@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?> 
 <!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
-<!--
+<!-- 
  * The Apache Software License, Version 1.1
  *
  *
@@ -60,19 +60,19 @@
 <ul>
 <li><link anchor="intro">Introduction</link></li>
 <li><link anchor="redirect">Redirect</link></li>
-<li><link anchor="nodeset">nodeset</link></li>
+<li><link anchor="nodeset">nodeset</link> <ref>(to be ported from Xalan-J 1)</ref></li>
 <li><link anchor="sql">SQL extensions</link></li>
 <li><link anchor="intersection">intersection</link></li>
 <li><link anchor="difference">difference</link></li>
 <li><link anchor="distinct">distinct</link></li>
 <li><link anchor="hassamenodes">hasSameNodes</link></li>
-<li><link anchor="evaluate">evalaute</link></li>
-<li><link anchor="groupitem">group and item</link></li>
-<li><link anchor="type">type</link></li>
-<li><link anchor="todate">toDate</link></li>
-<li><link anchor="formatdate">formatDate</link></li>
-<li><link anchor="grep">grep</link></li>
-<li><link anchor="foreachtoken">forEachToken</link></li>
+<li><link anchor="evaluate">evaluate</link> <ref>(to be done)</ref></li>
+<li><link anchor="groupitem">group and item</link> <ref>(to be done)</ref></li>
+<li><link anchor="type">type</link> <ref>(to be done)</ref></li>
+<li><link anchor="todate">toDate</link> <ref>(to be done)</ref></li>
+<li><link anchor="formatdate">formatDate</link> <ref>(to be done)</ref></li>
+<li><link anchor="grep">grep</link> <ref>(to be done)</ref></li>
+<li><link anchor="foreachtoken">forEachToken</link> <ref>(to be done)</ref></li>
 <li>Examples: <link anchor="ex-redirect">Redirect</link>, <link anchor="ex-sql">SQL library</link></li>
 </ul><anchor name="intro"/>
 <s2 title= "Introduction">
@@ -84,7 +84,7 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 </s2><anchor name="redirect"/>
 
 <s2 title= "Redirect">
-<p>A standard XSL transformation involves an XSL stylesheet, an XML source tree, and the transformation result tree. The transformation sends the entire result to a single <jump href="apidocs/trax/Result.html">trax.Result</jump> object.</p> 
+<p>A standard XSL transformation involves an XSL stylesheet, an XML source tree, and the transformation result tree. The transformation sends the entire result to a single <jump href="apidocs/org/apache/trax/Result.html">org.apache.trax.Result</jump> object.</p> 
 <p>The Redirect extension 
 (<jump href="apidocs/org/apache/xalan/xslt/extensions/Redirect.html">org.apache.xalan.xslt.extensions.Redirect</jump>) supplies three extension elements that you can use to redirect portions of your transformation output to multiple files: &lt;open&gt;, &lt;write&gt;, and &lt;close&gt;. If you use the &lt;write&gt; element alone, the extension opens a file, writes to it, and closes the file immediately. If you want explicit control over the opening and closing of files, use &lt;write&gt; in conjunction with the &lt;open&gt; and &lt;close&gt; elements.</p>
 <p>Each of these elements includes a file attribute and/or a select attribute to designate the output file. The file attribute takes a string, so you can use it to directly specify the output file name. The select attribute takes an XPath expression, so you can use it to dynamically generate the output file name. If you include both attributes, the Redirect extension first evaluates the select attribute, and falls back to the file attribute if the select attribute expression does not return a valid file name.</p>
