@@ -123,7 +123,7 @@ public abstract class Transformer
 
   /**
    * Set an object that will be used to resolve URIs used in
-   * document(), xsl:import, or xsl:include.
+   * document().
    * 
    * @param resolver An object that implements the URIResolver interface,
    * or null.

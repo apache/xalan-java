@@ -89,4 +89,11 @@ public interface TemplatesHandler extends ContentHandler
    * @param baseID Base URI for this stylesheet.
    */
   public void setSystemId(String systemID);
+  
+  /**
+   * Get the base ID (URI or system ID) from where relative 
+   * URLs will be resolved.
+   * @return The systemID that was set with {@link #setSystemId}.
+   */
+  public String getSystemId();
 }

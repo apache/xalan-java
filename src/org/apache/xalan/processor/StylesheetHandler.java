@@ -301,6 +301,17 @@ public class StylesheetHandler extends DefaultHandler
   {
     pushBaseIndentifier(baseID);
   }
+  
+  /**
+   * Get the base ID (URI or system ID) from where relative 
+   * URLs will be resolved.
+   * @return The systemID that was set with {@link #setSystemId}.
+   */
+  public String getSystemId()
+  {
+    return this.getBaseIdentifier();
+  }
+
 
   ////////////////////////////////////////////////////////////////////
   // Implementation of the EntityResolver interface.

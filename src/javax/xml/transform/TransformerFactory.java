@@ -220,7 +220,7 @@ public abstract class TransformerFactory
 
   /**
    * Set an object that is used by default during the transformation 
-   * to resolve URIs used in document(), xsl:import, or xsl:include.
+   * to resolve URIs used in xsl:import, or xsl:include.
    * 
    * @param resolver An object that implements the URIResolver interface,
    * or null.

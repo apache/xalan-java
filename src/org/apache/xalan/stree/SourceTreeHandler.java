@@ -842,7 +842,7 @@ public class SourceTreeHandler implements TransformerHandler
    * URLs will be resolved.
    * @param baseID Base URL for the source tree.
    */
-  public void setBaseID(String baseID)
+  public void setSystemId(String baseID)
   {
     m_transformer.setBaseURLOfSource(baseID);
     
@@ -851,6 +851,17 @@ public class SourceTreeHandler implements TransformerHandler
     
     stm.putDocumentInCache(m_root, new StreamSource(baseID));
   }
+  
+  /**
+   * Get the base ID (URI or system ID) from where relative 
+   * URLs will be resolved.
+   * @return The systemID that was set with {@link #setSystemId}.
+   */
+  public String getSystemId()
+  {
+    return m_transformer.getBaseURLOfSource();
+  }
+
   
   /**
    * Get the Transformer associated with this handler, which 
