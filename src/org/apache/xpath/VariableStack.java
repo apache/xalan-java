@@ -93,23 +93,44 @@ public class VariableStack extends Stack
     pushContextMarker();
   }
   
-  /**
-   * Pushes an item onto the top of this stack. This has exactly 
-   * the same effect as:
-   * <blockquote><pre>
-   * addElement(item)</pre></blockquote>
-   *
-   * @param   item   the item to be pushed onto this stack.
-   * @return  the <code>item</code> argument.
-   * @see     java.util.Vector#addElement
-   */
-  public Object push(Object item) 
-  {
-      if(!(item instanceof Stack))
-        throw new RuntimeException("You can only push a Stack on the variable stack!");
-
-      return super.push(item);
-  }
+//  /**
+//   * Pushes an item onto the top of this stack. This has exactly 
+//   * the same effect as:
+//   * <blockquote><pre>
+//   * addElement(item)</pre></blockquote>
+//   *
+//   * @param   item   the item to be pushed onto this stack.
+//   * @return  the <code>item</code> argument.
+//   * @see     java.util.Vector#addElement
+//   */
+//  public Object push(Object item) 
+//  {
+//      if(!(item instanceof Stack))
+//        throw new RuntimeException("You can only push a Stack on the variable stack!");
+//
+//      return super.push(item);
+//  }
+//  
+//  public synchronized void addElement(Object obj) {
+//    if(!(obj instanceof Stack))
+//      throw new RuntimeException("You can only push a Stack on the variable stack!");
+//      
+//    super.addElement(obj);
+//  }
+//  
+//  public synchronized void insertElementAt(Object obj, int index) {
+//  if(!(obj instanceof Stack))
+//    throw new RuntimeException("You can only push a Stack on the variable stack!");
+//    
+//  super.insertElementAt(obj, index);
+//  }
+//
+//  public synchronized void setElementAt(Object obj, int index) {
+//  if(!(obj instanceof Stack))
+//    throw new RuntimeException("You can only push a Stack on the variable stack!");
+//    
+//  super.insertElementAt(obj, index);
+// }
   
   /**
    * Set where to start the current search for a variable.
@@ -221,7 +242,8 @@ public class VariableStack extends Stack
    private Stack getCurrentFrame()
    {
       int stackFrameIndex = (-1 == m_searchStart) ? this.size()-1 : m_searchStart;
-      return (Stack)this.elementAt(stackFrameIndex);
+      // System.out.println("what: "+this.elementAt(stackFrameIndex));
+      return (Stack)elementAt(stackFrameIndex);
    }
    
   /**
@@ -254,7 +276,7 @@ public class VariableStack extends Stack
       Arg arg = (Arg)frame.elementAt(i);
       if(arg.getQName().equals(qname))
       {
-        this.setElementAt(new Arg(qname, xval), i);
+        frame.setElementAt(new Arg(qname, xval), i);
         return;
       }
     }
