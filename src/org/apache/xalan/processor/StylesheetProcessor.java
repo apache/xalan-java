@@ -57,6 +57,10 @@
 package org.apache.xalan.processor;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.util.Properties;
+import java.util.Enumeration;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
@@ -75,6 +79,42 @@ import trax.TemplatesBuilder;
  */
 public class StylesheetProcessor extends Processor
 {
+  static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
+  
+  /*
+  * Retrieve a propery bundle from a specified file and load it 
+  * int the System properties.
+  * @param file The string name of the property file.  
+  */
+  private static void loadPropertyFileToSystem(String file) 
+  {
+    InputStream is;
+    try
+    {   		   
+      Properties props = new Properties();
+      is = Process.class.getResourceAsStream(file);    
+      // get a buffered version
+      BufferedInputStream bis = new BufferedInputStream (is);
+      props.load (bis);                                     // and load up the property bag from this
+      bis.close ();                                          // close out after reading
+      // OK, now we only want to set system properties that 
+      // are not already set.
+      Properties systemProps = System.getProperties();
+      Enumeration propEnum = props.propertyNames();
+      while(propEnum.hasMoreElements())
+      {
+        String prop = (String)propEnum.nextElement();
+        if(!systemProps.containsKey(prop))
+          systemProps.put(prop, props.getProperty(prop));
+      }
+      System.setProperties(systemProps);
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+    }
+  }
+  
   /**
    * Process the source into a templates object.
    * 
@@ -84,6 +124,7 @@ public class StylesheetProcessor extends Processor
   public Templates process(InputSource source)
     throws ProcessorException, SAXException, IOException
   {
+    loadPropertyFileToSystem(XSLT_PROPERTIES);
     TemplatesBuilder builder = getTemplatesBuilder();
     builder.setBaseID(source.getSystemId());
     XMLReader reader = this.getXMLReader();
