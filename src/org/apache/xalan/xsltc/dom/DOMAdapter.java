@@ -317,11 +317,11 @@ public final class DOMAdapter implements DOM {
       return _dom.getNamespaceName(node);
     }
     
-    public String getNodeValue(final int node) 
+    public String getStringValueX(final int node) 
     {
     	if (node == DTM.NULL)
     	return "";
-      return _dom.getNodeValue(node);
+      return _dom.getStringValueX(node);
     }
     
     public void copy(final int node, TransletOutputHandler handler)

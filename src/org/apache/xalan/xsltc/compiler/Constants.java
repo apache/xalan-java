@@ -340,7 +340,7 @@ public interface Constants extends InstructionConstants {
     public static final String GET_NODE_TYPE      
 	= "getNodeType";
     public static final String GET_NODE_VALUE     
-	= "getNodeValue";
+	= "getStringValueX";
     public static final String GET_ELEMENT_VALUE  
 	= "getElementValue";
     public static final String GET_ATTRIBUTE_VALUE  

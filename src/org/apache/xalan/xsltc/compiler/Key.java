@@ -156,9 +156,9 @@ final class Key extends TopLevelElement {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	// DOM.getNodeValue(nodeIndex) => String
+	// DOM.getStringValueX(nodeIndex) => String
 	final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
-							   "getNodeValue",
+							   GET_NODE_VALUE,
 							   "(I)"+STRING_SIG);
 							   
 	final int getNodeIdent = cpg.addInterfaceMethodref(DOM_INTF,

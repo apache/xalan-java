@@ -103,7 +103,7 @@ public interface DOM {
     public int getNamespaceType(final int node);
     public int getParent(final int node);
     public int getAttributeNode(final int gType, final int element);
-    public String getNodeValue(final int node);
+    public String getStringValueX(final int node);
     public void copy(final int node, TransletOutputHandler handler)
 	throws TransletException;
     public void copy(DTMAxisIterator nodes, TransletOutputHandler handler)

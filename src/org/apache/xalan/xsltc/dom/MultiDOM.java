@@ -234,7 +234,7 @@ public final class MultiDOM implements DOM {
 
             int node;
             while ((node = _source.next()) != END) {
-                String val = getNodeValue(node);
+                String val = getStringValueX(node);
                 if (_value.equals(val) == _op) {
                     if (_returnType == RETURN_CURRENT)
                         return returnNode(node);
@@ -453,11 +453,11 @@ public final class MultiDOM implements DOM {
         return _adapters[getDTMId(node)].getNamespaceName(node & CLR);
     }
     
-    public String getNodeValue(final int node) {
+    public String getStringValueX(final int node) {
         if (node == DTM.NULL) {
             return "";
         }
-        return _adapters[getDTMId(node)].getNodeValue(node & CLR);
+        return _adapters[getDTMId(node)].getStringValueX(node & CLR);
     }
     
     public void copy(final int node, TransletOutputHandler handler)

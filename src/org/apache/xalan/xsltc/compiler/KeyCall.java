@@ -209,7 +209,7 @@ final class KeyCall extends FunctionCall {
 
 	// Returns the string value for a node in the DOM
 	final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
-							   "getNodeValue",
+							   GET_NODE_VALUE,
 							   "(I)"+STRING_SIG);
 
 	// Returns the KeyIndex object of a given name
