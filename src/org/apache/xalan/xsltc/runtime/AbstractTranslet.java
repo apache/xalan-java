@@ -473,7 +473,7 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /************************************************************************
-     * Start of an implementation of a multiple output extension.
+     * Multiple output document extension.
      * See compiler/TransletOutput for actual implementation.
      ************************************************************************/
 
@@ -524,15 +524,6 @@ public abstract class AbstractTranslet implements Translet {
 	transform(document, document.getIterator(), handler);
     }
 	
-    /**
-     * Calls transform() with a set of given output handlers
-     */
-    public final void transform(DOM document,
-				TransletOutputHandler[] handlers) 
-	throws TransletException {
-	transform(document, document.getIterator(), handlers[0]);
-    }
-
     /**
      * Used by some compiled code as a shortcut for passing strings to the
      * output handler

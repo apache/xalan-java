@@ -63,10 +63,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.dom.Axis;
 
 final class ParentLocationPath extends RelativeLocationPath {
     private Expression _step;
@@ -175,6 +176,17 @@ final class ParentLocationPath extends RelativeLocationPath {
 	     (right == Axis.PRECEDING) ||
 	     (right == Axis.PRECEDINGSIBLING)))
 	    return true;
+
+	if ((right == Axis.FOLLOWING) && (left == Axis.CHILD)) {
+	    // Special case for '@*/following::*' expressions. The resulting
+	    // iterator is initialised with the parent's first child, and this
+	    // can cause duplicates in the output if the parent has more than
+	    // one attribute that matches the left step.
+	    if (_path instanceof Step) {
+		int type = ((Step)_path).getNodeType();
+		if (type == DOM.ATTRIBUTE) return true;
+	    }
+	}
 
 	return false;
     }

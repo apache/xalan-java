@@ -90,7 +90,9 @@ public class Parser implements Constants, ContentHandler {
 
     private static final String XSL = "xsl";            // standard prefix
     private static final String TRANSLET = "translet"; // extension prefix
-    
+
+    private Locator _locator = null;
+
     private XSLTC _xsltc;             // Reference to the compiler object.
     private XPathParser _xpathParser; // Reference to the XPath parser.
     private Vector _errors;           // Contains all compilation errors
@@ -788,6 +790,8 @@ public class Parser implements Constants, ContentHandler {
 		node = (SyntaxTreeNode)clazz.newInstance();
 		node.setQName(qname);
 		node.setParser(this);
+		if (_locator != null)
+		    node.setLineNumber(_locator.getLineNumber());
 		if (node instanceof Stylesheet) {
 		    _xsltc.setStylesheet((Stylesheet)node);
 		}
@@ -842,7 +846,7 @@ public class Parser implements Constants, ContentHandler {
      *  @exp    - textual representation of the expression
      */
     public Expression parseExpression(SyntaxTreeNode parent, String exp) {
-	return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, 0, null);
+	return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, null);
     }
 
     /**
@@ -858,7 +862,7 @@ public class Parser implements Constants, ContentHandler {
 	// Use the default expression if none was found
         if ((exp.length() == 0) && (def != null)) exp = def;
 	// Invoke the XPath parser
-        return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, 0, exp);
+        return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, exp);
     }
 
     /**
@@ -867,7 +871,7 @@ public class Parser implements Constants, ContentHandler {
      *  @exp    - textual representation of the pattern
      */
     public Pattern parsePattern(SyntaxTreeNode parent, String pattern) {
-	return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, 0, pattern);
+	return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, pattern);
     }
 
     /**
@@ -883,16 +887,18 @@ public class Parser implements Constants, ContentHandler {
 	// Use the default pattern if none was found
 	if ((pattern.length() == 0) && (def != null)) pattern = def;
 	// Invoke the XPath parser
-        return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, 0, pattern);
+        return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, pattern);
     }
 
     /**
      * Parse an XPath expression or pattern using the generated XPathParser
      * The method will return a Dummy node if the XPath parser fails.
      */
-    private SyntaxTreeNode parseTopLevel(SyntaxTreeNode parent,
-					 String text, int line,
+    private SyntaxTreeNode parseTopLevel(SyntaxTreeNode parent, String text,
 					 String expression) {
+	int line = 0;
+	if (_locator != null) line = _locator.getLineNumber();
+
 	try {
 	    _xpathParser.setScanner(new XPathLexer(new StringReader(text)));
 	    Symbol result = _xpathParser.parse(line);
@@ -901,6 +907,7 @@ public class Parser implements Constants, ContentHandler {
 		if (node != null) {
 		    node.setParser(this);
 		    node.setParent(parent);
+		    node.setLineNumber(line);
 		    return node;
 		}
 	    } 
@@ -928,7 +935,6 @@ public class Parser implements Constants, ContentHandler {
     public boolean errorsFound() {
 	return _errors.size() > 0;
     }
-
 
     public void internalError() {
 	Exception e = new Exception();
@@ -1184,8 +1190,11 @@ public class Parser implements Constants, ContentHandler {
     public void skippedEntity(String name) { }
 
     /**
-     * IGNORED - we already know what the origin of the document is
+     * Store the document locator to later retrieve line numbers of all
+     * elements from the stylesheet
      */
-    public void setDocumentLocator(Locator locator) { }
+    public void setDocumentLocator(Locator locator) {
+	_locator = locator;
+    }
 
 }

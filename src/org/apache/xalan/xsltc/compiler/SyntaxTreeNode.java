@@ -88,7 +88,7 @@ public abstract class SyntaxTreeNode implements Constants {
     private Parser _parser;
 
     // This node's line number in the input file (not obtainable!!!!)
-    private final int _line;
+    private int _line;
 
     // Reference to this node's parent node
     protected SyntaxTreeNode _parent;
@@ -536,6 +536,10 @@ public abstract class SyntaxTreeNode implements Constants {
 
     protected final void indent(int indent) {
 	System.out.print(new String(_spaces, 0, indent));
+    }
+
+    public final void setLineNumber(int line) {
+	_line = line;
     }
 
     public final int getLineNumber() {

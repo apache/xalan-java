@@ -800,9 +800,17 @@ public final class TextOutput implements TransletOutputHandler {
 	    if (_startTagOpen) closeStartTag();
 	    if (_cdataTagOpen) closeCDATA();
 
+	    // Handle document type declaration (only HTML at this point)
+	    if ((_lexHandler != null) && (_outputType == HTML)) {
+		if ((_doctypeSystem != null) || (_doctypePublic != null))
+		    _lexHandler.startDTD("HTML",_doctypePublic,_doctypeSystem);
+		_lexHandler = null;
+	    }
+
 	    // Pass the processing instruction to the SAX handler
             _saxHandler.processingInstruction(target, data);
-        } catch (SAXException e) {
+        }
+	catch (SAXException e) {
             throw new TransletException(e);
         }
     }

@@ -115,16 +115,35 @@ final class RelationalExpr extends Expression implements Operators {
 
 	// If one is of reference type, then convert the other too
 	if (hasReferenceArgs()) {
+	    Type type = null;
+	    Type typeL = null;
+	    Type typeR = null;
 	    if (tleft instanceof ReferenceType) {
-		_right = new CastExpr(_right, Type.Reference);
+		if (_left instanceof VariableRefBase) {
+		    VariableRefBase ref = (VariableRefBase)_left;
+		    VariableBase var = ref.getVariable();
+		    typeL = var.getType();
+		}
 	    }
 	    if (tright instanceof ReferenceType) {
-		_left = new CastExpr(_left, Type.Reference);
+		if (_right instanceof VariableRefBase) {
+		    VariableRefBase ref = (VariableRefBase)_right;
+		    VariableBase var = ref.getVariable();
+		    typeR = var.getType();
+		}
 	    }
 	    // bug fix # 2838 
-	    _right = new CastExpr(_right, Type.Real);
-            _left = new CastExpr(_left, Type.Real);
+	    if (typeL == null)
+		type = typeR;
+	    else if (typeR == null)
+		type = typeL;
+	    else {
+		type = Type.Real;
+	    }
+	    if (type == null) type = Type.Real;
 
+	    _right = new CastExpr(_right, type);
+            _left = new CastExpr(_left, type);
 	    return _type = Type.Boolean;
 	}
 

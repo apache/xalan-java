@@ -722,16 +722,21 @@ final class Mode implements Constants {
 	targets[DOM.ATTRIBUTE] = attrNamespaceHandle;
 
 	// Match on processing instruction - default: process next node
-	targets[DOM.PROCESSING_INSTRUCTION] =
-	    _testSeq[DOM.PROCESSING_INSTRUCTION] != null
-	    ? _testSeq[DOM.PROCESSING_INSTRUCTION]
-	    .compile(classGen, methodGen, ihLoop)
-	    : ihLoop;
+	InstructionHandle ihPI = ihLoop;
+	if (_nodeTestSeq != null) ihPI = ihElem;
+	if (_testSeq[DOM.PROCESSING_INSTRUCTION] != null)
+	    targets[DOM.PROCESSING_INSTRUCTION] =
+		_testSeq[DOM.PROCESSING_INSTRUCTION].
+		compile(classGen, methodGen, ihPI);
+	else
+	    targets[DOM.PROCESSING_INSTRUCTION] = ihPI;
 	
 	// Match on comments - default: process next node
+	InstructionHandle ihComment = ihLoop;
+	if (_nodeTestSeq != null) ihComment = ihElem;
 	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
-	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihLoop)
-	    : ihLoop;
+	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihComment)
+	    : ihComment;
 
 	// Now compile test sequences for various match patterns:
 	for (int i = DOM.NTYPES; i < targets.length; i++) {
