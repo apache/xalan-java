@@ -618,11 +618,7 @@ public class XNodeSequenceSingleton extends XObject
    * @see java.lang.Object#equals(Object)
    */
   public boolean equals(Object arg0)
-  {
-    if(arg0 instanceof XObject)
-    {
-      equals((XObject)arg0);
-    }
+  {    
     return super.equals(arg0);
   }
   
