@@ -65,7 +65,6 @@
 
 package org.apache.xalan.xsltc.cmdline;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
@@ -73,29 +72,26 @@ import java.util.Vector;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 
-import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.dom.SAXImpl;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
 import org.apache.xalan.xsltc.runtime.Parameter;
 import org.apache.xalan.xsltc.runtime.TransletLoader;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+import org.apache.xml.serializer.SerializationHandler;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 final public class Transform {
 
-    // Temporary
-    static private boolean _useOldOutputSystem = false;
-
-    private TransletOutputHandler _handler;
+    private SerializationHandler _handler;
 
     private String  _fileName;
     private String  _className;
@@ -152,7 +148,7 @@ final public class Transform {
 	try {
 	    
 	    final Class clazz = loadTranslet(_className);
-	    final Translet translet = (Translet)clazz.newInstance();
+	    final AbstractTranslet translet = (AbstractTranslet)clazz.newInstance();
 
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -166,33 +162,14 @@ final public class Transform {
 	    final XMLReader reader = parser.getXMLReader();
 
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-	    final DOMImpl dom = new DOMImpl();
-	    DOMBuilder builder = dom.getBuilder();
-	    reader.setContentHandler(builder);
+            XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
 
-	    try {
-		String prop = "http://xml.org/sax/properties/lexical-handler";
-		reader.setProperty(prop, builder);
-	    }
-	    catch (SAXException e) {
-		// quitely ignored
-	    }
-	    
-	    // Create a DTD monitor and pass it to the XMLReader object
-	    final DTDMonitor dtdMonitor = new DTDMonitor(reader);
-	    AbstractTranslet _translet = (AbstractTranslet)translet;
+            final SAXImpl dom = (SAXImpl)dtmManager.getDTM(
+                             new SAXSource(reader, new InputSource(_fileName)),
+                             false, null, true, false, translet.hasIdCall());
+
 	    dom.setDocumentURI(_fileName);
-	    if (_uri)
-		reader.parse(_fileName);
-	    else
-		reader.parse(new File(_fileName).toURL().toExternalForm());
-
-	    builder = null;
-
-	    // If there are any elements with ID attributes, build an index
-	    dtdMonitor.buildIdIndex(dom, 0, _translet);
-	    // Pass unparsed entity descriptions to the translet
-	    _translet.setDTDMonitor(dtdMonitor);
+            translet.prepassDocument(dom);
 
 	    // Pass global parameters
 	    int n = _params.size();
@@ -205,20 +182,17 @@ final public class Transform {
 	    TransletOutputHandlerFactory tohFactory = 
 		TransletOutputHandlerFactory.newInstance();
 	    tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
-	    tohFactory.setEncoding(_translet._encoding);
-	    tohFactory.setOutputMethod(_translet._method);
+	    tohFactory.setEncoding(translet._encoding);
+	    tohFactory.setOutputMethod(translet._method);
 
 	    if (_iterations == -1) {
-		translet.transform(dom, _useOldOutputSystem ?
-					tohFactory.getOldTransletOutputHandler() :
-					tohFactory.getTransletOutputHandler());
+		translet.transform(dom, tohFactory.getSerializationHandler());
 	    }
 	    else if (_iterations > 0) {
 		long mm = System.currentTimeMillis();
 		for (int i = 0; i < _iterations; i++) {
-		    translet.transform(dom, _useOldOutputSystem ?
-					    tohFactory.getOldTransletOutputHandler() :
-					    tohFactory.getTransletOutputHandler());
+		    translet.transform(dom,
+				       tohFactory.getSerializationHandler());
 		}
 		mm = System.currentTimeMillis() - mm;
 
@@ -322,9 +296,6 @@ final public class Transform {
 		    else if (args[i].equals("-j")) {
 			isJarFileSpecified = true;	
 			jarFile = args[++i];
-		    }
-		    else if (args[i].equals("-e")) {
-			_useOldOutputSystem = true;
 		    }
 		    else if (args[i].equals("-n")) {
 			try {
