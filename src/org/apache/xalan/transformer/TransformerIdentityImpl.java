@@ -361,9 +361,9 @@ public class TransformerIdentityImpl extends Transformer
           }
           catch (SAXException se)
           {
-            throw new TransformerException(se);
+            m_errorListener.fatalError(new TransformerException(se));
           }
-  
+          
           return;
         }
         else
@@ -494,7 +494,7 @@ public class TransformerIdentityImpl extends Transformer
       }
       catch (org.xml.sax.SAXException se)
       {
-        throw new TransformerException(se);
+        m_errorListener.fatalError(new TransformerException(se));
       }
       catch (IOException ioe)
       {
