@@ -11,7 +11,7 @@
 </ul>
 <anchor name="download"/>
 <s2 title="Downloading what you need">
-<p>To use Xalan, you need the following:</p>
+<p>To use &xslt4j;, you need the following:</p>
 <ul>
 <li>The JDK or JRE 1.2.2, or 1.3.x</li>
 <li>xalan.jar</li>

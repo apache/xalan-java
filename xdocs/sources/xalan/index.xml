@@ -59,12 +59,12 @@
 <s1 title="&xslt4j-current;">
 <!--note>A later Developer release has been posted in the <resource-ref idref="xslt4j-distdir"/>. For the changes that have occurred since &xslt4j-current;, consult the xml-xalan-cvs@apache.org mailing list, or download the release and consult the release notes.</note-->
   <s2 title="What is it?">
-    <p>Xalan is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It implements the
+    <p>&xslt4j; is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It implements the
      W3C Recommendations for XSL Transformations (XSLT) and the XML Path Language (XPath). It can be used from the command line,
      in an applet or a servlet, or as a module in other program.</p>
   </s2>
   <s2 title="I've heard of &xslt4j;, but what is version 2?">
-    <p>&xslt4j; version 2 recasts Xalan as an implementation of the <link idref="trax">TRaX (Transformation API for XML)</link> interfaces, part of the <resource-ref idref="jaxp11"/>. TRaX provides a
+    <p>&xslt4j; version 2 recasts &xslt; as an implementation of the <link idref="trax">TRaX (Transformation API for XML)</link> interfaces, part of the <resource-ref idref="jaxp11"/>. TRaX provides a
     modular framework and a standard API for performing XML transformations, and it utilizes system properties to determine which Transformer and which XML parser to use.</p>
      <p>&xslt4j; version 2 also builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the XML parser API in
      <resource-ref idref="jaxp"/>.</p>
@@ -93,8 +93,8 @@
   </s2>
   
   <s2 title="Where do I get Xerces?">
-    <p>The Xalan download includes &xml4j-jar; from &xml4j-used;. In conjunction with xml-apis.jar, this is all you need to run Xalan with 
-    the Xerces XML parser. You can, however, download the complete Xerces binary or source distribution from the 
+    <p>The &xslt4j; download includes &xml4j-jar; from &xml4j-used;. In conjunction with xml-apis.jar, this is all you need to run &xslt4j; with 
+    the &xml4j; XML parser. You can, however, download the complete Xerces binary or source distribution from the 
     <resource-ref idref="xml4j-distdir"/>.</p>
     <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer
      and XML parser</link>.</note> 
@@ -104,8 +104,8 @@
     href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
   </s2>  
     <s2 title="For more information...">
-    <p>For more information, go to <link idref="overview">Xalan Overview</link> and <link idref="getstarted">Getting
-    Started</link>. All of the Xalan documentation on this website is included in the Xalan download, as are a number of
+    <p>For more information, go to <link idref="overview">&xslt4j; Overview</link> and <link idref="getstarted">Getting
+    Started</link>. All of the &xslt4j; documentation on this website is included in the &xslt4j; download, as are a number of
     <link idref="samples">Samples</link> to help you start using &xslt4j2; to transform XML documents.</p>
   </s2>  
 </s1> 

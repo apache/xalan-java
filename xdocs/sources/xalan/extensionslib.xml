@@ -59,7 +59,7 @@
 <s1 title="Extensions library">
 <ul>
 <li><link anchor="intro">Introduction</link></li>
-<li><link anchor="xalanns">Xalan namespace</link></li>
+<li><link anchor="xalanns">&xslt; namespace</link></li>
 <li><link anchor="redirect">Redirect</link></li>
 <li><link anchor="nodeset">nodeset</link></li>
 <li><link anchor="intersection">intersection</link></li>
@@ -82,11 +82,11 @@
 <s2 title= "Introduction">
 <p>Extension elements and functions provide a powerful mechanism
 for extending and simplifying what you can do with an XLST processor like
-Xalan. With input and contributions from the XML open-source developer community, we are working on placing the most useful
+&xslt;. With input and contributions from the XML open-source developer community, we are working on placing the most useful
 extensions in an extensions library distributed with &xslt4j;. If you have ideas and/or contributions you would like to make, please email us at the <human-resource-ref idref="xalandev"/>.</p>
 </s2><anchor name="xalanns"/>
-<s2 title="Xalan namespace">
-<p>Where it makes sense, we are placing the new Xalan extensions in the org.apache.xalan.lib.Extensions class and we have defined a namespace for this class:</p>
+<s2 title="&xslt; namespace">
+<p>Where it makes sense, we are placing the new &xslt; extensions in the org.apache.xalan.lib.Extensions class and we have defined a namespace for this class:</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan</code></p>
 <p>If you are calling &xslt4j;-supplied extensions, we recommend that you define this namespace in your stylesheet element, and call the extension using the namespace prefix that you have associated with that namespace. That way, if we later reorganize how the &xslt4j;-supplied extensions are stored, you won't have to modify your stylesheet.</p>
 <p>For an example that uses this namespace, see <link anchor="ex-nodeset">Example with the nodeset extension function</link>.</p>
@@ -454,7 +454,7 @@ designates the output from the second transformation.</p>
 <s3 title="Variation: using pipeDocument in an empty stylesheet">
 <p>Suppose you want to pipe a document through a series of transformations. You can use the pipeDocument extension element
 to perform this operation by placing the extension element in an otherwise empty stylesheet.</p>
-<p>The following stylesheet is used to merge the Xalan documents into a book (the first transformation), and transform the book
+<p>The following stylesheet is used to merge the &xslt; documents into a book (the first transformation), and transform the book
 into a tree of formatting objects, which can then be used to generate a PDF file. This transformation is invoked as follows:</p>
 <p><code>java org.apache.xalan.xslt.Process -in printbook.xml</code><br/>
 <code> -param source printbook.xml</code><br/>

@@ -1,5 +1,6 @@
 <?xml encoding="US-ASCII"?>
 
+<!ENTITY xslt "Xalan">
 <!ENTITY xslt4j "Xalan-Java">
 <!ENTITY xslt4j2 "Xalan-Java 2">
 <!ENTITY xslt4j-dist "xalan-j_2_3_0">

@@ -72,8 +72,8 @@
     <li><link anchor="done">Changes since version 2.2</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
-    <li><link anchor="status">Version of Xerces to use</link></li>
-    <li><link anchor="developer-list">Xalan developers</link></li>
+    <li><link anchor="status">Version of &xml4j; to use</link></li>
+    <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.2">
@@ -97,7 +97,7 @@
      <li>If an attempt is made to coerce a different namespace onto a prefix already in use in xsl:attribute, the attribute will come out 
      in the wrong namespace. Workaround: either provide an NCName instead of a QName for the attribute, or provide a QName with a prefix not
      used elsewhere.<br/><br/></li>
-     <li>Handling xsl:namespace-alias declarations: In release 2.0.D01, we reported the need to do some research concerning exactly how Xalan
+     <li>Handling xsl:namespace-alias declarations: In release 2.0.D01, we reported the need to do some research concerning exactly how &xslt;
      should handle xsl:namespace-alias declarations. As a result of discussions among members of the W3C Working Group on XSL, we have reached a
      more precise consensus on how namespaces should be represented when an xsl:namespace-alias declaration is in effect.<br/><br/>
      If a literal result element has a namespace prefix, the prefix will be preserved and the namespace URI of the element will be as
@@ -138,25 +138,17 @@
      <p>We strongly encourage you write patches for problems you find and submit them to
       xalan-dev@xml.apache.org. We review the patches we receive to make sure they do not break something else, and (assuming they 
      do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design
-     issues, we sincerely want (and need!) your active participation in the ongoing development of Xalan.</p>
+     issues, we sincerely want (and need!) your active participation in the ongoing development of &xslt;.</p>
      </s3>     
      <anchor name="status"/>
      <s3 title="Version of Xerces to use"> 
        <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including &xml4j-jar; on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
        <note>You may also use &xslt4j-current; for prototyping or beta testing with &xml4j; 2.0.0.beta3. <em>You may not use the 
        <link idref="usagepatterns" anchor="compat">&xslt4j; version 1 API (deprecated)</link> with &xml4j; 2.0.0.beta3.</em></note>
-       <p><em>Important</em> You may experience unpredictable anomalies if your Xalan and Xerces builds are not in synch. If you download an update to Xalan, check the release notes to determine which version of Xerces you should use.</p>
-       <note>You can use Xalan with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
+       <p><em>Important</em> You may experience unpredictable anomalies if your &xslt4j; and &xml4j; builds are not in synch. If you download an update to &xslt4j;, check the release notes to determine which version of &xml4j; you should use.</p>
+       <note>You can use &xslt4j; with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
        <link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>
      </s3>
-     <anchor name="to-do"/>
-     <s3 title="To-do tasks">
-       <p>For a list of goals, tasks, and target dates for completion, see <jump href="todo.html">Xalan-Java Version 2: Things To Do</jump>. 
-       As tasks are completed, they are moved from the to-do list to 
-       <jump href="todo.html#release-date-completed">Completed</jump>.</p>
-       <p>The source document for the to-do list is an active document in the Apache CVS repository: 
-       <jump href="http://xml.apache.org/websrc/cvsweb.cgi/xml-xalan/java/todo.xml">xml-xalan/java/todo.xml</jump>.</p>
-      </s3> 
   </s2>
   <anchor name="build"/>  
   <s2 title="Build Notes">

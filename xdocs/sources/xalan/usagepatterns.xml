@@ -118,7 +118,7 @@ transformer.transform
 </s2><anchor name="plug"/>
 <s2 title="Plugging in a Transformer and XML parser">
 <p>The Java API for XML Processing interfaces enable you to isolate your application from the internal implementation details of a given Transformer, SAX parser, or DOM parser. For each of these objects, there is an abstract Factory class with a static newInstance() method that instantiates a concrete Factory which wraps the underlying implementation. These newInstance() methods use system property settings to determine which implementation to instantiate.</p>
-<p>&xslt4j; is distributed with a system property setting for the Xalan XSLT Transformer. This setting is in xalan.jar in META-INF/services (see src/META-INF/services).</p>
+<p>&xslt4j; is distributed with a system property setting for the &xslt4j; processor. This setting is in xalan.jar in META-INF/services (see src/META-INF/services).</p>
 <gloss>
   <label>System property</label>
     <item>Setting</item>

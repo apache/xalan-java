@@ -79,7 +79,7 @@
   <li>DOM2DTM (which provides DTM access to an existing DOM)</li>
 </ul> 
   <p>Both DTMs can be built incrementally (see <link anchor="incremental">incremental transforms</link>). When operating incrementally, the
-  DTM allows the Xalan processor to begin reading the DTM and performing the transformation while the DTM is still being assembled 
+  DTM allows the &xslt4j; processor to begin reading the DTM and performing the transformation while the DTM is still being assembled 
   (for example, while the parser is still parsing the XML source), and attempts to do only as much work as is needed to support the
   read requests actually made by the XPath or XSLT processor.</p>
   <p>For the convenience of user-written extensions, a proxy mechanism presents the contents of the DTM as a read-only subset of the DOM.</p>

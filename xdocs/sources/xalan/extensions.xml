@@ -135,7 +135,7 @@
 <note>The extension function could include both numdays and multiplier as arguments, thus bypassing the need for the extension element, but the purpose here is to illustrate the usage pattern for extension elements.</note>
 <p>As you review this stylesheet, please note the following:</p>
 <ol>
-	  <li>The declaration of the Xalan lxslt namespace, which provides support for the component and
+	  <li>The declaration of the &xslt; lxslt namespace, which provides support for the component and
      component/script elements:<br/><br/>
     <code>xmlns:lxslt="http://xml.apache.org/xslt"</code><br/><br/></li>
     <li>The declaration of a namespace for this extension:<br/><br/>
@@ -499,7 +499,7 @@ org.w3c.dom.NodeList (or an org.apache.xpath.NodeSet, which implements NodeList,
 </s3>
 </s2><anchor name="java-namespace"/>
 <s2 title="Alternative: using the abbreviated syntax for extensions implemented in Java">
-<p>For extension functions and extension elements implemented in Java, Xalan permits an abbreviated syntax. When you use the abbreviated syntax, you do not use an lxslt:component to designate the functions.</p>
+<p>For extension functions and extension elements implemented in Java, &xslt4j; permits an abbreviated syntax. When you use the abbreviated syntax, you do not use an lxslt:component to designate the functions.</p>
 <p>The abbreviated syntax supports the use of extension functions and extension elements implemented in Java. You cannot use this syntax with extensions implemented in JavaScript or another scripting language.</p>
 <anchor name="java-namespace-declare"/>
 <s3 title="Declare the namespace">
