@@ -189,7 +189,7 @@ final class Predicate extends Expression {
 		(parent instanceof Pattern) ||
 		(parent instanceof FilterExpr)) {
 
-		final QName position = getParser().getQName("position");
+		final QName position = getParser().getQNameIgnoreDefaultNs("position");
 		final PositionCall positionCall = new PositionCall(position);
 		positionCall.setParser(getParser());
 		positionCall.setParent(this);
