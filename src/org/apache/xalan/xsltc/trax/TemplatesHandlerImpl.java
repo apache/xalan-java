@@ -75,12 +75,15 @@ import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.Stylesheet;
 import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
 import org.apache.xalan.xsltc.compiler.XSLTC;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+
+import java.util.Vector;
 
 /**
  * Implementation of a JAXP1.1 TemplatesHandler
@@ -113,6 +116,11 @@ public class TemplatesHandlerImpl
      * A reference to XSLTC's parser object.
      */
     private Parser _parser = null;
+
+    /**
+     * The created Templates object.
+     */
+    private TemplatesImpl _templates = null;
 
     /**
      * Default constructor
@@ -164,77 +172,7 @@ public class TemplatesHandlerImpl
      *         process, or null if no Templates object has been created.
      */
     public Templates getTemplates() {
-	try {
-	    XSLTC xsltc = _parser.getXSLTC();
-
-	    // Set the translet class name if not already set
-	    String transletName = null;
-	    if (_systemId != null) {
-		transletName = Util.baseName(_systemId);
-	    }
-	    else {
-	    	transletName = (String)_tfactory.getAttribute("translet-name");
-	    }
-	    xsltc.setClassName(transletName);
-
-	    // Get java-legal class name from XSLTC module
-	    transletName = xsltc.getClassName();
-
-	    Stylesheet stylesheet = null;
-	    SyntaxTreeNode root = _parser.getDocumentRoot();
-
-	    // Compile the translet - this is where the work is done!
-	    if (!_parser.errorsFound() && root != null) {
-		// Create a Stylesheet element from the root node
-		stylesheet = _parser.makeStylesheet(root);
-		stylesheet.setSystemId(_systemId);
-		stylesheet.setParentStylesheet(null);
-
-                // Set a document loader (for xsl:include/import) if defined
-                if (_uriResolver != null) {
-                    stylesheet.setSourceLoader(this);
-                }
-
-		_parser.setCurrentStylesheet(stylesheet);
-
-		// Set it as top-level in the XSLTC object
-		xsltc.setStylesheet(stylesheet);
-
-		// Create AST under the Stylesheet element
-		_parser.createAST(stylesheet);
-	    }
-
-	    // Generate the bytecodes and output the translet class(es)
-	    if (!_parser.errorsFound() && stylesheet != null) {
-		stylesheet.setMultiDocument(xsltc.isMultiDocument());
-		stylesheet.setHasIdCall(xsltc.hasIdCall());
-
-                // Class synchronization is needed for BCEL
-                synchronized (xsltc.getClass()) {
-                    stylesheet.translate();
-                }
-	    }
-
-	    if (!_parser.errorsFound()) {
-		// Check that the transformation went well before returning
-		final byte[][] bytecodes = xsltc.getBytecodes();
-		if (bytecodes != null) {
-		    final TemplatesImpl templates =
-			new TemplatesImpl(xsltc.getBytecodes(), transletName,
-			    _parser.getOutputProperties(), _indentNumber, _tfactory);
-
-		    // Set URIResolver on templates object
-		    if (_uriResolver != null) {
-			templates.setURIResolver(_uriResolver);
-		    }
-		    return templates;
-		}
-	    }
-	}
-	catch (CompilerException e) {
-	    // falls through
-	}
-	return null;
+        return _templates;
     }
 
     /**
@@ -275,8 +213,90 @@ public class TemplatesHandlerImpl
     /**
      * Just forward SAX2 event to parser object.
      */
-    public void endDocument() {
+    public void endDocument() throws SAXException {
         _parser.endDocument();
+
+        // create the templates
+        try {
+            XSLTC xsltc = _parser.getXSLTC();
+
+            // Set the translet class name if not already set
+            String transletName = null;
+            if (_systemId != null) {
+                transletName = Util.baseName(_systemId);
+            }
+            else {
+                transletName = (String)_tfactory.getAttribute("translet-name");
+            }
+            xsltc.setClassName(transletName);
+
+            // Get java-legal class name from XSLTC module
+            transletName = xsltc.getClassName();
+
+            Stylesheet stylesheet = null;
+            SyntaxTreeNode root = _parser.getDocumentRoot();
+
+            // Compile the translet - this is where the work is done!
+            if (!_parser.errorsFound() && root != null) {
+                // Create a Stylesheet element from the root node
+                stylesheet = _parser.makeStylesheet(root);
+                stylesheet.setSystemId(_systemId);
+                stylesheet.setParentStylesheet(null);
+
+                // Set a document loader (for xsl:include/import) if defined
+                if (_uriResolver != null) {
+                    stylesheet.setSourceLoader(this);
+                }
+
+                _parser.setCurrentStylesheet(stylesheet);
+
+                // Set it as top-level in the XSLTC object
+                xsltc.setStylesheet(stylesheet);
+
+                // Create AST under the Stylesheet element
+                _parser.createAST(stylesheet);
+            }
+
+            // Generate the bytecodes and output the translet class(es)
+            if (!_parser.errorsFound() && stylesheet != null) {
+                stylesheet.setMultiDocument(xsltc.isMultiDocument());
+                stylesheet.setHasIdCall(xsltc.hasIdCall());
+
+                // Class synchronization is needed for BCEL
+                synchronized (xsltc.getClass()) {
+                    stylesheet.translate();
+                }
+            }
+
+            if (!_parser.errorsFound()) {
+                // Check that the transformation went well before returning
+                final byte[][] bytecodes = xsltc.getBytecodes();
+                if (bytecodes != null) {
+                    _templates =
+                    new TemplatesImpl(xsltc.getBytecodes(), transletName,
+                        _parser.getOutputProperties(), _indentNumber, _tfactory);
+
+                    // Set URIResolver on templates object
+                    if (_uriResolver != null) {
+                        _templates.setURIResolver(_uriResolver);
+                    }
+                }
+            }
+            else {
+                StringBuffer errorMessage = new StringBuffer();
+                Vector errors = _parser.getErrors();
+                final int count = errors.size();
+                for (int i = 0; i < count; i++) {
+                    if (errorMessage.length() > 0)
+                        errorMessage.append('\n');
+                    errorMessage.append(errors.elementAt(i).toString());
+                }
+                throw new SAXException(ErrorMsg.JAXP_COMPILE_ERR, new TransformerException(errorMessage.toString()));
+            }
+        }
+        catch (CompilerException e) {
+            throw new SAXException(ErrorMsg.JAXP_COMPILE_ERR, e);
+        }
     }
 
     /**
