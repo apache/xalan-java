@@ -377,12 +377,22 @@ final class LiteralElement extends Instruction {
 	il.append(methodGen.startElement());
 
 	// The value of an attribute may depend on a (sibling) variable
-	for (int i = 0; i < elementCount(); i++) {
-	    final SyntaxTreeNode item = (SyntaxTreeNode) elementAt(i);
-	    if (item instanceof Variable) {
-		item.translate(classGen, methodGen);
-		removeElement(item);	// avoid translating it twice
+    int j=0;
+    while (j < elementCount())
+    {
+        final SyntaxTreeNode item = (SyntaxTreeNode) elementAt(j);
+        if (item instanceof Variable) {
+            item.translate(classGen, methodGen);
+            removeElement(item);	// avoid translating it twice
+            /* When removing an element we do not increment j
+             * but the removal will reduce the value of elementCount()
+             * so this loop WILL end. The next iteration will process
+             * elementAt(j), but with the old element removed
+             * we are actually processing the next element.
+             */
 	    }
+        else
+            j++;
 	}
 
 	// Compile code to emit namespace attributes
