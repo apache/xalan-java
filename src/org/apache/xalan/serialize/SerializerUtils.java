@@ -73,7 +73,7 @@ public class SerializerUtils
                 dtm.getLocalName(attr),
                 dtm.getNodeName(attr),
                 "CDATA",
-                dtm.getNodeValue(attr));
+                dtm.getNodeValue(attr), false);
         }
         catch (SAXException e)
         {
@@ -185,7 +185,7 @@ public class SerializerUtils
             else if (type == DTM.NAMESPACE_NODE)
             {
                 String prefix = dtm.getNodeNameX(src);
-                // bjm - some changes here to get desturi
+                // Brian M. - some changes here to get desturi
                 String desturi = handler.getNamespaceURIFromPrefix(prefix);
                 String srcURI = dtm.getNodeValue(src);
 

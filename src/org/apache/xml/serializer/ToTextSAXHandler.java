@@ -183,7 +183,8 @@ public final class ToTextSAXHandler extends ToSAXHandler
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)
     {
     }
 

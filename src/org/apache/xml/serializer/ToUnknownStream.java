@@ -258,6 +258,7 @@ public final class ToUnknownStream extends SerializerBase
      * @param rawName the attribute name, with prefix (if any)
      * @param type the type of the attribute, typically "CDATA"
      * @param value the value of the parameter
+     * @param XSLAttribute true if this attribute is coming from an xsl:attribute element
      * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
@@ -265,14 +266,15 @@ public final class ToUnknownStream extends SerializerBase
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)
         throws SAXException
     {
         if (m_firstTagNotEmitted)
         {
             flush();
         }
-        m_handler.addAttribute(uri, localName, rawName, type, value);
+        m_handler.addAttribute(uri, localName, rawName, type, value, XSLAttribute);
     }
     /**
      * Adds an attribute to the currenly open tag

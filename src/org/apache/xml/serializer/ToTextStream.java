@@ -583,7 +583,8 @@ void writeNormalizedChars(
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)
     {
         // do nothing, just forget all about the attribute
     }

@@ -363,7 +363,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
             if (getShouldOutputNSAttr()) 
             {
 
-	              /* bjm: don't know if we really needto do this. The
+	              /* Brian M.: don't know if we really needto do this. The
 	               * callers of this object should have injected both
 	               * startPrefixMapping and the attributes.  We are
 	               * just covering our butt here.
@@ -372,7 +372,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
   	            if (EMPTYSTRING.equals(prefix))
   	            {
   	                name = "xmlns";
-  	                addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
+  	                addAttributeAlways(XMLNS_URI, name, name,"CDATA",uri, false);
   	            }
   	            else 
                 {
@@ -384,7 +384,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
   	             	 	     *  the uri is the value, that is why we pass it in the
   	             	 	     * value, or 5th slot of addAttributeAlways()
   	                 	   */
-  	                    addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
+  	                    addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri, false );
   	                }
   	            }
             }
@@ -684,10 +684,9 @@ public final class ToXMLSAXHandler extends ToSAXHandler
         if (ns != null && ns.length() > 0)
         {
             int index;
-            String prefix =
-                (index = rawName.indexOf(":")) < 0
-                    ? ""
-                    : rawName.substring(0, index);
+            final boolean no_prefix = ((index = rawName.indexOf(":")) < 0);
+            String prefix = (no_prefix) ? "" : rawName.substring(0, index);
+
 
             if (null != prefix)
             {
@@ -702,10 +701,11 @@ public final class ToXMLSAXHandler extends ToSAXHandler
                         // SAX does expect both.
                         this.addAttributeAlways(
                             "http://www.w3.org/2000/xmlns/",
-                            prefix,
-                            "xmlns" + (prefix.length() == 0 ? "" : ":") + prefix,
+                            no_prefix ? "xmlns" : prefix,  // local name
+                            no_prefix ? "xmlns" : ("xmlns:"+ prefix), // qname
                             "CDATA",
-                            ns);
+                            ns,
+                            false);
                     }
                 }
 
@@ -722,6 +722,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
      * @param rawName    the qualified name of the attribute
      * @param type the type of the attribute (probably CDATA)
      * @param value the value of the attribute
+     * @param XSLAttribute true if this attribute is coming from an xsl:attribute element
      * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
@@ -729,13 +730,14 @@ public final class ToXMLSAXHandler extends ToSAXHandler
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)
         throws SAXException
     {      
         if (m_elemContext.m_startTagOpen)
         {
             ensurePrefixIsDeclared(uri, rawName);
-            addAttributeAlways(uri, localName, rawName, type, value);
+            addAttributeAlways(uri, localName, rawName, type, value, false);
         }
 
     } 

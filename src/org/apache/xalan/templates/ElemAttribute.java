@@ -182,25 +182,17 @@ public class ElemAttribute extends ElemElement
     if(null != nodeName && nodeName.length() > 0)
     {
       SerializationHandler rhandler = transformer.getSerializationHandler();
-      if(prefix != null && prefix.length() > 0)
-      {
-        try
-        {
-          rhandler.startPrefixMapping(prefix, nodeNamespace, false);
-        }
-        catch(SAXException se)
-        {
-          throw new TransformerException(se);
-        }
-      }
+
+      // Evaluate the value of this attribute
       String val = transformer.transformToString(this);
-      String localName = QName.getLocalPart(nodeName);
       try 
       {
+        // Let the result tree handler add the attribute and its String value.
+        String localName = QName.getLocalPart(nodeName);
         if(prefix != null && prefix.length() > 0){
-            rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val);
+            rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val, true);
         }else{
-            rhandler.addAttribute("", localName, nodeName, "CDATA", val);
+            rhandler.addAttribute("", localName, nodeName, "CDATA", val, true);
         }
       }
       catch (SAXException e)

@@ -323,6 +323,7 @@ public abstract class SerializerBase
      * @param rawName    the qualified name of the attribute
      * @param type the type of the attribute (probably CDATA)
      * @param value the value of the attribute
+     * @param XSLAttribute true if this attribute is coming from an xsl:attriute element
      * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
@@ -330,12 +331,13 @@ public abstract class SerializerBase
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)
         throws SAXException
     {
         if (m_elemContext.m_startTagOpen)
         {
-            addAttributeAlways(uri, localName, rawName, type, value);
+            addAttributeAlways(uri, localName, rawName, type, value, XSLAttribute);
         }
 
     }
@@ -350,14 +352,19 @@ public abstract class SerializerBase
      * @param rawName   the qualified name of the attribute
      * @param type the type of the attribute (probably CDATA)
      * @param value the value of the attribute
+     * @param XSLAttribute true if this attribute is coming from an xsl:attribute element
+     * @return true if the attribute was added, 
+     * false if an existing value was replaced.
      */
-    public void addAttributeAlways(
+    public boolean addAttributeAlways(
         String uri,
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)
     {
+        boolean was_added;
 //            final int index =
 //                (localName == null || uri == null) ?
 //                m_attributes.getIndex(rawName):m_attributes.getIndex(uri, localName);        
@@ -368,7 +375,11 @@ public abstract class SerializerBase
 //            else {
 //                index = m_attributes.getIndex(uri, localName);
 //            }
-            index = m_attributes.getIndex(rawName);
+            if (localName == null || uri == null || uri.length() == 0)
+                index = m_attributes.getIndex(rawName);
+            else {
+                index = m_attributes.getIndex(uri,localName);
+            }
             if (index >= 0)
             {
                 /* We've seen the attribute before.
@@ -376,12 +387,15 @@ public abstract class SerializerBase
                  * we really want to re-set is the value anyway.
                  */
                 m_attributes.setValue(index,value);
+                was_added = false;
             }
             else
             {
                 // the attribute doesn't exist yet, create it
                 m_attributes.addAttribute(uri, localName, rawName, type, value);
+                was_added = true;
             }
+            return was_added;
         
     }
   
@@ -402,10 +416,29 @@ public abstract class SerializerBase
             final String localName = getLocalName(patchedName);
             final String uri = getNamespaceURI(patchedName, false);
 
-            addAttributeAlways(uri,localName, patchedName, "CDATA", value);
+            addAttributeAlways(uri,localName, patchedName, "CDATA", value, false);
          }
     }    
 
+    /**
+     * Adds the given xsl:attribute to the set of collected attributes, 
+     * but only if there is a currently open element.  This method is only
+     * called by XSLTC.
+     *
+     * @param name the attribute's qualified name (prefix:localName)
+     * @param value the value of the attribute
+     * @param uri the URI that the prefix of the name points to
+     */
+    public void addXSLAttribute(String name, final String value, final String uri)
+    {
+        if (m_elemContext.m_startTagOpen)
+        {
+            final String patchedName = patchName(name);
+            final String localName = getLocalName(patchedName);
+
+            addAttributeAlways(uri,localName, patchedName, "CDATA", value, true);
+         }
+    } 
 
     /**
      * Add the given attributes to the currently collected ones. These
@@ -430,7 +463,8 @@ public abstract class SerializerBase
                 atts.getLocalName(i),
                 atts.getQName(i),
                 atts.getType(i),
-                atts.getValue(i));
+                atts.getValue(i),
+                false);
 
         }
     }

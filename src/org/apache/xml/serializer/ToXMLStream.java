@@ -404,17 +404,39 @@ public final class ToXMLStream extends ToStream
         }
     }
 
+    /**
+     * Add an attribute to the current element.
+     * @param uri the URI associated with the element name
+     * @param localName local part of the attribute name
+     * @param rawName   prefix:localName
+     * @param type
+     * @param value the value of the attribute
+     * @param xslAttribute true if this attribute is from an xsl:attribute,
+     * false if declared within the elements opening tag.
+     * @throws SAXException
+     */
     public void addAttribute(
         String uri,
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean xslAttribute)
         throws SAXException
     {
         if (m_elemContext.m_startTagOpen)
         {
-            if (!rawName.startsWith("xmlns"))
+            boolean was_added = addAttributeAlways(uri, localName, rawName, type, value, xslAttribute);
+            
+
+            /*
+             * We don't run this block of code if:
+             * 1. The attribute value was only replaced (was_added is false).
+             * 2. The attribute is from an xsl:attribute element (that is handled
+             *    in the addAttributeAlways() call just above.
+             * 3. The name starts with "xmlns", i.e. it is a namespace declaration.
+             */
+            if (was_added && !xslAttribute && !rawName.startsWith("xmlns"))
             {
                 String prefixUsed =
                     ensureAttributesNamespaceIsDeclared(
@@ -431,7 +453,7 @@ public final class ToXMLStream extends ToStream
 
                 }
             }
-            addAttributeAlways(uri, localName, rawName, type, value);
+            addAttributeAlways(uri, localName, rawName, type, value, xslAttribute);
         }
         else
         {

@@ -671,7 +671,7 @@ public class ElemLiteralResult extends ElemUse
                             avt.getName(),
                             avt.getRawName(),
                             "CDATA",
-                            stringedValue);
+                            stringedValue, false);
                     }
                 } // end for
             }

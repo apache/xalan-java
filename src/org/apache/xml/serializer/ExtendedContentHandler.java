@@ -51,6 +51,7 @@ abstract interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @param rawName the qualified name of the attribute
      * @param type the attribute type typically character data (CDATA)
      * @param value the value of the attribute
+     * @param XSLAttribute true if the added attribute is coming from an xsl:attribute element
      * @throws SAXException
      */
     public void addAttribute(
@@ -58,7 +59,8 @@ abstract interface ExtendedContentHandler extends org.xml.sax.ContentHandler
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)
         throws SAXException;
     /**
      * Add attributes to the current element
@@ -238,4 +240,12 @@ abstract interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      */
     public void addUniqueAttribute(String qName, String value, int flags)
         throws SAXException;
+    
+    /**
+     * Add an attribute from an xsl:attribute element.
+     * @param qName the qualified attribute name (prefix:localName)
+     * @param value the attributes value
+     * @param uri the uri that the prefix of the qName is mapped to.
+     */    
+    public void addXSLAttribute(String qName, final String value, final String uri);
 }

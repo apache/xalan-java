@@ -232,7 +232,8 @@ public class EmptySerializer implements SerializationHandler
         String localName,
         String rawName,
         String type,
-        String value)
+        String value,
+        boolean XSLAttribute)        
         throws SAXException
     {
         couldThrowSAXException();
@@ -707,5 +708,13 @@ public class EmptySerializer implements SerializationHandler
     public void characters(Node node) throws SAXException
     {
         couldThrowSAXException();        
+    }
+    
+    /**
+     * @see org.apache.xml.serializer.ExtendedContentHandler#addXSLAttribute(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void addXSLAttribute(String qName, String value, String uri)
+    {
+        aMethodIsCalled();        
     }
 }
