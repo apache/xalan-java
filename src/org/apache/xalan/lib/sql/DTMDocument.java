@@ -871,8 +871,6 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param parm2
    *
    * @throws org.xml.sax.SAXException
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void dispatchToEvents( int parm1, ContentHandler parm2 )throws org.xml.sax.SAXException
   {
@@ -900,8 +898,6 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param nodeHandle
    * @param ch
    * @param normalize
-   *
-   * @throws org.xml.sax.SAXException
    *
    * @throws org.xml.sax.SAXException
    */

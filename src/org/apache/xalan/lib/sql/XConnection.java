@@ -1234,8 +1234,6 @@ public class XConnection
 
   /**
    * Set an error and/or warning on this connection.
-   * @param feature The name of the feature being set, currently supports (streaming, inline-variables, multiple-results, cache-statements, default-pool-enabled).
-   * @param setting The new setting for the specified feature, currently "true" is true and anything else is false.
    *
    */
   public void setError(Exception excp, SQLDocument doc, SQLWarning warn)

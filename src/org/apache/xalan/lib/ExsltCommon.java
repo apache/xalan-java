@@ -87,7 +87,7 @@ public class ExsltCommon
    * 
    * The Xalan extensions MethodResolver converts 'node-set' to 'nodeSet'.
    * 
-   * @param myProcesser is passed in by the Xalan extension processor
+   * @param myProcessor is passed in by the Xalan extension processor
    * @param rtf The result tree fragment to be converted to a node-set.
    * 
    * @return node-set with the contents of the result tree fragment.

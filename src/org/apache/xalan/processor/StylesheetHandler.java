@@ -558,8 +558,6 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Receive notification of the start of an element.
    *
-   * @param name The element type name.
-   *
    * @param uri The Namespace URI, or an empty string.
    * @param localName The local name (without prefix), or empty string if not namespace processing.
    * @param rawName The qualified name (with prefix).
@@ -634,9 +632,6 @@ public class StylesheetHandler extends DefaultHandler
 
   /**
    * Receive notification of the end of an element.
-   *
-   * @param name The element type name.
-   * @param attributes The specified or defaulted attributes.
    *
    * @param uri The Namespace URI, or an empty string.
    * @param localName The local name (without prefix), or empty string if not namespace processing.
@@ -1117,21 +1112,21 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * If {@link #getStylesheetType} returns this value, the current stylesheet
+   * If {@link org.apache.xalan.processor.StylesheetHandler#getStylesheetType} returns this value, the current stylesheet
    *  is a root stylesheet.
    * @xsl.usage internal
    */
   public static final int STYPE_ROOT = 1;
 
   /**
-   * If {@link #getStylesheetType} returns this value, the current stylesheet
+   * If {@link org.apache.xalan.processor.StylesheetHandler#getStylesheetType} returns this value, the current stylesheet
    *  is an included stylesheet.
    * @xsl.usage internal
    */
   public static final int STYPE_INCLUDE = 2;
 
   /**
-   * If {@link #getStylesheetType} returns this value, the current stylesheet
+   * If {@link org.apache.xalan.processor.StylesheetHandler#getStylesheetType} returns this value, the current stylesheet
    *  is an imported stylesheet.
    * @xsl.usage internal
    */

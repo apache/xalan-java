@@ -61,7 +61,6 @@ public class NodeInfo
    * argument. If a node set is passed as argument, the system id of
    * the first node in the set is returned.
    *
-   * @param context an <code>ExpressionContext</code> value
    * @param nodeList a <code>NodeList</code> value
    * @return a <code>String</code> value
    */

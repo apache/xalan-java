@@ -336,8 +336,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * Create a new Transformer object that performs a copy
    * of the source to the result.
    *
-   * @param source An object that holds a URI, input stream, etc.
-   *
    * @return A Transformer object that may be used to perform a transformation
    * in a single thread, never null.
    *
@@ -548,8 +546,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * Create an XMLFilter that uses the given source as the
    * transformation instructions.
    *
-   * @param src The source of the transformation instructions.
-   *
    * @param templates non-null reference to Templates object.
    *
    * @return An XMLFilter object, or null if this feature is not supported.
@@ -644,8 +640,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * Get a TransformerHandler object that can process SAX
    * ContentHandler events into a Result.
    *
-   * @param src The source of the transformation instructions.
-   *
    * @return TransformerHandler ready to transform SAX events.
    *
    * @throws TransformerConfigurationException
@@ -700,8 +694,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   /**
    * Create a new Transformer object that performs a copy
    * of the source to the result.
-   *
-   * @param source An object that holds a URL, input stream, etc.
    *
    * @return A Transformer object capable of
    * being used for transformation purposes in a single thread.

@@ -61,9 +61,6 @@ public class ProcessorText extends ProcessorTemplateElem
   /**
    * Receive notification of the end of an element.
    *
-   * @param name The element type name.
-   * @param attributes The specified or defaulted attributes.
-   *
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param uri The Namespace URI, or an empty string.
    * @param localName The local name (without prefix), or empty string if not namespace processing.

@@ -298,11 +298,6 @@ public class SQLDocument extends DTMDocument
   /**
    * @param mgr
    * @param ident
-   * @param pool
-   * @param con
-   * @param stmt
-   * @param data
-   * @param streamingMode
    * @throws SQLException
    */
   // public cSQLDocument(DTMManager mgr, int ident, Statement stmt,

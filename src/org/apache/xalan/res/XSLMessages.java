@@ -41,7 +41,7 @@ public class XSLMessages extends XPATHMessages
    * Creates a message from the specified key and replacement
    * arguments, localized to the given locale.
    *
-   * @param errorCode The key for the message text.
+   * @param msgKey    The key for the message text.
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
