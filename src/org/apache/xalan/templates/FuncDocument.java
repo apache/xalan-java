@@ -156,7 +156,8 @@ public class FuncDocument extends Function2Args
       }
       else
       {
-        base = arg2.str();
+        //Can not convert other type to a node-set!;
+        arg2.iter();
       }
     }
     else
