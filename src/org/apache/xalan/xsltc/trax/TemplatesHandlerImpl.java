@@ -65,6 +65,7 @@ package org.apache.xalan.xsltc.trax;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
 
+import org.xml.sax.Locator;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.compiler.*;
@@ -172,6 +173,15 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 	catch (CompilerException e) {
 	    return null;
 	}
+    }
+
+    /**
+     * recieve an object for locating the origin of SAX document events.
+     * Most SAX parsers will use this method to inform content handler
+     * of the location of the parsed document. 
+     */
+    public void setDocumentLocator(Locator locator) {
+  	setSystemId(locator.getSystemId());
     }
 }
 
