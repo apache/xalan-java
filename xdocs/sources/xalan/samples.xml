@@ -471,7 +471,6 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
      invited to fix, add to, and vary in any way you find useful.</p>
      <p>Run this sample from the Validate subdirectory with</p>
      <p><code>java ValidateXMLInput</code></p>
-     <note>This sample also shows you how to check validation without using an event handler to report validation errors.</note>
      </s3><anchor name="validateutility"/>
      <s3 title="Validate utility">
      <p>What it does: Uses the <jump href="apidocs\javax\xml\parsers\SAXParser.html">JAXP SAXParser</jump> with a SAX event handler 
