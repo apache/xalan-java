@@ -68,6 +68,7 @@ import java.util.Locale;
  */
 public class XStringForFSB extends XString
 {
+  static long MAX_NO_OVERFLOW_RISK=(Long.MAX_VALUE-'9')/10;
 
   /** The start position in the fsb. */
   int m_start;
@@ -1034,6 +1035,9 @@ public class XStringForFSB extends XString
 	break;
 	
       case '0':			// NOT Unicode isDigit();  ASCII digits _only_
+	if(digitType==0 && digitsFound[0]==0)   // Ignore leading zeros
+	  break;
+	// Else fall through into normal digit handling.
       case '1':
       case '2':
       case '3':
@@ -1046,17 +1050,17 @@ public class XStringForFSB extends XString
 	// We have a potential overflow issue that we need
 	// to guard against. See Bugzilla 5346.
 	//
-	// %REVIEW% Is it possible that we should be accepting _some_
-	// of the bits of the new digit, but not all of them?
-	long newResult = longResult * 10 + (c - '0');
-	if(newResult>=0)
+	// %REVIEW% MUST BE RECONSIDERED  since this may not be
+	// fully compliant with the IEEE floating-point spec. (On the
+	// other hand, it's wicked fast compared to the usual solution,
+	// and works fine for all but a very few edge cases.)
+	if(longResult>MAX_NO_OVERFLOW_RISK)
+	  ++overflow;
+	else
 	{
-	  longResult=newResult;
+	  longResult=longResult*10 + (c - '0');
 	  ++digitsFound[digitType]; // Remember scaling
 	}
-	else
-		++overflow;
-    			
 	break;
 
       default:
