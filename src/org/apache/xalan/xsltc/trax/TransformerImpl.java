@@ -629,12 +629,12 @@ public final class TransformerImpl extends Transformer
 	    else if (name.equals(OutputKeys.VERSION))
 		translet._version = value;
 	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) {
-		if ((value != null) == (value.toLowerCase().equals("true"))) {
+		if ((value != null) && (value.toLowerCase().equals("true"))) {
 		    translet._omitHeader = true;
 		}
 	    }
 	    else if (name.equals(OutputKeys.INDENT)) {
-		if ((value != null) == (value.toLowerCase().equals("true"))) {
+		if ((value != null) && (value.toLowerCase().equals("true"))) {
 		    translet._indent = true;
 		}
 	    }
