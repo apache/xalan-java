@@ -74,14 +74,6 @@ import org.apache.xml.utils.Trie;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * @author minchau
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
- */
 public class ToHTMLStream extends ToStream 
 {
     /** State stack to keep track of if the current element has output 
@@ -590,7 +582,7 @@ public class ToHTMLStream extends ToStream
      * @return non-null reference to ElemDesc, which may be m_dummy if no 
      *         element description matches the given name.
      */
-    private final ElemDesc getElemDesc(String name)
+    public static final ElemDesc getElemDesc(String name)
     {
 
         if (null != name)
@@ -651,7 +643,7 @@ public class ToHTMLStream extends ToStream
                 {
                     m_writer.write(" PUBLIC \"");
                     m_writer.write(doctypePublic);
-                    m_writer.write("\"");
+                    m_writer.write('"');
                 }
 
                 if (null != doctypeSystem)
@@ -659,13 +651,13 @@ public class ToHTMLStream extends ToStream
                     if (null == doctypePublic)
                         m_writer.write(" SYSTEM \"");
                     else
-                        m_writer.write(" \"");
+                        m_writer.write('"');
 
                     m_writer.write(doctypeSystem);
-                    m_writer.write("\"");
+                    m_writer.write('"');
                 }
 
-                m_writer.write(">");
+                m_writer.write('>');
                 outputLineSep();
                 }
                 catch(IOException e)
@@ -731,13 +723,13 @@ public class ToHTMLStream extends ToStream
 
         if (m_cdataTagOpen)
         {
-			closeCDATA();
-			m_cdataTagOpen = false;
+            closeCDATA();
+            m_cdataTagOpen = false;
         }
         else if (m_needToCallStartDocument)
         {
-			startDocumentInternal();
-			m_needToCallStartDocument = false;
+            startDocumentInternal();
+            m_needToCallStartDocument = false;
         }
             
 //        if (m_needToOutputDocTypeDecl 
@@ -788,11 +780,11 @@ public class ToHTMLStream extends ToStream
 
         m_inBlockElem = !isBlockElement;
         
-		// remember for later
-		 m_elementLocalName = localName;
-		 m_elementURI = namespaceURI;
-		 m_elementName = name;
-		 m_elementDesc = elemDesc;        
+        // remember for later
+         m_elementLocalName = localName;
+         m_elementURI = namespaceURI;
+         m_elementName = name;
+         m_elementDesc = elemDesc;        
 
         m_isRawStack.push(elemDesc.is(ElemDesc.RAW));
 
@@ -829,8 +821,9 @@ public class ToHTMLStream extends ToStream
                 String encode = Encodings.getMimeEncoding(encoding);
 
                 m_writer.write(encode);
-                m_writer.write('"');
-                m_writer.write('>');
+                //m_writer.write('"');
+                //m_writer.write('>');
+                m_writer.write("\">");
             }
         }
         }
@@ -927,14 +920,13 @@ public class ToHTMLStream extends ToStream
                 processAttributes(nAttrs);
             if (!elemDesc.is(ElemDesc.EMPTY))
             {
-                m_writer.write('>');
 
                 // As per Dave/Paul recommendation 12/06/2000
                 // if (shouldIndent)
+                // m_writer.write('>');
                 //  indent(m_currentIndent);
 
-                m_writer.write('<');
-                m_writer.write('/');
+                m_writer.write("></");
                 m_writer.write(name);
                 m_writer.write('>');
             }
@@ -968,12 +960,12 @@ public class ToHTMLStream extends ToStream
         }
         
 
-		m_elementURI = null;
-		m_elementLocalName = null;
+        m_elementURI = null;
+        m_elementLocalName = null;
 
         // fire off the end element event
 
-		if (m_tracer != null)
+        if (m_tracer != null)
             super.fireEndElem(name);        
  
     }
@@ -1004,16 +996,17 @@ public class ToHTMLStream extends ToStream
         }
         else
         {
+                // %REVIEW% %OPT%
+                // Two calls to single-char write may NOT
+                // be more efficient than one to string-write...
             m_writer.write(name);
-            m_writer.write('=');
-
-            m_writer.write('\"');
+            m_writer.write("=\"");
             if (   elemDesc != null
                 && elemDesc.isAttrFlagSet(name, ElemDesc.ATTRURL))
                 writeAttrURI(value, m_specialEscapeURLs);
             else
                 writeAttrString(value, this.getEncoding());
-            m_writer.write('\"');
+            m_writer.write('"');
 
         }
     }
@@ -1272,6 +1265,9 @@ public class ToHTMLStream extends ToStream
         final char chars[] = string.toCharArray();
         final int strLen = chars.length;
 
+        // %REVIEW%%OPT% Should we be buffering rather than issuing
+        // so many calls to write(int)?
+
         for (int i = 0; i < strLen; i++)
         {
             char ch = chars[i];
@@ -1400,7 +1396,7 @@ public class ToHTMLStream extends ToStream
                 // m_writer.write("]]>");
                 
                 // time to generate characters event
-				if (m_tracer != null)
+                if (m_tracer != null)
                     super.fireCharEvent(chars, start, length);
                 
                 return;
@@ -1503,9 +1499,9 @@ public class ToHTMLStream extends ToStream
         throws org.xml.sax.SAXException
     {
 
-		// Process any pending starDocument and startElement first.
-		flushPending(); 
-		
+        // Process any pending starDocument and startElement first.
+        flushPending(); 
+        
         // Use a fairly nasty hack to tell if the next node is supposed to be 
         // unescaped text.
         if (target.equals(Result.PI_DISABLE_OUTPUT_ESCAPING))
@@ -1531,12 +1527,16 @@ public class ToHTMLStream extends ToStream
             if (shouldIndent())
                 indent();
 
-            m_writer.write("<?" + target);
+            //m_writer.write("<?" + target);
+            m_writer.write("<?");
+            m_writer.write(target);
 
             if (data.length() > 0 && !Character.isSpaceChar(data.charAt(0)))
-                m_writer.write(" ");
+                m_writer.write(' '); 
 
-            m_writer.write(data + ">"); // different from XML
+            //m_writer.write(data + ">"); // different from XML
+            m_writer.write(data); // different from XML
+            m_writer.write('>'); // different from XML
 
             // Always output a newline char if not inside of an 
             // element. The whitespace is not significant in that
@@ -1570,9 +1570,9 @@ public class ToHTMLStream extends ToStream
         try
         {
 
-        m_writer.write("&");
+        m_writer.write('&');
         m_writer.write(name);
-        m_writer.write(";");
+        m_writer.write(';');
         
         } catch(IOException e)
         {
@@ -1622,8 +1622,8 @@ public class ToHTMLStream extends ToStream
      */
     protected void closeStartTag() throws SAXException
     {
-			try
-			{
+            try
+            {
 
             // finish processing attributes, time to fire off the start element event
             if (m_tracer != null)
@@ -1631,27 +1631,27 @@ public class ToHTMLStream extends ToStream
             
             int nAttrs = m_attributes.getLength();   
             if (nAttrs>0) 
-			    processAttributes(nAttrs);
+                processAttributes(nAttrs);
 
-			m_writer.write('>');
+            m_writer.write('>');
 
-			/* whether Xalan or XSLTC, we have the prefix mappings now, so
-			 * lets determine if the current element is specified in the cdata-
-			 * section-elements list.
-			 */
-			if (m_cdataSectionElements != null) 
-			    pushCdataSectionState();
+            /* whether Xalan or XSLTC, we have the prefix mappings now, so
+             * lets determine if the current element is specified in the cdata-
+             * section-elements list.
+             */
+            if (m_cdataSectionElements != null) 
+                pushCdataSectionState();
             if (m_doIndent)
             {
-			    m_isprevtext = false;
-		        m_preserves.push(m_ispreserve);
+                m_isprevtext = false;
+                m_preserves.push(m_ispreserve);
             }
             
-			}
-			catch(IOException e)
-			{
-				throw new SAXException(e);
-			}
+            }
+            catch(IOException e)
+            {
+                throw new SAXException(e);
+            }
     }
     /**
      * Initialize the serializer with the specified output stream and output
@@ -1802,20 +1802,20 @@ public class ToHTMLStream extends ToStream
     
     public boolean reset()
     {
-    	boolean ret = super.reset();
-    	if (!ret)
-    		return false;
-    	initToHTMLStream();
-    	return true;    	
+        boolean ret = super.reset();
+        if (!ret)
+            return false;
+        initToHTMLStream();
+        return true;        
     }
     
     private void initToHTMLStream()
     {
-		m_elementDesc = null;
-		m_inBlockElem = false;
-		m_inDTD = false;
-		m_isRawStack.clear();
-		m_omitMetaTag = false;
-		m_specialEscapeURLs = true;    	
+        m_elementDesc = null;
+        m_inBlockElem = false;
+        m_inDTD = false;
+        m_isRawStack.clear();
+        m_omitMetaTag = false;
+        m_specialEscapeURLs = true;     
     }
 }

@@ -71,11 +71,6 @@ import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.xml.sax.SAXException;
 
-/**
- * @author minchau
- *
- */
-
 public class ToXMLStream extends ToStream
 {
 
@@ -308,8 +303,7 @@ public class ToXMLStream extends ToStream
                 if (shouldIndent())
                     indent();
 
-                m_writer.write('<');
-                m_writer.write('?');
+                m_writer.write("<?");
                 m_writer.write(target);
 
                 if (data.length() > 0
@@ -380,9 +374,9 @@ public class ToXMLStream extends ToStream
             if (shouldIndent())
                 indent();
 
-            m_writer.write("&");
+            m_writer.write('&');
             m_writer.write(name);
-            m_writer.write(";");
+            m_writer.write(';');
         }
         catch(IOException e)
         {

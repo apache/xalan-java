@@ -829,20 +829,20 @@ abstract public class ToStream extends SerializerBase
 
             m_writer.write("<!ATTLIST ");
             m_writer.write(eName);
-            m_writer.write(" ");
+            m_writer.write(' ');
 
             m_writer.write(aName);
-            m_writer.write(" ");
+            m_writer.write(' ');
             m_writer.write(type);
             if (valueDefault != null)
             {
-                m_writer.write(" ");
+                m_writer.write(' ');
                 m_writer.write(valueDefault);
             }
 
             //m_writer.write(" ");
             //m_writer.write(value);
-            m_writer.write(">");
+            m_writer.write('>');
             m_writer.write(m_lineSep, 0, m_lineSepLen);
         }
         catch (IOException e)
@@ -1597,7 +1597,7 @@ abstract public class ToStream extends SerializerBase
 
                 writer.write("&#");
                 writer.write(Integer.toString(next));
-                writer.write(";");
+                writer.write(';');
 
                 /*} else if (null != ctbc && !ctbc.canConvert(ch)) {
                 sb.append("&#x");
@@ -1610,7 +1610,7 @@ abstract public class ToStream extends SerializerBase
                 {
                     writer.write("&#");
                     writer.write(Integer.toString(ch));
-                    writer.write(";");
+                    writer.write(';');
                 }
                 else
                 {
@@ -1801,7 +1801,7 @@ abstract public class ToStream extends SerializerBase
                 // but not anymore - bjm
                 if (closeDecl)
                 {
-                    m_writer.write(">");
+                    m_writer.write('>');
                     m_writer.write(m_lineSep, 0, m_lineSepLen);
                 }
             }
