@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -128,17 +129,30 @@ final class LogicalExpr extends Expression {
     public void translateDesynthesized(ClassGenerator classGen,
 				       MethodGenerator methodGen) {
 	final InstructionList il = methodGen.getInstructionList();
+	final SyntaxTreeNode parent = getParent();
 	if (_op == AND) {
 	    _left.translateDesynthesized(classGen, methodGen);
 	    if ((_left instanceof FunctionCall) &&
 		(!(_left instanceof ContainsCall)))
 		_falseList.add(il.append(new IFEQ(null)));
+	    InstructionHandle middle = il.append(NOP);
 	    _right.translateDesynthesized(classGen, methodGen);
 	    if ((_right instanceof FunctionCall) &&
 		(!(_right instanceof ContainsCall)))
 		_falseList.add(il.append(new IFEQ(null)));
-	    _trueList.append(_right._trueList.append(_left._trueList));
 	    _falseList.append(_right._falseList.append(_left._falseList));
+
+	    // Special case for ((a OR b) and c)
+	    if (_left instanceof LogicalExpr) {
+		LogicalExpr left = (LogicalExpr)_left;
+		if (left.getOp() == OR) {
+		    left.backPatchTrueList(middle);
+		    _trueList.append(_right._trueList);
+		    return; 
+		}
+	    }
+
+	    _trueList.append(_right._trueList.append(_left._trueList));
 	} 
 	else {		// _op == OR
 	    _left.translateDesynthesized(classGen, methodGen);
