@@ -291,6 +291,9 @@ public class TemplateList implements java.io.Serializable
             {
               bestMatchedRule = rule;
               bestMatchedPattern = matchPat;
+              bestMatchedPattern.m_priority
+                = (XPath.MATCH_SCORE_NONE != rule.getPriority())
+                  ? rule.getPriority() : matchPat.getExpression().getMatchScore(support, targetNode);
             }            
             prevMatchPat = matchPat; // make sure this is done after above check.
             // TODO, need to add to the conflicts list, I think...
