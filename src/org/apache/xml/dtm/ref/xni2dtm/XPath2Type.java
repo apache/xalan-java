@@ -220,7 +220,13 @@ public class XPath2Type
     Object value;
     DTM_XSequence seq=null;
     
-    if(m_xniType==null)
+    // %REVIEW% This is a SLOPPY way of handling the "any" types. Better must exist!
+    if(m_xniType==null
+    	|| 
+    	(("anyType".equals(m_xniType.getName()) || "anySimpleType".equals(m_xniType.getName()))
+    		&& "http://www.w3.org/2001/XMLSchema".equals(m_xniType.getNamespace())
+    		)
+	    )
     {
       seq=new DTM_XSequence(textvalue,this);
     }
