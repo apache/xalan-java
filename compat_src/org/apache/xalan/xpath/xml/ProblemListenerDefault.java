@@ -124,7 +124,10 @@ public class ProblemListenerDefault implements ProblemListener
                        String msg, String id, int lineNo, int charOffset)
   throws org.xml.sax.SAXException   
   {
-    m_errorHandler.error(new SAXParseException(msg, null, id, lineNo, charOffset));
+    if (m_problemListener != null)
+      m_problemListener.problem(where, classification, styleNode, sourceNode, msg, id, lineNo, charOffset);
+    else
+      m_errorHandler.error(new SAXParseException(msg, null, id, lineNo, charOffset));
     return false;   
   }  
   

@@ -1400,7 +1400,11 @@ public class XSLTEngineImpl implements  XSLTProcessor
     {
     }
     
-    DefaultErrorHandler handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    DefaultErrorHandler handler;
+    if (m_problemListener == null)
+      handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    else
+      handler = (DefaultErrorHandler)m_problemListener.getErrorHandler();
     TransformerException te = (null == e) ? new TransformerException(fmsg, locator) :
                                           new TransformerException(fmsg, locator, e);
     if(null != handler)
@@ -1435,7 +1439,11 @@ public class XSLTEngineImpl implements  XSLTProcessor
     catch (TransformerConfigurationException tce)
     {
     }
-    DefaultErrorHandler handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    DefaultErrorHandler handler;
+    if (m_problemListener == null)
+      handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    else
+      handler = (DefaultErrorHandler)m_problemListener.getErrorHandler();
     TransformerException te = (null == e) ? new TransformerException(msg, locator) :
                                           new TransformerException(msg, locator, e);
     if(null != handler)
@@ -1509,7 +1517,11 @@ public class XSLTEngineImpl implements  XSLTProcessor
     catch (TransformerConfigurationException tce)
     {
     }
-    DefaultErrorHandler handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    DefaultErrorHandler handler;
+    if (m_problemListener == null)
+      handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    else
+      handler = (DefaultErrorHandler)m_problemListener.getErrorHandler();
     TransformerException te = (null == e) ? new TransformerException(fmsg, locator) :
                                           new TransformerException(fmsg, locator, e);
     if(null != handler)
@@ -1558,7 +1570,11 @@ public class XSLTEngineImpl implements  XSLTProcessor
     catch (TransformerConfigurationException tce)
     {
     }
-    DefaultErrorHandler handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    DefaultErrorHandler handler;
+    if (m_problemListener == null)
+      handler = (DefaultErrorHandler)m_tfactory.getErrorListener();
+    else
+      handler = (DefaultErrorHandler)m_problemListener.getErrorHandler();
     TransformerException te = (null == e) ? new TransformerException(fmsg, locator) :
                                           new TransformerException(fmsg, locator, e);
     if(null != handler)
@@ -1614,9 +1630,9 @@ public class XSLTEngineImpl implements  XSLTProcessor
     long millisecondsDuration = 0;
     if(null != key)
     {
-      Date date1 = (Date)m_durationsTable.get(key);
-      Date date2 = new Date();
-      millisecondsDuration = date2.getTime() - date1.getTime();
+      long start = ((Long)m_durationsTable.get(key)).longValue();
+      long stop = System.currentTimeMillis();
+      millisecondsDuration = stop - start;
       if(null != m_diagnosticsPrintWriter)
       {
         m_diagnosticsPrintWriter.println(info + " took " + millisecondsDuration + " milliseconds");
@@ -2368,7 +2384,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */
   public void setProblemListener(ProblemListener l)
   {
-    m_problemListener = new ProblemListenerDefault((DefaultErrorHandler)m_tfactory.getErrorListener(), l);        
+    if (l instanceof ProblemListenerDefault)
+      m_problemListener = (ProblemListenerDefault)l;
+    else
+      m_problemListener = new ProblemListenerDefault((DefaultErrorHandler)m_tfactory.getErrorListener(), l);        
   }
 
   /**
