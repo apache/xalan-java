@@ -311,9 +311,9 @@ in the new factory class:</p>
 Templates object.</p>
 <p><code>public Templates newTemplates(Source xslSrc)</code></p>
 <p>To implement this method I needed to create a new class that would be a Templates
-for Translets object. The new class TransletTemplates (org.apache.xalan.xsltc.runtime.TransletTemplates) implements the Templates
+for Translets object. The new class TransletTemplates (org.apache.xalan.xsltc.trax.TransletTemplates) implements the Templates
 interface as is shown below:</p>
-<source>package org.apache.xalan.xsltc.runtime;
+<source>package org.apache.xalan.xsltc.trax;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -513,7 +513,7 @@ BCEL=/net/bigblock/files18/tmiller/xml-xalan/java/bin/BCEL.jar
 JCUP=/net/bigblock/files18/tmiller/xml-xalan/java/bin/java_cup.jar
 JCUPRT=/net/bigblock/files18/tmiller/xml-xalan/java/bin/runtime.jar
 CLASSPATH=${JAXP}:${CRIMSON}:${XSLT}:${XML}:${BCEL}:${JCUP}:${JCUPRT}:.
-FAC=org.apache.xalan.xsltc.runtime.TransformerFactoryImpl
+FAC=org.apache.xalan.xsltc.trax.TransformerFactoryImpl
 #FAC=org.apache.xalan.processor.TransformerFactoryImpl
 java -classpath ${CLASSPATH} \
      -Djavax.xml.transform.TransformerFactory=${FAC} \
@@ -521,7 +521,7 @@ java -classpath ${CLASSPATH} \
 </s3><anchor name="transformerfactoryimpl"/>
 <s3 title="TransformerFactoryImpl.java">
 
-<source>package org.apache.xalan.xsltc.runtime;
+<source>package org.apache.xalan.xsltc.trax;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -647,7 +647,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
 }</source>
 </s3><anchor name="translettemplates"/>
 <s3 title="TransletTemplates.java">
-<source>package org.apache.xalan.xsltc.runtime;
+<source>package org.apache.xalan.xsltc.trax;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
