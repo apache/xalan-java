@@ -24,6 +24,8 @@ Build targets
     - jar      creates ./build/xalan.jar [the default target]
     - docs     generates the human-written documentation in ./build/docs
     - javadocs [or apidocs] generates the API documentation in ./build/docs/apidocs
+    - compat.jar compiles compatibility tree and creates ./build/xalanj1compat.jar
+    - compat.apidocs generates javadoc for the compatibility jar
     - clean    purges the build tree.
     - dist     creates a complete distribution in ./xalan-j_x_x_x
     - auto*    targets used by automated build programs, without dependencies
@@ -488,6 +490,7 @@ Copyright:
   <target name="site" depends="prepare.docs">
  
     <mkdir dir="${site.dir}/apidocs"/>
+    <mkdir dir="${site.dir}/compat_apidocs"/>
     <mkdir dir="${site.dir}/design"/>
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/$xalan.jar"> 
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
