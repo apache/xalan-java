@@ -136,14 +136,27 @@ public interface NodeFactory
      * @return a new VarName AST node or null.
      */
     VariableImpl createVarNameNode(int id);
-    
 
-	/**
-	 * Creates SequenceType AST node
-	 *
-	 * @return a new SequenceType AST node or null.
-	 */
-	SequenceTypeImpl createSequenceTypeNode(int id);
+    /**
+     * Creates SequenceType AST node
+     *
+     * @return a new SequenceType AST node or null.
+     */
+    SequenceTypeImpl createSequenceTypeNode(int id);
+
+    /**
+     * Creates Cast As AST node
+     *
+     * @return a new Cast As AST node or null.
+     */
+    SequenceTypeImpl createCastAsNode(int id);
+
+    /**
+     * Creates Treat As AST node
+     *
+     * @return a new Treat As AST node or null.
+     */
+    SequenceTypeImpl createTreatAsNode(int id);
 
     /**
      * Creates a generic AST node for the given tree node ID.

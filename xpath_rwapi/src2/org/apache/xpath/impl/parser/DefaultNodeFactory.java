@@ -66,11 +66,10 @@ import org.apache.xpath.impl.StepExprImpl;
 import org.apache.xpath.impl.VariableImpl;
 
 /**
- * Default implementation for node factory
+ * Default implementation for node factory.
  */
 public class DefaultNodeFactory implements NodeFactory {
 
-	
 
 	/**
 	 * @see org.apache.xpath.impl.parser.NodeFactory#createFunctionCallNode()
@@ -141,6 +140,20 @@ public class DefaultNodeFactory implements NodeFactory {
 	public SequenceTypeImpl createSequenceTypeNode(int id) {
 		return null;
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.impl.parser.NodeFactory#createCastAsNode(int)
+	 */
+	public SequenceTypeImpl createCastAsNode(int id) {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.impl.parser.NodeFactory#createTreatAsNode(int)
+	 */
+	public SequenceTypeImpl createTreatAsNode(int id) {
+		return null;
 	}
 
 }

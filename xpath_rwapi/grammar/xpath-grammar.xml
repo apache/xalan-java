@@ -1568,7 +1568,7 @@ apply.
 		<level>
       <postfix name="InstanceofExpr" if="xquery xpath" prefix-seq-type="?" condition="> 1">
 				  <sequence>
-					  <ref name="Instanceof"/>
+					  <ref name="Instanceof" node-type="void"/>
 					  <ref name="SequenceType"/>
 				  </sequence>
       </postfix>       
@@ -1802,7 +1802,7 @@ apply.
 	
 	<production name="CastExpr" if="xpath core xquery">
 	      <sequence>
-		  <ref name="CastAs"/>
+		  <ref name="CastAs" node-type="void"/>
        	  <ref name="SingleType"/>
       	</sequence>
    		<ref name="ParenthesizedExpr"/>
@@ -1819,7 +1819,7 @@ apply.
 	
 	<production name="TreatExpr" if="xpath core xquery">
   		<sequence>
-        		<ref name="TreatAs" if="xpath xquery"/>
+        		<ref name="TreatAs" if="xpath xquery" node-type="void"/>
         		<ref name="SequenceType"/>
       	</sequence>
       	<ref name="ParenthesizedExpr"/>    
@@ -2203,7 +2203,7 @@ apply.
 		</choice>
   </production>
 	
-  <production name="ItemType" if="xquery core xpath">
+  <production name="ItemType" if="xquery core xpath" node-type="void">
     <choice break="true">
       <sequence>
         <choice>
@@ -2263,7 +2263,7 @@ apply.
     <ref name="QName"/>
   </production>
 
-  <production name="OccurrenceIndicator" if="xquery core xpath">
+  <production name="OccurrenceIndicator" if="xquery core xpath"  node-type="void">
     <optional>
       <choice>
         <ref name="Star" if="xpath xquery core" show="no"/>

@@ -131,7 +131,7 @@ public interface ExpressionFactory {
     /**
      * Create a cast as expression 
      */
-    public CastExpr createCastExpr(SequenceType seqType, OperatorExpr parExpr);
+    public CastOrTreatAsExpr createCastExpr(SequenceType seqType, OperatorExpr parExpr);
     
     /**
      * Create an integer expression 

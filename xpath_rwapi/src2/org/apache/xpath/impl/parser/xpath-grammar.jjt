@@ -1340,13 +1340,13 @@ void ValidateExpr()  :
 void CastExpr()  :
 {}
 {
-  (<CastAs>{jjtThis.processToken(token);} #CastAs(true) SingleType()) ParenthesizedExpr()
+  (<CastAs> SingleType()) ParenthesizedExpr()
 }
 
 void TreatExpr()  :
 {}
 {
-  (<TreatAs>{jjtThis.processToken(token);} #TreatAs(true) SequenceType()) ParenthesizedExpr()
+  (<TreatAs> SequenceType()) ParenthesizedExpr()
 }
 
 void GeneralComp()  #void :

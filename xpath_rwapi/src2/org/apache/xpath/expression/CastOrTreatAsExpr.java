@@ -58,21 +58,25 @@ package org.apache.xpath.expression;
 import org.apache.xpath.datamodel.SequenceType;
 
 /**
- * Represent "cast as" expression.
+ * Represents "cast as" and 'treat as' expression.
+ * Use the method <code>getExprType()</code> to differentiate treat as and cast as 
+ * expressions.
  * @see <a href="http://www.w3.org/TR/xpath20/#id-cast">
  * XPath 2.0 specification</a>
  */
-public interface CastExpr extends Expr {
+public interface CastOrTreatAsExpr extends Expr {
+
+	/**
+	 * Gets the expression to cast as or to treat as
+	 * @return An parentherized expression
+	 */
+	Expr getExpr();
 
     /**
-     * 
+     * Gets the type to cast as or to treat as.
+     * @return A sequence Type
      */
     SequenceType getSequenceType();
-    
-    /**
-     * 
-     */
-    OperatorExpr getParenthesizedExpr();
 
 }
     

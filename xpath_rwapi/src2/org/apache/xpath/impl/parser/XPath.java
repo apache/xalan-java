@@ -2254,18 +2254,6 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(CastAs);
-             SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTAS);
-             boolean jjtc001 = true;
-             jjtree.openNodeScope(jjtn001);
-      try {
-             jjtree.closeNodeScope(jjtn001,  true);
-             jjtc001 = false;
-            jjtn001.processToken(token);
-      } finally {
-             if (jjtc001) {
-               jjtree.closeNodeScope(jjtn001,  true);
-             }
-      }
       SingleType();
       ParenthesizedExpr();
     } catch (Throwable jjte000) {
@@ -2296,18 +2284,6 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(TreatAs);
-              SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTREATAS);
-              boolean jjtc001 = true;
-              jjtree.openNodeScope(jjtn001);
-      try {
-              jjtree.closeNodeScope(jjtn001,  true);
-              jjtc001 = false;
-             jjtn001.processToken(token);
-      } finally {
-              if (jjtc001) {
-                jjtree.closeNodeScope(jjtn001,  true);
-              }
-      }
       SequenceType();
       ParenthesizedExpr();
     } catch (Throwable jjte000) {

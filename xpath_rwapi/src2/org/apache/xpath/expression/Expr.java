@@ -165,14 +165,19 @@ public interface Expr extends Visitable {
 	static final short UNARY_EXPR = 19;
     
     /**
-     * The expression is a cast expression
+     * The expression is a cast as expression
      */
-	static final short CAST_EXPR = 20;
+	static final short CAST_AS_EXPR = 20;
     
     /**
      * The expression is a castable expression
      */
 	static final short CASTABLE_EXPR = 21;
+	
+	/**
+	  * The expression is a treat as expression
+	  */
+	 static final short TREAT_AS_EXPR = 22;
 
     /**
      * Gets the global expression type. 

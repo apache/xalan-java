@@ -868,9 +868,31 @@
 		</ast>
 	</expr>
 	
-	<!-- Cast expr -->
+	<!-- Cast as expr -->
 	
+	<expr value="cast as xs:integer($v)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="CastExpr">
+					<node name="SingleType"/>
+					<node name="VarName"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
 	
+	<!-- Treat as expr -->
+	
+	<expr value="treat as xs:integer($v)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="TreatExpr">
+					<node name="SequenceType"/>
+					<node name="VarName"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
 	
 	<!-- Castable expr -->
 	

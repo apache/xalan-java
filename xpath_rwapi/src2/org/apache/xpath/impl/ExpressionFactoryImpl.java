@@ -59,7 +59,7 @@ import java.io.StringReader;
 
 import org.apache.xpath.XPathException;
 import org.apache.xpath.datamodel.SequenceType;
-import org.apache.xpath.expression.CastExpr;
+import org.apache.xpath.expression.CastOrTreatAsExpr;
 import org.apache.xpath.expression.ConditionalExpr;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.ExpressionFactory;
@@ -173,7 +173,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createCastExpr(org.apache.xpath.datamodel.SequenceType, org.apache.xpath.expression.OperatorExpr)
 	 */
-	public CastExpr createCastExpr(SequenceType seqType, OperatorExpr parExpr) {
+	public CastOrTreatAsExpr createCastExpr(SequenceType seqType, OperatorExpr parExpr) {
 		return null;
 	}
 

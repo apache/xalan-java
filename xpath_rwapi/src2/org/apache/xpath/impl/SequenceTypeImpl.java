@@ -57,7 +57,6 @@ package org.apache.xpath.impl;
 
 import org.apache.xpath.datamodel.SequenceType;
 import org.apache.xpath.impl.parser.Node;
-import org.apache.xpath.impl.parser.QName;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
