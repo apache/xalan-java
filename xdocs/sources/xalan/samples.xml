@@ -319,7 +319,7 @@ information.<br/><br/></item>
      <p>To run these examples, you must place bsf.jar (distributed with &xslt4j;), and js.jar
       (version 1.5, available from 
       <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the classpath. 
-     You do not need js.jar on the classpath for the samples that use Java extensions. <link idref="faq.html">
+     You do not need js.jar on the classpath for the samples that use Java extensions. <link idref="faq">
      Problems related to JDK 1.4</link></p>
      <p>Use java.org.apache.xalan.xslt.Process, the &xslt4j; command-line utility, to run most of these samples from
       the <link idref="commandline">command line</link>. The command line must include an -in flag with the 
@@ -438,7 +438,7 @@ information.<br/><br/></item>
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
     <p>What it does: The ExternalConnection classes uses the default implementation of the ConnectionPool interface 
     to create a pool of connections. A stylesheet in turn uses a connection from this pool to instantiate an 
-    XConnection object and connect to a datasouce.</p>
+    XConnection object and connect to a datasource.</p>
     <p>The stylesheet uses this named connection pool to instantiate an XConnection object and connect to the datasource. 
     The ExternalConnection class is in xalansamples.jar.</p>
     <p><link anchor="dbsetup">Set up the database</link>, be sure xalanxamples.jar is on the class path, and run this 
@@ -509,7 +509,7 @@ information.<br/><br/></item>
      <p><code>java ValidateXMLInput</code></p>
      </s3><anchor name="validateutility"/>
      <s3 title="Validate utility">
-     <p>What it does: Uses the <jump href="apidocs\javax\xml\parsers\SAXParser.html">JAXP SAXParser</jump> with a SAX event handler 
+     <p>What it does: Uses the <jump href="apidocs/javax/xml/parsers/SAXParser.html">JAXP SAXParser</jump> with a SAX event handler 
      (extends <jump href="apidocs/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</jump> and implements 
      <jump href="apidocs/org/xml/sax/ext/LexicalHandler.html">LexicalHandler</jump>) to verify that XML files conform to their declared 
      document type. You can use this utility to verify that an individual file or all the .xml files in a directory are
