@@ -144,4 +144,38 @@ public class StreeDOMHelper extends DOM2Helper
       return super.isNamespaceNode(n);
     }
   }
+  
+  /**
+   * Overload DOM2Helper#isNodeAfter, making the assumption that both nodes 
+   * implement DOMOrder, and handling things if this is not the case by 
+   * catching a cast exception.
+   *
+   * @param node1 DOM Node to perform position comparison on.
+   * @param node2 DOM Node to perform position comparison on .
+   * 
+   * @return false if node2 comes before node1, otherwise return true.
+   * You can think of this as 
+   * <code>(node1.documentOrderPosition &lt;= node2.documentOrderPosition)</code>.
+   */
+  public boolean isNodeAfter(Node node1, Node node2)
+  {
+
+    // Assume first that the nodes are DTM nodes, since discovering node 
+    // order is massivly faster for the DTM.
+    try
+    {
+      int index1 = ((org.apache.xpath.DOMOrder) node1).getUid();
+      int index2 = ((org.apache.xpath.DOMOrder) node2).getUid();
+
+      return index1 <= index2;
+    }
+    catch (ClassCastException cce)
+    {
+
+      // isNodeAfter will return true if node is after countedNode 
+      // in document order. The base isNodeAfter is sloooow (relatively)
+      return super.isNodeAfter(node1, node2);
+    }
+  }
+
 }

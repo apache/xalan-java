@@ -113,7 +113,9 @@ public class XPathContext implements ExpressionContext
   /**
    * Create an XPathContext instance.
    */
-  public XPathContext(){}
+  public XPathContext()
+  {
+  }
 
   /**
    * Create an XPathContext instance.
@@ -261,7 +263,7 @@ public class XPathContext implements ExpressionContext
    *  being mixed, so this may not be a perfect place for this.
    *  Right now, I think all the DOM helpers can handle a DOM that 
    *  they don't know about.  */
-  private DOMHelper m_domHelper;
+  private DOMHelper m_domHelper = new DOM2Helper();
 
   /**
    * Get the DOMHelper associated with this execution context.
@@ -270,10 +272,6 @@ public class XPathContext implements ExpressionContext
    */
   public final DOMHelper getDOMHelper()
   {
-
-    if (null == m_domHelper)
-      m_domHelper = new DOM2Helper();
-
     return m_domHelper;
   }
 

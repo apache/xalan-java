@@ -273,18 +273,18 @@ public class DOM2Helper extends DOMHelper
 
     // Assume first that the nodes are DTM nodes, since discovering node 
     // order is massivly faster for the DTM.
-    try
+    if(node1 instanceof DOMOrder && node2 instanceof DOMOrder)
     {
       int index1 = ((DOMOrder) node1).getUid();
       int index2 = ((DOMOrder) node2).getUid();
 
       return index1 <= index2;
     }
-    catch (ClassCastException cce)
+    else
     {
 
       // isNodeAfter will return true if node is after countedNode 
-      // in document order. The base isNodeAfter is sloooow (relatively)
+      // in document order. The base isNodeAfter is sloooow (relatively).
       return super.isNodeAfter(node1, node2);
     }
   }

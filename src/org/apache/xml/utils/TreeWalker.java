@@ -80,7 +80,7 @@ public class TreeWalker
   // DOM2Helper m_dh = new DOM2Helper();
 
   /** DomHelper for this TreeWalker          */
-  protected DOMHelper m_dh = new DOM2Helper();
+  protected DOMHelper m_dh;
 
   /**
    * Get the ContentHandler used for the tree walk.
@@ -97,9 +97,10 @@ public class TreeWalker
    * @param   contentHandler The implemention of the
    * contentHandler operation (toXMLString, digest, ...)
    */
-  public TreeWalker(ContentHandler contentHandler)
+  public TreeWalker(ContentHandler contentHandler, DOMHelper dh)
   {
     this.m_contentHandler = contentHandler;
+    m_dh = dh;
   }
 
   /**

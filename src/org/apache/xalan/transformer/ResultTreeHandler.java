@@ -793,7 +793,7 @@ public class ResultTreeHandler extends QueuedEvents
   {
 
     DocumentFragment docFrag = obj.rtree(support);
-    TreeWalker tw = new TreeWalker(this);
+    TreeWalker tw = new TreeWalker(this, support.getDOMHelper());
 
     Node n;
     for (n = docFrag.getFirstChild(); null != n; n = n.getNextSibling())

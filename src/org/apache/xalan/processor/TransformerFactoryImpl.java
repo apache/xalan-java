@@ -190,7 +190,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     try
     {
       TemplatesHandler builder = newTemplatesHandler();
-      TreeWalker walker = new TreeWalker(builder);
+      TreeWalker walker = new TreeWalker(builder, new org.apache.xpath.DOM2Helper());
 
       walker.traverse(node);
 
@@ -356,7 +356,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     {
       if (null != node)
       {
-        TreeWalker walker = new TreeWalker(handler);
+        TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper());
 
         walker.traverse(node);
       }

@@ -92,7 +92,7 @@ public class TreeWalker2Result extends TreeWalker
                            ResultTreeHandler handler)
   {
 
-    super(handler);
+    super(handler, transformer.getXPathContext().getDOMHelper());
 
     m_transformer = transformer;
     m_handler = handler;

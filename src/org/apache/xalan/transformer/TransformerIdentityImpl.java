@@ -319,7 +319,7 @@ public class TransformerIdentityImpl extends Transformer
               }
               else
               {
-                TreeWalker walker = new TreeWalker(this);
+                TreeWalker walker = new TreeWalker(this, new org.apache.xpath.DOM2Helper());
                 walker.traverse(dNode);
               }
             }
@@ -1258,10 +1258,10 @@ public class TransformerIdentityImpl extends Transformer
      * @exception SAXException The application may raise an exception.
      */
     public void elementDecl (String name, String model)
-	throws SAXException
+        throws SAXException
     {
-			if (null != m_resultDeclHandler)
-				m_resultDeclHandler.elementDecl(name, model);
+                        if (null != m_resultDeclHandler)
+                                m_resultDeclHandler.elementDecl(name, model);
     }
 
 
@@ -1285,14 +1285,14 @@ public class TransformerIdentityImpl extends Transformer
      * @exception SAXException The application may raise an exception.
      */
     public void attributeDecl (String eName,
-					String aName,
-					String type,
-					String valueDefault,
-					String value)
-	throws SAXException
+                                        String aName,
+                                        String type,
+                                        String valueDefault,
+                                        String value)
+        throws SAXException
     {
       if (null != m_resultDeclHandler)
-				m_resultDeclHandler.attributeDecl(eName, aName, type, valueDefault, value);
+                                m_resultDeclHandler.attributeDecl(eName, aName, type, valueDefault, value);
     }
 
 
@@ -1310,10 +1310,10 @@ public class TransformerIdentityImpl extends Transformer
      * @see org.xml.sax.DTDHandler#unparsedEntityDecl
      */
     public void internalEntityDecl (String name, String value)
-	throws SAXException
+        throws SAXException
     {
       if (null != m_resultDeclHandler)
-				m_resultDeclHandler.internalEntityDecl(name, value); 
+                                m_resultDeclHandler.internalEntityDecl(name, value); 
     }
 
 
@@ -1333,11 +1333,11 @@ public class TransformerIdentityImpl extends Transformer
      * @see org.xml.sax.DTDHandler#unparsedEntityDecl
      */
     public void externalEntityDecl (String name, String publicId,
-					     String systemId)
-	throws SAXException
+                                             String systemId)
+        throws SAXException
     {
       if (null != m_resultDeclHandler)
-				m_resultDeclHandler.externalEntityDecl(name, publicId, systemId);
+                                m_resultDeclHandler.externalEntityDecl(name, publicId, systemId);
     }
   
   /**

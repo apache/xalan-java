@@ -575,13 +575,13 @@ public class SerializerToXML
         accum(" \"");
 
       accum(m_doctypeSystem);
-			if (closeDecl)
-			{
-				accum("\">");
-				outputLineSep();
-			}
-			else
-				accum("\"");
+                        if (closeDecl)
+                        {
+                                accum("\">");
+                                outputLineSep();
+                        }
+                        else
+                                accum("\"");
     }
     
   }
@@ -1915,7 +1915,7 @@ public class SerializerToXML
      * @exception SAXException The application may raise an exception.
      */
     public void elementDecl (String name, String model)
-	throws SAXException
+        throws SAXException
     {
       if (m_inDoctype)
       {
@@ -1953,11 +1953,11 @@ public class SerializerToXML
      * @exception SAXException The application may raise an exception.
      */
     public void attributeDecl (String eName,
-					String aName,
-					String type,
-					String valueDefault,
-					String value)
-	throws SAXException
+                                        String aName,
+                                        String type,
+                                        String valueDefault,
+                                        String value)
+        throws SAXException
     {
       if (m_inDoctype)
       {
@@ -2003,7 +2003,7 @@ public class SerializerToXML
      * @see org.xml.sax.DTDHandler#unparsedEntityDecl
      */
     public void internalEntityDecl (String name, String value)
-	throws SAXException
+        throws SAXException
     {
       if (m_inDoctype)
       {
@@ -2031,8 +2031,8 @@ public class SerializerToXML
      * @see org.xml.sax.DTDHandler#unparsedEntityDecl
      */
     public void externalEntityDecl (String name, String publicId,
-					     String systemId)
-	throws SAXException
+                                             String systemId)
+        throws SAXException
     {}
 
   /**
@@ -2389,7 +2389,7 @@ public class SerializerToXML
 
     try
     {
-      TreeWalker walker = new TreeWalker(this);
+      TreeWalker walker = new TreeWalker(this, new org.apache.xpath.DOM2Helper());
 
       walker.traverse(node);
     }
