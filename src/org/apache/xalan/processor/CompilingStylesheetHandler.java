@@ -94,6 +94,9 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+// Java Compiler support, being swiped from BSF
+// TODO: ADOPT OR ADAPT THIS LOGIC *****
+import com.ibm.cs.util.JavaUtils;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -227,23 +230,23 @@ public class CompilingStylesheetHandler
     
     try
     {
-        // public class ACompiledTemplate000... extends ElemTemplate
-		// implements CompiledTemplate
+        // public class ACompiledTemplate000... 
+		// extends CompiledTemplate (partly abstract superclass)
         synthetic.Class tClass=
             synthetic.Class.declareClass(className);
         tClass.setModifiers(java.lang.reflect.Modifier.PUBLIC);
-        tClass.setSuperClass(ElemTemplate.class);
-        tClass.addImplements(tClass.forName("org.apache.xalan.processor.CompiledTemplate"));
+        tClass.setSuperClass(tClass.forName("org.apache.xalan.processor.CompiledTemplate"));
 
-        // Object[] interpretArray is used to
+/*****
+        // Object[] m_interpretArray is used to
         // bind to nodes we don't yet know how to compile.
         // Set at construction. ElemTemplateElements and AVTs...
         // Synthesis needs a more elegant way to declare array classes
         // given a base class... 
-        synthetic.reflection.Field interpretArray=
-            tClass.declareField("interpretArray");
+        synthetic.reflection.Field m_interpretArray=
+            tClass.declareField("m_interpretArray");
         // org.apache.xalan.templates.ElemTemplateElement
-        interpretArray.setType(tClass.forName("java.lang.Object[]"));
+        m_interpretArray.setType(tClass.forName("java.lang.Object[]"));
 
         // Namespace context tracking. Note that this is dynamic state
         // during execution, _NOT_ the static state tied to a single 
@@ -270,6 +273,7 @@ public class CompilingStylesheetHandler
 			+"nsuri=m_parentNode.getNamespaceForPrefix(nsprefix);\n"
 			+"return nsuri;\n"
 			);
+*****/		
 
         // public constructor: Copy values from original
         // template object, pick up "uncompiled children"
@@ -277,45 +281,21 @@ public class CompilingStylesheetHandler
         synthetic.reflection.Constructor ctor=
             tClass.declareConstructor();
         ctor.setModifiers(java.lang.reflect.Modifier.PUBLIC);
-        ctor.addParameter(tClass.getSuperclass(),"original");
-        ctor.addParameter(interpretArray.getType(),"interpretArray");
+        ctor.addParameter(tClass.forClass(ElemTemplate.class),"original");
+        ctor.addParameter(tClass.forName("java.lang.Object[]"),"interpretArray");
 		
-		// It'd be easiest in most cases to copy values direct from the
+		// It'd be easiest to let the c'tor copy values direct from the
 		// "original" template during instantiation. However, I want to make
-		// as many as possible into literals, for efficiency and debugability.
+		// some into literals, for the sake of debugability.
         ctor.getBody().append(
-			"org.xml.sax.helpers.LocatorImpl locator=new org.xml.sax.helpers.LocatorImpl();\n"
-			+"locator.setLineNumber("+source.getLineNumber()+");\n"
-			+"locator.setColumnNumber("+source.getColumnNumber()+");\n"
-			+"locator.setPublicId("+makeQuotedString(source.getPublicId())+");\n"
-			+"locator.setSystemId("+makeQuotedString(source.getSystemId())+");\n"
-            +"setLocaterInfo(locator); // yes, or/er clash\n"
-            +"// uncompiled descendents/children\n"
-            +"this.interpretArray=interpretArray;\n"
-            +"// other context values which seem to be needed\n"
-            +"setMatch(original.getMatch());\n"
-            +"setMode(original.getMode());\n"
-            +"setName(original.getName());\n"
-            +"setPriority(original.getPriority());\n"
-            +"setStylesheet(original.getStylesheet());\n\n"
-            //+"setLocatorInfo(new Locator(original.getPublicID(),original.getSystemID()));\n"
-            
-            // Reparent the interpreted ElemTemplateElements,
-            // to break their dependency on interpretive code.
-            // AVTs in this array don't need proceessing, as they are
-            // apparently not directly aware of their Elements.
-            +"for(int i=0;i<interpretArray.length;++i)\n{\n"
-            +"\tif(interpretArray[i] instanceof org.apache.xalan.templates.ElemTemplateElement)\n"
-            +"\t{\n"
-            +"\torg.apache.xalan.templates.ElemTemplateElement ete=(org.apache.xalan.templates.ElemTemplateElement)interpretArray[i];\n"
-            // Append alone is not enough; it's lightweight, and assumes
-            // the child had no previous parent. Need to remove first.
-            // (We know that there _was_ a previous parent, of course!)
-            +"\tappendChild(ete.getParentElem().removeChild(ete));\n"
-            +"\t}\n}\n"
-            );
+			"super(original,\n"
+			+'\t'+source.getLineNumber()+','+source.getColumnNumber()+",\n"
+			+'\t'+makeQuotedString(source.getPublicId())+",\n"
+			+'\t'+makeQuotedString(source.getSystemId())+",\n"
+			+"\tinterpretArray);\n"
+		  );
 
-        // Corresponding vector built during compilation
+        // m_interpretArray's vector built during compilation
         Vector interpretVector=new Vector();
 
         // Now for the big guns: the execute() method is where all the
@@ -464,7 +444,7 @@ public class CompilingStylesheetHandler
         int offset=interpretVector.size();
         interpretVector.addElement(kid);
         body.append(
-            "((org.apache.xalan.templates.ElemTemplateElement)interpretArray["+offset+"]).execute(transformer,sourceNode,mode);\n"
+            "((org.apache.xalan.templates.ElemTemplateElement)m_interpretArray["+offset+"]).execute(transformer,sourceNode,mode);\n"
             );
 		break;
 	}
@@ -547,7 +527,7 @@ public class CompilingStylesheetHandler
                 interpretVector.addElement(avt);
                 body.append(
                     "avtStringedValue=((org.apache.xalan.templates.AVT)"
-                    +"(interpretArray["+offset+"])"
+                    +"(m_interpretArray["+offset+"])"
                     +").evaluate(xctxt,sourceNode,this,new StringBuffer());\n"
                     +"if(null!=avtStringedValue)\n{\n"
                     );
@@ -664,7 +644,7 @@ public class CompilingStylesheetHandler
       // TODO: ***** I'm assuming I can get away with "this" as the prefixResolver
       // even in the compiled code. I'm not really convinced that's true...
       return 
-            "( ((org.apache.xalan.templates.AVT)interpretArray["+offset+"]).evaluate(transformer.getXPathContext(),sourceNode,this,new StringBuffer()) )"
+            "( ((org.apache.xalan.templates.AVT)m_interpretArray["+offset+"]).evaluate(transformer.getXPathContext(),sourceNode,this,new StringBuffer()) )"
             ;
   }
   
@@ -984,7 +964,7 @@ public class CompilingStylesheetHandler
         // 1.1 calls), then fall back on command line if necessary.
         // But I'm having some odd problems with it right now under
         // both VisualCafe and VisualJ++.
-        compileOK=com.ibm.bsf.util.JavaUtils.JDKcompile(filename,classpath);
+        compileOK = JavaUtils.JDKcompile(filename,classpath);
     }
     else
     {
