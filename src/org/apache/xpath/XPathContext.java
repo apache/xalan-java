@@ -67,6 +67,7 @@ import org.apache.xalan.utils.IntStack;
 import org.apache.xalan.utils.NSInfo;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.utils.QName;
+import org.apache.xalan.utils.NodeVector;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.axes.ContextNodeList;
@@ -223,7 +224,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the DOMHelper associated with this execution context.
    */
-  public DOMHelper getDOMHelper()
+  public final DOMHelper getDOMHelper()
   {
     if(null == m_domHelper)
       m_domHelper = new DOM2Helper();
@@ -245,7 +246,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the DOMHelper associated with this execution context.
    */
-  public SourceTreeManager getSourceTreeManager()
+  public final SourceTreeManager getSourceTreeManager()
   {
     return m_sourceTreeManager;
   }
@@ -265,7 +266,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the URIResolver associated with this execution context.
    */
-  public URIResolver getURIResolver()
+  public final URIResolver getURIResolver()
   {
     return m_uriResolver;
   }
@@ -285,7 +286,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get primary XMLReader associated with this execution context.
    */
-  public XMLReader getPrimaryReader()
+  public final XMLReader getPrimaryReader()
   {
     return m_primaryReader;
   }
@@ -305,7 +306,7 @@ public class XPathContext implements ExpressionContext
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide 
    * the error condition is severe enough to halt processing.
    */
-  public String getAbsoluteURI(String urlString, String base)
+  public final String getAbsoluteURI(String urlString, String base)
     throws SAXException 
   {
     InputSource inputSource;
@@ -349,7 +350,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the current context node list.
    */
-  public ContextNodeList getContextNodeList()
+  public final ContextNodeList getContextNodeList()
   {
     if (m_contextNodeLists.size()>0)
       return (ContextNodeList)m_contextNodeLists.peek();
@@ -363,7 +364,7 @@ public class XPathContext implements ExpressionContext
    * @param A nodelist that represents the current context 
    * list as defined by XPath.
    */
-  public void pushContextNodeList(ContextNodeList nl)
+  public final void pushContextNodeList(ContextNodeList nl)
   {
     m_contextNodeLists.push(nl);
   }
@@ -372,7 +373,7 @@ public class XPathContext implements ExpressionContext
    * <meta name="usage" content="internal"/>
    * Pop the current context node list.
    */
-  public void popContextNodeList()
+  public final void popContextNodeList()
   {
     m_contextNodeLists.pop();
   }
@@ -384,27 +385,20 @@ public class XPathContext implements ExpressionContext
    */
   private PrefixResolver m_currentPrefixResolver = null;
   
-  private Stack m_currentNodes = new Stack();
+  private NodeVector m_currentNodes = new NodeVector();
   
   /**
    * Get the current context node.
    */
-  public Node getCurrentNode()
+  public final Node getCurrentNode()
   {
-    try
-    {
-      return (Node)m_currentNodes.peek();
-    }
-    catch(java.util.EmptyStackException ese)
-    {
-    }
-    return null;
+    return m_currentNodes.peepOrNull();
   }
 
   /**
    * Set the current context node.
    */
-  public void pushCurrentNode(Node n)
+  public final void pushCurrentNode(Node n)
   {
     m_currentNodes.push(n);
   }
@@ -412,9 +406,9 @@ public class XPathContext implements ExpressionContext
   /**
    * Pop the current context node.
    */
-  public void popCurrentNode()
+  public final void popCurrentNode()
   {
-    m_currentNodes.pop();
+    m_currentNodes.popQuick();
   }
   
   private Stack m_currentExpressionNodes = new Stack();
@@ -422,7 +416,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the current node that is the expression's context (i.e. for current() support).
    */
-  public Node getCurrentExpressionNode()
+  public final Node getCurrentExpressionNode()
   {
     try
     {
@@ -437,7 +431,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Set the current node that is the expression's context (i.e. for current() support).
    */
-  public void pushCurrentExpressionNode(Node n)
+  public final void pushCurrentExpressionNode(Node n)
   {
     m_currentExpressionNodes.push(n);
   }
@@ -445,7 +439,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Pop the current node that is the expression's context (i.e. for current() support).
    */
-  public void popCurrentExpressionNode()
+  public final void popCurrentExpressionNode()
   {
     m_currentExpressionNodes.pop();
   }
@@ -454,7 +448,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the current namespace context for the xpath.
    */
-  public PrefixResolver getNamespaceContext()
+  public final PrefixResolver getNamespaceContext()
   {
     return m_currentPrefixResolver;
   }
@@ -462,7 +456,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the current namespace context for the xpath.
    */
-  public void setNamespaceContext(PrefixResolver pr)
+  public final void setNamespaceContext(PrefixResolver pr)
   {
     m_currentPrefixResolver = pr;
   } 
@@ -480,7 +474,7 @@ public class XPathContext implements ExpressionContext
    * <meta name="usage" content="internal"/>
    * Push a TreeWalker on the stack.
    */
-  public void pushSubContextList(SubContextList iter)
+  public final void pushSubContextList(SubContextList iter)
   {
     m_axesIteratorStack.push(iter);
   }
@@ -489,7 +483,7 @@ public class XPathContext implements ExpressionContext
    * <meta name="usage" content="internal"/>
    * Pop the last pushed axes iterator.
    */
-  public void popSubContextList()
+  public final void popSubContextList()
   {
     m_axesIteratorStack.pop();
   }
@@ -513,7 +507,7 @@ public class XPathContext implements ExpressionContext
    * Get the current context node.
    * @return The current context node.
    */
-  public Node getContextNode()
+  public final Node getContextNode()
   {
     return this.getCurrentNode();
   }
@@ -523,7 +517,7 @@ public class XPathContext implements ExpressionContext
    * @return An iterator for the current context list, as 
    * defined in XSLT.
    */
-  public NodeIterator getContextNodes()
+  public final NodeIterator getContextNodes()
   {
     try
     {
@@ -544,7 +538,7 @@ public class XPathContext implements ExpressionContext
    * @param n Node to be converted to a number.  May be null.
    * @return value of n as a number.
    */
-  public double toNumber(Node n)
+  public final double toNumber(Node n)
   {
     return XNodeSet.getNumberFromNode(n);
   }
@@ -554,7 +548,7 @@ public class XPathContext implements ExpressionContext
    * @param n Node to be converted to a string.  May be null.
    * @return value of n as a string, or an empty string if n is null.
    */
-  public String toString(Node n)
+  public final String toString(Node n)
   {
     return XNodeSet.getStringFromNode(n);
   }
