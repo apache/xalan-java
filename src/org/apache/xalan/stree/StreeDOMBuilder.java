@@ -93,6 +93,9 @@ public class StreeDOMBuilder extends DOMBuilder
    */
   private boolean m_previousIsText = false;
 
+  /** Indicate whether running in Debug mode        */
+  private static final boolean DEBUG = false;
+
   /**
    * StreeDOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
@@ -165,7 +168,57 @@ public class StreeDOMBuilder extends DOMBuilder
             throws org.xml.sax.SAXException
   {
     setPreviousIsText(false);
-    super.startElement(ns, localName, name, atts);
+    ElementImpl elem;
+
+    if ((null == ns) || (ns.length() == 0))
+      elem = (ElementImpl)m_doc.createElement(name);
+    else
+      elem = (ElementImpl)m_doc.createElementNS(ns, name);
+
+    // if you do the append here, the element might be accessed before
+    // the attributes are added.
+    // append(elem);
+    
+    // But, in order for the document order stuff to be done correctly, we 
+    // have to set the uid here, before the attributes are counted.
+    elem.m_uid = ++((DocImpl)m_doc).m_docOrderCount;
+
+    int nAtts = atts.getLength();
+
+    if (0 != nAtts)
+    {
+      for (int i = 0; i < nAtts; i++)
+      {
+
+        //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
+        // First handle a possible ID attribute
+        if (atts.getType(i).equalsIgnoreCase("ID"))
+          setIDAttribute(atts.getValue(i), elem);
+
+        String attrNS = atts.getURI(i);
+        
+        if(attrNS == null)
+          attrNS = ""; // defensive, shouldn't have to do this.
+
+        // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
+        //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
+        // Crimson won't let us set an xmlns: attribute on the DOM.
+        if ((attrNS.length() == 0) || atts.getQName(i).startsWith("xmlns:"))
+          elem.setAttribute(atts.getQName(i), atts.getValue(i));
+        else
+        {
+
+          // elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+          elem.setAttributeNS(attrNS, atts.getQName(i), atts.getValue(i));
+        }
+      }
+    }
+    
+    append(elem);
+
+    m_elemStack.push(elem);
+
+    m_currentNode = elem;
   }
 
   /**
@@ -199,6 +252,19 @@ public class StreeDOMBuilder extends DOMBuilder
   public void characters(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
+    if(DEBUG)
+    {
+      System.out.print("SourceTreeDOMBuilder#characters: ");
+      int n = start+length;
+      for (int i = start; i < n; i++) 
+      {
+        if(Character.isWhitespace(ch[i]))
+          System.out.print("\\"+((int)ch[i]));
+        else
+          System.out.print(ch[i]);
+      }    
+      System.out.println("");  
+    }
 
     if (getPreviousIsText())
       appendAccumulatedText(m_text_buffer, ch, start, length);
@@ -333,6 +399,11 @@ public class StreeDOMBuilder extends DOMBuilder
    */
   public void endDocument() throws org.xml.sax.SAXException
   {
+    if(DEBUG)
+    {
+      System.out.println("SourceTreeDOMBuilder#endDocument");
+    }
+    super.endDocument();
     setPreviousIsText(false);
   }
 
@@ -379,6 +450,21 @@ public class StreeDOMBuilder extends DOMBuilder
     }
     else
       ((TextImpl) m_text_buffer).appendText(ch, start, length);
+      
+    if(DEBUG)
+    {
+      System.out.print("SourceTreeDOMBuilder#appendAccumulatedText: ");
+      int n = start+length;
+      for (int i = start; i < n; i++) 
+      {
+        if(Character.isWhitespace(ch[i]))
+          System.out.print("\\"+((int)ch[i]));
+        else
+          System.out.print(ch[i]);
+      }    
+      System.out.println("");  
+    }
+
 
   }
 }
