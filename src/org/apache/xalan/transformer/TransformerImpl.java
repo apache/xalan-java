@@ -162,7 +162,7 @@ import trax.URIResolver;
  * @see XSLTProcessorFactory
  * @see XSLTProcessor
  */
-public class TransformerImpl extends XMLFilterImpl implements Transformer
+public class TransformerImpl extends XMLFilterImpl implements Transformer, Runnable
 {
   //==========================================================
   // SECTION: Constructors
@@ -1061,8 +1061,8 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
   {    
     // Does this element have any children?
     ElemTemplateElement firstChild = elem.getFirstChildElem();
-    if(null == firstChild)
-      return;
+    if(null == firstChild)    
+      return;      
     
     XPathContext xctxt = getXPathContext();
 
@@ -1450,7 +1450,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
   public TraceManager getTraceManager()
   {
     return m_traceManager;
-  }
+  }      
   
   /**
    * Look up the value of a feature.
@@ -1491,6 +1491,23 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
     throw new SAXNotRecognizedException(name);
   }
 
+  ////////////////////////
+  // Implement Runnable //  
+  ////////////////////////
   
+  /**
+   * Run the transform thread.
+   */
+  public void run()
+  {
+    try
+    {
+      transformNode(((SourceTreeHandler)getInputContentHandler()).getRoot());
+    }
+    catch(Exception e)
+    {
+      ; // should have already been reported via the error handler?
+    }
+  }
 
 } // end TransformerImpl class

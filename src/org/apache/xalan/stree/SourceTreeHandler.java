@@ -73,7 +73,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
   }
   
-  private boolean m_useMultiThreading = false;
+  private boolean m_useMultiThreading = true;
   
   private boolean indexedLookup = false;      // for now   
   
@@ -98,7 +98,9 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     
     if(m_useMultiThreading && (null != m_transformer))
     {
-      m_transformer.transformNode(m_root);
+      Thread t = new Thread(m_transformer);
+      t.start();
+      //m_transformer.transformNode(m_root);
     }
 
     m_sourceTreeHandler.startDocument();
@@ -112,6 +114,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void endDocument ()
     throws SAXException
   {
+    ((Parent)m_root).setComplete(true);    
     m_sourceTreeHandler.endDocument();
     
     if(!m_useMultiThreading && (null != m_transformer))
@@ -137,6 +140,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
                           String name)
     throws SAXException
   {
+    ((Parent)m_sourceTreeHandler.getCurrentNode()).setComplete(true);
     m_sourceTreeHandler.endElement(ns, localName, name);
   }
 

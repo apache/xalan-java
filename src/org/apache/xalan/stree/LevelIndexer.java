@@ -332,7 +332,7 @@ public class LevelIndexer
  */
   protected class MultiKeyTable //extends Hashtable
   {
-    private MultiKeyTable()
+    protected MultiKeyTable()
     {
       super();
     }

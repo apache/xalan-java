@@ -121,6 +121,14 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
   }
   
   /**
+   * Get the node currently being processed. 
+   */
+  public Node getCurrentNode()
+  {
+    return m_currentNode;
+  }
+  
+  /**
    * Return null since there is no Writer for this class.
    */
   public java.io.Writer getWriter()

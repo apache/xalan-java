@@ -71,7 +71,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public Node         getFirstChild()
   {
-    return (getChildCount() == 0) ? null : getChild(getLength());
+    // The call to getAttrCount gets the number of attributes in the list.
+    return (getChildCount() == 0) ? null : getChild(getAttrCount());
   }
       
   /**
@@ -84,7 +85,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     throws ArrayIndexOutOfBoundsException, NullPointerException
   {
     // wait?
-    if (i < getLength()) 
+    if (i < getAttrCount()) 
       return (AttrImpl)m_children[i];
     else
       return null;
@@ -99,7 +100,24 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public int getChildCount()
   {
-    return (null == m_children) ? 0 : m_children.length - getLength();
+    if (null == m_children && !isComplete())
+    {
+      synchronized (this)
+      {
+        try
+        {
+          //System.out.println("Waiting... getelCount " );
+          wait();
+        }
+        catch (InterruptedException e)
+        {
+          // That's OK, it's as good a time as any to check again
+        }
+        //System.out.println("/// gotelcount " );
+        
+      }
+    }
+    return (null == m_children) ? 0 : m_children.length - getAttrCount();
   }
   
   
@@ -225,7 +243,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      *
      * @return The number of attributes in the list.
      */
-    public int getLength ()
+    public int getAttrCount ()
     {
       return attrsEnd;
     }
@@ -332,7 +350,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public int getIndex (String uri, String localPart)
     {
-      for (int i = 0; i < getLength(); i++)
+      for (int i = 0; i < getAttrCount(); i++)
       {
         AttrImplNS attr = (AttrImplNS)getChildAttribute(i);
         if (attr.getLocalName().equals(localPart) &&
@@ -351,7 +369,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public int getIndex (String rawName)
     {
-      for (int i = 0; i < getLength(); i++)
+      for (int i = 0; i < getAttrCount(); i++)
       {
         AttrImpl attr = getChildAttribute(i);
         if (attr.getNodeName().equals(rawName))
@@ -415,9 +433,9 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
       return getValue(getIndex(rawName));
     }
     
-    //
-    // Implement NamedNodeMap
-    //
+    ////////////////////////////  
+    // Implement NamedNodeMap //
+    ////////////////////////////
     
     public Node getNamedItem(String name)
     {

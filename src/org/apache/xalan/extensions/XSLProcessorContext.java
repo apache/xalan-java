@@ -86,7 +86,7 @@ public class XSLProcessorContext {
    * Create a processor context to be passed to an extension.
    * (Notice it is a package-only constructor).
    */
-  XSLProcessorContext (TransformerImpl transformer,
+  public XSLProcessorContext (TransformerImpl transformer,
                        Stylesheet stylesheetTree,
                        Node sourceTree, Node sourceNode, QName mode) 
   {
