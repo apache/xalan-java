@@ -1425,10 +1425,12 @@ public abstract class DTMDefaultBase implements DTM
                 do {
                   ancestor=_parent(ancestor);
                 } while (candidate < ancestor);
-            } else {
+            } else if(wouldBeAt > 0){
               // Too late in list
               candidate=m_namespaceDeclSetElements.elementAt(--wouldBeAt);
             }
+            else
+            	break;
           }
       }
 
