@@ -57,47 +57,44 @@
 package javax.xml.transform;
 
 /**
- * <p>If a client of a transformation needs to implement customized error
- * handling, it must implement this interface and then register an
- * instance with the Transformer using the setErrorListener
- * method.  The Transformer will then report all errors and warnings
- * through this interface.</p>
+ * <p>To provide customized error handling, implement this interface and
+ * use the setErrorListener method to register an instance of the implmeentation 
+ * with the Transformer. The Transformer then reports all errors and warnings through this interface.</p>
  *
  * <p>If an application does <em>not</em>
- * register an ErrorListener, errors will be reported to System.err.</p>
+ * register an ErrorListener, errors are reported to System.err.</p>
  *
- * <p>For transformation errors, a transformer must use this interface 
- * instead of throwing an exception: it is up to the application 
- * to decide whether to throw an exception for different types of 
- * errors and warnings.  Note, however, that there is no requirement that 
- * the transformer continue with the transformation after a call to 
- * fatalError.</p>
- * 
- * <p>Transformers may use this mechanism to report XML parsing errors 
- * as well as transformation errors</p>
+ * <p>For transformation errors, a Transformer must use this interface
+ * instead of throwing an exception: it is up to the application
+ * to decide whether to throw an exception for different types of
+ * errors and warnings.  Note however that the Transformer is not required
+ * to continue with the transformation after a call to fatalError.</p>
+ *
+ * <p>Transformers may use this mechanism to report XML parsing errors
+ * as well as transformation errors.</p>
  */
 public interface ErrorListener 
 {
   
-  /**
-   * Receive notification of a warning.
-   *
-   * <p>Transformers will use this method to report conditions that
-   * are not errors or fatal errors.  The default behaviour is to 
-   * take no action.</p>
-   *
-   * <p>The Transformer must continue to with the transformation
-   * after invoking this method: it should still be possible for the
-   * application to process the document through to the end.</p>
-   *
-   * @param exception The warning information encapsulated in a
-   *                  transformer exception.
-   * 
-   * @throws javax.xml.transform.TransformerException if the application
-   * chooses to discontinue the transformation.
-   * 
-   * @see javax.xml.transform.TransformerException 
-   */
+    /**
+     * Receive notification of a warning.
+     *
+     * <p>Transformers can use this method to report conditions that
+     * are not errors or fatal errors.  The default behaviour is to
+     * take no action.</p>
+     *
+     * <p>After invoking this method, the Transformer must continue with 
+     * the transformation. It should still be possible for the
+     * application to process the document through to the end.</p>
+     *
+     * @param exception The warning information encapsulated in a
+     *                  transformer exception.
+     *
+     * @throws javax.xml.transform.TransformerException if the application
+     * chooses to discontinue the transformation.
+     *
+     * @see javax.xml.transform.TransformerException
+     */
   public abstract void warning (TransformerException exception)
     throws TransformerException;
   
@@ -106,7 +103,7 @@ public interface ErrorListener
    * Receive notification of a recoverable error.
    *
    * <p>The transformer must continue to provide normal parsing events
-   * after invoking this method: it should still be possible for the
+   * after invoking this method.  It should still be possible for the
    * application to process the document through to the end.</p>
    *
    * @param exception The error information encapsulated in a
@@ -124,12 +121,11 @@ public interface ErrorListener
   /**
    * Receive notification of a non-recoverable error.
    *
-   * <p>The application must assume that the transformation can 
-   * not continue after the transformer has invoked this method, 
-   * and should continue (if at all) only for the sake of collecting 
-   * addition error messages: in fact, transformers are free 
-   * to stop reporting any other events once this method has 
-   * been invoked.</p>
+   * <p>The application must assume that the transformation cannot 
+   * continue after the Transformer has invoked this method, 
+   * and should continue (if at all) only to collect
+   * addition error messages. In fact, Transformers are free 
+   * to stop reporting events once this method has been invoked.</p>
    *
    * @param exception The error information encapsulated in a
    *                  transformer exception.

@@ -58,7 +58,7 @@ package javax.xml.transform;
 
 /**
  * This interface is primarily for the purposes of reporting where
- * an error occured in the source or transformation instructions.
+ * an error occurred in the XML source or transformation instructions.
  */
 public interface SourceLocator
 {
@@ -67,8 +67,8 @@ public interface SourceLocator
    * Return the public identifier for the current document event.
    *
    * <p>The return value is the public identifier of the document
-   * entity or of the external parsed entity in which the markup
-   * triggering the event appears.</p>
+   * entity or of the external parsed entity in which the markup that
+   * triggered the event appears.</p>
    *
    * @return A string containing the public identifier, or
    *         null if none is available.
@@ -80,8 +80,8 @@ public interface SourceLocator
    * Return the system identifier for the current document event.
    *
    * <p>The return value is the system identifier of the document
-   * entity or of the external parsed entity in which the markup
-   * triggering the event appears.</p>
+   * entity or of the external parsed entity in which the markup that
+   * triggered the event appears.</p>
    *
    * <p>If the system identifier is a URL, the parser must resolve it
    * fully before passing it to the application.</p>
@@ -102,7 +102,7 @@ public interface SourceLocator
    *
    * <p>The return value is an approximation of the line number
    * in the document entity or external parsed entity where the
-   * markup triggering the event appears.</p>
+   * markup that triggered the event appears.</p>
    *
    * @return The line number, or -1 if none is available.
    * @see #getColumnNumber
@@ -119,7 +119,7 @@ public interface SourceLocator
    *
    * <p>The return value is an approximation of the column number
    * in the document entity or external parsed entity where the
-   * markup triggering the event appears.</p>
+   * markup that triggered the event appears.</p>
    *
    * @return The column number, or -1 if none is available.
    * @see #getLineNumber

@@ -57,21 +57,21 @@
 package javax.xml.transform;
 
 /**
- * <p>An interface that can be called by the processor to for turning the
- * URIs used in document() and xsl:import etc into an Source object.
+ * <p>An object that implements this interface that can be called by the processor 
+ * to turn a URI used in document(), xsl:import, or xsl:include into a Source object.
  */
 public interface URIResolver
 {
 
   /**
-   * This will be called by the processor when it encounters
+   * Called by the processor when it encounters
    * an xsl:include, xsl:import, or document() function.
    *
    * @param href An href attribute, which may be relative or absolute.
    * @param base The base URI in effect when the href attribute 
    * was encountered.
    *
-   * @return A Source object, or null if the href can not be resolved, 
+   * @return A Source object, or null if the href cannot be resolved, 
    * and the processor should try to resolve the URI itself.
    *
    * @throws TransformerException if an error occurs when trying to 

@@ -59,16 +59,15 @@ package javax.xml.transform;
 import java.util.Properties;
 
 /**
- * This object represents a Transformer, which can transform a
+ * An instace of this abstract class can transform a
  * source tree into a result tree.
  *
- * <p>An instance of this class can be obtained from the <code>
- * TransformerFactory.newTransformer</code> method. Once an instance
- * of this class is obtained, XML can be processed from a variety
- * of sources with the output from the transform being written
- * to a variety of sinks.</p>
- * <p>An object of this class can not be used concurrently over
- * multiple threads.</p>
+ * <p>An instance of this class can be obtained with the <code>
+ * TransformerFactory.newTransformer</code> method. This instance may
+ * then be used to process XML from a variety of sources and write
+ * the transformation output to a variety of sink.</p>
+ * <p>An object of this class may not be used in multiple threads
+ * running concurrently.</p>
  * <p>A Transformer may be used multiple times.  Parameters and 
  * output properties are preserved across transformations.</p>
  */
@@ -78,7 +77,7 @@ public abstract class Transformer
   /**
    * Process the source tree to the output result.
    * @param xmlSource  The input for the source tree.
-   * @param outputTarget The output source target.
+   * @param outputTarget The output target.
    *
    * @throws TransformerException If an unrecoverable error occurs 
    * during the course of the transformation.
@@ -89,24 +88,21 @@ public abstract class Transformer
   /**
    * Add a parameter for the transformation.
    * 
-   * <p>In order to pass namespaced names, the name can be passed as 
-   * a two-part string, with
-   * the first part being the URL, the delimiter being the '{' for the start of the
-   * URI and '}' signifies the end, with the local name following. If the qname has
-   * a null URL, then the String object will only contain the local name. An
+   * <p>Pass a qualified name as a two-part string, the namespace URI
+   * enclosed in curly braces ({}), followed by the local name. If the
+   * name has a null URL, the String only contain the local name. An
    * application can safely check for a non-null URI by testing to see if the first
    * character of the name is a '{' character.</p> 
    * <p>For example, if a URI and local name were obtained from an element
    * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
-   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+   * then the TrAX name would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
    * no prefix is used.</p>
    *
-   * @param name The name of the parameter,
-   *             which may have a namespace URI.
-   * @param value The value object.  This can be any valid Java object
-   * -- it's up to the processor to provide the proper
-   * coersion to the object, or simply pass it on for use
-   * in extensions.
+   * @param name The name of the parameter, which may begin with a namespace URI
+   * in curly braces ({}).
+   * @param value The value object.  This can be any valid Java object. It is
+   * up to the processor to provide the proper object coersion or to simply
+   * pass the object on for use in an extension.
    */
   public abstract void setParameter(String name, Object value);
     
@@ -114,11 +110,10 @@ public abstract class Transformer
    * Get a parameter that was explicitly set with setParameter 
    * or setParameters.
    * 
-   * <p>This does not return objects from default values of 
-   * parameters, since, among other reasons, these require a 
-   * node context to be evaluated, and thus can not be resolved 
-   * until the transformation is underway.</p>
-   *
+   * <p>This method does not return a default parameter value, which
+   * cannot be determined until the node context is evaluated during
+   * the transformation process.
+   * 
    * @return A parameter that has been set with setParameter 
    * or setParameters.
    */
@@ -126,7 +121,7 @@ public abstract class Transformer
 
   /**
    * Set an object that will be used to resolve URIs used in
-   * document(), etc.
+   * document(), xsl:import, or xsl:include.
    * 
    * @param resolver An object that implements the URIResolver interface,
    * or null.
@@ -144,29 +139,27 @@ public abstract class Transformer
 
   /**
    * Set the output properties for the transformation.  These
-   * properties will override properties set in the templates
+   * properties will override properties set in the Templates
    * with xsl:output.
    *
    * <p>If argument to this function is null, any properties
-   * previously set will be removed.</p>
+   * previously set are removed.</p>
    * 
-   * <p>In order to pass namespaced names, the name can be passed as 
-   * a two-part string, with
-   * the first part being the URL, the delimiter being the '{' for the start of the
-   * URI and '}' signifies the end, with the local name following. If the qname has
-   * a null URL, then the String object will only contain the local name. An
+   * <p>Pass a qualified property key name as a two-part string, the namespace URI
+   * enclosed in curly braces ({}), followed by the local name. If the
+   * name has a null URL, the String only contain the local name. An
    * application can safely check for a non-null URI by testing to see if the first
    * character of the name is a '{' character.</p> 
    * <p>For example, if a URI and local name were obtained from an element
    * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
-   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+   * then the TrAX name would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
    * no prefix is used.</p>
    * 
    * <p>If a given property is not supported, it will be silently ignored.</p>
    *
    * @param oformat A set of output properties that will be
    * used to override any of the same properties in effect
-   * for the transformation.
+   * for the transformation.   
    * 
    * @see javax.xml.transform.OutputKeys
    * @see java.util.Properties
@@ -185,7 +178,7 @@ public abstract class Transformer
    * setOutputProperties and setOutputProperty.  Subsequent layers 
    * contain the properties set in the stylesheet and the 
    * default properties for the transformation type.
-   * There is no guarantee on how the layers are structured passed the 
+   * There is no guarantee on how the layers are ordered after the 
    * first layer.  Thus, getOutputProperties().getProperty(String key) will obtain any 
    * property in effect for the stylesheet, while 
    * getOutputProperties().get(String key) will only retrieve properties 
@@ -206,16 +199,14 @@ public abstract class Transformer
    * Set an output property that will be in effect for the 
    * transformation.
    * 
-   * <p>In order to pass namespaced names, the name can be passed as 
-   * a two-part string, with
-   * the first part being the URL, the delimiter being the '{' for the start of the
-   * URI and '}' signifies the end, with the local name following. If the qname has
-   * a null URL, then the String object will only contain the local name. An
+   * <p>Pass a qualified property name as a two-part string, the namespace URI
+   * enclosed in curly braces ({}), followed by the local name. If the
+   * name has a null URL, the String only contain the local name. An
    * application can safely check for a non-null URI by testing to see if the first
    * character of the name is a '{' character.</p> 
    * <p>For example, if a URI and local name were obtained from an element
    * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
-   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+   * then the TrAX name would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
    * no prefix is used.</p>
    * 
    * @param name A non-null String that specifies an output 
@@ -253,7 +244,7 @@ public abstract class Transformer
    * Set the error event listener in effect for the transformation.
    *
    * @param listener The new error listener.
-   * @throws IllegalArgumentException if 
+   * @throws IllegalArgumentException if listener is null.
    */
   public abstract void setErrorListener (ErrorListener listener)
     throws IllegalArgumentException;

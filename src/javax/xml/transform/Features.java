@@ -57,29 +57,31 @@
 package javax.xml.transform;
 
 /**
- * This class defines feature URLs that are supported by
- * the TrAX subpackages, such as sax, dom, etc.
+ * Defines feature URIs that are supported by the various
+ * TrAX subpackages, such as sax, dom, etc.  A Transformer can use
+ * these values to do an identity comparison instead of a lexical
+ * comparison, which can greatly improve the performance of
+ * TransformerFactory#getFeature.
  */
 public class Features
 {
 
-  /**
-   * If TransformerFactory#getFeature returns true with this value
-   * passed as a parameter, the transformer supports the interfaces
+  /* If TransformerFactory#getFeature returns true with this value 
+   * passed as the parameter, the Transformer supports the interfaces
    * found in the javax.xml.transform.sax package.
    */
   public static final String SAX = "http://xml.org/trax/features/sax";
 
   /**
    * If TransformerFactory#getFeature returns true with this value
-   * passed as a parameter, the transformer supports the interfaces
+   * passed as the parameter, the Transformer supports the interfaces
    * found in the javax.xml.transform.dom package.
    */
   public static final String DOM = "http://xml.org/trax/features/dom";
 
   /**
    * If TransformerFactory#getFeature returns true with this value
-   * passed as a parameter, the transformer supports the interfaces
+   * passed as the parameter, the Transformer supports the interfaces
    * found in the javax.xml.transform.stream package.
    */
   public static final String STREAM = "http://xml.org/trax/features/stream";

@@ -63,7 +63,7 @@ import java.io.Reader;
 
 /**
  * An object that implements this interface contains the information
- * needed to act as source input.
+ * needed to act as source input (XML source or transformation instructions).
  */
 public interface Source
 {
@@ -71,9 +71,9 @@ public interface Source
    * Set the system identifier for this Source.
    *
    * <p>The system identifier is optional if the source does not 
-   * get it's data from a URL, but it is still useful to provide one,
-   * since the application can use it to resolve relative URIs
-   * and can include it in error messages and warnings.</p>
+   * get its data from a URL, but it may still be useful to provide one.
+   * The application can use a system identifier, for example, to resolve 
+   * relative URIs and to include in error messages and warnings.</p>
    *
    * @param systemId The system identifier as a URL string.
    */

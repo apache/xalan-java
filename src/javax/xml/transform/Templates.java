@@ -61,11 +61,11 @@ import java.util.Properties;
 import javax.xml.transform.TransformerException;
 
 /**
- * The Templates object is the runtime representation of processed
+ * An object that implements this interface is the runtime representation of processed
  * transformation instructions.
  *
  * <p>Templates must be threadsafe for a given instance
- * over multiple threads concurrently, and are generally meant to
+ * over multiple threads running concurrently, and may
  * be used multiple times in a given session.</p>
  */
 public interface Templates
@@ -82,7 +82,7 @@ public interface Templates
 
   /**
    * Get the static properties for xsl:output.  The object returned will
-   * be a clone of the internal values, and thus it can be mutated
+   * be a clone of the internal values. Accordingly, it can be mutated
    * without mutating the Templates object, and then handed in to
    * the process method.
    *

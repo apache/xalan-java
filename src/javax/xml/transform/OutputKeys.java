@@ -57,9 +57,9 @@
 package javax.xml.transform;
 
 /**
- * Class OutputKeys provides string constants that can be used to set
- * output properties on the Transformer class, or to retrieve
- * output properties on either Transformer or Templates instances.
+ * Provides string constants that can be used to set
+ * output properties for a Transformer, or to retrieve
+ * output properties from a Transformer or Templates object.
  *
  * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
  * XSL Transformations (XSLT) W3C Recommendation</a>
@@ -91,10 +91,10 @@ public class OutputKeys
    * encoding = <var>string</var>.
    *
    * <p><code>encoding</code> specifies the preferred character
-   * encoding that the XSLT processor should use to encode sequences of
-   * characters as sequences of bytes; the value of the attribute should be
-   * treated case-insensitively; the value must contain only characters in
-   * the range #x21 to #x7E (i.e. printable ASCII characters); the value
+   * encoding that the Transformer should use to encode sequences of
+   * characters as sequences of bytes. The value of the attribute should be
+   * treated case-insensitively. The value must only contain characters in
+   * the range #x21 to #x7E (i.e., printable ASCII characters). The value
    * should either be a <code>charset</code> registered with the Internet
    * Assigned Numbers Authority <a href="#IANA">[IANA]</a>,
    * <a href="#RFC2278">[RFC2278]</a> or start with <code>X-</code>.</p>
@@ -117,7 +117,7 @@ public class OutputKeys
   /**
    * standalone = "yes" | "no".
    *
-   * <p><code>standalone</code> specifies whether the XSLT processor
+   * <p><code>standalone</code> specifies whether the Transformer
    * should output a standalone document declaration; the value must be
    * <code>yes</code> or <code>no</code>.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
@@ -161,7 +161,7 @@ public class OutputKeys
   /**
    * indent = "yes" | "no".
    *
-   * <p><code>indent</code> specifies whether the XSLT processor may
+   * <p><code>indent</code> specifies whether the Transformer may
    * add additional whitespace when outputting the result tree; the value
    * must be <code>yes</code> or <code>no</code>.  </p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
@@ -174,7 +174,7 @@ public class OutputKeys
    *
    * <p><code>media-type</code> specifies the media type (MIME
    * content type) of the data that results from outputting the result
-   * tree; the <code>charset</code> parameter should not be specified
+   * tree. The <code>charset</code> parameter should not be specified
    * explicitly; instead, when the top-level media type is
    * <code>text</code>, a <code>charset</code> parameter should be added
    * according to the character encoding actually used by the output
