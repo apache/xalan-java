@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2002 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002,2003 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,12 +55,21 @@
 
 package org.apache.xml.utils;
 
-import java.security.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+
+import java.util.Properties;
 
 /**
- * This class is duplicated for each JAXP subpackage so keep it in sync.
- * It is package private and therefore is not exposed as part of the JAXP
+ * This class is duplicated for each Xalan-Java subpackage so keep it in sync.
+ * It is package private and therefore is not exposed as part of the Xalan-Java
  * API.
  *
  * Security related methods that only work on J2SE 1.2 and newer.
@@ -68,16 +77,16 @@ import java.io.*;
 class SecuritySupport12 extends SecuritySupport {
 
     public ClassLoader getContextClassLoader() {
-	return (ClassLoader)
-		AccessController.doPrivileged(new PrivilegedAction() {
-	    public Object run() {
-		ClassLoader cl = null;
-		try {
-		    cl = Thread.currentThread().getContextClassLoader();
-		} catch (SecurityException ex) { }
-		return cl;
-	    }
-	});
+        return (ClassLoader)
+                AccessController.doPrivileged(new PrivilegedAction() {
+            public Object run() {
+                ClassLoader cl = null;
+                try {
+                    cl = Thread.currentThread().getContextClassLoader();
+                } catch (SecurityException ex) { }
+                return cl;
+            }
+        });
     }
 
     public ClassLoader getSystemClassLoader() {
@@ -110,7 +119,7 @@ class SecuritySupport12 extends SecuritySupport {
     }
 
     public String getSystemProperty(final String propName) {
-	return (String)
+        return (String)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
                     return System.getProperty(propName);
@@ -121,16 +130,16 @@ class SecuritySupport12 extends SecuritySupport {
     public FileInputStream getFileInputStream(final File file)
         throws FileNotFoundException
     {
-	try {
+        try {
             return (FileInputStream)
                 AccessController.doPrivileged(new PrivilegedExceptionAction() {
                     public Object run() throws FileNotFoundException {
                         return new FileInputStream(file);
                     }
                 });
-	} catch (PrivilegedActionException e) {
-	    throw (FileNotFoundException)e.getException();
-	}
+        } catch (PrivilegedActionException e) {
+            throw (FileNotFoundException)e.getException();
+        }
     }
 
     public InputStream getResourceAsStream(final ClassLoader cl,

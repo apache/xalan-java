@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2002 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002,2003 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,11 +55,16 @@
 
 package org.apache.xml.utils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import java.util.Properties;
 
 /**
- * This class is duplicated for each JAXP subpackage so keep it in sync.
- * It is package private and therefore is not exposed as part of the JAXP
+ * This class is duplicated for each Xalan-Java subpackage so keep it in sync.
+ * It is package private and therefore is not exposed as part of the Xalan-Java
  * API.
  *
  * Base class with security related methods that work on JDK 1.1.
