@@ -173,6 +173,13 @@ public class Process
     System.out.println(resbundle.getString("optionURIRESOLVER"));  //"   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]");
     System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
     System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
+    // jk 11/27/01 these below should really be added as resources
+    System.out.println(
+      "   [-INCREMENTAL (request incremental DTM construction by setting http://xml.apache.org/xalan/features/incremental true.)]");
+    System.out.println(
+      "   [-NOOPTIMIMIZE (request no stylesheet optimization proccessing by setting http://xml.apache.org/xalan/features/optimize false.)]");
+    System.out.println(
+      "   [-RL recursionlimit (assert numeric limit on stylesheet recursion depth.)]");
   }
   
   /**
@@ -250,6 +257,7 @@ public class Process
       URIResolver uriResolver = null;
       EntityResolver entityResolver = null;
       ContentHandler contentHandler = null;
+      int recursionLimit=-1;
 
       for (int i = 0; i < argv.length; i++)
       {
@@ -554,7 +562,18 @@ public class Process
           tfactory.setAttribute
             ("http://xml.apache.org/xalan/features/optimize", 
              java.lang.Boolean.FALSE);
-				}
+	}
+        else if ("-RL".equalsIgnoreCase(argv[i]))
+        {
+          if (i + 1 < argv.length)
+            recursionLimit = Integer.parseInt(argv[++i]);
+          else
+            System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                new Object[]{ "-rl" }));  //"Missing argument for);
+        }
+
         else
           System.err.println(
             XSLMessages.createMessage(
@@ -660,6 +679,9 @@ public class Process
 
             if (useSourceLocation)
               impl.setProperty(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);
+
+	    if(recursionLimit>0)
+	      impl.setRecursionLimit(recursionLimit);
 
             // sc 28-Feb-01 if we re-implement this, please uncomment helpmsg in printArgOptions
             // impl.setDiagnosticsOutput( setQuietMode ? null : diagnosticsWriter );
