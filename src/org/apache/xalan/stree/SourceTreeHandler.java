@@ -616,10 +616,10 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
     synchronized (m_root)
     {
-      if (m_isCData)
-        m_sourceTreeHandler.cdata(ch, start, length);
-      else
-        m_sourceTreeHandler.characters(ch, start, length);
+//      if (m_isCData)
+//        m_sourceTreeHandler.cdata(ch, start, length);
+//      else
+      m_sourceTreeHandler.characters(ch, start, length);
     }
 
     notifyWaiters();
