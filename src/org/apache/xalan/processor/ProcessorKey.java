@@ -154,7 +154,7 @@ class ProcessorKey extends XSLTElementProcessor
       else
       {
         String valueString = attributes.getValue(i);
-        if (valueString.indexOf(FUNC_KEY_STRING) >= 0)
+        if (valueString.indexOf(FUNC_KEY_STRING+"(") >= 0)
           handler.error(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
         processedDefs.addElement(attrDef);
         attrDef.setAttrValue(handler, attrUri, attrLocalName,
