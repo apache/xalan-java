@@ -52,5 +52,7 @@ public class Trace
     // Close the PrintWriter and FileWriter.
     pw.close();
     fw.close();
+   	System.out.println("**The output is in foo.out; the log is in events.log ****");	
+    
   }
 }
