@@ -167,19 +167,52 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public void addVariable(Variable var) {
-	_variableScope.put(var.getName(), var);
+	addVariableOrParam(var);
     }
 
     public void addParameter(Param param) {
-	_variableScope.put(param.getName(), param);
+	addVariableOrParam(param);
+    }
+
+    private void addVariableOrParam(VariableBase var) {
+	Object existing = _variableScope.get(var.getName());
+	if (existing != null) {
+	    if (existing instanceof Stack) {
+		Stack stack = (Stack)existing;
+		stack.push(var);
+	    }
+	    else if (existing instanceof VariableBase) {
+		Stack stack = new Stack();
+		stack.push(existing);
+		stack.push(var);
+		_variableScope.put(var.getName(), stack);
+	    }
+	}
+	else {
+	    _variableScope.put(var.getName(), var);
+	}
     }
 
     public void removeVariable(QName name) {
+	Object existing = _variableScope.get(name);
+	if (existing instanceof Stack) {
+	    Stack stack = (Stack)existing;
+	    if (!stack.isEmpty()) stack.pop();
+	    if (!stack.isEmpty()) return;
+	}
 	_variableScope.remove(name);
     }
 
     public VariableBase lookupVariable(QName name) {
-	return((VariableBase)_variableScope.get(name));
+	Object existing = _variableScope.get(name);
+	if (existing instanceof VariableBase) {
+	    return((VariableBase)existing);
+	}
+	else if (existing instanceof Stack) {
+	    Stack stack = (Stack)existing;
+	    return((VariableBase)stack.peek());
+	}
+	return(null);
     }
 
     public void setXSLTC(XSLTC xsltc) {
