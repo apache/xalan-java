@@ -42,6 +42,20 @@
             source="xsltc/xsl_unparsed_design.xml"/> 
   
  <separator/>
+  <document id="xsl_if_design"
+            label="If design"
+            source="xsltc/xsl_if_design.xml"/> 
+  <document id="xsl_choose_design"
+            label="Choose|When|Otherwise design"
+            source="xsltc/xsl_choose_design.xml"/> 
+  <document id="xsl_include_design"
+            label="Include|Import design"
+            source="xsltc/xsl_include_design.xml"/> 
+  <document id="xsl_variable_design"
+            label="Variable|Param design"
+            source="xsltc/xsl_variable_design.xml"/> 
+
+ <separator/>
    
   <document id="xsltc_runtime"
             label="Runtime"
