@@ -231,10 +231,10 @@ public class ResultTreeHandler extends QueuedEvents
     if (DEBUG)
     {
       if (null != qse)
-        System.out.println("(pended: " + qse.getURL() + "#"
+        System.out.println("(ResultTreeHandler - pended: " + qse.getURL() + "#"
                            + qse.getLocalName());
 
-      System.out.println("startElement: " + ns + "#" + localName);
+      System.out.println("ResultTreeHandler - startElement: " + ns + "#" + localName);
     }
 
     checkForSerializerSwitch(ns, localName);
@@ -242,7 +242,7 @@ public class ResultTreeHandler extends QueuedEvents
 
     if (!m_nsContextPushed)
     {
-      if (DEBUG)
+      if (DEBUG) 
         System.out.println("push(startElement)");
 
       m_nsSupport.pushContext();
@@ -266,6 +266,15 @@ public class ResultTreeHandler extends QueuedEvents
   public void endElement(String ns, String localName, String name)
           throws org.xml.sax.SAXException
   {
+    if (DEBUG)
+    {
+      QueuedStartElement qse = getQueuedElem();
+      if (null != qse)
+        System.out.println("(ResultTreeHandler - pended: " + qse.getURL() + "#"
+                           + qse.getLocalName());
+
+      System.out.println("ResultTreeHandler - endElement: " + ns + "#" + localName);
+    }
 
     flushPending(EVT_ENDELEMENT);
     m_contentHandler.endElement(ns, localName, name);
