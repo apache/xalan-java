@@ -246,8 +246,9 @@ final class ChunkedIntArray
    */
   void writeSlot(int position, int w0, int w1, int w2, int w3)
   {
-    int chunkpos = position >> lowbits;
-    int slotpos = (position & lowmask) * slotsize;
+      position *= slotsize;
+      int chunkpos = position >> lowbits;
+      int slotpos = (position & lowmask);
 
     // Grow if needed
     if (chunkpos > chunks.size() - 1)
