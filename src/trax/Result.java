@@ -183,7 +183,7 @@ public class Result
   // Internal state.
   //////////////////////////////////////////////////////////////////////
 
-  private OutputStream byteStream;
-  private Writer characterStream;
-  private Node node;
+  protected OutputStream byteStream;
+  protected Writer characterStream;
+  protected Node node;
 }

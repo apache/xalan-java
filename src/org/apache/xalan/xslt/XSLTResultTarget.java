@@ -59,6 +59,10 @@ package org.apache.xalan.xslt;
 import org.w3c.dom.Node;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import org.xml.sax.DocumentHandler;
 import trax.Result;
 
@@ -271,14 +275,27 @@ public class XSLTResultTarget extends Result
     return formatterListener;
   }
 
+  public Writer getCharacterStream() {
+    if( characterStream != null ) return characterStream;
+    if( fileName != null ) {
+      try {
+	if( encoding==null ) {
+	  return new FileWriter( fileName );
+	} else {
+	  return new OutputStreamWriter( new FileOutputStream( fileName ), encoding);
+	}
+      } catch( IOException ex ) {
+	return null;
+      }
+    }
+    return null;
+  }
+    
   //////////////////////////////////////////////////////////////////////
   // Internal state.
   //////////////////////////////////////////////////////////////////////
 
   private String fileName;
-  private OutputStream byteStream;
   private String encoding;
-  private Writer characterStream;
-  private Node node;
   private DocumentHandler formatterListener;
 }
