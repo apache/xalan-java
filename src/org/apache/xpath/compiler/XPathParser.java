@@ -1561,7 +1561,7 @@ public class XPathParser
     // transition... but it gets real hairy if you try 
     // to do it in basis().
     else if (tokenIs('*') || tokenIs('@') || tokenIs('/')
-             || Character.isLetter(m_token.charAt(0)))
+             || tokenIs('_') || Character.isLetter(m_token.charAt(0)))
     {
       Basis();
 
