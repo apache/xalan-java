@@ -261,33 +261,19 @@
   <sect1 id="package"> 
 	 <title>javax.xml.transform</title> 
 	 <para>This package defines the generic APIs for processing transformation instructions,
-		and performing a transformation from source to result. For an overview, see 
-    <ulink url="trax.html">Transformation API for XML (TrAX)</ulink>. The TrAX 
+		and performing a transformation from source to result. These 
 		interfaces have no dependencies on SAX or the DOM standard, and try to make as
 		few assumptions as possible about the details of the source and result of a
-		transformation. TrAX achieves this by defining 
+		transformation. The API achieves this by defining 
 		<plink>javax.xml.transform.Source</plink> and 
 		<plink>javax.xml.transform.Result</plink> interfaces.</para> 
-	 <para>To define concrete classes for the user, TrAX defines specializations
-		of the interfaces found at the TrAX root level. These interfaces are found in 
+	 <para>To define concrete classes for the user, the API defines specializations
+		of the interfaces found at the root level. These interfaces are found in 
 		<plink>javax.xml.transform.sax</plink>, <plink>javax.xml.transform.dom</plink>,
 		and <plink>javax.xml.transform.stream</plink>.</para> 
-	 <para>The following illustrates a simple transformation from input URI to
-		result stream.</para> 
-	 <programlisting>    // Create a transform factory instance.
-    TransformerFactory tfactory = TransformerFactory.newInstance();
-    
-    // Create a transformer for the stylesheet.
-    Transformer transformer 
-      = tfactory.newTransformer(new StreamSource(xslID));
-    
-    // Transform the source XML to System.out.
-    transformer.transform( new StreamSource(sourceID),
-                           new StreamResult(System.out));
-</programlisting> 
 	 <sect2> 
 		<title>Creating Objects</title> 
-		<para>TrAX allows a concrete 
+		<para>The API allows a concrete 
 		  <plink>javax.xml.transform.TransformerFactory</plink> object to be created from
 		  the static function 
 		  <plink>javax.xml.transform.TransformerFactory#newInstance</plink>. The
@@ -298,10 +284,10 @@
 	 </sect2> 
 	 <sect2> 
 		<title>Specification of Inputs and Outputs</title> 
-		<para>TrAX defines two interface objects called 
+		<para>This API defines two interface objects called 
 		  <plink>javax.xml.transform.Source</plink> and 
 		  <plink>javax.xml.transform.Result</plink>. In order to pass Source and Result
-		  objects to the TrAX interfaces, concrete classes must be used. TrAX defines
+		  objects to the interfaces, concrete classes must be used. The transformation API defines
 		  three concrete representations for each of these objects: 
 		  <plink>javax.xml.transform.stream.StreamSource</plink> and 
 		  <plink>javax.xml.transform.stream.StreamResult</plink>,
@@ -345,7 +331,7 @@
 		the name is a '{' character.</para> 
 	 <para>For example, if a URI and local name were obtained from an element
 		defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
-		then the TrAX Qualified Name would be "{http://xyz.foo.com/yada/baz.html}foo".
+		then the transformation API Qualified Name would be "{http://xyz.foo.com/yada/baz.html}foo".
 		Note that the prefix is lost.</para> 
   </sect2> 
   <sect2> 
@@ -368,21 +354,11 @@
 		<plink>javax.xml.transform.TransformerFactory#newTransformer()</plink> method
 		with no arguments. This method creates a Transformer that effectively copies
 		the source to the result. This method may be used to create a DOM from SAX
-		events or to create an XML or HTML stream from a DOM or SAX events. The
-		following example illustrates the serialization of a DOM node to an XML
-		stream.</para> 
-	 <programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();    
-    Transformer serializer = tfactory.newTransformer();
-    Properties oprops = new Properties();
-    oprops.put("method", "html");
-    oprops.put("indent-amount", "2");
-    serializer.setOutputProperties(oprops);
-    serializer.transform(new DOMSource(doc), 
-                         new StreamResult(System.out));</programlisting> 
+		events or to create an XML or HTML stream from a DOM or SAX events.</para>
 </sect2> 
 <sect2> 
   <title>Exceptions and Error Reporting</title> 
-  <para>The TrAX APIs throw three types of specialized exceptions. A
+  <para>The transformation API throws three types of specialized exceptions. A
 	 <plink>javax.xml.transform.TransformerFactoryConfigurationError</plink> is parallel to
 	 the <plink>javax.xml.parsers.FactoryConfigurationError</plink>, and is thrown
 	 when a configuration problem with the TransformerFactory exists. This error
@@ -421,7 +397,7 @@
 </sect2> 
 <sect2> 
   <title>Resolution of URIs within a transformation</title> 
-  <para>TrAX provides a way for URIs referenced from within the stylesheet
+  <para>The API provides a way for URIs referenced from within the stylesheet
 	 instructions or within the transformation to be resolved by the calling
 	 application. This can be done by creating a class that implements the
 	 URIResolver interface, with its one method,
@@ -434,62 +410,6 @@
 	 base URI in effect when the URI passed as the first argument was encountered.
 	 The returned <plink>javax.xml.transform.Source</plink> object must be usable by
 	 the transformer, as specified in its implemented features.</para> 
-  <para>The following example illustrates the use of the URI resolver to
-	 resolve URIs to DOM nodes, in a transformation whose input is totally DOM
-	 based.</para> 
-  <programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    if (tfactory.getFeature(DOMSource.FEATURE) &amp;&amp; tfactory.getFeature(StreamResult.FEATURE))
-    {
-      DocumentBuilderFactory dfactory =
-                                       DocumentBuilderFactory.newInstance();
-      dfactory.setNamespaceAware(true); // Always, required for XSLT
-      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-      
-      // Set up to resolve URLs that correspond to our inc1.xsl, 
-      // to a DOM node. Use an anonymous class for the URI resolver.
-      final Node xslInc1 = docBuilder.parse("xsl/inc1/inc1.xsl");
-      final Node xslInc2 = docBuilder.parse("xsl/inc2/inc2.xsl");
-      tfactory.setURIResolver(new URIResolver() { 
-        public Source resolve(String href, String base) 
-        throws TransformerException
-        {
-        // ignore base because we're lazy, or we don't care.
-        return (href.equals("inc1/inc1.xsl"))  
-        ? new DOMSource(xslInc1) : 
-          (href.equals("inc2/inc2.xsl")) 
-          ? new DOMSource(xslInc2) : null;
-        }});
-
-      // The TransformerFactory will call the anonymous URI 
-      // resolver set above when it encounters 
-      // &lt;xsl:include href="inc1/inc1.xsl"/&gt;
-      Templates templates 
-        = tfactory.newTemplates(new DOMSource(docBuilder.parse(xslID), xslID));
-
-      // Get a transformer from the templates.
-      Transformer transformer = templates.newTransformer();
-      
-      // Set up to resolve URLs that correspond to our foo2.xml, to 
-      // a DOM node.  Use an anonymous class for the URI resolver.
-      // Be sure to return the same DOM tree every time for the 
-      // given URI.
-      final Node xmlSubdir1Foo2Node = docBuilder.parse("xml/subdir1/foo2.xml");
-      transformer.setURIResolver(new URIResolver() { 
-        public Source resolve(String href, String base) 
-        throws TransformerException
-        {
-        // ignore base because we're lazy, or we don't care.
-        return (href.equals("subdir1/foo2.xml"))  
-        ? new DOMSource(xmlSubdir1Foo2Node) : null;
-        }});
-
-      // Now the transformer will call our anonymous URI resolver 
-      // when it encounters the document('subdir1/foo2.xml') invocation.
-      transformer.transform(new DOMSource(docBuilder.parse(sourceID), sourceID), 
-                            new StreamResult(System.out));
-    }
-</programlisting>
 </sect2> 
 <sect2 id="specialized-packages"> 
 <title>Specialized Packages</title> 
@@ -516,27 +436,6 @@
 	 when it is useful to write to a character stream, such as when using a
 	 StringWriter in order to write to a String, or in the case of reading source
 	 XML from a StringReader.</para> 
-  <para>The following code fragment illustrates the use of the stream Source
-	 and Result objects.</para> 
-  <programlisting>    // Create a TransformerFactory instance.
-    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    InputStream xslIS = new BufferedInputStream(new FileInputStream(xslID));
-    StreamSource xslSource = new StreamSource(xslIS);
-    // Note that if we don't do this, relative URLs cannot be resolved correctly!
-    xslSource.setSystemId(xslID);
-
-    // Create a transformer for the stylesheet.
-    Transformer transformer = tfactory.newTransformer(xslSource);
-    
-    InputStream xmlIS = new BufferedInputStream(new FileInputStream(sourceID));
-    StreamSource xmlSource = new StreamSource(xmlIS);
-    // Note that if we don't do this, relative URLs cannot be resolved correctly!
-    xmlSource.setSystemId(sourceID);
-    
-    // Transform the source XML to System.out.
-    transformer.transform( xmlSource, new StreamResult(System.out));
-</programlisting>
 </sect3> 
 <sect3> 
 <title>javax.xml.transform.sax</title> 
@@ -555,24 +454,7 @@
   specify the SAX source.</para> 
 <para>The <plink>javax.xml.transform.sax.SAXResult</plink> class allows the
   setting of a <plink>org.xml.sax.ContentHandler</plink> to be the receiver of
-  SAX2 events from the transformation. The following code fragment illustrates
-  the use of the SAXSource and SAXResult objects.</para> 
-<programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXSource.FEATURE) &amp;&amp; tfactory.getFeature(SAXResult.FEATURE))
-    {      
-      // Get a transformer.
-      Transformer transformer 
-        = tfactory.newTransformer(new StreamSource(xslID));
-      
-      // Create an reader for reading.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-
-      transformer.transform(new SAXSource(reader, new InputSource(sourceID)),
-                            new SAXResult(new ExampleContentHandler()));
-    }
-</programlisting> 
+  SAX2 events from the transformation.</para>
 <para>The <plink>javax.xml.transform.sax.SAXTransformerFactory</plink> extends
   <plink>javax.xml.transform.TransformerFactory</plink> to provide factory
   methods for creating <plink>javax.xml.transform.sax.TemplatesHandler</plink>,
@@ -581,23 +463,7 @@
 <para>To obtain a <plink>javax.xml.transform.sax.SAXTransformerFactory</plink>,
   the caller must cast the <plink>javax.xml.transform.TransformerFactory</plink>
   instance returned from
-  <plink>javax.xml.transform.TransformerFactory#newInstance</plink>. For
-  example:</para> 
-<programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    // Does this factory support the SAXTransformerFactory feature?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      // If so, we can safely cast.
-      SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
-      
-      // A TransformerHandler is a ContentHandler that will listen for 
-      // SAX events, and transform them to the result.
-      TransformerHandler handler 
-        = stfactory.newTransformerHandler(new StreamSource(xslID));
-      // ...
-    }
-</programlisting> 
+  <plink>javax.xml.transform.TransformerFactory#newInstance</plink>.</para>
 <para>The <plink>javax.xml.transform.sax.TransformerHandler</plink> interface
   allows a transformation to be created from SAX2 parse events, which is a "push"
   model rather than the "pull" model that normally occurs for a transformation.
@@ -614,40 +480,7 @@
   Transformer handler, a <plink>javax.xml.transform.Transformer</plink> reference
   will need to be obtained from
   <plink>javax.xml.transform.sax.TransformerHandler#getTransformer</plink>, and
-  the methods invoked from that reference. The following illustrates the feeding
-  of SAX events from an <plink>org.xml.sax.XMLReader</plink> to a
-  Transformer.</para> 
-<programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      // If so, we can safely cast.
-      SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
-      
-      // A TransformerHandler is a ContentHandler that will listen for 
-      // SAX events, and transform them to the result.
-      TransformerHandler handler 
-        = stfactory.newTransformerHandler(new StreamSource(xslID));
-
-      // Set the result handling to be a serialization to System.out.
-      handler.setResult(new StreamResult(System.out));
-      
-      handler.getTransformer().setParameter("a-param",
-                                            "hello to you!");
-      
-      // Create a reader, and set it's content handler to be the TransformerHandler.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-      reader.setContentHandler(handler);
-      
-      // It's a good idea for the parser to send lexical events.
-      // The TransformerHandler is also a LexicalHandler.
-      reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-      
-      // Parse the source XML, and send the parse events to the TransformerHandler.
-      reader.parse(sourceID);
-    }
-</programlisting> 
+  the methods invoked from that reference.</para>
 <para>The <plink>javax.xml.transform.sax.TemplatesHandler</plink> interface
   allows the creation of <plink>javax.xml.transform.Templates</plink> objects
   from SAX2 parse events. Once the <plink>org.xml.sax.ContentHandler</plink>
@@ -655,39 +488,7 @@
   <plink>javax.xml.transform.sax.TemplatesHandler#getTemplates</plink>. Note that 
   <plink>javax.xml.transform.sax.TemplatesHandler#setSystemId</plink> should
   normally be called in order to establish a base system ID from which relative
-  URLs may be resolved. The following code fragment illustrates the creation of a
-  Templates object from SAX2 events sent from an XMLReader.</para> 
-<programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      // If so, we can safely cast.
-      SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
-      
-      // Have the factory create a special ContentHandler that will 
-      // create a Templates object.
-      TemplatesHandler handler = stfactory.newTemplatesHandler();
-      
-      // If you don't do this, the TemplatesHandler won't know how to 
-      // resolve relative URLs.
-      handler.setSystemId(xslID);
-      
-      // Create a reader, and set it's content handler to be the TemplatesHandler.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-      reader.setContentHandler(handler);
-      
-      // Parse the source XML, and send the parse events to the TemplatesHandler.
-      reader.parse(xslID);
-      
-      // Get the Templates reference from the handler.
-      Templates templates = handler.getTemplates();
-      
-      // Ready to transform.
-      Transformer transformer = templates.newTransformer();
-      transformer.transform(new StreamSource(sourceID), new StreamResult(System.out));
-    }
-</programlisting> 
+  URLs may be resolved.</para>
 <para>The
   <plink>javax.xml.transform.sax.SAXTransformerFactory#newXMLFilter</plink>
   method allows the creation of a <plink>org.xml.sax.XMLFilter</plink>, which
@@ -695,48 +496,13 @@
   illustrates several transformations chained together. Each filter points to a
   parent <plink>org.xml.sax.XMLReader</plink>, and the final transformation is
   caused by invoking <plink>org.xml.sax.XMLReader#parse</plink> on the final
-  reader in the chain.</para> 
-<programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();
-    
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      Templates stylesheet1 = tfactory.newTemplates(new StreamSource(xslID_1));
-      Transformer transformer1 = stylesheet1.newTransformer();
-      
-      SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-
-      XMLFilter filter1 = stf.newXMLFilter(new StreamSource(xslID_1));
-      XMLFilter filter2 = stf.newXMLFilter(new StreamSource(xslID_2));
-      XMLFilter filter3 = stf.newXMLFilter(new StreamSource(xslID_3));
-
-      // transformer1 will use a SAX parser as it's reader.    
-      filter1.setParent(reader);
-
-      // transformer2 will use transformer1 as it's reader.
-      filter2.setParent(filter1);
-
-      // transform3 will use transform2 as it's reader.
-      filter3.setParent(filter2);
-
-      filter3.setContentHandler(new ExampleContentHandler());
-      // filter3.setContentHandler(new org.xml.sax.helpers.DefaultHandler());
-
-      // Now, when you call transformer3 to parse, it will set  
-      // itself as the ContentHandler for transform2, and 
-      // call transform2.parse, which will set itself as the 
-      // content handler for transform1, and call transform1.parse, 
-      // which will set itself as the content listener for the 
-      // SAX parser, and call parser.parse(new InputSource("xml/foo.xml")).
-      filter3.parse(new InputSource(sourceID));
-    }</programlisting>
+  reader in the chain.</para>
 </sect3> 
 <sect3> 
 <title>javax.xml.transform.dom</title> 
 <para>This package implements DOM-specific transformation APIs.</para> 
 <para>The <plink>javax.xml.transform.dom.DOMSource</plink> class allows the
-client of the TrAX implementation to specify a DOM
+client of the implementation of this API to specify a DOM
 <plink>org.w3c.dom.Node</plink> as the source of the input tree. The model of
 how the Transformer deals with the DOM tree in terms of mismatches with the
 <ulink url="http://www.w3.org/TR/xslt#data-model">XSLT data model</ulink> or
@@ -761,42 +527,6 @@ The implementation has no responsibility to use a DOMLocator instead of
 a <plink>javax.xml.transform.SourceLocator</plink> (though line numbers and the
 like do not make much sense for a DOM), so the result of getLocator must always
 be tested with an instanceof. </para>
-<para>The following example performs a transformation using DOM nodes as input
-for the TransformerFactory, as input for the Transformer, and as the output of
-the transformation.</para>
-<programlisting>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    // Make sure the TransformerFactory supports the DOM feature.
-    if (tfactory.getFeature(DOMSource.FEATURE) &amp;&amp; tfactory.getFeature(DOMResult.FEATURE))
-    {
-      // Use javax.xml.parsers to create our DOMs.
-      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-      dfactory.setNamespaceAware(true); // do this always for XSLT
-      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-      
-      // Create the Templates from a DOM.
-      Node xslDOM = docBuilder.parse(xslID);
-      DOMSource dsource = new DOMSource(xslDOM, xslID);
-      Templates templates = tfactory.newTemplates(dsource);
-
-      // Create the source tree in the form of a DOM.
-      Node sourceNode = docBuilder.parse(sourceID);
-      
-      // Create a DOMResult that the transformation will fill in.
-      DOMResult dresult = new DOMResult();
-      
-      // And transform from the source DOM tree to a result DOM tree.
-      Transformer transformer = templates.newTransformer();
-      transformer.transform(new DOMSource(sourceNode, sourceID), dresult);
-      
-      // The root of the result tree may now be obtained from 
-      // the DOMResult object.
-      Node out = dresult.getNode();
-      
-      // Serialize it to System.out for diagnostics.
-      Transformer serializer = tfactory.newTransformer();
-      serializer.transform(new DOMSource(out), new StreamResult(System.out));
-    }</programlisting>
 </sect3> 
 </sect2>
 </sect1>
