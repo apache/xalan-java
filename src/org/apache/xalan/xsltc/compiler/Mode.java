@@ -934,16 +934,6 @@ final class Mode implements Constants {
 	ifeq.setTarget(ilLoop.append(RETURN)); // applyTemplates() ends here!
 	final InstructionHandle ihLoop = ilLoop.getStart();
 
-	// (*) Compile default handling of elements (traverse children)
-	InstructionList ilRecurse =
-	    compileDefaultRecursion(classGen, methodGen, ihLoop);
-	InstructionHandle ihRecurse = ilRecurse.getStart();
-
-	// (*) Compile default handling of text/attribute nodes (output text)
-	InstructionList ilText =
-	    compileDefaultText(classGen, methodGen, ihLoop);
-	InstructionHandle ihText = ilText.getStart();
-
 	// Distinguish attribute/element/namespace tests for further processing
 	final int[] types = new int[DOM.NTYPES + names.size()];
 	for (int i = 0; i < types.length; i++) types[i] = i;
@@ -961,9 +951,9 @@ final class Mode implements Constants {
 
 	// (*) Handle template with explicit "*" pattern
 	final TestSeq elemTest = _testSeq[DOM.ELEMENT];
-	InstructionHandle ihElem = ihRecurse;
+	InstructionHandle ihElem = ihLoop;
 	if (elemTest != null)
-	    ihElem = elemTest.compile(classGen, methodGen, ihRecurse);
+	    ihElem = elemTest.compile(classGen, methodGen, ihLoop);
 
 	// (*) Handle template with explicit "@*" pattern
 	final TestSeq attrTest = _testSeq[DOM.ATTRIBUTE];
@@ -983,6 +973,7 @@ final class Mode implements Constants {
 
 	// (*) If there is a match on node() we need to replace ihElem
 	//     and ihText (default behaviour for elements & text).
+	InstructionHandle ihText = ihLoop;
 	if (_nodeTestSeq != null) {
 	    double nodePrio = -0.5; //_nodeTestSeq.getPriority();
 	    int    nodePos  = _nodeTestSeq.getPosition();
@@ -1116,11 +1107,6 @@ final class Mode implements Constants {
 	if (nsElem != null) body.append(nsElem);
 	// Append NS:@* node tests (if any)
 	if (nsAttr != null) body.append(nsAttr);
-
-	// Append default action for element and root nodes
-	body.append(ilRecurse);
-	// Append default action for text and attribute nodes
-	body.append(ilText);
 
 	// putting together constituent instruction lists
 	mainIL.append(new GOTO_W(ihLoop));
