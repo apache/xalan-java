@@ -248,10 +248,16 @@ public class ElemApplyTemplates extends ElemCallTemplate
     int thisframe = vars.getStackFrame();
     StackGuard guard = transformer.getStackGuard();
     boolean check = (guard.getRecursionLimit() > -1) ? true : false;
+    
+    boolean pushContextNodeListFlag = false;
       
     try
     {
 
+            xctxt.pushCurrentNode(DTM.NULL);
+            xctxt.pushCurrentExpressionNode(DTM.NULL);
+            xctxt.pushSAXLocatorNull();
+            transformer.pushElemTemplateElement(null);
       final Vector keys = (m_sortElems == null)
                           ? null
                           : transformer.processSortKeys(this, sourceNode);
@@ -259,7 +265,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       // Sort if we need to.
       if (null != keys)
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
-
+            
       if (TransformerImpl.S_DEBUG)
       {
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
@@ -299,15 +305,13 @@ public class ElemApplyTemplates extends ElemCallTemplate
         vars.setStackFrame(argsFrame);
       }
       
-      xctxt.pushCurrentNode(DTM.NULL);
+      xctxt.pushContextNodeList(sourceNodes);
+      pushContextNodeListFlag = true;
+      
       IntStack currentNodes = xctxt.getCurrentNodeStack();
       
-      xctxt.pushCurrentExpressionNode(DTM.NULL);
       IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();     
-
-      xctxt.pushSAXLocatorNull();
-      xctxt.pushContextNodeList(sourceNodes);
-      transformer.pushElemTemplateElement(null);
+      
       // pushParams(transformer, xctxt);
       
       int child;
@@ -477,7 +481,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       if(nParams > 0)
         vars.unlink(thisframe);
       xctxt.popSAXLocator();
-      xctxt.popContextNodeList();
+      if (pushContextNodeListFlag) xctxt.popContextNodeList();
       transformer.popElemTemplateElement();
       xctxt.popCurrentExpressionNode();
       xctxt.popCurrentNode();
