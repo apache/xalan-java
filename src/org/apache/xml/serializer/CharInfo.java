@@ -27,6 +27,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.transform.TransformerException;
 
@@ -459,7 +461,18 @@ final class CharInfo
 //        return isCleanTextASCII;
 //    }
 
-
+     
+    private static CharInfo getCharInfoBasedOnPrivilege(
+        final String entitiesFileName, final String method, 
+        final boolean internal){
+            return (CharInfo) AccessController.doPrivileged(
+                new PrivilegedAction() {
+                        public Object run() {
+                            return new CharInfo(entitiesFileName, 
+                              method, internal);}
+            });            
+    }
+     
     /**
      * Factory that reads in a resource file that describes the mapping of
      * characters to entity references.
@@ -488,14 +501,16 @@ final class CharInfo
 
         // try to load it internally - cache
         try {
-            charInfo = new CharInfo(entitiesFileName, method, true);
+            charInfo = getCharInfoBasedOnPrivilege(entitiesFileName, 
+                                        method, true);
             m_getCharInfoCache.put(entitiesFileName, charInfo);
             return charInfo;
         } catch (Exception e) {}
 
         // try to load it externally - do not cache
         try {
-            return new CharInfo(entitiesFileName, method);
+            return getCharInfoBasedOnPrivilege(entitiesFileName, 
+                                method, false);
         } catch (Exception e) {}
 
         String absoluteEntitiesFileName;
@@ -512,7 +527,8 @@ final class CharInfo
             }
         }
 
-        return new CharInfo(absoluteEntitiesFileName, method, false);
+        return getCharInfoBasedOnPrivilege(entitiesFileName, 
+                                method, false);
     }
 
     /** Table of user-specified char infos. */
