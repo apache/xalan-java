@@ -75,6 +75,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.SerializerFactory;
@@ -312,7 +313,37 @@ public class TransformerIdentityImpl extends Transformer
   {
 
     createResultContentHandler(outputTarget);
+    
+    /*
+     * According to JAXP1.2, new SAXSource()/StreamSource()
+     * should create an empty input tree, with a default root node. 
+     * new DOMSource()creates an empty document using DocumentBuilder.
+     * newDocument(); Use DocumentBuilder.newDocument() for all 3 situations,
+     * since there is no clear spec. how to create an empty tree when
+     * both SAXSource() and StreamSource() are used.
+     */
+    if ((source instanceof StreamSource && source.getSystemId()==null &&
+       ((StreamSource)source).getInputStream()==null &&
+       ((StreamSource)source).getReader()==null)||
+       (source instanceof SAXSource &&
+       ((SAXSource)source).getInputSource()==null &&
+       ((SAXSource)source).getXMLReader()==null )||
+       (source instanceof DOMSource && ((DOMSource)source).getNode()==null)){
+      try {
+        DocumentBuilderFactory builderF = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = builderF.newDocumentBuilder();
+        String systemID = source.getSystemId();
+        source = new DOMSource(builder.newDocument());
 
+        // Copy system ID from original, empty Source to new Source
+        if (systemID != null) {
+          source.setSystemId(systemID);
+        }
+      } catch (ParserConfigurationException e){
+        throw new TransformerException(e.getMessage());
+      }           
+    }
+    
     try
     {
       if (source instanceof DOMSource)

@@ -79,6 +79,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
@@ -391,7 +393,7 @@ public final class TransformerImpl extends Transformer
 		if (systemId.startsWith("file:")) {
                     url = new URL(systemId);
 		    _tohFactory.setOutputStream(
-			new FileOutputStream(url.getFile()));
+		        new FileOutputStream(url.getFile()));
 		    return _tohFactory.getSerializationHandler();
                 }
                 else if (systemId.startsWith("http:")) {
@@ -404,7 +406,7 @@ public final class TransformerImpl extends Transformer
                     // system id is just a filename
                     url = new File(systemId).toURL();
 		    _tohFactory.setOutputStream(
-			new FileOutputStream(url.getFile()));
+		        new FileOutputStream(url.getFile()));
 		    return _tohFactory.getSerializationHandler();
                 }
 	    }
@@ -665,6 +667,34 @@ public final class TransformerImpl extends Transformer
 	String encoding) throws TransformerException 
     {
 	try {
+            /*
+             * According to JAXP1.2, new SAXSource()/StreamSource()
+             * should create an empty input tree, with a default root node. 
+             * new DOMSource()creates an empty document using DocumentBuilder.
+             * newDocument(); Use DocumentBuilder.newDocument() for all 3 
+             * situations, since there is no clear spec. how to create 
+             * an empty tree when both SAXSource() and StreamSource() are used.
+             */
+             if ((source instanceof StreamSource && source.getSystemId()==null 
+                && ((StreamSource)source).getInputStream()==null &&
+                ((StreamSource)source).getReader()==null)||
+                (source instanceof SAXSource &&
+                ((SAXSource)source).getInputSource()==null &&
+                ((SAXSource)source).getXMLReader()==null )||
+                (source instanceof DOMSource && 
+                ((DOMSource)source).getNode()==null)){
+                        DocumentBuilderFactory builderF = 
+                                DocumentBuilderFactory.newInstance();
+                        DocumentBuilder builder = 
+                                builderF.newDocumentBuilder();
+                        String systemID = source.getSystemId();
+                        source = new DOMSource(builder.newDocument());
+
+                        // Copy system ID from original, empty Source to new
+                        if (systemID != null) {
+                          source.setSystemId(systemID);
+                        }
+             }           
 	    if (_isIdentity) {
 		transformIdentity(source, handler);
 	    }

@@ -65,6 +65,8 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -74,8 +76,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.res.XSLMessages;
@@ -656,6 +661,36 @@ public class TransformerImpl extends Transformer
       }
       setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
+      /*
+       * According to JAXP1.2, new SAXSource()/StreamSource()
+       * should create an empty input tree, with a default root node. 
+       * new DOMSource()creates an empty document using DocumentBuilder.
+       * newDocument(); Use DocumentBuilder.newDocument() for all 3 situations,
+       * since there is no clear spec. how to create an empty tree when
+       * both SAXSource() and StreamSource() are used.
+       */
+      if ((source instanceof StreamSource && source.getSystemId()==null &&
+         ((StreamSource)source).getInputStream()==null &&
+         ((StreamSource)source).getReader()==null)||
+         (source instanceof SAXSource &&
+         ((SAXSource)source).getInputSource()==null &&
+         ((SAXSource)source).getXMLReader()==null )||
+         (source instanceof DOMSource && ((DOMSource)source).getNode()==null)){
+        try {
+          DocumentBuilderFactory builderF = 
+                   DocumentBuilderFactory.newInstance();
+          DocumentBuilder builder = builderF.newDocumentBuilder();
+          String systemID = source.getSystemId();
+          source = new DOMSource(builder.newDocument());
+
+          // Copy system ID from original, empty Source to new Source
+          if (systemID != null) {
+            source.setSystemId(systemID);
+          }
+        } catch (ParserConfigurationException e) {
+          fatalError(e);
+        }           
+      }
       DTM dtm = mgr.getDTM(source, false, this, true, true);
       dtm.setDocumentBaseURI(base);
       
