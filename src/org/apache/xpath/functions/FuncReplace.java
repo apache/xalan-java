@@ -103,13 +103,31 @@ public class FuncReplace extends FunctionMultiArgs
        int length = input.length();
        while (index < length)
     {
+    	boolean matched = false;
     	String[] s = new String[tokenTree.size()];
     	int t=0;
   		for(int i=0; i<tokenTree.size(); i++)
   		{
   			child = tokenTree.getChild(i);
-  			regex.compileToken(child);
-  			int[] range = regex.matchString(input, index, length);
+  			int[] range;
+  			// Note: Not really sure this is correct.
+  			// Needs review!!! See regex020, E4...
+  			if (child.getType() == Token.PAREN &&
+  			(i+1 < tokenTree.size()) &&
+  			tokenTree.getChild(i+1).getType() == Token.CHAR)
+  			{
+  				regex.compileToken(tokenTree.getChild(i+1));
+  			    range = regex.matchString(input, index, length);
+    	       int start = range[0] > length ? length : range[0]; 
+    	        regex.compileToken(child);
+    	        range = regex.matchString(input, index, start);
+  			}
+  			else
+  			{
+  				regex.compileToken(child);
+  				range = regex.matchString(input, index, length);
+  			}  			
+  			
     	int start = range[0];
     	int end = range[1];
     	if (end >= 0)
@@ -118,14 +136,19 @@ public class FuncReplace extends FunctionMultiArgs
     		s[t++] = input.substring(start, end);
     		outString = outString + input.substring(index, start);
     	    index = end;
+    	    matched = true;
   		}
   		else
     	{
     	    s[t++] = "";
     	    outString = outString + input.substring(index);
-    	    index = length;
+    	    index = length;    	    
+    	    break;
     	}
-  		}  		
+  		}
+  		
+  		if(!matched)
+  		break;   		
     	
     	//int j = 0;
     	String repVars = "";
@@ -149,7 +172,10 @@ public class FuncReplace extends FunctionMultiArgs
     		}
     		}
     		else
-    		break;
+    		{
+    			repVars = repVars+ replace.substring(start);
+    			break;
+    		}
     	}
     	outString = outString + repVars; 
     }
