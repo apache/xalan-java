@@ -24,12 +24,16 @@ if [ "$PARSER_JAR" = "" ] ; then
     PARSER_JAR=./bin/xerces.jar
 fi
 
+if [ "$XML-APIS_JAR" = "" ] ; then
+    XML-APIS_JAR=./bin/xml-apis.jar
+fi
+
 # Use _underscore prefix to not conflict with user's settings
 # Default to UNIX-style pathing
 CLPATHSEP=:
 # if we're on a Windows box make it ;
 uname | grep WIN && CLPATHSEP=\;
-_CLASSPATH="$ANT_JAR${CLPATHSEP}$PARSER_JAR${CLPATHSEP}$CLASSPATH"
+_CLASSPATH="$ANT_JAR${CLPATHSEP}$XML-APIS_JAR${CLPATHSEP}$PARSER_JAR${CLPATHSEP}$CLASSPATH"
 
 # Attempt to automatically add system classes to _CLASSPATH
 if [ -f $JAVA_HOME/lib/tools.jar ] ; then

@@ -35,15 +35,16 @@ set _ANT_JAR=%ANT_JAR%
 if "%_ANT_JAR%" == "" set _ANT_JAR=bin\ant.jar
 set _PARSER_JAR=%PARSER_JAR%
 if "%_PARSER_JAR%" == "" set _PARSER_JAR=bin\xerces.jar
+set _XML-APIS_JAR=%XML-APIS_JAR%
+if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=bin\xml-apis.jar
 
 rem Attempt to automatically add system classes to _CLASSPATH
 rem Use _underscore prefix to not conflict with user's settings
 set _CLASSPATH=%CLASSPATH%
 if exist "%JAVA_HOME%\lib\tools.jar" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
 if exist "%JAVA_HOME%\lib\classes.zip" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\classes.zip
-set _CLASSPATH=%_ANT_JAR%;%_PARSER_JAR%;%_CLASSPATH%
+set _CLASSPATH=%_ANT_JAR%;%_XML-APIS_JAR%;%_PARSER_JAR%;%_CLASSPATH%
 
-REM echo "%_JAVACMD%" %JAVA_OPTS% -Dant.home="%ANT_HOME%" -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 @echo on
 "%_JAVACMD%" -mx64m %JAVA_OPTS% -Dant.home="%ANT_HOME%" -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 @echo off
@@ -57,4 +58,5 @@ set _CLASSPATH=
 set _ANT_HOME=
 set _ANT_JAR=
 set _PARSER_JAR=
+set _XML-APIS_JAR=
 
