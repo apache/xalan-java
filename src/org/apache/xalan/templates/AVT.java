@@ -240,97 +240,109 @@ public class AVT implements java.io.Serializable
             case ('{') :
             {
 
-              // Attribute Value Template start
-              lookahead = tokenizer.nextToken();
-
-              if (lookahead.equals("{"))
+              try
               {
+                // Attribute Value Template start
+                lookahead = tokenizer.nextToken();
 
-                // Double curlys mean escape to show curly
-                buffer.append(lookahead);
-
-                lookahead = null;
-
-                break;  // from switch
-              }
-
-              /*
-              else if(lookahead.equals("\"") || lookahead.equals("\'"))
-              {
-              // Error. Expressions can not begin with quotes.
-              error = "Expressions can not begin with quotes.";
-              break; // from switch
-              }
-              */
-              else
-              {
-                if (buffer.length() > 0)
+                if (lookahead.equals("{"))
                 {
-                  m_parts.addElement(new AVTPartSimple(buffer.toString()));
-                  buffer.setLength(0);
+
+                  // Double curlys mean escape to show curly
+                  buffer.append(lookahead);
+
+                  lookahead = null;
+
+                  break;  // from switch
                 }
 
-                exprBuffer.setLength(0);
-
-                while (null != lookahead)
+                /*
+                else if(lookahead.equals("\"") || lookahead.equals("\'"))
                 {
-                  if (lookahead.length() == 1)
+                // Error. Expressions can not begin with quotes.
+                error = "Expressions can not begin with quotes.";
+                break; // from switch
+                }
+                */
+                else
+                {
+                  if (buffer.length() > 0)
                   {
-                    switch (lookahead.charAt(0))
+                    m_parts.addElement(new AVTPartSimple(buffer.toString()));
+                    buffer.setLength(0);
+                  }
+
+                  exprBuffer.setLength(0);
+
+                  while (null != lookahead)
+                  {
+                    if (lookahead.length() == 1)
                     {
-                    case '\'' :
-                    case '\"' :
-                    {
-
-                      // String start
-                      exprBuffer.append(lookahead);
-
-                      String quote = lookahead;
-
-                      // Consume stuff 'till next quote
-                      lookahead = tokenizer.nextToken();
-
-                      while (!lookahead.equals(quote))
+                      switch (lookahead.charAt(0))
                       {
-                        exprBuffer.append(lookahead);
+                      case '\'' :
+                      case '\"' :
+                        {
 
-                        lookahead = tokenizer.nextToken();
-                      }
+                          // String start
+                          exprBuffer.append(lookahead);
 
-                      exprBuffer.append(lookahead);
+                          String quote = lookahead;
 
-                      lookahead = tokenizer.nextToken();
+                          // Consume stuff 'till next quote
+                          lookahead = tokenizer.nextToken();
 
-                      break;
-                    }
-                    case '{' :
-                    {
+                          while (!lookahead.equals(quote))
+                          {
+                            exprBuffer.append(lookahead);
 
-                      // What's another curly doing here?
-                      error = XSLMessages.createMessage(
-                        XSLTErrorResources.ER_NO_CURLYBRACE, null);  //"Error: Can not have \"{\" within expression.";
-                      
-                      lookahead = null;  // breaks out of inner while loop
+                            lookahead = tokenizer.nextToken();
+                          }
 
-                      break;
-                    }
-                    case '}' :
-                    {
+                          exprBuffer.append(lookahead);
 
-                      // Proper close of attribute template.
-                      // Evaluate the expression.
-                      buffer.setLength(0);
+                          lookahead = tokenizer.nextToken();
 
-                      XPath xpath =
-                        handler.createXPath(exprBuffer.toString());
+                          break;
+                        }
+                      case '{' :
+                        {
 
-                      m_parts.addElement(new AVTPartXPath(xpath));
+                          // What's another curly doing here?
+                          error = XSLMessages.createMessage(
+                                                            XSLTErrorResources.ER_NO_CURLYBRACE, null);  //"Error: Can not have \"{\" within expression.";
+                          
+                          lookahead = null;  // breaks out of inner while loop
 
-                      lookahead = null;  // breaks out of inner while loop
+                          break;
+                        }
+                      case '}' :
+                        {
 
-                      break;
-                    }
-                    default :
+                          // Proper close of attribute template.
+                          // Evaluate the expression.
+                          buffer.setLength(0);
+
+                          XPath xpath =
+                                       handler.createXPath(exprBuffer.toString());
+
+                          m_parts.addElement(new AVTPartXPath(xpath));
+
+                          lookahead = null;  // breaks out of inner while loop
+
+                          break;
+                        }
+                      default :
+                        {
+
+                          // part of the template stuff, just add it.
+                          exprBuffer.append(lookahead);
+
+                          lookahead = tokenizer.nextToken();
+                        }
+                      }  // end inner switch
+                    }  // end if lookahead length == 1
+                    else
                     {
 
                       // part of the template stuff, just add it.
@@ -338,25 +350,21 @@ public class AVT implements java.io.Serializable
 
                       lookahead = tokenizer.nextToken();
                     }
-                    }  // end inner switch
-                  }  // end if lookahead length == 1
-                  else
+                  }  // end while(!lookahead.equals("}"))
+
+                  if (error != null)
                   {
-
-                    // part of the template stuff, just add it.
-                    exprBuffer.append(lookahead);
-
-                    lookahead = tokenizer.nextToken();
+                    break;  // from inner while loop
                   }
-                }  // end while(!lookahead.equals("}"))
-
-                if (error != null)
-                {
-                  break;  // from inner while loop
                 }
-              }
 
-              break;
+                break;
+              }
+              catch (java.util.NoSuchElementException ex)
+              {
+                error = XSLMessages.createMessage(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE, new Object[]{ name, stringedValue }); 
+                break;
+              }
             }
             case ('}') :
             {
