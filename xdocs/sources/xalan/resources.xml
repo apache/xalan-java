@@ -18,29 +18,31 @@
   <resource id="xslt4j-current" 
             title="&xslt4j-current;" 
             location="http://xml.apache.org/xalan"/>
-  <resource id="xslt4j-dist-zip" 
-            title="&xslt4j-dist;.zip" 
-            location="http://xml.apache.org/dist/xalan-j/&xslt4j-dist;.zip"/>
-  <resource id="xslt4j-dist-targz" 
-            title="&xslt4j-dist;.tar.gz" 
-            location="http://xml.apache.org/dist/xalan-j/&xslt4j-dist;.tar.gz"/>
-
-  <resource id="xslt4j-bin-dist-zip" 
-            title="&xslt4j-bin-dist;.zip" 
-            location="http://xml.apache.org/dist/xalan-j/&xslt4j-bin-dist;.zip"/>
-  <resource id="xslt4j-bin-dist-targz" 
-            title="&xslt4j-bin-dist;.tar.gz" 
-            location="http://xml.apache.org/dist/xalan-j/&xslt4j-bin-dist;.tar.gz"/>
-  <resource id="xslt4j-src-dist-zip" 
-            title="&xslt4j-src-dist;.zip" 
-            location="http://xml.apache.org/dist/xalan-j/&xslt4j-src-dist;.zip"/>
-  <resource id="xslt4j-src-dist-targz" 
-            title="&xslt4j-src-dist;.tar.gz" 
-            location="http://xml.apache.org/dist/xalan-j/&xslt4j-src-dist;.tar.gz"/>
 
   <resource id="xslt4j-distdir" 
             title="xalan-j distribution directory" 
-            location="http://xml.apache.org/dist/xalan-j/"/>
+            location="&xslt4j-distdir;"/>
+
+  <resource id="xslt4j-dist-zip" 
+            title="&xslt4j-dist;.zip" 
+            location="&xslt4j-distdir;&xslt4j-dist;.zip"/>
+  <resource id="xslt4j-dist-targz" 
+            title="&xslt4j-dist;.tar.gz" 
+            location="&xslt4j-distdir;&xslt4j-dist;.tar.gz"/>
+
+  <resource id="xslt4j-dist-bin-zip" 
+            title="&xslt4j-dist-bin;.zip" 
+            location="&xslt4j-distdir;&xslt4j-dist-bin;.zip"/>
+  <resource id="xslt4j-dist-bin-targz" 
+            title="&xslt4j-dist-bin;.tar.gz" 
+            location="&xslt4j-distdir;&xslt4j-dist-bin;.tar.gz"/>
+  <resource id="xslt4j-dist-src-zip" 
+            title="&xslt4j-dist-src;.zip" 
+            location="&xslt4j-distdir;&xslt4j-dist-src;.zip"/>
+  <resource id="xslt4j-dist-src-targz" 
+            title="&xslt4j-dist-src;.tar.gz" 
+            location="&xslt4j-distdir;&xslt4j-dist-src;.tar.gz"/>
+
   <resource id="xml4j-used" 
             title="&xml4j-used;" 
             location="http://xml.apache.org/xerces-j/index.html"/>

@@ -77,13 +77,13 @@
   <s2 title="How do I get it?">
     <p>To get the binary distribution (all you need to use and develop applications with &xslt4j;), download and unzip either of the following:</p>
     <ul>
-      <li><resource-ref idref="xslt4j-bin-dist-zip"/></li>
-      <li><resource-ref idref="xslt4j-bin-dist-targz"/></li>
+      <li><resource-ref idref="xslt4j-dist-bin-zip"/></li>
+      <li><resource-ref idref="xslt4j-dist-bin-targz"/></li>
     </ul>
     <p>To get the &xslt4j; sources (with which you can do your own &xslt4j; build; see <link idref="readme" anchor="build">Build notes</link>), download and unzip either of the following:</p>
     <ul>
-      <li><resource-ref idref="xslt4j-src-dist-zip"/></li>
-      <li><resource-ref idref="xslt4j-src-dist-targz"/></li>
+      <li><resource-ref idref="xslt4j-dist-src-zip"/></li>
+      <li><resource-ref idref="xslt4j-dist-src-targz"/></li>
     </ul>    
   </s2>
   
