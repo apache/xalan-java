@@ -965,7 +965,10 @@ public class Parser implements Constants, ContentHandler {
 		    }
 		}
 	    }
-	    if (node == null) node = new LiteralElement();
+	    if (node == null) {
+                node = new LiteralElement();
+                node.setLineNumber(_locator.getLineNumber());
+            }
 	}
 	if ((node != null) && (node instanceof LiteralElement)) {
 	    ((LiteralElement)node).setQName(qname);

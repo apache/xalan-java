@@ -277,7 +277,7 @@ final class LiteralElement extends Instruction {
 
 		// Handle all other literal attributes
 		final String name = translateQName(qname, stable);
-		LiteralAttribute attr = new LiteralAttribute(name, val, parser);
+		LiteralAttribute attr = new LiteralAttribute(name, val, parser, this);
 		addAttribute(attr);
 		attr.setParent(this);
 		attr.parseContents(parser);

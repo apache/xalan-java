@@ -47,8 +47,11 @@ final class LiteralAttribute extends Instruction {
      * @param value the attribute value.
      * @param parser the XSLT parser (wraps XPath parser).
      */
-    public LiteralAttribute(String name, String value, Parser parser) {
+    public LiteralAttribute(String name, String value, Parser parser,
+        SyntaxTreeNode parent) 
+    {
 	_name = name;
+        setParent(parent);
 	_value = AttributeValue.create(this, value, parser);
     }
 

@@ -118,11 +118,15 @@ public abstract class SyntaxTreeNode implements Constants {
     }
 
     /**
-     * Get the source file line number for this element
+     * Get the source file line number for this element. If unavailable, lookup
+     * in ancestors.
+     *
      * @return The source file line number.
      */
     public final int getLineNumber() {
-	return _line;
+        if (_line > 0) return _line;
+        SyntaxTreeNode parent = getParent();
+        return (parent != null) ? parent.getLineNumber() : 0;
     }
 
     /**
