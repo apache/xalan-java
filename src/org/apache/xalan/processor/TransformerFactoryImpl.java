@@ -852,30 +852,10 @@ public javax.xml.transform.Templates processFromNode(Node node)
 
     String baseID = source.getSystemId();
 
-    if (null == baseID)
-    {
-      try
-      {
-        String currentDir = System.getProperty("user.dir");
-        
-        if (currentDir.startsWith(java.io.File.separator))
-          baseID = "file://" + currentDir + java.io.File.separatorChar
-                   + source.getClass().getName();
-        else
-          baseID = "file:///" + currentDir + java.io.File.separatorChar
-                   + source.getClass().getName();
-      }
-      catch (SecurityException se)
-      {
+    if (null != baseID) {
+       baseID = SystemIDResolver.getAbsoluteURI(baseID);
+    }
 
-        // For untrusted applet case, user.dir is outside the sandbox 
-        //  and not accessible: just leave baseID as null (-sb & -sc)
-      }
-    }
-    else
-    {
-      baseID = SystemIDResolver.getAbsoluteURI(baseID);
-    }
 
     if (source instanceof DOMSource)
     {

@@ -56,6 +56,8 @@
  */
 package org.apache.xml.utils;
 
+import java.io.File;
+
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.EntityReference;
@@ -119,17 +121,19 @@ public class TreeWalker
   public TreeWalker(ContentHandler contentHandler, DOMHelper dh, String systemId)
   {
     this.m_contentHandler = contentHandler;
-                m_contentHandler.setDocumentLocator(m_locator);
-                if (systemId != null)
-                  m_locator.setSystemId(systemId);
-                else {
-                  try {
-                    m_locator.setSystemId(System.getProperty("user.dir"));
-                  }
-                  catch (SecurityException se) {// user.dir not accessible from applet
-                    m_locator.setSystemId("");
-                  }
-                }
+    m_contentHandler.setDocumentLocator(m_locator);
+    if (systemId != null)
+        m_locator.setSystemId(systemId);
+    else {
+        try {
+          // Adding dummy.xsl to the baseURI so that relative 
+          // URI's will be resolved correctly.
+          m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
+         }
+         catch (SecurityException se) {// user.dir not accessible from applet
+             m_locator.setSystemId("");
+         }
+    }
     m_dh = dh;
   }
 
@@ -143,7 +147,9 @@ public class TreeWalker
     this.m_contentHandler = contentHandler;
     m_contentHandler.setDocumentLocator(m_locator);
     try {
-      m_locator.setSystemId(System.getProperty("user.dir"));
+      // Adding dummy.xsl to the baseURI so that relative 
+      // URI's will be resolved correctly.
+      m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
     } 
     catch (SecurityException se){// user.dir not accessible from applet
       m_locator.setSystemId("");
@@ -162,7 +168,9 @@ public class TreeWalker
                 if (m_contentHandler != null)
                         m_contentHandler.setDocumentLocator(m_locator);
                 try {
-                  m_locator.setSystemId(System.getProperty("user.dir"));
+                  // Adding dummy.xsl to the baseURI so that relative 
+                  // URI's will be resolved correctly.
+                  m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
                 } 
                 catch (SecurityException se){// user.dir not accessible from applet
                   m_locator.setSystemId("");
