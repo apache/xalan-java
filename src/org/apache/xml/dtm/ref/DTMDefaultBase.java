@@ -210,12 +210,6 @@ public abstract class DTMDefaultBase implements DTM
                         DTMWSFilter whiteSpaceFilter,
                         XMLStringFactory xstringfactory, boolean doIndexing)
   {
-    if(false == doIndexing)
-    {
-      m_initialblocksize = 8;
-      m_blocksize = 16;
-    }
-
     m_exptype = new SuballocatedIntVector(m_initialblocksize);
     m_firstch = new SuballocatedIntVector(m_initialblocksize);
     m_nextsib = new SuballocatedIntVector(m_initialblocksize);
@@ -1271,16 +1265,42 @@ public abstract class DTMDefaultBase implements DTM
         // Decrement wouldBeAt to find last possible ancestor
         int candidate=m_namespaceDeclSetElements.elementAt(-- wouldBeAt);
         int ancestor=_parent(elementNodeIndex);
+
+        // Special case: if the candidate is before the given node, and
+        // is in the earliest possible position in the document, it
+        // must have the namespace declarations we're interested in.
+        if (wouldBeAt == 0 && candidate < ancestor) {
+          int rootHandle = getDocumentRoot(makeNodeHandle(elementNodeIndex));
+          int rootID = makeNodeIdentity(rootHandle);
+          int uppermostNSCandidateID;
+
+          if (getNodeType(rootHandle) == DTM.DOCUMENT_NODE) {
+            int ch = _firstch(rootID);
+            uppermostNSCandidateID = (ch != DTM.NULL) ? ch : rootID;
+          } else {
+            uppermostNSCandidateID = rootID;
+          }
+
+          if (candidate == uppermostNSCandidateID) {
+            return (SuballocatedIntVector)m_namespaceDeclSets
+                                                .elementAt(wouldBeAt);
+          }
+        }
+
         while(wouldBeAt>=0 && ancestor>0)
           {
-            candidate=m_namespaceDeclSetElements.elementAt(wouldBeAt);
-
-            if(candidate==ancestor) // Found ancestor in list
+            if (candidate==ancestor) {
+                // Found ancestor in list
                 return (SuballocatedIntVector)m_namespaceDeclSets.elementAt(wouldBeAt);
-            else if(candidate<ancestor) // Too deep in tree
-                ancestor=_parent(ancestor);
-            else // Too late in list
-              --wouldBeAt;
+            } else if (candidate<ancestor) {
+                // Too deep in tree
+                do {
+                  ancestor=_parent(ancestor);
+                } while (candidate < ancestor);
+            } else {
+              // Too late in list
+              candidate=m_namespaceDeclSetElements.elementAt(--wouldBeAt);
+            }
           }
       }
 
