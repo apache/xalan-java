@@ -403,9 +403,13 @@ public class ResultTreeHandler extends QueuedEvents
   public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
-    if (m_startDoc.isPending
-            && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
-      return;
+    // It would be nice to suppress all whitespace before the
+    // first element, but this is going to cause potential problems with 
+    // text serialization and with text entities (right term?).
+    // So this really needs to be done at the serializer level.
+    /*if (m_startDoc.isPending
+    && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
+    return;*/
 
     flushPending(EVT_CHARACTERS);
     m_contentHandler.characters(ch, start, length);
