@@ -74,14 +74,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.Attr;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.SAXException;
 
 import org.apache.xalan.xsltc.runtime.Constants;
 
-public class SAX2DOM implements ContentHandler, Constants {
+public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 
     private Document _root = null;
     private Stack _nodeStk = new Stack();
@@ -214,4 +217,24 @@ public class SAX2DOM implements ContentHandler, Constants {
      */
     public void skippedEntity(String name) {
     }
+
+
+    /**
+     * Lexical Handler method to create comment node in DOM tree.
+     */
+    public void comment(char[] ch, int start, int length) {
+	final Node last = (Node)_nodeStk.peek();
+	Comment comment = _root.createComment(new String(ch,start,length));
+	if (comment != null) last.appendChild(comment);
+    }
+
+    // Lexical Handler methods- not implemented
+    public void startCDATA() { }
+    public void endCDATA() { }
+    public void startEntity(java.lang.String name) { }
+    public void endDTD() { }
+    public void endEntity(String name) { }
+    public void startDTD(String name, String publicId, String systemId)
+        throws SAXException { }
+
 }

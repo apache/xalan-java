@@ -163,9 +163,9 @@ public class TransletOutputHandlerFactory {
 		}
 	    break;
 	    case DOM:
-		_lexHandler = null;
 		_handler = (_node != null) ? new SAX2DOM(_node) : 
 					     new SAX2DOM();
+		_lexHandler = (LexicalHandler)_handler;
 		// falls through
 	    case SAX:
 		if (_method == null) {
