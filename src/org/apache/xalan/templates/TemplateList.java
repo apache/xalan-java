@@ -466,11 +466,8 @@ public class TemplateList implements java.io.Serializable
       head = m_commentPatterns;
       break;
     case Node.DOCUMENT_NODE :
-      head = m_docPatterns;
-      break;
     case Node.DOCUMENT_FRAGMENT_NODE :
-      head = (TemplateSubPatternAssociation) m_patternTable.get(
-        PsuedoNames.PSEUDONAME_ANY);
+      head = m_docPatterns;
       break;
     case Node.NOTATION_NODE :
     default :
