@@ -141,6 +141,15 @@ public class TransformerHandlerImpl
   protected void clearCoRoutine()
   {
     
+    clearCoRoutine(null);
+  }
+  
+  /** 
+   * Do what needs to be done to shut down the CoRoutine management.
+   */
+  protected void clearCoRoutine(Exception ex)
+  {
+    
     if(m_dtm instanceof SAX2DTM)
     {
       if(DEBUG)
@@ -152,7 +161,7 @@ public class TransformerHandlerImpl
         CoroutineSAXParser sp = (CoroutineSAXParser)m_contentHandler;
 
         if(m_insideParse)
-            sp.doMore(false, sax2dtm.getAppCoroutineID());      
+            sp.doMore(false, sax2dtm.getAppCoroutineID());  
       }
       
       sax2dtm.clearCoRoutine(true);
@@ -161,6 +170,18 @@ public class TransformerHandlerImpl
       m_entityResolver = null;
       m_errorHandler = null;
       m_lexicalHandler = null;
+      
+      if(null != ex)
+      {
+        Thread thread = m_transformer.getTransformThread();
+        if(null != thread)
+        {
+          thread.interrupt();
+          // Damn... we can't stop() it, since stop() is deprecated.
+        }
+        // I don't think we need to do anything else with the exception.
+      }
+      
       if(DEBUG)
         System.out.println("...exiting clearCoRoutine");
     }
@@ -359,12 +380,12 @@ public class TransformerHandlerImpl
 
     //m_transformer.setTransformThread(listener);
     m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
-		int cpriority = Thread.currentThread().getPriority();
-	    
-		// runTransformThread is equivalent with the 2.0.1 code,
-		// except that the Thread may come from a pool.
-		m_transformer.runTransformThread( cpriority );
-	
+                int cpriority = Thread.currentThread().getPriority();
+            
+                // runTransformThread is equivalent with the 2.0.1 code,
+                // except that the Thread may come from a pool.
+                m_transformer.runTransformThread( cpriority );
+        
    //listener.setDaemon(false);
    //listener.start();
 
@@ -394,7 +415,7 @@ public class TransformerHandlerImpl
       m_contentHandler.endDocument();
     }
     
-		m_transformer.waitTransformThread();
+                m_transformer.waitTransformThread();
    /* Thread transformThread = m_transformer.getTransformThread();
 
     if (null != transformThread)
@@ -618,12 +639,13 @@ public class TransformerHandlerImpl
   public void warning(SAXParseException e) throws SAXException
   {
 
-    if (DEBUG)
-      System.out.println("TransformerHandlerImpl#warning: " + e);
-
     if (m_errorHandler != null)
     {
       m_errorHandler.warning(e);
+    }
+    else
+    {
+      System.err.println("TransformerHandlerImpl#warning: " + e);
     }
   }
 
@@ -637,13 +659,16 @@ public class TransformerHandlerImpl
    */
   public void error(SAXParseException e) throws SAXException
   {
-
-    if (DEBUG)
-      System.out.println("TransformerHandlerImpl#error: " + e);
+    // %REVIEW% I don't think this should be called.  -sb
+    // clearCoRoutine(e);
 
     if (m_errorHandler != null)
     {
       m_errorHandler.error(e);
+    }
+    else
+    {
+      System.err.println("TransformerHandlerImpl#error: " + e);
     }
   }
 
@@ -658,12 +683,15 @@ public class TransformerHandlerImpl
   public void fatalError(SAXParseException e) throws SAXException
   {
 
-    if (DEBUG)
-      System.out.println("TransformerHandlerImpl#fatalError: " + e);
+    clearCoRoutine(e);
 
     if (m_errorHandler != null)
     {
       m_errorHandler.fatalError(e);
+    }
+    else
+    {
+      System.err.println("TransformerHandlerImpl#fatalError: " + e);
     }
   }
 
