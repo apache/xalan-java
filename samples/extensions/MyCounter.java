@@ -1,7 +1,7 @@
 import java.util.Hashtable;
 
 public class MyCounter {
-  Hashtable counters = new Hashtable ();
+  static Hashtable counters = new Hashtable ();
 
 
   public void init(org.apache.xalan.extensions.XSLProcessorContext context, 
@@ -23,9 +23,9 @@ public class MyCounter {
   }
 
   public int read(String name) 
-  {
-    Integer cval = (Integer) counters.get (name);
-    return (cval == null) ? 0 : cval.intValue ();
+  { 
+    Integer cval = (Integer)counters.get(name);
+    return (cval == null) ? 0 : cval.intValue();
   }
 
   public void incr(org.apache.xalan.extensions.XSLProcessorContext context,  
