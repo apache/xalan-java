@@ -12,6 +12,7 @@
 
 package org.w3c.dom.xpath;
 
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -40,16 +41,11 @@ import org.w3c.dom.Node;
  * represented by the node.
  * <p><code>adoptNode</code>, <code>cloneNode</code>, and 
  * <code>importNode</code> fail on this node type by raising a 
- * <code>DOMException</code> with the code <code>NOT_SUPPORTED_ERR</code>.
- * importNode should also fail on XPathNamespace nodes.This was already 
- * fixed in the public draft.The Namespace node should be added to DOM Level 
- * 3 core and should be available via a read-only NamedNodeMap on element to 
- * reduce the confusion of adding a special node type for XPath.No change.
- * There are no known problems with this add-on node type and uses beyond 
- * XPath are not anticipated.<code>Node.namespaceValue</code> should be 
- * identical to Node.namespaceURI and not <code>null</code>.No change.It is 
- * not clear why it should be this way since the infoset does not dictate it.
- * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.
+ * <code>DOMException</code> with the code <code>NOT_SUPPORTED_ERR</code>.In 
+ * future versions of the XPath specification, the definition of a namespace 
+ * node may be changed incomatibly, in which case incompatible changes to 
+ * field values may be required to implement versions beyond XPath 1.0.
+ * <p>See also the <a href='http://www.w3.org/2002/08/WD-DOM-Level-3-XPath-20020820'>Document Object Model (DOM) Level 3 XPath Specification</a>.
  */
 public interface XPathNamespace extends Node {
     // XPathNodeType

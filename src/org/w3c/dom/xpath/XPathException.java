@@ -15,7 +15,7 @@ package org.w3c.dom.xpath;
 /**
  * A new exception has been created for exceptions specific to these XPath 
  * interfaces.
- * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/2002/08/WD-DOM-Level-3-XPath-20020820'>Document Object Model (DOM) Level 3 XPath Specification</a>.
  */
 public class XPathException extends RuntimeException {
     public XPathException(short code, String message) {
@@ -27,11 +27,8 @@ public class XPathException extends RuntimeException {
     /**
      * If the expression has a syntax error or otherwise is not a legal 
      * expression according to the rules of the specific 
-     * <code>XPathEvaluator</code>. If the <code>XPathEvaluator</code> was 
-     * obtained by casting the document, the expression must be XPath 1.0 
-     * with no special extension functions.A separate exception should be 
-     * raised if there are problems resolving namespaces.Yes. These now 
-     * raise DOMException with the code NAMESPACE_ERR.
+     * <code>XPathEvaluator</code> or contains specialized extension 
+     * functions or variables not supported by this implementation.
      */
     public static final short INVALID_EXPRESSION_ERR    = 1;
     /**
