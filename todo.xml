@@ -47,6 +47,10 @@
     Move org.apache.xalan.utils package to org.apache.xml.utils.
     remove resource dependencies on xalan and/or xpath package.
   </action>
+  
+  <action context="code" packages="templates" category="conformance">
+    Catch multiple definitions of a variable with the same name and scope.     
+  </action>
 
   <action context="code">
   </action>
@@ -112,10 +116,6 @@
     Sub-expression elimination.  When I call a series of 
     xsl:when tests, are there common subexpressions that can be 
     executed once and then shared?
-  </action>
-
-  <action context="code" packages="templates" category="conformance">
-    Catch multiple definitions of a variable with the same name and scope.     
   </action>
 
   <action context="code">
