@@ -37,8 +37,8 @@
  <actions>
 
    <target-release-description>
-    <date>12/15/00</date>
-    <level>beta</level>
+    <date>01/05/01</date>
+    <level>beta2</level>
     <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 98% conformance test passage.</goal>
     <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
     <goal type="stability">Stable, reasonable.</goal>
@@ -48,22 +48,20 @@
 
   <!-- Move to completed section when done. -->
 
-  <action context="code"  category="conformance" priority="high">
-    Check relative URL resolution with notations and unparsed entities.
-    Not sure if there is a bug here.  See note from Thomal Maesing on
-    10/24/2000, titled "Antwort: Re:".
-  </action>
+   <action context="code" category="performance" who="sb">
+    Optimize "/foo/baz" patterns to use simple child walkers.
+   </action>
 
-  <action context="test" category="feature" priority="high">
-    Update the xml-xalan\test\viewResults.xsl stylesheet to show 
-    differences between two result files from the same test (eg.
-    show differences from a results-before.xml run before a developer 
-    makes a change, with results-after.xml, which was after the 
-    developer's change.)
-    This could be a bunch of stuff added to viewResults.xsl or could 
-    be a separate stylesheet. See <b>SC</b> for details.
-  </action>
-    
+   <action context="code" category="performance" who="sb">
+    Optimize "/foo/baz" patterns that have no variability, to a global space, 
+    and don't re-evaluate each time.
+   </action>
+ 
+   <action context="code" category="error-handling" who="sb">
+    Simplify some of the exception nesting, maybe, and make sure error listener. 
+    are being called for all cases.
+   </action>
+  
  </actions>
 
  <actions>
@@ -305,6 +303,21 @@
     documents and stylesheets to the trusted worker thread to get around IE security restrictions.
   </action>
 
+  <action context="code"  category="conformance" priority="high" completed="12/19/00">
+    Check relative URL resolution with notations and unparsed entities.
+    Not sure if there is a bug here.  See note from Thomal Maesing on
+    10/24/2000, titled "Antwort: Re:".
+  </action>
+
+  <action context="test" category="feature" priority="high" completed="12/19/00">
+    Update the xml-xalan\test\viewResults.xsl stylesheet to show 
+    differences between two result files from the same test (eg.
+    show differences from a results-before.xml run before a developer 
+    makes a change, with results-after.xml, which was after the 
+    developer's change.)
+    This could be a bunch of stuff added to viewResults.xsl or could 
+    be a separate stylesheet. See <b>SC</b> for details.
+  </action>
 
  </completed>
 
