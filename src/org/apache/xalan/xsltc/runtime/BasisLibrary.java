@@ -1196,6 +1196,8 @@ public final class BasisLibrary implements Operators {
 	    // Create DOMAdapter and register with MultiDOM
 	    DOMAdapter domAdapter = new DOMAdapter(idom, 
                 translet.getNamesArray(),
+                translet.getUrisArray(),
+                translet.getTypesArray(),
 		translet.getNamespaceArray());
             multiDOM.addDOMAdapter(domAdapter);
 
@@ -1366,10 +1368,12 @@ public final class BasisLibrary implements Operators {
                                            "NAMESPACES_SUPPORT_ERR";
     public static final String CANT_RESOLVE_RELATIVE_URI_ERR =
                                            "CANT_RESOLVE_RELATIVE_URI_ERR";
-    public static final String UNSUPPORTED_XSL_ERR =                                       
+    public static final String UNSUPPORTED_XSL_ERR =
                                            "UNSUPPORTED_XSL_ERR";
-    public static final String UNSUPPORTED_EXT_ERR =                                       
+    public static final String UNSUPPORTED_EXT_ERR =
                                            "UNSUPPORTED_EXT_ERR";
+    public static final String UNKNOWN_TRANSLET_VERSION_ERR =
+                                           "UNKNOWN_TRANSLET_VERSION_ERR";
 
     // All error messages are localized and are stored in resource bundles.
     protected static ResourceBundle m_bundle;

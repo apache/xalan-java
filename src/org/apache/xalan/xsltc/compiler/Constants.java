@@ -400,6 +400,14 @@ public interface Constants extends InstructionConstants {
 	= "namesArray";
     public static final String NAMES_INDEX_SIG
 	= "[" + STRING_SIG;
+    public static final String URIS_INDEX
+       = "urisArray";
+    public static final String URIS_INDEX_SIG
+       = "[" + STRING_SIG;
+    public static final String TYPES_INDEX
+       = "typesArray";
+    public static final String TYPES_INDEX_SIG
+       = "[I";
     public static final String NAMESPACE_INDEX
 	= "namespaceArray";
     public static final String NAMESPACE_INDEX_SIG
@@ -408,9 +416,21 @@ public interface Constants extends InstructionConstants {
         = "_hasIdCall";
     public static final String HASIDCALL_INDEX_SIG
         = "Z";
+    public static final String TRANSLET_VERSION_INDEX
+        = "transletVersion";
+    public static final String TRANSLET_VERSION_INDEX_SIG
+        = "I";
 
     public static final String DOM_FIELD
 	= "_dom";
+    public static final String STATIC_NAMES_ARRAY_FIELD
+        = "_sNamesArray";
+    public static final String STATIC_URIS_ARRAY_FIELD
+        = "_sUrisArray";
+    public static final String STATIC_TYPES_ARRAY_FIELD
+        = "_sTypesArray";
+    public static final String STATIC_NAMESPACE_ARRAY_FIELD
+        = "_sNamespaceArray";
     public static final String STATIC_CHAR_DATA_FIELD
         = "_scharData";
     public static final String STATIC_CHAR_DATA_FIELD_SIG
