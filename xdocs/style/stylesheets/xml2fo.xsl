@@ -399,9 +399,8 @@ TBD: - The faq doesn't show in the content
    </fo:inline>
 </xsl:template>
 
-
 <!-- ul (unordered list) -->
-<xsl:template match ="ul|gloss">
+<xsl:template match ="ul">
   <fo:list-block start-indent="1cm" 
                  provisional-distance-between-starts="12pt" 
                  font-family="sans-serif" 
@@ -409,9 +408,8 @@ TBD: - The faq doesn't show in the content
                  line-height="11pt">
      <xsl:apply-templates/> 
    </fo:list-block>
-</xsl:template>
-
-
+</xsl:template>         
+          
 <!-- ol (ordered list) -->
 <xsl:template match ="ol">
   <fo:list-block start-indent="1cm" 
@@ -440,7 +438,6 @@ TBD: - The faq doesn't show in the content
     </fo:list-item>
 </xsl:template>
 
-
 <!-- li (list item) in ordered list -->
 <xsl:template match ="ol/li">
     <fo:list-item>
@@ -458,6 +455,34 @@ TBD: - The faq doesn't show in the content
       </fo:list-item-body>
     </fo:list-item>
 </xsl:template>
+
+<!-- temporary kludge for definition list gloss with label-item pairs ) -->
+
+<xsl:template match="gloss">
+  <xsl:apply-templates/>
+</xsl:template>
+<xsl:template match="label">
+   <fo:block font-size="11pt" 
+            font-family="sans-serif" 
+            line-height="13pt"
+            space-after.optimum="3pt"
+            space-before.optimum="6pt"
+            text-align="start">
+     <xsl:apply-templates/> 
+   </fo:block>
+</xsl:template> 
+<xsl:template match="item">
+   <fo:block font-size="11pt" 
+            font-family="sans-serif" 
+            line-height="13pt"
+            space-after.optimum="6pt"
+            space-before.optimum="0pt"
+            margin-left="24pt"
+            text-align="start">
+     <xsl:apply-templates/>
+     <fo:block></fo:block> 
+   </fo:block>
+</xsl:template> 
 
 <!-- end body -->
 
