@@ -222,12 +222,23 @@ final class Step extends RelativeLocationPath {
 
 	if (hasPredicates()) {
 	    translatePredicates(classGen, methodGen);
-	}
-	else {
-	    // If it is an attribute but not '@*', '@attr' or '@node()' and
-	    // has no parent
-	    if (_axis == Axis.ATTRIBUTE && _nodeType != NodeTest.ATTRIBUTE &&
-		_nodeType != NodeTest.ANODE && !hasParentPattern()) 
+	} else {
+            int star = 0;
+            String name = null;
+            final XSLTC xsltc = getParser().getXSLTC();
+
+            if (_nodeType >= DTM.NTYPES) {
+		final Vector ni = xsltc.getNamesIndex();
+		
+                name = (String)ni.elementAt(_nodeType-DTM.NTYPES);
+                star = name.lastIndexOf('*');
+            }
+
+	    // If it is an attribute, but not '@*', '@pre:*' or '@node()',
+            // and has no parent
+	    if (_axis == Axis.ATTRIBUTE && _nodeType != NodeTest.ATTRIBUTE
+		&& _nodeType != NodeTest.ANODE && !hasParentPattern()
+                && star == 0)
 	    {
 		int iter = cpg.addInterfaceMethodref(DOM_INTF,
 						     "getTypedAxisIterator",
@@ -280,16 +291,6 @@ final class Step extends RelativeLocationPath {
 		il.append(new INVOKEINTERFACE(git, 2));
 		break;
 	    default:
-		final XSLTC xsltc = getParser().getXSLTC();
-		final Vector ni = xsltc.getNamesIndex();
-		String name = null;
-		int star = 0;
-		
-		if (_nodeType >= DTM.NTYPES) {
-		    name = (String)ni.elementAt(_nodeType-DTM.NTYPES);
-		    star = name.lastIndexOf('*');
-		}
-		
 		if (star > 1) {
 		    final String namespace;
 		    if (_axis == Axis.ATTRIBUTE)
