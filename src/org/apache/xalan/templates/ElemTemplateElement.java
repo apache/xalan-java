@@ -761,6 +761,25 @@ public class ElemTemplateElement extends UnImplNode
   {
     return m_prefixTable;
   }
+  
+  /**
+   * Get whether or not the passed URL is contained flagged by
+   * the "extension-element-prefixes" property.  This method is overridden 
+   * by {@link ElemLiteralResult#containsExcludeResultPrefix}.
+   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * @param prefix non-null reference to prefix that might be excluded.
+   *
+   * @return true if the prefix should normally be excluded.
+   */
+  public boolean containsExcludeResultPrefix(String prefix)
+  {
+    ElemTemplateElement parent = this.getParentElem();
+    if(null != parent)
+      return parent.containsExcludeResultPrefix(prefix);
+      
+    return false;
+  }
 
   /**
    * Tell if the result namespace decl should be excluded.  Should be called before
@@ -787,13 +806,13 @@ public class ElemTemplateElement extends UnImplNode
               || uri.equals("http://xsl.lotus.com"))
         return true;
 
-      if (getStylesheet().containsExcludeResultPrefix(prefix))
+      if (containsExcludeResultPrefix(prefix))
         return true;
     }
 
     return false;
   }
-
+  
   /**
    * Combine the parent's namespaces with this namespace
    * for fast processing, taking care to reference the

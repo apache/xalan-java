@@ -182,12 +182,37 @@ public class ElemLiteralResult extends ElemUse
   }
   
   /**
+   * Get whether or not the passed URL is contained flagged by
+   * the "extension-element-prefixes" property.
+   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * @param prefix non-null reference to prefix that might be excluded.
+   *
+   * @return true if the prefix should normally be excluded.
+   */
+  public boolean containsExcludeResultPrefix(String prefix)
+  {
+
+    if (null == m_excludeResultPrefixes)
+      return super.containsExcludeResultPrefix(prefix);
+
+    if (prefix.length() == 0)
+      prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
+
+    if(m_excludeResultPrefixes.contains(prefix))
+      return true;
+    else
+      return super.containsExcludeResultPrefix(prefix);
+  }
+  
+  /**
    * Augment resolvePrefixTables, resolving the namespace aliases once 
    * the superclass has resolved the tables.
    */
   public void resolvePrefixTables() throws TransformerException
   {
     super.resolvePrefixTables();
+        
     StylesheetRoot stylesheet = getStylesheetRoot();
     if((null != m_namespace) && (m_namespace.length() > 0))
     {
@@ -438,139 +463,12 @@ public class ElemLiteralResult extends ElemUse
    * imported or included by children of that xsl:stylesheet element.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v vector of prefixes that are resolvable to strings.
    */
   public void setExcludeResultPrefixes(StringVector v)
   {
     m_excludeResultPrefixes = v;
   }
-
-  /**
-   * Tell if the result namespace decl should be excluded.  Should be called before
-   * namespace aliasing (I think).
-   *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
-   *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws TransformerException
-   */
-  private boolean excludeResultNSDecl(String prefix, String uri)
-          throws TransformerException
-  {
-
-    if (null != m_excludeResultPrefixes)
-    {
-      if (m_excludeResultPrefixes.contains(prefix))
-        return true;
-    }
-
-    return false;
-  }
-
-  /*
-   * Combine the parent's namespaces with this namespace
-   * for fast processing, taking care to reference the
-   * parent's namespace if this namespace adds nothing new.
-   * (Recursive method, walking the elements depth-first,
-   * processing parents before children).
-   * Overide super method to handle exclude-result-prefix attribute.
-   *
-   * @throws TransformerException
-   *
-  public void resolvePrefixTables() throws TransformerException
-  {
-
-    // Always start with a fresh prefix table!
-    m_prefixTable = null;
-
-    Vector m_declaredPrefixes = getDeclaredPrefixes();
-
-    // If we have declared declarations, then we look for 
-    // a parent that has namespace decls, and add them 
-    // to this element's decls.  Otherwise we just point 
-    // to the parent that has decls.
-    if (null != m_declaredPrefixes)
-    {
-
-      // Add this element's declared prefixes to the 
-      // prefix table.
-      int n = m_declaredPrefixes.size();
-
-      for (int i = 0; i < n; i++)
-      {
-        XMLNSDecl decl = (XMLNSDecl) m_declaredPrefixes.elementAt(i);
-        String prefix = decl.getPrefix();
-        String uri = decl.getURI();
-        boolean shouldExclude = excludeResultNSDecl(prefix, uri);
-
-        // Create a new prefix table if one has not already been created.
-        if (null == m_prefixTable)
-          m_prefixTable = new Vector();
-
-        m_prefixTable.addElement(new XMLNSDecl(prefix, uri, shouldExclude));
-      }
-    }
-
-    ElemTemplateElement parent = (ElemTemplateElement) this.getParentNode();
-
-    if (null != parent)
-    {
-
-      // The prefix table of the parent should never be null!
-      Vector prefixes = parent.m_prefixTable;
-
-      if (null == m_excludeResultPrefixes && null == m_prefixTable)
-      {
-
-        // Nothing to combine, so just use parent's table!
-        this.m_prefixTable = parent.m_prefixTable;
-      }
-      else
-      {
-        if (null == m_prefixTable)
-          m_prefixTable = new Vector();
-
-        // Add the prefixes from the parent's prefix table.
-        int n = prefixes.size();
-
-        for (int i = 0; i < n; i++)
-        {
-          XMLNSDecl decl = (XMLNSDecl) prefixes.elementAt(i);
-          boolean isexcluded = decl.getIsExcluded();
-
-          if (!isexcluded)
-          {
-            boolean shouldExclude = excludeResultNSDecl(decl.getPrefix(),
-                                                        decl.getURI());
-
-            if (shouldExclude != isexcluded)
-            {
-              decl = new XMLNSDecl(decl.getPrefix(), decl.getURI(),
-                                   shouldExclude);
-            }
-          }
-
-          m_prefixTable.addElement(decl);
-        }
-      }
-    }
-    else if (null == m_prefixTable)
-    {
-
-      // Must be stylesheet element without any result prefixes!
-      m_prefixTable = new Vector();
-    }
-
-    // Resolve the children's prefix tables.
-    for (ElemTemplateElement child = m_firstChild; child != null;
-            child = child.m_nextSibling)
-    {
-      child.resolvePrefixTables();
-    }
-  }
-  */
 
   /**
    * Copy a Literal Result Element into the Result tree, copy the

@@ -383,9 +383,9 @@ public class Stylesheet extends ElemTemplateElement
    * the "extension-element-prefixes" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param prefix
+   * @param prefix non-null reference to prefix that might be excluded.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the prefix should normally be excluded.
    */
   public boolean containsExcludeResultPrefix(String prefix)
   {

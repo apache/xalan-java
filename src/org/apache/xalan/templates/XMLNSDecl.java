@@ -60,16 +60,15 @@ package org.apache.xalan.templates;
  * Represents an xmlns declaration
  */
 public class XMLNSDecl
-	implements java.io.Serializable // 20001009 jkess
+        implements java.io.Serializable // 20001009 jkess
 {
 
   /**
    * Constructor XMLNSDecl
    *
-   *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param isExcluded
+   * @param prefix non-null reference to prefix, using "" for default namespace.
+   * @param uri non-null reference to namespace URI.
+   * @param isExcluded true if this namespace declaration should normally be excluded.
    */
   public XMLNSDecl(String prefix, String uri, boolean isExcluded)
   {
@@ -79,7 +78,7 @@ public class XMLNSDecl
     m_isExcluded = isExcluded;
   }
 
-  /** NEEDSDOC Field m_prefix          */
+  /** non-null reference to prefix, using "" for default namespace. */
   private String m_prefix;
 
   /**
@@ -92,7 +91,7 @@ public class XMLNSDecl
     return m_prefix;
   }
 
-  /** NEEDSDOC Field m_uri          */
+  /** non-null reference to namespace URI  */
   private String m_uri;
 
   /**
@@ -104,14 +103,14 @@ public class XMLNSDecl
     return m_uri;
   }
 
-  /** NEEDSDOC Field m_isExcluded          */
+  /** true if this namespace declaration should normally be excluded.  */
   private boolean m_isExcluded;
 
   /**
    * Tell if this declaration should be excluded from the
    * result namespace.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if this namespace declaration should normally be excluded.
    */
   public boolean getIsExcluded()
   {
