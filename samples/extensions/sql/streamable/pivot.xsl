@@ -6,7 +6,7 @@
 
 <xsl:output method="html" indent="yes"/>
 
-<xsl:param name="driver" select="'org.enhydra.instantdb.jdbc.idbDriver'"/>
+<xsl:param name="driver" select="'com.lutris.instantdb.jdbc.idbDriver'"/>
 <xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/>
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 

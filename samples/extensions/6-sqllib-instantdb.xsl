@@ -9,7 +9,7 @@
   <xsl:template match="/">
     <!-- 1. Make the connection -->
     <xsl:variable name="products"
-                  select="sql:new('org.enhydra.instantdb.jdbc.idbDriver',
+                  select="sql:new('com.lutris.instantdb.jdbc.idbDriver',
                                 'jdbc:idb:./instantdb/sample.prp')"/>
     <!--2. Execute the query -->
     <xsl:variable name="table" select='sql:query($products, $query)'/>

@@ -2,7 +2,7 @@
  <description>This file contains information required to make a connection to the DBMS</description>
 
  <DBINFO>
-   <dbdriver>org.enhydra.instantdb.jdbc.idbDriver</dbdriver>
+   <dbdriver>com.lutris.instantdb.jdbc.idbDriver</dbdriver>
    <dburl>jdbc:idb:../../instantdb/sample.prp</dburl>
    <user />
    <password/>
