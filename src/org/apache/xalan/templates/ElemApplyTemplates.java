@@ -239,11 +239,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
     if (null != m_paramElems)
     {  
       transformer.pushParams(xctxt, this, sourceNode, mode);
-      vars.setSearchStart(-1);
-    }  
+     }  
     else
       vars.pushContextMarker();
     
+    vars.setSearchStart(-1);
+     
     return savedSearchStart;
   }
 

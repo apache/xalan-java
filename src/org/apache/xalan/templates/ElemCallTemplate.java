@@ -170,12 +170,13 @@ public class ElemCallTemplate extends ElemForEach
       XPathContext xctxt = transformer.getXPathContext();
       VariableStack vars = xctxt.getVarStack();
 
+      int savedSearchStart = vars.getSearchStart();
+
       if (null != m_paramElems)
         transformer.pushParams(xctxt, this, sourceNode, mode);
       else
         vars.pushContextMarker();
       
-      int savedSearchStart = vars.getSearchStart();
       vars.setSearchStart(-1);
 
       SourceLocator savedLocator = xctxt.getSAXLocator();
