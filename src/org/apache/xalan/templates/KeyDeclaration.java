@@ -114,6 +114,17 @@ public class KeyDeclaration extends ElemTemplateElement
   {
     return m_name;
   }
+  
+  /**
+   * Return the node name.
+   *
+   * @return the element's name
+   */
+  public String getNodeName()
+  {
+    return Constants.ELEMNAME_KEY_STRING;
+  }
+
 
   /**
    * The "match" attribute.
@@ -179,6 +190,17 @@ public class KeyDeclaration extends ElemTemplateElement
   public XPath getUse()
   {
     return m_use;
+  }
+  
+  /**
+   * Get an int constant identifying the type of element.
+   * @see org.apache.xalan.templates.Constants
+   *
+   * @return The token ID for this element
+   */
+  public int getXSLToken()
+  {
+    return Constants.ELEMNAME_KEY;
   }
   
   /**

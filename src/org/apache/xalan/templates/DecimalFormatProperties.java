@@ -282,6 +282,16 @@ public class DecimalFormatProperties extends ElemTemplateElement
   {
     return m_dfs.getNaN();
   }
+  
+  /**
+   * Return the node name.
+   *
+   * @return the element's name
+   */
+  public String getNodeName()
+  {
+    return Constants.ELEMNAME_DECIMALFORMAT_STRING;
+  }
 
   /**
    * Set the "percent" attribute.
@@ -330,7 +340,18 @@ public class DecimalFormatProperties extends ElemTemplateElement
   {
     return m_dfs.getPerMill();
   }
-
+  
+  /**
+   * Get an int constant identifying the type of element.
+   * @see org.apache.xalan.templates.Constants
+   *
+   * @return The token ID for this element
+   */
+  public int getXSLToken()
+  {
+    return Constants.ELEMNAME_DECIMALFORMAT;
+  }
+  
   /**
    * Set the "zero-digit" attribute.
    * zero-digit specifies the character used as the digit zero; the default
