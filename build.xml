@@ -188,8 +188,7 @@ Copyright:
            includes="**/*.java"
            debug="${debug}"/>
     <copy todir="${build.classes}">
-          <fileset dir="${src.dir}" excludes="**/classes/**/*,**/msclasses/**/*" 
-                includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
+          <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
         </copy>  
   </target>
     
@@ -247,16 +246,18 @@ Copyright:
            includes="**/*.java"
            debug="${debug}"/>
     <copy todir="${build.compat.classes}">
-          <fileset dir="${compat.src.dir}" excludes="**/classes/**/*,**/msclasses/**/*" 
-                includes="**/*.properties,**/*.res"/>
+          <fileset dir="${compat.src.dir}" includes="**/*.properties,**/*.res"/>
     </copy>  
     <jar jarfile="${build.compat.jar}" manifest="src\MANIFEST.MF" basedir="${build.compat.classes}"/>
+  </target>
+  <target name="compat.package" depends="compat.jar">
+    <echo message="compat.package is an alias for compat.jar"/>  
   </target>
   
   <!-- =================================================================== -->
   <!-- Creates the Xalan-J1 compatability javadoc                          -->
   <!-- =================================================================== -->
-  <target name="compat.apidocs" depends="jar">
+  <target name="compat.javadocs" depends="jar">
     <mkdir dir="${build.compat.apidocs}"/>
     <javadoc
          classpath="${java.class.path}"
@@ -272,7 +273,11 @@ Copyright:
          doctitle="Xalan-Java 1 Compatability"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
     </javadoc>
-  </target>    
+  </target>
+    <target name="compat.apidocs" depends="compat.javadocs">
+    <echo message="compat.apidocs is an alias for compat.javadocs"/>  
+  </target>
+    
 
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
@@ -430,7 +435,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="docs,javadocs,samples,servlet,compat.jar,compat.apidocs,autodist"
+  <target name="dist" depends="docs,javadocs,samples,servlet,compat.jar,compat.javadocs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
