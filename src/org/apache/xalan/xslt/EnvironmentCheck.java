@@ -74,30 +74,36 @@ import java.util.Vector;
  * Simplistic reporting about certain classes found in your JVM may 
  * help answer some FAQs for simple problems.
  *
- * Usage-command line: 
- * <code>java org.apache.xalan.xslt.EnvironmentCheck [-out outFile]</code>
- * Usage-from program: 
+ * <p>Usage-command line:  
+ * <code>
+ * java org.apache.xalan.xslt.EnvironmentCheck [-out outFile]
+ * </code></p>
+ * <p>Usage-from program:  
  * <code>
  * boolean environmentOK = 
  * (new EnvironmentCheck()).checkEnvironment(yourPrintWriter);
- * </code>
+ * </code></p>
  *
- * Xalan users reporting problems are encouraged to use this class 
+ * <p>Xalan users reporting problems are encouraged to use this class 
  * to see if there are potential problems with their actual 
  * Java environment <b>before</b> reporting a bug.  Note that you 
  * should both check from the JVM/JRE's command line as well as 
  * temporarily calling checkEnvironment() directly from your code, 
- * since the classpath may differ (especially for servlets, etc).
+ * since the classpath may differ (especially for servlets, etc).</p>
  *
- * Also see http://xml.apache.org/xalan-j/faq.html
+ * <p>Also see http://xml.apache.org/xalan-j/faq.html</p>
  *
- * Note: This class is pretty simplistic: it does a fairly simple 
+ * <p>Note: This class is pretty simplistic: it does a fairly simple 
  * unordered search of the classpath; it only uses Class.forName() 
  * to load things, not actually querying the classloader; so the 
  * results are not necessarily definitive nor will it find all 
  * problems related to environment setup.  Also, you should avoid 
  * calling this in deployed production code, both because it is 
- * quite slow and because it forces classes to get loaded.
+ * quite slow and because it forces classes to get loaded.</p>
+ *
+ * <p>Note: This class explicitly has very limited compile-time 
+ * dependencies to enable easy compilation and usage even when 
+ * Xalan, DOM/SAX/JAXP, etc. are not present.</p>
  * 
  * @author Shane_Curcuru@lotus.com
  * @version $Id$
@@ -148,18 +154,18 @@ public class EnvironmentCheck
   /**
    * Report on basic environment settings that affect Xalan.
    *
-   * Note that this class is not advanced enough to tell you 
+   * <p>Note that this class is not advanced enough to tell you 
    * everything about the environment that affects Xalan, and 
    * sometimes reports errors that will not actually affect 
    * Xalan's behavior.  Currently, it very simplistically 
    * checks the JVM's environment for some basic properties and 
    * logs them out; it will report a problem if it finds a setting 
-   * or .jar file that is <i>likely</i> to cause problems.
+   * or .jar file that is <i>likely</i> to cause problems.</p>
    *
-   * Advanced users can peruse the code herein to help them 
+   * <p>Advanced users can peruse the code herein to help them 
    * investigate potential environment problems found; other users 
    * may simply send the output from this tool along with any bugs 
-   * they submit to help us in the debugging process.
+   * they submit to help us in the debugging process.</p>
    *
    * @param pw PrintWriter to send output to; can be sent to a 
    * file that will look similar to a Properties file; defaults 
@@ -175,16 +181,7 @@ public class EnvironmentCheck
       outWriter = pw;
 
     // Setup a hash to store various environment information in
-    Hashtable hash = new Hashtable();
-
-    // Call various worker methods to fill in the hash
-    //  These are explicitly separate for maintenance and so 
-    //  advanced users could call them standalone
-    checkJAXPVersion(hash);
-    checkProcessorVersion(hash);
-    checkParserVersion(hash);
-    checkDOMVersion(hash);
-    checkSystemProperties(hash);
+    Hashtable hash = getEnvironmentHash();
 
     // Check for ERROR keys in the hashtable, and print report
     boolean environmentHasErrors = writeEnvironmentReport(hash);
@@ -208,6 +205,32 @@ public class EnvironmentCheck
         outWriter.flush();
       return true;
     }
+  }
+
+  /**
+   * Fill a hash with basic environment settings that affect Xalan.
+   *
+   * <p>Worker method called from various places.</p>
+   *
+   * @return Hashtable full of useful environment info about Xalan 
+   * and related system properties, etc.
+   */
+  public Hashtable getEnvironmentHash()
+  {
+    // Setup a hash to store various environment information in
+    Hashtable hash = new Hashtable();
+
+    // Call various worker methods to fill in the hash
+    //  These are explicitly separate for maintenance and so 
+    //  advanced users could call them standalone
+    checkJAXPVersion(hash);
+    checkProcessorVersion(hash);
+    checkParserVersion(hash);
+    checkDOMVersion(hash);
+    // checkSAXVersion(hash); // not yet
+    checkSystemProperties(hash);
+
+    return hash;
   }
 
   /**
@@ -305,6 +328,65 @@ public class EnvironmentCheck
   };
 
   /**
+   * Print out report of .jars found in a classpath. 
+   *
+   * Takes the information encoded from a checkPathForJars() 
+   * call and dumps it out to our PrintWriter.
+   *
+   * @param v Vector of Hashtables of .jar file info
+   * @param desc description to print out in header
+   *
+   * @return false if OK, true if any .jars were reported 
+   * as having errors
+   * @see #checkPathForJars(String, String[])
+   */
+  protected boolean logFoundJars(Vector v, String desc)
+  {
+
+    if ((null == v) || (v.size() < 1))
+      return false;
+
+    boolean errors = false;
+
+    logMsg("#---- BEGIN Listing XML-related jars in: " + desc + " ----");
+
+    for (int i = 0; i < v.size(); i++)
+    {
+      Hashtable subhash = (Hashtable) v.elementAt(i);
+
+      for (Enumeration enum = subhash.keys(); enum.hasMoreElements();
+
+      /* no increment portion */
+      )
+      {
+        Object key = enum.nextElement();
+
+        try
+        {
+
+          //@todo ensure all keys are Strings
+          String keyStr = (String) key;
+          if (keyStr.startsWith(ERROR))
+          {
+            errors = true;
+          }
+          logMsg(keyStr + "=" + subhash.get(keyStr));
+
+        }
+        catch (Exception e)
+        {
+          errors = true;
+          logMsg("Reading-" + key + "= threw: " + e.toString());
+        }
+      }
+    }
+
+    logMsg("#----- END Listing XML-related jars in: " + desc + " -----");
+
+    return errors;
+  }
+
+  /**
    * Fillin hash with info about SystemProperties.  
    *
    * Logs java.class.path and other likely paths; then attempts 
@@ -392,65 +474,6 @@ public class EnvironmentCheck
         "java.version",
         "WARNING: SecurityException thrown accessing system classpath properties");
     }
-  }
-
-  /**
-   * Print out report of .jars found in a classpath. 
-   *
-   * Takes the information encoded from a checkPathForJars() 
-   * call and dumps it out to our PrintWriter.
-   *
-   * @param v Vector of Hashtables of .jar file info
-   * @param desc description to print out in header
-   *
-   * @return false if OK, true if any .jars were reported 
-   * as having errors
-   * @see #checkPathForJars(String, String[])
-   */
-  protected boolean logFoundJars(Vector v, String desc)
-  {
-
-    if ((null == v) || (v.size() < 1))
-      return false;
-
-    boolean errors = false;
-
-    logMsg("#---- BEGIN Listing XML-related jars in: " + desc + " ----");
-
-    for (int i = 0; i < v.size(); i++)
-    {
-      Hashtable subhash = (Hashtable) v.elementAt(i);
-
-      for (Enumeration enum = subhash.keys(); enum.hasMoreElements();
-
-      /* no increment portion */
-      )
-      {
-        Object key = enum.nextElement();
-
-        try
-        {
-
-          //@todo ensure all keys are Strings
-          String keyStr = (String) key;
-          if (keyStr.startsWith(ERROR))
-          {
-            errors = true;
-          }
-          logMsg(keyStr + "=" + subhash.get(keyStr));
-
-        }
-        catch (Exception e)
-        {
-          errors = true;
-          logMsg("Reading-" + key + "= threw: " + e.toString());
-        }
-      }
-    }
-
-    logMsg("#----- END Listing XML-related jars in: " + desc + " -----");
-
-    return errors;
   }
 
   /**
@@ -558,8 +581,10 @@ public class EnvironmentCheck
     jarVersions.put(new Long(426249), "xalan.jar from xalan-j_1_2_2");
     jarVersions.put(new Long(702536), "xalan.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(720930), "xalan.jar from xalan-j_2_0_1");
+    jarVersions.put(new Long(872241), "xalan.jar from xalan-j_2_2_D10");
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
+    jarVersions.put(new Long(857692), "xalan.jar from lotusxsl-j_2_2");
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
 
     jarVersions.put(new Long(1498679), "xerces.jar from xalan-j_1_2 from xerces-1_2_0.bin");
@@ -569,6 +594,11 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1605266), "xerces.jar from xalan-j_2_0_1 from xerces-1_3_0.bin");
     jarVersions.put(new Long(1190776), "xerces.jar from lotusxsl_1_0_1 apparently-from xerces-1_0_3.bin");
     jarVersions.put(new Long(1489400), "xerces.jar from lotusxsl-j_2_0_0 from XML4J-3_1_1");
+    jarVersions.put(new Long(1787796), "xerces.jar from lotusxsl-j_2_2 or xerces-1_4_1.bin");
+    jarVersions.put(new Long(904030), "xerces.jar from xerces-1_4_0.bin");
+    jarVersions.put(new Long(1802885), "xerces.jar from xerces-1_4_2.bin");
+    jarVersions.put(new Long(1808883), "xerces.jar from xalan-j_2_2_D10 or xerces-1_4_3.bin");
+    jarVersions.put(new Long(1803877), "xerces.jar from XML4J-3_2_1");
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
@@ -620,7 +650,8 @@ public class EnvironmentCheck
    * Report version information about JAXP interfaces.
    *
    * Currently distinguishes between JAXP 1.0.1 and JAXP 1.1, 
-   * and not found.
+   * and not found; only tests the interfaces, and does not 
+   * check for reference implementation versions.
    *
    * @param h Hashtable to put information in
    */
@@ -751,10 +782,13 @@ public class EnvironmentCheck
     if (null == h)
       h = new Hashtable();
 
+    final String XERCES1_VERSION_CLASS =
+      "org.apache.xerces.framework.Version";
+    final String XERCES2_VERSION_CLASS =
+      "org.apache.xerces.impl.Version";
+
     try
     {
-      final String XERCES1_VERSION_CLASS =
-        "org.apache.xerces.framework.Version";
       Class clazz = Class.forName(XERCES1_VERSION_CLASS);
 
       // Found Xerces-J 1.x, grab it's version fields
@@ -765,6 +799,24 @@ public class EnvironmentCheck
     }
     catch (Exception e)
     {
+      try
+      {
+        // Oops, no 1.x found, look for 2.x
+        Class clazz = Class.forName(XERCES2_VERSION_CLASS);
+
+        // Found Xerces-J 2.x, grab it's version fields
+        Field f = clazz.getField("fVersion");
+        String parserVersion = (String) f.get(null);
+
+        h.put(VERSION + "xerces", parserVersion);
+      }
+      catch (Exception e2)
+      {
+
+        // This isn't necessarily an error, since the user might 
+        //  be using some other parser
+        h.put(VERSION + "xerces", CLASS_NOTPRESENT);
+      }
 
       // This isn't necessarily an error, since the user might 
       //  be using some other parser
@@ -855,6 +907,64 @@ public class EnvironmentCheck
     //@todo load an actual DOM implmementation and check if 
     //  isNamespaceAware() == true, which is needed to parse 
     //  xsl stylesheet files into a DOM
+  }
+
+  /**
+   * Report version info from SAX interfaces. 
+   *
+   * Currently distinguishes between SAX 2, SAX 1, 
+   * and not found. NOT CORRECTLY IMPLEMENTED YET
+   *
+   * @param h Hashtable to put information in
+   */
+  protected void checkSAXVersion(Hashtable h)
+  {
+
+    if (null == h)
+      h = new Hashtable();
+
+    final String SAX_VERSION1_CLASS = "org.w3c.dom.Document";
+    final String SAX_VERSION1_METHOD = "createElementNS";  // String, String
+    final String SAX_VERSION2_CLASS = "org.w3c.dom.Node";
+    final String SAX_VERSION2_METHOD = "supported";  // String, String
+    final Class twoStringArgs[] = { java.lang.String.class,
+                                    java.lang.String.class };
+
+    try
+    {
+      Class clazz = Class.forName(SAX_VERSION2_CLASS);
+      Method method = clazz.getMethod(SAX_VERSION2_METHOD, twoStringArgs);
+
+      // If we succeeded, we have loaded interfaces from a 
+      //  SAX version 2.0 somewhere
+      h.put(VERSION + "SAX", "2.0");
+    }
+    catch (Exception e)
+    {
+      // If we didn't find the SAX 2.0 class, look for a 1.0 one
+      // Note that either 1.0 or no SAX are both errors
+      h.put(ERROR + VERSION + "SAX",
+            "ERROR attempting to load SAX version 2 class: " + e.toString());
+            
+      try
+      {
+        Class clazz = Class.forName(SAX_VERSION1_CLASS);
+        Method method = clazz.getMethod(SAX_VERSION1_METHOD, twoStringArgs);
+
+        // If we succeeded, we have loaded interfaces from a 
+        //  SAX version 1.0 somewhere; which won't work very 
+        //  well for JAXP 1.1 or beyond!
+        h.put(VERSION + "SAX-backlevel", "1.0");
+      }
+      catch (Exception e2)
+      {
+        // If we didn't find the SAX 2.0 class, look for a 1.0 one
+        // Note that either 1.0 or no SAX are both errors
+        h.put(ERROR + VERSION + "SAX-backlevel",
+              "ERROR attempting to load SAX version 1 class: " + e2.toString());
+          
+      }
+    }
   }
 
   /** Simple PrintWriter we send output to; defaults to System.out.  */
