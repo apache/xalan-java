@@ -67,7 +67,7 @@ import org.apache.xml.utils.QName;
  * mapping between Xalan classes and the markup elements in the XSLT instance.
  * This actually represents both text nodes and elements.
  */
-class XSLTElementDef
+public class XSLTElementDef
 {
 
   /**

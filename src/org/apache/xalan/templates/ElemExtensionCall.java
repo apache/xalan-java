@@ -311,25 +311,37 @@ public class ElemExtensionCall extends ElemLiteralResult
         // System.out.println(e);
         // e.printzStackTrace();
         String msg = e.getMessage();
+        
+        TransformerException te;
+        if(e instanceof TransformerException)
+        {
+          te = (TransformerException)e;
+        }
+        else
+        {
+          if(null != msg)
+            te = new TransformerException(e);
+          else
+            te = new TransformerException("Unknown error when calling extension!", e);
+        }
+        if(null == te.getLocator())
+          te.setLocator(this);
 
         if (null != msg)
         {
-          if (msg.startsWith("Stopping after fatal error:"))
+          if (msg.indexOf("fatal") >= 0)
           {
-            msg = msg.substring("Stopping after fatal error:".length());
+            transformer.getErrorListener().fatalError(te);
           }
+          else if(e instanceof RuntimeException)      
+            transformer.getErrorListener().error(te); // ??
+          else
+            transformer.getErrorListener().warning(te);
 
-          transformer.getMsgMgr().message(
-                                          XSLMessages.createMessage(
-                                                                    XSLTErrorResources.ER_CALL_TO_EXT_FAILED, new Object[]{ msg }),
-                                          false);  //"Call to extension element failed: "+msg);
-
-          // e.printStackTrace();
-          // System.exit(-1);
         }
+        else      
+          transformer.getErrorListener().error(te); // ??
 
-        // transformer.message(msg);
-        
         executeFallbacks(
           transformer, sourceNode, mode);
       }
