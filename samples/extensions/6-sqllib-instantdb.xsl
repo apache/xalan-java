@@ -1,13 +1,17 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
-                xmlns:sql="org.apache.xalan.lib.sql.XConnection"
+                xmlns:sql="http://xml.apache.org/xalan/sql"
                 extension-element-prefixes="sql">
   <xsl:output method="html" indent="yes"/>
+  
+  <!-- Substitute the select attribute by your own SQL query -->
   <xsl:param name="query" select="'SELECT * FROM import1'"/>
  
   <xsl:template match="/">
     <!-- 1. Make the connection -->
+    <!-- Substitute the first parameter of sql:new() by your JDBC driver class -->
+    <!-- Substitute the second parameter of sql:new() by your database url -->
     <xsl:variable name="products"
                   select="sql:new('com.lutris.instantdb.jdbc.idbDriver',
                                 'jdbc:idb:./instantdb/sample.prp')"/>

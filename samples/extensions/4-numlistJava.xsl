@@ -1,15 +1,15 @@
 <?xml version="1.0"?> 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:lxslt="http://xml.apache.org/xslt"
+                xmlns:xalan="http://xml.apache.org/xalan"
                 xmlns:counter="MyCounter"
                 extension-element-prefixes="counter"
                 version="1.0">
 
 
-  <lxslt:component prefix="counter"
+  <xalan:component prefix="counter"
                    elements="init incr" functions="read">
-    <lxslt:script lang="javaclass" src="MyCounter"/>
-  </lxslt:component>
+    <xalan:script lang="javaclass" src="MyCounter"/>
+  </xalan:component>
 
   <xsl:template match="/">
     <HTML>

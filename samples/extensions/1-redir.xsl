@@ -1,12 +1,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     version="1.0"
-    xmlns:lxslt="http://xml.apache.org/xslt"
-    xmlns:redirect="org.apache.xalan.lib.Redirect"
+    xmlns:redirect="http://xml.apache.org/xalan/redirect"
     extension-element-prefixes="redirect">
-
-  <lxslt:component prefix="redirect" elements="write open close" functions="">
-    <lxslt:script lang="javaclass" src="org.apache.xalan.lib.Redirect"/>
-  </lxslt:component>  
     
   <xsl:template match="/">
     <standard-out>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:java="http://xml.apache.org/xslt/java"
+                xmlns:java="http://xml.apache.org/xalan/java"
                 version="1.0">
                 
   <xsl:template match="/">
