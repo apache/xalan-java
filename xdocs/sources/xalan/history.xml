@@ -209,6 +209,33 @@ Reviewed by: Henry Zongaro
 Patch from Christine Li (jycli@ca.ibm.com) for bugzilla #18926.
 
 Variables weren't being cleared from stack between calls to func:function.
+<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/05/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources_ca.java XSLTErrorResources_cs.java XSLTErrorResources_de.java XSLTErrorResources_es.java XSLTErrorResources_fr.java XSLTErrorResources_hu.java XSLTErrorResources_it.java XSLTErrorResources_ja.java XSLTErrorResources_ko.java XSLTErrorResources_pl.java XSLTErrorResources_pt_BR.java XSLTErrorResources_ru.java XSLTErrorResources_sk.java XSLTErrorResources_tr.java XSLTErrorResources_zh_CN.java XSLTErrorResources_zh_TW.java xml-xalan/java/src/org/apache/xalan/xslt Process.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ErrorMessages_ca.java ErrorMessages_cs.java ErrorMessages_de.java ErrorMessages_es.java ErrorMessages_fr.java ErrorMessages_hu.java ErrorMessages_it.java ErrorMessages_ja.java ErrorMessages_ko.java ErrorMessages_pl.java ErrorMessages_pt_BR.java ErrorMessages_ru.java ErrorMessages_sk.java ErrorMessages_tr.java ErrorMessages_zh_CN.java ErrorMessages_zh_TW.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime ErrorMessages_ca.java ErrorMessages_cs.java ErrorMessages_de.java ErrorMessages_es.java ErrorMessages_fr.java ErrorMessages_hu.java ErrorMessages_it.java ErrorMessages_ja.java ErrorMessages_ko.java ErrorMessages_pl.java ErrorMessages_pt_BR.java ErrorMessages_ru.java ErrorMessages_sk.java ErrorMessages_tr.java ErrorMessages_zh_CN.java ErrorMessages_zh_TW.java xml-xalan/java/src/org/apache/xml/res XMLErrorResources_ca.java XMLErrorResources_cs.java XMLErrorResources_de.java XMLErrorResources_es.java XMLErrorResources_fr.java XMLErrorResources_hu.java XMLErrorResources_it.java XMLErrorResources_ja.java XMLErrorResources_ko.java XMLErrorResources_pl.java XMLErrorResources_pt_BR.java XMLErrorResources_ru.java XMLErrorResources_sk.java XMLErrorResources_tr.java XMLErrorResources_zh_CN.java XMLErrorResources_zh_TW.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources_ca.java XPATHErrorResources_cs.java XPATHErrorResources_de.java XPATHErrorResources_es.java XPATHErrorResources_fr.java XPATHErrorResources_hu.java XPATHErrorResources_it.java XPATHErrorResources_ja.java XPATHErrorResources_ko.java XPATHErrorResources_pl.java XPATHErrorResources_pt_BR.java XPATHErrorResources_ru.java XPATHErrorResources_sk.java XPATHErrorResources_tr.java XPATHErrorResources_zh_CN.java XPATHErrorResources_zh_TW.java<br/><ref>Committer's log entry: </ref>
+Checked in localized messages for Xalan and XSLTC contributed by IBM.
+New Locale support includes ca, cs, hu, pl, pt_BR, ru, sk and tr.
+The old messages are also updated with translations for newly added
+English messages.
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils BoolStack.java<br/><ref>Committer's log entry: </ref>
+Added a clear() method to clear a BoolStack, so that such a 
+stack can be re-used without the need to create a new one
+(for performance).
+Submitted by: Brian Minchau
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer NamespaceMappings.java SerializerBase.java ToHTMLStream.java ToSAXHandler.java ToStream.java ToXMLSAXHandler.java ToXMLStream.java<br/><ref>Committer's log entry: </ref>
+Support for reset() for the stream serializers and for ToXMLSAXHandler.
+These serializers can now be reset and re-used rather than creating a new one.
+A reset() takes about 1/2 the time of creating a new one.
+
+Submitted by: Brian Minchau
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToHTMLSAXHandler.java<br/><ref>Committer's log entry: </ref>
+Support for a ToHTMLSAXHandler serializer to be reset() and re-used.
+Submitted by: Brian Minchau
+<br/><br/></li>
+<li><ref>Committed by </ref>grchiu@apache.org<ref> on </ref>2003/05/28<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan faq.xml<br/><ref>Committer's log entry: </ref>
+Contributed by Christine Li (jycli@ca.ibm.com).
+Modified FAQ entry regarding bootclasspath; the class path separator is not
+colon for all systems.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/05/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates StylesheetRoot.java<br/><ref>Committer's log entry: </ref>
+Activate redundant expression elimination!
 <br/><br/></li></ul>
 </s2>
 <s2 title="Changes for &xslt4j; 2.5.0">
