@@ -2364,7 +2364,7 @@ public class TransformerImpl extends Transformer
          // %REVIEW% Make sure current node is being pushed.
          LexicalHandler lex = null;
          if (handler instanceof LexicalHandler) {
-            lex = (LexicalHandler) lex;
+            lex = (LexicalHandler) handler;
          }
          m_serializationHandler = new ToXMLSAXHandler(handler, lex, savedHandler.getEncoding());
          executeChildTemplates(elem, true);
