@@ -407,10 +407,9 @@ Copyright:
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/> 
     <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
-         includes="*.class"/>
-                   
+         includes="*.class"/>                   
   </target>
-  
+   
   <!-- =================================================================== -->
   <!-- Compiles the sample servlet and jars the class files.                -->  
   <!-- The javax.servlet and javax.servlet.http packages                    -->
@@ -431,6 +430,22 @@ Copyright:
          basedir="${build.samples}" 
          includes="servlet/**"/>
  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Compiles (does not jar) the translet samples in translets.          -->
+  <!-- For time being, classes are generated in place.                     -->
+  <!-- To run these samples, add xsltc.jar, runtime.jar, BCEL.jar,         -->
+  <!-- and java_cup.jar (all in the bin directory) to the classpath        --> 
+  <!--                                                                     -->
+  <!-- When we have straightened out classpath issues,                     -->
+  <!-- add samples in CompiledApplet, CompiledBrazil, and CompiledServlet  -->
+  <!-- =================================================================== -->
+  <target name="xsltc.samples" depends="jar,xsltc.jar">
+    <javac srcdir="${samples.dir}/translets" classpath="${java.class.path}:${build.xsltc.jar}" 
+           destdir="${samples.dir}/translets" excludes="${exclude}" 
+           debug="${debug}"/>  
+  </target>
+ 
  
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
