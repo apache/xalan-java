@@ -170,9 +170,8 @@
     <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
      stylesheet, and the HTML output.</p>
     <p>How to run it: Open appletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
-    <note>This and the following sample applet do not work in the Netscape Communicator 4.7. We have some work to do to get
-    our basic strategy of using system properties to identify the Transformer and XML Parser to work in the Netscape applet
-    sandbox.<br/><br/>
+    <note>For information about running &xslt4j; applets in Netscape Communicator, see <link idref="usagepatterns" anchor="netscape">Problems
+    with Netscape</link>.<br/><br/>
     Both applets look for xalan.jar and xerces.jar in the bin subdirectory. If you have placed these JAR files
     elsewhere, adjust the applet archive setting in client.html and get-todo-list.html accordingly.</note>
     </s2><anchor name="get-todo-list"/>

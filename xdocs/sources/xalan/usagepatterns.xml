@@ -392,7 +392,17 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
     &lt;param name="styleURL" value="s1ToHTML.xsl"/&gt;
 &lt;/applet&gt;</source>
 <p>When the user clicks the Transform button, the HTML client calls the getHtmlText() method, and puts the returned HTML text in a frame for the user to view.</p>
-
+<p>For samples, see <link idref="samples" anchor="applet">AppletXMLtoHTML</link>.</p>
+<anchor name="netscape"/><s3 title="Problems with Netscape">
+    <p>The JAXP strategy of reading system properties 
+    generates SecurityExceptions when you attempt to run &xslt4j; applets in the Netscape Communicator 4.7.</p> 
+    <p>Stuart Connell 
+    &lt;Stuart.Connell@compuware.com&gt; reports that the &xslt4j; applet wrapper does work in Netscape Communicator 6, 
+    provided that you avoid calls to the AppletContext showStatus() method. In other words, you can remove the showStatus() calls
+    from org.apache.xalan.client.XSLTProcessorApplet, and run &xslt4j; applets from Netscape Communicator 6. This appears to be a
+    Netscape bug, which hopefully will be fixed soon. For more information, see 
+    <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3231">Bugzilla bug 3231</jump>.</p>
+</s3>    
 </s2><anchor name="servlet"/>
 <s2 title="Using &xslt4j; in a servlet">
 <p>You can set up a servlet to use &xslt4j; to respond to requests for XML documents by transforming those documents into HTML and serving them to web browsers. To respond to HTTP GET requests, all you need to do is overwrite the HttpServlet doGet() method with a procedure that instantiates a Transformer and uses it to perform a transformation. As the following example shows, you can generate a ResultStream that a PrintWriter writes to the HttpResponse OutputStream, returning the transformation output to the web browser.</p>
