@@ -58,14 +58,12 @@ package org.apache.xml.dtm.ref.sax2dtm;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;
-import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.res.XMLErrorResources;
 
 import javax.xml.transform.Source;
 import org.xml.sax.*;
-import org.xml.sax.ext.*;
 
 /**
  * SAX2DTM2 is an optimized version of SAX2DTM which is used in non-incremental case.

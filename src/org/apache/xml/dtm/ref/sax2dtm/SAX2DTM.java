@@ -70,7 +70,6 @@ import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.WrappedRuntimeException;
-import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xml.res.XMLErrorResources;

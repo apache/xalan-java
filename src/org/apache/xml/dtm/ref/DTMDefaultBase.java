@@ -58,20 +58,9 @@ package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.utils.SuballocatedIntVector;
-import org.apache.xml.utils.SuballocatedByteVector;
-import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.BoolStack;
-import org.apache.xml.utils.StringBufferPool;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.XMLCharacterRecognizer;
 
 import java.util.Vector;
-
-import org.xml.sax.ContentHandler;
-
-import org.apache.xml.utils.NodeVector;
 
 import javax.xml.transform.Source;
 
