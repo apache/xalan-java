@@ -710,7 +710,7 @@ public class ApplyXSLT extends HttpServlet
     {
 	  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-      Node sourceTree = docBuilder.parse(xmlSource.getByteStream());
+      Node sourceTree = docBuilder.parse(xmlSource.getInputStream());
       for(Node child=sourceTree.getFirstChild(); null != child; child=child.getNextSibling())
       {
         if(Node.PROCESSING_INSTRUCTION_NODE == child.getNodeType())
