@@ -353,6 +353,7 @@ Transformer transformer = translet.newTransformer();
 transformer.transform(new StreamSource(xmlInURI),
                       new StreamResult(htmlOutURI));
 ...</source>
+<p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc1">JAXPTransletOneTransformation</link>.</p>
 <p><em>Example 2:</em> Compiling a translet/Templates object for a single transformation</p>
 <source>import java.util.Properties;
 import javax.xml.transform.TransformerFactory;
@@ -376,6 +377,7 @@ Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI));
 // Perform the transformation from a StreamSource to a StreamResult;
 transformer.transform(new StreamSource(xmlInURI),
                       new StreamResult(htmlOutURI));</source>
+<p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc2">JAXPTransletMultipleTransformations</link>.</p>
 </s3>
 </s2><anchor name="constraints"/>
 &xsltc_constraints;
