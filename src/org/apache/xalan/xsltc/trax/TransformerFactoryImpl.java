@@ -126,6 +126,12 @@ public class TransformerFactoryImpl
      */
     private Hashtable _piParams = null;
 
+
+    /**
+     * Use a thread local variable to store a copy of an XML Reader.
+     */
+    static ThreadLocal _xmlReader = new ThreadLocal();
+
     /**
      * The above hashtable stores objects of this class.
      */
@@ -727,7 +733,8 @@ public class TransformerFactoryImpl
     /**
      * This method is synchronized to allow instances of this class to 
      * be shared among threads. A tranformer object will call this 
-     * method to get an XMLReader.
+     * method to get an XMLReader. A different instance of an XMLReader
+     * is returned/cached for each thread.
      */
     public synchronized XMLReader getXMLReader() throws Exception {
 	// First check if factory is instantiated
@@ -735,6 +742,11 @@ public class TransformerFactoryImpl
 	    _parserFactory = SAXParserFactory.newInstance();
 	    _parserFactory.setNamespaceAware(true);
 	}
-	return _parserFactory.newSAXParser().getXMLReader();
+	XMLReader result = (XMLReader) _xmlReader.get();
+	if (result == null) {
+	    _xmlReader.set(
+		result = _parserFactory.newSAXParser().getXMLReader());
+	}
+	return result;
     }
 }
