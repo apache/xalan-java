@@ -241,6 +241,9 @@ public class XSLTCDTMManager extends DTMManagerDefault
 
       addDTM(dtm, dtmPos);
 
+      // %HZ% %REVISIT%:  I hate calling this here!
+      dtm.createMappings();
+
 //      if (DUMPTREE)
 //      {
 //        dtm.dumpDTM();
@@ -464,6 +467,9 @@ public class XSLTCDTMManager extends DTMManagerDefault
                                 whiteSpaceFilter, xstringFactory, doIndexing, size);
 
       addDTM(dtm, dtmPos);
+
+      // %HZ% %REVISIT%:  I hate calling this here!
+      dtm.createMappings();
 
 //      if (DUMPTREE)
 //      {
