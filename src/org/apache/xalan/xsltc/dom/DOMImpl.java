@@ -2855,7 +2855,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
-	    makeTextNode(false);
 	}
 
 	/**
@@ -2875,6 +2874,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	 * SAX2: Receive notification of the end of a document.
 	 */
 	public void endDocument() {
+	    makeTextNode(false);
+
 	    _shortTexts = null;
 	    final int namesSize = _nextNameCode - NTYPES;
 
@@ -2930,6 +2931,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	public void startElement(String uri, String localName,
 				 String qname, Attributes attributes)
 	    throws SAXException {
+
+	    makeTextNode(false);
+
 	    // Get node index and setup parent/child references
 	    final int node = nextNode();
 	    linkChildren(node);
@@ -2971,6 +2975,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void endElement(String namespaceURI, String localName,
 			       String qname) {
+	    makeTextNode(false);
 	    // Revert to strip/preserve-space setting from before this element
 	    xmlSpaceRevert(_parentStack[_sp]);
 	    _previousSiblingStack[_sp--] = 0;
@@ -2981,6 +2986,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void processingInstruction(String target, String data)
 	    throws SAXException {
+
+	    makeTextNode(false);
+
 	    final int node = nextNode();
 	    _type[node] = PROCESSING_INSTRUCTION;
 	    linkChildren(node);
@@ -3050,6 +3058,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	 * SAX2: Report an XML comment anywhere in the document.
 	 */
 	public void comment(char[] ch, int start, int length) {
+	    makeTextNode(false);
 	    if (_currentOffset + length > _text.length) {
 		resizeTextArray(_text.length * 2);
 	    }
