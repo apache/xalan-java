@@ -529,7 +529,8 @@ public class Process
               dfactory.setNamespaceAware(true);
               DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
               Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
-              Document outNode = docBuilder.newDocument();
+              Document doc = docBuilder.newDocument();
+              org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
               transformer.transform(new DOMSource(xmlDoc, inFileName), 
                                     new DOMResult(outNode));
                                     
