@@ -984,11 +984,12 @@ public class XStringForFSB extends XString
       
     long longResult=0;
     boolean isNegative=false;
+    boolean trailingSpace=false;
     int[] digitsFound={0,0}; // intpart,fracpart
     int digitType=0;    // Index to which kind of digit we're accumulating
     double doubleResult;
     
-    // Scan past whitespace characters
+    // Scan past leading whitespace characters
     while(start< end &&
           XMLCharacterRecognizer.isWhiteSpace( fsb.charAt(start) )
           )
@@ -1005,26 +1006,38 @@ public class XStringForFSB extends XString
     {
       char c = fsb.charAt(i);
 
-      if (c == '.')
+      if(XMLCharacterRecognizer.isWhiteSpace(c))
       {
+	trailngSpace=true;
+        break;                  // Trailing whitespace is ignored
+      }
+      else if(trailingSpace)
+	return Double.NaN;	// Nonspace after space is poorly formed
+	
+      switch(c)
+      {
+      case '.':
         if(digitType==0)
           digitType=1;
         else
           return Double.NaN;    // Second period is error
-      }
-      
-      // Should embedded whitespace _REALLY_ be ignored???
-      else if(XMLCharacterRecognizer.isWhiteSpace(c))
-        break;                  // Whitespace is ignored
-
-      else if (Character.isDigit(c))
-      {
+	break;
+	
+      case '0':			// NOT Unicode isDigit();  ASCII digits _only_
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
         longResult = longResult * 10 + (c - '0'); // Accumulate as int
         ++digitsFound[digitType]; // Remember scaling
-      }
+	break;
 
-      else
-      {
+      default:
         return Double.NaN;      // Nonnumeric is error
       }
     }
