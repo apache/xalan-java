@@ -40,26 +40,12 @@ import java.io.BufferedInputStream; // dml
  */
 public class Examples
 {
-	static void setProps()
-	  throws IOException
-	{
-	  java.util.Properties props = System.getProperties();
-	  java.util.zip.ZipFile jf = new java.util.jar.JarFile("/xml-xalan/java/build/xalan.jar");
-//	  props.load(new BufferedInputStream(jf.getInputStream(jf.getEntry("serialize/serializer.properties"))));
-//	  props.load(new BufferedInputStream(jf.getInputStream(jf.getEntry("trax/trax.properties"))));
-	  props.load(new BufferedInputStream(jf.getInputStream(jf.getEntry("org/apache/xalan/res/XSLTInfo.properties"))));
-	  System.setProperties(props);
-	}
-	
-
-
   public static void main( String argv[] )
     throws ProcessorException, ProcessorFactoryException, 
            TransformException, SAXException, IOException, 
            ParserConfigurationException
   {
-//    setProps();
-	System.out.println("==== exampleSimple ====");
+  	System.out.println("==== exampleSimple ====");
     exampleSimple("foo.xml", "foo.xsl");
     System.out.println("\n==== exampleSAX2SAX ====");
     exampleSAX2SAX("foo.xml", "foo.xsl");
