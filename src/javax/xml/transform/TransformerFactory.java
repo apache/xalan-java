@@ -204,6 +204,30 @@ public abstract class TransformerFactory
    */
   public abstract Templates newTemplates(Source source)
     throws TransformerConfigurationException;
+  
+  /**
+   * Get InputSource specification(s) that are associated with the
+   * given document specified in the source param,
+   * via the xml-stylesheet processing instruction
+   * (see http://www.w3.org/TR/xml-stylesheet/), and that matches
+   * the given criteria.  Note that it is possible to return several stylesheets
+   * that match the criteria, in which case they are applied as if they were
+   * a list of imports or cascades.
+   *
+   * @param source
+   * @param media The media attribute to be matched.  May be null, in which
+   *              case the prefered templates will be used (i.e. alternate = no).
+   * @param title The value of the title attribute to match.  May be null.
+   * @param charset The value of the charset attribute to match.  May be null.
+   * @returns An array of InputSources that can be passed to processMultiple method.
+   *
+   * @return A Source object suitable for passing to the TransformerFactory.
+   *
+   * @throws TransformerConfigurationException
+   */
+  public abstract Source getAssociatedStylesheet(
+    Source source, String media, String title, String charset)
+      throws TransformerConfigurationException;
 
   /**
    * Set an object that will be used to resolve URIs used in
