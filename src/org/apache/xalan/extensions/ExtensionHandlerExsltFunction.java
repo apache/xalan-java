@@ -61,6 +61,8 @@ import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemExsltFuncResult;
 import org.apache.xalan.templates.ElemExsltFunction;
@@ -234,25 +236,32 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
       }
       
       ElemExsltFunction elemFunc = getFunction(extFunction.getFunctionName());
-      XPathContext context = exprContext.getXPathContext();
-      TransformerImpl transformer = (TransformerImpl)context.getOwnerObject();
       
-      // Reset the frame bottom before calling the EXSLT function.
-      if (callerTemplate != null)
-        elemFunc.setCallerFrameSize(callerTemplate.m_frameSize);
-      else
-        elemFunc.setCallerFrameSize(0);
+      if (null != elemFunc) {
+        XPathContext context = exprContext.getXPathContext();
+        TransformerImpl transformer = (TransformerImpl)context.getOwnerObject();
       
-      elemFunc.execute(transformer, methodArgs);
+        // Reset the frame bottom before calling the EXSLT function.
+        if (callerTemplate != null)
+          elemFunc.setCallerFrameSize(callerTemplate.m_frameSize);
+        else
+          elemFunc.setCallerFrameSize(0);
+       
+        elemFunc.execute(transformer, methodArgs);
       
-      XObject val = new XString(""); // value returned if no result element.
-      if (elemFunc.isResultSet())
-      {
-        val = elemFunc.getResult();
-        elemFunc.clearResult();
-      }
+        XObject val = new XString(""); // value returned if no result element.
+        if (elemFunc.isResultSet())
+        {
+          val = elemFunc.getResult();
+          elemFunc.clearResult();
+        }
               
-      return val;
+        return val;
+      
+      }
+      else {
+      	throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_FUNCTION_NOT_FOUND, new Object[] {extFunction.getFunctionName()}));
+      }
     }
     catch (TransformerException e)
     {

@@ -430,6 +430,8 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_TEMPLATE_NAME_MATCH = "ER_TEMPLATE_NAME_MATCH";
   public static final String ER_INVALID_PREFIX = "ER_INVALID_PREFIX";
   public static final String ER_NO_ATTRIB_SET = "ER_NO_ATTRIB_SET";
+  public static final String ER_FUNCTION_NOT_FOUND = 
+	 "ER_FUNCTION_NOT_FOUND"; 
 
   public static final String WG_FOUND_CURLYBRACE = "WG_FOUND_CURLYBRACE";
   public static final String WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR = 
@@ -2123,16 +2125,24 @@ public class XSLTErrorResources extends ListResourceBundle
     { ER_INVALID_PREFIX,
      "Prefix in exclude-result-prefixes is not valid: {0}"},
 
-    // Note to translators:  An "attribute set" is a set of attributes that can be
-    // added to an element in the output document as a group.  The message indicates
-    // that there was a reference to an attribute set named {0} that was never
-    // defined.
+    // Note to translators:  An "attribute set" is a set of attributes that can
+    // be added to an element in the output document as a group.  The message
+    // indicates that there was a reference to an attribute set named {0} that
+    // was never defined.
     // ER_NO_ATTRIB_SET - new error message for bugzilla #782
 
   // attribute-set named {0} does not exist
 //  public static final int ER_NO_ATTRIB_SET           = 253;
     { ER_NO_ATTRIB_SET,
      "attribute-set named {0} does not exist"},
+     
+    // Note to translators:  This message indicates that there was a reference
+    // to a function named {0} for which no function definition could be found.
+//ER_FUNCTION_NOT_FOUND
+//  public static final int ER_FUNCTION_NOT_FOUND = 254;
+
+    { ER_FUNCTION_NOT_FOUND,
+     "The function named {0} does not exist"},
 
 
 
