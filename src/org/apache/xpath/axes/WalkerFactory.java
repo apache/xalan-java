@@ -63,8 +63,9 @@ import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.traversal.NodeFilter;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class WalkerFactory <needs-comment/>
+ * This class is both a factory for XPath location path expressions, 
+ * which are built from the opcode map output, and an analysis engine 
+ * for the location path expressions in order to provide optimization hints.
  */
 public class WalkerFactory
 {
@@ -76,11 +77,12 @@ public class WalkerFactory
    * @param xpath The xpath that is executing.
    * @param context The current source tree context node.
    *
-   * NEEDSDOC @param lpi
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param stepOpCodePos
+   * @param lpi The owning location path iterator.
+   * @param compiler non-null reference to compiler object that has processed 
+   *                 the XPath operations into an opcode map.
+   * @param stepOpCodePos The opcode position for the step.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null AxesWalker derivative.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -112,12 +114,13 @@ public class WalkerFactory
    * @param xpath The xpath that is executing.
    * @param context The current source tree context node.
    *
-   * NEEDSDOC @param lpi
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param stepOpCodePos
-   * NEEDSDOC @param stepIndex
+   * @param lpi The owning location path iterator object.
+   * @param compiler non-null reference to compiler object that has processed 
+   *                 the XPath operations into an opcode map.
+   * @param stepOpCodePos The opcode position for the step.
+   * @param stepIndex The top-level step index withing the iterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null AxesWalker derivative.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -160,34 +163,83 @@ public class WalkerFactory
   }
 
   /**
-   * NEEDSDOC Method newLocPathIterator 
+   * Create a new LocPathIterator iterator.  The exact type of iterator 
+   * returned is based on an analysis of the XPath operations.
    *
+   * @param compiler non-null reference to compiler object that has processed 
+   *                 the XPath operations into an opcode map.
+   * @param opPos The position of the operation code for this itterator.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
-   *
-   * NEEDSDOC (newLocPathIterator) @return
+   * @return non-null reference to a LocPathIterator or derivative.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public static LocPathIterator newLocPathIterator(
-          Compiler compiler, int opPos) throws javax.xml.transform.TransformerException
+          Compiler compiler, int opPos)
+            throws javax.xml.transform.TransformerException
   {
 
     int firstStepPos = compiler.getFirstChildPos(opPos);
     int analysis = analyze(compiler, firstStepPos, 0);
+    
+    
+    if (DEBUG_ITERATOR_CREATION)
+      System.out.println("analysis -- newLocPathIterator: " 
+                        + Integer.toBinaryString(analysis) + ", "
+                         + compiler.toString());
 
-    if (ONESTEP_CHILDREN_ANY == analysis)
+    // Can't have optimized iterators at this time that have predicates.
+    if (BIT_PREDICATE == (analysis & BIT_PREDICATE))
+      return new LocPathIterator(compiler, opPos, true);
+
+    if ((BIT_CHILD | 0x00000001) == (analysis & (BIT_CHILD | BITS_COUNT)))
     {
-      return new ChildIterator(compiler, opPos);
+      if (BIT_CHILD == (analysis & BIT_NODETEST_ANY))
+      {
+        if (DEBUG_ITERATOR_CREATION)
+          System.out.println("ChildIterator!");
+
+        return new ChildIterator(compiler, opPos);
+      }
+      else
+      {
+        if (DEBUG_ITERATOR_CREATION)
+          System.out.println("ChildTestIterator!");
+
+        return new ChildTestIterator(compiler, opPos);
+      }
     }
-    else if(ONESTEP_CHILDREN_NO_PREDICATE == analysis)
+    else if ((BIT_ATTRIBUTE | 0x00000001)
+             == (analysis & (BIT_ATTRIBUTE | BITS_COUNT)))
     {
-      return new ChildTestIterator(compiler, opPos);
-    }
-    else if(ONESTEP_ATTR_NO_PREDICATES == analysis)
-    {
+      if (DEBUG_ITERATOR_CREATION)
+        System.out.println("AttributeIterator!");
+
       return new AttributeIterator(compiler, opPos);
+    }
+    // Analysis of "//center":
+    // bits: 1001000000001010000000000000011
+    // count: 3
+    // root
+    // child:node()
+    // BIT_DESCENDANT_OR_SELF
+    // It's highly possible that we should have a seperate bit set for 
+    // "//foo" patterns.
+    else if (((BIT_DESCENDANT | BIT_DESCENDANT_OR_SELF | 0x00000001)
+             == (analysis
+                 & (BIT_DESCENDANT | BIT_DESCENDANT_OR_SELF | BITS_COUNT))) ||
+            ((BIT_DESCENDANT_OR_SELF | BIT_SELF | 0x00000002)
+             == (analysis
+                 & (BIT_DESCENDANT_OR_SELF | BIT_SELF | BITS_COUNT))) ||
+            ((BIT_DESCENDANT_OR_SELF | BIT_ROOT | BIT_CHILD | BIT_NODETEST_ANY | BIT_ANY_DESCENDANT_FROM_ROOT | 0x00000003)
+             == (analysis
+                 & (BIT_DESCENDANT_OR_SELF | BIT_ROOT | BIT_CHILD | BIT_NODETEST_ANY | BIT_ANY_DESCENDANT_FROM_ROOT | BITS_COUNT)))
+    )
+    {
+      if (DEBUG_ITERATOR_CREATION)
+        System.out.println("DescendantIterator!");
+
+      return new DescendantIterator(compiler, opPos);
     }
     else
     {
@@ -195,44 +247,18 @@ public class WalkerFactory
     }
   }
 
-  // There is no optimized walker that can handle 
-  // this pattern, so use the default.
-
-  /** Pattern that we do not optimize for.  */
-  static final int NO_OPTIMIZE = 1;
-
-  /** "."  */
-  static final int ONESTEP_SELF = 2;
-
-  /** "*" */
-  static final int ONESTEP_CHILDREN = 3;
-
-  /** "node()"  */
-  static final int ONESTEP_CHILDREN_ANY = 7;
-
-  /** "@foo[../baz]"  */
-  static final int ONESTEP_ATTR = 4;
-
-  /** "@foo"  */
-  static final int ONESTEP_ATTR_NO_PREDICATES = 9;
-
-  /** NEEDSDOC Field ONESTEP_DESCENDANTS          */
-  static final int ONESTEP_DESCENDANTS = 5;
-
-  /** NEEDSDOC Field MULTISTEP_CHILDREN          */
-  static final int MULTISTEP_CHILDREN = 6;
-
-  /** NEEDSDOC Field ONESTEP_CHILDREN          */
-  static final int ONESTEP_CHILDREN_NO_PREDICATE = 8;
-
   /**
-   * <meta name="usage" content="advanced"/>
+   * Analyze the location path and return 32 bits that give information about 
+   * the location path as a whole.  See the BIT_XXX constants for meaning about 
+   * each of the bits.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param stepOpCodePos
-   * NEEDSDOC @param stepIndex
+   * @param compiler non-null reference to compiler object that has processed 
+   *                 the XPath operations into an opcode map.
+   * @param stepOpCodePos The opcode position for the step.
+   * @param stepIndex The top-level step index withing the iterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return 32 bits as an integer that give information about the location 
+   * path as a whole.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -244,7 +270,7 @@ public class WalkerFactory
     int stepType;
     int ops[] = compiler.getOpMap();
     int stepCount = 0;
-    int analysisResult = NO_OPTIMIZE;
+    int analysisResult = 0x00000000;  // 32 bits of analysis
 
     while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
     {
@@ -255,92 +281,84 @@ public class WalkerFactory
       //                   ? namespace.equals(NodeTest.WILD) : false;
       // String localname = compiler.getStepLocalName(stepOpCodePos);
       // boolean isWild = (null != localname) ? localname.equals(NodeTest.WILD) : false;
-      int predAnalysis = analyzePredicate(compiler, stepOpCodePos, stepType);
+      boolean predAnalysis = analyzePredicate(compiler, stepOpCodePos,
+                                              stepType);
+
+      if (predAnalysis)
+        analysisResult |= BIT_PREDICATE;
+
       switch (stepType)
       {
       case OpCodes.OP_VARIABLE :
       case OpCodes.OP_EXTFUNCTION :
       case OpCodes.OP_FUNCTION :
       case OpCodes.OP_GROUP :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_FILTER;
+        break;
       case OpCodes.FROM_ROOT :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_ROOT;
+        break;
       case OpCodes.FROM_ANCESTORS :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_ANCESTOR;
+        break;
       case OpCodes.FROM_ANCESTORS_OR_SELF :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_ANCESTOR_OR_SELF;
+        break;
       case OpCodes.FROM_ATTRIBUTES :
-        if (1 == stepCount)
-        {
-          if(predAnalysis == HAS_NOPREDICATE)
-            analysisResult = ONESTEP_ATTR_NO_PREDICATES;
-          else
-            analysisResult = ONESTEP_ATTR;
-        }
-        else
-        {
-          return NO_OPTIMIZE;  // at least for now
-        }
+        analysisResult |= BIT_ATTRIBUTE;
         break;
       case OpCodes.FROM_NAMESPACE :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_NAMESPACE;
+        break;
       case OpCodes.FROM_CHILDREN :
-        if (1 == stepCount)
-        {
-          if (OpCodes.NODETYPE_NODE == ops[stepOpCodePos+3])    // child::node()
-          {
-            // System.out.println("ONESTEP_CHILDREN_ANY");
-            if(predAnalysis == HAS_NOPREDICATE)
-              analysisResult = ONESTEP_CHILDREN_ANY;
-            else
-              analysisResult = NO_OPTIMIZE;
-          }
-          else
-          {
-            if(predAnalysis == HAS_NOPREDICATE)
-              analysisResult = ONESTEP_CHILDREN_NO_PREDICATE;
-            else
-              analysisResult = ONESTEP_CHILDREN;
-          }
-        }
-        else
-        {
-          if ((analysisResult == ONESTEP_CHILDREN)
-                  || (analysisResult == MULTISTEP_CHILDREN))
-            analysisResult = MULTISTEP_CHILDREN;
-          else
-            return NO_OPTIMIZE;
-        }
+        analysisResult |= BIT_CHILD;
         break;
       case OpCodes.FROM_DESCENDANTS :
-        return NO_OPTIMIZE;  // TODO
+        analysisResult |= BIT_DESCENDANT;
+        break;
       case OpCodes.FROM_DESCENDANTS_OR_SELF :
-        return NO_OPTIMIZE;  // TODO
+        // Use a special bit to to make sure we get the right analysis of "//foo".
+        if(2 == stepCount && BIT_ROOT == analysisResult)
+        {
+          analysisResult |= BIT_ANY_DESCENDANT_FROM_ROOT;
+        }
+        analysisResult |= BIT_DESCENDANT_OR_SELF;
+        break;
       case OpCodes.FROM_FOLLOWING :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_DESCENDANT_OR_SELF;
+        break;
       case OpCodes.FROM_FOLLOWING_SIBLINGS :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_FOLLOWING_SIBLING;
+        break;
       case OpCodes.FROM_PRECEDING :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_PRECEDING;
+        break;
       case OpCodes.FROM_PRECEDING_SIBLINGS :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_PRECEDING_SIBLING;
+        break;
       case OpCodes.FROM_PARENT :
-        return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_PARENT;
+        break;
       case OpCodes.FROM_SELF :
-        if (1 == stepCount)
-          analysisResult = ONESTEP_SELF;
-        else
-          return NO_OPTIMIZE;  // at least for now
+        analysisResult |= BIT_SELF;
         break;
       case OpCodes.MATCH_ATTRIBUTE :
-        return NO_OPTIMIZE;  // for now we shouldn't be dealing with match patterns here.
+        analysisResult |= (BIT_MATCH_PATTERN | BIT_ATTRIBUTE);
+        break;
       case OpCodes.MATCH_ANY_ANCESTOR :
-        return NO_OPTIMIZE;  // for now we shouldn't be dealing with match patterns here.
+        analysisResult |= (BIT_MATCH_PATTERN | BIT_ANCESTOR);
+        break;
       case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
-        return NO_OPTIMIZE;  // for now we shouldn't be dealing with match patterns here.
+        analysisResult |= (BIT_MATCH_PATTERN | BIT_PARENT);
+        break;
       default :
         throw new RuntimeException("Programmer's assertion: unknown opcode: "
                                    + stepType);
+      }
+
+      if (OpCodes.NODETYPE_NODE == ops[stepOpCodePos + 3])  // child::node()
+      {
+        analysisResult |= BIT_NODETEST_ANY;
       }
 
       stepOpCodePos = compiler.getNextStepPos(stepOpCodePos);
@@ -349,34 +367,25 @@ public class WalkerFactory
         break;
     }
 
+    analysisResult |= (stepCount & BITS_COUNT);
+
     return analysisResult;
   }
 
-  /** NEEDSDOC Field HAS_PREDICATE          */
-  static final int HAS_PREDICATE = 1;
-
-  /** NEEDSDOC Field HAS_NOPREDICATE          */
-  static final int HAS_NOPREDICATE = 2;
-
-  /** NEEDSDOC Field HAS_BOOLEANPREDICATE          */
-  static final int HAS_BOOLEANPREDICATE = 3;
-
-  /** NEEDSDOC Field MAYHAVE_INDEXPREDICATE          */
-  static final int MAYHAVE_INDEXPREDICATE = 4;
-
   /**
-   * NEEDSDOC Method analyzePredicate 
+   * Analyze a step and give information about it's predicates.  Right now this 
+   * just returns true or false if the step has a predicate.
    *
+   * @param compiler non-null reference to compiler object that has processed 
+   *                 the XPath operations into an opcode map.
+   * @param opPos The opcode position for the step.
+   * @param stepType The type of step, one of OP_GROUP, etc.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
-   * NEEDSDOC @param stepType
-   *
-   * NEEDSDOC (analyzePredicate) @return
+   * @return true if step has a predicate.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  static int analyzePredicate(Compiler compiler, int opPos, int stepType)
+  static boolean analyzePredicate(Compiler compiler, int opPos, int stepType)
           throws javax.xml.transform.TransformerException
   {
 
@@ -397,18 +406,21 @@ public class WalkerFactory
     int pos = compiler.getFirstPredicateOpPos(opPos);
     int nPredicates = compiler.countPredicates(pos);
 
-    return (nPredicates > 0) ? HAS_PREDICATE : HAS_NOPREDICATE;
+    return (nPredicates > 0) ? true : false;
   }
 
   /**
    * Create the proper Walker from the axes type.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
-   * NEEDSDOC @param lpi
-   * NEEDSDOC @param analysis
+   * @param compiler non-null reference to compiler object that has processed 
+   *                 the XPath operations into an opcode map.
+   * @param opPos The opcode position for the step.
+   * @param lpi The owning location path iterator.
+   * @param analysis 32 bits of analysis, from which the type of AxesWalker 
+   *                 may be influenced.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to AxesWalker derivative.
+   * @throws RuntimeException if the input is bad.
    */
   private static AxesWalker createDefaultWalker(Compiler compiler, int opPos,
           LocPathIterator lpi, int analysis)
@@ -416,7 +428,6 @@ public class WalkerFactory
 
     AxesWalker ai;
     int stepType = compiler.getOp(opPos);
-    boolean debug = false;
 
     /*
     System.out.println("0: "+compiler.getOp(opPos));
@@ -427,6 +438,7 @@ public class WalkerFactory
     System.out.println("5: "+compiler.getOp(opPos+5));
     */
     boolean simpleInit = false;
+    int totalNumberWalkers = (analysis & BITS_COUNT);
 
     switch (stepType)
     {
@@ -447,40 +459,42 @@ public class WalkerFactory
       ai = new AncestorOrSelfWalker(lpi);
       break;
     case OpCodes.FROM_ATTRIBUTES :
-      switch (analysis)
+      if (1 == totalNumberWalkers)
       {
-      case ONESTEP_ATTR_NO_PREDICATES:
-      case ONESTEP_ATTR :
+
+        // TODO: We should be able to do this as long as this is 
+        // the last step.
         ai = new AttributeWalkerOneStep(lpi);
-        break;
-      default :
-        ai = new AttributeWalker(lpi);
       }
+      else
+        ai = new AttributeWalker(lpi);
       break;
     case OpCodes.FROM_NAMESPACE :
       ai = new NamespaceWalker(lpi);
       break;
     case OpCodes.FROM_CHILDREN :
-      switch (analysis)
+      if (1 == totalNumberWalkers)
       {
-      case ONESTEP_CHILDREN :
-      {
-        if (debug)
+        if (DEBUG_WALKER_CREATION)
           System.out.println("analysis -- onestep child: " + analysis + ", "
                              + compiler.toString());
 
         ai = new ChildWalkerOneStep(lpi);
       }
-      break;
-      case MULTISTEP_CHILDREN :
-        if (debug)
-          System.out.println("analysis -- multi-step child: " + analysis
-                             + ", " + compiler.toString());
+      else
+      {
+        if (0 == ~(BIT_CHILD | BIT_PREDICATE | BITS_COUNT))
+        {
+          if (DEBUG_WALKER_CREATION)
+            System.out.println("analysis -- multi-step child: " + analysis
+                               + ", " + compiler.toString());
 
-        ai = new ChildWalkerMultiStep(lpi);
-        break;
-      default :
-        ai = new ChildWalker(lpi);
+          ai = new ChildWalkerMultiStep(lpi);
+        }
+        else
+        {
+          ai = new ChildWalker(lpi);
+        }
       }
       break;
     case OpCodes.FROM_DESCENDANTS :
@@ -505,12 +519,16 @@ public class WalkerFactory
       ai = new ParentWalker(lpi);
       break;
     case OpCodes.FROM_SELF :
-      switch (analysis)
+      if (1 == totalNumberWalkers)
       {
-      case ONESTEP_SELF :
+        if (DEBUG_WALKER_CREATION)
+          System.out.println("analysis -- SelfWalkerOneStep: " + analysis
+                             + ", " + compiler.toString());
+
         ai = new SelfWalkerOneStep(lpi);
-        break;
-      default :
+      }
+      else
+      {
         ai = new SelfWalker(lpi);
       }
       break;
@@ -534,7 +552,6 @@ public class WalkerFactory
     }
     else
     {
-
       int whatToShow = compiler.getWhatToShow(opPos);
 
       /*
@@ -544,7 +561,6 @@ public class WalkerFactory
                              | NodeFilter.SHOW_ELEMENT
                              | NodeFilter.SHOW_PROCESSING_INSTRUCTION)));
       */
-
       if ((0 == (whatToShow
                  & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
                     | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
@@ -555,7 +571,93 @@ public class WalkerFactory
                         compiler.getStepLocalName(opPos));
       }
     }
-  
+
     return ai;
   }
+
+  /** Set to true for diagnostics about walker creation */
+  static final boolean DEBUG_WALKER_CREATION = false;
+
+  /** Set to true for diagnostics about iterator creation */
+  static final boolean DEBUG_ITERATOR_CREATION = false;
+
+  /**
+   * First 8 bits are the number of top-level location steps.  Hopefully
+   *  there will never be more that 255 location steps!!! 
+   */
+  public static final int BITS_COUNT = 0x000000FF;
+
+  /** 4 bits are reserved for future use. */
+  public static final int BITS_RESERVED = 0x00000F00;
+
+  /** Bit is on if the expression contains a top-level predicate. */
+  public static final int BIT_PREDICATE = (0x00001000);
+
+  /** Bit is on if any of the walkers contain an ancestor step. */
+  public static final int BIT_ANCESTOR = (0x00001000 << 1);
+
+  /** Bit is on if any of the walkers contain an ancestor-or-self step. */
+  public static final int BIT_ANCESTOR_OR_SELF = (0x00001000 << 2);
+
+  /** Bit is on if any of the walkers contain an attribute step. */
+  public static final int BIT_ATTRIBUTE = (0x00001000 << 3);
+
+  /** Bit is on if any of the walkers contain a child step. */
+  public static final int BIT_CHILD = (0x00001000 << 4);
+
+  /** Bit is on if any of the walkers contain a descendant step. */
+  public static final int BIT_DESCENDANT = (0x00001000 << 5);
+
+  /** Bit is on if any of the walkers contain a descendant-or-self step. */
+  public static final int BIT_DESCENDANT_OR_SELF = (0x00001000 << 6);
+
+  /** Bit is on if any of the walkers contain a following step. */
+  public static final int BIT_FOLLOWING = (0x00001000 << 7);
+
+  /** Bit is on if any of the walkers contain a following-sibiling step. */
+  public static final int BIT_FOLLOWING_SIBLING = (0x00001000 << 8);
+
+  /** Bit is on if any of the walkers contain a namespace step. */
+  public static final int BIT_NAMESPACE = (0x00001000 << 9);
+
+  /** Bit is on if any of the walkers contain a parent step. */
+  public static final int BIT_PARENT = (0x00001000 << 10);
+
+  /** Bit is on if any of the walkers contain a preceding step. */
+  public static final int BIT_PRECEDING = (0x00001000 << 11);
+
+  /** Bit is on if any of the walkers contain a preceding-sibling step. */
+  public static final int BIT_PRECEDING_SIBLING = (0x00001000 << 12);
+
+  /** Bit is on if any of the walkers contain a self step. */
+  public static final int BIT_SELF = (0x00001000 << 13);
+
+  /**
+   * Bit is on if any of the walkers contain a filter (i.e. id(), extension
+   *  function, etc.) step. 
+   */
+  public static final int BIT_FILTER = (0x00001000 << 14);
+
+  /** Bit is on if any of the walkers contain a root step. */
+  public static final int BIT_ROOT = (0x00001000 << 15);
+
+  /**
+   * Bit is on if any of the walkers can go backwards in document
+   *  order from the context node. 
+   */
+  public static final int BIT_BACKWARDS_SELF = (0x00001000 << 16);
+
+  /** Found "//foo" pattern */
+  public static final int BIT_ANY_DESCENDANT_FROM_ROOT = (0x00001000 << 17);
+
+  /**
+   * Bit is on if any of the walkers contain an node() test.  This is
+   *  really only useful if the count is 1. 
+   */
+  public static final int BIT_NODETEST_ANY = (0x00001000 << 18);
+
+  /** Bit is on if the expression is a match pattern. */
+  public static final int BIT_MATCH_PATTERN = (0x00001000 << 19);
+
+  // can't go higher than 19!
 }

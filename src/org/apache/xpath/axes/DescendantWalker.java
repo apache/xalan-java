@@ -105,7 +105,7 @@ public class DescendantWalker extends AxesWalker
 
     Node n;
 
-    if (m_root.equals(m_currentNode))
+    if (m_root.equals(m_currentNode)) // why not == ?  -sb
     {
       n = null;
     }

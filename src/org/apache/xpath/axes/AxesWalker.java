@@ -238,7 +238,7 @@ public abstract class AxesWalker extends NodeTest
    * The type of this walker based on the pattern analysis.
    * @see org.apache.xpath.axes.WalkerFactory
    */
-  protected int m_analysis = WalkerFactory.NO_OPTIMIZE;
+  protected int m_analysis = 0x00000000;
 
   /**
    * NEEDSDOC Method getAnalysis 

@@ -81,7 +81,7 @@ public class AttributeWalkerOneStep extends AxesWalker
   /**
    *  The root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of the node step.
    */
   public void setRoot(Node root)
   {
