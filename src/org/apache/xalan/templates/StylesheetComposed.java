@@ -561,12 +561,12 @@ public class StylesheetComposed extends Stylesheet
   {
     return (Vector) m_attrSets.get(name);
   }
-
+  
   /**
-   * Composed set of all params.
+   * Composed set of all variables and params.
    * <p>Note: Should this go on the StylesheetRoot class instead?</p>
    */
-  private transient Hashtable m_variables;
+  private transient Vector m_variables;
 
   /**
    * Recompose the attribute-set decls from this stylesheet and
@@ -575,7 +575,7 @@ public class StylesheetComposed extends Stylesheet
   void recomposeVariables()
   {
 
-    m_variables = new Hashtable();
+    m_variables = new Vector();
 
     // Loop for this stylesheet and all stylesheets included or of lower 
     // import precidence.
@@ -586,15 +586,15 @@ public class StylesheetComposed extends Stylesheet
       StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
 
       // Does this stylesheet contain it?
-      int nVariables = stylesheet.getVariableCount();
+      int nVariables = stylesheet.getVariableOrParamCount();
 
       for (int vIndex = 0; vIndex < nVariables; vIndex++)
       {
-        ElemVariable elemVar = stylesheet.getVariable(vIndex);
+        ElemVariable elemVar = stylesheet.getVariableOrParam(vIndex);
 
         // Don't overide higher priority variable        
-        if (m_variables.get(elemVar.getName()) == null)
-          m_variables.put(elemVar.getName(), elemVar);
+        if (getVariableOrParamComposed(elemVar.getName()) == null)
+          m_variables.addElement(elemVar);
       }
 
       // Do the included stylesheets contain it?
@@ -604,15 +604,15 @@ public class StylesheetComposed extends Stylesheet
       {
         Stylesheet included = stylesheet.getIncludeComposed(k);
 
-        nVariables = included.getVariableCount();
+        nVariables = included.getVariableOrParamCount();
 
         for (int vIndex = 0; vIndex < nVariables; vIndex++)
         {
-          ElemVariable elemVar = included.getVariable(vIndex);
+          ElemVariable elemVar = included.getVariableOrParam(vIndex);
 
           // Don't overide higher priority variable
-          if (m_variables.get(elemVar.getName()) == null)
-            m_variables.put(elemVar.getName(), elemVar);
+          if (getVariableOrParamComposed(elemVar.getName()) == null)
+            m_variables.addElement(elemVar);
         }
       }
     }
@@ -626,88 +626,21 @@ public class StylesheetComposed extends Stylesheet
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public ElemVariable getVariableComposed(QName qname)
+  public ElemVariable getVariableOrParamComposed(QName qname)
   {
-    return (ElemVariable) m_variables.get(qname);
-  }
-
-  /**
-   * Get all global "xsl:variable" properties in scope for this stylesheet.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public Enumeration getVariablesComposed()
-  {
-    return m_variables.elements();
-  }
-
-  /**
-   * Composed set of all params.
-   */
-  private transient Hashtable m_params;
-
-  /**
-   * Recompose the attribute-set decls from this stylesheet and
-   * all stylesheets within import precedence.
-   */
-  void recomposeParams()
-  {
-
-    m_params = new Hashtable();
-
-    // Loop for this stylesheet and all stylesheets included or of lower 
-    // import precidence.
-    int nImports = getImportCountComposed();
-
-    for (int i = -1; i < nImports; i++)
+    if (null != m_variables)
     {
-      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
+      int n = m_variables.size();
 
-      // Does this stylesheet contain it?
-      int nVariables = stylesheet.getParamCount();
-
-      for (int vIndex = 0; vIndex < nVariables; vIndex++)
+      for (int i = 0; i < n; i++)
       {
-        ElemParam elemVar = stylesheet.getParam(vIndex);
-
-        // Don't overide higher priority parameter
-        if (m_params.get(elemVar.getName()) == null)
-          m_params.put(elemVar.getName(), elemVar);
-      }
-
-      // Do the included stylesheets contain it?
-      int nIncludes = stylesheet.getIncludeCountComposed();
-
-      for (int k = 0; k < nIncludes; k++)
-      {
-        Stylesheet included = stylesheet.getIncludeComposed(k);
-
-        nVariables = included.getParamCount();
-
-        for (int vIndex = 0; vIndex < nVariables; vIndex++)
-        {
-          ElemParam elemVar = included.getParam(vIndex);
-
-          // Don't overide higher priority parameter
-          if (m_params.get(elemVar.getName()) == null)
-            m_params.put(elemVar.getName(), elemVar);
-        }
+        ElemVariable var = (ElemVariable)m_variables.elementAt(i);
+        if(var.getName().equals(qname))
+          return var;
       }
     }
-  }
 
-  /**
-   * Get an "xsl:param" property.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
-   *
-   * NEEDSDOC @param qname
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public ElemParam getParamComposed(QName qname)
-  {
-    return (ElemParam) m_params.get(qname);
+    return null;
   }
 
   /**
@@ -716,9 +649,9 @@ public class StylesheetComposed extends Stylesheet
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public Enumeration getParamsComposed()
+  public Vector getVariablesAndParamsComposed()
   {
-    return m_params.elements();
+    return m_variables;
   }
 
   /**

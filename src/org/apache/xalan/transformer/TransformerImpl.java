@@ -1498,11 +1498,12 @@ public class TransformerImpl extends Transformer
     XPathContext xctxt = getXPathContext();
     VariableStack vs = xctxt.getVarStack();
     StylesheetRoot sr = getStylesheet();
-    Enumeration vars = sr.getVariablesComposed();
+    Vector vars = sr.getVariablesAndParamsComposed();
 
-    while (vars.hasMoreElements())
+    int i = vars.size();
+    while (--i >= 0)
     {
-      ElemVariable v = (ElemVariable) vars.nextElement();
+      ElemVariable v = (ElemVariable) vars.elementAt(i);
       Object val = vs.getVariable(v.getName());
 
       if (null != val)
@@ -1511,22 +1512,9 @@ public class TransformerImpl extends Transformer
       XObject xobj = v.getValue(this, contextNode);
 
       vs.pushVariable(v.getName(), xobj);
+      vs.markGlobalStackFrame();
     }
 
-    vars = sr.getParamsComposed();
-
-    while (vars.hasMoreElements())
-    {
-      ElemParam v = (ElemParam) vars.nextElement();
-      Object val = vs.getVariable(v.getName());
-
-      if (null != val)
-        continue;
-
-      XObject xobj = v.getValue(this, contextNode);
-
-      vs.pushVariable(v.getName(), xobj);
-    }
 
     vs.markGlobalStackFrame();
   }

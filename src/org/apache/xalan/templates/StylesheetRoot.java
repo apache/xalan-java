@@ -260,7 +260,6 @@ public class StylesheetRoot extends StylesheetComposed
         sheet.recomposeDecimalFormats();
         sheet.recomposeKeys();
         sheet.recomposeNamespaceAliases();
-        sheet.recomposeParams();
         sheet.recomposeTemplates();
         sheet.recomposeVariables();
         sheet.recomposeWhiteSpaceInfo();
@@ -272,7 +271,6 @@ public class StylesheetRoot extends StylesheetComposed
     recomposeDecimalFormats();
     recomposeKeys();
     recomposeNamespaceAliases();
-    recomposeParams();
     recomposeTemplates();
     recomposeVariables();
     recomposeWhiteSpaceInfo();

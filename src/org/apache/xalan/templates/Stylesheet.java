@@ -894,7 +894,7 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * The "xsl:variable" properties.
+   * The "xsl:variable" and "xsl:param" properties.
    */
   private Vector m_topLevelVariables;
 
@@ -914,6 +914,34 @@ public class Stylesheet extends ElemTemplateElement
     // during recompose, they get properly overiden. 
     m_topLevelVariables.insertElementAt(v, 0);
   }
+  
+  /**
+   * Get an "xsl:variable" or "xsl:param" property.
+   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public ElemVariable getVariableOrParam(QName qname)
+  {
+
+    if (null != m_topLevelVariables)
+    {
+      int n = getVariableOrParamCount();
+
+      for (int i = 0; i < n; i++)
+      {
+        ElemVariable var = (ElemVariable) getVariableOrParam(i);
+
+        if (var.getName().equals(qname))
+          return var;
+      }
+    }
+
+    return null;
+  }
+
 
   /**
    * Get an "xsl:variable" property.
@@ -928,13 +956,13 @@ public class Stylesheet extends ElemTemplateElement
 
     if (null != m_topLevelVariables)
     {
-      int n = getVariableCount();
+      int n = getVariableOrParamCount();
 
       for (int i = 0; i < n; i++)
       {
-        ElemVariable var = (ElemVariable) getVariable(i);
-
-        if (var.getName().equals(qname))
+        ElemVariable var = getVariableOrParam(i);
+        if((var.getXSLToken() == Constants.ELEMNAME_VARIABLE) &&
+           (var.getName().equals(qname)))
           return var;
       }
     }
@@ -952,7 +980,7 @@ public class Stylesheet extends ElemTemplateElement
    *
    * @throws ArrayIndexOutOfBoundsException
    */
-  public ElemVariable getVariable(int i) throws ArrayIndexOutOfBoundsException
+  public ElemVariable getVariableOrParam(int i) throws ArrayIndexOutOfBoundsException
   {
 
     if (null == m_topLevelVariables)
@@ -967,31 +995,20 @@ public class Stylesheet extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public int getVariableCount()
+  public int getVariableOrParamCount()
   {
     return (null != m_topLevelVariables) ? m_topLevelVariables.size() : 0;
   }
 
   /**
-   * The "xsl:param" properties.
-   */
-  private Vector m_topLevelParams;
-
-  /**
    * Set an "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v A non-null ElemParam reference.
    */
   public void setParam(ElemParam v)
   {
-
-    if (null == m_topLevelParams)
-      m_topLevelParams = new Vector();
-
-    // Always insert parameters by order of importance so that 
-    // during recompose, they get properly overiden.
-    m_topLevelParams.insertElementAt(v, 0);
+    setVariable(v);
   }
 
   /**
@@ -1005,50 +1022,20 @@ public class Stylesheet extends ElemTemplateElement
   public ElemParam getParam(QName qname)
   {
 
-    if (null != m_topLevelParams)
+    if (null != m_topLevelVariables)
     {
-      int n = getParamCount();
+      int n = getVariableOrParamCount();
 
       for (int i = 0; i < n; i++)
       {
-        ElemParam var = getParam(i);
-
-        if (var.getName().equals(qname))
-          return var;
+        ElemVariable var = getVariableOrParam(i);
+        if((var.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) &&
+           (var.getName().equals(qname)))
+          return (ElemParam)var;
       }
     }
 
     return null;
-  }
-
-  /**
-   * Get an "xsl:param" property.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
-   *
-   * NEEDSDOC @param i
-   *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws ArrayIndexOutOfBoundsException
-   */
-  public ElemParam getParam(int i) throws ArrayIndexOutOfBoundsException
-  {
-
-    if (null == m_topLevelParams)
-      throw new ArrayIndexOutOfBoundsException();
-
-    return (ElemParam) m_topLevelParams.elementAt(i);
-  }
-
-  /**
-   * Get the number of "xsl:param" properties.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public int getParamCount()
-  {
-    return (null != m_topLevelParams) ? m_topLevelParams.size() : 0;
   }
 
   /**
