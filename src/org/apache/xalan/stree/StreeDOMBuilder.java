@@ -57,6 +57,7 @@
 package org.apache.xalan.stree;
 
 import org.apache.xml.utils.DOMBuilder;
+import org.apache.xml.utils.XMLCharacterRecognizer;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -82,7 +83,7 @@ public class StreeDOMBuilder extends DOMBuilder
    *  WARNING: Do NOT do a getNodeValue() or the like on this node while 
    *  it is accumulating text, as that will cause a string to be made, and 
    *  no more text will be obtained by the node!  */
-  Node m_text_buffer = null;
+  TextImpl m_text_buffer = null;
 
   /** Source document node */
   protected DocumentImpl m_docImpl;
@@ -235,6 +236,7 @@ public class StreeDOMBuilder extends DOMBuilder
           throws org.xml.sax.SAXException
   {
     setPreviousIsText(false);
+    // ((Parent)getCurrentNode()).setComplete(true);
     super.endElement(ns, localName, name);
   }
 
@@ -381,7 +383,12 @@ public class StreeDOMBuilder extends DOMBuilder
 
     if (m_previousIsText && !isText)
     {
-      append(m_text_buffer);
+      if (!(m_docImpl.m_sourceTreeHandler.getShouldStripWhitespace()
+        && XMLCharacterRecognizer.isWhiteSpace(m_text_buffer.m_doc.m_chars.m_map, 
+                m_text_buffer.m_start, m_text_buffer.m_length)))
+      {
+        append(m_text_buffer);
+      }
 
       m_text_buffer = null;
     }
