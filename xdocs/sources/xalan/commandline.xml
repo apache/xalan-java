@@ -85,7 +85,6 @@
 -V (Version info)
 -QC (Quiet Pattern Conflicts Warnings)
 
--L (Report line numbers for problems with source document)
 -TT (Trace the templates as they are being called)
 -TG (Trace each result tree generation event)
 -TS (Trace each selection event)
@@ -107,8 +106,7 @@
   false)
 -RL recursionLimit (Set numeric limit on depht of stylesheet 
   recursion)
--L (Obtain a SourceLocator that can be used within stylesheet to 
-  report location of nodes within the XML source document)      
+-L (Turn on source-location attribute)
 </source>
       <p>Use <code>-IN</code> to specify the XML source document.</p> 
       <p>Use <code>-XSL</code> to specify the XSL stylesheet file.</p>
@@ -120,6 +118,9 @@
       <code>java org.apache.xalan.xslt.Process -PARAM <ref>name value</ref></code></p>
       <p>The value is passed to the transformer as a String.</p>
       <p>For information about incremental and optimized stylesheet processing, see <link idref="dtm" anchor="settings">DTM settings</link>.</p>
+      <p>Use <code>-L</code> to obtain access to a SourceLocator that a stylesheet extension can use to get information about the location
+      of nodes in the source document. For more information, see <link idref="extensionslib" anchor="nodeinfo">NodeInfo extension functions</link>
+      and <link idref="features" anchor="source-location">source-location</link>.</p>
       <p>Use <code>-URIRESOLVER</code> with a fully qualified class name to utilize a custom implementation of the
       <jump href="apidocs/javax/xml/transform/URIResolver.html">URIResolver</jump> TrAX interface to resolve URIs for
        xsl:include, xsl:import, and the document() function.</p>

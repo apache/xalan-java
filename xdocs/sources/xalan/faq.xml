@@ -298,4 +298,30 @@ A JAXP 1.1 TransformerException often wraps another exception. Two of the Transf
 <p>Note too that on some platforms 1MB is an architectural upper limit on the stack size, so setting -Xss2m (or equivalent) may not allow deeper recusion than -Xss1m.</p>
 </a>
 </faq>
+<faq title="OutOfMemoryError processing multiple documents">
+<q>I get a java.lang.OutOfMemoryError when I try to process multiple documents with the document() function. What can I do?</q>
+<a>
+<p>As a general rule, &xslt4j; currently caches all of the documents that you read in with the document() function during a transformation.</p> 
+<p>If your objective is to transform a series of documents, you can break the process into a series of transformations. 
+The <link idref="extensionslib" anchor="pipedocument">PipeDocument</link> extension element provides one strategy for batching a 
+series of parallel transformations.</p> 
+<p>Another alternative is to place your document() call in the select attribute of an xsl:for-each instruction element 
+and use a custom PI (Processing Instruction) to turn off document caching. Include an XPath expression in your document() call if you do not 
+need to process the entire document.</p>
+<p>Sample stylesheet fragment:</p>
+<source>
+&lt;xsl:template match="doc"&gt;
+  &lt;xsl:for-each select="document(@href)/bar/zulu"&gt;
+    &lt;?xalan:doc-cache-off?&gt;
+    &lt;!-- process each document --&gt;
+  &lt;xsl:for-each&gt;
+&lt;/xsl:template&gt;</source>
+<note>PIs do not ordinarily uses namespaces, so "xalan:" is a 'fake' namespace we have included to indicate that this is not a standard PI.</note>
+<p>If you include an XPath expression in your document() call, you can also turn on <link idref="dtm" anchor="incremental">incremental transform</link>
+to eliminate the need to read in the entire document. In fact, you can take advantage of the incremental transform feature even if you are not turning
+off document caching.</p>
+<p>You can also increase your jvm heap size with the -Xmx or -mx flag, depending on which JVM you are using (you can include both flags, and the JVM will ignore the one it doesn't understand). For example, to give your JVM 64 meg, try <br/>
+<code> java -Xmx64m -mx64m <ref>Class</ref></code></p>
+</a>
+</faq>
 </faqs>

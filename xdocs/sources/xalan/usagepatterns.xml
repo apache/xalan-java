@@ -76,7 +76,7 @@
 <li><link anchor="multithreading">Multithreading</link></li>
 <li><link anchor="debugging">Debugger interface</link></li>
 </ul>
-<p>See also: <link idref="features">Tranformer Features</link>.</p>
+<p>See also: <link idref="features">Transform Features</link>.</p>
 <anchor name="basic"/>
   <s2 title="Basic steps">
     <ol>

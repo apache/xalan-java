@@ -66,10 +66,7 @@
 <li><link anchor="difference">difference</link></li>
 <li><link anchor="distinct">distinct</link></li>
 <li><link anchor="hassamenodes">hasSameNodes</link></li>
-<li><link anchor="systemid">systemId</link></li>
-<li><link anchor="publicid">publicId</link></li>
-<li><link anchor="linenumber">lineNumber</link></li>
-<li><link anchor="columnnumber">columnNumber</link></li>
+<li><link anchor="nodeinfo">NodeInfo extension functions</link></li>
 <li><link anchor="sql">SQL library</link></li>
 <li><link anchor="pipedocument">PipeDocument</link></li>
 <li><link anchor="evaluate">evaluate</link></li>
@@ -217,27 +214,41 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 <s2 title= "hasSameNodes">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
 <code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
-</s2><anchor name="systemid"/><anchor name="nodeinfo"/>
-<s2 title="systemId">
+</s2><anchor name="nodeinfo"/>
+<s2 title="NodeInfo">
+<p><jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump> provides extension elements that you can
+use to get information about the location of nodes in the source document:</p>
+<ul>
+<li><link anchor="systemid">systemId</link></li>
+<li><link anchor="publicid">publicId</link></li>
+<li><link anchor="linenumber">lineNumber</link></li>
+<li><link anchor="columnnumber">columnNumber</link></li>
+</ul>
+<note>If you want to use the NodeInfo extension elements, you MUST set the TransformerFactory 
+<link idref="features" anchor="source-location">source-location</link> attribute to Boolean.TRUE. 
+You can use the <link idref="commandline">command-line utility</link> -L flag or the <jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute()</jump> 
+method to set this attribute.</note>
+<anchor name="systemid"/>
+<s3 title="systemId">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
 <code>systemId()</code> returns the system ID for the current node, and <br/>
 <code>systemId(node-set)</code> returns the system ID of the first node in the node-set.</p>
-</s2><anchor name="publicid"/>
-<s2 title="publicId">
+</s3><anchor name="publicid"/>
+<s3 title="publicId">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
 <code>publicId()</code> returns the public ID for the current node, and<br/>
 <code>publicId(node-set)</code> returns the public ID of the first node in the node-set.</p>
-</s2><anchor name="linenumber"/>
-<s2 title="lineNumber">
+</s3><anchor name="linenumber"/>
+<s3 title="lineNumber">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
 <code>lineNumber()</code> returns the line number in the source document for the current node, and<br/>
 <code>lineNumber(node-set)</code> returns the line number in the source document for the first node in the node-set.</p>
-</s2><anchor name="columnnumber"/>
-<s2 title="columnNumber">
+</s3><anchor name="columnnumber"/>
+<s3 title="columnNumber">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
 <code>columnNumber()</code> returns the column number in the source document for the current node, and<br/>
 <code>columnNumber(node-set)</code> returns the column number in the source document for the first node in the node-set.</p>
-</s2><anchor name="sql"/>
+</s3></s2><anchor name="sql"/>
 <s2 title= "SQL library">
 <note>For UML Diagrams of the SQL Library, see <jump href="http://xml.apache.org/xalan-j/Xalan-SQL-Extension/DiagramIndex.html">SQL Library UML Diagrams</jump>.</note>
 <ul>

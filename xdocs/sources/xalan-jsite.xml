@@ -76,7 +76,7 @@
   <document id="commandline" label="Command Line" source="xalan/commandline.xml"/>
   <separator/>
   <document id="usagepatterns" label="Usage Patterns" source="xalan/usagepatterns.xml"/>
-  <hidden id="features" source="xalan/features.xml"/>
+  <document id="features" label="Features" source="xalan/features.xml"/>
   <separator/>
   <document id="trax" label="TrAX" source="xalan/trax.xml"/>
   <external href="apidocs/index.html" label="API (Javadoc)"/>
