@@ -10,7 +10,7 @@
 <!ENTITY xml4j "Xerces-Java">
 <!ENTITY xml4j1 "Xerces-Java 1">
 <!ENTITY xml4j2 "Xerces-Java 2">
-<!ENTITY xml4j-used "&xml4j; version 2.0 Gump Build">
+<!ENTITY xml4j-used "&xml4j; 2.0 (built from xml-xerces/java sources as of 2002-1-25 14:00)">
 <!ENTITY xml4j-jar "xercesImpl.jar (xerces.jar for &xml4j1;)">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
