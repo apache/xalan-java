@@ -80,7 +80,10 @@ public class SelfIteratorNoPredicate extends LocPathIterator
     }
 
     if (m_foundLast)
+    {
+      m_lastFetched = DTM.NULL;
       return DTM.NULL;
+    }
 
     int next;
     DTM dtm = m_cdtm;

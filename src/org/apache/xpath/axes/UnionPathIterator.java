@@ -638,7 +638,10 @@ public class UnionPathIterator extends Expression
     }
 
     if (m_foundLast)
+    {
+      m_lastFetched = DTM.NULL;
       return DTM.NULL;
+    }
 
     // Loop through the iterators getting the current fetched 
     // node, and get the earliest occuring in document order

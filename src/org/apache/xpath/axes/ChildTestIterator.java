@@ -202,7 +202,10 @@ public class ChildTestIterator extends LocPathIterator
     }
 
     if (m_foundLast)
+    {
+      m_lastFetched = DTM.NULL;
       return DTM.NULL;
+    }
       
     if(DTM.NULL == m_lastFetched)
     {

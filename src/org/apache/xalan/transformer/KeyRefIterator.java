@@ -135,7 +135,10 @@ public class KeyRefIterator extends LocPathIterator
   {
 
    if (m_foundLast)
+   {
+      m_lastFetched = DTM.NULL;
       return DTM.NULL;
+   }
     
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
