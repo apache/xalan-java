@@ -285,7 +285,7 @@ public class MethodResolver
       {
         Class[] paramTypes = method.getParameterTypes();
         if ( (paramTypes.length == 2)
-           && org.w3c.dom.Element.class.isAssignableFrom(paramTypes[1]) )
+           && paramTypes[1].isAssignableFrom(org.w3c.dom.Element.class) )
         {
           int score = -1;
           if (paramTypes[0].isAssignableFrom(
