@@ -118,7 +118,7 @@ public class XConnectionPoolManager
    * if a pool with the same name currently exists.
    *
    */
-  public void registerPool(String name, ConnectionPool pool)
+  public synchronized void registerPool(String name, ConnectionPool pool)
   {
     if ( m_poolTable.containsKey(name) )
     {
@@ -136,7 +136,7 @@ public class XConnectionPoolManager
    * @param <code>String name</code> name of the pool to remove.
    *
    */
-  public void removePool(String name)
+  public synchronized void removePool(String name)
   {
     ConnectionPool pool = getPool(name);
 
@@ -146,11 +146,8 @@ public class XConnectionPoolManager
       // Disable future use of this pool under the Xalan
       // extension only. This flag should only exist in the
       // wrapper and not in the actual pool implementation.
-      pool.setActive(false);
+      pool.disablePool();
 
-      //
-      // Let's trim down the number of connections that are in use
-      pool.freeUnused();
 
       //
       // Remove the pool from the Hashtable if we don'd have
@@ -172,7 +169,7 @@ public class XConnectionPoolManager
    * null
    *
    */
-  public ConnectionPool getPool(String name)
+  public synchronized ConnectionPool getPool(String name)
   {
     return (ConnectionPool) m_poolTable.get(name);
   }

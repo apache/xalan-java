@@ -93,7 +93,7 @@ public class XConnection
   /**
    * Flag for DEBUG mode
    */
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
 
   /**
@@ -104,8 +104,22 @@ public class XConnection
   /**
    * Reference to the ConnectionPool used
    */
-  public ConnectionPool m_ConnectionPool;
+  private ConnectionPool  m_ConnectionPool = null;
+  private String          m_ConnectionPoolName;
 
+  private boolean         m_IsDefaultPool = false;
+  private boolean         m_DefaultPoolingEnabled = false;
+
+
+  /**
+   * Let's keep a copy of the ConnectionPoolMgr in
+   * alive here so we are keeping the static pool alive
+   *
+   * We will also use this Pool Manager to register our default pools.
+   *
+   */
+
+   private XConnectionPoolManager m_PoolMgr = new XConnectionPoolManager();
 
   /**
    * For PreparedStatements, we need a place to
@@ -155,8 +169,12 @@ public class XConnection
   {
     try
     {
-      XConnectionPoolManager mgr = new XConnectionPoolManager();
-      m_ConnectionPool = mgr.getPool(ConnPoolName);
+      if ((m_ConnectionPool != null) && (m_IsDefaultPool))
+        m_PoolMgr.removePool(m_ConnectionPoolName);
+
+      m_ConnectionPool = m_PoolMgr.getPool(ConnPoolName);
+      m_ConnectionPoolName = ConnPoolName;
+
       m_connection = m_ConnectionPool.getConnection();
     }
     catch(SQLException e)
@@ -436,29 +454,73 @@ public class XConnection
   private void init(String driver, String dbURL, Properties prop)
     throws SQLException
   {
+    if (DEBUG)
+      System.out.println("XConnection, Connection Init");
+
     String user = prop.getProperty("user");
     if (user == null) user = "";
 
     String passwd = prop.getProperty("password");
     if (passwd == null) passwd = "";
 
-    String poolName = driver + dbURL + user + passwd;
 
-    XConnectionPoolManager mgr = new XConnectionPoolManager();
-    m_ConnectionPool = mgr.getPool(poolName);
-    if (m_ConnectionPool == null)
+    String poolName = driver + dbURL + user + passwd;
+    ConnectionPool cpool = m_PoolMgr.getPool(poolName);
+
+    // We are limited to only one Default Connection Pool
+    // at a time.
+    // If we are creating a new Default Pool, release the first
+    // One so it is not lost when we close the Stylesheet
+    if (
+        (m_ConnectionPool != null) &&
+        (m_IsDefaultPool) &&
+        (cpool != m_ConnectionPool))
     {
+      m_PoolMgr.removePool(m_ConnectionPoolName);
+    }
+
+    if (cpool == null)
+    {
+
+      if (DEBUG)
+      {
+        System.out.println("XConnection, Creating Connection");
+        System.out.println(" Driver  :" + driver);
+        System.out.println(" URL     :" + dbURL);
+        System.out.println(" user    :" + user);
+        System.out.println(" passwd  :" + passwd);
+      }
+
+
       DefaultConnectionPool defpool = new DefaultConnectionPool();
+
+      if ((DEBUG) && (defpool == null))
+        System.out.println("Failed to Create a Default Connection Pool");
+
       defpool.setDriver(driver);
       defpool.setURL(dbURL);
       defpool.setProtocol(prop);
-      defpool.setActive(true);
 
-      mgr.registerPool(poolName, defpool);
+
+      // Only enable pooling in the default pool if we are explicatly
+      // told too.
+      if (m_DefaultPoolingEnabled) defpool.enablePool();
+
+      m_PoolMgr.registerPool(poolName, defpool);
 
       m_ConnectionPool = defpool;
+      m_ConnectionPoolName = poolName;
+    }
+    else
+    {
+      if (DEBUG)
+        System.out.println("Default Connection already existed");
+
+      m_ConnectionPool = cpool;
+      m_ConnectionPoolName = poolName;
     }
 
+    m_ConnectionPool.testConnection();
 
     m_connection = m_ConnectionPool.getConnection();
   }
@@ -484,11 +546,23 @@ public class XConnection
     }
     catch(SQLException e)
     {
+      if (DEBUG)
+      {
+        System.out.println("SQL Exception in Query");
+        e.printStackTrace();
+      }
+
       SQLExtensionError err = new SQLExtensionError(e);
       return err;
     }
     catch (Exception e)
     {
+      if (DEBUG)
+      {
+        System.out.println("Exception in Query");
+        e.printStackTrace();
+      }
+
       ExtensionError err = new ExtensionError(e);
       return err;
     }
@@ -691,6 +765,51 @@ public class XConnection
     } while ( (n = n.getNextSibling()) != null);
   }
 
+
+  /**
+   *
+   * There is a problem with some JDBC drivers when a Connection
+   * is open and the JVM shutsdown. If there is a problem, there
+   * is no way to control the currently open connections in the
+   * pool. So for the default connection pool, the actuall pooling
+   * mechinsm is disabled by default. The Stylesheet designer can
+   * re-enabled pooling to take advantage of connection pools.
+   * The connection pool can even be disabled which will close all
+   * outstanding connections.
+   *
+   *
+   */
+  public void enableDefaultConnectionPool()
+  {
+
+    if (DEBUG)
+      System.out.println("Enabling Default Connection Pool");
+
+    m_DefaultPoolingEnabled = true;
+
+    if (m_ConnectionPool == null) return;
+    if (!m_IsDefaultPool) return;
+
+    m_ConnectionPool.enablePool();
+
+  }
+
+  /**
+   * See enableDefaultConnectionPool
+   */
+  public void disableDefaultConnectionPool()
+  {
+    if (DEBUG)
+      System.out.println("Disabling Default Connection Pool");
+
+    m_DefaultPoolingEnabled = false;
+
+    if (m_ConnectionPool == null) return;
+    if (!m_IsDefaultPool) return;
+
+    m_ConnectionPool.disablePool();
+  }
+
   /**
    * Close the connection to the data source.
    *
@@ -714,7 +833,7 @@ public class XConnection
       {
         // something is wrong here, we have a connection
         // but no controlling pool, close it anyway the
-        // error will show up as an exeption elsewhere.
+        // error will show up as an excpeion elsewhere
         m_connection.close();
       }
     }

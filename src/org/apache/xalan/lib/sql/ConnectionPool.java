@@ -78,13 +78,14 @@ import java.sql.SQLException;
 public interface ConnectionPool
 {
   /**
-   * The Active Flag determines if the ConnectionPool is usable
-   * If the Connection Pool is inactive, as connections are released
-   * they will also be closed, so the min number of connections will
-   * slowly be diminised.
+   * The Pool can be Enabled and Disabled. Disabling the pool
+   * closes all the outstanding Unused connections and any new
+   * connections will be closed upon release.
+   *
    */
-  public void     setActive(boolean flag);
-  public boolean  getActive();
+  public void     enablePool();
+  public void     disablePool();
+  public boolean  isEnabled();
 
   /**
    * The Driver and URL are the only required parmeters.

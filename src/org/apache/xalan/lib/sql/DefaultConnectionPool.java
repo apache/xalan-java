@@ -69,7 +69,7 @@ import java.sql.DriverManager;
 
 public class DefaultConnectionPool implements ConnectionPool
 {
-  private final static boolean DEBUG = true;
+  private final static boolean DEBUG = false;
 
   /**
    * The basic information to make a JDBC Connection
@@ -99,7 +99,7 @@ public class DefaultConnectionPool implements ConnectionPool
   /**
    * Storage for the PooledConnections
    */
-  private Vector      m_pool = null;
+  private Vector      m_pool = new Vector();
 
   /**
    * Are we active ??
@@ -114,15 +114,21 @@ public class DefaultConnectionPool implements ConnectionPool
    *
    * @param <code>boolean flag</code>, Set the active flag.
    */
-  public void setActive(boolean flag)
+  public void disablePool()
   {
-    m_IsActive = flag;
+    m_IsActive = false;
+    freeUnused();
+  }
+
+  public void enablePool()
+  {
+    m_IsActive = true;
   }
 
   /**
    * Return our current Active state
    */
-  public boolean getActive()
+  public boolean isEnabled()
   {
     return m_IsActive;
   }
@@ -233,6 +239,11 @@ public class DefaultConnectionPool implements ConnectionPool
   {
     try
     {
+      if (DEBUG)
+      {
+        System.out.println("Testing Connection");
+      }
+
       Connection conn = getConnection();
 
       if (DEBUG)
@@ -249,10 +260,21 @@ public class DefaultConnectionPool implements ConnectionPool
 
       releaseConnection(conn);
 
+      if (DEBUG)
+      {
+        System.out.println("Testing Connection, SUCCESS");
+      }
+
       return true;
     }
     catch(Exception e)
     {
+      if (DEBUG)
+      {
+        System.out.println("Testing Connection, FAILED");
+        e.printStackTrace();
+      }
+
       return false;
     }
 
@@ -266,7 +288,11 @@ public class DefaultConnectionPool implements ConnectionPool
 
     PooledConnection pcon = null;
 
-    if (m_pool == null) { initializePool(); }
+    // We will fill up the pool any time it is less than the
+    // Minimum. THis could be cause by the enableing and disabling
+    // or the pool.
+    //
+    if ( m_pool.size() < m_PoolMinSize ) { initializePool(); }
 
     // find a connection not in use
     for ( int x = 0; x < m_pool.size(); x++ )
@@ -324,7 +350,7 @@ public class DefaultConnectionPool implements ConnectionPool
           System.out.println("Releasing Connection " + x);
         }
 
-        if (getActive() == false)
+        if (! isEnabled())
         {
           con.close();
           m_pool.removeElementAt(x);
@@ -339,7 +365,6 @@ public class DefaultConnectionPool implements ConnectionPool
           // Set it's inuse attribute to false, which
           // releases it for use
           pcon.setInUse(false);
-          pcon.close();
         }
 
         break;
@@ -364,6 +389,7 @@ public class DefaultConnectionPool implements ConnectionPool
   public synchronized void initializePool()
     throws IllegalArgumentException, SQLException
   {
+
      // Check our initial values
      if ( m_driver == null )
      {
@@ -392,9 +418,12 @@ public class DefaultConnectionPool implements ConnectionPool
        throw new IllegalArgumentException("Invalid Driver Name Specified!");
      }
 
+     // IF we are not active, don't actuall build a pool yet
+     // Just set up the driver and periphal items.
+     if ( !m_IsActive) return;
 
     // Create Connections based on the size member
-    for ( int x = 0; x < m_PoolMinSize; x++ )
+    do
     {
 
       Connection con = createConnection();
@@ -412,19 +441,12 @@ public class DefaultConnectionPool implements ConnectionPool
         if (DEBUG) System.out.println("Adding DB Connection to the Pool");
       }
     }
+    while (m_pool.size() < m_PoolMinSize);
   }
 
   // Adds the PooledConnection to the pool
   private void addConnection(PooledConnection value)
   {
-
-    // If the pool is null, create a new vector
-    // with the initial size of "size"
-    if ( m_pool == null )
-    {
-      m_pool = new Vector( m_PoolMinSize);
-    }
-
     // Add the PooledConnection Object to the vector
     m_pool.addElement(value);
   }

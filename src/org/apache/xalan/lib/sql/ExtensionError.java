@@ -74,10 +74,6 @@ import org.apache.xalan.stree.DocumentImpl;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 
-// Imported Serializer classes
-//import org.apache.xml.serialize.OutputFormat;
-//import org.apache.xml.serialize.Serializer;
-//import org.apache.xml.serialize.XMLSerializer;
 import java.io.StringWriter;
 
 import java.io.ByteArrayOutputStream;
@@ -148,27 +144,29 @@ public class ExtensionError
 
       etmp = m_doc.createElement("message");
       info.appendChild(etmp);
-      text = m_doc.createTextNode(err.getMessage());
+      text = m_doc.createTextNode(err.getLocalizedMessage());
       etmp.appendChild(text);
 
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      PrintStream ps = new PrintStream(bos);
-      err.printStackTrace(ps);
-      String stack = bos.toString();
+      // System.out.println("MESSAGE[" + err.getLocalizedMessage() + "]");
+
+      //ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      //PrintStream ps = new PrintStream(bos);
+      //err.printStackTrace(ps);
+      //String stack = bos.toString();
 
       // System.out.println(stack);
 
-      etmp = m_doc.createElement("stack");
-      info.appendChild(etmp);
-      cdata = m_doc.createCDATASection(stack);
-      etmp.appendChild(text);
+      //etmp = m_doc.createElement("stack");
+      //info.appendChild(etmp);
+      //cdata = m_doc.createCDATASection(stack);
+      //etmp.appendChild(text);
 
       populateSpecificData(m_doc, root);
 
     }
     catch(Exception e)
     {
-      e.printStackTrace();
+      // e.printStackTrace();
 
       m_doc = null;
     }
@@ -271,33 +269,36 @@ public class ExtensionError
   {
   }
 
-//   public void dump()
-//   {
 
-//     try
-//     {
-//       //Serialize DOM
-//       OutputFormat		format  = new OutputFormat();
-//       //Writer will be a String
-//       StringWriter		stringOut = new StringWriter();
+  /*
+  public void dump()
+  {
 
-//       XMLSerializer		serial = new XMLSerializer( stringOut, format );
+    try
+    {
+      //Serialize DOM
+      OutputFormat		format  = new OutputFormat();
+      //Writer will be a String
+      StringWriter		stringOut = new StringWriter();
 
-//       // As a DOM Serializer
-//       serial.asDOMSerializer();
+      XMLSerializer		serial = new XMLSerializer( stringOut, format );
 
-//       Element e = m_doc.getDocumentElement();
-//       serial.serialize(e);
-//       System.out.println("Extension Error:");
-//       String display = stringOut.toString();
-//       System.out.println( display );
-//     }
-//     catch(Exception e)
-//     {
-//       // Empty
-//     }
+      // As a DOM Serializer
+      serial.asDOMSerializer();
 
-//   }
+      Element e = m_doc.getDocumentElement();
+      serial.serialize(e);
+      System.out.println("Extension Error:");
+      String display = stringOut.toString();
+      System.out.println( display );
+    }
+    catch(Exception e)
+    {
+      // Empty
+    }
+
+  }
+  */
 
   public Node getCurrentNode()
   {

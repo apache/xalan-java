@@ -100,7 +100,7 @@ public class SQLExtensionError extends ExtensionError {
     n.appendChild(root);
 
 
-    Element code = doc.createElement("error_code");
+    Element code = doc.createElement("error-code");
     root.appendChild(code);
 
     int ecode = m_sql_ex.getErrorCode();
@@ -114,8 +114,8 @@ public class SQLExtensionError extends ExtensionError {
     text = doc.createTextNode(m_sql_ex.getSQLState());
     state.appendChild(text);
 
-    m_sql_ex = m_sql_ex.getNextException();
-    if ( null != m_sql_ex ) populateSpecificData(doc, n);
+    // m_sql_ex = m_sql_ex.getNextException();
+    // if ( null != m_sql_ex ) populateSpecificData(doc, n);
   }
 
 }

@@ -93,7 +93,7 @@ public class XStatement extends StreamableNode
 {
 
   /** Flag for DEBUG mode          */
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false; 
 
   /**
    * Ths JDBC Statement that is used for the query.
@@ -259,58 +259,58 @@ public class XStatement extends StreamableNode
       stmt.setString(pos, p.getValue());
     }
 
-    else if (type.equalsIgnoreCase("bigdecimal"))
+    if (type.equalsIgnoreCase("bigdecimal"))
     {
       stmt.setBigDecimal(pos, new BigDecimal(p.getValue()));
     }
 
-    else if (type.equalsIgnoreCase("boolean"))
+    if (type.equalsIgnoreCase("boolean"))
     {
       Integer i = new Integer( p.getValue() );
       boolean b = ((i.intValue() != 0) ? false : true);
       stmt.setBoolean(pos, b);
     }
 
-    else if (type.equalsIgnoreCase("bytes"))
+    if (type.equalsIgnoreCase("bytes"))
     {
       stmt.setBytes(pos, p.getValue().getBytes());
     }
 
-    else if (type.equalsIgnoreCase("date"))
+    if (type.equalsIgnoreCase("date"))
     {
       stmt.setDate(pos, Date.valueOf(p.getValue()));
     }
 
-    else if (type.equalsIgnoreCase("double"))
+    if (type.equalsIgnoreCase("double"))
     {
       Double d = new Double(p.getValue());
       stmt.setDouble(pos, d.doubleValue() );
     }
 
-    else if (type.equalsIgnoreCase("float"))
+    if (type.equalsIgnoreCase("float"))
     {
       Float f = new Float(p.getValue());
       stmt.setFloat(pos, f.floatValue());
     }
 
-    else if (type.equalsIgnoreCase("long"))
+    if (type.equalsIgnoreCase("long"))
     {
       Long l = new Long(p.getValue());
       stmt.setLong(pos, l.longValue());
     }
 
-    else if (type.equalsIgnoreCase("short"))
+    if (type.equalsIgnoreCase("short"))
     {
       Short s = new Short(p.getValue());
       stmt.setShort(pos, s.shortValue());
     }
 
-    else if (type.equalsIgnoreCase("time"))
+    if (type.equalsIgnoreCase("time"))
     {
       stmt.setTime(pos, Time.valueOf(p.getValue()) );
     }
 
-    else if (type.equalsIgnoreCase("timestamp"))
+    if (type.equalsIgnoreCase("timestamp"))
     {
 
       stmt.setTimestamp(pos, Timestamp.valueOf(p.getValue()) );
