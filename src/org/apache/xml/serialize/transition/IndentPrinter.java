@@ -76,22 +76,6 @@ class IndentPrinter
     extends Printer
 {
 
-
-    /**
-     * Holds the currently accumulating text line. This buffer will constantly
-     * be reused by deleting its contents instead of reallocating it.
-     */
-    private StringBuffer    _line;
-
-
-    /**
-     * Holds the currently accumulating text that follows {@link #_line}.
-     * When the end of the part is identified by a call to {@link #printSpace}
-     * or {@link #breakLine}, this part is added to the accumulated line.
-     */
-    private StringBuffer    _text;
-
-
     /**
      * Counts how many white spaces come between the accumulated line and the
      * current accumulated text. Multiple spaces at the end of the a line
@@ -129,13 +113,58 @@ class IndentPrinter
         _spacechars[i] = ' ';
       }
     }
+    
+    /**
+     * Holds the currently accumulating text line. This buffer will constantly
+     * be reused by deleting its contents instead of reallocating it.
+     */
+    private FastStringBuffer    _line;
+    // private StringBuffer    _line;
+
+    /**
+     * Holds the currently accumulating text that follows {@link #_line}.
+     * When the end of the part is identified by a call to {@link #printSpace}
+     * or {@link #breakLine}, this part is added to the accumulated line.
+     */
+    private FastStringBuffer    _text;
+    // private StringBuffer    _text;
+    
+    private final void resetTextBuf()
+    {
+      _text.reset();
+      // _text = new StringBuffer(100);
+    }
+
+    private final void resetLineBuf()
+    {
+      _line.reset();
+      // _line = new StringBuffer(1024);
+    }
+    
+    /**
+     * The point at which the IndentPrinter should try to 
+     * flush the accumulated text into the printer.
+     */
+    public static int TRY_TO_FLUSH_AT = 1024;
+    
+    private final void flushLineBuf()
+      throws IOException
+    {        
+      _writer.write(_line.m_map, 0, _line.m_firstFree);
+      // String s = _line.toString();
+      // _writer.write(s);
+      resetLineBuf();
+    }
+
 
     IndentPrinter( Writer writer, OutputFormat format)
     {
         super( writer, format );
         // Initialize everything for a first/second run.
-        _line = new StringBuffer( 80 );
-        _text = new StringBuffer( 20 );
+        _line = new FastStringBuffer( 2048 );
+        _text = new FastStringBuffer( 2048 );
+        // _line = new StringBuffer( 1024 );
+        // _text = new StringBuffer( 100 );
         _spaces = 0;
         _thisIndent = _nextIndent = 0;
     }
@@ -178,7 +207,7 @@ class IndentPrinter
         // state, can no longer re-enter it.
         if ( _dtdWriter == null ) {
             _line.append( _text );
-            _text = new StringBuffer( 20 );
+            resetTextBuf();
             flushLine( false );
             _dtdWriter = new StringWriter();
             _docWriter = _writer;
@@ -197,7 +226,7 @@ class IndentPrinter
         // Only works if we're going out of DTD mode.
         if ( _writer == _dtdWriter ) {
             _line.append( _text );
-            _text = new StringBuffer( 20 );
+            resetTextBuf();
             flushLine( false );
             _writer = _docWriter;
             return _dtdWriter.toString();
@@ -296,7 +325,10 @@ class IndentPrinter
               _spaces = 0;
             }
             _line.append( _text );
-            _text.setLength(0);
+            resetTextBuf();
+            
+            if(_line.length() > TRY_TO_FLUSH_AT)
+              flushLine( false );
         }
         // Starting a new word: accumulate the text between the line
         // and this new word; not a new word: just add another space.
@@ -328,7 +360,7 @@ class IndentPrinter
                 _spaces = 0;
             }
             _line.append( _text );
-            _text = new StringBuffer( 20 );
+            resetTextBuf();
         }
         flushLine( preserveSpace );
         try {
@@ -375,10 +407,7 @@ class IndentPrinter
                 // they are simply stripped and replaced with a single line
                 // separator.
                 _spaces = 0;
-                String s = _line.toString();
-                _writer.write( s );
-                
-                _line.setLength(0);
+                flushLineBuf();
             } catch ( IOException except ) {
                 // We don't throw an exception, but hold it
                 // until the end of the document.

@@ -241,6 +241,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NodeConsumer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrappedRuntimeException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)XMLCharacterRecognizer.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)FastStringBuffer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringBufferPool.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
   org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Examples.java \
@@ -325,6 +326,7 @@ SRCS = \
   org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLFilterImpl.java \
   org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLReaderAdapter.java \
   org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLReaderFactory.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)FastStringBuffer.java \
   org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)BaseMarkupSerializer.java \
   org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)ElementState.java \
   org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Encodings.java \

@@ -82,6 +82,7 @@ import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.TemplateList;
 
 import org.apache.xalan.trace.TraceManager;
 
@@ -1321,10 +1322,9 @@ public class TransformerImpl extends XMLFilterImpl
       try
       {
         xctxt.setNamespaceContext(xslInstruction);
-
-        template = stylesheetTree.getTemplateComposed(xctxt, 
-                                                      child, mode, 
-                                                      getQuietConflictWarnings());
+        
+        TemplateList tl = stylesheetTree.getTemplateListComposed();
+        template = tl.getTemplate(xctxt, child, mode, m_quietConflictWarnings);
       }
       finally
       {

@@ -69,6 +69,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.StringBufferPool;
+import org.apache.xalan.utils.FastStringBuffer;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.CountersTable;
@@ -890,7 +891,7 @@ public class ElemNumber extends ElemTemplateElement
     throws SAXException
   {
     String numStr;
-    StringBuffer formattedNumber = StringBufferPool.get();
+    FastStringBuffer formattedNumber = StringBufferPool.get();
     try
     {
       int nNumbers = list.length, numberWidth = 1;
@@ -982,7 +983,9 @@ public class ElemNumber extends ElemTemplateElement
         else if(null != lastSep && !isFirstToken)
           formattedNumber.append(lastSep);
         
-        getFormattedNumber(transformer, contextNode, numberType, numberWidth, list[i], formattedNumber);
+        getFormattedNumber(transformer, contextNode, 
+                           numberType, numberWidth, 
+                           list[i], formattedNumber);
         isFirstToken = false;              // After the first pass, this should be false
         
       } // end for loop
@@ -1020,7 +1023,7 @@ public class ElemNumber extends ElemTemplateElement
                                   char numberType,
                                   int numberWidth,
                                   int listElement,
-                                  StringBuffer formattedNumber)
+                                  FastStringBuffer formattedNumber)
     throws org.xml.sax.SAXException
   {
     DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
@@ -1049,7 +1052,7 @@ public class ElemNumber extends ElemTemplateElement
         alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
         m_alphaCountTable = alphabet;
       }
-      StringBuffer stringBuf = StringBufferPool.get();
+      FastStringBuffer stringBuf = StringBufferPool.get();
       try
       {
         int2alphaCount(listElement, m_alphaCountTable, stringBuf);
@@ -1224,7 +1227,7 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected void int2alphaCount(int val, char [] aTable, StringBuffer stringBuf)
+  protected void int2alphaCount(int val, char [] aTable, FastStringBuffer stringBuf)
   {
 
     int radix = aTable.length;

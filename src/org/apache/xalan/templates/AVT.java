@@ -60,6 +60,7 @@ import org.w3c.dom.Node;
 import java.util.Vector;
 import java.util.StringTokenizer;
 import org.apache.xalan.utils.StringBufferPool;
+import org.apache.xalan.utils.FastStringBuffer;
 import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
 import org.apache.xpath.XPathContext;
@@ -150,8 +151,8 @@ public class AVT implements java.io.Serializable
     }
     else
     {
-      StringBuffer buffer = StringBufferPool.get();
-      StringBuffer exprBuffer = StringBufferPool.get();
+      FastStringBuffer buffer = StringBufferPool.get();
+      FastStringBuffer exprBuffer = StringBufferPool.get();
       try
       {
         m_parts = new Vector(nTokens+1);
@@ -338,7 +339,7 @@ public class AVT implements java.io.Serializable
     }
     else if(null != m_parts)
     {
-      StringBuffer buf = StringBufferPool.get();
+      FastStringBuffer buf = StringBufferPool.get();
       String s;
       try
       {
@@ -373,7 +374,7 @@ public class AVT implements java.io.Serializable
                           org.apache.xalan.utils.PrefixResolver nsNode)
     throws org.xml.sax.SAXException
   {
-    StringBuffer buf = StringBufferPool.get();
+    FastStringBuffer buf = StringBufferPool.get();
     try
     {
       if(null != m_simpleString)

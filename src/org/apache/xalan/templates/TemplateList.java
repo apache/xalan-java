@@ -469,18 +469,27 @@ public class TemplateList implements java.io.Serializable
   {    
     TemplateSubPatternAssociation head = getHead(xctxt, targetNode);
 
-    while (null != head)
+    if(null != head)
     {
-      if(head.matches(xctxt, targetNode, mode))
+      try
       {
-        if(quietConflictWarnings)
-          checkConflicts(head, xctxt, targetNode, mode);
-        if(DEBUG)
-          System.out.println("return("+head.getTargetString()
-                             +", "+head.getPattern()+")");
-        return head.getTemplate();
+        xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
+        do
+        {
+          if(head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE)
+          {
+            if(quietConflictWarnings)
+              checkConflicts(head, xctxt, targetNode, mode);
+            return head.getTemplate();
+          }
+          head = head.getNext();
+        }
+          while (null != head);
       }
-      head = head.getNext();
+      finally
+      {
+        xctxt.popCurrentNodeAndExpression();
+      }
     }
     
     StylesheetComposed stylesheet = getStylesheet().getStylesheetComposed();

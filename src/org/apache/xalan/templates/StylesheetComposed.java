@@ -566,6 +566,10 @@ public class StylesheetComposed extends Stylesheet
    * The "xsl:template" properties. 
    */
   private transient TemplateList m_templateList = new TemplateList(this);
+  public final TemplateList getTemplateListComposed()
+  {
+    return m_templateList;
+  }
   
   /**
    * Aggregate the list of templates and included templates into a single list. 

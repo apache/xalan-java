@@ -7,6 +7,7 @@ import org.xml.sax.SAXException;
 import org.apache.xalan.utils.NSInfo;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.StringBufferPool;
+import org.apache.xalan.utils.FastStringBuffer;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -757,7 +758,7 @@ public class DOMHelper
    */
   public static String getNodeData(Node node)
   {
-    StringBuffer buf = StringBufferPool.get();
+    FastStringBuffer buf = StringBufferPool.get();
     String s;
     try
     {
@@ -778,7 +779,7 @@ public class DOMHelper
    * or declare victory when I review the entire 
    * whitespace handling).
    */
-  public static void getNodeData(Node node, StringBuffer buf)
+  public static void getNodeData(Node node, FastStringBuffer buf)
   {
     // String data = null;
 

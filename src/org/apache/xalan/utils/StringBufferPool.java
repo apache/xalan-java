@@ -3,14 +3,14 @@ package org.apache.xalan.utils;
 public class StringBufferPool
 {
   private static ObjectPool m_stringBufPool 
-    = new ObjectPool(java.lang.StringBuffer.class);
+    = new ObjectPool(org.apache.xalan.utils.FastStringBuffer.class);
   
-  public static StringBuffer get()
+  public static FastStringBuffer get()
   {
-    return (StringBuffer)m_stringBufPool.getInstance();
+    return (FastStringBuffer)m_stringBufPool.getInstance();
   }
   
-  public static void free(StringBuffer sb)
+  public static void free(FastStringBuffer sb)
   {
     m_stringBufPool.freeInstance(sb);
     sb.setLength(0);

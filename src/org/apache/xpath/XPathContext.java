@@ -394,6 +394,24 @@ public class XPathContext implements ExpressionContext
   {
     return m_currentNodes.peepOrNull();
   }
+  
+  /**
+   * Set the current context node.
+   */
+  public final void pushCurrentNodeAndExpression(Node cn, Node en)
+  {
+    m_currentNodes.push(cn);
+    m_currentExpressionNodes.push(en);
+  }
+  
+  /**
+   * Set the current context node.
+   */
+  public final void popCurrentNodeAndExpression()
+  {
+    m_currentNodes.pop();
+    m_currentExpressionNodes.pop();
+  }
 
   /**
    * Set the current context node.

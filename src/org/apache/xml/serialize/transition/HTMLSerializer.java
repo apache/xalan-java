@@ -390,29 +390,29 @@ public class HTMLSerializer
         // Handle SCRIPT and STYLE specifically by changing the
         // state of the current element to CDATA (XHTML) or
         // unescaped (HTML).
-        if ( htmlName != null && ( rawName.equalsIgnoreCase( "SCRIPT" ) ||
-                                   rawName.equalsIgnoreCase( "STYLE" ) ) ) {
-            if ( _xhtml ) {
-                // XHTML: Print contents as CDATA section
-                state.doCData = true;
-            } else {
-                // HTML: Print contents unescaped
-                state.unescaped = true;
-            }
-        }
-        if ( htmlName != null && ( rawName.equalsIgnoreCase( "HEAD" )))
+        if(null != htmlName)
         {
-          _printer.printText( '>' );
-          // Insert Meta tag here         
-          _printer.breakLine();          
-          _printer.printText( '<' );
-          _printer.printText( "META" );
-          _printer.printText( " http-equiv=\"Content-Type\"" );          
-          _printer.printText( " content=\"text/html;");
-         // _printer.printText( _format.getMediaType() +'"' );
-          _printer.printText( " charset=");
-          _printer.printText( _format.getEncoding() +'"' );
-        }  
+          String rawNameU = rawName.toUpperCase();
+          if ( rawNameU.equals( "SCRIPT" ) ||
+                                     rawNameU.equals( "STYLE" )) {
+            if ( _xhtml ) {
+              // XHTML: Print contents as CDATA section
+              state.doCData = true;
+            } else {
+              // HTML: Print contents unescaped
+              state.unescaped = true;
+            }
+          }
+          if (rawName.equalsIgnoreCase( "HEAD" ))
+          {
+            _printer.printText( '>' );
+            // Insert Meta tag here         
+            _printer.breakLine();          
+            _printer.printText( "<META http-equiv=\"Content-Type\" content=\"text/html; charset=" );
+            _printer.printText( _format.getEncoding());
+            _printer.printText( '"' );
+          }  
+        }
     }
     
     

@@ -72,7 +72,7 @@ import org.apache.xalan.utils.QName;
  */
 class TemplateSubPatternAssociation implements Serializable, Cloneable
 {
-  private StepPattern m_stepPattern;
+  StepPattern m_stepPattern;
   private int m_posInStylesheet;
   private String m_pattern;
   private ElemTemplate m_template;
