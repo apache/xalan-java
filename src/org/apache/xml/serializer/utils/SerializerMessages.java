@@ -75,10 +75,10 @@ public class SerializerMessages extends ListResourceBundle
 
     // Message keys required by the message utility class (in case it has problems
   // with messages in this class)
-  public static final String BAD_MSGKEY = "BAD_CODE";
+  public static final String BAD_MSGKEY = "BAD_MSGKEY";
 
   /** String to use if the message format operation failed.  */
-  public static final String BAD_MSGFORMAT = "FORMAT_FAILED";
+  public static final String BAD_MSGFORMAT = "BAD_MSGFORMAT";
   
   // Message keys used by the serializer
   public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
@@ -87,7 +87,7 @@ public class SerializerMessages extends ListResourceBundle
   public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
   public static final String ER_OIERROR = "ER_OIERROR";
   public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
+  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTRIBUTE";
   public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
   public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
   public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
