@@ -80,7 +80,7 @@ final class GenerateIdCall extends FunctionCall {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final InstructionList il = methodGen.getInstructionList();
 	if (argumentCount() == 0) {
-	    il.append(new ILOAD(methodGen.getLocalIndex("current")));
+	   il.append(methodGen.loadContextNode());
 	}
 	else {			// one argument
 	    argument().translate(classGen, methodGen);
