@@ -361,6 +361,18 @@ Copyright:
     </javac>
   </target>
 
+  <target name="xsltc.fcompile" 
+    description="Compile just the XSLTC classes w/o JLex, JCUP" >
+    <echo message="Compiling remaining XSLTC classes"/>
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="${xsltc.reldir}/**/*.java"
+           debug="${build.debug}">
+      <classpath refid="xsltc.class.path" />
+      <bootclasspath refid="xslt.boot.class.path" />
+    </javac>
+  </target>
+
   <target name="xsltc.unbundledjar" depends="xsltc.compile"
     description="Jar just the xsltc.jar file" >
     <!-- Copy over the manifest, with filtering (for version number) -->
