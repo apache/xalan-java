@@ -142,6 +142,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /** The SAX Document locator */
   transient private Locator m_locator = null;
 
+  /** We are inside the DTD.  This is used for ignoring comments.  */
+  transient private boolean m_insideDTD = false;
+
   /** Tree Walker for dispatchToEvents. */
   protected DTMTreeWalker m_walker = new DTMTreeWalker();
 
@@ -2096,7 +2099,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           throws SAXException
   {
 
-    // no op
+    m_insideDTD = true;
   }
 
   /**
@@ -2108,7 +2111,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public void endDTD() throws SAXException
   {
 
-    // no op
+    m_insideDTD = false;
   }
 
   /**
@@ -2192,6 +2195,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void comment(char ch[], int start, int length) throws SAXException
   {
+
+    if (m_insideDTD)      // ignore comments if we're inside the DTD
+      return;
 
     charactersFlush();
 
