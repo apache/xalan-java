@@ -201,7 +201,7 @@ public class ElemExtensionCall extends ElemLiteralResult
             throws TransformerException
   {
 
-	if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
 		transformer.getTraceManager().fireTraceEvent(this);
     try
     {
@@ -264,7 +264,7 @@ public class ElemExtensionCall extends ElemLiteralResult
     catch(SAXException se) {
       throw new TransformerException(se);
     }
-	if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
 		transformer.getTraceManager().fireTraceEndEvent(this);
   }
 

@@ -56,7 +56,7 @@ import org.apache.xalan.xsltc.compiler.util.StringType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 
 
 /**

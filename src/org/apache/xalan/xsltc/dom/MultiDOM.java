@@ -26,6 +26,7 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
@@ -129,7 +130,7 @@ public final class MultiDOM implements DOM {
         }
     
         public boolean isReverse() {
-	    return Axis.isReverse[_axis];
+            return Axis.isReverse(_axis);
         }
     
         public void setMark() {

@@ -65,18 +65,26 @@ public class StylesheetHandler extends DefaultHandler
 {
 
 
-  static {
-      Function func = new org.apache.xalan.templates.FuncDocument();
-
-      FunctionTable.installFunction("document", func);
-
-      // func = new org.apache.xalan.templates.FuncKey();
-      // FunctionTable.installFunction("key", func);
-      func = new org.apache.xalan.templates.FuncFormatNumb();
-
-      FunctionTable.installFunction("format-number", func);
-
-  }
+  /**
+   * The function table of XPath and XSLT;
+   */
+  private FunctionTable m_funcTable = new FunctionTable();
+  
+  /**
+   * The flag for the setting of the optimize feature;
+   */
+  private boolean m_optimize = true;
+  
+  /**
+   * The flag for the setting of the incremental feature;
+   */
+  private boolean m_incremental = false;
+  
+  /**
+   * The flag for the setting of the source_location feature;
+   */
+  private boolean m_source_location = false;
+  
   /**
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
@@ -89,9 +97,24 @@ public class StylesheetHandler extends DefaultHandler
   public StylesheetHandler(TransformerFactoryImpl processor)
           throws TransformerConfigurationException
   {
+    Function func = new org.apache.xalan.templates.FuncDocument();
+    m_funcTable.installFunction("document", func);
 
+    // func = new org.apache.xalan.templates.FuncKey();
+    // FunctionTable.installFunction("key", func);
+    func = new org.apache.xalan.templates.FuncFormatNumb();
+
+    m_funcTable.installFunction("format-number", func);
+
+    m_optimize =((Boolean) processor.getAttribute(
+            TransformerFactoryImpl.FEATURE_OPTIMIZE)).booleanValue();
+    m_incremental = ((Boolean) processor.getAttribute(
+            TransformerFactoryImpl.FEATURE_INCREMENTAL)).booleanValue();
+    m_source_location = ((Boolean) processor.getAttribute(
+            TransformerFactoryImpl.FEATURE_SOURCE_LOCATION)).booleanValue();
     // m_schema = new XSLTSchema();
     init(processor);
+    
   }
 
   /**
@@ -126,7 +149,8 @@ public class StylesheetHandler extends DefaultHandler
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    XPath xpath = new XPath(str, owningTemplate, this, XPath.SELECT, handler);
+    XPath xpath = new XPath(str, owningTemplate, this, XPath.SELECT, handler, 
+            m_funcTable);
     // Visit the expression, registering namespaces for any extension functions it includes.
     xpath.callVisitors(xpath, new ExpressionVisitor(getStylesheetRoot()));
     return xpath;
@@ -146,7 +170,8 @@ public class StylesheetHandler extends DefaultHandler
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    XPath xpath = new XPath(str, owningTemplate, this, XPath.MATCH, handler);
+    XPath xpath = new XPath(str, owningTemplate, this, XPath.MATCH, handler, 
+        m_funcTable);
     // Visit the expression, registering namespaces for any extension functions it includes.
     xpath.callVisitors(xpath, new ExpressionVisitor(getStylesheetRoot()));
     return xpath;    
@@ -1171,6 +1196,11 @@ public class StylesheetHandler extends DefaultHandler
    */
   public StylesheetRoot getStylesheetRoot()
   {
+    if (m_stylesheetRoot != null){
+        m_stylesheetRoot.setOptimizer(m_optimize);
+        m_stylesheetRoot.setIncremental(m_incremental);
+        m_stylesheetRoot.setSource_location(m_source_location);  		
+    }
     return m_stylesheetRoot;
   }
 
@@ -1629,12 +1659,33 @@ public class StylesheetHandler extends DefaultHandler
       }
     return (version == -1)? Constants.XSLTVERSUPPORTED : version;
   }
-	/**
-	 * @see PrefixResolver#handlesNullPrefixes()
-	 */
-	public boolean handlesNullPrefixes() {
-		return false;
-	}
+    /**
+     * @see PrefixResolver#handlesNullPrefixes()
+     */
+    public boolean handlesNullPrefixes() {
+        return false;
+    }
+
+    /**
+     * @return Optimization flag
+     */
+    public boolean getOptimize() {
+        return m_optimize;
+    }
+
+    /**
+     * @return Incremental flag
+     */
+    public boolean getIncremental() {
+        return m_incremental;
+    }
+
+    /**
+     * @return Source Location flag
+     */
+    public boolean getSource_location() {
+        return m_source_location;
+    }
 
 }
 

@@ -23,6 +23,7 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.Axis;
 
 /**
  * @author Jacek Ambroziak
@@ -39,7 +40,7 @@ public abstract class MultipleNodeCounter extends NodeCounter {
     public NodeCounter setStartNode(int node) {
 	_node = node;
 	_nodeType = _document.getExpandedTypeID(node);
-	_precSiblings = _document.getAxisIterator(PRECEDINGSIBLING);
+    _precSiblings = _document.getAxisIterator(Axis.PRECEDINGSIBLING);
 	return this;
     }
 

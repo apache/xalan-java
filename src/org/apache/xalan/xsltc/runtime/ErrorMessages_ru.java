@@ -75,7 +75,13 @@ public class ErrorMessages_ru extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final Object[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
 
         /*
          * Note to translators:  the substitution text in the following message
@@ -218,9 +224,6 @@ public class ErrorMessages_ru extends ListResourceBundle {
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
         "\u041d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u0442\u044c \u0441\u0441\u044b\u043b\u043a\u0443 \u043d\u0430 URI ''{0}''."}
     };
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 
 }

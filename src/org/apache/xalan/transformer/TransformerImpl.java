@@ -288,10 +288,34 @@ public class TransformerImpl extends Transformer
   private MsgMgr m_msgMgr;
 
   /**
+   * The flag for the setting of the optimize feature;
+   * This flag should have the same value as the FEATURE_OPTIMIZE feature
+   * which is set by the TransformerFactory.setAttribut() method before a
+   * Transformer is created
+   */    
+  private boolean m_optimizer = true;
+
+  /**
+   * The flag for the setting of the incremental feature;
+   * This flag should have the same value as the FEATURE_INCREMENTAL feature
+   * which is set by the TransformerFactory.setAttribut() method before a
+   * Transformer is created
+   */    
+  private boolean m_incremental = false;
+
+  /**
+   * The flag for the setting of the source_location feature;
+   * This flag should have the same value as the FEATURE_SOURCE_LOCATION feature
+   * which is set by the TransformerFactory.setAttribut() method before a
+   * Transformer is created
+   */  
+  private boolean m_source_location = false;
+    
+  /**
    * This is a compile-time flag to turn off calling
    * of trace listeners. Set this to false for optimization purposes.
    */
-  public static boolean S_DEBUG = false;
+  private boolean m_debug = false;
 
   /**
    * The SAX error handler, where errors and warnings are sent.
@@ -366,10 +390,18 @@ public class TransformerImpl extends Transformer
   public TransformerImpl(StylesheetRoot stylesheet)
    // throws javax.xml.transform.TransformerException    
   {
+    m_optimizer = stylesheet.getOptimizer();
+    m_incremental = stylesheet.getIncremental();
+    m_source_location = stylesheet.getSource_location();  	
     setStylesheet(stylesheet);
-    setXPathContext(new XPathContext(this));
+    XPathContext xPath = new XPathContext(this);
+    xPath.setIncremental(m_incremental);
+    xPath.getDTMManager().setIncremental(m_incremental);
+    xPath.setSource_location(m_source_location);
+    xPath.getDTMManager().setSource_location(m_source_location);
+    setXPathContext(xPath);
     getXPathContext().setNamespaceContext(stylesheet);
-    m_stackGuard = new StackGuard(this);
+    m_stackGuard = new StackGuard(this);    
   }
   
   // ================ ExtensionsTable ===================
@@ -1977,7 +2009,7 @@ public class TransformerImpl extends Transformer
     ElemTemplateElement firstChild = elem.getFirstChildElem();
     if(null == firstChild)
       return "";
-    if(elem.hasTextLitOnly() && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+    if(elem.hasTextLitOnly() && m_optimizer)
     {
       return ((ElemTextLiteral)firstChild).getNodeValue();
     }
@@ -2186,7 +2218,7 @@ public class TransformerImpl extends Transformer
 
         // Fire a trace event for the template.
          
-        if (TransformerImpl.S_DEBUG)
+        if (m_debug)
           getTraceManager().fireTraceEvent(template);
         // And execute the child templates.
         // 9/11/00: If template has been compiled, hand off to it
@@ -2202,7 +2234,7 @@ public class TransformerImpl extends Transformer
         m_xcontext.getVarStack().link(template.m_frameSize);
         executeChildTemplates(template, true);
         
-        if (TransformerImpl.S_DEBUG)
+        if (m_debug)
           getTraceManager().fireTraceEndEvent(template);
       }
     }
@@ -2292,7 +2324,7 @@ public class TransformerImpl extends Transformer
     if (null == t)
       return;      
     
-    if(elem.hasTextLitOnly() && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+    if(elem.hasTextLitOnly() && m_optimizer)
     {      
       char[] chars = ((ElemTextLiteral)t).getChars();
       try
@@ -2432,7 +2464,7 @@ public class TransformerImpl extends Transformer
     {
       ElemSort sort = foreach.getSortElem(i);
       
-      if (TransformerImpl.S_DEBUG)
+      if (m_debug)
         getTraceManager().fireTraceEvent(sort);
      
       String langString =
@@ -2494,7 +2526,7 @@ public class TransformerImpl extends Transformer
       keys.addElement(new NodeSortKey(this, sort.getSelect(), treatAsNumbers,
                                       descending, langString, caseOrderUpper,
                                       foreach));
-      if (TransformerImpl.S_DEBUG)
+      if (m_debug)
         getTraceManager().fireTraceEndEvent(sort);
      }
 
@@ -3583,12 +3615,41 @@ public class TransformerImpl extends Transformer
 		m_traceManager.fireGenerateEvent(ge);
 	}
 
-	/**
-	 * @see org.apache.xml.serializer.SerializerTrace#hasTraceListeners()
-	 */
-	public boolean hasTraceListeners() {
-		return m_traceManager.hasTraceListeners();
-	}
+    /**
+     * @see org.apache.xml.serializer.SerializerTrace#hasTraceListeners()
+     */
+    public boolean hasTraceListeners() {
+        return m_traceManager.hasTraceListeners();
+    }
+
+    public boolean getDebug() {
+        return m_debug;
+    }
+
+    public void setDebug(boolean b) {
+        m_debug = b;
+    }
+
+    /**
+     * @return Incremental flag
+     */
+    public boolean getIncremental() {
+        return m_incremental;
+    }
+
+    /**
+     * @return Optimization flag
+     */
+    public boolean getOptimize() {
+        return m_optimizer;
+    }
+
+    /**
+     * @return Source location flag
+     */
+    public boolean getSource_location() {
+        return m_source_location;
+    }
 
 }  // end TransformerImpl class
 

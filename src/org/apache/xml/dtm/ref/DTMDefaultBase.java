@@ -41,7 +41,7 @@ import java.io.*; // for dumpDTM
  */
 public abstract class DTMDefaultBase implements DTM
 {
-	static boolean JJK_DEBUG=false;
+    static final boolean JJK_DEBUG=false;
 
   // This constant is likely to be removed in the future. Use the 
   // getDocument() method instead of ROOTNODE to get at the root 
@@ -770,7 +770,7 @@ public abstract class DTMDefaultBase implements DTM
     catch(IOException ioe)
     {
       ioe.printStackTrace(System.err);
-      System.exit(-1);
+        throw new RuntimeException(ioe.getMessage());
     }
   }
   

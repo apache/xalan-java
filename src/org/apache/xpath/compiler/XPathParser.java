@@ -707,7 +707,7 @@ public class XPathParser
 
     try
     {
-      tok = ((Integer) (Keywords.m_functions.get(key))).intValue();
+      tok = ((Integer) (Keywords.getFunction(key))).intValue();
     }
     catch (NullPointerException npe)
     {
@@ -1787,7 +1787,7 @@ public class XPathParser
   protected int AxisName() throws javax.xml.transform.TransformerException
   {
 
-    Object val = Keywords.m_axisnames.get(m_token);
+    Object val = Keywords.getAxisName(m_token);
 
     if (null == val)
     {
@@ -1817,7 +1817,7 @@ public class XPathParser
 
     if (lookahead('(', 1))
     {
-      Object nodeTestOp = Keywords.m_nodetypes.get(m_token);
+      Object nodeTestOp = Keywords.getNodeType(m_token);
 
       if (null == nodeTestOp)
       {

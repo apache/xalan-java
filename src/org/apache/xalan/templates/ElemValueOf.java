@@ -215,13 +215,13 @@ public class ElemValueOf extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
     SerializationHandler rth = transformer.getResultTreeHandler();
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
     try
     {
       // Optimize for "."
-      if (false && m_isDot && !TransformerImpl.S_DEBUG)
+      if (false && m_isDot && !transformer.getDebug())
       {
         int child = xctxt.getCurrentNode();
         DTM dtm = xctxt.getDTM(child);
@@ -261,7 +261,7 @@ public class ElemValueOf extends ElemTemplateElement
         {
           Expression expr = m_selectExpression.getExpression();
 
-          if (TransformerImpl.S_DEBUG)
+          if (transformer.getDebug())
           {
             XObject obj = expr.execute(xctxt);
 
@@ -296,7 +296,7 @@ public class ElemValueOf extends ElemTemplateElement
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
 	    transformer.getTraceManager().fireTraceEndEvent(this); 
     }
   }

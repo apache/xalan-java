@@ -2733,7 +2733,7 @@ public class SAX2DTM2 extends SAX2DTM
       }
       else if (localName.length() == 0)
       {
-	return m_fixednames[type];
+        return getFixedNames(type);
       }
       else
 	return localName;

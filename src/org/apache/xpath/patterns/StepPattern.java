@@ -792,7 +792,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
       if (pat != this)
         buf.append("/");
 
-      buf.append(Axis.names[pat.m_axis]);
+      buf.append(Axis.getNames(pat.m_axis));
       buf.append("::");
 
       if (0x000005000 == pat.m_whatToShow)

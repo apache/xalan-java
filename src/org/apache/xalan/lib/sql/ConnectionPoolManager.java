@@ -31,10 +31,7 @@ public class ConnectionPoolManager
 {
   /**
    */
-  static Hashtable m_poolTable = null;
-  /**
-   */
-  static boolean m_isInit = false;
+  private static Hashtable m_poolTable = null;
 
   /**
    */
@@ -47,18 +44,14 @@ public class ConnectionPoolManager
    * Initialize the internal structures of the Pool Manager
    *
    */
-  public synchronized void init( )
+  private synchronized void init( )
   {
-    // Only do this process once
-    if (m_isInit == true) return;
-
-
-    //
-    // Initialize the pool table
-    //
-    m_poolTable = new Hashtable();
-
-    m_isInit = true;
+    /**
+     * Only do this process once
+     * Initialize the pool table
+     */   
+    if (m_poolTable == null)
+            m_poolTable = new Hashtable();
   }
 
   /**

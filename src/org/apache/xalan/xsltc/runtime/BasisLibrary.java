@@ -31,7 +31,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.AbsoluteIterator;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.MultiDOM;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
@@ -52,7 +52,7 @@ import org.apache.xml.utils.XMLChar;
  * Standard XSLT functions. All standard functions expect the current node 
  * and the DOM as their last two arguments.
  */
-public final class BasisLibrary implements Operators {
+public final class BasisLibrary {
 
     private final static String EMPTYSTRING = "";
 
@@ -496,22 +496,22 @@ public final class BasisLibrary implements Operators {
     private static boolean compareStrings(String lstring, String rstring,
 					  int op, DOM dom) {
 	switch (op) {
-	case EQ:
+    case Operators.EQ:
 	    return lstring.equals(rstring);
 
-	case NE:
+    case Operators.NE:
 	    return !lstring.equals(rstring);
 
-	case GT:
+    case Operators.GT:
 	    return numberF(lstring, dom) > numberF(rstring, dom);
 
-	case LT:
+    case Operators.LT:
 	    return numberF(lstring, dom) < numberF(rstring, dom);
 
-	case GE:
+    case Operators.GE:
 	    return numberF(lstring, dom) >= numberF(rstring, dom);
-
-	case LE:
+        
+    case Operators.LE:
 	    return numberF(lstring, dom) <= numberF(rstring, dom);
 
 	default:
@@ -536,9 +536,9 @@ public final class BasisLibrary implements Operators {
 	    while ((rnode = right.next()) != DTMAxisIterator.END) {
                 // String value must be the same if both nodes are the same
                 if (lnode == rnode) {
-                    if (op == EQ) {
+                    if (op == Operators.EQ) {
                         return true;
-                    } else if (op == NE) {
+                    } else if (op == Operators.NE) {
                         continue;
                     }
                 }
@@ -559,7 +559,7 @@ public final class BasisLibrary implements Operators {
 	String value;
 
 	switch(op) {
-	case EQ:
+    case Operators.EQ:
             rnode = iterator.next();
             if (rnode != DTMAxisIterator.END) {
 	        value = dom.getStringValueX(node);
@@ -571,7 +571,7 @@ public final class BasisLibrary implements Operators {
 	        } while ((rnode = iterator.next()) != DTMAxisIterator.END);
             }
 	    break;
-	case NE:
+    case Operators.NE:
             rnode = iterator.next();
             if (rnode != DTMAxisIterator.END) {
 	        value = dom.getStringValueX(node);
@@ -583,13 +583,13 @@ public final class BasisLibrary implements Operators {
 	        } while ((rnode = iterator.next()) != DTMAxisIterator.END);
             }
 	    break;
-	case LT:
+    case Operators.LT:
 	    // Assume we're comparing document order here
 	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
 		if (rnode > node) return true;
 	    }
 	    break;
-	case GT:
+    case Operators.GT:
 	    // Assume we're comparing document order here
 	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
 		if (rnode < node) return true;
@@ -608,42 +608,42 @@ public final class BasisLibrary implements Operators {
 	//left.reset();
 
 	switch (op) {
-	case EQ:
+    case Operators.EQ:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getStringValueX(node), dom) == rnumber)
 		    return true;
 	    }
 	    break;
 
-	case NE:
+    case Operators.NE:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getStringValueX(node), dom) != rnumber)
 		    return true;
 	    }
 	    break;
 
-	case GT:
+    case Operators.GT:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getStringValueX(node), dom) > rnumber)
 		    return true;
 	    }
 	    break;
 
-	case LT:
+    case Operators.LT:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getStringValueX(node), dom) < rnumber)
 		    return true;
 	    }
 	    break;
 
-	case GE:
+    case Operators.GE:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getStringValueX(node), dom) >= rnumber)
 		    return true;
 	    }
 	    break;
 
-	case LE:
+    case Operators.LE:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getStringValueX(node), dom) <= rnumber)
 		    return true;
@@ -679,7 +679,7 @@ public final class BasisLibrary implements Operators {
 	boolean result = false;
 	boolean hasSimpleArgs = hasSimpleType(left) && hasSimpleType(right);
 
-	if (op != EQ && op != NE) {
+    if (op != Operators.EQ && op != Operators.NE) {
 	    // If node-boolean comparison -> convert node to boolean
 	    if (left instanceof Node || right instanceof Node) {
 		if (left instanceof Boolean) {
@@ -694,19 +694,19 @@ public final class BasisLibrary implements Operators {
 
 	    if (hasSimpleArgs) {
 		switch (op) {
-		case GT:
+        case Operators.GT:
 		    return numberF(left, dom) > numberF(right, dom);
 		    
-		case LT:
+        case Operators.LT:
 		    return numberF(left, dom) < numberF(right, dom);
 		    
-		case GE:
+        case Operators.GE:
 		    return numberF(left, dom) >= numberF(right, dom);
 		    
-		case LE:
+        case Operators.LE:
 		    return numberF(left, dom) <= numberF(right, dom);
 		    
-		default:
+        default:
 		    runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
 		}
 	    }
@@ -741,7 +741,7 @@ public final class BasisLibrary implements Operators {
 		left instanceof DOM && right instanceof DTMAxisIterator) {
 		// swap operands and operator
 		final Object temp = right; right = left; left = temp;
-                op = Operators.swapArray[op];
+                op = Operators.swapOp(op);
 	    }
 
 	    if (left instanceof DOM) {
@@ -1443,7 +1443,7 @@ public final class BasisLibrary implements Operators {
     public static final String INVALID_NCNAME_ERR = "INVALID_NCNAME_ERR";
 
     // All error messages are localized and are stored in resource bundles.
-    protected static ResourceBundle m_bundle;
+    private static ResourceBundle m_bundle;
     
     public final static String ERROR_MESSAGES_KEY = "error-messages";
 

@@ -86,7 +86,13 @@ public class ErrorMessages_ko extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
         "\ud558\ub098 \uc774\uc0c1\uc758 \uc2a4\ud0c0\uc77c \uc2dc\ud2b8\uac00 \ub3d9\uc77c\ud55c \ud30c\uc77c\uc5d0\uc11c \uc815\uc758\ub418\uc5c8\uc2b5\ub2c8\ub2e4."},
 
@@ -839,9 +845,5 @@ public class ErrorMessages_ko extends ListResourceBundle {
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "Translet \uc624\ub958:"}
     };
-
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

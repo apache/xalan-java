@@ -148,7 +148,7 @@ public class ElemWithParam extends ElemTemplateElement
   {
     // See if we can reduce an RTF to a select with a string expression.
     if(null == m_selectPattern  
-       && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+       && sroot.getOptimizer())
     {
       XPath newSelect = ElemVariable.rewriteChildToExpression(this);
       if(null != newSelect)
@@ -202,7 +202,7 @@ public class ElemWithParam extends ElemTemplateElement
 
         var.allowDetachToRelease(false);
 
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
           transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                   "select", m_selectPattern, var);
       }

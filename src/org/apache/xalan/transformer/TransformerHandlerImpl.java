@@ -55,6 +55,20 @@ public class TransformerHandlerImpl
         implements EntityResolver, DTDHandler, ContentHandler, ErrorHandler,
                    LexicalHandler, TransformerHandler, DeclHandler
 {
+    /**
+     * The flag for the setting of the optimize feature;
+     */    
+    private final boolean m_optimizer;
+
+    /**
+     * The flag for the setting of the incremental feature;
+     */    
+    private final boolean m_incremental;
+
+    /**
+     * The flag for the setting of the source_location feature;
+     */  
+    private final boolean m_source_location;
   
   private boolean m_insideParse = false;
 
@@ -89,6 +103,9 @@ public class TransformerHandlerImpl
     m_entityResolver = dtm.getEntityResolver();
     m_errorHandler = dtm.getErrorHandler();
     m_lexicalHandler = dtm.getLexicalHandler();
+    m_incremental = transformer.getIncremental();
+    m_optimizer = transformer.getOptimize();
+    m_source_location = transformer.getSource_location();
   }
   
   /** 
@@ -336,7 +353,7 @@ public class TransformerHandlerImpl
     if (m_contentHandler != null)
     {
       //m_transformer.setTransformThread(listener);
-      if(DTMManager.getIncremental())
+      if(m_incremental)
       {
         m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
             
@@ -379,7 +396,7 @@ public class TransformerHandlerImpl
       m_contentHandler.endDocument();
     }
     
-    if(DTMManager.getIncremental())
+    if(m_incremental)
     {
       m_transformer.waitTransformThread();
     }

@@ -79,11 +79,15 @@ public class Compiler extends OpMap
    * @param locator The location object where the expression lives, which 
    *                may be null, but which, if not null, must be valid over 
    *                the long haul, in other words, it will not be cloned.
+   * @param functionTable The FunctionTable object where the xpath build-in 
+   *                functions are stored.
    */
-  public Compiler(ErrorListener errorHandler, SourceLocator locator)
+  public Compiler(ErrorListener errorHandler, SourceLocator locator, 
+            FunctionTable fTable)
   {
     m_errorHandler = errorHandler;
     m_locator = locator;
+    m_functionTable = fTable;
   }
 
   /**
@@ -1017,7 +1021,7 @@ private static final boolean DEBUG = false;
 
     if (-1 != funcID)
     {
-      Function func = FunctionTable.getFunction(funcID);
+      Function func = m_functionTable.getFunction(funcID);
 
       func.postCompileStep(this);
       
@@ -1037,7 +1041,7 @@ private static final boolean DEBUG = false;
       }
       catch (WrongNumberArgsException wnae)
       {
-        java.lang.String name = FunctionTable.getFunctionName(funcID);
+        java.lang.String name = m_functionTable.getFunctionName(funcID);
 
         m_errorHandler.fatalError( new TransformerException(
                   XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
@@ -1241,4 +1245,9 @@ private static final boolean DEBUG = false;
 
   /** The source locator for the expression being compiled.  May be null. */
   SourceLocator m_locator;
+  
+  /**
+   * The FunctionTable for all xpath build-in functions
+   */
+  private FunctionTable m_functionTable;
 }

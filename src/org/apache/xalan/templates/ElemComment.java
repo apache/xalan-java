@@ -71,7 +71,7 @@ public class ElemComment extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
     try
     {
@@ -93,7 +93,7 @@ public class ElemComment extends ElemTemplateElement
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireTraceEndEvent(this);
     }
   }

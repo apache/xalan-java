@@ -204,7 +204,7 @@ public class ElemTextLiteral extends ElemTemplateElement
     try
     {
       SerializationHandler rth = transformer.getResultTreeHandler();
-      if (TransformerImpl.S_DEBUG) {
+      if (transformer.getDebug()) {
         // flush any pending cached processing before the trace event.
         rth.flushPending();
         transformer.getTraceManager().fireTraceEvent(this);
@@ -228,7 +228,7 @@ public class ElemTextLiteral extends ElemTemplateElement
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG) {
+      if (transformer.getDebug()) {
         try
         {
             // flush any pending cached processing before sending the trace event

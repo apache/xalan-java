@@ -533,7 +533,7 @@ public class XSLTProcessorApplet extends Applet
     catch (MalformedURLException e)
     {
       e.printStackTrace();
-      System.exit(-1);
+      throw new RuntimeException(e.getMessage());
     }      
     catch (Exception any_error)
     {
@@ -673,12 +673,12 @@ public class XSLTProcessorApplet extends Applet
       catch (TransformerConfigurationException tfe)
       {
         tfe.printStackTrace();
-        System.exit(-1);
+        throw new RuntimeException(tfe.getMessage());
       }
       catch (MalformedURLException e)
       {
         e.printStackTrace();
-        System.exit(-1);
+        throw new RuntimeException(e.getMessage());
       }
 	  
       this.showStatus("Transformation Done!");

@@ -421,7 +421,7 @@ public class MethodResolver
    * Specification of conversions from XSLT type CLASS_UNKNOWN
    * (i.e. some unknown Java object) to allowed Java types.
    */
-  static ConversionInfo[] m_javaObjConversions = {
+  private final static ConversionInfo[] m_javaObjConversions = {
     new ConversionInfo(Double.TYPE, 11),
     new ConversionInfo(Float.TYPE, 12),
     new ConversionInfo(Long.TYPE, 13),
@@ -436,7 +436,7 @@ public class MethodResolver
    * Specification of conversions from XSLT type CLASS_BOOLEAN
    * to allowed Java types.
    */
-  static ConversionInfo[] m_booleanConversions = {
+  private final static ConversionInfo[] m_booleanConversions = {
     new ConversionInfo(Boolean.TYPE, 0),
     new ConversionInfo(java.lang.Boolean.class, 1),
     new ConversionInfo(java.lang.Object.class, 2),
@@ -447,7 +447,7 @@ public class MethodResolver
    * Specification of conversions from XSLT type CLASS_NUMBER
    * to allowed Java types.
    */
-  static ConversionInfo[] m_numberConversions = {
+  private final static ConversionInfo[] m_numberConversions = {
     new ConversionInfo(Double.TYPE, 0),
     new ConversionInfo(java.lang.Double.class, 1),
     new ConversionInfo(Float.TYPE, 3),
@@ -465,7 +465,7 @@ public class MethodResolver
    * Specification of conversions from XSLT type CLASS_STRING
    * to allowed Java types.
    */
-  static ConversionInfo[] m_stringConversions = {
+  private final static ConversionInfo[] m_stringConversions = {
     new ConversionInfo(java.lang.String.class, 0),
     new ConversionInfo(java.lang.Object.class, 1),
     new ConversionInfo(Character.TYPE, 2),
@@ -482,7 +482,7 @@ public class MethodResolver
    * Specification of conversions from XSLT type CLASS_RTREEFRAG
    * to allowed Java types.
    */
-  static ConversionInfo[] m_rtfConversions = {
+  private final static ConversionInfo[] m_rtfConversions = {
     new ConversionInfo(org.w3c.dom.traversal.NodeIterator.class, 0),
     new ConversionInfo(org.w3c.dom.NodeList.class, 1),
     new ConversionInfo(org.w3c.dom.Node.class, 2),
@@ -502,7 +502,7 @@ public class MethodResolver
    * Specification of conversions from XSLT type CLASS_NODESET
    * to allowed Java types.  (This is the same as for CLASS_RTREEFRAG)
    */
-  static ConversionInfo[] m_nodesetConversions = {
+  private final static ConversionInfo[] m_nodesetConversions = {
     new ConversionInfo(org.w3c.dom.traversal.NodeIterator.class, 0),
     new ConversionInfo(org.w3c.dom.NodeList.class, 1),
     new ConversionInfo(org.w3c.dom.Node.class, 2),
@@ -522,7 +522,7 @@ public class MethodResolver
    * Order is significant in the list below, based on 
    * XObject.CLASS_XXX values.
    */
-  static ConversionInfo[][] m_conversions = 
+  private final static ConversionInfo[][] m_conversions = 
   {
     m_javaObjConversions, // CLASS_UNKNOWN = 0;
     m_booleanConversions, // CLASS_BOOLEAN = 1;

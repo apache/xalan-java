@@ -77,7 +77,7 @@ public class ElemApplyImport extends ElemTemplateElement
         XSLTErrorResources.ER_NO_APPLY_IMPORT_IN_FOR_EACH);  //"xsl:apply-imports not allowed in a xsl:for-each");
     }
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
@@ -92,7 +92,7 @@ public class ElemApplyImport extends ElemTemplateElement
       transformer.getMsgMgr().error(this,
         XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS);  //"sourceNode is null in xsl:apply-imports!");
     }
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEndEvent(this);
   }
 

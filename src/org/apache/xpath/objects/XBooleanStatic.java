@@ -29,7 +29,7 @@ public class XBooleanStatic extends XBoolean
 
   /** The value of the object.
    *  @serial          */
-  boolean m_val;
+  private final boolean m_val;
 
   /**
    * Construct a XBooleanStatic object.

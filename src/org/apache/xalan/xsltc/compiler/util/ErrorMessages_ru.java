@@ -86,7 +86,13 @@ public class ErrorMessages_ru extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
         "\u0412 \u0444\u0430\u0439\u043b\u0435 \u043e\u043f\u0440\u0435\u0434\u0435\u043b\u0435\u043d\u043e \u043d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0442\u0430\u0431\u043b\u0438\u0446 \u0441\u0442\u0438\u043b\u0435\u0439. "},
 
@@ -839,9 +845,5 @@ public class ErrorMessages_ru extends ListResourceBundle {
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "\u041e\u0448\u0438\u0431\u043a\u0438 \u043f\u0440\u043e\u0446\u0435\u0434\u0443\u0440\u044b \u043f\u0440\u0435\u043e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u044f:"}
     };
-
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

@@ -172,14 +172,14 @@ public class ElemApplyTemplates extends ElemCallTemplate
           transformer.pushMode(m_mode);
         }
       }
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireTraceEvent(this);
 
       transformSelectedNodes(transformer);
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireTraceEndEvent(this);
 
       if (pushMode)
@@ -229,7 +229,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       if (null != keys)
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
             
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
       {
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
@@ -257,10 +257,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
         for (int i = 0; i < nParams; i++) 
         {
           ElemWithParam ewp = m_paramElems[i];
-          if (TransformerImpl.S_DEBUG)
+          if (transformer.getDebug())
             transformer.getTraceManager().fireTraceEvent(ewp);
           XObject obj = ewp.getValue(transformer, sourceNode);
-          if (TransformerImpl.S_DEBUG)
+          if (transformer.getDebug())
             transformer.getTraceManager().fireTraceEndEvent(ewp);
           
           vars.setLocalVariable(i, obj, argsFrame);
@@ -380,7 +380,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
         	currentFrameBottom = 0;
 
         // Fire a trace event for the template.
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
           transformer.getTraceManager().fireTraceEvent(template);
 
         // And execute the child templates.
@@ -401,7 +401,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
           }
         }
         
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
 	      transformer.getTraceManager().fireTraceEndEvent(template); 
 	    
         if(template.m_frameSize > 0)
@@ -435,7 +435,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));

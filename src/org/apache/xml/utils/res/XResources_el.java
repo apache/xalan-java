@@ -36,22 +36,18 @@ public class XResources_el extends XResourceBundle
    */
   public Object[][] getContents()
   {
-    return contents;
-  }
-
-  /** The association list.          */
-  static final Object[][] contents =
+    return new Object[][]
   {
     { "ui_language", "el" }, { "help_language", "el" }, { "language", "el" },
-    { "alphabet",
+    { "alphabet", new CharArrayWrapper(
       new char[]{ 0x03b1, 0x03b2, 0x03b3, 0x03b4, 0x03b5, 0x03b6, 0x03b7,
                   0x03b8, 0x03b9, 0x03ba, 0x03bb, 0x03bc, 0x03bd, 0x03be,
                   0x03bf, 0x03c0, 0x03c1, 0x03c2, 0x03c3, 0x03c4, 0x03c5,
-                  0x03c6, 0x03c7, 0x03c8, 0x03c9 } },
-    { "tradAlphabet",
+                  0x03c6, 0x03c7, 0x03c8, 0x03c9 }) },
+    { "tradAlphabet", new CharArrayWrapper(
       new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-                  'Y', 'Z' } },
+                  'Y', 'Z' }) },
 
     //language orientation
     { "orientation", "LeftToRight" },
@@ -64,28 +60,29 @@ public class XResources_el extends XResourceBundle
     // largest numerical value
     //{"MaxNumericalValue", new Integer()},
     //These would not be used for EN. Only used for traditional numbering   
-    { "numberGroups", new int[]{ 100, 10, 1 } },
+    { "numberGroups", new IntArrayWrapper(new int[]{ 100, 10, 1 }) },
 
     //These only used for mutiplicative-additive numbering
-    { "multiplier", new long[]{ 1000 } },
-    { "multiplierChar", new char[]{ 0x03d9 } },
+    { "multiplier", new LongArrayWrapper(new long[]{ 1000 }) },
+    { "multiplierChar", new CharArrayWrapper(new char[]{ 0x03d9 }) },
 
     // chinese only??
-    { "zero", new char[0] },
+    { "zero", new CharArrayWrapper(new char[0]) },
 
     //{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
-    { "digits",
+    { "digits", new CharArrayWrapper(
       new char[]{ 0x03b1, 0x03b2, 0x03b3, 0x03b4, 0x03b5, 0x03db, 0x03b6,
-                  0x03b7, 0x03b8 } },
-    { "tens",
+                  0x03b7, 0x03b8 }) },
+    { "tens", new CharArrayWrapper(
       new char[]{ 0x03b9, 0x03ba, 0x03bb, 0x03bc, 0x03bd, 0x03be, 0x03bf,
-                  0x03c0, 0x03df } },
-    { "hundreds",
+                  0x03c0, 0x03df }) },
+    { "hundreds", new CharArrayWrapper(
       new char[]{ 0x03c1, 0x03c2, 0x03c4, 0x03c5, 0x03c6, 0x03c7, 0x03c8,
-                  0x03c9, 0x03e1 } },
+                  0x03c9, 0x03e1 }) },
 
     //{"thousands", new char[]{0x10D9,0x10DA,0x10DB,0x10DC,0x10DD,0x10DE,0x10DF,0x10E0,0x10E1}},  
     //hundreds, etc...
-    { "tables", new String[]{ "hundreds", "tens", "digits" } }
+    { "tables", new StringArrayWrapper(new String[]{ "hundreds", "tens", "digits" }) }
   };
+  }
 }

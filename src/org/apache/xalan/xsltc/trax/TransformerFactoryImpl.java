@@ -111,7 +111,7 @@ public class TransformerFactoryImpl
      * compared to the rest of his bulk, waved helplessly before his eyes.
      * "What has happened to me?", he thought. It was no dream....
      */
-    protected static String DEFAULT_TRANSLET_NAME = "GregorSamsa";
+    protected final static String DEFAULT_TRANSLET_NAME = "GregorSamsa";
     
     /**
      * The class name of the translet
@@ -138,12 +138,6 @@ public class TransformerFactoryImpl
      * <?xml-stylesheet ...?> processing instructions in XML docs.
      */
     private Hashtable _piParams = null;
-
-
-    /**
-     * Use a thread local variable to store a copy of an XML Reader.
-     */
-    static ThreadLocal _xmlReader = new ThreadLocal();
 
     /**
      * The above hashtable stores objects of this class.

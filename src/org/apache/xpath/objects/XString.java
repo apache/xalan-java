@@ -38,7 +38,7 @@ public class XString extends XObject implements XMLString
     static final long serialVersionUID = 2020470518395094525L;
 
   /** Empty string XString object */
-  public static XString EMPTYSTRING = new XString("");
+  public static final XString EMPTYSTRING = new XString("");
 
   /**
    * Construct a XString object.  This constructor exists for derived classes.

@@ -26,7 +26,7 @@ import org.apache.xml.utils.XMLStringFactory;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-
+import org.apache.xalan.xsltc.dom.NodeCounter;
 
 /**
  * This class implements the traversers for DTMDefaultBase.
@@ -106,7 +106,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
     if (null == m_traversers)  // Cache of stateless traversers for this DTM
     {
-      m_traversers = new DTMAxisTraverser[Axis.names.length];
+      m_traversers = new DTMAxisTraverser[Axis.getNamesLength()];
       traverser = null;
     }
     else
@@ -186,7 +186,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     }
 
     if (null == traverser)
-      throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_AXIS_TRAVERSER_NOT_SUPPORTED, new Object[]{Axis.names[axis]}));
+      throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_AXIS_TRAVERSER_NOT_SUPPORTED, new Object[]{Axis.getNames(axis)}));
       // "Axis traverser not supported: "
       //                       + Axis.names[axis]);
 

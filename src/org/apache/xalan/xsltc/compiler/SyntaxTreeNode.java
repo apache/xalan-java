@@ -75,7 +75,7 @@ public abstract class SyntaxTreeNode implements Constants {
     private   Hashtable _prefixMapping = null; // Namespace declarations
 
     // Sentinel - used to denote unrecognised syntaxt tree nodes.
-    protected static final SyntaxTreeNode Dummy = new AbsolutePathPattern(null);
+    static final SyntaxTreeNode Dummy = new AbsolutePathPattern(null);
 
     // These two are used for indenting nodes in the AST (debug output)
     protected static final int IndentIncrement = 4;

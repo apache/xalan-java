@@ -434,23 +434,23 @@ public class XNodeSet extends NodeSequence
   }
 
   /** Less than comparator         */
-  static LessThanComparator S_LT = new LessThanComparator();
+  static final LessThanComparator S_LT = new LessThanComparator();
 
   /** Less than or equal comparator          */
-  static LessThanOrEqualComparator S_LTE = new LessThanOrEqualComparator();
+  static final LessThanOrEqualComparator S_LTE = new LessThanOrEqualComparator();
 
   /** Greater than comparator         */
-  static GreaterThanComparator S_GT = new GreaterThanComparator();
+  static final GreaterThanComparator S_GT = new GreaterThanComparator();
 
   /** Greater than or equal comparator          */
-  static GreaterThanOrEqualComparator S_GTE =
+  static final GreaterThanOrEqualComparator S_GTE =
     new GreaterThanOrEqualComparator();
 
   /** Equal comparator         */
-  static EqualComparator S_EQ = new EqualComparator();
+  static final EqualComparator S_EQ = new EqualComparator();
 
   /** Not equal comparator         */
-  static NotEqualComparator S_NEQ = new NotEqualComparator();
+  static final NotEqualComparator S_NEQ = new NotEqualComparator();
 
   /**
    * Tell if one object is less than the other.

@@ -78,7 +78,7 @@ public class ElemChoose extends ElemTemplateElement
   public void execute(TransformerImpl transformer) throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
     boolean found = false;
@@ -103,11 +103,11 @@ public class ElemChoose extends ElemTemplateElement
         // if(when.getTest().getPatternString().equals("COLLECTION/icuser/ictimezone/LITERAL='GMT +13:00 Pacific/Tongatapu'"))
         // 	System.err.println("Found COLLECTION/icuser/ictimezone/LITERAL");
 
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
         {
           XObject test = when.getTest().execute(xctxt, sourceNode, when);
 
-          if (TransformerImpl.S_DEBUG)
+          if (transformer.getDebug())
             transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
                     "test", when.getTest(), test);
 
@@ -134,13 +134,13 @@ public class ElemChoose extends ElemTemplateElement
       {
         found = true;
 
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
           transformer.getTraceManager().fireTraceEvent(childElem);
 
         // xsl:otherwise                
         transformer.executeChildTemplates(childElem, true);
 
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
 	      transformer.getTraceManager().fireTraceEndEvent(childElem); 
         return;
       }
@@ -150,7 +150,7 @@ public class ElemChoose extends ElemTemplateElement
       transformer.getMsgMgr().error(
         this, XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
         
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
 	  transformer.getTraceManager().fireTraceEndEvent(this);         
   }
 

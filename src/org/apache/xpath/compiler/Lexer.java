@@ -467,7 +467,7 @@ class Lexer
 
     try
     {
-      Integer itok = (Integer) Keywords.m_keywords.get(key);
+      Integer itok = (Integer) Keywords.getKeyWord(key);
 
       tok = (null != itok) ? itok.intValue() : 0;
     }

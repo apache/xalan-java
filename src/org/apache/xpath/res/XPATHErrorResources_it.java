@@ -351,7 +351,14 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   // Error messages...
 
-  public static final Object[][] contents = {
+  /**
+   * Get the association list.
+   *
+   * @return The association list.
+   */
+  public Object[][] getContents()
+  {
+    return new Object[][]{
 
   /** Field ERROR0000          */
 
@@ -1222,6 +1229,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   { "three", "3" }
 
   };
+  }
 
 
   // ================= INFRASTRUCTURE ======================
@@ -1254,15 +1262,6 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /** Field QUERY_HEADER          */
   public static final String QUERY_HEADER = "MODELLO ";
 
-  /**
-   * Get the association list.
-   *
-   * @return The association list.
-   */
-  public Object[][] getContents()
-  {
-    return contents;
-  }
 
   /**
    * Return a named ResourceBundle for a particular locale.  This method mimics the behavior

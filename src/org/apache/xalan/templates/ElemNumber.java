@@ -36,6 +36,10 @@ import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.StringBufferPool;
 import org.apache.xml.utils.res.XResourceBundle;
+import org.apache.xml.utils.res.CharArrayWrapper;
+import org.apache.xml.utils.res.IntArrayWrapper;
+import org.apache.xml.utils.res.LongArrayWrapper;
+import org.apache.xml.utils.res.StringArrayWrapper;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -480,12 +484,6 @@ public class ElemNumber extends ElemTemplateElement
     new DecimalToRoman(10L, "X", 9L, "IX"),
     new DecimalToRoman(5L, "V", 4L, "IV"),
     new DecimalToRoman(1L, "I", 1L, "I") };
-
-  /**
-   * Chars for converting integers into alpha counts.
-   * @see TransformerImpl#int2alphaCount
-   */
-  private static char[] m_alphaCountTable = null;
   
   /**
    * This function is called after everything else has been
@@ -553,7 +551,7 @@ public class ElemNumber extends ElemTemplateElement
             throws TransformerException
   {
 
-     if (TransformerImpl.S_DEBUG)
+     if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
@@ -570,7 +568,7 @@ public class ElemNumber extends ElemTemplateElement
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
 	    transformer.getTraceManager().fireTraceEndEvent(this); 
     }
   }
@@ -1324,45 +1322,38 @@ public class ElemNumber extends ElemTemplateElement
       ? m_lettervalue_avt.evaluate(
       transformer.getXPathContext(), contextNode, this) : null;
 
+    /**
+     * Wrapper of Chars for converting integers into alpha counts.
+     */
+    CharArrayWrapper alphaCountTable = null;
+    
+    XResourceBundle thisBundle = null;
+     
     switch (numberType)
     {
     case 'A' :
-      if (m_alphaCountTable == null)
-      {
-        XResourceBundle thisBundle;
 
         thisBundle =
           (XResourceBundle) XResourceBundle.loadResourceBundle(
             org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
 
-        char[] alphabet;
 
-        alphabet = (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
-        m_alphaCountTable = alphabet;
-      }
+        alphaCountTable = (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
 
-      int2alphaCount(listElement, m_alphaCountTable, formattedNumber);
+      int2alphaCount(listElement, alphaCountTable, formattedNumber);
       break;
     case 'a' :
-      if (m_alphaCountTable == null)
-      {
-        XResourceBundle thisBundle;
 
         thisBundle =
           (XResourceBundle) XResourceBundle.loadResourceBundle(
             org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
 
-        char[] alphabet;
-
-        alphabet = (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
-        m_alphaCountTable = alphabet;
-      }
-
+        alphaCountTable = (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
       FastStringBuffer stringBuf = StringBufferPool.get();
 
       try
       {
-        int2alphaCount(listElement, m_alphaCountTable, stringBuf);
+        int2alphaCount(listElement, alphaCountTable, stringBuf);
         formattedNumber.append(
           stringBuf.toString().toLowerCase(
             getLocale(transformer, contextNode)));
@@ -1382,7 +1373,6 @@ public class ElemNumber extends ElemTemplateElement
       break;
     case 0x3042 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HA"));
@@ -1394,13 +1384,12 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
+            (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x3044 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HI"));
@@ -1412,13 +1401,12 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
+            (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x30A2 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "A"));
@@ -1430,13 +1418,12 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
+            (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x30A4 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "I"));
@@ -1448,13 +1435,12 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
+            (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x4E00 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("zh", "CN"));
@@ -1466,14 +1452,13 @@ public class ElemNumber extends ElemTemplateElement
       }
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
+                       (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x58F9 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("zh", "TW"));
@@ -1483,14 +1468,13 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
+                       (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x0E51 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("th", ""));
@@ -1500,14 +1484,13 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
+                       (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x05D0 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("he", ""));
@@ -1517,14 +1500,13 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
+                       (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x10D0 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ka", ""));
@@ -1534,14 +1516,13 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
+                       (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x03B1 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("el", ""));
@@ -1551,14 +1532,13 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
+                       (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x0430 :
     {
-      XResourceBundle thisBundle;
 
       thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("cy", ""));
@@ -1568,7 +1548,7 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
+                       (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
@@ -1609,10 +1589,10 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected String int2singlealphaCount(long val, char[] table)
+  protected String int2singlealphaCount(long val, CharArrayWrapper table)
   {
 
-    int radix = table.length;
+    int radix = table.getLength();
 
     // TODO:  throw error on out of range input
     if (val > radix)
@@ -1620,7 +1600,7 @@ public class ElemNumber extends ElemTemplateElement
       return getZeroString();
     }
     else
-      return (new Character(table[(int)val - 1])).toString();  // index into table is off one, starts at 0
+      return (new Character(table.getChar((int)val - 1))).toString();  // index into table is off one, starts at 0
   }
 
   /**
@@ -1637,22 +1617,22 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected void int2alphaCount(long val, char[] aTable,
+  protected void int2alphaCount(long val, CharArrayWrapper aTable,
                                 FastStringBuffer stringBuf)
   {
 
-    int radix = aTable.length;
-    char[] table = new char[aTable.length];
+    int radix = aTable.getLength();
+    char[] table = new char[radix];
 
     // start table at 1, add last char at index 0. Reason explained above and below.
     int i;
 
-    for (i = 0; i < aTable.length - 1; i++)
+    for (i = 0; i < radix - 1; i++)
     {
-      table[i + 1] = aTable[i];
+      table[i + 1] = aTable.getChar(i);
     }
 
-    table[0] = aTable[i];
+    table[0] = aTable.getChar(i);
 
     // Create a buffer to hold the result
     // TODO:  size of the table can be detereined by computing
@@ -1767,11 +1747,11 @@ public class ElemNumber extends ElemTemplateElement
     charPos = 0;  //start at 0
 
     // array of number groups: ie.1000, 100, 10, 1
-    int[] groups = (int[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_NUMBERGROUPS);
+    IntArrayWrapper groups = (IntArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_NUMBERGROUPS);
 
     // array of tables of hundreds, tens, digits...
-    String[] tables =
-      (String[]) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_NUM_TABLES));
+    StringArrayWrapper tables =
+      (StringArrayWrapper) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_NUM_TABLES));
 
     //some languages have additive alphabetical notation,
     //some multiplicative-additive, etc... Handle them differently.
@@ -1781,79 +1761,79 @@ public class ElemNumber extends ElemTemplateElement
     if (numbering.equals(org.apache.xml.utils.res.XResourceBundle.LANG_MULT_ADD))
     {
       String mult_order = thisBundle.getString(org.apache.xml.utils.res.XResourceBundle.MULT_ORDER);
-      long[] multiplier =
-        (long[]) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER));
-      char[] zeroChar = (char[]) thisBundle.getObject("zero");
+      LongArrayWrapper multiplier =
+        (LongArrayWrapper) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER));
+      CharArrayWrapper zeroChar = (CharArrayWrapper) thisBundle.getObject("zero");
       int i = 0;
 
       // skip to correct multiplier
-      while (i < multiplier.length && val < multiplier[i])
+      while (i < multiplier.getLength() && val < multiplier.getLong(i))
       {
         i++;
       }
 
       do
       {
-        if (i >= multiplier.length)
+        if (i >= multiplier.getLength())
           break;  //number is smaller than multipliers
 
         // some languages (ie chinese) put a zero character (and only one) when
         // the multiplier is multiplied by zero. (ie, 1001 is 1X1000 + 0X100 + 0X10 + 1)
         // 0X100 is replaced by the zero character, we don't need one for 0X10
-        if (val < multiplier[i])
+        if (val < multiplier.getLong(i))
         {
-          if (zeroChar.length == 0)
+          if (zeroChar.getLength() == 0)
           {
             i++;
           }
           else
           {
-            if (buf[charPos - 1] != zeroChar[0])
-              buf[charPos++] = zeroChar[0];
+            if (buf[charPos - 1] != zeroChar.getChar(0))
+              buf[charPos++] = zeroChar.getChar(0);
 
             i++;
           }
         }
-        else if (val >= multiplier[i])
+        else if (val >= multiplier.getLong(i))
         {
-          long mult = val / multiplier[i];
+          long mult = val / multiplier.getLong(i);
 
-          val = val % multiplier[i];  // save this.
+          val = val % multiplier.getLong(i);  // save this.
 
           int k = 0;
 
-          while (k < groups.length)
+          while (k < groups.getLength())
           {
             lookupIndex = 1;  // initialize for each table
 
-            if (mult / groups[k] <= 0)  // look for right table
+            if (mult / groups.getInt(k) <= 0)  // look for right table
               k++;
             else
             {
 
               // get the table
-              char[] THEletters = (char[]) thisBundle.getObject(tables[k]);
+              CharArrayWrapper THEletters = (CharArrayWrapper) thisBundle.getObject(tables.getString(k));
 
-              table = new char[THEletters.length + 1];
+              table = new char[THEletters.getLength() + 1];
 
               int j;
 
-              for (j = 0; j < THEletters.length; j++)
+              for (j = 0; j < THEletters.getLength(); j++)
               {
-                table[j + 1] = THEletters[j];
+                table[j + 1] = THEletters.getChar(j);
               }
 
-              table[0] = THEletters[j - 1];  // don't need this                                                                         
+              table[0] = THEletters.getChar(j - 1);  // don't need this                                                                         
 
               // index in "table" of the next char to emit
-              lookupIndex = (int)mult / groups[k];
+              lookupIndex = (int)mult / groups.getInt(k);
 
               //this should not happen
               if (lookupIndex == 0 && mult == 0)
                 break;
 
-              char multiplierChar = ((char[]) (thisBundle.getObject(
-                org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER_CHAR)))[i];
+              char multiplierChar = ((CharArrayWrapper) (thisBundle.getObject(
+                org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER_CHAR))).getChar(i);
 
               // put out the next character of output   
               if (lookupIndex < table.length)
@@ -1867,7 +1847,7 @@ public class ElemNumber extends ElemTemplateElement
                 {
 
                   // don't put out 1 (ie 1X10 is just 10)
-                  if (lookupIndex == 1 && i == multiplier.length - 1){}
+                  if (lookupIndex == 1 && i == multiplier.getLength() - 1){}
                   else
                     buf[charPos++] = table[lookupIndex];
 
@@ -1884,7 +1864,7 @@ public class ElemNumber extends ElemTemplateElement
           i++;
         }  // end else if
       }  // end do while
-      while (i < multiplier.length);
+      while (i < multiplier.getLength());
     }
 
     // Now do additive part...
@@ -1892,31 +1872,31 @@ public class ElemNumber extends ElemTemplateElement
     String tableName;
 
     // do this for each table of hundreds, tens, digits...
-    while (count < groups.length)
+    while (count < groups.getLength())
     {
-      if (val / groups[count] <= 0)  // look for correct table
+      if (val / groups.getInt(count) <= 0)  // look for correct table
         count++;
       else
       {
-        char[] theletters = (char[]) thisBundle.getObject(tables[count]);
+        CharArrayWrapper theletters = (CharArrayWrapper) thisBundle.getObject(tables.getString(count));
 
-        table = new char[theletters.length + 1];
+        table = new char[theletters.getLength() + 1];
 
         int j;
 
         // need to start filling the table up at index 1
-        for (j = 0; j < theletters.length; j++)
+        for (j = 0; j < theletters.getLength(); j++)
         {
-          table[j + 1] = theletters[j];
+          table[j + 1] = theletters.getChar(j);
         }
 
-        table[0] = theletters[j - 1];  // don't need this
+        table[0] = theletters.getChar(j - 1);  // don't need this
 
         // index in "table" of the next char to emit
-        lookupIndex = (int)val / groups[count];
+        lookupIndex = (int)val / groups.getInt(count);
 
         // shift input by one "column"
-        val = val % groups[count];
+        val = val % groups.getInt(count);
 
         // this should not happen
         if (lookupIndex == 0 && val == 0)

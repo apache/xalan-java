@@ -45,7 +45,7 @@ import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.NamedMethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 
 /**

@@ -50,7 +50,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 
 /**
@@ -147,7 +147,7 @@ class StepPattern extends RelativePathPattern {
 	
     public String toString() {
 	final StringBuffer buffer = new StringBuffer("stepPattern(\"");
-	buffer.append(Axis.names[_axis])
+    buffer.append(Axis.getNames(_axis))
 	    .append("\", ")
 	    .append(_isEpsilon ? 
 			("epsilon{" + Integer.toString(_nodeType) + "}") :

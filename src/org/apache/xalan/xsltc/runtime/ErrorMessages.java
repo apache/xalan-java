@@ -77,7 +77,13 @@ public class ErrorMessages extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final Object[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
 
         /*
          * Note to translators:  the substitution text in the following message
@@ -266,9 +272,6 @@ public class ErrorMessages extends ListResourceBundle {
         {BasisLibrary.INVALID_NCNAME_ERR,
         "An attribute whose value must be an NCName had the value ''{0}''"},
     };
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 
 }

@@ -385,7 +385,7 @@ public class ElemTemplate extends ElemTemplateElement
     
     xctxt.pushRTFContext();
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
       // %REVIEW% commenting out of the code below.
@@ -402,7 +402,7 @@ public class ElemTemplate extends ElemTemplateElement
 //      //"sourceNode is null in handleApplyTemplatesInstruction!");
 //    }
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEndEvent(this);
 
     xctxt.popRTFContext();  

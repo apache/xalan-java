@@ -60,24 +60,24 @@ public class JavaCupRedirect {
 		 		 // This option must have an argument
 		 		 if ((++i >= argc) || (args[i].startsWith("-"))) {
 		 		     System.err.println(ERRMSG);
-		 		     doSystemExit(systemExitOK);
+                     throw new RuntimeException(ERRMSG);
 		 		 }
 		 		 try {
 		 		     input = new FileInputStream(args[i]);
 		 		 }
 		 		 catch (FileNotFoundException e) {
 		 		     System.err.println("Could not open file "+args[i]);
-		 		     doSystemExit(systemExitOK);
+                     throw new RuntimeException(e.getMessage());
 		 		 }
 		 		 catch (SecurityException e) {
 		 		     System.err.println("No permission to file "+args[i]);
-		 		     doSystemExit(systemExitOK);
+                     throw new RuntimeException(e.getMessage());
 		 		 }
 		     }
 		     else {
 		 		 if (new_argc == new_args.length) {
 		 		     System.err.println("Missing -stdin option!");
-		 		     doSystemExit(systemExitOK);
+                     throw new RuntimeException();
 		 		 }
 		 		 new_args[new_argc++] = args[i];
 		     }
@@ -90,11 +90,6 @@ public class JavaCupRedirect {
 		 catch (Exception e) {
 		     System.err.println("Error running JavaCUP:");
 		     e.printStackTrace();
-		     doSystemExit(systemExitOK);
 		 }
-    }
-    public static void doSystemExit (boolean doExit) {
-        if (doExit)
-            System.exit(-1);
     }
 }

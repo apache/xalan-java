@@ -43,8 +43,7 @@ import org.apache.xalan.xsltc.compiler.Stylesheet;
  * @author Santiago Pericas-Geertsen
  */
 public class ClassGenerator extends ClassGen {
-    protected static int TRANSLET_INDEX = 0;
-    protected static int INVALID_INDEX  = -1;
+    protected final static int TRANSLET_INDEX = 0;
 
     private Stylesheet _stylesheet;
     private final Parser _parser;		// --> can be moved to XSLT

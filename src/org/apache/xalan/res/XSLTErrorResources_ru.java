@@ -452,8 +452,13 @@ public class XSLTErrorResources_ru extends ListResourceBundle
 
   // Error messages...
 
-  /** The lookup table for error messages.   */
-  public static final Object[][] contents = {
+  /** Get the lookup table for error messages.   
+   *
+   * @return The int to message lookup table.
+   */
+  public Object[][] getContents()
+  {
+    return new Object[][] {
 
   /** Error message ID that has a null message, but takes in a single object.    */
   {"ER0000" , "{0}" },
@@ -2372,6 +2377,7 @@ public class XSLTErrorResources_ru extends ListResourceBundle
   { "matchPatternIs", "\u0448\u0430\u0431\u043b\u043e\u043d \u0441\u043e\u043e\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u044f" }
 
   };
+  }
 
   // ================= INFRASTRUCTURE ======================
 
@@ -2400,15 +2406,6 @@ public class XSLTErrorResources_ru extends ListResourceBundle
    * @deprecated  */
   public static final String QUERY_HEADER = "PATTERN ";
 
-  /**
-   * Get the lookup table.
-   *
-   * @return The int to message lookup table.
-   */
-  public Object[][] getContents()
-  {
-    return contents;
-  }
 
   /**
    *   Return a named ResourceBundle for a particular locale.  This method mimics the behavior

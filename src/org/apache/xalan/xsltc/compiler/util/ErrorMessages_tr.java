@@ -86,7 +86,13 @@ public class ErrorMessages_tr extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
         "Ayn\u0131 dosyada birden \u00e7ok bi\u00e7em yapra\u011f\u0131 tan\u0131mland\u0131."},
 
@@ -839,9 +845,5 @@ public class ErrorMessages_tr extends ListResourceBundle {
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "Derleme sonusu s\u0131n\u0131f dosyas\u0131 hatalar\u0131:"}
     };
-
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

@@ -146,13 +146,14 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /**
    * fixed dom-style names.
    */
-  static final String[] m_fixednames = { null, null,  // nothing, Element
-                                         null, "#text",  // Attr, Text
-                                         "#cdata_section", null,  // CDATA, EntityReference
-                                         null, null,  // Entity, PI
-                                         "#comment", "#document",  // Comment, Document
-                                         null, "#document-fragment",  // Doctype, DocumentFragment
-                                         null };  // Notation
+  private static final String[] m_fixednames = { null, 
+                    null,  // nothing, Element
+                    null, "#text",  // Attr, Text
+                    "#cdata_section", null,  // CDATA, EntityReference
+                    null, null,  // Entity, PI
+                    "#comment", "#document",  // Comment, Document
+                    null, "#document-fragment",  // Doctype, DocumentFragment
+                    null };  // Notation
 
   /**
    * Vector of entities.  Each record is composed of four Strings:
@@ -189,12 +190,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * Made protected for access by SAX2RTFDTM.
    */
   protected boolean m_useSourceLocationProperty = false;
-
-  /**
-   * Describes whether information about document source location
-   * should be maintained or not. This static flag is set by TransformerFactoryImpl.
-   */
-  protected static boolean m_source_location = false;
 
    /** Made protected for access by SAX2RTFDTM.
    */
@@ -287,7 +282,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     //m_dataOrQName = new SuballocatedIntVector(blocksize);
     
     // m_useSourceLocationProperty=org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
-    m_useSourceLocationProperty = m_source_location;
+    m_useSourceLocationProperty = mgr.getSource_location();
     m_sourceSystemId = (m_useSourceLocationProperty) ? new StringVector() : null;
  	m_sourceLine = (m_useSourceLocationProperty) ?  new IntVector() : null;
     m_sourceColumn = (m_useSourceLocationProperty) ?  new IntVector() : null; 
@@ -297,9 +292,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * Set whether information about document source location
    * should be maintained or not. 
    */
-  public static void setUseSourceLocation(boolean useSourceLocation)
+  public void setUseSourceLocation(boolean useSourceLocation)
   {
-    m_source_location = useSourceLocation;
+    m_useSourceLocationProperty = useSourceLocation;
   }
 
   /**
@@ -985,10 +980,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // by not allowing the enabling conditions to change after we start
     // building the document.
     if (m_sourceSystemId.size() != m_size) {
-        System.err.println("CODING ERROR in Source Location: " + m_size
-                           + " != "
-                            + m_sourceSystemId.size());
-        System.exit(1);
+        String msg = "CODING ERROR in Source Location: " + m_size + " != "
+                    + m_sourceSystemId.size();
+        System.err.println(msg);
+        throw new RuntimeException(msg);
     }
   }
 
@@ -2518,5 +2513,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     	return new NodeLocator(null,m_systemId,-1,-1);
     }
     return null;
+  }
+  
+  public String getFixedNames(int type){
+    return m_fixednames[type];
   }
 }

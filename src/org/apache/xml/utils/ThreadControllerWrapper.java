@@ -26,18 +26,7 @@ public class ThreadControllerWrapper
 {
   
   /** The ThreadController pool   */
-  static ThreadController m_tpool = new ThreadController();
-
-  /**
-   * Change the ThreadController that will be used to
-   * manage the transform threads.
-   *
-   * @param tp A ThreadController object
-   */
-  public static void setThreadController(ThreadController tpool)
-  {
-    m_tpool = tpool;
-  }
+  private static ThreadController m_tpool = new ThreadController();
   
   public static Thread runThread(Runnable runnable, int priority)
   {

@@ -184,7 +184,6 @@ public final class DocumentCache implements DOMCache {
 	}
 	catch (ParserConfigurationException e) {
 	    BasisLibrary.runTimeError(BasisLibrary.NAMESPACES_SUPPORT_ERR);
-	    System.exit(-1);
 	}
     }
 

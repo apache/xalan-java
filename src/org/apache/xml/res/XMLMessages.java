@@ -41,10 +41,10 @@ public class XMLMessages
     "org.apache.xml.res.XMLErrorResources";
 
   /** String to use if a bad message code is used. */
-  protected static String BAD_CODE = "BAD_CODE";
+  protected static final String BAD_CODE = "BAD_CODE";
 
   /** String to use if the message format operation failed.  */
-  protected static String FORMAT_FAILED = "FORMAT_FAILED";
+  protected static final String FORMAT_FAILED = "FORMAT_FAILED";
     
   /**
    * Set the Locale object to use.

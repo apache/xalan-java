@@ -27,7 +27,13 @@ public final class ErrorMessages_no extends ErrorMessages {
     
     // Disse feilmeldingene maa korrespondere med konstantene som er definert
     // i kildekoden til {ErrorMsg.
-    private static final String m_errorMessages[][] = { 
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] { 
 	{ErrorMsg.MULTIPLE_STYLESHEET_ERR,
 	"En fil kan bare innehold ett stilark."},
 	{ErrorMsg.TEMPLATE_REDEF_ERR,	
@@ -210,8 +216,5 @@ public final class ErrorMessages_no extends ErrorMessages {
 	{ErrorMsg.SYNTAX_ERR,
 	"Syntax error in ''{0}''."}  // TODO: How do you say "syntax error" in norwegian?
     };
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

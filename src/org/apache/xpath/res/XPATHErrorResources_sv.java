@@ -46,7 +46,14 @@ public static final int MAX_CODE = 108;  // this is needed to keep track of the 
 
 
   // Error messages...
-  public static final Object[][] contents = {
+  /**
+   * Get the association list.
+   *
+   * @return The association list.
+   */
+  public Object[][] getContents()
+  {
+    return new Object[][]{
 
   /** Field ERROR0000          */
   //public static final int ERROR0000 = 0;
@@ -1206,6 +1213,7 @@ public static final int MAX_CODE = 108;  // this is needed to keep track of the 
     { "noParsermsg5",
       "IBMs AlphaWorks: http://www.alphaworks.ibm.com/formula/xml"}
   };
+  }
 
   // ================= INFRASTRUCTURE ======================
 
@@ -1237,15 +1245,6 @@ public static final int MAX_CODE = 108;  // this is needed to keep track of the 
   /** Field QUERY_HEADER          */
   public static final String QUERY_HEADER = "M\u00d6NSTER ";
 
-  /**
-   * Get the association list.
-   *
-   * @return The association list.
-   */
-  public Object[][] getContents()
-  {
-    return contents;
-  }
 }
 
 

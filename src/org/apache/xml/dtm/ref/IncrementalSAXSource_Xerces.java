@@ -355,10 +355,10 @@ public class IncrementalSAXSource_Xerces
 			return ((Boolean)ret).booleanValue();
 		}
 	}
-	
-	static final Object[] noparms=new Object[0]; // Would null work???
-	static final Object[] parmsfalse={Boolean.FALSE};
-	private boolean parseSome()
+//  Would null work???
+    private static final Object[] noparms=new Object[0];
+    private static final Object[] parmsfalse={Boolean.FALSE};
+    private boolean parseSome()
 		throws SAXException, IOException, IllegalAccessException,
 					 java.lang.reflect.InvocationTargetException
 	{

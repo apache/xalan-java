@@ -141,7 +141,7 @@ public class MatchPatternIterator extends LocPathIterator
     }
     if(false || DEBUG)
     {
-      System.out.println("axis: "+Axis.names[m_superAxis]);
+      System.out.println("axis: "+Axis.getNames(m_superAxis));
     }
     
   }

@@ -255,7 +255,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   {
 
     transformer.pushCurrentTemplateRuleIsNull(true);    
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);//trigger for-each element event
 
     try
@@ -264,7 +264,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
 	    transformer.getTraceManager().fireTraceEndEvent(this); 
       transformer.popCurrentTemplateRuleIsNull();
     }
@@ -345,7 +345,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
       if (null != keys)
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
     {
 
         // The original code, which is broken for bug#16889,
@@ -408,7 +408,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         final int nodeType = dtm.getNodeType(child); 
 
         // Fire a trace event for the template.
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
         {
            transformer.getTraceManager().fireTraceEvent(this);
         }
@@ -424,7 +424,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
           t.execute(transformer);
         }
         
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
         {
          // We need to make sure an old current element is not 
           // on the stack.  See TransformerImpl#getElementCallstack.
@@ -458,7 +458,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));

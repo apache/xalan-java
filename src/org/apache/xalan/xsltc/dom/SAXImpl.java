@@ -33,6 +33,7 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
@@ -1160,7 +1161,8 @@ public final class SAXImpl extends SAX2DTM2
             case Axis.NAMESPACE:
                 return new NamespaceIterator();
             default:
-                BasisLibrary.runTimeError(BasisLibrary.AXIS_SUPPORT_ERR, Axis.names[axis]);
+                BasisLibrary.runTimeError(BasisLibrary.AXIS_SUPPORT_ERR, 
+                        Axis.getNames(axis));
         }
         return null;
     }
@@ -1209,7 +1211,8 @@ public final class SAXImpl extends SAX2DTM2
             case Axis.NAMESPACE:
                 return  new TypedNamespaceIterator(type);
             default:
-                BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR, Axis.names[axis]);
+                BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR, 
+                        Axis.getNames(axis));
         }
         return null;
     }

@@ -51,12 +51,12 @@ public class RedundentExprEliminator extends XSLTVisitor
   boolean m_isSameContext;
   AbsPathChecker m_absPathChecker = new AbsPathChecker();
   
-  static int m_uniquePsuedoVarID = 1;
+  private static int m_uniquePseudoVarID = 1;
   static final String PSUEDOVARNAMESPACE = Constants.S_VENDORURL+"/xalan/psuedovar";
  
-  public static boolean DEBUG = false;
-  public static boolean DIAGNOSE_NUM_PATHS_REDUCED = false;
-  public static boolean DIAGNOSE_MULTISTEPLIST = false;
+  public static final boolean DEBUG = false;
+  public static final boolean DIAGNOSE_NUM_PATHS_REDUCED = false;
+  public static final boolean DIAGNOSE_MULTISTEPLIST = false;
 
   /**
    * So we can reuse it over and over again.
@@ -242,7 +242,7 @@ public class RedundentExprEliminator extends XSLTVisitor
 		ElemTemplateElement root = isGlobal ? varScope : findCommonAncestor(matchedPaths);
 		WalkingIterator sharedIter = (WalkingIterator)matchedPaths.m_exprOwner.getExpression();
 		WalkingIterator newIter = createIteratorFromSteps(sharedIter, lengthToTest);
-		ElemVariable var = createPsuedoVarDecl(root, newIter, isGlobal);
+		ElemVariable var = createPseudoVarDecl(root, newIter, isGlobal);
 		if(DIAGNOSE_MULTISTEPLIST)
 			System.err.println("Created var: "+var.getName()+(isGlobal ? "(Global)" : ""));
 		while(null != matchedPaths)
@@ -436,16 +436,16 @@ public class RedundentExprEliminator extends XSLTVisitor
   /**
    * Change a given number of steps to a single variable reference.
    * 
-   * @param uniquePsuedoVarName The name of the variable reference.
+   * @param uniquePseudoVarName The name of the variable reference.
    * @param wi The walking iterator that is to be changed.
    * @param numSteps The number of steps to be changed.
    * @param isGlobal true if this will be a global reference.
    */
-  protected LocPathIterator changePartToRef(final QName uniquePsuedoVarName, WalkingIterator wi, 
+  protected LocPathIterator changePartToRef(final QName uniquePseudoVarName, WalkingIterator wi, 
                                  final int numSteps, final boolean isGlobal)
   {
   	Variable var = new Variable();
-  	var.setQName(uniquePsuedoVarName);
+  	var.setQName(uniquePseudoVarName);
   	var.setIsGlobal(isGlobal);
   	if(isGlobal)
   	{	ElemTemplateElement elem = getElemFromExpression(wi);
@@ -654,16 +654,16 @@ public class RedundentExprEliminator extends XSLTVisitor
 	{
 		ElemTemplateElement root = isGlobal ? psuedoVarRecipient : findCommonAncestor(head);
 		LocPathIterator sharedIter = (LocPathIterator)head.m_exprOwner.getExpression();
-		ElemVariable var = createPsuedoVarDecl(root, sharedIter, isGlobal);
+		ElemVariable var = createPseudoVarDecl(root, sharedIter, isGlobal);
 		if(DIAGNOSE_MULTISTEPLIST)
 			System.err.println("Created var: "+var.getName()+(isGlobal ? "(Global)" : ""));
-		QName uniquePsuedoVarName = var.getName();
+		QName uniquePseudoVarName = var.getName();
 		while(null != head)
 		{
 			ExpressionOwner owner = head.m_exprOwner;	
 			if(DIAGNOSE_MULTISTEPLIST)
 				diagnoseLineNumber(owner.getExpression());
-			changeToVarRef(uniquePsuedoVarName, owner, paths, root);
+			changeToVarRef(uniquePseudoVarName, owner, paths, root);
 			head = head.m_next;
 		}
 		// Replace the first occurance with the variable's XPath, so  
@@ -683,7 +683,7 @@ public class RedundentExprEliminator extends XSLTVisitor
                          Vector paths) 
                  throws org.w3c.dom.DOMException 
   {
-	QName uniquePsuedoVarName = null;
+	QName uniquePseudoVarName = null;
 	boolean foundFirst = false;
 	int numPathsFound = 0;
 	int n = paths.size();
@@ -708,12 +708,12 @@ public class RedundentExprEliminator extends XSLTVisitor
 					// Insert variable decl into psuedoVarRecipient
 					// We want to insert this into the first legitimate 
 					// position for a variable.
-				    ElemVariable var = createPsuedoVarDecl(psuedoVarRecipient, lpi, isGlobal);
+				    ElemVariable var = createPseudoVarDecl(psuedoVarRecipient, lpi, isGlobal);
 				    if(null == var)
 				    	return 0;
-				    uniquePsuedoVarName = var.getName();
+				    uniquePseudoVarName = var.getName();
 	
-					changeToVarRef(uniquePsuedoVarName, firstOccuranceOwner, 
+					changeToVarRef(uniquePseudoVarName, firstOccuranceOwner, 
 					               paths, psuedoVarRecipient);
 					               
 					// Replace the first occurance with the variable's XPath, so  
@@ -722,7 +722,7 @@ public class RedundentExprEliminator extends XSLTVisitor
 					numPathsFound++;
 				}
 	
-				changeToVarRef(uniquePsuedoVarName, owner2, paths, psuedoVarRecipient);
+				changeToVarRef(uniquePseudoVarName, owner2, paths, psuedoVarRecipient);
 	
 				// Null out the occurance, so we don't have to test it again.
 				paths.setElementAt(null, j);
@@ -736,11 +736,11 @@ public class RedundentExprEliminator extends XSLTVisitor
 	// Change all globals in xsl:templates, etc, to global vars no matter what.
 	if((0 == numPathsFound) && (paths == m_absPaths))
 	{
-      ElemVariable var = createPsuedoVarDecl(psuedoVarRecipient, lpi, true);
+      ElemVariable var = createPseudoVarDecl(psuedoVarRecipient, lpi, true);
       if(null == var)
         return 0;
-	  uniquePsuedoVarName = var.getName();
-      changeToVarRef(uniquePsuedoVarName, firstOccuranceOwner, paths, psuedoVarRecipient);
+	  uniquePseudoVarName = var.getName();
+      changeToVarRef(uniquePseudoVarName, firstOccuranceOwner, paths, psuedoVarRecipient);
       paths.setElementAt(var.getSelect(), firstOccuranceIndex);
       numPathsFound++;
 	}
@@ -803,7 +803,11 @@ public class RedundentExprEliminator extends XSLTVisitor
 	}
 	owner.setExpression(varRef);
   }
-
+   
+  private synchronized static int getPseudoVarID(){
+      return m_uniquePseudoVarID++; 
+  }
+  
   /**
    * Create a psuedo variable reference that will represent the 
    * shared redundent XPath, and add it to the stylesheet.
@@ -814,35 +818,34 @@ public class RedundentExprEliminator extends XSLTVisitor
    * @param isGlobal true if the paths are global.
    * @return The new psuedo var element.
    */
-  protected ElemVariable createPsuedoVarDecl(
+  protected ElemVariable createPseudoVarDecl(
       ElemTemplateElement psuedoVarRecipient,
       LocPathIterator lpi, boolean isGlobal)
       throws org.w3c.dom.DOMException
   {
-    QName uniquePsuedoVarName = new QName (PSUEDOVARNAMESPACE, "#"+m_uniquePsuedoVarID);
-    m_uniquePsuedoVarID++;
+    QName uniquePseudoVarName = new QName (PSUEDOVARNAMESPACE, "#"+getPseudoVarID());
   		
   	if(isGlobal)
   	{
-  	  return createGlobalPsuedoVarDecl(uniquePsuedoVarName, 
+  	  return createGlobalPseudoVarDecl(uniquePseudoVarName, 
   	                                  (StylesheetRoot)psuedoVarRecipient, lpi);
   	}
   	else						
-      return createLocalPsuedoVarDecl(uniquePsuedoVarName, psuedoVarRecipient, lpi);
+      return createLocalPseudoVarDecl(uniquePseudoVarName, psuedoVarRecipient, lpi);
   }
   
   /**
    * Create a psuedo variable reference that will represent the 
    * shared redundent XPath, for a local reduction.
    * 
-   * @param uniquePsuedoVarName The name of the new variable.
+   * @param uniquePseudoVarName The name of the new variable.
    * @param stylesheetRoot The broadest scope of where the variable 
    *        should be inserted, which must be a StylesheetRoot element in this case.
    * @param lpi The LocationPathIterator that the variable should represent.
-   * @return null if the decl was not created, otherwise the new Psuedo var  
+   * @return null if the decl was not created, otherwise the new Pseudo var  
    *              element.
    */
-  protected ElemVariable createGlobalPsuedoVarDecl(QName uniquePsuedoVarName,
+  protected ElemVariable createGlobalPseudoVarDecl(QName uniquePseudoVarName,
                                            StylesheetRoot stylesheetRoot, 
                                            LocPathIterator lpi) 
         throws org.w3c.dom.DOMException 
@@ -851,7 +854,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	psuedoVar.setIsTopLevel(true);
 	XPath xpath = new XPath(lpi);
 	psuedoVar.setSelect(xpath);
-	psuedoVar.setName(uniquePsuedoVarName);
+	psuedoVar.setName(uniquePseudoVarName);
 	
 	Vector globalVars = stylesheetRoot.getVariablesAndParamsComposed();
 	psuedoVar.setIndex(globalVars.size());
@@ -866,15 +869,15 @@ public class RedundentExprEliminator extends XSLTVisitor
    * Create a psuedo variable reference that will represent the 
    * shared redundent XPath, for a local reduction.
    * 
-   * @param uniquePsuedoVarName The name of the new variable.
+   * @param uniquePseudoVarName The name of the new variable.
    * @param psuedoVarRecipient The broadest scope of where the variable 
    * should be inserted, usually an xsl:template or xsl:for-each.
    * @param lpi The LocationPathIterator that the variable should represent.
    * @param addToContext true if the decl should be added to psuedoVarRecipient.
-   * @return null if the decl was not created, otherwise the new Psuedo var  
+   * @return null if the decl was not created, otherwise the new Pseudo var  
    *              element.
    */
-  protected ElemVariable createLocalPsuedoVarDecl(QName uniquePsuedoVarName,
+  protected ElemVariable createLocalPseudoVarDecl(QName uniquePseudoVarName,
                                            ElemTemplateElement psuedoVarRecipient, 
                                            LocPathIterator lpi) 
         throws org.w3c.dom.DOMException 
@@ -883,7 +886,7 @@ public class RedundentExprEliminator extends XSLTVisitor
 		
 		XPath xpath = new XPath(lpi);
 		psuedoVar.setSelect(xpath);
-		psuedoVar.setName(uniquePsuedoVarName);
+		psuedoVar.setName(uniquePseudoVarName);
 
 		ElemVariable var = addVarDeclToElem(psuedoVarRecipient, lpi, psuedoVar);
 		

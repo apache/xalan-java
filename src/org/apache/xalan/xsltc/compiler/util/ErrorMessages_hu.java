@@ -86,7 +86,13 @@ public class ErrorMessages_hu extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
         "Egyn\u00e9l t\u00f6bb st\u00edluslap van defini\u00e1lva ugyanabban a f\u00e1jlban."},
 
@@ -839,9 +845,5 @@ public class ErrorMessages_hu extends ListResourceBundle {
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "Translet hib\u00e1k:"}
     };
-
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

@@ -42,19 +42,12 @@ public final class Compile {
     private static int VERSION_DELTA = 0;
  
 
-    // This variable should be set to false to prevent any methods in this 
-    // class from calling System.exit(). As this is a command-line tool,
-    // calling System.exit() is normally OK, but we also want to allow for
-    // this class being used in other ways as well.
-    private static boolean _allowExit = true;
-
     public static void printUsage() {
         StringBuffer vers = new StringBuffer("XSLTC version " + 
 	    VERSION_MAJOR + "." + VERSION_MINOR + 
 	    ((VERSION_DELTA > 0) ? ("."+VERSION_DELTA) : ("")));
 	System.err.println(vers + "\n" + 
 		new ErrorMsg(ErrorMsg.COMPILE_USAGE_STR));
-	if (_allowExit) System.exit(-1);
     }
 
     /** 
@@ -100,9 +93,6 @@ public final class Compile {
 		case 'u':
 		    inputIsURL = true;
 		    break;
-		case 's':
-		    _allowExit = false;
-		    break;
 		case 'n':
 		    xsltc.setTemplateInlining(true);	// used to be 'false'
 		    break;
@@ -120,7 +110,6 @@ public final class Compile {
 	    if (useStdIn) {
 		if (!classNameSet) {
 		    System.err.println(new ErrorMsg(ErrorMsg.COMPILE_STDIN_ERR));
-		    if (_allowExit) System.exit(-1);
 		}
 		compileOK = xsltc.compile(System.in, xsltc.getClassName());
 	    }
@@ -144,12 +133,10 @@ public final class Compile {
 	    if (compileOK) {
 		xsltc.printWarnings();
 		if (xsltc.getJarFileName() != null) xsltc.outputToJar();
-		if (_allowExit) System.exit(0);
 	    }
 	    else {
 		xsltc.printWarnings();
 		xsltc.printErrors();
-		if (_allowExit) System.exit(-1);
 	    }
 	}
 	catch (GetOptsException ex) {
@@ -158,7 +145,6 @@ public final class Compile {
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
-	    if (_allowExit) System.exit(-1);
 	}
     }
 

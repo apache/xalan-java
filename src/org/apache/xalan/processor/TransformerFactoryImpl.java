@@ -389,7 +389,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       return false;
   }
   
-  public static boolean m_optimize = true;
+  /**
+   * Flag set by FEATURE_OPTIMIZE.
+   * This feature specifies whether to Optimize stylesheet processing. By
+   * default it is set to true.
+   */
+  private boolean m_optimize = true;
   
   /** Flag set by FEATURE_SOURCE_LOCATION.
    * This feature specifies whether the transformation phase should
@@ -401,7 +406,15 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * The default is false. Setting it true may significantly
    * increase storage cost per node. 
    */
-  public static boolean m_source_location = false;
+  private boolean m_source_location = false;
+  
+  /**
+   * Flag set by FEATURE_INCREMENTAL.
+   * This feature specifies whether to produce output incrementally, rather than
+   * waiting to finish parsing the input before generating any output. By 
+   * default this attribute is set to false. 
+   */
+  private boolean m_incremental = false;
   
   /**
    * Allows the user to set specific attributes on the underlying
@@ -421,12 +434,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       if(value instanceof Boolean)
       {
         // Accept a Boolean object..
-        org.apache.xml.dtm.DTMManager.setIncremental(((Boolean)value).booleanValue());
+        m_incremental = ((Boolean)value).booleanValue();
       }
       else if(value instanceof String)
       {
         // .. or a String object
-        org.apache.xml.dtm.DTMManager.setIncremental((new Boolean((String)value)).booleanValue());
+        m_incremental = (new Boolean((String)value)).booleanValue();
       }
       else
       {
@@ -464,14 +477,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       {
         // Accept a Boolean object..
         m_source_location = ((Boolean)value).booleanValue();
-        // Pass the source location property to SAX2DTM, where it actually gets used.
-        SAX2DTM.setUseSourceLocation(m_source_location);
       }
       else if(value instanceof String)
       {
         // .. or a String object
         m_source_location = (new Boolean((String)value)).booleanValue();
-        SAX2DTM.setUseSourceLocation(m_source_location);
       }
       else
       {
@@ -500,7 +510,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
     if (name.equals(FEATURE_INCREMENTAL))
     {
-      return new Boolean(org.apache.xml.dtm.DTMManager.getIncremental());            
+      return new Boolean(m_incremental);            
     }
     else if (name.equals(FEATURE_OPTIMIZE))
     {

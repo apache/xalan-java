@@ -1103,8 +1103,8 @@ public class WalkerFactory
     if (false || DEBUG_PATTERN_CREATION)
     {
       System.out.print("new step: "+ ai);
-      System.out.print(", axis: " + Axis.names[ai.getAxis()]);
-      System.out.print(", predAxis: " + Axis.names[ai.getAxis()]);
+      System.out.print(", axis: " + Axis.getNames(ai.getAxis()));
+      System.out.print(", predAxis: " + Axis.getNames(ai.getAxis()));
       System.out.print(", what: ");
       System.out.print("    ");
       ai.debugWhatToShow(ai.getWhatToShow());

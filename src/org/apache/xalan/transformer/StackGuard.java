@@ -41,7 +41,7 @@ public class StackGuard
    * infinite loop situation, when there is none.
    * Post version 1.0.0, we'll make this a runtime feature.
    */
-  public static int m_recursionLimit = -1;
+  private int m_recursionLimit = -1;
   
   TransformerImpl m_transformer;
 

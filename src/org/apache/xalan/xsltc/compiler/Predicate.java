@@ -44,6 +44,7 @@ import org.apache.xalan.xsltc.compiler.util.TestGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xalan.xsltc.runtime.Operators;
 
 /**
  * @author Jacek Ambroziak
@@ -326,7 +327,7 @@ final class Predicate extends Expression implements Closure {
            positionCall.setParser(getParser());
            positionCall.setParent(this);
 
-           _exp = new EqualityExpr(EqualityExpr.EQ, positionCall,
+           _exp = new EqualityExpr(Operators.EQ, positionCall,
                                     _exp);
            if (_exp.typeCheck(stable) != Type.Boolean) {
                _exp = new CastExpr(_exp, Type.Boolean);

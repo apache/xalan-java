@@ -36,21 +36,17 @@ public class XResources_de extends XResourceBundle
    */
   public Object[][] getContents()
   {
-    return contents;
-  }
-
-  /** The association list.         */
-  static final Object[][] contents =
+    return new Object[][]
   {
     { "ui_language", "de" }, { "help_language", "de" }, { "language", "de" },
-    { "alphabet",
+    { "alphabet", new CharArrayWrapper(
       new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-                  'Y', 'Z' } },
-    { "tradAlphabet",
+                  'Y', 'Z' }) },
+    { "tradAlphabet", new CharArrayWrapper(
       new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-                  'Y', 'Z' } },
+                  'Y', 'Z' }) },
 
     //language orientation
     { "orientation", "LeftToRight" },
@@ -71,4 +67,5 @@ public class XResources_de extends XResourceBundle
     //hundreds, etc...
     //{"tables", new String[]{"tens", "digits"}}
   };
+  }
 }

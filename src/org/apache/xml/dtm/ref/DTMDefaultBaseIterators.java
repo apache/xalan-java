@@ -26,7 +26,7 @@ import org.apache.xml.utils.XMLStringFactory;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-
+import org.apache.xalan.xsltc.dom.NodeCounter;
 
 /**
  * This class implements the traversers for DTMDefaultBase.
@@ -157,7 +157,10 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         iterator = new TypedRootIterator(type);
         break;
       default :
-        throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: typed iterator for axis "
+        throw new DTMException(XMLMessages.createXMLMessage(
+            XMLErrorResources.ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED, 
+            new Object[]{Axis.getNames(axis)})); 
+            //"Error: typed iterator for axis "
                                //+ Axis.names[axis] + "not implemented");
       }
     }
@@ -221,7 +224,10 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       iterator = new RootIterator();
       break;
     default :
-      throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: iterator for axis '" + Axis.names[axis]
+      throw new DTMException(XMLMessages.createXMLMessage(
+        XMLErrorResources.ER_ITERATOR_AXIS_NOT_IMPLEMENTED, 
+        new Object[]{Axis.getNames(axis)})); 
+        //"Error: iterator for axis '" + Axis.names[axis]
                              //+ "' not implemented");
     }
 

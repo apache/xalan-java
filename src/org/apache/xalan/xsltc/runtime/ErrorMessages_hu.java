@@ -75,7 +75,13 @@ public class ErrorMessages_hu extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final Object[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
 
         /*
          * Note to translators:  the substitution text in the following message
@@ -218,9 +224,6 @@ public class ErrorMessages_hu extends ListResourceBundle {
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
         "Nem lehet feloldani a(z) ''{0}'' URI hivatkoz\u00e1st."}
     };
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 
 }

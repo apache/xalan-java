@@ -86,7 +86,13 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
         "Mais de uma p\u00e1gina de estilo definida no mesmo arquivo. "},
 
@@ -839,9 +845,5 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "Erros de translet:"}
     };
-
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

@@ -1178,7 +1178,7 @@ public class EnvironmentCheck
    *
    * @see #getApparentVersion(String, long)
    */
-  protected static Hashtable jarVersions = new Hashtable();
+  private static Hashtable jarVersions = new Hashtable();
 
   /** 
    * Static initializer for jarVersions table.  

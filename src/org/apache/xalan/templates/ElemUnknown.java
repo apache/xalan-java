@@ -109,7 +109,7 @@ public class ElemUnknown extends ElemLiteralResult
   {
 
 
-	if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
 		transformer.getTraceManager().fireTraceEvent(this);
 
 	try {
@@ -123,7 +123,7 @@ public class ElemUnknown extends ElemLiteralResult
 	} catch (TransformerException e) {
 		transformer.getErrorListener().fatalError(e);
 	}
-	if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
 		transformer.getTraceManager().fireTraceEndEvent(this);
   }
 

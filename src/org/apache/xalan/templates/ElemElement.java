@@ -200,7 +200,7 @@ public class ElemElement extends ElemUse
             throws TransformerException
   {
 
-       if (TransformerImpl.S_DEBUG)
+       if (transformer.getDebug())
          transformer.getTraceManager().fireTraceEvent(this);
 
  	SerializationHandler rhandler = transformer.getSerializationHandler();
@@ -287,7 +287,7 @@ public class ElemElement extends ElemUse
 
     constructNode(nodeName, prefix, nodeNamespace, transformer);
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEndEvent(this);
   }
   

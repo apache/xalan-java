@@ -86,7 +86,13 @@ public class ErrorMessages_it extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
         "Pi\u00f9 fogli di stile definiti nello stesso file. "},
 
@@ -839,9 +845,5 @@ public class ErrorMessages_it extends ListResourceBundle {
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "Errori del translet:"}
     };
-
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

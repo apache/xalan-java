@@ -44,8 +44,13 @@ public class XSLTErrorResources_sv extends XSLTErrorResources
   /** Maximum total warnings and error messages.          */
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
 
-  /** The lookup table for error messages.   */
-  public static final Object[][] contents = {
+  /** Get the lookup table for error messages.   
+   *
+   * @return The int to message lookup table.
+   */
+  public Object[][] getContents()
+  {
+    return new Object[][] {
 
   /** Error message ID that has a null message, but takes in a single object.    */
   //public static final int ERROR0000 = 0;
@@ -2298,6 +2303,7 @@ public class XSLTErrorResources_sv extends XSLTErrorResources
 
 		
   };
+  }
 
   // ================= INFRASTRUCTURE ======================
 
@@ -2326,15 +2332,6 @@ public class XSLTErrorResources_sv extends XSLTErrorResources
    * @deprecated  */
   public static final String QUERY_HEADER = "M\u00d6NSTER ";
 
-  /**
-   * Get the lookup table. 
-   *
-   * @return The int to message lookup table.
-   */
-  public Object[][] getContents()
-  {
-    return contents;
-  }
 }
 
 

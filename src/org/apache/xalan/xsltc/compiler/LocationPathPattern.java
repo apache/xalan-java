@@ -23,7 +23,7 @@ import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 
 /**
  * @author Jacek Ambroziak

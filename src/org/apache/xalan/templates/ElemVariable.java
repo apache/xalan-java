@@ -240,7 +240,7 @@ public class ElemVariable extends ElemTemplateElement
   public void execute(TransformerImpl transformer) throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
@@ -250,7 +250,7 @@ public class ElemVariable extends ElemTemplateElement
     // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
     transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);
     
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
 	  transformer.getTraceManager().fireTraceEndEvent(this);         
   }
 
@@ -281,7 +281,7 @@ public class ElemVariable extends ElemTemplateElement
 
         var.allowDetachToRelease(false);
 
-        if (TransformerImpl.S_DEBUG)
+        if (transformer.getDebug())
           transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                   "select", m_selectPattern, var);
       }
@@ -337,7 +337,7 @@ public class ElemVariable extends ElemTemplateElement
   {
     // See if we can reduce an RTF to a select with a string expression.
     if(null == m_selectPattern  
-       && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+       && sroot.getOptimizer())
     {
       XPath newSelect = rewriteChildToExpression(this);
       if(null != newSelect)

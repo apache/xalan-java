@@ -33,7 +33,7 @@ import org.apache.xalan.xsltc.compiler.util.NodeType;
 import org.apache.xalan.xsltc.compiler.util.ResultTreeType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 
 /**
  * @author Jacek Ambroziak

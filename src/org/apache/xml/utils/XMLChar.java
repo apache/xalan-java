@@ -49,7 +49,7 @@ public class XMLChar {
     //
 
     /** Character flags. */
-    public static final byte[] CHARS = new byte[1 << 16];
+    private static final byte[] CHARS = new byte[1 << 16];
 
     /** Valid character mask. */
     public static final int MASK_VALID = 0x01;

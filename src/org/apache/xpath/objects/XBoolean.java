@@ -31,17 +31,17 @@ public class XBoolean extends XObject
    * A true boolean object so we don't have to keep creating them.
    * @xsl.usage internal
    */
-  public static XBoolean S_TRUE = new XBooleanStatic(true);
+  public static final XBoolean S_TRUE = new XBooleanStatic(true);
 
   /**
    * A true boolean object so we don't have to keep creating them.
    * @xsl.usage internal
    */
-  public static XBoolean S_FALSE = new XBooleanStatic(false);
+  public static final XBoolean S_FALSE = new XBooleanStatic(false);
 
   /** Value of the object.
    *  @serial         */
-  boolean m_val;
+  private final boolean m_val;
 
   /**
    * Construct a XBoolean object.

@@ -269,11 +269,11 @@ public class XSLTAttributeDef
   T_PREFIXLIST = 20;
 
   /** Representation for an attribute in a foreign namespace. */
-  static XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
+  static final XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
                                             XSLTAttributeDef.T_CDATA,false, false, WARNING);
 
   /** Method name that objects may implement if they wish to have forein attributes set. */
-  static String S_FOREIGNATTR_SETTER = "setForeignAttr";
+  static final String S_FOREIGNATTR_SETTER = "setForeignAttr";
 
   /**
    * The allowed namespace for this element.

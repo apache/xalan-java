@@ -31,7 +31,7 @@ import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 
 /**
@@ -72,7 +72,7 @@ final class UnionPathExpr extends Expression {
 		    _components[0] = step;
 		}
 		// Check if the union contains a reverse iterator
-		if (Axis.isReverse[axis]) _reverse = true;
+        if (Axis.isReverse(axis)) _reverse = true;
 	    }
 	}
 	// No need to reverse anything if another expression lies on top of this

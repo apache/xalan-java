@@ -23,25 +23,34 @@ package org.apache.xalan.xsltc.runtime;
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
-public interface Operators {
+public final class Operators {
     public static final int EQ = 0;
     public static final int NE = 1;
     public static final int GT = 2;
     public static final int LT = 3;
     public static final int GE = 4;
     public static final int LE = 5;
-	
-    public static final String[] names = {
-	"=", "!=", ">", "<", ">=", "<="
+
+    private static final String[] names = {
+    "=", "!=", ">", "<", ">=", "<="
     };
     
-    // Swap operator array
-    public static final int[] swapArray = {
+    public static final String getOpNames(int operator) {
+          return names[operator];
+    }
+    
+//  Swap operator array
+    private static final int[] swapOpArray = {
         EQ,     // EQ
         NE,     // NE
         LT,     // GT
         GT,     // LT 
         LE,     // GE 
         GE      // LE
-    };   
+    };
+
+    public static final int swapOp(int operator) {
+          return swapOpArray[operator];
+    }    
+      
 }

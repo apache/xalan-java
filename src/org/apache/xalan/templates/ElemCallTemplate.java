@@ -193,7 +193,7 @@ public class ElemCallTemplate extends ElemForEach
             throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
     if (null != m_template)
@@ -221,10 +221,10 @@ public class ElemCallTemplate extends ElemForEach
             ElemWithParam ewp = m_paramElems[i];
             if(ewp.m_index >= 0)
             {
-              if (TransformerImpl.S_DEBUG)
+              if (transformer.getDebug())
                 transformer.getTraceManager().fireTraceEvent(ewp);
               XObject obj = ewp.getValue(transformer, currentNode);
-              if (TransformerImpl.S_DEBUG)
+              if (transformer.getDebug())
                 transformer.getTraceManager().fireTraceEndEvent(ewp);
               
               // Note here that the index for ElemWithParam must have been 
@@ -269,7 +269,7 @@ public class ElemCallTemplate extends ElemForEach
                                     new Object[]{ m_templateName });  //"Could not find template named: '"+templateName+"'");
     }
     
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
 	  transformer.getTraceManager().fireTraceEndEvent(this); 
 
   }

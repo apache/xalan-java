@@ -615,7 +615,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
     catch(IOException ioe)
     {
       ioe.printStackTrace(System.err);
-      System.exit(-1);
+      throw new RuntimeException(ioe.getMessage());
     }
   }
 

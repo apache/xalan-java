@@ -50,6 +50,21 @@ public class StylesheetRoot extends StylesheetComposed
         implements java.io.Serializable, Templates
 {
     static final long serialVersionUID = 3875353123529147855L;
+    
+    /**
+     * The flag for the setting of the optimize feature;
+     */    
+    private boolean m_optimizer = true;
+
+    /**
+     * The flag for the setting of the incremental feature;
+     */    
+    private boolean m_incremental = false;
+
+    /**
+     * The flag for the setting of the source_location feature;
+     */  
+    private boolean m_source_location = false;
 
   /**
    * Uses an XSL stylesheet document.
@@ -1177,7 +1192,29 @@ public class StylesheetRoot extends StylesheetComposed
     {
       m_composeState = null;
     }
+
+    private String m_extensionHandlerClass = 
+        "org.apache.xalan.extensions.ExtensionHandlerExsltFunction";
     
+    /**
+     * This internal method allows the setting of the java class
+     * to handle the extension function (if other than the default one).
+     * 
+     * @xsl.usage internal
+     */
+    public String setExtensionHandlerClass(String handlerClassName) {
+        String oldvalue = m_extensionHandlerClass;
+        m_extensionHandlerClass = handlerClassName;
+        return oldvalue;
+    } 
+    /**
+     * 
+     * @xsl.usage internal
+     */
+    public String getExtensionHandlerClass() {
+        return m_extensionHandlerClass;
+    }
+        
     /**
      * Class to track state global state during the compose() operation.
      */
@@ -1297,4 +1334,47 @@ public class StylesheetRoot extends StylesheetComposed
       private int m_maxStackFrameSize;
 
     }
+    
+    /**
+     * @return Optimization flag
+     */
+    public boolean getOptimizer() {
+        return m_optimizer;
+    }
+
+    /**
+     * @param Optimization flag
+     */
+    public void setOptimizer(boolean b) {
+        m_optimizer = b;
+    }
+
+    /**
+     * @return Incremental flag
+     */
+    public boolean getIncremental() {
+        return m_incremental;
+    }
+
+    /**
+     * @return source location flag
+     */
+    public boolean getSource_location() {
+        return m_source_location;
+    }
+
+    /**
+     * @param Incremental flag
+     */
+    public void setIncremental(boolean b) {
+        m_incremental = b;
+    }
+
+    /**
+     * @param Source location flag
+     */
+    public void setSource_location(boolean b) {
+        m_source_location = b;
+    }
+
 }

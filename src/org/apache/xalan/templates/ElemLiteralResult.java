@@ -611,7 +611,7 @@ public class ElemLiteralResult extends ElemUse
 
         try
         {
-            if (TransformerImpl.S_DEBUG) {
+            if (transformer.getDebug()) {
                 // flush any buffered pending processing before
                 // the trace event.
                 rhandler.flushPending();
@@ -699,7 +699,7 @@ public class ElemLiteralResult extends ElemUse
              * there was an exception in the middle.
              * Otherwise an exception in the middle could cause a system to hang.
              */
-            if (TransformerImpl.S_DEBUG) {
+            if (transformer.getDebug()) {
                 // flush any buffered pending processing before
                 // the trace event.
                 //rhandler.flushPending();

@@ -24,6 +24,7 @@ import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMManager;

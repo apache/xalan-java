@@ -35,10 +35,6 @@ interface SerializerConstants
     static final String CDATA_DELIMITER_CLOSE = "]]>";
     static final String CDATA_DELIMITER_OPEN = "<![CDATA[";
 
-    static final char[] CNTCDATA = CDATA_CONTINUE.toCharArray();
-    static final char[] BEGCDATA = CDATA_DELIMITER_OPEN.toCharArray();
-    static final char[] ENDCDATA = CDATA_DELIMITER_CLOSE.toCharArray();
-
     static final String EMPTYSTRING = "";
 
     static final String ENTITY_AMP = "&amp;";

@@ -60,7 +60,7 @@ public class FastStringBuffer
   	// the read process, due to how the resizing code re-jiggers storage. Arggh. 
   	// If we want to retain the variable-size-block feature, we need to reconsider 
   	// that issue. For now, I have forced us into fixed-size mode.
-	static boolean DEBUG_FORCE_FIXED_CHUNKSIZE=true;
+    static final boolean DEBUG_FORCE_FIXED_CHUNKSIZE=true;
 
 	/** Manifest constant: Suppress leading whitespace.
 	 * This should be used when normalize-to-SAX is called for the first chunk of a

@@ -124,7 +124,7 @@ public class ElemCopyOf extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
     	transformer.getTraceManager().fireTraceEvent(this);
 
     try
@@ -133,7 +133,7 @@ public class ElemCopyOf extends ElemTemplateElement
       int sourceNode = xctxt.getCurrentNode();
       XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
 
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                                                         "select", m_selectExpression, value);
 
@@ -202,7 +202,7 @@ public class ElemCopyOf extends ElemTemplateElement
       }
                         
       // I don't think we want this.  -sb
-      //  if (TransformerImpl.S_DEBUG)
+      //  if (transformer.getDebug())
       //  transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
       //  "endSelect", m_selectExpression, value);
 
@@ -213,7 +213,7 @@ public class ElemCopyOf extends ElemTemplateElement
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireTraceEndEvent(this);
     }
 

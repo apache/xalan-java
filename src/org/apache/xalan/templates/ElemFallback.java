@@ -98,12 +98,12 @@ public class ElemFallback extends ElemTemplateElement
         || Constants.ELEMNAME_UNDEFINED == parentElemType)
     {
 
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
         transformer.getTraceManager().fireTraceEvent(this);
 
       transformer.executeChildTemplates(this, true);
 
-      if (TransformerImpl.S_DEBUG)
+      if (transformer.getDebug())
 	    transformer.getTraceManager().fireTraceEndEvent(this); 
     }
     else

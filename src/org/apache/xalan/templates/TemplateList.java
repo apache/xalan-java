@@ -122,7 +122,7 @@ public class TemplateList implements java.io.Serializable
   }
 
   /** Flag to indicate whether in DEBUG mode          */
-  static boolean DEBUG = false;
+  final static boolean DEBUG = false;
 
   /**
    * Dump all patterns and elements that match those patterns

@@ -54,13 +54,15 @@ final class CharInfo
      * The name of the HTML entities file.
      * If specified, the file will be resource loaded with the default class loader.
      */
-    public static String HTML_ENTITIES_RESOURCE = "org.apache.xml.serializer.HTMLEntities";
+    public static final String HTML_ENTITIES_RESOURCE = 
+                "org.apache.xml.serializer.HTMLEntities";
 
     /**
      * The name of the XML entities file.
      * If specified, the file will be resource loaded with the default class loader.
      */
-    public static String XML_ENTITIES_RESOURCE = "org.apache.xml.serializer.XMLEntities";
+    public static final String XML_ENTITIES_RESOURCE = 
+                "org.apache.xml.serializer.XMLEntities";
 
     /** The horizontal tab character, which the parser should always normalize. */
     public static final char S_HORIZONAL_TAB = 0x09;
@@ -69,7 +71,7 @@ final class CharInfo
     public static final char S_LINEFEED = 0x0A;
 
     /** The carriage return character, which the parser should always normalize. */
-    public static char S_CARRIAGERETURN = 0x0D;
+    public static final char S_CARRIAGERETURN = 0x0D;
     
     /** This flag is an optimization for HTML entities. It false if entities 
      * other than quot (34), amp (38), lt (60) and gt (62) are defined

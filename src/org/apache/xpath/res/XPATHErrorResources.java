@@ -365,7 +365,15 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 
   // Error messages...
 
-  public static final Object[][] contents = {
+
+  /**
+   * Get the association list.
+   *
+   * @return The association list.
+   */
+  public Object[][] getContents()
+  {
+    return new Object[][]{
 
   /** Field ERROR0000          */
 
@@ -1258,6 +1266,7 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
   { "three", "3" }
 
   };
+  }
 
 
   // ================= INFRASTRUCTURE ======================
@@ -1290,15 +1299,6 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
   /** Field QUERY_HEADER          */
   public static final String QUERY_HEADER = "PATTERN ";
 
-  /**
-   * Get the association list.
-   *
-   * @return The association list.
-   */
-  public Object[][] getContents()
-  {
-    return contents;
-  }
 
   /**
    * Return a named ResourceBundle for a particular locale.  This method mimics the behavior

@@ -54,7 +54,7 @@ public final class ToHTMLStream extends ToStream
      * Map that tells which XML characters should have special treatment, and it
      *  provides character to entity name lookup.
      */
-    protected static final CharInfo m_htmlcharInfo =
+    private static final CharInfo m_htmlcharInfo =
 //        new CharInfo(CharInfo.HTML_ENTITIES_RESOURCE);
         CharInfo.getCharInfo(CharInfo.HTML_ENTITIES_RESOURCE, Method.HTML);
 

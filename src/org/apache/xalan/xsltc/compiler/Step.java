@@ -34,7 +34,7 @@ import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 
 /**
@@ -433,7 +433,7 @@ final class Step extends RelativeLocationPath {
      */
     public String toString() {
 	final StringBuffer buffer = new StringBuffer("step(\"");
-	buffer.append(Axis.names[_axis]).append("\", ").append(_nodeType);
+    buffer.append(Axis.getNames(_axis)).append("\", ").append(_nodeType);
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {

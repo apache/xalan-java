@@ -138,6 +138,11 @@ public class FunctionTable
    * The function table.
    */
   private static FuncLoader m_functions[];
+  
+  /**
+   * The function table contains functions defined in XSLT
+   */
+  private FuncLoader m_functions_xslt[] = new FuncLoader[NUM_ALLOWABLE_ADDINS];
 
   /**
    * Number of built in functions.  Be sure to update this as
@@ -153,11 +158,11 @@ public class FunctionTable
   /**
    * The index to the next free function index.
    */
-  static int m_funcNextFreeIndex = NUM_BUILT_IN_FUNCS;
+  private int m_funcNextFreeIndex = NUM_BUILT_IN_FUNCS;
   
   static
   {
-    m_functions = new FuncLoader[NUM_BUILT_IN_FUNCS + NUM_ALLOWABLE_ADDINS];
+    m_functions = new FuncLoader[NUM_BUILT_IN_FUNCS];
     m_functions[FUNC_CURRENT] = new FuncLoader("FuncCurrent", FUNC_CURRENT);
     m_functions[FUNC_LAST] = new FuncLoader("FuncLast", FUNC_LAST);
     m_functions[FUNC_POSITION] = new FuncLoader("FuncPosition",
@@ -217,12 +222,16 @@ public class FunctionTable
       new FuncLoader("FuncUnparsedEntityURI", FUNC_UNPARSED_ENTITY_URI);
   }
 
+  public FunctionTable(){
+  }
+  
   /**
    * Return the name of the a function in the static table. Needed to avoid
    * making the table publicly available.
    */
-  static String getFunctionName(int funcID) {
-      return m_functions[funcID].getName();
+  String getFunctionName(int funcID) {
+      if (funcID < NUM_BUILT_IN_FUNCS) return m_functions[funcID].getName();
+      else return m_functions_xslt[funcID - NUM_BUILT_IN_FUNCS].getName();
   }
 
   /**
@@ -237,23 +246,23 @@ public class FunctionTable
    * @throws javax.xml.transform.TransformerException if ClassNotFoundException, 
    *    IllegalAccessException, or InstantiationException is thrown.
    */
-  public static Function getFunction(int which)
+  Function getFunction(int which)
           throws javax.xml.transform.TransformerException
   {
-    return m_functions[which].getFunction();
+      if (which < NUM_BUILT_IN_FUNCS) return m_functions[which].getFunction();
+      else return  m_functions_xslt[which - NUM_BUILT_IN_FUNCS].getFunction();
   }
-
   /**
    * Install a built-in function.
    * @param name The unqualified name of the function.
    * @param func A Implementation of an XPath Function object.
    * @return the position of the function in the internal index.
    */
-  public static int installFunction(String name, Expression func)
+  public int installFunction(String name, Expression func)
   {
 
     int funcIndex;
-    Object funcIndexObj = Keywords.m_functions.get(name);
+    Object funcIndexObj = Keywords.getFunction(name);
 
     if (null != funcIndexObj)
     {
@@ -265,29 +274,14 @@ public class FunctionTable
 
       m_funcNextFreeIndex++;
 
-      Keywords.m_functions.put(name, new Integer(funcIndex));
+      Keywords.putFunction(name, new Integer(funcIndex));
     }
 
     FuncLoader loader = new FuncLoader(func.getClass().getName(), funcIndex);
 
-    m_functions[funcIndex] = loader;
+    m_functions_xslt[funcIndex - NUM_BUILT_IN_FUNCS] = loader;
 
     return funcIndex;
   }
 
-  /**
-   * Install a function loader at a specific index.
-   * @param func A Implementation of an XPath Function object.
-   * @param which  The function ID, which may correspond to one of the FUNC_XXX 
-   *    values found in {@link org.apache.xpath.compiler.FunctionTable}, but may 
-   *    be a value installed by an external module. 
-   * @return the position of the function in the internal index.
-   */
-  public static void installFunction(Expression func, int funcIndex)
-  {
-
-    FuncLoader loader = new FuncLoader(func.getClass().getName(), funcIndex);
-
-    m_functions[funcIndex] = loader;
-  }
 }

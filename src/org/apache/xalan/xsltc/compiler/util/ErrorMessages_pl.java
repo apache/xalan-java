@@ -86,7 +86,13 @@ public class ErrorMessages_pl extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String[][] m_errorMessages = {
+    /** Get the lookup table for error messages.   
+     *
+     * @return The message lookup table.
+     */
+    public Object[][] getContents()
+    {
+      return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
         "W jednym pliku zdefiniowano wi\u0119cej ni\u017c jeden arkusz styl\u00f3w."},
 
@@ -839,9 +845,5 @@ public class ErrorMessages_pl extends ListResourceBundle {
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "B\u0142\u0119dy transletu:"}
     };
-
-
-    public Object[][] getContents() {
-        return m_errorMessages;
     }
 }

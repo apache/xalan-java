@@ -215,7 +215,8 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 
     try
     {
-
+      TransformerImpl trans = 
+        (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
       if (funcName.endsWith(".new")) {                   // Handle constructor call
 
         methodArgs = new Object[args.size()];
@@ -256,8 +257,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                                           convertedArgs,
                                           exprContext);
         putToCache(methodKey, null, methodArgs, c);
-        if (TransformerImpl.S_DEBUG) {
-            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+        if (trans.getDebug()) {
             trans.getTraceManager().fireExtensionEvent(new ExtensionEvent(trans, c, convertedArgs[0]));            
             Object result;
             try {
@@ -281,7 +281,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
           methodArgs[i] = args.elementAt(i);
         }
         Method m = (Method) getFromCache(methodKey, null, methodArgs);
-        if (m != null && !TransformerImpl.S_DEBUG)
+        if (m != null && !trans.getDebug())
         {
           try
           {
@@ -315,8 +315,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                                      exprContext,
                                      MethodResolver.STATIC_ONLY);
         putToCache(methodKey, null, methodArgs, m);
-        if (TransformerImpl.S_DEBUG) {
-            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+        if (trans.getDebug()) {
             trans.getTraceManager().fireExtensionEvent(m, null, convertedArgs[0]);            
             Object result;
             try {
@@ -374,8 +373,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                                      exprContext,
                                      MethodResolver.INSTANCE_ONLY);
         putToCache(methodKey, targetObject, methodArgs, m);
-        if (TransformerImpl.S_DEBUG) {
-            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+        if (trans.getDebug()) {
             trans.getTraceManager().fireExtensionEvent(m, targetObject, convertedArgs[0]);            
             Object result;
             try {
@@ -491,7 +489,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 
     try
     {
-      if (TransformerImpl.S_DEBUG) {
+      if (transformer.getDebug()) {
           transformer.getTraceManager().fireExtensionEvent(m, null, new Object[] {xpc, element});
         try {
             result = m.invoke(null, new Object[] {xpc, element});

@@ -1585,7 +1585,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
         /**
          * fixednames
         */
-        static final String[] fixednames=
+        private static final String[] fixednames=
         {
                 null,null,							// nothing, Element
                 null,"#text",						// Attr, Text

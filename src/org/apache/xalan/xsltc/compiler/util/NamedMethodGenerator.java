@@ -33,7 +33,7 @@ import org.apache.bcel.generic.Type;
  * @author Santiago Pericas-Geertsen
  */
 public final class NamedMethodGenerator extends MethodGenerator {
-    protected static int CURRENT_INDEX  = 4;
+    protected static final int CURRENT_INDEX  = 4;
     
     // The index of the first parameter (after dom/iterator/handler/current)
     private static final int PARAM_START_INDEX = 5;

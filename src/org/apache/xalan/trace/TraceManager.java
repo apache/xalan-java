@@ -64,7 +64,7 @@ public class TraceManager
           throws TooManyListenersException
   {
 
-    TransformerImpl.S_DEBUG = true;
+    m_transformer.setDebug(true);
 
     if (null == m_traceListeners)
       m_traceListeners = new Vector();

@@ -126,7 +126,7 @@ public class ElemPI extends ElemTemplateElement
             throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEvent(this);
 
     XPathContext xctxt = transformer.getXPathContext();
@@ -174,7 +174,7 @@ public class ElemPI extends ElemTemplateElement
       throw new TransformerException(se);
     }
     
-    if (TransformerImpl.S_DEBUG)
+    if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEndEvent(this);
   }
 

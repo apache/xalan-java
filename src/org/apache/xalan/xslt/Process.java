@@ -148,6 +148,7 @@ public class Process
     boolean doStackDumpOnError = false;
     boolean setQuietMode = false;
     boolean doDiag = false;
+    String msg = null;
 
     // Runtime.getRuntime().traceMethodCalls(false);
     // Runtime.getRuntime().traceInstructions(false);
@@ -194,13 +195,14 @@ public class Process
       catch (TransformerFactoryConfigurationError pfe)
       {
         pfe.printStackTrace(dumpWriter);
-        diagnosticsWriter.println(
-          XSLMessages.createMessage(
-            XSLTErrorResources.ER_NOT_SUCCESSFUL, null));  //"XSL Process was not successful.");
+//      "XSL Process was not successful.");
+        msg = XSLMessages.createMessage(
+            XSLTErrorResources.ER_NOT_SUCCESSFUL, null);
+        diagnosticsWriter.println(msg);  
 
         tfactory = null;  // shut up compiler
 
-        doExit(-1);
+        doExit(msg);
       }
 
       boolean formatOutput = false;
@@ -431,20 +433,20 @@ public class Process
             }
             catch (ObjectFactory.ConfigurationError cnfe)
             {
-              System.err.println(
-                XSLMessages.createMessage(
-                  XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
-                  new Object[]{ "-URIResolver" }));
-              doExit(-1);
+                msg = XSLMessages.createMessage(
+                    XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                    new Object[]{ "-URIResolver" });
+              System.err.println(msg);
+              doExit(msg);
             }
           }
           else
           {
-            System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
-                new Object[]{ "-URIResolver" }));  //"Missing argument for);
-            doExit(-1);
+            msg = XSLMessages.createMessage(
+                    XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                    new Object[]{ "-URIResolver" });  //"Missing argument for);
+            System.err.println(msg);
+            doExit(msg);
           }
         }
         else if ("-ENTITYRESOLVER".equalsIgnoreCase(argv[i]))
@@ -458,20 +460,21 @@ public class Process
             }
             catch (ObjectFactory.ConfigurationError cnfe)
             {
-              System.err.println(
-                XSLMessages.createMessage(
-                  XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
-                  new Object[]{ "-EntityResolver" }));
-              doExit(-1);
+                msg = XSLMessages.createMessage(
+                    XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                    new Object[]{ "-EntityResolver" });
+              System.err.println(msg);
+              doExit(msg);
             }
           }
           else
           {
-            System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
-                new Object[]{ "-EntityResolver" }));  //"Missing argument for);
-            doExit(-1);
+//            "Missing argument for);
+              msg = XSLMessages.createMessage(
+                    XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                    new Object[]{ "-EntityResolver" });
+            System.err.println(msg);  
+            doExit(msg);
           }
         }
         else if ("-CONTENTHANDLER".equalsIgnoreCase(argv[i]))
@@ -485,26 +488,27 @@ public class Process
             }
             catch (ObjectFactory.ConfigurationError cnfe)
             {
-              System.err.println(
-                XSLMessages.createMessage(
-                  XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
-                  new Object[]{ "-ContentHandler" }));
-              doExit(-1);
+                msg = XSLMessages.createMessage(
+                    XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                    new Object[]{ "-ContentHandler" });
+              System.err.println(msg);
+              doExit(msg);
             }
           }
           else
           {
-            System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
-                new Object[]{ "-ContentHandler" }));  //"Missing argument for);
-            doExit(-1);
+//            "Missing argument for);
+              msg = XSLMessages.createMessage(
+                    XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                    new Object[]{ "-ContentHandler" });
+            System.err.println(msg);  
+            doExit(msg);
           }
         }
         else if ("-L".equalsIgnoreCase(argv[i]))
         {
           if (!useXSLTC)
-            useSourceLocation = true;
+            tfactory.setAttribute(XalanProperties.SOURCE_LOCATION, Boolean.TRUE); 
           else
             printInvalidXSLTCOption("-L");
         }
@@ -681,8 +685,9 @@ public class Process
       // Print usage instructions if no xml and xsl file is specified in the command line
       if (inFileName == null && xslFileName == null)
       {
-        System.err.println(resbundle.getString("xslProc_no_input"));
-        doExit(-1);
+          msg = resbundle.getString("xslProc_no_input");
+        System.err.println(msg);
+        doExit(msg);
       }
 
       // Note that there are usage cases for calling us without a -IN arg
@@ -1000,10 +1005,11 @@ public class Process
         }
         else
         {
-          diagnosticsWriter.println(
-            XSLMessages.createMessage(
-              XSLTErrorResources.ER_NOT_SUCCESSFUL, null));  //"XSL Process was not successful.");
-          doExit(-1);
+//          "XSL Process was not successful.");
+            msg = XSLMessages.createMessage(
+                XSLTErrorResources.ER_NOT_SUCCESSFUL, null);
+          diagnosticsWriter.println(msg);  
+          doExit(msg);
         }
         
 	// close output streams
@@ -1025,7 +1031,7 @@ public class Process
         if (doDiag)
         {
         	Object[] msgArgs = new Object[]{ inFileName, xslFileName, new Long(millisecondsDuration) };
-        	String msg = XSLMessages.createMessage("diagTiming", msgArgs);
+            msg = XSLMessages.createMessage("diagTiming", msgArgs);
         	diagnosticsWriter.println('\n');
           	diagnosticsWriter.println(msg);
         }
@@ -1063,7 +1069,7 @@ public class Process
           dumpWriter.close();
         }
 
-        doExit(-1);
+        doExit(throwable.getMessage());
       }
 
       if (null != dumpFileName)
@@ -1088,9 +1094,9 @@ public class Process
    * before this blows itself out of the water...
    * (I keep checking this in, it keeps vanishing. Grr!)
    * */
-  static void doExit(int i)
+  static void doExit(String msg)
   {
-    System.exit(i);
+    throw new RuntimeException(msg);
   }
   
   /**
