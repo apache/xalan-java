@@ -735,6 +735,13 @@ public class TransformerImpl extends XMLFilterImpl
   }
   
   /**
+   * Use member variable to store param variables as they're
+   * being created, use member variable so we don't
+   * have to create a new vector every time.
+   */
+  private Vector m_newVars = new Vector();
+  
+  /**
    * Given a template, search for
    * the arguments and push them on the stack.  Also,
    * push default arguments on the stack.
@@ -781,10 +788,19 @@ public class TransformerImpl extends XMLFilterImpl
           var = new XRTreeFrag(df);
         }
         
-        vars.push(new Arg(xslParamElement.getName(), 
-                                                         var, true));
+        m_newVars.addElement(new Arg(xslParamElement.getName(), var, true));
       }
     }
+    vars.pushContextMarker();
+    
+    int n = m_newVars.size();
+    for(int i = 0; i < n; i++)
+    {
+      vars.push((Arg)m_newVars.elementAt(i));
+    }
+    
+    // Dragons check: make sure this is nulling the refs.
+    m_newVars.removeAllElements();
     
   } // end pushParams method
   
@@ -1040,16 +1056,12 @@ public class TransformerImpl extends XMLFilterImpl
                                          selectPattern, xresult);
         // nodeList.setCurrentPos(0);
       }
-    }
-    finally
-    {
-      varstack.setCurrentStackFrameIndex(savedCurrentStackFrameIndex);
-    }
 
-    // Of we now have a list of source nodes, sort them if needed, 
-    // and then call transformNode on each of them.
-    if(null != sourceNodes)
-    {
+      // Of we now have a list of source nodes, sort them if needed, 
+      // and then call transformNode on each of them.
+      if(null == sourceNodes)
+        return;
+
       // Sort if we need to.
       if(null != keys)
       {               
@@ -1079,28 +1091,32 @@ public class TransformerImpl extends XMLFilterImpl
           xctxt.popContextNodeList();
         }
       }
-      
-      // Push the ContextNodeList on a stack, so that select="position()"
-      // and the like will work.
-      // System.out.println("pushing context node list...");
-      xctxt.pushContextNodeList((ContextNodeList)sourceNodes );
-      try
-      {   
-        // Do the transformation on each.
-        Node context;
-        while(null != (context = sourceNodes.nextNode())) 
-        {
-          transformNode(xslInstruction, template, context, mode);
-        }
-      }
-      finally
-      {
-        xctxt.popContextNodeList();
-      }
     }
     
+    finally
+    {
+      varstack.setCurrentStackFrameIndex(savedCurrentStackFrameIndex);
+    }
+    
+    // Push the ContextNodeList on a stack, so that select="position()"
+    // and the like will work.
+    // System.out.println("pushing context node list...");
+    xctxt.pushContextNodeList((ContextNodeList)sourceNodes );
+    try
+    {   
+      // Do the transformation on each.
+      Node context;
+      while(null != (context = sourceNodes.nextNode())) 
+      {
+        transformNode(xslInstruction, template, context, mode);
+      }
+    }
+    finally
+    {
+      xctxt.popContextNodeList();
+    }
   }
-  
+ 
   /** 
    * <meta name="usage" content="advanced"/>
    * Given an element and mode, find the corresponding

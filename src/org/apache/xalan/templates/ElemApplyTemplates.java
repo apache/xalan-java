@@ -162,16 +162,10 @@ public class ElemApplyTemplates extends ElemForEach
           mode = m_mode;
         }
 
-        // Dragons here.  Push the params & stack frame, but then 
-        // execute the select statement inside transformSelectedNodes, 
-        // which must be executed in the stack frame before the 
-        // new stack frame.  Because of depth-first searching, this 
-        // gets worse.
         VariableStack vars = transformer.getXPathContext().getVarStack();
-        int selectStackFrameIndex = vars.getCurrentStackFrameIndex();
+        int selectStackFrameIndex = vars.getCurrentStackFrameIndex();       
         
-        vars.pushContextMarker();
-        vars.setCurrentStackFrameIndex(selectStackFrameIndex);
+        // This call will cause a context marker to be pushed into the stack 
         transformer.pushParams(getStylesheet(), 
                         this, 
                         sourceNode, mode);

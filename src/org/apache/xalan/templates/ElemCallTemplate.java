@@ -148,10 +148,8 @@ public class ElemCallTemplate extends ElemTemplateElement
     {
       XPathContext xctxt = transformer.getXPathContext();
       VariableStack vars = xctxt.getVarStack();
-      int selectStackFrameIndex = vars.getCurrentStackFrameIndex();
+      // int selectStackFrameIndex = vars.getCurrentStackFrameIndex();
       
-      vars.pushContextMarker();
-      vars.setCurrentStackFrameIndex(selectStackFrameIndex);
       transformer.pushParams(getStylesheet(), 
                              this, sourceNode, mode);
       vars.setCurrentStackFrameIndex(vars.size());
@@ -168,7 +166,7 @@ public class ElemCallTemplate extends ElemTemplateElement
         transformer.popElemTemplateElement();
         xctxt.setSAXLocator(savedLocator);
         vars.popCurrentContext();
-        vars.setCurrentStackFrameIndex(selectStackFrameIndex);
+        // vars.setCurrentStackFrameIndex(selectStackFrameIndex);
       }
     }
     else
