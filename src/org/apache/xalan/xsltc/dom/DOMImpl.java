@@ -1985,10 +1985,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the type of a specific node
      */
     public int getType(final int node) {
-	if (node >= _type.length)
-	    return(0);
-	else
-	    return _type[node];
+	return (node >= _type.length) ? 0 : _type[node];
     }
     
     /**
@@ -1996,10 +1993,8 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public int getNamespaceType(final int node) {
 	final int type = _type[node];
-	if (type >= NTYPES)
-	    return(_namespace[type-NTYPES]);
-	else
-	    return(0); // default namespace
+	return (type >= NTYPES) ? _namespace[type-NTYPES] 
+	    : 0; 	// default namespace
     }
 
     /**
