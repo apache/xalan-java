@@ -74,7 +74,7 @@
      <p>With most of the samples, you can use the following procedure:</p>
      <ol>
      <li>Be sure xalan.jar, xalansamples.jar, and xerces.jar are on the system class
-      path. For the extension examples, bsf.jar, bsfengines.jar, and (for the JavaScript extensions) js.jar must also be on the class
+      path. For the extension examples, bsf.jar and (for the JavaScript extensions) js.jar must also be on the class
       path.</li>
      <li>Be sure the java executable is on your path.</li>
      <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
@@ -193,7 +193,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     </ul>
     <p>The extensions subdirectory contains five samples with &xslt4j; extensions. Two of the samples use
      extensions implemented in JavaScript, and three of the samples use extensions implemented in Java.</p>
-     <p>To run these examples, you must place bsf.jar and bsfengines.jar (distributed with &xslt4j;), and js.jar
+     <p>To run these examples, you must place bsf.jar (distributed with &xslt4j;), and js.jar
       (version 1.5, available from 
       <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the class path. 
      You do not need js.jar on the class path for the samples that use Java extensions. </p>

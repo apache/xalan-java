@@ -27,7 +27,7 @@
 </s2><anchor name="supported-lang"/>
 <s2 title="Supported languages">
 <p>&xslt4j; uses the <jump href="http://www.alphaworks.ibm.com/tech/bsf">Bean Scripting Framework (BSF)</jump>, an architecture for incorporating scripting into Java applications and applets. BSF allows an application to take advantage of scripting while being independent of any specific scripting language. To date, we have tested extensions implemented in Java and JavaScript. Other languages with BSF support appear in the table below.</p>
-<p>BSF requires two JAR files on the class path: bsf.jar and bsfengines.jar. These two JAR files are shipped with &xslt4j;, and that is all that is required for Java extensions. The additional JAR files or DLLs required to support extensions in other languages are listed in the table below. These files are available from the sources indicated and are not shipped with &xslt4j;.</p>
+<p>BSF requires bsf.jar on the class path. This JAR file is shipped with &xslt4j;, and that is all that is required for Java extensions. The additional JAR files or DLLs required to support extensions in other languages are listed in the table below. These files are available from the sources indicated and are not shipped with &xslt4j;.</p>
 <table>
   <tr>
     <td><em>Language</em></td>
@@ -136,7 +136,7 @@
 </source>
 </s2><anchor name="setup-runtime"/>
 <s2 title="Setting up the runtime environment">
-<p>To run the preceding example, bsf.jar, bsfengines.jar, and js.jar must be on the class path. Remember that bsf.jar and bsfengines.jar must be on the class path to run any extension. For extensions implemented in a scripting language, see the additional requirements in <link anchor="supported-lang">Supported languages</link>.</p>
+<p>To run the preceding example, bsf.jar and js.jar must be on the class path. Remember that bsf.jar must be on the class path to run any extension. For extensions implemented in a scripting language, see the additional requirements in <link anchor="supported-lang">Supported languages</link>.</p>
 </s2><anchor name="basic-syntax"/>
 <s2 title="Syntax">
 <p>You can always use the pattern illustrated above to set up and use extension elements and extension functions. For extension functions implemented in Java, you can also use the java namespace, described in <link anchor="java-namespace">Alternative: using the predefined java extension namespace</link>. Unless you are using the predefined java extension namespace, do the following:</p>
