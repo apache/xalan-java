@@ -78,6 +78,9 @@ Copyright:
   <property name="jlex.jar" value="${bin.dir}/${jlex.jar.name}"/>
   <property name="runtime.jar.name" value="runtime.jar"/>
   <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
+  <property name="regexp.jar.name" value="regexp.jar"/>
+  <property name="regexp.jar" value="${bin.dir}/${regexp.jar.name}"/>
+
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
@@ -359,7 +362,7 @@ Copyright:
     </javac>
   </target>
 
-  <target name="xsltc.jar" depends="xsltc.compile"
+  <target name="xsltc.unbundledjar" depends="xsltc.compile"
     description="Jar just the xsltc.jar file" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
@@ -372,7 +375,7 @@ Copyright:
   </target>
 
 
-  <target name="xsltc.bundledjar" depends="xsltc.compile"
+  <target name="xsltc.jar" depends="xsltc.compile"
      description="Jar xsltc, BCEL,JLex,java_cup,runtime and jakarta regexp">
     <!-- make a tmp directory to work in -->
     <delete dir="${build.dir}/xsltctmp" includeEmptyDirs="true" quiet="true"/>
@@ -447,11 +450,14 @@ Copyright:
         includeEmptyDirs="true" quiet="true"/>
 
     <!-- create new META-INF dir w/ transformer factory default -->
+   <!-- GTM: comment this out so that bundled xsltc.jar does not have
+         service provider default until further notice 2/20/2002
     <mkdir dir="${build.dir}/xsltctmp/META-INF"/>
     <mkdir dir="${build.dir}/xsltctmp/META-INF/services"/>
     <copy todir="${build.dir}/xsltctmp/META-INF/services"
       file="${src.dir}/${xsltc.reldir}/javax.xml.transform.TransformerFactory"
     />
+    -->
 
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
@@ -845,6 +851,7 @@ Copyright:
       <include name="${dist.file}/bin/${java_cup.jar.name}"/>
       <include name="${dist.file}/bin/${jlex.jar.name}"/>
       <include name="${dist.file}/bin/${runtime.jar.name}"/>
+      <include name="${dist.file}/bin/${regexp.jar.name}"/>
     </patternset>
 
     <tar tarfile="${build.dir}/${dist.file}-bin.tar" >
