@@ -32,6 +32,8 @@ import org.apache.xalan.xsltc.compiler.util.NamedMethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
+
 
 /**
  * @author Jacek Ambroziak
@@ -192,10 +194,18 @@ public final class Template extends TopLevelElement {
 	_stylesheet = super.getStylesheet();
 
 	if (name.length() > 0) {
+            if (!XMLChar.isValidQName(name)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
+                parser.reportError(Constants.ERROR, err);           
+            }                
 	    _name = parser.getQNameIgnoreDefaultNs(name);
 	}
 	
 	if (mode.length() > 0) {
+            if (!XMLChar.isValidQName(mode)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, mode, this);
+                parser.reportError(Constants.ERROR, err);           
+            } 		
 	    _mode = parser.getQNameIgnoreDefaultNs(mode);
 	}
 	

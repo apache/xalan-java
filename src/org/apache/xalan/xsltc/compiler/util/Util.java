@@ -19,8 +19,11 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import java.util.StringTokenizer;
+
 import org.apache.bcel.generic.Type;
 import org.apache.xalan.xsltc.compiler.Constants;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * @author Jacek Ambroziak
@@ -163,6 +166,35 @@ public final class Util {
 	final int index = qname.lastIndexOf(":");
 	return (index > 0) ? qname.substring(0, index) : 
 	    Constants.EMPTYSTRING;
+    } 
+          
+    /**
+     * Checks if the string is a literal (i.e. not an AVT) or not.
+     */
+    public static boolean isLiteral(String str) {
+        final int length = str.length();
+        for (int i = 0; i < length - 1; i++) {
+            if (str.charAt(i) == '{' && str.charAt(i + 1) != '{') {
+        	return false;
+            }
+        }
+        return true;
     }
+    
+    /**
+     * Checks if the string is valid list of qnames
+     */
+    public static boolean isValidQNames(String str) {
+        if ((str != null) && (!str.equals(Constants.EMPTYSTRING))) {
+            final StringTokenizer tokens = new StringTokenizer(str);
+            while (tokens.hasMoreTokens()) {
+                if (!XMLChar.isValidQName(tokens.nextToken())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }    
+      	   
 }
 

@@ -46,7 +46,9 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 
@@ -1274,49 +1276,112 @@ public final class BasisLibrary implements Operators {
 	    runTimeError(RUN_TIME_COPY_ERR);
 	}
     }
+    
+    /**
+     * Utility function to check if xsl:attribute has a valid qname
+     * This method should only be invoked if the name attribute is an AVT
+     */    
+    public static void checkAttribQName(String name) {
+        final int firstOccur = name.indexOf(":");
+        final int lastOccur = name.lastIndexOf(":");
+        final String localName = name.substring(lastOccur + 1);
+        
+        if (firstOccur > 0) {
+            final String newPrefix = name.substring(0, firstOccur); 
+        
+            if (firstOccur != lastOccur) {
+               final String oriPrefix = name.substring(firstOccur+1, lastOccur); 
+                if (!XMLChar.isValidNCName(oriPrefix)) {
+                    // even though the orignal prefix is ignored, it should still get checked for valid NCName
+                    runTimeError(INVALID_QNAME_ERR,oriPrefix+":"+localName);
+                }
+            }
+            
+            // prefix must be a valid NCName
+            if (!XMLChar.isValidNCName(newPrefix)) {
+                runTimeError(INVALID_QNAME_ERR,newPrefix+":"+localName); 
+            }  
+        }
+                
+        // local name must be a valid NCName and must not be XMLNS
+        if ((!XMLChar.isValidNCName(localName))||(localName.equals(Constants.XMLNS_PREFIX))) {
+            runTimeError(INVALID_QNAME_ERR,localName); 
+        }
+    }
+    
+    /**
+     * Utility function to check if a name is a valid ncname
+     * This method should only be invoked if the attribute value is an AVT
+     */    
+    public static void checkNCName(String name) {
+        if (!XMLChar.isValidNCName(name)) {
+            runTimeError(INVALID_NCNAME_ERR,name); 
+        }  
+    }        
 
+    /**
+     * Utility function to check if a name is a valid qname
+     * This method should only be invoked if the attribute value is an AVT
+     */    
+    public static void checkQName(String name) {
+        if (!XMLChar.isValidQName(name)) {
+            runTimeError(INVALID_QNAME_ERR,name); 
+        }  
+    }
+    
     /**
      * Utility function for the implementation of xsl:element.
      */
     public static String startXslElement(String qname, String namespace,
 	SerializationHandler handler, DOM dom, int node)
     {
-	try {
-	    // Get prefix from qname
-	    String prefix;
-	    final int index = qname.indexOf(':');
-
-	    if (index > 0) {
-		prefix = qname.substring(0, index);
-
-		// Handle case when prefix is not known at compile time
-		if (namespace == null || namespace.length() == 0) {
-		    namespace = dom.lookupNamespace(node, prefix);
-		}
-
-		handler.startElement(namespace, qname.substring(index+1),
-                                     qname);
-		handler.namespaceAfterStartElement(prefix, namespace); 
-	    }
-	    else {
-		// Need to generate a prefix?
-		if (namespace != null && namespace.length() > 0) {
-		    prefix = generatePrefix();
-		    qname = prefix + ':' + qname;   
-		    handler.startElement(namespace, qname, qname);   
-		    handler.namespaceAfterStartElement(prefix, namespace);
-		}
-		else {
-		    handler.startElement(null, null, qname);   
-		}
-	    }
-	}
-	catch (SAXException e) {
-	    throw new RuntimeException(e.getMessage());
-	}
-
-	return qname;
-    }
+        try {
+            // Get prefix from qname
+            String prefix;
+            final int index = qname.indexOf(':');
+            
+            if (index > 0) {
+                prefix = qname.substring(0, index);
+                
+                // Handle case when prefix is not known at compile time
+                if (namespace == null || namespace.length() == 0) {
+                    try {
+                        // not sure if this line of code ever works
+                        namespace = dom.lookupNamespace(node, prefix);
+                    }
+                    catch(RuntimeException e) {
+                        handler.flushPending();  // need to flush or else can't get namespacemappings
+                        NamespaceMappings nm = handler.getNamespaceMappings();
+                        namespace = nm.lookupNamespace(prefix);
+                        if (namespace == null) {
+                            runTimeError(NAMESPACE_PREFIX_ERR,prefix);
+                        }
+                    }
+                }
+                
+                handler.startElement(namespace, qname.substring(index+1),
+                                         qname);
+                handler.namespaceAfterStartElement(prefix, namespace); 
+            }
+            else {                      
+                // Need to generate a prefix?
+                if (namespace != null && namespace.length() > 0) {
+                    prefix = generatePrefix();
+                    qname = prefix + ':' + qname;   
+                    handler.startElement(namespace, qname, qname);   
+                    handler.namespaceAfterStartElement(prefix, namespace);
+                }
+                else {
+                    handler.startElement(null, null, qname);   
+                }
+            }
+        }
+        catch (SAXException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    
+        return qname;
+    }    
 
     /**
      * This function is used in the execution of xsl:element
@@ -1374,6 +1439,8 @@ public final class BasisLibrary implements Operators {
                                            "UNSUPPORTED_EXT_ERR";
     public static final String UNKNOWN_TRANSLET_VERSION_ERR =
                                            "UNKNOWN_TRANSLET_VERSION_ERR";
+    public static final String INVALID_QNAME_ERR = "INVALID_QNAME_ERR";                                           
+    public static final String INVALID_NCNAME_ERR = "INVALID_NCNAME_ERR";
 
     // All error messages are localized and are stored in resource bundles.
     protected static ResourceBundle m_bundle;
@@ -1447,7 +1514,10 @@ public final class BasisLibrary implements Operators {
      * and thus get mapped to legal java variable names 
      */
     public static String mapQNameToJavaName (String base ) {
-       return replace(base, ".-:/{}?#%*", new String[] { "$dot$", "$dash$" ,"$colon$", "$flash$","","$colon$","$ques$","$hash$","$per$","$aster$"});
+       return replace(base, ".-:/{}?#%*",
+                      new String[] { "$dot$", "$dash$" ,"$colon$", "$slash$",
+                                     "","$colon$","$ques$","$hash$","$per$",
+                                     "$aster$"});
 
     }
 

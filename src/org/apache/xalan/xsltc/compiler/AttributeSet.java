@@ -31,6 +31,8 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * @author Jacek Ambroziak
@@ -81,7 +83,13 @@ final class AttributeSet extends TopLevelElement {
     public void parseContents(Parser parser) {
 	
 	// Get this attribute set's name
-	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
+        final String name = getAttribute("name");
+        
+        if (!XMLChar.isValidQName(name)) {
+            ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
+            parser.reportError(Constants.ERROR, err);           
+        }        
+        _name = parser.getQNameIgnoreDefaultNs(name);
 	if ((_name == null) || (_name.equals(EMPTYSTRING))) {
 	    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNNAMED_ATTRIBSET_ERR, this);
 	    parser.reportError(Constants.ERROR, msg);
@@ -90,6 +98,10 @@ final class AttributeSet extends TopLevelElement {
 	// Get any included attribute sets (similar to inheritance...)
 	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
+            if (!Util.isValidQNames(useSets)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, useSets, this);
+                parser.reportError(Constants.ERROR, err);	
+            }		
 	    _useSets = new UseAttributeSets(useSets, parser);
 	}
 

@@ -42,6 +42,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * @author Morten Jorgensen
@@ -76,7 +77,12 @@ final class Key extends TopLevelElement {
     public void parseContents(Parser parser) {
 
 	// Get the required attributes and parser XPath expressions
-	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
+        final String name = getAttribute("name");
+        if (!XMLChar.isValidQName(name)){
+            ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
+            parser.reportError(Constants.ERROR, err);           
+        }
+        _name = parser.getQNameIgnoreDefaultNs(name);
 	_match = parser.parsePattern(this, "match", null);
 	_use = parser.parseExpression(this, "use", null);
 

@@ -19,7 +19,10 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.ICONST;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.LocalVariableGen;
@@ -30,6 +33,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * @author Jacek Ambroziak
@@ -61,39 +65,6 @@ final class XslElement extends Instruction {
 	return false;
     }
 
-    /**
-     * Checks if <param>str</param> is a literal (i.e. not an AVT) or not.
-     */
-    private boolean isLiteral(String str) {
-	final int length = str.length();
-	for (int i = 0; i < length; i++) {
-	    if (str.charAt(i) == '{' && str.charAt(i + 1) != '{') {
-		return false;
-	    }
-	}
-	return true;
-    }
-
-    /**
-     * Simple check to determine if qname is legal. If it returns false
-     * then <param>str</param> is illegal; if it returns true then 
-     * <param>str</param> may or may not be legal.
-     */
-    private boolean isLegalName(String str) {
-	if (str.indexOf(' ') > -1) {
-	    return false;
-	}
-	final int colon = str.indexOf(':');
-	if (colon == 0 || colon == str.length() - 1) {
-	    return false;
-	}
-	final char first = str.charAt(0);
-	if (!Character.isLetter(first) && first != '_') {
-	    return false;
-	}
-	return true;
-    }
-
     public void parseContents(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
@@ -112,9 +83,9 @@ final class XslElement extends Instruction {
 	String namespace = getAttribute("namespace");
 
 	// Optimize compilation when name is known at compile time
-	_isLiteralName = isLiteral(name);
+        _isLiteralName = Util.isLiteral(name);
 	if (_isLiteralName) {
-	    if (!isLegalName(name)) {
+            if (!XMLChar.isValidQName(name)) {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
 					    name, this);
 		parser.reportError(WARNING, msg);
@@ -146,7 +117,7 @@ final class XslElement extends Instruction {
 	    }
 	    else {
 		if (prefix == EMPTYSTRING) {
-		    if (isLiteral(namespace)) {
+        	    if (Util.isLiteral(namespace)) {
 			prefix = lookupPrefix(namespace);
 			if (prefix == null) {
 			    prefix = stable.generateNamespacePrefix();
@@ -173,6 +144,10 @@ final class XslElement extends Instruction {
 
 	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
+            if (!Util.isValidQNames(useSets)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, useSets, this);
+                parser.reportError(Constants.ERROR, err);	
+            }
 	    setFirstElement(new UseAttributeSets(useSets, parser));
 	}
 
@@ -243,11 +218,30 @@ final class XslElement extends Instruction {
 	}
 
 	if (!_ignore) {
-	    // Push handler for call to endElement()
-	    il.append(methodGen.loadHandler());
-
-	    // Push name and namespace URI
-	    _name.translate(classGen, methodGen);
+       
+            // if the qname is an AVT, then the qname has to be checked at runtime if it is a valid qname
+            LocalVariableGen nameValue = methodGen.addLocalVariable2("nameValue",
+                    Util.getJCRefType(STRING_SIG),
+                    il.getEnd());
+                    
+            // store the name into a variable first so _name.translate only needs to be called once  
+            _name.translate(classGen, methodGen);
+            il.append(new ASTORE(nameValue.getIndex()));
+            il.append(new ALOAD(nameValue.getIndex()));
+            
+            // call checkQName if the name is an AVT
+            final int check = cpg.addMethodref(BASIS_LIBRARY_CLASS, "checkQName",
+                            "("
+                            +STRING_SIG
+                            +")V");                 
+            il.append(new INVOKESTATIC(check));
+            
+            // Push handler for call to endElement()
+            il.append(methodGen.loadHandler());         
+            
+            // load name value again    
+            il.append(new ALOAD(nameValue.getIndex()));  
+                    
 	    if (_namespace != null) {
 		_namespace.translate(classGen, methodGen);
 	    }
@@ -259,14 +253,16 @@ final class XslElement extends Instruction {
 	    il.append(methodGen.loadHandler());
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadCurrentNode());
+        
+            // Invoke BasisLibrary.startXslElemCheckQName()
+            il.append(new INVOKESTATIC(
+            cpg.addMethodref(BASIS_LIBRARY_CLASS, "startXslElement",
+                    "(" + STRING_SIG 
+                    + STRING_SIG 
+                    + TRANSLET_OUTPUT_SIG 
+                    + DOM_INTF_SIG + "I)" + STRING_SIG)));                
 
-	    // Invoke BasisLibrary.startXslElement()
-	    il.append(new INVOKESTATIC(
-		cpg.addMethodref(BASIS_LIBRARY_CLASS, "startXslElement",
-		      "(" + STRING_SIG 
-			  + STRING_SIG 
-			  + TRANSLET_OUTPUT_SIG 
-			  + DOM_INTF_SIG + "I)" + STRING_SIG)));
+
 	}
 
 	translateContents(classGen, methodGen);

@@ -22,6 +22,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.XMLChar;
 import org.apache.xpath.XPathContext;
 
 /**
@@ -145,7 +146,7 @@ public class ElemPI extends ElemTemplateElement
     
     // Only check if an avt was used (ie. this wasn't checked at compose time.)
     // Ignore processing instruction, if invalid
-    else if ((!m_name_atv.isSimple()) && (!isValidNCName(piName)))
+    else if ((!m_name_atv.isSimple()) && (!XMLChar.isValidNCName(piName)))
     {
      	transformer.getMsgMgr().warn(
         this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,

@@ -31,6 +31,7 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * @author Jacek Ambroziak
@@ -56,10 +57,17 @@ final class DecimalFormatting extends TopLevelElement {
      */
     public void parseContents(Parser parser) {
 	// Get the name of these decimal formatting symbols
-	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
-	if (_name == null) {
-	    _name = parser.getQNameIgnoreDefaultNs(EMPTYSTRING);
-	}
+        final String name = getAttribute("name");
+        if (name.length() > 0) {
+            if (!XMLChar.isValidQName(name)){
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
+                parser.reportError(Constants.ERROR, err);           
+            }
+        }
+        _name = parser.getQNameIgnoreDefaultNs(name);
+        if (_name == null) {
+            _name = parser.getQNameIgnoreDefaultNs(EMPTYSTRING);
+        }         
 
 	// Check if a set of symbols has already been registered under this name
 	SymbolTable stable = parser.getSymbolTable();

@@ -24,6 +24,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XMLChar;
 import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
 
@@ -154,45 +155,6 @@ public class ElemElement extends ElemUse
   {
     return Constants.ELEMNAME_ELEMENT_STRING;
   }
-  
-  /**
-   * Validate that the node name is good.
-   * 
-   * @param nodeName Name of the node being constructed, which may be null.
-   * 
-   * @return true if the node name is valid, false otherwise.
-   */
-   protected boolean validateNodeName(String nodeName)
-   {
-    if(nodeName == null)
-      return false;
-
-    int len = nodeName.length();
-    
-    if(len == 0)
-      return false;
-      
-    int indexOfNSSep = nodeName.indexOf(':');
-
-    if(indexOfNSSep + 1 == len)
-      return false;
-      
-    if(indexOfNSSep == 0)
-      return false;
-      
-    String localName = QName.getLocalPart(nodeName);
-      
-    if(isValidNCName(localName))
-    {
-      String prefix = QName.getPrefixPart(nodeName);
-      if(prefix.length() == 0)
-        return true;
-      if(isValidNCName(prefix))
-        return true;
-    }
-
-    return false;
-   }
    
   /**
    * Resolve the namespace into a prefix.  Meant to be
@@ -251,7 +213,7 @@ public class ElemElement extends ElemUse
     String nodeNamespace = "";
 
     // Only validate if an AVT was used.
-    if ((nodeName != null) && (!m_name_avt.isSimple()) && (!validateNodeName(nodeName)))
+    if ((nodeName != null) && (!m_name_avt.isSimple()) && (!XMLChar.isValidQName(nodeName)))
     {
       transformer.getMsgMgr().warn(
         this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,

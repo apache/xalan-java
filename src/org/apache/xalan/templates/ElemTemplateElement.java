@@ -214,37 +214,6 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Validate that the string is an NCName.
-   *
-   * @param s The name in question.
-   * @return True if the string is a valid NCName according to XML rules.
-   * @see <a href="http://www.w3.org/TR/REC-xml-names#NT-NCName">XXX in XSLT Specification</a>
-   */
-  protected boolean isValidNCName(String s)
-  {
-
-    int len = s.length();
-    char c = s.charAt(0);
-
-    if (!(Character.isLetter(c) || (c == '_')))
-      return false;
-
-    if (len > 0)
-    {
-      for (int i = 1; i < len; i++)
-      {
-        c = s.charAt(i);
-
-        if (!(Character.isLetterOrDigit(c) || (c == '_') || (c == '-')
-              || (c == '.')))
-          return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
    * Throw a template element runtime error.  (Note: should we throw a TransformerException instead?)
    *
    * @param msg key of the error that occured.
