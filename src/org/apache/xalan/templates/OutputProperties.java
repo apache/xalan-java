@@ -57,29 +57,22 @@
 package org.apache.xalan.templates;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.io.IOException;
-
-import java.util.Vector;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.util.Enumeration;
+import java.util.Vector;
 
-import java.lang.Cloneable;
-
-import org.w3c.dom.Document;
-
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.WrappedRuntimeException;
-import org.apache.xalan.serialize.Method;
-import org.apache.xalan.extensions.ExtensionHandler;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
-
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.serialize.Method;
+import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.WrappedRuntimeException;
 
 /**
  * This class provides information from xsl:output elements. It is mainly
@@ -1011,62 +1004,10 @@ public class OutputProperties extends ElemTemplateElement
   public void copyFrom(OutputProperties opsrc)
     throws TransformerException
   {
-    checkDuplicates(opsrc);
+   // Bugzilla 6157: recover from xsl:output statements
+    // checkDuplicates(opsrc);
     copyFrom(opsrc.getProperties());
   }
-
-  /**
-   * Check to see if a set of properties is at the same import level as the
-   * last set of properties set that was passed as an argument to this method.
-   * This operation assumes that the OutputProperties are being called
-   * from most important to least important, in document order.
-   *
-   * @param newProps non-null reference to OutputProperties that is about to
-   *                 be added to this set.
-   */
-  private void checkDuplicates(OutputProperties newProps)
-    throws TransformerException
-  {
-
-    if (null == m_propertiesLevels)
-      m_propertiesLevels = new Hashtable();
-
-    // This operation assumes that the OutputProperties are being called 
-    // from most important to least important, in reverse document order.
-
-    int newPrecedence = newProps.getStylesheetComposed().getImportCountComposed();
-
-    Properties p = newProps.getProperties();
-    Enumeration enum = p.keys();
-
-    while (enum.hasMoreElements())
-    {
-      String key = (String) enum.nextElement();
-
-      if (key.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
-        continue;
-
-      // Do we already have this property? Call hashtable operation, 
-      // since we don't want to look at default properties.
-      Integer oldPrecedence = (Integer) m_propertiesLevels.get(key);
-      if (null == oldPrecedence)
-      {
-        m_propertiesLevels.put(key, new Integer(newPrecedence));
-      }
-      else if (newPrecedence >= oldPrecedence.intValue())
-      {
-        String oldValue = (String) this.m_properties.get(key);
-        String newValue = (String) newProps.m_properties.get(key);
-        if ( ((oldValue == null) && (newValue != null)) || !oldValue.equals(newValue) )
-        {
-          String msg = key + " can not be multiply defined at the same "
-                       + "import level! Old value = " 
-                       + oldValue + "; New value = " + newValue;
-          throw new TransformerException(msg, newProps);
-        }
-      }
-    }
-}
 
   /**
    * Report if the key given as an argument is a legal xsl:output key.
