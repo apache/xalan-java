@@ -77,6 +77,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.dom.DOMImpl;
@@ -167,9 +169,11 @@ final public class DefaultRun {
 	    // Transform the document
 	    String encoding = _translet._encoding;
 
-	    DefaultSAXOutputHandler saxHandler = new 
-		DefaultSAXOutputHandler(System.out, encoding);
-	    TextOutput textOutput = new TextOutput(saxHandler);
+	    DefaultSAXOutputHandler saxHandler =
+		new DefaultSAXOutputHandler(System.out, encoding);
+	    TextOutput textOutput =
+		new TextOutput((ContentHandler)saxHandler,
+			       (LexicalHandler)saxHandler, encoding);
 	    translet.transform(dom, textOutput);
 
 	    if (_debug) {

@@ -70,11 +70,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.net.UnknownServiceException;
 
 import java.lang.IllegalArgumentException;
 import java.util.Enumeration;
@@ -83,6 +85,7 @@ import java.util.StringTokenizer;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.ext.LexicalHandler;
 
 import org.w3c.dom.Document;
 
@@ -237,7 +240,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	    }
 	}
 	// If we cannot write to the location specified by the SystemId
-	catch (java.net.UnknownServiceException e) {
+	catch (UnknownServiceException e) {
 	    throw new TransformerException(e);
 	}
 	// If we cannot create a SAX2DOM adapter
@@ -246,7 +249,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		"SAX2DOM adapter could not be created, " + e.getMessage());
 	}
 	// If we cannot create the file specified by the SystemId
-	catch (java.io.IOException e) {
+	catch (IOException e) {
 	    throw new TransformerException(e);
 	}
     }
@@ -367,15 +370,24 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     /**
      * Internal transformation method - uses the internal APIs of XSLTC
      */
-    private void transform(Source src, ContentHandler handler, String encoding)
+    private void transform(Source src, ContentHandler sax, String encoding)
 	throws TransformerException {
 	try {
 	    // Build an iternal DOMImpl from the TrAX Source
 	    DOMImpl dom = getDOM(src, 0);
+
 	    // Pass output properties to the translet
 	    setOutputProperties(_translet, _properties);
-	    // Transform the document
-	    _translet.transform(dom, new TextOutput(handler, _encoding));
+	    
+	    // This handler will post-process the translet output
+	    TextOutput handler;
+
+	    // Check if the ContentHandler also implements LexicalHandler
+	    if (sax instanceof LexicalHandler)
+		handler = new TextOutput(sax, (LexicalHandler)sax, encoding);
+	    else
+		handler = new TextOutput(sax, encoding);
+	    _translet.transform(dom, handler);
 	}
 	catch (TransletException e) {
 	    if (_errorListener != null)
@@ -496,12 +508,11 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 
 	String value = null;
 
-	// First check if the property is overridden in this Transformer
+	// Level1: Check if the property is overridden in this Transformer
 	if (_properties != null) value = _properties.getProperty(name);
 
-	// Then check if it is set in the translet
+	// Level2: Check if the property value is set in the translet
 	if ((value == null) && (_translet != null)) {
-	    // TODO: get propertie value from translet
 	    if (name.equals(OutputKeys.ENCODING))
 		value = _translet._encoding;
 	    else if (name.equals(OutputKeys.METHOD))
@@ -524,7 +535,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		value = _translet._version;
 	}
 
-	// Then return the default values
+	// Level3: Return the default property value
 	if (value == null) {
 	    if (name.equals(OutputKeys.ENCODING))
 		value = "utf-8";

@@ -74,9 +74,9 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
 
-public class DefaultSAXOutputHandler implements ContentHandler, DeclHandler {
+public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 
     // The output writer
     private Writer _writer;
@@ -425,22 +425,45 @@ public class DefaultSAXOutputHandler implements ContentHandler, DeclHandler {
 	// Do nothing
     }
 
-    public void attributeDecl(java.lang.String eName, java.lang.String aName, java.lang.String type, java.lang.String valueDefault, java.lang.String value) {
+    // The above are ignored methods of the org.xml.sax.ext.LexicalHandler intf.
+    public void startCDATA() { }
+    public void endCDATA() { }
+    public void comment(char[] ch, int start, int length) { }
+    public void startEntity(java.lang.String name) { }
+    public void endDTD() { }
+    public void endEntity(String name) { }
 
+    /**
+     * This method is part of the LexicalHandler interface. It is only used to
+     * pass DOCTYPE declarations (based on the doctype-system/public attributes
+     * in the <xsl:output> element) to the output handler.
+     * @param name     The document type name (name of first element)
+     * @param publicId <xsl:output doctype-public="..."/>
+     * @param systemId <xsl:output doctype-system="..."/>
+     * @throws SAXException Whenever
+     */
+    public void startDTD(String name, String publicId, String systemId)
+	throws SAXException {
+	try {
+	    StringBuffer buf = new StringBuffer("<!DOCTYPE ");
+	    buf.append(name);
+	    if (publicId == null) {
+		buf.append(" SYSTEM ");
+	    }
+	    else {
+		buf.append(" PUBLIC \"");
+		buf.append(publicId);
+		buf.append("\" ");
+	    }
+	    buf.append('\"');
+	    buf.append(systemId);
+	    buf.append("\">\n");
+	    _writer.write(buf.toString());
+	}
+        catch (IOException e) {
+            throw new SAXException(e);
+        }
     }
-
-    public void elementDecl(java.lang.String name, java.lang.String model) {
-
-    }
-
-    public void externalEntityDecl(java.lang.String name, java.lang.String publicId, java.lang.String systemId) {
-
-    }
-
-    public void internalEntityDecl(java.lang.String name, java.lang.String value) {
-
-    }
-    
 
     /**
      * Adds a newline in the output stream and indents to correct level

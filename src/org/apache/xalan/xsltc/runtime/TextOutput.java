@@ -69,7 +69,7 @@ import java.util.Stack;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.xsltc.*;
 
@@ -136,7 +136,7 @@ public final class TextOutput implements TransletOutputHandler {
 
     // Reference to the SAX2 handler that consumes this handler's output
     private ContentHandler _saxHandler;
-    private DeclHandler    _declHandler;
+    private LexicalHandler _lexHandler;
 
     /**
      * Creates a new translet output post-processor
@@ -170,11 +170,10 @@ public final class TextOutput implements TransletOutputHandler {
      * @param encoding The default encoding to use (set in <xsl:output>)
      * @throws IOException
      */
-    public TextOutput(ContentHandler saxHandler, DeclHandler declHandler,
-		      String encoding)
+    public TextOutput(ContentHandler sax, LexicalHandler lex, String encoding)
 	throws IOException {
-        _saxHandler = saxHandler;
-	_declHandler = declHandler;
+        _saxHandler = sax;
+	_lexHandler = lex;
         init();
 	_encoding = encoding;
     }
@@ -479,8 +478,8 @@ public final class TextOutput implements TransletOutputHandler {
 	    }
 
 	    // Handle document type declaration (for first element only)
-	    if ((_doctypeSystem != null) && (_declHandler != null)) {
-		// _declHandler.something(something);
+	    if ((_doctypeSystem != null) && (_lexHandler != null)) {
+		_lexHandler.startDTD(elementName,_doctypePublic,_doctypeSystem);
 		_doctypeSystem = null;
 	    }
 

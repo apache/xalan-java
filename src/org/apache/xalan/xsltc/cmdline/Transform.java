@@ -77,6 +77,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
@@ -169,10 +171,14 @@ final public class Transform {
 	    // Transform the document
 	    String encoding = _translet._encoding;
 
-	    //TextOutput textOutput = new TextOutput(System.out, encoding);
-	    DefaultSAXOutputHandler saxHandler = new 
-		DefaultSAXOutputHandler(System.out, encoding);
-	    TextOutput textOutput = new TextOutput(saxHandler);
+	    // Create our default SAX/DTD handler
+	    DefaultSAXOutputHandler saxHandler =
+		new DefaultSAXOutputHandler(System.out, encoding);
+	    // Create a translet output handler and plug in the SAX/DTD handler
+	    TextOutput textOutput =
+		new TextOutput((ContentHandler)saxHandler,
+			       (LexicalHandler)saxHandler, encoding);
+	    // Transform and pass output to the translet output handler
 	    translet.transform(dom, textOutput);
 
 	    if (_debug) {

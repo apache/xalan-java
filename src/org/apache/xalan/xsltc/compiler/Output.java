@@ -233,7 +233,7 @@ final class Output extends TopLevelElement {
 	}
 
 	// Set system/public doctype only if both are set
-	if ((_doctypePublic != null) && (_doctypeSystem != null)) {
+	if (_doctypeSystem != null) {
 	    field = cpg.addFieldref(TRANSLET_CLASS,"_doctypeSystem",STRING_SIG);
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, _doctypeSystem));
