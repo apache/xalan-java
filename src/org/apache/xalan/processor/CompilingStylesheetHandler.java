@@ -107,6 +107,12 @@ import org.apache.xml.utils.synthetic.JavaUtils;
 public class CompilingStylesheetHandler
   extends StylesheetHandler
 {
+	/** Constants for the "maythrow" field (gates whether catch
+	 * statements are generated):
+	 */
+	final int MAY_THROW_SAX_EXCEPTION=0x01;
+	
+	
   /**
    * Create a StylesheetHandler object, creating a root stylesheet 
    * as the target.
@@ -432,15 +438,16 @@ public class CompilingStylesheetHandler
     return instance;
   }
   
-  void compileElemTemplateElement(ElemTemplateElement kid,StringBuffer body,Vector interpretVector)
+  int compileElemTemplateElement(ElemTemplateElement kid,StringBuffer body,Vector interpretVector)
   {
+	int maythrow=0;  
     ++uniqueVarSuffix; // Maintain unique variable naming
       
         switch(kid.getXSLToken())
         {
         case Constants.ELEMNAME_LITERALRESULT:
-        compileElemLiteralResult((ElemLiteralResult)kid,body,interpretVector);
-                break;
+			maythrow=compileElemLiteralResult((ElemLiteralResult)kid,body,interpretVector);
+            break;
 
 	// TODO: ***** Redirection of attr value not working yet.
 	// TODO: ***** Attrs should be preprocessed (SAX-ordered)
@@ -459,10 +466,14 @@ public class CompilingStylesheetHandler
             );
                 break;
         }
+		
+		return maythrow;
   }  
   
-  void compileElemLiteralResult(ElemLiteralResult ele,StringBuffer body,Vector interpretVector)
+  int compileElemLiteralResult(ElemLiteralResult ele,StringBuffer body,Vector interpretVector)
   {
+	int maythrow=0;
+	
     ++uniqueVarSuffix; // Maintain unique variable naming
       
     body.append("rhandler.startElement(\""
@@ -561,7 +572,9 @@ public class CompilingStylesheetHandler
 
     // Process children
     // TODO:***** "Process m_extensionElementPrefixes && m_attributeSetsNames"
-    
+
+	// TODO: Should maythrow be passed outward, unwinding try/catch?
+	// maythrow !=
     compileChildTemplates(ele,body,interpretVector);
 
     // Close the patient
@@ -571,6 +584,8 @@ public class CompilingStylesheetHandler
                 +ele.getRawName()+"\");\n");
     if(newNSlevel)
         body.append("nsSupport.popContext();\n");
+	
+	return maythrow | MAY_THROW_SAX_EXCEPTION;
   }
 
   // Detect and report AttributeSet loops.
@@ -850,6 +865,8 @@ public class CompilingStylesheetHandler
   
   void compileChildTemplates(ElemTemplateElement source,StringBuffer body,Vector interpretVector)
   {      
+    int maythrow=0;
+	
     ++uniqueVarSuffix; // Maintain unique variable naming
       
     // If no kids, no code gen.
@@ -879,23 +896,32 @@ public class CompilingStylesheetHandler
           kid!=null;
           kid=kid.getNextSiblingElem())
          {
-	   //TODO: NEED EQUIVALENT? This Node is Going Away...
-	   // body.append("transformer.pushElemTemplateElement(kid);\n");
-           compileElemTemplateElement(kid,body,interpretVector);
+			//TODO: NEED EQUIVALENT? This Node is Going Away...
+			// body.append("transformer.pushElemTemplateElement(kid);\n");
+		  
+			maythrow|=compileElemTemplateElement(kid,body,interpretVector);
 
-	   //TODO: NEED EQUIVALENT? This Node is Going Away...
-	   // body.append("transformer.popElemTemplateElement(kid);\n");
+			//TODO: NEED EQUIVALENT? This Node is Going Away...
+			// body.append("transformer.popElemTemplateElement(kid);\n");
          }
 
-     // End the class wrapper
-     body.append(
-        "\n\n}\nfinally {\n"
+	  // End the class wrapper. 
+	  // TODO: Should "maythrow" be returned and processed @ outermost compile?
+	  body.append("\n\n}\n");
+	  if(0!=(maythrow & MAY_THROW_SAX_EXCEPTION))
+		body.append("catch(org.xml.sax.SAXException se) {\n"
+					+"  throw new javax.xml.transform.TransformerException(se);\n"
+					+"}\n"
+					);
+      body.append(
+		"finally {\n"
         +"  xctxt.setSAXLocator("+savedLocatorName+");\n"
         +"  // Pop all the variables in this element frame.\n"
         +"  "+varstackName+".popElemFrame();\n"
         +"}\n"
         );
     }
+
   }
  
   
