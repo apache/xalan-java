@@ -30,7 +30,7 @@
     transformer.</p>
     <p>&xslt4j; includes the JAXP packages, implements the TrAX portion of that API (javax.xml.transform....), and includes xerces.jar from
     &xml4j;, which implements the parser portion of the API (javax.xml.parser....).</p>
-<p>For more information, see <resource-ref idref="trax"/> and <resource-ref idref="jaxp11"/>.</p></a>
+<p>For more information, see <link idref="trax">TRaX (Transformation API for XML)</link> and <resource-ref idref="jaxp11"/>.</p></a>
   </faq>
   <faq title="Chaining transformations">  
     <q>How do you chain together a series of transformations?"</q>
@@ -165,6 +165,18 @@
         should be able to 'verify the signature' of the .sig file, which basically verifies that the corresponding 
         .zip or tar.gz file has not been changed since we signed it.</p>
       </a>
+    </faq>
+    <faq title="Setting output encoding">
+    <q>Why is the output character encoding I set in the stylesheet not being used?</q>
+    <a>
+    <p>If you use a character output stream to instantiate the 
+    <jump href="apidocs/javax/xml/transform/stream/StreamResult.html">StreamResult</jump> object which holds the 
+    transformation output, the Writer uses its own encoding, not the encoding you specify
+    in the stylesheet.</p>
+    <p>If you want to use the stylesheet output encoding, do not use StreamResult(java.io.Writer) to
+    instantiate the holder for the output. Alternatively, you can specify the encoding when you create a Writer 
+    (java.io.OutputStreamWriter). Once the Writer exists, you cannot change its encoding.</p>
+    </a>
     </faq>
 
 </faqs>
