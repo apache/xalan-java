@@ -1949,6 +1949,37 @@ public class ElemNumber extends ElemTemplateElement
 
     return roman;
   }  // end long2roman
+  
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  public void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+  {
+  	if(callAttrs)
+  	{
+	  	if(null != m_countMatchPattern)
+	  		m_countMatchPattern.getExpression().callVisitors(m_countMatchPattern, visitor);
+	  	if(null != m_fromMatchPattern)
+	  		m_fromMatchPattern.getExpression().callVisitors(m_fromMatchPattern, visitor);
+	  	if(null != m_valueExpr)
+	  		m_valueExpr.getExpression().callVisitors(m_valueExpr, visitor);
+	
+	  	if(null != m_format_avt)
+	  		m_format_avt.callVisitors(visitor);
+	  	if(null != m_groupingSeparator_avt)
+	  		m_groupingSeparator_avt.callVisitors(visitor);
+	  	if(null != m_groupingSize_avt)
+	  		m_groupingSize_avt.callVisitors(visitor);
+	  	if(null != m_lang_avt)
+	  		m_lang_avt.callVisitors(visitor);
+	  	if(null != m_lettervalue_avt)
+	  		m_lettervalue_avt.callVisitors(visitor);
+  	}
+
+    super.callChildVisitors(visitor, callAttrs);
+  }
+
 
   /**
    * This class returns tokens using non-alphanumberic
@@ -2101,4 +2132,5 @@ public class ElemNumber extends ElemTemplateElement
       return count;
     }
   }  // end NumberFormatStringTokenizer
+
 }

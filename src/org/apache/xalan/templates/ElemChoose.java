@@ -141,6 +141,11 @@ public class ElemChoose extends ElemTemplateElement
         // must be xsl:when
         XPathContext xctxt = transformer.getXPathContext();
         int sourceNode = xctxt.getCurrentNode();
+        
+        // System.err.println("\""+when.getTest().getPatternString()+"\"");
+        
+        // if(when.getTest().getPatternString().equals("COLLECTION/icuser/ictimezone/LITERAL='GMT +13:00 Pacific/Tongatapu'"))
+        // 	System.err.println("Found COLLECTION/icuser/ictimezone/LITERAL");
 
         if (TransformerImpl.S_DEBUG)
         {
@@ -216,4 +221,14 @@ public class ElemChoose extends ElemTemplateElement
 
     return super.appendChild(newChild);
   }
+  
+  /**
+   * Tell if this element can accept variable declarations.
+   * @return true if the element can accept and process variable declarations.
+   */
+  public boolean canAcceptVariables()
+  {
+  	return false;
+  }
+
 }

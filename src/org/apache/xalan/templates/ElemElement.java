@@ -271,8 +271,6 @@ public class ElemElement extends ElemUse
    * for the attributes and children of the created element.
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -430,4 +428,23 @@ public class ElemElement extends ElemUse
       throw new TransformerException(se);
     }
   }
+  
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+  {
+  	if(callAttrs)
+  	{
+  	  if(null != m_name_avt)
+  		m_name_avt.callVisitors(visitor);
+  		
+  	  if(null != m_namespace_avt)
+  		m_namespace_avt.callVisitors(visitor);
+  	}
+  		
+    super.callChildVisitors(visitor, callAttrs);
+  }
+
 }

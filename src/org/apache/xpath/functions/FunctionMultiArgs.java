@@ -56,7 +56,12 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.Vector;
+
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.functions.Function3Args.Arg2Owner;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -104,6 +109,7 @@ public class FunctionMultiArgs extends Function3Args
         args[m_args.length] = arg;
         m_args = args;
       }
+      arg.exprSetParent(this);
     }
   }
   
@@ -163,4 +169,79 @@ public class FunctionMultiArgs extends Function3Args
       return false;
     }
   }
+  
+  class ArgMultiOwner implements ExpressionOwner
+  {
+  	int m_argIndex;
+  	
+  	ArgMultiOwner(int index)
+  	{
+  		m_argIndex = index;
+  	}
+  	
+    /**
+     * @see ExpressionOwner#getExpression()
+     */
+    public Expression getExpression()
+    {
+      return m_args[m_argIndex];
+    }
+
+
+    /**
+     * @see ExpressionOwner#setExpression(Expression)
+     */
+    public void setExpression(Expression exp)
+    {
+    	exp.exprSetParent(FunctionMultiArgs.this);
+    	m_args[m_argIndex] = exp;
+    }
+  }
+
+   
+    /**
+     * @see XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+     */
+    public void callArgVisitors(XPathVisitor visitor)
+    {
+      super.callArgVisitors(visitor);
+      if (null != m_args)
+      {
+        int n = m_args.length;
+        for (int i = 0; i < n; i++)
+        {
+          m_args[i].callVisitors(new ArgMultiOwner(i), visitor);
+        }
+      }
+    }
+    
+    /**
+     * @see Expression#deepEquals(Expression)
+     */
+    public boolean deepEquals(Expression expr)
+    {
+      if (!super.deepEquals(expr))
+            return false;
+
+      FunctionMultiArgs fma = (FunctionMultiArgs) expr;
+      if (null != m_args)
+      {
+        int n = m_args.length;
+        if ((null == fma) || (fma.m_args.length != n))
+              return false;
+
+        for (int i = 0; i < n; i++)
+        {
+          if (!m_args[i].deepEquals(fma.m_args[i]))
+                return false;
+        }
+
+      }
+      else if (null != fma.m_args)
+      {
+          return false;
+      }
+
+      return true;
+    }
 }

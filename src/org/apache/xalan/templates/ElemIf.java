@@ -119,7 +119,7 @@ public class ElemIf extends ElemTemplateElement
    * values that may be based on some other property that
    * depends on recomposition.
    *
-   * NEEDSDOC @param sroot
+   * @param sroot The root stylesheet.
    *
    * @throws TransformerException
    */
@@ -200,4 +200,16 @@ public class ElemIf extends ElemTemplateElement
       transformer.executeChildTemplates(this, true);
     }
   }
+  
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+  {
+  	if(callAttrs)
+  		m_test.getExpression().callVisitors(m_test, visitor);
+    super.callChildVisitors(visitor, callAttrs);
+  }
+
 }

@@ -978,11 +978,14 @@ public class ResultTreeHandler extends QueuedEvents
     int doc = obj.rtf();
     DTM dtm = support.getDTM(doc);
 
-    for (int n = dtm.getFirstChild(doc); DTM.NULL != n;
-            n = dtm.getNextSibling(n))
+    if(null != dtm)
     {
-      flushPending(true);  // I think.
-      dtm.dispatchToEvents(n, this);
+	    for (int n = dtm.getFirstChild(doc); DTM.NULL != n;
+	            n = dtm.getNextSibling(n))
+	    {
+	      flushPending(true);  // I think.
+	      dtm.dispatchToEvents(n, this);
+	    }
     }
   }
 

@@ -465,13 +465,14 @@ public class XSLTAttributeDef
    * in the attribute value template string.
    */
   AVT processAVT(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
+          StylesheetHandler handler, String uri, String name, String rawName, String value,
+          ElemTemplateElement owner)
             throws org.xml.sax.SAXException
   {
 
     try
     {
-      AVT avt = new AVT(handler, uri, name, rawName, value);
+      AVT avt = new AVT(handler, uri, name, rawName, value, owner);
 
       return avt;
     }
@@ -566,13 +567,14 @@ public class XSLTAttributeDef
    * string contains a syntax error.
    */
   Object processEXPR(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
+          StylesheetHandler handler, String uri, String name, String rawName, String value,
+          ElemTemplateElement owner)
             throws org.xml.sax.SAXException
   {
 
     try
     {
-      XPath expr = handler.createXPath(value);
+      XPath expr = handler.createXPath(value, owner);
 
       return expr;
     }
@@ -618,13 +620,14 @@ public class XSLTAttributeDef
    * string contains a syntax error.
    */
   Object processPATTERN(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
+          StylesheetHandler handler, String uri, String name, String rawName, String value,
+          ElemTemplateElement owner)
             throws org.xml.sax.SAXException
   {
 
     try
     {
-      XPath pattern = handler.createMatchPatternXPath(value);
+      XPath pattern = handler.createMatchPatternXPath(value, owner);
 
       return pattern;
     }
@@ -741,7 +744,8 @@ public class XSLTAttributeDef
    * strings contains a syntax error.
    */
   Vector processSIMPLEPATTERNLIST(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
+          StylesheetHandler handler, String uri, String name, String rawName, String value,
+          ElemTemplateElement owner)
             throws org.xml.sax.SAXException
   {
 
@@ -754,7 +758,7 @@ public class XSLTAttributeDef
       for (int i = 0; i < nPatterns; i++)
       {
         XPath pattern =
-          handler.createMatchPatternXPath(tokenizer.nextToken());
+          handler.createMatchPatternXPath(tokenizer.nextToken(), owner);
 
         patterns.addElement(pattern);
       }
@@ -895,7 +899,8 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException if the attribute value can not be processed.
    */
   Object processValue(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
+          StylesheetHandler handler, String uri, String name, String rawName, String value,
+          ElemTemplateElement owner)
             throws org.xml.sax.SAXException
   {
 
@@ -905,7 +910,7 @@ public class XSLTAttributeDef
     switch (type)
     {
     case T_AVT :
-      processedValue = processAVT(handler, uri, name, rawName, value);
+      processedValue = processAVT(handler, uri, name, rawName, value, owner);
       break;
     case T_CDATA :
       processedValue = processCDATA(handler, uri, name, rawName, value);
@@ -917,13 +922,13 @@ public class XSLTAttributeDef
       processedValue = processENUM(handler, uri, name, rawName, value);
       break;
     case T_EXPR :
-      processedValue = processEXPR(handler, uri, name, rawName, value);
+      processedValue = processEXPR(handler, uri, name, rawName, value, owner);
       break;
     case T_NMTOKEN :
       processedValue = processNMTOKEN(handler, uri, name, rawName, value);
       break;
     case T_PATTERN :
-      processedValue = processPATTERN(handler, uri, name, rawName, value);
+      processedValue = processPATTERN(handler, uri, name, rawName, value, owner);
       break;
     case T_PRIORITY :
       processedValue = processPRIORITY(handler, uri, name, rawName, value);
@@ -936,7 +941,7 @@ public class XSLTAttributeDef
       break;
     case T_SIMPLEPATTERNLIST :
       processedValue = processSIMPLEPATTERNLIST(handler, uri, name, rawName,
-                                                value);
+                                                value, owner);
       break;
     case T_URL :
       processedValue = processURL(handler, uri, name, rawName, value);
@@ -966,7 +971,7 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException wraps an invocation exception if the
    * setter method can not be invoked on the object.
    */
-  void setDefAttrValue(StylesheetHandler handler, Object elem)
+  void setDefAttrValue(StylesheetHandler handler, ElemTemplateElement elem)
           throws org.xml.sax.SAXException
   {
     setAttrValue(handler, this.getNamespace(), this.getName(),
@@ -1042,7 +1047,8 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException
    */
   void setAttrValue(
-          StylesheetHandler handler, String attrUri, String attrLocalName, String attrRawName, String attrValue, Object elem)
+          StylesheetHandler handler, String attrUri, String attrLocalName, 
+          String attrRawName, String attrValue, ElemTemplateElement elem)
             throws org.xml.sax.SAXException
   {
     if(attrRawName.equals("xmlns") || attrRawName.startsWith("xmlns:"))
@@ -1076,7 +1082,7 @@ public class XSLTAttributeDef
         else
         {
           Object value = processValue(handler, attrUri, attrLocalName,
-                                      attrRawName, attrValue);
+                                      attrRawName, attrValue, elem);
                                       
           // First try to match with the primative value.
           Class[] argTypes = new Class[]{ getPrimativeClass(value) };

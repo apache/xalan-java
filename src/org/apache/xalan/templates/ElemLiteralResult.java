@@ -737,4 +737,36 @@ public class ElemLiteralResult extends ElemUse
   {
     return (null == m_avts) ? null : m_avts.elements();
   }
+  
+    /**
+     * Accept a visitor and call the appropriate method 
+     * for this class.
+     * 
+     * @param visitor The visitor whose appropriate method will be called.
+     * @return true if the children of the object should be visited.
+     */
+    protected boolean accept(XSLTVisitor visitor)
+    {
+      return visitor.visitLiteralResultElement(this);
+    }
+
+    /**
+     * Call the children visitors.
+     * @param visitor The visitor whose appropriate method will be called.
+     */
+    protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+    {
+      if (callAttrs && null != m_avts)
+      {
+        int nAttrs = m_avts.size();
+
+        for (int i = (nAttrs - 1); i >= 0; i--)
+        {
+          AVT avt = (AVT) m_avts.elementAt(i);
+          avt.callVisitors(visitor);
+        }
+      }
+      super.callChildVisitors(visitor, callAttrs);
+    }
+
 }

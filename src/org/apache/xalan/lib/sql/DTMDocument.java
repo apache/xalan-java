@@ -1469,8 +1469,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
     return super._firstch( parm1);
   }
 
-  /** This call should follow DOM semantics, where the owner of a Document node
-   * is null.
+  /**
    * @param parm1
    * @return
    */
@@ -1478,17 +1477,6 @@ public class DTMDocument extends DTMDefaultBaseIterators
   {
     if (DEBUG) System.out.println("getOwnerDoc("+parm1+")");
     return super.getOwnerDocument( parm1);
-  }
-
-  /** This call should follow DTM semantics, where the owner of a Document node
-   * is itself.
-   * @param parm1
-   * @return
-   */
-  public int getDocumentRoot( int parm1 )
-  {
-    if (DEBUG) System.out.println("getOwnerDoc("+parm1+")");
-    return super.getDocumentRoot( parm1);
   }
 
   /**

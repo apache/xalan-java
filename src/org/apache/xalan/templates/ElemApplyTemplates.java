@@ -267,15 +267,20 @@ public class ElemApplyTemplates extends ElemCallTemplate
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
       if (TransformerImpl.S_DEBUG)
+      {
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
+      }
 
       final ResultTreeHandler rth = transformer.getResultTreeHandler();
       ContentHandler chandler = rth.getContentHandler();
       final StylesheetRoot sroot = transformer.getStylesheet();
       final TemplateList tl = sroot.getTemplateListComposed();
       final boolean quiet = transformer.getQuietConflictWarnings();
+      
+      // Should be able to get this from the iterator but there must be a bug.
+      DTM dtm = xctxt.getDTM(sourceNode);
       
       int argsFrame = -1;
       if(nParams > 0)
@@ -308,11 +313,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
       xctxt.pushContextNodeList(sourceNodes);
       transformer.pushElemTemplateElement(null);
       // pushParams(transformer, xctxt);
-
-      // Should be able to get this from the iterator but there must be a bug.
-      DTM dtm = xctxt.getDTM(sourceNode);
-      
-      
       
       int child;
       while (DTM.NULL != (child = sourceNodes.nextNode()))

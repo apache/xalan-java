@@ -219,7 +219,7 @@ public class TraceManager
     {
       Node source = m_transformer.getXPathContext().getDTM(
         sourceNode).getNode(sourceNode);
-
+        
       fireSelectedEvent(new SelectionEvent(m_transformer, source, styleNode,
                                            attributeName, xpath, selection));
     }
@@ -246,7 +246,7 @@ public class TraceManager
     {
       Node source = m_transformer.getXPathContext().getDTM(
         sourceNode).getNode(sourceNode);
-
+        
       fireSelectedEndEvent(new EndSelectionEvent(m_transformer, source, styleNode,
                                            attributeName, xpath, selection));
     }

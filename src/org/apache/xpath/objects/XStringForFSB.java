@@ -68,7 +68,6 @@ import java.util.Locale;
  */
 public class XStringForFSB extends XString
 {
-  static long MAX_NO_OVERFLOW_RISK=(Long.MAX_VALUE-'9')/10;
 
   /** The start position in the fsb. */
   int m_start;
@@ -372,6 +371,8 @@ public class XStringForFSB extends XString
     {
       return true;
     }
+    if(obj2.getType() == XObject.CLASS_NUMBER)
+    	return obj2.equals(this);
 
     String str = obj2.str();
     int n = m_length;
@@ -458,6 +459,9 @@ public class XStringForFSB extends XString
 
     if (null == obj2)
       return false;
+      
+    if(obj2 instanceof XNumber)
+    	return obj2.equals(this);
 
       // In order to handle the 'all' semantics of 
       // nodeset comparisons, we always call the 
@@ -979,8 +983,6 @@ public class XStringForFSB extends XString
    * the performance of this operation. Does XString.toDouble constitute
    * any measurable percentage of our typical runtime? I suspect not!
    *
-   * %REVIEW%
-   *
    * @return A double value representation of the string, or return Double.NaN 
    * if the string can not be converted.  */
   public double toDouble()
@@ -998,7 +1000,6 @@ public class XStringForFSB extends XString
     int[] digitsFound={0,0}; // intpart,fracpart
     int digitType=0;    // Index to which kind of digit we're accumulating
     double doubleResult;
-    int overflow=0;
     
     // Scan past leading whitespace characters
     while(start< end &&
@@ -1044,21 +1045,8 @@ public class XStringForFSB extends XString
       case '7':
       case '8':
       case '9':
-	// We have a potential overflow issue that we need
-	// to guard against. See Bugzilla 5346.
-	//
-	// %REVIEW% MUST BE RECONSIDERED. I _think_ the truncation of
-	// the 64-bit long before it overflows is well within the acceptable
-	// error range of the double's 53-bit mantissa...
-	if(longResult>MAX_NO_OVERFLOW_RISK)
-	{
-	  if(digitType==0) ++overflow;
-	}
-	else
-	{
-	  longResult=longResult*10 + (c - '0');
-	  ++digitsFound[digitType]; // Remember scaling
-	}
+        longResult = longResult * 10 + (c - '0'); // Accumulate as int
+        ++digitsFound[digitType]; // Remember scaling
 	break;
 
       default:
@@ -1076,34 +1064,10 @@ public class XStringForFSB extends XString
     // the same thing.
                 
     long scale=1;               // AFAIK, java doesn't have an easier 10^n operation
-    
-    doubleResult=(double)longResult;
-    if(digitsFound[1]==0)		// Integer overflow scaling
-    {
-	    for(int i=overflow;i>0;--i) 
- 		     scale*=10;
-	 	doubleResult*=scale;
-    }
-    else 						// Fractional-part scaling
-    {
-    	// Complication: In values <0, the fractional part may want to be divided
-    	// by a power of 10 too large to fit in a long! In that case, resort to 
-    	// successive divisions. 
-    	//
-    	// %REVIEW% This can't be an optimal solution. Need a better algorithm.
- 	    int i=digitsFound[1];
- 	    while(i>0)
- 	    {
- 	    	int j=(i<18) ? i : 18;
- 	    	i-=j;
- 	    	
-		    for(scale=1;j>0;--j) 
-		    	scale*=10;
- 	     
-		    doubleResult/=scale;
- 	    }
-    }
-
+    for(int i=digitsFound[1];i>0;--i) 
+      scale*=10;
+                
+    doubleResult=((double)longResult)/scale;
                 
     if(isNegative)
       doubleResult *= -1;

@@ -62,6 +62,7 @@ import org.apache.xml.dtm.DTM;
 import org.xml.sax.*;
 
 import org.apache.xpath.*;
+import org.apache.xpath.Expression;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -466,6 +467,45 @@ public class ElemVariable extends ElemTemplateElement
   {
     super.setParentElem(p);
     p.m_hasVariableDecl = true;
+  }
+  
+  /**
+   * Accept a visitor and call the appropriate method 
+   * for this class.
+   * 
+   * @param visitor The visitor whose appropriate method will be called.
+   * @return true if the children of the object should be visited.
+   */
+  protected boolean accept(XSLTVisitor visitor)
+  {
+  	return visitor.visitVariableOrParamDecl(this);
+  }
+
+  
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+  {
+  	if(null != m_selectPattern)
+  		m_selectPattern.getExpression().callVisitors(m_selectPattern, visitor);
+    super.callChildVisitors(visitor, callAttrs);
+  }
+  
+  /**
+   * Tell if this is a psuedo variable reference, declared by Xalan instead 
+   * of by the user.
+   */
+  public boolean isPsuedoVar()
+  {
+  	java.lang.String ns = m_qname.getNamespaceURI();
+  	if((null != ns) && ns.equals(RedundentExprEliminator.PSUEDOVARNAMESPACE))
+  	{
+  		if(m_qname.getLocalName().startsWith("#"))
+  			return true;
+  	}
+  	return false;
   }
 
 }

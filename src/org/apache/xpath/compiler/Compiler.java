@@ -112,20 +112,13 @@ public class Compiler extends OpMap
    * @param errorHandler Error listener where messages will be sent, or null 
    *                     if messages should be sent to System err.
    * @param locator The location object where the expression lives, which 
-   *                may be null.
+   *                may be null, but which, if not null, must be valid over 
+   *                the long haul, in other words, it will not be cloned.
    */
   public Compiler(ErrorListener errorHandler, SourceLocator locator)
   {
     m_errorHandler = errorHandler;
-    if(null != locator)
-    {
-      SAXSourceLocator ssl = new SAXSourceLocator();
-      ssl.setColumnNumber(locator.getColumnNumber());
-      ssl.setLineNumber(locator.getLineNumber());
-      ssl.setPublicId(locator.getPublicId());
-      ssl.setSystemId(locator.getSystemId());
-      m_locator = ssl;
-    }
+    m_locator = locator;
   }
 
   /**
@@ -229,8 +222,8 @@ public class Compiler extends OpMap
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
             new Object[]{ Integer.toString(m_opMap[opPos]) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
     }
-    if(null != expr)
-      expr.setSourceLocator(m_locator);
+//    if(null != expr)
+//      expr.setSourceLocator(m_locator);
 
     return expr;
   }
@@ -631,7 +624,7 @@ public class Compiler extends OpMap
    * 
    * @param opPos The current position in the m_opMap array.
    *
-   * @return reference to {@link org.apache.xpath.axes.UnionPathIterator} instance.
+   * @return reference to {@link org.apache.xpath.axes.LocPathIterator} instance.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
@@ -640,7 +633,7 @@ public class Compiler extends OpMap
     locPathDepth++;
     try
     {
-      return new UnionPathIterator(this, opPos);
+      return UnionPathIterator.createUnionIterator(this, opPos);
     }
     finally
     {

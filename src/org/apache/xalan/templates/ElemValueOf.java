@@ -355,4 +355,16 @@ public class ElemValueOf extends ElemTemplateElement
     //" to " + this.m_elemName);
     return null;
   }
+  
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+  {
+  	if(callAttrs)
+  		m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
+    super.callChildVisitors(visitor, callAttrs);
+  }
+
 }

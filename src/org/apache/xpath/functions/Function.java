@@ -58,12 +58,12 @@ package org.apache.xpath.functions;
 
 //import org.w3c.dom.Node;
 
-import java.util.Vector;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -127,5 +127,35 @@ public abstract class Function extends Expression
     return null;
   }
   
+  /**
+   * Call the visitors for the function arguments.
+   */
+  public void callArgVisitors(XPathVisitor visitor)
+  {
+  }
+
+  
+  /**
+   * @see XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+   */
+  public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
+  {
+  	if(visitor.visitFunction(owner, this))
+  	{
+  		callArgVisitors(visitor);
+  	}
+  }
+  
+  /**
+   * @see Expression#deepEquals(Expression)
+   */
+  public boolean deepEquals(Expression expr)
+  {
+  	if(!isSameClass(expr))
+  		return false;
+  		
+  	return true;
+  }
+
 
 }

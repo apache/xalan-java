@@ -79,7 +79,7 @@ import java.util.Vector;
  * processors, and deals with things that are common to all elements.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  */
-public class XSLTElementProcessor
+public class XSLTElementProcessor extends ElemTemplateElement
 {
 
   /**
@@ -305,7 +305,8 @@ public class XSLTElementProcessor
    * @param target The target element where the properties will be set.
    */
   void setPropertiesFromAttributes(
-          StylesheetHandler handler, String rawName, Attributes attributes, Object target)
+          StylesheetHandler handler, String rawName, Attributes attributes, 
+          ElemTemplateElement target)
             throws org.xml.sax.SAXException
   {
     setPropertiesFromAttributes(handler, rawName, attributes, target, true);
@@ -326,7 +327,8 @@ public class XSLTElementProcessor
    * @throws TransformerException
    */
   Attributes setPropertiesFromAttributes(
-          StylesheetHandler handler, String rawName, Attributes attributes, Object target, boolean throwError)
+          StylesheetHandler handler, String rawName, Attributes attributes, 
+          ElemTemplateElement target, boolean throwError)
             throws org.xml.sax.SAXException
   {
 

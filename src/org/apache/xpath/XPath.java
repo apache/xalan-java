@@ -56,48 +56,31 @@
  */
 package org.apache.xpath;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.traversal.NodeIterator;
-//import org.w3c.dom.DocumentFragment;
-
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-
+import java.io.Serializable;
 import java.util.Vector;
 
-import java.io.Serializable;
-import java.io.ObjectInputStream;
-import java.io.IOException;
-
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.QName;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.functions.Function;
-
-// import org.apache.xpath.functions.FuncLoader;
-import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.compiler.OpMap;  // temp
-import org.apache.xpath.compiler.OpCodes;  // temp
-import org.apache.xpath.compiler.PsuedoNames;  // temp
-import org.apache.xpath.compiler.FunctionTable;  // temp
-import org.apache.xpath.objects.XObject;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.objects.*;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xpath.patterns.NodeTest;
+import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.w3c.dom.Node;
 
 /**
  * <meta name="usage" content="advanced"/>
  * The XPath class wraps an expression object and provides general services 
  * for execution of that expression.
  */
-public class XPath implements Serializable
+public class XPath implements Serializable, ExpressionOwner
 {
 
   /** The top of the expression tree. 
@@ -138,6 +121,8 @@ public class XPath implements Serializable
    */
   public void setExpression(Expression exp)
   {
+  	if(null != m_mainExp)
+    	exp.exprSetParent(m_mainExp.exprGetParent()); // a bit bogus
     m_mainExp = exp;
   }
 
@@ -149,21 +134,21 @@ public class XPath implements Serializable
    */
   public SourceLocator getLocator()
   {
-    return m_mainExp.m_slocator;
+    return m_mainExp;
   }
 
-  /**
-   * Set the SourceLocator on the expression object.
-   *
-   *
-   * @param l the SourceLocator on the expression object, which may be null.
-   */
-  public void setLocator(SourceLocator l)
-  {
-    // Note potential hazards -- l may not be serializable, or may be changed
-      // after being assigned here.
-    m_mainExp.setSourceLocator(l);
-  }
+//  /**
+//   * Set the SourceLocator on the expression object.
+//   *
+//   *
+//   * @param l the SourceLocator on the expression object, which may be null.
+//   */
+//  public void setLocator(SourceLocator l)
+//  {
+//    // Note potential hazards -- l may not be serializable, or may be changed
+//      // after being assigned here.
+//    m_mainExp.setSourceLocator(l);
+//  }
 
   /** The pattern string, mainly kept around for diagnostic purposes.
    *  @serial  */
@@ -225,6 +210,11 @@ public class XPath implements Serializable
 
     // System.out.println("expr: "+expr);
     this.setExpression(expr);
+    
+    if((null != locator) && locator instanceof ExpressionNode)
+    {
+    	expr.exprSetParent((ExpressionNode)locator);
+    }
 
   }
   
@@ -574,6 +564,20 @@ public class XPath implements Serializable
                          + "; line " + slocator.getLineNumber() + "; column "
                          + slocator.getColumnNumber());
     }
+  }
+  
+  /**
+   * This will traverse the heararchy, calling the visitor for 
+   * each member.  If the called visitor method returns 
+   * false, the subtree should not be called.
+   * 
+   * @param owner The owner of the visitor, where that path may be 
+   *              rewritten if needed.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
+  {
+  	m_mainExp.callVisitors(this, visitor);
   }
 
   /**
