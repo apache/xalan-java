@@ -59,11 +59,6 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xml.dtm.DTM;
 
-/**
- * @author Jacek Ambroziak
- * @author Santiago Pericas-Geertsen
- * @author Morten Jorgensen
- */
 public final class Stylesheet extends SyntaxTreeNode {
 
     /**
@@ -153,7 +148,13 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Import precendence for this stylesheet.
      */
     private int _importPrecedence = 1;
-    
+
+    /**
+     * Minimum precendence of any descendant stylesheet by inclusion or
+     * importation.
+     */
+    private int _minimumDescendantPrecedence = -1;
+
     /**
      * Mapping between key names and Key objects (needed by Key/IdPattern).
      */
@@ -343,6 +344,35 @@ public final class Stylesheet extends SyntaxTreeNode {
     
     public int getImportPrecedence() {
 	return _importPrecedence;
+    }
+
+    /**
+     * Get the minimum of the precedence of this stylesheet, any stylesheet
+     * imported by this stylesheet and any include/import descendant of this
+     * stylesheet.
+     */
+    public int getMinimumDescendantPrecedence() {
+        if (_minimumDescendantPrecedence == -1) {
+            // Start with precedence of current stylesheet as a basis.
+            int min = getImportPrecedence();
+
+            // Recursively examine all imported/included stylesheets.
+            final int inclImpCount = (_includedStylesheets != null)
+                                          ? _includedStylesheets.size()
+                                          : 0;
+
+            for (int i = 0; i < inclImpCount; i++) {
+                int prec = ((Stylesheet)_includedStylesheets.elementAt(i))
+                                              .getMinimumDescendantPrecedence();
+
+                if (prec < min) {
+                    min = prec;
+                }
+            }
+
+            _minimumDescendantPrecedence = min;
+        }
+        return _minimumDescendantPrecedence;
     }
 
     public boolean checkForLoop(String systemId) {
