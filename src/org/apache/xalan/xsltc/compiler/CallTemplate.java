@@ -184,17 +184,10 @@ final class CallTemplate extends Instruction {
      * template is not a simple named template.
      */
     public Template getCalleeTemplate() {
-    	Stylesheet stylesheet = getXSLTC().getStylesheet();
-    	Vector templates = stylesheet.getAllValidTemplates();
-        
-    	int size = templates.size();
-    	for (int i = 0; i < size; i++) {
-    	    Template t = (Template)templates.elementAt(i);
-    	    if (t.getName() == _name && t.isSimpleNamedTemplate()) {
-    	    	return t;
-    	    }
-    	}
-    	return null;
+    	Template foundTemplate
+            = getXSLTC().getParser().getSymbolTable().lookupTemplate(_name);
+
+        return foundTemplate.isSimpleNamedTemplate() ? foundTemplate : null;
     }
     
     /**
