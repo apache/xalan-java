@@ -74,8 +74,6 @@ import java.util.Properties;
 // Needed Xalan classes
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.stree.SourceTreeHandler;
-import org.apache.xalan.transformer.TransformerImpl;
 
 // Needed TRaX classes
 import javax.xml.transform.Result;
@@ -86,9 +84,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Source;
 import javax.xml.transform.Result;
-import javax.xml.transform.sax.TemplatesHandler;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -99,8 +94,8 @@ import javax.xml.transform.stream.StreamSource;
  * <li>Use an &lt;applet&gt; tag to embed this applet in the HTML client.</li>
  * <li>Use the DocumentURL and StyleURL PARAM tags or the {@link #setDocumentURL} and
  * {@link #setStyleURL} methods to specify the XML source document and XSL stylesheet.</li>
- * <li>Call the {@link #transformToHTML} method to perform the transformation and return
- * the result as a String.</li>
+ * <li>Call the {@link #getHtmlText} method (or one of the transformToHtml() methods)
+ * to perform the transformation and return the result as a String.</li>
  * </ol>
  */
 public class XSLTProcessorApplet extends Applet
@@ -135,10 +130,6 @@ public class XSLTProcessorApplet extends Applet
    */
   private final String PARAM_documentURL = "documentURL";
 
-  /**
-   * @serial
-   */
-
 
   // We'll keep the DOM trees around, so tell which trees
   // are cached.
@@ -158,12 +149,13 @@ public class XSLTProcessorApplet extends Applet
    * @serial
    */
   private URL m_codeBase = null;
+  
+  private String m_treeURL = null;
 
-  /** The base document URL, to resolve relative URLs.     */
+  /** 
+   * DocumentBase URL       
+   */
   private URL m_documentBase = null;
-
-  /** The stylesheet object.  */
-  private Templates m_styleTree = null;
 
   /**
    * Thread stuff for the trusted worker thread.
@@ -175,6 +167,7 @@ public class XSLTProcessorApplet extends Applet
   transient private TrustedAgent m_trustedAgent = null;
 
   /**
+   * Thread for running TrustedAgent.
    */
   transient private Thread m_trustedWorker = null;
 
@@ -182,7 +175,12 @@ public class XSLTProcessorApplet extends Applet
    * Where the worker thread puts the HTML text.
    */
   transient private String m_htmlText = null;
-
+  
+  /**
+   * Where the worker thread puts the document/stylesheet text.
+   */
+  transient private String m_sourceText = null;
+  
   /**
    * Stylesheet attribute name and value that the caller can set.
    */
@@ -278,19 +276,16 @@ public class XSLTProcessorApplet extends Applet
   {
 
     m_trustedAgent = new TrustedAgent();
-
     Thread currentThread = Thread.currentThread();
-
     m_trustedWorker = new Thread(currentThread.getThreadGroup(),
                                  m_trustedAgent);
-
     m_trustedWorker.start();
     try
     {
       m_tfactory = TransformerFactory.newInstance();
       this.showStatus("Causing Transformer and Parser to Load and JIT...");
 
-      // Prime the pump so that subsequent transforms don't look so slow.
+      // Prime the pump so that subsequent transforms are faster.
       StringReader xmlbuf = new StringReader("<?xml version='1.0'?><foo/>");
       StringReader xslbuf = new StringReader(
         "<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
@@ -313,7 +308,6 @@ public class XSLTProcessorApplet extends Applet
     }
   }
 
-
   /**
    * Do not call; this applet contains no UI or visual components.
    *
@@ -326,7 +320,6 @@ public class XSLTProcessorApplet extends Applet
    */
   public void stop()
   {
-
     if (null != m_trustedWorker)
     {
       m_trustedWorker.stop();
@@ -337,15 +330,13 @@ public class XSLTProcessorApplet extends Applet
 
     m_styleURLOfCached = null;
     m_documentURLOfCached = null;
-  }
-    
+  }   
   
   /**
    * Cleanup; called when applet is terminated and unloaded.
    */
   public void destroy()
   {
-
     if (null != m_trustedWorker)
     {
       m_trustedWorker.stop();
@@ -353,17 +344,14 @@ public class XSLTProcessorApplet extends Applet
       // m_trustedWorker.destroy();
       m_trustedWorker = null;
     }
-
     m_styleURLOfCached = null;
     m_documentURLOfCached = null;
   }
 
-
   /**
    * Set the URL to the XSL stylesheet that will be used
    * to transform the input XML.  No processing is done yet.
-   *
-   * @param urlString The URL string for the styelsheet.
+   * @param urlString valid URL string for XSL stylesheet.
    */
   public void setStyleURL(String urlString)
   {
@@ -373,8 +361,7 @@ public class XSLTProcessorApplet extends Applet
   /**
    * Set the URL to the XML document that will be transformed
    * with the XSL stylesheet.  No processing is done yet.
-   *
-   * @param urlString The URL string for the source tree.
+   * @param urlString valid URL string for XML document.
    */
   public void setDocumentURL(String urlString)
   {
@@ -404,25 +391,28 @@ public class XSLTProcessorApplet extends Applet
                                      String elemId, String attrName,
                                      String value)
   {
-
     m_nameOfIDAttrOfElemToModify = nameOfIDAttrOfElemToModify;
     m_elemIdToModify = elemId;
     m_attrNameToSet = attrName;
     m_attrValueToSet = value;
   }
 
-  /** The local name of a parameter to set a param in the stylesheet.   */
+  /** 
+   * Stylesheet parameter key
+   */
   transient String m_key;
 
-  /** The string value for the parameter. */
+  /** 
+   * Stylesheet parameter value
+   */
   transient String m_expression;
 
   /**
    * Submit a stylesheet parameter.
    *
-   * @param key The local name of a parameter to set a param in the stylesheet.
-   * @param expr The parameter expression to be submitted.
-   * @see org.apache.xalan.xslt.TransformerFactory#setStylesheetParam(String, String)
+   * @param key stylesheet parameter key
+   * @param expr the parameter expression to be submitted.
+   * @see javax.xml.transform.Transformer#setParameter(String,Object)
    */
   public void setStylesheetParam(String key, String expr)
   {
@@ -434,13 +424,12 @@ public class XSLTProcessorApplet extends Applet
    * Given a String containing markup, escape the markup so it
    * can be displayed in the browser.
    *
-   * @param s The string to be escaped.
+   * @param s String to escape
    *
-   * @return The escaped string.
+   * The escaped string.
    */
   public String escapeString(String s)
   {
-
     StringBuffer sb = new StringBuffer();
     int length = s.length();
 
@@ -462,7 +451,6 @@ public class XSLTProcessorApplet extends Applet
       }
       else if (0xd800 <= ch && ch < 0xdc00)
       {
-
         // UTF-16 surrogate
         int next;
 
@@ -490,7 +478,6 @@ public class XSLTProcessorApplet extends Applet
           //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
           next = ((ch - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
         }
-
         sb.append("&#x");
         sb.append(Integer.toHexString(next));
         sb.append(";");
@@ -500,7 +487,6 @@ public class XSLTProcessorApplet extends Applet
         sb.append(ch);
       }
     }
-
     return sb.toString();
   }
 
@@ -508,14 +494,13 @@ public class XSLTProcessorApplet extends Applet
    * Assuming the stylesheet URL and the input XML URL have been set,
    * perform the transformation and return the result as a String.
    *
-   * @return A string that contains the HTML result of the transformation.
+   * @return A string that contains the contents pointed to by the URL.
+   *
    */
   public String getHtmlText()
   {
-
     m_trustedAgent.m_getData = true;
     m_callThread = Thread.currentThread();
-
     try
     {
       synchronized (m_callThread)
@@ -527,45 +512,66 @@ public class XSLTProcessorApplet extends Applet
     {
       System.out.println(ie.getMessage());
     }
-
     return m_htmlText;
   }
 
   /**
-   * Open a URL and return the contents as a string.
+   * Get an XML document (or stylesheet)
    *
-   * @param The target URL.
+   * @param treeURL valid URL string for the document.
    *
-   * @return A string that contains the contents pointed at by the URL.
+   * @return document
    *
    * @throws IOException
    */
   public String getTreeAsText(String treeURL) throws IOException
   {
-
-    String text = "";
-    byte[] buffer = new byte[50000];
-
+    m_treeURL = treeURL;
+    m_trustedAgent.m_getData = true;
+    m_trustedAgent.m_getSource = true;
+    m_callThread = Thread.currentThread();
     try
     {
-      URL docURL = new URL(m_documentBase, treeURL);
-/*    Transformer transformer = m_tfactory.newTransformer();
-      StreamSource source = new StreamSource(docURL.toString());
-      StringWriter osw = new StringWriter();
-      PrintWriter pw = new PrintWriter(osw, false);
-      StreamResult result = new StreamResult(pw);
-      transformer.transform(source, result);
-      text = osw.toString();
-*/  
-      InputStream in = docURL.openStream();
-      int nun_chars;
-
-      while ((nun_chars = in.read(buffer, 0, buffer.length)) != -1)
+      synchronized (m_callThread)
       {
-        text = text + new String(buffer, 0, nun_chars);
+        m_callThread.wait();
       }
-      in.close();      
     }
+    catch (InterruptedException ie)
+    {
+      System.out.println(ie.getMessage());
+    }
+    return m_sourceText;
+  }
+  
+  /**
+   * Use a Transformer to copy the source document
+   * to a StreamResult.
+   * 
+   * @return the document as a string
+   */
+  private String getSource() throws TransformerException
+  {
+    StringWriter osw = new StringWriter();
+    PrintWriter pw = new PrintWriter(osw, false);
+    String text = "";
+    try
+    {
+      URL docURL = new URL(m_documentBase, m_treeURL);
+      synchronized (m_tfactory)
+      {
+        Transformer transformer = m_tfactory.newTransformer();
+        StreamSource source = new StreamSource(docURL.toString());    
+        StreamResult result = new StreamResult(pw);
+        transformer.transform(source, result);
+        text = osw.toString();
+      }
+    }
+    catch (MalformedURLException e)
+    {
+      e.printStackTrace();
+      System.exit(-1);
+    }      
     catch (Exception any_error)
     {
       any_error.printStackTrace();
@@ -578,7 +584,7 @@ public class XSLTProcessorApplet extends Applet
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
    *
-   * @return the source tree as a string.
+   * @return XML source document as a string.
    * @exception Exception thrown if tree can not be converted.
    */
   public String getSourceTreeAsText() throws Exception
@@ -591,7 +597,7 @@ public class XSLTProcessorApplet extends Applet
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
    *
-   * @return the stylesheet as a string.
+   * @return The XSL stylesheet as a string.
    * @exception Exception thrown if tree can not be converted.
    */
   public String getStyleTreeAsText() throws Exception
@@ -604,7 +610,7 @@ public class XSLTProcessorApplet extends Applet
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
    *
-   * @return The result tree as a string.
+   * @return Transformation result as unmarked text.
    * @exception Exception thrown if tree can not be converted.
    */
   public String getResultTreeAsText() throws Exception
@@ -617,10 +623,10 @@ public class XSLTProcessorApplet extends Applet
    * the transformation result.  If one of these is null, the
    * existing value (of a previous transformation) is not affected.
    *
-   * @param doc The document string.
-   * @param style The stylesheet string.
+   * @param doc URL string to XML document
+   * @param style URL string to XSL stylesheet
    *
-   * @return The document transformed via the stylesheet.
+   * @return HTML transformation result
    */
   public String transformToHtml(String doc, String style)
   {
@@ -643,9 +649,9 @@ public class XSLTProcessorApplet extends Applet
    * the transformation result. Use the xsl:stylesheet PI to find the
    * document, if one exists.
    *
-   * @param doc The document string.
+   * @param doc  URL string to XML document containing an xsl:stylesheet PI.
    *
-   * @return The document transformed via the stylesheet.
+   * @return HTML transformation result
    */
   public String transformToHtml(String doc)
   {
@@ -660,66 +666,11 @@ public class XSLTProcessorApplet extends Applet
     return getHtmlText();
   }
 
-  /**
-   * Do the real transformation after the right XML processor
-   * liason has been found.
-   *
-   * @return The transformed document as a string.
-   *
-   * @throws TransformerException
-   */
-  private String doTransformation() throws TransformerException
-  {
-    URL documentURL = null;
-    URL styleURL = null;
-    StringWriter osw = new StringWriter();
-    PrintWriter pw = new PrintWriter(osw, false);
-    StreamResult result = new StreamResult(pw);
-    
-    this.showStatus("Begin Transformation...");
-
-    try
-    {
-      documentURL = new URL(m_codeBase, m_documentURL);
-      StreamSource xmlSource = new StreamSource(documentURL.toString());
-
-      styleURL = new URL(m_codeBase, m_styleURL);
-      StreamSource xslSource = new StreamSource(styleURL.toString());
-
-      Transformer transformer = m_tfactory.newTransformer(xslSource);
-
-      if (null != m_key)
-        transformer.setParameter(m_key, m_expression);
-      
-       transformer.transform(xmlSource, result);
-    }
-    catch (TransformerConfigurationException tfe)
-    {
-      tfe.printStackTrace();
-      System.exit(-1);
-    }
-    catch (MalformedURLException e)
-    {
-      e.printStackTrace();
-      System.exit(-1);
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-      System.exit(-1);
-    }
-
-    this.showStatus("Transformation Done!");
-
-    String htmlData = osw.toString();
-
-    return htmlData;
-  }
 
   /**
    * Process the transformation.
    *
-   * @return The transformed document as a string.
+   * @return The transformation result as a string.
    *
    * @throws TransformerException
    */
@@ -730,7 +681,45 @@ public class XSLTProcessorApplet extends Applet
     
     synchronized (m_tfactory)
     {
-      htmlData = doTransformation();
+     URL documentURL = null;
+      URL styleURL = null;
+      StringWriter osw = new StringWriter();
+      PrintWriter pw = new PrintWriter(osw, false);
+      StreamResult result = new StreamResult(pw);
+    
+      this.showStatus("Begin Transformation...");
+      try
+      {
+        documentURL = new URL(m_codeBase, m_documentURL);
+        StreamSource xmlSource = new StreamSource(documentURL.toString());
+
+        styleURL = new URL(m_codeBase, m_styleURL);
+        StreamSource xslSource = new StreamSource(styleURL.toString());
+
+        Transformer transformer = m_tfactory.newTransformer(xslSource);
+
+        if (null != m_key)
+          transformer.setParameter(m_key, m_expression);
+      
+         transformer.transform(xmlSource, result);
+      }
+      catch (TransformerConfigurationException tfe)
+      {
+        tfe.printStackTrace();
+        System.exit(-1);
+      }
+      catch (MalformedURLException e)
+      {
+        e.printStackTrace();
+        System.exit(-1);
+      }
+      catch (IOException e)
+      {
+        e.printStackTrace();
+        System.exit(-1);
+      }
+      this.showStatus("Transformation Done!");
+      htmlData = osw.toString();
     }
     return htmlData;
   }
@@ -744,28 +733,40 @@ public class XSLTProcessorApplet extends Applet
   class TrustedAgent implements Runnable
   {
 
-    /** Flag set to true when it's time to do the transformation.   */
+    /** 
+     * Specifies whether the worker thread should perform a transformation.
+     */
     public boolean m_getData = false;
 
+    /** 
+     * Specifies whether the worker thread should get an XML document or XSL stylesheet.
+     */
+    public boolean m_getSource = false;
+
     /**
-     * Run the trusted agent, waiting for a flag to tell it that it's time 
-     * to do the transformation.
+     * The real work is done from here.
      *
      */
     public void run()
     {
-
       while (true)
       {
         m_trustedWorker.yield();
 
-        if (m_getData)
+        if (m_getData)  // Perform a transformation or get a document.
         {
           try
           {
             m_getData = false;
             m_htmlText = null;
-            m_htmlText = processTransformation();
+            m_sourceText = null;
+            if (m_getSource)  // Get a document.
+            {
+              m_getSource = false;
+              m_sourceText = getSource();
+            }
+            else              // Perform a transformation.
+              m_htmlText = processTransformation();
           }
           catch (Exception e)
           {
