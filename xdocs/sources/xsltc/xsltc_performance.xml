@@ -59,16 +59,14 @@
 
 <s1 title="XSLTC Performance">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <s2 title="Introduction">
 
-    <p><i>XSLT is not a programming language!</i> Just so you remember.
+    <p><em>XSLT is not a programming language!</em> Just so you remember.
     XSLT is a declarative language and can be used by you to describe
-    <i><b>what</b></i> you want put in your output document and
-    <i><b>what</b></i> you want this output to look like. It does not describe
-    <i><b>how</b></i> these taks should be carried. That is the job of the XSLT
-    processor. This document is <u>not</u> a "<i>programmer's guide to XSLT</i>"
+    <em>what</em> you want put in your output document and
+    <em>what</em> you want this output to look like. It does not describe
+    <em>how</em> these taks should be carried. That is the job of the XSLT
+    processor. This document is <em>not</em> a "<ref>programmer's guide to XSLT</ref>"
     and should not be considered as such. All XSLT processors have their
     properties and ways of handling XSL elements and XPath properties. This
     document will give you some insight into the XSLTC internals, so that you
@@ -132,7 +130,7 @@
     of the output is changed by this approach, so if the order is significant
     you'll have to stick to the original stylesheet.</p>
 
-    <p><i><b>Important note:</b></i> The type of pattern referred to as a
+    <p><em>Important note:</em> The type of pattern referred to as a
     type-less pattern, as it does not match any specific node type. Such
     patterns do in general degrade the performance of XSLTC. Type-less patterns
     must be evaluated for every single node in the input document - causing a
@@ -175,7 +173,7 @@
     This is not always desireable. You may want to handle these elements in
     the order in which they appear in the input document.</p>
 
-    <p><b>Important note:</b> This does <u>not</u> apply to union patterns.
+    <p><em>Important note:</em> This does <em>not</em> apply to union patterns.
     Using unions in patterns actually makes smaller and more efficient code,
     as only one copy of the templete body has to be compiled. Use:</p><source>
     &lt;xsl:template match="foo|bar|baz"/></source>

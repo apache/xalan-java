@@ -58,8 +58,6 @@
  -->
   <s1 title="&lt;xsl:strip/preserve-space&gt;">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <ul>
     <li><link anchor="functionality">Functionality</link></li>
     <li><link anchor="identify">Identifying strippable whitespace nodes</link></li>

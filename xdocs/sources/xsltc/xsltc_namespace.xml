@@ -58,8 +58,6 @@
 <!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
   <s1 title="XSLTC and Namespaces">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <ul>
     <li><link anchor="functionality">Functionality</link></li>
     <li><link anchor="overview">Namespace overview</link></li>

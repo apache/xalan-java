@@ -58,8 +58,6 @@
  -->
 <s1 title="XSLTC Internal DOM">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <ul>
     <li><link anchor="functionality">General functionlaity</link></li>
     <li><link anchor="components">Components of the internal DOM</link></li>
@@ -351,18 +349,18 @@
   <p>A node in the DOM is identified by an integer. The first 8 bits of this
   integer are used to identify the DOM in which the node belongs, while the
   lower 24 bits are used to identify the node within the DOM:</p>
-    <small-table leave-me-alone="yes" border="2">
+    <table>
       <tr>
-        <td align="center" width="50">31-24</td>
-        <td align="center" width="50">23-16</td>
-        <td align="center" width="50">16-8</td>
-        <td align="center" width="50">7-0</td>
+        <td>31-24</td>
+        <td>23-16</td>
+        <td>16-8</td>
+        <td>7-0</td>
       </tr>
       <tr>
-        <td align="center">DOM id</td>
-        <td colspan="3" align="center">node id</td>
+        <td>DOM id</td>
+        <td colspan="3">node id</td>
       </tr>
-    </small-table>
+    </table>
 
   <p>The DOM multiplexer has an array of DOMAdapter objects. The topmost 8
   bits of the identifier is used to find the correct DOM from the array. Then

@@ -59,8 +59,6 @@
  -->
 <s1 title="The Translet API and TrAX">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <s2 title="Contents">
 
   <p>Note: This document describes the design of XSLTC's TrAX implementation.

@@ -59,8 +59,6 @@
 
 <s1 title="XSLTC Documentation">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <s2 title="User Documentation">
     <p>The following user documentation is currently available:</p>
     <ul>
@@ -119,9 +117,6 @@
     design documents for some XSL elements and XPath expressions, patterns
     and functions:</p>
 
-    <small-table>
-    <tr><td>
-
     <s4 title="XSL elements">
       <ul>
         <li><link idref="xsl_sort_design">&lt;xsl:sort&gt;</link></li>
@@ -139,9 +134,6 @@
         <li><link idref="xsl_imports_design">&lt;xsl:apply-imports&gt;</link></li>
       </ul>
     </s4>
-
-    </td><td>
-
     <s4 title="XPath functions">
       <ul>
         <li><link idref="xsl_key_design">key()</link></li>
@@ -149,7 +141,6 @@
         <li><link idref="xsl_unparsed_design">unparsed-entity-uri()</link></li>
       </ul>
     </s4>
-
     <s4 title="XPath expressons">
       <ul>
         <li><link idref="xsltc_predicates">Predicates</link></li>
@@ -163,10 +154,6 @@
         <li><jump href="xsl_key_design.html#patterns">KeyPattern</jump></li>
       </ul>
     </s4>
-
-    </td></tr>
-    </small-table>
-
     </s3>
 
     <!--========================= RUNTIME DESIGN ==========================-->

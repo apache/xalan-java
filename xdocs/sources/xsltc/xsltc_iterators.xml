@@ -59,8 +59,6 @@
 
 <s1 title="XSLTC node iterators">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <s2 title="Contents">
 
   <p>This document describes the function of XSLTC's node iterators. It also

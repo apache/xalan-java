@@ -59,8 +59,6 @@
 
 <s1 title="XSLTC TrAX API">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <s2 title="The JAXP/TrAX API">
 
   <p>XSLTC is 100% compliant with the TrAX poriton of the

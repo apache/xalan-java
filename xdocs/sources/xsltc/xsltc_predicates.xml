@@ -59,8 +59,6 @@
 
 <s1 title="XSLTC Predicate Handling">
 
-  <p><img src="xmllogo.gif"/></p>
-
   <s2 title="Definition">
 
   <p>According to Michael Kay's &quot;XSLT Programmer's Reference&quot; page
@@ -170,7 +168,7 @@
     <p>Expressions containing just a single predicate have no intermediate step
     and there is no need for any extra iterator. The expression inside the
     predicate can be applied directly to the original iterator. We call this
-    category <b>SIMPLE_CONTEXT</b>.</p>
+    category <em>SIMPLE_CONTEXT</em>.</p>
 
     </s3>
 
@@ -233,7 +231,7 @@
 
     <s3 title="Predicates and Step expressions">
 
-    <p>The basic behaviour for a predicate is to compile a <i>filter</i>. This
+    <p>The basic behaviour for a predicate is to compile a <em>filter</em>. This
     filter is an auxiliary class that implements the
     <code>org.apache.xalan.xsltc.dom.CurrentNodeListFilter</code> interface. The
     <code>Step</code> or <code>StepPattern</code> that uses the predicate will
@@ -282,9 +280,9 @@
 
     <p>The first case is handled by creating an iterator that represents
     <code>foo/@attr</code>, then passing this iterator and a test-value to
-    a <code>NodeValueIterator</code>. The <i>&lt;value&gt;</i> is an
+    a <code>NodeValueIterator</code>. The <em>&lt;value&gt;</em> is an
     expression that is compiled and passed to the iterator as a string. It
-    does <u><i>not</i></u> have to be a literal string as the string value is
+    does <em>not</em> have to be a literal string as the string value is
     found at runtime. The last two cases are similarly handled by creating an
     iterator for <code>foo/bar</code> and passing that and the test-value to
     a <code>NodeValueIterator</code>.</p>
@@ -338,16 +336,16 @@
     <s4 title="Basic pattern handling">
 
     <p>All patterns are grouped (by the <code>Mode</code> class) according to
-    their <i>kernel</i>-node type. The kernel node-type is node-type of the
-    <u>last</u> step in a pattern:</p><source>
+    their <ref>kernel</ref>-node type. The kernel node-type is node-type of the
+    <em>last</em> step in a pattern:</p><source>
     &lt;xsl:template match="foo/bar/baz"&gt;  ...  &lt;xsl:template&gt;</source>
 
     <p>In this case the type for elements <code>&lt;baz&gt;</code> is the
-    kernel type. This step is <u>not</u> compiled as a step pattern. The node
+    kernel type. This step is <em>not</em> compiled as a step pattern. The node
     type is passed to the <code>Mode</code> class and is used to place the
     remainder of the pattern code inside the big <code>switch()</code> statement
     in the translet's <code>applyTemplates()</code> method. The whole pattern
-    is then <i>reduced</i> to:</p><source>
+    is then <em>reduced</em> to:</p><source>
     match="foo/bar"</source>
 
     <p>The <code>StepPattern</code> representing the <code>&lt;bar&gt;</code>
