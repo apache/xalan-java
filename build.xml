@@ -319,7 +319,7 @@ Copyright:
            bootclasspathref="xslt.boot.class.path" />
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
-      <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
+      <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,META-INF/services/javax.xml.transform.*"/>
     </copy>  
   </target>
 
@@ -406,7 +406,6 @@ Copyright:
       <patternset><!-- relative to jar/@basedir -->
         <exclude name="${xsltc.reldir}/**/*" />
         <exclude name="javax/xml/parsers/**" />
-        <exclude name="META-INF/services/javax.xml.parsers*" />
       </patternset>
     </jar>
   </target>
@@ -433,7 +432,7 @@ Copyright:
     <copy todir="${build.compat.classes}">
           <fileset dir="${compat.src.dir}" includes="**/*.properties,**/*.res"/>
     </copy>  
-    <jar jarfile="${build.compat.jar}" manifest="src\MANIFEST.MF" basedir="${build.compat.classes}"/>
+    <jar jarfile="${build.compat.jar}" manifest="${manifest.mf}" basedir="${build.compat.classes}"/>
   </target>
   
   <!-- =================================================================== -->
