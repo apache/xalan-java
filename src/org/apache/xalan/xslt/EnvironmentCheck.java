@@ -626,6 +626,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(426249), "xalan.jar from xalan-j_1_2_2");
     jarVersions.put(new Long(702536), "xalan.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(720930), "xalan.jar from xalan-j_2_0_1");
+    jarVersions.put(new Long(732330), "xalan.jar from xalan-j_2_1_0");
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
@@ -635,6 +636,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(804460),  "xerces.jar from xalan-j_1_2_2 from xerces-1_2_2.bin");
     jarVersions.put(new Long(1499244), "xerces.jar from xalan-j_2_0_0 from xerces-1_2_3.bin");
     jarVersions.put(new Long(1605266), "xerces.jar from xalan-j_2_0_1 from xerces-1_3_0.bin");
+    jarVersions.put(new Long(904030),  "xerces.jar from xalan-j_2_1_0 from xerces-1_4_0.bin");
     jarVersions.put(new Long(1190776), "xerces.jar from lotusxsl_1_0_1 apparently-from xerces-1_0_3.bin");
     jarVersions.put(new Long(1489400), "xerces.jar from lotusxsl-j_2_0_0 from XML4J-3_1_1");
 
