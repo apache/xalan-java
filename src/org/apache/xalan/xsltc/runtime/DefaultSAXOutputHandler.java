@@ -215,7 +215,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 	buffer.append(_version);
 	buffer.append("\" encoding=\"");
 	buffer.append(_encoding);
-	if ( _standalone != null && _standalone.equals("yes") ) {
+	if ( _standalone != null ) {
 	    buffer.append("\" standalone=\"");
 	    buffer.append(_standalone);
 	}
