@@ -223,6 +223,8 @@ public interface Constants extends InstructionConstants {
 	= "makeNode";
     public static final String MAKE_NODE_LIST     
 	= "makeNodeList";
+    public static final String GET_UNPARSED_ENTITY_URI
+        = "getUnparsedEntityURI";
     public static final String STRING_TO_REAL     
 	= "stringToReal";
     public static final String STRING_TO_REAL_SIG 
@@ -322,7 +324,7 @@ public interface Constants extends InstructionConstants {
 	= "document";
 
     public static final String GET_NODE_NAME      
-	= "getNodeName";
+	= "getNodeNameX";
     public static final String CHARACTERSW        
 	= "characters";
     public static final String GET_CHILDREN       
@@ -484,6 +486,9 @@ public interface Constants extends InstructionConstants {
 	= "getNodeValueIterator";
     public static final String GET_NODE_VALUE_ITERATOR_SIG
 	= "("+NODE_ITERATOR_SIG+"I"+STRING_SIG+"Z)"+NODE_ITERATOR_SIG;
+
+    public static final String GET_UNPARSED_ENTITY_URI_SIG
+        = "("+STRING_SIG+")"+STRING_SIG;
 
     public static final int POSITION_INDEX = 2;
     public static final int LAST_INDEX     = 3;

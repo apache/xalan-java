@@ -160,28 +160,15 @@ public final class LoadDocument {
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
-        // Create a DTD monitor and pass it to the XMLReader object
-	    DTDMonitor dtdMonitor = new DTDMonitor();
-	    dtdMonitor.handleDTD(reader);
-
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-	    DTMManager dtmManager = ((DTMDefaultBase)((DOMAdapter)multiplexer.getMain()).getDOMImpl()).m_mgr;
-      //DTMManager dtmManager = XSLTCDTMManager.newInstance(
-       //          org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
-      newdom = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, new InputSource(uri)), false, null, true, true);
-		//newdom = new DOMImpl();
-	   // reader.setContentHandler(((SAXImpl)newdom).getBuilder());
-
+	    DTMManager dtmManager =
+                     ((DTMDefaultBase)((DOMAdapter)multiplexer.getMain())
+                                               .getDOMImpl()).m_mgr;
+            newdom = (SAXImpl)dtmManager.getDTM(
+                                 new SAXSource(reader, new InputSource(uri)),
+                                 false, null, true, true);
 
 	    ((SAXImpl)newdom).setDocumentURI(uri);
-	    //reader.parse(uri);
-
-	    // Set size of key/id indices
-	    translet.setIndexSize(newdom.getSize());
-	    // Create index for any ID attributes defined in the document DTD
-	    dtdMonitor.buildIdIndex(newdom, mask, translet);
-	    // Pass any unparsed URI elements to the translet
-	    translet.setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
 	}
 
 	// Wrap the DOM object in a DOM adapter and add to multiplexer
@@ -189,10 +176,10 @@ public final class LoadDocument {
 	mask = multiplexer.addDOMAdapter(domAdapter);
 
 	// Create index for any key elements
-	translet.buildKeys((DOM)newdom, null, null, ((SAXImpl)newdom).getDocument()/*DTMDefaultBase.ROOTNODE | mask*/);
+	translet.buildKeys(newdom, null, null, ((SAXImpl)newdom).getDocument());
 
 	// Return a singleton iterator containing the root node
-	return new SingletonIterator(((SAXImpl)newdom).getDocument()/*DTMDefaultBase.ROOTNODE | mask*/, true);
+	return new SingletonIterator(((SAXImpl)newdom).getDocument(), true);
     }
 
     /**

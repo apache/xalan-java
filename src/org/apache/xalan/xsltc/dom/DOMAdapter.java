@@ -71,6 +71,7 @@ import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;
@@ -283,6 +284,13 @@ public final class DOMAdapter implements DOM {
     	return "";
       return _domImpl.getNodeName(node);
     }
+    
+    public String getNodeNameX(final int node) 
+    {
+    	if (node == DTM.NULL)
+    	return "";
+      return _domImpl.getNodeNameX(node);
+    }
 
     public String getNamespaceName(final int node) 
     {
@@ -426,5 +434,13 @@ public final class DOMAdapter implements DOM {
 	throws TransletException 
     {
 	return _domImpl.lookupNamespace(node, prefix);
+    }
+
+    public String getUnparsedEntityURI(String entity) {
+        return _domImpl.getUnparsedEntityURI(entity);
+    }
+
+    public Hashtable getElementsWithIDs() {
+        return _domImpl.getElementsWithIDs();
     }
 }

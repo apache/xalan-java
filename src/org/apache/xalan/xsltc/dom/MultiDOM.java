@@ -410,6 +410,12 @@ public final class MultiDOM implements DOM {
     	return "";
 	return _adapters[getDTMId(node)].getNodeName(node & CLR);
     }
+    
+    public String getNodeNameX(final int node) {
+    	if (node == DTM.NULL)
+    	return "";
+	return _adapters[getDTMId(node)].getNodeNameX(node & CLR);
+    }
 
     public String getNamespaceName(final int node) {
     	if (node == DTM.NULL)
@@ -560,5 +566,15 @@ public final class MultiDOM implements DOM {
 	throws TransletException
     {
 	return _adapters[node>>>24].lookupNamespace(node, prefix);
+    }
+
+    // %HZ% Does this method make any sense here???
+    public String getUnparsedEntityURI(String entity) {
+        return _adapters[0].getUnparsedEntityURI(entity);
+    }
+
+    // %HZ% Does this method make any sense here???
+    public Hashtable getElementsWithIDs() {
+        return _adapters[0].getElementsWithIDs();
     }
 }

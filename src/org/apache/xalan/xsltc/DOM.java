@@ -68,6 +68,7 @@ import org.w3c.dom.NodeList;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public interface DOM {
     public final static int  FIRST_TYPE             = 0;
@@ -96,6 +97,7 @@ public interface DOM {
 					     String value, boolean op);
     public DTMAxisIterator orderNodes(DTMAxisIterator source, int node);
     public String getNodeName(final int node);
+    public String getNodeNameX(final int node);
     public String getNamespaceName(final int node);
     public int getType(final int node);
     public int getNamespaceType(final int node);
@@ -132,4 +134,6 @@ public interface DOM {
     public TransletOutputHandler getOutputDomBuilder();
     public int getNSType(int node);
     public int getDocument();
+    public String getUnparsedEntityURI(String name);
+    public Hashtable getElementsWithIDs();
 }
