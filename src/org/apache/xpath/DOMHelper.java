@@ -181,7 +181,7 @@ public class DOMHelper
    */
   public String getUniqueID(Node node)
   {
-    return "N" + Integer.toHexString(node.hashCode());
+    return "N" + Integer.toHexString(node.hashCode()).toUpperCase();
   }
 
   /**

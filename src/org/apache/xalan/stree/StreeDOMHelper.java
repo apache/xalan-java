@@ -96,7 +96,7 @@ public class StreeDOMHelper extends DOM2Helper
     {
       int index = ((Child) node).getUid();
 
-      return "N" + Integer.toHexString(index);
+      return "N" + Integer.toHexString(index).toUpperCase();
     }
     catch (ClassCastException cce)
     {
