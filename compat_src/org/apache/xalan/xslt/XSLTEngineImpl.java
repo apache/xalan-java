@@ -328,8 +328,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
       Boolean totalTimeID = new Boolean(true);
       pushTime(totalTimeID);
       Node sourceTree = null;
-      if(null != inputSource)
-        sourceTree = getSourceTreeFromInput(inputSource);
+      
       Templates templates = null;
       if (m_needToEval)
       {
@@ -372,63 +371,67 @@ public class XSLTEngineImpl implements  XSLTProcessor
         }  
         
       }      
-      else if(null != sourceTree)
-      {
-        String stylesheetURI = null;
-        Stack hrefs = new Stack();
-        for(Node child=sourceTree.getFirstChild(); null != child; child=child.getNextSibling())
+      else if(null != inputSource)
+      {        
+        sourceTree = getSourceTreeFromInput(inputSource);
+        if(null != sourceTree)
         {
-          if(Node.PROCESSING_INSTRUCTION_NODE == child.getNodeType())
+          String stylesheetURI = null;
+          Stack hrefs = new Stack();
+          for(Node child=sourceTree.getFirstChild(); null != child; child=child.getNextSibling())
           {
-            ProcessingInstruction pi = (ProcessingInstruction)child;
-            if(pi.getNodeName().equals("xml-stylesheet")
-               || pi.getNodeName().equals("xml:stylesheet"))
+            if(Node.PROCESSING_INSTRUCTION_NODE == child.getNodeType())
             {
-              boolean isOK = true;
-              StringTokenizer tokenizer = new StringTokenizer(pi.getNodeValue(), " \t=");
-              while(tokenizer.hasMoreTokens())
+              ProcessingInstruction pi = (ProcessingInstruction)child;
+              if(pi.getNodeName().equals("xml-stylesheet")
+                 || pi.getNodeName().equals("xml:stylesheet"))
               {
-                if(tokenizer.nextToken().equals("type"))
-                {
-                  String typeVal = tokenizer.nextToken();
-                  typeVal = typeVal.substring(1, typeVal.length()-1);
-                  if(!typeVal.equals("text/xsl"))
-                  {
-                    isOK = false;
-                  }
-                }
-              }
-
-              if(isOK)
-              {
-                tokenizer = new StringTokenizer(pi.getNodeValue(), " \t=");
+                boolean isOK = true;
+                StringTokenizer tokenizer = new StringTokenizer(pi.getNodeValue(), " \t=");
                 while(tokenizer.hasMoreTokens())
                 {
-                  if(tokenizer.nextToken().equals("href"))
+                  if(tokenizer.nextToken().equals("type"))
                   {
-                    stylesheetURI = tokenizer.nextToken();
-                    stylesheetURI = stylesheetURI.substring(1, stylesheetURI.length()-1);
-                    hrefs.push(stylesheetURI);
+                    String typeVal = tokenizer.nextToken();
+                    typeVal = typeVal.substring(1, typeVal.length()-1);
+                    if(!typeVal.equals("text/xsl"))
+                    {
+                      isOK = false;
+                    }
                   }
-                }                
+                }
+
+                if(isOK)
+                {
+                  tokenizer = new StringTokenizer(pi.getNodeValue(), " \t=");
+                  while(tokenizer.hasMoreTokens())
+                  {
+                    if(tokenizer.nextToken().equals("href"))
+                    {
+                      stylesheetURI = tokenizer.nextToken();
+                      stylesheetURI = stylesheetURI.substring(1, stylesheetURI.length()-1);
+                      hrefs.push(stylesheetURI);
+                    }
+                  }                
+                }
               }
             }
-          }
-        } // end for(int i = 0; i < nNodes; i++)
-        boolean isRoot = true;
-        Stylesheet prevStylesheet = null;
-        while(!hrefs.isEmpty())
-        {
-          Stylesheet stylesheet = getStylesheetFromPIURL((String)hrefs.pop(), sourceTree,
-                                                         (null != inputSource)
-                                                         ? inputSource.getSystemId() : null,
-                                                         isRoot);
-          if(false == isRoot)
+          } // end for(int i = 0; i < nNodes; i++)
+          boolean isRoot = true;
+          Stylesheet prevStylesheet = null;
+          while(!hrefs.isEmpty())
           {
-            prevStylesheet.setImport((StylesheetComposed)stylesheet);
+            Stylesheet stylesheet = getStylesheetFromPIURL((String)hrefs.pop(), sourceTree,
+                                                           (null != inputSource)
+                                                           ? inputSource.getSystemId() : null,
+                                                           isRoot);
+            if(false == isRoot)
+            {
+              prevStylesheet.setImport((StylesheetComposed)stylesheet);
+            }
+            prevStylesheet = stylesheet;
+            isRoot = false;
           }
-          prevStylesheet = stylesheet;
-          isRoot = false;
         }
       }
       else
@@ -448,14 +451,14 @@ public class XSLTEngineImpl implements  XSLTProcessor
         }  
       }
 
-      if(null != sourceTree)
+      if(null != templates)
       {
         try{
           m_transformerImpl = (TransformerImpl)templates.newTransformer(); 
           if (m_problemListener != null)
             m_transformerImpl.setErrorListener(m_problemListener);
           if (m_liaison != null)
-          m_transformerImpl.getXPathContext().setDOMHelper(m_liaison);
+            m_transformerImpl.getXPathContext().setDOMHelper(m_liaison);
    
         }
         catch (TransformerConfigurationException tce)
@@ -563,10 +566,9 @@ public class XSLTEngineImpl implements  XSLTProcessor
     m_stylesheetRoot = null;
     try
     {
-      m_stylesheetRoot = createStylesheetRoot(stylesheetSource.getSystemId());
-      addTraceListenersToStylesheet();
       StylesheetHandler stylesheetProcessor
-        = new StylesheetHandler((TransformerFactoryImpl)m_tfactory); //this, m_stylesheetRoot); 
+          = new StylesheetHandler((TransformerFactoryImpl)m_tfactory); //this, m_stylesheetRoot); 
+        
       Source ssSource = stylesheetSource.getSourceObject();
       if(ssSource instanceof DOMSource)
       {
@@ -583,6 +585,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
       }
       else
       {
+        m_stylesheetRoot = createStylesheetRoot(stylesheetSource.getSystemId());
+        addTraceListenersToStylesheet();
+        
+        
         stylesheetProcessor.pushStylesheet(m_stylesheetRoot.getObject());      
         diag("========= Parsing "+xslIdentifier+" ==========");
         pushTime(xslIdentifier);
@@ -710,15 +716,15 @@ public class XSLTEngineImpl implements  XSLTProcessor
         diag("========= Parsing "+xmlIdentifier+" ==========");
         pushTime(xmlIdentifier);
         
-        String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
+        //String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
 
-        if(null != liaisonClassName)
+        if(null != m_liaison)
         {
-          DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
-          liaison.parse(SAXSource.sourceToInputSource(iSource));
+          //DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
+          m_liaison.parse(SAXSource.sourceToInputSource(iSource));
           if(null != m_diagnosticsPrintWriter)
             displayDuration("Parse of "+xmlIdentifier, xmlIdentifier);
-          sourceTree = liaison.getDocument();
+          sourceTree = m_liaison.getDocument();
         }
         else
         {      
@@ -938,31 +944,15 @@ public class XSLTEngineImpl implements  XSLTProcessor
       URL xslURL = getURLFromString(xslURLString, xmlBaseIdent);
 
       XSLTInputSource inputSource = new XSLTInputSource(xslURL.toString());
-      String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
+      String liaisonClassName = m_liaison.getClass().getName();
 
-      if(null != liaisonClassName)
+      if(null != m_liaison)
       {
         try{
-          DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
-          liaison.parse(SAXSource.sourceToInputSource(inputSource.getSourceObject()));
+          //DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
+          m_liaison.parse(SAXSource.sourceToInputSource(inputSource.getSourceObject()));
         }
-        catch (ClassNotFoundException e1) 
-        {
-          throw new SAXException("XML Liaison class " + liaisonClassName +
-            " specified but not found", e1);
-        } 
-        catch (IllegalAccessException e2) 
-        {
-          throw new SAXException("XML Liaison class " + liaisonClassName +
-            " found but cannot be loaded", e2);
-        } 
-        catch (InstantiationException e3) 
-        {
-          throw new SAXException("XML Liaison class " + liaisonClassName +
-            " loaded but cannot be instantiated (no empty public constructor?)",
-            e3);
-        }
-        
+                
         catch (TransformerException tce)
         {
           throw new SAXException(tce);
