@@ -151,7 +151,7 @@ branch if the mainline development has already moved forward; the point is to
 make critical bugfixes for existing customers who want to stay on the stable release.<br/><br/></li>
 <li>Developer releases are very ad hoc; they represent a chunk of progress along the 
 HEAD of our CVS tree towards a new major or minor release. The developer release 
-versions would be going from 2.3 to a new 2.4.D1 - the developer release can is somewhat 
+versions would be going from 2.3 to a new 2.4.D1 - the developer release is somewhat 
 like a 'beta' towards a new 2.4 minor version release.  Quality standards for developer 
 releases are much less stringent than other releases.<br/><br/></li>
 </ul>

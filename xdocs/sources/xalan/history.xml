@@ -3,6 +3,365 @@
 <s1 title="History of software changes">
 <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
 &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.4.1">
+<p> Core (Non-XSLTC) source code updates:</p><ul>
+<li><ref>Committed by </ref>johng@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib/sql DefaultConnectionPool.java<br/><ref>Committer's log entry: </ref>
+Fixed Class loader Problem. Default Connection now uses context Classloader
+<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>
+Fixed problem where a query that returned zero rows would incorrectly return a JDBC
+Exception. Note: This only occurs in streaming mode.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>
+Add a convenient interface getStringValue() which returns the
+string value of a node. It is used by the extension code
+to get a node value without hacking into the DTM.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates Constants.java<br/><ref>Committer's log entry: </ref>
+Add strings for new extension namespaces. This includes new EXSLT
+namespaces (dynamic and strings), namespaces for redirect, PipeDocument
+and SQL extensions and new namespace for the Java extension. For
+backward compatibility, the old Java namespace is still kept.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespacesManager.java<br/><ref>Committer's log entry: </ref>
+Register new extension namespaces, including two new EXSLT namespaces
+(dynamic and strings), namespaces for redirect, PipeDocument and SQL
+extensions and the new/old namespaces for Java extension.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib Extensions.java<br/><ref>Committer's log entry: </ref>
+Reorganize the extension functions for new EXSLT extensions and
+XSLTC integration. The implementation of some extension functions
+(intersection, difference, distinct, evaluate and tokenize) are
+moved to the corresponding EXSLT extension classes. We also put
+a note to say that using these extension functions in the
+Xalan namespace is deprecated. The signature of some extension
+functions are changed to facilitate the XSLTC integration.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltMath.java<br/><ref>Committer's log entry: </ref>
+The EXSLT math extension was rewritten for XSLTC integration. The
+signatures of the existing functions (max, min, highest and lowest)
+are changed. We use NodeList instead of NodeSet and NodeIterator
+in arguments and return types, because it is the only node list type
+recognized by XSLTC. We also got rid of the ExpressionContext
+arguments in these functions. We implemented the toNumber() and toString()
+interfaces as a replacement.
+
+I also implemented all of the remaining math functions in the EXSLT spec,
+e.g. constant, sin, random.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltSets.java<br/><ref>Committer's log entry: </ref>
+The signatures of the sets extension functions are changed for
+XSLTC integration. NodeList is used instead of NodeSet and NodeIterator
+in arguments and return types. The implementation of intersection,
+difference and distinct was moved from Extensions.java to this file.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib Redirect.java<br/><ref>Committer's log entry: </ref>
+Add comments for the new namespace (http://xml.apache.org/xalan/redirect).
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib PipeDocument.java<br/><ref>Committer's log entry: </ref>
+Add comments for the new namespace (http://xml.apache.org/xalan/PipeDocument).
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib/sql XConnection.java<br/><ref>Committer's log entry: </ref>
+Add comments for the new namespace (http://xml.apache.org/xalan/sql).
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltDynamic.java<br/><ref>Committer's log entry: </ref>
+Add the ExsltDynamic class which implements the EXSLT dynamic
+extension functions (max, min, sum, map, evaluate and closure).
+
+The implementation of evaluate is taken from Extensions.java.
+The Javadoc is copied from the relevant EXSLT page.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltStrings.java<br/><ref>Committer's log entry: </ref>
+Implement the EXSLT strings extension functions (align,
+concat, padding, split and tokenize). The implementation
+of tokenize is taken from Extensions.java.
+
+The Javadoc is copied from the relevant EXSLT page. Three
+functions (decode-uri, encode-uri and replace) are missing
+due to ambiguous spec.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes SelfIteratorNoPredicate.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 11809 and 10643. Fix the nextNode() interface so that
+it returns DTM.NULL if the m_foundLast flag is true.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemExtensionCall.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 11073. Fix an extension namespace problem.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncExtFunction.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 11743 and 12298. Fix argument handling in
+extension functions. Arguments now have non-null parents
+and they will be visited by the XPathVisitor.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/09<br/><ref>Modified: </ref> xml-xalan/java KEYS<br/><ref>Committer's log entry: </ref>
+I had to get a new key after a hard drive crash.  This time, I backed it up!
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/11<br/><ref>Modified: </ref> xml-xalan/java build.xml<br/><ref>Committer's log entry: </ref>
+Copy the LICENSE and README files to the bin directory for the source distribution.
+These files are needed by the xsltc.jar target.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/11<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerIdentityImpl.java<br/><ref>Committer's log entry: </ref>
+Throw an IllegalArgumentException in the setErrorListener() interface
+if the error listener is null.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/11<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions MethodResolver.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 9731. Convert an empty NodeList to a null Node.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates OutputProperties.java xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 12379. Transformer.setOutputProperties() should throw
+IllegalArgumentException if the property is invalid.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor XSLTAttributeDef.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 12127. Throw a TransformerException if a prefix cannot
+be resolved to a URI insteading of throwing a NullPointerException.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor XSLTAttributeDef.java<br/><ref>Committer's log entry: </ref>
+Correct a problem in the previous patch.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltDatetime.java<br/><ref>Committer's log entry: </ref>
+Javadoc correction.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib Extensions.java<br/><ref>Committer's log entry: </ref>
+Make the tokenize extension function different from the one in the
+EXSLT strings extension. Reuse the Document object to reduce
+memory consumption.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltStrings.java<br/><ref>Committer's log entry: </ref>
+Make the tokenize function conformed with the EXSLT spec. Reuse
+the Document object to reduce memory usage.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes RTFIterator.java xml-xalan/java/src/org/apache/xpath/objects XRTreeFrag.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 11341. Let RTFIterator extend NodeSetDTM so that it is the kind
+of DTMIterator expected by DTMNodeList. This also fixes the problem in
+testcase JavaBugzilla3722.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFunction.java XSLTSchema.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 12077. Fixed problem with func:function in included stylesheet.
+Add exsltFunction to the templateElements list so that we can detect the error where
+func:function is embedded in another (e.g. xsl:variable) element.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/17<br/><ref>Modified: </ref> xml-xalan/java/bin xml-apis.jar xml-xalan/java/src xml-commons-src.tar.gz<br/><ref>Committer's log entry: </ref>
+New version of xml-apis.jar taken from xml-commons with tag:
+factoryfinder-build.  It contains the JAXP FactoryFinder patch and some
+SAX file updates.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/18<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>
+XSLTC support - phase 1
+
+Add the -XSLTC option to enable transforming using XSLTC
+
+The following existing options do not work in XSLTC mode:
+-TT
+-TG
+-TS
+-TTC
+-QC
+-L
+-INCREMENTAL
+-NOOPTIMIZE
+-RL
+
+If any of these options is used with -XSLTC, a message is printed
+and the option is ignored. All other existing options (e.g. -flavor,
+-text, etc.) can be used with -XSLTC.
+
+In phase 2, we are going to migrate the XSLTC specific options in the
+XSLTC command lines (Compile and Transform) to the Process command line.
+One of the new features would be generating translet class files from
+the xsl.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/19<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltDynamic.java ExsltMath.java ExsltStrings.java<br/><ref>Committer's log entry: </ref>
+Extension work. A few Javadoc correction. Fix problems in math:max and math:min.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/19<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/objects XRTreeFragSelectWrapper.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 6181. Change the execute() interface to return the result
+of executing the select expression.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/20<br/><ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/><ref>Committer's log entry: </ref>
+Updating to latest xercesImpl.jar, which contains org.w3c.dom.xpath interfaces.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/domapi XPathEvaluatorImpl.java XPathExpressionImpl.java XPathNSResolverImpl.java XPathResultImpl.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Prototype implementation of DOM L3 XPath Specification.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize SerializerToXML.java<br/><ref>Committer's log entry: </ref>
+Committing Gordon Chiu's (grchiu@ca.ibm.com) patch for bugzilla #6927.
+<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>2002/09/23<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml xsltc_usage.xml<br/><ref>Committer's log entry: </ref>
+compile -n option changed so inlining is now the default
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltBase.java ExsltDynamic.java ExsltMath.java ExsltSets.java ExsltStrings.java<br/><ref>Committer's log entry: </ref>
+Extension cleanup.
+Add an ExsltBase class as the super class for other EXSLT implementation
+classes, so that the toString() and toNumber() interfaces can be easily
+reused by all the subclasses without duplicating code.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath DOMHelper.java<br/><ref>Committer's log entry: </ref>
+The isNodeTheSame(node1, node2) interface should return true if node1==node2.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemAttribute.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #10384.  There's still a problem with attribseterr08 which
+is covered in bugzilla #3969.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/dom3/xpath XPathEvaluator.java XPathException.java XPathExpression.java XPathNamespace.java XPathNSResolver.java XPathResult.java<br/><ref>Committer's log entry: </ref>
+Since Xerces has decided not to build the org.w3c.dom.xpath interfaces into
+XercesImpl I have created a temporary home for these interfaces, until
+the specification becomes a recommendation.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/domapi XPathEvaluatorImpl.java XPathExpressionImpl.java XPathNSResolverImpl.java XPathResultImpl.java<br/><ref>Committer's log entry: </ref>
+Updating import statements to use the interfaces in the temporary org.apache.xalan.dom3.xpath package.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Added some new error message strings.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/25<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #4344.  The testcases, copyerr04-07 were already
+working correctly in that when an attempt was made to add an attribute
+after child elements, or before an element was produced, the attribute was 
+ignored.  However, Dave M.  said that a warning was also needed.  So,
+I have added a warning message for these cases.  Also, similar behaviour
+was being seen for testcases attribset19,35,36 and attribseterr08.  This
+was being handled in ElemAttribute.execute, but I've commented out the
+code there since it will get caught in  ResultTreeHandler.execute in the
+same place the copyerr tests get handled.
+
+The negative testcases, copyerr04-07, attribset08 should  be moved
+to the positive bucket (possibly with a few tweaks) since they all run to
+completion.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/25<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemAttribute.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #4344.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/09/25<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>
+Gordon Chiu's (grchui@ca.ibm.com) patch for bugzilla #8473.  Thanks also
+to Brian Minchau (minchau@ca.ibm.com) for the analysis of this bug.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FunctionMultiArgs.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 7161. Add a public accessor to return the argument array.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPathContext.java xml-xalan/java/src/org/apache/xalan/extensions ExpressionContext.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 10414. Provide a getErrorListener() interface in the ExpressionContext.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/27<br/><ref>Modified: </ref> xml-xalan/java/samples/AppletXMLtoHTML client.html<br/><ref>Committer's log entry: </ref>
+For bugzilla 13059. Fix typo width"0" to width="0".
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/30<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Messages for new options in the Process command line.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/09/30<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>
+XSLTC support in the Process command line - phase 2
+Migrate the options from the XSLTC command line (Compile and Transform)
+to the Process command line. The following new options are added:
+
+-XO [translet_name]  (specify translate class name)
+-XD destination_directory (specify destination directory)
+-XJ jar_name (put translet into jar file)
+-XP package_prefix (specify package name prefix)
+-XN (enable template inlining)
+-XX (additional debug messages)
+-XT (use translet to transform if possible)
+
+The new options can only be used with the -XSLTC option. The options are
+passed to XSLTC via the standard TRAX API - TransformerFactory.setAttribute().
+Process does not directly communicate with XSLTC.
+
+The usage instructions are also re-organized. The options are divided into
+three categories (command options, Options for Xalan and Options for XSLTC). A
+pager is used when displaying the usage instructions so that you can see them
+page by page.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2002/10/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ErrorMessages.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime ErrorMessages.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Added and fixed up some additional translation guidelines.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncExtFunction.java<br/><ref>Committer's log entry: </ref>
+Use Vector.elementAt() instead of Vector.get(). The latter is not available
+in JDK 1.1.8. Add two argument accessor methods for Bugzilla 8939.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates Constants.java ElemTemplateElement.java output_html.properties output_text.properties output_xml.properties OutputProperties.java<br/><ref>Committer's log entry: </ref>
+Use one namespace for all extensions (Bugzilla 9959)
+Use the new namespace uri "http://xml.apache.org/xalan" instead of
+"http://xml.apache.org/xslt" for xsl:output extension attributes.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorLRE.java XSLTElementDef.java XSLTSchema.java<br/><ref>Committer's log entry: </ref>
+Use one namespace for all extensions (Bugzilla 9959)
+Use the new namespace uri "http://xml.apache.org/xalan" for
+the component and script extension elements. We maintain
+backward compatibility so that using the old uri
+"http://xml.apache.org/xslt" still works.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerJavaPackage.java<br/><ref>Committer's log entry: </ref>
+Minor Javadoc update to use the new namespace uri.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/03<br/><ref>Modified: </ref> xml-xalan/java/samples/extensions 1-redir.xsl 2-basicJscript.xsl 3-java-namespace.xsl 4-numlistJava.xsl 5-numlistJscript.xsl 6-sqllib-instantdb.xsl<br/><ref>Committer's log entry: </ref>
+Update the extension samples to use the new namespace.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/04<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltMath.java<br/><ref>Committer's log entry: </ref>
+Minor fix for math:max().
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/04<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor StylesheetHandler.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 13106. Visit the XPath expressions created for match patterns.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes DescendantIterator.java UnionPathIterator.java WalkerFactory.java xml-xalan/java/src/org/apache/xpath/compiler Compiler.java Lexer.java OpMap.java XPathParser.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #5046.
+
+The token queue and operations map can now grow to accomodate really
+large XPath expressions.   Starting sizes of the data structures remain set
+at the size in the current code.
+
+I created new classes org.apache.xml.utils.ObjectVector (based on org.apache.xml.utils.IntVector)
+and org.apache.xpath.compiler.OpMapVector to store the token queue
+and operations map.
+
+This patch is essentially a stop gap until the new parser (xslt20 branch) is integrated.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils ObjectVector.java xml-xalan/java/src/org/apache/xpath/compiler OpMapVector.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #5046.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/compiler OpMap.java<br/><ref>Committer's log entry: </ref>
+Cleaning up import statements.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils IntStack.java IntVector.java ObjectStack.java ObjectVector.java xml-xalan/java/src/org/apache/xalan/templates ElemApplyTemplates.java ElemForEach.java xml-xalan/java/src/org/apache/xalan/transformer StackGuard.java TransformerImpl.java TransformSnapshotImpl.java xml-xalan/java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>
+Commiting Gordon Chiu's (grchiu@ca.ibm.com) patch for bugzilla#8175.
+
+IntStack's and ObjectStack's are now used in place of fixed length arrays, so that users
+should not run into limitations based on array sizes.  The initial size of the arrays has
+been set to current array sizes, so the user's experience should not change much, except
+in the cases where they were running into the size limitation.
+
+No performance analysis has been done to determine an optimal initial
+size for the stacks.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>
+Committing Igor Hersht's (igorh@ca.ibm.com) patch for bugzilla #10176.
+
+Also, removing testcase position102 from the excludes list for the smoketest
+since it now runs.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #13305.  Moved initalization code into a static initializer.
+
+TransformerFactory.newInstance() can now be called safely from multiple
+threads.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/19<br/><ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/><ref>Committer's log entry: </ref>
+Updating to XercesJ 2.2.0.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref ExpandedNameTable.java<br/><ref>Committer's log entry: </ref>
+Committing Pavel Ausianik's (Pavel_Ausianik@epam.com) patch for bugzilla #12687.
+
+Reduce memory allocation on initialization of ExpandedNameTable.
+
+m_locNamesPool and m_namespaceNames and code that uses them has
+been commented out.  Some initialization now done in static initializer.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>
+Committing Gordon Chiu's (grchiu@ca.ibm.com) modified patch of Pavel Ausianik's (Pavel_Ausianik@epam.com) 
+patch for bugzilla #12486.
+
+Method XPathContext.reset()  was creating many new instances of java objects, 
+causing unnecessary memory allocations, instead of reusing previously created 
+objects. 
+
+
+m_locNamesPool and m_namespaceNames and code that uses them has
+been commented out.  Some initialization now done in static initializer.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize Encodings.java Encodings.properties<br/><ref>Committer's log entry: </ref>
+Committing Gordon Chiu's (grchiu@ca.ibm.com) patch for bugzilla #13754.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/dom3/xpath COPYRIGHT.html<br/><ref>Committer's log entry: </ref>
+Copying the copyright statement for the DOM L3 XPath API interfaces into
+the temporary package (org.apache.xalan.dom3.xpath) which contains
+the interfaces until they become a recommendation.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/22<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFunction.java<br/><ref>Committer's log entry: </ref>
+For bugzilla 13711
+Fix the conditions for validating the child elements of func:function.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/22<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer KeyTable.java xml-xalan/java/src/org/apache/xpath/axes NodeSequence.java<br/><ref>Committer's log entry: </ref>
+Committing urban.spielmann@swisslife.ch (Urban Spielmann)'s  patch for bugzilla #11661.  
+
+After the Redundant Expression Elimination merge, the key cache had
+not yet been replaced.  This patch puts back the key cache, which
+gives xsl:key much better performance.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/22<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemExtensionCall.java<br/><ref>Committer's log entry: </ref>
+For bugzilla 7357
+Fix problems in exception handling for extension elements.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #13863.
+
+Moved setting the namespaceContext from the TransformerImpl constructor to
+the transform method.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/25<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPath.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Move a hardcoded string into the properties file.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/25<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerJavaClass.java ExtensionHandlerJavaPackage.java<br/><ref>Committer's log entry: </ref>
+For bugzilla 13944. Check for InvocationTargetException in Method.invoke().
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>
+For Bugzilla 13303.
+Fix Memory leak in XPathContext.popRTFContext().
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>
+Backing out patch for bugzilla #13863.  It causes a bunch of failures in 
+the trax.sax flavour.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan extensions.xml extensionslib.xml samples.xml<br/><ref>Committer's log entry: </ref>
+Update the extensions documentation.
+Use the new namespaces in documents and examples. Update EXSLT development
+status. Modify setup instructions for SQL samples.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java/xdocs xml-site-style.tar.gz xml-xalan/java/xdocs/sources/xalan faq.xml resources.xml<br/><ref>Committer's log entry: </ref>
+For Bugzilla 14022
+Commit Gordon Chiu's update to the FAQ.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/dom3/xpath COPYRIGHT.html XPathEvaluator.java XPathException.java XPathExpression.java XPathNamespace.java XPathNSResolver.java XPathResult.java xml-xalan/java/src/org/apache/xpath/domapi XPathEvaluatorImpl.java XPathExpressionImpl.java XPathNSResolverImpl.java XPathResultImpl.java<br/><ref>Committer's log entry: </ref>
+Removed the temporary org.apache.xalan.dom3.xpath package.
+
+Updated the org.w3c.dom.xpath interfaces.
+
+Changed dependencies to org.w3c.dom.xpath interfaces in the implementation
+classes in org.apache.xalan.xpath.domapi.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java build.xml<br/><ref>Committer's log entry: </ref>
+Build org.w3c.xpath.dom interfaces into xalan.jar.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>
+Patch from Gordon Chiu.  Replace stack.clear() calls with stack.removeAllElements()
+to be compatible with JDK1.1.8.
+<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>2002/10/28<br/><ref>Modified: </ref> xml-xalan/java build.xml<br/><ref>Committer's log entry: </ref>
+Support compiling under JDK 1.2 - 1.4.  Also check for compatability with target JDK 1.1.x.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/10/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/domapi XPathNamespaceImpl.java XPathResultImpl.java<br/><ref>Committer's log entry: </ref>
+Somewhat rough implementation of XPathNamespace.
+<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>2002/10/29<br/><ref>Modified: </ref> xml-xalan/java/bin ant.jar<br/><ref>Committer's log entry: </ref>
+Upgrade to Ant 1.5.1.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/10/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltBase.java ExsltStrings.java xml-xalan/java/src/org/apache/xalan/lib/sql DefaultConnectionPool.java<br/><ref>Committer's log entry: </ref>
+Fix JDK 1.1.8 compatibility problems.
+Replace methods calls that are only in Java2 by JDK 1.1 equivalents.
+For DefaultConnectionPool.java, use reflection mechanism to invoke
+Thread.getContextClassLoader() instead of hard-coded invocation.
+<br/><br/></li></ul>
+</s2>
 <s2 title="Changes for &xslt4j; 2.4.0">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize SerializerToText.java<br/><ref>Committer's log entry: </ref>
 Bugzilla 8358 -- bad method signature. I've created a new method

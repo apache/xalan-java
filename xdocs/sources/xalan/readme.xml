@@ -69,13 +69,93 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.3.1</link></li>
+    <li><link anchor="done">Changes since version 2.4.0</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
+     <s3 title="Changes since &xslt4j; 2.4.0">
+     <ul>
+      <li>Performance fixes and enhancements to address the degradation of performance between Xalan-Java
+      version 2.3.1 and Xalan-Java 2.4.0.</li>
+      <li>A prototype implementation of the <jump href="http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328/">DOM Level 3 XPath Specification</jump>. 
+          The implementation is considered 'experimental' at this time due to the status of the specification.
+          See the new sample, <link idref="samples" anchor="applyxpathdom">ApplyXPathDOM</link> for an
+          example of how to use this API.</li>
+     <li>Extension changes and enhancements:</li>
+      <ul>
+        <li>Implement canonical namespaces for all Xalan extensions. All extensions
+        now use namespaces starting with <code>http://xml.apache.org/xalan</code>. The old namespaces are
+        still supported for backward compatibility. See the updated 
+        <link idref="extensionslib" anchor="intro">extensions</link> documentation for details.</li>
+        <li>Added new EXSLT extension functions, including the EXSLT dynamic extension functions 
+        max, min, sum, map, evaluate and closure, the EXSLT strings extension functions align, 
+        concat, padding, split and tokenize, and some new extension functions in the math module.</li>
+        <li>Reorganized the extension functions for new EXSLT extensions.
+     The implementation of some extension functions (intersection, difference, distinct, 
+     evaluate and tokenize) are moved from the main Extensions class to the corresponding EXSLT modules.</li>
+        <li>Enable the EXSLT extensions for XSLTC. The EXSLT common, math, sets, dates-and-times and strings
+        modules can be used in XSLTC.</li>
+        <li>Integration of the nodeset and redirect extension for XSLTC. You can now use Xalan namespaces for
+        these extensions in XSLTC.</li>
+        <li>Enhancement in Java extenion for XSLTC. Three namespace formats (Java, package and class) can all
+        be used in XSLTC. More type conversion rules are added as well.</li>
+      </ul>
+      <li>Enable support for invoking transformations using the Xalan compiler (XSLTC) via the 
+     Xalan interpretive Process command line.  Specifically, the -XSLTC option was added.  The 
+     -TT, -TG, -TS, -TTC, -QC, -L, -INCREMENTAL, -NOOPTIMIZE and -RL option do not work in XSLTC mode.  All
+     other existing options can be used with -XSLTC.  Additional options were added to enable XSLTC compile
+     and transform modes: -XO, -XD, -XJ, -XP, -XN, -XX, -XT.  See the Process usage statement for more
+     information on these options.</li>
+     <li>Fixed SQL Extension problem where a query that returned zero rows would incorrectly
+      return a JDBC exception.</li>
+     <li>Fixed a limitation for XPath expressions. The token queue and operations map can now grow
+      to accomodate really large XPath expressions.</li>
+     <li>Fixes for the following bugzilla defects: 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=4344">4344</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5046">5046</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6181">6181</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6927">6927</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7161">7161</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7357">7357</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=8175">8175</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=8473">8473</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=8939">8939</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9731">9731</jump>,                              
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9959">9959</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10176">10176</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10384">10384</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10414">10414</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10643">10643</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11073">11073</jump>,                         
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11341">11341</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11661">11661</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11743">11743</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11809">11809</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12077">12077</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12127">12127</jump>,                         
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12298">12298</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12687">12687</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13059">13059</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13303">13303</jump>,               
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13305">13305</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13106">13106</jump>,   
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13501">13501</jump>,            
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13711">13711</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13754">13754</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13863">13863</jump>,          
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13944">13944</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14022">14022</jump></li>. 
+     <li>Support for and bundling of Xerces Java 2.2.</li>
+     <li>Support for and bundling of xml-apis.jar from the factoryfinder-build of the RIVERCOURT1 branch of xml-commons.  This version of the Java
+     APIs for XML Processing successfully passes the JAXP 1.1 and JAXP 1.2 TCKs.</li>
+     <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.</li>
+     <li>Support building Xalan with JDK 1.4.</li>
+     </ul>
+     </s3>
      <s3 title="Changes since &xslt4j; 2.3.1">
      <ul>
      <li>Fixes for the following bugzilla defects: 

@@ -49,7 +49,7 @@
 
   <resource id="xml4j-used" 
             title="&xml4j-used;" 
-            location="http://xml.apache.org/xerces-j/index.html"/>
+            location="http://xml.apache.org/xerces2-j/index.html"/>
   <resource id="xml4j-distdir" 
             title="xerces-j distribution directory" 
             location="http://xml.apache.org/dist/xerces-j/"/>
