@@ -1194,7 +1194,11 @@ public class NodeSetDTM extends NodeVector
         "This NodeSetDTM can not do indexing or counting functions!");
 
     int saved = m_next;
-    int n = (m_next < m_firstFree) ? elementAt(m_next) : DTM.NULL;
+    // because nextNode always increments
+    // But watch out for copy29, where the root iterator didn't
+    // have nextNode called on it.
+    int current = (m_next > 0) ? m_next-1 : m_next; 
+    int n = (current < m_firstFree) ? elementAt(current) : DTM.NULL;
     m_next = saved; // HACK: I think this is a bit of a hack.  -sb
     return n;
   }
