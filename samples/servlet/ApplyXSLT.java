@@ -502,7 +502,7 @@ public class ApplyXSLT extends HttpServlet
 	  if (method.equals("html"))
 		  return "text/html";
 	  else if (method.equals("text"))
-		  return "text";
+		  return "text/plain";
 	  else 
 		  return "text/xml";
 	}
