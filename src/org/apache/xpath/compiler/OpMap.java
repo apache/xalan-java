@@ -291,6 +291,15 @@ public class OpMap
    * <meta name="usage" content="advanced"/>
    * Go to the first child of a given operation.
    */
+  public int getArgLength(int opPos)
+  {
+    return m_opMap[opPos+MAPINDEX_LENGTH];
+  }
+
+  /**
+   * <meta name="usage" content="advanced"/>
+   * Go to the first child of a given operation.
+   */
   public int getArgLengthOfStep(int opPos)
   {
     return m_opMap[opPos+MAPINDEX_LENGTH+1]-3;
