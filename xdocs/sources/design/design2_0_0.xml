@@ -25,7 +25,7 @@
   <s2 title="Introduction"> 
 	 <p>This document presents the basic design for Xalan-J 2.0, which is a
 		<jump href="http://www.awl.com/cseng/titles/0-201-89542-0/techniques/refactoring.htm">refactoring</jump>
-		and redesign of the Xalan-J 1.x processor.   This document will expand and grow over time, and is also incomplete in some sections, though hopefully overall accurate.  The reader should be able to get a good overall idea of the internal design of Xalan, and begin to understand the process flow, and also the technical challanges.</p> 
+		and redesign of the Xalan-J 1.x processor.   This document will expand and grow over time, and is also incomplete in some sections, though hopefully overall accurate.  The reader should be able to get a good overall idea of the internal design of Xalan, and begin to understand the process flow, and also the technical challenges.</p> 
 	 <p>The main goals of this redesign are
 		to: </p><ol> 
 		<li>Make the design and code more understandable by Open Source
