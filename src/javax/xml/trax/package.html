@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>
+</title>
+</head>
+<body> 
+  <h2>Transformations API For XML (TrAX)</h2> 
+  <p>October 30, 2000</p> 
+  <p>&copy;Copyright 2000 Java Community Process (Sun Microsystems,
+	 Inc.)</p> 
+    
+  <h3>Introduction</h3> 
+  <p>There is a broad need for Java applications to be able to transform XML
+	 and related tree-shaped data structures. In fact, XML is not normally very
+	 useful to an application without going through some sort of transformation,
+	 unless the semantic structure is used directly as data. Almost all xml-related
+	 applications need to perform transformations. Transformations may be described
+	 by Java code, Perl code, XSLT Stylesheets, other types of script, or by
+	 proprietary formats. The inputs, one or multiple, to a transformation, may be
+	 an URL, XML stream, a DOM tree, SAX Events, or a proprietary format or data
+	 structure. The output types are the pretty much the same types as the inputs,
+	 but different inputs may need to be combined with different outputs.</p> 
+  <p>The great challenge of a transformation API is how to deal with
+	 combinations of inputs and outputs, without becoming specialized for any of the
+	 given types.</p> 
+  <p>The Java community will greatly benefit from a common API that will
+	 allow them to understand and apply a single model, write to consistent
+	 interfaces, and apply the transformations polymorphically. TrAX attempts to
+	 define a model that is clean and generic, yet will fill the requirements of
+	 general application across a great variety of uses. </p> 
+   
+	 <h3>General Terminology</h3> 
+	 <p>This section will explain some general terminology used in this
+		document. Technical terminology will be explained in the Model section. In many
+		cases, the general terminology overlaps with the technical terminology.</p> 
+	 <dl>
+<dt>Transformation</dt>
+<dd>The processor of consuming a stream or tree to produce
+			 another stream or tree.</dd>
+<dt>Serialization</dt>
+<dd>The process of taking a tree and turning it into a stream. In
+			 some sense, serialization is a specialization of transformation.</dd>
+<dt>Transformer</dt>
+<dd>A transformer is the thing that executes the transformation.
+			 </dd>
+<dt>Transformation instructions</dt>
+<dd>Describes the transformation. A form of code or
+			 script.</dd>
+<dt>Processor</dt>
+<dd>A general term for the thing that may both process the
+			 transformation instructions, and perform the transformation.</dd>
+</dl> 
+   
+  <h3>Requirements</h3> 
+  <p>The following requirements have been determined from broad experience
+	 with XML projects from the various members participating on the JCP.</p> 
+  <ol>
+<li>TrAX must provide a clean, simple interface for simple
+		uses.</li>
+<li>TrAX must be powerful enough to be applied to a wide range of
+		uses, such as, e-commerce, content management, server content delivery, and
+		client applications.</li>
+<li>A processor that implements a TrAX interface must be
+		optimizeable. Performance is a critical issue for most transformation use
+		cases.</li>
+<li>As a specialization of the above requirement, a TrAX processor
+		must be able to support a compiled model, so that a single set of
+		transformation instructions can be compiled, optimized, and applied to a large
+		set of input sources.</li>
+<li>TrAX must not be dependent an any given type of transformation
+		instructions. For instance, it must remain independent of XSLT.</li>
+<li>TrAX must be able to allow processors to transform DOM
+		trees.</li>
+<li>TrAX must be able to allow processors to produce DOM
+		trees.</li>
+<li>TrAX must be able to allow processors to transform SAX
+		events.</li>
+<li>TrAX must be able to allow processors to produce DOM
+		trees.</li>
+<li>TrAX must be able to allow processors to transform streams of
+		XML.</li>
+<li>TrAX must be able to allow processors to produce XML, HTML, and
+		other types of streams.</li>
+<li>TrAX must be able to allow processors to implement the various
+		combinations of inputs and outputs within a single processor.</li>
+<li>TrAX must be able to allow processors to implement only a limited
+		set of inputs. For instance, it should be possible to write a processor that
+		implements the TrAX interfaces that only processor DOM trees, not streams or
+		SAX events.</li>
+<li>TrAX should allow a processor to implement transformations of
+		proprietary data structures. For instance, it should be possible to implement a
+		processor that provides TrAX interfaces that performs transformation of JDOM
+		trees.</li>
+<li>TrAX must be able to allow the setting of serialization
+		properties, without constraint as to what the details of those properties
+		are.</li>
+<li>TrAX must allow the setting of parameters to the transformation
+		instructions.</li>
+<li>TrAX must be able to support the setting of parameters and
+		properties as XML Namespaced items (i.e. qualified names).</li>
+<li>TrAX must be able to support URL resolution from within the
+		transformation, and have it return the needed data structure.</li>
+</ol>   
+  <h3>Model</h3> 
+  <p>The section defines the abstract model for TrAX, apart from the details
+	 of the interfaces.</p> 
+  <p>A TRaX TransformerFactory is an object that
+	 processes transformation instructions, and produces
+	 Templates (in the technical termonology). The
+	 Templates provide Transformers, which
+	 transform one or more Sources into one or more
+	 Results.</p> 
+  <p>To use the TRaX interface, you create a
+	 TransformerFactory, which may directly provide Transformers,
+	 or which can provide Templates from a variety of
+	 Sources. The Templates object is normally a compiled
+	 representation of the transformation instructions, and provides a
+	 Transformer. The Transformer processes an
+	 InputSource according to the instructions found in the
+	 Templates, and produces a Result.</p> 
+  <p>The process of transformation from a tree, either in the form of an
+	 object model, or in the form of parse events, into a stream, is known as
+	 Serialization. This term, although it overlaps with Java
+	 object serialization, is the best description of this process.</p>
+  
+  ProcessorGeneric concept for the
+  set of objects that implement the TrAX
+  interfaces.Create compiled transformation
+  instructions, transform resources, and manager parameters and properties of
+  those transformations.Only the Templates
+  object can be used concurrently in multiple threads. The rest of the processor
+  does not do synchronized blocking, and so can not be used
+  concurrently.
+  TransformerFactory Serve as a vendor
+  neutral Processor interface for XSLT processors and similar
+  processors. Serve as a factory for a concrete
+  implementation of an TransformerFactory, serve as a direct factory for
+  Transformer objects, serve as a factory for Templates objects, and manage
+  processor specific features.
+  TransformerFactorys can not run concurrently.
+    Templates The run
+  time representation of the transformation instructions.
+  Acts as a data bag for transformation instructions, act as a
+  factory for Transformers. Threadsafe
+  concurrently over multiple threads once construction is
+  complete.  
+  Transformer Act as a per-thread execution
+  context for transformations, act as an interface for performing the
+  transformation.Perfom the
+  transformation. Only safe one instance per
+  thread. The Transformer is bound to the Templates object
+  that created it.  
+  Source Serve as a single vendor-neutral
+  object for multiple types of input. Act as simple
+  data holder for System IDs, DOM nodes, streams, etc.
+  Threadsafe concurrently over multiple threads for read-only,
+  must be synchronized for edit. 
+  Result
+  ResultTarget Serve
+  as a single object for multiple types of output, so there can be simple process
+  method signatures. Act as simple data holder for
+  output stream, DOM node, ContentHandler, etc.
+  Threadsafe concurrently over multiple threads for read-only,
+  must be synchronized for edit.   
+   
+	 <h3>Interfaces and Usage</h3> 
+	  
+		<p>The detailed documentation of the APIs is left to JavaDoc for the
+		  moment, until the interfaces are stable enough to document here.</p> 
+	  
+	 <p> TrAX defines a top-level series of interfaces in org.javax.xml.trax.
+		These interfaces have no dependencies on SAX or the DOM standard, and try to
+		make as few assumptions as possible about the details of the source and result
+		of a transform. It acheaves this by defining org.javax.xml.trax.Source and
+		org.javax.xml.trax.Result interfaces, which, at the current time, hold no
+		methods, though this may change over time.</p> 
+	 <p>In order to define concrete, useable classes for the user, TrAX
+		defines specialization of the interfaces found at the TrAX root level. These
+		interfaces are found in javax.xml.trax.sax, javax.xml.trax.dom,
+		javax.xml.trax.uri, and javax.xml.trax.stream.</p> 
+	  
+		<h3>Creating Objects</h3> 
+		<p>TrAX allows a concrete TransformerFactory object to be created from
+		  static functions implemented by the TransformerFactory abstract class. A
+		  particular TransformerFactory is "plugged" into the platform via the
+		  ProcessorFactory in one of two ways: 1) as a platform default classname that
+		  can be set via the TransformerFactory#setPlatformDefault method, and 2) through
+		  external specification by a system property named "org.xml.trax.Processor.xslt"
+		  obtained using java.lang.System.getProperty().</p> 
+	  
+	  
+		<h3>Specification of Inputs and Outputs</h3> 
+		<p>TrAX defines two interface objects called Source and Result. In
+		  order to pass Source and Result objects to the TrAX interfaces, concrete
+		  classes need to be used. TrAX defines four concrete representations of Source
+		  and Result pairs: URISource and URIResult, StreamSource and StreamResult,
+		  SAXSource and SAXResult, and DOMSource and DOMResult.</p> 
+	  
+	  
+		<h3>Qualified Name representation</h3> 
+		<p>One of the facts of dealing with XML objects is having to deal
+		  withNamespaces.
+		  Qualified Names appear in XML markup as prefixed names. But the prefixes
+		  themselves do not hold identity, rather, it is the URIs that they contextually
+		  map to that hold the identity. Therefore, when passing Qualified Names in among
+		  Java programs, it is impossible to pass "xyz:foo" without have some sort of
+		  object that maps "xyz" to a namespace. </p> 
+		<p>One solution to this as been to create a QName object that holds
+		  the namespace URI, as well as the prefix and local name. But this is not a
+		  great solution when you want to use unique strings as keys in a dictionary
+		  object, for instance. Not having a string representation also makes it very
+		  hard to specify namespaced identity outside the context of a XML
+		  document.</p> 
+		<p>In order to pass namespaced values to transformations, for instance
+		  as a set of properties to the Serializer, this specification defines that
+		  parameter String object specified as "qname" be passed as two-part string, with
+		  the first part being the URL, the delimiter being the '{' for the start of the
+		  URI and '}' signifies the end, with the local name following. If the qname has
+		  a null URL, then the String object will only contain the local name. An
+		  application can safely check for a non-null URI by testing to see if the first
+		  character of the name is a '{' character.</p> 
+		<p>For example, if a URI and local name were obtained from an element
+		  defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
+		  then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+		  the prefix is lost.</p> 
+	  
+	  
+		<h3>Serialization</h3> 
+		<p>
+</p> 
+		<p>If all that is desired is the simple identity transformation of a
+		  source to a result, then the TransformerFactory provides a newTransformer
+		  method that does not have any arguments. The method will create a Transformer
+		  that will simply perform a copy of the source to the result. The most common
+		  uses of this will be to create a DOM from SAX events, or creates an XML or HTML
+		  stream from DOM or SAX events. The following example illustrates the
+		  serialization of a DOM node to an XML stream.</p> 
+		<code>
+<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();    
+    Transformer serializer = tfactory.newTransformer();
+    Properties oprops = new Properties();
+    oprops.put("method", "html");
+    oprops.put("indent-amount", "2");
+    serializer.setOutputProperties(oprops);
+    serializer.transform(new DOMSource(doc), 
+                         new StreamResult(System.out));</pre>
+</code> 
+   
+   
+	 <h3>Resolution of URIs within a transformation</h3> 
+	 <p>TBD</p> 
+   
+
+</body>
+</html>
