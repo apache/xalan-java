@@ -1524,13 +1524,17 @@ public final class DOMImpl implements DOM, Externalizable {
 		    // set _limit to match next()'s criteria for end
 		    _limit = node + 1;
 		}
-		// find leftmost descendant of next sibling
-		else if ((node = _nextSibling[node]) == 0) {
-		    // no next sibling, array end is the limit
-		    _limit = _treeNodeLimit;
+		else if ((_limit = _nextSibling[node]) == 0) {
+		    final int parent = _parent[node];
+		    if (parent == 0 || (_limit = _nextSibling[parent]) == 0) {
+			_limit = _treeNodeLimit;
+		    }
+		    else {
+			// _limit already set to parent's next sibling.
+		    }
 		}
 		else {
-		    _limit = leftmostDescendant(node);
+		    // _limit already set to next sibling.
 		}
 		return resetPosition();
 	    }
@@ -1877,17 +1881,6 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public NodeIterator orderNodes(NodeIterator source, int node) {
 	return new DupFilterIterator(source);
-    }
-
-    /**
-     * Returns the leftmost descendant of a node (bottom left in sub-tree)
-     */
-    private int leftmostDescendant(int node) {
-	int current;
-	while (_type[current = node] >= NTYPES 
-	       && (node = _offsetOrChild[node]) != NULL) {
-	}
-	return current;
     }
 
     /**
