@@ -181,12 +181,30 @@ public class OutputProperties extends ElemTemplateElement
   static private Properties loadPropertiesFile(String resourceName, Properties defaults)
     throws IOException
   {
+
+    // This static method should eventually be moved to a thread-specific class
+    // so that we can cache the ContextClassLoader and bottleneck all properties file
+    // loading throughout Xalan.
+
     Properties props = new Properties(defaults);
 
     InputStream is = null;
     BufferedInputStream bis = null;
+
     try {
-      is = ExtensionHandler.getClassForName("org.apache.xalan.templates.OutputProperties").getResourceAsStream(resourceName);
+      try {
+        java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
+        if (getCCL != null) {
+          ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
+          is = contextClassLoader.getResourceAsStream("org/apache/xalan/templates/" + resourceName);
+        }
+      }
+      catch (Exception e) {}
+
+      if ( is == null ) {
+        is = OutputProperties.class.getResourceAsStream(resourceName);
+      }
+      
       bis = new BufferedInputStream(is);
       props.load(bis);
     } 
@@ -207,9 +225,6 @@ public class OutputProperties extends ElemTemplateElement
         throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);
       }
     } 
-    catch (ClassNotFoundException cnfe) {
-      throw new WrappedRuntimeException("Internal error.  Could not load org.apache.xalan.templates.OutputProperties!", cnfe);
-    }
     finally {
       if ( bis != null ) {
         bis.close();
@@ -1037,4 +1052,11 @@ public class OutputProperties extends ElemTemplateElement
 
   /** Synchronization object for lazy initialization of the above tables. */
   private static Integer m_synch_object = new Integer(1);
+
+  /** a zero length Class array used in loadPropertiesFile() */
+  private static final Class[] NO_CLASSES = new Class[0];
+
+  /** a zero length Object array used in loadPropertiesFile() */
+  private static final Object[] NO_OBJS = new Object[0];
+
 }
