@@ -36,13 +36,6 @@ import org.apache.xalan.xsltc.compiler.util.RealType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
-/**
- * @author Jacek Ambroziak
- * @author Santiago Pericas-Geertsen
- * @author Morten Jorgensen
- * @author Erwin Bolwidt <ejb@klomp.org>
- * @author John Howard <JohnH@schemasoft.com>
- */
 final class Variable extends VariableBase {
 
     public int getIndex() {
@@ -148,25 +141,26 @@ final class Variable extends VariableBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	final String name = getEscapedName();
+        // Don't generate code for unreferenced variables
+        if (_refs.isEmpty()) {
+            _ignore = true;
+        }
 
 	// Make sure that a variable instance is only compiled once
 	if (_ignore) return;
 	_ignore = true;
+
+	final String name = getEscapedName();
 
 	if (isLocal()) {
 	    // Compile variable value computation
 	    translateValue(classGen, methodGen);
 
 	    // Add a new local variable and store value
-	    if (_refs.isEmpty()) { // Remove it if nobody uses the value
-		il.append(_type.POP());
-		_local = null;
-	    }
-	    else {		   // Store in local var slot if referenced
-		if (_local == null) mapRegister(methodGen);
-		il.append(_type.STORE(_local.getIndex()));
-	    }
+	    if (_local == null) {
+                mapRegister(methodGen);
+            }
+	    il.append(_type.STORE(_local.getIndex()));
 	}
 	else {
 	    String signature = _type.toSignature();
