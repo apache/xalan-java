@@ -122,7 +122,7 @@ public class CountersTable extends Hashtable
   /**
    * Place to collect new counters.
    */
-  private NodeSet m_newFound = new NodeSet();
+  transient private NodeSet m_newFound = new NodeSet();
 
   /**
    * Add a list of counted nodes that were built in backwards document
@@ -146,7 +146,7 @@ public class CountersTable extends Hashtable
   // For diagnostics
 
   /** Number of counters created so far          */
-  int m_countersMade = 0;
+  transient int m_countersMade = 0;
 
   /**
    * Count forward until the given node is found, or until

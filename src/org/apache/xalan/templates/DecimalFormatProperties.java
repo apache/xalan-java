@@ -96,7 +96,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 public class DecimalFormatProperties extends ElemTemplateElement
 {
 
-  /** An instance of DecimalFormatSymbols for this element        */
+  /** An instance of DecimalFormatSymbols for this element.
+   *  @serial       */
   DecimalFormatSymbols m_dfs;
 
   /**
@@ -142,6 +143,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
   /**
    * If there is a name attribute, then the element declares a named
    * decimal-format; otherwise, it declares the default decimal-format.
+   * @serial
    */
   private QName m_qname = null;
 

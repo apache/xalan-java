@@ -77,27 +77,28 @@ import org.w3c.dom.Node;
 public class XUnresolvedVariable extends XObject
 {  
   /** The node context for execution. */
-  private Node m_context;
+  transient private Node m_context;
   
   /** The transformer context for execution. */
-  private TransformerImpl m_transformer;
+  transient private TransformerImpl m_transformer;
   
   /** An index to the point in the variable stack where we should
    * begin variable searches for evaluation of expressions.
    * This is -1 if m_isTopLevel is false. 
    **/
-  private int m_varStackPos = -1;
+  transient private int m_varStackPos = -1;
 
   /** An index into the variable stack where the variable context 
    * ends, i.e. at the point we should terminate the search. 
    **/
-  private int m_varStackContext;
+  transient private int m_varStackContext;
   
-  /** true if this variable or parameter is a global. */
+  /** true if this variable or parameter is a global.
+   *  @serial */
   private boolean m_isGlobal;
   
   /** true if this variable or parameter is not currently being evaluated. */
-  private boolean m_doneEval = true;
+  transient private boolean m_doneEval = true;
   
   /**
    * Create an XUnresolvedVariable, that may be executed at a later time.

@@ -1533,7 +1533,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   /**
    * Get a string representation of the error code.
    *
-   * @param errorCode Should be a valid error code less than {@link MAX_CODE}.
+   * @param errorCode Should be a valid error code less than {@link #MAX_CODE}.
    *
    * @return A string representation of the error code, or null if code is 
    * greater than MAX_CODE.
@@ -1554,7 +1554,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   /**
    * Get a string representation of the warning code.
    *
-   * @param errorCode Should be a valid warning code less than {@link MAX_WARNING}.
+   * @param errorCode Should be a valid warning code less than {@link #MAX_WARNING}.
    *
    * @return A string representation of the warning code, or null if code is 
    * greater than MAX_WARNING.
@@ -1575,7 +1575,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   /**
    * Get a string representation of the message code. (same as getMessageKey).
    *
-   * @param errorCode Should be a valid error code less than {@link MAX_CODE}.
+   * @param errorCode Should be a valid error code less than {@link #MAX_CODE}.
    *
    * @return A string representation of the error code, or null if code is 
    * greater than MAX_CODE.
@@ -1595,7 +1595,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   /**
    * Get a string representation of the warning code.
    *
-   * @param errorCode Should be a valid warning code less than {@link MAX_WARNING}.
+   * @param errorCode Should be a valid warning code less than {@link #MAX_WARNING}.
    *
    * @return A string representation of the warning code, or null if code is 
    * greater than MAX_WARNING.

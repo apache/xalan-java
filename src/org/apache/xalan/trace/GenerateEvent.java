@@ -71,20 +71,18 @@ import org.apache.xalan.transformer.TransformerImpl;
  * formatter listener FormatterToXXX)classes.
  *
  * @see org.apache.xml.utils.DOMBuilder
- * @see org.apache.xml.utils.FormatterToHTML
- * @see org.apache.xml.utils.FormatterToText
- * @see org.apache.xml.utils.FormatterToXML
+ * @see org.apache.xalan.serialize.SerializerToHTML
+ * @see org.apache.xalan.serialize.SerializerToText
+ * @see org.apache.xalan.serialize.SerializerToXML
  *
  */
 public class GenerateEvent implements java.util.EventListener
 {
 
   /**
-   * The XSLT TransformerFactory, which either directly or indirectly contains most needed information.
-   * Accessing the m_stylesheetRoot member variable will get you to the stylesheet information.
+   * The XSLT Transformer, which either directly or indirectly contains most needed information.
    *
-   * @see org.apache.xalan.transformer.TransformerImpl, org.apache.xalan.templates.StylesheetRoot,
-   *     org.apache.xalan.xslt.Stylesheet
+   * @see org.apache.xalan.transformer.TransformerImpl
    */
   public TransformerImpl m_processor;
 

@@ -110,7 +110,7 @@ public class MethodResolver
    * @param argsOut An array of the exact size as argsIn, which will be 
    * populated with converted arguments if a suitable method is found.
    * @return A constructor that will work with the argsOut array.
-   * @exception TransformerException may be thrown for Xalan conversion
+   * @throws TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static Constructor getConstructor(Class classObj, 
@@ -202,7 +202,7 @@ public class MethodResolver
    * @param argsOut An array of the exact size as argsIn, which will be 
    * populated with converted arguments if a suitable method is found.
    * @return A method that will work with the argsOut array.
-   * @exception TransformerException may be thrown for Xalan conversion
+   * @throws TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static Method getMethod(Class classObj,
@@ -324,7 +324,7 @@ public class MethodResolver
    * @param classObj The Class of the object that should have the method.
    * @param name The name of the method to be invoked.
    * @return A method that will work to be called as an element.
-   * @exception TransformerException may be thrown for Xalan conversion
+   * @throws TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static Method getElementMethod(Class classObj,
@@ -398,7 +398,7 @@ public class MethodResolver
    * populated with converted arguments.
    * @param paramTypes An array of class objects, of the exact same 
    * size as argsIn and argsOut.
-   * @exception TransformerException may be thrown for Xalan conversion
+   * @throws TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static void convertParams(Object[] argsIn, 
@@ -662,7 +662,7 @@ public class MethodResolver
    * @param javaClass The type of object to convert to.
    * @returns An object suitable for passing to the Method.invoke 
    * function in the args array, which may be null in some cases.
-   * @exception TransformerException may be thrown for Xalan conversion
+   * @throws TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   static Object convert(Object xsltObj, Class javaClass)

@@ -84,16 +84,19 @@ public class AVT implements java.io.Serializable
 
   /**
    * If the AVT is not complex, just hold the simple string.
+   * @serial
    */
   private String m_simpleString = null;
 
   /**
    * If the AVT is complex, hold a Vector of AVTParts.
+   * @serial
    */
   private Vector m_parts = null;
 
   /**
    * The name of the attribute.
+   * @serial
    */
   private String m_rawName;
 
@@ -119,6 +122,7 @@ public class AVT implements java.io.Serializable
 
   /**
    * The name of the attribute.
+   * @serial
    */
   private String m_name;
 
@@ -143,7 +147,8 @@ public class AVT implements java.io.Serializable
   }
 
   /**
-   * The name of the attribute.
+   * The namespace URI of the owning attribute.
+   * @serial
    */
   private String m_uri;
 

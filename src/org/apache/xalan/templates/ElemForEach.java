@@ -107,6 +107,7 @@ public class ElemForEach extends ElemTemplateElement
 
   /**
    * The "select" expression.
+   * @serial
    */
   private XPath m_selectExpression = null;
 
@@ -142,7 +143,8 @@ public class ElemForEach extends ElemTemplateElement
            ? getStylesheetRoot().m_selectDefault : m_selectExpression;
   }
 
-  /** Vector containing the xsl:sort elements associated with this element         */
+  /** Vector containing the xsl:sort elements associated with this element.
+   *  @serial         */
   protected Vector m_sortElems = null;
 
   /**
@@ -360,7 +362,7 @@ public class ElemForEach extends ElemTemplateElement
    *
    * @param transformer non-null reference to the the current transform-time state.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
-   * @exception TransformerException Thrown in a variety of circumstances.
+   * @throws TransformerException Thrown in a variety of circumstances.
    * @param stylesheetTree The owning stylesheet tree.
    * @param xslInstruction The stylesheet element context (depricated -- I do
    *      not think we need this).

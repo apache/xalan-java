@@ -91,7 +91,8 @@ public class ElemExtensionCall extends ElemLiteralResult
 
   // ExtensionNSHandler nsh;
 
-  /** The Namespace URI for this extension call element          */
+  /** The Namespace URI for this extension call element.
+   *  @serial          */
   String m_extns;
 
   // String m_extHandlerLookup;
@@ -99,16 +100,20 @@ public class ElemExtensionCall extends ElemLiteralResult
   /** Flag indicating if the extension is available for execution    */
   transient boolean isAvailable = false;
 
-  /** Language used by extension          */
+  /** Language used by extension.
+   *  @serial          */
   String m_lang;
 
-  /** URL pointing to extension          */
+  /** URL pointing to extension.
+   *  @serial          */
   String m_srcURL;
 
-  /** Source for script          */
+  /** Source for script.
+   *  @serial          */
   String m_scriptSrc;
 
-  /** Declaration for Extension element          */
+  /** Declaration for Extension element. 
+   *  @serial          */
   ElemExtensionDecl m_decl = null;
 
   /**

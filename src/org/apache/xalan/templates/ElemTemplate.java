@@ -92,10 +92,12 @@ import javax.xml.transform.TransformerException;
 public class ElemTemplate extends ElemTemplateElement
 {
 
-  /** The public identifier for the current document event          */
+  /** The public identifier for the current document event.
+   *  @serial          */
   private String m_publicId;
 
-  /** The system identifier for the current document event          */
+  /** The system identifier for the current document event.
+   *  @serial          */
   private String m_systemId;
 
   /**
@@ -191,6 +193,7 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * The match attribute is a Pattern that identifies the source
    * node or nodes to which the rule applies.
+   * @serial
    */
   private XPath m_matchPattern = null;
 
@@ -228,6 +231,7 @@ public class ElemTemplate extends ElemTemplateElement
 
   /**
    * An xsl:template element with a name attribute specifies a named template.
+   * @serial
    */
   private QName m_name = null;
 
@@ -262,6 +266,7 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * Modes allow an element to be processed multiple times,
    * each time producing a different result.
+   * @serial
    */
   private QName m_mode;
 
@@ -296,6 +301,7 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * The priority of a template rule is specified by the priority
    * attribute on the template rule.
+   * @serial
    */
   private double m_priority = XPath.MATCH_SCORE_NONE;
 

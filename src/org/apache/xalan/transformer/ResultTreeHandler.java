@@ -329,12 +329,10 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI the prefix is mapped to.
-   * @exception javax.xml.transform.TransformerException The client may throw
+   * @throws org.xml.sax.SAXException The client may throw
    *            an exception during processing.
    * @see #endPrefixMapping
    * @see #startElement
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
@@ -351,7 +349,8 @@ public class ResultTreeHandler extends QueuedEvents
    * @param shouldFlush Indicate whether pending events needs
    * to be flushed first  
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException The client may throw
+   *            an exception during processing.
    */
   public void startPrefixMapping(
           String prefix, String uri, boolean shouldFlush) throws org.xml.sax.SAXException
@@ -396,12 +395,10 @@ public class ResultTreeHandler extends QueuedEvents
    * guaranteed.</p>
    *
    * @param prefix The prefix that was being mapping.
-   * @exception javax.xml.transform.TransformerException The client may throw
+   * @throws org.xml.sax.SAXException The client may throw
    *            an exception during processing.
    * @see #startPrefixMapping
    * @see #endElement
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException{}
 
@@ -722,10 +719,8 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @param name The name of the skipped entity.  If it is a
    *        parameter entity, the name will begin with '%'.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void skippedEntity(String name) throws org.xml.sax.SAXException{}
 

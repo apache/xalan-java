@@ -322,7 +322,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   /**
    * Implement the startDocument event.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void startDocument() throws org.xml.sax.SAXException
   {
@@ -412,7 +412,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   /**
    * Implement the endDocument event.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void endDocument() throws org.xml.sax.SAXException
   {
@@ -497,7 +497,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param name Name of the element
    * @param atts List of attributes associated with the element
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String ns, String localName, String name, Attributes atts)
@@ -533,7 +533,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param localName Local part of the qualified name of the element
    * @param name Name of the element
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void endElement(String ns, String localName, String name)
           throws org.xml.sax.SAXException
@@ -565,7 +565,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * the regular {@link org.xml.sax.ContentHandler#characters
    * characters} event.</p>
    *
-   * @exception TransformerException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #endCDATA
    */
   public void startCDATA() throws org.xml.sax.SAXException
@@ -576,7 +576,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   /**
    * Report the end of a CDATA section.
    *
-   * @exception TransformerException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #startCDATA
    */
   public void endCDATA() throws org.xml.sax.SAXException
@@ -591,7 +591,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param start Start index of characters to process in the array
    * @param length Number of characters to process in the array 
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
@@ -631,7 +631,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param start Start index of characters to process in the array
    * @param length Number of characters to process in the array
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void charactersRaw(char ch[], int start, int length)
           throws org.xml.sax.SAXException
@@ -652,7 +652,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param start Start index of characters to process in the array
    * @param length Number of characters to process in the array
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
           throws org.xml.sax.SAXException
@@ -675,7 +675,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param target Target of PI node
    * @param data Content of PI node
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void processingInstruction(String target, String data)
           throws org.xml.sax.SAXException
@@ -699,7 +699,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param ch An array holding the characters in the comment.
    * @param start The starting position in the array.
    * @param length The number of characters to use from the array.
-   * @exception TransformerException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    */
   public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
@@ -726,7 +726,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *
    * @param name The name of the entity.  If it is a parameter
    *        entity, the name will begin with '%'.
-   * @exception TransformerException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #endEntity
    * @see org.xml.sax.ext.DeclHandler#internalEntityDecl
    * @see org.xml.sax.ext.DeclHandler#externalEntityDecl
@@ -745,7 +745,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * Report the end of an entity.
    *
    * @param name The name of the entity that is ending.
-   * @exception TransformerException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #startEntity
    */
   public void endEntity(String name) throws org.xml.sax.SAXException
@@ -771,7 +771,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *        external DTD subset, or null if none was declared.
    * @param systemId The declared system identifier for the
    *        external DTD subset, or null if none was declared.
-   * @exception TransformerException The application may raise an
+   * @throws org.xml.sax.SAXException The application may raise an
    *            exception.
    * @see #endDTD
    * @see #startEntity
@@ -790,7 +790,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   /**
    * Report the end of DTD declarations.
    *
-   * @exception TransformerException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #startDTD
    */
   public void endDTD() throws org.xml.sax.SAXException
@@ -822,12 +822,10 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI the prefix is mapped to.
-   * @exception javax.xml.transform.TransformerException The client may throw
-   *            an exception during processing.
    * @see #endPrefixMapping
    * @see #startElement
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
@@ -850,12 +848,10 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * guaranteed.</p>
    *
    * @param prefix The prefix that was being mapping.
-   * @exception javax.xml.transform.TransformerException The client may throw
-   *            an exception during processing.
    * @see #startPrefixMapping
    * @see #endElement
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException
   {
@@ -879,10 +875,8 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *
    * @param name The name of the skipped entity.  If it is a
    *        parameter entity, the name will begin with '%'.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void skippedEntity(String name) throws org.xml.sax.SAXException
   {
@@ -950,7 +944,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *
    * @param result A Result instance, should not be null.
    * 
-   * @throws TransformerException if result is invalid for some reason.
+   * @throws IllegalArgumentException if result is invalid for some reason.
    */
   public void setResult(Result result)
     throws IllegalArgumentException
@@ -1025,7 +1019,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *
    * @param name The element type name.
    * @param model The content model as a normalized string.
-   * @exception SAXException The application may raise an exception.
+   * @throws SAXException The application may raise an exception.
    */
   public void elementDecl (String name, String model)
     throws org.xml.sax.SAXException
@@ -1050,7 +1044,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *        none of these applies.
    * @param value A string representing the attribute's default value,
    *        or null if there is none.
-   * @exception SAXException The application may raise an exception.
+   * @throws SAXException The application may raise an exception.
    */
   public void attributeDecl (String eName,
                              String aName,
@@ -1071,7 +1065,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param name The name of the entity.  If it is a parameter
    *        entity, the name will begin with '%'.
    * @param value The replacement text of the entity.
-   * @exception SAXException The application may raise an exception.
+   * @throws SAXException The application may raise an exception.
    * @see #externalEntityDecl
    * @see org.xml.sax.DTDHandler#unparsedEntityDecl
    */
@@ -1092,7 +1086,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param publicId The declared public identifier of the entity, or
    *        null if none was declared.
    * @param systemId The declared system identifier of the entity.
-   * @exception SAXException The application may raise an exception.
+   * @throws SAXException The application may raise an exception.
    * @see #internalEntityDecl
    * @see org.xml.sax.DTDHandler#unparsedEntityDecl
    */
@@ -1121,7 +1115,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *        none was given.
    * @param systemId The notation's system identifier, or null if
    *        none was given.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #unparsedEntityDecl
    * @see org.xml.sax.AttributeList
@@ -1145,7 +1139,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * <p>If the system identifier is a URL, the parser must resolve it
    * fully before passing it to the application.</p>
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @param name The unparsed entity's name.
    * @param publicId The entity's public identifier, or null if none

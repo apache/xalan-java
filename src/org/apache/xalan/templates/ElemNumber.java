@@ -108,6 +108,7 @@ public class ElemNumber extends ElemTemplateElement
 
   /**
    * Only nodes are counted that match this pattern.
+   * @serial
    */
   private XPath m_countMatchPattern = null;
 
@@ -152,6 +153,7 @@ public class ElemNumber extends ElemTemplateElement
    * For level="any:
    * Only nodes after the first node before the
    * current node that match the from pattern are considered.
+   * @serial
    */
   private XPath m_fromMatchPattern = null;
 
@@ -213,6 +215,7 @@ public class ElemNumber extends ElemTemplateElement
    * the union of the members of the preceding and ancestor-or-self axes). If the
    * from attribute is specified, then only nodes after the first node before the
    * current node that match the from pattern are considered.
+   * @serial
    */
   private int m_level = Constants.NUMBERLEVEL_SINGLE;
 
@@ -246,6 +249,7 @@ public class ElemNumber extends ElemTemplateElement
    * The value attribute contains an expression. The expression is evaluated
    * and the resulting object is converted to a number as if by a call to the
    * number function.
+   * @serial
    */
   private XPath m_valueExpr = null;
 
@@ -279,6 +283,7 @@ public class ElemNumber extends ElemTemplateElement
    * The "format" attribute is used to control conversion of a list of
    * numbers into a string.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   * @serial
    */
   private AVT m_format_avt = null;
 
@@ -311,6 +316,7 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * When numbering with an alphabetic sequence, the lang attribute
    * specifies which language's alphabet is to be used.
+   * @serial
    */
   private AVT m_lang_avt = null;
 
@@ -349,6 +355,7 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * The letter-value attribute disambiguates between numbering
    * sequences that use letters.
+   * @serial
    */
   private AVT m_lettervalue_avt = null;
 
@@ -382,6 +389,7 @@ public class ElemNumber extends ElemTemplateElement
    * The grouping-separator attribute gives the separator
    * used as a grouping (e.g. thousands) separator in decimal
    * numbering sequences.
+   * @serial
    */
   private AVT m_groupingSeparator_avt = null;
 
@@ -415,6 +423,7 @@ public class ElemNumber extends ElemTemplateElement
 
   /**
    * The optional grouping-size specifies the size (normally 3) of the grouping.
+   * @serial
    */
   private AVT m_groupingSize_avt = null;
 
@@ -450,8 +459,7 @@ public class ElemNumber extends ElemTemplateElement
 
   /**
    * Table to help in converting decimals to roman numerals.
-   * @see TransformerImpl#DecimalToRoman
-   * @see TransformerImpl#long2roman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    */
   private final static DecimalToRoman m_romanConvertTable[] = {
     new DecimalToRoman(1000, "M", 900, "CM"),
@@ -1940,7 +1948,7 @@ public class ElemNumber extends ElemTemplateElement
      * Returns the next token from this string tokenizer.
      *
      * @return     the next token from this string tokenizer.
-     * @exception  NoSuchElementException  if there are no more tokens in this
+     * @throws  NoSuchElementException  if there are no more tokens in this
      *               tokenizer's string.
      */
     public String nextToken()

@@ -86,6 +86,7 @@ public class ElemAttributeSet extends ElemUse
 
   /**
    * The name attribute specifies the name of the attribute set.
+   * @serial
    */
   public QName m_qname = null;
 

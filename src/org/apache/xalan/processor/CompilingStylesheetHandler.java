@@ -116,7 +116,7 @@ public class CompilingStylesheetHandler
   /**
    * Create a StylesheetHandler object, creating a root stylesheet 
    * as the target.
-   * @exception May throw TransformerConfigurationException if a StylesheetRoot 
+   * @throws May throw TransformerConfigurationException if a StylesheetRoot 
    * can not be constructed for some reason.
    */
   public CompilingStylesheetHandler(TransformerFactoryImpl processor)
@@ -130,7 +130,7 @@ public class CompilingStylesheetHandler
    * Run standard cleanup of the internal representation,
    * then start trying to replace that rep with custom code.
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endDocument
    */

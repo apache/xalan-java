@@ -74,7 +74,6 @@ public class ExtensionsTable
    * Table of extensions that may be called from the expression language
    * via the call(name, ...) function.  Objects are keyed on the call
    * name.
-   * @see extensions.html.
    */
   public Hashtable m_extensionFunctionNamespaces = new Hashtable();
 

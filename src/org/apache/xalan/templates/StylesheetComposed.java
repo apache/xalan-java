@@ -209,12 +209,14 @@ public class StylesheetComposed extends Stylesheet
     }
   }
 
-  /** Order in import chain         */
+  /** Order in import chain.
+   *  @serial         */
   private int m_importNumber = -1;
 
   /** The precedence of this stylesheet in the global import list.
    *  The lowest precedence stylesheet is 0.  A higher
    *  number has a higher precedence.
+   *  @serial
    */
   private int m_importCountComposed;
 
@@ -271,6 +273,7 @@ public class StylesheetComposed extends Stylesheet
 
   /**
    * The combined list of includes.
+   * @serial
    */
   private transient Vector m_includesComposed;
 
@@ -338,11 +341,11 @@ public class StylesheetComposed extends Stylesheet
    * (rather than appending to) previous composition.
    * We could phase out the old API in favor of this one, but I'm
    * holding off until we've made up our minds about compilation.
-   * ADDED 9/5/2000 to support compilation experiment
-   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   * ADDED 9/5/2000 to support compilation experiment.
    * NOTE: GLP 29-Nov-00 I've left this method in so that CompilingStylesheetHandler will compile.  However,
    *                     I'm not sure why it's needed or what it does and I've commented out the body.
    *
+   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    * @param flushFirst Flag indicating the option of overwriting
    * (rather than appending to) previous composition.
    *

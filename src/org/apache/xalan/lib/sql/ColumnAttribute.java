@@ -92,7 +92,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  *   <li>writable</li>
  *   <li>searchable</li>
  * </ul>
- * @see org.apache.xalan.lib.sql.ColumnHeader.
+ * @see org.apache.xalan.lib.sql.ColumnHeader
  */
 public class ColumnAttribute extends StreamableNode implements Attr
 {

@@ -86,11 +86,13 @@ public class ElemAttribute extends ElemTemplateElement
 
   /**
    * The local name which should be used.
+   * @serial
    */
   public AVT m_name_avt = null;
 
   /**
    * The namespace which should be used.
+   * @serial
    */
   public AVT m_namespace_avt = null;
 

@@ -140,7 +140,7 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    *
    * @param ch Content handler to handle SAX events
    *
-   * @throws TransformerException
+   * @throws SAXException if the content handler characters event throws a SAXException.
    */
   public void dispatchSaxEvent(ContentHandler ch) 
     throws org.xml.sax.SAXException

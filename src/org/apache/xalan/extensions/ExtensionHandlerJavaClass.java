@@ -213,7 +213,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    * @param methodKey A key that uniquely identifies this class and method call.
    * @param exprContext The context in which this expression is being executed.
    * @return the return value of the function evaluation.
-   * @exception TransformerException
+   * @throws TransformerException
    */
 
   public Object callFunction (String funcName, 
@@ -374,8 +374,8 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    * @param sourceNode     The current context node.
    * @param mode           The current mode.
    * @param methodKey      A key that uniquely identifies this element call.
-   * @exception IOException           if loading trouble
-   * @exception TransformerException          if parsing trouble
+   * @throws IOException           if loading trouble
+   * @throws TransformerException          if parsing trouble
    */
 
   public void processElement(String localPart,

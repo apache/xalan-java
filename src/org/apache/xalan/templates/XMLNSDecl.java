@@ -78,7 +78,8 @@ public class XMLNSDecl
     m_isExcluded = isExcluded;
   }
 
-  /** non-null reference to prefix, using "" for default namespace. */
+  /** non-null reference to prefix, using "" for default namespace.
+   *  @serial */
   private String m_prefix;
 
   /**
@@ -91,7 +92,8 @@ public class XMLNSDecl
     return m_prefix;
   }
 
-  /** non-null reference to namespace URI  */
+  /** non-null reference to namespace URI.
+   *  @serial  */
   private String m_uri;
 
   /**
@@ -103,7 +105,8 @@ public class XMLNSDecl
     return m_uri;
   }
 
-  /** true if this namespace declaration should normally be excluded.  */
+  /** true if this namespace declaration should normally be excluded.
+   *  @serial  */
   private boolean m_isExcluded;
 
   /**

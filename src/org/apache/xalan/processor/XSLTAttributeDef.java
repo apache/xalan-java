@@ -330,7 +330,7 @@ public class XSLTAttributeDef
    * @param key The XSLT attribute value.
    *
    * @return The integer representation of the enumerated value for this attribute.
-   * @exception Throws NullPointerException if m_enums is null.
+   * @throws Throws NullPointerException if m_enums is null.
    */
   private int getEnum(String key)
   {

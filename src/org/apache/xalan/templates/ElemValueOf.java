@@ -88,6 +88,7 @@ public class ElemValueOf extends ElemTemplateElement
 
   /**
    * The select expression to be executed.
+   * @serial
    */
   private XPath m_selectExpression = null;
 
@@ -119,6 +120,7 @@ public class ElemValueOf extends ElemTemplateElement
 
   /**
    * Tells if this element should disable escaping.
+   * @serial
    */
   private boolean m_disableOutputEscaping = false;
 

@@ -108,15 +108,16 @@ public class KeyWalker extends DescendantOrSelfWalker
   }
 
   /** List of attribute nodes of the current node      */
-  NamedNodeMap m_attrs;
+  transient NamedNodeMap m_attrs;
 
   /** Flag indicating that attibute nodes were found for the current node    */
-  boolean m_foundAttrs;
+  transient boolean m_foundAttrs;
 
   /** Current position in the attribute nodes list         */
-  int m_attrPos;
+  transient int m_attrPos;
 
-  /** Key value that this is looking for           */
+  /** Key value that this is looking for.
+   *  @serial           */
   String m_lookupKey;
 
   /**

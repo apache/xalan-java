@@ -91,7 +91,7 @@ public class CompilingStylesheetProcessor extends TransformerFactoryImpl
    *        the TransformerFactory class simply derive from org.xml.sax.ContentHandler?</dd>
    * </dl>
    * @return A TemplatesBuilder object, or null if not supported.
-   * @exception May throw a TransformerConfigurationException if a StylesheetHandler can
+   * @throws May throw a TransformerConfigurationException if a StylesheetHandler can
    * not be constructed for some reason.
    *
    * @throws TransformerConfigurationException

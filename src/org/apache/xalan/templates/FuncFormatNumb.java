@@ -188,7 +188,7 @@ public class FuncFormatNumb extends Function3Args
    * @param xctxt The XPath runtime state.
    * @param msg Warning message code
    * @param args Arguments to be used in warning message
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException

@@ -86,6 +86,7 @@ public class ElemSort extends ElemTemplateElement
 
   /**
    * xsl:sort has a select attribute whose value is an expression.
+   * @serial
    */
   private XPath m_selectExpression = null;
 
@@ -133,6 +134,7 @@ public class ElemSort extends ElemTemplateElement
 
   /**
    * lang specifies the language of the sort keys.
+   * @serial
    */
   private AVT m_lang_avt = null;
 
@@ -165,6 +167,7 @@ public class ElemSort extends ElemTemplateElement
   /**
    * data-type specifies the data type of the
    * strings to be sorted.
+   * @serial
    */
   private AVT m_dataType_avt = null;
 
@@ -245,6 +248,7 @@ public class ElemSort extends ElemTemplateElement
   /**
    * order specifies whether the strings should be sorted in ascending
    * or descending order.
+   * @serial
    */
   private AVT m_order_avt = null;
 
@@ -277,6 +281,7 @@ public class ElemSort extends ElemTemplateElement
   /**
    * case-order has the value upper-first or lower-first.
    * The default value is language dependent.
+   * @serial
    */
   private AVT m_caseorder_avt = null;
 
@@ -290,6 +295,8 @@ public class ElemSort extends ElemTemplateElement
    * The default value is language dependent.
    *
    * @param v The value to set for the "case-order" attribute
+   * 
+   * @serial
    */
   public void setCaseOrder(AVT v)
   {

@@ -149,7 +149,7 @@ public class ProcessingInstructionImpl extends Child
    * preceding the <code>?&gt;</code>.
    *
    * @return This PI's data
-   * @exception DOMException
+   * @throws DOMException
    *   NO_MODIFICATION_ALLOWED_ERR: Raised when the node is readonly.
    */
   public String getData()

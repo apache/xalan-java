@@ -72,7 +72,7 @@ import org.apache.xpath.axes.ContextNodeList;
  * Implementation of the TraceListener interface that
  * prints each event to standard out as it occurs.
  *
- * @see TracerEvent.java
+ * @see org.apache.xalan.trace.TracerEvent
  */
 public class PrintTraceListener implements TraceListener
 {

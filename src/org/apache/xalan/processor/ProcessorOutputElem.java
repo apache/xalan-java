@@ -87,7 +87,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the cdata-section-elements property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#CDATA_SECTION_ELEMENTS}
+   * @see javax.xml.transform.OutputKeys#CDATA_SECTION_ELEMENTS
    * @param newValue non-null reference to processed attribute value.
    */
   public void setCdataSectionElements(java.util.Vector newValue)
@@ -97,7 +97,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the doctype-public property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#DOCTYPE_PUBLIC}
+   * @see javax.xml.transform.OutputKeys#DOCTYPE_PUBLIC
    * @param newValue non-null reference to processed attribute value.
    */
   public void setDoctypePublic(String newValue)
@@ -107,7 +107,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the doctype-system property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#DOCTYPE_SYSTEM}
+   * @see javax.xml.transform.OutputKeys#DOCTYPE_SYSTEM
    * @param newValue non-null reference to processed attribute value.
    */
   public void setDoctypeSystem(String newValue)
@@ -117,7 +117,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the encoding property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#ENCODING}
+   * @see javax.xml.transform.OutputKeys#ENCODING
    * @param newValue non-null reference to processed attribute value.
    */
   public void setEncoding(String newValue)
@@ -127,7 +127,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the indent property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#INDENT}
+   * @see javax.xml.transform.OutputKeys#INDENT
    * @param newValue non-null reference to processed attribute value.
    */
   public void setIndent(boolean newValue)
@@ -137,7 +137,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the media type property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#MEDIA_TYPE}
+   * @see javax.xml.transform.OutputKeys#MEDIA_TYPE
    * @param newValue non-null reference to processed attribute value.
    */
   public void setMediaType(String newValue)
@@ -147,7 +147,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the method property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#METHOD}
+   * @see javax.xml.transform.OutputKeys#METHOD
    * @param newValue non-null reference to processed attribute value.
    */
   public void setMethod(org.apache.xml.utils.QName newValue)
@@ -157,7 +157,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the omit-xml-declaration property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#OMIT_XML_DECLARATION}
+   * @see javax.xml.transform.OutputKeys#OMIT_XML_DECLARATION
    * @param newValue processed attribute value.
    */
   public void setOmitXmlDeclaration(boolean newValue)
@@ -167,7 +167,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the standalone property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#STANDALONE}
+   * @see javax.xml.transform.OutputKeys#STANDALONE
    * @param newValue processed attribute value.
    */
   public void setStandalone(boolean newValue)
@@ -177,7 +177,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
   /**
    * Set the version property from the attribute value.
-   * @see {@link javax.xml.transform.OutputKeys#VERSION}
+   * @see javax.xml.transform.OutputKeys#VERSION
    * @param newValue non-null reference to processed attribute value.
    */
   public void setVersion(String newValue)

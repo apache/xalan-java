@@ -84,6 +84,7 @@ public class ElemWithParam extends ElemTemplateElement
   /**
    * The "select" attribute, which specifies the value of the
    * argument, if element content is not specified.
+   * @serial
    */
   private XPath m_selectPattern = null;
 
@@ -116,6 +117,7 @@ public class ElemWithParam extends ElemTemplateElement
    * parameter (the variable the value of whose binding is
    * to be replaced). The value of the name attribute is a QName,
    * which is expanded as described in [2.4 Qualified Names].
+   * @serial
    */
   private QName m_qname = null;
 

@@ -89,6 +89,7 @@ public class ElemElement extends ElemUse
    * The name attribute is interpreted as an attribute value template.
    * It is an error if the string that results from instantiating the
    * attribute value template is not a QName.
+   * @serial
    */
   private AVT m_name_avt = null;
 
@@ -123,6 +124,7 @@ public class ElemElement extends ElemUse
    * as an attribute value template. The string that results from
    * instantiating the attribute value template should be a URI reference.
    * It is not an error if the string is not a syntactically legal URI reference.
+   * @serial
    */
   private AVT m_namespace_avt = null;
 
@@ -156,6 +158,7 @@ public class ElemElement extends ElemUse
 
   /**
    * Cached prefix value... the use of which is dubious.
+   * @serial
    */
   private String m_prefix;
 

@@ -96,7 +96,7 @@ public class MsgMgr
    *
    * @param msg The message text to issue
    * @param terminate Flag indicating whether to terminate this process
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -127,7 +127,7 @@ public class MsgMgr
    * Warn the user of a problem.
    *
    * @param msg Message text to issue
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -143,7 +143,7 @@ public class MsgMgr
    *
    * @param msg Message text to issue
    * @param args Arguments to pass to the message
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -161,7 +161,7 @@ public class MsgMgr
    * @param styleNode Stylesheet node
    * @param sourceNode Source tree node
    * @param msg Message text to issue
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -180,7 +180,7 @@ public class MsgMgr
    * @param sourceNode Source tree node
    * @param msg Message text to issue
    * @param args Arguments to pass to the message
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -204,7 +204,7 @@ public class MsgMgr
    * exception.
    *
    * @param msg Message text to issue
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -230,7 +230,7 @@ public class MsgMgr
    * exception.
    *
    * @param msg Message text to issue
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -247,7 +247,7 @@ public class MsgMgr
    *
    * @param msg Message text to issue
    * @param args Arguments to be passed to the message 
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -264,7 +264,7 @@ public class MsgMgr
    *
    * @param msg Message text to issue
    * @param e Exception to throw
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -282,7 +282,7 @@ public class MsgMgr
    * @param msg Message text to issue
    * @param args Arguments to use in message
    * @param e Exception to throw
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -313,7 +313,7 @@ public class MsgMgr
    * @param styleNode Stylesheet node
    * @param sourceNode Source tree node
    * @param msg Message text to issue
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -333,7 +333,7 @@ public class MsgMgr
    * @param sourceNode Source tree node
    * @param msg Message text to issue
    * @param args Arguments to use in message
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException

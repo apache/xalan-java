@@ -76,6 +76,7 @@ public class ElemTextLiteral extends ElemTemplateElement
 
   /**
    * Tell if space should be preserved.
+   * @serial
    */
   private boolean m_preserveSpace;
 
@@ -103,6 +104,7 @@ public class ElemTextLiteral extends ElemTemplateElement
 
   /**
    * The character array.
+   * @serial
    */
   private char m_ch[];
 
@@ -128,6 +130,7 @@ public class ElemTextLiteral extends ElemTemplateElement
 
   /**
    * Tells if this element should disable escaping.
+   * @serial
    */
   private boolean m_disableOutputEscaping = false;
 

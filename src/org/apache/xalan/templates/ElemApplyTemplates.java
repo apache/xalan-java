@@ -92,6 +92,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
   /**
    * mode %qname; #IMPLIED
+   * @serial
    */
   private QName m_mode = null;
 
@@ -120,6 +121,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * in which case it will act different with
    * regard to processing modes.
    * @see <a href="http://www.w3.org/TR/xslt#built-in-rule">built-in-rule in XSLT Specification</a>
+   * @serial
    */
   private boolean m_isDefaultTemplate = false;
 

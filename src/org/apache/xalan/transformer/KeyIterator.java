@@ -85,17 +85,19 @@ import javax.xml.transform.TransformerException;
 public class KeyIterator extends LocPathIterator
 {
   
-  /** The key table this iterator is associated to          */
+  /** The key table this iterator is associated to.
+   *  @serial          */
   private KeyTable m_keyTable;
 
-  /** Key name           */
+  /** Key name.
+   *  @serial           */
   private QName m_name;
   
   /** 
    * Flag indicating whether the whole source tree has been walked.     
    * True if we still need to finish walking the tree.
    * */
-  private boolean m_lookForMoreNodes = true;
+  transient private boolean m_lookForMoreNodes = true;
 
   /**
    * Get the key name from a key declaration this iterator will process
@@ -108,7 +110,8 @@ public class KeyIterator extends LocPathIterator
     return m_name;
   }
 
-  /** Vector of Key declarations in the stylesheet          */
+  /** Vector of Key declarations in the stylesheet.
+   *  @serial          */
   private Vector m_keyDeclarations;
 
   /**

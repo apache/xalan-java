@@ -96,7 +96,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Uses an XSL stylesheet document.
-   * @exception TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
+   * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
    */
   public StylesheetRoot() throws TransformerConfigurationException
   {
@@ -119,6 +119,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * The schema used when creating this StylesheetRoot
+   * @serial
    */
   private Hashtable m_availElems;
 
@@ -127,7 +128,7 @@ public class StylesheetRoot extends StylesheetComposed
    * StylesheetRoot.  The schema may be needed later for an element-available() function call.
    * 
    * @param schema The schema used to create this stylesheet
-   * @exception TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
+   * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
    */
   public StylesheetRoot(XSLTSchema schema) throws TransformerConfigurationException
   {
@@ -311,6 +312,7 @@ public class StylesheetRoot extends StylesheetComposed
    * The combined list of imports.  The stylesheet with the highest
    * import precedence will be at element 0.  The one with the lowest
    * import precedence will be at element length - 1.
+   * @serial
    */
   private StylesheetComposed[] m_globalImportList;
 
@@ -423,6 +425,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * This will be set up with the default values, and then the values
    * will be set as stylesheets are encountered.
+   * @serial
    */
   private OutputProperties m_outputProperties;
 
@@ -457,7 +460,8 @@ public class StylesheetRoot extends StylesheetComposed
     return m_outputProperties;
   }
 
-  /** Flag indicating whether an output method has been set by the user           */
+  /** Flag indicating whether an output method has been set by the user.
+   *  @serial           */
   private boolean m_outputMethodSet = false;
 
   /**
@@ -474,6 +478,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Composed set of all included and imported attribute set properties.
    * Each entry is a vector of ElemAttributeSet objects.
+   * @serial
    */
   private Hashtable m_attrSets;
 
@@ -514,6 +519,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Table of DecimalFormatSymbols, keyed by QName.
+   * @serial
    */
   private Hashtable m_decimalFormatSymbols;
 
@@ -576,6 +582,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * A list of all key declarations visible from this stylesheet and all
    * lesser stylesheets.
+   * @serial
    */
   private Vector m_keyDecls;
 
@@ -602,6 +609,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Composed set of all namespace aliases.
+   * @serial
    */
   private Hashtable m_namespaceAliasComposed;
 
@@ -633,6 +641,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * The "xsl:template" properties.
+   * @serial
    */
   private TemplateList m_templateList;
 
@@ -714,7 +723,7 @@ public class StylesheetRoot extends StylesheetComposed
   
   /**
    * Composed set of all variables and params.
-   * (note to self: why were these marked transient???  -sb)
+   * @serial
    */
   private Vector m_variables;
 
@@ -769,6 +778,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * A list of properties that specify how to do space
    * stripping. This uses the same exact mechanism as Templates.
+   * @serial
    */
   private TemplateList m_whiteSpaceInfoList;
 
@@ -883,6 +893,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Used for default selection.
+   * @serial
    */
   XPath m_selectDefault;
 

@@ -138,7 +138,7 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
    *
    * @param ch Content Handler
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void dispatchSaxEvent(ContentHandler ch) throws org.xml.sax.SAXException
   {

@@ -86,6 +86,7 @@ public class ElemMessage extends ElemTemplateElement
    * If the terminate attribute has the value yes, then the
    * XSLT transformer should terminate processing after sending
    * the message. The default value is no.
+   * @serial
    */
   private boolean m_terminate = Constants.ATTRVAL_NO;  // default value 
 

@@ -72,7 +72,8 @@ public class AVTPartXPath extends AVTPart
 {
 
   /**
-   * Simple string value;
+   * The XPath object contained in this part.
+   * @serial
    */
   private XPath m_xpath;
   

@@ -381,7 +381,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @return A Transformer object that may be used to perform a transformation
    * in a single thread, never null.
    *
-   * @exception TransformerConfigurationException May throw this during
+   * @throws TransformerConfigurationException May throw this during
    *            the parse when it is constructing the
    *            Templates object and fails.
    */
@@ -436,7 +436,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @param name The name of the attribute.
    * @param value The value of the attribute.
    *
-   * @exception IllegalArgumentException thrown if the underlying
+   * @throws IllegalArgumentException thrown if the underlying
    * implementation doesn't recognize the attribute.
    */
   public void setAttribute(String name, Object value)
@@ -452,7 +452,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @param name The name of the attribute.
    * @return value The value of the attribute.
    *
-   * @exception IllegalArgumentException thrown if the underlying
+   * @throws IllegalArgumentException thrown if the underlying
    * implementation doesn't recognize the attribute.
    */
   public Object getAttribute(String name) throws IllegalArgumentException
@@ -589,7 +589,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @return A Transformer object capable of
    * being used for transformation purposes in a single thread.
    *
-   * @exception TransformerConfigurationException May throw this during the parse when it
+   * @throws TransformerConfigurationException May throw this during the parse when it
    *            is constructing the Templates object and fails.
    */
   public Transformer newTransformer(Source source)
@@ -608,7 +608,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @return A Transformer object capable of
    * being used for transformation purposes in a single thread.
    *
-   * @exception TransformerConfigurationException May throw this during
+   * @throws TransformerConfigurationException May throw this during
    *            the parse when it is constructing the
    *            Templates object and it fails.
    */
@@ -642,7 +642,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @param source An object that holds a URL, input stream, etc.
    * @return A Templates object capable of being used for transformation purposes.
    *
-   * @exception TransformerConfigurationException May throw this during the parse when it
+   * @throws TransformerConfigurationException May throw this during the parse when it
    *            is constructing the Templates object and fails.
    */
   public Templates newTemplates(Source source)
@@ -740,39 +740,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
 
     return builder.getTemplates();
-  }
-
-  /**
-   * Method setProperty
-   *
-   * @param name
-   * @param value
-   *
-   * @throws TransformerConfigurationException
-   */
-  public void setProperty(String name, Object value)
-          throws TransformerConfigurationException
-  {
-
-    // No action at the moment
-    return;
-  }
-
-  /**
-   * Method getProperty
-   *
-   * @param name
-   *
-   * @return
-   *
-   * @throws TransformerConfigurationException
-   */
-  public Object getProperty(String name)
-          throws TransformerConfigurationException
-  {
-
-    // No action at the moment
-    return null;
   }
 
   /**

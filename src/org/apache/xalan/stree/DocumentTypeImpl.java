@@ -262,7 +262,7 @@ public class DocumentTypeImpl extends Child implements DocumentType, NamedNodeMa
    * @return If the new <code>Node</code> replaces an existing node the 
    *   replaced <code>Node</code> is returned, otherwise <code>null</code> 
    *   is returned.
-   * @exception DOMException
+   * @throws DOMException
    *   WRONG_DOCUMENT_ERR: Raised if <code>arg</code> was created from a 
    *   different document than the one that created this map.
    *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.
@@ -287,7 +287,7 @@ public class DocumentTypeImpl extends Child implements DocumentType, NamedNodeMa
    * @param nameThe <code>nodeName</code> of the node to remove.
    * @return The node removed from this map if a node with such a name 
    *   exists.
-   * @exception DOMException
+   * @throws DOMException
    *   NOT_FOUND_ERR: Raised if there is no node named <code>name</code> in 
    *   this map.
    *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.
@@ -348,7 +348,7 @@ public class DocumentTypeImpl extends Child implements DocumentType, NamedNodeMa
    * @return If the new <code>Node</code> replaces an existing node the 
    *   replaced <code>Node</code> is returned, otherwise <code>null</code> 
    *   is returned.
-   * @exception DOMException
+   * @throws DOMException
    *   WRONG_DOCUMENT_ERR: Raised if <code>arg</code> was created from a 
    *   different document than the one that created this map.
    *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.
@@ -376,7 +376,7 @@ public class DocumentTypeImpl extends Child implements DocumentType, NamedNodeMa
    * @param localNameThe local name of the node to remove.
    * @return The node removed from this map if a node with such a local 
    *   name and namespace URI exists.
-   * @exception DOMException
+   * @throws DOMException
    *   NOT_FOUND_ERR: Raised if there is no node with the specified 
    *   <code>namespaceURI</code> and <code>localName</code> in this map.
    *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.

@@ -228,6 +228,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xmlns:xsl" property.
+   * @serial
    */
   private String m_XmlnsXsl;
 
@@ -255,6 +256,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "extension-element-prefixes" property, actually contains URIs.
+   * @serial
    */
   private StringVector m_ExtensionElementURIs;
 
@@ -321,6 +323,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "exclude-result-prefixes" property.
+   * @serial
    */
   private StringVector m_ExcludeResultPrefixs;
 
@@ -402,6 +405,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "id" property.
+   * @serial
    */
   private String m_Id;
 
@@ -429,6 +433,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "version" property.
+   * @serial
    */
   private String m_Version;
 
@@ -456,6 +461,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:import" list.
+   * @serial
    */
   private Vector m_imports;
 
@@ -509,6 +515,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:include" properties.
+   * @serial
    */
   private Vector m_includes;
 
@@ -559,7 +566,8 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * Table of tables of element decimal-format.
-   * @see ElemDecimalFormat.
+   * @see DecimalFormatProperties
+   * @serial
    */
   Stack m_DecimalFormatDeclarations;
 
@@ -611,7 +619,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * Get an "xsl:decimal-format" property.
    * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
-   * @see ElemDecimalFormat.
+   * @see DecimalFormatProperties
    *
    * @param i Index of decimal-format property in stack
    *
@@ -631,7 +639,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * Get the number of xsl:decimal-format declarations.
-   * @see ElemDecimalFormat.
+   * @see DecimalFormatProperties
    *
    * @return the number of xsl:decimal-format declarations.
    */
@@ -644,6 +652,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * The "xsl:strip-space" properties,
    * A lookup table of all space stripping elements.
+   * @serial
    */
   private Vector m_whitespaceStrippingElements;
 
@@ -698,6 +707,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * The "xsl:preserve-space" property,
    * A lookup table of all space preserving elements.
+   * @serial
    */
   private Vector m_whitespacePreservingElements;
 
@@ -751,6 +761,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:output" properties.  This is a vector of OutputProperties objects.
+   * @serial
    */
   private Vector m_output;
 
@@ -804,6 +815,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:key" property.
+   * @serial
    */
   private Vector m_keyDeclarations;
 
@@ -854,6 +866,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:attribute-set" property.
+   * @serial
    */
   private Vector m_attributeSets;
 
@@ -907,6 +920,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:variable" and "xsl:param" properties.
+   * @serial
    */
   private Vector m_topLevelVariables;
 
@@ -1050,6 +1064,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:template" properties.
+   * @serial
    */
   private Vector m_templates;
 
@@ -1101,6 +1116,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "xsl:namespace-alias" properties.
+   * @serial
    */
   private Vector m_prefix_aliases;
 
@@ -1152,6 +1168,7 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * The "non-xsl-top-level" properties.
+   * @serial
    */
   private Hashtable m_NonXslTopLevel;
 
@@ -1192,10 +1209,12 @@ public class Stylesheet extends ElemTemplateElement
    */
   private String m_href = null;
 
-  /** The doctype-public element           */
+  /** The doctype-public element.
+   *  @serial          */
   private String m_publicId;
 
-  /** The doctype-system element          */
+  /** The doctype-system element.
+   *  @serial          */
   private String m_systemId;
 
   /**

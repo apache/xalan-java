@@ -82,6 +82,7 @@ public class ElemUse extends ElemTemplateElement
 
   /**
    * The value of the "use-attribute-sets" attribute.
+   * @serial
    */
   private QName m_attributeSetsNames[] = null;
 

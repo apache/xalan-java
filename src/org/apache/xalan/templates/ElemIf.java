@@ -86,6 +86,7 @@ public class ElemIf extends ElemTemplateElement
 
   /**
    * The xsl:if element must have a test attribute, which specifies an expression.
+   * @serial
    */
   private XPath m_test = null;
 

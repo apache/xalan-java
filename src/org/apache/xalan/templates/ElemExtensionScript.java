@@ -73,7 +73,8 @@ public class ElemExtensionScript extends ElemTemplateElement
     // System.out.println("ElemExtensionScript ctor");
   }
 
-  /** Language used in extension          */
+  /** Language used in extension.
+   *  @serial          */
   private String m_lang = null;
 
   /**
@@ -98,7 +99,8 @@ public class ElemExtensionScript extends ElemTemplateElement
     return m_lang;
   }
 
-  /** Extension handler          */
+  /** Extension handler.
+   *  @serial          */
   private String m_src = null;
 
   /**

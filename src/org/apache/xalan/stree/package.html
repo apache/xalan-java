@@ -2,13 +2,15 @@
   <title>Xalan Source Tree Package.</title>
   <body>
     <p>Implementation of the Xalan Source Tree, which is a DOM implementation that 
-    is optimized for XSLT processing and the needs of Xalan -- derived nodes can index 
-    the children, and, combined with specialized node iterators (and tree walkers) can
-    provide optimal child retrieval.<p>
-    <dl>
-      <dt><b>Version: </b></dt><dd>Alpha, 2.0.0, July 05, 2000</dd>
-      <dt><b>Author: </b></dt><dd><a href="mailto:scott_boag@lotus.com">Scott Boag</a></dd>
-    </dl>
+    is optimized for XSLT processing and the needs of Xalan.  The primary feature 
+    of the Stree is that nodes can be parsed on one thread, while they are being 
+    read on another thread.  If a requested child node has not yet arrived, the 
+    reading thread will wait until the parse thread has produced the node, thrown 
+    an exception, or marked the parent as complete.  Stree nodes also contain a 
+    document order index, which is used in conjunction with the XPath module to 
+    optimize certain operations. Stree text nodes also do not build String objects 
+    until requested, and are capable of directly dispatching text events to a 
+    ContentHandler.<p>
  </body>
 </html>
 

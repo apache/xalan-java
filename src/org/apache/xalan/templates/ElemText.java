@@ -85,6 +85,7 @@ public class ElemText extends ElemTemplateElement
 
   /**
    * Tells if this element should disable escaping.
+   * @serial
    */
   private boolean m_disableOutputEscaping = false;
 

@@ -85,7 +85,7 @@ public interface SaxEventDispatch
    *
    * @param ch A non-null reference to a ContentHandler.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void dispatchSaxEvent(ContentHandler ch) 
         throws org.xml.sax.SAXException;

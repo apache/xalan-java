@@ -136,7 +136,7 @@ public class OutputProperties extends ElemTemplateElement
    * name".
    */
   static final String S_BUILTIN_EXTENSIONS_UNIVERSAL=
-	"{"+Constants.S_BUILTIN_EXTENSIONS_URL+"}";
+        "{"+Constants.S_BUILTIN_EXTENSIONS_URL+"}";
   
   /**
    * Fix up a string in an output properties file according to 
@@ -963,7 +963,8 @@ public class OutputProperties extends ElemTemplateElement
    */
   private transient Hashtable m_propertiesLevels;
 
-  /** The output properties. */
+  /** The output properties.
+   *  @serial */
   private Properties m_properties = null;
 
   // Some special Xalan keys.

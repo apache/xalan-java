@@ -139,7 +139,7 @@ public class CommentImpl extends TextImpl implements Comment
    *
    * @param ch Character array with comment data
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   public void dispatchSaxEvent(ContentHandler ch) throws org.xml.sax.SAXException
   {

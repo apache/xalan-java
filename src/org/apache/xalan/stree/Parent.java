@@ -203,8 +203,8 @@ public class Parent extends Child
    * @param i the index of the child.
    *
    * @return The child node at the specified position or null if none found 
-   * @exception ArrayIndexOutOfBoundsException if the index is out of bounds.
-   * @exception NullPointerException if there are no children.
+   * @throws ArrayIndexOutOfBoundsException if the index is out of bounds.
+   * @throws NullPointerException if there are no children.
    */
   public Child getChild(int i)
           throws ArrayIndexOutOfBoundsException, NullPointerException
@@ -319,7 +319,7 @@ public class Parent extends Child
    * @param newChild Must be a org.apache.xalan.stree.Child.
    *
    * @return The node we just added to this parent's children list
-   * @exception ClassCastException if the newChild isn't a org.apache.xalan.stree.Child.
+   * @throws ClassCastException if the newChild isn't a org.apache.xalan.stree.Child.
    *
    * @throws DOMException
    */

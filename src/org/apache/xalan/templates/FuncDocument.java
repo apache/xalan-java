@@ -391,7 +391,7 @@ public class FuncDocument extends Function2Args
    * @param xctxt The XPath runtime state.
    * @param msg The error message code
    * @param args Arguments to be used in the error message
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
@@ -417,7 +417,7 @@ public class FuncDocument extends Function2Args
    * @param xctxt The XPath runtime state.
    * @param msg Warning message code
    * @param args Arguments to be used in the warning message
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException

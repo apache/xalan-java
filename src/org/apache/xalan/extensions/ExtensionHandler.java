@@ -188,7 +188,7 @@ public abstract class ExtensionHandler
    *
    * @return the return value of the function evaluation.
    *
-   * @exception TransformerException          if parsing trouble
+   * @throws TransformerException          if parsing trouble
    */
   public abstract Object callFunction(
     String funcName, Vector args, Object methodKey,
@@ -208,12 +208,12 @@ public abstract class ExtensionHandler
    * @param sourceNode     The current context node.
    * @param methodKey      A key that uniquely identifies this class and method call.
    *
-   * @exception XSLProcessorException thrown if something goes wrong
+   * @throws XSLProcessorException thrown if something goes wrong
    *            while running the extension handler.
-   * @exception MalformedURLException if loading trouble
-   * @exception FileNotFoundException if loading trouble
-   * @exception IOException           if loading trouble
-   * @exception TransformerException          if parsing trouble
+   * @throws MalformedURLException if loading trouble
+   * @throws FileNotFoundException if loading trouble
+   * @throws IOException           if loading trouble
+   * @throws TransformerException          if parsing trouble
    */
   public abstract void processElement(
     String localPart, Element element, TransformerImpl transformer,

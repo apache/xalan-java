@@ -85,6 +85,7 @@ public class KeyDeclaration extends ElemTemplateElement
 
   /**
    * The "name" property.
+   * @serial
    */
   private QName m_name;
 
@@ -116,6 +117,7 @@ public class KeyDeclaration extends ElemTemplateElement
 
   /**
    * The "match" attribute.
+   * @serial
    */
   private XPath m_matchPattern = null;
 
@@ -149,6 +151,7 @@ public class KeyDeclaration extends ElemTemplateElement
 
   /**
    * The "use" attribute.
+   * @serial
    */
   private XPath m_use;
 
@@ -176,36 +179,6 @@ public class KeyDeclaration extends ElemTemplateElement
   public XPath getUse()
   {
     return m_use;
-  }
-
-  /** Constant for build state of this key          */
-  public static int UNBUILT = -1;
-
-  /** Constant for build state of this key          */
-  public static int BUILDING = 0;
-
-  /** Constant for build state of this key           */
-  public static int BUILT = 1;
-
-  /** Hold the build state of this key           */
-  private int m_buildState = UNBUILT;
-
-  /**
-   * Set the state of the build for this key.
-   * @param state One of UNBUILT, BUILDING, BUILT.
-   */
-  public void setBuildState(int state)
-  {
-    m_buildState = state;
-  }
-
-  /**
-   * Get the state of the build for this key.
-   * @return One of UNBUILT, BUILDING, BUILT.
-   */
-  public int getBuildState()
-  {
-    return m_buildState;
   }
 
   /**

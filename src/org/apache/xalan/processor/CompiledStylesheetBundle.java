@@ -284,9 +284,9 @@ public class CompiledStylesheetBundle
 	* 
 	* @param String filename Filesystem name of the bundle file to be loaded.
 	* @return Stylesheet as loaded.
-	* @exception java.io.IOException if there are any problems reading the
+	* @throws java.io.IOException if there are any problems reading the
 	* bundle file
-	* @exception java.lang.ClassNotFoundException if a class used in 
+	* @throws java.lang.ClassNotFoundException if a class used in 
 	* serializing the Stylesheet can't be resolved. This could be a glitch
 	* in the bundle, but is more likely to be incompatable versions if the
 	* Xalan code was changed between when the bundle was created and when it

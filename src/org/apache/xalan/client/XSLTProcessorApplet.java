@@ -102,7 +102,8 @@ public class XSLTProcessorApplet extends Applet
 {
 
   /**
-   * The stylesheet processor
+   * The stylesheet processor.
+   * @serial
    */
   TransformerFactory m_tfactory = null;
 
@@ -150,10 +151,14 @@ public class XSLTProcessorApplet extends Applet
    */
   private URL m_codeBase = null;
   
+  /**
+   * @serial
+   */
   private String m_treeURL = null;
 
   /** 
-   * DocumentBase URL       
+   * DocumentBase URL
+   * @serial       
    */
   private URL m_documentBase = null;
 
@@ -585,7 +590,7 @@ public class XSLTProcessorApplet extends Applet
    * XML itself, not for rendering of HTML by the browser.
    *
    * @return XML source document as a string.
-   * @exception Exception thrown if tree can not be converted.
+   * @throws Exception thrown if tree can not be converted.
    */
   public String getSourceTreeAsText() throws Exception
   {
@@ -598,7 +603,7 @@ public class XSLTProcessorApplet extends Applet
    * XML itself, not for rendering of HTML by the browser.
    *
    * @return The XSL stylesheet as a string.
-   * @exception Exception thrown if tree can not be converted.
+   * @throws Exception thrown if tree can not be converted.
    */
   public String getStyleTreeAsText() throws Exception
   {
@@ -611,7 +616,7 @@ public class XSLTProcessorApplet extends Applet
    * XML itself, not for rendering of HTML by the browser.
    *
    * @return Transformation result as unmarked text.
-   * @exception Exception thrown if tree can not be converted.
+   * @throws Exception thrown if tree can not be converted.
    */
   public String getResultTreeAsText() throws Exception
   {

@@ -77,13 +77,16 @@ import org.w3c.dom.traversal.NodeIterator;
 public class KeyRefIterator extends LocPathIterator
 {
 
-  /** Key name          */
+  /** Key name.
+   *  @serial         */
   private QName m_name;    
   
-  /** Use field of key function          */
+  /** Use field of key function.
+   *  @serial         */
   private String m_lookupKey;  
   
-  /** Main Key iterator for this iterator     */
+  /** Main Key iterator for this iterator.
+   *  @serial    */
   private KeyIterator m_ki;    
   
   /**
@@ -126,7 +129,7 @@ public class KeyRefIterator extends LocPathIterator
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
    * 
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */

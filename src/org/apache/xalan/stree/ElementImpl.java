@@ -173,8 +173,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * @param i the index of the child.
    *
    * @return the attribute child at the specified position
-   * @exception ArrayIndexOutOfBoundsException if the index is out of bounds.
-   * @exception NullPointerException if there are no children.
+   * @throws ArrayIndexOutOfBoundsException if the index is out of bounds.
+   * @throws NullPointerException if there are no children.
    */
   public AttrImpl getChildAttribute(int i)
           throws ArrayIndexOutOfBoundsException, NullPointerException
@@ -770,7 +770,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * @return  If the new <code>Node</code> replaces an existing node the
    *   replaced <code>Node</code> is returned, otherwise <code>null</code>
    *   is returned.
-   * @exception DOMException
+   * @throws DOMException
    *    WRONG_DOCUMENT_ERR: Raised if <code>arg</code> was created from a
    *   different document than the one that created this map.
    *   <br> NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.
@@ -797,7 +797,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * @param name  The <code>nodeName</code> of the node to remove.
    * @return  The node removed from this map if a node with such a name
    *   exists.
-   * @exception DOMException
+   * @throws DOMException
    *    NOT_FOUND_ERR: Raised if there is no node named <code>name</code>
    *   in this map.
    *   <br> NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.
@@ -902,7 +902,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * @return  If the new <code>Node</code> replaces an existing node the
    *   replaced <code>Node</code> is returned, otherwise <code>null</code>
    *   is returned.
-   * @exception DOMException
+   * @throws DOMException
    *    WRONG_DOCUMENT_ERR: Raised if <code>arg</code> was created from a
    *   different document than the one that created this map.
    *   <br> NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.
@@ -934,7 +934,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * @param localName  The  local name of the node to remove.
    * @return  The node removed from this map if a node with such a local
    *   name and namespace URI exists.
-   * @exception DOMException
+   * @throws DOMException
    *    NOT_FOUND_ERR: Raised if there is no node with the specified
    *   <code>namespaceURI</code> and <code>localName</code> in this map.
    *   <br> NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.

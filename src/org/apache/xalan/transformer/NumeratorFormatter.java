@@ -87,8 +87,7 @@ class NumeratorFormatter
 
   /**
    * Table to help in converting decimals to roman numerals.
-   * @see TransformerImpl#DecimalToRoman
-   * @see TransformerImpl#long2roman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    */
   private final static DecimalToRoman m_romanConvertTable[] = {
     new DecimalToRoman(1000, "M", 900, "CM"),
@@ -132,7 +131,7 @@ class NumeratorFormatter
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
    * @return String representing alpha count of number.
-   * @see TransformerImpl#DecimalToRoman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    *
    * Note that the radix of the conversion is inferred from the size
    * of the table.
@@ -299,7 +298,7 @@ class NumeratorFormatter
      * Returns the next token from this string tokenizer.
      *
      * @return     the next token from this string tokenizer.
-     * @exception  NoSuchElementException  if there are no more tokens in this
+     * @throws  NoSuchElementException  if there are no more tokens in this
      *               tokenizer's string.
      */
     String nextToken()

@@ -51,7 +51,7 @@ public class TrAXFilter extends XMLFilterImpl
    * or to set or get a feature or property will fail.</p>
    *
    * @param parent The parent XML reader.
-   * @exception java.lang.NullPointerException If the parent is null.
+   * @throws java.lang.NullPointerException If the parent is null.
    */
   public void setParent (XMLReader parent)
   { 
@@ -70,9 +70,9 @@ public class TrAXFilter extends XMLFilterImpl
    * Parse a document.
    *
    * @param input The input source for the document entity.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @exception java.io.IOException An IO exception from the parser,
+   * @throws java.io.IOException An IO exception from the parser,
    *            possibly from a byte stream or character stream
    *            supplied by the application.
    * @see org.xml.sax.XMLReader#parse(org.xml.sax.InputSource)
@@ -86,25 +86,25 @@ public class TrAXFilter extends XMLFilterImpl
 
       // Use JAXP1.1 ( if possible )
       try {
-	  javax.xml.parsers.SAXParserFactory factory=
-	      javax.xml.parsers.SAXParserFactory.newInstance();
-	  factory.setNamespaceAware( true );
-	  javax.xml.parsers.SAXParser jaxpParser=
-	      factory.newSAXParser();
-	  reader=jaxpParser.getXMLReader();
-	  
+          javax.xml.parsers.SAXParserFactory factory=
+              javax.xml.parsers.SAXParserFactory.newInstance();
+          factory.setNamespaceAware( true );
+          javax.xml.parsers.SAXParser jaxpParser=
+              factory.newSAXParser();
+          reader=jaxpParser.getXMLReader();
+          
       } catch( javax.xml.parsers.ParserConfigurationException ex ) {
-	  throw new org.xml.sax.SAXException( ex );
+          throw new org.xml.sax.SAXException( ex );
       } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-	  throw new org.xml.sax.SAXException( ex1.toString() );
+          throw new org.xml.sax.SAXException( ex1.toString() );
       } catch( NoSuchMethodError ex2 ) {
       }
 
       XMLReader parent;
       if( reader==null )
-	  parent= XMLReaderFactory.createXMLReader();
+          parent= XMLReaderFactory.createXMLReader();
       else
-	  parent=reader;
+          parent=reader;
       try
       {
         parent.setFeature("http://xml.org/sax/features/namespace-prefixes",
@@ -141,9 +141,9 @@ public class TrAXFilter extends XMLFilterImpl
    * Parse a document.
    *
    * @param systemId The system identifier as a fully-qualified URI.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @exception java.io.IOException An IO exception from the parser,
+   * @throws java.io.IOException An IO exception from the parser,
    *            possibly from a byte stream or character stream
    *            supplied by the application.
    * @see org.xml.sax.XMLReader#parse(java.lang.String)
@@ -195,7 +195,7 @@ public class TrAXFilter extends XMLFilterImpl
    * Set the content event handler.
    *
    * @param resolver The new content handler.
-   * @exception java.lang.NullPointerException If the handler
+   * @throws java.lang.NullPointerException If the handler
    *            is null.
    * @see org.xml.sax.XMLReader#setContentHandler
    */

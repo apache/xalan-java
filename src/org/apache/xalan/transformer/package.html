@@ -3,23 +3,18 @@
   <body>
     <p>In charge of run-time transformations and the production of result trees.</p>
     
-    <p>TransformerImpl implements the TRaX Transformer interface, and extends the SAX XMLFilterImpl. It uses a SAX XMLParser to
-    parse the XML input and sends parse events to an input SAX ContentHandler, org.apache.xalan.stree.SourceTreeHandler, which in
-    turn uses org.apache.xalan.utils.DOMBuilder to assemble the input into a DOM tree (this step is unnecessary if the XML input
-    is submitted as a DOM).</p>
+    <p>{@link org.apache.xalan.transformer.TransformerImpl} implements the 
+    {@link javax.xml.transform.Transformer} interface, and is the core representation 
+    of the transformation execution.</p>
     <p>For each node in the XML source, TransformerImpl uses the StylesheetRoot and underlying XSLT schema to determine which
     template to apply: one of the templates in the StylesheetRoot, a default template rule as specified in the XSLT spec, or
     none.</p>
-    <p>The Transformer works with org.apache.xalan.transformer.ResultTreeHandler to forward the SAX events produced by this
-    process to the appropriate output ContentHandler, a serializer if the Result object has been set up to write to a stream or
-    file, a DOMBuilder utility if the output is to be a DOM tree.</p>
+    <p>The Transformer works with {@link org.apache.xalan.transformer.ResultTreeHandler} to 
+    forward the SAX events produced by the
+    transformation to the appropriate output ContentHandler.</p>
     <p>To the degree possible, the parsing of the XML source and application of the Templates object to that source are performed
     concurrently in separate threads. When necessary, the Transformer waits for the parse events that must be in place before a
     given template may be applied.</p>
-    <dl>
-      <dt><b>Version: </b></dt><dd>xalan-j_2_0_D01, September 6, 2000</dd>
-      <dt><b>Author: </b></dt><dd><a href="mailto:scott_boag@lotus.com">Scott Boag</a></dd>
-    </dl>
  </body>
 </html>
 

@@ -82,6 +82,7 @@ public class ElemWhen extends ElemTemplateElement
   /**
    * Each xsl:when element has a single attribute, test,
    * which specifies an expression.
+   * @serial
    */
   private XPath m_test;
 

@@ -87,6 +87,7 @@ public class ElemPI extends ElemTemplateElement
    * attribute that specifies the name of the processing instruction node.
    * The value of the name attribute is interpreted as an
    * attribute value template.
+   * @serial
    */
   private AVT m_name_atv = null;
 

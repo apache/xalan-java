@@ -78,7 +78,8 @@ public class NamespaceAlias extends ElemTemplateElement
   }
 
   /**
-   * The "stylesheet-prefix" attribute
+   * The "stylesheet-prefix" attribute.
+   * @serial
    */
   private String m_StylesheetPrefix;
 
@@ -104,6 +105,7 @@ public class NamespaceAlias extends ElemTemplateElement
   
   /**
    * The namespace in the stylesheet space.
+   * @serial
    */
   private String m_StylesheetNamespace;
 
@@ -128,7 +130,8 @@ public class NamespaceAlias extends ElemTemplateElement
   }
 
   /**
-   * The "result-prefix" attribute
+   * The "result-prefix" attribute.
+   * @serial
    */
   private String m_ResultPrefix;
 
@@ -154,6 +157,7 @@ public class NamespaceAlias extends ElemTemplateElement
   
   /**
    * The result namespace.
+   * @serial
    */
   private String m_ResultNamespace;
 

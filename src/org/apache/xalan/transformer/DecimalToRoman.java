@@ -59,8 +59,6 @@ package org.apache.xalan.transformer;
 /**
  * <meta name="usage" content="internal"/>
  * Structure to help in converting integers to roman numerals
- * @see long2roman
- * @see m_romanConvertTable
  */
 public class DecimalToRoman
 {

@@ -94,6 +94,7 @@ public class ElemVariable extends ElemTemplateElement
 
   /**
    * The value of the "select" attribute.
+   * @serial
    */
   private XPath m_selectPattern;
 
@@ -129,6 +130,7 @@ public class ElemVariable extends ElemTemplateElement
 
   /**
    * The value of the "name" attribute.
+   * @serial
    */
   private QName m_qname;
 
@@ -164,6 +166,7 @@ public class ElemVariable extends ElemTemplateElement
 
   /**
    * Tells if this is a top-level variable or param, or not.
+   * @serial
    */
   private boolean m_isTopLevel = false;
 

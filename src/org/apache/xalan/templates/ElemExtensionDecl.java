@@ -89,7 +89,8 @@ public class ElemExtensionDecl extends ElemTemplateElement
     // System.out.println("ElemExtensionDecl ctor");
   }
 
-  /** Prefix string for this extension element         */
+  /** Prefix string for this extension element.
+   *  @serial         */
   private String m_prefix = null;
 
   /**
@@ -114,7 +115,8 @@ public class ElemExtensionDecl extends ElemTemplateElement
     return m_prefix;
   }
 
-  /** StringVector holding the names of functions defined in this extension     */
+  /** StringVector holding the names of functions defined in this extension.
+   *  @serial     */
   private StringVector m_functions = new StringVector();
 
   /**
@@ -169,7 +171,8 @@ public class ElemExtensionDecl extends ElemTemplateElement
     return (null != m_functions) ? m_functions.size() : 0;
   }
 
-  /** StringVector of elements defined in this extension         */
+  /** StringVector of elements defined in this extension.
+   *  @serial         */
   private StringVector m_elements = null;
 
   /**

@@ -86,6 +86,7 @@ public class ElemCopyOf extends ElemTemplateElement
 
   /**
    * The required select attribute contains an expression.
+   * @serial
    */
   public XPath m_selectExpression = null;
 

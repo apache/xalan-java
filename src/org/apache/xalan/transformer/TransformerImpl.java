@@ -163,29 +163,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * <meta name="usage" content="advanced"/>
- * The Xalan workhorse -- Collaborates with the XPath xcontext, the DOM,
- * and the XPath engine, to transform a source tree of nodes into a result tree
- * according to instructions and templates specified by a stylesheet tree.
- * We suggest you use one of the
- * static XSLTProcessorFactory getProcessor() methods to instantiate the processor
- * and return an interface that greatly simplifies the process of manipulating
- * TransformerImpl.
- *
- * <p>The methods <code>process(...)</code> are the primary public entry points.
- * The best way to perform transformations is to use the
- * {@link XSLTProcessor#process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)} method,
- * but you may use any of process methods defined in TransformerImpl.</p>
- *
- * <p>Please note that this class is not safe per instance over multiple
- * threads.  If you are in a multithreaded environment, you should
- * keep a pool of these objects, or create a new one each time.  In a
- * multithreaded environment, the right way to do things is to create a
- * StylesheetRoot via processStylesheet, and then reuse this object
- * over multiple threads.</p>
- *
- * <p>If you reuse the processor instance, you should call reset() between transformations.</p>
- * @see XSLTProcessorFactory
- * @see XSLTProcessor
+ * This class implements the 
+ * {@link javax.xml.transform.Transformer} interface, and is the core 
+ * representation of the transformation execution.</p>
  */
 public class TransformerImpl extends Transformer
         implements Runnable, TransformState
@@ -715,11 +695,6 @@ public class TransformerImpl extends Transformer
    * @param name The property name, which is a fully-qualified URI.
    *
    * @return The value of the property, or null if not found.
-   * @exception org.xml.sax.SAXNotRecognizedException When the
-   *            XMLReader does not recognize the property name.
-   * @exception org.xml.sax.SAXNotSupportedException When the
-   *            XMLReader recognizes the property name but
-   *            cannot set the requested value.
    *
    * @throws IllegalArgumentException If the property is not supported, 
    * and is not namespaced.
@@ -750,13 +725,7 @@ public class TransformerImpl extends Transformer
    *
    * @param name The property name, which is a fully-qualified URI.
    * @param value The requested value for the property.
-   * @exception org.xml.sax.SAXNotRecognizedException When the
-   *            XMLReader does not recognize the property name.
-   * @exception org.xml.sax.SAXNotSupportedException When the
-   *            XMLReader recognizes the property name but
-   *            cannot set the requested value.
-   *
-   * @throws TransformerException
+   * @throws IllegalArgumentException if the property name is not legal.
    */
   public void setOutputProperty(String name, String value)
     throws IllegalArgumentException
@@ -1611,7 +1580,7 @@ public class TransformerImpl extends Transformer
    * Set the content event handler.
    *
    * @param resolver The new content handler.
-   * @exception java.lang.NullPointerException If the handler
+   * @throws java.lang.NullPointerException If the handler
    *            is null.
    * @see org.xml.sax.XMLReader#setContentHandler
    */
@@ -1765,7 +1734,7 @@ public class TransformerImpl extends Transformer
    * 
    * @return The stringized result of executing the elements children.
    * 
-   * @exception TransformerException
+   * @throws TransformerException
    */
   public String transformToString(
           ElemTemplateElement elem, Node sourceNode, QName mode)
@@ -1857,7 +1826,7 @@ public class TransformerImpl extends Transformer
    * @param template The template to use if xsl:for-each, or null.
    * @param child The source context node.
    * @param mode The current mode, may be null.
-   * @exception TransformerException
+   * @throws TransformerException
    * @return true if applied a template, false if not.
    */
   public boolean applyTemplateToNode(ElemTemplateElement xslInstruction,  // xsl:apply-templates or xsl:for-each
@@ -2000,7 +1969,7 @@ public class TransformerImpl extends Transformer
    * @param handler The ContentHandler to where the result events 
    * should be fed.
    * 
-   * @exception TransformerException
+   * @throws TransformerException
    */
   public void executeChildTemplates(
           ElemTemplateElement elem, Node sourceNode, QName mode, ContentHandler handler)
@@ -2036,7 +2005,7 @@ public class TransformerImpl extends Transformer
    * @param sourceNode The current context node.
    * @param mode The current mode.
    * 
-   * @exception TransformerException
+   * @throws TransformerException
    */
   public void executeChildTemplates(
           ElemTemplateElement elem, Node sourceNode, QName mode)
@@ -2666,9 +2635,9 @@ public class TransformerImpl extends Transformer
    * @param name The feature name, which is a fully-qualified
    *        URI.
    * @return The current state of the feature (true or false).
-   * @exception org.xml.sax.SAXNotRecognizedException When the
+   * @throws org.xml.sax.SAXNotRecognizedException When the
    *            TransformerFactory does not recognize the feature name.
-   * @exception org.xml.sax.SAXNotSupportedException When the
+   * @throws org.xml.sax.SAXNotSupportedException When the
    *            TransformerFactory recognizes the feature name but
    *            cannot determine its value at this time.
    *

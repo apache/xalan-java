@@ -117,7 +117,6 @@ public class ElemTemplateElement extends UnImplNode
    * @param atts The element attributes.
    * @param lineNumber The line in the XSLT file that the element occurs on.
    * @param columnNumber The column index in the XSLT file that the element occurs on.
-   * @exception TransformerException Never.
    */
   public ElemTemplateElement(){}
 
@@ -167,14 +166,11 @@ public class ElemTemplateElement extends UnImplNode
    * Execute the element's primary function.  Subclasses of this
    * function may recursivly execute down the element tree.
    *
-   * @exception XSLProcessorException
-   * @exception java.net.MalformedURLException
-   * @exception java.io.FileNotFoundException
-   * @exception java.io.IOException
-   * @exception TransformerException
    * @param transformer The XSLT TransformerFactory.
    * @param sourceNode The current context node.
    * @param mode The current mode.
+   * 
+   * @throws TransformerException if any checked exception occurs.
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
@@ -294,7 +290,7 @@ public class ElemTemplateElement extends UnImplNode
    * @param newChild Child to be added to child list
    *
    * @return Child just added to the child list
-   * @exception DOMException
+   * @throws DOMException
    */
   public Node appendChild(Node newChild) throws DOMException
   {
@@ -509,7 +505,8 @@ public class ElemTemplateElement extends UnImplNode
     return this.getSystemId();
   }
 
-  /** line number where the current document event ends         */
+  /** line number where the current document event ends.
+   *  @serial         */
   private int m_lineNumber;
 
   /**
@@ -524,7 +521,8 @@ public class ElemTemplateElement extends UnImplNode
     return m_lineNumber;
   }
 
-  /** the column number where the current document event ends        */
+  /** the column number where the current document event ends.
+   *  @serial        */
   private int m_columnNumber;
 
   /**
@@ -998,6 +996,8 @@ public class ElemTemplateElement extends UnImplNode
     }
   }
   
+  /** The *relative* document order number of this element.
+   *  @serial */
   protected int m_docOrderNumber = -1;
   
   /**
@@ -1144,7 +1144,7 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /** DOM backpointer that this element originated from.          */
-  private Node m_DOMBackPointer;
+  transient private Node m_DOMBackPointer;
 
   /**
    * If this stylesheet was created from a DOM, get the

@@ -155,7 +155,7 @@ public class TemplateList implements java.io.Serializable
   }
 
   /** Flag to indicate whether in DEBUG mode          */
-  boolean DEBUG = false;
+  static boolean DEBUG = false;
 
   /**
    * Dump all patterns and elements that match those patterns
@@ -403,13 +403,18 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * <meta name="usage" content="internal"/>
-   * Method getPriorityOrScore  <needs-description/>
+   * Given a match pattern and template association, return the 
+   * score of that match.  This score or priority can always be 
+   * statically calculated.
    *
+   * @param matchPat The match pattern to template association.
    *
-   * @param matchPat
-   *
-   * @return
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}, or 
+   *         the value defined by the priority attribute of the template.
    *
    */
   private double getPriorityOrScore(TemplateSubPatternAssociation matchPat)
@@ -431,13 +436,11 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * Locate a macro via the "name" attribute.
+   * Locate a named template.
    *
-   * @param qname
+   * @param qname  Qualified name of the template.
    *
-   * @return
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
-   * the error condition is severe enough to halt processing.
+   * @return Template argument with the requested name, or null if not found.
    */
   public ElemTemplate getTemplate(QName qname)
   {
@@ -445,14 +448,16 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * Get the head of the most likely list of associations to check.
+   * Get the head of the most likely list of associations to check, based on 
+   * the name and type of the targetNode argument.
    *
-   * @param xctxt
-   * @param targetNode
+   * @param xctxt The XPath runtime context.
+   * @param targetNode The target node that will be checked for a match.
    *
-   * @return
+   * @return The head of a linked list that contains all possible match pattern to 
+   * template associations.
    */
-  TemplateSubPatternAssociation getHead(XPathContext xctxt, Node targetNode)
+  public TemplateSubPatternAssociation getHead(XPathContext xctxt, Node targetNode)
   {
 
     short targetNodeType = targetNode.getNodeType();
@@ -507,7 +512,7 @@ public class TemplateList implements java.io.Serializable
    *        access templates that have been overridden.
    * @param quietConflictWarnings
    * @return Rule that best matches targetElem.
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
@@ -632,24 +637,30 @@ public class TemplateList implements java.io.Serializable
    */
   private Hashtable m_patternTable = new Hashtable(89);
 
-  /** Wildcard patterns          */
+  /** Wildcard patterns.
+   *  @serial          */
   private TemplateSubPatternAssociation m_wildCardPatterns = null;
 
-  /** Text Patterns          */
+  /** Text Patterns.
+   *  @serial          */
   private TemplateSubPatternAssociation m_textPatterns = null;
 
-  /** Root document Patterns          */
+  /** Root document Patterns.
+   *  @serial          */
   private TemplateSubPatternAssociation m_docPatterns = null;
 
-  /** Comment Patterns          */
+  /** Comment Patterns.
+   *  @serial          */
   private TemplateSubPatternAssociation m_commentPatterns = null;
 
   /**
    * Get table of named Templates.
-   * These are keyed on string macro names, and holding values
-   * that are template elements in the XSL DOM tree.
+   * These are keyed on template names, and holding values
+   * that are template elements.
    *
-   * @return
+   * @return A Hashtable dictionary that contains {@link java.lang.String}s 
+   * as the keys, and {@link org.apache.xalan.templates.ElemTemplate}s as the 
+   * values. 
    */
   private Hashtable getNamedTemplates()
   {
@@ -661,7 +672,9 @@ public class TemplateList implements java.io.Serializable
    * These are keyed on string macro names, and holding values
    * that are template elements in the XSL DOM tree.
    *
-   * @param v
+   * @param v Hashtable dictionary that contains {@link java.lang.String}s 
+   * as the keys, and {@link org.apache.xalan.templates.ElemTemplate}s as the 
+   * values.
    */
   private void setNamedTemplates(Hashtable v)
   {
@@ -671,9 +684,10 @@ public class TemplateList implements java.io.Serializable
   /**
    * Get the head of the assocation list that is keyed by target.
    *
-   * @param key
+   * @param key The name of a node. 
    *
-   * @return
+   * @return The head of a linked list that contains all possible match pattern to 
+   * template associations for the given key.
    */
   private TemplateSubPatternAssociation getHead(String key)
   {

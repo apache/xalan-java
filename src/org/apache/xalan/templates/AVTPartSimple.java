@@ -70,6 +70,7 @@ public class AVTPartSimple extends AVTPart
 
   /**
    * Simple string value;
+   * @serial
    */
   private String m_val;
 

@@ -66,7 +66,8 @@ import org.apache.xpath.XPath;
 public class WhiteSpaceInfo extends ElemTemplate
 {
 
-  /** Flag indicating whether whitespaces should be stripped        */
+  /** Flag indicating whether whitespaces should be stripped.
+   *  @serial        */
   private boolean m_shouldStripSpace;
 
   /**
