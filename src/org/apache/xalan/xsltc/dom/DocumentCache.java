@@ -238,10 +238,8 @@ public final class DocumentCache implements DOMCache {
 	    }
 	    return(timestamp);
 	}
-	catch (MalformedURLException e) {
-	    return(System.currentTimeMillis());
-	}
-	catch (IOException e) {
+	// Brutal handling of all exceptions
+	catch (Exception e) {
 	    return(System.currentTimeMillis());
 	}
     }
