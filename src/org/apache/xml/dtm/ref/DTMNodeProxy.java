@@ -580,8 +580,10 @@ public class DTMNodeProxy
     return implementation;
   }
 
-  /**
-   *
+  /** This is a bit of a problem in DTM, since a DTM may be a Document
+   * Fragment and hence not have a clear-cut Document Element. We can
+   * make it work in some cases but would that be confusing for others?
+   * 
    * @return
    * @see org.w3c.dom.Document
    */
@@ -1323,7 +1325,8 @@ public class DTMNodeProxy
      */
     public boolean hasFeature(String feature,String version)
     {
-      if( ("core".equals(feature) || "xml".equals(feature)) && 
+      if( ("CORE".equals(feature.toUpperCase()) || "XML".equals(feature.toUpperCase())) 
+					&& 
           ("1.0".equals(version) || "2.0".equals(version))
           )
         return true;
