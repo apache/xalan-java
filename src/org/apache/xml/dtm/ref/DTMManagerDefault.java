@@ -350,14 +350,14 @@ public class DTMManagerDefault extends DTMManager
           dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
                                xstringFactory, doIndexing);
         }
-        /******************************************************
+        /**************************************************************
         // EXPERIMENTAL 3/22/02
-        //else if(JKESS_XNI_EXPERIMENT && m_incremental)
+        else if(JKESS_XNI_EXPERIMENT && m_incremental)
         {        	
           dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
                             xstringFactory, doIndexing);
         }
-        ********************************************************/
+        **************************************************************/
         else // Create the basic SAX2DTM.
         {
           dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
