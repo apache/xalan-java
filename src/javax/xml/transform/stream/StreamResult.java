@@ -196,7 +196,11 @@ public class StreamResult implements Result {
      * @param f Must a non-null File reference.
      */
     public void setSystemId(File f) {
-        this.systemId = "file:///" + f.getAbsolutePath();
+        String fpath=f.getAbsolutePath();
+        if( fpath.startsWith("/"))
+	  this.systemId= "file://" + fpath;
+	else
+	  this.systemId = "file:///" + fpath;
     }
 
     /**

@@ -168,7 +168,7 @@ public class StreamSource implements Source {
      * @param f Must a non-null File reference.
      */
     public StreamSource(File f) {
-        this.systemId = "file:///" + f.getAbsolutePath();
+        setSystemId(f);
     }
 
     /**
@@ -276,7 +276,11 @@ public class StreamSource implements Source {
      * @param f Must a non-null File reference.
      */
     public void setSystemId(File f) {
-        this.systemId = "file:///" + f.toString();
+        String fpath=f.getAbsolutePath();
+        if( fpath.startsWith("/"))
+	  this.systemId= "file://" + fpath;
+	else
+	  this.systemId = "file:///" + fpath;
     }
 
     //////////////////////////////////////////////////////////////////////
