@@ -200,13 +200,16 @@ Copyright:
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
     <!-- Since the samples are packageless, they must be compiled separately. -->   
-    <!--javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.dir}/xalan.jar"  
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
+    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.dir}/xalan.jar"
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.dir}/xalan.jar"  
+    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
     <javac srcdir="${samples.dir}/TransformToDom" classpath="${java.class.path}:${build.dir}/xalan.jar" 
@@ -214,24 +217,21 @@ Copyright:
            debug="${debug}"/>
     <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/>
+           debug="${debug}"/>           
     <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${build.dir}/xalan.jar" 
-           destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/>
-   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/xalan.jar" 
-           destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}"/>
-    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.dir}/xalan.jar"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
     <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${build.dir}/xalan.jar"  
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/>                                                        
+           debug="${debug}"/>
+   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+           destdir="${build.samples}" excludes="${exclude}" 
+           debug="${debug}"/>           
    <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/> 
     <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
-         includes="*.class"/-->
+         includes="*.class"/>
                    
   </target>
   
