@@ -167,7 +167,7 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 		return null;
 	    }
 
-	    return(new TemplatesImpl(bytecodes, transletName));
+	    return new TemplatesImpl(bytecodes, transletName, getOutputProperties());
 	}
 	catch (CompilerException e) {
 	    return null;

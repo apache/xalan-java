@@ -72,6 +72,7 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Date;
@@ -161,6 +162,13 @@ public final class XSLTC {
      */
     public void setOutputType(int type) {
 	_outputType = type;
+    }
+
+    /**
+     * Only for user by the internal TrAX implementation.
+     */
+    public Properties getOutputProperties() {
+	return _parser.getOutputProperties();
     }
 
     /**

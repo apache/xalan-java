@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Iterator;
@@ -132,6 +133,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     private boolean _forwardReference = false;
 
+    private Properties _outputProperties = null;
+
     public void setForwardReference() {
 	_forwardReference = true;
     }
@@ -148,6 +151,21 @@ public final class Stylesheet extends SyntaxTreeNode {
 	_simplified = true;
     }
     
+    public void setOutputProperty(String key, String value) {
+	if (_outputProperties == null) {
+	    _outputProperties = new Properties();
+	}
+	_outputProperties.setProperty(key, value);
+    }
+
+    public void setOutputProperties(Properties props) {
+	_outputProperties = props;
+    }
+
+    public Properties getOutputProperties() {
+	return _outputProperties;
+    }
+
     public void setMultiDocument(boolean flag) {	
 	_multiDocument = flag;
     }

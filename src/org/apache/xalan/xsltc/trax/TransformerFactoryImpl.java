@@ -336,7 +336,8 @@ public class TransformerFactoryImpl
 	}
 
 	// Create a Transformer object and store for other calls
-	Templates templates = new TemplatesImpl(bytecodes,_defaultTransletName);
+	Templates templates = new TemplatesImpl(bytecodes, 
+	    _defaultTransletName, xsltc.getOutputProperties());
 	_copyTransformer = templates.newTransformer();
 	if (_uriResolver != null) _copyTransformer.setURIResolver(_uriResolver);
 	return(_copyTransformer);
@@ -519,7 +520,8 @@ public class TransformerFactoryImpl
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
 	    throw new TransformerConfigurationException(err.toString());
 	}
-	return(new TemplatesImpl(bytecodes, transletName));
+	return new TemplatesImpl(bytecodes, transletName, 
+	    xsltc.getOutputProperties());
     }
 
     /**

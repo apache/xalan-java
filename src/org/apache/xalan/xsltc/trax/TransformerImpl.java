@@ -118,7 +118,7 @@ public final class TransformerImpl extends Transformer
 
     private ErrorListener _errorListener = this;
     private URIResolver   _uriResolver = null;
-    private Properties    _properties = null;
+    private Properties    _properties, _propertiesClone;
 
     // Used for default output property settings
     private final static String EMPTY_STRING = "";
@@ -138,9 +138,10 @@ public final class TransformerImpl extends Transformer
      * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
      */
-    protected TransformerImpl(Translet translet) {
+    protected TransformerImpl(Translet translet, Properties outputProperties) {
 	_translet = (AbstractTranslet)translet;
-	_properties = createOutputProperties();
+	_properties = createOutputProperties(outputProperties);
+	_propertiesClone = (Properties) _properties.clone();
     }
 
     /**
@@ -642,17 +643,12 @@ public final class TransformerImpl extends Transformer
 
     /**
      * Implements JAXP's Transformer.getOutputProperties().
-     * Returns a copy of the output properties for the transformation. This is
-     * a set of layered properties. The first layer contains properties set by
-     * calls to setOutputProperty() and setOutputProperties() on this class,
-     * and the output settings defined in the stylesheet's <xsl:output>
-     * element makes up the second level, while the default XSLT output
-     * settings are returned on the third level.
+     * Returns a copy of the output properties for the transformation. 
      *
      * @return Properties in effect for this Transformer
      */
     public Properties getOutputProperties() {
-	return(_properties);
+	return (Properties) _properties.clone();
     }
 
     /**
@@ -670,7 +666,7 @@ public final class TransformerImpl extends Transformer
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_PROP_ERR, name);
 	    throw new IllegalArgumentException(err.toString());
 	}
-	return(_properties.getProperty(name));
+	return _properties.getProperty(name);
     }
 
     /**
@@ -683,8 +679,25 @@ public final class TransformerImpl extends Transformer
      * @throws IllegalArgumentException Never, errors are ignored
      */
     public void setOutputProperties(Properties properties)
-	throws IllegalArgumentException {
-	_properties.putAll(properties);
+	throws IllegalArgumentException 
+    {
+	if (properties != null) {
+	    final Enumeration names = properties.propertyNames();
+
+	    while (names.hasMoreElements()) {
+		final String name = (String) names.nextElement();
+		if (validOutputProperty(name)) {
+		    _properties.setProperty(name, properties.getProperty(name));
+		}
+		else {
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_PROP_ERR, name);
+		    throw new IllegalArgumentException(err.toString());
+		}
+	    }
+	}
+	else {
+	    _properties = _propertiesClone;
+	}
     }
 
     /**
@@ -766,66 +779,40 @@ public final class TransformerImpl extends Transformer
      * Internal method to pass any properties to the translet prior to
      * initiating the transformation
      */
-    private Properties createOutputProperties() {
-	
-	// Level3: Return the default property value
- 	// bug # 6751 fixed by removing setProperty lines for 
-  	//  OutputKeys.(DOCTYPE_PUBLIC|DOCTYPE_SYSTEM|CDATA_SECTION_ELEMENTS)
-  	//  instead of setting them to "" (EMPTY_STRING). Fix contributed
-  	//  by Derek Sayeau.   
-	Properties third = new Properties();
-	third.setProperty(OutputKeys.ENCODING, "UTF-8");
-	third.setProperty(OutputKeys.METHOD, XML_STRING);
-	third.setProperty(OutputKeys.INDENT, NO_STRING);
-	third.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
-	third.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
-	third.setProperty(OutputKeys.STANDALONE, NO_STRING);
-	third.setProperty(OutputKeys.VERSION, "1.0");
+    private Properties createOutputProperties(Properties outputProperties) {
+	final Properties defaults = new Properties();
+	defaults.setProperty(OutputKeys.ENCODING, "UTF-8");
+	defaults.setProperty(OutputKeys.METHOD, XML_STRING);
+	defaults.setProperty(OutputKeys.INDENT, NO_STRING);
+	defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
+	defaults.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
+	defaults.setProperty(OutputKeys.STANDALONE, NO_STRING);
+	defaults.setProperty(OutputKeys.VERSION, "1.0");
 
-	// Level2: Return the property value is set in the translet
-	// Creating these properties with the third-level properties as default
-	Properties second = new Properties(third);
-	if (_translet != null) {
-	    String value = _translet._encoding;
-	    if (value != null) second.setProperty(OutputKeys.ENCODING, value);
-
-	    value = _translet._method;
-	    if (value != null) second.setProperty(OutputKeys.METHOD, value);
-
-	    if (_translet._indent)
-		second.setProperty(OutputKeys.INDENT, "yes");
-	    else
-		second.setProperty(OutputKeys.INDENT, "no");
-
-	    value = _translet._doctypePublic;
-	    if (value != null) 
-		second.setProperty(OutputKeys.DOCTYPE_PUBLIC, value);
-
-	    value = _translet._doctypeSystem;
-	    if (value != null) 
-		second.setProperty(OutputKeys.DOCTYPE_SYSTEM, value);
-
-	    value = makeCDATAString(_translet._cdata);
-	    if (value != null) 
-		second.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS,value);
-
-	    value = _translet._mediaType;
-	    if (value != null) second.setProperty(OutputKeys.MEDIA_TYPE, value);
-
-	    if (_translet._omitHeader)
-		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-	    else
-		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-
-	    value = _translet._standalone;
-	    if (value != null) second.setProperty(OutputKeys.STANDALONE, value);
-
-	    value = _translet._version;
-	    if (value != null) second.setProperty(OutputKeys.VERSION, value);
+	// Copy propeties set in stylesheet to base
+	final Properties base = new Properties(defaults);
+	if (outputProperties != null) {
+	    final Enumeration names = outputProperties.propertyNames();
+	    while (names.hasMoreElements()) {
+		final String name = (String) names.nextElement();
+		base.setProperty(name, outputProperties.getProperty(name));
+	    }
 	}
 
-	// Creating the properties with the second-level properties as default
-	return(new Properties(second));
+	// Update defaults based on output method
+	final String method = base.getProperty(OutputKeys.METHOD);
+	if (method != null) {
+	    if (method.equals("html")) {
+		defaults.setProperty(OutputKeys.INDENT, "yes");
+		defaults.setProperty(OutputKeys.VERSION, "4.0");
+		defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/html");
+	    }
+	    else if (method.equals("text")) {
+		defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/plain");
+	    }
+	}
+
+	return base; 
     }
 
     /**

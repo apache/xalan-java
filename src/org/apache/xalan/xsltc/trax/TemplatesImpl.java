@@ -97,6 +97,8 @@ public final class TemplatesImpl implements Templates, Serializable {
     // and _bytecodes arrays (above).
     private int _transletIndex = -1;
     
+    private Properties _outputProperties;
+
     // Our own private class loader - builds Class definitions from bytecodes
     private class TransletClassLoader extends ClassLoader {
 
@@ -127,9 +129,12 @@ public final class TemplatesImpl implements Templates, Serializable {
      * The bytecodes for the translet and auxiliary classes, plus the name of
      * the main translet class, must be supplied
      */
-    protected TemplatesImpl(byte[][] bytecodes, String transletName) {
+    protected TemplatesImpl(byte[][] bytecodes, String transletName,
+	Properties outputProperties) 
+    {
 	_bytecodes = bytecodes;
 	_name      = transletName;
+	_outputProperties = outputProperties;
     }
 
     /**
@@ -256,7 +261,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     public Transformer newTransformer()
 	throws TransformerConfigurationException {
-        return(new TransformerImpl(getTransletInstance()));
+        return new TransformerImpl(getTransletInstance(), _outputProperties);
     }
 
     /**
