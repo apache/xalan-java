@@ -152,7 +152,6 @@ public final class LoadDocument {
                 throw new IllegalArgumentException(err);
             }      
         } catch (Exception e) {
-            System.out.println("xslURI: " + xslURI);
             throw new TransletException(e);
         }
     }
