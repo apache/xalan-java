@@ -84,7 +84,7 @@ public class FilterExprWalker extends AxesWalker
   /**
    * Construct a FilterExprWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator non-null reference to the parent iterator.
    */
   public FilterExprWalker(LocPathIterator locPathIterator)
   {
@@ -94,9 +94,9 @@ public class FilterExprWalker extends AxesWalker
   /**
    * Init a FilterExprWalker.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
-   * NEEDSDOC @param stepType
+   * @param compiler non-null reference to the Compiler that is constructing.
+   * @param opPos positive opcode position for this step.
+   * @param stepType The type of step.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -123,7 +123,8 @@ public class FilterExprWalker extends AxesWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root non-null reference to the root, or starting point of 
+   *        the query.
    */
   public void setRoot(Node root)
   {
@@ -149,7 +150,7 @@ public class FilterExprWalker extends AxesWalker
     {
 
       // TODO: Fix...
-      throw new RuntimeException(se.getMessage());
+      throw new org.apache.xml.utils.WrappedRuntimeException(se);
     }
     finally
     {
@@ -163,7 +164,7 @@ public class FilterExprWalker extends AxesWalker
   /**
    * Get a cloned FilterExprWalker.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new FilterExprWalker that can be used without mutating this one.
    *
    * @throws CloneNotSupportedException
    */
@@ -177,17 +178,6 @@ public class FilterExprWalker extends AxesWalker
       clone.m_nodeSet = (NodeIterator) ((ContextNodeList) m_nodeSet).clone();
 
     return clone;
-  }
-
-  /**
-   * NEEDSDOC Method setLocPathIterator 
-   *
-   *
-   * NEEDSDOC @param li
-   */
-  public void setLocPathIterator(LocPathIterator li)
-  {
-    super.setLocPathIterator(li);
   }
 
   /**
@@ -280,19 +270,20 @@ public class FilterExprWalker extends AxesWalker
     return setCurrentIfNotNull(next);
   }
 
-  /** NEEDSDOC Field m_expr          */
-  Expression m_expr;
+  /** The contained expression. Should be non-null.   */
+  private Expression m_expr;
 
-  /** NEEDSDOC Field m_nodeSet          */
-  NodeIterator m_nodeSet;
+  /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
+  private NodeIterator m_nodeSet;
 
-  /** NEEDSDOC Field m_peek          */
-  Node m_peek = null;
+  /** I think this is always null right now.    */
+  private Node m_peek = null;
 
   /**
-   * Tell what's the maximum level this axes can descend to.
+   * Tell what's the maximum level this axes can descend to (which is actually
+   * impossible to predict with this walker?).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return always a level of 1 right now.
    */
   protected int getLevelMax()
   {
