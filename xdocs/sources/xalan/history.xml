@@ -3,6 +3,1004 @@
  <s1 title="History of software changes">
    <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
    &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.4.0">
+<p> Core (Non-XSLTC) source code updates:</p>
+<ul>
+<li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize SerializerToText.java<br/><ref>Committer's log entry: </ref>
+Bugzilla 8358 -- bad method signature. I've created a new method
+with the correct signature. The old one may or may not be entirely
+superfluous, but I don't want to muck with it right now.<br/><br/></li>
+<li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources entities.ent xalan-jsite.xml<br/><ref>Committer's log entry: </ref>
+Updated Xalan version to 2.3.2 and Xerces to 2.0.1.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan xsltc_usage.xml<br/><ref>Committer's log entry: </ref>
+Added classpath information pertaining to xercesImpl.jar and xml-apis.jar.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources entities.ent<br/><ref>Committer's log entry: </ref>
+Added pointer to xml-apis.jar MANIFEST for version information.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan history.xml readme.xml xsltc_history.xml<br/><ref>Committer's log entry: </ref>
+Updates for next version (release notes to history)
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java commits.xml<br/><ref>Committer's log entry: </ref>
+Pieriodic update.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+Added info on Xalan implementation of EXSLT common, math,
+and set extensions, and ongoing work on the function and result
+elements and datetime extensions.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan index.xml<br/><ref>Committer's log entry: </ref>
+Added support for EXSLT extensions.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>
+Fix for Bugzilla entries
+	6833
+	7023
+	7123
+	7410
+
+Basic summary of logic error: It is possible for multiple RTF DTMs
+to be pushed onto the stack between the start of a template and
+return from it. I hadn't anticipated that, so my pop logic was
+inadequate.
+
+I'm still not 110% sure I understand the case where this situation
+arises... I have a general intuition that it makes sense, but also a
+suspicion that there might be a way to avoid creating one of these
+DTMs. We should review that someday.
+
+Meanwhile, this fixes a whole batch of related bugs.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref ExpandedNameTable.java<br/><ref>Committer's log entry: </ref>
+Performance improvement. Instead of looping through the ExtendedType objects, use a hashtable and go directly to the correct object.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize Encodings.java Encodings.properties<br/><ref>Committer's log entry: </ref>
+Bugzilla 6356: Add support for "windows-1251" and use a properties file to store all the supported encodings. Patch from Sergey Ushakov.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref ExpandedNameTable.java<br/><ref>Committer's log entry: </ref>
+Add basic DOM nodetypes to our hashtable of extended type IDs
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/05/12<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/xslt Process.java xml-xalan/java/src/org/apache/xml/utils/res XResourceBundle.java XResourceBundleBase.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResourceBundle.java XPATHErrorResources_en.java XPATHErrorResources.java XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Use PropertyResourceBundle instead of ListResourceBundle, and put error
+messages into property files, for easier localization.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/05/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes WalkerFactory.java<br/><ref>Committer's log entry: </ref>
+In mightBeProximate, there was a bug that assumed a variable would not be
+be a numeric result.  It is now fixed to assume a number may be a number, which
+may cause a small performance penalty.  In the future, it should be possible to
+chase this down a bit more to rule out more variables as non-numbers.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/05/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPath.java<br/><ref>Committer's log entry: </ref>
+Bugzilla 7157. Updated Javadoc comment to note that the XPath.installFunction() method currently does not
+use the name parameter.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/compiler Compiler.java xml-xalan/java/src/org/apache/xpath/functions FuncLast.java FuncPosition.java Function.java<br/><ref>Committer's log entry: </ref>
+Bugzilla6284: New function added to position() and last() that will help us determine whether we are executing a top-level expression and therefore, not inside a predicate
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.java xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java<br/><ref>Committer's log entry: </ref>
+Add a null constructor for resource files and fix XSLMessages to use the correct error resource file
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/13<br/><ref>Modified: </ref> xml-xalan/java/src/META-INF/services org.apache.xml.dtm.DTMManager xml-xalan/java/src/org/apache/xml/dtm DTMManager.java<br/><ref>Committer's log entry: </ref>
+Add meta file for DTMManager factory and make sure it is read as UTF-8
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/13<br/><ref>Modified: </ref> xml-xalan/java build.xml<br/><ref>Committer's log entry: </ref>
+Pick up all meta files
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java<br/><ref>Committer's log entry: </ref>
+Back out this change!
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/objects XNodeSetForDOM.java<br/><ref>Committer's log entry: </ref>
+m_last was not being set correctly. See comments.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemVariable.java<br/><ref>Committer's log entry: </ref>
+Bugzilla 7118: Variable set via RTF may have
+local variables within it; need to push a new
+context.
+
+(This anonymous-pseudotemplate thing has
+caused us more confusion....)
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils DefaultErrorHandler.java<br/><ref>Committer's log entry: </ref>
+Obvious typo.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java<br/><ref>Committer's log entry: </ref>
+Missing safety net, mostly needed during stylesheet construction.
+
+We really should change TransformerImpl to set parent _before_
+starting to setPropertiesFromAttributes, so the error conditions
+which might cause this test to be needed don't arise. Among other
+things, that would produce more useful diagnostic messages.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseTraversers.java<br/><ref>Committer's log entry: </ref>
+Bugzilla 8894: DescendantForRoot traversers needed to implement their own version of first(int, int) so that their context would be from the root.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/05/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes NodeSequence.java<br/><ref>Committer's log entry: </ref>
+Fix for NullPointerException in SQL extension stuff. Just check for a NULL iterator...
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseIterators.java<br/><ref>Committer's log entry: </ref>
+Bugzilla 8324. This should have been checked into the main branch.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java<br/><ref>Committer's log entry: </ref>
+Dumb of me -- fixed one edge case and created another, because
+I forgot about subclassing Sigh. This version protects against both.
+
+(And whitens your laundry, and keeps your car from rusting, and
+kills crabgrass... It's a furnature wax! It's a dessert topping! ... Sorry.)
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java DTMDefaultBaseIterators.java<br/><ref>Committer's log entry: </ref>
+Fix for new tests Variable71 and Variable72.
+
+When we went to the shared RTF DTMs, we forgot to update
+PreceedingIterator to reflect the fact that the root of a DTM tree
+may no longer have 0 as its internal Node Identifier. This change
+corrects that situation, and does so without imposing a lot of
+computational overhead since we need to scan the ancestors
+anyway.
+
+There appear to be similar hazards in some of the Traversers,
+still to be dealt with. Coming up with testcases which will provoke
+those bugs (and confirm that we've fixed them) is likely to be
+harder than writing the fix itself...
+<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>2002/05/17<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+section on problems was way out of date. Also incorporated material from JAXP 1.2 release notes
+<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>2002/05/17<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+updated command option usuage. Some options have been added.
+<br/><br/></li><li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2002/05/17<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan xsltc_usage.xml<br/><ref>Committer's log entry: </ref>
+Updated first three sections.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/17<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemVariable.java<br/><ref>Committer's log entry: </ref>
+Bugzilla 7118 REVERT -- This fix was provoking bug 9195, which
+is more severe.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/21<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+Obvious mistake, apparently in a corner our regression tests missed.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2RTFDTM.java<br/><ref>Committer's log entry: </ref>
+Root node is not always 0 in an RTFDTM
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/05/22<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/xslt Process.java xml-xalan/java/src/org/apache/xpath/functions FuncPosition.java<br/><ref>Committer's log entry: </ref>
+Fixed hard coded string for timing diagnostics.
+<br/><br/></li><li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize SerializerToXML.java<br/><ref>Committer's log entry: </ref>
+Prevent an external DTD from being inlined when using the built-in
+identity transform.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+Starting branch for Xalan3
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils CharacterBlockEnumeration<br/><ref>Committer's log entry: </ref>
+file CharacterBlockEnumeration was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/objects XRTreeFrag.java<br/><ref>Committer's log entry: </ref>
+Just comment
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file DTM2XNI.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncValidate.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm XNISource.java<br/><ref>Committer's log entry: </ref>
+file XNISource.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/05/31<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file CharacterBlockEnumeration.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/06/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>
+Put back main-branch version. Not sure how it got overlaid with the
+XALAN3-branch copy.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorFuncResult.java ProcessorFunction.java ProcessorOutputElem.java ProcessorResultDocument.java XSLTSchema.java<br/><ref>Committer's log entry: </ref>
+XSLT 2.0: stylesheet function, result-document, and
+principal-result-document.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/><ref>Committer's log entry: </ref>
+Xalan3 branch: Check in temporary version of Xerces. This predates
+the most recent changes to Xerces, and supports the older "light
+weight" PSVI APIs. Current Xerces has replaced those with a heavier
+version, but in the process lost the derivedFrom() method which
+we need; when they restore that functionality, we'll cut over.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+Mistake! These files belong on the Xalan3 branch.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorResultDocument.java<br/><ref>Committer's log entry: </ref>
+Mistake! This file belongs on the Xalan3 branch.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemFuncResult.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemFunction.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemPrincipalResultDocument.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/04<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemResultDocument.java<br/><ref>Committer's log entry: </ref>
+file ElemResultDocument.java was initially added on branch Xalan3.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor XSLTSchema.java<br/><ref>Committer's log entry: </ref>
+Restored pre-Xalan3 source file!
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ExpressionVisitor.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ExtensionHandlerExsltFunction.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ExtensionNamespacesManager.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespaceSupport.java<br/><ref>Committer's log entry: </ref>
+file ExtensionNamespaceSupport.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemExsltFuncResult.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemExsltFunction.java<br/><ref>Committer's log entry: </ref>
+file ElemExsltFunction.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath ExtensionsProvider.java<br/><ref>Committer's log entry: </ref>
+file ExtensionsProvider.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ProcessorExsltFuncResult.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFunction.java<br/><ref>Committer's log entry: </ref>
+file ProcessorExsltFunction.java was initially added on branch ExtensionEnhancements.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/05<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltDatetime.java<br/><ref>Committer's log entry: </ref>
+Core EXSLT dates-and-times functions.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorOutputElem.java<br/><ref>Committer's log entry: </ref>
+Restored correct version for Xalan 2.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemVariable.java XUnresolvedVariable.java<br/><ref>Committer's log entry: </ref>
+Fix bug 7118.  In XUnresolvedVariable, treat the RTF variable much more like
+a template that has to count it's variables at compose-time, and link and unlink
+when the lazy variable is resolved.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib/sql DefaultConnectionPool.java xml-xalan/java/src/org/apache/xalan/processor TransformerFactoryImpl.java xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates RedundentExprEliminator.java xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseTraversers.java xml-xalan/java/src/org/apache/xml/utils ListingErrorHandler.java xml-xalan/java/src/org/apache/xml/utils/synthetic JavaUtils.java xml-xalan/java/src/org/apache/xpath VariableStack.java xml-xalan/java/src/org/apache/xpath/functions FuncConcat.java Function.java Function2Args.java Function3Args.java FunctionOneArg.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Integrated some removal of hard-coded error messages.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/08<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>
+Add resets for m_contextNodeLists, etc.  It might be possible that these are
+redundent with the same thing being done somewhere else, but given
+http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6021 I suspect
+that this really does need to be done here.  It would explain any problems
+that might have been reported after an exception has been thrown, and
+the Transformer is being reused.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/08<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemApplyTemplates.java ElemTemplate.java xml-xalan/java/src/org/apache/xalan/transformer StackGuard.java TransformerImpl.java xml-xalan/java/src/org/apache/xml/utils URI.java<br/><ref>Committer's log entry: </ref>
+Add back a certain amount of StackGuard functionality.  Instead of checking
+counts where both the node and the xsl:template are the same... (we would
+really need also to check that parameters are the same), just check for recursion
+of templates.  We can make it fancier over time to also check for same params,
+but checking of the current node may be harder.  I was only able to set the
+recursion limit to about 475 before I would get stack overflow errors anyway.
+I also did some stuff where the error messages should be more consistent by
+making sure some of the arrays are reset in XPathContex, which may address
+some of the inconsistency problems that Christina reported.
+may address part of the problem that Christina was having.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/08<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/transformer StackGuard.java<br/><ref>Committer's log entry: </ref>
+Moved hard coded strings for StackGuard error message to properties file.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Fix bug for optionV.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExpressionContext.java ExpressionVisitor.java ExtensionHandlerExsltFunction.java ExtensionNamespacesManager.java ExtensionNamespaceSupport.java ExtensionsTable.java xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFuncResult.java ProcessorExsltFunction.java StylesheetHandler.java XSLTSchema.java xml-xalan/java/src/org/apache/xalan/templates Constants.java ElemExsltFuncResult.java ElemExsltFunction.java ElemExtensionCall.java ElemExtensionDecl.java StylesheetRoot.java xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java xml-xalan/java/src/org/apache/xpath ExtensionsProvider.java XPathContext.java xml-xalan/java/src/org/apache/xpath/functions FuncExtElementAvailable.java FuncExtFunction.java FuncExtFunctionAvailable.java<br/><ref>Committer's log entry: </ref>
+Updates to Xalan extensions: (1) EXLST function and (2) architectural modifications.
+This is a merge of the ExtensionEnhancements branch into Main.
+
+1. EXSLT function
+We are well underway in our progress towards providing support for EXSLT extension functionss and elements. The EXSLT function and result elements (see http://www.exslt.org/func/func.html) require some fairly substantial additions.
+XSLTSchema includes new XSLTElementDefs for a top-level exslt:function element, which, along with other items, may contain an exslt:result element. These definitions specify a new element class and processor for both of these elements, and a new extension handler. I have tested the implementation with the 6 test cases that EXSLT provides (including recursive calls), and it passes these tests.
+Note: These additions/updates also provide the infrastructure for the XSLT 2.0 stylesheet function.
+2. Architectural changes
+During styesheet composition, Stylesheet Root assembles a vector of ExtensionNamespaceSupport objects. This object contains the information required during a transform to instantiate the required ExtensionHandler. If the stylesheet includes no extensions, this vector is null.  I.e.,  it does not include handlers for the default extension namespaces (of which there are currently 7, and which the Xalan currently loads for each transformation).
+The presence of an extension is detected as follows:
+Compilation of an expression that contains a FuncExtFunction. StylesheetHandler.createXPath()  uses an XPathVisitor to locate any FuncExtFunctions embedded in the expression.
+Final composition of a component element  -- ElemExtensionDecl.compose().
+Final composition of an extension component for which no component exsits -- ElemExtensionCall.compose().
+Final composition of an exslt:function element -- ElemFunction.compose().
+During StylesheetRoot.recompose(), any extension namespaces that are not predefined and for which no component or function element exists, are defined as java class (if a java class is found) or java package. In the current implementation, this last stab is made during the transformation, repeatedly if the element or function cannot be processed and is called more than once.
+At the beginning of each transformation -- transformNode() --  if any extensions exist, TransformerImpl instantiates an ExtensionsTable with a hashtable containing an ExtensionHandler for each of the ExtensionNamespaceSupport objects defined during stylesheet assembly. XPathContext  no longer creates or has any direct knowledge of the ExtensionsTable. The ExtensionsTable does not contain handlers for predefined namespaces that are not being used.
+TransformerImpl implements the org.apache.xpath.ExtensionsProvider interface. The relevant XPath functions (FuncExtFunction, FuncExtElememntAvailable, and FuncExtFunctionAvailable) call this interface, via XPathContext.getOwnerObject(). The implementation contains 3 methods that call through to the ExtensionsTable, which passes the call on to the appropriate ExtensionHandler..
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/06/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize Encodings.java<br/><ref>Committer's log entry: </ref>
+Use ContextClassLoader - Use full Encoding file package name - Merge new patch from Sergey Ushakov
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates FuncDocument.java FuncFormatNumb.java xml-xalan/java/src/org/apache/xpath/functions FuncConcat.java FuncExtFunction.java FuncSubstring.java Function.java Function2Args.java Function3Args.java FunctionDef1Arg.java FunctionMultiArgs.java FunctionOneArg.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Patch submitted by Henry_Zongaro@us.ibm.com:
+
+To summarize what I did, the Function class and its subclasses have two
+methods that check the number of arguments:  setArg and
+checkNumberArgs.  The former checks whether too many arguments are
+specified, and the latter checks for too few (or too many, redundantly).
+
+In the case where there are optional arguments (as in substring), the class
+for the function (FuncSubstring, in this case) derives from a class that has a
+fixed number of arguments (Func3Arguments, in this case).  If too few
+arguments are specified, the FuncSubstring.checkNumberArgs method
+reports that the function only allows 2 or 3 arguments; if too many arguments
+are specified, the Function3Arguments.setArg method reports that the
+function only allows 3 arguments.
+
+To fix the problem, I added reportWrongNumberArgs() methods to the
+Function class and to its subclasses, as appropriate, and I added code to
+call that from checkNumberArgs and setArg - that way, the correct number
+of arguments is always reported in the error messages.
+
+Alternatively, I could have changed the setArg method in all the classes that
+have optional arguments to report correctly the number of arguments, but I
+didn't like the idea of having it redundantly perform the same check that the
+setArg method of its base class was going to perform just to get a better
+message out.  A third possibility would be to have setArg call the
+checkNumberArgs method when it detects too many arguments are
+specified; that would guarantee that setArg would report the same message,
+and avoid introducing a new method, as long as checkNumberArgs always
+checks for both too few and for too many arguments.  A fourth possibility
+would be to report two different errors:  the minimum number of arguments
+required in checkNumberArgs and the maximum permitted in setArg.
+
+I also noticed that the message produced for FuncSubstring when too few
+arguments are specified actually indicates that 0 or 1 arguments are required,
+ so I fixed the XPATHErrorResources.properties file.
+
+I don't see the NPE that Dave Marston mentions in Bugzilla, so I assume
+that's been fixed.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor StylesheetHandler.java xml-xalan/java/src/org/apache/xalan/templates ElemNumber.java ElemTemplateElement.java xml-xalan/java/src/org/apache/xml/utils PrefixResolver.java PrefixResolverDefault.java xml-xalan/java/src/org/apache/xpath/compiler Lexer.java<br/><ref>Committer's log entry: </ref>
+Patch submitted by Ilene_Seelemann@us.ibm.com for Bug 6798:
+
+Added a method (handlesNullPrefixes) to the PrefixResolver interface so
+that the resolver can indicate whether it supports null prefixes.  Then, in the
+tokenizer, if the prefix is null, and the resolver supports that, it continues
+processing as if the prefix had a value.  In Lexer.java, methods that have
+changed are: tokenize, mapNSTokens.
+
+In ElemNumber#getCountMatchPattern, pass MyPrefixResolver instance to default
+psuedo match patterns.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java commits.xml<br/><ref>Committer's log entry: </ref>
+Purged for upcoming developer releases.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan history.xml readme.xml xsltc_constraints.xml xsltc_history.xml<br/><ref>Committer's log entry: </ref>
+Moved 2.3.2 core and xsltc updates into the history files.
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/><ref>Committer's log entry: </ref>
+xercesImpl.jar from Xerces-J-bin.2.0.1.zip (for upcoming Xalan-J 2.4.D1)
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java/src MANIFEST.MF<br/><ref>Committer's log entry: </ref>
+Update xerces.jar to be xercesImpl.jar; this should have been
+done quite a while ago.  Note the Class-Path: entry needs review
+in general at some point.
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan builds.xml<br/><ref>Committer's log entry: </ref>
+Brief documentation about developer standards and official build processes
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources xalan-jlocal.xml<br/><ref>Committer's log entry: </ref>
+Add builds.xml; perhaps should also be added to xalan-jsite.xml as well
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemNumber.java xml-xalan/java/src/org/apache/xpath/compiler Lexer.java<br/><ref>Committer's log entry: </ref>
+From Ilene Seelemann:
+Added the following in blue to line 395 of Lexer.java
+
+     if ((-1 != posOfNSSep) ||
+         ((m_namespaceContext != null) &amp;&amp; (m_namespaceContext.handlesNullPrefixes())))
+
+I'm also including ElemNumber.java which really doesn't need to
+explicitly state that it implements PrefixResolver.
+Without these updates everything does run fine.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/06/11<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespaceSupport.java<br/><ref>Committer's log entry: </ref>
+Commented out a debug print line.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/13<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan readme.xml xsltc_constraints.xml<br/><ref>Committer's log entry: </ref>
+updates for developer's release.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/13<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources entities.ent xalan-jsite.xml xml-xalan/java/xdocs/sources/xalan history.xml index.xml readme.xml resources.xml xml-xalan/java KEYS<br/><ref>Committer's log entry: </ref>
+Patches for developer's release from Sarah McNamara.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>
+Updated version # for developer's release.
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>
+Update .jar file sizes for 2.4.D1 release
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/13<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan resources.xml<br/><ref>Committer's log entry: </ref>
+Remove extraneous slash char on path
+Submitted by: mcnamara@ca.ibm.com
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>
+Fix Bugzilla #9137; don't toLowerCase() the filename (not really needed anymore);
+remove line for xalan.jar for 2_4_D1 because .jar build size is not determinate
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/13<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan extensionslib.xml<br/><ref>Committer's log entry: </ref>
+Add pointers to info on new EXSLT extensions.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/17<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespacesManager.java<br/><ref>Committer's log entry: </ref>
+Changed Vector.get(int) to Vector.elementAt(int) to maintain
+compability with Java 1.1.8.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/17<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltDatetime.java<br/><ref>Committer's log entry: </ref>
+Modified leap-year functions to use arithmetic logic rather than relying
+on a Calendar method that doesn't exist in Java 1.1.8.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/18<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes RTFIterator.java xml-xalan/java/src/org/apache/xpath/objects XRTreeFrag.java<br/><ref>Committer's log entry: </ref>
+Added RTFIterator (extends OneStepIteratorForward);
+created fromRTFFragment so EXSLT object-type function
+can identify an RTF with certainty.
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/06/18<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltCommon.java<br/><ref>Committer's log entry: </ref>
+Removed duplicate implementation of several EXSLT "Set"
+functions.
+<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>2002/06/21<br/><ref>Modified: </ref> xml-xalan/java/bin jtidy.LICENSE.txt jtidy.README.txt Tidy.jar<br/><ref>Committer's log entry: </ref>
+adding Jtidy for use with test harness to parse html
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils Hashtree2Node.java<br/><ref>Committer's log entry: </ref>
+Simplistic static utility to convert a Hashtable of items (either
+Hashtables or anything else cast to (String)) into an Element tree
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib Extensions.java<br/><ref>Committer's log entry: </ref>
+Update checkEnvironment to attempt to call org.apache.env.Which first
+by using reflection; Which provides better output data than
+EnvironmentCheck.  If reflection doesn't work, then we
+fallback to EnvironmentCheck as before.
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/21<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan faq.xml<br/><ref>Committer's log entry: </ref>
+Add doc about calling checkEnvironment as a stylesheet extension
+<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>2002/06/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize SerializerToXML.java<br/><ref>Committer's log entry: </ref>
+bug fix for bugzilla 9572, fix by Pavani.Mukthipudi@sun.com
+<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>2002/06/26<br/><ref>Modified: </ref> xml-xalan/java build.xml<br/><ref>Committer's log entry: </ref>
+Update docs.class.path to include XSLTC-dependent jars
+Submitted by:	Henri Gomez hgomez@slib.fr
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/06/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Add error resources pulled out from code
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/06/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Add error resources pulled out from code
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/06/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/compiler Compiler.java OpMap.java<br/><ref>Committer's log entry: </ref>
+Pull out hard coded messages
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/06/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath NodeSet.java NodeSetDTM.java xml-xalan/java/src/org/apache/xpath/objects XStringForFSB.java xml-xalan/java/src/org/apache/xpath/axes AxesWalker.java LocPathIterator.java<br/><ref>Committer's log entry: </ref>
+Pull out hard coded messages
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/06/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/compiler XPathParser.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Bugzilla 5016: Patch from Henry Zongaro... Fix XPATHParser.java to prevent matching empty RelativeLocationPath and Step expressions, prevent a LocationPath from preceding a Predicate in a FilterExpr, check for valid NameTest in NodeTest()
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/06/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Fix typo.
+<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>2002/06/29<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml<br/><ref>Committer's log entry: </ref>
+fix typo in SmartTransormerFactoryImpl pointed out by Tobias McNulty
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/07/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemNumber.java<br/><ref>Committer's log entry: </ref>
+Bug6268. Patch from Ilene Seelemann. Fix Grouping separator. If no grouping separator is specified but a gouping size is, number is not formatted. If grouping separator is "", warning is issued and number is not formatted. If grouping separator is more than one character, warning is issued and number is not formatted.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/07/08<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor StylesheetHandler.java XSLTAttributeDef.java xml-xalan/java/src/org/apache/xml/utils DefaultErrorHandler.java<br/><ref>Committer's log entry: </ref>
+resource error messages
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/07/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor XSLTAttributeDef.java XSLTElementProcessor.java XSLTSchema.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates AVT.java Constants.java ElemAttribute.java ElemElement.java ElemNumber.java ElemPI.java xml-xalan/java/src/org/apache/xml/utils QName.java StringToIntTable.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Bugzilla 5013: Validation of QName attribute values. The patch will also fix the missing validation described in bugs 792 and 793
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/07/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils XMLChar.java<br/><ref>Committer's log entry: </ref>
+Bugzilla 5013: Validation of QName attribute values. The patch will also fix the missing validation described in bugs 792 and 793
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/07/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseIterators.java<br/><ref>Committer's log entry: </ref>
+bugzilla 9575: Fix AncestorIterator counting root node twice. Patch from Henry Zongaro.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/07/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils DOMBuilder.java<br/><ref>Committer's log entry: </ref>
+&lt;Blush&gt;
+
+This was still trying to switch between setAttribute() and
+setAttributeNS(). Correct usage of DOM Level 2 would be to
+always use setAttributeNS(), and simply set a null URI when the
+node is not namespaced. (Basically, the L1 versions of
+createElement, createAttribute, setAttribute and setAttributeNode
+should be considered deprecated with the sole exception of
+manipulating a DOM intended to be viewed *only* as Level 1.)
+
+I could swear we fixed this a VERY long time ago...
+Good catch, thanks for calling it to our attention.
+
+&lt;/Blush&gt;
+<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>2002/07/17<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan dtm.xml<br/><ref>Committer's log entry: </ref>
+testing commit
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/19<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>
+Morris Kwan's patch for bugzilla#10306
+
+The problem is that the namespace declaration is not added to the attributes if there are other leading attributes. There is a check for whether the namespace
+ has already been added. That check is commented out because multiple namespace declarations can exist in one element.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/22<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates RedundentExprEliminator.java<br/><ref>Committer's log entry: </ref>
+Applied patch from Morris Kwan for bugzilla #9753.
+
+The bug addresses the problem that there is a build error with Xalan under JDK 1.4, because one of the classes uses assert() as method name.
+ And assert is a keyword in JDK 1.4. The patch just changes the word "assert" to "assertion".
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor XSLTSchema.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates ElemPI.java xml-xalan/java/src/org/apache/xml/utils QName.java<br/><ref>Committer's log entry: </ref>
+Remaining updates for Bugzilla#5013.  
+
+Some attributes that should have been handled as errors were getting
+handled as warnings.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemApplyTemplates.java ElemForEach.java<br/><ref>Committer's log entry: </ref>
+Check that recursionLimit is not negative before calling checkForInfinateLoop.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/24<br/><ref>Modified: </ref> xml-xalan/java KEYS<br/><ref>Committer's log entry: </ref>
+*** empty log message ***
+<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>2002/07/25<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml<br/><ref>Committer's log entry: </ref>
+fix typo, java for Java in doc on xsltc and external java functions
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/25<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize Encodings.java<br/><ref>Committer's log entry: </ref>
+Applying patch for bug#10839.
+
+Try/catch block needed around System.getProperty call.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor XSLTAttributeDef.java XSLTSchema.java<br/><ref>Committer's log entry: </ref>
+Applying Paul Brown's patch for bug#6972.
+
+xsl:output cdata-section-elements attribute was not handled correctly.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2002/07/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes SingletonIterator.java<br/><ref>Committer's log entry: </ref>
+file SingletonIterator.java was initially added on branch XSLTC_DTM.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltCommon.java ExsltMath.java ExsltSets.java Extensions.java<br/><ref>Committer's log entry: </ref>
+Committed patch for bugzilla#10323 (incorrect Javadoc 
+in the extension code.)
+Submitted by Morris Kwan (mkwan@ca.ibm.com)
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerJavaClass.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Committed patch for bugzilla#10914
+( Need better error message for redirect select errors)
+Submitted by Morris Kwan (mkwan@ca.ibm.com)
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/07/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils TreeWalker.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #9146
+
+NullPointerException when attempting to build a stylesheet from 
+a DOM Element instead of a Document node.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2002/07/30<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils SystemIDResolver.java<br/><ref>Committer's log entry: </ref>
+Applying patches for Morris Kwan for bug 10519.  Changed condition in absoluteURI method to handle the case where the URI is the root of a file system - e.g., / or c:\
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2002/07/30<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorInclude.java<br/><ref>Committer's log entry: </ref>
+Applying patches for Morris Kwan for bug 10519.  In parse method, if SystemId of the returned DOMSource object is null, systemID is resolved using href.
+<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>2002/08/02<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml<br/><ref>Committer's log entry: </ref>
+changed verbage to agree with new support of constructors and nonstatic external java functions
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2002/08/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/objects XRTreeFrag.java<br/><ref>Committer's log entry: </ref>
+Applying patch for Bug 9683 for Morris Kwan.  If XRTreeFrag is constructed
+without respect to an XPathContext, the object() method should defer to the
+parent class's object() method to convert the fragment to the appropriate
+representation.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/08/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemValueOf.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla #6071.  Specifically, this patch allows line numbers to 
+be reported when errors are discovered at runtime in a value-of attribute.
+(See idkeyerr10.)
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src MANIFEST.MF<br/><ref>Committer's log entry: </ref>
+For Bug#6547. Remove reference to old jar files.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file debugconf.bat was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java parse.bat<br/><ref>Committer's log entry: </ref>
+file parse.bat was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file xpath-grammar.xml was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file xpath-manifest.txt was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file xquery-manifest.txt was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file core-manifest.txt was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file etree.xsl was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file grammar.dtd was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file javacc.xsl was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file jjtree.xsl was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file pathx1-manifest.txt was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SimpleNode.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Test.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/grammar utils.xsl<br/><ref>Committer's log entry: </ref>
+file utils.xsl was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file JavaCC.zip was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/bin optional.jar<br/><ref>Committer's log entry: </ref>
+file optional.jar was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerStylesheetFunction.java<br/><ref>Committer's log entry: </ref>
+file ExtensionHandlerStylesheetFunction.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemForEachGroup.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemNamespace.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates FuncCurrentGroup.java<br/><ref>Committer's log entry: </ref>
+file FuncCurrentGroup.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file GroupingIterator.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file GroupSorter.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ItemSorter.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer SortKey.java<br/><ref>Committer's log entry: </ref>
+file SortKey.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file DTMSequence.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file DTMSequenceEmpty.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm XTypeConverter.java<br/><ref>Committer's log entry: </ref>
+file XTypeConverter.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file AbstractSchema.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file DOMValidationConfigurationSwipedFromXerces.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemImportSchema.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncData.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncInstanceOf.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncTreatAs.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file NamespaceSupportAtDTMNode.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm XPath2Type.java<br/><ref>Committer's log entry: </ref>
+file XPath2Type.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file DateTimeObj.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Duration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils SparseVector.java<br/><ref>Committer's log entry: </ref>
+file SparseVector.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath VariableComposeState.java<br/><ref>Committer's log entry: </ref>
+file VariableComposeState.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/conditional Else.java<br/><ref>Committer's log entry: </ref>
+file Else.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddDays.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddDayTimeDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddDTDurationToDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddDTDurationToDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddDTDurationToTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddYearMonthDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddYMDurationToDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncAddYMDurationToDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncCurrentDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncCurrentDateTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncData.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDateTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDateTimeEq.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDateTimeGT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDateTimeLT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDivDayTimeDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDivYearMonthDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDTDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDTDurationEqual.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDTDurationFromSecs.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDTDurationGT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDTDurationLT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncDurationEqual.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGDay.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetDFromDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetDFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetDFromDTDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetDTDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetHFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetHFromDTDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetHFromTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetMFromDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetMFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetMFromYMDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetMnFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetMnFromDTDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetMnFromTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetSFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetSFromDTDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetSFromTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetTZFromDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetTZFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetTZFromTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetYFromDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetYFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetYFromYMDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetYMDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGMonth.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGMonthDay.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGYear.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncGYearMonth.java<br/><ref>Committer's log entry: </ref>
+file FuncGYearMonth.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file If.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/conditional Then.java<br/><ref>Committer's log entry: </ref>
+file Then.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncMultDayTimeDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncMultYearMonthDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncSubDayTimeDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncSubtractDTDurationFromDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncSubtractDTDurationFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncSubtractDTDurationFromTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncSubtractYMDurationFromDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncSubtractYMDurationFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncSubYearMonthDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncYMDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncYMDurationEqual.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncYMDurationFromDT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncYMDurationFromMonths.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncYMDurationGT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncYMDurationLT.java<br/><ref>Committer's log entry: </ref>
+file FuncYMDurationLT.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file NodeSequence.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file TypeOperations.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XDate.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XDateTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XDecimal.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XDouble.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XDTDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XDTMSequence.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XFloat.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XGDay.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XGMonth.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XGMonthDay.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XGYearMonth.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XGYearObj.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XInteger.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XJavaObject.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XNodeSequenceSingleton.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XSequence.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XSequenceCachedBase.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XSequenceEmpty.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XSequenceImpl.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XSequenceMutable.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XSequenceSingleton.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XTime.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/objects XYMDuration.java<br/><ref>Committer's log entry: </ref>
+file XYMDuration.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Add.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Follows.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FortranEq.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FortranGe.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FortranGt.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FortranLe.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FortranLt.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FortranNe.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file GenericOpFunc.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file GtGt.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Idiv.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Is.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file IsNot.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file LtLt.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file OperationNormalized.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file OperationSimple.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file OpFuncLookupTable.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Pos.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Precedes.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/operations Subtract.java<br/><ref>Committer's log entry: </ref>
+file Subtract.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file AnyKindTest.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ASCII_CharStream.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file AtomicType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file CommentTest.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemOrAttrType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Empty.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ForClause.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file IfExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file In.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Instanceof.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ItemType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file JJTXPathState.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file KindTest.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file LbrackOrRbrack.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file NameTest.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file NCNameColonStar.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Node.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file NodeTest.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file NodeTestType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file NonExecutableExpression.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file OccurrenceIndicator.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file OfType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ParseException.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file PathExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Pattern.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file PatternAxis.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Predicates.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ProcessingInstructionTest.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file QName.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file QuantifiedExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Return.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file RootOfRoot.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file RootOfRootPattern.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SchemaContext.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SchemaContextStep.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SchemaGlobalContext.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SchemaType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SequenceType.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SimpleNode.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file SlashOrSlashSlash.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Star.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file StarColonNCName.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file StepExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file TempFunctionHolder.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file TextTest.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Token.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file TokenMgrError.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file UnaryExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XPath.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XPathConstants.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XPathTokenManager.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file XPathTreeConstants.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/parser XPathVisitor.java<br/><ref>Committer's log entry: </ref>
+file XPathVisitor.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Every.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file In.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Satisfies.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/quantified Some.java<br/><ref>Committer's log entry: </ref>
+file Some.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/types Atomizer.java<br/><ref>Committer's log entry: </ref>
+file Atomizer.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Binding.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ExprSequence.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ExprSequenceIter.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FLWRExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/seqctor FLWRIter.java<br/><ref>Committer's log entry: </ref>
+file FLWRIter.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file InstanceofExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/types Promoter.java<br/><ref>Committer's log entry: </ref>
+file Promoter.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file RangeExpr.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>2002/08/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/seqctor RangeIter.java<br/><ref>Committer's log entry: </ref>
+file RangeIter.java was initially added on branch xalan3.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/08/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates FuncKey.java xml-xalan/java/src/org/apache/xalan/transformer KeyTable.java<br/><ref>Committer's log entry: </ref>
+Patch for bug: "The key() function throws an exception when called in the context of a 
+local variable." reported on xalan-dev.
+
+Modified FuncKey.execute to use getDocumentRoot instead of getDocument.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/15<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncNodeKind.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncBaseURI.java<br/><ref>Committer's log entry: </ref>
+file FuncBaseURI.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes BasicTestIterator.java<br/><ref>Committer's log entry: </ref>
+For Bug#11123. Fix infinite loop in union expression.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerJavaClass.java<br/><ref>Committer's log entry: </ref>
+For bug#7776. Fix argument passing problem for Java extension.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/trace PrintTraceListener.java<br/><ref>Committer's log entry: </ref>
+See bug#10945. Test if a node is a DTMNodeProxy before casting.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemAnalyzeString.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ElemMatchingSubstring.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemNonMatchingSubstring.java<br/><ref>Committer's log entry: </ref>
+file ElemNonMatchingSubstring.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncMatches.java<br/><ref>Committer's log entry: </ref>
+file FuncMatches.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates FuncRegexGroup.java<br/><ref>Committer's log entry: </ref>
+file FuncRegexGroup.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncReplace.java<br/><ref>Committer's log entry: </ref>
+file FuncReplace.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/parser/regexp BMPattern.java<br/><ref>Committer's log entry: </ref>
+file BMPattern.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncTokenize.java<br/><ref>Committer's log entry: </ref>
+file FuncTokenize.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Match.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file Op.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ParseException.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file ParserForXMLSchema.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file RangeToken.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file RegexParser.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file RegularExpression.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file REUtil.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>2002/08/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/parser/regexp Token.java<br/><ref>Committer's log entry: </ref>
+file Token.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/19<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncUniqueID.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/19<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncNodeName.java<br/><ref>Committer's log entry: </ref>
+file FuncNodeName.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/08/19<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseTraversers.java<br/><ref>Committer's log entry: </ref>
+Patch for bugzilla#11834.  Replaced calls to DTM.getDocument with get 
+DTM.getDocumentRoot.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncCompare.java<br/><ref>Committer's log entry: </ref>
+file FuncCompare.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer ClonerToResultTree.java<br/><ref>Committer's log entry: </ref>
+James Riordan's bug -- Attributes on elements returned from
+extensions were not being processed successfully. Turns out
+our copying logic had a minor sequencing error.
+
+I don't see anything similar listed in Bugzilla.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/objects XExpandedQName.java<br/><ref>Committer's log entry: </ref>
+file XExpandedQName.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/08/27<br/><ref>Modified: </ref> xml-xalan/java/bin xml-apis.jar<br/><ref>Committer's log entry: </ref>
+Replacing xml-apis.jar with the version from the RIVERCOURT1 branch 
+of xml-commons.   The xml-commons-1.0.b2 version does not pass
+the TCK 1.1 or the TCK 1.2.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/08/27<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan builds.xml<br/><ref>Committer's log entry: </ref>
+Small updates to the build documentation.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/08/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties xml-xalan/java build.xml xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>
+Updating version numbers to 2.4.0 for new release.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/27<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncExpandedQName.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/27<br/><ref>Modified: </ref><br/><ref>Committer's log entry: </ref>
+file FuncGetLocalNameFromQName.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2002/08/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncGetNamespaceFromQName.java<br/><ref>Committer's log entry: </ref>
+file FuncGetNamespaceFromQName.java was initially added on branch xslt20.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2002/08/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties xml-xalan/java build.xml xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>
+Updating version numbers to 2.4.0 for new release.
+<br/><br/></li>
+</ul></s2>
 <s2 title="Changes for &xslt4j; 2.3.1">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Make synchronized to address potential reentrancy issue in
  XRTreeFrag.finalize(), as discussed in the Javadoc. This may
