@@ -22,13 +22,11 @@ package org.apache.xpath.domapi;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-
+import org.apache.xpath.res.XPATHMessages;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -41,27 +39,27 @@ import org.w3c.dom.xpath.XPathNamespace;
  * The class provides an implementation of XPathExpression according 
  * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
  *
- * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
+ * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
 
  * <p>The <code>XPathExpression</code> interface represents a parsed and resolved 
  * XPath expression.</p>
  * 
  * @see org.w3c.dom.xpath.XPathExpression
+ *  
+ * @xsl.usage internal
  */
-public class XPathExpressionImpl implements XPathExpression {
+class XPathExpressionImpl implements XPathExpression {
 
-  private PrefixResolver m_resolver;      
-  
   /**
    * The xpath object that this expression wraps
    */
-  private XPath m_xpath;
+  final private XPath m_xpath;
   
   /**
    * The document to be searched to parallel the case where the XPathEvaluator
    * is obtained by casting a Document.
    */  
-  private Document m_doc = null;  
+  final private Document m_doc;  
 
     /**
      * Constructor for XPathExpressionImpl.
@@ -117,7 +115,7 @@ public class XPathExpressionImpl implements XPathExpression {
      *   context node.   
      * 
      * @see org.w3c.dom.xpath.XPathExpression#evaluate(Node, short, XPathResult)
-     * @xsl.usage experimental
+     * @xsl.usage internal
      */
     public Object evaluate(
         Node contextNode,
@@ -130,7 +128,7 @@ public class XPathExpressionImpl implements XPathExpression {
         
             // Check that the context node is owned by the same document
             if ((contextNode != m_doc) && (!contextNode.getOwnerDocument().equals(m_doc))) {
-                String fmsg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_WRONG_DOCUMENT, null);       
+                String fmsg = XPATHMessages.createXPATHMessage(XPATHErrorResources.ER_WRONG_DOCUMENT, null);       
                 throw new DOMException(DOMException.WRONG_DOCUMENT_ERR, fmsg);
             }
             
@@ -144,7 +142,7 @@ public class XPathExpressionImpl implements XPathExpression {
                 (nodeType != Document.COMMENT_NODE) &&
                 (nodeType != Document.PROCESSING_INSTRUCTION_NODE) &&
                 (nodeType != XPathNamespace.XPATH_NAMESPACE_NODE)) {
-                    String fmsg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_WRONG_NODETYPE, null);       
+                    String fmsg = XPATHMessages.createXPATHMessage(XPATHErrorResources.ER_WRONG_NODETYPE, null);       
                     throw new DOMException(DOMException.NOT_SUPPORTED_ERR, fmsg);
             }
         }
@@ -153,7 +151,7 @@ public class XPathExpressionImpl implements XPathExpression {
         // If the type is not a supported type, throw an exception and be
         // done with it!
         if (!XPathResultImpl.isValidType(type)) {
-            String fmsg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_XPATH_TYPE, new Object[] {new Integer(type)});       
+            String fmsg = XPATHMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_XPATH_TYPE, new Object[] {new Integer(type)});       
             throw new XPathException(XPathException.TYPE_ERR,fmsg); // Invalid XPath type argument: {0}               
         }
         
@@ -167,7 +165,7 @@ public class XPathExpressionImpl implements XPathExpression {
 
         XObject xobj = null;
         try {
-            xobj = m_xpath.execute(xpathSupport, contextNode, m_resolver );         
+            xobj = m_xpath.execute(xpathSupport, contextNode, null);         
         } catch (TransformerException te) {
             // What should we do here?
             throw new XPathException(XPathException.INVALID_EXPRESSION_ERR,te.getMessageAndLocation()); 
@@ -177,7 +175,7 @@ public class XPathExpressionImpl implements XPathExpression {
         // Reuse result object passed in?
         // The constructor will check the compatibility of type and xobj and
         // throw an exception if they are not compatible.
-        return new XPathResultImpl(type,xobj,contextNode);
+        return new XPathResultImpl(type,xobj,contextNode, m_xpath);
     }
 
 }

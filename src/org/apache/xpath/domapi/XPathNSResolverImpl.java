@@ -37,9 +37,9 @@ import org.w3c.dom.xpath.XPathNSResolver;
  * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
  * 
  * @see org.w3c.dom.xpath.XPathNSResolver
- * @xsl.usage experimental
+ * @xsl.usage internal
  */
-public class XPathNSResolverImpl extends PrefixResolverDefault implements XPathNSResolver {
+class XPathNSResolverImpl extends PrefixResolverDefault implements XPathNSResolver {
 
 	/**
 	 * Constructor for XPathNSResolverImpl.

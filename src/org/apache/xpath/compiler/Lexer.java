@@ -633,11 +633,16 @@ class Lexer
     }
     else
     {
+        // To older XPath code it doesn't matter if
+        // error() is called or errorForDOM3().
+		m_processor.errorForDOM3(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
+						 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
 
-      // error("Could not locate namespace for prefix: "+prefix);
-      m_processor.error(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
-                 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
-
+/** old code commented out 17-Sep-2004
+// error("Could not locate namespace for prefix: "+prefix);
+//		  m_processor.error(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
+//					 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
+*/
 
       /***  Old code commented out 10-Jan-2001
       addToTokenQueue(prefix);

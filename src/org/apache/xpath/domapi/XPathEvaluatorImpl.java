@@ -21,11 +21,10 @@ package org.apache.xpath.domapi;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.res.XPATHErrorResources;
-
+import org.apache.xpath.res.XPATHMessages;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -39,7 +38,7 @@ import org.w3c.dom.xpath.XPathNSResolver;
  * The class provides an implementation of XPathEvaluator according 
  * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
  *
- * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
+ * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
  * 
  * </p>The evaluation of XPath expressions is provided by 
  * <code>XPathEvaluator</code>, which will provide evaluation of XPath 1.0 
@@ -53,9 +52,9 @@ import org.w3c.dom.xpath.XPathNSResolver;
  * 
  * @see org.w3c.dom.xpath.XPathEvaluator
  * 
- * @xsl.usage experimental
+ * @xsl.usage internal
  */
-public class XPathEvaluatorImpl implements XPathEvaluator {
+public final class XPathEvaluatorImpl implements XPathEvaluator {
 
 	/**
 	 * This prefix resolver is created whenever null is passed to the 
@@ -63,12 +62,12 @@ public class XPathEvaluatorImpl implements XPathEvaluator {
 	 * requirement that if a null prefix resolver is used, an exception 
 	 * should only be thrown when an attempt is made to resolve a prefix.
 	 */
-	class DummyPrefixResolver implements PrefixResolver {
+	private class DummyPrefixResolver implements PrefixResolver {
 
 		/**
 		 * Constructor for DummyPrefixResolver.
 		 */
-		public DummyPrefixResolver() {}
+		DummyPrefixResolver() {}
 			
 		/**
 		 * @exception DOMException
@@ -77,7 +76,7 @@ public class XPathEvaluatorImpl implements XPathEvaluator {
 		 * @see org.apache.xml.utils.PrefixResolver#getNamespaceForPrefix(String, Node)
 		 */
 		public String getNamespaceForPrefix(String prefix, Node context) {
-            String fmsg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_RESOLVER, null);       
+            String fmsg = XPATHMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_RESOLVER, null);       
             throw new DOMException(DOMException.NAMESPACE_ERR, fmsg);   // Unable to resolve prefix with null prefix resolver.         
 		}
 
@@ -111,16 +110,9 @@ public class XPathEvaluatorImpl implements XPathEvaluator {
      * The document to be searched to parallel the case where the XPathEvaluator
      * is obtained by casting a Document.
      */  
-    private Document m_doc = null;
+    private final Document m_doc;
     
-	/**
-	 * Constructor for XPathEvaluatorImpl.
-	 */
-	public XPathEvaluatorImpl() {
-		super();
-	}
-    
-     /**
+    /**
      * Constructor for XPathEvaluatorImpl.
      * 
      * @param doc The document to be searched, to parallel the case where''
@@ -128,6 +120,15 @@ public class XPathEvaluatorImpl implements XPathEvaluator {
      */
     public XPathEvaluatorImpl(Document doc) {
         m_doc = doc;
+    }
+    
+    /**
+     * Constructor in the case that the XPath expression can be evaluated
+     * without needing an XML document at all.
+     *
+     */
+    public XPathEvaluatorImpl() {
+            m_doc = null;
     }
 
 	/**
@@ -167,9 +168,15 @@ public class XPathEvaluatorImpl implements XPathEvaluator {
 			      XPath.SELECT);
                   
             return new XPathExpressionImpl(xpath, m_doc);
-			      
+			
 		} catch (TransformerException e) {
-			throw new DOMException(XPathException.INVALID_EXPRESSION_ERR,e.getMessageAndLocation());
+			// Need to pass back exception code DOMException.NAMESPACE_ERR also.
+			// Error found in DOM Level 3 XPath Test Suite.
+			if(e instanceof XPathStylesheetDOM3Exception)
+				throw new DOMException(DOMException.NAMESPACE_ERR,e.getMessageAndLocation());
+			else
+				throw new XPathException(XPathException.INVALID_EXPRESSION_ERR,e.getMessageAndLocation());
+				
 		}
 	}
 

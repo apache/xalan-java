@@ -60,22 +60,22 @@ import org.w3c.dom.xpath.XPathNamespace;
  * future versions of the XPath specification, the definition of a namespace 
  * node may be changed incomatibly, in which case incompatible changes to 
  * field values may be required to implement versions beyond XPath 1.0.
- * <p>See also the <a href='http://www.w3.org/2002/08/WD-DOM-Level-3-XPath-20020820'>Document Object Model (DOM) Level 3 XPath Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.
  * 
  * This implementation wraps the DOM attribute node that contained the 
  * namespace declaration.
- * @xsl.usage experimental
+ * @xsl.usage internal
  */
 
-public class XPathNamespaceImpl implements XPathNamespace {
+class XPathNamespaceImpl implements XPathNamespace {
 
     // Node that XPathNamespaceImpl wraps
-    Node m_attributeNode = null;
+    final private Node m_attributeNode;
     
     /**
      * Constructor for XPathNamespaceImpl.
      */
-    public XPathNamespaceImpl(Node node) {
+    XPathNamespaceImpl(Node node) {
         m_attributeNode = node;
     }
 

@@ -30,10 +30,10 @@ public class XPathException extends RuntimeException {
      * <code>XPathEvaluator</code> or contains specialized extension 
      * functions or variables not supported by this implementation.
      */
-    public static final short INVALID_EXPRESSION_ERR    = 1;
+    public static final short INVALID_EXPRESSION_ERR    = 51;
     /**
      * If the expression cannot be converted to return the specified type.
      */
-    public static final short TYPE_ERR                  = 2;
+    public static final short TYPE_ERR                  = 52;
 
 }

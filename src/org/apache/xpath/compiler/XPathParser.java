@@ -24,6 +24,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
+import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -612,6 +613,50 @@ public class XPathParser
     }
   }
 
+  /**
+   * This method is added to support DOM 3 XPath API.
+   * <p>
+   * This method is exactly like error(String, Object[]); except that
+   * the underlying TransformerException is 
+   * XpathStylesheetDOM3Exception (which extends TransformerException).
+   * <p>
+   * So older XPath code in Xalan is not affected by this. To older XPath code
+   * the behavior of whether error() or errorForDOM3() is called because it is
+   * always catching TransformerException objects and is oblivious to
+   * the new subclass of XPathStylesheetDOM3Exception. Older XPath code 
+   * runs as before.
+   * <p>
+   * However, newer DOM3 XPath code upon catching a TransformerException can
+   * can check if the exception is an instance of XPathStylesheetDOM3Exception
+   * and take appropriate action.
+   * 
+   * @param msg An error msgkey that corresponds to one of the constants found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
+   *
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
+   */
+  void errorForDOM3(String msg, Object[] args) throws TransformerException
+  {
+
+	String fmsg = XSLMessages.createXPATHMessage(msg, args);
+	ErrorListener ehandler = this.getErrorListener();
+
+	TransformerException te = new XPathStylesheetDOM3Exception(fmsg, m_sourceLocator);
+	if (null != ehandler)
+	{
+	  // TO DO: Need to get stylesheet Locator from here.
+	  ehandler.fatalError(te);
+	}
+	else
+	{
+	  // System.err.println(fmsg);
+	  throw te;
+	}
+  }
   /**
    * Dump the remaining token queue.
    * Thanks to Craig for this.

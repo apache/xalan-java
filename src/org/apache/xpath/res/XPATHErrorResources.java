@@ -133,6 +133,8 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_INCORRECT_ARG_LENGTH ="ER_INCORRECT_ARG_LENGTH";
   public static final String ER_CANT_CONVERT_TO_NUMBER = 
 	 "ER_CANT_CONVERT_TO_NUMBER";
+  public static final String ER_CANT_CONVERT_XPATHRESULTTYPE_TO_NUMBER = 
+	   "ER_CANT_CONVERT_XPATHRESULTTYPE_TO_NUMBER";	 
   public static final String ER_CANT_CONVERT_TO_NODELIST = 
 	 "ER_CANT_CONVERT_TO_NODELIST";
   public static final String ER_CANT_CONVERT_TO_MUTABLENODELIST = 
@@ -298,7 +300,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 //	 "ER_ARG_LOCALNAME_INVALID";
   /** prefix in QNAME should be a valid NCName */
   //public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-  /** Field ER_CANT_CONVERT_TO_BOOLEAN          */
+  /** ER_CANT_CONVERT_XPATHRESULTTYPE_TO_BOOLEAN          */
   public static final String ER_CANT_CONVERT_TO_BOOLEAN = 
 	 "ER_CANT_CONVERT_TO_BOOLEAN";
   /** Field ER_CANT_CONVERT_TO_SINGLENODE       */
@@ -1036,11 +1038,11 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
   // message indicates that a value of a particular type could not be converted
   // to a value of type string.
 
-  /** Field ER_CANT_CONVERT_TO_BOOLEAN          */
+  /** ER_CANT_CONVERT_TO_BOOLEAN          */
 //  public static final int ER_CANT_CONVERT_TO_BOOLEAN = 103;
 
   { ER_CANT_CONVERT_TO_BOOLEAN,
-       "Cannot convert {0} to a boolean."},
+       "The XPathResult of XPath expression ''{0}'' has an XPathResultType of {1} which cannot be converted to a boolean."},
 
   // Note to translators: Do not translate ANY_UNORDERED_NODE_TYPE and 
   // FIRST_ORDERED_NODE_TYPE.
@@ -1049,7 +1051,7 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
   //public static final int ER_CANT_CONVERT_TO_SINGLENODE = 104;
 
   { ER_CANT_CONVERT_TO_SINGLENODE,
-       "Cannot convert {0} to a single node. This getter applies to types ANY_UNORDERED_NODE_TYPE and FIRST_ORDERED_NODE_TYPE."},
+       "The XPathResult of XPath expression ''{0}'' has an XPathResultType of {1} which cannot be converted to a single node. The method getSingleNodeValue applies only to types ANY_UNORDERED_NODE_TYPE and FIRST_ORDERED_NODE_TYPE."},
 
   // Note to translators: Do not translate UNORDERED_NODE_SNAPSHOT_TYPE and
   // ORDERED_NODE_SNAPSHOT_TYPE.
@@ -1058,13 +1060,13 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 //  public static final int ER_CANT_GET_SNAPSHOT_LENGTH = 105;
 
   { ER_CANT_GET_SNAPSHOT_LENGTH,
-       "Cannot get snapshot length on type: {0}. This getter applies to types UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE."},
+       "The method getSnapshotLength cannot be called on the XPathResult of XPath expression ''{0}'' because its XPathResultType is {1}. This method applies only to types UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE."},
 
   /** Field ER_NON_ITERATOR_TYPE                */
   //public static final int ER_NON_ITERATOR_TYPE        = 106;
 
   { ER_NON_ITERATOR_TYPE,
-       "Cannot iterate over non-iterator type: {0}"},
+       "The method iterateNext cannot be called on the XPathResult of XPath expression ''{0}'' because its XPathResultType is {1}. This method applies only to types UNORDERED_NODE_ITERATOR_TYPE and ORDERED_NODE_ITERATOR_TYPE."},
 
   // Note to translators: This message indicates that the document being operated
   // upon changed, so the iterator object that was being used to traverse the
@@ -1092,7 +1094,7 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 //  public static final int ER_INCOMPATIBLE_TYPES       = 110;
 
   { ER_INCOMPATIBLE_TYPES,
-       "The returned type: {0} cannot be coerced into the specified type: {1}"},
+       "The XPathResult of XPath expression ''{0}'' has an XPathResultType of {1} which cannot be coerced into the specified XPathResultType of {2}."},
 
   /** Field ER_NULL_RESOLVER                     */
  // public static final int ER_NULL_RESOLVER            = 111;
@@ -1108,7 +1110,7 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 //  public static final int ER_CANT_CONVERT_TO_STRING   = 112;
 
   { ER_CANT_CONVERT_TO_STRING,
-       "Cannot convert {0} to a string."},
+       "The XPathResult of XPath expression ''{0}'' has an XPathResultType of {1} which cannot be converted to a string."},
 
   // Note to translators: Do not translate snapshotItem,
   // UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE.
@@ -1117,7 +1119,7 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 //  public static final int ER_NON_SNAPSHOT_TYPE       = 113;
 
   { ER_NON_SNAPSHOT_TYPE,
-       "Cannot call snapshotItem on type: {0}. This method applies to types UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE."},
+       "The method snapshotItem cannot be called on the XPathResult of XPath expression ''{0}'' because its XPathResultType is {1}. This method applies only to types UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE."},
 
   // Note to translators:  XPathEvaluator is a Java interface name.  An
   // XPathEvaluator is created with respect to a particular XML document, and in
@@ -1143,6 +1145,12 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 
   { ER_XPATH_ERROR,
        "Unknown error in XPath."},
+       
+	/** Field ER_CANT_CONVERT_XPATHRESULTTYPE_TO_NUMBER          */
+//	  public static final int ER_CANT_CONVERT_XPATHRESULTTYPE_TO_NUMBER = 117;
+
+	{ ER_CANT_CONVERT_XPATHRESULTTYPE_TO_NUMBER,
+		"The XPathResult of XPath expression ''{0}'' has an XPathResultType of {1} which cannot be converted to a number"},       
 
 
   // Warnings...
