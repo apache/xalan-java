@@ -57,25 +57,39 @@
 package org.apache.xml.utils;
 
 /**
- * Bare-bones, unsafe, fast string buffer.
+ * Bare-bones, unsafe, fast string buffer. No thread-safety, no
+ * parameter range checking, exposed fields.
  */
 public class FastStringBuffer
 {
 
-  /** NEEDSDOC Field m_blocksize          */
+  /** Field m_blocksize establishes the allocation granularity -- the
+   * initial size of m_map[] and the minimum increment by which it grows
+   * when necessary.  */
   public int m_blocksize;
 
-  /** NEEDSDOC Field m_map[]          */
-  public char m_map[];  // don't hold on to a reference!
+  /** Field m_map[] is a character array holding the string buffer's
+   * contents. Note that this array will be reallocated when necessary
+   * in order to allow the buffer to grow, so references to this
+   * object may become (indedetectably) invalid  after any edit is
+   * made to the FastStringBuffer. DO NOT retain such references!
+   * (Note that this imposes a multithreading hazard; its the user's
+   * responsibility to manage access to FastStringBuffer to prevent
+   * the problem from arising.) */
+  public char m_map[];
 
-  /** NEEDSDOC Field m_firstFree          */
+  /** Field m_firstFree is an index into m_map[], pointing to the first
+   * character in the array which is not part of the FastStringBuffer's
+   * current content. Since m_map[] is zero-based, m_firstFree is also 
+   * equal to the length of that content. */
   public int m_firstFree = 0;
 
-  /** NEEDSDOC Field m_mapSize          */
+  /** Field m_mapSize is a cached copy of m_map.length -- or,
+   * transiently, the new length that m_map will grow to. */
   public int m_mapSize;
 
   /**
-   * Construct a IntVector, using the given block size.
+   * Construct a IntVector, using the default block size.
    */
   public FastStringBuffer()
   {
@@ -88,7 +102,8 @@ public class FastStringBuffer
   /**
    * Construct a IntVector, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Desired value for m_blocksize, establishes both
+   * the initial storage allocation and the minimum growth increment.
    */
   public FastStringBuffer(int blocksize)
   {
@@ -99,9 +114,9 @@ public class FastStringBuffer
   }
 
   /**
-   * Get the length of the list.
+   * Get the length of the list. Synonym for length().
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of characters in the FastStringBuffer's content.
    */
   public final int size()
   {
@@ -109,10 +124,9 @@ public class FastStringBuffer
   }
 
   /**
-   * NEEDSDOC Method length 
+   * Get the length of the list. Synonym for size().
    *
-   *
-   * NEEDSDOC (length) @return
+   * @return the number of characters in the FastStringBuffer's content.
    */
   public final int length()
   {
@@ -120,8 +134,8 @@ public class FastStringBuffer
   }
 
   /**
-   * NEEDSDOC Method reset 
-   *
+   * Discard the content of the FastStringBuffer. Does _not_ release
+   * any of the storage space.
    */
   public final void reset()
   {
@@ -129,10 +143,16 @@ public class FastStringBuffer
   }
 
   /**
-   * NEEDSDOC Method setLength 
+   * Directly set how much of the FastStringBuffer's storage is to be
+   * considered part of its content. This is a fast but hazardous
+   * operation. It is not protected against negative values, or values
+   * greater than the amount of storage currently available... and even
+   * if additional storage does exist, its contents are unpredictable.
+   * The only safe use for setLength() is to truncate the FastStringBuffer
+   * to a shorter string.
    *
-   *
-   * NEEDSDOC @param l
+   * @param l New length. If l<0 or l>=m_mapSize, this operation will
+   * not report an error but future operations will almost certainly fail.
    */
   public final void setLength(int l)
   {
@@ -140,10 +160,7 @@ public class FastStringBuffer
   }
 
   /**
-   * NEEDSDOC Method toString 
-   *
-   *
-   * NEEDSDOC (toString) @return
+   * @return the contents of the FastStringBuffer as a standard Java string
    */
   public final String toString()
   {
@@ -151,16 +168,26 @@ public class FastStringBuffer
   }
 
   /**
-   * NEEDSDOC Method ensureSize 
+   * Ensure that the FastStringBuffer has at least the specified amount
+   * of unused space in m_map[]. If necessary, this operation will
+   * enlarge the buffer, overallocating (as specified by the blocksize)
+   * to try to decrease the frequency of these reallocations.
+   * <p>
+   * NOTE THAT after calling ensureSize(), previously obtained
+   * references to m_map[] may no longer be valid.
    *
-   *
-   * NEEDSDOC @param newSize
+   * @param newSize the required amount of "free space".
    */
   private final void ensureSize(int newSize)
   {
 
     if ((m_firstFree + newSize) >= m_mapSize)
     {
+		// This has somewhat interesting characteristics... if
+		// newsize==blocksize repeatedly, we reallocate every time,
+		// while if newsize==blocksize+1 we reallocate every other time.
+		// Might be simpler to always use +=newSize+m_blocksize,
+		// avoiding the test-and-branch.
       if (m_blocksize > newSize)
         m_mapSize += m_blocksize;
       else
@@ -175,9 +202,13 @@ public class FastStringBuffer
   }
 
   /**
-   * Append a int onto the vector.
+   * Append a single character onto the FastStringBuffer, growing the 
+   * storage if necessary.
+   * <p>
+   * NOTE THAT after calling append(), previously obtained
+   * references to m_map[] may no longer be valid.
    *
-   * NEEDSDOC @param value
+   * @param value character to be appended.
    */
   public final void append(char value)
   {
@@ -190,9 +221,13 @@ public class FastStringBuffer
   }
 
   /**
-   * Append a int onto the vector.
+   * Append the contents of a String onto the FastStringBuffer, 
+   * growing the storage if necessary.
+   * <p>
+   * NOTE THAT after calling append(), previously obtained
+   * references to m_map[] may no longer be valid.
    *
-   * NEEDSDOC @param value
+   * @param value String whose contents are to be appended.
    */
   public final void append(String value)
   {
@@ -206,9 +241,13 @@ public class FastStringBuffer
   }
 
   /**
-   * Append a int onto the vector.
+   * Append the contents of a StringBuffer onto the FastStringBuffer,
+   * growing the storage if necessary.
+   * <p>
+   * NOTE THAT after calling append(), previously obtained
+   * references to m_map[] may no longer be valid.
    *
-   * NEEDSDOC @param value
+   * @param value StringBuffer whose contents are to be appended.
    */
   public final void append(StringBuffer value)
   {
@@ -222,12 +261,16 @@ public class FastStringBuffer
   }
 
   /**
-   * NEEDSDOC Method append 
+   * Append part of the contents of a Character Array onto the 
+   * FastStringBuffer,  growing the storage if necessary.
+   * <p>
+   * NOTE THAT after calling append(), previously obtained
+   * references to m_map[] may no longer be valid.
    *
-   *
-   * NEEDSDOC @param chars
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param chars character array from which data is to be copied
+   * @param start offset in chars of first character to be copied,
+   * zero-based.
+   * @param length number of characters to be copied
    */
   public final void append(char[] chars, int start, int length)
   {
@@ -239,10 +282,14 @@ public class FastStringBuffer
   }
 
   /**
-   * NEEDSDOC Method append 
+   * Append the contents of another FastStringBuffer onto 
+   * this FastStringBuffer, growing the storage if necessary.
+   * <p>
+   * NOTE THAT after calling append(), previously obtained
+   * references to m_map[] may no longer be valid.
    *
-   *
-   * NEEDSDOC @param value
+   * @param value FastStringBuffer whose contents are
+   * to be appended.
    */
   public final void append(FastStringBuffer value)
   {
