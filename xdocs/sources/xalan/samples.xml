@@ -75,11 +75,43 @@
 <li><link anchor="trax">trax</link></li>&xsltcsampleshead;
 </ul>  
 	  <s2 title="Samples to help you get started">
-    <p>Each of the subdirectories in the &xslt4j; java/samples directory contains the source files for one or more
-     sample applications. The class files for the samples are in xalansamples.jar (everything except the servlet) and xalanservlet.jar, so to run the samples, you should place these JAR files on the system classpath.</p>
+    <p>Each of the subdirectories in the &xslt4j; java/samples directory
+    contains the source files for one or more sample applications.  The class
+    files for the samples are in the following jar files:</p>
+<table>
+<tr>
+  <th>JAR file</th>
+  <th>Content</th>
+</tr>
+<tr>
+  <td>xalansamples.jar</td>
+  <td>Everything except the Xalan-J Interpretive servlet sample and some
+      XSLTC samples</td>
+</tr>
+<tr>
+  <td>xalanservlet.jar</td>
+  <td>Xalan-J Interpretive servlet sample</td>
+</tr>
+<tr>
+  <td>xsltcapplet.jar</td>
+  <td>XSLTC applet sample</td>
+</tr>
+<tr>
+  <td>xsltcbrazil.jar</td>
+  <td>XSLTC Brazil server sample</td>
+</tr>
+<tr>
+  <td>xsltcejb.jar</td>
+  <td>XSLTC EJB sample</td>
+</tr>
+<tr>
+  <td>xsltcservlet.jar</td>
+  <td>XSLTC servlet sample</td>
+</tr>
+</table>
      <p>With most of the samples, you can use the following procedure:</p>
      <ol>
-     <li>Be sure xalan.jar, xml-apis.jar, xalansamples.jar, and &xml4j-jar; are on the system class
+     <li>Be sure xalan.jar, xml-apis.jar, the appropriate samples JAR file, and &xml4j-jar; are on the system class
       path. For the extension examples, bsf.jar and (for the JavaScript extensions) js.jar must also be on the class
       path.</li>
      <li>Be sure the java executable is on your path.</li>
