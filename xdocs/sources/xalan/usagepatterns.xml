@@ -490,7 +490,7 @@ ptl.m_traceExtension = true;
 
 // Set up the transformation    
 javax.xml.transform.TransformerFactory tFactory = 
-                     javax.xml.trnasform.TransformerFactory.newInstance();
+                     javax.xml.transform.TransformerFactory.newInstance();
 javax.xml.transform.Transformer transformer = 
   tFactory.newTransformer(new javax.xml.transform.stream.StreamSource
                                                              ("foo.xsl"));
