@@ -51,11 +51,13 @@ compat: makecompat compatjars
 
 PROPPATH = org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res
 $(JARNAME)::
+	-mkdir src/$(CLASS_DIR)/META-INF;
+	-mkdir src/$(CLASS_DIR)/META-INF/services;
 	$(CP) src/$(PROPPATH)/*.properties src/$(CLASS_DIR)/$(PROPPATH)/.; \
 	$(CP) src/org/apache/serialize/*.properties src/$(CLASS_DIR)/org/apache/serialize/.; \
-	$(CP) src/org/apache/trax/*.properties src/$(CLASS_DIR)/org/apache/trax/.; \
+	$(CPR) src/META-INF/* src/$(CLASS_DIR)/META-INF/.; \
 	echo -n "Jarring ../bin/$@ .. "; \
-	cd src/$(CLASS_DIR); $(JAR) $(JARFLAGS) ../../bin/$@ org; \
+	cd src/$(CLASS_DIR); $(JAR) $(JARFLAGS) ../../bin/$@ META-INF javax org; \
 	echo "done"
 
 compatjars:

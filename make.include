@@ -63,7 +63,7 @@ JAVADEBUG   = -g
 # JAVADEBUG   = -g:none -O
 JAVADESTDIR = -d $(CLASS_DIR)
 JAVACFLAGS  = $(JAVADEBUG) $(JAVADESTDIR)
-JARFLAGS    = cf0
+JARFLAGS    = Mcf0
 
 # References to other tools
 RM         = rm -f
