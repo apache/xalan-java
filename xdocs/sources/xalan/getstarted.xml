@@ -35,7 +35,7 @@
 <li>Be sure the java executable is on your path.</li>
 <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
 <li>Use the java executable to run the sample from the command line.</li>
-<li>Examine the application source files.</li>
+<li>Examine the application source and result files.</li>
 </ol>
 <p>For example, go to the SimpleTransform subdirectory and issue the following command:</p>
 <p><code>java SimpleTransform</code></p>
@@ -54,11 +54,14 @@
 <p>You can start by using your own XML source files and XSL stylesheets with the sample applications, which illustrate a number of the <link idref="usagepatterns">basic usage patterns</link>.</p>
 <p>Here is the basic TRaX procedure to keep in mind when you set up a transformation:</p>
 <ol>
-<li>Use org.apache.trax.Processor.newInstance("xslt") to instantiate a stylesheet processor -- a TRaX <jump href="apidocs/org/apache/trax/Processor.html">Processor</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetProcessor.html">StylesheetProcessor</jump>.<br/><br/></li>
-<li>Use the Processor process() or processFromNode() method to process the stylesheet (a SAX InputSource or DOM Node) and generate a Templates object -- a TRaX <jump href="apidocs/org/apache/trax/Templates.html">Templates</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetRoot.html">StylesheetRoot</jump><br/><br/></li>
-<li>Use the Templates newTransformer() method to instantiate a Transformer -- a TRaX
-<jump href="apidocs/org/apache/trax/Transformer.html">Transformer</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/transformer/TransformerImpl.html">TransformerImpl</jump>.<br/><br/></li>
-<li>Use one of the Transformer transform() or transformNode() methods to apply the Templates object to an XML document (a SAX InputSource or DOM Node) and perform the transformation, placing the output in a TRaX <jump href="apidocs/org/apache/trax/Result.html">Result</jump> object.</li>
+<li>Use the TransformerFactory static newInstance() method to instantiate a <jump href="apidocs/javax/xml/transform/TransformerFactory.html"></jump>.<br/><br/></li>
+<li>Use the TransformerFactory newTransformer(Source stylesheet) method to process the transformation instructions in an XSLT stylesheet (producing under the covers a <jump href="apidocs/javax/xml/transform/Templates.html"></jump>Templates object) and generate a <jump href="apidocs/javax/xml/transform/Transformer.html">Transformer</jump>.<br/><br/></li>
+<li>Use the Transformer transform(Source xmlSource, Result transformResult) method to apply the transformation instructions (the Template object) to the XML Source and produce the transformation Result.<br/><br/></li>
+</ol>
+<p>A couple of alternatives:</p>
+<ol>
+<li>If you want to apply the same transformation instructions to a number of XML sources, use the TransformerFactory newTemplates(Source stylesheet) method to process the stylesheet and explicitly produce a Templates object, which you can then use repeatedly and even in concurrently running threads to generate a Transformer and perform a transformation.<br/><br/></li>
+<li>If you are processing SAX input, cast the TransformerFactory object you instantiate to <jump href="apidocs/javax/xml/transform/sax/SAXTransformerer.html">SAXTransformerFactory</jump>, which provides access to SAX ContentHandlers for producing Templates objects and Transformers.</li>
 </ol>
 <p>For more information about this procedure and its variations, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
 </s2>

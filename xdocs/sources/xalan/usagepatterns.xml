@@ -75,36 +75,37 @@
 <anchor name="basic"/>
   <s2 title="Basic steps">
     <ol>
-    <li><link anchor="processor">Instantiate stylesheet Processor</link></li>
-    <li><link anchor="process">Process stylesheet</link></li>
-    <li><link anchor="transformer">Instantiate Transformer</link></li>
-    <li><link anchor="transformation">Perform transformation</link></li>
+    <li><link anchor="transformerfactory">Instantiate a TransformerFactory</link></li>
+    <li><link anchor="transformer">Process the stylesheet and generate a Transformer</link></li>
+    <li><link anchor="transformation">Perform the transformation</link></li>
   </ol>
     <p>The following example highlights the four basic steps involved in performing a transformation.</p>
-    <source>// 1. Instantiate a stylesheet Processor.
-org.apache.trax.Processor processor = 
-                          org.apache.trax.Processor.newInstance("xslt");
+    <source>// 1. Instantiate a TransformerFactory.
+javax.xml.transform.TransformerFactory tFactory = 
+                  javax.xml.transformerTransformerFactory.newInstance();
 
-// 2. Process the stylesheet, producing a Templates object.
-org.apache.trax.Templates templates = processor.process
-                               (new org.xml.sax.InputSource("foo.xsl"));
-
-// 3. Use the Templates object to instantiate a Transformer.
-org.apache.trax.Transformer transformer = templates.newTransformer();
+// 2. Use the TransformerFactory to process the stylesheet Source and
+//    generate a Transformer.
+javax.xml.transform.Transformer transformer = tFactory.newTransformer
+                (new javax.xml.transform.stream.StreamSource("foo.xsl");
 
 // 4. Use the Transformer to apply the Templates object to an XML
-//&nbsp;&nbsp;&nbsp;&nbsp;source and send the output to a Result object.
+//    Source and send the output to a Result object.
 transformer.transform
-      ( new org.xml.sax.InputSource("foo.xml"), 
-        new org.apache.trax.Result(new java.io.FileOutputStream("foo.out")) );</source>
+    (new javax.xml.transform.stream.StreamSource("foo.xml"), 
+     new javax.xml.transform.stream.StreamResult( new
+                                  java.io.FileOutputStream("foo.out")));</source>
   <note>For a working example of this model at its simplest, see SimpleTransform.java in the java/samples/SimpleTransform subdirectory.</note>
   </s2><anchor name="processor"/>
-  <s2 title="1. Instantiate a stylesheet Processor">
-  <p>The org.apache.trax.Processor static newInstance() method with "xslt" as its argument instantiates the processor designated by the org.apache.trax.processor.xslt system property.</p>
-  <p>If this system property has not already been set (from the command line or in your application), org.apache.trax.Processor sets it from org/apache/trax/trax.properties (in xalan.jar).</p>
-  <p>For &xslt4j;, this system property should be set to org.apache.xalan.processor.StylesheetProcessor.</p>
+  <s2 title="1. Instantiate a TransformerFactory">
+  <p>TransformerFactory is an abstract class with a static newInstance() method that instantiates the concrete subclass designated by the javax.xml.transform.TransformerFactory system property.</p>
+  <p>The default setting for this system property is  org.apache.xalan.processor.TransformerFactoryImpl.</p>
 </s2><anchor name="process"/>
-  <s2 title="2. Process the stylesheet, producing a Templates object">
+  <s2 title="2. Use the TransformerFactory to process the stylesheet Source and produce a Transformer">
+  <p>You may provide the stylesheet Source in the form of a stream of XML markup (StreamSource) or a DOM Node (DOMSource). To specify a StreamSource, you may use a system ID or file name (using URI syntax), an InputStream, or a Reader.</p>
+<p>The Transformer newTransformer(Source) method processes the stylesheet into a Templates object and generates a Transformer that you can use to perform a transformation.</p>
+
+<p></p>
   <p>The Templates object is an immutable runtime representation of the structure and content of a stylesheet (which may include
   and import multiple stylesheet sources).</p>
 <p>A given Templates object may be used repeatedly and by multiple concurrent threads for the transformation of XML input.</p>
@@ -113,6 +114,7 @@ transformer.transform
 <p>To perform this operation with a SAX input source, the processor uses a org.apache.trax.TemplatesBuilder (extending the SAX ContentHandler interface) and a SAX XMLReader.</p>
 <p>The XMLReader parses the input, sending parse events to the TemplatesBuilder, which responds by building the Templates object.</p>
 <p>If you use the processFromNode() method with a DOM representation of the stylesheet, the processor traverses the DOM, sending SAX events to the TemplatesBuilder.</p>
+<note>You may also provide the Source in the form of SAX ContentHandler events from a SAX InputSource or SAX XMLReader (SAXSource), in which case you should use a <jump href="apidocs/javax/xml/transform/xax/SAXTransformerFactory.html">SAXTransformerFactory</jump>. For more information, see xxxxxx.</note>
 </s2><anchor name="transformer"/>
 <s2 title="3. Instantiate a Transformer">
 <p>To transform an XML document, you need an implementation of the org.apache.trax.Transformer interface.</p>
