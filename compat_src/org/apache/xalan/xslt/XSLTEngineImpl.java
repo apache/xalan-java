@@ -594,7 +594,6 @@ public class XSLTEngineImpl implements  XSLTProcessor
       addTraceListenersToStylesheet();
       StylesheetHandler stylesheetProcessor
         = new StylesheetHandler((TransformerFactoryImpl)m_tfactory); //this, m_stylesheetRoot); 
-      stylesheetProcessor.pushStylesheet(m_stylesheetRoot.getObject());
       Source ssSource = stylesheetSource.getSourceObject();
       if(ssSource instanceof DOMSource)
       {
@@ -606,10 +605,12 @@ public class XSLTEngineImpl implements  XSLTProcessor
         {
           TreeWalker tw = new TreeWalker(stylesheetProcessor);
           tw.traverse(((DOMSource)ssSource).getNode());
+          m_stylesheetRoot = new StylesheetRoot(stylesheetProcessor.getStylesheetRoot());
         }
       }
       else
       {
+        stylesheetProcessor.pushStylesheet(m_stylesheetRoot.getObject());      
         diag("========= Parsing "+xslIdentifier+" ==========");
         pushTime(xslIdentifier);
         String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
