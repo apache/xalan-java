@@ -74,7 +74,7 @@
 <note>To compile translets, you must be running the JDK or JRE 1.2 or higher. You can run translets with the JDK or JRE 1.1.8 or higher.</note>
 </s2><anchor name="classpath"/>
 <s2 title="Setting the system classpath for XSLTC">
-<p>To compile translets, urn translets, and use the XSLTC API, put the following on the system classpath:</p>
+<p>To compile translets, run translets, and use the XSLTC API, put the following on the system classpath:</p>
 <table>
 <tr>
   <th>Classes or JAR</th>
@@ -94,12 +94,15 @@
   <td>required</td>
   <td>required</td>  
 </tr>
+<!-- TWA - xml.jar has old project x stuff; was able to compile and run without it -->
+<!--
 <tr>
   <td>xml.jar</td>
   <td>required</td>
   <td>required</td>
   <td>required</td>  
 </tr>
+-->
 <tr>
   <td>runtime.jar</td>
   <td>required</td>
@@ -109,6 +112,18 @@
 <tr>
   <td>BCEL.jar</td>
   <td>required</td>
+  <td></td>
+  <td>required</td>  
+</tr>
+<tr>
+  <td>Jlex.jar</td>
+  <td></td>
+  <td></td>
+  <td>required</td>  
+</tr>
+<tr>
+  <td>java_cup.jar</td>
+  <td></td>
   <td></td>
   <td>required</td>  
 </tr>
