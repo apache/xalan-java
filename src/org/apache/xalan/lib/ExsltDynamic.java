@@ -145,7 +145,7 @@ public class ExsltDynamic extends ExsltBase
     NodeSetDTM contextNodes = new NodeSetDTM(nl, xctxt);
     xctxt.pushContextNodeList(contextNodes);
     
-    double maxValue = Double.MIN_VALUE;
+    double maxValue = - Double.MAX_VALUE;
     for (int i = 0; i < contextNodes.getLength(); i++)
     {
       int contextNode = contextNodes.item(i);
@@ -397,6 +397,8 @@ public class ExsltDynamic extends ExsltBase
     throws SAXNotSupportedException
   {
     XPathContext xctxt = null;
+    Document lDoc = null;
+    
     if (myContext instanceof XPathContext.XPathExpressionContext)
       xctxt = ((XPathContext.XPathExpressionContext) myContext).getXPathContext();
     else
@@ -438,12 +440,13 @@ public class ExsltDynamic extends ExsltBase
         }
         else
         {
-          Document lDoc = null;
-
-          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-          dbf.setNamespaceAware(true);
-          DocumentBuilder db = dbf.newDocumentBuilder();
-          lDoc = db.newDocument();
+	  if (lDoc == null)
+	  {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            lDoc = db.newDocument();
+          }
         
           Element element = null;
           if (object instanceof XNumber)
