@@ -731,7 +731,9 @@ public class ElemLiteralResult extends ElemUse
              * successful startElement() call even if 
              * there was an exception in the middle.
              * Otherwise an exception in the middle could cause a system to hang.
-             */            
+             */   
+            if (TransformerImpl.S_DEBUG)
+                transformer.getTraceManager().fireTraceEndEvent(this);
             rhandler.endElement(getNamespace(), getLocalName(), getRawName());
         }
         catch (SAXException se)
@@ -763,10 +765,6 @@ public class ElemLiteralResult extends ElemUse
         {
             throw new TransformerException(se);
         }
-
-        if (TransformerImpl.S_DEBUG)
-            transformer.getTraceManager().fireTraceEndEvent(this);
-
     }
 
   /**
