@@ -867,6 +867,8 @@ public class TransformerIdentityImpl extends Transformer
       throw new SAXException(te.getMessage(), te);
     }
 
+    // Reset for multiple transforms with this transformer.
+    m_flushedStartDoc = false;
     m_foundFirstElement = false;
   }
   
