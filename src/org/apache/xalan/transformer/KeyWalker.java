@@ -102,8 +102,8 @@ public class KeyWalker extends DescendantOrSelfWalker
       {
         KeyDeclaration kd = (KeyDeclaration)keys.elementAt(i);
         
-        if(!kd.getName().equals(name)) 
-          continue;
+        //if(!kd.getName().equals(name)) 
+        //  continue;
         
         ki.getXPathContext().setNamespaceContext(ki.getPrefixResolver());
             
