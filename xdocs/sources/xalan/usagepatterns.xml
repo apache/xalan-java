@@ -215,13 +215,10 @@ org.apache.trax.Transformer transformer = templates.newTransformer();
 
 // 4. Perform the transformation.
 // Set up the ContentHandler (a serializer) for the output.
-org.apache.trax.Result result = 
-          new org.apache.trax.Result(new java.io.FileWriter("foo.out"));
-org.apache.xml.serialize.SerializerFactory sfactory = 
-  org.apache.xml.serialize.SerializerFactory.getSerializerFactory("xml");
-org.apache.xml.serialize.Serializer serializer = sfactory.makeSerializer
-                         ( result.getCharacterStream(), 
-                           new org.apache.xml.serialize.OutputFormat() );
+java.io.FileOutputStream fos = new java.io.FileOutputStream("foo.out");
+org.apache.trax.Result result = new org.apache.trax.Result(fos);
+org.apache.serialize.Serializer serializer = 
+               org.apache.serialize.SerializerFactory.getSerializer("xml");
 transformer.setContentHandler(serializer.asContentHandler());
 // Set up the ContentHandler for the input.
 org.xml.sax.ContentHandler chandler = transformer.getInputContentHandler();

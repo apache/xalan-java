@@ -61,7 +61,7 @@
  * <http://www.apache.org/>.
  -->
 <s1 title="Release Notes">
-<p>&xslt4j-current;</p>
+<p>&xslt4j-current; alpha release</p>
 <p>It is our pleasure to thank two new contributors, Gary Peskin and Costin Manolache, for the fantastic help they have provided in producing this first release of Xalan-Java 2, and for the new ideas and creative work we are sure they will continue to provide in the ongoing &xslt4j; saga.</p>
  <ul>
   <li><link anchor="status">Status</link></li>
