@@ -100,4 +100,20 @@ class VariableRefBase extends Expression {
 	return "variable-ref(" + _variable.getName() + ')';
     }
 
+    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
+        // Attempt to get the cached variable type
+        _type = _variable.getType();
+
+        // If that does not work we must force a type-check (this is normally
+        // only needed for globals in included/imported stylesheets
+        if (_type == null) {
+            _variable.typeCheck(stable);
+            _type = _variable.getType();
+        }
+
+        // Return the type of the referenced variable
+        return _type;
+    }
+
 }
