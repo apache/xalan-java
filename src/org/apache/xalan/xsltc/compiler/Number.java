@@ -324,12 +324,13 @@ final class Number extends Instruction {
 	
 	// Get NodeCounter._translet and store locally
 	local = matchGen.addLocalVariable("translet", 
-				  Util.getJCRefType("Lorg/apache/xalan/xsltc/Translet;"),
+				  Util.getJCRefType(TRANSLET_SIG),
 				  null, null);
 	field = cpg.addFieldref(NODE_COUNTER, "_translet",
 				"Lorg/apache/xalan/xsltc/Translet;");
 	il.append(ALOAD_0); // 'this' pointer on stack
 	il.append(new GETFIELD(field));
+	il.append(new CHECKCAST(cpg.addClass(TRANSLET_CLASS)));
 	il.append(new ASTORE(local.getIndex()));
 	nodeCounterGen.setTransletIndex(local.getIndex());
 

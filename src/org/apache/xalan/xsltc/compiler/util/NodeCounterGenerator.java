@@ -98,7 +98,7 @@ public final class NodeCounterGenerator extends ClassGenerator {
      * matchFrom or matchCount.
      * Overridden from ClassGenerator.
      */
-    public Instruction aloadTranslet() {
+    public Instruction loadTranslet() {
 	return _aloadTranslet;
     }
     
