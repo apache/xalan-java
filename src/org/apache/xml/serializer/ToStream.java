@@ -879,14 +879,6 @@ abstract public class ToStream extends SerializerBase
         throws SAXException
     {
     }
-    
-    static boolean isWhitespace(char ch)
-    {
-        if (ch == 0x20 || ch == 0x0A || ch == 0x0D || ch == 0x09 )
-            return true;
-        else
-            return false;
-    }
 
     /**
      * Tell if this character can be written without escaping.
@@ -1384,15 +1376,6 @@ abstract public class ToStream extends SerializerBase
     public void characters(final char chars[], final int start, final int length)
         throws org.xml.sax.SAXException
     {
-        if (0 == length)
-        {
-            // Even though the character string is empty, but it is still a character event
-            // time to fire off characters generation event
-            if (m_tracer != null)
-                super.fireCharEvent(chars, start, length);
-            return;
-        }
-
         if (m_startTagOpen)
         {
             closeStartTag();
