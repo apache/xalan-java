@@ -74,6 +74,7 @@ import org.apache.xml.serializer.ToHTMLStream;
 import org.apache.xml.serializer.ToTextSAXHandler;
 import org.apache.xml.serializer.ToTextStream;
 import org.apache.xml.serializer.ToUnknownStream;
+import org.apache.xml.serializer.ToXHTMLStream;
 import org.apache.xml.serializer.ToXMLSAXHandler;
 import org.apache.xml.serializer.ToXMLStream;
 import org.apache.xml.serializer.SerializationHandler;
@@ -163,6 +164,12 @@ public class TransletOutputHandlerFactory {
                     result = new ToXMLStream();
 
                 }
+                else if (_method.equalsIgnoreCase("xhtml"))
+                {
+
+                    result = new ToXHTMLStream();
+
+                }
                 else if (_method.equalsIgnoreCase("html"))
                 {
 
@@ -220,7 +227,8 @@ public class TransletOutputHandlerFactory {
                     }
 
                 }
-                else if (_method.equalsIgnoreCase("html"))
+                else if (_method.equalsIgnoreCase("html")
+                      || _method.equalsIgnoreCase("xhtml") )
                 {
 
                     if (_lexHandler == null)
