@@ -162,10 +162,12 @@ class StepPattern extends RelativePathPattern {
     private int analyzeCases() {
 	boolean noContext = true;
 	final int n = _predicates.size();
+
 	for (int i = 0; i < n && noContext; i++) {
 	    final Predicate pred = (Predicate)_predicates.elementAt(i);
-	    final Expression exp = pred.getExpr();
-	    if (exp.hasPositionCall()) noContext = false;
+	    if (pred.getExpr().hasPositionCall()) {
+		noContext = false;
+	    }
 	}
 
 	if (noContext) {

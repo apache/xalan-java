@@ -220,8 +220,8 @@ public class ErrorMessages extends ResourceBundle {
 	"The -i option must be used with the -o option.",
 	// COMPILE_USAGE_STR
 	"Usage:\n" + 
-	"   xsltc [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
-	"         [-p <package name>] [-x] [-s] [-u] <stylesheet>|-i\n\n"+
+	"   java org.apache.xalan.xsltc.cmdline.Compile [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
+	"         [-p <package name>] [-x] [-s] [-u] { <stylesheet> | -i }\n\n"+
 	"   Where <output> is the name to give the the generated translet.\n"+
 	"         <stylesheet> is one or more stylesheet file names, or if\n"+
 	"         the -u options is specified, one or more stylesheet URLs.\n"+
@@ -235,8 +235,8 @@ public class ErrorMessages extends ResourceBundle {
 	"         The -s option disables calling System.exit.",
 	// TRANSFORM_USAGE_STR
 	"Usage: \n" +
-	"   xslt  [-j <jarfile>] {-u <document_url> | <document>} <class>\n"+
-	"         [<name1>=<value1> ...]\n\n" +
+	"   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>] [-x] [-s]\n" +
+	"         {-u <document_url> | <document>} <class> [<param1>=<value1> ...]\n" +
 	"   Where <document> is the xml document to be transformed, or\n" +
 	"         <document_url> is a url for the xml document,\n" +
 	"         <class> is the translet class which is either in\n" +

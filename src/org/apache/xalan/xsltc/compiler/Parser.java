@@ -265,6 +265,10 @@ public class Parser implements Constants, ContentHandler {
     }
     
     public QName getQName(final String stringRep) {
+	return getQName(stringRep, true);    
+    }
+
+    public QName getQName(final String stringRep, boolean reportError) {
 	// parse and retrieve namespace
 	final int colon = stringRep.lastIndexOf(':');
 	if (colon != -1) {
@@ -275,7 +279,7 @@ public class Parser implements Constants, ContentHandler {
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals("xmlns") == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
-		if (namespace == null) {
+		if (namespace == null && reportError) {
 		    final int line = _locator.getLineNumber();
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
 						line, prefix);
@@ -614,8 +618,8 @@ public class Parser implements Constants, ContentHandler {
 				COMPILER_PACKAGE + '.' + className);
     }
 
-    public boolean elementSupported(QName qname) {
-	return(_instructionClasses.get(qname) != null);
+    public boolean elementSupported(String namespace, String localName) {
+	return(_instructionClasses.get(getQName(namespace, XSL, localName)) != null);
     }
 
     public boolean functionSupported(String fname) {
@@ -660,6 +664,7 @@ public class Parser implements Constants, ContentHandler {
 	MethodType B_V  = new MethodType(Type.Boolean, Type.Void);
 	MethodType B_B  = new MethodType(Type.Boolean, Type.Boolean);
 	MethodType B_S  = new MethodType(Type.Boolean, Type.String);
+	MethodType D_T  = new MethodType(Type.NodeSet, Type.ResultTree);
 	MethodType R_RR = new MethodType(Type.Real, Type.Real, Type.Real);
 	MethodType I_II = new MethodType(Type.Int, Type.Int, Type.Int);
 	MethodType B_RR = new MethodType(Type.Boolean, Type.Real, Type.Real);
@@ -743,6 +748,9 @@ public class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("normalize-space", S_V);
 	_symbolTable.addPrimop("normalize-space", S_S);
 	_symbolTable.addPrimop("system-property", S_S);
+
+	// Extensions
+	_symbolTable.addPrimop("nodeset", D_T);
 
 	// Operators +, -, *, /, % defined on real types.
 	_symbolTable.addPrimop("+", R_RR);	
@@ -1072,7 +1080,9 @@ public class Parser implements Constants, ContentHandler {
      *       This has to be passed on to the symbol table!
      */
     public void startPrefixMapping(String prefix, String uri) {
-	if (_prefixMapping == null) _prefixMapping = new Hashtable();
+	if (_prefixMapping == null) {
+	    _prefixMapping = new Hashtable();
+	}
 	_prefixMapping.put(prefix, uri);
     }
 
@@ -1091,11 +1101,7 @@ public class Parser implements Constants, ContentHandler {
 			     String qname, Attributes attributes) 
 	throws SAXException {
 	final int col = qname.lastIndexOf(':');
-	final String prefix;
-	if (col == -1)
-	    prefix = null;
-	else
-	    prefix = qname.substring(0, col);
+	final String prefix = (col == -1) ? null : qname.substring(0, col);
 
 	SyntaxTreeNode element = makeInstance(uri, prefix, localname);
 	if (element == null) {

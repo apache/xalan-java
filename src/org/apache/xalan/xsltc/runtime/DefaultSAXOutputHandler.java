@@ -63,6 +63,8 @@
 
 package org.apache.xalan.xsltc.runtime;
 
+import java.util.Vector;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.io.FileOutputStream;
@@ -122,7 +124,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
     private int     _indentLevel = 0;
 
     // This is used for aggregating namespace declarations
-    private AttributeList _namespaceDeclarations = new AttributeList();
+    private Vector _namespaceDecls = null;
 
     /**
      * Constructor - set Writer to send output to and output encoding
@@ -239,7 +241,8 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
     /**
      * SAX2: Receive notification of the beginning of a document.
      */
-    public void startDocument() throws SAXException { }
+    public void startDocument() throws SAXException { 
+    }
 
     /**
      * SAX2: Receive notification of the end of an element.
@@ -266,7 +269,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
             if (_startTagOpen) closeStartTag(true); // Close any open element.
             _element = elementName; // Save element name
 
-	    // Handle indentation (not a requirement)
+	    // Handle inden3dcb50483dcb504tation (not a requirement)
             if (_indent) {
 		if (!_emptyElements.containsKey(elementName.toLowerCase())) {
 		    indent(_lineFeedNextStartTag);
@@ -283,24 +286,26 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 	    _indentNextEndTag = false;
 
 	    // Output namespace declarations first...
-	    int declCount = _namespaceDeclarations.getLength();
-	    for (int i=0; i<declCount; i++) {
-		final String prefix = _namespaceDeclarations.getQName(i);
-		_writer.write(XMLNS);
-		if ((prefix != null) && (prefix != EMPTYSTRING)) {
-		    _writer.write(':');
-		    _writer.write(prefix);
+	    if (_namespaceDecls != null) {
+		int nDecls = _namespaceDecls.size();
+		for (int i = 0; i < nDecls; i++) {
+		    final String prefix = (String) _namespaceDecls.elementAt(i++);
+		    _writer.write(XMLNS);
+		    if ((prefix != null) && (prefix != EMPTYSTRING)) {
+			_writer.write(':');
+			_writer.write(prefix);
+		    }
+		    _writer.write('=');
+		    _writer.write('\"');
+		    _writer.write((String) _namespaceDecls.elementAt(i));
+		    _writer.write('\"');
 		}
-		_writer.write('=');
-		_writer.write('\"');
-		_writer.write(_namespaceDeclarations.getValue(i));
-		_writer.write('\"');
-            }
-	    _namespaceDeclarations.clear();
+		_namespaceDecls.clear();
+	    }
 
 	    // ...then output all attributes
 	    int attrCount = attrs.getLength();
-	    for (int i=0; i<attrCount; i++) {
+	    for (int i = 0; i < attrCount; i++) {
 		_writer.write(' ');
 		_writer.write(attrs.getQName(i));
 		_writer.write('=');
@@ -440,7 +445,11 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
      *       Namespace declarations are output in startElement()
      */
     public void startPrefixMapping(String prefix, String uri) {
-	_namespaceDeclarations.add(prefix,uri);
+	if (_namespaceDecls == null) {
+	    _namespaceDecls = new Vector(2);
+	}
+	_namespaceDecls.addElement(prefix);
+	_namespaceDecls.addElement(uri);
     }
 
     /**

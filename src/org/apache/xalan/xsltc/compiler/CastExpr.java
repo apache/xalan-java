@@ -140,6 +140,7 @@ final class CastExpr extends Expression {
 	InternalTypeMap.put(Type.Reference, Type.String);
 	InternalTypeMap.put(Type.Reference, Type.Node);
 	InternalTypeMap.put(Type.Reference, Type.NodeSet);
+	InternalTypeMap.put(Type.Reference, Type.ResultTree);
 
 	InternalTypeMap.put(Type.Void, Type.String);
     }

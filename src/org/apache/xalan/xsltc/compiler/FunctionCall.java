@@ -86,9 +86,18 @@ class FunctionCall extends Expression {
     private final static Vector EMPTY_ARG_LIST = new Vector(0);
 
     // Valid namespaces for Java function-call extension
-    private final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
-    private final static String JAVA_EXT_XALAN =
+    protected final static String EXT_XSLTC = 
+	TRANSLET_URI;
+
+    protected final static String JAVA_EXT_XSLTC = 
+	EXT_XSLTC + "/java";
+
+    protected final static String EXT_XALAN =
+	"http://xml.apache.org/xalan";
+
+    protected final static String JAVA_EXT_XALAN =
 	"http://xml.apache.org/xslt/java";
+
 
     // External Java function's class/method/signature
     private String     _className;
@@ -170,6 +179,7 @@ class FunctionCall extends Expression {
     public FunctionCall(QName fname, Vector arguments) {
 	_fname = fname;
 	_arguments = arguments;
+	_type = null;
     }
 
     public FunctionCall(QName fname) {
@@ -192,48 +202,71 @@ class FunctionCall extends Expression {
 	}
     }
 
+    public String getClassNameFromUri(String uri) 
+	throws TypeCheckError
+    {
+	final int length = 
+	    uri.startsWith(JAVA_EXT_XSLTC) ? JAVA_EXT_XSLTC.length() + 1 :
+	    uri.startsWith(JAVA_EXT_XALAN) ? JAVA_EXT_XALAN.length() + 1 : 0;
+
+	if (length == 0) {
+	    throw new TypeCheckError(this);
+	}
+	return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+    }
+
     /**
      * Type check a function call. Since different type conversions apply,
      * type checking is different for standard and external (Java) functions.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(SymbolTable stable) 
+	throws TypeCheckError 
+    {
+	if (_type != null) return _type;
 
 	final String namespace = _fname.getNamespace();
 	final String local = _fname.getLocalPart();
 
-	// XPath functions have no namespace
-	if (isStandard()) {
+	if (isExtension()) {
+	    _fname = new QName(null, null, local);
+	    return typeCheckStandard(stable);
+	}
+	else if (isStandard()) {
 	    return typeCheckStandard(stable);
 	}
 	// Handle extension functions (they all have a namespace)
 	else {
-	    final int len = JAVA_EXT_PREFIX.length();
-	    if (namespace.equals(JAVA_EXT_PREFIX) ||
-		namespace.equals(JAVA_EXT_XALAN)) {
-		final int pos = local.indexOf('.');
-		_className = local.substring(0, pos);
-		_fname = new QName(namespace, null, local.substring(pos+1));
-	    }
-	    else if (namespace.length() >= len &&
-		namespace.substring(0, len).equals(JAVA_EXT_PREFIX)) {
-		_className = namespace.substring(len + 1);
-	    }
-	    else {
-		/*
-		 * Warn user if external function could not be resolved.
-		 * Warning will _NOT_ be issued is the call is properly
-		 * wrapped in an <xsl:if> or <xsl:when> element. For details
-		 * see If.parserContents() and When.parserContents()
-		 */
-		final Parser parser = getParser();
-		if (parser != null) {
-		    reportWarning(this, parser, ErrorMsg.FUNCTION_RESOLVE_ERR,
-				  _fname.toString());
+	    try {
+		_className = getClassNameFromUri(namespace);
+
+		final int pos = local.lastIndexOf('.');
+		if (pos > 0) {
+		    _className = _className + local.substring(0, pos);
+		    _fname = new QName(namespace, null, local.substring(pos + 1));
 		}
-		unresolvedExternal = true;
-		return _type = Type.Void;
+		else {
+		    _fname = new QName(namespace, null, local);
+		}
+		if (_className.length() > 0) {
+		    return typeCheckExternal(stable);
+		}
+	    } catch (TypeCheckError e) {
+		// Falls through
 	    }
-	    return typeCheckExternal(stable);
+
+	    /*
+	     * Warn user if external function could not be resolved.
+	     * Warning will _NOT_ be issued is the call is properly
+	     * wrapped in an <xsl:if> or <xsl:when> element. For details
+	     * see If.parserContents() and When.parserContents()
+	     */
+	    final Parser parser = getParser();
+	    if (parser != null) {
+		reportWarning(this, parser, ErrorMsg.FUNCTION_RESOLVE_ERR,
+			      _fname.toString());
+	    }
+	    unresolvedExternal = true;
+	    return _type = Type.Void;
 	}
     }
 
@@ -243,8 +276,7 @@ class FunctionCall extends Expression {
      * thrown, then catch it and re-throw it with a new "this".
      */
     public Type typeCheckStandard(SymbolTable stable) throws TypeCheckError {
-
-	_fname.clearNamespace(); // HACK!!!
+	_fname.clearNamespace(); 	// HACK!!!
 
 	final int n = _arguments.size();
 	final Vector argsType = typeCheckArgs(stable);
@@ -367,8 +399,8 @@ class FunctionCall extends Expression {
      * Update true/false-lists.
      */
     public void translateDesynthesized(ClassGenerator classGen,
-				       MethodGenerator methodGen) {
-
+				       MethodGenerator methodGen) 
+    {
 	Type type = Type.Boolean;
 	if (_chosenMethodType != null)
 	    type = _chosenMethodType.resultType();
@@ -393,7 +425,7 @@ class FunctionCall extends Expression {
 	int index;
 
 	// Translate calls to methods in the BasisLibrary
-	if (isStandard()) {
+	if (isStandard() || isExtension()) {
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
 		exp.translate(classGen, methodGen);
@@ -470,10 +502,13 @@ class FunctionCall extends Expression {
 
     public boolean isStandard() {
 	final String namespace = _fname.getNamespace();
-	if ((namespace == null) || (namespace.equals(Constants.EMPTYSTRING)))
-	    return true;
-	else
-	    return false;
+	return (namespace == null) || (namespace.equals(Constants.EMPTYSTRING));
+    }
+
+    public boolean isExtension() {
+	final String namespace = _fname.getNamespace();
+	return (namespace != null) && (namespace.equals(EXT_XSLTC) 
+	    || namespace.equals(EXT_XALAN));
     }
 
     /**
@@ -485,7 +520,7 @@ class FunctionCall extends Expression {
 	Vector result = null;
 	final String namespace = _fname.getNamespace();
 
-	if (namespace.startsWith(JAVA_EXT_PREFIX) ||
+	if (namespace.startsWith(JAVA_EXT_XSLTC) ||
 	    namespace.startsWith(JAVA_EXT_XALAN)) {
 	    final int nArgs = _arguments.size();
 	    try {

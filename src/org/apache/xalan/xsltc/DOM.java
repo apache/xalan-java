@@ -132,4 +132,6 @@ public interface DOM {
     public void setupMapping(String[] names, String[] namespaces);
     public boolean isElement(final int node);
     public boolean isAttribute(final int node);
+    public String lookupNamespace(int node, String prefix)
+	throws TransletException;
 }
