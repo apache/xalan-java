@@ -74,10 +74,11 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class XslElement extends Instruction {
 
-    private AttributeValue _name; // name treated as AVT (7.1.3)
-    private AttributeValueTemplate _namespace = null;
     private String  _prefix;
     private boolean _ignore = false;
+    private boolean _isLiteralName = true;
+    private AttributeValueTemplate _name; 
+    private AttributeValueTemplate _namespace;
 
     /**
      * Displays the contents of the element
@@ -88,92 +89,125 @@ final class XslElement extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 
+    /**
+     * This method is now deprecated. The new implemation of this class
+     * never declares the default NS.
+     */
     public boolean declaresDefaultNS() {
-	return (_namespace != null && _prefix == EMPTYSTRING);
+	return false;
     }
 
     /**
-     * Parses the element's contents. Special care taken for namespaces.
-     * TODO: The namespace attribute that specifies the namespace to use
-     * for the element is an attribute value template and not a string
-     * constant. This means that we do not know what namespace is used
-     * before runtime. This causes a problem with the way output namespaces
-     * are handled at compile-time. We use a shortcut in this method to get
-     * around the problem by treating the namaspace attribute as a constant.
-     *          (Yes, I know this is a hack, bad, bad, bad.)
+     * Checks if <param>str</param> is a literal (i.e. not an AVT) or not.
      */
-    public void parseContents(Parser parser) {
+    private boolean isLiteral(String str) {
+	final int length = str.length();
+	for (int i = 0; i < length; i++) {
+	    if (str.charAt(i) == '{' && str.charAt(i + 1) != '{') {
+		return false;
+	    }
+	}
+	return true;
+    }
 
+    /**
+     * Simple check to determine if qname is legal. If it returns false
+     * then <param>str</param> is illegal; if it returns true then 
+     * <param>str</param> may or may not be legal.
+     */
+    private boolean isLegalName(String str) {
+	if (str.indexOf(' ') > -1) {
+	    return false;
+	}
+	final int colon = str.indexOf(':');
+	if (colon == 0 || colon == str.length() - 1) {
+	    return false;
+	}
+	final char first = str.charAt(0);
+	if (!Character.isLetter(first) && first != '_') {
+	    return false;
+	}
+	return true;
+    }
+
+    public void parseContents(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
-	// Get the "name" attribute of the <xsl:element> element
+	// Handle the 'name' attribute
 	String name = getAttribute("name");
-	if ((name == null) || (name.equals(EMPTYSTRING))) {
+	if (name == EMPTYSTRING) {
 	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
 					name, this);
 	    parser.reportError(WARNING, msg);
-	    _ignore = true; // Ignore the element if the QName is invalid
+	    parseChildren(parser);
+	    _ignore = true; 	// Ignore the element if the QName is invalid
 	    return;
 	}
 
-	// Try to construct a QName and then get the prefix and local part
-	QName  qname  = parser.getQNameSafe(name);
-	String prefix = qname.getPrefix();
-	String local  = qname.getLocalPart();
-
-	// First try to get the namespace URI from the "namespace" attribute
+	// Get namespace attribute
 	String namespace = getAttribute("namespace");
-	// Then try to get it from the "name" attribute QName prefix
-	if (!hasAttribute("namespace")) {
-	    // We are supposed to use the default namespace URI if the QName
-	    // from the "name" attribute is not prefixed, so check that first
-	    if (prefix == null) prefix = EMPTYSTRING;
-	    // Then look up the URI that is in scope for the prefix
-	    namespace = lookupNamespace(prefix); 
 
-	    // Signal error if the prefix does not map to any namespace URI 
-	    if (namespace == null) {
-		ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
-					    prefix, this);
-		parser.reportError(WARNING, err);
+	// Optimize compilation when name is known at compile time
+	_isLiteralName = isLiteral(name);
+	if (_isLiteralName) {
+	    if (!isLegalName(name)) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
+					    name, this);
+		parser.reportError(WARNING, msg);
 		parseChildren(parser);
-		_ignore = true; // Ignore the element if prefix is undeclared
+		_ignore = true; 	// Ignore the element if the QName is invalid
 		return;
 	    }
-	    _namespace = new AttributeValueTemplate(namespace, parser);
-	    _prefix = prefix;
+
+	    final QName qname = parser.getQNameSafe(name);
+	    String prefix = qname.getPrefix();
+	    String local = qname.getLocalPart();
+	    
+	    if (prefix == null) {
+		prefix = EMPTYSTRING;
+	    }
+
+	    if (!hasAttribute("namespace")) {
+		namespace = lookupNamespace(prefix); 
+		if (namespace == null) {
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
+						prefix, this);
+		    parser.reportError(WARNING, err);
+		    parseChildren(parser);
+		    _ignore = true; 	// Ignore the element if prefix is undeclared
+		    return;
+		}
+		_prefix = prefix;
+		_namespace = (namespace == EMPTYSTRING) ? null :
+			     new AttributeValueTemplate(namespace, parser, this);
+	    }
+	    else {
+		if (prefix == EMPTYSTRING) {
+		    if (isLiteral(namespace)) {
+			prefix = lookupPrefix(namespace);
+			if (prefix == null) {
+			    prefix = stable.generateNamespacePrefix();
+			}
+		    }
+
+		    // Prepend prefix to local name
+		    final StringBuffer newName = new StringBuffer(prefix);
+		    if (prefix != EMPTYSTRING) {
+			newName.append(':');
+		    }
+		    name = newName.append(local).toString();
+		}
+		_prefix = prefix;
+		_namespace = new AttributeValueTemplate(namespace, parser, this);
+	    }
 	}
-	// Check if this element belongs in a specific namespace
 	else {
-	    // Get the namespace requested by the xsl:element
-	    _namespace = new AttributeValueTemplate(namespace, parser);
-	    // Get the current prefix for that namespace (if any)
-	    _prefix = lookupPrefix(namespace);
-	    // Is it the default namespace?
-	    if ((_prefix = prefix) == null) _prefix = EMPTYSTRING;
-
-	    // Construct final element QName
-	    if (_prefix == EMPTYSTRING)
-		name = qname.getLocalPart();
-	    else
-		name = _prefix+":"+qname.getLocalPart();
+	    _namespace = (namespace == EMPTYSTRING) ? null :
+			 new AttributeValueTemplate(namespace, parser, this);
 	}
 
-	_name = AttributeValue.create(this, name, parser);
+	_name = new AttributeValueTemplate(name, parser, this);
 
-	// Next check that the local part of the QName is legal (no whitespace)
-	if (_name instanceof SimpleAttributeValue) {
-	    if (local.equals(EMPTYSTRING) || (local.indexOf(' ') > -1)) {
-		ErrorMsg err = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
-					    local, this);
-		parser.reportError(WARNING, err);
-		parseChildren(parser);
-		_ignore = true; // Ignore the element if local part is invalid
-		return;
-	    }
-	}
-
-	// Handle the 'use-attribute-sets' attribute
 	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
 	    setFirstElement(new UseAttributeSets(useSets, parser));
@@ -188,34 +222,30 @@ final class XslElement extends Instruction {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (!_ignore) {
 	    _name.typeCheck(stable);
-	    if (_namespace != null)
+	    if (_namespace != null) {
 		_namespace.typeCheck(stable);
+	    }
 	}
 	typeCheckContents(stable);
 	return Type.Void;
     }
 
     /**
-     * Compiles code that emits the element with the necessary namespace
-     * definitions. The element itself is ignored if the element definition
-     * was in any way erronous, but the child nodes are still processed.
-     * See the overriden translateContents() method as well.
+     * This method is called when the name of the element is known at compile time.
+     * In this case, there is no need to inspect the element name at runtime to
+     * determine if a prefix exists, needs to be generated, etc.
      */
-    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+    public void translateLiteral(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	// Ignore this element if not correctly declared
 	if (!_ignore) {
-	    // Compile code that emits the element start tag
 	    il.append(methodGen.loadHandler());
 	    _name.translate(classGen, methodGen);
-	    il.append(DUP2);	// duplicate these 2 args for endElement
+	    il.append(DUP2);
 	    il.append(methodGen.startElement());
 
-	    // Compile code that emits any needed namespace declaration
 	    if (_namespace != null) {
-		// public void attribute(final String name, final String value)
 		il.append(methodGen.loadHandler());
 		il.append(new PUSH(cpg, _prefix));
 		_namespace.translate(classGen,methodGen);
@@ -223,12 +253,94 @@ final class XslElement extends Instruction {
 	    }
 	}
 
-	// Compile code that emits the element attributes and contents
 	translateContents(classGen, methodGen);
 
-	// Ignore this element if not correctly declared
 	if (!_ignore) {
-	    // Compile code that emits the element end tag
+	    il.append(methodGen.endElement());
+	}
+    }
+
+    /**
+     * At runtime the compilation of xsl:element results in code that: (i)
+     * evaluates the avt for the name, (ii) checks for a prefix in the name
+     * (iii) generates a new prefix and create a new qname when necessary
+     * (iv) calls startElement() on the handler (v) looks up a uri in the XML
+     * when the prefix is not known at compile time (vi) calls namespace() 
+     * on the handler (vii) evaluates the contents (viii) calls endElement().
+     */
+    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+	LocalVariableGen local = null;
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	// Optimize translation if element name is a literal
+	if (_isLiteralName) {
+	    translateLiteral(classGen, methodGen);
+	    return;
+	}
+
+	if (!_ignore) {
+	    il.append(methodGen.loadHandler());
+	    _name.translate(classGen, methodGen);
+
+	    // Call BasisLibrary.getPrefix() and store result in local variable
+	    il.append(DUP);
+	    final int getPrefix = cpg.addMethodref(BASIS_LIBRARY_CLASS, "getPrefix",
+					      "(" + STRING_SIG + ")" + STRING_SIG);
+	    il.append(new INVOKESTATIC(getPrefix));
+	    il.append(DUP);
+	    local = methodGen.addLocalVariable("prefix", 
+					       org.apache.bcel.generic.Type.STRING,
+					       il.getEnd(), null);
+	    il.append(new ASTORE(local.getIndex()));
+
+	    // If prefix is null then generate a prefix at runtime
+	    final BranchHandle ifNotNull = il.append(new IFNONNULL(null));
+	    if (_namespace != null) {
+		final int generatePrefix = cpg.addMethodref(BASIS_LIBRARY_CLASS, 
+							    "generatePrefix", 
+							    "()" + STRING_SIG);
+		il.append(new INVOKESTATIC(generatePrefix));
+		il.append(DUP);
+		il.append(new ASTORE(local.getIndex()));
+
+		// Prepend newly generated prefix to the name
+		final int makeQName = cpg.addMethodref(BASIS_LIBRARY_CLASS, "makeQName", 
+				       "(" + STRING_SIG + STRING_SIG + ")" + STRING_SIG);
+		il.append(new INVOKESTATIC(makeQName));
+	    }
+	    ifNotNull.setTarget(il.append(DUP2));
+	    il.append(methodGen.startElement());
+
+	    if (_namespace != null) {
+		il.append(methodGen.loadHandler());
+		il.append(new ALOAD(local.getIndex()));
+		_namespace.translate(classGen, methodGen);
+		il.append(methodGen.namespace());
+	    }
+	    else {
+		// If prefix not known at compile time, call DOM.lookupNamespace()
+		il.append(new ALOAD(local.getIndex()));
+		final BranchHandle ifNull = il.append(new IFNULL(null));
+		il.append(methodGen.loadHandler());
+		il.append(new ALOAD(local.getIndex()));
+
+		il.append(methodGen.loadDOM());
+		il.append(methodGen.loadCurrentNode());
+		il.append(new ALOAD(local.getIndex()));
+
+		final int lookupNamespace = cpg.addInterfaceMethodref(DOM_INTF, 
+					"lookupNamespace", 
+				        "(I" + STRING_SIG + ")" + STRING_SIG);
+		il.append(new INVOKEINTERFACE(lookupNamespace, 3));
+		il.append(methodGen.namespace());
+		ifNull.setTarget(il.append(NOP));
+	    }
+	}
+
+	translateContents(classGen, methodGen);
+
+	if (!_ignore) {
 	    il.append(methodGen.endElement());
 	}
     }
@@ -243,7 +355,7 @@ final class XslElement extends Instruction {
 	for (int i = 0; i < n; i++) {
 	    final SyntaxTreeNode item =
 		(SyntaxTreeNode)getContents().elementAt(i);
-	    if ((_ignore) && (item instanceof XslAttribute)) continue;
+	    if (_ignore && item instanceof XslAttribute) continue;
 	    item.translate(classGen, methodGen);
 	}
     }

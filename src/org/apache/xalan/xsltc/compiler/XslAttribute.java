@@ -137,14 +137,14 @@ final class XslAttribute extends Instruction {
 	// Get namespace from namespace attribute?
 	if (namespace != null && namespace != Constants.EMPTYSTRING) {
 	    _prefix = lookupPrefix(namespace);
-	    _namespace = new AttributeValueTemplate(namespace, parser);
+	    _namespace = new AttributeValueTemplate(namespace, parser, this);
 	}
 	// Get namespace from prefix in name attribute?
 	else if (prefix != null && prefix != Constants.EMPTYSTRING) {
 	    _prefix = prefix;
 	    namespace = lookupNamespace(prefix);
 	    if (namespace != null) {
-		_namespace = new AttributeValueTemplate(namespace, parser);
+		_namespace = new AttributeValueTemplate(namespace, parser, this);
 	    }
 	}
 	

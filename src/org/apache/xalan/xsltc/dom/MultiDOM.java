@@ -453,4 +453,9 @@ public final class MultiDOM implements DOM {
 	return(_adapters[node>>>24].isAttribute(node & CLR));
     }
 
+    public String lookupNamespace(int node, String prefix) 
+	throws TransletException
+    {
+	return _adapters[node>>>24].lookupNamespace(node, prefix);
+    }
 }

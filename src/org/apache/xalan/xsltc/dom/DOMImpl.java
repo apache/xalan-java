@@ -175,6 +175,37 @@ public final class DOMImpl implements DOM, Externalizable {
     }
 
     /**
+     * Lookup a namespace URI from a prefix starting at node. This method 
+     * is used in the execution of xsl:element when the prefix is not known 
+     * at compile time.
+     */
+    public String lookupNamespace(int node, String prefix) 
+	throws TransletException 
+    {
+	int anode, nsnode;
+	final AncestorIterator ancestors = new AncestorIterator();
+	
+	if (isElement(node)) {
+	    ancestors.includeSelf();
+	}
+
+	ancestors.setStartNode(node);
+	while ((anode = ancestors.next()) != NULL) {
+	    final NodeIterator namespaces = 
+		new NamespaceIterator().setStartNode(anode);
+
+	    while ((nsnode = namespaces.next()) != NULL) {
+		if (_prefixArray[_prefix[nsnode]].equals(prefix)) {
+		    return getNodeValue(nsnode);
+		}
+	    }
+	}
+
+	// TODO: Internationalization?
+	throw new TransletException("Namespace prefix '" + prefix + "' is undeclared.");
+    }
+
+    /**
      * Returns 'true' if a specific node is an element (of any type)
      */
     public boolean isElement(final int node) {
