@@ -84,7 +84,7 @@ public class Printer
      * the default one for this document type will be used. The format
      * object is never changed by the serializer.
      */
-    protected final OutputFormat _format;
+    protected OutputFormat _format;
 
 
     /**
