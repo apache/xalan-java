@@ -59,6 +59,7 @@ package org.apache.xalan.templates;
 import org.w3c.dom.Node;
 import java.util.Vector;
 import java.util.StringTokenizer;
+import org.apache.xalan.utils.StringBufferPool;
 import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
 import org.apache.xpath.XPathContext;
@@ -149,166 +150,174 @@ public class AVT implements java.io.Serializable
     }
     else
     {
-      m_parts = new Vector(nTokens+1);
-      StringBuffer buffer = new StringBuffer(32);
-      StringBuffer exprBuffer = new StringBuffer(32);
-      String t = null; // base token
-      String lookahead= null; // next token
-      String error = null; // if non-null, break from loop
-      while(tokenizer.hasMoreTokens())
+      StringBuffer buffer = StringBufferPool.get();
+      StringBuffer exprBuffer = StringBufferPool.get();
+      try
       {
-        if( lookahead != null )
+        m_parts = new Vector(nTokens+1);
+        String t = null; // base token
+        String lookahead= null; // next token
+        String error = null; // if non-null, break from loop
+        while(tokenizer.hasMoreTokens())
         {
-          t = lookahead;
-          lookahead = null;
-        }
-        else t = tokenizer.nextToken();
-        
-        if(t.length() == 1)
-        {
-          switch(t.charAt(0))
+          if( lookahead != null )
           {
-          case('\"'):
-          case('\''):
+            t = lookahead;
+            lookahead = null;
+          }
+          else t = tokenizer.nextToken();
+          
+          if(t.length() == 1)
+          {
+            switch(t.charAt(0))
             {
-              // just keep on going, since we're not in an attribute template
-              buffer.append(t);
-              break;
-            }
-          case('{'):
-            {
-              // Attribute Value Template start
-              lookahead = tokenizer.nextToken();
-              if(lookahead.equals("{"))
+            case('\"'):
+            case('\''):
               {
-                // Double curlys mean escape to show curly
-                buffer.append(lookahead);
-                lookahead = null;
-                break; // from switch
+                // just keep on going, since we're not in an attribute template
+                buffer.append(t);
+                break;
               }
-              /*
-              else if(lookahead.equals("\"") || lookahead.equals("\'"))
+            case('{'):
               {
-              // Error. Expressions can not begin with quotes.
-              error = "Expressions can not begin with quotes.";
-              break; // from switch
-              }
-              */
-              else
-              {
-                if(buffer.length() > 0)
+                // Attribute Value Template start
+                lookahead = tokenizer.nextToken();
+                if(lookahead.equals("{"))
                 {
-                  m_parts.addElement(new AVTPartSimple(buffer.toString()));
-                  buffer.setLength(0);
+                  // Double curlys mean escape to show curly
+                  buffer.append(lookahead);
+                  lookahead = null;
+                  break; // from switch
                 }
-
-                exprBuffer.setLength(0);
-                while(null != lookahead)
+                /*
+                else if(lookahead.equals("\"") || lookahead.equals("\'"))
                 {
-                  if(lookahead.length() == 1)
+                // Error. Expressions can not begin with quotes.
+                error = "Expressions can not begin with quotes.";
+                break; // from switch
+                }
+                */
+                else
+                {
+                  if(buffer.length() > 0)
                   {
-                    switch(lookahead.charAt(0))
+                    m_parts.addElement(new AVTPartSimple(buffer.toString()));
+                    buffer.setLength(0);
+                  }
+
+                  exprBuffer.setLength(0);
+                  while(null != lookahead)
+                  {
+                    if(lookahead.length() == 1)
                     {
-                    case '\'':
-                    case '\"':
+                      switch(lookahead.charAt(0))
                       {
-                        // String start
-                        exprBuffer.append(lookahead);
-                        String quote = lookahead;
-                        // Consume stuff 'till next quote
-                        lookahead = tokenizer.nextToken();
-                        while(!lookahead.equals(quote))
+                      case '\'':
+                      case '\"':
                         {
+                          // String start
+                          exprBuffer.append(lookahead);
+                          String quote = lookahead;
+                          // Consume stuff 'till next quote
+                          lookahead = tokenizer.nextToken();
+                          while(!lookahead.equals(quote))
+                          {
+                            exprBuffer.append(lookahead);
+                            lookahead = tokenizer.nextToken();
+                          }
+                          exprBuffer.append(lookahead);
+                          lookahead = tokenizer.nextToken();
+                          break;
+                        }
+                      case '{':
+                        {
+                          // What's another curly doing here?
+                          error = XSLMessages.createMessage(XSLTErrorResources.ER_NO_CURLYBRACE, null); //"Error: Can not have \"{\" within expression.";
+                          break;
+                        }
+                      case '}':
+                        {
+                          // Proper close of attribute template.
+                          // Evaluate the expression.
+                          buffer.setLength(0);
+                          
+                          XPath xpath = handler.createXPath(exprBuffer.toString());
+                          m_parts.addElement(new AVTPartXPath(xpath));
+                          
+                          lookahead = null; // breaks out of inner while loop
+                          break;
+                        }
+                      default:
+                        {
+                          // part of the template stuff, just add it.
                           exprBuffer.append(lookahead);
                           lookahead = tokenizer.nextToken();
                         }
-                        exprBuffer.append(lookahead);
-                        lookahead = tokenizer.nextToken();
-                        break;
-                      }
-                    case '{':
-                      {
-                        // What's another curly doing here?
-                        error = XSLMessages.createMessage(XSLTErrorResources.ER_NO_CURLYBRACE, null); //"Error: Can not have \"{\" within expression.";
-                        break;
-                      }
-                    case '}':
-                      {
-                        // Proper close of attribute template.
-                        // Evaluate the expression.
-                        buffer.setLength(0);
-                        
-                        XPath xpath = handler.createXPath(exprBuffer.toString());
-                        m_parts.addElement(new AVTPartXPath(xpath));
-                        
-                        lookahead = null; // breaks out of inner while loop
-                        break;
-                      }
-                    default:
-                      {
-                        // part of the template stuff, just add it.
-                        exprBuffer.append(lookahead);
-                        lookahead = tokenizer.nextToken();
-                      }
-                    } // end inner switch
-                  } // end if lookahead length == 1
-                  else
+                      } // end inner switch
+                    } // end if lookahead length == 1
+                    else
+                    {
+                      // part of the template stuff, just add it.
+                      exprBuffer.append(lookahead);
+                      lookahead = tokenizer.nextToken();
+                    }
+                  } // end while(!lookahead.equals("}"))
+                  if(error != null)
                   {
-                    // part of the template stuff, just add it.
-                    exprBuffer.append(lookahead);
-                    lookahead = tokenizer.nextToken();
+                    break; // from inner while loop
                   }
-                } // end while(!lookahead.equals("}"))
-                if(error != null)
-                {
-                  break; // from inner while loop
                 }
+                break;
               }
-              break;
-            }
-          case('}'):
-            {
-              lookahead = tokenizer.nextToken();
-              if(lookahead.equals("}"))
+            case('}'):
               {
-                // Double curlys mean escape to show curly
-                buffer.append(lookahead);
-                lookahead = null; // swallow
+                lookahead = tokenizer.nextToken();
+                if(lookahead.equals("}"))
+                {
+                  // Double curlys mean escape to show curly
+                  buffer.append(lookahead);
+                  lookahead = null; // swallow
+                }
+                else
+                {
+                  // Illegal, I think...
+                  handler.warn(XSLTErrorResources.WG_FOUND_CURLYBRACE, null); //"Found \"}\" but no attribute template open!");
+                  buffer.append("}");
+                  // leave the lookahead to be processed by the next round.
+                }
+                break;
               }
-              else
+            default:
               {
-                // Illegal, I think...
-                handler.warn(XSLTErrorResources.WG_FOUND_CURLYBRACE, null); //"Found \"}\" but no attribute template open!");
-                buffer.append("}");
-                // leave the lookahead to be processed by the next round.
+                // Anything else just add to string.
+                buffer.append(t);
               }
-              break;
-            }
-          default:
-            {
-              // Anything else just add to string.
-              buffer.append(t);
-            }
-          } // end switch t
-        } // end if length == 1
-        else
+            } // end switch t
+          } // end if length == 1
+          else
+          {
+            // Anything else just add to string.
+            buffer.append(t);
+          }
+          if(null != error)
+          {
+            handler.warn(XSLTErrorResources.WG_ATTR_TEMPLATE, new Object[] {error}); //"Attr Template, "+error);
+            break;
+          }
+        } // end while(tokenizer.hasMoreTokens())
+        
+        if(buffer.length() > 0)
         {
-          // Anything else just add to string.
-          buffer.append(t);
+          m_parts.addElement(new AVTPartSimple(buffer.toString()));
+          buffer.setLength(0);
         }
-        if(null != error)
-        {
-          handler.warn(XSLTErrorResources.WG_ATTR_TEMPLATE, new Object[] {error}); //"Attr Template, "+error);
-          break;
-        }
-      } // end while(tokenizer.hasMoreTokens())
-      
-      if(buffer.length() > 0)
-      {
-        m_parts.addElement(new AVTPartSimple(buffer.toString()));
-        buffer.setLength(0);
       }
-            
+      finally
+      {
+        StringBufferPool.free(buffer);
+        StringBufferPool.free(exprBuffer);
+      }
+      
     } // end else nTokens > 1
     
     if(null == m_parts && (null == m_simpleString))
@@ -329,15 +338,24 @@ public class AVT implements java.io.Serializable
     }
     else if(null != m_parts)
     {
-      StringBuffer buf = new StringBuffer();
-      buf.setLength(0);
-      int n = m_parts.size();
-      for(int i = 0; i < n; i++)
+      StringBuffer buf = StringBufferPool.get();
+      String s;
+      try
       {
-        AVTPart part = (AVTPart)m_parts.elementAt(i);
-        buf.append(part.getSimpleString());
+        buf.setLength(0);
+        int n = m_parts.size();
+        for(int i = 0; i < n; i++)
+        {
+          AVTPart part = (AVTPart)m_parts.elementAt(i);
+          buf.append(part.getSimpleString());
+        }
+        s = buf.toString();
       }
-      return buf.toString();
+      finally
+      {
+        StringBufferPool.free(buf);
+      }
+      return s;
     }
     else
     {
@@ -352,28 +370,35 @@ public class AVT implements java.io.Serializable
    * @param NodeList The current Context Node List.
    */
   public String evaluate(XPathContext xctxt, Node context, 
-                  org.apache.xalan.utils.PrefixResolver nsNode, 
-                  StringBuffer buf)
+                          org.apache.xalan.utils.PrefixResolver nsNode)
     throws org.xml.sax.SAXException
   {
-    if(null != m_simpleString)
+    StringBuffer buf = StringBufferPool.get();
+    try
     {
-      return m_simpleString;
-    }
-    else if(null != m_parts)
-    {
-      buf.setLength(0);
-      int n = m_parts.size();
-      for(int i = 0; i < n; i++)
+      if(null != m_simpleString)
       {
-        AVTPart part = (AVTPart)m_parts.elementAt(i);
-        part.evaluate(xctxt, buf, context, nsNode);
+        return m_simpleString;
       }
-      return buf.toString();
+      else if(null != m_parts)
+      {
+        buf.setLength(0);
+        int n = m_parts.size();
+        for(int i = 0; i < n; i++)
+        {
+          AVTPart part = (AVTPart)m_parts.elementAt(i);
+          part.evaluate(xctxt, buf, context, nsNode);
+        }
+        return buf.toString();
+      }
+      else
+      {
+        return "";
+      }
     }
-    else
+    finally
     {
-      return "";
+      StringBufferPool.free(buf);
     }
   }
 
