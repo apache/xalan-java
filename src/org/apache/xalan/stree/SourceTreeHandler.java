@@ -197,7 +197,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   }
 
   /** Source Document          */
-  Source m_inputSource;
+  private Source m_inputSource;
 
   /**
    * Set the Source document 
@@ -302,6 +302,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void startDocument() throws org.xml.sax.SAXException
   {
     // System.out.println("startDocument: "+m_id);
+    
     synchronized (m_root)
     {
       m_root.setSourceTreeHandler(this);
@@ -370,6 +371,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
         }
         catch(TransformerException te)
         {
+          // te.printStackTrace();
           throw new org.xml.sax.SAXException(te);
         }
       }
@@ -432,7 +434,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
           String ns, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
-
+    // System.out.println("startElement: "+ns+", "+localName);
     synchronized (m_root)
     {
       m_shouldStripWhitespaceStack.push(m_shouldStripWS);
@@ -454,6 +456,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void endElement(String ns, String localName, String name)
           throws org.xml.sax.SAXException
   {
+    // System.out.println("endElement: "+ns+", "+localName);
 
     synchronized (m_root)
     {
@@ -875,7 +878,9 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     XPathContext xctxt = m_transformer.getXPathContext();
     SourceTreeManager stm = xctxt.getSourceTreeManager();
     
-    stm.putDocumentInCache(m_root, new StreamSource(baseID));
+    m_inputSource = new StreamSource(baseID);
+    
+    stm.putDocumentInCache(m_root, m_inputSource);
   }
   
   /**
@@ -1056,7 +1061,8 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   {
     try
     {
-      systemId = org.apache.xml.utils.SystemIDResolver.getAbsoluteURI(systemId, m_inputSource.getSystemId());
+      if(null != m_inputSource)
+        systemId = org.apache.xml.utils.SystemIDResolver.getAbsoluteURI(systemId, m_inputSource.getSystemId());
     }
     catch(Exception e)
     {
