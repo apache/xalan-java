@@ -192,23 +192,6 @@ public class TreeWalker
     }
   }
 
-  /*
-  public void traverse(Node pos) throws TransformerException
-  {
-    startNode(pos);
-    NodeList children = pos.getChildNodes();
-    if(null != children)
-    {
-      int nChildren = children.getLength();
-      for(int i = 0; i < nChildren; i++)
-      {
-        traverse(children.item(i));
-      }
-    }
-    endNode(pos);
-  }
-  */
-
   /** Flag indicating whether following text to be processed is raw text          */
   boolean nextIsRaw = false;
 

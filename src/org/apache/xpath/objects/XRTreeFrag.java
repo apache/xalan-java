@@ -195,9 +195,7 @@ public class XRTreeFrag extends XObject
   public NodeList convertToNodeset()
   {
 
-    if (m_obj instanceof DocumentFragment)
-      return ((DocumentFragment) m_obj).getChildNodes();
-    else if (m_obj instanceof NodeList)
+    if (m_obj instanceof NodeList)
       return (NodeList) m_obj;
     else
       return null;

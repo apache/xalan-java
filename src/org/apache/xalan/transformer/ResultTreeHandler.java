@@ -753,14 +753,13 @@ public class ResultTreeHandler extends QueuedEvents
   {
 
     DocumentFragment docFrag = obj.rtree(support);
-    NodeList nl = docFrag.getChildNodes();
-    int nChildren = nl.getLength();
     TreeWalker tw = new TreeWalker(this);
 
-    for (int i = 0; i < nChildren; i++)
+    Node n;
+    for (n = docFrag.getFirstChild(); null != n; n = docFrag.getNextSibling())
     {
       flushPending(EVT_NODE);  // I think.
-      tw.traverse(nl.item(i));
+      tw.traverse(n);
     }
   }
 

@@ -1085,16 +1085,6 @@ public class DOMHelper
     switch (node.getNodeType())
     {
     case Node.DOCUMENT_FRAGMENT_NODE :
-    {
-      NodeList mnl = node.getChildNodes();
-      int n = mnl.getLength();
-
-      for (int i = 0; i < n; i++)
-      {
-        getNodeData(mnl.item(i), buf);
-      }
-    }
-    break;
     case Node.DOCUMENT_NODE :
     case Node.ELEMENT_NODE :
     {
