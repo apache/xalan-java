@@ -231,7 +231,8 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function round()
      */
     public static double roundF(double d) {
-            return (d<-0.5 || d>0.0)?Math.floor(d+0.5):((d==0.0)?d:-0.0);
+            return (d<-0.5 || d>0.0)?Math.floor(d+0.5):((d==0.0)?
+                        d:(Double.isNaN(d)?Double.NaN:-0.0));
     }
 
     /**
