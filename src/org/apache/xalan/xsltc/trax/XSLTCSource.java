@@ -1,3 +1,4 @@
+
 /*
  * @(#)$Id$
  *
@@ -149,6 +150,9 @@ public final class XSLTCSource implements Source {
 	    // Make sure that the system id is set before proceding
 	    if (systemId == null) throw new SAXException(NO_SYSTEM_ID_ERR);
 
+	    // Use this method in case we need to prepend 'file:' to url
+	    setSystemId(systemId);
+
 	    // Create an input source for the parser first, just in case the
 	    // systemId is invalid. We don't want to waste time creating a SAX
 	    // parser before we know that we actually have some valid input.
@@ -189,6 +193,7 @@ public final class XSLTCSource implements Source {
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
+
 	    build(reader, systemId);
 	}
 	catch (ParserConfigurationException e) {
