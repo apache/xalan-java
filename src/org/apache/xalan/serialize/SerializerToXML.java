@@ -2005,8 +2005,11 @@ public class SerializerToXML
       writer.write(aName);
       writer.write(" ");
       writer.write(type);
-      writer.write(" ");
-      writer.write(valueDefault);
+      if(valueDefault!=null)
+      {
+	writer.write(" ");
+	writer.write(valueDefault);
+      }
   
       //m_writer.write(" ");
       //m_writer.write(value);
