@@ -87,7 +87,8 @@ public class ExpandedNameTable
   public static int MASK_LOCALNAME = 0x0000FFFF;
   public static int MASK_NAMESPACE = 0x03FF0000;
   public static int MASK_NODETYPE = 0xFC000000;
-  
+  public static int MASK_NODEHANDLE = 0x000FFFFF;
+
   public static final int ROTAMOUNT_TYPE = (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME);
   
   // These are all the types prerotated, for caller convenience.

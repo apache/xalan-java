@@ -67,7 +67,9 @@ import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.Constants;
 import org.apache.xpath.axes.ContextNodeList;
 
+import javax.xml.transform.SourceLocator;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -181,6 +183,14 @@ public class PrintTraceListener implements TraceListener
     if (m_traceSelection)
     {
       ElemTemplateElement ete = (ElemTemplateElement) ev.m_styleNode;
+      Node sourceNode = ev.m_sourceNode;
+      int nodeHandler = ((DTMNodeProxy)sourceNode).getDTMNodeNumber();
+      
+      SourceLocator locator = ((DTMNodeProxy)sourceNode).getDTM()
+        .getSourceLocatorFor(nodeHandler);
+
+      m_pw.println("Selected source node '" + sourceNode.getNodeName()
+                 + "', at " + locator);
 
       if (ev.m_styleNode.getLineNumber() == 0)
       {

@@ -61,6 +61,8 @@ import java.util.Hashtable;
 //import java.util.Stack;
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xml.dtm.ref.ChunkedIntArray;
 import org.apache.xml.utils.FastStringBuffer;
 
@@ -2405,4 +2407,26 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
     // residual data from provious use of this DTM
   }
 
+  /**
+   * For the moment all the run time properties are ignored by this
+   * class.
+   *
+   * @param property a <code>String</code> value
+   * @param value an <code>Object</code> value
+   */
+  public void setProperty(String property, Object value)
+  {
+  }
+  
+  /**
+   * Source information is not handled yet, so return
+   * <code>null</code> here.
+   *
+   * @param node an <code>int</code> value
+   * @return null
+   */
+  public SourceLocator getSourceLocatorFor(int node)
+  {
+    return null;
+  }
 }

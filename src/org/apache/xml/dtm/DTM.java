@@ -58,6 +58,8 @@ package org.apache.xml.dtm;
 
 import org.apache.xml.utils.XMLString;
 
+import javax.xml.transform.SourceLocator;
+
 /**
  * <code>DTM</code> is an XML document model expressed as a table
  * rather than an object tree. It attempts to provide an interface to
@@ -185,6 +187,14 @@ public interface DTM
    * @param state true if this feature should be on, false otherwise.
    */
   public void setFeature(String featureId, boolean state);
+
+  /**
+   * Set a run time property for this DTM instance.
+   *
+   * @param property a <code>String</code> value
+   * @param value an <code>Object</code> value
+   */
+  public void setProperty(String property, Object value);
 
   // ========= Document Navigation Functions =========
   
@@ -928,4 +938,13 @@ public interface DTM
    * @param str Non-null reference to a string.
    */
   public void appendTextChild(String str);
+
+  /**
+   * Get the location of a node in the source document.
+   *
+   * @param node an <code>int</code> value
+   * @return a <code>SourceLocator</code> value or null if no location
+   * is available
+   */
+  public SourceLocator getSourceLocatorFor(int node);
 }

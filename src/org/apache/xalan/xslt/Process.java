@@ -86,6 +86,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceListener;
@@ -159,7 +160,8 @@ public class Process
     System.out.println(resbundle.getString("optionTEXT"));  //"   [-TEXT (Use simple Text formatter.)]");
     System.out.println(resbundle.getString("optionHTML"));  //"   [-HTML (Use HTML formatter.)]");
     System.out.println(resbundle.getString("optionPARAM"));  //"   [-PARAM name expression (Set a stylesheet parameter)]");
-
+    System.out.println(resbundle.getString("optionLINENUMBERS")); //"   [-L use line numbers]"
+    
     // sc 28-Feb-01 these below should really be added as resources
     System.out.println(
       "   [-MEDIA mediaType (use media attribute to find stylesheet associated with a document.)]");
@@ -189,7 +191,7 @@ public class Process
    */
   public static void main(String argv[])
   {
-
+    
     // Runtime.getRuntime().traceMethodCalls(false); // turns Java tracing off
     boolean doStackDumpOnError = false;
     boolean setQuietMode = false;
@@ -233,6 +235,7 @@ public class Process
       }
 
       boolean formatOutput = false;
+      boolean useSourceLocation = false;
       String inFileName = null;
       String outFileName = null;
       String dumpFileName = null;
@@ -532,6 +535,8 @@ public class Process
             doExit(-1);
           }
         }
+        else if ("-L".equalsIgnoreCase(argv[i]))
+          useSourceLocation = true;
         else
           System.err.println(
             XSLMessages.createMessage(
@@ -634,6 +639,9 @@ public class Process
               tm.addTraceListener(tracer);
 
             impl.setQuietConflictWarnings(quietConflictWarnings);
+
+            if (useSourceLocation)
+              impl.setProperty(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);
 
             // sc 28-Feb-01 if we re-implement this, please uncomment helpmsg in printArgOptions
             // impl.setDiagnosticsOutput( setQuietMode ? null : diagnosticsWriter );

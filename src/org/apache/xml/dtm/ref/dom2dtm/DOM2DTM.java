@@ -72,6 +72,7 @@ import org.w3c.dom.*;
 import java.util.Vector;
 
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.SourceLocator;
 import org.xml.sax.ContentHandler;
 
 import org.apache.xml.utils.NodeVector;
@@ -1630,4 +1631,26 @@ public class DOM2DTM extends DTMDefaultBaseIterators
             throws org.xml.sax.SAXException;
   }
 
+  /**
+   * For the moment all the run time properties are ignored by this
+   * class.
+   *
+   * @param property a <code>String</code> value
+   * @param value an <code>Object</code> value
+   */
+  public void setProperty(String property, Object value)
+  {
+  }
+  
+  /**
+   * No source information is available for DOM2DTM, so return
+   * <code>null</code> here.
+   *
+   * @param node an <code>int</code> value
+   * @return null
+   */
+  public SourceLocator getSourceLocatorFor(int node)
+  {
+    return null;
+  }
 }

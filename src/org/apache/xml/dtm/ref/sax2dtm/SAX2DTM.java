@@ -56,24 +56,25 @@
  */
 package org.apache.xml.dtm.ref.sax2dtm;
 
-import org.apache.xml.dtm.ref.*;
-import org.apache.xml.dtm.*;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import org.xml.sax.*;
-import org.xml.sax.ext.*;
-
 import javax.xml.transform.Source;
-
+import javax.xml.transform.SourceLocator;
+import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.ref.*;
+import org.apache.xml.utils.StringVector;
+import org.apache.xml.utils.IntVector;
 import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.utils.WrappedRuntimeException;
+import org.xml.sax.*;
+import org.xml.sax.ext.*;
 
 /**
  * This class implements a DTM that tends to be optimized more for speed than
@@ -208,6 +209,16 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * or -1 if there is no text node in progress
    */
   private int m_textPendingStart = -1;
+
+  /**
+   * Describes whether information about document source location
+   * should be maintained or not.
+   */
+  private boolean m_useSourceLocationProperty = false;
+
+  private StringVector m_sourceSystemId;
+  private IntVector m_sourceLine;
+  private IntVector m_sourceColumn;
   
   /**
    * Construct a SAX2DTM object ready to be constructed from SAX2
@@ -234,16 +245,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
 
     m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
-
-    int doc = addNode(DTM.DOCUMENT_NODE,
-                      m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
-                      m_levelAmount, DTM.NULL, DTM.NULL, 0, true);
-
-    m_levelAmount++;
-
-    m_parents.push(doc);
-
-    m_previous = DTM.NULL;
   }
 
   /**
@@ -835,6 +836,19 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int nodeIndex = m_size++;
 
     ensureSize(nodeIndex);
+
+    if (m_useSourceLocationProperty && m_locator != null) {
+      m_sourceSystemId.addElement(m_locator.getSystemId());
+      m_sourceLine.addElement(m_locator.getLineNumber());
+      m_sourceColumn.addElement(m_locator.getColumnNumber());
+      
+      if (m_sourceSystemId.size() != m_size) {
+        System.out.println("size array " + m_size
+                           + " is different from size of array "
+                           + m_sourceSystemId.size());
+        System.exit(1);
+      }
+    }
 
     // Do the hard casts here, so we localize changes that may have to be made.
     m_level.addElement((byte)level); // %REVIEW% setElementAt(level,nodeIndex)?
@@ -1480,6 +1494,16 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void startDocument() throws SAXException
   {
+    int doc = addNode(DTM.DOCUMENT_NODE,
+                      m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
+                      m_levelAmount, DTM.NULL, DTM.NULL, 0, true);
+
+    m_levelAmount++;
+
+    m_parents.push(doc);
+
+    m_previous = DTM.NULL;
+
     m_contextIndexes.push(m_prefixMappings.size());  // for the next element.
   }
 
@@ -1497,7 +1521,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void endDocument() throws SAXException
   {
-
     charactersFlush();
 
     m_nextsib.setElementAt(NULL,0);
@@ -2192,5 +2215,35 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     m_previous = addNode(DTM.COMMENT_NODE, exName, m_levelAmount,
                          m_parents.peek(), m_previous, dataIndex, false);
+  }
+
+  /**
+   * Set a run time property for this DTM instance.
+   *
+   * @param property a <code>String</code> value
+   * @param value an <code>Object</code> value
+   */
+  public void setProperty(String property, Object value)
+  {
+    if (property.equals(XalanProperties.SOURCE_LOCATION)) {
+      if (!(value instanceof Boolean))
+        throw new RuntimeException("Value for property "
+                                   + XalanProperties.SOURCE_LOCATION
+                                   + " should be a Boolean instance");
+      m_useSourceLocationProperty = ((Boolean)value).booleanValue();
+      m_sourceSystemId = new StringVector();
+      m_sourceLine = new IntVector();
+      m_sourceColumn = new IntVector();
+    }
+  }
+
+  public SourceLocator getSourceLocatorFor(int node)
+  {
+    node = node & ExpandedNameTable.MASK_NODEHANDLE;
+    
+    return new NodeLocator(null,
+                           m_sourceSystemId.elementAt(node),
+                           m_sourceLine.elementAt(node),
+                           m_sourceColumn.elementAt(node));
   }
 }

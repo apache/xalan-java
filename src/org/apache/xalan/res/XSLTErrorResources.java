@@ -92,7 +92,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final int MAX_WARNING = 26;
 
   /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 44;
+  public static final int MAX_OTHERS = 45;
 
   /** Maximum total warnings and error messages.          */
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
@@ -1452,6 +1452,8 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[MAX_MESSAGES + 43][1] = "   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]";
 		contents[MAX_MESSAGES + 44][0] = "optionCONTENTHANDLER";
     contents[MAX_MESSAGES + 44][1] = "   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]";
+    contents[MAX_MESSAGES + 45][0] = "optionLINENUMBERS";
+    contents[MAX_MESSAGES + 45][1] = "   [-L use line numbers for source document]";
 		
   }
 
