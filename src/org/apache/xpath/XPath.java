@@ -467,9 +467,9 @@ public class XPath implements Serializable, ExpressionOwner
 
   /**
    * Install a built-in function.
-   * @param name The unqualified name of the function.
+   * @param name The unqualified name of the function; not currently used.
    * @param funcIndex The index of the function in the table.
-   * @param func A Implementation of an XPath Function object.
+   * @param func An Implementation of an XPath Function object.
    * @return the position of the function in the internal index.
    */
   public void installFunction(String name, int funcIndex, Function func)
