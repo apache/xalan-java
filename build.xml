@@ -28,6 +28,7 @@ Build targets
     - javadocs [or apidocs] generates the API documentation in ./build/docs/apidocs
     - compat.jar compiles compatibility tree and creates ./build/xalanj1compat.jar
     - compat.apidocs generates javadoc for the compatibility jar
+    - xsltc.jar creates just the xsltc.jar
     - xsltc.docs creates the XSLTC design documentation.
     - clean    purges the build tree.
     - dist     creates a complete distribution in ./xalan-j_x_x_x
@@ -522,7 +523,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,autodist"
+  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,xsltc.jar,xsltc.docs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
@@ -564,9 +565,10 @@ Copyright:
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
 
-    <!-- Copy xalan jar and compability into the bin directory (subject to change) -->
+    <!-- Copy various built .jar files into the bin directory (subject to change) -->
     <copy file="${build.xalan.jar}" todir="${dist.dir}/bin"/>
     <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
+    <copy file="${build.xsltc.jar}" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,xsltc_todo.xml,todo.xsl,commits.xml"/>
