@@ -865,7 +865,8 @@ Copyright:
       
     <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
-	 destdir="${build.apidocs}"
+         additionalparam="-breakiterator"
+         destdir="${build.apidocs}"
          public="true"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
