@@ -126,21 +126,34 @@
         <xsl:text>Developers:</xsl:text>
       </xsl:element>
     </H3>
-    <p>A list of some of people currently working on working on <xsl:value-of select="/todo/@project"/>:</p>
+    <p>A list of some of the people currently working on <xsl:value-of select="/todo/@project"/>:</p>
     <ul>
-    <xsl:for-each select="devs/person">
+    <xsl:for-each select="devs/person[not(@status = 'emeritus')]">
       <li>
-        <a href="mailto:{@email}">
-          <xsl:value-of select="@name"/>
-        </a>
-         <xsl:element name="a">
-           <xsl:attribute name="name"><xsl:text>personref-</xsl:text><xsl:value-of select="@id"/></xsl:attribute>
-           <xsl:text> (</xsl:text><xsl:value-of select="@id"/><xsl:text>)</xsl:text>
-         </xsl:element>
-         <BR/><xsl:value-of select="."/>
+        <xsl:apply-templates select="."/>
       </li>
     </xsl:for-each>
     </ul>
+    <xsl:if test="boolean(devs/person[@status = 'emeritus'])">
+      <p>And the Hall-of-Fame list of past developers on <xsl:value-of select="/todo/@project"/>:</p>
+      <ul>
+      <xsl:for-each select="devs/person[@status = 'emeritus']">
+        <li>
+          <xsl:apply-templates select="."/>
+        </li>
+      </xsl:for-each>
+      </ul>
+    </xsl:if>
   </xsl:template>
 
+  <xsl:template match="person">
+    <a href="mailto:{@email}">
+      <xsl:value-of select="@name"/>
+    </a>
+    <xsl:element name="a">
+      <xsl:attribute name="name"><xsl:text>personref-</xsl:text><xsl:value-of select="@id"/></xsl:attribute>
+      <xsl:text> (</xsl:text><xsl:value-of select="@id"/><xsl:text>)</xsl:text>
+    </xsl:element>
+     <BR/><xsl:value-of select="."/>
+  </xsl:template>
 </xsl:stylesheet>
