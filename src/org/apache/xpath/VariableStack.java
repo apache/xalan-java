@@ -416,24 +416,27 @@ public class VariableStack extends Stack
   {
 
     Stack frame = getCurrentFrame();
+    Stack gframe = (Stack)this.elementAt(0);
     
-    for (int i = (frame.size() - 1); i >= 0; i--)
+    if(frame != gframe)
     {
-      Arg arg = (Arg)frame.elementAt(i);
-
-      if (arg.getQName().equals(name) && !arg.isParamVar())
+      for (int i = (frame.size() - 1); i >= 0; i--)
       {
-        XObject val = arg.getVal();
-        if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
+        Arg arg = (Arg)frame.elementAt(i);
+  
+        if (arg.getQName().equals(name) && !arg.isParamVar())
         {
-          val = val.execute(xctxt);
-          arg.setVal(val);
+          XObject val = arg.getVal();
+          if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
+          {
+            val = val.execute(xctxt);
+            arg.setVal(val);
+          }
+          return val;
         }
-        return val;
       }
     }
     
-    Stack gframe = (Stack)this.elementAt(0);
     if(gframe == frame)
       return null;
     
