@@ -614,7 +614,12 @@ Copyright:
     <!-- put xalan design doc in the site design subdir -->
     <copy todir="${site.dir}/design">
       <fileset dir="${build.docs}/design"/>
+    </copy>
+    <!-- put xsltc design doc in the site xsltc subdir -->
+    <copy todir="${site.dir}/xsltc">
+      <fileset dir="${build.docs}/xsltc"/>
     </copy>  
+    
     <!-- put in the javadoc -->
     <copy todir="${site.dir}/apidocs">
       <fileset dir="${build.apidocs}"/>

@@ -384,4 +384,149 @@ was reused.</Log>
 <Modified>java/src/org/apache/xalan/lib/sql package.html</Modified>
 <Log>Preliminary updates for John G's work.</Log>
 </Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>05/07/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Check for a null contextNodeList before returning its clone</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>05/07/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/stree StreeDOMBuilder.java</Modified>
+<Log>Set the element's level correctly, before we process attributes.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ TransformerIdentityImpl.java</Modified>
+<Log>Resolve bugzilla 1648 
+(http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1648).
+ TransformerIdentityImpl was improperly using an old LexicalHandler when 
+invoked for a second transform.
+ This bug only affects identity transforms with StreamResults.
+ Many thanks to John Keyes &lt;johnkeyes@yahoo.com&gt; for reporting this bug.</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>05/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>Updated version number to 2.1.0</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>05/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>Updated version number to 2.1.0</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/functions FuncExtFunction.java</Modified>
+<Log>Change submitted by Patrick Moore &lt;patmoore@ieee.org&gt; as part of bugzilla 
+1373 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1373).
+ Return value from extension function is now generalized so that all 
+derivatives of Number are now properly handled.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>05/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLTSchema.java</Modified>
+<Log>Set the correct order of xsl:include elements</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>05/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql Column.java
+ ColumnAttribute.java ColumnData.java
+ ColumnHeader.java ConnectionPool.java
+ DefaultConnectionPool.java ExtensionError.java
+ PooledConnection.java QueryParameter.java Row.java
+ RowSet.java SQLExtensionError.java
+ StreamableNode.java XConnection.java
+ XConnectionPoolManager.java XStatement.java
+ package.html</Modified>
+<Log>Updates Javadocs
+ Submitted by:John Gentilin mailto://johnglinux@eyecatching.com</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>Correct typo introduced in revision 1.30 causing problems with transforms on 
+Unix platforms.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemChoose.java</Modified>
+<Log>Correct bugzilla bug 1748 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1748&gt;.
+ When evaluating xsl:when, the xsl:choose element was used to resolve 
+namespace prefixes instead of
+ the xsl:when element itself. This caused namespace prefixes defined on the 
+xsl:when to be ignored.</Log>
+</Commit>
+<Commit category="core">
+<Who>costin@apache.org</Who>
+<DateCommitted>05/15/2001</DateCommitted>
+<Modified>java/src/javax/xml/parsers DocumentBuilderFactory.java
+ SAXParserFactory.java
+ java/src/javax/xml/transform TransformerFactory.java</Modified>
+<Log>Use the context class loader if available.
+
+ The implementation is based on ExtensionHandler, and it's needed in order
+ to work in certain environments ( like tomcat ).</Log>
+</Commit>
+<Commit category="core">
+<Who>costin@apache.org</Who>
+<DateCommitted>05/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/extensions ExtensionHandler.java
+ ExtensionHandlerGeneral.java</Modified>
+<Log>Make getClassForName a public method. There are few other places in xalan
+ where Class.forName is used, and this can create problems in some cases
+ where the Thread.getContextClassLoader should be used.
+
+ getClassForName uses introspection to call getContextClassLoader
+ ( so it works in JDK1.1 ).
+
+ In ExtensionHandlerGeneral, use the thread loader to find BSF ( it may be
+ possible that xalan is installed in CLASSPATH, but BSF is in a webapp ).</Log>
+</Commit>
+<Commit category="core">
+<Who>costin@apache.org</Who>
+<DateCommitted>05/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor
+ CompilingStylesheetHandler.java
+ java/src/org/apache/xalan/serialize SerializerFactory.java</Modified>
+<Log>2 more instances where Class.forName was used.
+
+ Use the method in ExtensionHandler for consistency ( we could move it in
+ org.apache.xml.utils, but for now it's easier to just use it as it is )</Log>
+</Commit>
+<Commit category="core">
+<Who>costin@apache.org</Who>
+<DateCommitted>05/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/stree SourceTreeHandler.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>This is the "thread pooling hook".
+
+ It slightly changes the API used to create and wait for the transform thread.
+ Instead of using threadCreate() and Thread.start() that creates a new thread
+ and thread.join() that waits for a thread to end, we now use a 
+ThreadControler
+ class that has the equivalent methods:
+ - run( Runnable ) - executes a task in a thread. The default implementation
+ is identical with what we had, using new Thread() and start()
+ - waitTread() - waits for a task to end. The default impl. is identical with
+ the previous code, using thread.join().
+
+ Someone wanting to use a thread pool for xalan will have to extend
+ the ThreadControler and override the 2 methods, then call setThreadController.
+
+ Xalan itself doesn't implement a thread pool right now ( for mosts uses it's
+ not even needed - if you just do few transforms for example ), instead
+ a server that runs xalan could plug it's own thread pool.</Log>
+</Commit>
 </Commits>
