@@ -263,7 +263,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     this(mgr, source, dtmIdentity, whiteSpaceFilter,
-          xstringfactory, doIndexing, DEFAULT_BLOCKSIZE, true);
+          xstringfactory, doIndexing, DEFAULT_BLOCKSIZE, true, false);
   }
   
   /**
@@ -280,17 +280,19 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *                   indexing schemes.
    * @param blocksize The block size of the DTM.
    * @param usePrevsib true if we want to build the previous sibling node array.
+   * @param newNameTable true if we want to use a new ExpandedNameTable for this DTM.
    */
   public SAX2DTM(DTMManager mgr, Source source, int dtmIdentity,
                  DTMWSFilter whiteSpaceFilter,
                  XMLStringFactory xstringfactory,
                  boolean doIndexing,
                  int blocksize,
-                 boolean usePrevsib)
+                 boolean usePrevsib,
+                 boolean newNameTable)
   {
 
     super(mgr, source, dtmIdentity, whiteSpaceFilter,
-          xstringfactory, doIndexing, blocksize, usePrevsib);
+          xstringfactory, doIndexing, blocksize, usePrevsib, newNameTable);
 
     // %OPT% Use smaller sizes for all internal storage units when
     // the blocksize is small. This reduces the cost of creating an RTF.
@@ -981,6 +983,30 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       // not to add messages right not for I18N reasons.
       // %REVIEW% Should this be a Fatal Error?
       error(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+    }
+  }
+
+  /**
+    * Migrate a DTM built with an old DTMManager to a new DTMManager.
+    * After the migration, the new DTMManager will treat the DTM as
+    * one that is built by itself.
+    * This is used to support DTM sharing between multiple transformations.
+    * @param manager the DTMManager
+    */
+  public void migrateTo(DTMManager manager) {
+    super.migrateTo(manager);
+    
+    // We have to reset the information in m_dtmIdent and
+    // register the DTM with the new manager. 
+    int numDTMs = m_dtmIdent.size();
+    int dtmId = m_mgrDefault.getFirstFreeDTMID();
+    int nodeIndex = 0;
+    for (int i = 0; i < numDTMs; i++)
+    {     
+      m_dtmIdent.setElementAt(dtmId << DTMManager.IDENT_DTM_NODE_BITS, i);
+      m_mgrDefault.addDTM(this, dtmId, nodeIndex);
+      dtmId++;
+      nodeIndex += (1 << DTMManager.IDENT_DTM_NODE_BITS);
     }
   }
 

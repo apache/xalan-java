@@ -62,6 +62,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.DTMException;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
@@ -142,7 +143,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
                       boolean doIndexing)
     {
         return getDTM(source, unique, whiteSpaceFilter, incremental,
-                      doIndexing, false, 0, true);
+		      doIndexing, false, 0, true, false);
     }
 
     /**
@@ -172,10 +173,43 @@ public class XSLTCDTMManager extends DTMManagerDefault
                       boolean doIndexing, boolean buildIdIndex)
     {
         return getDTM(source, unique, whiteSpaceFilter, incremental,
-                      doIndexing, false, 0, buildIdIndex);
+		      doIndexing, false, 0, buildIdIndex, false);
     }
   
     /**
+     * Get an instance of a DTM, loaded with the content from the
+     * specified source.  If the unique flag is true, a new instance will
+     * always be returned.  Otherwise it is up to the DTMManager to return a
+     * new instance or an instance that it already created and may be being used
+     * by someone else.
+     * (I think more parameters will need to be added for error handling, and
+     * entity resolution).
+     *
+     * @param source the specification of the source object.
+     * @param unique true if the returned DTM must be unique, probably because it
+     * is going to be mutated.
+     * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may
+     *                         be null.
+     * @param incremental true if the DTM should be built incrementally, if
+     *                    possible.
+     * @param doIndexing true if the caller considers it worth it to use
+     *                   indexing schemes.
+     * @param buildIdIndex true if the id index table should be built.
+     * @param newNameTable true if we want to use a separate ExpandedNameTable
+     *                     for this DTM.
+     * 
+     * @return a non-null DTM reference.
+     */
+  public DTM getDTM(Source source, boolean unique,
+		    DTMWSFilter whiteSpaceFilter, boolean incremental,
+		    boolean doIndexing, boolean buildIdIndex,
+		    boolean newNameTable)
+  {
+    return getDTM(source, unique, whiteSpaceFilter, incremental,
+		  doIndexing, false, 0, buildIdIndex, newNameTable);
+  }
+  
+  /**
      * Get an instance of a DTM, loaded with the content from the
      * specified source.  If the unique flag is true, a new instance will
      * always be returned.  Otherwise it is up to the DTMManager to return a
@@ -207,6 +241,45 @@ public class XSLTCDTMManager extends DTMManagerDefault
                       boolean doIndexing, boolean hasUserReader, int size,
                       boolean buildIdIndex)
     {
+      return getDTM(source, unique, whiteSpaceFilter, incremental,
+                    doIndexing, hasUserReader, size,
+                    buildIdIndex, false);
+  }
+  
+  /**
+     * Get an instance of a DTM, loaded with the content from the
+     * specified source.  If the unique flag is true, a new instance will
+     * always be returned.  Otherwise it is up to the DTMManager to return a
+     * new instance or an instance that it already created and may be being used
+     * by someone else.
+     * (I think more parameters will need to be added for error handling, and
+     * entity resolution).
+     *
+     * @param source the specification of the source object.
+     * @param unique true if the returned DTM must be unique, probably because it
+     * is going to be mutated.
+     * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may
+     *                         be null.
+     * @param incremental true if the DTM should be built incrementally, if
+     *                    possible.
+     * @param doIndexing true if the caller considers it worth it to use
+     *                   indexing schemes.
+     * @param hasUserReader true if <code>source</code> is a
+     *                      <code>SAXSource</code> object that has an
+     *                      <code>XMLReader</code>, that was specified by the
+     *                      user.
+     * @param size  Specifies initial size of tables that represent the DTM
+     * @param buildIdIndex true if the id index table should be built.
+     * @param newNameTable true if we want to use a separate ExpandedNameTable
+     *                     for this DTM.
+     *
+     * @return a non-null DTM reference.
+     */
+  public DTM getDTM(Source source, boolean unique,
+		    DTMWSFilter whiteSpaceFilter, boolean incremental,
+		    boolean doIndexing, boolean hasUserReader, int size,
+		    boolean buildIdIndex, boolean newNameTable)
+  {
         if(DEBUG && null != source) {
             System.out.println("Starting "+
 			 (unique ? "UNIQUE" : "shared")+
@@ -226,10 +299,13 @@ public class XSLTCDTMManager extends DTMManagerDefault
 
             if (size <= 0) {
                 dtm = new SAXImpl(this, source, documentID,
-                          whiteSpaceFilter, null, doIndexing, buildIdIndex);
+                                  whiteSpaceFilter, null, doIndexing, 
+                                  DTMDefaultBase.DEFAULT_BLOCKSIZE,
+                                  buildIdIndex, newNameTable);
             } else {
                 dtm = new SAXImpl(this, source, documentID,
-                          whiteSpaceFilter, null, doIndexing, size, buildIdIndex);
+                                  whiteSpaceFilter, null, doIndexing, 
+                                  size, buildIdIndex, newNameTable);
             }
       
             dtm.setDocumentURI(source.getSystemId());
@@ -289,10 +365,12 @@ public class XSLTCDTMManager extends DTMManagerDefault
                 SAXImpl dtm;
                 if (size <= 0) {
                     dtm = new SAXImpl(this, source, documentID, whiteSpaceFilter,
-                                      null, doIndexing, buildIdIndex);
+			              null, doIndexing, 
+			              DTMDefaultBase.DEFAULT_BLOCKSIZE,
+			              buildIdIndex, newNameTable);
                 } else {
                     dtm = new SAXImpl(this, source, documentID, whiteSpaceFilter,
-                                      null, doIndexing, size, buildIdIndex);
+			    null, doIndexing, size, buildIdIndex, newNameTable);
                 }
 
                 // Go ahead and add the DTM to the lookup table.  This needs to be

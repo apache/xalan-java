@@ -64,6 +64,7 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xml.serializer.EmptySerializer;
@@ -1041,4 +1042,7 @@ public class SimpleResultTreeImpl extends EmptySerializer implements DOM, DTM
     {
     }
 
+    public void migrateTo(DTMManager manager)
+    {
+    }
 }

@@ -206,7 +206,7 @@ public abstract class DTMDefaultBase implements DTM
   			XMLStringFactory xstringfactory, boolean doIndexing)
   {
     this(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
-         doIndexing, DEFAULT_BLOCKSIZE, true);
+         doIndexing, DEFAULT_BLOCKSIZE, true, false);
   }
 
   /**
@@ -223,14 +223,14 @@ public abstract class DTMDefaultBase implements DTM
    *                   indexing schemes.
    * @param blocksize The block size of the DTM.
    * @param usePrevsib true if we want to build the previous sibling node array.
+   * @param newNameTable true if we want to use a new ExpandedNameTable for this DTM.
    */
   public DTMDefaultBase(DTMManager mgr, Source source, int dtmIdentity,
                         DTMWSFilter whiteSpaceFilter,
                         XMLStringFactory xstringfactory, boolean doIndexing,
-                        int blocksize, boolean usePrevsib)
-  {
-    //m_blocksize = blocksize;
-    
+                        int blocksize, boolean usePrevsib,
+                        boolean newNameTable)
+  {    
     // Use smaller sizes for the internal node arrays if the block size
     // is small.
     int numblocks;    
@@ -2380,6 +2380,20 @@ public abstract class DTMDefaultBase implements DTM
    public void documentRelease()
    {
    }
+
+   /**
+    * Migrate a DTM built with an old DTMManager to a new DTMManager.
+    * After the migration, the new DTMManager will treat the DTM as
+    * one that is built by itself.
+    * This is used to support DTM sharing between multiple transformations.
+    * @param manager the DTMManager
+    */
+   public void migrateTo(DTMManager mgr)
+   {
+     m_mgr = mgr;
+     if(mgr instanceof DTMManagerDefault)
+       m_mgrDefault=(DTMManagerDefault)mgr;     
+   }      
 
 	 /** Query which DTMManager this DTM is currently being handled by.
 	  * 

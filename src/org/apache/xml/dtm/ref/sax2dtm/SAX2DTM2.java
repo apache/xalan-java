@@ -1882,7 +1882,7 @@ public class SAX2DTM2 extends SAX2DTM
   {
 
     this(mgr, source, dtmIdentity, whiteSpaceFilter,
-          xstringfactory, doIndexing, DEFAULT_BLOCKSIZE, true, true);
+          xstringfactory, doIndexing, DEFAULT_BLOCKSIZE, true, true, false);
   }
  
   /**
@@ -1894,11 +1894,12 @@ public class SAX2DTM2 extends SAX2DTM
                  boolean doIndexing,
                  int blocksize,
                  boolean usePrevsib,
-                 boolean buildIdIndex)
+                 boolean buildIdIndex,
+                 boolean newNameTable)
   {
 
     super(mgr, source, dtmIdentity, whiteSpaceFilter,
-          xstringfactory, doIndexing, blocksize, usePrevsib);
+          xstringfactory, doIndexing, blocksize, usePrevsib, newNameTable);
         
     // Initialize the values of m_SHIFT and m_MASK.
     int shift;

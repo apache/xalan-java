@@ -109,6 +109,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
    *                   indexing schemes.
    * @param blocksize The block size of the DTM.
    * @param usePrevsib true if we want to build the previous sibling node array.
+   * @param newNameTable true if we want to use a new ExpandedNameTable for this DTM.
    */
   public DTMDefaultBaseIterators(DTMManager mgr, Source source,
                                  int dtmIdentity,
@@ -116,10 +117,11 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
                                  XMLStringFactory xstringfactory,
                                  boolean doIndexing,
                                  int blocksize,
-                                 boolean usePrevsib)
+                                 boolean usePrevsib,
+                                 boolean newNameTable)
   {
     super(mgr, source, dtmIdentity, whiteSpaceFilter, 
-          xstringfactory, doIndexing, blocksize, usePrevsib);
+          xstringfactory, doIndexing, blocksize, usePrevsib, newNameTable);
   }
 
   /**

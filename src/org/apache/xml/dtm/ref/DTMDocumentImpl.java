@@ -2443,5 +2443,15 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    {
    }
 
+   /**
+    * Migrate a DTM built with an old DTMManager to a new DTMManager.
+    * After the migration, the new DTMManager will treat the DTM as
+    * one that is built by itself.
+    * This is used to support DTM sharing between multiple transformations.
+    * @param manager the DTMManager
+    */
+   public void migrateTo(DTMManager manager)
+   {
+   }
 
 }

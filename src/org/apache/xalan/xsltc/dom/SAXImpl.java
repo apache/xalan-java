@@ -677,7 +677,7 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
                    boolean doIndexing, boolean buildIdIndex)
     {
         this(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
-            doIndexing, DEFAULT_BLOCKSIZE, buildIdIndex);
+            doIndexing, DEFAULT_BLOCKSIZE, buildIdIndex, false);
     }
     
     /**
@@ -687,10 +687,11 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
                    int dtmIdentity, DTMWSFilter whiteSpaceFilter,
                    XMLStringFactory xstringfactory,
                    boolean doIndexing, int blocksize, 
-                   boolean buildIdIndex)
+                   boolean buildIdIndex,
+                   boolean newNameTable)
     {
         super(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
-            doIndexing, blocksize, false, buildIdIndex);
+            doIndexing, blocksize, false, buildIdIndex, newNameTable);
       
         _dtmManager = mgr;      
         _size = blocksize;
@@ -715,6 +716,20 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
             }
             _node2Ids = new Hashtable();
         }                          
+    }
+        
+    /**
+    * Migrate a DTM built with an old DTMManager to a new DTMManager.
+    * After the migration, the new DTMManager will treat the DTM as
+    * one that is built by itself.
+    * This is used to support DTM sharing between multiple transformations.
+    * @param manager the DTMManager
+    */
+    public void migrateTo(DTMManager manager) {
+    	super.migrateTo(manager);
+    	if (manager instanceof XSLTCDTMManager) {
+    	    _dtmManager = (XSLTCDTMManager)manager;
+    	}
     }
         
     /**

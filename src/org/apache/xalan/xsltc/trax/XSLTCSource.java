@@ -102,8 +102,8 @@ public final class XSLTCSource implements Source {
                 XSLTCDTMManager.newInstance();
       int dtmPos = dtmManager.getFirstFreeDTMID();
       int documentID = dtmPos << DTMManager.IDENT_DTM_NODE_BITS;
-      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null,
-                              null, false, size, true);
+      _dom = new SAXImpl(dtmManager, this, documentID, null,
+                              null, false, size, true, false);
       dtmManager.addDTM((DTM)_dom, dtmPos);
     }
 
