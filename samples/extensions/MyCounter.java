@@ -7,10 +7,10 @@ public class MyCounter {
   {}
 
   public void init(org.apache.xalan.extensions.XSLProcessorContext context, 
-                   org.apache.xalan.templates.ElemExtensionCall extElem) 
+                   org.w3c.dom.Element elem) 
   {
-    String name = extElem.getAttribute("name");
-    String value = extElem.getAttribute("value");
+    String name = elem.getAttribute("name");
+    String value = elem.getAttribute("value");
     int val;
     try 
     {
@@ -31,8 +31,8 @@ public class MyCounter {
   }
 
   public void incr(org.apache.xalan.extensions.XSLProcessorContext context, 
-                   org.apache.xalan.templates.ElemExtensionCall extElem) {
-    String name = extElem.getAttribute("name");
+                   org.w3c.dom.Element elem) {
+    String name = elem.getAttribute("name");
     Integer cval = (Integer) counters.get(name);
     int nval = (cval == null) ? 0 : (cval.intValue () + 1);
     counters.put (name, new Integer (nval));
