@@ -99,6 +99,7 @@ public class Parser implements Constants, ContentHandler {
     private Vector _warnings;         // Contains all compilation errors
 
     private Hashtable   _instructionClasses; // Maps instructions to classes
+    private Hashtable   _instructionAttrs;;  // reqd and opt attrs 
     private Hashtable   _qNames;
     private Hashtable   _namespaces;
     private QName       _useAttributeSets;
@@ -126,6 +127,7 @@ public class Parser implements Constants, ContentHandler {
 	_qNames              = new Hashtable(512);
 	_namespaces          = new Hashtable();
 	_instructionClasses  = new Hashtable();
+	_instructionAttrs    = new Hashtable();
 	_variableScope       = new Hashtable();
 	_template            = null;
 	_errors              = new Vector();
@@ -136,6 +138,7 @@ public class Parser implements Constants, ContentHandler {
 	_currentImportPrecedence = 1;
 	
 	initStdClasses();
+	initInstructionAttrs();
 	initExtClasses();
 	initSymbolTable();
 	
@@ -571,6 +574,71 @@ public class Parser implements Constants, ContentHandler {
 	return(external);
     }
 
+    private void initAttrTable(String elementName, String[] attrs) {
+	_instructionAttrs.put(getQName(XSLT_URI, XSL, elementName),
+				attrs);
+    }
+
+    private void initInstructionAttrs() {
+	initAttrTable("template", 
+	    new String[] {"match", "name", "priority", "mode"});
+	initAttrTable("stylesheet", 
+	    new String[] {"id", "version", "extension-element-prefixes",
+		"exclude-result-prefixes"});
+	initAttrTable("transform",
+	    new String[] {"id", "version", "extension-element-prefixes",
+		"exclude-result-prefixes"});
+	initAttrTable("text", new String[] {"disable-output-escaping"}); 
+	initAttrTable("if", new String[] {"test"}); 
+	initAttrTable("choose", new String[] {}); 
+	initAttrTable("when", new String[] {"test"}); 
+	initAttrTable("otherwise", new String[] {}); 
+	initAttrTable("for-each", new String[] {"select"}); 
+	initAttrTable("message", new String[] {"terminate"}); 
+	initAttrTable("number", 
+	    new String[] {"level", "count", "from", "value", "format", "lang",
+		"letter-value", "grouping-separator", "grouping-size"});
+		initAttrTable("comment", new String[] {}); 
+	initAttrTable("copy", new String[] {"use-attribute-sets"}); 
+	initAttrTable("copy-of", new String[] {"select"}); 
+	initAttrTable("param", new String[] {"name", "select"}); 
+	initAttrTable("with-param", new String[] {"name", "select"}); 
+	initAttrTable("variable", new String[] {"name", "select"}); 
+	initAttrTable("output", 
+	    new String[] {"method", "version", "encoding", 
+		"omit-xml-declaration", "standalone", "doctype-public",
+		"doctype-system", "cdata-section-elements", "indent",
+		"media-type"}); 
+	initAttrTable("sort", 
+	   new String[] {"select", "order", "case-order", "lang", "data-type"});
+	initAttrTable("key", new String[] {"name", "match", "use"}); 
+	initAttrTable("fallback", new String[] {}); 
+	initAttrTable("attribute", new String[] {"name", "namespace"}); 
+	initAttrTable("attribute-set", 
+	    new String[] {"name", "use-attribute-sets"}); 
+	initAttrTable("value-of", 
+	    new String[] {"select", "disable-output-escaping"}); 
+	initAttrTable("element", 
+	    new String[] {"name", "namespace", "use-attribute-sets"}); 
+	initAttrTable("call-template", new String[] {"name"}); 
+	initAttrTable("apply-templates", new String[] {"select", "mode"}); 
+	initAttrTable("apply-imports", new String[] {}); 
+	initAttrTable("decimal-format", 
+	    new String[] {"name", "decimal-separator", "grouping-separator",
+		"infinity", "minus-sign", "NaN", "percent", "per-mille",
+		"zero-digit", "digit", "pattern-separator"}); 
+	initAttrTable("import", new String[] {"href"}); 
+	initAttrTable("include", new String[] {"href"}); 
+	initAttrTable("strip-space", new String[] {"elements"}); 
+	initAttrTable("preserve-space", new String[] {"elements"}); 
+	initAttrTable("processing-instruction", new String[] {"name"}); 
+	initAttrTable("namespace-alias", 
+	   new String[] {"stylesheet-prefix", "result-prefix"}); 
+    }
+
+
+
+
     /**
      * Initialize the _instructionClasses Hashtable, which maps XSL element
      * names to Java classes in this package.
@@ -822,10 +890,16 @@ public class Parser implements Constants, ContentHandler {
      * until we have received all child elements of an unsupported element to
      * see if any <xsl:fallback> elements exist.
      */
-    public SyntaxTreeNode makeInstance(String uri, String prefix, String local){
+
+    private boolean versionIsOne = true;
+
+    public SyntaxTreeNode makeInstance(String uri, String prefix, 
+	String local, Attributes attributes)
+    {
+	boolean isStylesheet = false;
+	SyntaxTreeNode node = null;
 	QName  qname = getQName(uri, prefix, local);
 	String className = (String)_instructionClasses.get(qname);
-	SyntaxTreeNode node = null;
 
 	if (className != null) {
 	    try {
@@ -833,10 +907,41 @@ public class Parser implements Constants, ContentHandler {
 		node = (SyntaxTreeNode)clazz.newInstance();
 		node.setQName(qname);
 		node.setParser(this);
-		if (_locator != null)
+		if (_locator != null){
 		    node.setLineNumber(_locator.getLineNumber());
+		}
 		if (node instanceof Stylesheet) {
-		    _xsltc.setStylesheet((Stylesheet)node);
+		    isStylesheet = true;
+		    _xsltc.setStylesheet((Stylesheet) node);
+		}
+
+			// Check for illegal attributes
+		String[] legal = (String[]) _instructionAttrs.get(qname);
+	        if (versionIsOne && legal != null) {
+		    int j;
+		    final int n = attributes.getLength();
+
+		    for (int i = 0; i < n; i++) {
+			final String attrQName = attributes.getQName(i);
+
+			if (isStylesheet && attrQName.equals("version")) {
+			    versionIsOne = attributes.getValue(i).equals("1.0");
+			}
+
+			if (attrQName.startsWith("xml")) continue;
+
+			for (j = 0; j < legal.length; j++) {
+			    if (attrQName.equalsIgnoreCase(legal[j])) {
+				break;
+			    }	
+			}
+			if (j == legal.length) {
+			    final ErrorMsg err = 
+			        new ErrorMsg(ErrorMsg.ILLEGAL_ATTRIBUTE_ERR, 
+					     attrQName, node);
+			    reportError(WARNING, err);
+		        }
+		    }
 		}
 	    }
 	    catch (ClassNotFoundException e) {
@@ -1103,7 +1208,8 @@ public class Parser implements Constants, ContentHandler {
 	final int col = qname.lastIndexOf(':');
 	final String prefix = (col == -1) ? null : qname.substring(0, col);
 
-	SyntaxTreeNode element = makeInstance(uri, prefix, localname);
+	SyntaxTreeNode element = makeInstance(uri, prefix, 
+			localname, attributes);
 	if (element == null) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR,
 					prefix+':'+localname);
