@@ -115,6 +115,7 @@ includes <jump href="http://xml.apache.org/xerces2-j/index.html">Xerces</jump>
 
 <s3 title="Unbundled System Classpath">
 <note>Support for building an unbundled version of XSLTC is not currently
+available.  This section will be brought up-to-date when that support is
 available.</note>
 <p>To compile translets, run translets, and use the XSLTC API, put the following on the system classpath:</p>
 <table>
@@ -422,8 +423,8 @@ parser</link>.</p>
    as many <code>Transformer</code> objects as you require.</p>
 
 <p>XSLTC also defines a set of attributes that you can set on the
-<code>TransformerFactory</code> to save and subsequently use those translets
-by way of the JAXP Transform API - without having to recompile the
+<code>TransformerFactory</code> in order to save and subsequently use those
+translets by way of the JAXP Transform API - without having to recompile the
 stylesheet each time.</p><anchor name="api-attributes"/>
 <s3 title="XSLTC TransformerFactory attributes">
 The JAXP Transform API defines a <code><jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute</jump>
@@ -459,13 +460,19 @@ The JAXP Transform API defines a <code><jump href="apidocs/javax/xml/transform/T
 </tr>
 <tr>
   <td>generate-translet</td>
-  <td>Specifies whether translet files should be generated</td>
+  <td>Specifies whether translet class files should be generated</td>
   <td>Boolean</td>
   <td>Boolean.FALSE</td>
 </tr>
 <tr>
   <td>auto-translet</td>
   <td>Specifies that time-stamp of translet file, if any, should be compared with that of stylesheet to decide whether to recompile the stylesheet</td>
+  <td>Boolean</td>
+  <td>Boolean.FALSE</td>
+</tr>
+<tr>
+  <td>use-classpath</td>
+  <td>Specifies that precompiled translet classes should be looked up from the classpath when a new transformer or templates is created</td>
   <td>Boolean</td>
   <td>Boolean.FALSE</td>
 </tr>
@@ -581,15 +588,10 @@ create a <code>Templates</code> object from which you would create your
 <s2 title="Calling XSLTC with the native API">
 <p>The XSLTC Native API is no longer supported.  Instead, you should always
 use XSLTC with the JAXP Transform API.</p>
-<p>This section demonstrates how to use the native XSLTC API in a standalone Java application.</p> 
 </s2>
 <anchor name="constraints"/>
 <s2 title="Usage constraints">
 <ul>
-  <li>The strip space element does not work with copy-of. For example, with <code>&lt;xsl:strip-space 
-    elements=&quot;*&quot;/&gt;</code>, if you do an identity transform by matching on 
-    the root node (/) and then do a <code>copy-of select=&quot;.&quot;</code>, the whitespace-only 
-    nodes are not stripped out. <code>xsl:strip-space</code> works when you do not do a copy-of.<br/><br/></li>
   <li>The default for template inlining has been changed. Previously,
     by default, inlining (putting all the templates into one big method) was on and 
     the <code>&quot;-n&quot;</code> option to the compile command line disabled inlining. 
