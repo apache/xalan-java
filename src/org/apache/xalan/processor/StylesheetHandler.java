@@ -348,7 +348,11 @@ public class StylesheetHandler
   
   /**
    * Receive a Locator object for document events.
-   *
+   * This is called by the parser to push a locator for the 
+   * stylesheet being parsed. The stack needs to be popped
+   * after the stylesheed has been parsed. We pop in in 
+   * popStylesheet.
+   *  
    * @param locator A locator for all SAX document events.
    * @see org.xml.sax.ContentHandler#setDocumentLocator
    * @see org.xml.sax.Locator
@@ -798,6 +802,10 @@ public class StylesheetHandler
    */
   Stylesheet popStylesheet()
   {
+    // The stylesheetLocatorStack needs to be popped because
+    // a locator was pushed in for this stylesheet by the SAXparser by calling
+    // setDocumentLocator().
+    m_stylesheetLocatorStack.pop();
     return (Stylesheet)m_stylesheets.pop();
   }
 
