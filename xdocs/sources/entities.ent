@@ -24,17 +24,6 @@
                 
 <!ENTITY xsltcreleasenotesentry '<li><link anchor="xsltcreleasenotes">XSLTC Release Notes</link></li>'>
 
-<!ENTITY xsltcdone 
-                '<p>The Sun XSLTC team (david.hofert@east.sun.com, tom.amiro@east.sun.com, todd.miller@east.sun.com, 
-                 morten.jorgensen@Ireland.sun.com) has checked <link idref="xsltc_usage">XSLTC</link> into the Xalan
-                 source tree, and we have begun the process of merging XSLTC into Xalan. XSLTC provides a compiler for compiling
-                 stylesheets into translets, and a streamlined runtime environment for using translets to transform XML input. 
-                 In the near term, XSLTC will appear in a separate JAR file (xsltc.jar) with its own API and command-line
-                 utilities. You can already use the same JAXP interfaces to perform
-                 transformations with the Xalan transformer and with translets. Over time, we plan to merge the two codebases.
-                 <ref>See <jump href="xsltc/index.html">XSLTC Design Documents</jump>.</ref></p>
-                 <p>See <link anchor="xsltcreleasenotes">XSLTC Release Notes</link>.</p>'>
-
 <!ENTITY xsltcsampleshead '<li><link anchor="translets">translets</link></li>'>
 
 <!ENTITY xsltcsamples '<anchor name="translets"/><s2 title="Translets">
