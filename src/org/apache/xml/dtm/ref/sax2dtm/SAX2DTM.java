@@ -1720,12 +1720,18 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         if (attributes.getType(i).equalsIgnoreCase("ID"))
           setIDAttribute(valString, elemNode);
       }
+      
+      // Bit of a hack... if somehow valString is null, stringToIndex will 
+      // return -1, which will make things very unhappy.
+      if(null == valString)
+        valString = "";
 
       int val = m_valuesOrPrefixes.stringToIndex(valString);
       String attrLocalName = attributes.getLocalName(i);
 
       if (null != prefix)
       {
+        
         prefixIndex = m_valuesOrPrefixes.stringToIndex(attrQName);
 
         int dataIndex = m_data.size();
