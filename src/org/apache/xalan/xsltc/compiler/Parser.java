@@ -705,7 +705,7 @@ public class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("generate-id", S_A);
 	_symbolTable.addPrimop("ceiling", R_R);
 	_symbolTable.addPrimop("floor", R_R);
-	_symbolTable.addPrimop("round", I_R);
+	_symbolTable.addPrimop("round", R_R);
 	_symbolTable.addPrimop("contains", B_SS);
 	_symbolTable.addPrimop("number", R_O);
 	_symbolTable.addPrimop("number", R_V);

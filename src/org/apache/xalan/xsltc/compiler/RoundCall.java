@@ -76,9 +76,18 @@ final class RoundCall extends FunctionCall {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
+
+	// Get two copies of the argument on the stack
 	argument().translate(classGen, methodGen);
+	il.append(DUP2);
+
+	// Check if the argument is NaN
+	il.append(new INVOKESTATIC(cpg.addMethodref("java.lang.Double",
+						    "isNaN", "(D)Z")));
+	final BranchHandle skip = il.append(new IFNE(null));
 	il.append(new INVOKESTATIC(cpg.addMethodref(MATH_CLASS,
 						    "round", "(D)J")));
-	il.append(L2I);		// no long type :-(
+	il.append(L2D);
+	skip.setTarget(il.append(NOP));
     }
 }

@@ -827,8 +827,12 @@ public final class BasisLibrary implements Operators {
 
     private static double lowerBounds = 0.001;
     private static double upperBounds = 10000000;
-    private static DecimalFormat defaultFormatter = new DecimalFormat();
+    private static DecimalFormat defaultFormatter;
     private static String defaultPattern = "####################.#########";
+
+    static {
+	defaultFormatter = new DecimalFormat();
+    }
 
     /**
      * Utility function: used in RealType to convert a real to a string.
@@ -847,6 +851,8 @@ public final class BasisLibrary implements Operators {
 		return result;
 	}
 	else {
+	    if (Double.isNaN(d) || Double.isInfinite(d))
+		return(Double.toString(d));
 	    return formatNumber(d, defaultPattern, defaultFormatter);
 	}
     }
