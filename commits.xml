@@ -657,4 +657,22 @@ result from the Redirect extension to make file references in Redirect relative
 to the original result URI.
  If this is not available, references are relative to the source URI.</Log>
 </Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>03/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>Remove check for missing -IN arg; there are a number of use
+ cases for calling Process.main without an XML document</Log>
+</Commit>
+<Commit category="core">
+<Who>costin@apache.org</Who>
+<DateCommitted>03/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>A (last ? ) place where XMLReaderFactory was used without
+ trying jaxp first. I used the same code that is used in all other
+ places in xalan.
+
+ With this change, the parser defined in XSLTInfo.properties will be used
+ only if jaxp is not available.</Log>
+</Commit>
 </Commits>
