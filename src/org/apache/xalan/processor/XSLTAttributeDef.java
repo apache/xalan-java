@@ -1055,8 +1055,10 @@ public class XSLTAttributeDef
 
         if(setterString.equals(S_FOREIGNATTR_SETTER))
         {
-          // First try to match with the primative value.
-          Class sclass = attrUri.getClass();
+	  // workaround for possible crimson bug
+          if( attrUri==null) attrUri="";
+	  // First try to match with the primative value.
+	  Class sclass = attrUri.getClass();
           Class[] argTypes = new Class[]{ sclass, sclass,
                                       sclass, sclass };
   
