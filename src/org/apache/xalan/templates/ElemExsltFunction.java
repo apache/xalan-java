@@ -74,16 +74,6 @@ import org.w3c.dom.NodeList;
  */
 public class ElemExsltFunction extends ElemTemplate
 {
-  
-  // A flag indicating whether the return result is set
-  private boolean m_isResultSet = false;
-  
-  // The return result
-  private XObject m_result;
-  
-  // The frame size of the current caller
-  private int m_callerFrameSize = 0;
-  
   /**
    * Get an integer representation of the element type.
    *
@@ -111,35 +101,38 @@ public class ElemExsltFunction extends ElemTemplate
   public void execute(TransformerImpl transformer, XObject[] args)
           throws TransformerException
   {
-    // Reset the result before starting a function execution.
-    m_isResultSet = false;
-    m_result = null;
-    
     XPathContext xctxt = transformer.getXPathContext();
     VariableStack vars = xctxt.getVarStack();
     
     // Increment the frame bottom of the variable stack by the
-    // frame size of the caller template or EXSLT function.
-    int oldStackFrame = vars.getStackFrame();
-    vars.setStackFrame(m_callerFrameSize + oldStackFrame);
+    // frame size
+    int thisFrame = vars.getStackFrame();
+    int nextFrame = vars.link(m_frameSize);
+
+    if (m_inArgsSize < args.length) {
+      throw new TransformerException ("function called with too many args");
+    }
     
     // Set parameters,
     // have to clear the section of the stack frame that has params.
-    vars.clearLocalSlots(vars.getStackFrame(), VariableStack.CLEARLIMITATION);
-    NodeList children = this.getChildNodes();
-    int numparams =0;
-    for (int i = 0; i < args.length; i ++)
-    {
-      Node child = children.item(i);
-      if (children.item(i) instanceof ElemParam)
-      {
-        numparams++;
-        ElemParam param = (ElemParam)children.item(i);
-        vars.setLocalVariable (param.getIndex(), args[i]);
+    if (m_inArgsSize > 0) {
+      vars.clearLocalSlots(0, m_inArgsSize);
+
+      if (args.length > 0) {
+        vars.setStackFrame(thisFrame);
+        NodeList children = this.getChildNodes();
+        
+        for (int i = 0; i < args.length; i ++) {
+          Node child = children.item(i);
+          if (children.item(i) instanceof ElemParam) {
+            ElemParam param = (ElemParam)children.item(i);
+            vars.setLocalVariable(param.getIndex(), args[i], nextFrame);
+          }
+        }
+        
+        vars.setStackFrame(nextFrame);
       }
     }
-    if (numparams < args.length)
-      throw new TransformerException ("function called with too many args");
 
     //  Removed ElemTemplate 'push' and 'pop' of RTFContext, in order to avoid losing the RTF context 
     //  before a value can be returned. ElemExsltFunction operates in the scope of the template that called 
@@ -149,15 +142,15 @@ public class ElemExsltFunction extends ElemTemplate
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
     
+    vars.setStackFrame(nextFrame);
     transformer.executeChildTemplates(this, true);
     
     // Reset the stack frame after the function call
-    vars.setStackFrame(oldStackFrame);
-    m_callerFrameSize = 0;
+    vars.unlink(thisFrame);
 
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEndEvent(this);
-    
+
     // Following ElemTemplate 'pop' removed -- see above.
     // xctxt.popRTFContext(); 
     
@@ -189,55 +182,5 @@ public class ElemExsltFunction extends ElemTemplate
       extNsSpt = new ExtensionNamespaceSupport(namespace, handlerClass, args);
       sroot.getExtensionNamespacesManager().registerExtension(extNsSpt);
     }
-  }
-  
-  /**
-   * Return the result of this EXSLT function
-   *
-   * @return The result of this EXSLT function
-   */
-  public XObject getResult()
-  {
-    return m_result;
-  }
-  
-  /**
-   * Set the return result of this EXSLT function
-   *
-   * @param result The return result
-   */
-  public void setResult(XObject result)
-  {
-    m_isResultSet = true;
-    m_result = result;
-  }
-  
-  /**
-   * Return true if the result has been set
-   *
-   * @return true if the result has been set
-   */
-  public boolean isResultSet()
-  {
-    return m_isResultSet;
-  }
-  
-  /**
-   * Clear the return result of this EXSLT function
-   */
-  public void clearResult()
-  {
-    m_isResultSet = false;
-    m_result = null;    
-  }
-  
-  /**
-   * Set the frame size of the current caller for use in the variable stack.
-   *
-   * @param callerFrameSize The frame size of the caller
-   */
-  public void setCallerFrameSize(int callerFrameSize)
-  {
-    m_callerFrameSize = callerFrameSize;
   }
 }
