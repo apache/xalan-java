@@ -240,15 +240,15 @@ Update the following lines for each version field:<br/>
 &lt;property name="version.DEVELOPER" value="D"/>&lt;!-- Set this to "D" if a developer release; blank "" if maintenance point release -->
 &lt;property name="version.MINOR" value="1"/>&lt;!-- EITHER the developer release number, or a maintenance point release number -->
 <br/><br/></li>
-<li>src/org/apache/xalan/xpath/xml/XSLTInfo.properties (only if needed for an XSLT spec change, this will be very rare. This is not the processor version, but the spec version)  
-You probably shouldn't even <b>think</b> about updating this one, so pretend I 
-never mentioned it, OK?<br/><br/></li>
+<li>src/org/apache/xalan/res/XSLTInfo.properties:<br/>
+Update the version number.<br/><br/></li>
 
-<li>xml-xalan\java\xdocs\sources\entities.ent (xslt4j-current) documentation updates<br/><br/></li>
-<li>xml-xalan\java\xdocs\sources\xalan-jsite (document id="index" label="Xalan-Java x.x")<br/><br/></li>
+<li>xml-xalan/java/xdocs/sources/entities.ent (xslt4j-current, xslt4j-dist) documentation updates.  The xsl4j-dist is used to construct links to the actual distribution units, and must be coordinated with whatever xml-xalan/java/build.xml uses for ${version}.<br/><br/></li>
 
 <li>If you updated xercesImpl.jar or any other dependent .jar files, 
 make sure you update the documentation to reflect this. xml-xalan\java\xdocs\sources\entities.ent (xml4j-used)<br/><br/></li>
+<li>xml-xalan/java/xdocs/sources/xalan-jsite (document id="index" label="Xalan-Java x.x")<br/><br/></li>
+
 </ul>
 <p>I did remind you to check in all your work, didn't I?</p>
 </s3>
@@ -273,7 +273,7 @@ to see the exact format of previous builds.</p>
 
 
 <ul>
-<li>build dist smoketest -logfile ..\dist.log</li>
+<li>build dist site smoketest -logfile ..\dist.log</li>
 </ul>
 <p>The above command will build the 'dist' or distribution .zip/.tar.gz 
 files, as well as building the full product plus all documentation.  It will then 
@@ -346,8 +346,7 @@ as needed.  If you don't understand the format of this file, ask for help.</p>
 </ul>
 <p>Now that the distribution is available for downloading, you should also 
 update the static copy of the documentation that's posted to xml.apache.org.  
-I'll leave this to Donald Leslie to document, since he has 
-it all organized.  (Plus I'm out of time!)</p>
+</p>
 
 <ul>
 <li>Email xalan-dev with build notice!</li>
