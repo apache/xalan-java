@@ -341,7 +341,7 @@ public final class XSLTC {
 	return _debug;
     }
     
-    private void setDestDirectory(String dstDirName) throws CompilerException {
+    public void setDestDirectory(String dstDirName) throws CompilerException {
 	final File dir = new File(dstDirName);
 	if (dir.exists() || dir.mkdirs()) {
 	    _destDir = dir;
