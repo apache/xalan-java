@@ -122,9 +122,9 @@ build smoketest
   includes a complete set of <jump href="http://jakarta.apache.org/gump/">GUMP documentation</jump>.</p> 
   <p>Some committers at jakarta also provide a GUMP service, which runs actual 
   builds nightly of nearly all xml and jakarta projects.  The 
-  <jump href="http://jakarta.apache.org/builds/gump/">results of nightly builds</jump> 
+  <jump href="http://cvs.apache.org/builds/gump/">results of nightly builds</jump> 
   are posted daily, and the actual 
-  <jump href="http://xml.apache.org/dist/xalan-j/nightly/">&xslt4j; nightly build</jump> is also posted (when it succeeds).</p>
+  <jump href="http://cvs.apache.org/dist/xalan-j/nightly/">&xslt4j; nightly build</jump> is also posted (when it succeeds).</p>
   <p>Discussions about GUMP itself happen on the alexandria-dev@jakarta.apache.org mailing list.  
   Note: nightly builds are just that - automated builds run nightly, without human intervention.  
   Use them at your own risk!</p>
