@@ -860,7 +860,6 @@ public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
   {
 
-    TemplatesHandler builder = newTemplatesHandler();
     String baseID = source.getSystemId();
 
     if (null == baseID)
@@ -888,8 +887,6 @@ public javax.xml.transform.Templates processFromNode(Node node)
       baseID = SystemIDResolver.getAbsoluteURI(baseID);
     }
 
-    builder.setSystemId(baseID);
-
     if (source instanceof DOMSource)
     {
       DOMSource dsource = (DOMSource) source;
@@ -906,6 +903,9 @@ public javax.xml.transform.Templates processFromNode(Node node)
       }
     }
 
+    TemplatesHandler builder = newTemplatesHandler();
+    builder.setSystemId(baseID);
+    
     try
     {
       InputSource isource = SAXSource.sourceToInputSource(source);
