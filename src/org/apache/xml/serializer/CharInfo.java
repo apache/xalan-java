@@ -71,7 +71,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.CharKey;
-import org.apache.xml.utils.ObjectFactory;
+
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.WrappedRuntimeException;
 

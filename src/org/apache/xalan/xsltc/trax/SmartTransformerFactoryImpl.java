@@ -80,7 +80,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xml.utils.ObjectFactory;
+
 import org.xml.sax.XMLFilter;
 
 /**

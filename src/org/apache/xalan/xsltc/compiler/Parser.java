@@ -87,7 +87,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.runtime.AttributeList;
-import org.apache.xml.utils.ObjectFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;

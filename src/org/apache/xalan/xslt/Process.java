@@ -90,7 +90,7 @@ import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xml.utils.DefaultErrorHandler;
-import org.apache.xml.utils.ObjectFactory;
+
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
