@@ -67,7 +67,6 @@
 <li><link anchor="usexmlfilters">UseXMLFilters</link></li>
 <li><link anchor="applyxpath">ApplyXPath</link></li>
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
-<li><link anchor="get-trax">get-trax</link></li>
 <li><link anchor="servlet">servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
 <li><link anchor="trace">Trace</link></li>
@@ -172,15 +171,9 @@
     <p>How to run it: Open appletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
     <note>For information about running &xslt4j; applets in Netscape Communicator, see <link idref="usagepatterns" anchor="netscape">Problems
     with Netscape</link>.<br/><br/>
-    Both applets look for xalan.jar, xml-apis.jar, and xercesImpl.jar (Xerces-J2) or xerces.jar (Xerces-J 1) in the bin 
+    This applet looks for xalan.jar, xml-apis.jar, and xercesImpl.jar (Xerces-J2) or xerces.jar (Xerces-J 1) in the bin 
     subdirectory. If you have placed these JAR files
-    elsewhere, adjust the applet archive setting in client.html and get-trax.html accordingly.</note>
-    </s2><anchor name="get-trax"/>
-    <s2 title="get-trax">
-    <p>This applet uses spec.xsl to transform trax.xml and display the result. The XML source (trax.xml) is part of a draft
-    for the TrAX (Transformation API for XML) specification written by Scott Boag. It contains a useful overview of what
-    was to become the JAXP 1.1 interface for performing XML transformations.</p>
-     <p>How to run it: Open get-trax.html in the Internet Explorer 5 browser.</p>
+    elsewhere, adjust the applet archive setting in client.html accordingly.</note>
     </s2><anchor name="servlet"/>
     <s2 title="servlet">
    <p>For a general introduction, see <link idref="usagepatterns" anchor="servlet">Using &xslt4j; in a servlet</link>.</p>
