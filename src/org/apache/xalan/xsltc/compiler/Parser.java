@@ -683,12 +683,11 @@ public final class Parser implements Constants, ContentHandler {
 	_template = template;
     }
 
-    /*
     private int _templateIndex = 0;
+
     public int getTemplateIndex() {
 	return(_templateIndex++);
     }
-    */
 
     /**
      * Creates a new node in the abstract syntax tree. This node can be

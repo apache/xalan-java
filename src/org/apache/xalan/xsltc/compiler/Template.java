@@ -236,6 +236,8 @@ public final class Template extends TopLevelElement {
 		_priority = Double.NaN;
 	}
 
+	_position = parser.getTemplateIndex();
+
 	// Add the (named) template to the symbol table
 	if (_name != null) {
 	    Template other = parser.getSymbolTable().addTemplate(this);

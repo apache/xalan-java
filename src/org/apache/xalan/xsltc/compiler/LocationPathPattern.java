@@ -71,7 +71,8 @@ public abstract class LocationPathPattern extends Pattern {
     private Template _template;
     private int _importPrecedence;
     private double _priority = Double.NaN;
-		
+    private int _position = 0;
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	return Type.Void;		// TODO
     }
@@ -84,6 +85,7 @@ public abstract class LocationPathPattern extends Pattern {
 	_template = template;
 	_priority = template.getPriority();
 	_importPrecedence = template.getImportPrecedence();
+	_position = template.getPosition();
     }
 		
     public Template getTemplate() {
@@ -97,11 +99,30 @@ public abstract class LocationPathPattern extends Pattern {
     public double getDefaultPriority() {
 	return 0.5;
     }
-		
+
+    /**
+     * This method is used by the Mode class to prioritise patterns and
+     * template. This method is called for templates that are in the same
+     * mode and that match on the same core pattern. The rules used are:
+     *  o) first check precedence - highest precedence wins
+     *  o) then check priority - highest priority wins
+     *  o) then check the position - the template that occured last wins
+     */
     public boolean noSmallerThan(LocationPathPattern other) {
-	return (_importPrecedence > other._importPrecedence ||
-		(_importPrecedence == other._importPrecedence &&
-		 getPriority() >= other.getPriority()));
+	if (_importPrecedence > other._importPrecedence) {
+	    return true;
+	}
+	else if (_importPrecedence == other._importPrecedence) {
+	    if (_priority > other._priority) {
+		return true;
+	    }
+	    else if (_priority == other._priority) {
+		if (_position > other._position) {
+		    return true;
+		}
+	    }
+	}
+	return false;
     }
     
     /** return last pattern (matching the current node) */
