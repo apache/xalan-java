@@ -2003,20 +2003,34 @@ public class TransformerImpl extends Transformer
         maxImportLevel = -1;
       }
 
-      // Find the XSL template that is the best match for the 
-      // element.        
-      XPathContext xctxt = getXPathContext();
-      PrefixResolver savedPrefixResolver = xctxt.getNamespaceContext();
+      // If we're trying an xsl:apply-imports at the top level (ie there are no
+      // imported stylesheets), we need to indicate that there is no matching template.
+      // The above logic will calculate a maxImportLevel of -1 which indicates
+      // that we should find any template.  This is because a value of -1 for
+      // maxImportLevel has a special meaning.  But we don't want that.
+      // We want to match -no- templates. See bugzilla bug 1170.
 
-      try
+      if (isApplyImports && (maxImportLevel == -1))
       {
-        xctxt.setNamespaceContext(xslInstruction);
-        template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode, maxImportLevel,
-                                  m_quietConflictWarnings);
+        template = null;
       }
-      finally
+      else
       {
-        xctxt.setNamespaceContext(savedPrefixResolver);
+        // Find the XSL template that is the best match for the 
+        // element.        
+        XPathContext xctxt = getXPathContext();
+        PrefixResolver savedPrefixResolver = xctxt.getNamespaceContext();
+
+        try
+        {
+          xctxt.setNamespaceContext(xslInstruction);
+          template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode, maxImportLevel,
+                                    m_quietConflictWarnings);
+        }
+        finally
+        {
+          xctxt.setNamespaceContext(savedPrefixResolver);
+        }
       }
 
       // If that didn't locate a node, fall back to a default template rule.
