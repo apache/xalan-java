@@ -13,7 +13,10 @@
   <li>Fixed tokenizing of stylesheet processing instructions to allow parameters to be passed to server in href attributes.<br/><br/></li>
   <li>Fixed a bug passing Transformer creation error messages to ErrorListener when an ErrorListener has been set on
    TransformerFactory.<br/><br/></li>
-  <li>When using an Exception to instantiate a FactoryConfigurationError (extends Error), we now propagate the Exception message to super().</li>
+  <li>When using an Exception to instantiate a FactoryConfigurationError (extends Error), we now propagate the Exception message to 
+  super().<br/><br/></li>
+  <li>Fixed a bug (the generation of an unwanted entity reference) performing the identity transformation 
+  (see <link idref="usagepatterns" anchor="serialize">Serializing output</link>) with an XML document containing a DOCTYPE declaration.</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
