@@ -764,7 +764,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
           factory.setNamespaceAware(true);
 
-          javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
+
+		  javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
           reader = jaxpParser.getXMLReader();
         }

@@ -457,8 +457,10 @@ public class StylesheetHandler extends DefaultHandler
     pushSpaceHandling(false);
   }
 
-  
-  /** support for isParsingComplete */
+  /** m_parsingComplete becomes true when the top-level stylesheet and all
+   * its included/imported stylesheets have been been fully parsed, as an
+   * indication that composition/optimization/compilation can begin.
+   * @see isStylesheetParsingComplete  */
   private boolean m_parsingComplete = false;
 
   /**

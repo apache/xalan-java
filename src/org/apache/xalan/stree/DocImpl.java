@@ -95,7 +95,8 @@ public abstract class DocImpl extends Parent
   public DocImpl()
   {
     super(null);
-    m_chars = new FastStringBuffer(1024 * 8);
+    // Just an initial guess at reasonable tuning parameters
+    m_chars = new FastStringBuffer(13,13);
 //    m_id = m_idCount++;
   }
   

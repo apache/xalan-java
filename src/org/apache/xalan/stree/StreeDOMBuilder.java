@@ -387,9 +387,8 @@ public class StreeDOMBuilder extends DOMBuilder
 
     if (m_previousIsText && !isText)
     {
-      if (!(m_docImpl.m_sourceTreeHandler.getShouldStripWhitespace()
-        && XMLCharacterRecognizer.isWhiteSpace(m_text_buffer.m_doc.m_chars.m_map, 
-                m_text_buffer.m_start, m_text_buffer.m_length)))
+      if (!( m_docImpl.m_sourceTreeHandler.getShouldStripWhitespace()
+        && m_text_buffer.isWhitespace() ))
       {
         append(m_text_buffer);
       }

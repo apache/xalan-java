@@ -91,7 +91,7 @@ public class TextImpl extends Child implements Text
    *  @return the length of text in the text buffer. */
   public int getLengthInBuffer()
   {
-    return m_start;
+    return m_length;
   }
 
   /**
@@ -130,15 +130,16 @@ public class TextImpl extends Child implements Text
 
     synchronized(fsb)
     {
-      m_start = fsb.m_firstFree;
+      m_start = fsb.length(); // Isolate from internal representation
       m_length = length;
       fsb.append(ch, start, length);
     }
   }
 
   /**
-   * Handle a Characters event 
-   *
+   * Send content of this text node as a SAX Characters event. Handles both
+   * the case where the Text node has stored its data as a local string and
+   * that in which the data has been placed in a FastStringBuffer pool.
    *
    * @param ch Content handler to handle SAX events
    *
@@ -153,8 +154,8 @@ public class TextImpl extends Child implements Text
     else
     {
       synchronized(m_doc.m_chars)
-      {   
-        ch.characters(m_doc.m_chars.m_map, m_start, m_length);
+      {
+		m_doc.m_chars.sendSAXcharacters(ch,m_start,m_length);
       }
     }
   }
@@ -211,7 +212,7 @@ public class TextImpl extends Child implements Text
     {
       synchronized(m_doc.m_chars)
       {   
-        m_data = new String(m_doc.m_chars.m_map, m_start, m_length);
+        m_data = m_doc.m_chars.getString(m_start, m_length);
       }
     }
 
@@ -242,7 +243,7 @@ public class TextImpl extends Child implements Text
     {
       synchronized(m_doc.m_chars)
       {   
-        m_data = new String(m_doc.m_chars.m_map, m_start, m_length);
+        m_data = m_doc.m_chars.getString(m_start, m_length);
       }
     }
 
@@ -272,6 +273,11 @@ public class TextImpl extends Child implements Text
       m_data.concat(ch.toString());
     
     m_length += length;
+  }
+  
+  public boolean isWhitespace()
+  {
+	  return m_doc.m_chars.isWhitespace(m_start,m_length);
   }
   
 }

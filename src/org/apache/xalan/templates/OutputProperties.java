@@ -666,7 +666,9 @@ public class OutputProperties extends ElemTemplateElement
   {
 
     int s = v.size();
-    FastStringBuffer fsb = new FastStringBuffer();
+
+    // Just an initial guess at reasonable tuning parameters
+    FastStringBuffer fsb = new FastStringBuffer(9,9);
 
     for (int i = 0; i < s; i++)
     {
