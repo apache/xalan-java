@@ -176,6 +176,11 @@ public class TransformerImpl extends Transformer
   private Boolean m_reentryGuard = new Boolean(true);
   
   /**
+   * This is null unless we own the stream.
+   */
+  private java.io.FileOutputStream m_outputStream = null;
+  
+  /**
    * True if the parser events should be on the main thread,
    * false if not.  Experemental.  Can not be set right now.
    */
@@ -375,6 +380,16 @@ public class TransformerImpl extends Transformer
     if(!m_hasBeenReset)
     {
       m_hasBeenReset = true;
+      
+      if(this.m_outputStream != null)
+      {
+        try
+        {
+          m_outputStream.close();
+        }
+        catch(java.io.IOException ioe){}
+      }
+      m_outputStream = null;
   
       // I need to look more carefully at which of these really
       // needs to be reset.
@@ -1053,7 +1068,8 @@ public class TransformerImpl extends Transformer
           {
             fileURL = fileURL.substring(8);
           }
-          serializer.setOutputStream(new java.io.FileOutputStream(fileURL));
+          m_outputStream = new java.io.FileOutputStream(fileURL);
+          serializer.setOutputStream(m_outputStream);
         }
         else throw new TransformerException("No output specified!");
 

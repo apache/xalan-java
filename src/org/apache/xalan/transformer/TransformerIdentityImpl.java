@@ -247,7 +247,8 @@ public class TransformerIdentityImpl extends Transformer
             fileURL = fileURL.substring(8);
           }
 
-          serializer.setOutputStream(new java.io.FileOutputStream(fileURL));
+          m_outputStream = new java.io.FileOutputStream(fileURL);
+          serializer.setOutputStream(m_outputStream);
         }
         else
           throw new TransformerException("No output specified!");
@@ -289,174 +290,189 @@ public class TransformerIdentityImpl extends Transformer
 
     createResultContentHandler(outputTarget);
 
-    if (source instanceof DOMSource)
-    {
-      DOMSource dsource = (DOMSource) source;
-
-      m_systemID = dsource.getSystemId();
-
-      Node dNode = dsource.getNode();
-
-      if (null != dNode)
-      {
-        try
-        {
-          if(dNode.getNodeType() != Node.DOCUMENT_NODE)
-            this.startDocument();
-          try
-          {
-            if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
-            {
-              String data = dNode.getNodeValue();
-              char[] chars = data.toCharArray();
-              characters(chars, 0, chars.length);
-            }
-            else
-            {
-              TreeWalker walker = new TreeWalker(this);
-              walker.traverse(dNode);
-            }
-          }
-          finally
-          {
-            if(dNode.getNodeType() != Node.DOCUMENT_NODE)
-              this.endDocument();
-          }
-        }
-        catch (SAXException se)
-        {
-          throw new TransformerException(se);
-        }
-
-        return;
-      }
-      else
-      {
-        String messageStr = XSLMessages.createMessage(
-          XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
-
-        throw new IllegalArgumentException(messageStr);
-      }
-    }
-
-    InputSource xmlSource = SAXSource.sourceToInputSource(source);
-
-    if (null == xmlSource)
-    {
-      throw new TransformerException("Can't transform a Source of type "
-                                     + source.getClass().getName() + "!");
-    }
-
-    if (null != xmlSource.getSystemId())
-      m_systemID = xmlSource.getSystemId();
-
     try
     {
-      XMLReader reader = null;
-
-      if (source instanceof SAXSource)
-        reader = ((SAXSource) source).getXMLReader();
-
-      if (null == reader)
+      if (source instanceof DOMSource)
       {
-
-        // Use JAXP1.1 ( if possible )      
-        try
+        DOMSource dsource = (DOMSource) source;
+  
+        m_systemID = dsource.getSystemId();
+  
+        Node dNode = dsource.getNode();
+  
+        if (null != dNode)
         {
-          javax.xml.parsers.SAXParserFactory factory =
-            javax.xml.parsers.SAXParserFactory.newInstance();
-
-          factory.setNamespaceAware(true);
-
-          javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
-
-          reader = jaxpParser.getXMLReader();
+          try
+          {
+            if(dNode.getNodeType() != Node.DOCUMENT_NODE)
+              this.startDocument();
+            try
+            {
+              if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
+              {
+                String data = dNode.getNodeValue();
+                char[] chars = data.toCharArray();
+                characters(chars, 0, chars.length);
+              }
+              else
+              {
+                TreeWalker walker = new TreeWalker(this);
+                walker.traverse(dNode);
+              }
+            }
+            finally
+            {
+              if(dNode.getNodeType() != Node.DOCUMENT_NODE)
+                this.endDocument();
+            }
+          }
+          catch (SAXException se)
+          {
+            throw new TransformerException(se);
+          }
+  
+          return;
         }
-        catch (javax.xml.parsers.ParserConfigurationException ex)
+        else
         {
-          throw new org.xml.sax.SAXException(ex);
+          String messageStr = XSLMessages.createMessage(
+            XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
+  
+          throw new IllegalArgumentException(messageStr);
         }
-        catch (javax.xml.parsers.FactoryConfigurationError ex1)
-        {
-          throw new org.xml.sax.SAXException(ex1.toString());
-        }
-        catch (NoSuchMethodError ex2){}
       }
-
-      if (null == reader)
+  
+      InputSource xmlSource = SAXSource.sourceToInputSource(source);
+  
+      if (null == xmlSource)
       {
-        reader = XMLReaderFactory.createXMLReader();
+        throw new TransformerException("Can't transform a Source of type "
+                                       + source.getClass().getName() + "!");
       }
-
+  
+      if (null != xmlSource.getSystemId())
+        m_systemID = xmlSource.getSystemId();
+  
       try
       {
-        reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
-                          true);
-        reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                          true);
+        XMLReader reader = null;
+  
+        if (source instanceof SAXSource)
+          reader = ((SAXSource) source).getXMLReader();
+  
+        if (null == reader)
+        {
+  
+          // Use JAXP1.1 ( if possible )      
+          try
+          {
+            javax.xml.parsers.SAXParserFactory factory =
+              javax.xml.parsers.SAXParserFactory.newInstance();
+  
+            factory.setNamespaceAware(true);
+  
+            javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
+  
+            reader = jaxpParser.getXMLReader();
+          }
+          catch (javax.xml.parsers.ParserConfigurationException ex)
+          {
+            throw new org.xml.sax.SAXException(ex);
+          }
+          catch (javax.xml.parsers.FactoryConfigurationError ex1)
+          {
+            throw new org.xml.sax.SAXException(ex1.toString());
+          }
+          catch (NoSuchMethodError ex2){}
+        }
+  
+        if (null == reader)
+        {
+          reader = XMLReaderFactory.createXMLReader();
+        }
+  
+        try
+        {
+          reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
+                            true);
+          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+                            true);
+        }
+        catch (org.xml.sax.SAXException se)
+        {
+  
+          // We don't care.
+        }
+  
+        // Get the input content handler, which will handle the 
+        // parse events and create the source tree. 
+        ContentHandler inputHandler = this;
+  
+        reader.setContentHandler(inputHandler);
+  
+        if (inputHandler instanceof org.xml.sax.DTDHandler)
+          reader.setDTDHandler((org.xml.sax.DTDHandler) inputHandler);
+  
+        try
+        {
+          if (inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+            reader.setProperty("http://xml.org/sax/properties/lexical-handler",
+                               inputHandler);
+  
+          if (inputHandler instanceof org.xml.sax.ext.DeclHandler)
+            reader.setProperty(
+              "http://xml.org/sax/properties/declaration-handler",
+              inputHandler);
+        }
+        catch (org.xml.sax.SAXException se){}
+  
+        try
+        {
+          if (inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+            reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
+                               inputHandler);
+  
+          if (inputHandler instanceof org.xml.sax.ext.DeclHandler)
+            reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
+                               inputHandler);
+        }
+        catch (org.xml.sax.SAXNotRecognizedException snre){}
+  
+        reader.parse(xmlSource);
+      }
+      catch (org.apache.xml.utils.WrappedRuntimeException wre)
+      {
+        Throwable throwable = wre.getException();
+  
+        while (throwable
+               instanceof org.apache.xml.utils.WrappedRuntimeException)
+        {
+          throwable =
+            ((org.apache.xml.utils.WrappedRuntimeException) throwable).getException();
+        }
+  
+        throw new TransformerException(wre.getException());
       }
       catch (org.xml.sax.SAXException se)
       {
-
-        // We don't care.
+        throw new TransformerException(se);
       }
-
-      // Get the input content handler, which will handle the 
-      // parse events and create the source tree. 
-      ContentHandler inputHandler = this;
-
-      reader.setContentHandler(inputHandler);
-
-      if (inputHandler instanceof org.xml.sax.DTDHandler)
-        reader.setDTDHandler((org.xml.sax.DTDHandler) inputHandler);
-
-      try
+      catch (IOException ioe)
       {
-        if (inputHandler instanceof org.xml.sax.ext.LexicalHandler)
-          reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                             inputHandler);
-
-        if (inputHandler instanceof org.xml.sax.ext.DeclHandler)
-          reader.setProperty(
-            "http://xml.org/sax/properties/declaration-handler",
-            inputHandler);
+        throw new TransformerException(ioe);
       }
-      catch (org.xml.sax.SAXException se){}
-
-      try
+    }
+    finally
+    {
+      if(null != m_outputStream)
       {
-        if (inputHandler instanceof org.xml.sax.ext.LexicalHandler)
-          reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
-                             inputHandler);
-
-        if (inputHandler instanceof org.xml.sax.ext.DeclHandler)
-          reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
-                             inputHandler);
+        try
+        {
+          m_outputStream.close();
+        }
+        catch(IOException ioe){}
+        m_outputStream = null;
       }
-      catch (org.xml.sax.SAXNotRecognizedException snre){}
-
-      reader.parse(xmlSource);
-    }
-    catch (org.apache.xml.utils.WrappedRuntimeException wre)
-    {
-      Throwable throwable = wre.getException();
-
-      while (throwable
-             instanceof org.apache.xml.utils.WrappedRuntimeException)
-      {
-        throwable =
-          ((org.apache.xml.utils.WrappedRuntimeException) throwable).getException();
-      }
-
-      throw new TransformerException(wre.getException());
-    }
-    catch (org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    catch (IOException ioe)
-    {
-      throw new TransformerException(ioe);
     }
   }
 
@@ -1211,6 +1227,11 @@ public class TransformerIdentityImpl extends Transformer
     if (null != m_resultLexicalHandler)
       m_resultLexicalHandler.comment(ch, start, length);
   }
+  
+  /**
+   * This is null unless we own the stream.
+   */
+  private java.io.FileOutputStream m_outputStream = null;
 
   /** The content handler where result events will be sent. */
   private ContentHandler m_resultContentHandler;
