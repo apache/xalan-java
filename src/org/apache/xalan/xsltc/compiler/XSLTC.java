@@ -341,7 +341,11 @@ public final class XSLTC {
 	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
 		_stylesheet.setCallsNodeset(_callsNodeset);
 		_stylesheet.setMultiDocument(_multiDocument);
-		_stylesheet.translate();
+
+		// Class synchronization is needed for BCEL
+		synchronized (getClass()) {
+		    _stylesheet.translate();
+		}
 	    }
 	}
 	catch (Exception e) {
