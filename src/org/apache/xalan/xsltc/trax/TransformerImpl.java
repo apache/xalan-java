@@ -708,9 +708,9 @@ public final class TransformerImpl extends Transformer
 	    if (value != null) second.setProperty(OutputKeys.MEDIA_TYPE, value);
 
 	    if (_translet._omitHeader)
-		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-	    else
 		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+	    else
+		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 
 	    value = _translet._standalone;
 	    if (value != null) second.setProperty(OutputKeys.STANDALONE, value);
