@@ -375,6 +375,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   	if(m_rtfdtm_stack!=null)
   		 for (java.util.Enumeration e = m_rtfdtm_stack.elements() ; e.hasMoreElements() ;) 
   		 	m_dtmManager.release((DTM)e.nextElement(), true);
+
     m_rtfdtm_stack=null; // drop our references too
     m_which_rtfdtm=-1;
     
@@ -725,7 +726,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popContextNodeList()
   {
-    m_contextNodeLists.pop();
+  	if(m_contextNodeLists.isEmpty())
+  	  System.err.println("Warning: popContextNodeList when stack is empty!");
+  	else
+      m_contextNodeLists.pop();
   }
 
   /**
@@ -1263,7 +1267,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	{
 		m_rtfdtm_stack=new Vector();
   		rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
-		m_rtfdtm_stack.addElement(rtfdtm);
+    m_rtfdtm_stack.addElement(rtfdtm);
 		++m_which_rtfdtm;
 	}
 	else
@@ -1282,7 +1286,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  		else
 	  		{
 		  		rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
-				m_rtfdtm_stack.addElement(rtfdtm); 		
+          m_rtfdtm_stack.addElement(rtfdtm); 	
 	  		}
  	 	}
 	}
