@@ -916,11 +916,11 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @return true if the prefix should normally be excluded.
    */
-  public boolean containsExcludeResultPrefix(String prefix)
+  public boolean containsExcludeResultPrefix(String prefix, String uri)
   {
     ElemTemplateElement parent = this.getParentElem();
     if(null != parent)
-      return parent.containsExcludeResultPrefix(prefix);
+      return parent.containsExcludeResultPrefix(prefix, uri);
       
     return false;
   }
@@ -948,7 +948,7 @@ public class ElemTemplateElement extends UnImplNode
               || uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL))
         return true;
 
-      if (containsExcludeResultPrefix(prefix))
+      if (containsExcludeResultPrefix(prefix, uri))
         return true;
     }
 

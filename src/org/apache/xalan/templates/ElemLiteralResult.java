@@ -246,23 +246,29 @@ public class ElemLiteralResult extends ElemUse
    * the "extension-element-prefixes" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * @param prefix non-null reference to prefix that might be excluded.
+   * @param prefix non-null reference to prefix that might be excluded.(not currently used)
+   * @param uri reference to namespace that prefix maps to
    *
    * @return true if the prefix should normally be excluded.
    */
-  public boolean containsExcludeResultPrefix(String prefix)
+  public boolean containsExcludeResultPrefix(String prefix, String uri)
   {
 
-    if (null == m_excludeResultPrefixes)
-      return super.containsExcludeResultPrefix(prefix);
+    if (null == m_excludeResultPrefixes || uri == null)
+      return super.containsExcludeResultPrefix(prefix, uri);
 
     if (prefix.length() == 0)
       prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
 
-    if (m_excludeResultPrefixes.contains(prefix))
-      return true;
-    else
-      return super.containsExcludeResultPrefix(prefix);
+    // This loop is ok here because this code only runs during
+    // stylesheet compile time.    
+    for (int i =0; i< m_excludeResultPrefixes.size(); i++)
+    {
+      if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixes.elementAt(i))))
+        return true;
+    }    
+    
+    return super.containsExcludeResultPrefix(prefix, uri);
   }
 
   /**
@@ -604,8 +610,7 @@ public class ElemLiteralResult extends ElemUse
 
     if (null != m_excludeResultPrefixes)
     {
-      if (m_excludeResultPrefixes.contains(prefix))
-        return true;
+      return containsExcludeResultPrefix(prefix, uri);
     }
 
     return false;
