@@ -107,8 +107,7 @@ public class PipeDocument
 	  throws TransformerException, TransformerConfigurationException, 
          SAXException, IOException, FileNotFoundException	   
   {
-    try
-    {
+
       SAXTransformerFactory saxTFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
       
       // XML doc to transform.
@@ -183,11 +182,6 @@ public class PipeDocument
          }
          usePipe(vTHandler, absSourceURL, target);
        }
-     }
-     catch (Exception e)
-     {
-       e.printStackTrace();
-     }
   }
   /**
    * Uses a Vector of TransformerHandlers to pipe XML input document through
