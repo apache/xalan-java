@@ -1,0 +1,1 @@
+java -classpath F:\xalan3\xml-xalan\java\build\xalan.jar;F:\xalan3\xml-xalan\java\bin\xml-apis.jar;F:\xalan3\xml-xalan\java\build\xercesImpl.jar;C:\jdk1.3\lib\tools.jar;e:\xml-xalan\test\tests\conf\extendx;e:\rhino\js.jar;e:\bsf-src\lib\bsf.jar;E:\xml-xalan\java\build\xml-apis.jar org.apache.xpath.parser.XPath %1 %2 %3 
