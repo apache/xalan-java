@@ -68,7 +68,7 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public abstract class NodeIteratorBase implements NodeIterator {
     private int _last = -1;
-    private int _position = 0;
+    protected int _position = 0;
 
     protected int _markedNode;
     protected int _startNode = NodeIterator.END;

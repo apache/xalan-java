@@ -857,7 +857,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	public int next() {
 	    int node;
 	    while ((node = super.next()) != NULL) {
-		if (_type[node] == _nodeType) return node;
+		if (_type[node] == _nodeType) return(node);
+		_position--;
 	    }
 	    return END;
 	}
@@ -1007,9 +1008,9 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
-	    }
-	    return returnNode(node);
+	    while ((node = super.next()) != NULL && _type[node] != _nodeType)
+		_position--;
+	    return(node);
 	}
 
     } // end of PrecedingSiblingIterator
@@ -1069,7 +1070,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    // Advance node index and check if all nodes have been returned.
 	    while (++_node < _startNode) {
 		// Check if we reached one of the base node's ancestors
-		if ((_sp < 0) || (_node < _stack[_sp])) return(_node);
+		if ((_sp < 0) || (_node < _stack[_sp]))
+		    return returnNode(_node);
 		// Anvance past the next ancestor node
 		_sp--;
 	    }
@@ -1109,8 +1111,8 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
-	    }
+	    while ((node = super.next()) != NULL && _type[node] != _nodeType)
+		_position--; 
 	    return node;
 	}
 
@@ -1166,7 +1168,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	public int next() {
 	    int node;
 	    while ((node = super.next()) != NULL) {
-		if (_type[node] == _nodeType) return node;
+		if (_type[node] == _nodeType) return(node);
+		_position--;
 	    }
 	    return END;
 	}
@@ -1256,8 +1259,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	public int next() {
 	    int node;
 	    while ((node = super.next()) != NULL) {
-		if (_type[node] == _nodeType)
-		    return returnNode(node);
+		if (_type[node] == _nodeType) return(node);
+		_position--;
 	    }
 	    return(NULL);
 	}
@@ -1395,7 +1398,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		    } while ((pos<_pos) && (child = _nextSibling[child]) != 0);
 		}
 
-		if (node == child) return node;
+		if (node == child) return node; 
 	    }
 	    return(END);
 	}
