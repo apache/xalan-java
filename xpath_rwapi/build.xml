@@ -2,6 +2,7 @@
 <!-- ===================================================================
 
    Build file for XPath Api
+   Sample usage: build javacc test -Dtest.expr="a/b /a/b /a|b"
    
 Setup instructions: 
    Before running an Ant build, you must
@@ -37,9 +38,17 @@ Copyright:
 
 <project name="XPathAPI" default="javacc" basedir=".">
 
+  <property name="build.dir" value="../build"/>
+  <property name="build.classes" value="${build.dir}/classes"/>
   <property name="spec" value="xpath"/>
-  <property name="target.parser" value="src/org/apache/xpath/rwapi/impl/parser"/>
-  <property name="tree.xsl" value="grammar/etree.xsl"/>
+  <property name="grammar.dir" value="grammar"/>
+  <property name="tree.xsl" value="${grammar.dir}/etree.xsl"/>
+
+  <property name="src.dir" value="src"/>
+  <property name="rwapi.package" value="org/apache/xpath/rwapi"/>
+  <property name="target.parser" value="${src.dir}/${rwapi.package}/impl/parser"/>
+
+  <property name="test.class" value="org.apache.xpath.rwapi.test.Test2"/>
   <property name="test.expr" value="a/b/c"/>
   
   <path id="classpath">
@@ -54,11 +63,11 @@ Copyright:
   <target name="gen-grammar">
       <mkdir dir="${target.parser}"/>
     
-		<!-- first customize from original xpath-grammar -->
-      <style style="grammar/customize.xsl" in="grammar/xpath-grammar.xml" 
-	    out="grammar/custom-xpath-grammar.xml" force="yes" extension=".xml" destdir="grammar"/>
+		<!-- first customized from original xpath-grammar -->
+      <style style="${grammar.dir}/customize.xsl" in="${grammar.dir}/xpath-grammar.xml" 
+	    out="${grammar.dir}/custom-xpath-grammar.xml" force="yes" extension=".xml" destdir="${grammar.dir}"/>
     
-      <style style="${tree.xsl}" in="grammar/custom-xpath-grammar.xml" 
+      <style style="${tree.xsl}" in="${grammar.dir}/custom-xpath-grammar.xml" 
 	    out="${target.parser}/xpath-grammar.jjt" force="yes" extension=".jjt" destdir="${spec}">
       	<param name="spec" expression="${spec}"/>
       	<param name="package-name" expression="org.apache.xpath.rwapi.impl.parser"/>
@@ -87,21 +96,26 @@ Copyright:
   </target>
   
   <target name="prepare">
-		<mkdir dir="build/classes"/>
+		<mkdir dir="${build.classes}"/>
 	</target>
   
   <target name="compile" depends="prepare">
-  	<javac srcdir="src" destdir="build/classes">
+  	<javac srcdir="src" destdir="${build.classes}">
 	  	<classpath refid="classpath"/>
 	</javac>
   </target>
   
   <target name="jar" depends="compile">
-		<jar destfile="build/xpathapi.jar" basedir="build/classes" includes="**/*.*"/>
-	</target>
+    <echo message="Jarring classes in: ${build.classes} spec: ${rwapi.package}/**"/>
+    <jar jarfile="${build.dir}/xpathapi.jar">
+      <fileset dir="${build.classes}"
+               includes="${rwapi.package}/**"/>
+    </jar>
+
+  </target>
 
   <target name="test" depends="jar">
-    <java fork="yes" classname="org.apache.xpath.rwapi.test.Test2" >
+    <java fork="yes" classname="${test.class}" >
       <classpath refid="test.classpath" />
       <arg line="${test.expr}"/>
     </java>
