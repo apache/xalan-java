@@ -407,7 +407,6 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean            supports(String feature,
                                      String version)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"supports not supported!");
     return false;
   }
 
