@@ -799,6 +799,10 @@ public final class TransformerImpl extends Transformer
 
 	    while (names.hasMoreElements()) {
 		final String name = (String) names.nextElement();
+
+		// Ignore lower layer properties
+		if (isDefaultProperty(name)) continue;
+
 		if (validOutputProperty(name)) {
 		    _properties.setProperty(name, properties.getProperty(name));
 		}
@@ -953,6 +957,13 @@ public final class TransformerImpl extends Transformer
 		name.equals(OutputKeys.STANDALONE) ||
 		name.equals(OutputKeys.VERSION) ||
 		name.charAt(0) == '{');
+    }
+
+    /**
+     * Checks if a given output property is default (2nd layer only)
+     */
+    private boolean isDefaultProperty(String name) {
+	return (_properties.get(name) == null);
     }
 
     /**
