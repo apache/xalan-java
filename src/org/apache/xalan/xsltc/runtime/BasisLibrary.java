@@ -890,6 +890,31 @@ public final class BasisLibrary implements Operators {
 	try {
 	    StringBuffer result = new StringBuffer();
 	    formatter.applyLocalizedPattern(pattern);
+
+	    //------------------------------------------------------
+ 	    // bug fix # 9179 - make sure localized pattern contains
+	    //   a leading zero before decimal, handle cases where  
+	    //   decimal is in position zero, and >= to 1. 
+	    //   localized pattern is ###.### convert to ###0.###
+	    //   localized pattern is .###    convert to 0.###
+	    //------------------------------------------------------
+	    String localizedPattern = formatter.toPattern();
+	    int index = localizedPattern.indexOf('.');
+	    if ( index >= 1  && localizedPattern.charAt(index-1) != '0' ) {
+		//insert a zero before the decimal point in the pattern
+		StringBuffer newpattern = new StringBuffer();
+		newpattern.append(localizedPattern.substring(0, index));
+                newpattern.append("0");
+                newpattern.append(localizedPattern.substring(index));
+		formatter.applyLocalizedPattern(newpattern.toString());
+	    } else if (index == 0) {
+                // insert a zero before decimal point in pattern
+                StringBuffer newpattern = new StringBuffer();
+                newpattern.append("0");
+                newpattern.append(localizedPattern);
+		formatter.applyLocalizedPattern(newpattern.toString());
+            }
+
 	    formatter.format(number, result, _fieldPosition);
 	    return(result.toString());
 	}
