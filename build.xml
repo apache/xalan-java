@@ -147,15 +147,6 @@ Copyright:
     <pathelement path="${java.class.path}" />
   </path>
 
-  <!-- References to various automated test locations/parameters -->
-  <property name="tests.dir" value="../test/java/"/>
-  <property name="test.loggingLevel" value="5"/>
-  <!-- The excluded lre tests are at issue or are new bugs, and should be 
-       included as soon as they are resolved.  -->
-  <!-- The attribset40+ tests concern Erratum E26, which has convoluted verbiage. Need to determine what E26 means in practical terms, then fix any bugs. -->
-  <property name="test.excludes" value="extendx07.xsl;extendx13.xsl;processorinfo03.xsl;attribset40.xsl;attribset42.xsl;attribset43.xsl;impincl18.xsl;impincl12.xsl;lre02.xsl;lre03.xsl;lre07.xsl;lre10.xsl;lre12.xsl;lre21.xsl"/>
-  <property name="test.embedded" value="embed01.xsl;embed02.xsl;embed07.xsl"/>
-
   <!-- =================================================================== -->
   <!-- Creates output build directories and doc prerequistes               -->
   <!-- =================================================================== -->
@@ -166,7 +157,7 @@ Copyright:
          this target, either directly or indirectly, to get 
          the tests-available property set for them.
     -->
-    <available file="${tests.dir}" property="tests-available" />
+    <available file="${test.relpath}" property="tests-available" />
     <available property="xerces.present" 
       classname="org.apache.xerces.parsers.SAXParser"/>
   </target>
@@ -653,97 +644,39 @@ Copyright:
   </target>
    
   <!-- =================================================================== -->
-  <!-- Compiles and runs the minitest from xml-xalan\test, if present      -->
+  <!-- Compiles and runs mini/smoketest from xml-xalan\test, if present    -->
   <!-- =================================================================== -->
-  <path id="minitest.class.path">
-    <pathelement location="${parser.jar}" />
-    <pathelement location="${build.xalan.jar}" />
-    <pathelement location="${bsf.jar}" />
-    <pathelement path="${java.class.path}" />
-  </path>
+  <property name="test.relpath" value="../test"/>
 
-  <!-- Reference from the testing directory back to our directory, 
-       used when calling testing targets to set the classpath for 
-       the tests to include jars we just compiled.
-  -->
-  <property name="tests.backref" value="../../java/"/>
-
-  <target name="minitest" depends="prepare,jar,minitest-run,tests-not-available" 
-    description="Run the Minitest from xml-xalan/test/java" >
-    <!-- This target explicitly depends on the jar target, since 
-         without xalan.jar the tests won't compile/run.
-         We then call the worker target minitest-run to do 
-         the work of running the minitest.
-         We finally call a helper target tests-not-available 
-         to notify users that they need to checkout the tests 
-         explicitly from CVS - but this only runs if needed.
+  <target name="minitest" depends="prepare,minitest-run,tests-not-available" 
+    description="Run the Minitest from xml-xalan/test" >
+    <!-- This target simply asks the minitest-run worker target to 
+         actually have the Minitest run (by the test/build.xml file);
+         we then also call the tests-not-available target in case 
+         the user never checked out the tests.
     -->
   </target>
-  <target name="minitest-run" if="tests-available" depends="prepare" >
-    <echo message=" [minitest] Calling ${tests.dir}build.xml now to run minitest.xalan2" />
-    <ant dir="${tests.dir}" antfile="build.xml" target="minitest.xalan2" >
-      <!-- Set the below testxsl.jar.name so that it will create 
-           minitest.jar instead of testxsl.jar; we only do this here 
-           since this is a commonly-called developer target, and it's 
-           good to differentiate this jar from the regular testing jar 
-           (which has many more test classes in it).
-      -->
-      <property name="testxsl.jar.name" value="minitest.jar" />
-      <property name="prepend.class.path"
-                value="${tests.backref}${parser.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
-    <!-- Why doesn't the following refid work? I get an error referencing it.
-      <property name="prepend.class.path" refid="minitest.class.path" />
-    -->
+  <target name="minitest-run" if="tests-available" depends="jar" >
+    <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Minitest" />
+    <ant dir="${test.relpath}" antfile="build.xml" target="minitest.gump" >
+    </ant>
+  </target>
+
+  <target name="smoketest" depends="prepare,smoketest-run,tests-not-available" 
+    description="Run the Smoketest (Minitest, conf, harness) from xml-xalan/test" >
+  </target>
+  <target name="smoketest-run" if="tests-available" depends="jar" >
+    <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Smoketest" />
+    <ant dir="${test.relpath}" antfile="build.xml" target="smoketest.gump" >
     </ant>
   </target>
 
   <!-- Called from various testing targets if the test dir doesn't exist. -->
   <target name="tests-not-available" unless="tests-available" >
-    <echo message=" [tests] The tests do not seem to be present!" />
+    <echo message=" [tests] The tests do not seem to be present in ${test.relpath}" />
     <echo message=" [tests] You must have checked out from CVS to run the tests," />
     <echo message=" [tests]   it is not included in binary distributions." />
     <echo message=" [tests] See http://xml.apache.org/xalan-j/test/ for more info." />
-  </target>
-  
-  <!-- =================================================================== -->
-  <!-- Compiles and runs the conformance test from xml-xalan\test, if present      -->
-  <!-- =================================================================== -->
-  <!-- We should have a duplicate of minitest.class.path that
-       in the future this may need to include references to dirs 
-       where Java-based extension tests keep their .classes.
-  -->
-
-  <target name="conftest" depends="prepare,jar,conftest-run,tests-not-available" 
-    description="Run the ConformanceTest from xml-xalan/test/java" >
-  </target>
-  <target name="conftest-run" if="tests-available" depends="prepare" >
-    <echo message=" [conftest] Calling ${tests.dir}build.xml now to run conftest.xalan2" />
-    <ant dir="${tests.dir}" antfile="build.xml" target="conftest.xalan2" >
-      <property name="testxsl.jar.name" value="conftest.jar" /> 
-      <!-- Set name above so that it will create conftest.jar instead 
-           of testxsl.jar - but, since the "ConformanceTest" depends 
-           on so many testing classes, it may not be worth calling 
-           this a different name from the default 'testxsl.jar'.  It 
-           does reduce confusion, however, for people who build and 
-           run the tests directly from the testing directory, instead 
-           of doing it from this directory.
-      -->
-      <property name="prepend.class.path"
-                value="${tests.backref}${parser.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
-    </ant>
-  </target>
-  
-  <!-- =================================================================== -->
-  <!-- Compiles and runs the smoke test from xml-xalan\test, if present      -->
-  <!-- =================================================================== -->
-  <target name="smoketest" depends="prepare,jar,smoketest-run,tests-not-available" 
-    description="Run the SmokeTest (includes API tests and ConformanceTest)" >
-  </target>
-  <target name="smoketest-run" if="tests-available" depends="prepare" >
-    <ant dir="${tests.dir}" antfile="build.xml" target="smoketest-xalan2" >
-      <property name="prepend.class.path"
-                value="${tests.backref}${parser.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
-    </ant>
   </target>
   
   <!-- =================================================================== -->
