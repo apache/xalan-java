@@ -1656,6 +1656,8 @@ public class TransformerImpl extends Transformer
     // in scope, when really only the current stylesheet's 
     // global variables should be in scope.  Have to think on 
     // this more...
+
+    XObject xobj;
     XPathContext xctxt = getXPathContext();
     VariableStack vs = xctxt.getVarStack();
     StylesheetRoot sr = getStylesheet();
@@ -1674,11 +1676,17 @@ public class TransformerImpl extends Transformer
         {
           previouslyDeclared.setIsVisible(true);
         }
+        else
+        {
+          xobj = new XUnresolvedVariable(v, contextNode, 
+                             this, vs.getSearchStartOrTop(), 0, true);
+          previouslyDeclared.setVal(xobj);
+        }
         continue;
       }
 
       // XObject xobj = v.getValue(this, contextNode);
-      XObject xobj = new XUnresolvedVariable(v, contextNode, 
+      xobj = new XUnresolvedVariable(v, contextNode, 
                              this, vs.getSearchStartOrTop(), 0, true);
 
       vs.pushVariable(v.getName(), xobj);
