@@ -642,16 +642,18 @@ public class ElemTemplateElement extends UnImplNode
   private boolean excludeResultNSDecl(String prefix, String uri)
     throws SAXException
   {
-    if(uri.equals(Constants.S_XSLNAMESPACEURL)
-       || getStylesheet().containsExtensionElementURI(uri)
-       || uri.equals("http://xml.apache.org/xslt")
-       || uri.equals("http://xsl.lotus.com/")
-       || uri.equals("http://xsl.lotus.com"))
-      return true; 
-    
-    if(getStylesheet().containsExcludeResultPrefix(prefix))
-      return true;
-    
+    if (uri != null)
+    {  
+      if(uri.equals(Constants.S_XSLNAMESPACEURL)
+         || getStylesheet().containsExtensionElementURI(uri)
+         || uri.equals("http://xml.apache.org/xslt")
+         || uri.equals("http://xsl.lotus.com/")
+         || uri.equals("http://xsl.lotus.com"))
+        return true; 
+      
+      if(getStylesheet().containsExcludeResultPrefix(prefix))
+        return true;
+    }
     return false;
   }
 
