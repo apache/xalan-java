@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id$ 
  *
  * The Apache Software License, Version 1.1
  *
@@ -56,15 +56,14 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author G Todd Miller 
  */
 
-package org.apache.xalan.xsltc.util.getopt; 
+package org.apache.xalan.xsltc.cmdline.getopt;
 
-import org.apache.xalan.xsltc.util.getopt.GetOptsException;
+import org.apache.xalan.xsltc.cmdline.getopt.GetOptsException;
 
-class MissingOptArgException extends GetOptsException{
-    public MissingOptArgException(String msg){
+class IllegalArgumentException extends GetOptsException{
+    public IllegalArgumentException(String msg){
 	super(msg);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * $Id$ 
+ * @(#)$Id$
  *
  * The Apache Software License, Version 1.1
  *
@@ -56,13 +56,25 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author G Todd Miller 
+ * @author Morten Jorgensen
+ *
  */
 
-package org.apache.xalan.xsltc.util.getopt; 
+package org.apache.xalan.xsltc.trax;
 
-public class GetOptsException extends Exception{
-    public GetOptsException(String msg){
-	super(msg);
+import javax.xml.transform.*;
+
+import org.apache.xalan.xsltc.Translet;
+
+public abstract class TransformerImpl extends Transformer {
+
+    Translet _translet = null;
+
+    public TransformerImpl(Translet translet) {
+	_translet = translet;
+    }
+
+    public void transform(Source source, Result result) {
+	// copy in the transform() method from AbstractTranslet
     }
 }

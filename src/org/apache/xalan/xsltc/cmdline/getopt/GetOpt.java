@@ -60,14 +60,14 @@
  *
  */
 
-package org.apache.xalan.xsltc.util.getopt; 
+package org.apache.xalan.xsltc.cmdline.getopt; 
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.List;
 
-import org.apache.xalan.xsltc.util.getopt.IllegalArgumentException;
-import org.apache.xalan.xsltc.util.getopt.MissingOptArgException;
+import org.apache.xalan.xsltc.cmdline.getopt.IllegalArgumentException;
+import org.apache.xalan.xsltc.cmdline.getopt.MissingOptArgException;
 
 
 /**

@@ -75,7 +75,7 @@ import org.apache.xalan.xsltc.TransletOutputHandler;
 
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xalan.xsltc.util.getopt.*;
+import org.apache.xalan.xsltc.cmdline.getopt.*;
 
 public final class Compile {
 

@@ -85,7 +85,7 @@ import javax.xml.parsers.*;
 import javax.xml.transform.ErrorListener;
 
 import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.util.getopt.*;
+import org.apache.xalan.xsltc.cmdline.getopt.*;
 import org.apache.xalan.xsltc.DOM;
 import de.fub.bytecode.classfile.JavaClass;
 
