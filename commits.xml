@@ -1010,4 +1010,29 @@ xsl:param not first child of xsl:template</Log>
 <Log>Bugzilla 3800: Make sure that when looking for excluded prefixes, we check 
 the URI associated with the prefix, not the prefix in the excluded list.</Log>
 </Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>09/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath NodeSetDTM.java</Modified>
+<Log>Do not reorder or strip duplicate nodes when converting a DOM nodelist into a 
+DTM nodelist</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>10/01/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref
+ IncrementalSAXSource_Filter.java</Modified>
+<Log>Catch for unwrappered StopException (apparently not all parsers generate
+ a SAXException wrapper).</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>10/01/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDefaultBaseIterators.java
+ DTMDefaultBaseTraversers.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
+<Log>Creating the implied Namespace Node for xml:</Log>
+</Commit>
 </Commits>
