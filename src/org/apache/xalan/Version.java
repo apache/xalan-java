@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,17 +54,38 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.processor;
+package org.apache.xalan;
 
 /**
  * <meta name="usage" content="general"/>
  * Administrative class to keep track of the version number of
  * the Xalan release.
- * <P>See also: org/apache/xalan/res/XSLTInfo.properties</P>
- * @deprecated To be replaced by org.apache.xalan.Version.getVersion()
+ * <P>This class implements the upcoming standard of having
+ * org.apache.project-name.Version.getVersion() be a standard way 
+ * to get version information.  This class will replace the older 
+ * org.apache.xalan.processor.Version class.</P>
+ * <P>See also: org/apache/xalan/res/XSLTInfo.properties for 
+ * information about the version of the XSLT spec we support.</P>
  */
-public class XSLProcessorVersion
+public class Version
 {
+
+  /**
+   * Get the basic version string for the current Xalan release.
+   * Version String formatted like 
+   * <CODE>"<B>Xalan</B> <B>Java</B> v.r[.dd| <B>D</B>nn]"</CODE>.
+   *
+   * Futurework: have this read version info from jar manifest.
+   *
+   * @return String denoting our current version
+   */
+  public static String getVersion()
+  {
+    return getProduct()+" "+getImplementationLanguage()+" "
+           +getMajorVersionNum()+"."+getReleaseVersionNum()+"."
+           +(getDevelopmentVersionNum() > 0 ? 
+               ("D"+getDevelopmentVersionNum()) : (getMaintenanceVersionNum()));
+  }
 
   /**
    * Print the processor version to the command line.
@@ -73,18 +94,24 @@ public class XSLProcessorVersion
    */
   public static void main(String argv[])
   {
-    System.out.println(S_VERSION);
+    System.out.println(getVersion());
   }
 
   /**
-   * Constant name of product.
+   * Name of product: Xalan.
    */
-  public static final String PRODUCT = "Xalan";
+  public static String getProduct()
+  {
+    return "Xalan";
+  }
 
   /**
-   * Implementation Language.
+   * Implementation Language: Java.
    */
-  public static String LANGUAGE = "Java";
+  public static String getImplementationLanguage()
+  {
+    return "Java";
+  }
 
   /**
    * Major version number.
@@ -97,7 +124,15 @@ public class XSLProcessorVersion
    *          of new versions as external interfaces and behaviour
    *          may have changed.
    */
-  public static int VERSION = 2;
+  public static int getMajorVersionNum()
+  {
+    // return 2;
+    // NOTE: In post 2.2 builds, we should remove XSLProcessorVersion
+    //  and simply store this info here or in the build.xml and use 
+    //  Ant's filtering capability to replace it here
+    return org.apache.xalan.processor.XSLProcessorVersion.VERSION;
+    
+  }
 
   /**
    * Release Number.
@@ -107,7 +142,11 @@ public class XSLProcessorVersion
    *            -  API or behaviour change.
    *            -  its designated as a reference release.
    */
-  public static int RELEASE = 2;
+  public static int getReleaseVersionNum()
+  {
+    //return 2;
+    return org.apache.xalan.processor.XSLProcessorVersion.RELEASE;
+  }
 
   /**
    * Maintenance Drop Number.
@@ -118,7 +157,11 @@ public class XSLProcessorVersion
    *          When missing, it designates the final and complete
    *          development drop for a release.
    */
-  public static int MAINTENANCE = 0;
+  public static int getMaintenanceVersionNum()
+  {
+    //return 0;
+    return org.apache.xalan.processor.XSLProcessorVersion.MAINTENANCE;
+  }
 
   /**
    * Development Drop Number.
@@ -137,16 +180,9 @@ public class XSLProcessorVersion
    *          well as defect fixes. 'D' drops may not be as stable as
    *          the final releases.
    */
-  public static int DEVELOPMENT = 12;
-  
-  /**
-   * Version String like <CODE>"<B>Xalan</B> <B>Language</B> 
-   * v.r[.dd| <B>D</B>nn]"</CODE>.
-   * <P>Semantics of the version string are identical to the Xerces project.</P>
-   */
-  public static String S_VERSION = PRODUCT+" "+LANGUAGE+" "
-                                   +VERSION+"."+RELEASE+"."
-                                   +(DEVELOPMENT > 0 ? ("D"+DEVELOPMENT) 
-                                     : (""+MAINTENANCE));
-
+  public static int getDevelopmentVersionNum()
+  {
+    //return 12;
+    return org.apache.xalan.processor.XSLProcessorVersion.DEVELOPMENT;
+  }
 }

@@ -780,6 +780,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(702536), "xalan.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(720930), "xalan.jar from xalan-j_2_0_1");
     jarVersions.put(new Long(872241), "xalan.jar from xalan-j_2_2_D10");
+    jarVersions.put(new Long(882739), "xalan.jar from xalan-j_2_2_D11");
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
     jarVersions.put(new Long(857692), "xalan.jar from lotusxsl-j_2_2");
@@ -798,7 +799,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1787796), "xerces.jar from lotusxsl-j_2_2 or xerces-1_4_1.bin");
     jarVersions.put(new Long(904030), "xerces.jar from xerces-1_4_0.bin");
     jarVersions.put(new Long(1802885), "xerces.jar from xerces-1_4_2.bin");
-    jarVersions.put(new Long(1808883), "xerces.jar from xalan-j_2_2_D10 or xerces-1_4_3.bin");
+    jarVersions.put(new Long(1808883), "xerces.jar from xalan-j_2_2_D10,D11,D12 or xerces-1_4_3.bin");
     jarVersions.put(new Long(1803877), "xerces.jar from XML4J-3_2_1");
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
@@ -902,9 +903,9 @@ public class EnvironmentCheck
       }
       else
       {
-
         // We couldn't even find the class, and don't have 
-        //  any JAXP support at all
+        //  any JAXP support at all, or only have the 
+        //  transform half of it
         h.put(ERROR + VERSION + "JAXP", CLASS_NOTPRESENT);
         h.put(ERROR, ERROR_FOUND);
       }
@@ -955,31 +956,40 @@ public class EnvironmentCheck
 
     try
     {
+      // NOTE: This is the old Xalan 2.0, 2.1, 2.2 version class, 
+      //    is being replaced by class below
       final String XALAN2_VERSION_CLASS =
         "org.apache.xalan.processor.XSLProcessorVersion";
       Class clazz = Class.forName(XALAN2_VERSION_CLASS);
 
       // Found Xalan-J 2.x, grab it's version fields
       StringBuffer buf = new StringBuffer();
-      Field f = clazz.getField("PRODUCT");
-
+      Field f = clazz.getField("S_VERSION");
       buf.append(f.get(null));
-      buf.append(";");
 
-      f = clazz.getField("LANGUAGE");
-
-      buf.append(f.get(null));
-      buf.append(";");
-
-      f = clazz.getField("S_VERSION");
-
-      buf.append(f.get(null));
-      buf.append(";");
-      h.put(VERSION + "xalan2", buf.toString());
+      h.put(VERSION + "xalan2x", buf.toString());
     }
     catch (Exception e2)
     {
-      h.put(VERSION + "xalan2", CLASS_NOTPRESENT);
+      h.put(VERSION + "xalan2x", CLASS_NOTPRESENT);
+    }
+    try
+    {
+      // NOTE: This is the new Xalan 2.2+ version class
+      final String XALAN2_2_VERSION_CLASS =
+        "org.apache.xalan.Version";
+      final String XALAN2_2_VERSION_METHOD = "getVersion";
+      final Class noArgs[] = new Class[0];
+
+      Class clazz = Class.forName(XALAN2_2_VERSION_CLASS);
+      Method method = clazz.getMethod(XALAN2_2_VERSION_METHOD, noArgs);
+      Object returnValue = method.invoke(null, new Object[0]);
+
+      h.put(VERSION + "xalan2_2", (String)returnValue);
+    }
+    catch (Exception e2)
+    {
+      h.put(VERSION + "xalan2_2", CLASS_NOTPRESENT);
     }
   }
 
