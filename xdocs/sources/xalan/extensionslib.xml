@@ -200,7 +200,7 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 </s2><anchor name="intersection"/>
 <s2 title="intersection">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
-<code>intersection (node-set1, node-set2)</code>  function returns a node-set with all nodes that are in ns1 and in ns2 .</p>
+<code>intersection (node-set1, node-set2)</code> function returns a node-set with all nodes that are in ns1 and in ns2 .</p>
 </s2><anchor name="difference"/>
 <s2 title= "difference">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
@@ -220,12 +220,12 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 use to get information about the location of nodes in the source document:</p>
 <ul>
 <li><link anchor="systemid">systemId</link></li>
-<li><link anchor="publicid">publicId</link></li>
+<li><link anchor="publicid">publicId</link> (to be done)</li>
 <li><link anchor="linenumber">lineNumber</link></li>
 <li><link anchor="columnnumber">columnNumber</link></li>
 </ul>
 <note>If you want to use the NodeInfo extension elements, you MUST set the TransformerFactory 
-<link idref="features" anchor="source-location">source-location</link> attribute to Boolean.TRUE. 
+<link idref="features" anchor="source_location">source_location</link> attribute to true. 
 You can use the <link idref="commandline">command-line utility</link> -L flag or the <jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute()</jump> 
 method to set this attribute.</note>
 <anchor name="systemid"/>
@@ -235,19 +235,21 @@ method to set this attribute.</note>
 <code>systemId(node-set)</code> returns the system ID of the first node in the node-set.</p>
 </s3><anchor name="publicid"/>
 <s3 title="publicId">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
-<code>publicId()</code> returns the public ID for the current node, and<br/>
-<code>publicId(node-set)</code> returns the public ID of the first node in the node-set.</p>
+<p><em>To be done.</em> Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
+<code>publicId()</code> will return the public ID for the current node, and<br/>
+<code>publicId(node-set)</code> will return the public ID of the first node in the node-set.</p>
 </s3><anchor name="linenumber"/>
 <s3 title="lineNumber">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
 <code>lineNumber()</code> returns the line number in the source document for the current node, and<br/>
 <code>lineNumber(node-set)</code> returns the line number in the source document for the first node in the node-set.</p>
+<note>This function returns -1 if the line number is not known (for example, the source is a DOM Document).</note>
 </s3><anchor name="columnnumber"/>
 <s3 title="columnNumber">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
 <code>columnNumber()</code> returns the column number in the source document for the current node, and<br/>
 <code>columnNumber(node-set)</code> returns the column number in the source document for the first node in the node-set.</p>
+<note>This function returns -1 if the column number is not known (for example, the source is a DOM Document).</note>
 </s3></s2><anchor name="sql"/>
 <s2 title= "SQL library">
 <note>For UML Diagrams of the SQL Library, see <jump href="http://xml.apache.org/xalan-j/Xalan-SQL-Extension/DiagramIndex.html">SQL Library UML Diagrams</jump>.</note>
