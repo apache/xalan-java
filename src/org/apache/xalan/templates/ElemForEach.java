@@ -429,7 +429,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
         // Fire a trace event for the template.
         if (TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireTraceEvent(this);
+        {
+           transformer.getTraceManager().fireTraceEvent(this);
+        }
 
         // And execute the child templates.
         // Loop through the children of the template, calling execute on 
@@ -443,7 +445,12 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         }
         
         if (TransformerImpl.S_DEBUG)
+        {
+         // We need to make sure an old current element is not 
+          // on the stack.  See TransformerImpl#getElementCallstack.
+          transformer.setCurrentElement(null);
           transformer.getTraceManager().fireTraceEndEvent(this);
+        }
 
 
 	 	// KLUGE: Implement <?xalan:doc_cache_off?> 
