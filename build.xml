@@ -219,6 +219,7 @@ $Id$
          compatibility with 1.1.x.  If you omit this property, compatability
          with 1.1.x will not be checked even though javac specifies a target of 1.1 -->
     <pathelement location="${build.classes}" />
+    <pathelement location="${serializer.build.classes}" />
     <pathelement path="${build.boot.class.path}" />
     <pathelement path="${sun.boot.class.path}" />
   </path>
