@@ -72,6 +72,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.stree.DocumentImpl;
+import org.apache.xalan.stree.DocImpl;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -1603,7 +1604,7 @@ public class TransformerImpl extends Transformer
       // Create a ResultTreeFrag object.
       DocumentImpl doc = (DocumentImpl)((SourceTreeHandler)rtfHandler).getRoot();
       resultFragment = doc.createDocumentFragment();      
-      ((SourceTreeHandler)rtfHandler).setRoot((Document)resultFragment);
+      ((SourceTreeHandler)rtfHandler).setRoot((DocImpl)resultFragment);
     }     
     else
     {

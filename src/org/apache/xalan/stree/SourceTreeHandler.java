@@ -150,7 +150,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   private DOMBuilder m_sourceTreeHandler;
 
   /** The root of the source document          */
-  private Document m_root;  // Normally a Document
+  private DocImpl m_root;  // Normally a Document but may be a DocumentFragment
 
   /** No longer used??          */
   private boolean m_initedRoot;
@@ -180,7 +180,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    *
    * @param root root document of tree that will be created
    */
-  public void setRoot(Document root)
+  public void setRoot(DocImpl root)
   {
     m_root = root;
   }
@@ -193,7 +193,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public void setExceptionThrown(Exception e)
   {
-    ((DocumentImpl) m_root).m_exceptionThrown = e;
+    m_root.m_exceptionThrown = e;
   }
 
   /** Source Document          */
@@ -304,15 +304,16 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     // System.out.println("startDocument: "+m_id);
     synchronized (m_root)
     {
-      ((DocumentImpl) m_root).setSourceTreeHandler(this);
-      ((DocumentImpl) m_root).setUid(1);
-      ((DocumentImpl) m_root).setLevel(new Integer(1).shortValue());
-      ((DocumentImpl) m_root).setUseMultiThreading(getUseMultiThreading());
+      m_root.setSourceTreeHandler(this);
+      m_root.setUid(1);
+      m_root.setLevel(new Integer(1).shortValue());
+      m_root.setUseMultiThreading(getUseMultiThreading());
 
       if (m_root.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE)
-        m_sourceTreeHandler = new StreeDOMBuilder(m_root, (DocumentFragment)m_root);
+        m_sourceTreeHandler =
+                new StreeDOMBuilder(m_root.getOwnerDocument(), (DocumentFragment) m_root);
       else
-      m_sourceTreeHandler = new StreeDOMBuilder(m_root);
+        m_sourceTreeHandler = new StreeDOMBuilder((Document) m_root);
 
       pushShouldStripWhitespace(false);
       m_sourceTreeHandler.startDocument();
@@ -348,7 +349,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void endDocument() throws org.xml.sax.SAXException
   {
     // System.out.println("endDocument: "+m_id);
-    ((Parent) m_root).setComplete(true);
+    m_root.setComplete(true);
 
     m_eventsCount = m_maxEventsToNotify;
 
@@ -676,9 +677,12 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void startDTD(String name, String publicId, String systemId)
           throws org.xml.sax.SAXException
   {
-    DocumentImpl doc = ((DocumentImpl)m_root);
-    DocumentTypeImpl dtd = new DocumentTypeImpl(doc, name, publicId, systemId);
-    ((DocumentImpl)m_root).setDoctype(dtd);
+    if (m_root instanceof DocumentImpl)
+    {
+      DocumentImpl doc = ((DocumentImpl)m_root);
+      DocumentTypeImpl dtd = new DocumentTypeImpl(doc, name, publicId, systemId);
+      ((DocumentImpl)m_root).setDoctype(dtd);
+    }
   }
 
   /**

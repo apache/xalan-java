@@ -78,23 +78,8 @@ import org.apache.xml.utils.FastStringBuffer;
  * interface.  It rules over the tree, and may contain 
  * common information for the tree.
  */
-public class DocumentImpl extends Parent
+public class DocumentImpl extends DocImpl
 {
-  /** Aid to assigning a unique ID to the tree. */
-  static int m_idCount = 0;
-  
-  /** The unique ID of this tree. */
-  int m_id;
-  
-  /** Contains exception thrown from transformation thread, 
-   * if one occured. */
-  public Exception m_exceptionThrown = null;
-
-  /** This holds all the characters used, copied from the 
-   * characters events.  This allows us to not have to allocate 
-   * a million little arrays.  */
-  FastStringBuffer m_chars = new FastStringBuffer(1024 * 64);
-
   /**
    * Constructor DocumentImpl. This constructor is 
    * not normally used by the transformation.
@@ -102,10 +87,8 @@ public class DocumentImpl extends Parent
   DocumentImpl()
   {
 
-    super(null);
-    m_id = m_idCount++;
+    super();
     setDoc(this);
-
     // m_bUpIndexer = new LevelIndexer();
   }
 
@@ -118,10 +101,8 @@ public class DocumentImpl extends Parent
   DocumentImpl(SourceTreeHandler sth)
   {
 
-    super(null);
-    m_id = m_idCount++;
+    super();
     setDoc(this);
-
     // m_bUpIndexer = new LevelIndexer();
     m_sourceTreeHandler = sth;
   }
@@ -136,43 +117,12 @@ public class DocumentImpl extends Parent
   DocumentImpl(DocumentType doctype)
   {
 
-    super(null);
-    m_id = m_idCount++;
+    super();
     setDoc(this);
-
     if (null != doctype)
       m_docType = (DocumentTypeImpl) doctype;
 
     // m_bUpIndexer = new LevelIndexer();
-  }
-
-  /** A reference back to the source tree 
-   * handler that is creating this tree.    */
-  SourceTreeHandler m_sourceTreeHandler;
-
-  /**
-   * Get a reference back to the source tree 
-   * handler that is creating this tree.  
-   *
-   * @return SourceTreeHandler reference, could 
-   * be null (though maybe this should change.  -sb).
-   */
-  SourceTreeHandler getSourceTreeHandler()
-  {
-    return m_sourceTreeHandler;
-  }
-
-  /**
-   * Set a reference back to the source tree 
-   * handler that is creating this tree. 
-   *
-   * @param h Should be a non-null reference to 
-   * the SourceTreeHandler that is creating this 
-   * tree.
-   */
-  void setSourceTreeHandler(SourceTreeHandler h)
-  {
-    m_sourceTreeHandler = h;
   }
 
   /**
@@ -180,29 +130,6 @@ public class DocumentImpl extends Parent
    * not normally used, and may well be null.
    */
   DocumentTypeImpl m_docType;
-
-  /** This tells how many children are in the tree.  */
-  int m_docOrderCount = 1;
-
-  /**
-   * Increment the document order count.  Needs to be called
-   * when a child is added.
-   */
-  protected void incrementDocOrderCount()
-  {
-    m_docOrderCount++;
-  }
-
-  /**
-   * Get the number of nodes in the tree.  Needs to be called
-   * when a child is added.
-   *
-   * @return The number of children in the tree.
-   */
-  protected int getDocOrderCount()
-  {
-    return m_docOrderCount;
-  }
 
   /**
    * For XML, this provides access to the Document Type Definition.
@@ -219,36 +146,6 @@ public class DocumentImpl extends Parent
   public void setDoctype(DocumentType docType)
   {
     m_docType = (DocumentTypeImpl)docType;
-  }
-
-
-  /** If this is true, the transformation is working off of 
-   * a secondary thread from the incoming SAX events, and 
-   * the secondary thread may have to wait for nodes be produced.  */
-  boolean m_useMultiThreading = false;
-
-  /**
-   * Set whether or not the tree being built should handle
-   * transformation while the parse is still going on.
-   *
-   * @param b true if the transformation is working off of a 
-   * secondary thread, false otherwise.
-   */
-  public void setUseMultiThreading(boolean b)
-  {
-    m_useMultiThreading = b;
-  }
-
-  /**
-   * Tell whether or not the tree being built should handle
-   * transformation while the parse is still going on.
-   *
-   * @return true if the transformation is working off of a 
-   * secondary thread, false otherwise.
-   */
-  public boolean getUseMultiThreading()
-  {
-    return m_useMultiThreading;
   }
 
   /**
@@ -380,7 +277,7 @@ public class DocumentImpl extends Parent
    */
   public DocumentFragment createDocumentFragment()
   {
-    return new DocumentFragmentImpl();
+    return new DocumentFragmentImpl(this);
   }
 
   /**
