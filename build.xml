@@ -163,9 +163,7 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
-  <!-- Compiles the samples and jars the class files                       -->  
-  <!-- To compile (and run) the servlet sample, the javax.servlet and      -->
-  <!-- javax.servlet.http packages must be on the classpath                -->
+  <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
   <target name="samples" depends="jar">
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
@@ -190,18 +188,27 @@ Copyright:
     <jar jarfile="${build.samples}/$xalansamples.jar" basedir="${build.samples}"
          includes="*.class"/>
                    
-    <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${xalanjar}:${servletjar}" 
+  </target>
+  
+   <!-- =================================================================== -->
+  <!-- Compiles the sample servlet and jars the class files.                -->  
+  <!-- The javax.servlet and javax.servlet.http packages                    -->
+  <!-- must be on the classpath                                             -->
+  <!-- =================================================================== -->
+
+ <target name="servlet" depends="jar">
+     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${xalanjar}:${servletjar}" 
            destdir="${build.samples}" excludes="${exclude}"
            debug="${debug}"/>      
     <jar jarfile="${build.samples}/servlet/xalanservlet.jar" basedir="${build.samples}"
          includes="servlet/*.*"/>            
-  </target>
-
+ </target>
+ 
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
   <target name="docs" depends="prepare.docs">
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalan1jar}" 
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalanjar}" 
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
   </target>
   
@@ -238,7 +245,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="docs,javadocs,samples">
+  <target name="dist" depends="docs,javadocs,samples,servlet">
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/bin"/>    
     <mkdir dir="${dist.dir}/src"/>
@@ -287,4 +294,20 @@ Copyright:
     <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
   </target-->
       
+
+ <!-- =================================================================== -->
+  <!-- Compiles the source tree                                            -->
+  <!-- =================================================================== -->
+  <target name="compilex" depends="prepare">
+    <javac srcdir="${src.dir}" destdir="${build.dest}" debug="${debug}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the xalan JAR                                               -->
+  <!-- =================================================================== -->
+  <target name="jarx" depends="compilex">
+    <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"/>
+  </target>
+
+
 </project>
