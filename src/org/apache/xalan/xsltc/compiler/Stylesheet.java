@@ -212,7 +212,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    SyntaxTreeNode child = (SyntaxTreeNode)elements.nextElement();
 	    if (child instanceof Include) {
 		Stylesheet included = ((Include)child).getIncludedStylesheet();
-		if (included != null) included.setImportPrecedence(precedence);
+		if (included != null && included._includedFrom == this) {
+		    included.setImportPrecedence(precedence);
+		}
 	    }
 	}
 
