@@ -188,8 +188,9 @@ public class NodeTest extends Expression
         if(0 == isNamespace)
         {
           if(!dh.isNamespaceNode(context))
-            return (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
-                    && subPartMatch(dh.getLocalNameOfNode(context), m_name)) ?
+            return ((m_name == WILD) || 
+                    (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
+                    && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
                    m_score : SCORE_NONE;
           else
             return SCORE_NONE;
@@ -210,8 +211,9 @@ public class NodeTest extends Expression
     case NodeFilter.SHOW_ELEMENT:
       {
         DOMHelper dh = xctxt.getDOMHelper();
-        return (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
-                && subPartMatch(dh.getLocalNameOfNode(context), m_name)) ?
+        return ((m_name == WILD) ||
+                (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
+                && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
                m_score : SCORE_NONE;
       }
       
