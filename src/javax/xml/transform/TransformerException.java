@@ -148,7 +148,7 @@ public class TransformerException extends Exception {
      */
     public synchronized Throwable initCause(Throwable cause) {
 
-        if (this.containedException == null) {
+        if ((this.containedException == null) && (cause != null)) {
             throw new IllegalStateException("Can't overwrite cause");
         }
 
