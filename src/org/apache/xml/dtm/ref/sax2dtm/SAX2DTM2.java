@@ -366,7 +366,7 @@ public class SAX2DTM2 extends SAX2DTM
             return returnNode(node);
           }
         } else {
-          if (m_expandedNameTable.getType(expType) == nodeType) {
+          if (m_extendedTypes[expType].getNodeType() == nodeType) {
             return returnNode(node);
           }
         }
@@ -467,7 +467,7 @@ public class SAX2DTM2 extends SAX2DTM
             if (eType == nodeType) {
               break;
             }
-          } else if (m_expandedNameTable.getType(eType) == nodeType) {
+          } else if (m_extendedTypes[eType].getNodeType() == nodeType) {
             break;
           }
         }
@@ -639,7 +639,7 @@ public class SAX2DTM2 extends SAX2DTM
           return resetPosition();
         }
 
-        int type = m_expandedNameTable.getType(_exptype2(node));
+        int type = _type2(node);
         if(ExpandedNameTable.ATTRIBUTE == type 
            || ExpandedNameTable.NAMESPACE == type )
         {
@@ -730,7 +730,7 @@ public class SAX2DTM2 extends SAX2DTM
               break;
             }
           } else {
-            if (m_expandedNameTable.getType(expType) == nodeType) {
+            if (m_extendedTypes[expType].getNodeType() == nodeType) {
               break;
             }
           }
@@ -983,7 +983,7 @@ public class SAX2DTM2 extends SAX2DTM
                 break;
               }
             } else {
-              if (m_expandedNameTable.getType(expType) == nodeType) {
+              if (m_extendedTypes[expType].getNodeType() == nodeType) {
                 break;
               }
             }
@@ -1310,7 +1310,7 @@ public class SAX2DTM2 extends SAX2DTM
             int eType = _exptype2(nodeID);
 
             if ((eType >= DTM.NTYPES
-                    && m_expandedNameTable.getType(eType) == nodeType)
+                    && m_extendedTypes[eType].getNodeType() == nodeType)
                 || (eType < DTM.NTYPES && eType == nodeType)) {
               m_ancestors.addElement(makeNodeHandle(nodeID));
             }
@@ -1403,7 +1403,7 @@ public class SAX2DTM2 extends SAX2DTM
 
       do {
         node++;
-        type = _type(node);
+        type = _type2(node);
 
         if (NULL == type ||!isDescendant(node)) {
           _currentNode = NULL;
@@ -1581,10 +1581,10 @@ public class SAX2DTM2 extends SAX2DTM
   // SuballocatedIntVectors. Using the cached arrays reduces the level
   // of indirection and results in better performance than just calling
   // SuballocatedIntVector.elementAt().
-  private final int[] m_exptype_map0;
-  private final int[] m_nextsib_map0;
-  private final int[] m_firstch_map0;
-  private final int[] m_parent_map0;
+  private int[] m_exptype_map0;
+  private int[] m_nextsib_map0;
+  private int[] m_firstch_map0;
+  private int[] m_parent_map0;
   
   // Double array references to the map arrays in SuballocatedIntVectors.
   private int[][] m_exptype_map;
@@ -1596,8 +1596,9 @@ public class SAX2DTM2 extends SAX2DTM
   private ExtendedType[] m_extendedTypes;
   
   // Cache the shift and mask values for the SuballocatedIntVectors.
-  protected final int m_SHIFT;
-  protected final int m_MASK;
+  protected int m_SHIFT;
+  protected int m_MASK;
+  protected int m_blocksize;
   
   // A constant for empty string
   private static final String EMPTY_STR = "";
@@ -1614,7 +1615,7 @@ public class SAX2DTM2 extends SAX2DTM
     this(mgr, source, dtmIdentity, whiteSpaceFilter,
           xstringfactory, doIndexing, m_initialblocksize);
   }
-  
+ 
   /**
    * Construct a SAX2DTM2 object using the given block size.
    */
@@ -1632,8 +1633,9 @@ public class SAX2DTM2 extends SAX2DTM
     int shift;
     for(shift=0; (blocksize>>>=1) != 0; ++shift);
     
+    m_blocksize = 1<<shift;
     m_SHIFT = shift;
-    m_MASK = (1<<shift) - 1;
+    m_MASK = m_blocksize - 1;
     
     // Set the map0 values in the constructor.
     m_exptype_map0 = m_exptype.getMap0();
@@ -1816,6 +1818,69 @@ public class SAX2DTM2 extends SAX2DTM
 	{
 	  break;
 	}
+      }
+    }
+
+    return DTM.NULL;
+  }
+
+  /**
+   * The optimized version of DTMDefaultBase.getFirstAttributeIdentity(int).
+   *
+   * Given a node identity, get the index of the node's first attribute.
+   *
+   * @param identity int identity of the node.
+   * @return Identity of first attribute, or DTM.NULL to indicate none exists.
+   */
+  protected int getFirstAttributeIdentity(int identity) {
+    int type = _type2(identity);
+
+    if (DTM.ELEMENT_NODE == type)
+    {
+      // Assume that attributes and namespaces immediately follow the element.
+      while (true)
+      {
+        identity++;
+
+        // Assume this can not be null.
+        type = _type2(identity);
+
+        if (type == DTM.ATTRIBUTE_NODE)
+        {
+          return identity;
+        }
+        else if (DTM.NAMESPACE_NODE != type)
+        {
+          break;
+        }
+      }
+    }
+
+    return DTM.NULL;
+  }
+
+  /**
+   * The optimized version of DTMDefaultBase.getNextAttributeIdentity(int).
+   *
+   * Given a node identity for an attribute, advance to the next attribute.
+   *
+   * @param identity int identity of the attribute node.  This
+   * <strong>must</strong> be an attribute node.
+   *
+   * @return int DTM node-identity of the resolved attr,
+   * or DTM.NULL to indicate none exists.
+   *
+   */
+  protected int getNextAttributeIdentity(int identity) {
+    // Assume that attributes and namespace nodes immediately follow the element
+    while (true) {
+      identity++;
+      int type = _type2(identity);
+
+      if (type == DTM.ATTRIBUTE_NODE) {
+        return identity;
+      } else if (type != DTM.NAMESPACE_NODE) {
+        break;
       }
     }
 
