@@ -46,7 +46,6 @@ import java.io.BufferedInputStream;    // dml
  */
 public class Examples
 {
-
   /**
    * Method main
    */
@@ -55,38 +54,117 @@ public class Examples
                  ParserConfigurationException, FileNotFoundException
   {
     System.out.println("\n\n==== exampleSimple ====");
-    exampleSimple1("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleFromStream ====");
-    exampleFromStream("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleFromReader ====");
-    exampleFromReader("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleUseTemplatesObj ====");
-    exampleUseTemplatesObj("xml/foo.xml", "xml/baz.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleContentHandlerToContentHandler ====");
-    exampleContentHandlerToContentHandler("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleXMLReader ====");
-    exampleXMLReader("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleXMLFilter ====");
-    exampleXMLFilter("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleXMLFilterChain ====");
-    exampleXMLFilterChain("xml/foo.xml", "xsl/foo.xsl", "xsl/foo2.xsl", "xsl/foo3.xsl");
-    System.out.println("\n\n==== exampleDOM2DOM ====");
-    exampleDOM2DOM("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleParam ====");
-    exampleParam("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleTransformerReuse ====");
-    exampleTransformerReuse("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleOutputProperties ====");
-    exampleOutputProperties("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleUseAssociated ====");
-    exampleUseAssociated("xml/foo.xml");
-    System.out.println("\n\n==== exampleContentHandler2DOM ====");
-    exampleContentHandler2DOM("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleAsSerializer ====");
-    exampleAsSerializer("xml/foo.xml", "xsl/foo.xsl");
-    System.out.println("\n\n==== exampleContentHandler2DOM ====");
-    exampleContentHandler2DOM("xml/foo.xml", "xsl/foo.xsl");
+    try {
+        exampleSimple1("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
     
+    System.out.println("\n\n==== exampleFromStream ====");
+    try {
+        exampleFromStream("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleFromReader ====");
+    try {
+        exampleFromReader("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleUseTemplatesObj ====");
+    try {
+        exampleUseTemplatesObj("xml/foo.xml", "xml/baz.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleContentHandlerToContentHandler ====");
+    try {
+        exampleContentHandlerToContentHandler("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleXMLReader ====");
+    try {
+        exampleXMLReader("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleXMLFilter ====");
+    try {
+        exampleXMLFilter("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleXMLFilterChain ====");
+    try {
+        exampleXMLFilterChain("xml/foo.xml", "xsl/foo.xsl", "xsl/foo2.xsl", "xsl/foo3.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleDOM2DOM ====");
+    try {
+        exampleDOM2DOM("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleParam ====");
+    try {
+        exampleParam("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleTransformerReuse ====");
+    try {
+        exampleTransformerReuse("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleOutputProperties ====");
+    try {
+        exampleOutputProperties("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleUseAssociated ====");
+    try {
+        exampleUseAssociated("xml/foo.xml");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleContentHandler2DOM ====");
+    try {
+        exampleContentHandler2DOM("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleAsSerializer ====");
+    try {
+        exampleAsSerializer("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
+    System.out.println("\n\n==== exampleContentHandler2DOM ====");
+    try {
+        exampleContentHandler2DOM("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+
     System.out.println("\n==== done! ====");
   }
   
@@ -626,5 +704,16 @@ public class Examples
   }
   
 
+  private static void  handleException( Exception ex ) {
+    System.out.println("EXCEPTION: " );
+    ex.printStackTrace();
+    
+    if( ex instanceof TransformerConfigurationException ) {
+      System.out.println();
+      System.out.println("Internal exception: " );
+      Exception ex1=((TransformerConfigurationException)ex).getException();
+      ex1.printStackTrace();
+    }
+  }
 
 }
