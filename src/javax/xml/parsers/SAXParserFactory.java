@@ -264,8 +264,12 @@ public abstract class SAXParserFactory {
 
     /** Temp debug code - this will be removed after we test everything
      */
-    private static final boolean debug=
-        System.getProperty( "jaxp.debug" ) != null;
+    private static boolean debug=false;
+    static {
+	try {
+	    debug= System.getProperty( "jaxp.debug" ) != null;
+	} catch(SecurityException ex ) {}
+    } 
 
     /** Private implementation method - will find the implementation
         class in the specified order.
