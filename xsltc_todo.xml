@@ -1,23 +1,22 @@
 <?xml version="1.0"?>
-<!DOCTYPE todo
-     [<!ENTITY integration-task "Note: Task may be implemented as a result of integrating Xsltc and Xalan 
-                                 and using shared code.">
-     ]
->
 
 <todo title="Things To Do" project="XSLTC" major-version="1">
 
-
-
   <devs>
+   <person name="Jacek Ambroziak" email="jaceka@crossgain.com" id="JA" expertise="code">
+     Originator.
+   </person>  
    <person name="Tom Amiro" email="Tom.Amiro@Sun.COM" id="TA" expertise="testing">
-     Details to be added.
+     Testing.
    </person>  
    <person name="Morten J&#216;rgensen" email="morten@xml.apache.org" id="MJ" expertise="code, doc">
-     Details to be added.
+     Lead developer.
    </person>
    <person name="G. Todd Miller" email="Glenn.Miller@Sun.COM" id="TM" expertise="code">
-     Details to be added.
+     Developer.
+   </person>
+   <person name="Santiago Pericas-Geertsen" email="santiago@cs.bu.edu" id="SP" expertise="code">
+     Co-originator.
    </person>
   </devs>
  
@@ -135,7 +134,8 @@
           priority="medium">
       Implement an extension to support the redirection of output to multiple
       output files from within a stylesheet (equivalent to xalan:redirect or
-      saxon:output). &integration-task;
+      saxon:output).  Note: Task may be implemented as a result of integrating Xsltc and Xalan 
+     and using shared code.
    </action>       
 
 
@@ -145,7 +145,8 @@
           priority="medium">
      Implement a node-set extension to convert result tree fragments to
      node-sets. This enables sorting and grouping of nodes assigned to a tree 
-     variable. &integration-task;
+     variable. Note: Task may be implemented as a result of integrating Xsltc and Xalan 
+     and using shared code.
    </action>       
 
 
@@ -153,7 +154,9 @@
           category="feature, integration with Xalan"
           who="??"
           priority="medium">
-      Add support for nonstatic external Java functions. &integration-task;
+      Add support for nonstatic external Java functions.  
+      Note: Task may be implemented as a result of integrating Xsltc and Xalan 
+      and using shared code.
    </action>       
 
 
@@ -163,7 +166,9 @@
           priority="medium">
     Fix bugs affecting the correctness of ouput 
     (1403, 1406, 1441, 1489, 1429, 1504,
-     1508, 1512, 1513, 1516, 1520, 1521, 1525).  &integration-task;
+     1508, 1512, 1513, 1516, 1520, 1521, 1525).
+     Note: Task may be implemented as a result of integrating Xsltc and Xalan 
+     and using shared code.
    </action>       
 
   <action context="code, AST"
