@@ -325,7 +325,7 @@ if (transformer instanceof TransformerImpl) {
   
   // Register the TraceListener with the TraceManager associated 
   // with the TransformerImpl.
-  TraceManager trMgr = new transformerImpl.getTraceManager();
+  TraceManager trMgr = transformerImpl.getTraceManager();
   trMgr.addTraceListener(ptl);
   
   // Perform the transformation --printing information to
