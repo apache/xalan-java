@@ -181,6 +181,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   public AttrImpl getChildAttribute(int i)
           throws ArrayIndexOutOfBoundsException, NullPointerException
   {
+    if(i < 0)  // bug fix attributed to Norman Walsh <ndw@nwalsh.com>
+      return null; 
 
     synchronized (m_doc)
     {
