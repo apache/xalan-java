@@ -119,5 +119,18 @@ public class ResultTreeFrag extends DocumentFragmentImpl implements NodeList
   {
     return getChildCount();
   }
+  
+  /**
+   * The <code>Document</code> object associated with this node. This is 
+   * also the <code>Document</code> object used to create new nodes. When 
+   * this node is a <code>Document</code> or a <code>DocumentType</code> 
+   * which is not used with any <code>Document</code> yet, this is 
+   * <code>null</code>.
+   * @version DOM Level 2
+   */
+  public Document     getOwnerDocument()
+  {
+    return m_docFactory;
+  }
 
 }
