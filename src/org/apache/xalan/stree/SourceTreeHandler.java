@@ -75,10 +75,12 @@ import org.w3c.dom.Document;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.Locator;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.DTDHandler;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -93,7 +95,7 @@ import javax.xml.transform.ErrorListener;
  * This class handles SAX2 parse events to create a source
  * tree for transformation.
  */
-public class SourceTreeHandler implements TransformerHandler
+public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implements TransformerHandler, DeclHandler, DTDHandler
 {
   static int m_idCount = 0;
   int m_id;
@@ -616,7 +618,6 @@ public class SourceTreeHandler implements TransformerHandler
    */
   public void startEntity(String name) throws org.xml.sax.SAXException
   {
-
     synchronized (m_root)
     {
       m_sourceTreeHandler.startEntity(name);
@@ -661,7 +662,12 @@ public class SourceTreeHandler implements TransformerHandler
    * @see #startEntity
    */
   public void startDTD(String name, String publicId, String systemId)
-          throws org.xml.sax.SAXException{}
+          throws org.xml.sax.SAXException
+  {
+    DocumentImpl doc = ((DocumentImpl)m_root);
+    DocumentTypeImpl dtd = new DocumentTypeImpl(doc, name, publicId, systemId);
+    ((DocumentImpl)m_root).setDoctype(dtd);
+  }
 
   /**
    * Report the end of DTD declarations.
@@ -669,7 +675,9 @@ public class SourceTreeHandler implements TransformerHandler
    * @exception TransformerException The application may raise an exception.
    * @see #startDTD
    */
-  public void endDTD() throws org.xml.sax.SAXException{}
+  public void endDTD() throws org.xml.sax.SAXException
+  {
+  }
 
   /**
    * Begin the scope of a prefix-URI Namespace mapping.
@@ -755,7 +763,9 @@ public class SourceTreeHandler implements TransformerHandler
    *
    * @throws TransformerException
    */
-  public void skippedEntity(String name) throws org.xml.sax.SAXException{}
+  public void skippedEntity(String name) throws org.xml.sax.SAXException
+  {
+  }
 
   /** Flag indicating whether to strip whitespace nodes          */
   private boolean m_shouldStripWS = false;
@@ -880,6 +890,156 @@ public class SourceTreeHandler implements TransformerHandler
   {
     return m_transformer;
   }
+  
+  /**
+   * Report an element type declaration.
+   *
+   * <p>The content model will consist of the string "EMPTY", the
+   * string "ANY", or a parenthesised group, optionally followed
+   * by an occurrence indicator.  The model will be normalized so
+   * that all whitespace is removed,and will include the enclosing
+   * parentheses.</p>
+   *
+   * @param name The element type name.
+   * @param model The content model as a normalized string.
+   * @exception SAXException The application may raise an exception.
+   */
+  public void elementDecl (String name, String model)
+    throws org.xml.sax.SAXException
+  {
+  }
 
+
+  /**
+   * Report an attribute type declaration.
+   *
+   * <p>Only the effective (first) declaration for an attribute will
+   * be reported.  The type will be one of the strings "CDATA",
+   * "ID", "IDREF", "IDREFS", "NMTOKEN", "NMTOKENS", "ENTITY",
+   * "ENTITIES", or "NOTATION", or a parenthesized token group with 
+   * the separator "|" and all whitespace removed.</p>
+   *
+   * @param eName The name of the associated element.
+   * @param aName The name of the attribute.
+   * @param type A string representing the attribute type.
+   * @param valueDefault A string representing the attribute default
+   *        ("#IMPLIED", "#REQUIRED", or "#FIXED") or null if
+   *        none of these applies.
+   * @param value A string representing the attribute's default value,
+   *        or null if there is none.
+   * @exception SAXException The application may raise an exception.
+   */
+  public void attributeDecl (String eName,
+                             String aName,
+                             String type,
+                             String valueDefault,
+                             String value)
+    throws org.xml.sax.SAXException
+  {
+  }
+
+
+  /**
+   * Report an internal entity declaration.
+   *
+   * <p>Only the effective (first) declaration for each entity
+   * will be reported.</p>
+   *
+   * @param name The name of the entity.  If it is a parameter
+   *        entity, the name will begin with '%'.
+   * @param value The replacement text of the entity.
+   * @exception SAXException The application may raise an exception.
+   * @see #externalEntityDecl
+   * @see org.xml.sax.DTDHandler#unparsedEntityDecl
+   */
+  public void internalEntityDecl (String name, String value)
+    throws org.xml.sax.SAXException
+  {
+  }
+
+
+  /**
+   * Report a parsed external entity declaration.
+   *
+   * <p>Only the effective (first) declaration for each entity
+   * will be reported.</p>
+   *
+   * @param name The name of the entity.  If it is a parameter
+   *        entity, the name will begin with '%'.
+   * @param publicId The declared public identifier of the entity, or
+   *        null if none was declared.
+   * @param systemId The declared system identifier of the entity.
+   * @exception SAXException The application may raise an exception.
+   * @see #internalEntityDecl
+   * @see org.xml.sax.DTDHandler#unparsedEntityDecl
+   */
+  public void externalEntityDecl (String name, String publicId,
+                                  String systemId)
+    throws org.xml.sax.SAXException
+  {
+  }
+
+  /**
+   * Receive notification of a notation declaration event.
+   *
+   * <p>It is up to the application to record the notation for later
+   * reference, if necessary.</p>
+   *
+   * <p>At least one of publicId and systemId must be non-null.
+   * If a system identifier is present, and it is a URL, the SAX
+   * parser must resolve it fully before passing it to the
+   * application through this event.</p>
+   *
+   * <p>There is no guarantee that the notation declaration will be
+   * reported before any unparsed entities that use it.</p>
+   *
+   * @param name The notation name.
+   * @param publicId The notation's public identifier, or null if
+   *        none was given.
+   * @param systemId The notation's system identifier, or null if
+   *        none was given.
+   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @see #unparsedEntityDecl
+   * @see org.xml.sax.AttributeList
+   */
+  public void notationDecl (String name,
+                            String publicId,
+                            String systemId)
+    throws org.xml.sax.SAXException
+  {
+  }
+  
+  
+  /**
+   * Receive notification of an unparsed entity declaration event.
+   *
+   * <p>Note that the notation name corresponds to a notation
+   * reported by the {@link #notationDecl notationDecl} event.  
+   * It is up to the application to record the entity for later 
+   * reference, if necessary.</p>
+   *
+   * <p>If the system identifier is a URL, the parser must resolve it
+   * fully before passing it to the application.</p>
+   *
+   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @param name The unparsed entity's name.
+   * @param publicId The entity's public identifier, or null if none
+   *        was given.
+   * @param systemId The entity's system identifier.
+   * @param notation name The name of the associated notation.
+   * @see #notationDecl
+   * @see org.xml.sax.AttributeList
+   */
+  public void unparsedEntityDecl (String name,
+                                  String publicId,
+                                  String systemId,
+                                  String notationName)
+    throws org.xml.sax.SAXException
+  {
+    EntityImpl entity = new EntityImpl(name, notationName, publicId, systemId);
+    m_root.getDoctype().getEntities().setNamedItem(entity);
+  }
 
 }

@@ -380,10 +380,26 @@ public class XSLTProcessorApplet extends Applet
       ContentHandler inputHandler = new SourceTreeHandler(transformer);
 
       m_reader.setContentHandler(inputHandler);
-      try
+      if(m_reader instanceof org.xml.sax.DTDHandler)
+        m_reader.setDTDHandler((org.xml.sax.DTDHandler)inputHandler);
+     try
       {
         m_reader.setProperty("http://xml.org/sax/properties/lexical-handler",
                              inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          m_reader.setProperty("http://xml.org/sax/properties/declaration-handler",
+                               inputHandler);
+      }
+      catch(org.xml.sax.SAXNotRecognizedException snre)
+      {
+      }
+      try
+      {
+        m_reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
+                             inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          m_reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
+                               inputHandler);
       }
       catch(org.xml.sax.SAXNotRecognizedException snre)
       {

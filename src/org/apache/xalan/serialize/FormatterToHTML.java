@@ -73,6 +73,8 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Method;
 import org.apache.xalan.serialize.helpers.HTMLOutputFormat;
+import org.apache.xalan.utils.StringToIntTable;
+
 
 /**
  * <meta name="usage" content="general"/>
@@ -81,7 +83,6 @@ import org.apache.xalan.serialize.helpers.HTMLOutputFormat;
  */
 public class FormatterToHTML extends FormatterToXML
 {
-
   // StringVector m_parents = new StringVector();
 
   /** NEEDSDOC Field m_isRawStack          */
@@ -427,7 +428,7 @@ public class FormatterToHTML extends FormatterToXML
   static private ElemDesc m_dummy = new ElemDesc(0 | ElemDesc.BLOCK);
 
   /** NEEDSDOC Field m_specialEscapeURLs          */
-  private boolean m_specialEscapeURLs = false;
+  private boolean m_specialEscapeURLs = true;
 
   /**
    * Tells if the formatter should use special URL escaping.
@@ -1004,12 +1005,15 @@ public class FormatterToHTML extends FormatterToXML
 
           // The next is kind of a hack to keep from escaping in the case 
           // of Shift_JIS and the like.
+          /*
           else if ((ch < m_maxCharacter) && (m_maxCharacter == 0xFFFF)
-                   && (ch != 160) /* nbsp */)
+          && (ch != 160))
           {
-            accum(ch);  // no escaping in this case
+          accum(ch);  // no escaping in this case
           }
-          else if ((ch >= 160) && (ch <= 255))
+          else 
+          */
+          if ((ch >= 160) && (ch <= 255))
           {
             accum('&');
             accum(s_HTMLlat1[((int) ch) - 160]);
@@ -1053,9 +1057,16 @@ public class FormatterToHTML extends FormatterToXML
           }
           else
           {
-            accum("&#");
-            accum(Integer.toString(ch));
-            accum(';');
+            if (ch < m_maxCharacter)
+            {
+              accum(ch);  // no escaping in this case
+            }
+            else
+            {
+              accum("&#");
+              accum(Integer.toString(ch));
+              accum(';');
+            }
           }
         }
       }

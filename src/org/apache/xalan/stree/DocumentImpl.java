@@ -215,6 +215,12 @@ public class DocumentImpl extends Parent
   {
     return m_docType;
   }
+  
+  public void setDoctype(DocumentType docType)
+  {
+    m_docType = (DocumentTypeImpl)docType;
+  }
+
 
   /** If this is true, the transformation is working off of 
    * a secondary thread from the incoming SAX events, and 

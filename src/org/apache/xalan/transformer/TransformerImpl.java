@@ -511,12 +511,30 @@ public class TransformerImpl extends Transformer
       ContentHandler inputHandler = getInputContentHandler();
 
       reader.setContentHandler(inputHandler);
+      if(inputHandler instanceof org.xml.sax.DTDHandler)
+        reader.setDTDHandler((org.xml.sax.DTDHandler)inputHandler);
       try
       {
-        reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                           inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+          reader.setProperty("http://xml.org/sax/properties/lexical-handler",
+                             inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          reader.setProperty("http://xml.org/sax/properties/declaration-handler",
+                             inputHandler);
       }
       catch(org.xml.sax.SAXException se) {}
+      try
+      {
+        if(inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+          reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
+                             inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
+                             inputHandler);
+      }
+      catch(org.xml.sax.SAXNotRecognizedException snre)
+      {
+      }
 
       // Set the reader for cloning purposes.
       getXPathContext().setPrimaryReader(reader);
@@ -949,12 +967,30 @@ public class TransformerImpl extends Transformer
       inputHandler = (ContentHandler) inputHandlerClass.newInstance();
 
       reader.setContentHandler(inputHandler);
+      if(inputHandler instanceof org.xml.sax.DTDHandler)
+        reader.setDTDHandler((org.xml.sax.DTDHandler)inputHandler);
       try
       {
-        reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                           inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+          reader.setProperty("http://xml.org/sax/properties/lexical-handler",
+                             inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          reader.setProperty("http://xml.org/sax/properties/declaration-handler",
+                             inputHandler);
       }
       catch(SAXNotRecognizedException snre){}
+      try
+      {
+        if(inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+          reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
+                             inputHandler);
+        if(inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
+                             inputHandler);
+      }
+      catch(org.xml.sax.SAXNotRecognizedException snre)
+      {
+      }
       getXPathContext().setPrimaryReader(reader);
 
       // ...and of course I need a standard way to get a node...
