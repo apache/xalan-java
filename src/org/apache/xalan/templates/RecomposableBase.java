@@ -56,6 +56,8 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * This interface defines a recomposable stylesheet element that does not
  * necessarily implement the compareTo() method.
@@ -66,5 +68,5 @@ interface RecomposableBase
   /**
    * Recomposes this object with others of its type.
    */
-  public void recompose(StylesheetRoot root);
+  public void recompose(StylesheetRoot root) throws TransformerException;
 }

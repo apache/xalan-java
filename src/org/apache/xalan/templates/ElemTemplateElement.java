@@ -226,7 +226,9 @@ public class ElemTemplateElement extends UnImplNode
    * This function is called during recomposition to
    * control how this element is composed.
    */
-  public void recompose(StylesheetRoot root){}
+  public void recompose(StylesheetRoot root) throws TransformerException
+  {
+  }
 
   /**
    * This function is called after everything else has been

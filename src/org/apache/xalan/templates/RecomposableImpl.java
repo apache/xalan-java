@@ -57,6 +57,8 @@
 
 package org.apache.xalan.templates;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * This class creates a recomposable object when the underlying object does
  * not implement Recomposable itself.
@@ -131,7 +133,7 @@ class RecomposableImpl implements Recomposable
   /**
    * Recomposes this object with others of its type.
    */
-  public void recompose(StylesheetRoot root)
+  public void recompose(StylesheetRoot root) throws TransformerException
   {
     m_obj.recompose(root);
   }
