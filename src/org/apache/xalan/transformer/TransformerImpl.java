@@ -482,7 +482,8 @@ public class TransformerImpl extends XMLFilterImpl
   /**
    * Create a ContentHandler from a Result object.
    */
-  public ContentHandler createResultContentHandler(Result outputTarget, OutputFormat format)
+  public ContentHandler createResultContentHandler(Result outputTarget, 
+                                                   OutputFormat format)
     throws TransformException
   {
     ContentHandler handler;
@@ -511,14 +512,13 @@ public class TransformerImpl extends XMLFilterImpl
       
       try
       {
-        // System.out.println("createResultContentHandler -- format.getIndenting: "
-        //                   +format.getIndenting());
         Serializer serializer = SerializerFactory.getSerializer(format);
         if(null != outputTarget.getCharacterStream())
           serializer.setWriter(outputTarget.getCharacterStream());
         else
           serializer.setOutputStream(outputTarget.getByteStream());
         handler = serializer.asContentHandler();
+        this.setSerializer(serializer);
       }
       catch(UnsupportedEncodingException uee)
       {
@@ -668,6 +668,19 @@ public class TransformerImpl extends XMLFilterImpl
                             m_outputFormat;
     return format;
   }
+  
+  private Serializer m_serializer;
+  
+  public Serializer getSerializer()
+  {
+    return m_serializer;
+  }
+  
+  public void setSerializer(Serializer s)
+  {
+    m_serializer = s;;
+  }
+
 
   /**
    * Set a parameter for the templates.

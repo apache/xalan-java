@@ -60,6 +60,9 @@ import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.ElemExtensionCall;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xpath.XPath;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
@@ -79,11 +82,35 @@ public class ProcessorLRE extends ProcessorTemplateElem
                             String rawName, Attributes attributes)
     throws SAXException
   {
+    ElemTemplateElement p = handler.getElemTemplateElement();
+    if(null == p)
+    {
+      // Literal Result Template as stylesheet.
+      Stylesheet stylesheet = new StylesheetRoot();
+      // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
+      stylesheet.setLocaterInfo(new org.xml.sax.helpers.LocatorImpl());
+      stylesheet.setPrefixes(handler.getNamespaceSupport());
+
+      handler.pushStylesheet(stylesheet);
+      
+      setPropertiesFromAttributes(handler, "stylesheet", attributes, stylesheet);
+
+      handler.pushElemTemplateElement(stylesheet);
+      
+      ElemTemplate template = new ElemTemplate();
+      appendAndPush(handler, template);
+      
+      XPath rootMatch = new XPath("/", stylesheet, stylesheet, XPath.MATCH);
+      template.setMatch(rootMatch); 
+      // template.setDOMBackPointer(handler.getOriginatingNode());
+      stylesheet.setTemplate(template);
+      p = handler.getElemTemplateElement();
+    }
+
     XSLTElementDef def = getElemDef();
     Class classObject = def.getClassObject();
     
     boolean isExtension = false;
-    ElemTemplateElement p = handler.getElemTemplateElement();
     while(null != p)
     {
       // System.out.println("Checking: "+p);

@@ -87,6 +87,8 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
                             String rawName, Attributes attributes)
     throws SAXException
   {
+    ElemTemplateElement parent = handler.getElemTemplateElement();
+
     XSLTElementDef def = getElemDef();
     Class classObject = def.getClassObject();
     

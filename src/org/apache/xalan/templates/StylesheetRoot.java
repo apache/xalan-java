@@ -149,24 +149,15 @@ public class StylesheetRoot
    */
   public OutputFormat getOutputFormat()
   {
-    OutputFormat cloned = new OutputFormatExtended();
-    cloned.setPreserveSpace(true);
-    cloned.setCDataElements(m_outputFormatComposed.getCDataElements());
-    cloned.setDoctypePublicId(m_outputFormatComposed.getDoctypePublicId());
-    // cloned.setDoctype(m_outputFormatComposed.getDoctypePublic(), m_outputFormatComposed.getDoctypeSystem());
-    cloned.setEncoding(m_outputFormatComposed.getEncoding());
-    // System.out.println("getOutputFormat - m_outputFormatComposed.getIndent(): "+ m_outputFormatComposed.getIndent());
-    // cloned.setIndent(m_outputFormatComposed.getIndent());
-    cloned.setIndent(m_outputFormatComposed.getIndent());
-    // cloned.setLineSeparator(m_outputFormatComposed.getLineSeparator());
-    // cloned.setLineWidth(m_outputFormatComposed.getLineWidth());
-    cloned.setMediaType(m_outputFormatComposed.getMediaType());
-    cloned.setMethod(m_outputFormatComposed.getMethod());
-    cloned.setNonEscapingElements(m_outputFormatComposed.getNonEscapingElements());
-    cloned.setOmitXMLDeclaration(m_outputFormatComposed.getOmitXMLDeclaration());
-    cloned.setPreserveSpace(m_outputFormatComposed.getPreserveSpace());
-    cloned.setStandalone(m_outputFormatComposed.getStandalone());
-    cloned.setVersion(m_outputFormatComposed.getVersion());
+    OutputFormatExtended cloned = new OutputFormatExtended();
+    if(m_outputFormatComposed instanceof OutputFormatExtended)
+    {
+      cloned.copyFrom((OutputFormatExtended)m_outputFormatComposed);
+    }
+    else
+    {
+      cloned.copyFrom(m_outputFormatComposed);
+    }
     return cloned;
   }
 
@@ -241,7 +232,7 @@ public class StylesheetRoot
   public void recomposeOutput()
   {
     // System.out.println("Recomposing output...");
-    m_outputFormatComposed = new OutputFormat();
+    m_outputFormatComposed = new OutputFormatExtended();
     m_outputFormatComposed.setPreserveSpace(true);
     recomposeOutput(this);
   }
@@ -276,37 +267,7 @@ public class StylesheetRoot
     OutputFormatExtended of = getOutput();
     if(null != of)
     {
-      // System.out.println("Composing output - of.indentHasBeenSet(): " 
-      //                   + of.indentHasBeenSet()+", of.indentingHasBeenSet(): "
-      //                   + of.indentingHasBeenSet());
-      if(of.cdataElementsHasBeenSet())
-        m_outputFormatComposed.setCDataElements(of.getCDataElements());
-      if(of.doctypePublicHasBeenSet())
-        m_outputFormatComposed.setDoctypePublicId(of.getDoctypePublicId());
-      if(of.doctypeSystemHasBeenSet())
-        m_outputFormatComposed.setDoctypePublicId(of.getDoctypeSystemId());
-      if(of.encodingHasBeenSet())
-        m_outputFormatComposed.setEncoding(of.getEncoding());
-      if(of.indentHasBeenSet())
-        m_outputFormatComposed.setIndent(of.getIndent());
-      if(of.indentingHasBeenSet())
-      {
-        boolean indent = of.getIndent();
-        m_outputFormatComposed.setIndent(indent);
-        m_outputFormatComposed.setPreserveSpace(!indent);
-      }
-      if(of.mediaTypeHasBeenSet())
-        m_outputFormatComposed.setMediaType(of.getMediaType());
-      if(of.methodHasBeenSet())
-        m_outputFormatComposed.setMethod(of.getMethod());
-      if(of.nonEscapingElementsHasBeenSet())
-        m_outputFormatComposed.setNonEscapingElements(of.getNonEscapingElements());
-      if(of.omitXmlDeclarationHasBeenSet())
-        m_outputFormatComposed.setOmitXMLDeclaration(of.getOmitXMLDeclaration());
-      if(of.standaloneHasBeenSet())
-        m_outputFormatComposed.setStandalone(of.getStandalone());
-      if(of.versionHasBeenSet())
-        m_outputFormatComposed.setVersion(of.getVersion());
+      ((OutputFormatExtended)m_outputFormatComposed).copyFrom(of);
     }
   }
 

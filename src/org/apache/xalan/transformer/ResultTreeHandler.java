@@ -59,6 +59,8 @@ package org.apache.xalan.transformer;
 import org.w3c.dom.*;
 import java.util.Stack;
 import java.util.Enumeration;
+import java.io.Writer;
+import java.io.OutputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.Locator;
@@ -76,6 +78,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.OutputFormatExtended;
 import serialize.SerializerFactory;
 import serialize.OutputFormat;
 import serialize.Method;
@@ -84,6 +87,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 import serialize.SerializerHandler;
+import serialize.Serializer;
 
 /**
  * This class is a layer between the direct calls to the result 
@@ -310,20 +314,41 @@ public class ResultTreeHandler
   public void flushPending()
     throws SAXException
   {
-    if(m_pendingStartDoc && (null != m_pendingElementName))
+    // The stylesheet is set at a rather late stage, so I do 
+    // this here, though it would probably be better done elsewhere.
+    if((null == m_stylesheetRoot) && (null != m_transformer))
+      m_stylesheetRoot = m_transformer.getStylesheet();
+    
+    if(!m_foundStartDoc && (null != m_pendingElementName))
     {
-      if(null != m_stylesheetRoot && !m_stylesheetRoot.isOutputMethodSet())
+     if(null != m_stylesheetRoot && !m_stylesheetRoot.isOutputMethodSet())
       {
         if(m_pendingElementName.equalsIgnoreCase("html") 
            && (null == m_nsSupport.getURI("")))
         {
-          // System.out.println("Setting the method automatically to HTML");
-          
-          /* TBD: I don't think this works yet? */
-          // SerializerFactory factory = SerializerFactory.getSerializerFactory(Method.HTML);
           OutputFormat oformat = m_stylesheetRoot.getOutputFormat();
           oformat.setMethod(Method.HTML);
-          // m_flistener = factory.makeSerializer(oformat).asContentHandler();
+          try
+          {
+            Serializer oldSerializer = m_transformer.getSerializer();
+            Serializer serializer = SerializerFactory.getSerializer(oformat);
+            Writer writer = oldSerializer.getWriter();
+            if(null != writer)
+              serializer.setWriter(writer);
+            else
+            {
+              OutputStream os = serializer.getOutputStream();
+              serializer.setOutputStream(os);
+            }
+            m_transformer.setSerializer(serializer);
+            ContentHandler ch = serializer.asContentHandler();
+            m_transformer.setContentHandler(ch);
+            m_contentHandler = ch;
+          }
+          catch(java.io.IOException e)
+          {
+            throw new SAXException(e);
+          }
         }
       }
     }
@@ -1013,7 +1038,7 @@ public class ResultTreeHandler
    * The root of a linked set of stylesheets.
    */
   private StylesheetRoot m_stylesheetRoot = null;
-    
+      
   /**
    * This is used whenever a unique namespace is needed.
    */

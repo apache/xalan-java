@@ -79,8 +79,6 @@ public class OutputFormatExtended extends OutputFormat
   public boolean methodHasBeenSet() { return m_methodHasBeenSet; }
   private boolean m_versionHasBeenSet = false;
   public boolean versionHasBeenSet() { return m_versionHasBeenSet; }
-  private boolean m_indentingHasBeenSet = false;
-  public boolean indentingHasBeenSet() { return m_indentingHasBeenSet; }
   private boolean m_indentHasBeenSet = false;
   public boolean indentHasBeenSet() { return m_indentHasBeenSet; }
   private boolean m_encodingHasBeenSet = false;
@@ -109,65 +107,85 @@ public class OutputFormatExtended extends OutputFormat
     m_shouldRecordHasBeenSet = true;
     setPreserveSpace(true);
   }
-
-  /**
-   * Constructs a new output format with the default values for
-   * the specified method and encoding. If <tt>indent</tt>
-   * is true, the document will be pretty printed with the default
-   * indentation level and default line wrapping.
-   *
-   * @param method The specified output method
-   * @param encoding The specified encoding
-   * @param indenting True for pretty printing
-   * @see #setEncoding
-   * @see #setIndenting
-   * @see #setMethod
-   */
-  public OutputFormatExtended( String method, String encoding, boolean indenting )
+  
+  void copyFrom(OutputFormatExtended of)
   {
-    // super(method, encoding, indenting);
-    if(null != method)
-      super.setMethod(method);
-    if(null != encoding)
-      super.setEncoding(encoding);
-    super.setIndent(indenting);
-    m_shouldRecordHasBeenSet = true;
+      setPreserveSpace(true);
+      if(of.methodHasBeenSet())
+        setMethod(of.getMethod());
+      else
+        super.setMethod(of.getMethod());
+      if(of.cdataElementsHasBeenSet())
+        setCDataElements(of.getCDataElements());
+      else
+        super.setCDataElements(of.getCDataElements());
+      if(of.doctypePublicHasBeenSet())
+        setDoctypePublicId(of.getDoctypePublicId());
+      else
+        super.setDoctypePublicId(of.getDoctypePublicId());
+      
+      if(of.doctypeSystemHasBeenSet())
+        setDoctypeSystemId(of.getDoctypeSystemId());
+      else
+        super.setDoctypeSystemId(of.getDoctypeSystemId());
+      if(of.encodingHasBeenSet())
+        setEncoding(of.getEncoding());
+      else
+        super.setEncoding(of.getEncoding());
+      boolean indent = of.getIndent();
+      if(of.indentHasBeenSet())
+      {
+        setIndent(indent);
+        setPreserveSpace(!indent);
+      }
+      else
+      {
+        super.setIndent(indent);
+        super.setPreserveSpace(!indent);
+      }
+      if(of.mediaTypeHasBeenSet())
+        setMediaType(of.getMediaType());
+      else
+        super.setMediaType(of.getMediaType());
+      if(of.nonEscapingElementsHasBeenSet())
+        setNonEscapingElements(of.getNonEscapingElements());
+      else
+        super.setNonEscapingElements(of.getNonEscapingElements());
+      if(of.omitXmlDeclarationHasBeenSet())
+        setOmitXMLDeclaration(of.getOmitXMLDeclaration());
+      else
+        super.setOmitXMLDeclaration(of.getOmitXMLDeclaration());
+      if(of.standaloneHasBeenSet())
+        setStandalone(of.getStandalone());
+      else
+        super.setStandalone(of.getStandalone());
+      if(of.versionHasBeenSet())
+        setVersion(of.getVersion());
+      else
+        super.setVersion(of.getVersion());
+  }
+  
+  void copyFrom(OutputFormat of)
+  {
+    setPreserveSpace(true);
+    setCDataElements(of.getCDataElements());
+    setDoctypePublicId(of.getDoctypePublicId());
+    // setDoctype(of.getDoctypePublic(), of.getDoctypeSystem());
+    setEncoding(of.getEncoding());
+    // System.out.println("getOutputFormat - of.getIndent(): "+ of.getIndent());
+    // setIndent(of.getIndent());
+    setIndent(of.getIndent());
+    // setLineSeparator(of.getLineSeparator());
+    // setLineWidth(of.getLineWidth());
+    setMediaType(of.getMediaType());
+    setMethod(of.getMethod());
+    setNonEscapingElements(of.getNonEscapingElements());
+    setOmitXMLDeclaration(of.getOmitXMLDeclaration());
+    setPreserveSpace(of.getPreserveSpace());
+    setStandalone(of.getStandalone());
+    setVersion(of.getVersion());
   }
 
-  /*
-   * Constructs a new output format with the proper method,
-   * document type identifiers and media type for the specified
-   * document.
-   *
-   * @param doc The document to output
-   * @see #whichMethod
-   */
-  // public OutputFormatExtended( Document doc )
-  // {
-    // super(doc);
-    // super();
-    // m_shouldRecordHasBeenSet = true;
-  // }
-  
-  /**
-   * Constructs a new output format with the proper method,
-   * document type identifiers and media type for the specified
-   * document, and with the specified encoding. If <tt>indent</tt>
-   * is true, the document will be pretty printed with the default
-   * indentation level and default line wrapping.
-   *
-   * @param doc The document to output
-   * @param encoding The specified encoding
-   * @param indenting True for pretty printing
-   * @see #setEncoding
-   * @see #setIndenting
-   * @see #whichMethod
-   */
-  // public OutputFormatExtended( Document doc, String encoding, boolean indenting )
-  // {
-    // super(doc, encoding, indenting);
-    // m_shouldRecordHasBeenSet = true;
-  // }
   
   /**
    * The doctype-public attribute.
@@ -235,9 +253,21 @@ public class OutputFormatExtended extends OutputFormat
    */
   public void setMethod( String method )
   {
+    // System.out.println("Setting the method to: "+method);
     if(m_shouldRecordHasBeenSet)
       m_methodHasBeenSet = true;
-    super.setMethod(method);;
+    super.setMethod(method);
+    
+    if((null != method) && method.equalsIgnoreCase("html"))
+    {
+      // System.out.println("m_indentHasBeenSet: "+m_indentHasBeenSet);
+      if(!this.m_indentHasBeenSet)
+      {
+        // System.out.println("Setting indent to true");
+        setIndent(true);
+        this.m_indentHasBeenSet = false;
+      }
+    }
   }
   
   /**
@@ -253,6 +283,17 @@ public class OutputFormatExtended extends OutputFormat
     // TODO: Work with Assaf on this.
     String meth = method.getLocalPart();
     super.setMethod(meth);;
+    if((null != method) && (method.getNamespaceURI() == null) 
+       && method.getLocalName().equalsIgnoreCase("html"))
+    {
+      // System.out.println("m_indentHasBeenSet: "+m_indentHasBeenSet);
+      if(!this.m_indentHasBeenSet)
+      {
+        // System.out.println("Setting indent to true");
+        setIndent(true);
+        this.m_indentHasBeenSet = false;
+      }
+    }
   }
 
   /**
@@ -288,45 +329,12 @@ public class OutputFormatExtended extends OutputFormat
    */
   public void setIndent( boolean indent )
   {
-    // System.out.println("setIndent( "+indent+" )");
-    // setPreserveSpace(false);
-    setIndent(indent);
-  }
-
-  /**
-   * Sets the indentation amount. The document will not be
-   * indented if the indentation is set to zero.
-   * Calling {@link #setIndenting} will reset this
-   * value to zero (off) or the default (on).
-   *
-   * @param indent The indentation, or zero
-   */
-  public void setIndent( int indent )
-  {
-    // System.out.println("setIndent( int indent )");
     if(m_shouldRecordHasBeenSet)
       m_indentHasBeenSet = true;
-    // For the moment, there doesn't seem to be a way 
-    // to set the indenting amount.
-    // super.setIndent(indent);
-  }
-
-  /**
-   * Sets the indentation on and off. When set on, the default
-   * indentation level and default line wrapping is used
-   * (see {@link #DEFAULT_INDENT} and {@link #DEFAULT_LINE_WIDTH}).
-   * To specify a different indentation level or line wrapping,
-   * use {@link #setIndent} and {@link #setLineWidth}.
-   *
-   * @param on True if indentation should be on
-   */
-  public void setIndenting( boolean on )
-  {
-    // System.out.println("setIndenting( "+on+" ), m_shouldRecordHasBeenSet: "+m_shouldRecordHasBeenSet);
-    if(m_shouldRecordHasBeenSet)
-      m_indentingHasBeenSet = true;
-    setPreserveSpace(!on);
-    super.setIndent(on);
+    
+    // System.out.println("setIndent( "+indent+" )");
+    setPreserveSpace(!indent);
+    super.setIndent(indent);
   }
 
   /**
