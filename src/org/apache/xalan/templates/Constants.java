@@ -102,12 +102,19 @@ public class Constants
 	S_VENDORURL = "http://xml.apache.org";
 
   /** S_BUILTIN_EXTENSIONS_URL is a mnemonic for the XML Namespace 
-   *(http://xml.apache.org/xslt) predefined to signify Xalan's
+   *(http://xml.apache.org/xalan) predefined to signify Xalan's
    * built-in XSLT Extensions. When used in stylesheets, this is often 
    * bound to the "xalan:" prefix.
    */
   public static final String 
-    S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xslt"; 
+    S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xalan"; 
+
+  /**
+   * The old built-in extension url. It is still supported for
+   * backward compatibility.
+   */
+  public static final String 
+    S_BUILTIN_OLD_EXTENSIONS_URL = "http://xml.apache.org/xslt"; 
   
   /**
    * Xalan extension namespaces.
