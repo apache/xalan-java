@@ -290,9 +290,17 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
             _nodes = new Node[_namesSize];
         }
 
-        return (_nodes[index] != null)
-                    ? _nodes[index]
-                    : (_nodes[index] = new DTMNodeProxy((DTM)this, index));
+        int nodeID = makeNodeIdentity(index);
+        if (nodeID < 0) {
+            return null;
+        }
+        else if (nodeID < _nodes.length) {
+            return (_nodes[nodeID] != null) ? _nodes[nodeID] 
+                : (_nodes[nodeID] = new DTMNodeProxy((DTM)this, index));
+        }
+        else {
+            return new DTMNodeProxy((DTM)this, index);
+        }
     }
 
     /**
@@ -310,11 +318,19 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
         if (_nodeLists == null) {
             _nodeLists = new NodeList[_namesSize];
         }
-        return (_nodeLists[index] != null)
-                 ? _nodeLists[index]
-                 : (_nodeLists[index] =
-                         new DTMAxisIterNodeList(this,
-                                                 new SingletonIterator(index)));
+        
+        int nodeID = makeNodeIdentity(index);
+        if (nodeID < 0) {
+            return null;
+        }
+        else if (nodeID < _nodeLists.length) {
+            return (_nodeLists[nodeID] != null) ? _nodeLists[nodeID]
+                   : (_nodeLists[nodeID] = new DTMAxisIterNodeList(this,
+                                                  new SingletonIterator(index)));
+        }
+        else {
+            return new DTMAxisIterNodeList(this, new SingletonIterator(index));
+        }
     }
 
     /**
