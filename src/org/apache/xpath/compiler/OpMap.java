@@ -306,6 +306,7 @@ public class OpMap
    * @return position of predicate in FROM_stepType structure.
    */
   public int getFirstPredicateOpPos(int opPos)
+     throws javax.xml.transform.TransformerException
   {
 
     int stepType = m_opMap[opPos];
@@ -322,11 +323,34 @@ public class OpMap
     }
     else
     {
-      throw new RuntimeException(
-        "Programmer's assertion in getNextStepPos: unknown stepType: "
-        + stepType);
+      error(org.apache.xpath.res.XPATHErrorResources.ER_UNKNOWN_OPCODE,
+            new Object[]{ String.valueOf(stepType) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
+      return -1;
     }
   }
+  
+  /**
+   * Tell the user of an error, and probably throw an
+   * exception.
+   *
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
+   *
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
+   */
+  public void error(int msg, Object[] args) throws javax.xml.transform.TransformerException
+  {
+
+    java.lang.String fmsg = org.apache.xalan.res.XSLMessages.createXPATHMessage(msg, args);
+    
+
+    throw new javax.xml.transform.TransformerException(fmsg);
+  }
+
 
   /**
    * Go to the first child of a given operation.
