@@ -578,6 +578,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         }
         else
         {
+          stylesheetProcessor.setSystemId(stylesheetSource.getSystemId());
           TreeWalker tw = new TreeWalker(stylesheetProcessor);
           tw.traverse(((DOMSource)ssSource).getNode());
           m_stylesheetRoot = new StylesheetRoot(stylesheetProcessor.getStylesheetRoot());
