@@ -174,7 +174,7 @@ public class Keywords
   private static final String FUNC_IDREF_STRING = "idref";
 
   /** NEEDSDOC Field FUNC_KEY_STRING          */
-  static final String FUNC_KEY_STRING = "key";
+  public static final String FUNC_KEY_STRING = "key";
 
   /** NEEDSDOC Field FUNC_KEYREF_STRING          */
   private static final String FUNC_KEYREF_STRING = "keyref";
