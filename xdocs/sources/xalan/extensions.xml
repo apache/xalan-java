@@ -28,7 +28,7 @@
 <p>XSLT extensions are specified in the <jump href="http://www.w3.org/TR/xslt#extension">XSLT Recommendation</jump>.  This document focuses on the &xslt4j; implementation of those requirements, not on XSLT extensions in general. For additional information on extensions, consult the Recommendation or the other resources listed in <link idref="overview" anchor="uptospeed">Getting up to speed with XSLT</link>.</p>
 </s2><anchor name="supported-lang"/>
 <s2 title="Supported languages">
-<p>Extensions written in Java are directly supported by &xslt4j;.  For extensions written in languages other than Java, &xslt4j; uses the <jump href="http://www.alphaworks.ibm.com/tech/bsf">Bean Scripting Framework (BSF)</jump>, an architecture for incorporating scripting into Java applications and applets. BSF allows an application to take advantage of scripting while being independent of any specific scripting language. To date, we have tested extensions implemented in JavaScript. Other languages with BSF support appear in the table below.</p>
+<p>Extensions written in Java are directly supported by &xslt4j;.  For extensions written in languages other than Java, &xslt4j; uses the <resource-ref idref="bsf"/>, an architecture for incorporating scripting into Java applications and applets. BSF allows an application to take advantage of scripting while being independent of any specific scripting language. To date, we have tested extensions implemented in JavaScript. Other languages with BSF support appear in the table below.</p>
 <p>BSF requires bsf.jar on the classpath. This JAR file is shipped with &xslt4j; and is required only if you have extensions written in languages other than Java. The additional JAR files or DLLs required to support extensions written in other languages are listed in the table below. These files are available from the sources indicated and are not shipped with &xslt4j;.</p>
 <table>
   <tr>
@@ -50,7 +50,7 @@
     <tr>
     <td>BML<br/><br/></td>
     <td>2.4<br/><br/></td>
-    <td>bmlall.jar available from http://www.alphaWorks.ibm.com/formula/bml<br/><br/></td>
+    <td>bmlall.jar available from http://oss.software.ibm.com/developerworks/projects/bsf<br/><br/></td>
   </tr>
     <tr>
     <td>JPython<br/><br/></td>

@@ -1,5 +1,5 @@
 <s3 title="Changes since &xslt4j; version 2.0.D07">
-<p>This release includes several bug fixes to the &xslt4j; and TrAX core and to the Xalan-Java 1 compatibility API.</p>
+<p>This release includes several bug fixes to the &xslt4j; and TrAX core and to the Xalan-Java 1 compatibility API. We also updated bsf.jar to the <resource-ref idref="bsf"/> release candidate 2.2, which fixes a bug running JPython extensions.</p>
 <p><em>Core bug fixes:</em></p>
 <ul>
   <li>A threading problem showed up when using multiple processors. We fixed it by using a separate XPathContext object to do whitespace node
