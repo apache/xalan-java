@@ -19,6 +19,7 @@
 package org.apache.xpath.axes;
 
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMFilter;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
 
@@ -46,6 +47,9 @@ public class ChildIterator extends LocPathIterator
           throws javax.xml.transform.TransformerException
   {
     super(compiler, opPos, analysis, false);
+
+    // This iterator matches all kinds of nodes
+    initNodeTest(DTMFilter.SHOW_ALL);
   }
   
   /**
