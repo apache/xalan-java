@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<todo title="Things To Do" project="Xalan" major-version="2">
+<todo title="Things To Do" project="Xalan-Java" major-version="2">
 
  <devs>
   <!-- in alphabetical order, by last name -->
@@ -17,7 +17,7 @@
     Xalan-J 2.x developer, compiling/compiled stylesheets experiments.
   </person>
   <person name="Donald Leslie" email="donald_leslie@lotus.com" id="DL" expertise="doc">
-    Xalan-J and -C documentation, servlets and samples.
+    Xalan-J and -C documentation, servlets, applets, and samples.
   </person>
   <person name="Costin Manolache" email="cmanolache@yahoo.com" id="CM">
     Xalan-J 2.x developer.

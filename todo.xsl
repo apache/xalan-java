@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-
+<xsl:variable name="title" select="concat(todo/@project, ' ', todo/@major-version)"/>
   <xsl:template match="/">
     <HTML>
       <HEAD>
-         <TITLE>Xalan-Java Version 2</TITLE>
+         <TITLE><xsl:value-of select="$title"/></TITLE>
       </HEAD>
       <BODY>
-        <!-- H1>Xalan for Java Version 2</H1 -->
-        <H2>Xalan for Java Version 2: <xsl:value-of select="todo/@title"/></H2>
+
+        <H2><xsl:value-of select="concat($title, ': ', todo/@title)"/></H2>
         <p><font size="-1">See a 
           <xsl:element name="a">
             <xsl:attribute name="href">#developer-list</xsl:attribute>
@@ -126,7 +126,7 @@
         <xsl:text>Developers:</xsl:text>
       </xsl:element>
     </H3>
-    <p>A list of some of people working on Xalan currently:</p>
+    <p>A list of some of people currently working on working on <xsl:value-of select="/todo/@project"/>:</p>
     <ul>
     <xsl:for-each select="devs/person">
       <li>
