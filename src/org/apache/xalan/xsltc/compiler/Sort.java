@@ -241,9 +241,6 @@ final class Sort extends Instruction {
 	// that as the last argument to the SortingIterator constructor.
 	compileSortRecordFactory(sortObjects, classGen, methodGen);
 	il.append(new INVOKESPECIAL(init));
-
-	il.append(methodGen.loadCurrentNode());
-	il.append(new INVOKEINTERFACE(setStartNode,2));
     }
 
 
