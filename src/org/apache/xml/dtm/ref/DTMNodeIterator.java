@@ -193,7 +193,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
         throw new DTMDOMException(DOMException.INVALID_STATE_ERR);
       
       int handle=dtm_iter.nextNode();
-      if (handle==-1)
+      if (handle==DTM.NULL)
         return null;
       return dtm_iter.getDTM(handle).getNode(handle);
     }
@@ -211,6 +211,8 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
         throw new DTMDOMException(DOMException.INVALID_STATE_ERR);
       
       int handle=dtm_iter.previousNode();
+      if (handle==DTM.NULL)
+        return null;      
       return dtm_iter.getDTM(handle).getNode(handle);
     }
 }

@@ -206,7 +206,7 @@ public interface DTMIterator
    * is rejected by the filters) the first node within its subtree which is
    * not filtered out.
    * @return The next node handle in the set being iterated over, or
-   *   -1 if there are no more members in that set.
+   *   <code>DTM.NULL</code> if there are no more members in that set.
    */
   public int nextNode();
 
@@ -214,7 +214,7 @@ public interface DTMIterator
    * Returns the previous node in the set and moves the position of the
    * <code>DTMIterator</code> backwards in the set.
    * @return The previous node handle in the set being iterated over,
-   *   or <code>null</code> if there are no more members in that set.
+   *   or <code>DTM.NULL</code> if there are no more members in that set.
    */
   public int previousNode();
 
