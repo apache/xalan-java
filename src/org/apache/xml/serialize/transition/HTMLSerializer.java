@@ -312,7 +312,8 @@ public class HTMLSerializer
         // separated with a space so the element can be broken on
         // multiple lines.
         if ( attrs != null ) {
-            for ( i = 0 ; i < attrs.getLength() ; ++i ) {
+            int attrsLen = attrs.getLength();
+            for ( i = 0 ; i < attrsLen ; ++i ) {
                 _printer.printSpace();
                 name = attrs.getQName( i ).toLowerCase();;
                 value = attrs.getValue( i );
