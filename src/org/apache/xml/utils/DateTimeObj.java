@@ -1021,6 +1021,13 @@ public class DateTimeObj
      return dur;*/
      return getDTDuration(date2);
     }
+    
+    public Duration subtractTimeFromTime(DateTimeObj time2)
+    throws TransformerException
+    {
+      
+     return getDTDuration(time2);
+    }
 
     	
     	

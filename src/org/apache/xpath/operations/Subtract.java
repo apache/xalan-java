@@ -197,10 +197,20 @@ public class Subtract extends OperationNormalized
       {
         DateTimeObj oldTime = lhs.time();
         // The normalizer should
-        Duration duration2 = rhs.duration();
-        
-        DateTimeObj newTime = oldTime.subtractDTDurationFromTime(duration2);
-        return new XTime(newTime);
+        int rhsVT = rhs.getValueType();
+        if(XType.DURATION == rhsVT 
+          || XType.DAYTIMEDURATION == rhsVT)
+        {
+          Duration duration2 = rhs.duration();
+          DateTimeObj newTime = oldTime.subtractDTDurationFromTime(duration2);
+         return new XTime(newTime);
+        }
+        else
+        {
+          DateTimeObj t2 = rhs.time();
+          Duration duration = oldTime.subtractTimeFromTime(t2);
+          return new XDuration(duration);
+        }
       }
     });
     m_funcs.setFunc(XType.DATE, new GenericOpFunc()
