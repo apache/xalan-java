@@ -222,9 +222,10 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)TreeWalker.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)Trie.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)UnImplNode.java \
-    org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)URI.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)URI.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrongParserException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NodeConsumer.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrappedRuntimeException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)StylesheetSpec.java \
   trax$(PATHSEP)Examples.java \
