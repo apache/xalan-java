@@ -196,7 +196,7 @@ public class ExsltDatetime
       if (time == null || zone == null) 
         return EMPTY_STR;
                     
-      String[] formatsIn = {dt, d};
+      String[] formatsIn = {dt, d, t};
       String formatOut =  t;
       Date date = testFormats(time, formatsIn);
       if (date == null) return EMPTY_STR;
@@ -212,8 +212,14 @@ public class ExsltDatetime
     {
       String datetime = dateTime().toString();
       String time = datetime.substring(datetime.indexOf("T")+1);
-      String zone = datetime.substring(getZoneStart(datetime));      
-      return (time + zone);
+      
+	  // The datetime() function returns the zone on the datetime string.  If we
+	  // append it, we get the zone substring duplicated.
+	  // Fix for JIRA 2013
+
+      // String zone = datetime.substring(getZoneStart(datetime));      
+      // return (time + zone);
+      return (time);
     } 
        
     /**
