@@ -80,23 +80,24 @@ import java.lang.reflect.Method;
 public class IncrementalSAXSource_Xerces
   implements IncrementalSAXSource
 {
-	//
-	// Reflection. To allow this to compile with both Xerces1 and Xerces2, which
-	// require very different methods and objects, we need to avoid static 
-	// references to those APIs. So until Xerces2 is pervasive and we're willing 
-	// to make it a prerequisite, we will rely upon relection.
-	//
-	Method fParseSomeSetup=null; // Xerces1 method
-	Method fParseSome=null; // Xerces1 method
-	Object fPullParserConfig=null; // Xerces2 pull control object
-	Method fConfigSetInput=null; // Xerces2 method
-	Method fConfigParse=null; // Xerces2 method
-	Method fSetInputSource=null; // Xerces2 pull control method
-	Constructor fConfigInputSourceCtor=null; // Xerces2 initialization method
-	Method fConfigSetByteStream=null; // Xerces2 initialization method
-	Method fConfigSetCharStream=null; // Xerces2 initialization method
-	Method fConfigSetEncoding=null; // Xerces2 initialization method
-		
+  //
+  // Reflection. To allow this to compile with both Xerces1 and Xerces2, which
+  // require very different methods and objects, we need to avoid static 
+  // references to those APIs. So until Xerces2 is pervasive and we're willing 
+  // to make it a prerequisite, we will rely upon relection.
+  //
+  Method fParseSomeSetup=null; // Xerces1 method
+  Method fParseSome=null; // Xerces1 method
+  Object fPullParserConfig=null; // Xerces2 pull control object
+  Method fConfigSetInput=null; // Xerces2 method
+  Method fConfigParse=null; // Xerces2 method
+  Method fSetInputSource=null; // Xerces2 pull control method
+  Constructor fConfigInputSourceCtor=null; // Xerces2 initialization method
+  Method fConfigSetByteStream=null; // Xerces2 initialization method
+  Method fConfigSetCharStream=null; // Xerces2 initialization method
+  Method fConfigSetEncoding=null; // Xerces2 initialization method
+  Method fReset=null; // Both Xerces1 and Xerces2, but diff. signatures
+  
   //
   // Data
   //
@@ -159,9 +160,11 @@ public class IncrementalSAXSource_Xerces
 			fConfigSetCharStream=fXniInputSourceClass.getMethod("setCharacterStream",args6);
 			Class[] args7={String.class};
 			fConfigSetEncoding=fXniInputSourceClass.getMethod("setEncoding",args7);
-															
+
 			Class[] argsb={Boolean.TYPE};
 			fConfigParse=xniStdConfigClass.getMethod("parse",argsb);			
+			Class[] noargs=new Class[0];
+			fReset=fIncrementalParser.getClass().getMethod("reset",noargs);
 		}
 		catch(Exception e)
 		{
@@ -356,6 +359,14 @@ public class IncrementalSAXSource_Xerces
 			fConfigSetCharStream.invoke(xmlsource,parmsa);
 			parmsa[0]=source.getEncoding();
 			fConfigSetEncoding.invoke(xmlsource,parmsa);
+
+			// Bugzilla5272 patch suggested by Sandy Gao.
+			// Has to be reflection to run with Xerces2
+			// after compilation against Xerces1. or vice
+			// versa, due to return type mismatches.
+			Object[] noparms=new Object[0];
+			fReset.invoke(fIncrementalParser,noparms);
+			
 			parmsa[0]=xmlsource;
 			fConfigSetInput.invoke(fPullParserConfig,parmsa);
 			
