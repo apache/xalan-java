@@ -164,6 +164,10 @@ class FunctionCall extends Expression {
 	this(fname, EmptyArgs);
     }
 
+    public String getName() {
+	return(_fname.toString());
+    }
+
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	if (_arguments != null) {
@@ -175,7 +179,7 @@ class FunctionCall extends Expression {
 	    }
 	}
     }
-    
+
     /**
      * Type check a function call. Since different type conversions apply,
      * type checking is different for standard and external (Java) functions.
@@ -314,7 +318,28 @@ class FunctionCall extends Expression {
     }
 
     /**
-     * Translate a function call.
+     * Compile the function call and treat as an expression
+     * Update true/false-lists.
+     */
+    public void translateDesynthesized(ClassGenerator classGen,
+				       MethodGenerator methodGen) {
+
+	Type type = Type.Boolean;
+	if (_chosenMethodType != null)
+	    type = _chosenMethodType.resultType();
+
+	final InstructionList il = methodGen.getInstructionList();
+	translate(classGen, methodGen);
+
+	if ((type instanceof BooleanType) || (type instanceof IntType)) {
+	    _falseList.add(il.append(new IFEQ(null)));
+	}
+    }
+
+
+    /**
+     * Translate a function call. The compiled code will leave the function's
+     * return value on the JVM's stack.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final int n = argumentCount();

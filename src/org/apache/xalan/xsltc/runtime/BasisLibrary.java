@@ -438,14 +438,11 @@ public final class BasisLibrary implements Operators {
 	left.reset();
 	
 	while ((lnode = left.next()) != NodeIterator.END) {
-	    //System.out.println("lnode = " + lnode);
 	    final String lvalue = dom.getNodeValue(lnode);
-	    //System.out.println("lvalue = " + lvalue);
 	    
 	    int rnode;
 	    right.reset();
 	    while ((rnode = right.next()) != NodeIterator.END) {
-		
 		if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
 		    return true;
 		}

@@ -58,25 +58,63 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
+
+import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class StartsWithCall extends FunctionCall {
+
+    private Expression _base = null;
+    private Expression _token = null;
+
+    /**
+     * Create a starts-with() call - two arguments, both strings
+     */
     public StartsWithCall(QName fname, Vector arguments) {
 	super(fname, arguments);
     }
 
+    /**
+     * Type check the two parameters for this function
+     */
+    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
+	// Check that the function was passed exactly two arguments
+	if (argumentCount() != 2) {
+	    throw new TypeCheckError(ErrorMsg.FUNRESOL_ERR, getName());
+	}
+
+	// The first argument must be a String, or cast to a String
+	_base = argument(0);
+	Type baseType = _base.typeCheck(stable);	
+	if (baseType != Type.String)
+	    _base = new CastExpr(_base, Type.String);
+
+	// The second argument must also be a String, or cast to a String
+	_token = argument(1);
+	Type tokenType = _token.typeCheck(stable);	
+	if (tokenType != Type.String)
+	    _token = new CastExpr(_token, Type.String);
+
+	return _type = Type.Boolean;
+    }
+
+    /**
+     * Compile the expression - leave boolean expression on stack
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	argument(0).translate(classGen, methodGen);
-	argument(1).translate(classGen, methodGen);
+	_base.translate(classGen, methodGen);
+	_token.translate(classGen, methodGen);
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_CLASS,
 						     "startsWith", 
 						     "("+STRING_SIG+")Z")));

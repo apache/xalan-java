@@ -92,8 +92,16 @@ public final class Template extends TopLevelElement {
      * classes (e.g., predicates, xsl:number, xsl:sort).
      */
     private boolean _hasVariableFrame;
-
+    private boolean _hasParams = false;
     private boolean _simplified = false;
+
+    public boolean hasParams() {
+	return _hasParams;
+    }
+
+    public void hasParams(boolean hasParams) {
+	_hasParams = hasParams;
+    }
 
     public boolean isSimplified() {
 	return(_simplified);

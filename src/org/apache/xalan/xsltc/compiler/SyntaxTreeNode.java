@@ -88,11 +88,6 @@ public abstract class SyntaxTreeNode implements Constants {
     // Contains all child nodes of this node
     private final Vector   _contents = new Vector(2);
 
-    // All parameters defined in this AST node
-    private Vector _params;
-    // All variables defined in this AST node
-    private Vector _vars;
-
     // The QName of this element (contains uri, prefix and localname)
     protected QName      _qname;
     // The attributes (if any) of this element
@@ -251,20 +246,6 @@ public abstract class SyntaxTreeNode implements Constants {
 
     public final XSLTC getXSLTC() {
 	return _parser.getXSLTC();
-    }
-
-    //!! are these needed?
-
-    public int addParam(Param param) {
-	if (_params == null) {
-	    _params = new Vector(4);
-	}
-	_params.addElement(param);
-	return _params.size() - 1;
-    }
-
-    public final boolean hasParams() {
-	return _params != null;
     }
 
     /**

@@ -86,7 +86,7 @@ final class QName {
     }
 
     public void clearDefaultNamespace() {
-	if ((_prefix == null) || (_prefix.equals(""))) {
+	if ((_prefix == null) || (_prefix.equals(Constants.EMPTYSTRING))) {
 	    _namespace = null;
 	    _stringRep = _localname;
 	    _hashCode  = _stringRep.hashCode() + 19; // cached for speed

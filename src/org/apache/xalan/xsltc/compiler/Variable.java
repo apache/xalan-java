@@ -184,6 +184,7 @@ final class Variable extends TopLevelElement {
 	final String name = getAttribute("name");
 	if (name.length() > 0) {
 	    _name = parser.getQName(name);
+	    _name.clearDefaultNamespace();
 	}
         else {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");

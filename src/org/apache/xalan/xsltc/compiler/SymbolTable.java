@@ -92,10 +92,13 @@ final class SymbolTable {
     }
 
     public Template addTemplate(Template template) {
-	return (Template)_templates.put(template.getName(), template);
+	final QName name = template.getName();
+	name.clearDefaultNamespace();
+	return (Template)_templates.put(name, template);
     }
 	
     public Template lookupTemplate(QName name) {
+	name.clearDefaultNamespace();
 	return (Template)_templates.get(name);
     }
 

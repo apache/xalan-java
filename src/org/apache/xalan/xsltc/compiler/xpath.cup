@@ -181,7 +181,7 @@ non terminal StepPattern StepPattern;
 non terminal Object NodeTestPattern, NameTestPattern;
 
 non terminal Vector Predicates, NonemptyArgumentList;
-non terminal QName QName, FunctionName;
+non terminal QName QName, FunctionName, VariableName;
 non terminal Integer AxisName, AxisSpecifier;
 non terminal Integer ChildOrAttributeAxisSpecifier;
 
@@ -579,7 +579,7 @@ PrimaryExpr ::= VariableReference:vr
 	* namespace info in the literal expression. This is used for
 	* element-available and function-available functions.
 	*/
-	final int index = string.indexOf(':');
+	final int index = string.lastIndexOf(':');
 	final String prefix = index >= 0
                                      ? string.substring(0, index)
                                      : Constants.EMPTYSTRING;
@@ -607,9 +607,12 @@ PrimaryExpr ::= VariableReference:vr
         | FunctionCall:fc
         {: RESULT = fc; :};
 
-VariableReference ::= DOLLAR QName:varName
+VariableReference ::= DOLLAR VariableName:varName
         {: 
+            // An empty qname prefix for a variable or parameter reference
+            // should map to the null namespace and not the default URI.
             SyntaxTreeNode node = parser.lookupName(varName);
+
             if (node != null) {
                 if (node instanceof Variable) {
                     RESULT = new VariableRef((Variable)node);
@@ -618,18 +621,17 @@ VariableReference ::= DOLLAR QName:varName
                     RESULT = new ParameterRef((Param)node);
                 } 
                 else {
-                    //node.getParser().addFatalError("Cannot resolve variable or parameter feference to "+varName);
-                    node.getParser().reportError(Constants.FATAL,
-			new ErrorMsg(
-		 	"Cannot resolve variable or parameter feference to "+
-			varName));
+                    node = null;
                 }
             }
-            else {
+
+            if (node == null) {
+		System.err.println("looking for var "+varName);
                 RESULT = parser.DummyVarRef;
-                parser.addError(new ErrorMsg(ErrorMsg.VARUNDEF_ERR, 
+                parser.addError(new ErrorMsg(ErrorMsg.VARUNDEF_ERR,
 		    parser.getLineNumber(), varName));
             }
+
         :};
 
 FunctionCall ::= FunctionName:fname LPAREN RPAREN
@@ -770,6 +772,12 @@ FunctionName ::= QName:fname
         {:
             fname.clearDefaultNamespace();
             RESULT = fname; 
+        :};
+
+VariableName ::= QName:vname
+        {:
+            vname.clearDefaultNamespace();
+            RESULT = vname; 
         :};
 
 Argument ::=    Expr:ex

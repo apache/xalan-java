@@ -145,6 +145,7 @@ final class Param extends TopLevelElement {
 
 	if (name.length() > 0) {
 	    _name = parser.getQName(name);
+	    _name.clearDefaultNamespace();
 	}
         else {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
@@ -172,9 +173,9 @@ final class Param extends TopLevelElement {
 	    //!! check for redef
 	    parser.getSymbolTable().addParam(this);
 	}
-	else {
+	else if (parent instanceof Template) {
 	    _isLocal = true;
-	    parent.addParam(this);
+	    ((Template)parent).hasParams(true);
 	}
     }
 

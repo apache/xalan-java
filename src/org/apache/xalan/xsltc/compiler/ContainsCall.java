@@ -77,28 +77,36 @@ final class ContainsCall extends FunctionCall {
     private Expression _token = null;
 
     /**
-     *
+     * Create a contains() call - two arguments, both strings
      */
     public ContainsCall(QName fname, Vector arguments) {
 	super(fname, arguments);
     }
 
     /**
-     *
+     * This XPath function returns true/false values
+     */
+    public boolean isBoolean() {
+	return true;
+    }
+
+    /**
+     * Type check the two parameters for this function
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
 	// Check that the function was passed exactly two arguments
 	if (argumentCount() != 2) {
-	    ErrorMsg msg = new ErrorMsg("Illegal number of arguments "+
-					"to contains() function");
-	    throw new TypeCheckError(msg);
+	    throw new TypeCheckError(ErrorMsg.FUNRESOL_ERR, getName());
 	}
-	
+
+	// The first argument must be a String, or cast to a String
 	_base = argument(0);
 	Type baseType = _base.typeCheck(stable);	
 	if (baseType != Type.String)
 	    _base = new CastExpr(_base, Type.String);
 
+	// The second argument must also be a String, or cast to a String
 	_token = argument(1);
 	Type tokenType = _token.typeCheck(stable);	
 	if (tokenType != Type.String)
@@ -107,12 +115,17 @@ final class ContainsCall extends FunctionCall {
 	return _type = Type.Boolean;
     }
 
-
+    /**
+     * Compile the expression - leave boolean expression on stack
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	translateDesynthesized(classGen, methodGen);
 	synthesize(classGen, methodGen);
     }
 
+    /**
+     * Compile expression and update true/false-lists
+     */
     public void translateDesynthesized(ClassGenerator classGen,
 				       MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();

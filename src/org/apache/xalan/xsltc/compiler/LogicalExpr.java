@@ -73,8 +73,9 @@ final class LogicalExpr extends Expression {
     public static final int OR  = 0;
     public static final int AND = 1;
 	
-    private final int _op;
-    private Expression _left, _right;
+    private final int  _op;     // operator
+    private Expression _left;   // first operand
+    private Expression _right;  // second operand
 
     private static final String[] Ops = { "or", "and" };
 
@@ -131,10 +132,12 @@ final class LogicalExpr extends Expression {
 	if (haveType != null) {
 	    // Check if left-hand side operand must be type casted
 	    Type arg1 = (Type)haveType.argsType().elementAt(0);
-	    if (!arg1.identicalTo(tleft)) _left = new CastExpr(_left, arg1);
+	    if (!arg1.identicalTo(tleft))
+		_left = new CastExpr(_left, arg1);
 	    // Check if right-hand side operand must be type casted
 	    Type arg2 = (Type) haveType.argsType().elementAt(1);
-	    if (!arg2.identicalTo(tright)) _right = new CastExpr(_right, arg1);
+	    if (!arg2.identicalTo(tright))
+		_right = new CastExpr(_right, arg1);
 	    // Return the result type for the operator we will use
 	    return _type = haveType.resultType();
 	}
@@ -163,18 +166,12 @@ final class LogicalExpr extends Expression {
 
 	    // Translate left hand side - must be true
 	    _left.translateDesynthesized(classGen, methodGen);
-	    if ((_left instanceof FunctionCall) &&
-		(!(_left instanceof ContainsCall)))
-		_falseList.add(il.append(new IFEQ(null)));
 
 	    // Need this for chaining any OR-expression children
 	    InstructionHandle middle = il.append(NOP);
 
 	    // Translate left right side - must be true
 	    _right.translateDesynthesized(classGen, methodGen);
-	    if ((_right instanceof FunctionCall) &&
-		(!(_right instanceof ContainsCall)))
-		_falseList.add(il.append(new IFEQ(null)));
 
 	    // Need this for chaining any OR-expression children
 	    InstructionHandle after = il.append(NOP);
@@ -182,7 +179,8 @@ final class LogicalExpr extends Expression {
 	    // Append child expression false-lists to our false-list
 	    _falseList.append(_right._falseList.append(_left._falseList));
 
-	    // Special case for OR-expression as a left child of AND
+	    // Special case for OR-expression as a left child of AND.
+	    // The true-list of OR must point to second clause of AND.
 	    if ((_left instanceof LogicalExpr) &&
 		(((LogicalExpr)_left).getOp() == OR)) {
 		((LogicalExpr)_left).backPatchTrueList(middle);
@@ -192,6 +190,7 @@ final class LogicalExpr extends Expression {
 	    }
 
 	    // Special case for OR-expression as a right child of AND
+	    // The true-list of OR must point to true-list of AND.
 	    if ((_right instanceof LogicalExpr) &&
 		(((LogicalExpr)_right).getOp() == OR)) {
 		((LogicalExpr)_right).backPatchTrueList(after);
@@ -205,9 +204,6 @@ final class LogicalExpr extends Expression {
 	else {
 	    // Translate left-hand side expression and produce true/false list
 	    _left.translateDesynthesized(classGen, methodGen);
-	    if ((_left instanceof FunctionCall) &&
-		(!(_left instanceof ContainsCall)))
-		_falseList.add(il.append(new IFEQ(null)));
 
 	    // This GOTO is used to skip over the code for the last test
 	    // in the case where the the first test succeeds
@@ -215,9 +211,6 @@ final class LogicalExpr extends Expression {
 
 	    // Translate right-hand side expression and produce true/false list
 	    _right.translateDesynthesized(classGen, methodGen);
-	    if ((_right instanceof FunctionCall) &&
-		(!(_right instanceof ContainsCall)))
-		_falseList.add(il.append(new IFEQ(null)));
 
 	    _left._trueList.backPatch(ih);
 	    _left._falseList.backPatch(ih.getNext());
