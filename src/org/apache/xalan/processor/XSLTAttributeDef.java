@@ -522,7 +522,7 @@ public class XSLTAttributeDef
     if (value.length() != 1)
     {
       handler.error(
-        "An XSLT attribute of type T_CHAR must be only 1 character!", null);
+        XSLMessages.createMessage(XSLTErrorResources.ER_ATTR_T_CHAR_ONE_CHAR, null), null); //"An XSLT attribute of type T_CHAR must be only 1 character!", null);
     }
 
     return new Character(value.charAt(0));

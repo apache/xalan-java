@@ -422,8 +422,8 @@ public class StylesheetHandler extends DefaultHandler
     }
 
     if (null == elemProcessor)
-      error(rawName + " is not allowed in this position in the stylesheet!",
-            null);
+      error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[]{rawName}),null);//rawName + " is not allowed in this position in the stylesheet!",
+            
                 
     return elemProcessor;
   }
@@ -740,8 +740,8 @@ public class StylesheetHandler extends DefaultHandler
       // If it's whitespace, just ignore it, otherwise flag an error.
       if (!XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
         error(
-          "Non-whitespace text is not allowed in this position in the stylesheet!",
-          null);
+          XSLMessages.createMessage(XSLTErrorResources.ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION, null),null);//"Non-whitespace text is not allowed in this position in the stylesheet!",
+          
     }
     else
       elemProcessor.characters(this, ch, start, length);
