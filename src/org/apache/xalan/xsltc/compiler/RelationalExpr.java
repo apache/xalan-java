@@ -84,7 +84,17 @@ final class RelationalExpr extends Expression implements Operators {
 	_left.setParser(parser);
 	_right.setParser(parser);
     }
-    
+
+    /**
+     * Returns true if this expressions contains a call to position(). This is
+     * needed for context changes in node steps containing multiple predicates.
+     */
+    public boolean hasPositionCall() {
+	if (_left.hasPositionCall()) return true;
+	if (_right.hasPositionCall()) return true;
+	return false;
+    }
+
     public boolean hasReferenceArgs() {
 	return _left.getType() instanceof ReferenceType ||
 	    _right.getType() instanceof ReferenceType;

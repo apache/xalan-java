@@ -82,6 +82,10 @@ final class LastCall extends FunctionCall {
 	_type = type;
     }
 
+    public boolean hasPositionCall() {
+	return true;
+    }
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 
 	final InstructionList il = methodGen.getInstructionList();

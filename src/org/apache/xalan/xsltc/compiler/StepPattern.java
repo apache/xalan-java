@@ -158,9 +158,9 @@ final class StepPattern extends RelativePathPattern {
 	boolean noContext = true;
 	final int n = _predicates.size();
 	for (int i = 0; i < n && noContext; i++) {
-	    final Predicate exp = (Predicate)_predicates.elementAt(i);
-	    if (exp.isNthPositionFilter())
-		noContext = false;
+	    final Predicate pred = (Predicate)_predicates.elementAt(i);
+	    final Expression exp = pred.getExpr();
+	    if (exp.hasPositionCall()) noContext = false;
 	}
 
 	if (noContext) {
@@ -195,6 +195,9 @@ final class StepPattern extends RelativePathPattern {
 		_step.typeCheck(stable);
 	    }
 	    else if (_contextCase == GENERAL_CONTEXT) {
+		final int len = _predicates.size();
+		for (int i = 0; i < len; i++)
+		    ((Predicate)_predicates.elementAt(i)).dontOptimize();
 		_step = new Step(_axis, _nodeType, _predicates);
 		_step.setParser(getParser());
 		_step.typeCheck(stable);
@@ -336,7 +339,6 @@ final class StepPattern extends RelativePathPattern {
 	il.append(methodGen.storeIterator());
 	il.append(new ILOAD(match.getIndex()));
 	il.append(methodGen.storeCurrentNode());
-
 
 	// Translate the expression of the predicate 
 	Predicate pred = (Predicate) _predicates.elementAt(0);

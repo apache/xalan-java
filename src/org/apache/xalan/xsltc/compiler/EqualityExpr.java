@@ -107,6 +107,16 @@ final class EqualityExpr extends Expression implements Operators {
 	    return true;
     }
 
+    /**
+     * Returns true if this expressions contains a call to position(). This is
+     * needed for context changes in node steps containing multiple predicates.
+     */
+    public boolean hasPositionCall() {
+	if (_left.hasPositionCall()) return true;
+	if (_right.hasPositionCall()) return true;
+	return false;
+    }
+
     private void swapArguments() {
 	final Expression temp = _left;
 	_left = _right;

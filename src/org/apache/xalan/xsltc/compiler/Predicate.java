@@ -78,6 +78,7 @@ final class Predicate extends Expression {
     private String  _className;     // Name of filter to generate
     private boolean _nthPositionFilter = false;
     private boolean _nthDescendant = false;
+    private boolean _canOptimize = true;
     private int     _ptype = -1;
 
     public Predicate(Expression exp) {
@@ -96,7 +97,11 @@ final class Predicate extends Expression {
     public boolean isNthPositionFilter() {
 	return _nthPositionFilter;
     }
-    
+
+    public void dontOptimize() {
+	_canOptimize = false;
+    }
+
     protected final boolean isClosureBoundary() {
 	return true;
     }
@@ -177,10 +182,12 @@ final class Predicate extends Expression {
 		_exp = new CastExpr(_exp, Type.Int);
 	    }
 
+	    SyntaxTreeNode parent = getParent();
+
 	    // Expand [last()] into [position() = last()]
 	    if ((_exp instanceof LastCall) ||
-		(getParent() instanceof Pattern) ||
-		(getParent() instanceof FilterExpr)) {
+		(parent instanceof Pattern) ||
+		(parent instanceof FilterExpr)) {
 
 		final QName position = getParser().getQName("position");
 		final PositionCall positionCall = new PositionCall(position);
@@ -191,12 +198,14 @@ final class Predicate extends Expression {
 		if (_exp.typeCheck(stable) != Type.Boolean) {
 		    _exp = new CastExpr(_exp, Type.Boolean);
 		}
-		_nthPositionFilter = false;
+		if (parent instanceof Pattern)
+		    _nthPositionFilter = true;
+		else
+		    _nthPositionFilter = false;
 		return _type = Type.Boolean;
 	    }
 	    // Use NthPositionIterator to handle [position()] or [a]
 	    else {
-		SyntaxTreeNode parent = getParent();
 		if ((parent != null) && (parent instanceof Step)) {
 		    parent = parent.getParent();
 		    if ((parent != null) &&
@@ -210,8 +219,12 @@ final class Predicate extends Expression {
 		return _type = Type.NodeSet;
 	    }
 	}
+	else if (texp instanceof BooleanType) {
+	    if (_exp.hasPositionCall())
+		_nthPositionFilter = true;
+	}
 	// All other types will be handled as boolean values
-	else if (texp instanceof BooleanType == false) {
+	else {
 	    _exp = new CastExpr(_exp, Type.Boolean);
 	}
 	_nthPositionFilter = false;
@@ -306,6 +319,7 @@ final class Predicate extends Expression {
      * very common in many stylesheets
      */
     public boolean isNodeValueTest() {
+	if (!_canOptimize) return false;
 	if ((getStep() != null) && (getCompareValue() != null))
 	    return true;
 	else
@@ -396,11 +410,25 @@ final class Predicate extends Expression {
 	    il.append(new PUSH(cpg, ((EqualityExpr)_exp).getOp()));
 	}
 	else {
-	    compileFilter(classGen, methodGen);
-	    il.append(new NEW(cpg.addClass(_className)));
-	    il.append(DUP);
-	    il.append(new INVOKESPECIAL(cpg.addMethodref(_className,
-							 "<init>", "()V")));
+	    translateFilter(classGen, methodGen);
 	}
+    }
+
+    /**
+     * Translate a predicate expression. This translation pushes
+     * two references on the stack: a reference to a newly created
+     * filter object and a reference to the predicate's closure.
+     */
+    public void translateFilter(ClassGenerator classGen,
+				MethodGenerator methodGen) {
+
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	compileFilter(classGen, methodGen);
+	il.append(new NEW(cpg.addClass(_className)));
+	il.append(DUP);
+	il.append(new INVOKESPECIAL(cpg.addMethodref(_className,
+						     "<init>", "()V")));
     }
 }

@@ -489,7 +489,7 @@ final class Step extends RelativeLocationPath {
 		il.append(new NEW(cpg.addClass(CURRENT_NODE_LIST_ITERATOR)));
 		il.append(DUP);
 		translatePredicates(classGen, methodGen); // recursive call
-		predicate.translate(classGen, methodGen);
+		predicate.translateFilter(classGen, methodGen);
 		
 		il.append(methodGen.loadCurrentNode());
 		il.append(classGen.loadTranslet());
@@ -504,6 +504,7 @@ final class Step extends RelativeLocationPath {
 		// See CurrentNodeListIterator's constructor(s) for details.
 		SyntaxTreeNode parent = getParent();
 		while (!(parent instanceof Template)) {
+		    if (parent == null) break;
 		    if (parent instanceof ApplyTemplates) {
 			idx = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
 					       "forceNaturalOrder",
