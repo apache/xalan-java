@@ -69,7 +69,7 @@
      <p>&xslt4j; version 2 also builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the XML parser API in
      <resource-ref idref="jaxp"/>.</p>
      <p>For more information, see <link idref="whatsnew">What's new in &xslt4j2;</link>.</p>
-     <note>&xslt4c; version 1 is no longer supported and no longer available from xml.apache.org.</note>
+     <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
   </s2>
   <s2 title="How about this release?">
   <p>&xslt4j-current; is a Developer release. To improve performance, it uses the Document Table Model (<link idref="dtm">DTM</link>) to represent the XML source document to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
