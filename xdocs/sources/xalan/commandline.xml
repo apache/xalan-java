@@ -119,6 +119,7 @@
       <p>To set stylesheet parameters from the command line, use <br/>
       <code>java org.apache.xalan.xslt.Process -PARAM <ref>name value</ref></code></p>
       <p>The value is passed to the transformer as a String.</p>
+      <p>For information about incremental and optimized stylesheet processing, see <link idref="dtm" anchor="settings">DTM settings</link>.</p>
       <p>Use <code>-URIRESOLVER</code> with a fully qualified class name to utilize a custom implementation of the
       <jump href="apidocs/javax/xml/transform/URIResolver.html">URIResolver</jump> TrAX interface to resolve URIs for
        xsl:include, xsl:import, and the document() function.</p>
