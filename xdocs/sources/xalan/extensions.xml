@@ -352,6 +352,48 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
 </ol>
 <p>Any extension function written in Java can have a first parameter of type <code>org.apache.xalan.extensions.ExpressionContext</code>. Any method with an ExpressionContext as the first parameter will score higher than any method which does not have an ExpressionContext as a first parameter.</p>
 </s3>
+
+<anchor name="ext-func-retval"/>
+<s3 title="Return values">
+<p>The &xslt4j; extension mechanism examines the class of the value returned from a function and converts the value into an XSLT type according to the following table:</p>
+  <table>
+    <tr>
+      <th>Java Types</th>
+      <th>XSLT Type</th>
+    </tr>
+    <tr>
+       <td>org.w3c.dom.traversal.NodeIterator<br/>org.apache.xml.dtm.DTM<br/>org.apache.xml.dtm.DTMAxisIterator<br/>org.apache.xml.dtm.DTMIterator<br/>org.w3c.dom.Node</td>
+       <td>Node-Set</td>
+    </tr>
+    <tr>
+       <td>java.lang.String</td>
+       <td>String</td>
+    </tr>
+    <tr>
+       <td>java.lang.Boolean</td>
+       <td>Boolean</td>
+    </tr>
+    <tr>
+       <td>java.lang.Number</td>
+       <td>Number</td>
+    </tr>
+    <tr>
+       <td>org.w3c.dom.DocumentFragment</td>
+       <td>Result Tree Fragment</td>
+    </tr>
+    <tr>
+       <td>org.apache.xpath.objects.XObject</td>
+       <td>Specified XSLT Type</td>
+    </tr>
+    <tr>
+       <td>All other classes</td>
+       <td>Non-XSLT Type</td>
+    </tr>
+  </table>
+  <p>Note that the above test is applied using <code>instanceof</code> so that any subclasses of the classes listed above will be treated the same as the listed superclass.  For example, a <code>java.lang.Double</code> will be treated the same as a <code>java.lang.Number</code> and will be converted to an XSLT Number.</p>
+  <note>The return value conversion can somtimes cause confusion.  For example, if your extension function returns an object that is a subclass of NodeIterator, that object will be converted by &xslt4j; to an XSLT Node-Set.  If you later attempt to treat that object as a non-XSLT object of your original class and try to invoke a method on that object, your method invocation will fail.</note>
+</s3>
+
 <anchor name="ext-func-calls"/>
 <s3 title="Extension function Java calls">
 <p>The technique for instantiating Java objects and calling Java methods depends on the format of the extension namespace that was declared.  See <link anchor="java-namespace-declare">Declare the namespace</link> for the three different formats of namespace declarations for Java extensions. For each namespace format, the section below describes how to instantiate an object, how to invoke an instance method, and how to invoke a static method. The sections below explain, for each syntax, which methods are <ref>qualified</ref> for method selection as described in the preceeding section.</p>
