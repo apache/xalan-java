@@ -60,11 +60,12 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.ClonerToResultTree;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xalan.serialize.SerializerUtils;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.DescendantIterator;
@@ -198,7 +199,7 @@ public class XSLProcessorContext
 
     try
     {
-      ResultTreeHandler rtreeHandler = transformer.getResultTreeHandler();
+      SerializationHandler rtreeHandler = transformer.getResultTreeHandler();
       XPathContext xctxt = transformer.getXPathContext();
       XObject value;
 
@@ -331,8 +332,10 @@ public class XSLProcessorContext
         }
         break;
       case XObject.CLASS_RTREEFRAG :
-        rtreeHandler.outputResultTreeFragment(value,
-                                              transformer.getXPathContext());
+        SerializerUtils.outputResultTreeFragment(
+            rtreeHandler, value, transformer.getXPathContext());
+//        rtreeHandler.outputResultTreeFragment(value,
+//                                              transformer.getXPathContext());
         break;
       }
     }
