@@ -56,6 +56,8 @@ Copyright:
        location properties to make it simpler to reset these values; 
        please provide feedback if this is useful. 
   -->
+  <property name="xmlapis.jar.name" value="xml-apis.jar"/>
+  <property name="xmlapis.jar" value="${bin.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name" value="xerces.jar"/>
   <property name="parser.jar" value="${bin.dir}/${parser.jar.name}"/>
   <property name="bsf.jar.name" value="bsf.jar"/>
@@ -80,8 +82,8 @@ Copyright:
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
   <property name="version.RELEASE" value="2"/>
-  <property name="version.DEVELOPER" value="D"/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR" value="14"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.DEVELOPER" value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
+  <property name="version.MINOR" value="0"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version" value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
@@ -105,32 +107,14 @@ Copyright:
   <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/><!-- GUMP: actual path/name of jar target output -->
   <property name="build.xsltc.jar" value="${build.dir}/xsltc.jar"/>
   <property name="build.classes" value="${build.dir}/classes"/>
-  <property name="build.api.src" value="${build.dir}/commons-src"/><!-- temp location of DOM/SAX/JAXP sources -->
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
   <property name="build.apidocs" value="${build.docs}/apidocs"/>
   <property name="dist.file" value="${name}-j_${version}"/><!-- GUMP: actual path/name of dist target .tar.gz/.zip-->
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   
-  <!-- xml-commons and xml-apis.jar information -->
-  <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-src.tar.gz"/>
-  <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-src.tar"/>
-  <property name="xml-apis.jar.name" value="xml-apis.jar"/>
-  <property name="build.xml-apis.jar" value="${build.dir}/${xml-apis.jar.name}"/>
-
-  <!-- Set of files in the xml-commons that go in xml-apis.jar -->
-  <patternset id="api-patternset">
-    <!-- Should be DOM L2 -->
-    <include name="org/w3c/dom/"/>
-    <!-- Should be SAX 2.0 -->
-    <include name="org/xml/sax/"/>
-    <!-- Should be JAXP 1.1.x -->
-    <include name="javax/xml/"/>
-    <!-- XmlCommons specific external version file -->
-    <include name="org/apache/xmlcommons/"/>
-  </patternset>
-
   <!-- Xalan-J1 compatability stuff.  -->
+  <!-- DEPRECATED: new 'skipcompat' flag allows you to optionally skip 1.x compat layer -->
   <property name="compat.jar" value="xalanj1compat.jar"/>
   <property name="compat.src.dir" value="./compat_src"/>
   <property name="build.compat.classes" value="${build.dir}/compat_classes"/>
@@ -158,23 +142,24 @@ Copyright:
   <property name="xdocs.DONE.file" value="${xdocs.dir}/sources/xalan/DONE"/>
     <property name="xdocs.XSLTCDONE.file" value="${xdocs.dir}/sources/xalan/XSLTCDONE"/>
   <path id="docs.class.path">
+    <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
     <pathelement location="${bsf.jar}" />
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
     <pathelement location="${build.xalan.jar}" />
-    <pathelement location="${build.xml-apis.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
   <path id="samples.class.path">
+    <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
     <pathelement location="${build.xalan.jar}" />
-    <pathelement location="${build.xml-apis.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
   <path id="compile.class.path">
     <!-- Ensure the selected parser.jar file is used to compile against -->
     <pathelement location="${build.classes}" />
+    <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
@@ -241,20 +226,6 @@ Copyright:
          which causes an error like:
          [javac] E:\builds\xml-xalan\java\src\org\apache\xalan\templates\ElemTemplate.java:108: Cyclic class inheritance or scoping.
     --> 
-    <!-- Compile the xml-commons stuff, after expanding sources -->
-    <gunzip src="${xml-commons-srcs.tar.gz}" dest="${build.dir}" />
-    <untar src="${xml-commons-srcs.tar}" dest="${src.dir}" /><!-- Note this is into the src area... -->
-    <delete file="${xml-commons-srcs.tar}"/>
-    <javac srcdir="${src.dir}"
-           destdir="${build.classes}"
-           debug="${build.debug}"
-           optimize="${optimize}">
-      <bootclasspath refid="xslt.boot.class.path" />
-      <classpath>
-        <pathelement location="${build.classes}"/>
-      </classpath>
-      <patternset refid="api-patternset"/>
-    </javac>
     <!-- Compile XPath engine and some common utilities -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
@@ -400,22 +371,14 @@ Copyright:
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile"
-    description="Jar up xalan.jar, plus the ${xml-apis.jar.name}" >
+    description="Jar up xalan.jar, plus the ${xmlapis.jar.name}" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     <jar jarfile="${build.xalan.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
-      <patternset>
-        <exclude name="org/w3c/dom/"/>
-        <exclude name="org/xml/sax/"/>
-        <exclude name="javax/xml/"/>
-      </patternset>
       <patternset><!-- relative to jar/@basedir -->
         <exclude name="${xsltc.reldir}/**/*" />
       </patternset>
-    </jar>
-    <jar jarfile="${build.xml-apis.jar}" manifest="${src.dir}/manifest.commons" basedir="${build.classes}" >
-      <patternset refid="api-patternset"/>
     </jar>
   </target>
   
@@ -430,7 +393,8 @@ Copyright:
   <!-- Creates the Xalan-J1 compatability JAR                              -->
   <!-- =================================================================== -->
   <target name="compat.jar" depends="jar"
-    description="DEPRECATED:Compile and jar Xalan-J 1.x backwards compat classes" >
+    description="DEPRECATED:Compile and jar Xalan-J 1.x backwards compat classes" 
+    unless="skipcompat" >
     <echo message="DEPRECATED:Compile and jar just the Xalan-J 1 compability API"/>
     <mkdir dir="${build.compat.classes}"/>
     <javac srcdir="${compat.src.dir}" 
@@ -450,7 +414,8 @@ Copyright:
   <!-- Creates the Xalan-J1 compatability javadoc                          -->
   <!-- =================================================================== -->
   <target name="compat.javadocs" depends="jar"
-    description="Build javadocs for Xalan-J 1.x backwards compat classes" >
+    description="Build javadocs for Xalan-J 1.x backwards compat classes" 
+    unless="skipcompat" >
     <mkdir dir="${build.compat.apidocs}"/>
     <javadoc
          public="true"
@@ -662,12 +627,6 @@ Copyright:
     <delete file="${xdocs.DONE.file}"/>
     <delete file="${xdocs.XSLTCDONE.file}"/>
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
-    <delete includeEmptyDirs="true" >
-      <fileset dir="${src.dir}" >
-        <patternset refid="api-patternset"/>
-      </fileset>
-    </delete>
-    <delete file="${src.dir}/manifest.commons"/>
   </target>
  
   <target name="xsltc.clean"
@@ -738,9 +697,12 @@ Copyright:
          below that actually define the contents of our two 
          *-bin.zip/tar.gz and *-src.zip/tar.gz files.
     -->
-    <copy file="${build.xalan.jar}" todir="${dist.dir}/bin"/>
-    <copy file="${build.xml-apis.jar}" todir="${dist.dir}/bin"/>
-    <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
+    <copy file="${build.xalan.jar}" todir="${dist.dir}/bin" />
+    <copy todir="${dist.dir}/bin">
+      <fileset dir=".">
+        <include name="${build.compat.jar}" unless="skipcompat" />
+      </fileset>
+    </copy>
     <copy file="${build.xsltc.jar}" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
@@ -754,7 +716,7 @@ Copyright:
       <include name="${dist.file}/License"/>
       <include name="${dist.file}/KEYS"/>
       <include name="${dist.file}/bin/${name}.jar"/>
-      <include name="${dist.file}/bin/${xml-apis.jar.name}"/>
+      <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
       <include name="${dist.file}/bin/xsltc.jar"/>
       <include name="${dist.file}/bin/xerces.jar"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
@@ -767,6 +729,7 @@ Copyright:
       <include name="${dist.file}/*"/>
       <include name="${dist.file}/bin/ant*"/>
       <include name="${dist.file}/bin/xerces.jar"/>
+      <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
       <include name="${dist.file}/bin/${stylebook.jar.name}"/>
       <include name="${dist.file}/bin/${doclet.jar.name}"/>
@@ -958,7 +921,7 @@ Copyright:
      <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
      <property name="samplesj1.dir" value="/xml-xalan/samples"/>
      <property name="build.compat.samples" value="./build/compat_samples"/>
-     <property name="build.compat.class.path" value="${build.compat.jar}:${build.xalan.jar}:${build.xml-apis.jar}:${java.class.path}"/>
+     <property name="build.compat.class.path" value="${build.compat.jar}:${build.xalan.jar}:${xmlapis.jar}:${java.class.path}"/>
      
      <mkdir dir="${build.compat.samples}"/>     
 
