@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -58,43 +58,24 @@ package org.apache.xml.dtm.ref.sax2dtm;
 
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMWSFilter;
-import org.apache.xml.dtm.ref.DTMDefaultBaseIterators;
-import org.apache.xml.dtm.ref.DTMManagerDefault;
-import org.apache.xml.dtm.ref.DTMStringPool;
-import org.apache.xml.dtm.ref.DTMTreeWalker;
-import org.apache.xml.dtm.ref.IncrementalSAXSource;
-import org.apache.xml.dtm.ref.IncrementalSAXSource_Filter;
-import org.apache.xml.dtm.ref.NodeLocator;
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
+import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.ref.*;
+import org.apache.xml.utils.StringVector;
+import org.apache.xml.utils.IntVector;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.IntVector;
-import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.ext.LexicalHandler;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.xml.sax.*;
+import org.xml.sax.ext.*;
 
 /**
  * This class implements a DTM that tends to be optimized more for speed than
@@ -135,7 +116,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * Made protected rather than private so SAX2RTFDTM can access it.
    */
   //private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
-  protected FastStringBuffer m_chars = new FastStringBuffer(5, 13);
+  protected FastStringBuffer m_chars;
 
   /** This vector holds offset and length data.
    */
@@ -144,7 +125,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /** The parent stack, needed only for construction.
    * Made protected rather than private so SAX2RTFDTM can access it.
    */
-  transient protected IntStack m_parents = new IntStack();
+  transient protected IntStack m_parents;
 
   /** The current previous node, needed only for construction time.
    * Made protected rather than private so SAX2RTFDTM can access it.
@@ -160,31 +141,31 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /** Namespace support, only relevent at construction time.
    * Made protected rather than private so SAX2RTFDTM can access it.
    */
-  transient protected IntStack m_contextIndexes = new IntStack();
+  transient protected IntStack m_contextIndexes;
 
   /** Type of next characters() event within text block in prgress. */
-  transient private int m_textType = DTM.TEXT_NODE;
+  transient protected int m_textType = DTM.TEXT_NODE;
 
   /**
    * Type of coalesced text block. See logic in the characters()
    * method.
    */
-  transient private int m_coalescedTextType = DTM.TEXT_NODE;
+  transient protected int m_coalescedTextType = DTM.TEXT_NODE;
 
   /** The SAX Document locator */
-  transient private Locator m_locator = null;
+  transient protected Locator m_locator = null;
 
   /** The SAX Document system-id */
   transient private String m_systemId = null;
 
   /** We are inside the DTD.  This is used for ignoring comments.  */
-  transient private boolean m_insideDTD = false;
+  transient protected boolean m_insideDTD = false;
 
   /** Tree Walker for dispatchToEvents. */
   protected DTMTreeWalker m_walker = new DTMTreeWalker();
 
   /** pool of string values that come as strings. */
-  private DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
+  protected DTMStringPool m_valuesOrPrefixes;
 
   /** End document has been reached.
    * Made protected rather than private so SAX2RTFDTM can access it.
@@ -237,7 +218,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * CDATA_SECTION node currently being acumulated,
    * or -1 if there is no text node in progress
    */
-  private int m_textPendingStart = -1;
+  protected int m_textPendingStart = -1;
 
   /**
    * Describes whether information about document source location
@@ -264,6 +245,28 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   protected IntVector m_sourceColumn;
   
   /**
+   * Construct a SAX2DTM object using the default block size.
+   *
+   * @param mgr The DTMManager who owns this DTM.
+   * @param source the JAXP 1.1 Source object for this DTM.
+   * @param dtmIdentity The DTM identity ID for this DTM.
+   * @param whiteSpaceFilter The white space filter for this DTM, which may
+   *                         be null.
+   * @param xstringfactory XMLString factory for creating character content.
+   * @param doIndexing true if the caller considers it worth it to use
+   *                   indexing schemes.
+   */
+  public SAX2DTM(DTMManager mgr, Source source, int dtmIdentity,
+                 DTMWSFilter whiteSpaceFilter,
+                 XMLStringFactory xstringfactory,
+                 boolean doIndexing)
+  {
+
+    this(mgr, source, dtmIdentity, whiteSpaceFilter,
+          xstringfactory, doIndexing, DEFAULT_BLOCKSIZE, true);
+  }
+  
+  /**
    * Construct a SAX2DTM object ready to be constructed from SAX2
    * ContentHandler events.
    *
@@ -273,26 +276,51 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * @param whiteSpaceFilter The white space filter for this DTM, which may
    *                         be null.
    * @param xstringfactory XMLString factory for creating character content.
-   * @param doIndexing true if the caller considers it worth it to use 
+   * @param doIndexing true if the caller considers it worth it to use
    *                   indexing schemes.
+   * @param blocksize The block size of the DTM.
+   * @param usePrevsib true if we want to build the previous sibling node array.
    */
   public SAX2DTM(DTMManager mgr, Source source, int dtmIdentity,
                  DTMWSFilter whiteSpaceFilter,
                  XMLStringFactory xstringfactory,
-                 boolean doIndexing)
+                 boolean doIndexing,
+                 int blocksize,
+                 boolean usePrevsib)
   {
 
-    super(mgr, source, dtmIdentity, whiteSpaceFilter, 
-          xstringfactory, doIndexing);
-          
+    super(mgr, source, dtmIdentity, whiteSpaceFilter,
+          xstringfactory, doIndexing, blocksize, usePrevsib);
+
+    // %OPT% Use smaller sizes for all internal storage units when
+    // the blocksize is small. This reduces the cost of creating an RTF.
+    if (blocksize <= 64) 
+    {
+      m_data = new SuballocatedIntVector(blocksize, DEFAULT_NUMBLOCKS_SMALL);
+      m_dataOrQName = new SuballocatedIntVector(blocksize, DEFAULT_NUMBLOCKS_SMALL);
+      m_valuesOrPrefixes = new DTMStringPool(16);
+      m_chars = new FastStringBuffer(7, 10);
+      m_contextIndexes = new IntStack(4);
+      m_parents = new IntStack(4);
+    }
+    else
+    {
+      m_data = new SuballocatedIntVector(blocksize, DEFAULT_NUMBLOCKS);
+      m_dataOrQName = new SuballocatedIntVector(blocksize, DEFAULT_NUMBLOCKS);
+      m_valuesOrPrefixes = new DTMStringPool();
+      m_chars = new FastStringBuffer(10, 13);
+      m_contextIndexes = new IntStack();
+      m_parents = new IntStack();
+    }
+         
     // %REVIEW%  Initial size pushed way down to reduce weight of RTFs
     // (I'm not entirely sure 0 would work, so I'm playing it safe for now.)
     //m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
-    m_data = new SuballocatedIntVector(32, 1024);
+    //m_data = new SuballocatedIntVector(blocksize);
 
     m_data.addElement(0);   // Need placeholder in case index into here must be <0.
 
-    m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
+    //m_dataOrQName = new SuballocatedIntVector(blocksize);
     
     // m_useSourceLocationProperty=org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
     m_useSourceLocationProperty = m_source_location;
@@ -323,8 +351,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     if (identity < m_size)
       return m_dataOrQName.elementAt(identity);
 
-    // Check to see if the information requested has been processed, and, 
-    // if not, advance the iterator until we the information has been 
+    // Check to see if the information requested has been processed, and,
+    // if not, advance the iterator until we the information has been
     // processed.
     while (true)
     {
@@ -501,19 +529,23 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @param nodeHandle The node ID.
    * @param ch A non-null reference to a ContentHandler.
-   * @param normalize true if the content should be normalized according to 
+   * @param normalize true if the content should be normalized according to
    * the rules for the XPath
    * <a href="http://www.w3.org/TR/xpath#function-normalize-space">normalize-space</a>
    * function.
    *
    * @throws SAXException
    */
-  public void dispatchCharactersEvents(int nodeHandle, ContentHandler ch, 
+  public void dispatchCharactersEvents(int nodeHandle, ContentHandler ch,
                                        boolean normalize)
           throws SAXException
   {
 
     int identity = makeNodeIdentity(nodeHandle);
+    
+    if (identity == DTM.NULL)
+      return;
+    
     int type = _type(identity);
 
     if (isTextType(type))
@@ -521,7 +553,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       int dataIndex = m_dataOrQName.elementAt(identity);
       int offset = m_data.elementAt(dataIndex);
       int length = m_data.elementAt(dataIndex + 1);
-      
+
       if(normalize)
         m_chars.sendNormalizedSAXcharacters(ch, offset, length);
       else
@@ -535,12 +567,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       {
         int offset = -1;
         int length = 0;
-        int level = _level(identity);
+        int startNode = identity;
 
         identity = firstChild;
 
-        while (DTM.NULL != identity && (_level(identity) > level))
-        {
+        do {
           type = _type(identity);
 
           if (isTextType(type))
@@ -556,7 +587,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           }
 
           identity = getNextNodeIdentity(identity);
-        }
+        } while (DTM.NULL != identity && (_parent(identity) >= startNode));
 
         if (length > 0)
         {
@@ -579,7 +610,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         String str = m_valuesOrPrefixes.indexToString(dataIndex);
 
           if(normalize)
-            FastStringBuffer.sendNormalizedSAXcharacters(str.toCharArray(), 
+            FastStringBuffer.sendNormalizedSAXcharacters(str.toCharArray(),
                                                          0, str.length(), ch);
           else
             ch.characters(str.toCharArray(), 0, str.length());
@@ -771,7 +802,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @return The number of that are currently in the tree.
    */
-  protected int getNumberOfNodes()
+  public int getNumberOfNodes()
   {
     return m_size;
   }
@@ -819,7 +850,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
       return false;
 
-      // %TBD% 
+      // %TBD%
     }
 
     if (gotMore != Boolean.TRUE)
@@ -885,54 +916,26 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // Have we overflowed a DTM Identity's addressing range?
     if(m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
     {
-      try
-      {
-        if(m_mgr==null)
-          throw new ClassCastException();
-                                
-                                // Handle as Extended Addressing
-        DTMManagerDefault mgrD=(DTMManagerDefault)m_mgr;
-        int id=mgrD.getFirstFreeDTMID();
-        mgrD.addDTM(this,id,nodeIndex);
-        m_dtmIdent.addElement(id<<DTMManager.IDENT_DTM_NODE_BITS);
-      }
-      catch(ClassCastException e)
-      {
-        // %REVIEW% Wrong error message, but I've been told we're trying
-        // not to add messages right not for I18N reasons.
-        // %REVIEW% Should this be a Fatal Error?
-        error(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
-      }
+      addNewDTMID(nodeIndex);
     }
 
     m_firstch.addElement(canHaveFirstChild ? NOTPROCESSED : DTM.NULL);
     m_nextsib.addElement(NOTPROCESSED);
-    m_prevsib.addElement(previousSibling);
     m_parent.addElement(parentIndex);
     m_exptype.addElement(expandedTypeID);
-    m_dataOrQName.addElement(dataOrPrefix);    
+    m_dataOrQName.addElement(dataOrPrefix);
 
-	if (m_useSourceLocationProperty && m_locator != null) 
-	{
-		m_sourceSystemId.addElement(m_locator.getSystemId());
-		m_sourceLine.addElement(m_locator.getLineNumber());
-		m_sourceColumn.addElement(m_locator.getColumnNumber());
+    if (m_prevsib != null) {
+      m_prevsib.addElement(previousSibling);
+    }
 
-		//%REVIEW% %BUG% Prevent this from arising in the first place
-		// by not allowing the enabling conditions to change after we start
-		// building the document.
-		if (m_sourceSystemId.size() != m_size) 
-		{
-			System.err.println("CODING ERROR in Source Location: " + m_size
-				+ " != "
-				+ m_sourceSystemId.size());
-			System.exit(1);
-		}
-	}
-
-
-    if (DTM.NULL != previousSibling)
+    if (DTM.NULL != previousSibling) {
       m_nextsib.setElementAt(nodeIndex,previousSibling);
+    }
+
+    if (m_locator != null && m_useSourceLocationProperty) {
+      setSourceLocation();
+    }
 
     // Note that nextSibling is not processed until charactersFlush()
     // is called, to handle successive characters() events.
@@ -946,13 +949,59 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     case DTM.ATTRIBUTE_NODE:
       break;
     default:
-      if (DTM.NULL != parentIndex &&
-	  NOTPROCESSED == m_firstch.elementAt(parentIndex))
+      if (DTM.NULL == previousSibling && DTM.NULL != parentIndex) {
         m_firstch.setElementAt(nodeIndex,parentIndex);
+      }
       break;
     }
 
     return nodeIndex;
+  }
+
+  /**
+   * Get a new DTM ID beginning at the specified node index.
+   * @param  nodeIndex The node identity at which the new DTM ID will begin
+   * addressing.
+   */
+  protected void addNewDTMID(int nodeIndex) {
+    try
+    {
+      if(m_mgr==null)
+        throw new ClassCastException();
+                              
+                              // Handle as Extended Addressing
+      DTMManagerDefault mgrD=(DTMManagerDefault)m_mgr;
+      int id=mgrD.getFirstFreeDTMID();
+      mgrD.addDTM(this,id,nodeIndex);
+      m_dtmIdent.addElement(id<<DTMManager.IDENT_DTM_NODE_BITS);
+    }
+    catch(ClassCastException e)
+    {
+      // %REVIEW% Wrong error message, but I've been told we're trying
+      // not to add messages right not for I18N reasons.
+      // %REVIEW% Should this be a Fatal Error?
+      error(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+    }
+  }
+
+  /**
+   * Store the source location of the current node.  This method must be called
+   * as every node is added to the DTM or for no node.
+   */
+  protected void setSourceLocation() {
+    m_sourceSystemId.addElement(m_locator.getSystemId());
+    m_sourceLine.addElement(m_locator.getLineNumber());
+    m_sourceColumn.addElement(m_locator.getColumnNumber());
+
+    //%REVIEW% %BUG% Prevent this from arising in the first place
+    // by not allowing the enabling conditions to change after we start
+    // building the document.
+    if (m_sourceSystemId.size() != m_size) {
+        System.err.println("CODING ERROR in Source Location: " + m_size
+                           + " != "
+                            + m_sourceSystemId.size());
+        System.exit(1);
+    }
   }
 
   /**
@@ -1067,13 +1116,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         if (null != nname)
         {
 
-          // The draft says: "The XSLT processor may use the public 
-          // identifier to generate a URI for the entity instead of the URI 
-          // specified in the system identifier. If the XSLT processor does 
-          // not use the public identifier to generate the URI, it must use 
-          // the system identifier; if the system identifier is a relative 
-          // URI, it must be resolved into an absolute URI using the URI of 
-          // the resource containing the entity declaration as the base 
+          // The draft says: "The XSLT processor may use the public
+          // identifier to generate a URI for the entity instead of the URI
+          // specified in the system identifier. If the XSLT processor does
+          // not use the public identifier to generate the URI, it must use
+          // the system identifier; if the system identifier is a relative
+          // URI, it must be resolved into an absolute URI using the URI of
+          // the resource containing the entity declaration as the base
           // URI [RFC2396]."
           // So I'm falling a bit short here.
           url = (String) m_entities.elementAt(i + ENTITY_FIELD_SYSTEMID);
@@ -1241,12 +1290,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       {
         int offset = -1;
         int length = 0;
-        int level = _level(identity);
+        int startNode = identity;
 
         identity = firstChild;
 
-        while (DTM.NULL != identity && (_level(identity) > level))
-        {
+        do {
           type = _type(identity);
 
           if (isTextType(type))
@@ -1262,7 +1310,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           }
 
           identity = getNextNodeIdentity(identity);
-        }
+        } while (DTM.NULL != identity && (_parent(identity) >= startNode));
 
         if (length > 0)
         {
@@ -1283,6 +1331,33 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
 
     return m_xstrf.emptystr();
+  }
+  
+  /**
+   * Determine if the string-value of a node is whitespace
+   *
+   * @param nodeHandle The node Handle.
+   *
+   * @return Return true if the given node is whitespace.
+   */
+  public boolean isWhitespace(int nodeHandle)
+  {
+    int identity = makeNodeIdentity(nodeHandle);
+    int type;
+    if(identity==DTM.NULL) // Separate lines because I wanted to breakpoint it
+      type = DTM.NULL;
+    else
+      type= _type(identity);
+
+    if (isTextType(type))
+    {
+      int dataIndex = _dataOrQName(identity);
+      int offset = m_data.elementAt(dataIndex);
+      int length = m_data.elementAt(dataIndex + 1);
+
+      return m_chars.isWhitespace(offset, length);
+    }
+    return false;
   }
 
   /**
@@ -1334,7 +1409,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @return The prefix if there is one, or null.
    */
-  private String getPrefix(String qname, String uri)
+  public String getPrefix(String qname, String uri)
   {
 
     String prefix;
@@ -1366,19 +1441,27 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       }
       else
       {
-        prefix = null;  // ??
+        prefix = null;
       }
     }
     else if (null != qname)
     {
       int indexOfNSSep = qname.indexOf(':');
 
-      if (qname.equals("xmlns"))
-        prefix = "";
-      else if (qname.startsWith("xmlns:"))
-        prefix = qname.substring(indexOfNSSep + 1);
+      if (indexOfNSSep > 0)
+      {
+        if (qname.startsWith("xmlns:"))
+          prefix = qname.substring(indexOfNSSep + 1);
+        else
+          prefix = qname.substring(0, indexOfNSSep);	
+      }
       else
-        prefix = (indexOfNSSep > 0) ? qname.substring(0, indexOfNSSep) : null;
+      {
+      	if (qname.equals("xmlns"))
+      	  prefix = "";
+      	else
+      	  prefix = null;
+      }
     }
     else
     {
@@ -1386,6 +1469,53 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
 
     return prefix;
+  }
+  
+  /**
+   * Get a prefix either from the uri mapping, or just make
+   * one up!
+   *
+   * @param uri The namespace URI, which may be null.
+   *
+   * @return The prefix if there is one, or null.
+   */
+  public int getIdForNamespace(String uri)
+  {
+
+     return m_valuesOrPrefixes.stringToIndex(uri);
+    
+  }
+
+    /**
+   * Get a prefix either from the qname or from the uri mapping, or just make
+   * one up!
+   *
+   * @param qname The qualified name, which may be null.
+   * @param uri The namespace URI, which may be null.
+   *
+   * @return The prefix if there is one, or null.
+   */
+  public String getNamespaceURI(String prefix)
+  {
+
+    String uri = "";
+    int prefixIndex = m_contextIndexes.peek() - 1 ;
+
+    if(null == prefix)
+      prefix = "";
+
+      do
+      {
+        prefixIndex = m_prefixMappings.indexOf(prefix, ++prefixIndex);
+      } while ( (prefixIndex >= 0) && (prefixIndex & 0x01) == 0x01);
+
+      if (prefixIndex > -1)
+      {
+        uri = (String) m_prefixMappings.elementAt(prefixIndex + 1);
+      }
+
+
+    return uri;
   }
 
   /**
@@ -1583,10 +1713,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int doc = addNode(DTM.DOCUMENT_NODE,
                       m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
                       DTM.NULL, DTM.NULL, 0, true);
-		
+
     m_parents.push(doc);
     m_previous = DTM.NULL;
-				
+
     m_contextIndexes.push(m_prefixMappings.size());  // for the next element.
   }
 
@@ -1714,7 +1844,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     return false;
   }
-	
+
 	boolean m_pastFirstElement=false;
 
   /**
@@ -1771,12 +1901,14 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     String prefix = getPrefix(qName, uri);
     int prefixIndex = (null != prefix)
                       ? m_valuesOrPrefixes.stringToIndex(qName) : 0;
+
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true);
 
     if(m_indexing)
       indexNode(exName, elemNode);
     
+
     m_parents.push(elemNode);
 
     int startDecls = m_contextIndexes.peek();
@@ -1794,7 +1926,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
                      prev, val, false);
       m_pastFirstElement=true;
     }
-                        
+
     for (int i = startDecls; i < nDecls; i += 2)
     {
       prefix = (String) m_prefixMappings.elementAt(i);
@@ -1823,6 +1955,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       prefix = getPrefix(attrQName, attrUri);
 
       int nodeType;
+      
+       String attrLocalName = attributes.getLocalName(i);
 
       if ((null != attrQName)
               && (attrQName.equals("xmlns")
@@ -1840,18 +1974,18 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         if (attributes.getType(i).equalsIgnoreCase("ID"))
           setIDAttribute(valString, elemNode);
       }
-      
-      // Bit of a hack... if somehow valString is null, stringToIndex will 
+
+      // Bit of a hack... if somehow valString is null, stringToIndex will
       // return -1, which will make things very unhappy.
       if(null == valString)
         valString = "";
 
       int val = m_valuesOrPrefixes.stringToIndex(valString);
-      String attrLocalName = attributes.getLocalName(i);
+      //String attrLocalName = attributes.getLocalName(i);
 
       if (null != prefix)
       {
-        
+
         prefixIndex = m_valuesOrPrefixes.stringToIndex(attrQName);
 
         int dataIndex = m_data.size();
@@ -1919,19 +2053,22 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     // If no one noticed, startPrefixMapping is a drag.
     // Pop the context for the last child (the one pushed by startElement)
-    m_prefixMappings.setSize(m_contextIndexes.pop());
+    m_contextIndexes.quickPop(1);
 
     // Do it again for this one (the one pushed by the last endElement).
-    m_prefixMappings.setSize(m_contextIndexes.pop());
-    m_contextIndexes.push(m_prefixMappings.size());  // for the next element.
+    int topContextIndex = m_contextIndexes.peek();
+    if (topContextIndex != m_prefixMappings.size()) {
+      m_prefixMappings.setSize(topContextIndex);
+    }
 
     int lastNode = m_previous;
 
     m_previous = m_parents.pop();
 
-    if (NOTPROCESSED == m_firstch.elementAt(m_previous))
+    // If lastNode is still DTM.NULL, this element had no children
+    if (DTM.NULL == lastNode)
       m_firstch.setElementAt(DTM.NULL,m_previous);
-    else if (DTM.NULL != lastNode)
+    else
       m_nextsib.setElementAt(DTM.NULL,lastNode);
 
     popShouldStripWhitespace();
@@ -1960,15 +2097,16 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       m_textPendingStart = m_chars.size();
       m_coalescedTextType = m_textType;
     }
-
-    m_chars.append(ch, start, length);
-
     // Type logic: If all adjacent text is CDATASections, the
     // concatentated text is treated as a single CDATASection (see
     // initialization above).  If any were ordinary Text, the whole
     // thing is treated as Text. This may be worth %REVIEW%ing.
-    if (m_textType == DTM.TEXT_NODE)
+    else if (m_textType == DTM.TEXT_NODE)
+    {
       m_coalescedTextType = DTM.TEXT_NODE;
+    }
+
+    m_chars.append(ch, start, length);
   }
 
   /**
@@ -1990,6 +2128,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public void ignorableWhitespace(char ch[], int start, int length)
           throws SAXException
   {
+
     // %OPT% We can probably take advantage of the fact that we know this 
     // is whitespace.
     characters(ch, start, length);
@@ -2338,12 +2477,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     int exName = m_expandedNameTable.getExpandedTypeID(DTM.COMMENT_NODE);
 
-    // For now, treat comments as strings...  I guess we should do a 
+    // For now, treat comments as strings...  I guess we should do a
     // seperate FSB buffer instead.
     int dataIndex = m_valuesOrPrefixes.stringToIndex(new String(ch, start,
                       length));
 
-    m_previous = addNode(DTM.COMMENT_NODE, exName, 
+
+    m_previous = addNode(DTM.COMMENT_NODE, exName,
                          m_parents.peek(), m_previous, dataIndex, false);
   }
 
@@ -2372,8 +2512,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
     if (m_useSourceLocationProperty)
     {
+
       node = makeNodeIdentity(node);
       
+
       return new NodeLocator(null,
                              m_sourceSystemId.elementAt(node),
                              m_sourceLine.elementAt(node),
