@@ -665,9 +665,8 @@ public class TransformerImpl extends Transformer
         }
         else if (e instanceof org.apache.xml.utils.WrappedRuntimeException)
         {
-          m_errorHandler.fatalError(
-            new javax.xml.transform.TransformerException(
-              ((org.apache.xml.utils.WrappedRuntimeException) e).getException()));
+          fatalError(
+              ((org.apache.xml.utils.WrappedRuntimeException) e).getException());
         }
         else
         {
@@ -690,17 +689,13 @@ public class TransformerImpl extends Transformer
           ((org.apache.xml.utils.WrappedRuntimeException) throwable).getException();
       }
 
-      m_errorHandler.fatalError(new TransformerException(wre.getException()));
+      fatalError(throwable);
     }
 
     // Patch attributed to David Eisenberg <david@catcode.com>
     catch (org.xml.sax.SAXParseException spe)
     {
-      String msg = spe.getMessage();
-      SAXSourceLocator loc = new SAXSourceLocator(spe);
-
-      //m_errorHandler.fatalError(new TransformerException( msg, loc ));
-      m_errorHandler.fatalError(new TransformerException(spe));
+      fatalError(spe);
     }
     catch (org.xml.sax.SAXException se)
     {
@@ -713,6 +708,15 @@ public class TransformerImpl extends Transformer
       // This looks to be redundent to the one done in TransformNode.
       reset();
     }
+  }
+  
+  private void fatalError(Throwable throwable) throws TransformerException
+  {
+    if (throwable instanceof org.xml.sax.SAXParseException)
+      m_errorHandler.fatalError(new TransformerException(throwable.getMessage(),new SAXSourceLocator((org.xml.sax.SAXParseException)throwable)));
+    else
+      m_errorHandler.fatalError(new TransformerException(throwable));
+    
   }
 
   /**
