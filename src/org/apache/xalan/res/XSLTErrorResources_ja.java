@@ -56,16 +56,6 @@
  */
 package org.apache.xalan.res;
 
-import org.apache.xml.utils.res.XResourceBundleBase;
-
-import java.util.MissingResourceException;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import java.text.DecimalFormat;
-
-import org.apache.xalan.templates.Constants;
-
 
 /**
  * Set up error messages.

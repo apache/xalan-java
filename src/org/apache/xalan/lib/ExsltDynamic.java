@@ -56,26 +56,29 @@
  */
 package org.apache.xalan.lib;
 
-import org.w3c.dom.*;
-
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XNodeSet;
-
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSet;
-import org.apache.xpath.NodeSetDTM;
-
-import org.xml.sax.SAXNotSupportedException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
 
-import javax.xml.transform.*;
-import javax.xml.parsers.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+import org.xml.sax.SAXNotSupportedException;
 
 /**
  * <meta name="usage" content="general"/>

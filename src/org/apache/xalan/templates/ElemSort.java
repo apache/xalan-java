@@ -56,13 +56,11 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
-
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xpath.XPath;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 
 /**
  * <meta name="usage" content="advanced"/>

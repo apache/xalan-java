@@ -64,12 +64,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
 import java.util.Hashtable;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.MethodType;
 
 final class SymbolTable {
 

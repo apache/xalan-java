@@ -64,20 +64,17 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
-
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.PUSH;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import org.apache.bcel.generic.*;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
-import org.apache.xalan.xsltc.runtime.AttributeList;
-import org.apache.xalan.xsltc.compiler.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
 final class DecimalFormatting extends TopLevelElement {
 

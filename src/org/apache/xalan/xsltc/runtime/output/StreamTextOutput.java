@@ -62,9 +62,9 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 
 import org.apache.xalan.xsltc.TransletException;
 

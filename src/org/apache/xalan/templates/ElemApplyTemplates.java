@@ -56,15 +56,16 @@
  */
 package org.apache.xalan.templates;
 
-//import org.w3c.dom.*;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
@@ -72,7 +73,6 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.apache.xml.utils.IntStack;
 
 /**
  * <meta name="usage" content="advanced"/>

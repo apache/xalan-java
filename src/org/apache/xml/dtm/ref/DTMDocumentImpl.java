@@ -56,23 +56,21 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-import java.util.Hashtable;
-//import java.util.Stack;
-import java.util.Vector;
-
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xml.dtm.ref.ChunkedIntArray;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.FastStringBuffer;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.Attributes;
-import org.xml.sax.ext.LexicalHandler;
-
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * This is the implementation of the DTM document interface.  It receives

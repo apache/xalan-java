@@ -64,7 +64,6 @@
 
 package org.apache.xalan.xsltc;
 
-import java.io.*;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public interface TransletOutputHandler {

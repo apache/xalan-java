@@ -56,30 +56,28 @@
  */
 package org.apache.xalan.lib;
 
-import org.w3c.dom.Node;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xalan.xslt.EnvironmentCheck;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
 
-import org.apache.xpath.NodeSet;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNumber;
 import org.xml.sax.SAXNotSupportedException;
-
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-
-import org.apache.xalan.extensions.ExpressionContext;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-// Note: we should consider loading EnvironmentCheck at runtime
-//  to simplify inter-package dependencies Sep-01 -sc
-import org.apache.xalan.xslt.EnvironmentCheck;
-import javax.xml.transform.TransformerException;
-import javax.xml.parsers.*;
 
 /**
  * <meta name="usage" content="general"/>

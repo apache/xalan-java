@@ -56,25 +56,19 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.Vector;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
 
-import org.apache.xml.utils.QName;
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.XPath;
-import org.apache.xpath.Expression;
-import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-
-import org.w3c.dom.Node;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.ErrorListener;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xpath.Expression;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 
 /**
  * <meta name="usage" content="advanced"/>

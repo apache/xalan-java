@@ -56,42 +56,21 @@
  */
 package org.apache.xpath;
 
-import java.net.MalformedURLException;
-
-import java.io.File;
 import java.io.IOException;
-
-import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.xpath.objects.XString;
-
-//import org.w3c.dom.Node;
-//import org.w3c.dom.Document;
+import javax.xml.transform.Source;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.dtm.DTM;
-
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.TransformerException;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.XMLReader;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.EntityResolver;
-
-// import org.xml.sax.Locator;
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.SystemIDResolver;
-import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xpath.res.XPATHErrorResources;
 
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.TransformerException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * This class bottlenecks all management of source trees.  The methods

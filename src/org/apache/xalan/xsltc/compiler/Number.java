@@ -65,13 +65,32 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.ArrayList;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.Field;
-
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.CHECKCAST;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GETFIELD;
+import org.apache.bcel.generic.GOTO;
+import org.apache.bcel.generic.IFNONNULL;
+import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.L2I;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.PUSH;
+import org.apache.bcel.generic.PUTFIELD;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MatchGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.NodeCounterGenerator;
+import org.apache.xalan.xsltc.compiler.util.RealType;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class Number extends Instruction implements Closure {
     private static final int LEVEL_SINGLE   = 0;

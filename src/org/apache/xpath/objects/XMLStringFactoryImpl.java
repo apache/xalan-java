@@ -56,9 +56,9 @@
  */
 package org.apache.xpath.objects;
 
+import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>

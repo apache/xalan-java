@@ -56,18 +56,14 @@
  */
 package org.apache.xalan.templates;
 
-//import org.w3c.dom.*;
-import org.apache.xml.dtm.DTM;
-
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.ResultTreeHandler;
-
 import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.XPathContext;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -56,7 +56,6 @@
  */
 package org.apache.xpath.objects;
 
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;

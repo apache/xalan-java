@@ -63,8 +63,8 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import org.xml.sax.AttributeList;
 import org.apache.xalan.xsltc.DOM;
+import org.xml.sax.AttributeList;
 
 public final class Attributes implements AttributeList {
     private int _element;

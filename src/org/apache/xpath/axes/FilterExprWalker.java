@@ -56,17 +56,11 @@
  */
 package org.apache.xpath.axes;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
-import org.apache.xalan.templates.FuncKey;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
-import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;

@@ -56,9 +56,6 @@
  */
 package org.apache.xml.dtm.ref;
  
-import org.w3c.dom.*;
-import org.apache.xml.dtm.*;
-
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 

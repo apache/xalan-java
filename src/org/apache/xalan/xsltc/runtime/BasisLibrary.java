@@ -66,36 +66,34 @@
 
 package org.apache.xalan.xsltc.runtime;
 
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import java.text.NumberFormat;
-import java.text.MessageFormat;
-import java.text.FieldPosition;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.xml.sax.AttributeList;
-
-import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.Translet;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.dom.AbsoluteIterator;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
-import org.apache.xalan.xsltc.dom.MultiDOM;
-import org.apache.xalan.xsltc.dom.AbsoluteIterator;
-import org.apache.xalan.xsltc.dom.SingletonIterator;
-
-import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.DOMBuilder;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.MultiDOM;
+import org.apache.xalan.xsltc.dom.SingletonIterator;
 import org.apache.xalan.xsltc.dom.StepIterator;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.apache.xalan.xsltc.trax.DOM2SAX;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilderFactory; 
-import javax.xml.parsers.DocumentBuilder; 
-import org.apache.xalan.xsltc.trax.DOM2SAX;
+import org.w3c.dom.NodeList;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 

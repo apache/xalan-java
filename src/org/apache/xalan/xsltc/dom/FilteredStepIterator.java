@@ -65,7 +65,6 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 /**
  * Extends a StepIterator by adding the ability to filter nodes. It 

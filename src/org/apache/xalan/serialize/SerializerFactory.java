@@ -56,18 +56,12 @@
  */
 package org.apache.xalan.serialize;
 
-import javax.xml.transform.OutputKeys;
-
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.transform.OutputKeys;
 
 import org.apache.xalan.templates.OutputProperties;
-import org.apache.xml.utils.WrappedRuntimeException;
 
 /**
  * Factory for creating serializers.

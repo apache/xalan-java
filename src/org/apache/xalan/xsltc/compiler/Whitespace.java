@@ -62,19 +62,25 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.IF_ICMPEQ;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.PUSH;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.*;
-
-import org.apache.xalan.xsltc.dom.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class Whitespace extends TopLevelElement {
     // Three possible actions for the translet:

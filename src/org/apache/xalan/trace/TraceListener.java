@@ -56,7 +56,6 @@
  */
 package org.apache.xalan.trace;
 
-import org.w3c.dom.*;
 
 /**
  * <meta name="usage" content="advanced"/>

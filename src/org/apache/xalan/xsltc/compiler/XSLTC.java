@@ -66,29 +66,29 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.io.*;
-import java.util.Set;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Enumeration;
-import java.util.StringTokenizer;
-import java.util.Date;
-import java.util.Map;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.jar.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
-import org.xml.sax.*;
-
-import javax.xml.parsers.*;
-
-import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.cmdline.getopt.*;
-import org.apache.xalan.xsltc.DOM;
 import org.apache.bcel.classfile.JavaClass;
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.Util;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 public final class XSLTC {
 

@@ -56,13 +56,11 @@
  */
 package org.apache.xalan.transformer;
 
+import java.text.Collator;
 import java.util.Locale;
 
-import org.apache.xpath.XPath;
-
-import java.text.Collator;
-
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xpath.XPath;
 
 /**
  * <meta name="usage" content="internal"/>

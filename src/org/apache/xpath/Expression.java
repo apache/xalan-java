@@ -56,26 +56,18 @@
  */
 package org.apache.xpath;
 
-//import org.w3c.dom.Node;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
-import org.xml.sax.XMLReader;
-import org.xml.sax.ContentHandler;
-
-import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
 
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.ErrorListener;
+import org.xml.sax.ContentHandler;
 
 /**
  * This abstract class serves as the base for all expression objects.  An

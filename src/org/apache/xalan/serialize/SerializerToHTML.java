@@ -56,28 +56,19 @@
  */
 package org.apache.xalan.serialize;
 
-import java.util.Stack;
-
-import java.io.Writer;
 import java.io.IOException;
-
-import java.util.Hashtable;
-import java.util.Vector;
 import java.util.Properties;
-import java.util.BitSet;
 
-import org.xml.sax.*;
+import javax.xml.transform.Result;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.OutputProperties;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.Trie;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xml.utils.StringToIntTable;
-import org.apache.xalan.templates.OutputProperties;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="general"/>

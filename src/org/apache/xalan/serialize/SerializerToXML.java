@@ -56,39 +56,35 @@
  */
 package org.apache.xalan.serialize;
 
-import java.io.Writer;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-
-import java.util.Enumeration;
-import java.util.Stack;
-import java.util.Vector;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.BitSet;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.util.BitSet;
+import java.util.Vector;
 
-import org.xml.sax.*;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.ext.DeclHandler;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xpath.res.XPATHErrorResources;
 
 import org.w3c.dom.Node;
 
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.DOMSerializer;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.templates.OutputProperties;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.WrappedRuntimeException;
-import org.apache.xml.utils.SystemIDResolver;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.res.XPATHErrorResources;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.OutputKeys;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * <meta name="usage" content="general"/>

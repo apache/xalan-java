@@ -57,19 +57,12 @@
 package org.apache.xalan.processor;
 
 import javax.xml.transform.OutputKeys;
-
-import java.util.Hashtable;
-
-import org.apache.xalan.templates.OutputProperties;
-import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.ElemTemplateElement;
-
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.SystemIDResolver;
-
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SystemIDResolver;
 import org.xml.sax.Attributes;
 
 /**

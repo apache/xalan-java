@@ -62,21 +62,24 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import org.xml.sax.*;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.helpers.DefaultHandler;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.TransformerHandler;
 
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
-
-import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Implementation of a JAXP1.1 TransformerHandler

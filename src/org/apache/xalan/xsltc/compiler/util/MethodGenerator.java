@@ -63,9 +63,19 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.ICONST;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Template;
 
 public class MethodGenerator extends MethodGen
     implements org.apache.xalan.xsltc.compiler.Constants {

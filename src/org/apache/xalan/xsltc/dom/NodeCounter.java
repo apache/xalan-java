@@ -65,10 +65,10 @@
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Vector;
+
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xalan.xsltc.Translet;
 
 public abstract class NodeCounter implements Axis {
     public static final int END = DOM.NULL;

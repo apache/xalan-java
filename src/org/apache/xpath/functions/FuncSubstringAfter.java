@@ -56,16 +56,10 @@
  */
 package org.apache.xpath.functions;
 
-//import org.w3c.dom.Node;
-
-import java.util.Vector;
-
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-
-import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="advanced"/>

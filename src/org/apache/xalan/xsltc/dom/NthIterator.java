@@ -63,7 +63,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 

@@ -56,20 +56,16 @@
  */
 package org.apache.xalan.serialize;
 
-import java.util.BitSet;
-
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.BufferedReader;
-
-import java.net.*;
-
+import java.net.URL;
+import java.util.BitSet;
 import java.util.Hashtable;
-
-import org.apache.xml.utils.CharKey;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.utils.CharKey;
 
 /**
  * This class provides services that tell if a character should have

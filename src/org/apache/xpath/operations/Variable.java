@@ -56,17 +56,11 @@
  */
 package org.apache.xpath.operations;
 
-import java.util.Vector;
-
 import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemVariable;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
-import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -76,8 +70,6 @@ import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 
 /**

@@ -56,9 +56,10 @@
  */
 package org.apache.xalan.lib;
 
+import org.apache.xml.dtm.ref.DTMNodeProxy;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.apache.xml.dtm.ref.DTMNodeProxy;
 
 /**
  * The base class for some EXSLT extension classes.

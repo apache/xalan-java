@@ -56,56 +56,46 @@
  */
 package org.apache.xalan.processor;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.XMLReader;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Properties;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TemplatesHandler;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLFilter;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.TrAXFilter;
+import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
+import org.apache.xml.utils.DefaultErrorHandler;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.TreeWalker;
 
 import org.w3c.dom.Node;
 
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.SystemIDResolver;
-import org.apache.xml.utils.DefaultErrorHandler;
-import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.TransformerIdentityImpl;
-import org.apache.xalan.transformer.TrAXFilter;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.Source;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.Templates;
-import javax.xml.transform.sax.TemplatesHandler;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.ErrorListener;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedInputStream;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.io.StringReader;
-
-import java.util.Properties;
-import java.util.Enumeration;
-
-import org.apache.xalan.transformer.XalanProperties;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLFilter;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * The TransformerFactoryImpl, which implements the TRaX TransformerFactory

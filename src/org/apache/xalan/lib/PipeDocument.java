@@ -55,61 +55,41 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.lib;
-// Imported classes for Extension elements
-import org.apache.xalan.extensions.XSLProcessorContext;
-import org.apache.xalan.templates.ElemExtensionCall;
-import org.apache.xalan.templates.ElemLiteralResult;
-import org.apache.xalan.templates.AVT;
-import org.apache.xalan.transformer.TransformerImpl;
 
-// Imported JAXP/TrAX classes
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.Templates;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.sax.SAXResult;
-
-// Imported JAXP parsing classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException; 
-
-// Imported SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.Parser;
-import org.xml.sax.helpers.ParserAdapter;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.XMLReader;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-
-// Imported DOM classes
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-// Imported Serializer classes
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
-import org.apache.xalan.templates.OutputProperties;
-
-// Other org.apache imports
-import org.apache.xpath.XPathContext;
-import org.apache.xml.utils.SystemIDResolver;
-
-// Imported java.io and java.util classes
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.util.Vector;
 import java.util.Properties;
+import java.util.Vector;
+
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.xalan.extensions.XSLProcessorContext;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xalan.templates.AVT;
+import org.apache.xalan.templates.ElemExtensionCall;
+import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xpath.XPathContext;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * PipeDocument is a Xalan extension element to set stylesheet params and pipes an XML 

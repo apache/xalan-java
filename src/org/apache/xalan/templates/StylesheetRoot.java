@@ -56,44 +56,29 @@
  */
 package org.apache.xalan.templates;
 
-// import org.w3c.dom.*;
-import org.apache.xml.dtm.DTM;
-
-import java.util.*;
-
-import java.net.MalformedURLException;
-
-import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
 
-import java.io.*;
-
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-
-import org.apache.xalan.serialize.*;
-import org.apache.xml.utils.*;
-import org.apache.xpath.*;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xalan.trace.*;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.processor.XSLTSchema;
-import org.apache.xalan.transformer.TransformerImpl;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.Templates;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
-import org.apache.xml.dtm.ref.ExpandedNameTable;
-//dml
-import org.apache.xml.utils.StringVector;
-import org.apache.xalan.extensions.ExtensionNamespaceSupport;
-import org.apache.xalan.extensions.ExtensionHandler;
 import org.apache.xalan.extensions.ExtensionNamespacesManager;
+import org.apache.xalan.processor.XSLTSchema;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.serialize.Method;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.ref.ExpandedNameTable;
+import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="general"/>

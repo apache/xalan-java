@@ -66,25 +66,34 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Vector;
 
-import java.lang.reflect.*;
-
-import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.IFEQ;
-import org.apache.bcel.generic.PUSH;
+import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
-import org.apache.bcel.generic.INVOKESPECIAL;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.InstructionConstants;
+import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.InvokeInstruction;
-
+import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.PUSH;
+import org.apache.xalan.xsltc.compiler.util.BooleanType;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.IntType;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodType;
+import org.apache.xalan.xsltc.compiler.util.MultiHashtable;
+import org.apache.xalan.xsltc.compiler.util.ObjectType;
+import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.runtime.TransletLoader;
 
 class FunctionCall extends Expression {

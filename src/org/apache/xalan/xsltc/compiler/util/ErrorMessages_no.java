@@ -62,9 +62,6 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.ResourceBundle;
 
 public final class ErrorMessages_no extends ErrorMessages {
     

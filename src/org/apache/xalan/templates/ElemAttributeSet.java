@@ -56,18 +56,12 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
-
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.utils.QName;
-import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
-
-import java.util.Stack;
-
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.QName;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -56,17 +56,13 @@
  */
 package org.apache.xalan.transformer;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 
-import org.xml.sax.Locator;
-import org.xml.sax.helpers.LocatorImpl;
-
 import org.w3c.dom.Node;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.dom.DOMLocator;
-import javax.xml.transform.SourceLocator;
 
 /**
  * This class will manage error messages, warning messages, and other types of

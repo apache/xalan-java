@@ -56,15 +56,11 @@
  */
 package org.apache.xpath.objects;
 
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMFilter;
-
-import org.apache.xml.utils.XMLString;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.Expression;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.Expression;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**

@@ -56,18 +56,10 @@
  */
 package org.apache.xalan.transformer;
 
-import org.apache.xalan.templates.Stylesheet;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.utils.XMLString;
-
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Attributes;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * <meta name="usage" content="internal"/>

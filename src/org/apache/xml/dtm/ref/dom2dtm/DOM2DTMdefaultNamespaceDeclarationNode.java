@@ -57,10 +57,14 @@
 
 package org.apache.xml.dtm.ref.dom2dtm;
 
-import org.w3c.dom.*;
-import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
-import org.apache.xml.dtm.ref.*;
-import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.DTMException;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /** This is a kluge to let us shove a declaration for xml: into the
  * DOM2DTM model.  Basically, it creates a proxy node in DOM space to

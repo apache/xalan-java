@@ -56,27 +56,19 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.Vector;
 import java.util.Hashtable;
 
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.Function2Args;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.axes.UnionPathIterator;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.KeyManager;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.XPathContext;
-
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.UnionPathIterator;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>

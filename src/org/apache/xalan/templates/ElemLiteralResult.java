@@ -56,29 +56,15 @@
  */
 package org.apache.xalan.templates;
 
-//import org.w3c.dom.*;
-import org.apache.xml.dtm.DTM;
-
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
-
-import java.util.StringTokenizer;
-
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.NameSpace;
-import org.apache.xpath.XPathContext;
-import org.apache.xml.utils.StringToStringTable;
-import org.apache.xml.utils.NameSpace;
-import org.apache.xml.utils.StringVector;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.ResultTreeHandler;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
-import java.io.*;
-
-import java.util.*;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.StringVector;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="advanced"/>

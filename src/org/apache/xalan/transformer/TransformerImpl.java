@@ -56,14 +56,10 @@
  */
 package org.apache.xalan.transformer;
 
-// Java imports
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
-import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -80,7 +76,8 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.xalan.processor.TransformerFactoryImpl;
+
+import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.serialize.Method;
@@ -99,7 +96,6 @@ import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.WhiteSpaceInfo;
 import org.apache.xalan.templates.XUnresolvedVariable;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xml.dtm.DTM;
@@ -108,34 +104,26 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.DOMBuilder;
+import org.apache.xml.utils.DOMHelper;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.ObjectPool;
 import org.apache.xml.utils.ObjectStack;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xml.utils.WrappedRuntimeException;
-import org.apache.xml.utils.DOMHelper;
 import org.apache.xml.utils.ThreadControllerWrapper;
 import org.apache.xpath.Arg;
+import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
-
-//dml
-import org.apache.xpath.ExtensionsProvider;
-import org.apache.xalan.extensions.ExtensionsTable;
-import org.apache.xpath.functions.FuncExtFunction;
 
 /**
  * <meta name="usage" content="advanced"/>

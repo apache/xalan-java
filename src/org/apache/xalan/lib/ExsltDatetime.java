@@ -58,16 +58,15 @@
 package org.apache.xalan.lib;
 
 
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
 import java.text.ParseException;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XNumber;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 
 /**
  * <meta name="usage" content="general"/>

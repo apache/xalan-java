@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import org.apache.xalan.xsltc.*;
+import org.apache.xalan.xsltc.TransletException;
 
 public final class StringValueHandler extends TransletOutputBase {
 

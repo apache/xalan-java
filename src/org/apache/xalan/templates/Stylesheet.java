@@ -56,33 +56,20 @@
  */
 package org.apache.xalan.templates;
 
-// Java imports
-import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
-import java.text.DecimalFormatSymbols;
-
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
 
-// Xalan imports
-import org.apache.xml.utils.SystemIDResolver;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringVector;
-import org.apache.xpath.XPath;
-
-// DOM Imports
-//import org.w3c.dom.Node;
-//import org.w3c.dom.Document;
-import org.apache.xml.dtm.DTM;
-
-// SAX2 Imports
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Locator;
-
-import javax.xml.transform.SourceLocator;
+import org.apache.xml.utils.SystemIDResolver;
 
 /**
  * Represents a stylesheet element.

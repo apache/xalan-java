@@ -56,17 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-//import org.w3c.dom.*;
-import org.apache.xml.dtm.DTM;
-
-import org.xml.sax.*;
-
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.TransformerImpl;
-
-import java.io.*;
-
-import java.util.*;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -56,7 +56,6 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xml.utils.res.XResourceBundle;
 
 /**
  * <meta name="usage" content="advanced"/>

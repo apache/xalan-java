@@ -63,15 +63,12 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.util.Stack;
 import java.io.IOException;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.runtime.BasisLibrary;
-import org.apache.xalan.xsltc.runtime.AttributeList;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 public class SAXHTMLOutput extends SAXOutput { 
 

@@ -64,10 +64,8 @@ package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.TransletException;
-
-import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.util.IntegerArray;
 
 /**
  * Removes duplicates and sorts a source iterator. The nodes from the 

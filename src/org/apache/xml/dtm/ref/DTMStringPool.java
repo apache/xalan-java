@@ -59,8 +59,9 @@ package org.apache.xml.dtm.ref;
 
 // %REVIEW% Should this be based on SuballocatedIntVector instead?
 // (Unclear. Pools will rarely be huge. But if they ever are...)
-import org.apache.xml.utils.IntVector;
 import java.util.Vector;
+
+import org.apache.xml.utils.IntVector;
 
 /** <p>DTMStringPool is an "interning" mechanism for strings. It will
  * create a stable 1:1 mapping between a set of string values and a set of

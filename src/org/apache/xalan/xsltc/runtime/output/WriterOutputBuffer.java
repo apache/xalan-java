@@ -62,9 +62,9 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.io.Writer;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 class WriterOutputBuffer implements OutputBuffer {
     private static final int KB = 1024;

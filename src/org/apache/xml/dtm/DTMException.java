@@ -57,9 +57,8 @@
 package org.apache.xml.dtm;
 
 
-import java.lang.reflect.Method;
-import java.lang.IllegalAccessException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.xml.transform.SourceLocator;
 

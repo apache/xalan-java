@@ -56,17 +56,17 @@
  */
 package org.apache.xalan.transformer;
 
+import java.util.Vector;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import java.util.Vector;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.templates.KeyDeclaration;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * <meta name="usage" content="internal"/>

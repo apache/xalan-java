@@ -75,7 +75,6 @@ import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VariableSafeAbsRef;
-import org.w3c.dom.DOMException;
 
 /**
  * This class eleminates redundent XPaths from a given subtree, 

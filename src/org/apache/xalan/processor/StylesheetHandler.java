@@ -56,55 +56,40 @@
  */
 package org.apache.xalan.processor;
 
-import java.net.URL;
-
-import java.io.IOException;
-
-import javax.xml.transform.sax.TemplatesHandler;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-
 import java.util.Stack;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.TemplatesHandler;
+
+import org.apache.xalan.extensions.ExpressionVisitor;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.templates.ElemForEach;
-import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.NodeConsumer;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLCharacterRecognizer;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.XPathFactory;
 import org.apache.xpath.XPath;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.functions.Function;
 
-import org.apache.xpath.functions.FuncExtFunction;
-import org.apache.xalan.extensions.ExpressionVisitor;
 import org.w3c.dom.Node;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-
-import org.xml.sax.helpers.NamespaceSupport;
-import org.apache.xml.utils.NamespaceSupport2;
 import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xml.utils.SAXSourceLocator;
+import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -59,19 +59,23 @@ package org.apache.xml.utils;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.w3c.dom.*;
-
-import javax.xml.transform.TransformerException;
-
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
-
-// Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.dtm.ref.DTMNodeProxy;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Entity;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 /**
  * @deprecated Since the introduction of the DTM, this class will be removed.

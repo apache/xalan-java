@@ -58,7 +58,38 @@ package org.apache.xalan.processor;
 
 import java.util.Hashtable;
 
-import org.apache.xalan.templates.*;
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemApplyImport;
+import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemAttribute;
+import org.apache.xalan.templates.ElemCallTemplate;
+import org.apache.xalan.templates.ElemChoose;
+import org.apache.xalan.templates.ElemComment;
+import org.apache.xalan.templates.ElemCopy;
+import org.apache.xalan.templates.ElemCopyOf;
+import org.apache.xalan.templates.ElemElement;
+import org.apache.xalan.templates.ElemExsltFuncResult;
+import org.apache.xalan.templates.ElemExsltFunction;
+import org.apache.xalan.templates.ElemExtensionDecl;
+import org.apache.xalan.templates.ElemExtensionScript;
+import org.apache.xalan.templates.ElemFallback;
+import org.apache.xalan.templates.ElemForEach;
+import org.apache.xalan.templates.ElemIf;
+import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemMessage;
+import org.apache.xalan.templates.ElemNumber;
+import org.apache.xalan.templates.ElemOtherwise;
+import org.apache.xalan.templates.ElemPI;
+import org.apache.xalan.templates.ElemParam;
+import org.apache.xalan.templates.ElemSort;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemText;
+import org.apache.xalan.templates.ElemTextLiteral;
+import org.apache.xalan.templates.ElemUnknown;
+import org.apache.xalan.templates.ElemValueOf;
+import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.ElemWhen;
+import org.apache.xalan.templates.ElemWithParam;
 import org.apache.xml.utils.QName;
 
 /**

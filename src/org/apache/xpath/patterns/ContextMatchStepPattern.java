@@ -56,15 +56,13 @@
  */
 package org.apache.xpath.patterns;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.Axis;
-import org.apache.xpath.axes.WalkerFactory; // evil import.
-
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.WalkerFactory;
+import org.apache.xpath.objects.XObject;
 /**
  * Special context node pattern matcher.
  */

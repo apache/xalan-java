@@ -65,34 +65,30 @@
 
 package org.apache.xalan.xsltc.cmdline;
 
-import java.io.*;
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
-
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
-import org.apache.xalan.xsltc.dom.Axis;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.Constants;
+import org.apache.xalan.xsltc.runtime.Parameter;
+import org.apache.xalan.xsltc.runtime.TransletLoader;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 
-import org.apache.xalan.xsltc.runtime.output.*;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 final public class Transform {
 

@@ -57,22 +57,8 @@
 package org.apache.xalan.templates;
 
 import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Enumeration;
-
-import javax.xml.transform.TransformerConfigurationException;
-import org.apache.xpath.XPath;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xpath.XPathContext;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
 
 import javax.xml.transform.TransformerException;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 
 /**
  * Represents a stylesheet that has methods that resolve includes and

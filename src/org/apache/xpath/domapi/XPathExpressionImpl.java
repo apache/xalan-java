@@ -66,10 +66,13 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.xpath.*;
+import org.w3c.dom.xpath.XPathException;
+import org.w3c.dom.xpath.XPathExpression;
+import org.w3c.dom.xpath.XPathNamespace;
 
 /**
  * 

@@ -63,8 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Vector;
 
 public final class MultiHashtable extends Hashtable {
     public Object put(Object key, Object value) {

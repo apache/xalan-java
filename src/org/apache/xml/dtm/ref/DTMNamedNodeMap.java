@@ -56,10 +56,11 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
-import java.util.Vector;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * <meta name="usage" content="internal"/>

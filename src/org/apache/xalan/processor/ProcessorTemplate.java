@@ -59,9 +59,6 @@ package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Attributes;
-
 /**
  * TransformerFactory for xsl:template markup.
  */

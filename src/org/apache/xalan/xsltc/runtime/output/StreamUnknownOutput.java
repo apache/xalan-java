@@ -63,16 +63,13 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.util.ArrayList;
-
-import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.ArrayList;
 
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public class StreamUnknownOutput extends StreamOutput {

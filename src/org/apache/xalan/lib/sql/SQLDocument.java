@@ -58,15 +58,14 @@
 
 package org.apache.xalan.lib.sql;
 
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTM;
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.*;
-import org.apache.xml.dtm.ref.*;
+import java.sql.Statement;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 
 /**
  * The SQL Document is the main controlling class the executesa SQL Query

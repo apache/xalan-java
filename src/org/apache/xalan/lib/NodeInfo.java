@@ -56,10 +56,10 @@
 
 package org.apache.xalan.lib;
 
-import org.apache.xml.dtm.ref.DTMNodeProxy;
-import org.apache.xalan.extensions.ExpressionContext;
-
 import javax.xml.transform.SourceLocator;
+
+import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

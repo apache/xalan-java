@@ -56,20 +56,9 @@
  */
 package org.apache.xpath.axes;
 
-import java.util.Vector;
-
-import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.OpCodes;
-import org.apache.xpath.objects.XObject;
-
-import javax.xml.transform.TransformerException;
-
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.Axis;
+import org.apache.xpath.XPathContext;
 
 /**
  * Walker for a reverse axes.

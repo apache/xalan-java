@@ -66,8 +66,8 @@ package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.util.IntegerArray;
 
 /**
  * Iterators of this kind use a CurrentNodeListFilter to filter a subset of 

@@ -56,36 +56,22 @@
  */
 package org.apache.xalan.templates;
 
-//import org.w3c.dom.*;
-//import org.w3c.dom.traversal.NodeIterator;
+import java.util.Vector;
+
+import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.transformer.NodeSorter;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
-
-// Experemental
-import org.apache.xml.dtm.ref.ExpandedNameTable;
-
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
-import org.apache.xpath.Expression;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.objects.XObject;
-
-import java.util.Vector;
-
-import org.apache.xml.utils.QName;
 import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.NodeSorter;
-import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xalan.transformer.ClonerToResultTree;
-
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.TransformerException;
+import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.xml.sax.ContentHandler;
 
 /**
  * <meta name="usage" content="advanced"/>

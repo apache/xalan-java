@@ -57,8 +57,6 @@
 package org.apache.xpath.axes;
 
 import org.apache.xpath.XPathContext;
-
-//import org.w3c.dom.Node;
  
 /**
  * <meta name="usage" content="advanced"/>

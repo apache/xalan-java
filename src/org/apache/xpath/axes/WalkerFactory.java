@@ -56,21 +56,20 @@
  */
 package org.apache.xpath.axes;
 
-import org.apache.xpath.compiler.OpCodes;
-import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.patterns.NodeTest;
-import org.apache.xpath.patterns.StepPattern;
-import org.apache.xpath.patterns.ContextMatchStepPattern;
-import org.apache.xpath.patterns.FunctionPattern;
-import org.apache.xpath.Expression;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.res.XPATHErrorResources;
-
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.Axis;
+import org.apache.xpath.Expression;
+import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.OpCodes;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.patterns.ContextMatchStepPattern;
+import org.apache.xpath.patterns.FunctionPattern;
+import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.patterns.StepPattern;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * This class is both a factory for XPath location path expressions,

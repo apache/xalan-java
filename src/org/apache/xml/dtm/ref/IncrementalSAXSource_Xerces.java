@@ -57,16 +57,17 @@
 
 package org.apache.xml.dtm.ref;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import java.io.IOException;
-import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.XMLReader;
-
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
+import org.apache.xerces.parsers.SAXParser;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 
 /** <p>IncrementalSAXSource_Xerces takes advantage of the fact that Xerces1

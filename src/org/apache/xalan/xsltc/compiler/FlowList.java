@@ -63,9 +63,12 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
 import java.util.Iterator;
-import org.apache.bcel.generic.*;
+import java.util.Vector;
+
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
 
 public final class FlowList {
     private Vector _elements;

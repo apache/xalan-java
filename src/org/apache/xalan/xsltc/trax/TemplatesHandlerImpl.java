@@ -63,15 +63,21 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.sax.TemplatesHandler;
 
-import org.xml.sax.Locator;
+import org.apache.xalan.xsltc.compiler.CompilerException;
+import org.apache.xalan.xsltc.compiler.Parser;
+import org.apache.xalan.xsltc.compiler.SourceLoader;
+import org.apache.xalan.xsltc.compiler.Stylesheet;
+import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
+import org.apache.xalan.xsltc.compiler.XSLTC;
+
 import org.xml.sax.InputSource;
-
-import org.apache.xalan.xsltc.compiler.*;
-import org.apache.xalan.xsltc.Translet;
-import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.xml.sax.Locator;
 
 /**
  * Implementation of a JAXP1.1 TemplatesHandler

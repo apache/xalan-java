@@ -56,7 +56,6 @@
  */
 package org.apache.xpath;
 
-import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.functions.Function;
@@ -65,6 +64,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 

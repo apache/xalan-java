@@ -58,16 +58,11 @@ package org.apache.xalan.transformer;
 
 import java.util.Vector;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
-import org.apache.xml.dtm.DTM;
-
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xml.utils.QName;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.XNodeSet;
 
 /**

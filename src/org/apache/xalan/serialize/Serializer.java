@@ -56,9 +56,9 @@
  */
 package org.apache.xalan.serialize;
 
-import java.io.Writer;
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Properties;
 
 import org.xml.sax.ContentHandler;

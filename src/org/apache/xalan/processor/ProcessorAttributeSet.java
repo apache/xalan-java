@@ -56,11 +56,12 @@
  */
 package org.apache.xalan.processor;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemTemplateElement;
 
 import org.xml.sax.Attributes;
-import javax.xml.transform.TransformerException;
 
 /**
  * This class processes parse events for an xsl:attribute-set.

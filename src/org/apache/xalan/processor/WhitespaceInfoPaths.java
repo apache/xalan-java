@@ -56,9 +56,10 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.WhiteSpaceInfo;
 import java.util.Vector;
+
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.WhiteSpaceInfo;
 
 public class WhitespaceInfoPaths extends WhiteSpaceInfo
 {

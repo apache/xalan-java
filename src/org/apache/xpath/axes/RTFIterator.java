@@ -63,9 +63,8 @@
   */
 package org.apache.xpath.axes;
 
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.NodeSetDTM;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.NodeSetDTM;
 
 public class RTFIterator extends NodeSetDTM {
 

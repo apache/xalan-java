@@ -57,11 +57,9 @@
 
 package org.apache.xml.dtm.ref;
 
+import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
 
 /** <p>IncrementalSAXSource is an API that delivers a small number of
  * SAX events each time a request is made from a "controller"

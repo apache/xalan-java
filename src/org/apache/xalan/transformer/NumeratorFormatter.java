@@ -56,11 +56,10 @@
  */
 package org.apache.xalan.transformer;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import java.util.Locale;
 import java.util.NoSuchElementException;
+
+import org.w3c.dom.Element;
 
 /**
  * <meta name="usage" content="internal"/>

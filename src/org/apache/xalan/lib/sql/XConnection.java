@@ -56,37 +56,31 @@
  */
 package org.apache.xalan.lib.sql;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.StringTokenizer;
-import java.lang.IllegalArgumentException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import java.util.Vector;
+import java.sql.Timestamp;
 import java.util.Enumeration;
-import java.math.BigDecimal;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xpath.objects.XBooleanStatic;
 
-import org.w3c.dom.*;
-import java.sql.*;
-import java.util.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * An XSLT extension that allows a stylesheet to

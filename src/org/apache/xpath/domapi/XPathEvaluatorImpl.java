@@ -63,10 +63,14 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.res.XPATHErrorResources;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.xpath.*;
+import org.w3c.dom.xpath.XPathEvaluator;
+import org.w3c.dom.xpath.XPathException;
+import org.w3c.dom.xpath.XPathExpression;
+import org.w3c.dom.xpath.XPathNSResolver;
 
 /**
  * <meta name="usage" content="experimental"/>

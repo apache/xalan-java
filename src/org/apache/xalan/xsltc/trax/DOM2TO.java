@@ -62,16 +62,23 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import java.io.IOException;
-import org.w3c.dom.Entity;
-import org.w3c.dom.Notation;
-
-import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.TransletOutputHandler;
+
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 
 public class DOM2TO implements XMLReader, Locator {
 

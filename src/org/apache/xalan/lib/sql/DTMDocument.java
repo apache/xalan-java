@@ -58,31 +58,31 @@
 
 package org.apache.xalan.lib.sql;
 
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMWSFilter;
-import org.apache.xml.dtm.ref.DTMDefaultBaseIterators;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.ref.DTMDefaultBaseIterators;
+import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.utils.StringBufferPool;
 import org.apache.xml.utils.SuballocatedIntVector;
+import org.apache.xml.utils.XMLString;
+
 import org.w3c.dom.Node;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.ErrorHandler;
+
+import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.ContentHandler;
-import java.io.IOException;
-import java.io.File;
-import java.io.PrintStream;
-import java.io.FileOutputStream;
-import org.xml.sax.*;
-import javax.xml.transform.SourceLocator;
-import org.apache.xml.utils.*;
-import org.apache.xml.dtm.*;
-import org.xml.sax.ext.*;
 
 /**
  * The SQL Document is the main controlling class the executesa SQL Query

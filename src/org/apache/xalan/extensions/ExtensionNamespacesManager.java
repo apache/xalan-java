@@ -56,8 +56,9 @@
  */
 package org.apache.xalan.extensions;
 
-import org.apache.xalan.templates.Constants;
 import java.util.Vector;
+
+import org.apache.xalan.templates.Constants;
 
 /**
  * Used during assembly of a stylesheet to collect the information for each 

@@ -59,15 +59,12 @@ package org.apache.xalan.transformer;
 import java.util.Hashtable;
 import java.util.Vector;
 
-//import org.w3c.dom.Node;
-import org.apache.xml.dtm.DTM;
-
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.NodeSetDTM;
 import org.apache.xalan.templates.ElemNumber;
+import org.apache.xml.dtm.DTM;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="internal"/>

@@ -65,18 +65,32 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Iterator;
-import java.util.HashSet;
-import java.util.Vector;
-import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
-import org.apache.bcel.util.*;
-import org.apache.bcel.generic.*;
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.DUP;
+import org.apache.bcel.generic.GOTO_W;
+import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.SWITCH;
+import org.apache.bcel.generic.TargetLostException;
+import org.apache.bcel.util.InstructionFinder;
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.NamedMethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.dom.Axis;
-import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.compiler.util.Type;
 
 /**
  * Mode gathers all the templates belonging to a given mode; 

@@ -61,9 +61,9 @@ package org.apache.xpath.domapi;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.dtm.DTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -71,7 +71,8 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.xpath.*;
+import org.w3c.dom.xpath.XPathException;
+import org.w3c.dom.xpath.XPathResult;
 
 /**
  * <meta name="usage" content="experimental"/>

@@ -56,12 +56,8 @@
  */
 package org.apache.xpath.patterns;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.ref.ExpandedNameTable;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;

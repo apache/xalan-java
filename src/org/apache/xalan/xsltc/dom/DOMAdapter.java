@@ -63,14 +63,14 @@
 
 package org.apache.xalan.xsltc.dom;
 
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.StripFilter;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.StripFilter;
-import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.TransletOutputHandler;
-import org.apache.xalan.xsltc.TransletException;
 
 public final class DOMAdapter implements DOM {
 

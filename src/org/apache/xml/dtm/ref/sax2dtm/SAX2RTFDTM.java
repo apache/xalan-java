@@ -56,25 +56,17 @@
  */
 package org.apache.xml.dtm.ref.sax2dtm;
 
-import java.util.Hashtable;
-import java.util.Vector;
 import javax.xml.transform.Source;
-import javax.xml.transform.SourceLocator;
 
-import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.ref.*;
-import org.apache.xml.utils.StringVector;
-import org.apache.xml.utils.IntVector;
-import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.SuballocatedIntVector;
-import org.apache.xml.utils.SystemIDResolver;
-import org.apache.xml.utils.WrappedRuntimeException;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-import org.apache.xml.utils.XMLString;
+import org.apache.xml.utils.IntVector;
+import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.XMLStringFactory;
-import org.xml.sax.*;
-import org.xml.sax.ext.*;
+
+import org.xml.sax.SAXException;
 
 /**
  * This is a subclass of SAX2DTM which has been modified to meet the needs of

@@ -56,11 +56,6 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.*;
-
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
 /**
  * <meta name="usage" content="internal"/>
  * This class doesn't have any XPathContext, so override

@@ -56,9 +56,6 @@
  */
 package org.apache.xpath.patterns;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
@@ -67,7 +64,6 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.patterns.StepPattern.PredOwner;
 
 /**
  * <meta name="usage" content="advanced"/>

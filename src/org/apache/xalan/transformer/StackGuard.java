@@ -56,10 +56,8 @@
  */
 package org.apache.xalan.transformer;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.Text;
-//import org.w3c.dom.Element;
 import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplate;

@@ -56,7 +56,6 @@
  */
 package org.apache.xpath.operations;
 
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;

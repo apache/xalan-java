@@ -56,33 +56,26 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-import org.apache.xml.utils.SuballocatedIntVector;
-import org.apache.xml.utils.SuballocatedByteVector;
-import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xml.utils.StringBufferPool;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Vector;
-
-import org.xml.sax.ContentHandler;
-
-import org.apache.xml.utils.NodeVector;
 
 import javax.xml.transform.Source;
 
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMException;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-
-import org.apache.xml.res.XMLMessages;
-import org.apache.xml.res.XMLErrorResources;
-
-import java.io.*; // for dumpDTM
-
 /**
  * The <code>DTMDefaultBase</code> class serves as a helper base for DTMs.
  * It sets up structures for navigation and type, while leaving data

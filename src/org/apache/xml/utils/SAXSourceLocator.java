@@ -56,13 +56,13 @@
  */
 package org.apache.xml.utils;
 
+import java.io.Serializable;
+
 import javax.xml.transform.SourceLocator;
 
-import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
-
-import java.io.Serializable;
+import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * Class SAXSourceLocator extends org.xml.sax.helpers.LocatorImpl

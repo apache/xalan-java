@@ -56,13 +56,11 @@
  */
 package org.apache.xml.utils;
 
+import java.io.File;
+
 import javax.xml.transform.TransformerException;
-import org.apache.xml.utils.URI;
+
 import org.apache.xml.utils.URI.MalformedURIException;
-
-import java.io.*;
-
-import java.lang.StringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>

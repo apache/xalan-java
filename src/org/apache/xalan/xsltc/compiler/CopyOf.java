@@ -63,14 +63,21 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
-
-import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.NodeSetType;
+import org.apache.xalan.xsltc.compiler.util.NodeType;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.ResultTreeType;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class CopyOf extends Instruction {
     private Expression _select;

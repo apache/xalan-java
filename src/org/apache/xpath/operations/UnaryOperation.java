@@ -56,13 +56,10 @@
  */
 package org.apache.xpath.operations;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.objects.XObject;
 
 /**

@@ -56,51 +56,36 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-
-import java.util.Vector;
-
-// JAXP 1.1
-import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.Source;
-import javax.xml.transform.SourceLocator;
 
-// Apache XML Utilities
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMException;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.XMLStringFactory;
 
-/**************************************************************
-// EXPERIMENTAL 3/22/02
-import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
-**************************************************************/
-
-// W3C DOM
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-// SAX2
 import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.ext.LexicalHandler;
-
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.utils.XMLStringFactory;
-
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
 
 /**
  * The default implementation for the DTMManager.

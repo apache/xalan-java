@@ -56,7 +56,6 @@
  */
 package org.apache.xpath;
 
-//import org.w3c.dom.Node;
 
 /**
  * <meta name="usage" content="internal"/>

@@ -62,20 +62,20 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import java.io.Reader;
 import java.io.InputStream;
+import java.io.Reader;
 
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.compiler.SourceLoader;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 public final class Util {
 

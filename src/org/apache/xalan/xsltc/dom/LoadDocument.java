@@ -62,23 +62,19 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.net.URL;
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
-import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+
+import org.xml.sax.XMLReader;
 
 public final class LoadDocument {
 

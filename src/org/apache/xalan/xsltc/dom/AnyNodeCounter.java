@@ -64,8 +64,8 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.Translet;
 
 public abstract class AnyNodeCounter extends NodeCounter {
     public AnyNodeCounter(Translet translet,

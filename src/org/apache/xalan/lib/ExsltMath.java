@@ -56,9 +56,10 @@
  */
 package org.apache.xalan.lib;
 
+import org.apache.xpath.NodeSet;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.apache.xpath.NodeSet;
 
 /**
  * <meta name="usage" content="general"/>

@@ -56,7 +56,7 @@
  */
 
 package org.apache.xml.dtm.ref;
-import java.util.Vector;
+
 
 /** <p>Like DTMStringPool, but threadsafe. It's been proposed that DTMs
  * share their string pool(s); that raises threadsafety issues which

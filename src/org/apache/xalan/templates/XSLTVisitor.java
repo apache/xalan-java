@@ -57,7 +57,6 @@
 package org.apache.xalan.templates;
 
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.ExpressionOwner;
 
 /**
  * A derivation from this class can be passed to a class that implements 

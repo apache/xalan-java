@@ -56,23 +56,17 @@
  */
 package org.apache.xpath;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-//import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.traversal.NodeIterator;
-//import org.w3c.dom.traversal.NodeFilter;
-//import org.w3c.dom.DOMException;
-
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
-
 import org.apache.xml.utils.NodeVector;
-import org.apache.xpath.axes.ContextNodeList;
-
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.NodeIterator;
 
 
 /**

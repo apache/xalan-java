@@ -62,9 +62,9 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import java.util.Vector;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 public class ErrorMessages extends ResourceBundle {
 

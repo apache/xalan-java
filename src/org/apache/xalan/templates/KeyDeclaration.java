@@ -56,8 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xpath.XPath;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.XPath;
 
 /**
  * <meta name="usage" content="internal"/>

@@ -56,18 +56,21 @@
  */
 package org.apache.xml.utils;
 
-import org.apache.xml.res.XMLMessages;
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.utils.NodeVector;
 import java.util.Stack;
 
-import org.xml.sax.ext.LexicalHandler;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
+
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
-import org.xml.sax.Attributes;
-
-import org.w3c.dom.*;  // we pretty much use everything in the DOM here.
-
+import org.xml.sax.ext.LexicalHandler;
 /**
  * <meta name="usage" content="general"/>
  * This class takes SAX events (in addition to some extra events

@@ -63,13 +63,9 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.util.Vector;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.dom.NodeIteratorBase;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.util.IntegerArray;
 

@@ -56,7 +56,7 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 /**
  * This class serves as a default base for implementations of DTMAxisIterators.

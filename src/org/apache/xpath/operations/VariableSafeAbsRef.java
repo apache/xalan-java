@@ -56,9 +56,6 @@
  */
 package org.apache.xpath.operations;
 
-import javax.xml.transform.TransformerException;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;

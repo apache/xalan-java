@@ -65,7 +65,6 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public final class SortingIterator extends NodeIteratorBase {

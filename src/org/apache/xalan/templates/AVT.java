@@ -56,24 +56,18 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xml.dtm.DTM;
-
-import java.util.Vector;
 import java.util.StringTokenizer;
-
-import org.apache.xml.utils.StringBufferPool;
-import org.apache.xml.utils.FastStringBuffer;
+import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.processor.StylesheetHandler;
-
-import javax.xml.transform.ErrorListener;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.utils.StringBufferPool;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="advanced"/>

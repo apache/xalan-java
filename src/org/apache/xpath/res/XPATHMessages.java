@@ -56,10 +56,7 @@
  */
 package org.apache.xpath.res;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.ListResourceBundle;
-import java.util.MissingResourceException;
 
 import org.apache.xml.res.XMLMessages;
 

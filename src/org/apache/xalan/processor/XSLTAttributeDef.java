@@ -56,26 +56,23 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xml.utils.StringToIntTable;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.xalan.templates.AVT;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.Constants;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.AVT;
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.utils.QName;
-import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.StringToIntTable;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.XMLChar;
 import org.apache.xpath.XPath;
-
-import javax.xml.transform.TransformerException;
 
  
 /**

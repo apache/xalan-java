@@ -56,9 +56,11 @@
  */
 package org.apache.xpath.objects;
 
-import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.Axis;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.axes.OneStepIterator;
 
 

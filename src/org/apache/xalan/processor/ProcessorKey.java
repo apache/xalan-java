@@ -56,15 +56,13 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.KeyDeclaration;
-
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Attributes;
+import java.util.Vector;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.KeyDeclaration;
 
-import java.util.Vector;
+import org.xml.sax.Attributes;
 
 /**
  * TransformerFactory for xsl:key markup.

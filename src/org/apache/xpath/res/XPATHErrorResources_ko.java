@@ -1,4 +1,4 @@
-/*
+	/*
  * The Apache Software License, Version 1.1
  *
  *
@@ -55,14 +55,6 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xpath.res;
-
-import org.apache.xml.utils.res.XResourceBundleBase;
-
-
-import java.util.*;
-
-import java.text.DecimalFormat;
-
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -56,21 +56,9 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
-
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
-
-import java.util.*;
-
-import java.text.NumberFormat;
-import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 import org.apache.xml.utils.QName;
-import org.apache.xalan.res.*;
-import org.apache.xalan.transformer.TransformerImpl;
 
 /**
  * <meta name="usage" content="advanced"/>

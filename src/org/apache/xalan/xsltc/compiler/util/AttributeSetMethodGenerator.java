@@ -63,11 +63,11 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import java.util.Vector;
-import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Parser;
-import org.apache.xalan.xsltc.compiler.Template;
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
+import org.apache.bcel.generic.ClassGen;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionList;
 
 public final class AttributeSetMethodGenerator extends MethodGenerator {
     private static int HANDLER_INDEX = 1;

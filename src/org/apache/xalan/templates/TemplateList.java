@@ -56,27 +56,20 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.Enumeration;
-
-import java.io.Serializable;
-
-//import org.w3c.dom.Node;
-import org.apache.xml.dtm.DTM;
-
-import org.apache.xml.dtm.ref.ExpandedNameTable;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
-import org.apache.xml.utils.PrefixResolver;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xpath.patterns.NodeTest;
-import org.apache.xpath.Expression;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xpath.XPathContext;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 

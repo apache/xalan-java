@@ -56,24 +56,11 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xpath.res.XPATHErrorResources;
-
-//import org.w3c.dom.Node;
-
-import java.util.Vector;
-
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.objects.XMLStringFactoryImpl;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.utils.FastStringBuffer;
-
-import org.apache.xml.dtm.DTM;
 import org.xml.sax.ContentHandler;
 
 /**

@@ -56,42 +56,28 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.Vector;
-
-import java.io.StringWriter;
-import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMManager;
-
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.Function2Args;
-import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.SourceTreeManager;
-import org.apache.xpath.Expression;
-import org.apache.xpath.XPathContext;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xpath.XPathContext;
-import org.apache.xalan.transformer.TransformerImpl;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
-import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.Expression;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.SourceTreeManager;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>

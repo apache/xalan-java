@@ -56,15 +56,11 @@
  */
 package org.apache.xalan.processor;
 
-import org.xml.sax.ContentHandler;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xml.utils.QName;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-
-import java.util.Hashtable;
-import java.util.Enumeration;
 
 /**
  * This class defines the allowed structure for an element in a XSLT stylesheet,

@@ -65,20 +65,19 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import java.io.Serializable;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.ObjectInputStream;
 import java.io.IOException;
-import java.util.Properties;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Properties;
 
-import javax.xml.transform.*;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.URIResolver;
 
 import org.apache.xalan.xsltc.Translet;
-import org.apache.xalan.xsltc.compiler.*;
-import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 public final class TemplatesImpl implements Templates, Serializable {

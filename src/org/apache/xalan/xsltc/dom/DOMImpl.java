@@ -66,27 +66,36 @@
 package org.apache.xalan.xsltc.dom;
 
 import java.io.Externalizable;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.IOException;
-import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Stack;
 
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.StripFilter;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.runtime.SAXAdapter;
+import org.apache.xalan.xsltc.util.IntegerArray;
+import org.apache.xerces.dom.NamedNodeMapImpl;
+import org.apache.xerces.dom.NodeImpl;
+import org.apache.xerces.parsers.DOMBuilderImpl;
+import org.apache.xpath.axes.AttributeIterator;
+import org.apache.xpath.axes.DescendantIterator;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Document;
 
-import org.xml.sax.*;
-import org.xml.sax.ext.*;
-import org.xml.sax.helpers.AttributesImpl;
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.util.IntegerArray;
-import org.apache.xalan.xsltc.runtime.BasisLibrary;
-import org.apache.xalan.xsltc.runtime.SAXAdapter;
-import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 public final class DOMImpl implements DOM, Externalizable {
 

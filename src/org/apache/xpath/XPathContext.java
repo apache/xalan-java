@@ -56,64 +56,36 @@
  */
 package org.apache.xpath;
 
-// Java lib imports
-import java.io.File;
-import java.io.IOException;
-
+import java.lang.reflect.Method;
 import java.util.Stack;
 import java.util.Vector;
 
-import java.lang.reflect.Method;
-
-// Xalan imports
-import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.ObjectStack;
-import org.apache.xml.utils.NSInfo;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.NodeVector;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.axes.SubContextList;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.objects.XString;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 
 import org.apache.xalan.extensions.ExpressionContext;
-
-// SAX2 imports
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-// import org.xml.sax.Locator;
-
-// TRaX imports
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.dom.DOMSource;
-
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.Source;
-import javax.xml.transform.ErrorListener;
-
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.Axis;
-
-// Utility imports.
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
+import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.ObjectStack;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
-import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.utils.IntStack;
+import org.apache.xpath.axes.SubContextList;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.res.XPATHErrorResources;
 
-import org.apache.xpath.axes.DescendantIterator;
-
-// For  handling.
-import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
+import org.xml.sax.XMLReader;
 
 /**
  * <meta name="usage" content="advanced"/>

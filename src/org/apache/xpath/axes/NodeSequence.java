@@ -56,16 +56,13 @@
  */
 package org.apache.xpath.axes;
 
-import java.io.Serializable;
-
 import java.util.Vector;
-import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.utils.NodeVector;
-import org.apache.xpath.Expression;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;

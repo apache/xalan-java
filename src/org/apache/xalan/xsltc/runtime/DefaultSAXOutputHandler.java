@@ -63,18 +63,17 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import java.util.Vector;
-
-import java.io.IOException;
-import java.io.Writer;
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
+import java.io.Writer;
+import java.util.Vector;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 

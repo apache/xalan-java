@@ -56,12 +56,7 @@
  */
 package org.apache.xpath.axes;
 
-// Java library imports
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-
-import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
@@ -74,9 +69,6 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="advanced"/>
