@@ -52,7 +52,7 @@ Copyright:
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
-  <property name="xalan.jar" value="${name}.jar"/>
+
 
   <property name="build.compiler" value="classic"/>
   <property name="debug" value="off"/>
@@ -186,7 +186,7 @@ Copyright:
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile">
-    <jar jarfile="${build.dir}/${xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
+    <jar jarfile="${build.dir}/xalan.jar" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
   </target>
   <target name="package" depends="jar">
     <!-- OK, what are the 'Apache-standard' names for various targets? -->
@@ -200,34 +200,34 @@ Copyright:
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
     <!-- Since the samples are packageless, they must be compiled separately. -->   
-    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.dir}/${xalan.jar}"  
+    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.dir}/xalan.jar"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/TransformToDom" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+    <javac srcdir="${samples.dir}/TransformToDom" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+    <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.dir}/${xalan.jar}"  
+    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.dir}/xalan.jar"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${build.dir}/${xalan.jar}"  
+    <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${build.dir}/xalan.jar"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>                                                        
-   <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+   <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/> 
     <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
@@ -242,12 +242,16 @@ Copyright:
   <!-- =================================================================== -->
  <target name="servlet" depends="jar">
      <echo message="To compile and run the sample servlet, javax.servlet and javax.servlet.http must be on the classpath"/>   
-     <mkdir dir="${build.dir}/servlet"/>
-     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+     <mkdir dir="${build.samples}/servlet"/>
+     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"
-           debug="${debug}"/>      
+           debug="${debug}"/>
+      <copy todir="${build.samples}/servlet">
+	  <fileset dir="${samples.dir}/servlet" 
+	        includes="media.properties,default.xsl,default2.xsl"/>
+	</copy>  		         
     <jar jarfile="${build.dir}/xalanservlet.jar" basedir="${build.samples}"
-         includes="servlet/*.class"/>            
+         includes="servlet/**"/>            
  </target>
  
   <!-- =================================================================== -->
@@ -259,7 +263,7 @@ Copyright:
   
   <target name="autodocs">
     <echo message="autodocs is for automated build process, without dependencies"/>   
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${xalan.jar}">
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/xalan.jar">
        <arg line="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>
 	</java>	 
   </target>
@@ -301,7 +305,7 @@ Copyright:
           <group title="DOM 2" packages="org.w3c.dom*"/>
     </javadoc>
     <!-- generate patterns.html, a TRaX "patterns design" document -->
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/${xalan.jar}">
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/xalan.jar">
       <arg line="-in ${src.dir}/org/apache/trax/patterns.xml 
                 -xsl ${xdocs.style}/stylesheets/patterns.xsl 
                 -out ${build.apidocs}/org/apache/trax/patterns.html"/>
@@ -369,7 +373,7 @@ Copyright:
     <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
 
     <!-- Copy xalan jar into the bin directory (subject to change) -->
-    <copy file="${build.dir}/${xalan.jar}" todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xalan.jar" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat"/>
@@ -387,7 +391,7 @@ Copyright:
  
     <mkdir dir="${site.dir}/apidocs"/>
     
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar"> 
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/$xalan.jar"> 
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
 	</java>	 
        
