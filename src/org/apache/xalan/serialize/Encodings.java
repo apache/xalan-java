@@ -172,7 +172,7 @@ public class Encodings extends Object
         // Get the default system character encoding.  This may be 
         // incorrect if they passed in a writer, but right now there 
         // seems to be no way to get the encoding from a writer.
-        encoding = System.getProperty("file.encoding");
+        encoding = System.getProperty("file.encoding", "UTF8");
 
         if (null != encoding)
         {
