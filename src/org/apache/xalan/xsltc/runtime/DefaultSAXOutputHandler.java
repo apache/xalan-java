@@ -508,6 +508,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
                     if (!_emptyElements.containsKey(_element.toLowerCase())){
                         _writer.write(GT_LT_SL);
                         _writer.write(_element);
+			_writer.write('>');
                     }
 		    else {
 			_writer.write(GT_CR);
@@ -519,7 +520,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
                 }
             }
             else {
-              _writer.write('>');
+		_writer.write('>');
             }
             _startTagOpen = false;
         }

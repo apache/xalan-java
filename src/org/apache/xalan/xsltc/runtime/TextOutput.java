@@ -66,7 +66,6 @@
 package org.apache.xalan.xsltc.runtime;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.Stack;
 import java.util.Enumeration;
 
@@ -350,14 +349,14 @@ public final class TextOutput implements TransletOutputHandler {
      */
     private void characters(String str) throws SAXException {
 	final char[] ch = str.toCharArray();
-	_saxHandler.characters(ch, 0, ch.length);
+	characters(ch, 0, ch.length);
     }
 
     /**
      * Utility method - pass a whole character array to the SAX handler
      */
     private void characters(char[] ch) throws SAXException {
-	_saxHandler.characters(ch, 0, ch.length);
+	characters(ch, 0, ch.length);
     }
 
     /**
@@ -595,6 +594,7 @@ public final class TextOutput implements TransletOutputHandler {
 	if (_startTagOpen) {
 
 	    // URL-encode href attributes in HTML output
+	    /* Nope, does not work properly - find other solution
 	    if (_outputType == HTML) {
 		if  (name.toLowerCase().equals("href")) {
 		    if (value.startsWith("http")) {
@@ -603,6 +603,7 @@ public final class TextOutput implements TransletOutputHandler {
 		    }
 		}
 	    }
+	    */
 
 	    // Intercept namespace declarations and handle them separately
 	    if (name.startsWith("xml")) {
