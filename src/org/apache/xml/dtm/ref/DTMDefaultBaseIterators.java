@@ -1121,7 +1121,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
   {
 
     /** The max ancestors, but it can grow... */
-    static private final int _maxAncestors = 8;
+    private final int _maxAncestors = 8;
 
     /**
      * The stack of start node + ancestors up to ROOTNODE,
