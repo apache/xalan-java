@@ -2285,8 +2285,6 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	int attr, child, col;
 
-	if (node >= _treeNodeLimit) return;
-
 	switch(_type[node]) {
 	case ROOT:
 	    for (child = _offsetOrChild[node];
@@ -2304,6 +2302,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    handler.characters(_text,
 			       _offsetOrChild[node],
 			       _lengthOrAttr[node]);
+	    break;
+	case ATTRIBUTE:
+	    shallowCopy(node, handler);
 	    break;
 	default:
 	    if (isElement(node)) {
@@ -2335,7 +2336,6 @@ public final class DOMImpl implements DOM, Externalizable {
 					  makeStringValue(attr));
 		    }
 		}
-		// Copy element namespace declarations ???
 
 		// Copy element children
 		for (child = _offsetOrChild[node];
@@ -2343,10 +2343,13 @@ public final class DOMImpl implements DOM, Externalizable {
 		     child = _nextSibling[child]) {
 		    copy(child, handler);
 		}
+
+		// Copy element end-tag
 		handler.endElement(name);
 	    }
+	    // Shallow copy of attribute to output handler
 	    else {
-		System.err.println("NYI: non element in copy");
+		shallowCopy(node, handler);
 	    }
 	    break;
 	}
@@ -2396,14 +2399,23 @@ public final class DOMImpl implements DOM, Externalizable {
 	    return null;
 	default:                  // element or attribute
 	    final String name = getNodeName(node);
-	    if (node < _treeNodeLimit) { // element
-		handler.startElement(name);
-		return name;
+	    if (isElement(node)) {
+		// Copy element name - start tag
+		int col = name.lastIndexOf(':');
+		if (col > 0) {
+		    final String prefix = generateNamespacePrefix();
+		    handler.startElement(prefix+':'+name.substring(col+1));
+		    handler.namespace(prefix, name.substring(0,col));
+		}
+		else {
+		    handler.startElement(name);
+		}
+		handler.endElement(name);
 	    }
 	    else {                  // attribute
 		handler.attribute(name, makeStringValue(node));
-		return null;
 	    }
+	    return null;
 	}
     }
 

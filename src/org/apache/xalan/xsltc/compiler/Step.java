@@ -166,6 +166,7 @@ final class Step extends RelativeLocationPath {
 	SyntaxTreeNode parent = getParent();
 	if ((parent instanceof ParentPattern) ||
 	    (parent instanceof ParentLocationPath) ||
+	    (parent instanceof UnionPathExpr) ||
 	    (parent instanceof FilterParentPath))
 	    return(true);
 	else

@@ -111,8 +111,6 @@ final class CopyOf extends Instruction {
 	final String DOM_CLASS = classGen.getDOMClass();
 	final Type tselect = _select.getType();
 
-	
-
 	if (tselect instanceof NodeSetType) {
 	    il.append(methodGen.loadDOM());
 

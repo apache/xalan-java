@@ -100,6 +100,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	    node = markedNode;
 	    iterator.gotoMark();
 	}
+
     } // end of LookAheadIterator
 
     private static final int InitSize = 8;
@@ -139,6 +140,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	    System.arraycopy(_heap, 0, newArray, 0, _free);
 	    _heap = newArray;
 	}
+	_heapSize++;
 	_heap[_free++] = new LookAheadIterator(iterator);
 	return this;
     }
@@ -151,8 +153,9 @@ public final class UnionIterator extends NodeIteratorBase {
 		    // replace it with last
 		    _heap[0] = _heap[--_heapSize];
 		}
-		else 
+		else {
 		    return END;
+		}
 	    }
 	    else if (smallest == _last) {	// duplicate
 		_heap[0].step(); // value consumed
