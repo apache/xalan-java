@@ -84,7 +84,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 83;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 84;  // this is needed to keep track of the number of messages          
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -812,17 +812,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   {
     contents[ER_ZERO_OR_ONE][1] =
        "0 or 1";
-  }
-  
-   /**  2 or 3   */
-  public static final int ER_TWO_OR_THREE = 78;
-
-  static
-  {
-    contents[ER_TWO_OR_THREE][1] =
-       "0 or 1";
-  }
-  
+  }    
   
   
    /**  rtf() not supported by XRTreeFragSelectWrapper   */
@@ -877,7 +867,17 @@ public class XPATHErrorResources extends XResourceBundleBase
   {
     contents[ER_FASTSTRINGBUFFER_CANNOT_BE_NULL][1] =
       "The FastStringBuffer argument can not be null";
-  }  
+  }
+  
+   /**  2 or 3   */
+  public static final int ER_TWO_OR_THREE = 84;
+
+  static
+  {
+    contents[ER_TWO_OR_THREE][1] =
+       "0 or 1";
+  }
+  
   
 
 
