@@ -70,8 +70,6 @@ Copyright:
   <!-- GUMP: Currently 18-Apr-01 used only for xsltc.compile -->
   <property name="bcel.jar.name" value="BCEL.jar"/>
   <property name="bcel.jar" value="${bin.dir}/${bcel.jar.name}"/>
-  <property name="crimson.jar.name" value="crimson.jar"/><!-- Why is this here? 10-Sep-01 -sc -->
-  <property name="crimson.jar" value="${bin.dir}/${crimson.jar.name}"/>
   <property name="java_cup.jar.name" value="java_cup.jar"/>
   <property name="java_cup.jar" value="${bin.dir}/${java_cup.jar.name}"/>
   <property name="jlex.jar.name" value="JLex.jar"/>
@@ -83,8 +81,8 @@ Copyright:
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
-  <property name="version.RELEASE" value="4"/>
-  <property name="version.DEVELOPER" value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
+  <property name="version.RELEASE" value="5"/>
+  <property name="version.DEVELOPER" value="D"/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
   <property name="version.MINOR" value="1"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version" value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
@@ -95,6 +93,7 @@ Copyright:
   <!-- Relative locations of source directories -->
   <property name="manifest.mf" value="./src/MANIFEST.MF"/>
   <property name="manifest.xsltc.mf" value="./src/manifest.xsltc"/>
+  <property name="XSLTInfo.props" value="./src/org/apache/xalan/res/XSLTInfo.properties"/>  
   <property name="src.dir" value="./src"/>
   <property name="apachexml.reldir" value="org/apache/xml"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
@@ -250,8 +249,10 @@ Copyright:
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
-      <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,META-INF/services/*"/>
+      <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,META-INF/services/*" excludes="**/XSLTInfo.properties"/>
     </copy>  
+    <filter token="impl.version" value="${impl.version}"/>
+    <copy todir="${build.classes}/org/apache/xalan/res" file="${XSLTInfo.props}" filtering="true"/>
   </target>
 
   <!-- =================================================================== -->
@@ -263,7 +264,6 @@ Copyright:
     <pathelement location="${jlex.jar}" />
     <pathelement location="${java_cup.jar}" />
     <pathelement location="${runtime.jar}" />
-    <pathelement location="${crimson.jar}" />
     <!-- build.classes needed for 
          org.apache.xalan.xsltc.util.JavaCupRedirect -->
     <pathelement location="${build.classes}" />
