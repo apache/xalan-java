@@ -327,7 +327,12 @@ public class XPath implements Serializable, ExpressionOwner
       // e.printStackTrace();
 
       String msg = e.getMessage();
-      msg = (msg == null || msg.length()== 0)? "Unknown error in XPath" : msg;
+      
+      if (msg == null || msg.length() == 0) {
+           msg = XSLMessages.createXPATHMessage(
+               XPATHErrorResources.ER_XPATH_ERROR, null);
+     
+      }  
       TransformerException te = new TransformerException(msg,
               getLocator(), e);
       ErrorListener el = xctxt.getErrorListener();
@@ -397,7 +402,13 @@ public class XPath implements Serializable, ExpressionOwner
       // e.printStackTrace();
 
       String msg = e.getMessage();
-      msg = (msg == null || msg.length()== 0)? "Unknown error in XPath" : msg;
+      
+      if (msg == null || msg.length() == 0) {
+           msg = XSLMessages.createXPATHMessage(
+               XPATHErrorResources.ER_XPATH_ERROR, null);
+     
+      }        
+      
       TransformerException te = new TransformerException(msg,
               getLocator(), e);
       ErrorListener el = xctxt.getErrorListener();

@@ -1189,8 +1189,12 @@ public class TransformerFactoryImpl
             String systemId = source.getSystemId();
             if (systemId != null) {
           	String baseName = Util.baseName(systemId);
-                if (baseName != null)
-            	    transletBaseName = Util.noExtName(baseName);
+                //if (baseName != null)
+            	//   transletBaseName = Util.noExtName(baseName);
+		if (baseName != null) {
+		    baseName = Util.noExtName(baseName);
+		    transletBaseName = Util.toJavaName(baseName);
+		}
             }
       	}
       

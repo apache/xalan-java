@@ -86,7 +86,7 @@ Copyright:
   <property name="version.VERSION" value="2"/>
   <property name="version.RELEASE" value="4"/>
   <property name="version.DEVELOPER" value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR" value="0"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.MINOR" value="1"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version" value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
@@ -100,6 +100,7 @@ Copyright:
   <property name="apachexml.reldir" value="org/apache/xml"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
+  <property name="domxpath.reldir" value="org/w3c/dom/xpath"/>
   <property name="xsltc.reldir" value="${xalan.reldir}/xsltc"/>
   <property name="generated.xpathparser" value="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java"/>
   <property name="generated.xpathlexer" value="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
@@ -109,7 +110,7 @@ Copyright:
   <property name="build.dir" value="./build"/><!-- GUMP: root of all normal builds output -->
   <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/><!-- GUMP: actual path/name of jar target output -->
   <property name="build.xalan-unbundled.jar" value="${build.dir}/${name}-unbundled.jar"/>
-  <property name="build.xalan-interpreter.jar" value="${build.dir}/${name}-interpreter.jar"/>
+  <property name="build.xalan-interpretive.jar" value="${build.dir}/${name}-interpretive.jar"/>
   <property name="build.xsltc.jar" value="${build.dir}/xsltc.jar"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
@@ -180,10 +181,18 @@ Copyright:
   </path>
   <path id="xslt.boot.class.path">
     <!-- Put this version of xalan in front of the jdk's for JDK 1.4+ -->
+    <!-- Set build.boot.class.path to a JDK 1.1.x classes.zip file to check
+         compatibility with 1.1.x.  If you omit this property, compatability
+         with 1.1.x will not be checked even though javac specifies a target of 1.1 -->
     <pathelement location="${build.classes}" />
+    <pathelement path="${build.boot.class.path}" />
     <pathelement path="${sun.boot.class.path}" />
   </path>
-  
+  <path id="compile.source.path">
+    <dirset dir="${src.dir}" includes="/org/apache/**" />
+  </path>
+
+
   <!-- =================================================================== -->
   <!-- Creates output build directories and doc prerequistes               -->
   <!-- =================================================================== -->
@@ -232,7 +241,8 @@ Copyright:
     <echo message="Compiling DTM implementation and utilities" />
     <javac srcdir="${src.dir}"
            destdir="${build.classes}"
-           debug="${build.debug}" >
+           debug="${build.debug}"
+           target="1.1" >
       <include name="${apachexml.reldir}/**/*.java" />
       <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
       <exclude name="${apachexml.reldir}/utils/synthetic/**/*.java" />      
@@ -246,41 +256,20 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Compile the Xalan interpreter source tree                           -->
   <!-- =================================================================== -->
-  <target name="xalan-interpreter.compile" depends="xml.compile"
-    description="Compile the Xalan interpreter classes (skips 1.x compat and XSLTC)" >
-    <echo message="Compiling Xalan interpreter classes" />
-    <!-- Note: split compile into separate javac steps to avoid JDK 1.1.8 bug reported at:
-         http://developer.java.sun.com/developer/bugParade/bugs/4043508.html
-         which causes an error like:
-         [javac] E:\builds\xml-xalan\java\src\org\apache\xalan\templates\ElemTemplate.java:108: Cyclic class inheritance or scoping.
-    --> 
-    <!-- Compile XPath engine and some common utilities -->
+  <target name="xalan-interpretive.compile" depends="xml.compile"
+    description="Compile the Xalan interpretive classes (skips 1.x compat and XSLTC)" >
+    <echo message="Compiling Xalan interpretive classes" />
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           debug="${build.debug}" >
-      <!-- Also compile version info classes here -->
-      <include name="${xalan.reldir}/Version.java" />
-      <include name="${xalan.reldir}/processor/XSLProcessorVersion.java" />
+           debug="${build.debug}" 
+           target="1.1" >
       <include name="${xpath.reldir}/**/*.java" />
+      <include name="${domxpath.reldir}/**/*.java" />
+      <include name="${xalan.reldir}/**/*.java" />
+      <exclude name="${xsltc.reldir}/**/*.java" />
       <classpath refid="compile.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
-    </javac>
-    <!-- Compile Xalan interpreter main engine (but not xsltc package yet) -->
-    <javac srcdir="${src.dir}" 
-           destdir="${build.classes}"
-           includes="${xalan.reldir}/**/*.java"
-           excludes="${xsltc.reldir}/**/*.java,${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${build.debug}" >
-      <classpath refid="compile.class.path" />
-      <bootclasspath refid="xslt.boot.class.path" />
-    </javac>
-    <!-- Compile various Xalan-specific extensions and command line class -->
-    <javac srcdir="${src.dir}" 
-           destdir="${build.classes}"
-           includes="${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${build.debug}" >
-      <classpath refid="compile.class.path" />
-      <bootclasspath refid="xslt.boot.class.path" />
+      <sourcepath refid="compile.source.path" />
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
@@ -288,9 +277,9 @@ Copyright:
     </copy>  
   </target>
   
-  <!-- Compile all java sources (Xalan interpreter and XSLTC) -->
-  <target name="compile" depends="xalan-interpreter.compile,xsltc.compile"
-    description="Compile all java source files (Xalan interpreter + XSLTC)" >
+  <!-- Compile all java sources (Xalan interpretive and XSLTC) -->
+  <target name="compile" depends="xalan-interpretive.compile,xsltc.compile"
+    description="Compile all java source files (Xalan interpretive + XSLTC)" >
   </target>
 
   <!-- =================================================================== -->
@@ -495,14 +484,14 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
-  <!-- Creates the xalan interpreter jar                                   -->
+  <!-- Creates the xalan interpretive jar                                   -->
   <!-- =================================================================== -->
-  <target name="xalan-interpreter.jar" depends="xalan-interpreter.compile"
-    description="Jar up everything in Xalan interpreter (without XSLTC)" >
+  <target name="xalan-interpretive.jar" depends="xalan-interpretive.compile"
+    description="Jar up everything in Xalan interpretive (without XSLTC)" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
-    <jar jarfile="${build.xalan-interpreter.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
+    <jar jarfile="${build.xalan-interpretive.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
         <include name="${apachexml.reldir}/**/*" />
         <include name="${xpath.reldir}/**/*" />
@@ -514,9 +503,9 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
-  <!-- Creates the xalan unbundled jar (Xalan interpreter + XSLTC)         -->
+  <!-- Creates the xalan unbundled jar (Xalan interpretive + XSLTC)         -->
   <!-- =================================================================== -->
-  <target name="unbundledjar" depends="xalan-interpreter.compile,xsltc.compile"
+  <target name="unbundledjar" depends="xalan-interpretive.compile,xsltc.compile"
     description="Jar up Xalan and XSLTC, without the XSLTC dependencies" >
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
@@ -531,9 +520,9 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
-  <!-- Creates one big xalan jar (Xalan interpreter + XSLTC + support jars) -->
+  <!-- Creates one big xalan jar (Xalan interpretive + XSLTC + support jars) -->
   <!-- =================================================================== -->
-  <target name="jar" depends="xalan-interpreter.compile,xsltc.compile,xsltc.copy-deps-jars"
+  <target name="jar" depends="xalan-interpretive.compile,xsltc.compile,xsltc.copy-deps-jars"
     description="Jar up everything (Xalan, XSLTC and XSLTC dependencies)" >
     
     <!-- Copy over the manifest, with filtering (for version number) -->
@@ -805,7 +794,11 @@ Copyright:
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
     <delete dir="${src.dir}/javax" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/org/xml" includeEmptyDirs="true" quiet="true"/>
-    <delete dir="${src.dir}/org/w3c" includeEmptyDirs="true" quiet="true"/>
+    <delete includeEmptyDirs="true" quiet="true">
+      <fileset dir="${src.dir}/org/w3c">
+        <exclude name="dom/xpath/**"/>
+      </fileset>
+    </delete>
   </target>
  
   <target name="xsltc.clean"

@@ -387,8 +387,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
                    
     m_saxLocations.removeAllElements();   
-	m_axesIteratorStack.clear();
-	m_contextNodeLists.clear();
+	m_axesIteratorStack.removeAllElements();
+	m_contextNodeLists.removeAllElements();
 	m_currentExpressionNodes.removeAllElements();
 	m_currentNodes.removeAllElements();
 	m_iteratorRoots.RemoveAllNoClear();
@@ -1308,10 +1308,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * */
   public void popRTFContext()
   {
+  	int previous=m_last_pushed_rtfdtm.pop();
   	if(null==m_rtfdtm_stack)
   		return;
   
-  	int previous=m_last_pushed_rtfdtm.pop();
   	if(m_which_rtfdtm==previous)
   	{
   		if(previous>=0) // guard against none-active

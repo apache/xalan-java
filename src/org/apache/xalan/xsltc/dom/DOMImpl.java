@@ -414,23 +414,19 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	if (_nodeLists == null) {
             _nodeLists = new NodeList[_namesArray.length + DTM.NTYPES];
 	}
-      try
-      {        
-// %HZ%:  Should we create an org.apache.xpath.axes.SingletonIterator class?
       return _nodeLists[index] != null
                ? _nodeLists[index]
-               : (_nodeLists[index] = new DTMNodeList(new org.apache.xpath.axes.SingletonIterator(index)));
-      }
-      catch (javax.xml.transform.TransformerException te)
-      {return null;}
+               : (_nodeLists[index] =
+                         new DTMAxisIterNodeList(this,
+                                                 new SingletonIterator(index)));
     }
 
     /**
      * Create an org.w3c.dom.NodeList from a node iterator
      * The iterator most be started before this method is called
      */
-    public NodeList makeNodeList(DTMIterator iter) {
-        return new DTMNodeList(iter);
+    public NodeList makeNodeList(DTMAxisIterator iter) {
+        return new DTMAxisIterNodeList(this, iter);
     }
 
     /**
@@ -439,7 +435,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     private NodeList getEmptyNodeList() {
       return EmptyNodeList != null
              ? EmptyNodeList
-               : (EmptyNodeList = new DTMNodeList(null));
+               : (EmptyNodeList = new DTMNodeListBase());
     }
 
     /**

@@ -368,7 +368,7 @@ public final class DOMAdapter implements DOM {
       return _dom.makeNodeList(index);
     }
 
-    public NodeList makeNodeList(DTMIterator iter) 
+    public NodeList makeNodeList(DTMAxisIterator iter) 
     {
       return _dom.makeNodeList(iter);
     }

@@ -240,10 +240,15 @@ public final class UnionIterator extends DTMAxisIteratorBase {
     }
 
     public DTMAxisIterator reset() {
-	super.reset();
 	for (int i = 0; i < _free; i++) {
 	    _heap[i].iterator.reset();
+	    _heap[i].step();
 	}
+	// build heap
+	for (int i = (_heapSize = _free)/2; i >= 0; i--) {
+	    heapify(i);
+	}
+	_returnedLast = END;
 	return resetPosition();
     }
 

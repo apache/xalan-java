@@ -148,6 +148,21 @@ public final class NodeSetType extends Type {
 					 + ")" + NODE_ITERATOR_SIG );
 	   il.append(new INVOKESTATIC(convert));
 	}
+	else if (clazz.getName().equals("org.w3c.dom.Node")) {
+	   // w3c Node is on the stack from the external Java function call.
+	   // call BasisLibrary.node2Iterator() to consume Node and leave 
+	   // Iterator on the stack. 
+	   il.append(classGen.loadTranslet());   // push translet onto stack
+	   il.append(methodGen.loadDOM());   	 // push DOM onto stack
+	   final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+					"node2Iterator",
+					"("		
+					 + "Lorg/w3c/dom/Node;"
+					 + TRANSLET_INTF_SIG 
+					 + DOM_INTF_SIG 
+					 + ")" + NODE_ITERATOR_SIG );
+	   il.append(new INVOKESTATIC(convert));
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 		toString(), clazz.getName());

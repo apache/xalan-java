@@ -80,7 +80,6 @@ import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMIterator;
 
 public final class MultiDOM implements DOM {
 
@@ -161,7 +160,7 @@ public final class MultiDOM implements DOM {
         }
     
         public boolean isReverse() {
-            return (_source == null) ? false : _source.isReverse();
+	    return Axis.isReverse[_axis];
         }
     
         public void setMark() {
@@ -178,7 +177,6 @@ public final class MultiDOM implements DOM {
             clone._mask = _mask;
             return clone;
         }
-
     } // end of AxisIterator
 
 
@@ -533,7 +531,7 @@ public final class MultiDOM implements DOM {
         return _adapters[getDTMId(index)].makeNodeList(index & CLR);
     }
 
-    public NodeList makeNodeList(DTMIterator iter) {
+    public NodeList makeNodeList(DTMAxisIterator iter) {
         // TODO: gather nodes from all DOMs ?
         return _adapters[0].makeNodeList(iter);
     }

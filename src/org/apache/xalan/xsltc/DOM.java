@@ -116,7 +116,7 @@ public interface DOM {
     public Node makeNode(int index);
     public Node makeNode(DTMAxisIterator iter);
     public NodeList makeNodeList(int index);
-    public NodeList makeNodeList(DTMIterator iter);
+    public NodeList makeNodeList(DTMAxisIterator iter);
     public String getLanguage(int node);
     public int getSize();
     public String getDocumentURI(int node);

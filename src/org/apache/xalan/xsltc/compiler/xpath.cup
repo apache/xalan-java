@@ -353,9 +353,11 @@ RelativePathPattern ::= StepPattern:sp
             {: RESULT = new AncestorPattern(sp, rpp); :};
 
 StepPattern ::= NodeTestPattern:nt
-            {: RESULT = new StepPattern(Axis.CHILD,
-                                        parser.findNodeType(Axis.CHILD, nt),
-                                        null);
+            {: 
+	        final int nodeType = parser.findNodeType(Axis.CHILD, nt);
+		RESULT = new StepPattern(
+		     (nodeType == NodeTest.ATTRIBUTE) ? Axis.ATTRIBUTE : Axis.CHILD,
+		     nodeType, null);
             :}
 
             | NodeTestPattern:nt Predicates:pp

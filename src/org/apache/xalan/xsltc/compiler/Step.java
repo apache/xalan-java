@@ -256,9 +256,11 @@ final class Step extends RelativeLocationPath {
 	    translatePredicates(classGen, methodGen);
 	}
 	else {
-	    // If it is an attribute but not '@*' or '@attr' with a parent
-	    if ((_axis == Axis.ATTRIBUTE) &&
-		(_nodeType != NodeTest.ATTRIBUTE) && (!hasParentPattern())) {
+	    // If it is an attribute but not '@*', '@attr' or '@node()' and
+	    // has no parent
+	    if (_axis == Axis.ATTRIBUTE && _nodeType != NodeTest.ATTRIBUTE &&
+		_nodeType != NodeTest.ANODE && !hasParentPattern()) 
+	    {
 		int iter = cpg.addInterfaceMethodref(DOM_INTF,
 						     "getTypedAxisIterator",
 						     "(II)"+NODE_ITERATOR_SIG);

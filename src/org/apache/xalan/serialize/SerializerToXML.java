@@ -441,8 +441,6 @@ public class SerializerToXML
 
     if (null != entitiesFileName)
     {
-      try
-      {
         m_charInfo = null;
 
         if (null == m_charInfos)
@@ -474,26 +472,12 @@ public class SerializerToXML
         {
           String absoluteEntitiesFileName;
 
-          if (entitiesFileName.indexOf(':') < 0)
-          {
-            absoluteEntitiesFileName =
-              SystemIDResolver.getAbsoluteURIFromRelative(entitiesFileName);
-          }
-          else
-          {
-            absoluteEntitiesFileName =
-              SystemIDResolver.getAbsoluteURI(entitiesFileName, null);
-          }
-
+          absoluteEntitiesFileName = SystemIDResolver.getAbsoluteURI(entitiesFileName);
+            
           m_charInfo = new CharInfo(absoluteEntitiesFileName);
 
           m_charInfos.put(entitiesFileName, m_charInfo);
         }
-      }
-      catch (javax.xml.transform.TransformerException te)
-      {
-        throw new org.apache.xml.utils.WrappedRuntimeException(te);
-      }
     }
   }
 
