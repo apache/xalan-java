@@ -58,6 +58,9 @@ package org.apache.xalan.processor;
 
 import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
+import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.WhiteSpaceInfo;
+import org.apache.xpath.XPath;
 
 import java.util.Vector;
 
@@ -118,7 +121,22 @@ class ProcessorPreserveSpace extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
+
     setPropertiesFromAttributes(handler, rawName, attributes, this);
-    handler.getStylesheet().setPreserveSpaces(getElements());
+
+    Stylesheet thisSheet = handler.getStylesheet();
+    Vector xpaths = getElements();
+
+    for (int i = 0; i < xpaths.size(); i++)
+    {
+      WhiteSpaceInfo wsi = new WhiteSpaceInfo((XPath) xpaths.elementAt(i), false, thisSheet);
+
+      // We do the push and pop here to force StylesheetHandler to assign us a Uid.
+
+      handler.pushElemTemplateElement(wsi);
+      wsi = (WhiteSpaceInfo) handler.popElemTemplateElement();
+
+      thisSheet.setPreserveSpaces(wsi);
+    }
   }
 }

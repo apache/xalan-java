@@ -88,11 +88,13 @@ public class WhiteSpaceInfo extends ElemTemplate
    * NEEDSDOC @param matchPattern
    * NEEDSDOC @param shouldStripSpace
    */
-  WhiteSpaceInfo(XPath matchPattern, boolean shouldStripSpace)
+  public WhiteSpaceInfo(XPath matchPattern, boolean shouldStripSpace, Stylesheet thisSheet)
   {
 
     m_shouldStripSpace = shouldStripSpace;
 
     setMatch(matchPattern);
+
+    setStylesheet(thisSheet);
   }
 }

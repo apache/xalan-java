@@ -99,7 +99,7 @@ public class TemplateList implements java.io.Serializable
    *
    * @param template
    */
-  public void setTemplate(ElemTemplate template, int pos)
+  public void setTemplate(ElemTemplate template)
   {
     if (null != template.getName())
     {
@@ -122,7 +122,7 @@ public class TemplateList implements java.io.Serializable
 
       if (matchExpr instanceof StepPattern)
       {
-        insertPatternInTable((StepPattern) matchExpr, template, pos);
+        insertPatternInTable((StepPattern) matchExpr, template);
       }
       else if (matchExpr instanceof UnionPattern)
       {
@@ -132,7 +132,7 @@ public class TemplateList implements java.io.Serializable
 
         for (int i = 0; i < n; i++)
         {
-          insertPatternInTable(pats[i], template, pos);
+          insertPatternInTable(pats[i], template);
         }
       }
       else
@@ -247,13 +247,12 @@ public class TemplateList implements java.io.Serializable
   {
 
     // Sort first by decreasing priority (highest priority is at front),
+    // then by import level (higher level is at front),
     // then by document order (later in document is at front).
-    // GLP:  This routine sorts by the document order obtained by getDocOrderPos() on
-    //       the item.  However, this is only the sequence within the individual
-    //       sheet, not within a composed sheet.  This needs to be fixed.
 
     double priority = getPriorityOrScore(item);
     double workPriority;
+    int importLevel = item.getImportLevel();
     int docOrder = item.getDocOrderPos();
     TemplateSubPatternAssociation insertPoint = head;
     TemplateSubPatternAssociation next;
@@ -283,7 +282,11 @@ public class TemplateList implements java.io.Serializable
           break;
         else if (priority < workPriority)
           insertPoint = next;
-        else if (docOrder >= next.getDocOrderPos())      // priorities are equal
+        else if (importLevel > next.getImportLevel())   // priorities are equal
+          break;
+        else if (importLevel < next.getImportLevel())
+          insertPoint = next;
+        else if (docOrder >= next.getDocOrderPos())     // priorities, import are equal
           break;
         else
           insertPoint = next;
@@ -296,6 +299,10 @@ public class TemplateList implements java.io.Serializable
       if (priority > workPriority)
         insertBefore = true;
       else if (priority < workPriority)
+        insertBefore = false;
+      else if (importLevel > insertPoint.getImportLevel())
+        insertBefore = true;
+      else if (importLevel < insertPoint.getImportLevel())
         insertBefore = false;
       else if (docOrder >= insertPoint.getDocOrderPos())
         insertBefore = true;
@@ -352,10 +359,8 @@ public class TemplateList implements java.io.Serializable
    *
    * @param pattern
    * @param template
-   * @param pos
    */
-  private void insertPatternInTable(StepPattern pattern,
-                                    ElemTemplate template, int pos)
+  private void insertPatternInTable(StepPattern pattern, ElemTemplate template)
   {
 
     String target = pattern.getTargetString();
@@ -364,7 +369,7 @@ public class TemplateList implements java.io.Serializable
     {
       String pstring = template.getMatch().getPatternString();
       TemplateSubPatternAssociation association =
-        new TemplateSubPatternAssociation(template, pattern, pstring, pos);
+        new TemplateSubPatternAssociation(template, pattern, pstring);
 
       // See if there's already one there
       boolean isWildCard = association.isWild();

@@ -77,9 +77,6 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   /** NEEDSDOC Field m_stepPattern          */
   StepPattern m_stepPattern;
 
-  /** NEEDSDOC Field m_posInStylesheet          */
-  private int m_posInStylesheet;
-
   /** NEEDSDOC Field m_pattern          */
   private String m_pattern;
 
@@ -100,15 +97,12 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    * @param template The node that contains the template for this pattern.
    * @param pattern An executable XSLT StepPattern.
    * @param pat For now a Nodelist that contains old-style element patterns.
-   * @param posInStylesheet The document-order position of the template in the stylesheet.
    */
-  TemplateSubPatternAssociation(ElemTemplate template, StepPattern pattern,
-                                String pat, int posInStylesheet)
+  TemplateSubPatternAssociation(ElemTemplate template, StepPattern pattern, String pat)
   {
 
     m_pattern = pat;
     m_template = template;
-    m_posInStylesheet = posInStylesheet;
     m_stepPattern = pattern;
     m_targetString = m_stepPattern.getTargetString();
     m_wild = m_targetString.equals("*");
@@ -223,17 +217,6 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   }
 
   /**
-   * Return the position of the template in document
-   * order in the stylesheet.
-   *
-   * @return The position of the template in stylesheet.
-   */
-  public int getDocOrderPos()
-  {
-    return m_posInStylesheet;
-  }
-
-  /**
    * Get the pattern string for diagnostic purposes.
    *
    * @return The pattern string for diagnostic purposes.
@@ -242,6 +225,28 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   public String getPattern()
   {
     return m_pattern;
+  }
+
+  /**
+   * Return the position of the template in document
+   * order in the stylesheet.
+   *
+   * @return The position of the template in the overall template order.
+   */
+  public int getDocOrderPos()
+  {
+    return m_template.getUid();
+  }
+
+  /**
+   * Return the import level associated with the stylesheet into which  
+   * this template is composed.
+   *
+   * @return The import level of this template.
+   */
+  public int getImportLevel()
+  {
+    return m_template.getStylesheetComposed().getImportCountComposed();
   }
 
   /**

@@ -651,22 +651,15 @@ public class Stylesheet extends ElemTemplateElement
    *
    * NEEDSDOC @param v
    */
-  public void setStripSpaces(Vector v)
+  public void setStripSpaces(WhiteSpaceInfo wsi)
   {
 
     if (null == m_whitespaceStrippingElements)
     {
-      m_whitespaceStrippingElements = v;
+      m_whitespaceStrippingElements = new Vector();
     }
-    else
-    {
-      int n = v.size();
 
-      for (int i = 0; i < n; i++)
-      {
-        m_whitespaceStrippingElements.addElement(v.elementAt(i));
-      }
-    }
+    m_whitespaceStrippingElements.addElement(wsi);
   }
 
   /**
@@ -679,13 +672,13 @@ public class Stylesheet extends ElemTemplateElement
    *
    * @throws ArrayIndexOutOfBoundsException
    */
-  public XPath getStripSpace(int i) throws ArrayIndexOutOfBoundsException
+  public WhiteSpaceInfo getStripSpace(int i) throws ArrayIndexOutOfBoundsException
   {
 
     if (null == m_whitespaceStrippingElements)
       throw new ArrayIndexOutOfBoundsException();
 
-    return (XPath) m_whitespaceStrippingElements.elementAt(i);
+    return (WhiteSpaceInfo) m_whitespaceStrippingElements.elementAt(i);
   }
 
   /**
@@ -712,22 +705,15 @@ public class Stylesheet extends ElemTemplateElement
    *
    * NEEDSDOC @param v
    */
-  public void setPreserveSpaces(Vector v)
+  public void setPreserveSpaces(WhiteSpaceInfo wsi)
   {
 
     if (null == m_whitespacePreservingElements)
     {
-      m_whitespacePreservingElements = v;
+      m_whitespacePreservingElements = new Vector();
     }
-    else
-    {
-      int n = v.size();
 
-      for (int i = 0; i < n; i++)
-      {
-        m_whitespacePreservingElements.addElement(v.elementAt(i));
-      }
-    }
+    m_whitespacePreservingElements.addElement(wsi);
   }
 
   /**
@@ -740,13 +726,13 @@ public class Stylesheet extends ElemTemplateElement
    *
    * @throws ArrayIndexOutOfBoundsException
    */
-  public XPath getPreserveSpace(int i) throws ArrayIndexOutOfBoundsException
+  public WhiteSpaceInfo getPreserveSpace(int i) throws ArrayIndexOutOfBoundsException
   {
 
     if (null == m_whitespacePreservingElements)
       throw new ArrayIndexOutOfBoundsException();
 
-    return (XPath) m_whitespacePreservingElements.elementAt(i);
+    return (WhiteSpaceInfo) m_whitespacePreservingElements.elementAt(i);
   }
 
   /**
