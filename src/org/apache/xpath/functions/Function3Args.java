@@ -123,7 +123,7 @@ public class Function3Args extends Function2Args
       arg.exprSetParent(this);
     }
     else
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("three", null));
+		  reportWrongNumberArgs();
   }
 
   /**
@@ -137,6 +137,16 @@ public class Function3Args extends Function2Args
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum != 3)
+      reportWrongNumberArgs();
+  }
+
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("three", null));
   }
   

@@ -93,7 +93,8 @@ public abstract class Function extends Expression
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
   {
-    throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
+			// throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
+      reportWrongNumberArgs();
   }
 
   /**
@@ -109,6 +110,17 @@ public abstract class Function extends Expression
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum != 0)
+      reportWrongNumberArgs();
+  }
+
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.  This method is meant to be overloaded
+   * by derived classes so that the message will be as specific as possible.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
   }
 

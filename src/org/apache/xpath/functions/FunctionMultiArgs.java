@@ -62,6 +62,8 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.functions.Function3Args.Arg2Owner;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -144,6 +146,21 @@ public class FunctionMultiArgs extends Function3Args
    * @throws WrongNumberArgsException
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException{}
+
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.  This class supports an arbitrary
+   * number of arguments, so this method must never be called.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+    String fMsg = XSLMessages.createXPATHMessage(
+        XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
+        new Object[]{ "Programmer's assertion:  the method FunctionMultiArgs.reportWrongNumberArgs() should never be called." });
+
+    throw new RuntimeException(fMsg);
+  }
 
   /**
    * Tell if this expression or it's subexpressions can traverse outside

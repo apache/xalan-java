@@ -113,6 +113,16 @@ public class FuncConcat extends FunctionMultiArgs
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum < 2)
+      reportWrongNumberArgs();
+  }
+
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("gtone", null));
   }
 }
