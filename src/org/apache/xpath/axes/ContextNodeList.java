@@ -147,4 +147,7 @@ public interface ContextNodeList
    * @throws CloneNotSupportedException
    */
   public Object clone() throws CloneNotSupportedException;
+  
+  public int getLast();
+  public void setLast(int last);
 }

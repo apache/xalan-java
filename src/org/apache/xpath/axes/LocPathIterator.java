@@ -176,6 +176,8 @@ public class LocPathIterator extends Expression
    * a predicate.
    */
   private boolean m_isTopLevel = false;
+  
+  private int m_last = 0;
 
   /**
    * Create a LocPathIterator object.
@@ -628,6 +630,7 @@ public class LocPathIterator extends Expression
     m_foundLast = false;
     m_lastFetched = null;
     m_next = 0;
+    m_last = 0;
 
     if (null != m_firstWalker)
     {
@@ -912,4 +915,15 @@ public class LocPathIterator extends Expression
   {
     return m_prefixResolver;
   }
+  
+  public int getLast()
+  {
+    return m_last;
+  }
+  
+  public void setLast(int last)
+  {
+    m_last = last;
+  }
+
 }

@@ -566,4 +566,16 @@ public class XStatement extends StreamableNode
 
     return clone;
   }
+  
+  private int m_last = 0;
+  
+  public int getLast()
+  {
+    return m_last;
+  }
+  
+  public void setLast(int last)
+  {
+    m_last = last;
+  }
 }

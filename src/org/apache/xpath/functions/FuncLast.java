@@ -102,19 +102,38 @@ public class FuncLast extends Function
 
     if (cnl.size() == 0)
     {
+      try
+      {
+        NodeIterator ni = (NodeIterator)cnl.clone();
+        int count = cnl.getCurrentPos();
+        while(null != ni.nextNode())
+          count++;
+        cnl.setLast(count);
+        return count;
+      }
+      catch(CloneNotSupportedException cnse){}
+    }
+    return cnl.size();
+
+    /*
+    // The code below has massive problem if inside of a predicate.  -sb
+    if (cnl.size() == 0)
+    {
       int currentPos = cnl.getCurrentPos();
 
-      // System.out.println("getCountOfContextNodeList - currentPos: "+currentPos);
+      // This has problems if inside a predicate.  For now, just clone.
       if (!cnl.isFresh())
         cnl.reset();
 
       cnl.setShouldCacheNodes(true);
       cnl.runTo(-1);
       cnl.setCurrentPos(currentPos);
+      System.out.println("cnl.getCurrentPos() after: "+cnl.getCurrentPos());
     }
 
     // System.out.println("cnl.size(): "+cnl.size());
     return cnl.size();
+    */
   }
 
   /**

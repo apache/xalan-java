@@ -658,4 +658,16 @@ public class UnionPathIterator extends Expression
    * path</a> contained in the union expression.
    */
   protected LocPathIterator[] m_iterators;
+  
+  private int m_last = 0;
+  
+  public int getLast()
+  {
+    return m_last;
+  }
+  
+  public void setLast(int last)
+  {
+    m_last = last;
+  }
 }
