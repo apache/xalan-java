@@ -505,6 +505,7 @@ public final class XSLTC {
      */
     public void setPackageName(String packageName) {
 	_packageName = packageName;
+	if (_className != null) setClassName(_className);
     }
 
     /**
