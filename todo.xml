@@ -48,18 +48,58 @@
 
   <!-- Move to completed section when done. -->
 
-   <action context="code" category="performance" who="sb">
+   <action context="code" category="performance" who="SB">
     Optimize "/foo/baz" patterns to use simple child walkers.
    </action>
 
-   <action context="code" category="performance" who="sb">
+   <action context="code" category="performance" who="SB">
     Optimize "/foo/baz" patterns that have no variability, to a global space, 
     and don't re-evaluate each time.
    </action>
  
-   <action context="code" category="error-handling" who="sb">
+   <action context="code" category="error-handling" who="SB">
     Simplify some of the exception nesting, maybe, and make sure error listener. 
     are being called for all cases.
+   </action>
+
+   <action context="code" category="documentation" who="SB">
+    Fix some javadoc headers that still have old XalanJ1 text.  For instance, 
+    TransformerImpl.
+   </action>
+
+   <action context="code" category="performance" who="SB">
+    Delete nodes in the source tree when possible.  (?? Note sure if this 
+    is do-able by beta2.)
+   </action>
+   
+   <action context="code" category="bugs" who="SB">
+    Fix bug with rare intermittent failures, probably in the STree.
+   </action>
+  
+   <action context="code" category="bugs" who="SB">
+    Fix bug with Shane's s2s test hang.
+   </action>
+
+   <action context="code" category="conformance" who="GP">
+      Verify that the recomposing procedure for each of the recomposable
+      elements matches the standard (including errata).
+   </action>
+
+   <action context="code" category="conformance" who="GP">
+      Fix xsl:output method= so that it only accepts valid values per the
+      standard (xml, html, text, qname-that-is-not-an-ncname).  I'm looking
+      into where this change should be made.
+   </action>
+
+   <action context="code" category="conformance" who="GP">
+      Verify that the element-available function exhibits the proper
+      behavior according to Errata E7 regarding the interaction between the
+      default namespace and the element-available function.
+   </action>
+
+   <action context="code" category="extensions" who="GP">
+      Add compatibility with XalanJ1 NodeSet extension, so that stylehsheets 
+      can work with both processors.
    </action>
   
  </actions>
