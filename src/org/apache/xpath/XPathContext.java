@@ -69,15 +69,19 @@ import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.axes.SubContextList;
+
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNodeSet;
 
 
 // DOM Imports
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.TreeWalker;
 import org.w3c.dom.Node;
+
+import org.w3c.xslt.ExpressionContext;
 
 // SAX2 imports
 import org.xml.sax.ErrorHandler;
@@ -95,12 +99,9 @@ import org.apache.xalan.extensions.ExtensionsTable;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Default class for the execution context for XPath. Many 
- * of the functions in this class need to be overridden in order to 
- * perform correct execution of the XPath (for instance, variable 
- * execution).
+ * Default class for the runtime execution context for XPath.
  */
-public class XPathContext
+public class XPathContext implements ExpressionContext
 {
   /**
    * Create an XPathContext instance.
@@ -503,5 +504,60 @@ public class XPathContext
            ? null : (SubContextList)m_axesIteratorStack.peek();
                                            
   }
+
+  //==========================================================
+  // SECTION: Implementation of ExpressionContext interface
+  //==========================================================
+
+  /**
+   * Get the current context node.
+   * @return The current context node.
+   */
+  public Node getContextNode()
+  {
+    return this.getCurrentNode();
+  }
+  
+  /**
+   * Get the current context node list.
+   * @return An iterator for the current context list, as 
+   * defined in XSLT.
+   */
+  public NodeIterator getContextNodes()
+  {
+    try
+    {
+    ContextNodeList cnl = getContextNodeList();
+    if(null != cnl)
+      return cnl.cloneWithReset();
+    else
+      return null; // for now... this might ought to be an empty iterator.
+    }
+    catch(CloneNotSupportedException cnse)
+    {
+      return null; // error reporting?
+    }
+  }
+
+  /**
+   * Get the value of a node as a number.
+   * @param n Node to be converted to a number.  May be null.
+   * @return value of n as a number.
+   */
+  public double toNumber(Node n)
+  {
+    return XNodeSet.getNumberFromNode(n);
+  }
+
+  /**
+   * Get the value of a node as a string.
+   * @param n Node to be converted to a string.  May be null.
+   * @return value of n as a string, or an empty string if n is null.
+   */
+  public String toString(Node n)
+  {
+    return XNodeSet.getStringFromNode(n);
+  }
+
 
 }
