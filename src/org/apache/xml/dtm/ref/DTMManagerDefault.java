@@ -454,13 +454,15 @@ public class DTMManagerDefault extends DTMManager
           }
          }
       
-      // Fallback: Not found in one we know how to search.
-      // Current solution: Generate a new DOM2DTM.
-      // %REVIEW% Maybe the best I can do??     
-      Node root = (Node.DOCUMENT_FRAGMENT_NODE == node.getNodeType()) ?
-                  node : node.getOwnerDocument();
-      if(null == root)
-        root =  node;   
+      // Since the real root of our tree may be a DocumentFragment, we need to 
+      // use getParent to find the root, instead of getOwnerDocument.  Otherwise 
+      // DOM2DTM#getHandleOfNode will be very unhappy.
+      Node root = node;
+      for (Node p = root.getParentNode(); p != null; p = p.getParentNode()) 
+      {
+        root = p;
+      }
+        
       DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(root), false,
                        null, true, true);
 
