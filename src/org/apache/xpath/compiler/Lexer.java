@@ -428,11 +428,17 @@ class Lexer
 
     if (0 == nesting)
     {
+      if(m_patternMapSize >= m_patternMap.length)
+      {
+        int patternMap[] = m_patternMap;
+        int len = m_patternMap.length;
+        m_patternMap = new int[m_patternMapSize + 100];
+        System.arraycopy(patternMap, 0, m_patternMap, 0, len);
+      } 
       if (!isStart)
       {
         m_patternMap[m_patternMapSize - 1] -= TARGETEXTRA;
       }
-
       m_patternMap[m_patternMapSize] =
         (m_compiler.m_tokenQueueSize - (isAttrName ? 1 : 0)) + TARGETEXTRA;
 
