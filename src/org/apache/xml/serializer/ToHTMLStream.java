@@ -1718,4 +1718,16 @@ public class ToHTMLStream extends ToStream
             }            
             startPrefixMapping(prefix,uri,false);
         }
+
+        /**
+         * Report the end of DTD declarations.
+         * @throws org.xml.sax.SAXException The application may raise an exception.
+         * @see #startDTD
+         */
+        public void endDTD() throws org.xml.sax.SAXException
+        {
+			/* for ToHTMLStream the DOCTYPE is entirely output in the
+			 * startDocumentInternal() method, so don't do anything here
+			 */ 
+        }
 }
