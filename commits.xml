@@ -542,4 +542,28 @@ to
  wellformed Document, this call is undefined and throws an exception...
  which isn't DOMlike but that's a non-DOMlike situation.</Log>
 </Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/30/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler xpath.cup</Modified>
+<Log>A fix to the XPath parser to make sure (again!) that non-prefixed elements
+ in XPath expressions/patterns are not assigned the default namespace but
+ rather the null namespace.
+ PR: bugzilla 4904
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/30/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Stylesheet.java</Modified>
+<Log>Modified the order in which top-level elements are parsed. This to make sure
+ that xsl:namespace-alias elements are parsed before xsl:import and include,
+ so that namespace aliases are global to all included stylesheets.
+ PR: bugzilla 4876
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
 </Commits>
