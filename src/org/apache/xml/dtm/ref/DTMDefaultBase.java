@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -122,13 +122,13 @@ public abstract class DTMDefaultBase implements DTM
 
   /** Previous sibling values, one array element for each node. */
   protected SuballocatedIntVector m_parent;
-  
+
   /** Experemental.  -sb */
 //  protected boolean m_haveSeenNamespace = false;
-  
+
   /** Vector of SuballocatedIntVectors of NS decl sets  -jjk */
   protected Vector m_namespaceDeclSets = null;
-  
+
   /** SuballocatedIntVector  of elements at which corresponding
    * namespaceDeclSets were defined -jjk */
   protected SuballocatedIntVector m_namespaceDeclSetElements = null;
@@ -350,7 +350,7 @@ public abstract class DTMDefaultBase implements DTM
    * @param list A list of integers.
    * @param start The start index to begin the search.
    * @param len The number of items to search.
-   * @param value Find the slot that has a value that is greater than or 
+   * @param value Find the slot that has a value that is greater than or
    * identical to this argument.
    *
    * @return The index in the list of the slot that is higher or identical
@@ -454,7 +454,7 @@ public abstract class DTMDefaultBase implements DTM
 //     */
 //    protected void ensureSize(int index)
 //    {
-//        // We've cut over to Suballocated*Vector, which are self-sizing. 
+//        // We've cut over to Suballocated*Vector, which are self-sizing.
 //    }
 
   /**
@@ -538,8 +538,8 @@ public abstract class DTMDefaultBase implements DTM
     // Boiler-plate code for each of the _xxx functions, except for the array.
     int info = (identity >= m_size) ? NOTPROCESSED : m_firstch.elementAt(identity);
 
-    // Check to see if the information requested has been processed, and, 
-    // if not, advance the iterator until we the information has been 
+    // Check to see if the information requested has been processed, and,
+    // if not, advance the iterator until we the information has been
     // processed.
     while (info == NOTPROCESSED)
     {
@@ -571,8 +571,8 @@ public abstract class DTMDefaultBase implements DTM
     // Boiler-plate code for each of the _xxx functions, except for the array.
     int info = (identity >= m_size) ? NOTPROCESSED : m_nextsib.elementAt(identity);
 
-    // Check to see if the information requested has been processed, and, 
-    // if not, advance the iterator until we the information has been 
+    // Check to see if the information requested has been processed, and,
+    // if not, advance the iterator until we the information has been
     // processed.
     while (info == NOTPROCESSED)
     {
@@ -604,8 +604,8 @@ public abstract class DTMDefaultBase implements DTM
     if (identity < m_size)
       return m_prevsib.elementAt(identity);
 
-    // Check to see if the information requested has been processed, and, 
-    // if not, advance the iterator until we the information has been 
+    // Check to see if the information requested has been processed, and,
+    // if not, advance the iterator until we the information has been
     // processed.
     while (true)
     {
@@ -631,8 +631,8 @@ public abstract class DTMDefaultBase implements DTM
     if (identity < m_size)
       return m_parent.elementAt(identity);
 
-    // Check to see if the information requested has been processed, and, 
-    // if not, advance the iterator until we the information has been 
+    // Check to see if the information requested has been processed, and,
+    // if not, advance the iterator until we the information has been
     // processed.
     while (true)
     {
@@ -655,13 +655,13 @@ public abstract class DTMDefaultBase implements DTM
       File f = new File("DTMDump"+((Object)this).hashCode()+".txt");
       System.err.println("Dumping... "+f.getAbsolutePath());
       PrintStream ps = new PrintStream(new FileOutputStream(f));
-  
+
       while (nextNode()){}
-  
+
       int nRecords = m_size;
-  
+
       ps.println("Total nodes: " + nRecords);
-  
+
       for (int i = 0; i < nRecords; i++)
       {
         ps.println("=========== " + i + " ===========");
@@ -670,15 +670,15 @@ public abstract class DTMDefaultBase implements DTM
         ps.println("LocalName: " + getLocalName(i));
         ps.println("NamespaceURI: " + getNamespaceURI(i));
         ps.println("Prefix: " + getPrefix(i));
-  
+
         int exTypeID = getExpandedTypeID(i);
-  
+
         ps.println("Expanded Type ID: "
                            + Integer.toHexString(exTypeID));
-  
+
         int type = getNodeType(i);
         String typestring;
-  
+
         switch (type)
         {
         case DTM.ATTRIBUTE_NODE :
@@ -727,47 +727,47 @@ public abstract class DTMDefaultBase implements DTM
           typestring = "Unknown!";
           break;
         }
-  
+
         ps.println("Type: " + typestring);
-  
+
         int firstChild = _firstch(i);
-  
+
         if (DTM.NULL == firstChild)
           ps.println("First child: DTM.NULL");
         else if (NOTPROCESSED == firstChild)
           ps.println("First child: NOTPROCESSED");
         else
           ps.println("First child: " + firstChild);
-  
+
         int prevSibling = _prevsib(i);
-  
+
         if (DTM.NULL == prevSibling)
           ps.println("Prev sibling: DTM.NULL");
         else if (NOTPROCESSED == prevSibling)
           ps.println("Prev sibling: NOTPROCESSED");
         else
           ps.println("Prev sibling: " + prevSibling);
-  
+
         int nextSibling = _nextsib(i);
-  
+
         if (DTM.NULL == nextSibling)
           ps.println("Next sibling: DTM.NULL");
         else if (NOTPROCESSED == nextSibling)
           ps.println("Next sibling: NOTPROCESSED");
         else
           ps.println("Next sibling: " + nextSibling);
-  
+
         int parent = _parent(i);
-  
+
         if (DTM.NULL == parent)
           ps.println("Parent: DTM.NULL");
         else if (NOTPROCESSED == parent)
           ps.println("Parent: NOTPROCESSED");
         else
           ps.println("Parent: " + parent);
-  
+
         int level = _level(i);
-  
+
         ps.println("Level: " + level);
         ps.println("Node Value: " + getNodeValue(i));
         ps.println("String Value: " + getStringValue(i));
@@ -937,7 +937,7 @@ public abstract class DTMDefaultBase implements DTM
   }
 
   /**
-   * Given a node handle, advance to the next attribute. 
+   * Given a node handle, advance to the next attribute.
    * If an attr, we advance to
    * the next attr on the same node.  If not an attribute, we return NULL.
    *
@@ -1021,7 +1021,7 @@ public abstract class DTMDefaultBase implements DTM
         m_namespaceDeclSetElements.addElement(elementNodeIndex);
         nsList=new SuballocatedIntVector();
         m_namespaceDeclSets.addElement(nsList);
-                
+
         SuballocatedIntVector inherited= findNamespaceContext(_parent(elementNodeIndex));
 
         if(inherited!=null)
@@ -1053,7 +1053,7 @@ public abstract class DTMDefaultBase implements DTM
       }
     nsList.addElement(namespaceNodeIndex | m_dtmIdent);
   }
-    
+
   /** Retrieve list of namespace declaration locations
      * active at this node. List is an SuballocatedIntVector whose
      * entries are the namespace node HANDLES declared at that ID.
@@ -1083,7 +1083,7 @@ public abstract class DTMDefaultBase implements DTM
         int ancestor=_parent(elementNodeIndex);
         while(wouldBeAt>=0 && ancestor>0)
           {
-            candidate=m_namespaceDeclSetElements.elementAt(wouldBeAt); 
+            candidate=m_namespaceDeclSetElements.elementAt(wouldBeAt);
 
             if(candidate==ancestor) // Found ancestor in list
                 return (SuballocatedIntVector)m_namespaceDeclSets.elementAt(wouldBeAt);
@@ -1133,7 +1133,7 @@ public abstract class DTMDefaultBase implements DTM
           first = i + 1; // looked ot early
         }
       }
-            
+
       if (first > i) {
         i = first; // Clean up at loop end
       }
@@ -1159,7 +1159,7 @@ public abstract class DTMDefaultBase implements DTM
   public int getFirstNamespaceNode(int nodeHandle, boolean inScope)
   {
         if(inScope)
-        {      
+        {
             SuballocatedIntVector nsContext=findNamespaceContext(nodeHandle & m_mask);
             if(nsContext==null || nsContext.size()<1)
               return NULL;
@@ -1529,7 +1529,7 @@ public abstract class DTMDefaultBase implements DTM
     return (short) (_level(identity) + 1);
   }
 
-  // ============== Document query functions ============== 
+  // ============== Document query functions ==============
 
   /**
    * Tests whether DTM DOM implementation implements a specific feature and
@@ -1833,7 +1833,7 @@ public abstract class DTMDefaultBase implements DTM
    *
    * @param nodeHandle The node ID.
    * @param ch A non-null reference to a ContentHandler.
-   * @param normalize true if the content should be normalized according to 
+   * @param normalize true if the content should be normalized according to
    * the rules for the XPath
    * <a href="http://www.w3.org/TR/xpath#function-normalize-space">normalize-space</a>
    * function.
@@ -1963,4 +1963,23 @@ public abstract class DTMDefaultBase implements DTM
     if (null != m_shouldStripWhitespaceStack)
       m_shouldStripWhitespaceStack.setTop(shouldStrip);
   }
+
+  /**
+   * A dummy routine to satisify the abstract interface. If the DTM
+   * implememtation that extends the default base requires notification
+   * of registration, they can override this method.
+   */
+   public void documentRegistration()
+   {
+   }
+
+  /**
+   * A dummy routine to satisify the abstract interface. If the DTM
+   * implememtation that extends the default base requires notification
+   * when the document is being released, they can override this method
+   */
+   public void documentRelease()
+   {
+   }
+
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -102,28 +102,29 @@ import org.apache.xalan.res.XSLMessages;
 public class DTMManagerDefault extends DTMManager
 {
 
-  /** 
-   * Vector of DTMs that this manager manages. 
+  /**
+   * Vector of DTMs that this manager manages.
    */
   protected DTM m_dtms[] = new DTM[IDENT_MAX_DTMS];
-    
+
   /**
    * Add a DTM to the DTM table.
-   * 
+   *
    * @param dtm Should be a valid reference to a DTM.
    */
   public void addDTM(DTM dtm, int id)
   {
     m_dtms[id] = dtm;
+    dtm.documentRegistration();
   }
-  
+
   /**
    * Get the first free DTM ID available.
    */
   public int getFirstFreeDTMID()
   {
     int n = m_dtms.length;
-    for (int i = 1; i < n; i++) 
+    for (int i = 1; i < n; i++)
     {
       if(null == m_dtms[i])
       {
@@ -132,7 +133,7 @@ public class DTMManagerDefault extends DTMManager
     }
     throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null)); //"No more DTM IDs are available!");
   }
-  
+
   /**
    * The default table for exandedNameID lookups.
    */
@@ -147,7 +148,7 @@ public class DTMManagerDefault extends DTMManager
 
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
-  
+
   /** Set this to true if you want a basic diagnostics. */
   private static final boolean DEBUG = false;
 
@@ -167,13 +168,13 @@ public class DTMManagerDefault extends DTMManager
    *                         be null.
    * @param incremental true if the DTM should be built incrementally, if
    *                    possible.
-   * @param doIndexing true if the caller considers it worth it to use 
+   * @param doIndexing true if the caller considers it worth it to use
    *                   indexing schemes.
    *
    * @return a non-null DTM reference.
    */
   public DTM getDTM(Source source, boolean unique,
-                    DTMWSFilter whiteSpaceFilter, boolean incremental, 
+                    DTMWSFilter whiteSpaceFilter, boolean incremental,
                     boolean doIndexing)
   {
 
@@ -242,7 +243,7 @@ public class DTMManagerDefault extends DTMManager
         SAX2DTM dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
                                   xstringFactory, doIndexing);
 
-        // Go ahead and add the DTM to the lookup table.  This needs to be 
+        // Go ahead and add the DTM to the lookup table.  This needs to be
         // done before any parsing occurs.
         addDTM(dtm, dtmPos);
 
@@ -253,7 +254,7 @@ public class DTMManagerDefault extends DTMManager
         if (haveXercesParser)
           incremental = true;  // No matter what.  %REVIEW%
 
-        // If the reader is null, but they still requested an incremental build, 
+        // If the reader is null, but they still requested an incremental build,
         // then we still want to set up the IncrementalSAXSource stuff.
         if (this.m_incremental && incremental /* || ((null == reader) && incremental) */)
         {
@@ -283,7 +284,7 @@ public class DTMManagerDefault extends DTMManager
 	      filter.setXMLReader(reader);
 	      coParser=filter;
 	    }
-	    
+
           }
 
           // Have the DTM set itself up as the IncrementalSAXSource's listener.
@@ -374,7 +375,7 @@ public class DTMManagerDefault extends DTMManager
       else
       {
 
-        // It should have been handled by a derived class or the caller 
+        // It should have been handled by a derived class or the caller
         // made a mistake.
         throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{source})); //"Not supported: " + source);
       }
@@ -404,7 +405,7 @@ public class DTMManagerDefault extends DTMManager
       //
       // NOTE that since a DOM2DTM may represent a subtree rather
       // than a full document, we have to be prepared to check more
-      // than one -- and there is no guarantee that we will find 
+      // than one -- and there is no guarantee that we will find
       // one that contains ancestors or siblings of the node we're
       // seeking.
       //
@@ -424,24 +425,24 @@ public class DTMManagerDefault extends DTMManager
             if(handle!=DTM.NULL) return handle;
           }
          }
-      
-      // Since the real root of our tree may be a DocumentFragment, we need to 
-      // use getParent to find the root, instead of getOwnerDocument.  Otherwise 
+
+      // Since the real root of our tree may be a DocumentFragment, we need to
+      // use getParent to find the root, instead of getOwnerDocument.  Otherwise
       // DOM2DTM#getHandleOfNode will be very unhappy.
       Node root = node;
-      for (Node p = root.getParentNode(); p != null; p = p.getParentNode()) 
+      for (Node p = root.getParentNode(); p != null; p = p.getParentNode())
       {
         root = p;
       }
-        
+
       DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(root), false,
                        null, true, true);
 
       int handle = ((DOM2DTM)dtm).getHandleOfNode(node);
-      
+
       if(DTM.NULL == handle)
         throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_RESOLVE_NODE, null)); //"Could not resolve the node to a handle!");
-      
+
       return handle;
     }
   }
@@ -466,7 +467,7 @@ public class DTMManagerDefault extends DTMManager
     {
       XMLReader reader = (inputSource instanceof SAXSource)
                          ? ((SAXSource) inputSource).getXMLReader() : null;
-                         
+
       boolean isUserReader = (reader != null);
 
       if (null == reader)
@@ -509,7 +510,7 @@ public class DTMManagerDefault extends DTMManager
         // TODO: User diagnostics.
       }
 
-        // Commented out as per discussion with Thomas2.Maesing@bgs-ag.de 
+        // Commented out as per discussion with Thomas2.Maesing@bgs-ag.de
         // about bug 2124.
 //      if(!isUserReader)
 //      {
@@ -520,7 +521,7 @@ public class DTMManagerDefault extends DTMManager
 //        }
 //        catch (org.xml.sax.SAXException se)
 //        {
-//  
+//
 //          // What can we do?
 //          // TODO: User diagnostics.
 //        }
@@ -564,7 +565,7 @@ public class DTMManagerDefault extends DTMManager
     // [But we can't do it... sorry.  -sb]
     int n = m_dtms.length;
 
-    for (int i = 0; i < n; i++) 
+    for (int i = 0; i < n; i++)
     {
       DTM tdtm = m_dtms[i];
 
@@ -599,6 +600,7 @@ public class DTMManagerDefault extends DTMManager
       m_dtms[i] = null;
     }
 
+    dtm.documentRelease();
     return true;
   }
 
@@ -694,7 +696,7 @@ public class DTMManagerDefault extends DTMManager
     /** @todo: implement this org.apache.xml.dtm.DTMManager abstract method */
     return null;
   }
-  
+
   /**
    * return the expanded name table.
    *

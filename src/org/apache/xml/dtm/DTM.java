@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -197,9 +197,9 @@ public interface DTM
   public void setProperty(String property, Object value);
 
   // ========= Document Navigation Functions =========
-  
+
   /**
-   * This returns a stateless "traverser", that can navigate over an 
+   * This returns a stateless "traverser", that can navigate over an
    * XPath axis, though not in document order.
    *
    * @param axis One of Axes.ANCESTORORSELF, etc.
@@ -207,9 +207,9 @@ public interface DTM
    * @return A DTMAxisIterator, or null if the givin axis isn't supported.
    */
   public DTMAxisTraverser getAxisTraverser(final int axis);
-  
+
   /**
-   * This is a shortcut to the iterators that implement 
+   * This is a shortcut to the iterators that implement
    * XPath axes.
    * Returns a bare-bones iterator that must be initialized
    * with a start node (using iterator.setStartNode()).
@@ -221,10 +221,10 @@ public interface DTM
   public DTMAxisIterator getAxisIterator(final int axis);
 
   /**
-   * Get an iterator that can navigate over an XPath Axis, predicated by 
+   * Get an iterator that can navigate over an XPath Axis, predicated by
    * the extended type ID.
    *
-   * @param axis 
+   * @param axis
    * @param type An extended type ID.
    *
    * @return A DTMAxisIterator, or null if the givin axis isn't supported.
@@ -550,7 +550,7 @@ public interface DTM
    */
   public short getLevel(int nodeHandle);
 
-  // ============== Document query functions ============== 
+  // ============== Document query functions ==============
 
   /**
    * Tests whether DTM DOM implementation implements a specific feature and
@@ -818,7 +818,7 @@ public interface DTM
    *
    * @param nodeHandle The node ID.
    * @param ch A non-null reference to a ContentHandler.
-   * @param normalize true if the content should be normalized according to 
+   * @param normalize true if the content should be normalized according to
    * the rules for the XPath
    * <a href="http://www.w3.org/TR/xpath#function-normalize-space">normalize-space</a>
    * function.
@@ -947,4 +947,21 @@ public interface DTM
    * is available
    */
   public SourceLocator getSourceLocatorFor(int node);
+
+  /**
+   * As the DTM is registered with the DTMManager, this method
+   * will be called. This will give the DTM implementation a
+   * chance to initialize any subsystems that are required to
+   * build the DTM
+   */
+  public void documentRegistration();
+
+  /**
+   * As documents are released from the DTMManager, the DTM implementation
+   * will be notified of the event. This will allow the DTM implementation
+   * to shutdown any subsystem activity that may of been assoiated with
+   * the active DTM Implementation.
+   */
+
+   public void documentRelease();
 }
