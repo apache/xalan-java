@@ -157,8 +157,7 @@ public class TemplateList implements java.io.Serializable
       {
         insertPatternInTable((StepPattern) matchExpr, template, pos);
       }
-
-      if (matchExpr instanceof UnionPattern)
+      else if (matchExpr instanceof UnionPattern)
       {
         UnionPattern upat = (UnionPattern) matchExpr;
         StepPattern[] pats = upat.getPatterns();
