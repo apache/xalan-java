@@ -21,6 +21,8 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.StringTokenizer;
+import java.util.NoSuchElementException;
 
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKESPECIAL;
@@ -39,76 +41,164 @@ import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
  * @author Santiago Pericas-Geertsen
  */
 final class AttributeValueTemplate extends AttributeValue {
+    
+    final static int OUT_EXPR = 0;
+    final static int IN_EXPR  = 1;
+    final static int IN_EXPR_SQUOTES = 2;
+    final static int IN_EXPR_DQUOTES = 3;
+    final static String DELIMITER = "\uFFFE";      // A Unicode nonchar
 
     public AttributeValueTemplate(String value, Parser parser, 
 	SyntaxTreeNode parent) 
     {
 	setParent(parent);
 	setParser(parser);
-	if (check(value, parser)) {
-	    parseAVTemplate(0, value, parser);
-	}
+        
+        try {
+            parseAVTemplate(value, parser);
+        }
+        catch (NoSuchElementException e) {
+            reportError(parent, parser,
+                        ErrorMsg.ATTR_VAL_TEMPLATE_ERR, value);            
+        }
     }
 
-    private void parseAVTemplate(final int start, String text, Parser parser) {
-	String str;
+    /**
+     * Two-pass parsing of ATVs. In the first pass, double curly braces are 
+     * replaced by one, and expressions are delimited using DELIMITER. The 
+     * second pass splits up the resulting buffer into literal and non-literal
+     * expressions. Errors are reported during the first pass.
+     */
+    private void parseAVTemplate(String text, Parser parser) {
+        StringTokenizer tokenizer = 
+            new StringTokenizer(text, "{}\"\'", true);
+        
+        /*
+          * First pass: replace double curly braces and delimit expressions
+          * Simple automaton to parse ATVs, delimit expressions and report
+          * errors.
+          */
+        String t = null;
+        String lookahead = null;
+        StringBuffer buffer = new StringBuffer();
+        int state = OUT_EXPR;
+        
+        while (tokenizer.hasMoreTokens()) {            
+            // Use lookahead if available
+            if (lookahead != null) {
+                t = lookahead;
+                lookahead = null;
+            }
+            else {
+                t = tokenizer.nextToken();
+            }
+            
+            if (t.length() == 1) {
+                switch (t.charAt(0)) {
+                    case '{':
+                        switch (state) {
+                            case OUT_EXPR:
+                                lookahead = tokenizer.nextToken();
+                                if (lookahead.equals("{")) {
+                                    buffer.append(lookahead);    // replace {{ by {
+                                    lookahead = null;
+                                }
+                                else {
+                                    buffer.append(DELIMITER);
+                                    state = IN_EXPR;                                    
+                                }
+                                break;
+                            case IN_EXPR:
+                            case IN_EXPR_SQUOTES:
+                            case IN_EXPR_DQUOTES:
+                                reportError(getParent(), parser,
+                                            ErrorMsg.ATTR_VAL_TEMPLATE_ERR, text);
+                                break;
+                        }                                                
+                        break;
+                    case '}':
+                        switch (state) {
+                            case OUT_EXPR:
+                                lookahead = tokenizer.nextToken();
+                                if (lookahead.equals("}")) {
+                                    buffer.append(lookahead);    // replace }} by }
+                                    lookahead = null;
+                                }
+                                else {
+                                    reportError(getParent(), parser,
+                                            ErrorMsg.ATTR_VAL_TEMPLATE_ERR, text);
+                                }
+                                break;
+                            case IN_EXPR:
+                                buffer.append(DELIMITER);
+                                state = OUT_EXPR;
+                                break;
+                            case IN_EXPR_SQUOTES:
+                            case IN_EXPR_DQUOTES:
+                                buffer.append(t);
+                                break;
+                        }
+                        break;
+                    case '\'':
+                        switch (state) {
+                            case IN_EXPR:
+                                state = IN_EXPR_SQUOTES;
+                                break;
+                            case IN_EXPR_SQUOTES:
+                                state = IN_EXPR;
+                                break;
+                            case OUT_EXPR:
+                            case IN_EXPR_DQUOTES:
+                                break;
+                        }
+                        buffer.append(t);
+                        break;
+                    case '\"':
+                        switch (state) {
+                            case IN_EXPR:
+                                state = IN_EXPR_DQUOTES;
+                                break;
+                            case IN_EXPR_DQUOTES:
+                                state = IN_EXPR;
+                                break;
+                            case OUT_EXPR:
+                            case IN_EXPR_SQUOTES:
+                                break;
+                        }
+                        buffer.append(t);
+                        break;
+                    default:
+                        buffer.append(t);
+                        break;
+                }
+            }
+            else {
+                buffer.append(t);
+            }
+        }
 
-	if (text == null) return;
-
-	// Get first single opening braces
-	int open = start - 2;
-	do {
-	    open = text.indexOf('{', open+2);
-	} while ((open != -1) && 
-		 (open < (text.length()-1)) && 
-		 (text.charAt(open+1) == '{'));
-
-	if (open != -1) {
-	    // Get first single closing braces
-	    int close = open - 2;
-	    do {
-		close = text.indexOf('}', close+2);
-	    } while ((close != -1) && 
-		     (close < (text.length()-1)) && 
-		     (text.charAt(close+1) == '}'));
-	    
-	    // Add literal expressiong before AVT
-	    if (open > start) {
-		str = removeDuplicateBraces(text.substring(start, open));
-		addElement(new LiteralExpr(str));
-	    }
-	    // Add the AVT itself
-	    if (close > open + 1) {
-		str = text.substring(open + 1, close);
-		str = removeDuplicateBraces(text.substring(open+1,close));
-		addElement(parser.parseExpression(this, str));
-	    }
-	    // Parse rest of string
-	    parseAVTemplate(close + 1, text, parser);
-	    
-	}
-	else if (start < text.length()) {
-	    // Add literal expression following AVT
-	    str = removeDuplicateBraces(text.substring(start));
-	    addElement(new LiteralExpr(str));
-	}
-    }
-
-    public String removeDuplicateBraces(String orig) {
-	String result = orig;
-	int index;
-
-	while ((index = result.indexOf("{{")) != -1) {
-	    result = result.substring(0,index) + 
-		result.substring(index+1,result.length());
-	}
-
-	while ((index = result.indexOf("}}")) != -1) {
-	    result = result.substring(0,index) + 
-		result.substring(index+1,result.length());
-	}
-
-	return(result);
+        // Must be in OUT_EXPR at the end of parsing
+        if (state != OUT_EXPR) {
+            reportError(getParent(), parser,
+                        ErrorMsg.ATTR_VAL_TEMPLATE_ERR, text);
+        }
+        
+        /*
+          * Second pass: split up buffer into literal and non-literal expressions.
+          */
+        tokenizer = new StringTokenizer(buffer.toString(), DELIMITER, true);
+        
+        while (tokenizer.hasMoreTokens()) {
+            t = tokenizer.nextToken();
+            
+            if (t.equals(DELIMITER)) {
+		addElement(parser.parseExpression(this, tokenizer.nextToken()));
+                tokenizer.nextToken();      // consume other delimiter
+            }
+            else {
+		addElement(new LiteralExpr(t)); 
+            }
+        }        
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -165,46 +255,5 @@ final class AttributeValueTemplate extends AttributeValue {
 	    }
 	    il.append(new INVOKEVIRTUAL(toString));
 	}
-    }
-
-    private boolean check(String value, Parser parser) {
-	// !!! how about quoted/escaped braces?
-	if (value == null) return true;
-
-	final char[] chars = value.toCharArray();
-	int level = 0;
-	for (int i = 0; i < chars.length; i++) {
-	    switch (chars[i]) {
-	    case '{':
-		if (((i+1) == (chars.length)) || (chars[i+1] != '{'))
-		    ++level;
-		else
-		    i++;
-		break;
-	    case '}':	
-		if (((i+1) == (chars.length)) || (chars[i+1] != '}'))
-		    --level;
-		else
-		    i++;
-		break;
-	    default:
-		continue;
-	    }
-	    switch (level) {
-	    case 0:
-	    case 1:
-		continue;
-	    default:
-		reportError(getParent(), parser,
-			    ErrorMsg.ATTR_VAL_TEMPLATE_ERR, value);
-		return false;
-	    }
-	}
-	if (level != 0) {
-	    reportError(getParent(), parser,
-			ErrorMsg.ATTR_VAL_TEMPLATE_ERR, value);
-	    return false;
-	}
-	return true;
     }
 }
