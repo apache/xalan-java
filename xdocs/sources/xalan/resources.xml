@@ -148,5 +148,14 @@
   <human-resource id="jgentilin"
                   name="John Gentilin"
                   mailto="johng@apache.org"/>
+  <human-resource id="mkwan"
+                  name="Morris Kwan"
+                  mailto="mkwan@ca.ibm.com"/>
+  <human-resource id="ilene"
+                  name="Ilene Seelemann"
+                  mailto="ilene@ca.ibm.com"/>
+  <human-resource id="zongaro"
+                  name="Henry Zongaro"
+                  mailto="zongaro@ca.ibm.com"/>
                   
 </resources>
