@@ -21,8 +21,10 @@
   <li>Removed superfluous method calls to TransformerImpl.executeChildTemplates().<br/><br/></li>  
   <li>In response to a bug with the SQL library extension reported by Mike Kay, NodeTest.getLocalName() and ColumnData.getData() now return
   an empty string instead of null when there is no NodeTest name or column data.<br/><br/></li>
-  <li><br/><br/></li>  
-  <li><br/><br/></li>  
+  <li>In the extensions MethodResolver, Gary Peskin corrected ConversionInfo array for Node-Set, replaced DocumentFragment in RTF with
+  NodeList, removed duplicate Boolean from both, and fixed Boolean conversion to give Boolean precedence over String. <br/><br/></li>  
+  <li>Fixed a SQL library extension bug reported by Dimitry Voytenko. In some cases &lt;xsl:copy-of select="sql:query(...)"/&gt; was
+  crashing with a NullPointerException.  The null nodetest is now used to mean the same as "node()".<br/><br/></li>  
   <li></li>
 
 </ul>
