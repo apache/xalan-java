@@ -64,7 +64,7 @@
     <p>The following user documentation is currently available:</p>
 
     <ul>
-      <li>XSLTC <jump href="README">Installation and Requirements</jump> 'README'</li> (not updated)
+      <li>XSLTC <jump href="README">Installation and Requirements</jump> 'README'  (not updated)</li>
       <li>Command-line <jump href="README.xsltc">compiler</jump> and
       <jump href="README.xslt">runtime</jump> 'README'</li>
       <li><link idref="xsltc_native_api">XSLTC Native API reference</link></li>
@@ -152,7 +152,7 @@
 
     <s4 title="XPath expressons">
       <ul>
-        <li>Step</li>
+        <li><link idref="xsltc_predicates">Predicates</link></li>
       </ul>
     </s4>
 

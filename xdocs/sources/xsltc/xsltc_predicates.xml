@@ -1,0 +1,229 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
+<!-- 
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 2001, Sun
+ * Microsystems., http://www.sun.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ -->
+
+<s1 title="XSLTC Predicate Handling">
+
+  <s2 title="Definition">
+
+  <p>According to Michael Kay's &quot;XSLT Programmer's Reference&quot; page
+  736, a predicate is <i>&quot;An expression used to filter which nodes are
+  selected by a particular step in a path expression, or to select a subset of
+  the nodes in a node-set. A Boolean expression selects the nodes for which the
+  predicate is true; a numeric expression selects the node at the position
+  given by the value of the expression, for example '[1]' selects the first
+  node.&quot;</i>. Note that a predicate containing a boolean expression can
+  return zero, one or more nodes, while a predicate containing a numeric
+  expression can return only zero or one node.</p>
+
+  </s2>
+
+  <s2 title="Examples">
+
+  <p>I'll list a few examples that I can refer back to later on in this
+  document. All examples will use this XML document:</p><source>
+    &lt;?xml version="1.0"?>
+    &lt;doc>
+      &lt;foo location="Drumcondra">
+        &lt;bar name="Cat and Cage">
+        &lt;bar name="Fagan's">
+        &lt;bar name="Gravedigger's">
+        &lt;bar name="Ivy House">
+      &lt;foo>
+      &lt;foo location="Town">
+        &lt;bar name="Peter's Pub">
+        &lt;bar name="Grogan's">
+        &lt;bar name="Hogans's">
+        &lt;bar name="Brogan's">
+      &lt;/foo>
+    &lt;/doc></source>
+
+  <p>Here are some examples of a predicate with boolean expressions:</p><source>
+    &lt;xsl:for-each select="//bar[contains(@name,'ogan')]">
+    &lt;xsl:for-each select="//bar[parent::*/@location = 'Drumcondra']">
+    &lt;xsl:for-each select="//bar[@name = 'Cat and Cage']"></source>
+
+  <p>The first two select more than one node, while the last selects only one.
+  The last expression could select more nodes if the input document was
+  different. Now, here are a few examples of predicates with numeric
+  expressions:</p><source>
+    &lt;xsl:value-of select="//bar[1]">
+    &lt;xsl:value-of select="/doc/foo[2]/bar[1]">
+    &lt;xsl:value-of select="/doc/foo[2]/bar"></source>
+  <p>The last expression will return more than one node, but the step that
+  contains the predicate returns only one (the second <code>&lt;foo&gt;</code>
+  element).</p>
+
+  <p>The above are the basic types of predicates. These can be grouped to create
+  a predicate pipeline, where the first predicate reduces the node-set that the
+  second predicate filters, and so on. Here are some examples:</p><source>
+    A: &lt;for-each select="//bar[contains(@name,'ogan')][2]">
+    C: &lt;for-each select="//bar[2][contains(@name,'ogan')]">
+    B: &lt;for-each select="//bar[position() > 3][2]"></source>
+
+  <p>It is easier to figure out which nodes these expressions should return if
+  one goes through the steps and predicates one by one. In expression
+  <code>A:</code> we first get all <code>&lt;bar&gt;</code> elements from the
+  whole document. Then the first predicate selects from that node-set only
+  those elements that have a <code>@name</code> attribute that contains
+  &quot;ogan&quot;, and we're left with these elements:</p><source>
+        &lt;bar name="Grogan's">
+        &lt;bar name="Hogans's">
+        &lt;bar name="Brogan's"></source>
+  <p>And finally, the last predicate then selects the second of those
+  elements:</p><source>
+        &lt;bar name="Hogans's"></source>
+
+  <p>Expression <code>B:</code> contains the same predicates as <code>A:</code>,
+  but the resulting node set if completely different. We start off with the same
+  set of <code>&lt;bar&gt;</code> elements, but we apply the
+  <code>&quot;[2]&quot;</code> predicate first, and end up with this
+  element:</p><source>
+        &lt;bar name="Fagan's"></source>
+
+  <p>Fagan's is the bar where the Irish Taoiseach (prime minister) drinks his
+  pints, but its name does not contain the string &quot;<code>ogan</code>&quot;,
+  so the resulting node-set is empty.</p>
+
+  <p>The third expressions also starts off with all <code>&lt;bar&gt;</code>
+  elements, applies the predicate &quot;<code>[position() > 3]</code>&quot;,
+  and reduces the node set to these:</p><source>
+        &lt;bar name="Ivy House">
+        &lt;bar name="Peter's Pub">
+        &lt;bar name="Grogan's">
+        &lt;bar name="Hogans's">
+        &lt;bar name="Brogan's"></source>
+  <p>The last predicate &quot;<code>[2]</code>&quot; is applied to this node-set
+  and set is further reduced to:</p><source>
+        &lt;bar name="Peter's Pub"></source>
+
+  </s2>
+
+  <s2 title="Categories">
+
+  <p>From the examples in the last chapter we can try to categorize predicate
+  chains/pipelines to simplify our implementation. We can speed up processing
+  significantly if we can avoid using a data-structure (iterator) to represent
+  the intermediate step between predicates. The goal of setting up these
+  categories is to pinpoint those cases where an intermediate iterator has
+  to be used and when it can be avoided.</p>
+
+    <s3 title="Single predicate expressions">
+
+    <p>Expressions containing just a single predicate have no intermediate step
+    and there is no need for any extra iterator. The original iterator
+    representing the step the predicate is applied to is used. We call this
+    category <b>SIMPLE_CONTEXT</b>.</p>
+
+    </s3>
+
+    <s3 title="Expressions containing only non-position predicates">
+    
+    <p>Predicate-order is significant when the predicate-chain contains one or
+    more predicate with an expression similar to
+    &quot;<code>position() > 3</code>&quot; or &quot;<code>2</code>&quot;. This
+    is because the <code>position()</code> and <code>last()</code> explicitly
+    refer to the intermediate step between applying each predicate. The
+    expression:</p><source>
+    &lt;xsl:for-each select="//bar[contains(@name,'ogan')][parent::*/@location = 'Town']"></source>
+    <p>has two predicates that can be applied in any order and still produce the
+    desired node-set. Such predicates can be merged to:</p><source>
+    &lt;xsl:for-each select="//bar[contains(@name,'ogan') &amp; (parent::*/@location = 'Town')]"></source>
+    <p>We call this category <b>NO_CONTEXT</b>.</p>
+
+    </s3>
+
+    <s3 title="Expressions containing position predicates">
+
+    <p>A predicate-chain, whose predicates' expressions contain any use of the
+    <code>position()</code> or <code>last()</code> functions require some way
+    of representing the intermediate step in an iterator. The first predicate
+    is applied to the original node-set, and the resulting node-set must then
+    be stored in some other iterator, from which the second predicate can get
+    the current position from the iterator's <code>getPosition()</code> and
+    <code>getLast()</code> methods. We call this category
+    <b>GENERAL_CONTEXT</b></p>
+
+    </s3>
+
+    <s3 title="Expressions containing one position predicate">
+
+    <p>There is one expection from the <b>GENERAL_CONTEXT</b> category. If the
+    predicate-chain contains only one position-predicate, and that predicate is
+    the very first one, then that predicate can call the iterator that contains
+    the first node-set directly. Just look:</p><source>
+    &lt;xsl:for-each select="//bar[2][parent::*/@location = 'Drumcondra']"></source>
+    <p>The <code>[2]</code> predicate can be applied to the original iterator
+    for the <code>//bar</code> step. And so can the
+    <code>[parent::*/@location = 'Drumcondra']</code> predicate as well. This
+    is only the case when the position predicate is first in the predicate
+    chain. These types of predicate chains belong in the
+    <b>NO_CONTEXT</b> category.</p>
+
+    </s3>
+
+  </s2>
+
+  <s2 title="Design details">
+
+    <s3 title="Predicates in Step expressions"></s3>
+    <s3 title="Predicates in StepPatterns"></s3>
+
+  </s2>
+
+</s1>

@@ -120,16 +120,17 @@
     public void gotoMark();</source>
 
     <p>Every node iterator implements two functions that make up the
-    functionality behind XPath's <code>position()</code> and <code>last()</code>
-    functions.</p><source>
+    functionality behind XPath's <code>getPosition()</code> and
+    <code>getLast()</code> functions.</p><source>
     public int getPosition();
     public int getLast();</source>
 
-    <p>The <code>last()</code> function returns the number of nodes in the set,
-    while the <code>position()</code> returns the current position within the
-    node-set. The value returned by <code>position()</code> for the first node
-    in the set is always 1 (one), and the value returned for the last node in
-    the set is always the same value as is returned by <code>last()</code>.</p>
+    <p>The <code>getLast()</code> function returns the number of nodes in the
+    set, while the <code>getPosition()</code> returns the current position
+    within the node-set. The value returned by <code>getPosition()</code> for
+    the first node in the set is always 1 (one), and the value returned for the
+    last node in the set is always the same value as is returned by
+    <code>getLast()</code>.</p>
 
     <p>All node iterators that implement an XPath axis will return the node-set
     in the natural order of the axis. For example, the iterator implementing the
@@ -238,8 +239,8 @@
     the <code>next()</code> method. <code>returnNode()</code> increments an
     internal node counter/cursor that keeps track of the current position within
     the node set. This counter/cursor is then used by the 
-    <code>position()</code> implementation to return the current position. The
-    node cursor can be reset by calling <code>resetPosition()</code>. This
+    <code>getPosition()</code> implementation to return the current position.
+    The node cursor can be reset by calling <code>resetPosition()</code>. This
     method is normally called by an iterator's <code>reset()</code> method.</p>
 
   </s2>
@@ -306,7 +307,7 @@
     is placed inside a variable or parameter. This becomes even more complicated
     for step iterators that encapsulate other step iterators. We'll make our
     previous example a bit more interesting:</p><source>
-    &lt;xsl:for-each select="foo/bar[@name='cat and cage]/baz"></source>
+    &lt;xsl:for-each select="foo/bar[@name='cat and cage']/baz"></source>
 
     <p>This will result in an iterator-tree similar to this:</p>
 
