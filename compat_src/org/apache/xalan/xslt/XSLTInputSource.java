@@ -116,7 +116,6 @@ public class XSLTInputSource //extends SAXSource
   public XSLTInputSource (String systemId)
   {
     saxSource = new SAXSource();
-    saxSource.setSystemId(systemId);
     this.setSystemId(systemId);
   }
 
@@ -190,7 +189,7 @@ public class XSLTInputSource //extends SAXSource
     saxSource.setInputSource(isource);
     //saxSource.setXMLReader(isource.getCharacterStream());
     this.setEncoding(isource.getEncoding());
-    saxSource.setSystemId(isource.getSystemId());
+    this.setSystemId(isource.getSystemId());
   }
 
   /**
