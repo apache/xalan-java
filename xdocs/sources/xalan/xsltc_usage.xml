@@ -325,7 +325,7 @@ Arguments wirhout flags:
 </ol>
 <s3 title="Examples">
 <p><em>Example 1:</em> Using a translet/Templates object for multiple transformations</p>
-<source>java.util.Properties;
+<source>import java.util.Properties;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Templates;
@@ -354,7 +354,7 @@ transformer.Transform(new StreamSource(xmlInURI),
                       new StreamResult(htmlOutURI));
 ...</source>
 <p><em>Example 2:</em> Compiling a translet/Templates object for a single transformation</p>
-<source>java.util.Properties;
+<source>import java.util.Properties;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.StreamSource;
