@@ -73,6 +73,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xalan.serialize.Method;
+import org.apache.xalan.extensions.ExtensionHandler;
 
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.OutputKeys;
@@ -185,9 +186,9 @@ public class OutputProperties extends ElemTemplateElement
     InputStream is = null;
     BufferedInputStream bis = null;
     try {
-      is = OutputProperties.class.getResourceAsStream(resourceName);
+      is = ExtensionHandler.getClassForName("org.apache.xalan.templates.OutputProperties").getResourceAsStream(resourceName);
       bis = new BufferedInputStream(is);
-    props.load(bis);
+      props.load(bis);
     } 
     catch (IOException ioe) {
       if ( defaults == null ) {
@@ -206,6 +207,9 @@ public class OutputProperties extends ElemTemplateElement
         throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);
       }
     } 
+    catch (ClassNotFoundException cnfe) {
+      throw new WrappedRuntimeException("Internal error.  Could not load org.apache.xalan.templates.OutputProperties!", cnfe);
+    }
     finally {
       if ( bis != null ) {
         bis.close();
