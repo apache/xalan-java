@@ -107,8 +107,9 @@
      </ul>
      </s3><anchor name="bugs"/>
      <s3 title="Bugs">
-     <p>All known &xslt4j; bugs are listed in <resource-ref idref="bugzilla"/>. If you find a new bug, please enter a XalanJ2 bug
-     report in this database.</p>
+     <p>All known &xslt4j; bugs are listed in <resource-ref idref="bugzilla"/>. For a list of open bugs with links to each bug
+      report, see <resource-ref idref="buglist"/>. If you find a new bug, please enter a XalanJ2 bug report in this
+      database.</p>
      <note>Before you can enter your first bug report, you must submit your email address to Bugzilla and receive a password.</note> 
      <p>We strongly encourage you write patches for problems you find and submit them to
       xalan-dev@xml.apache.org. We review the patches we receive to make sure they do not break something else, and (assuming they 
