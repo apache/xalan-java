@@ -63,48 +63,43 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
+import java.util.Stack;
+import java.io.IOException;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.AttributeList;
-import java.io.IOException;
-import java.util.Stack;
 
-public class SAXHTMLOutput extends SAXOutput  { 
-    private boolean   _headTagOpen = false;
-    private String _mediaType = "text/html";
+public class SAXHTMLOutput extends SAXOutput { 
+    private boolean _headTagOpen = false;
+    private String  _mediaType   = "text/html";
 
-    public SAXHTMLOutput(ContentHandler handler, String encoding) throws
-	IOException 
+    public SAXHTMLOutput(ContentHandler handler, String encoding) 
+	throws IOException 
     {
 	super(handler, encoding);
-	init();
     }
 
     public SAXHTMLOutput(ContentHandler handler, LexicalHandler lex, 
 	String encoding) throws IOException
     {
 	super(handler, lex, encoding);
-	init();
     }
    
-    private void init() throws IOException {
-	_qnameStack = new Stack();
-    }
-
-
     public void attribute(String name, final String value) 
 	throws TransletException
     {
-	final String patchedName = patchQName(name);
+	final String patchedName = patchName(name);
 	final String localName = getLocalName(patchedName);
 	final int index = _attributes.getIndex(name); 
 
 	if (!_startTagOpen) {
             BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
         }
+
         if (index >= 0) {
             _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING,
                     name, "CDATA", value);
@@ -187,7 +182,6 @@ public class SAXHTMLOutput extends SAXOutput  {
             _elementName = elementName;
             _attributes.clear();
             _startTagOpen = true;
-            _qnameStack.push(elementName);
 
             // Insert <META> tag directly after <HEAD> element in HTML doc
             if (elementName.toLowerCase().equals("head")) {
@@ -198,19 +192,18 @@ public class SAXHTMLOutput extends SAXOutput  {
         }
     }
 
-
-
-   
     /**
      * End an element or CDATA section in the output document
      */
     public void endElement(String elementName) throws TransletException {
         try {
             // Close any open element
-            if (_startTagOpen) closeStartTag();
-            _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING,
-                (String)(_qnameStack.pop()));
-        } catch (SAXException e) {
+            if (_startTagOpen) {
+		closeStartTag();
+	    }
+            _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, elementName);
+        } 
+	catch (SAXException e) {
             throw new TransletException(e);
         }
 
@@ -241,23 +234,4 @@ public class SAXHTMLOutput extends SAXOutput  {
             throw new TransletException(e);
         }
     }
-
-
-    private void initNamespaces() { 
-	//empty 
-    }
-
-    private String lookupNamespace(String prefix) { 
-	return null;	// no-op	
-    }
-
-    private void popNamespace(String prefix) throws SAXException {
-	//empty
-    }
-
-    private String getNamespaceURI(String qname, boolean isElement)
-        throws TransletException
-    {
-	return null;	// no-op	
-    } 
 }

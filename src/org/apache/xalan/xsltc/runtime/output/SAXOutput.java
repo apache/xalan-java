@@ -72,23 +72,15 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.Constants;
 
 public class SAXOutput extends OutputBase implements Constants { 
+
     protected ContentHandler _saxHandler;
     protected LexicalHandler _lexHandler;
-    protected boolean        _startTagOpen = false;
     protected AttributesImpl _attributes = new AttributesImpl();
+    
     protected String	     _elementName = null;
 
-    // parameters set by <xsl:output> element, or by set/getOutputProperty()
     protected String         _encoding = null; 
-    protected String         _doctypeSystem = null;
-    protected String         _doctypePublic = null;
  
-    // The top of this stack contains the QName of the currently open element
-    protected Stack          _qnameStack;
-
-    // Holds the current tree depth (see startElement() and endElement()).
-    protected int            _depth = 0;
-
 
     public SAXOutput(ContentHandler handler, String encoding) {
 	_saxHandler = handler;
@@ -101,11 +93,11 @@ public class SAXOutput extends OutputBase implements Constants {
 	_encoding = encoding;
     }
 
-
     public void startDocument() throws TransletException {
 	try {
 	    _saxHandler.startDocument();
-	} catch (SAXException e) {
+	} 
+	catch (SAXException e) {
 	    throw new TransletException(e);
 	}
     }
@@ -113,7 +105,8 @@ public class SAXOutput extends OutputBase implements Constants {
     public void endDocument() throws TransletException {
 	try {
 	    _saxHandler.endDocument();
-	} catch (SAXException e) {
+	} 
+	catch (SAXException e) {
             throw new TransletException(e);
         }
     }
@@ -125,39 +118,10 @@ public class SAXOutput extends OutputBase implements Constants {
 	try {
 	    _saxHandler.characters(characters.toCharArray(), 0, 
 		characters.length());	
-	} catch (SAXException e) {
+	} 
+	catch (SAXException e) {
             throw new TransletException(e);
         }
-    }
-
-    /**
-     * Set the output document system/public identifiers
-     */
-    public void setDoctype(String system, String pub) {
-        _doctypeSystem = system;
-        _doctypePublic = pub;
-    }
-
-
-
-   /**
-     * TODO: This method is a HACK! Since XSLTC does not have access to the
-     * XML file, it sometimes generates a NS prefix of the form "ns?" for
-     * an attribute. If at runtime, when the qname of the attribute is
-     * known, another prefix is specified for the attribute, then we can get
-     * a qname of the form "ns?:otherprefix:name". This function patches the
-     * qname by simply ignoring "otherprefix".
-     */ 
-    protected static String patchQName(String qname) throws TransletException {
-        final int lastColon = qname.lastIndexOf(':');
-        if (lastColon > 0) {
-            final int firstColon = qname.indexOf(':');
-            if (firstColon != lastColon) {
-                return qname.substring(0, firstColon) + 
-		    qname.substring(lastColon);
-            }
-        }
-        return qname;
     }
 
     /**

@@ -92,9 +92,7 @@ class StreamOutput extends OutputBase {
     protected Writer  _writer;
     protected StringBuffer _buffer;
 
-    protected boolean _startTagOpen  = false;
     protected boolean _is8859Encoded = false;
-
     protected boolean _indent     = false;
     protected boolean _omitHeader = false;
     protected String  _standalone = null;
@@ -108,9 +106,6 @@ class StreamOutput extends OutputBase {
     protected boolean _escaping     = true;
     protected boolean _firstElement = true;
     protected String  _encoding     = "UTF-8";
-
-    protected String  _doctypeSystem = null;
-    protected String  _doctypePublic = null;
 
     // protected HashSet _attributes = new HashSet();
     protected Vector _attributes = new Vector();

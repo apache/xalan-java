@@ -76,7 +76,7 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
-public class StreamXMLOutput extends StreamOutput implements Constants {
+public class StreamXMLOutput extends StreamOutput {
 
     private static final String BEGCDATA = "<![CDATA[";
     private static final String ENDCDATA = "]]>";
@@ -86,77 +86,18 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     private static final String CDATA_ESC_START = "]]>&#";
     private static final String CDATA_ESC_END   = ";<![CDATA[";
 
-    /**
-     * Holds the current tree depth.
-     */
-    private int _depth = 0;
-
-    /**
-     * Each entry (prefix) in this hashtable points to a Stack of URIs
-     */
-    private Hashtable _namespaces;
-
-    /** 
-     * The top of this stack contains an id of the element that last declared
-     * a namespace. Used to ensure prefix/uri map scopes are closed correctly
-     */
-    private Stack _nodeStack;
-
-    /** 
-     * The top of this stack is the prefix that was last mapped to an URI
-     */
-    private Stack _prefixStack;
-
-    /**
-     * Contains all elements that should be output as CDATA sections.
-     */
-    private Hashtable _cdata = null;
-
-    /**
-     * The top of this stack contains the element id of the last element whose
-     * contents should be output as CDATA sections.
-     */
-    private Stack _cdataStack;
-
-    private boolean _cdataTagOpen = false;
-
     public StreamXMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
-	init();
+	initCDATA();
+	initNamespaces();
     }
 
     public StreamXMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	super(out, encoding);
-	init();
-    }
-
-    /**
-     * Initialize global variables
-     */
-    private void init() {
-	// CDATA stack
-	_cdataStack = new Stack();
-	_cdataStack.push(new Integer(-1)); 	// push dummy value
-
-	// Namespaces
-	_namespaces = new Hashtable();
-	_nodeStack = new Stack();
-	_prefixStack = new Stack();
-
-	// Define the default namespace (initially maps to "" uri)
-	Stack stack;
-	_namespaces.put(EMPTYSTRING, stack = new Stack());
-	stack.push(EMPTYSTRING);
-	_prefixStack.push(EMPTYSTRING);
-
-	_namespaces.put(XML_PREFIX, stack = new Stack());
-	stack.push("http://www.w3.org/XML/1998/namespace");
-	_prefixStack.push(XML_PREFIX);
-
-	_nodeStack.push(new Integer(-1));
-	_depth = 0;
+	initCDATA();
+	initNamespaces();
     }
 
     public void startDocument() throws TransletException { 
@@ -335,11 +276,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	return temp; 
     }
 
-    public void setCdataElements(Hashtable elements) { 
-	_cdata = elements;
-    }
-
-    public void namespace(final String prefix, final String uri)
+   public void namespace(final String prefix, final String uri)
 	throws TransletException 
     {
 // System.out.println("namespace prefix = " + prefix + " uri = " + uri);
@@ -356,59 +293,6 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
 	    BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
 				      prefix, uri);
-	}
-    }
-
-    /**
-     * Declare a prefix to point to a namespace URI
-     */
-    private boolean pushNamespace(String prefix, String uri) {
-	// Prefixes "xml" and "xmlns" cannot be redefined
-	if (prefix.startsWith(XML_PREFIX)) {
-	    return false;
-	}
-	
-	Stack stack;
-	// Get the stack that contains URIs for the specified prefix
-	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
-	    _namespaces.put(prefix, stack = new Stack());
-	}
-
-	if (!stack.empty() && uri.equals(stack.peek())) {
-	    return false;
-	}
-
-	stack.push(uri);
-	_prefixStack.push(prefix);
-	_nodeStack.push(new Integer(_depth));
-	return true;
-    }
-
-    /**
-     * Undeclare the namespace that is currently pointed to by a given prefix
-     */
-    private void popNamespace(String prefix) {
-	// Prefixes "xml" and "xmlns" cannot be redefined
-	if (prefix.startsWith(XML_PREFIX)) {
-	    return;
-	}
-
-	Stack stack;
-	if ((stack = (Stack)_namespaces.get(prefix)) != null) {
-	    stack.pop();
-	}
-    }
-
-    /**
-     * Pop all namespace definitions that were delcared by the current element
-     */
-    private void popNamespaces() {
-	while (true) {
-	    if (_nodeStack.isEmpty()) return;
-	    Integer i = (Integer)(_nodeStack.peek());
-	    if (i.intValue() != _depth) return;
-	    _nodeStack.pop();
-	    popNamespace((String)_prefixStack.pop());
 	}
     }
 
@@ -511,25 +395,5 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    result.append(ch, offset, limit - offset);
 	}
 	return result.toString();
-    }
-
-    /**
-     * TODO: This method is a HACK! Since XSLTC does not have access to the
-     * XML file, it sometimes generates a NS prefix of the form "ns?" for
-     * an attribute. If at runtime, when the qname of the attribute is
-     * known, another prefix is specified for the attribute, then we can get 
-     * a qname of the form "ns?:otherprefix:name". This function patches the 
-     * name by simply ignoring "otherprefix".
-     */
-    private static String patchName(String qname) {
-	final int lastColon = qname.lastIndexOf(':');
-	if (lastColon > 0) {
-	    final int firstColon = qname.indexOf(':');
-	    if (firstColon != lastColon) {
-		return qname.substring(0, firstColon) + 
-		       qname.substring(lastColon);
-	    }
-	}
-	return qname;
     }
 }
