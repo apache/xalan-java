@@ -299,7 +299,8 @@ public class TransformerIdentityImpl extends Transformer
       {
         try
         {
-          this.startDocument();
+          if(dNode.getNodeType() != Node.DOCUMENT_NODE)
+            this.startDocument();
           try
           {
             if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
@@ -316,7 +317,8 @@ public class TransformerIdentityImpl extends Transformer
           }
           finally
           {
-            this.endDocument();
+            if(dNode.getNodeType() != Node.DOCUMENT_NODE)
+              this.endDocument();
           }
         }
         catch (SAXException se)
