@@ -288,7 +288,7 @@ public class Redirect
       org.apache.xpath.XPathContext xctxt 
         = context.getTransformer().getXPathContext();
       XPath myxpath = new XPath(fileNameExpr, elem, xctxt.getNamespaceContext(), XPath.SELECT);
-      XObject xobj = myxpath.execute(xctxt, context.getContextNode(), xctxt.getNamespaceContext());
+      XObject xobj = myxpath.execute(xctxt, context.getContextNode(), elem);
       fileName = xobj.str();
       if((null == fileName) || (fileName.length() == 0))
       {
@@ -367,11 +367,12 @@ public class Redirect
       // TransformerImpl.setOutputTarget() to set the desired Result base.
   //      String base = urlToFileName(elem.getStylesheet().getSystemId());
 
-      Result outputTarget = transformer.getOutputTarget();
-      if ( (null != outputTarget) && ((base = outputTarget.getSystemId()) != null) ) {
-        base = urlToFileName(base);
-      }
-      else
+  // %REVIEW% This breaks FOP codegen. -sb
+//      Result outputTarget = transformer.getOutputTarget();
+//      if ( (null != outputTarget) && ((base = outputTarget.getSystemId()) != null) ) {
+//        base = urlToFileName(base);
+//      }
+//      else
       {
         base = urlToFileName(transformer.getBaseURLOfSource());
       }
@@ -381,6 +382,7 @@ public class Redirect
         File baseFile = new File(base);
         file = new File(baseFile.getParent(), fileName);
       }
+      // System.out.println("file is: "+file.toString());
     }
 
     if(mkdirs)
