@@ -644,6 +644,9 @@ public abstract class XObject extends Expression implements Serializable, Clonea
   public Object castToType(int t, XPathContext support)
           throws javax.xml.transform.TransformerException
   {
+  	// Should this be generalized to handle the rest of the basic types?
+	//if(t==this.getType())	// Already matches
+	//	return this;
 
     Object result;
 
