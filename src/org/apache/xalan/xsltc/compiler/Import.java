@@ -88,7 +88,7 @@ final class Import extends TopLevelElement {
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
 	try {
-	    final String systemId = getAttribute("href");
+	    String systemId = getAttribute("href");
 	    if (context.checkForLoop(systemId)) {
 		final int errno = ErrorMsg.CIRCULAR_INC;
 		final ErrorMsg msg = new ErrorMsg(errno, systemId, this);
@@ -96,20 +96,22 @@ final class Import extends TopLevelElement {
 		return;
 	    }
 
+	    final String base = context.getSystemId();
 	    SourceLoader loader = context.getSourceLoader();
 	    InputSource input = null;
+
 	    if (loader != null) {
 		final XSLTC xsltc = parser.getXSLTC();
-		final String base = context.getSystemId();
 		input = loader.loadSource(base, systemId, xsltc);
 	    }
 	    else {
-		//System.err.println("current context is "+context.getSystemId());
-		//System.err.println("new file  is "+systemId);
+		final URL url = new URL(new URL(base), systemId);
+		systemId = url.toString();
 		input = new InputSource(systemId);
 	    }
 
-	    final SyntaxTreeNode root = parser.parse(input);
+	    SyntaxTreeNode root = parser.parse(input);
+
 	    if (root == null) return;
 	    final Stylesheet _imported = parser.makeStylesheet(root);
 	    if (_imported == null) return;
