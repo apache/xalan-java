@@ -1061,6 +1061,8 @@ abstract public class ToStream extends SerializerBase
      * @param i index into character array.
      * @param chars non-null reference to character array.
      * @param len length of chars.
+     * @param fromTextNode true if the characters being processed
+     * are from a text node, false if they are from an attribute value
      * @param escLF true if the linefeed should be escaped.
      *
      * @return i+1 if the character was written, else i.
@@ -1073,6 +1075,7 @@ abstract public class ToStream extends SerializerBase
         int i,
         char[] chars,
         int len,
+        boolean fromTextNode,
         boolean escLF)
         throws IOException
     {
@@ -1083,7 +1086,9 @@ abstract public class ToStream extends SerializerBase
         }
         else
         {
-            if (m_charInfo.isSpecial(ch))
+            // if this is text node character and a special one of those,
+            // or if this is a character from attribute value and a special one of those
+            if ((fromTextNode && m_charInfo.isSpecialTextChar(ch)) || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch)))
             {
                 String entityRef = m_charInfo.getEntityNameForChar(ch);
 
@@ -1474,9 +1479,9 @@ abstract public class ToStream extends SerializerBase
                  * processing for dirty characters here as for non-whitespace.
                  * 
                  */
-                if (!m_charInfo.isASCIIClean(ch1))
+                if (!m_charInfo.isTextASCIIClean(ch1))
                 {
-                    lastDirty = processDirty(chars,end, i,ch1, lastDirty);
+                    lastDirty = processDirty(chars,end, i,ch1, lastDirty, true);
                     i = lastDirty;
                 }
             }
@@ -1500,7 +1505,7 @@ abstract public class ToStream extends SerializerBase
                     char ch2;
                     while (i<end 
                             && ((ch2 = chars[i])<127)
-                            && m_charInfo.isASCIIClean(ch2))
+                            && m_charInfo.isTextASCIIClean(ch2))
                             i++;
                     if (i == end)
                         break;
@@ -1509,14 +1514,14 @@ abstract public class ToStream extends SerializerBase
                 final char ch = chars[i];
                 if (
                 
-                    (escapingNotNeeded(ch) && (!m_charInfo.isSpecial(ch)))
+                    (escapingNotNeeded(ch) && (!m_charInfo.isSpecialTextChar(ch)))
                         || ('"' == ch))
                 {
                     ; // a character needing no special processing
                 }
                 else
                 {
-                    lastDirty = processDirty(chars,end, i, ch, lastDirty);
+                    lastDirty = processDirty(chars,end, i, ch, lastDirty, true);
                     i = lastDirty;
                 }
             }
@@ -1551,6 +1556,8 @@ abstract public class ToStream extends SerializerBase
      * @param i the index of the dirty character
      * @param ch the character in chars[i]
      * @param lastDirty the last dirty character previous to i
+     * @param fromTextNode true if the characters being processed are
+     * from a text node, false if they are from an attribute value.
      * @return the index of the last character processed
      */
     private int processDirty(
@@ -1558,7 +1565,8 @@ abstract public class ToStream extends SerializerBase
         int end,
         int i, 
         char ch,
-        int lastDirty) throws IOException
+        int lastDirty,
+        boolean fromTextNode) throws IOException
     {
         int startClean = lastDirty + 1;
         // if we have some clean characters accumulated
@@ -1570,7 +1578,7 @@ abstract public class ToStream extends SerializerBase
         }
 
         // process the "dirty" character
-        if (CharInfo.S_LINEFEED == ch)
+        if (CharInfo.S_LINEFEED == ch && fromTextNode)
         {
             m_writer.write(m_lineSep, 0, m_lineSepLen);
         }
@@ -1583,6 +1591,7 @@ abstract public class ToStream extends SerializerBase
                     i,
                     chars,
                     end,
+                    fromTextNode,
                     false);
             i = startClean - 1;
         }
@@ -1616,6 +1625,9 @@ abstract public class ToStream extends SerializerBase
      * @param i index into character array.
      * @param chars non-null reference to character array.
      * @param len length of chars.
+     * @param fromTextNode true if the characters being processed are
+     * from a text node, false if the characters being processed are from
+     * an attribute value.
      * @param escLF true if the linefeed should be escaped.
      *
      * @return i+1 if a character was written, i+2 if two characters
@@ -1629,11 +1641,12 @@ abstract public class ToStream extends SerializerBase
         int i,
         char[] chars,
         int len,
+        boolean fromTextNode,
         boolean escLF)
         throws IOException
     {
 
-        int pos = accumDefaultEntity(writer, ch, i, chars, len, escLF);
+        int pos = accumDefaultEntity(writer, ch, i, chars, len, fromTextNode, escLF);
 
         if (i == pos)
         {
@@ -1676,14 +1689,12 @@ abstract public class ToStream extends SerializerBase
                 writer.write(Integer.toString(next));
                 writer.write(';');
                 pos += 2; // count the two characters that went into writing out this entity
-                /*} else if (null != ctbc && !ctbc.canConvert(ch)) {
-                sb.append("&#x");
-                sb.append(Integer.toString((int)ch, 16));
-                sb.append(";");*/
             }
             else
             {
-                if (!escapingNotNeeded(ch) || (m_charInfo.isSpecial(ch)))
+                if (!escapingNotNeeded(ch) || 
+                    (  (fromTextNode && m_charInfo.isSpecialTextChar(ch))
+                     || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch))))
                 {
                     writer.write("&#");
                     writer.write(Integer.toString(ch));
@@ -1948,21 +1959,21 @@ abstract public class ToStream extends SerializerBase
         for (int i = 0; i < len; i++)
         {
             char ch = stringChars[i];
-            if (escapingNotNeeded(ch) && (!m_charInfo.isSpecial(ch)))
+            if (escapingNotNeeded(ch) && (!m_charInfo.isSpecialAttrChar(ch)))
             {
                 writer.write(ch);
             }
             else
             { // I guess the parser doesn't normalize cr/lf in attributes. -sb
-                if ((CharInfo.S_CARRIAGERETURN == ch)
-                    && ((i + 1) < len)
-                    && (CharInfo.S_LINEFEED == stringChars[i + 1]))
-                {
-                    i++;
-                    ch = CharInfo.S_LINEFEED;
-                }
+//                if ((CharInfo.S_CARRIAGERETURN == ch)
+//                    && ((i + 1) < len)
+//                    && (CharInfo.S_LINEFEED == stringChars[i + 1]))
+//                {
+//                    i++;
+//                    ch = CharInfo.S_LINEFEED;
+//                }
 
-                accumDefaultEscape(writer, ch, i, stringChars, len, true);
+                accumDefaultEscape(writer, ch, i, stringChars, len, false, true);
             }
         }
 

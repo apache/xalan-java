@@ -100,6 +100,9 @@ public class CharInfo
      */
     public static String XML_ENTITIES_RESOURCE = "org.apache.xml.serializer.XMLEntities";
 
+    /** The horizontal tab character, which the parser should always normalize. */
+    public static final char S_HORIZONAL_TAB = 0x09;
+
     /** The linefeed character, which the parser should always normalize. */
     public static final char S_LINEFEED = 0x0A;
 
@@ -116,14 +119,21 @@ public class CharInfo
     /** Copy the first 0,1 ... ASCII_MAX values into an array */
     private static final int ASCII_MAX = 128;
     
-    /** Array of values is faster access than a set of bits */
-    private boolean[] quickASCII = new boolean[ASCII_MAX];
+    /** Array of values is faster access than a set of bits 
+     * to quickly check ASCII characters in attribute values. 
+     */
+    private boolean[] isSpecialAttrASCII = new boolean[ASCII_MAX];
+    
+    /** Array of values is faster access than a set of bits 
+     * to quickly check ASCII characters in text nodes. 
+     */
+    private boolean[] isSpecialTextASCII = new boolean[ASCII_MAX];
 
-    private boolean[] isCleanASCII = new boolean[ASCII_MAX];
+    private boolean[] isCleanTextASCII = new boolean[ASCII_MAX];
 
     /** An array of bits to record if the character is in the set.
      * Although information in this array is complete, the
-     * quickASCII array is used first because access to its values
+     * isSpecialAttrASCII array is used first because access to its values
      * is common and faster.
      */   
     private int array_of_bits[] = createEmptySetOfIntegers(65535);
@@ -326,24 +336,40 @@ public class CharInfo
                 }
             }
         }
+          
+        /* initialize the array isCleanTextASCII[] with a cache of values
+         * for use by ToStream.character(char[], int , int)
+         * and the array isSpecialTextASCII[] with the opposite values
+         * (all in the name of performance!)
+         */
+        for (int ch = 0; ch <ASCII_MAX; ch++)
+        if((((0x20 <= ch || (0x0A == ch || 0x0D == ch || 0x09 == ch)))
+             && (!get(ch))) || ('"' == ch))
+        {
+            isCleanTextASCII[ch] = true;
+            isSpecialTextASCII[ch] = false;
+        }
+        else {
+            isCleanTextASCII[ch] = false;
+            isSpecialTextASCII[ch] = true;     
+        }       
+        
+        /* Now that we've used get(ch) just above to initialize the
+         * two arrays we will change by adding a tab to the set of 
+         * special chars.  We do this because a tab is always a
+         * special character in an attribute, but only a special character
+         * in text if it has an entity defined for it.
+         * This is the reason for this delay.
+         */ 
+        set(S_HORIZONAL_TAB);
+        
 
         onlyQuotAmpLtGt = noExtraEntities;
 
         // initialize the array with a cache of the BitSet values
         for (int i=0; i<ASCII_MAX; i++)
-            quickASCII[i] = get(i);    
-          
-        // initialize the array with a cache of values
-        // for use by ToStream.character(char[], int , int)
-        for (int ch = 0; ch <ASCII_MAX; ch++)
-        if((((0x20 <= ch || (0x0A == ch || 0x0D == ch || 0x09 == ch)))
-             && (!get(ch))) || ('"' == ch))
-        {
-            isCleanASCII[ch] = true;
-        }
-        else {
-            isCleanASCII[ch] = false;     
-        }
+            isSpecialAttrASCII[i] = get(i);    
+
     }
 
     /**
@@ -388,22 +414,45 @@ public class CharInfo
         m_charKey.setChar(value);
         return (String) m_charToEntityRef.get(m_charKey);
     }
-
+    
     /**
-     * Tell if the character argument should have special treatment.
-     *
-     * @param value character value.
-     *
-     * @return true if the character should have any special treatment, such as
-     * when writing out attribute values, or entity references.
+     * Tell if the character argument that is from
+     * an attribute value should have special treatment.
+     * 
+     * @param value the value of a character that is in an attribute value
+     * @return true if the character should have any special treatment, 
+     * such as when writing out attribute values, 
+     * or entity references.
      */
-    public final boolean isSpecial(int value)
+    public final boolean isSpecialAttrChar(int value)
     {
         // for performance try the values in the boolean array first,
         // this is faster access than the BitSet for common ASCII values
 
         if (value < ASCII_MAX)
-            return quickASCII[value];
+            return isSpecialAttrASCII[value];
+
+        // rather than java.util.BitSet, our private
+        // implementation is faster (and less general).
+        return get(value);
+    }    
+
+    /**
+     * Tell if the character argument that is from a 
+     * text node should have special treatment.
+     * 
+     * @param value the value of a character that is in a text node
+     * @return true if the character should have any special treatment, 
+     * such as when writing out attribute values, 
+     * or entity references.
+     */
+    public final boolean isSpecialTextChar(int value)
+    {
+        // for performance try the values in the boolean array first,
+        // this is faster access than the BitSet for common ASCII values
+
+        if (value < ASCII_MAX)
+            return isSpecialTextASCII[value];
 
         // rather than java.util.BitSet, our private
         // implementation is faster (and less general).
@@ -411,13 +460,14 @@ public class CharInfo
     }
     
     /**
-     * This method is used to determine if an ASCII character is "clean"
+     * This method is used to determine if an ASCII character in
+     * a text node (not an attribute value) is "clean".
      * @param value the character to check (0 to 127).
      * @return true if the character can go to the writer as-is
      */
-    public final boolean isASCIIClean(int value)
+    public final boolean isTextASCIIClean(int value)
     {
-        return isCleanASCII[value];
+        return isCleanTextASCII[value];
     }
     
 //  In the future one might want to use the array directly and avoid
@@ -425,7 +475,7 @@ public class CharInfo
 //  so don't do it (for now) - bjm    
 //    public final boolean[] getASCIIClean()
 //    {
-//        return isCleanASCII;
+//        return isCleanTextASCII;
 //    }
 
 

@@ -1305,7 +1305,7 @@ public class ToHTMLStream extends ToStream
             // System.out.println("ch: "+(int)ch);
             // System.out.println("m_maxCharacter: "+(int)m_maxCharacter);
             // System.out.println("m_attrCharsMap[ch]: "+(int)m_attrCharsMap[ch]);
-            if (escapingNotNeeded(ch) && (!m_charInfo.isSpecial(ch)))
+            if (escapingNotNeeded(ch) && (!m_charInfo.isSpecialAttrChar(ch)))
             {
                 cleanLength++;
             }
@@ -1325,7 +1325,7 @@ public class ToHTMLStream extends ToStream
                     writer.write(chars,cleanStart,cleanLength);
                     cleanLength = 0;
                 }
-                int pos = accumDefaultEntity(writer, ch, i, chars, end, false);
+                int pos = accumDefaultEntity(writer, ch, i, chars, end, false, false);
 
                 if (i != pos)
                 {
