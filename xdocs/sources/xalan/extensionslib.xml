@@ -83,9 +83,9 @@ Xalan. With input and contributions from the XML open-source developer community
 extensions in an extensions library distributed with &xslt4j;. If you have ideas and/or contributions you would like to make, please email us at the <human-resource-ref idref="xalandev"/>.</p>
 </s2><anchor name="xalanns"/>
 <s2 title="Xalan namespace">
-<p>Where it makes sense, we are placing the new Xalan extensions in the org.apache.xalan.lib.Extensions class, and (strictly for ease of use) we have defined a namespace for this class:</p>
+<p>Where it makes sense, we are placing the new Xalan extensions in the org.apache.xalan.lib.Extensions class and we have defined a namespace for this class:</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan</code></p>
-<p>To call any of the extensions implemented in org.apache.xalan.lib.Extensions, you can define this namespace in your stylesheet element, and call the extension using the namespace prefix you have associated with that namespace.</p>
+<p>If you are calling &xslt4j;-supplied extensions, we recommend that you define this namespace in your stylesheet element, and call the extension using the namespace prefix that you have associated with that namespace. That way, if we later reorganize how the &xslt4j;-supplied extensions are stored, you won't have to modify your stylesheet.</p>
 <p>For an example that uses this namespace, see <link anchor="ex-nodeset">Example with the nodeset extension function</link>.</p>
 </s2><anchor name="redirect"/>
 <s2 title= "Redirect">
