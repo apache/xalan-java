@@ -57,7 +57,8 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
- * @author G. Todd Miller
+ * @author G. Todd Millerj
+ * @author Jochen Cordes <Jochen.Cordes@t-online.de>
  *
  */
 
@@ -97,6 +98,11 @@ public final class TemplatesImpl implements Templates, Serializable {
     
     // Our own private class loader - builds Class definitions from bytecodes
     private class TransletClassLoader extends ClassLoader {
+
+	protected TransletClassLoader(ClassLoader parent){
+	    super(parent);
+	}
+
 	public Class defineClass(byte[] b) {
 	    return super.defineClass(null, b, 0, b.length);
 	}
@@ -170,7 +176,8 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    (TransletClassLoader) AccessController.doPrivileged(
 		new PrivilegedAction() {
 			public Object run() {
-			    return new TransletClassLoader();
+			    ClassLoader current = getClass().getClassLoader();
+			    return new TransletClassLoader(current);
 			}
 		    }
 		);
