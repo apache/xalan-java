@@ -77,17 +77,23 @@
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
-     <anchor name="done"/>
+     <anchor name="done"/><anchor name="dtm"/>
      <s3 title="Changes since &xslt4j; 2.1.0">
-     <p>We have incorporated all our work over the past several months on the Document Table Model
-     <link idref="whatsnew" anchor="dtm">DTM</link> into this build.</p>
+     <p>This release includes the following changes:</p>
+     <ul>
+       <li>Deprecation of the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatiblity API</link></li>
+       <li>The DTM</li>
+       <li>Other optimization work</li>
+     </ul>
+     <anchor name="dtm"/>
+     <p>The primary focus of the 2.2 Developer releases is incorporation of all our work over the past several months on the Document Table
+      Model (<link idref="dtm">DTM</link>).</p>
 
 <p>As a result of the changes in *internal* api, you may encounter problems with extensions. We have done some bug fixing in support
 for extensions since 2.2.D1.  John Gentilin is working on fixing the SQL library extension,which currently is broken. Please report 
 any problems you find (see <link anchor="bugs">bugs</link>).</p>
 
-<anchor name="dtm"/>
-<p>The DTM work provides faster performance and less accumulation of garbage... though it is an
+<p>The DTM and related work provides faster performance and less accumulation of garbage... though it is an
 ongoing battle.  Brief summary:</p>
 <ul>
 <li>The DTM identifies nodes with 32-bit integer handles.
@@ -118,40 +124,7 @@ interpretation.</li>
 </ul>
 <p>&xslt4j; implements two DTM performance features that you can control with the TransformerFactory
 <jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">setAttribute()</jump>
-method.</p>
-<table>
-<tr>
-  <th>Attribute ID (URL)</th>
-  <th>Default setting</th>
-  <th>Description</th>    
-</tr>
-<tr>
-  <td>"http://xml.apache.org/xalan/features/incremental"</td>
-  <td>false</td>
-  <td>incremental transforms</td>
-</tr>
-<tr>
-  <td>"http://xml.apache.org/xalan/features/optimize"</td>
-  <td>true</td>
-  <td>optimized transforms</td>
-</tr>
-</table>
-<p><em>"http://xml.apache.org/xalan/features/incremental"</em></p>
- <p>Set this feature to true to enable incremental transformations. If set to false
- (the default), the transform and the parse are performed on the same thread.</p>
- <note> When set to true: If the parser is Xerces, we perform an incremental transform on a single thread using the Xerces 
- "parse on demand" feature. If the parser is not Xerces, we run the transform in one thread and the parse in another. Exception: if the
- parser is not Xerces and the XML source is a DOMSource, setting this feature to true has no effect.</note>
- <p>Example: setting incremental transforms to true:</p>
- <source>javax.xml.transform.TransformerFactory tFactory =
-          javax.xml.transform.TransformerFactory.newInstance();
-tFactory.setAttribute
-          ("http://xml.apache.org/xalan/features/incremental", true);
-...</source>
-<p><em>"http://xml.apache.org/xalan/features/optimize"</em></p>
- <p>When set to true (the default), this feature enables optimizations that may involve 
- structural rewrites of the stylesheet. Any tool that requires direct access to the stylesheet structure should set this feature to 
- false.</p>
+method. See <link idref="dtm" anchor="settings">DTM performance settings</link></p>
      </s3>
      <anchor name="other"/>
      <s3 title="Other points of interest">
