@@ -40,7 +40,11 @@ Copyright:
   
   - Much of this file stolen from Stefano's xml-xerces build.xml  
   
+<<<<<<< build.xml
    $Id$
+=======
+   $Id$
+>>>>>>> 1.20
    
 ==================================================================== -->
 
@@ -65,7 +69,7 @@ Copyright:
   <property name="serializer.reldir" value="org/apache/xml/serialize/transition"/>
   <property name="jaxp.reldir" value="javax/xml/parsers"/>
   <property name="sax.reldir" value="org/xml/sax"/>
-  <property name="dom.reldir" value="org/w3c/dom"/>    
+  <property name="w3c.reldir" value="org/w3c"/>    
   <property name="build.dir" value="./build"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
@@ -361,10 +365,13 @@ Copyright:
     <copydir src="${build.docs}/resources" dest="${site.dir}/docs/resources"/>
     <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
   </target-->
+<<<<<<< build.xml
+=======
     <target name="docsxalan1">
    
     <java fork="yes" classname="${doc.generator}" classpath="../build/xalan.jar:../xdocs/stylebook-1.0-b2.jar:${java.class.path}"
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
   </target>
   
+>>>>>>> 1.20
 </project>
