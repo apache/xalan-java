@@ -192,6 +192,23 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
   }
       
   // ========= Transformer Interface Implementation ==========
+
+  /**
+   * Transform a document.
+   *
+   * @param input The input source for the document entity.
+   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @exception java.io.IOException An IO exception from the parser,
+   *            possibly from a byte stream or character stream
+   *            supplied by the application.
+   * @see org.xml.sax.XMLReader#parse(org.xml.sax.InputSource)
+   */
+  public void parse( InputSource xmlSource)
+    throws SAXException, IOException
+  {
+    transform( xmlSource );
+  }
   
   /**
    * Process the source tree to SAX parse events.
@@ -242,7 +259,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
       try
       {
         // Get an already set XMLReader, or create one.
-        XMLReader reader = this.getXMLReader();
+        XMLReader reader = this.getParent();
         if(null == reader)
         {
           reader = XMLReaderFactory.createXMLReader();
@@ -333,7 +350,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
       try
       {
         // Get an already set XMLReader, or create one.
-        XMLReader reader = this.getXMLReader();
+        XMLReader reader = this.getParent();
         if(null == reader)
         {
           reader = XMLReaderFactory.createXMLReader();
@@ -699,32 +716,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
   public void setURIResolver(URIResolver resolver)
   {
   }
-  
-  /**
-   * The XMLReader used to parse the source tree.
-   */
-  private XMLReader m_reader;
-  
-  /**
-   * Set an XML parser for the source tree.  Note that if 
-   * Transformer.setXMLReader is not called, the parser set 
-   * with Processor.setXMLReader will be used.
-   */
-  public void setXMLReader(XMLReader reader)
-  {
-    m_reader = reader;
-  }
-
-  /**
-   * Get the XML parser used for the source tree.  Note that 
-   * if Transformer.setXMLReader is not called, the parser set 
-   * with Processor.setXMLReader will be used.
-   */
-  public XMLReader getXMLReader()
-  {
-    return m_reader;
-  }
-  
+    
   // ======== End Transformer Implementation ========  
     
   /**
