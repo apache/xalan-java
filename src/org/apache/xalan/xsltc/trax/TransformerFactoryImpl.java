@@ -65,14 +65,21 @@
 package org.apache.xalan.xsltc.trax;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.FilenameFilter;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Enumeration;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
@@ -118,7 +125,27 @@ public class TransformerFactoryImpl
      * compared to the rest of his bulk, waved helplessly before his eyes.
      * "What has happened to me?", he thought. It was no dream....
      */
-    protected static String _defaultTransletName = "GregorSamsa";
+    protected static String DEFAULT_TRANSLET_NAME = "GregorSamsa";
+    
+    /**
+     * The class name of the translet
+     */
+    protected static String _transletName = DEFAULT_TRANSLET_NAME;
+    
+    /**
+     * The destination directory for the translet
+     */
+    protected static String _destinationDirectory = null;
+    
+    /**
+     * The package name prefix for all generated translet classes
+     */
+    protected static String _packageName = null;
+    
+    /**
+     * The jar file name which the translet classes are packaged into
+     */
+    protected static String _jarFileName = null;
 
     /**
      * This Hashtable is used to store parameters for locating
@@ -156,6 +183,19 @@ public class TransformerFactoryImpl
      * Set to <code>true</code> when templates are inlined.
      */
     private boolean _enableInlining = false;
+    
+    /**
+     * Set to <code>true</code> when we want to generate 
+     * translet classes from the stylesheet.
+     */
+    private boolean _generateTranslet = false;
+    
+    /**
+     * If this is set to <code>true</code>, we attempt to use translet classes for 
+     * transformation if possible without compiling the stylesheet. The translet class
+     * is only used if its timestamp is newer than the timestamp of the stylesheet.
+     */
+    private boolean _autoTranslet = false;
 
     /**
      * Number of indent spaces when indentation is turned on.
@@ -217,7 +257,13 @@ public class TransformerFactoryImpl
     { 
 	// Return value for attribute 'translet-name'
 	if (name.equals("translet-name")) {
-	    return _defaultTransletName;
+	    return _transletName;
+	}
+	else if (name.equals("generate-translet")) {
+	    return new Boolean(_generateTranslet);
+	}
+	else if (name.equals("auto-translet")) {
+	    return new Boolean(_autoTranslet);
 	}
 
 	// Throw an exception for all other attributes
@@ -239,8 +285,40 @@ public class TransformerFactoryImpl
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
 	if (name.equals("translet-name") && value instanceof String) {
-	    _defaultTransletName = (String) value;
+	    _transletName = (String) value;	      
 	    return;
+	}
+	else if (name.equals("destination-directory") && value instanceof String) {
+	    _destinationDirectory = (String) value;
+	    return;
+	}
+	else if (name.equals("package-name") && value instanceof String) {
+	    _packageName = (String) value;
+	    return;
+	}
+	else if (name.equals("jar-name") && value instanceof String) {
+	    _jarFileName = (String) value;
+	    return;
+	}
+	else if (name.equals("generate-translet")) {
+	    if (value instanceof Boolean) {
+		_generateTranslet = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_generateTranslet = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
+	}
+	else if (name.equals("auto-translet")) {
+	    if (value instanceof Boolean) {
+		_autoTranslet = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_autoTranslet = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
 	else if (name.equals("debug")) {
 	    if (value instanceof Boolean) {
@@ -458,12 +536,45 @@ public class TransformerFactoryImpl
     public Templates newTemplates(Source source)
 	throws TransformerConfigurationException 
     {
+	// If _autoTranslet is true, we will try to load the bytecodes
+	// from the translet classes without compiling the stylesheet.
+	if (_autoTranslet)  {
+	    byte[][] bytecodes = null;
+	    String transletClassName = getTransletClassName(source);
+	    
+	    if (_jarFileName != null)
+	    	bytecodes = getBytecodesFromJar(source, transletClassName);
+	    else
+	    	bytecodes = getBytecodesFromClasses(source, transletClassName);	    
+	  
+	    if (bytecodes != null) {
+	    	if (_debug) {
+	      	    if (_jarFileName != null)
+	        	System.err.println(new ErrorMsg(
+	            	    ErrorMsg.TRANSFORM_WITH_JAR_STR, transletClassName, _jarFileName));
+	            else
+	            	System.err.println(new ErrorMsg(
+	            	    ErrorMsg.TRANSFORM_WITH_TRANSLET_STR, transletClassName));
+	    	}
+
+	    	// Reset the per-session attributes to their default values
+	    	// after each newTemplates() call.
+	    	resetTransientAttributes();
+	    
+	    	return new TemplatesImpl(bytecodes, transletClassName, null, _indentNumber, this);	    
+	    }
+	}
+	
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
 	if (_enableInlining) xsltc.setTemplateInlining(true);
 	xsltc.init();
 
+	// Set the translet name
+	if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
+	    xsltc.setClassName(_transletName);
+	  
 	// Set a document loader (for xsl:include/import) if defined
 	if (_uriResolver != null) {
 	    xsltc.setSourceLoader(this);
@@ -480,10 +591,50 @@ public class TransformerFactoryImpl
 	    }
 	}
 
+	// Set the attributes for translet generation
+	int outputType = XSLTC.BYTEARRAY_OUTPUT;
+	if (_generateTranslet || _autoTranslet) {
+	    if (_destinationDirectory != null)
+	    	xsltc.setDestDirectory(_destinationDirectory);
+	    else {
+	    	String xslName = getStylesheetFileName(source);
+	    	if (xslName != null) {
+	      	    File xslFile = new File(xslName);
+	            String xslDir = xslFile.getParent();
+	    
+	      	    if (xslDir != null)
+	                xsltc.setDestDirectory(xslDir);
+	    	}
+	    }
+	  
+	    if (_packageName != null)
+	        xsltc.setPackageName(_packageName);
+	
+	    if (_jarFileName != null) {
+	    	xsltc.setJarFileName(_jarFileName);
+	    	outputType = XSLTC.BYTEARRAY_AND_JAR_OUTPUT;
+	    }
+	    else
+	    	outputType = XSLTC.BYTEARRAY_AND_FILE_OUTPUT;
+	}
+
 	// Compile the stylesheet
 	final InputSource input = Util.getInputSource(xsltc, source);
-	byte[][] bytecodes = xsltc.compile(null, input);
+	byte[][] bytecodes = xsltc.compile(null, input, outputType);
 	final String transletName = xsltc.getClassName();
+
+	// Output to the jar file if the jar file name is set.
+	if ((_generateTranslet || _autoTranslet)
+	   	&& bytecodes != null && _jarFileName != null) {
+	    try {
+	    	xsltc.outputToJar();
+	    }
+	    catch (java.io.IOException e) { }
+	}
+
+	// Reset the per-session attributes to their default values
+	// after each newTemplates() call.
+	resetTransientAttributes();
 
 	// Pass compiler warnings to the error listener
 	if (_errorListener != this) {
@@ -760,5 +911,328 @@ public class TransformerFactoryImpl
 		result = _parserFactory.newSAXParser().getXMLReader());
 	}
 	return result;
+    }
+    
+    /**
+     * Reset the per-session attributes to their default values
+     */
+    private void resetTransientAttributes() {
+	_transletName = DEFAULT_TRANSLET_NAME;
+	_destinationDirectory = null;
+	_packageName = null;
+	_jarFileName = null;    
+    }
+        
+    /**
+     * Load the translet classes from local .class files and return
+     * the bytecode array.
+     *
+     * @param source The xsl source
+     * @param fullClassName The full name of the translet
+     * @return The bytecode array
+     */
+    private byte[][] getBytecodesFromClasses(Source source, String fullClassName)
+    {
+    	if (fullClassName == null)
+    	    return null;
+    	  
+    	String xslFileName = getStylesheetFileName(source);
+    	File xslFile = null;
+    	if (xslFileName != null)
+    	    xslFile = new File(xslFileName);
+    	
+    	// Find the base name of the translet
+    	final String transletName;
+    	int lastDotIndex = fullClassName.lastIndexOf('.');
+    	if (lastDotIndex > 0)
+    	    transletName = fullClassName.substring(lastDotIndex+1);
+    	else
+    	    transletName = fullClassName;
+    	    	
+    	// Construct the path name for the translet class file
+    	String transletPath = fullClassName.replace('.', '/');
+    	if (_destinationDirectory != null) {
+    	    transletPath = _destinationDirectory + "/" + transletPath + ".class";
+    	}
+    	else {
+    	    if (xslFile != null && xslFile.getParent() != null)
+    	    	transletPath = xslFile.getParent() + "/" + transletPath + ".class";
+    	    else
+    	    	transletPath = transletPath + ".class";
+    	}
+    	    	    	
+    	// Return null if the translet class file does not exist.
+    	File transletFile = new File(transletPath);
+    	if (!transletFile.exists())
+    	    return null;
+    	    	  
+    	// Compare the timestamps of the translet and the xsl file.
+    	// If the translet is older than the xsl file, return null 
+    	// so that the xsl file is used for the transformation and
+    	// the translet is regenerated.
+    	if (xslFile != null && xslFile.exists()) {
+    	    long xslTimestamp = xslFile.lastModified();
+    	    long transletTimestamp = transletFile.lastModified();
+    	    if (transletTimestamp < xslTimestamp)
+    	    	return null;
+    	}
+    	
+    	// Load the translet into a bytecode array.
+    	Vector bytecodes = new Vector();
+    	int fileLength = (int)transletFile.length();
+    	if (fileLength > 0) {
+    	    FileInputStream input = null;
+    	    try {
+    	    	input = new FileInputStream(transletFile);
+    	    }
+    	    catch (FileNotFoundException e) {
+    	    	return null;
+    	    }
+    	  
+    	    byte[] bytes = new byte[fileLength];
+    	    try {
+	    	readFromInputStream(bytes, input, fileLength);
+	    	input.close();
+	    }
+	    catch (IOException e) {
+    	    	return null;
+    	    }
+    	  
+    	    bytecodes.addElement(bytes);
+    	}
+    	else
+    	    return null;
+    	
+    	// Find the parent directory of the translet.
+    	String transletParentDir = transletFile.getParent();
+    	if (transletParentDir == null)
+    	    transletParentDir = System.getProperty("user.dir");
+    	  
+    	File transletParentFile = new File(transletParentDir);
+    	
+    	// Find all the auxiliary files which have a name pattern of "transletClass$nnn.class".
+    	final String transletAuxPrefix = transletName + "$";
+    	File[] auxfiles = transletParentFile.listFiles(new FilenameFilter() {
+        	public boolean accept(File dir, String name)
+    		{
+    		    return (name.endsWith(".class") && name.startsWith(transletAuxPrefix));	
+    		}
+    	      });
+    	
+    	// Load the auxiliary class files and add them to the bytecode array.
+    	for (int i = 0; i < auxfiles.length; i++)
+    	{
+    	    File auxfile = auxfiles[i];
+    	    int auxlength = (int)auxfile.length();
+    	    if (auxlength > 0) {
+    	    	FileInputStream auxinput = null;
+    	    	try {
+    	      	    auxinput = new FileInputStream(auxfile);
+    	    	}
+    	    	catch (FileNotFoundException e) {
+    	      	    continue;
+    	    	}
+    	  
+    	    	byte[] bytes = new byte[auxlength];
+    	    
+    	    	try {
+    	      	    readFromInputStream(bytes, auxinput, auxlength);
+    	      	    auxinput.close();
+    	    	}
+    	    	catch (IOException e) {
+    	      	    continue;
+    	    	}
+    	    
+    	    	bytecodes.addElement(bytes);   	    
+    	    }
+    	}
+    	
+    	// Convert the Vector of byte[] to byte[][].
+    	final int count = bytecodes.size();
+    	if ( count > 0) {
+    	    final byte[][] result = new byte[count][1];
+    	    for (int i = 0; i < count; i++) {
+    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    }
+    	  
+    	    return result;
+    	}
+    	else
+    	    return null;
+    }
+    
+    /**
+     * Load the translet classes from the jar file and return the bytecode.
+     *
+     * @param source The xsl source
+     * @param fullClassName The full name of the translet
+     * @return The bytecode array
+     */
+    private byte[][] getBytecodesFromJar(Source source, String fullClassName)
+    {
+    	String xslFileName = getStylesheetFileName(source);
+    	File xslFile = null;
+    	if (xslFileName != null)
+    	    xslFile = new File(xslFileName);
+      
+      	// Construct the path for the jar file
+      	String jarPath = null;
+      	if (_destinationDirectory != null)
+            jarPath = _destinationDirectory + "/" + _jarFileName;
+      	else {
+      	    if (xslFile != null && xslFile.getParent() != null)
+    	    	jarPath = xslFile.getParent() + "/" + _jarFileName;
+    	    else
+    	    	jarPath = _jarFileName;
+    	}
+            
+      	// Return null if the jar file does not exist.
+      	File file = new File(jarPath);
+      	if (!file.exists())
+            return null;
+
+     	// Compare the timestamps of the jar file and the xsl file. Return null
+     	// if the xsl file is newer than the jar file.
+    	if (xslFile != null && xslFile.exists()) {
+    	    long xslTimestamp = xslFile.lastModified();
+    	    long transletTimestamp = file.lastModified();
+    	    if (transletTimestamp < xslTimestamp)
+    	        return null;
+    	}
+      
+      	// Create a ZipFile object for the jar file
+      	ZipFile jarFile = null;
+      	try {
+            jarFile = new ZipFile(file);
+      	}
+      	catch (IOException e) {
+            return null;
+      	}
+      
+      	String transletPath = fullClassName.replace('.', '/');
+      	String transletAuxPrefix = transletPath + "$";
+      	String transletFullName = transletPath + ".class";
+      
+      	Vector bytecodes = new Vector();      
+      
+      	// Iterate through all entries in the jar file to find the 
+      	// translet and auxiliary classes.
+      	Enumeration entries = jarFile.entries();
+      	while (entries.hasMoreElements())
+      	{
+            ZipEntry entry = (ZipEntry)entries.nextElement();
+            String entryName = entry.getName();
+            if (entry.getSize() > 0 && 
+            	  (entryName.equals(transletFullName) ||
+              	  (entryName.endsWith(".class") && 
+              	      entryName.startsWith(transletAuxPrefix))))
+            {
+            	try {
+              	    InputStream input = jarFile.getInputStream(entry);
+              	    int size = (int)entry.getSize();
+              	    byte[] bytes = new byte[size];
+              	    readFromInputStream(bytes, input, size);
+              	    input.close();
+              	    bytecodes.addElement(bytes);
+            	}
+            	catch (IOException e) {
+              	    return null;
+            	}          
+            }
+      	}
+      
+        // Convert the Vector of byte[] to byte[][].
+    	final int count = bytecodes.size();
+    	if (count > 0) {
+    	    final byte[][] result = new byte[count][1];
+    	    for (int i = 0; i < count; i++) {
+    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    }
+    	  
+    	    return result;
+    	}
+    	else
+    	    return null;
+    }
+    
+    /**
+     * Read a given number of bytes from the InputStream into a byte array.
+     *
+     * @param bytes The byte array to store the input content.
+     * @param input The input stream.
+     * @param size The number of bytes to read.
+     */
+    private void readFromInputStream(byte[] bytes, InputStream input, int size)
+      	throws IOException
+    {
+      int n = 0;
+      int offset = 0;
+      int length = size;
+      while (length > 0 && (n = input.read(bytes, offset, length)) > 0) {
+          offset = offset + n;
+          length = length - n;
+      }    
+    }
+
+    /**
+     * Return the fully qualified class name of the translet
+     *
+     * @param source The Source
+     * @return The full name of the translet class
+     */
+    private String getTransletClassName(Source source)
+    {      
+        String transletBaseName = null;
+        if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
+            transletBaseName = _transletName;
+      	else {
+            String systemId = source.getSystemId();
+            if (systemId != null) {
+          	String baseName = Util.baseName(systemId);
+                if (baseName != null)
+            	    transletBaseName = Util.noExtName(baseName);
+            }
+      	}
+      
+        if (transletBaseName == null)
+            transletBaseName = DEFAULT_TRANSLET_NAME;
+        
+        if (_packageName != null)
+            return _packageName + "." + transletBaseName;
+        else
+            return transletBaseName;
+    }
+        
+    /**
+     *  Return the local file name from the systemId of the Source object
+     *
+     * @param source The Source
+     * @return The file name in the local filesystem, or null if the
+     * systemId does not represent a local file.
+     */
+    private String getStylesheetFileName(Source source)
+    {
+    	String systemId = source.getSystemId();
+      	if (systemId != null) {
+            File file = new File(systemId);
+            if (file.exists())
+                return systemId;
+            else {
+              	URL url = null;
+          	try {
+            	    url = new URL(systemId);
+          	}
+          	catch (MalformedURLException e) {
+            	    return null;
+          	}
+          
+          	if ("file".equals(url.getProtocol()))
+            	    return url.getFile();
+          	else
+            	    return null;
+            }
+      	}
+      	else
+            return null;
     }
 }
