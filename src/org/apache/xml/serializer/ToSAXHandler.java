@@ -100,6 +100,16 @@ abstract public class ToSAXHandler extends SerializerBase
      */
     protected LexicalHandler m_lexHandler;
 
+    /**
+     * A startPrefixMapping() call on a ToSAXHandler will pass that call
+     * on to the wrapped ContentHandler, but should we also mirror these calls
+     * with matching attributes, if so this field is true.
+     * For example if this field is true then a call such as
+     * startPrefixMapping("prefix1","uri1") will also cause the additional
+     * internally generated attribute xmlns:prefix1="uri1" to be effectively added
+     * to the attributes passed to the wrapped ContentHandler.
+     */ 
+    private boolean m_shouldGenerateNSAttribute = true;
     
     /** If this is true, then the content handler wrapped by this
      * serializer implements the TransformState interface which
@@ -278,6 +288,28 @@ abstract public class ToSAXHandler extends SerializerBase
     {
         // do nothing
     }
+    
+    /** Set whether or not namespace declarations (e.g. 
+     * xmlns:foo) should appear as attributes of 
+     * elements
+     * @param doOutputNSAttr whether or not namespace declarations
+     * should appear as attributes
+     */
+    public void setShouldOutputNSAttr(boolean doOutputNSAttr)
+    {
+        m_shouldGenerateNSAttribute = doOutputNSAttr;
+    }
+ 
+    /** 
+     * Returns true if namespace declarations from calls such as
+     * startPrefixMapping("prefix1","uri1") should
+     * also be mirrored with self generated additional attributes of elements 
+     * that declare the namespace, for example the attribute xmlns:prefix1="uri1"
+     */
+    boolean getShouldOutputNSAttr()
+    {
+        return m_shouldGenerateNSAttribute;
+    }
 
     /**
      * This method flushes any pending events, which can be startDocument()
@@ -442,6 +474,7 @@ abstract public class ToSAXHandler extends SerializerBase
         this.m_lexHandler = null;
         this.m_saxHandler = null;
         this.m_state = null;
+        this.m_shouldGenerateNSAttribute = false;
     }  
 
     /**

@@ -401,28 +401,33 @@ public class ToXMLSAXHandler extends ToSAXHandler
         {
             m_saxHandler.startPrefixMapping(prefix,uri);
             
-            /* bjm: don't know if we really needto do this. The
-             * callers of this object should have injected both
-             * startPrefixMapping and the attributes.  We are
-             * just covering our butt here.
-             */
-            String name;
-            if (EMPTYSTRING.equals(prefix))
+            if (getShouldOutputNSAttr()) 
             {
-                name = "xmlns";
-                addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
-            }
-            else {
-                if (!EMPTYSTRING.equals(uri)) // hack for XSLTC attribset16 test
-                {                             // that maps ns1 prefix to "" URI 
-                    name = "xmlns:" + prefix;
 
-                    /* for something like xmlns:abc="w3.pretend.org"
-             	 	 *  the      uri is the value, that is why we pass it in the
-             	 	 * value, or 5th slot of addAttributeAlways()
-                 	 */
-                    addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
-                }
+	              /* bjm: don't know if we really needto do this. The
+	               * callers of this object should have injected both
+	               * startPrefixMapping and the attributes.  We are
+	               * just covering our butt here.
+	               */
+	              String name;
+  	            if (EMPTYSTRING.equals(prefix))
+  	            {
+  	                name = "xmlns";
+  	                addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
+  	            }
+  	            else 
+                {
+  	                if (!EMPTYSTRING.equals(uri)) // hack for XSLTC attribset16 test
+  	                {                             // that maps ns1 prefix to "" URI 
+  	                    name = "xmlns:" + prefix;
+  	
+  	                    /* for something like xmlns:abc="w3.pretend.org"
+  	             	 	     *  the uri is the value, that is why we pass it in the
+  	             	 	     * value, or 5th slot of addAttributeAlways()
+  	                 	   */
+  	                    addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
+  	                }
+  	            }
             }
         }
         return pushed;
@@ -733,14 +738,16 @@ public class ToXMLSAXHandler extends ToSAXHandler
                 {
                     this.startPrefixMapping(prefix, ns, false);
 
-                    // Bugzilla1133: Generate attribute as well as namespace event.
-                    // SAX does expect both.
-                    this.addAttributeAlways(
-                        "http://www.w3.org/2000/xmlns/",
-                        prefix,
-                        "xmlns" + (prefix.length() == 0 ? "" : ":") + prefix,
-                        "CDATA",
-                        ns);
+                    if (getShouldOutputNSAttr()) {
+                        // Bugzilla1133: Generate attribute as well as namespace event.
+                        // SAX does expect both.
+                        this.addAttributeAlways(
+                            "http://www.w3.org/2000/xmlns/",
+                            prefix,
+                            "xmlns" + (prefix.length() == 0 ? "" : ":") + prefix,
+                            "CDATA",
+                            ns);
+                    }
                 }
 
             }
