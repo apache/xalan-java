@@ -127,7 +127,7 @@ public class PrintTraceListener implements TraceListener
     case Constants.ELEMNAME_TEXTLITERALRESULT :
       if (m_traceElements)
       {
-        m_pw.print("Line #" + ev.m_styleNode.getLineNumber() + ", "
+        m_pw.print(ev.m_styleNode.getSystemId()+ " Line #" + ev.m_styleNode.getLineNumber() + ", "
                    + "Column #" + ev.m_styleNode.getColumnNumber() + " -- "
                    + ev.m_styleNode.getNodeName() + ": ");
 
@@ -142,7 +142,7 @@ public class PrintTraceListener implements TraceListener
       {
         ElemTemplate et = (ElemTemplate) ev.m_styleNode;
 
-        m_pw.print("Line #" + et.getLineNumber() + ", " + "Column #"
+        m_pw.print(et.getSystemId()+ " Line #" + et.getLineNumber() + ", " + "Column #"
                    + et.getColumnNumber() + ": " + et.getNodeName() + " ");
 
         if (null != et.getMatch())
@@ -161,7 +161,7 @@ public class PrintTraceListener implements TraceListener
     default :
       if (m_traceElements)
       {
-        m_pw.println("Line #" + ev.m_styleNode.getLineNumber() + ", "
+        m_pw.println(ev.m_styleNode.getSystemId()+ " Line #" + ev.m_styleNode.getLineNumber() + ", "
                      + "Column #" + ev.m_styleNode.getColumnNumber() + ": "
                      + ev.m_styleNode.getNodeName());
       }
@@ -208,43 +208,43 @@ public class PrintTraceListener implements TraceListener
       }
       else
       {
-        m_pw.print("Line #" + ev.m_styleNode.getLineNumber() + ", "
+        m_pw.print(ev.m_styleNode.getSystemId()+ " Line #" + ev.m_styleNode.getLineNumber() + ", "
                    + "Column #" + ev.m_styleNode.getColumnNumber() + ": "
                    + ete.getNodeName() + ", " + ev.m_attributeName + "='"
                    + ev.m_xpath.getPatternString() + "': ");
       }
 
-			if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET)
-			{
-				m_pw.println();
-				
-				org.apache.xml.dtm.DTMIterator nl = ev.m_selection.iter();
+                        if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET)
+                        {
+                                m_pw.println();
+                                
+                                org.apache.xml.dtm.DTMIterator nl = ev.m_selection.iter();
 
-				try
-				{
-					nl = nl.cloneWithReset();
-				}
-				catch(CloneNotSupportedException cnse)
-				{
-					m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
-					return;
-				}
-				int pos = nl.nextNode();
+                                try
+                                {
+                                        nl = nl.cloneWithReset();
+                                }
+                                catch(CloneNotSupportedException cnse)
+                                {
+                                        m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
+                                        return;
+                                }
+                                int pos = nl.nextNode();
 
-				if (DTM.NULL == pos)
-				{
-					m_pw.println("     [empty node list]");
-				}
-				else
-				{
-					while (DTM.NULL != pos)
-					{
-						m_pw.println("     " + ev.m_processor.getXPathContext().getDTM(pos).getNode(pos));
+                                if (DTM.NULL == pos)
+                                {
+                                        m_pw.println("     [empty node list]");
+                                }
+                                else
+                                {
+                                        while (DTM.NULL != pos)
+                                        {
+                                                m_pw.println("     " + ev.m_processor.getXPathContext().getDTM(pos).getNode(pos));
 
-						pos = nl.nextNode();
-					}
-				}        
-			}
+                                                pos = nl.nextNode();
+                                        }
+                                }        
+                        }
       else
       {
         m_pw.println(ev.m_selection.str());
