@@ -1480,21 +1480,6 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     }
 
     /**
-     * Returns the last element in this interation.
-     *
-     * %TBD% %BUG% This is returning a nodeHandle rather than a _position
-     * value. That conflicts with what everyone else is doing. And it's
-     * talking about the start node, which conflicts with some of the
-     * other reverse iterators. DEFINITE BUG; needs to be reconciled.
-     *
-     * @return the last element in this interation.
-     */
-    public int getLast()
-    {
-      return (_startNode);
-    }
-
-    /**
      * Returns a deep copy of this iterator.  The cloned iterator is not reset.
      *
      * @return a deep copy of this iterator.
@@ -1640,27 +1625,6 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       
     }
 
-    /**
-     * Returns the last element in this interation.
-     *
-     * @return the last element in this interation.
-     */
-    public int getLast()
-    {
-
-      int last = NULL;
-      int curr = _startNode;
-
-      while (curr != NULL)
-      {
-        if (getExpandedTypeID(curr) == _nodeType)
-          last = curr;
-
-        curr = getParent(curr);
-      }
-
-      return (last);
-    }
   }  // end of TypedAncestorIterator
 
   /**
