@@ -70,6 +70,7 @@ import java.util.Vector;
 import java.io.StringReader;
 import java_cup.runtime.*;
 
+import org.apache.xml.dtm.DTM;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.runtime.Operators;
@@ -128,6 +129,11 @@ parser code {:
     public void setCallsNodeset(boolean flag) {
           _xsltc.setCallsNodeset(flag);
     }
+
+    public void setHasIdCall(boolean flag) {
+          _xsltc.setHasIdCall(flag); 
+    }
+    
 
     /**
      * This method is similar to findNodeType(int, Object) except that it
@@ -412,7 +418,9 @@ LocationPathPattern ::= SLASH
             {: RESULT = rpp; :};
 
 IdKeyPattern ::= ID LPAREN Literal:l RPAREN
-            {: RESULT = new IdPattern(l); :}
+            {: RESULT = new IdPattern(l);
+               parser.setHasIdCall(true);
+            :}
 
             | KEY LPAREN Literal:l1 COMMA Literal:l2 RPAREN
             {: RESULT = new KeyPattern(l1, l2); :};
@@ -606,7 +614,7 @@ PathExpr ::= LocationPath:lp
 	   if (rlp instanceof Step && 
 	       parser.isElementAxis(((Step) rlp).getAxis())) 
 	   {
-	       nodeType = DOM.ELEMENT;
+	       nodeType = DTM.ELEMENT_NODE;
 	   }
            final Step step = new Step(Axis.DESCENDANTORSELF, nodeType, null);
            FilterParentPath fpp = new FilterParentPath(fexp, step);
@@ -676,14 +684,14 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
                    // Expand './/step' -> 'descendant-or-self::*/step'
                    if (rlp instanceof Step && ((Step)rlp).isAbbreviatedDot()) {
                        Step left = new Step(Axis.DESCENDANTORSELF, 
-			    DOM.ELEMENT, null);
+			    DTM.ELEMENT_NODE, null);
                        RESULT = new ParentLocationPath(left, right);
                    }
                    else {
                        // Expand 'rlp//step' -> 'rlp/descendant-or-self::*/step'
                        RelativeLocationPath left = (RelativeLocationPath)rlp;
                        Step mid = new Step(Axis.DESCENDANTORSELF, 
-			    DOM.ELEMENT, null);
+			    DTM.ELEMENT_NODE, null);
                        ParentLocationPath ppl = new ParentLocationPath(mid, right);
                        RESULT = new ParentLocationPath(left, ppl);
                    }
@@ -693,7 +701,7 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
                // Expand 'rlp//step' -> 'rlp/descendant-or-self::*/step'
                RelativeLocationPath left = (RelativeLocationPath)rlp;
                Step middle = new Step(Axis.DESCENDANTORSELF, 
-		    DOM.ELEMENT, null);
+		    DTM.ELEMENT_NODE, null);
                ParentLocationPath ppl = new ParentLocationPath(middle, right);
                RESULT = new ParentLocationPath(left, ppl);
 	   }
@@ -718,7 +726,7 @@ AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
 	   if (rlp instanceof Step && 
 	       parser.isElementAxis(((Step) rlp).getAxis())) 
 	   {
-	       nodeType = DOM.ELEMENT;
+	       nodeType = DTM.ELEMENT_NODE;
 	   }
 	   final Step step = new Step(Axis.DESCENDANTORSELF, nodeType, null);
 	   RESULT = new AbsoluteLocationPath(parser.insertStep(step, 
@@ -979,6 +987,7 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
 	  }
           else if (fname == parser.getQNameIgnoreDefaultNs("id")) {
             RESULT = new KeyCall(fname, argl);
+            parser.setHasIdCall(true);
 	  }
           else if (fname == parser.getQNameIgnoreDefaultNs("ceiling")) {
             RESULT = new CeilingCall(fname, argl);

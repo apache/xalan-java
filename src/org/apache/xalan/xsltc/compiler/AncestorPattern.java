@@ -67,7 +67,7 @@ package org.apache.xalan.xsltc.compiler;
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GOTO;
-import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.IFLT;
 import org.apache.bcel.generic.ILOAD;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.ISTORE;
@@ -172,7 +172,7 @@ final class AncestorPattern extends RelativePathPattern {
 	    
 	    il.append(DUP);
 	    il.append(storeLocal);
-	    _falseList.add(il.append(new IFEQ(null)));
+	    _falseList.add(il.append(new IFLT(null)));
 	    il.append(loadLocal);
 
 	    _left.translate(classGen, methodGen);

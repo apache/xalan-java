@@ -69,12 +69,12 @@ import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.NEW;
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.DTM;
 
 final class ParentLocationPath extends RelativeLocationPath {
     private Expression _step;
@@ -191,7 +191,7 @@ final class ParentLocationPath extends RelativeLocationPath {
 	    // one attribute that matches the left step.
 	    if (_path instanceof Step) {
 		int type = ((Step)_path).getNodeType();
-		if (type == DOM.ATTRIBUTE) return true;
+		if (type == DTM.ATTRIBUTE_NODE) return true;
 	    }
 	}
 

@@ -80,6 +80,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.DTM;
 
 final class Step extends RelativeLocationPath {
 
@@ -324,8 +325,8 @@ final class Step extends RelativeLocationPath {
 		String name = null;
 		int star = 0;
 		
-		if (_nodeType >= DOM.NTYPES) {
-		    name = (String)ni.elementAt(_nodeType-DOM.NTYPES);
+		if (_nodeType >= DTM.NTYPES) {
+		    name = (String)ni.elementAt(_nodeType-DTM.NTYPES);
 		    star = name.lastIndexOf('*');
 		}
 		

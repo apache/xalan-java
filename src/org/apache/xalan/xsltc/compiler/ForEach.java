@@ -70,7 +70,7 @@ import java.util.Vector;
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GOTO;
-import org.apache.bcel.generic.IFNE;
+import org.apache.bcel.generic.IFGT;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
@@ -197,7 +197,7 @@ final class ForEach extends Instruction {
 	il.append(methodGen.nextNode());
 	il.append(DUP);
 	il.append(methodGen.storeCurrentNode());
-	il.append(new IFNE(loop));
+	il.append(new IFGT(loop));
 
 	// Restore current DOM (if result tree was used instead for this loop)
 	if ((_type != null) && (_type instanceof ResultTreeType)) {

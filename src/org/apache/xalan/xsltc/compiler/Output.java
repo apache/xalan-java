@@ -79,7 +79,7 @@ import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xalan.xsltc.runtime.output.StreamOutput;
+import org.apache.xml.serializer.Encodings;
 
 final class Output extends TopLevelElement {
 
@@ -177,9 +177,10 @@ final class Output extends TopLevelElement {
 	else {
 	    try {
 		// Create a write to verify encoding support
+        String canonicalEncoding;
+        canonicalEncoding = Encodings.convertMime2JavaEncoding(_encoding);
 		OutputStreamWriter writer =
-		    new OutputStreamWriter(System.out, 
-		       StreamOutput.getCanonicalEncoding(_encoding));
+		    new OutputStreamWriter(System.out, canonicalEncoding); 
 	    }
 	    catch (java.io.UnsupportedEncodingException e) {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_ENCODING,

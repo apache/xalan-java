@@ -72,12 +72,12 @@ import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.DTM;
 
 final class ProcessingInstructionPattern extends StepPattern {
 
@@ -88,7 +88,7 @@ final class ProcessingInstructionPattern extends StepPattern {
      * Handles calls with no parameter (current node is implicit parameter).
      */
     public ProcessingInstructionPattern(String name) {
-	super(Axis.CHILD, DOM.PROCESSING_INSTRUCTION, null);
+	super(Axis.CHILD, DTM.PROCESSING_INSTRUCTION_NODE, null);
 	_name = name;
 	//if (_name.equals("*")) _typeChecked = true; no wildcard allowed!
     }
@@ -148,11 +148,12 @@ final class ProcessingInstructionPattern extends StepPattern {
 	if (!_typeChecked) {
 	    il.append(methodGen.loadCurrentNode());
 	    final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-							  "getType", "(I)I");
+							  "getExpandedTypeID",
+                                                          "(I)I");
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadCurrentNode());
 	    il.append(new INVOKEINTERFACE(getType, 2));
-	    il.append(new PUSH(cpg, DOM.PROCESSING_INSTRUCTION));
+	    il.append(new PUSH(cpg, DTM.PROCESSING_INSTRUCTION_NODE));
 	    _falseList.add(il.append(new IF_ICMPEQ(null)));
 	}
 

@@ -266,18 +266,8 @@ final class Predicate extends Expression implements Closure {
 		(parent instanceof Pattern) ||
 		(parent instanceof FilterExpr)) {
 
-		final QName position = getParser().getQNameIgnoreDefaultNs("position");
-		final PositionCall positionCall = new PositionCall(position);
-		positionCall.setParser(getParser());
-		positionCall.setParent(this);
-
-		_exp = new EqualityExpr(EqualityExpr.EQ, positionCall, _exp);
-		if (_exp.typeCheck(stable) != Type.Boolean) {
-		    _exp = new CastExpr(_exp, Type.Boolean);
-		}
-
-		if (parent instanceof Pattern) {
- 		    _nthPositionFilter = true;
+		if (parent instanceof Pattern && !(_exp instanceof LastCall)) {
+ 		    _nthPositionFilter = _canOptimize;
 		}
 		else if (parent instanceof FilterExpr) {
 		    FilterExpr filter = (FilterExpr)parent;
@@ -298,7 +288,29 @@ final class Predicate extends Expression implements Closure {
 		    if (_canOptimize)
 			_nthPositionFilter = true;
 		}
-		return _type = Type.Boolean;
+
+                // If this case can be optimized, leave the expression as
+                // an integer.  Otherwise, turn it into a comparison with
+                // the position() function.
+                if (_nthPositionFilter) {
+                   return _type = Type.NodeSet;
+                } else {
+                   final QName position =
+                                getParser().getQNameIgnoreDefaultNs("position");
+
+                   final PositionCall positionCall =
+                                               new PositionCall(position);
+                   positionCall.setParser(getParser());
+                   positionCall.setParent(this);
+
+                   _exp = new EqualityExpr(EqualityExpr.EQ, positionCall,
+                                            _exp);
+                   if (_exp.typeCheck(stable) != Type.Boolean) {
+                       _exp = new CastExpr(_exp, Type.Boolean);
+                   }
+
+                   return _type = Type.Boolean;
+                }
 	    }
 	    // Use NthPositionIterator to handle [position()] or [a]
 	    else {

@@ -77,6 +77,7 @@ import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DUP_X1;
 import org.apache.bcel.generic.GETFIELD;
 import org.apache.bcel.generic.ICONST;
+import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
@@ -87,6 +88,8 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.DOM;
+
 import org.xml.sax.Attributes;
 
 
@@ -537,6 +540,94 @@ public abstract class SyntaxTreeNode implements Constants {
 	    }
 	}
     }
+    
+    /**
+     * Return true if the node represents a simple RTF.
+     *
+     * A node is a simple RTF if all children only produce Text value.
+     *
+     * @param node A node
+     * @return true if the node content can be considered as a simple RTF.
+     */
+    private boolean isSimpleRTF(SyntaxTreeNode node) {
+        
+        Vector contents = node.getContents();
+        for (int i = 0; i < contents.size(); i++) {
+            SyntaxTreeNode item = (SyntaxTreeNode)contents.elementAt(i);
+            if (!isTextElement(item, false))
+                return false;
+        }
+        
+        return true;
+    }
+ 
+     /**
+     * Return true if the node represents an adaptive RTF.
+     *
+     * A node is an adaptive RTF if each children is a Text element
+     * or it is <xsl:call-template> or <xsl:apply-templates>.
+     *
+     * @param node A node
+     * @return true if the node content can be considered as an adaptive RTF.
+     */
+    private boolean isAdaptiveRTF(SyntaxTreeNode node) {
+        
+        Vector contents = node.getContents();
+        for (int i = 0; i < contents.size(); i++) {
+            SyntaxTreeNode item = (SyntaxTreeNode)contents.elementAt(i);
+            if (!isTextElement(item, true))
+                return false;
+        }
+        
+        return true;
+    }
+   
+    /**
+     * Return true if the node only produces Text content.
+     *
+     * A node is a Text element if it is Text, xsl:value-of, xsl:number, 
+     * or a combination of these nested in a control instruction (xsl:if or
+     * xsl:choose).
+     *
+     * If the doExtendedCheck flag is true, xsl:call-template and xsl:apply-templates
+     * are also considered as Text elements.
+     *
+     * @param node A node
+     * @param doExtendedCheck If this flag is true, <xsl:call-template> and 
+     * <xsl:apply-templates> are also considered as Text elements.
+     *
+     * @return true if the node of Text type
+     */
+    private boolean isTextElement(SyntaxTreeNode node, boolean doExtendedCheck) {
+        if (node instanceof ValueOf || node instanceof Number
+            || node instanceof Text)
+        {
+            return true;
+        }
+        else if (node instanceof If) {
+            return doExtendedCheck ? isAdaptiveRTF(node) : isSimpleRTF(node);
+        }
+        else if (node instanceof Choose) {
+            Vector contents = node.getContents();
+            for (int i = 0; i < contents.size(); i++) {
+                SyntaxTreeNode item = (SyntaxTreeNode)contents.elementAt(i);
+                if (item instanceof Text || 
+                     ((item instanceof When || item instanceof Otherwise)
+                     && ((doExtendedCheck && isAdaptiveRTF(item))
+                         || (!doExtendedCheck && isSimpleRTF(item)))))
+                    continue;
+                else
+                    return false;
+            }
+            return true;
+        }
+        else if (doExtendedCheck && 
+                  (node instanceof CallTemplate
+                   || node instanceof ApplyTemplates))
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Utility method used by parameters and variables to store result trees
@@ -550,25 +641,41 @@ public abstract class SyntaxTreeNode implements Constants {
 	final InstructionList il = methodGen.getInstructionList();
 	final Stylesheet stylesheet = classGen.getStylesheet();
 
+	boolean isSimple = isSimpleRTF(this);
+	boolean isAdaptive = false;
+	if (!isSimple) {
+	    isAdaptive = isAdaptiveRTF(this);
+	}
+	
+	int rtfType = isSimple ? DOM.SIMPLE_RTF
+	                       : (isAdaptive ? DOM.ADAPTIVE_RTF : DOM.TREE_RTF);
+	
 	// Save the current handler base on the stack
 	il.append(methodGen.loadHandler());
 
 	final String DOM_CLASS = classGen.getDOMClass();
 
-	// Create new instance of DOM class
-	int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	il.append(new NEW(cpg.addClass(DOM_IMPL)));
-	il.append(DUP);
-	il.append(DUP);
+	// Create new instance of DOM class (with RTF_INITIAL_SIZE nodes)
+	//int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
+	//il.append(new NEW(cpg.addClass(DOM_IMPL)));
+	
+	il.append(methodGen.loadDOM());
+	int index = cpg.addInterfaceMethodref(DOM_INTF,
+				 "getResultTreeFrag",
+				 "(II)" + DOM_INTF_SIG);
 	il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
-	il.append(new INVOKESPECIAL(index));
+	il.append(new PUSH(cpg, rtfType));
+	il.append(new INVOKEINTERFACE(index,3));
+
+	
+	il.append(DUP);
 
 	// Overwrite old handler with DOM handler
-	index = cpg.addMethodref(DOM_IMPL,
+	index = cpg.addInterfaceMethodref(DOM_INTF,
 				 "getOutputDomBuilder",
 				 "()" + TRANSLET_OUTPUT_SIG);
 
-	il.append(new INVOKEVIRTUAL(index));
+	il.append(new INVOKEINTERFACE(index,1));
 	il.append(DUP);
 	il.append(methodGen.storeHandler());
 
@@ -582,12 +689,15 @@ public abstract class SyntaxTreeNode implements Constants {
 	il.append(methodGen.loadHandler());
 	il.append(methodGen.endDocument());
 
-	// Check if we need to wrap the DOMImpl object in a DOMAdapter object
-	if (!DOM_CLASS.equals(DOM_IMPL_CLASS)) {
+	// Check if we need to wrap the DOMImpl object in a DOMAdapter object.
+	// DOMAdapter is not needed if the RTF is a simple RTF and the nodeset()
+	// function is not used.
+	if ((!isSimple || stylesheet.callsNodeset())
+	    && !DOM_CLASS.equals(DOM_IMPL_CLASS)) {
 	    // new org.apache.xalan.xsltc.dom.DOMAdapter(DOMImpl,String[]);
 	    index = cpg.addMethodref(DOM_ADAPTER_CLASS,
 				     "<init>",
-				     "("+DOM_IMPL_SIG+
+				     "("+DOM_INTF_SIG+
 				     "["+STRING_SIG+
 				     "["+STRING_SIG+")V");
 	    il.append(new NEW(cpg.addClass(DOM_ADAPTER_CLASS)));

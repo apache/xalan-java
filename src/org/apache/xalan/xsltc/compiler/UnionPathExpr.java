@@ -71,12 +71,12 @@ import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.NEW;
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xml.dtm.DTM;
 
 final class UnionPathExpr extends Expression {
 
@@ -107,7 +107,7 @@ final class UnionPathExpr extends Expression {
 		final int axis = step.getAxis();
 		final int type = step.getNodeType();
 		// Put attribute iterators first
-		if ((axis == Axis.ATTRIBUTE) || (type == DOM.ATTRIBUTE)) {
+		if ((axis == Axis.ATTRIBUTE) || (type == DTM.ATTRIBUTE_NODE)) {
 		    _components[i] = _components[0];
 		    _components[0] = step;
 		}

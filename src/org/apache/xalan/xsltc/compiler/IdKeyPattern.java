@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.compiler;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GOTO;
 import org.apache.bcel.generic.IFNE;
+import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
@@ -134,6 +135,9 @@ abstract class IdKeyPattern extends LocationPathPattern {
 	final int lookupKey = cpg.addMethodref(KEY_INDEX_CLASS,
 					       "containsKey",
 					       "(ILjava/lang/Object;)I");
+	final int getNodeIdent = cpg.addInterfaceMethodref(DOM_INTF,
+							   "getNodeIdent",
+							   "(I)"+NODE_SIG);				       
 
 	// Call getKeyIndex in AbstractTranslet with the name of the key
 	// to get the index for this key (which is also a node iterator).
@@ -146,9 +150,23 @@ abstract class IdKeyPattern extends LocationPathPattern {
 	il.append(SWAP);
 	il.append(new PUSH(cpg,_value));
 	if (this instanceof IdPattern)
+	{
+		il.append(SWAP);
+		il.append(methodGen.loadDOM());
+		il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(getNodeIdent, 2));
+	    il.append(SWAP);
 	    il.append(new INVOKEVIRTUAL(lookupId));
+	}
 	else
+	{
+		il.append(SWAP);
+		il.append(methodGen.loadDOM());
+		il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(getNodeIdent, 2));
+	    il.append(SWAP);
 	    il.append(new INVOKEVIRTUAL(lookupKey));
+	}
 
 	_trueList.add(il.append(new IFNE(null)));
 	_falseList.add(il.append(new GOTO(null)));

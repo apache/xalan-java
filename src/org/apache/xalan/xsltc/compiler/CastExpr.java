@@ -72,6 +72,7 @@ import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.SIPUSH;
 import org.apache.xalan.xsltc.compiler.util.BooleanType;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.MultiHashtable;
 import org.apache.xalan.xsltc.compiler.util.NodeType;
@@ -218,7 +219,9 @@ final class CastExpr extends Expression {
 	if (InternalTypeMap.maps(tleft, _type) != null) {
 	    return _type;
 	}
-	throw new TypeCheckError(this);	
+	// throw new TypeCheckError(this);	
+	throw new TypeCheckError(new ErrorMsg(
+	    ErrorMsg.DATA_CONVERSION_ERR, tleft.toString(), _type.toString()));
     }
 
     public void translateDesynthesized(ClassGenerator classGen, 
@@ -234,7 +237,8 @@ final class CastExpr extends Expression {
 	    final InstructionList il = methodGen.getInstructionList();
 
 	    final int idx = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getType", "(I)I");
+						      "getExpandedTypeID",
+                                                      "(I)I");
 	    il.append(new SIPUSH((short)((Step)_left).getNodeType()));
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadContextNode());

@@ -150,9 +150,10 @@ class NameBase extends FunctionCall {
 	    il.append(new INVOKESTATIC(cpg.addMethodref
 				       (BASIS_LIBRARY_CLASS,
 					"referenceToNodeSet",
-					"(Ljava/lang/Object;)" +
-					"Lorg/apache/xalan/xsltc/" +
-					"NodeIterator;")));
+					"("
+					+ OBJECT_SIG
+					+ ")"
+					+ NODE_ITERATOR_SIG)));
 	    il.append(methodGen.nextNode());
 	}
 	// Function was called with node-set parameter

@@ -70,7 +70,7 @@ import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GOTO;
-import org.apache.bcel.generic.IFNE;
+import org.apache.bcel.generic.IFGT;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
@@ -171,7 +171,8 @@ final class KeyCall extends FunctionCall {
 	// be added to the resulting node-set.
 	_valueType = _value.typeCheck(stable);
 
-	if (_valueType != Type.NodeSet && _valueType != Type.String) {
+	if (_valueType != Type.NodeSet && _valueType != Type.String) 
+	{
 	    _value = new CastExpr(_value, Type.String);
 	}
 
@@ -193,16 +194,22 @@ final class KeyCall extends FunctionCall {
 			  MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
+						 
+	final int getNodeHandle = cpg.addInterfaceMethodref(DOM_INTF,
+							   "getNodeHandle",
+							   "(I)"+NODE_SIG);	
 
 	// Wrap the KeyIndex (iterator) inside a duplicate filter iterator
 	// to pre-read the indexed nodes and cache them.
 	final int dupInit = cpg.addMethodref(DUP_FILTERED_ITERATOR,
 					     "<init>",
 					     "("+NODE_ITERATOR_SIG+")V");
-	il.append(new NEW(cpg.addClass(DUP_FILTERED_ITERATOR)));
+					     
+	il.append(new NEW(cpg.addClass(DUP_FILTERED_ITERATOR)));	
 	il.append(DUP);
 	translateCall(classGen, methodGen);
 	il.append(new INVOKESPECIAL(dupInit));
+	
     }
 
     /**
@@ -218,7 +225,7 @@ final class KeyCall extends FunctionCall {
 
 	// Returns the string value for a node in the DOM
 	final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
-							   "getNodeValue",
+							   GET_NODE_VALUE,
 							   "(I)"+STRING_SIG);
 
 	// Returns the KeyIndex object of a given name
@@ -244,6 +251,12 @@ final class KeyCall extends FunctionCall {
 	final int indexConstructor = cpg.addMethodref(TRANSLET_CLASS,
 						      "createKeyIndex",
 						      "()"+KEY_INDEX_SIG);
+						      
+	// KeyIndex.setDom(Dom) => void
+	final int keyDom = cpg.addMethodref(XSLT_PACKAGE + ".dom.KeyIndex",
+					 "setDom",
+					 "("+DOM_INTF_SIG+")V");				 
+						      
 	
 	// This local variable holds the index/iterator we will return
 	final LocalVariableGen returnIndex =
@@ -273,6 +286,9 @@ final class KeyCall extends FunctionCall {
 	    // Create the KeyIndex object (the iterator) we'll return
 	    il.append(classGen.loadTranslet());
 	    il.append(new INVOKEVIRTUAL(indexConstructor));
+	    il.append(DUP);
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKEVIRTUAL(keyDom));
 	    il.append(new ASTORE(returnIndex.getIndex()));
 
 	    // Initialise the index specified in the first parameter of key()
@@ -321,7 +337,7 @@ final class KeyCall extends FunctionCall {
 	    il.append(methodGen.nextNode());
 	    il.append(DUP);
 	    il.append(methodGen.storeCurrentNode());
-	    il.append(new IFNE(loop));
+	    il.append(new IFGT(loop));
 
 	    // LOOP ENDS HERE
 

@@ -74,12 +74,12 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.PUSH;
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.dtm.DTM;
 
 final class AbsolutePathPattern extends LocationPathPattern {
     private final RelativePathPattern _left; // may be null
@@ -140,7 +140,8 @@ final class AbsolutePathPattern extends LocationPathPattern {
 							GET_PARENT,
 							GET_PARENT_SIG);
 	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getType", "(I)I");
+						      "getExpandedTypeID",
+                                                      "(I)I");
 
 	InstructionHandle begin = il.append(methodGen.loadDOM());
 	il.append(SWAP);
@@ -150,7 +151,7 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	    il.append(SWAP);
 	}
 	il.append(new INVOKEINTERFACE(getType, 2));
-	il.append(new PUSH(cpg, DOM.ROOT));
+	il.append(new PUSH(cpg, DTM.DOCUMENT_NODE));
 	
 	final BranchHandle skip = il.append(new IF_ICMPEQ(null));
 	_falseList.add(il.append(new GOTO_W(null)));

@@ -65,7 +65,6 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
@@ -114,7 +113,7 @@ final class Message extends Instruction {
                 // Push current output handler onto the stack
                 il.append(methodGen.loadHandler());
 
-                // Replace the current output handler by a StreamXMLOutput
+                // Replace the current output handler by a ToXMLStream
                 il.append(new NEW(cpg.addClass(STREAM_XML_OUTPUT)));
                 il.append(methodGen.storeHandler());
 
@@ -125,19 +124,31 @@ final class Message extends Instruction {
                 il.append(new INVOKESPECIAL(
                     cpg.addMethodref(STRING_WRITER, "<init>", "()V")));
 
-                // Load StreamXMLOutput
+                // Load ToXMLStream
                 il.append(methodGen.loadHandler());
-                il.append(SWAP);
-                il.append(new PUSH(cpg, "UTF-8"));   // other encodings?
                 il.append(new INVOKESPECIAL(
                     cpg.addMethodref(STREAM_XML_OUTPUT, "<init>",
-                    "(" + WRITER_SIG + STRING_SIG + ")V")));
+                                     "()V")));
 
-                // Invoke output.omitHeader(true)
+                // Invoke output.setWriter(STRING_WRITER)
+                il.append(methodGen.loadHandler());
+                il.append(SWAP);
+                il.append(new INVOKEVIRTUAL(
+                    cpg.addMethodref(OUTPUT_BASE, "setWriter",
+                                     "("+WRITER_SIG+")V")));
+
+                // Invoke output.setEncoding("UTF-8")
+                il.append(methodGen.loadHandler());
+                il.append(new PUSH(cpg, "UTF-8"));   // other encodings?
+                il.append(new INVOKEVIRTUAL(
+                    cpg.addMethodref(OUTPUT_BASE, "setEncoding",
+                                     "("+STRING_SIG+")V")));
+
+                // Invoke output.setOmitXMLDeclaration(true)
                 il.append(methodGen.loadHandler());
                 il.append(ICONST_1);
                 il.append(new INVOKEVIRTUAL(
-                    cpg.addMethodref(OUTPUT_BASE, "omitHeader",
+                    cpg.addMethodref(OUTPUT_BASE, "setOmitXMLDeclaration",
                                      "(Z)V")));
 
                 il.append(methodGen.loadHandler());
@@ -156,7 +167,7 @@ final class Message extends Instruction {
                 // Call toString() on StringWriter
                 il.append(new INVOKEVIRTUAL(
                     cpg.addMethodref(STRING_WRITER, "toString",
-                    "()" + STRING_SIG)));
+                                     "()" + STRING_SIG)));
 
                 // Restore old output handler
                 il.append(SWAP);

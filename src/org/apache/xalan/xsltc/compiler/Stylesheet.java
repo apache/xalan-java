@@ -72,7 +72,6 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.bcel.generic.ANEWARRAY;
-import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.FieldGen;
 import org.apache.bcel.generic.GETFIELD;
@@ -88,13 +87,13 @@ import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.PUTFIELD;
 import org.apache.bcel.generic.TargetLostException;
 import org.apache.bcel.util.InstructionFinder;
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.dtm.DTM;
 
 public final class Stylesheet extends SyntaxTreeNode {
 
@@ -138,6 +137,8 @@ public final class Stylesheet extends SyntaxTreeNode {
     private boolean _templateInlining = true;
 
     private boolean _forwardReference = false;
+    
+    private boolean _hasIdCall = false;
 
     private Properties _outputProperties = null;
 
@@ -159,6 +160,10 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public void setSimplified() {
 	_simplified = true;
+    }
+    
+    public void setHasIdCall(boolean flag) {
+        _hasIdCall = flag;
     }
     
     public void setOutputProperty(String key, String value) {
@@ -612,6 +617,14 @@ public final class Stylesheet extends SyntaxTreeNode {
 					       NAMESPACE_INDEX,
 					       NAMESPACE_INDEX_SIG)));
 
+	if (_hasIdCall) {
+	    il.append(classGen.loadTranslet());
+	    il.append(new PUSH(cpg, Boolean.TRUE));
+	    il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					           HASIDCALL_INDEX,
+					           HASIDCALL_INDEX_SIG)));
+	}
+	
 	// Compile in code to set the output configuration from <xsl:output>
 	if (output != null) {
 	    // Set all the output settings files in the translet
@@ -672,7 +685,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 			       "setFilter",
 			       "(Lorg/apache/xalan/xsltc/StripFilter;)V");
 
-	il.append(new PUSH(cpg, DOM.ROOTNODE));
+	il.append(new PUSH(cpg, DTM.ROOT_NODE));
 	il.append(new ISTORE(current.getIndex()));
 
 	// Resolve any forward referenes and translate global variables/params
@@ -817,15 +830,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 				"buildKeys", _className, il,
 				classGen.getConstantPool());
 
-	final int domField = cpg.addFieldref(getClassName(),
-					     DOM_FIELD,
-					     DOM_INTF_SIG);
-
 	buildKeys.addException("org.apache.xalan.xsltc.TransletException");
-
-	il.append(classGen.loadTranslet());
-	il.append(new GETFIELD(domField));  // The DOM reference
-	il.append(new ASTORE(1));
 	
 	final Enumeration elements = elements();
 	// Compile code for other top-level elements
@@ -928,7 +933,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUTFIELD(domField));
 
 	// continue with globals initialization
-	il.append(new PUSH(cpg, DOM.ROOTNODE));
+	il.append(new PUSH(cpg, DTM.ROOT_NODE));
 	il.append(new ISTORE(current.getIndex()));
 
 	// Transfer the output settings to the output post-processor
@@ -939,19 +944,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 					   "("+OUTPUT_HANDLER_SIG+")V");
 	il.append(new INVOKEVIRTUAL(index));
 
-	// Compile buildKeys -- TODO: omit if not needed
-	final String keySig = compileBuildKeys(classGen);
-	final int    keyIdx = cpg.addMethodref(getClassName(),
-					       "buildKeys", keySig);
-	il.append(classGen.loadTranslet());     // The 'this' pointer
-	il.append(classGen.loadTranslet());
-	il.append(new GETFIELD(domField));      // The DOM reference
-	il.append(transf.loadIterator());       // Not really used, but...
-	il.append(transf.loadHandler());        // The output handler
-	il.append(new PUSH(cpg, DOM.ROOTNODE)); // Start with the root node
-	il.append(new INVOKEVIRTUAL(keyIdx));
-
-	// Look for top-level elements that need handling
+    // Look for top-level elements that need handling
 	final Enumeration toplevel = elements();
 	if ((_globals.size() > 0) || (toplevel.hasMoreElements())) {
 	    // Compile method for handling top-level elements
@@ -969,6 +962,21 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    il.append(new INVOKEVIRTUAL(topLevelIdx));
 	}
 	
+	// Compile buildKeys -- TODO: omit if not needed		
+	
+	final String keySig = compileBuildKeys(classGen);
+	final int    keyIdx = cpg.addMethodref(getClassName(),
+					       "buildKeys", keySig);
+	il.append(classGen.loadTranslet());     // The 'this' pointer
+	il.append(classGen.loadTranslet());
+	il.append(new GETFIELD(domField));      // The DOM reference
+	il.append(transf.loadIterator());       // Not really used, but...
+	il.append(transf.loadHandler());        // The output handler
+	il.append(new PUSH(cpg, DTM.ROOT_NODE)); // Start with the root node
+	il.append(new INVOKEVIRTUAL(keyIdx));
+
+
+
 	// start document
 	il.append(transf.loadHandler());
 	il.append(transf.startDocument());

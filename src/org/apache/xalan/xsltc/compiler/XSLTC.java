@@ -84,9 +84,10 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.apache.bcel.classfile.JavaClass;
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.dtm.DTM;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -146,6 +147,7 @@ public final class XSLTC {
     private Vector  _bcelClasses;
     private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
+    private boolean _hasIdCall = false;
 
     /**
      * Set to true if template inlining is requested. Template
@@ -168,7 +170,7 @@ public final class XSLTC {
     public Parser getParser() {
         return _parser;
     }
-    
+
     /**
      * Only for user by the internal TrAX implementation.
      */
@@ -197,7 +199,7 @@ public final class XSLTC {
      * Initializes the compiler to produce a new translet
      */
     private void reset() {
-	_nextGType      = DOM.NTYPES;
+	_nextGType      = DTM.NTYPES;
 	_elements       = new Hashtable();
 	_attributes     = new Hashtable();
 	_namespaces     = new Hashtable();
@@ -212,6 +214,7 @@ public final class XSLTC {
 	_helperClassSerial  = 0;
 	_attributeSetSerial = 0;
 	_multiDocument      = false;
+	_hasIdCall          = false;
 	_numberFieldIndexes = new int[] {
 	    -1, 	// LEVEL_SINGLE
 	    -1, 	// LEVEL_MULTIPLE
@@ -353,6 +356,7 @@ public final class XSLTC {
 	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
 		_stylesheet.setCallsNodeset(_callsNodeset);
 		_stylesheet.setMultiDocument(_multiDocument);
+		_stylesheet.setHasIdCall(_hasIdCall);
 
 		// Class synchronization is needed for BCEL
 		synchronized (getClass()) {
@@ -361,7 +365,7 @@ public final class XSLTC {
 	    }
 	}
 	catch (Exception e) {
-	    if (_debug) e.printStackTrace();
+	    /*if (_debug)*/ e.printStackTrace();
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e));
 	}
 	catch (Error e) {
@@ -516,6 +520,14 @@ public final class XSLTC {
 
     public boolean callsNodeset() {
 	return _callsNodeset;
+    }
+    
+    protected void setHasIdCall(boolean flag) {
+    	_hasIdCall = flag;
+    }
+    
+    public boolean hasIdCall() {
+    	return _hasIdCall;
     }
 
     /**
