@@ -78,7 +78,7 @@
      (XSLTC) and the runtime support packages into a single jar, called xalan.jar.  The second binary 
      distribution contains the Xalan Interpretive processor in xalan.jar and the Xalan Compiled 
      processor (XSLTC) and the runtime support packages in xsltc.jar.  The runtime support packages
-     required by XSLTC are: java_cup runtime version 0.10j, bcel version 5.0, and regexp version 1.2.
+     required by XSLTC are: java_cup runtime version 0.10k, bcel version 5.0, and regexp version 1.2.
      Both binary distributions contain xml-apis.jar (the JAXP 1.2 implementation) and 
      &xml4j-jar; from <resource-ref idref="xml4j-used"/>.</p>
      

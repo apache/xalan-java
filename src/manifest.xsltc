@@ -25,7 +25,7 @@ Name: java_cup
 Comment: Parser Generator for Java 
 Specification-Title: Parser Generator for Java 
 Specification-Vendor: Princeton University 
-Specification-Version: 0.10j 
+Specification-Version: 0.10k 
 Implementation-Title: java_cup 
 Implementation-Version: @impl.version@
 Implementation-Vendor: Princeton University 
@@ -35,7 +35,7 @@ Name: runtime
 Comment: Runtime component of JCup 
 Specification-Title: Runtime component of JCup
 Specification-Vendor: Princeton University 
-Specification-Version: 0.10j 
+Specification-Version: 0.10k 
 Implementation-Title: runtime 
 Implementation-Version: @impl.version@
 Implementation-Vendor: Princeton University  
