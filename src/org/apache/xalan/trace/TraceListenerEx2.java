@@ -63,7 +63,7 @@ package org.apache.xalan.trace;
 public interface TraceListenerEx2 extends TraceListenerEx
 {
   /**
-   * Method that is called when a trace event occurs.
+   * Method that is called when the end of a trace event occurs.
    * The method is blocking.  It must return before processing continues.
    *
    * @param ev the trace event.
