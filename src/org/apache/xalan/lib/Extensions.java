@@ -69,6 +69,7 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.DOMHelper;
 import org.xml.sax.SAXNotSupportedException;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
@@ -207,11 +208,11 @@ public class Extensions {
 		for (int i = 0; i < ns.getLength(); i++)
 		{
 			Node n = ns.elementAt(i);
-            String key = n.getNodeValue();
-            if (!stringTable.containsKey(key))
+      String key = DOMHelper.getNodeData(n);
+      if (!stringTable.containsKey(key))
 			{
-                stringTable.put(key, n);
-                dist.addElement(n);
+        stringTable.put(key, n);
+        dist.addElement(n);
 			}
 		}
 		return dist;
