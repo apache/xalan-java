@@ -107,15 +107,17 @@ final public class Transform {
     private boolean _isJarFileSpecified = false;
     private Vector  _params = null;
     private boolean _uri, _debug;
+    private int     _iterations;
 
     private static boolean _allowExit = true;
 
     public Transform(String className, String fileName,
-		     boolean uri, boolean debug) {
+		     boolean uri, boolean debug, int iterations) {
 	_fileName = fileName;
 	_className = className;
 	_uri = uri;
 	_debug = debug;
+	_iterations = iterations;
     }
 
     public void setParameters(Vector params) {
@@ -201,39 +203,28 @@ final public class Transform {
 	    }
 
 	    // Transform the document
-	    final String method = _translet._method;
-	    final String encoding = _translet._encoding;
+	    TransletOutputHandlerFactory tohFactory = TransletOutputHandlerFactory.newInstance();
+	    tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+	    tohFactory.setEncoding(_translet._encoding);
+	    tohFactory.setOutputMethod(_translet._method);
 
-	    TransletOutputHandler handler = null;
+	    if (_iterations > 1) {
+		long mm = System.currentTimeMillis();
+		for (int i = 0; i < _iterations; i++) {
+		    translet.transform(dom, _useExperimentalOutputSystem ?
+					    tohFactory.getTransletOutputHandler() :
+					    tohFactory.getOldTransletOutputHandler());
+		}
+		mm = System.currentTimeMillis() - mm;
 
-	    if (_useExperimentalOutputSystem) {
-		if (method != null) {
-		    if (method.equals("xml")) {
-			handler = new StreamXMLOutput(System.out, encoding);
-		    }
-		    else if (method.equals("html")) {
-			handler = new StreamHTMLOutput(System.out, encoding);
-		    }
-		    else if (method.equals("text")) {
-			handler = null;		// TODO
-		    }
-		}
-		else {
-		    // TODO
-		    handler = new StreamXMLOutput(System.out, encoding);
-		}
+		System.err.println("transform  = " + (mm / _iterations) + " ms");
+		System.err.println("throughput = " + (1000.0 / (mm / _iterations)) + " tps");
 	    }
 	    else {
-		// Create our default SAX/DTD handler
-		DefaultSAXOutputHandler saxHandler =
-		    new DefaultSAXOutputHandler(System.out, encoding);
-		// Create a translet output handler and plug in the SAX/DTD handler
-		handler = new TextOutput((ContentHandler)saxHandler,
-				         (LexicalHandler)saxHandler, encoding);
+		translet.transform(dom, _useExperimentalOutputSystem ?
+					tohFactory.getTransletOutputHandler() :
+					tohFactory.getOldTransletOutputHandler());
 	    }
-
-	    // Transform and pass output to the translet output handler
-	    translet.transform(dom, handler);
 	}
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();
@@ -305,6 +296,7 @@ final public class Transform {
 	try {
 	    if (args.length > 0) {
 		int i;
+		int iterations = 1;
 		boolean uri = false, debug = false;
 		boolean isJarFileSpecified = false;
 		String  jarFile = null;
@@ -327,6 +319,14 @@ final public class Transform {
 		    else if (args[i].equals("-e")) {
 			_useExperimentalOutputSystem = true;
 		    }
+		    else if (args[i].equals("-n")) {
+			try {
+			    iterations = Integer.parseInt(args[++i]);
+			}
+			catch (NumberFormatException e) {
+			    // ignore
+			}
+		    }
 		    else {
 			printUsage();
 		    }
@@ -336,7 +336,8 @@ final public class Transform {
 		if (args.length - i < 2) printUsage();
 
 		// Get document file and class name
-		Transform handler = new Transform(args[i+1],args[i],uri,debug);
+		Transform handler = new Transform(args[i+1], args[i], uri,
+		    debug, iterations);
 		handler.setJarFileInputSrc(isJarFileSpecified,	jarFile);
 
 		// Parse stylesheet parameters
