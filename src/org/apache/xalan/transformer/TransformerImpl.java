@@ -1806,6 +1806,27 @@ public class TransformerImpl extends XMLFilterImpl
     return m_traceManager;
   }      
   
+  /** Set the parent reader.
+   *
+   * <p>This is the {@link org.xml.sax.XMLReader XMLReader} from which 
+   * this filter will obtain its events and to which it will pass its 
+   * configuration requests.  The parent may itself be another filter.</p>
+   *
+   * <p>If there is no parent reader set, any attempt to parse
+   * or to set or get a feature or property will fail.</p>
+   *
+   * @param parent The parent XML reader.
+   * @exception java.lang.NullPointerException If the parent is null.
+   */
+  public void setParent (XMLReader parent)
+  { 
+    super.setParent(parent);
+    // the setting of the parent's content handler directly works 
+    // because parse (InputSource input) is overridden, and 
+    // setupParse(); in XMLFilterImpl is never called.
+    parent.setContentHandler(getInputContentHandler());
+  }
+  
   /**
    * Look up the value of a feature.
    *
