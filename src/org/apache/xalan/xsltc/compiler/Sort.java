@@ -215,11 +215,6 @@ final class Sort extends Instruction {
 					  + NODE_SORT_FACTORY_SIG
 					  + ")V");	
 
-	final int setStartNode = cpg.addInterfaceMethodref(NODE_ITERATOR,
-							   SET_START_NODE,
-							   "(I)"+
-							   NODE_ITERATOR_SIG);
-	
 	il.append(new NEW(cpg.addClass(SORT_ITERATOR)));
 	il.append(DUP);
 

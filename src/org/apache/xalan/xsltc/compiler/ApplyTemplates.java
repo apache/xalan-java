@@ -186,6 +186,12 @@ final class ApplyTemplates extends Instruction {
 	    if (sortObjects.size() > 0) {
 		Sort.translateSortIterator(classGen, methodGen,
 					   _select, sortObjects);
+		int setStartNode = cpg.addInterfaceMethodref(NODE_ITERATOR,
+							     SET_START_NODE,
+							     "(I)"+
+							     NODE_ITERATOR_SIG);
+		il.append(methodGen.loadCurrentNode());
+		il.append(new INVOKEINTERFACE(setStartNode,2));
 	    }
 	    else {
 		if (_select == null)
