@@ -122,7 +122,7 @@ final class Param extends VariableBase {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
         }
 
-	// check whether variable/param of the same name is already in scope
+	// Check whether variable/param of the same name is already in scope
 	if (parser.lookupVariable(_name) != null) {
 	    ErrorMsg msg = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
 	    parser.reportError(Constants.ERROR, msg);
@@ -139,9 +139,35 @@ final class Param extends VariableBase {
 	// Add a ref to this param to its enclosing construct
 	final SyntaxTreeNode parent = getParent();
 	if (parent instanceof Stylesheet) {
+	    // Mark this as a global parameter
 	    _isLocal = false;
+	    // Check if a global variable with this name already exists...
+	    Param param = parser.getSymbolTable().lookupParam(_name);
+	    // ...and if it does we need to check import precedence
+	    if (param != null) {
+		final int us = this.getImportPrecedence();
+		final int them = param.getImportPrecedence();
+		// It is an error if the two have the same import precedence
+		if (us == them) {
+		    System.err.println("FOOOOOOOOOOOOOO!");
+		    System.err.println("us = "+this);
+		    System.err.println("us parent = "+
+				       ((Stylesheet)getParent()).getSystemId());
+		    System.err.println("us prec. = "+us);
+		    System.err.println("them = "+param);
+		    System.err.println("them parent = "+
+				       ((Stylesheet)param.getParent()).getSystemId());
+		    System.err.println("them prec = "+them);
+		    reportError(this, parser, ErrorMsg.VARREDEF_ERR,
+				_name.toString());
+		}
+		// Ignore this if previous definition has higher precedence
+		else if (them > us) {
+		    return;
+		}
+	    }
+	    // Add this variable if we have higher precedence
 	    ((Stylesheet)parent).addParam(this);
-	    //!! check for redef
 	    parser.getSymbolTable().addParam(this);
 	}
 	else if (parent instanceof Template) {
@@ -216,28 +242,30 @@ final class Param extends VariableBase {
 	    }
 	}
 	else {
-	    classGen.addField(new Field(ACC_PUBLIC, cpg.addUtf8(name),
-					cpg.addUtf8(signature),
-					null, cpg.getConstantPool()));
-	    il.append(classGen.loadTranslet());
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, name));
-	    translateValue(classGen, methodGen);
-	    il.append(new PUSH(cpg, true));
+	    if (classGen.containsField(name) == null) {
+		classGen.addField(new Field(ACC_PUBLIC, cpg.addUtf8(name),
+					    cpg.addUtf8(signature),
+					    null, cpg.getConstantPool()));
+		il.append(classGen.loadTranslet());
+		il.append(DUP);
+		il.append(new PUSH(cpg, name));
+		translateValue(classGen, methodGen);
+		il.append(new PUSH(cpg, true));
 
-	    // Call addParameter() from this class
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-							 ADD_PARAMETER,
-							 ADD_PARAMETER_SIG)));
+		// Call addParameter() from this class
+		il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
+						     ADD_PARAMETER,
+						     ADD_PARAMETER_SIG)));
 
-	    _type.translateUnBox(classGen, methodGen);
+		_type.translateUnBox(classGen, methodGen);
 
-	    // Cache the result of addParameter() in a field
-	    if (className != EMPTYSTRING) {
-		il.append(new CHECKCAST(cpg.addClass(className)));
+		// Cache the result of addParameter() in a field
+		if (className != EMPTYSTRING) {
+		    il.append(new CHECKCAST(cpg.addClass(className)));
+		}
+		il.append(new PUTFIELD(cpg.addFieldref(classGen.getClassName(),
+						       name, signature)));
 	    }
-	    il.append(new PUTFIELD(cpg.addFieldref(classGen.getClassName(),
-						   name, signature)));
 	}
     }
 

@@ -120,6 +120,7 @@ final class Import extends TopLevelElement {
 	    _imported.setSourceLoader(loader);
 	    _imported.setSystemId(docToLoad);
 	    _imported.setParentStylesheet(context);
+	    _imported.setImportingStylesheet(context);
 
 	    // precedence for the including stylesheet
 	    final int currPrecedence = parser.getCurrentImportPrecedence();

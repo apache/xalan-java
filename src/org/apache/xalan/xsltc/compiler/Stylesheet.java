@@ -110,6 +110,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     private final Hashtable _modes = new Hashtable();
     private final Hashtable _extensions = new Hashtable();
 
+    public  Stylesheet _importedFrom = null;
     private int _importPrecedence = 1;
     private Mode _defaultMode;
     private boolean _multiDocument = false;
@@ -136,10 +137,11 @@ public final class Stylesheet extends SyntaxTreeNode {
 	_multiDocument = flag;
     }
 
-    public boolean isMultiDOM() {
+    public boolean isMultiDocument() {
 	return _multiDocument;
     }
 
+    /*
     public boolean isImported() {
 	final SyntaxTreeNode parent = getParent();
 	return ((parent != null) && (parent instanceof Import));
@@ -149,14 +151,17 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final SyntaxTreeNode parent = getParent();
 	return ((parent != null) && (parent instanceof Include));
     }
+    */
 
     public void numberFormattingUsed() {
 	_numberFormattingUsed = true;
     }
 
     public void setImportPrecedence(final int precedence) {
+	// Set import precedence for this stylesheet
 	_importPrecedence = precedence;
 
+	// Set import precedence for all included stylesheets
 	final Enumeration elements = elements();
 	while (elements.hasMoreElements()) {
 	    final TopLevelElement child =
@@ -169,6 +174,14 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	}
 
+	// Set import precedence for the stylesheet that imported this one
+	if (_importedFrom != null) {
+	    if (_importedFrom.getImportPrecedence() < precedence) {
+		final Parser parser = getParser();
+		final int nextPrecedence = parser.getNextImportPrecedence();
+		_importedFrom.setImportPrecedence(nextPrecedence);
+	    }
+	}
     }
     
     public int getImportPrecedence() {
@@ -197,6 +210,10 @@ public final class Stylesheet extends SyntaxTreeNode {
     
     public Stylesheet getParentStylesheet() {
 	return _parentStylesheet;
+    }
+
+    public void setImportingStylesheet(Stylesheet parent) {
+	_importedFrom = parent;
     }
 
     public void setSystemId(String systemId) {
@@ -328,6 +345,16 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// variables and/or parameters before we parse the other elements...
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+	    if ((child instanceof Import) || (child instanceof Include)) {
+		parser.getSymbolTable().setCurrentNode(child);
+		child.parseContents(parser);
+	    }
+	}
+
+	// We have to scan the stylesheet element's top-level elements for
+	// variables and/or parameters before we parse the other elements...
+	for (int i=0; i<count; i++) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
 	    if (child instanceof VariableBase) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
@@ -337,7 +364,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Now go through all the other top-level elements...
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if (!(child instanceof VariableBase)) {
+	    if (!(child instanceof VariableBase) &&
+		!(child instanceof Import) &&
+		!(child instanceof Include)) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
@@ -752,7 +781,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(classGen.loadTranslet());
 	// prepare appropriate DOM implementation
 	
-	if (isMultiDOM()) {
+	if (isMultiDocument()) {
 	    il.append(new NEW(cpg.addClass(MULTI_DOM_CLASS)));
 	    il.append(DUP);
 	}
@@ -765,7 +794,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 						     DOM_ADAPTER_SIG)));
 	// DOMAdapter is on the stack
 
-	if (isMultiDOM()) {
+	if (isMultiDocument()) {
 	    final int init = cpg.addMethodref(MULTI_DOM_CLASS,
 					      "<init>",
 					      "("+DOM_INTF_SIG+")V");
