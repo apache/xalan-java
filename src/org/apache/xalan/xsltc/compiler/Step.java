@@ -74,23 +74,28 @@ import org.apache.xalan.xsltc.DOM;
 
 final class Step extends RelativeLocationPath {
 
-    // This step's axis as defined in class Axis.
+    /**
+     * This step's axis as defined in class Axis.
+     */
     private int _axis;
 
-    // A vector of predicates (filters) defined on this step - may be null
+    /**
+     * A vector of predicates (filters) defined on this step - may be null
+     */
     private Vector _predicates;
 
-    // Some simple predicates can be handled by this class (and not by the
-    // Predicate class) and will be removed from the above vector as they are
-    // handled. We use this boolean to remember if we did have any predicates.
+    /**
+     * Some simple predicates can be handled by this class (and not by the
+     * Predicate class) and will be removed from the above vector as they are
+     * handled. We use this boolean to remember if we did have any predicates.
+     */
     private boolean _hadPredicates = false;
 
-    // Type of the node test.
+    /**
+     * Type of the node test.
+     */
     private int _nodeType;
 
-    /**
-     * Constructor
-     */
     public Step(int axis, int nodeType, Vector predicates) {
 	_axis = axis;
 	_nodeType = nodeType;
@@ -156,16 +161,12 @@ final class Step extends RelativeLocationPath {
      * an element like <xsl:for-each> or <xsl:apply-templates>.
      */
     private boolean hasParentPattern() {
-	SyntaxTreeNode parent = getParent();
-	if ((parent instanceof ParentPattern) ||
-	    (parent instanceof ParentLocationPath) ||
-	    (parent instanceof UnionPathExpr) ||
-	    (parent instanceof FilterParentPath))
-	    return(true);
-	else
-	    return(false);
+	final SyntaxTreeNode parent = getParent();
+	return (parent instanceof ParentPattern ||
+		parent instanceof ParentLocationPath ||
+		parent instanceof UnionPathExpr ||
+		parent instanceof FilterParentPath);
     }
-
     
     /**
      * Returns 'true' if this step has any predicates
@@ -214,14 +215,7 @@ final class Step extends RelativeLocationPath {
 
 	// Special case for '.' 
 	if (isAbbreviatedDot()) {
-	    if (hasParentPattern())
-		_type = Type.NodeSet;
-	    else
-		_type = Type.Node;
-	}
-	// Special case for '..'
-	else if (isAbbreviatedDDot()) {
-	    _type = Type.NodeSet;
+	    _type =  (hasParentPattern()) ? Type.NodeSet : Type.Node;
 	}
 	else {
 	    _type = Type.NodeSet;
@@ -256,7 +250,6 @@ final class Step extends RelativeLocationPath {
 	    // the nodes for us.
 	    if (hasParentPattern()) return false;
 	    if (hasPredicates()) return false;
-	    if (_hadPredicates) return false;
 	    
 	    // Check if this step occured under an <xsl:apply-templates> element
 	    SyntaxTreeNode parent = this;
@@ -385,7 +378,11 @@ final class Step extends RelativeLocationPath {
 		il.append(new PUSH(cpg, _axis));
 		il.append(new PUSH(cpg, _nodeType));
 		il.append(new INVOKEINTERFACE(ty, 3));
-		orderIterator(classGen, methodGen);
+
+		// If needed, create a reverse iterator
+		if (!_hadPredicates) {
+		    orderIterator(classGen, methodGen);
+		}
 		break;
 	    }
 	}
@@ -490,6 +487,11 @@ final class Step extends RelativeLocationPath {
 		    il.append(new CHECKCAST(cpg.addClass(className)));
 		}
 		il.append(new INVOKESPECIAL(idx));
+
+		// If needed, create a reverse iterator after compiling preds
+		if (_predicates.size() == 0) {
+		    orderIterator(classGen, methodGen);
+		}
 	    }
 	}
     }
