@@ -70,6 +70,8 @@ import java.util.Properties;
  * 
  * <p>An object of this class can not be used concurrently over
  * multiple threads.</p>
+ * 
+ * <p>A Transformer may be used multiple times.</p>
  *
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
@@ -145,10 +147,21 @@ public abstract class Transformer
    * @param oformat A set of output properties that will be
    * used to override any of the same properties in effect
    * for the transformation.
-   *
-   * @see org.xml.serialize.OutputFormat
    */
   public abstract void setOutputProperties(Properties oformat);
+
+  /**
+   * Get a copy of the output properties for the transformation.  These
+   * properties will override properties set in the templates
+   * with xsl:output.
+   * 
+   * <p>Note that mutation of the Properties object returned will not 
+   * effect the properties that the transformation contains.</p>
+   *
+   * @returns A copy of the set of output properties in effect
+   * for the next transformation.
+   */
+  public abstract Properties getOutputProperties();
 
   /**
    * Method setProperty
