@@ -93,14 +93,14 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
  * Implementation of a JAXP1.1 TransformerFactory for Translets.
  */
 public class TransformerFactoryImpl
-    extends SAXTransformerFactory implements SourceLoader {
+    extends SAXTransformerFactory implements SourceLoader, ErrorListener {
 
     // This constant should be removed once all abstract methods are impl'ed.
     private static final String NYI = "Not yet implemented";
 
     // This error listener is used only for this factory and is not passed to
     // the Templates or Transformer objects that we create!!!
-    private ErrorListener _errorListener = null; 
+    private ErrorListener _errorListener = this; 
 
     // This URIResolver is passed to all created Templates and Transformers
     private URIResolver _uriResolver = null;
@@ -631,6 +631,69 @@ public class TransformerFactoryImpl
 	catch (TransformerException e) {
 	    return null;
 	}
+    }
+
+    /**
+     * Receive notification of a recoverable error. 
+     * The transformer must continue to provide normal parsing events after
+     * invoking this method. It should still be possible for the application
+     * to process the document through to the end.
+     *
+     * @param exception The warning information encapsulated in a transformer 
+     * exception.
+     * @throws TransformerException if the application chooses to discontinue
+     * the transformation (always does in our case).
+     */
+    public void error(TransformerException e)
+	throws TransformerException {
+	System.err.println("ERROR: "+e.getMessageAndLocation());
+	Throwable wrapped = e.getException();
+	if (e != null)
+	    System.err.println("     : "+wrapped.getMessage());
+	throw(e); 	
+    }
+
+    /**
+     * Receive notification of a non-recoverable error. 
+     * The application must assume that the transformation cannot continue
+     * after the Transformer has invoked this method, and should continue
+     * (if at all) only to collect addition error messages. In fact,
+     * Transformers are free to stop reporting events once this method has
+     * been invoked.
+     *
+     * @param exception The warning information encapsulated in a transformer
+     * exception.
+     * @throws TransformerException if the application chooses to discontinue
+     * the transformation (always does in our case).
+     */
+    public void fatalError(TransformerException e)
+	throws TransformerException {
+	System.err.println("FATAL: "+e.getMessageAndLocation());
+	Throwable wrapped = e.getException();
+	if (e != null)
+	    System.err.println("     : "+wrapped.getMessage());
+	throw(e);
+    }
+
+    /**
+     * Receive notification of a warning.
+     * Transformers can use this method to report conditions that are not
+     * errors or fatal errors. The default behaviour is to take no action.
+     * After invoking this method, the Transformer must continue with the
+     * transformation. It should still be possible for the application to
+     * process the document through to the end.
+     *
+     * @param exception The warning information encapsulated in a transformer
+     * exception.
+     * @throws TransformerException if the application chooses to discontinue
+     * the transformation (never does in our case).
+     */
+    public void warning(TransformerException e)
+	throws TransformerException {
+	System.err.println("WARNING: "+e.getMessageAndLocation());
+	Throwable wrapped = e.getException();
+	if (e != null)
+	    System.err.println("       : "+wrapped.getMessage());
     }
 
 }
