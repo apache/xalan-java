@@ -73,6 +73,7 @@ import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public final class MultiDOM implements DOM {
     private static final int NO_TYPE = DOM.FIRST_TYPE - 2;
@@ -85,6 +86,8 @@ public final class MultiDOM implements DOM {
     private int _size;
 
     private Hashtable _documents = new Hashtable();
+
+    private int _currentDOM = 0;
 
     private final class AxisIterator implements NodeIterator {
 	// constitutive data
@@ -108,15 +111,16 @@ public final class MultiDOM implements DOM {
 	
 	public NodeIterator setStartNode(final int node) {
 	    _mask = node & SET;
+	    int dom = _currentDOM = node >>> 24;
 	    // consider caching these
 	    if ((_type == NO_TYPE) || (_type == DOM.ELEMENT)) {
-		_source = _adapters[node>>>24].getAxisIterator(_axis);
+		_source = _adapters[dom].getAxisIterator(_axis);
 	    }
 	    else if (_axis == Axis.CHILD) {
-		_source = _adapters[node>>>24].getTypedChildren(_type);
+		_source = _adapters[dom].getTypedChildren(_type);
 	    }
 	    else {
-		_source = _adapters[node>>>24].getTypedAxisIterator(_axis,_type);
+		_source = _adapters[dom].getTypedAxisIterator(_axis,_type);
 	    }
 	    _source.setStartNode(node & CLR);
 	    return this;
@@ -160,6 +164,83 @@ public final class MultiDOM implements DOM {
 	}
     } // end of AxisIterator
 
+
+    /**************************************************************
+     * This is a specialised iterator for predicates comparing node or
+     * attribute values to variable or parameter values.
+     */
+    private final class NodeValueIterator extends NodeIteratorBase {
+
+	private NodeIterator _source;
+	private String _value;
+	private boolean _op;
+	private final boolean _isReverse;
+	private int _returnType = RETURN_PARENT;
+
+	public NodeValueIterator(NodeIterator source, int returnType,
+				 String value, boolean op) {
+	    _source = source;
+	    _returnType = returnType;
+	    _value = value;
+	    _op = op;
+	    _isReverse = source.isReverse();
+	}
+
+	public boolean isReverse() {
+	    return _isReverse;
+	}
+    
+	public NodeIterator cloneIterator() {
+	    try {
+		NodeValueIterator clone = (NodeValueIterator)super.clone();
+		clone._isRestartable = false;
+		clone._source = _source.cloneIterator();
+		clone._value = _value;
+		clone._op = _op;
+		return clone.reset();
+	    }
+	    catch (CloneNotSupportedException e) {
+		BasisLibrary.runTimeError("Iterator clone not supported."); 
+		return null;
+	    }
+	}
+    
+	public NodeIterator reset() {
+	    _source.reset();
+	    return resetPosition();
+	}
+
+	public int next() {
+
+	    int node;
+	    while ((node = _source.next()) != END) {
+		String val = getNodeValue(node);
+		if (_value.equals(val) == _op) {
+		    if (_returnType == RETURN_CURRENT)
+			return returnNode(node);
+		    else
+			return returnNode(getParent(node));
+		}
+	    }
+	    return END;
+	}
+
+	public NodeIterator setStartNode(int node) {
+	    if (_isRestartable) {
+		_source.setStartNode(_startNode = node); 
+		return resetPosition();
+	    }
+	    return this;
+	}
+
+	public void setMark() {
+	    _source.setMark();
+	}
+
+	public void gotoMark() {
+	    _source.gotoMark();
+	}
+    }                       
 
     public MultiDOM(DOM main) {
 	_size = INITIAL_SIZE;
@@ -236,7 +317,7 @@ public final class MultiDOM implements DOM {
 
     public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
 					     String value, boolean op) {
-	return _adapters[0].getNodeValueIterator(iterator, type, value, op);
+	return(new NodeValueIterator(iterator, type, value, op));
     }
 
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
