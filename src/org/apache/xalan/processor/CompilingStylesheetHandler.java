@@ -247,18 +247,14 @@ public class CompilingStylesheetHandler
 
         // Namespace context tracking. Note that this is dynamic state
         // during execution, _NOT_ the static state tied to a single 
-        // ElemTemplateElement during parsing
-//GONK//		
-        // TODO: ***** PROBLEM: THIS ISN'T THREADSAFE. It needs to be
-		// a class field rather than an automatic in order to support
-		// callback via getNamespaceForPrefix. But it also needs to be
-		// thread-specific. Unfortunately, that callback doesn't pass 
-		// the xctxt as a parameter, so we can't stash it there.
-		// Best thought I've got is a Thread-indexed hashtable... ugh.
-        synthetic.reflection.Field m_nsSupport=
-            tClass.declareField("m_nsSupport");
-        m_nsSupport.setType(tClass.forClass(org.xml.sax.helpers.NamespaceSupport.class));
-        m_nsSupport.setInitializer("new org.xml.sax.helpers.NamespaceSupport()");
+        // ElemTemplateElement during parsing. Also note that it needs to
+		// be set in execute() but testable in getNamespaceForPrefix --
+		// and the latter, most unfortunately, is not passed the xctxt so
+		// making that threadsafe is a bit ugly. 
+        synthetic.reflection.Field m_nsThreadContexts=
+            tClass.declareField("m_nsThreadContexts");
+        m_nsThreadContexts.setType(tClass.forClass(java.util.Hashtable.class));
+        m_nsThreadContexts.setInitializer("new java.util.Hashtable()");
         // And accessor, to let kids query current state
         synthetic.reflection.Method getNSURI =
             tClass.declareMethod("getNamespaceForPrefix");
@@ -266,7 +262,10 @@ public class CompilingStylesheetHandler
         getNSURI.setReturnType(tClass.forClass(java.lang.String.class));
         getNSURI.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         getNSURI.getBody().append(
-			"String nsuri=m_nsSupport.getURI(nsprefix);\n"
+			"String nsuri=\"\";\n"								  
+			+"org.xml.sax.helpers.NamespaceSupport nsSupport=(org.xml.sax.helpers.NamespaceSupport)m_nsThreadContexts.get(Thread.currentThread());\n"
+			+"if(null!=nsSupport)\n"
+			+"\tnsuri=nsSupport.getURI(nsprefix);\n"
 			+"if(null==nsuri || nsuri.length()==0)\n"
 			+"nsuri=m_parentNode.getNamespaceForPrefix(nsprefix);\n"
 			+"return nsuri;\n"
@@ -372,12 +371,21 @@ public class CompilingStylesheetHandler
               +"if (check)\n"
               +"  transformer.getStackGuard().push(this, sourceNode);\n"
               +"String avtStringedValue; // ***** Optimize away?\n\n"
-				);
+		  // Establish dynamic namespace context for this invocation
+			  +"org.xml.sax.helpers.NamespaceSupport nsSupport=new org.xml.sax.helpers.NamespaceSupport();\n"
+			  +"org.xml.sax.helpers.NamespaceSupport savedNsSupport=(org.xml.sax.helpers.NamespaceSupport)m_nsThreadContexts.get(Thread.currentThread());\n"
+			  +"m_nsThreadContexts.put(Thread.currentThread(),nsSupport);\n"
+			  );
+
           
           compileChildTemplates(source,body,interpretVector);
           
+		  // Body Cleanup
           body.append(
-              "// Decrement infinite-loop check\n"
+		  // Restore dynamic namespace context for this invocation
+			  "if(null!=savedNsSupport) m_nsThreadContexts.put(Thread.currentThread(),savedNsSupport);\n"
+			  +"else m_nsThreadContexts.remove(Thread.currentThread());\n\n"
+              +"// Decrement infinite-loop check\n"
               +"if (check)\n"
               +"  transformer.getStackGuard().pop();\n"
               );
@@ -487,7 +495,7 @@ public class CompilingStylesheetHandler
     int n = prefixTable.size();
     boolean newNSlevel=(n>0);
     if(newNSlevel)
-        body.append("m_nsSupport.pushContext();\n");
+        body.append("nsSupport.pushContext();\n");
     for(int i = 0; i < n; i++)
     {
       XMLNSDecl decl = (XMLNSDecl)prefixTable.elementAt(i);
@@ -500,7 +508,7 @@ public class CompilingStylesheetHandler
             );
       // CompiledTemplate state
         body.append(
-            "m_nsSupport.declarePrefix(\""
+            "nsSupport.declarePrefix(\""
             +decl.getPrefix()+"\",\""
             +decl.getURI()+"\");\n"
             );
@@ -572,7 +580,7 @@ public class CompilingStylesheetHandler
                 +ele.getLocalName()+"\",\""
                 +ele.getRawName()+"\");\n");
     if(newNSlevel)
-        body.append("m_nsSupport.popContext();\n");
+        body.append("nsSupport.popContext();\n");
   }
 
   // Detect and report AttributeSet loops.
@@ -834,7 +842,7 @@ public class CompilingStylesheetHandler
                 // TODO: ***** BIG ISSUE: What about uncompiled nodes? Do we need
                 //         to become their parent and support gNFP()?
                 //       Bigger restructuring than I've been doing.
-                +attrNameSpace+"=m_nsSupport.getURI("+nsprefix+");\n"
+                +attrNameSpace+"=nsSupport.getURI("+nsprefix+");\n"
                 
                 // The if here substitutes for early returns in original code
                 +"if(!"+attributeHandled+")\n{\n"
