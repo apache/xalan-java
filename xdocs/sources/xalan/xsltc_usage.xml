@@ -71,14 +71,17 @@
 <p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
 <anchor name="intro"/>
 <s2 title="Introduction">
-<p>XSLTC provides a compiler and a runtime processor. Use the compiler to compile an XSL stylesheet into a translet, a set of Java classes. Use the runtime processor to apply the translet to an XML document and perform a transformation.</p>
-<note>To compile translets, you must be running the JDK or JRE 1.2 or higher. You can run translets with the JDK or JRE 1.1.8 or higher.</note>
+<p>XSLTC provides a compiler and a runtime processor. 
+Use the compiler to compile an XSL stylesheet into a translet (i.e. a set of Java 
+classes). Use the runtime processor to apply the translet to an XML document and 
+perform a transformation.</p>
+<note>To compile and run translets you must have a JDK or a JRE 1.2 or higher.</note>
 </s2><anchor name="classpath"/>
 <s2 title="Setting the system classpath for XSLTC">
 
 <p>
 The jar file structure of the XSLTC component has changed. In the original
-structure the xsltc.jar file contained only the XSLTC classes, and the
+structure the xsltc.jar file contained only XSLTC classes, and the
 other support jar files needed to be in the user's class path.
  If you want to use this model refer to the subsection below 
 'Unbundled System Classpath'.  In the newer model, all of the support 
@@ -94,8 +97,12 @@ Refer to the subsection 'Bundled System Classpath' below.
 To use this newer approach, simply put xsltc.jar in your classpath.
 No need to mention the others (BCEL.jar, JLex.jar, regexp.jar, java_cup.jar,
 runtime.jar). 
-<note>Be sure to also a JAXP XML parser, such as xercesImpl.jar and xml-apis.jar, which are in our distribution.</note>
 </p>
+<note>In order to compile and run translets you must have a JAXP-compliant XML parser 
+installed. Our distribution 
+includes<jump href="http://xml.apache.org/xerces2-j/index.html">Xerces</jump>
+(just include xercesImpl.jar and xml-apis.jar in your class path).
+</note>
 </s3>
 
 <s3 title="Unbundled System Classpath">
@@ -105,54 +112,46 @@ runtime.jar).
   <th>Classes or JAR</th>
   <th>To compile a translet</th>
   <th>To run a translet</th>
-  <th>To use the XSLTC API</th>
 </tr>
 <tr>
   <td>the translet</td>
   <td></td>
   <td>required</td>
-  <td>required</td>  
 </tr>
 <tr>
   <td>xsltc.jar</td>
   <td>required</td>
   <td>required</td>
-  <td>required</td>  
 </tr>
 <tr>
   <td>runtime.jar</td>
   <td>required</td>
-  <td></td>
-  <td>required</td>  
+  <td>required</td>
 </tr>
 <tr>
   <td>BCEL.jar</td>
   <td>required</td>
   <td></td>
-  <td>required</td>  
 </tr>
 <tr>
   <td>JLex.jar</td>
+  <td>required</td>
   <td></td>
-  <td></td>
-  <td>required</td>  
 </tr>
 <tr>
   <td>java_cup.jar</td>
+  <td>required</td>
   <td></td>
-  <td></td>
-  <td>required</td>  
 </tr>
 <tr>
   <td>regexp.jar</td>
   <td>required</td>
   <td></td>
-  <td>required</td>  
 </tr>
 </table>
-<p>The JAR files listed above are in the &xslt4j; bin directory. The translet is the set of class files or the JAR file that you generate with the compiler; see <link anchor="compile">Compiling translets</link>.</p>
-<p>If you are using JDK or JRE 1.1.8, also include classes.zip on the classpath. If you are using JDK or JRE 1.2, include tools.jar on the classpath.</p>
-<note>For the time being, the Xalan processor and XSLT do not yet use the same DOM, SAX, and parser infastructures. Accordingly, you may find it necessary to reset the system classpath each time you switch between the Xalan processor and XSLTC. For information on setting the classpath for the Xalan processor, see <link idref="getstarted" anchor="classpath">Setting the system classpath for Xalan</link>.</note>
+<p>The JAR files listed above are installed in the &xslt4j; bin directory. 
+The translet is the set of class files or the JAR file that you generate with the 
+compiler; see <link anchor="compile">Compiling translets</link>.</p>
 </s3>
 <anchor name="compile"/>
 <s2 title="Compiling translets from the command line">
@@ -165,21 +164,18 @@ runtime.jar).
 	stylesheets into lightweight and portable Java byte codes 
 	called translets.</p>  
 
-	<p>The XSLT Compiler can be run on any platform including UNIX,
-	Windows, NT, or Mac that supports Java 1.2.x or later. The generated
-	translets can be run on any platform that supports a Java
-	Runtime Environment, including a Palm Pilot with J2ME CLDC 
-	(Java 2 Micro Edition, Connected Limited Device Configuration).</p>
-    
-    <p>To run the compiler from the command line or a script, <link anchor="classpath">set the classpath</link> and 
-    run the XSLTC class with the appropriate flags and arguments (described below).</p>
+    <p>To run the compiler from the command line or from a script, 
+    <link anchor="classpath">set the classpath</link> and 
+    run the class org.apache.xalan.xsltc.cmdline.Compile. The synopsis
+    of the options and arguments accepted by this class is shown below.
+    </p>
     <anchor name="comp-synopsis"/>
 <s3 title="Synopsis">
 <p>
 <code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;[-o &lt;output&gt;] [-d &lt;directory&gt;] [-j &lt;jarfile&gt;]</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;[-p &lt;package name&gt;] [-n] [-x] [-v] [-u] [-h]<br/>
-{&lt;stylesheet&gt; | -i }</code></p> 
+&nbsp;&nbsp;&nbsp;&nbsp;{&lt;stylesheet&gt; | -i }</code></p> 
 
 </s3><anchor name="comp-args"/>
 <s3 title="Flags and arguments">
