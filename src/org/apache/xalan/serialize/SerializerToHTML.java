@@ -88,7 +88,7 @@ public class SerializerToHTML extends SerializerToXML
 
   /** State stack to keep track of if the current element has output 
    *  escaping disabled. */
-  private BoolStack m_isRawStack = new BoolStack();
+  protected BoolStack m_isRawStack = new BoolStack();
 
   /** True if the current element is a block element.  (seems like 
    *  this needs to be a stack. -sb). */

@@ -310,7 +310,7 @@ public class SerializerToXML
    * The maximum character size before we have to resort
    * to escaping.
    */
-  int m_maxCharacter = Encodings.getLastPrintable();
+  protected int m_maxCharacter = Encodings.getLastPrintable();
 
   /**
    * Add space before '/>' for XHTML.
@@ -2083,7 +2083,7 @@ public class SerializerToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  final int accumDefaultEntity(
+  protected final int accumDefaultEntity(
           char ch, int i, char[] chars, int len, boolean escLF)
             throws org.xml.sax.SAXException
   {
@@ -2135,7 +2135,7 @@ public class SerializerToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  final int accumDefaultEscape(
+  protected final int accumDefaultEscape(
           char ch, int i, char[] chars, int len, boolean escLF)
             throws org.xml.sax.SAXException
   {
