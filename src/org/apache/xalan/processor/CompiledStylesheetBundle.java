@@ -206,18 +206,20 @@ public class CompiledStylesheetBundle
 				// Asking the classloader to getResourceAsStream is our
 				// "best bet" for any caching that may have occurred, and 
 				// is the standard solution recommended by Sun.
-				//
-				// PROBLEM: Microsoft misimplemented that. Fetching the
-				// resource as c.getClassName returns a null pointer;
-				// fetching it as a file name throws IllegalAgumentException
-				// ("Cannot load class files via getSystemResource APIs.")
-				// So for VJ++ compatability, I'm forced to us a workaround.
-				
-				// Where to copy the classfile from. 
-				String source=
-					packageNameToDirectory(packagename,outdir,File.separatorChar)
-					+shortname+".class";
-				java.io.FileInputStream fis=new java.io.FileInputStream(source);
+				// PROBLEM: Java 1.1 security forbids this and throws an
+				// exception. For compatability, I'm forced to use a fallback;
+				// luckily, we _do_ know where we did our compilation.
+				java.io.InputStream fis;
+				if(false) // Works only >= Java 1.2
+					fis=c.getClass().getResourceAsStream(sink);	
+				else
+				{				
+					// Where to copy the classfile from. 
+					String source=
+						packageNameToDirectory(packagename,outdir,File.separatorChar)
+						+shortname+".class";
+					fis=new java.io.FileInputStream(source);
+				}
 
 				// Need to count how many bytes are transferred; the ZipEntry
 				// does _NOT_ set itself automatically.
@@ -418,7 +420,7 @@ public class CompiledStylesheetBundle
 			return c;
 		}
 		
-		/** Internal subroutine: Givne the name of a class (or of a resource),
+		/** Internal subroutine: Given the name of a class (or of a resource),
 		 * access the zipfile and retrieve the contents thereof as a byte array.
 		 * TODO: Implement the "leading / means already in filename syntax" trick?
 		 * Or is that irrelevant?

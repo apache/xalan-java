@@ -92,8 +92,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-// Java Compiler support. *****
-// TODO: Merge the Microsoft VJ++ workarounds in this file into that one.
+// Java Compiler support.
 import org.apache.xalan.utils.synthetic.JavaUtils;
 
 /**
@@ -121,12 +120,6 @@ public class CompilingStylesheetHandler
     super(processor);
   }
   
-  // TODO: Should we override startElement to redirect ProcessorStylesheet?
-  // That would let us create a version that had a specialized serializer
-  // ... if that'd be the best way to handle the "bundling" of the
-  // generated classes into a .jar/.zip.
-
-  
   /**
    * Receive notification of the end of the document.
    * Run standard cleanup of the internal representation,
@@ -144,11 +137,11 @@ public class CompilingStylesheetHandler
 	Vector compiledTemplates=new Vector();
 	 
     Stylesheet current=getStylesheet();
-    if(current==getStylesheetRoot())
+    if(isStylesheetParsingComplete())
     {    
 		// Begin compiling. Loop modeled on StylesheetRoot.recompose()
         // calling recomposeTemplates().
-        StylesheetRoot root=(StylesheetRoot)current;
+        StylesheetRoot root=(StylesheetRoot)getStylesheetRoot();
         
         // loop from recompose()
         int nImports = root.getGlobalImportCount();
@@ -193,11 +186,7 @@ public class CompilingStylesheetHandler
         root.recomposeTemplates(true); 
 		
 		// TODO: Should bundling occur elsewhere?
-boolean runSerializer=true; // TODO: DEBUG HOOK, CLEAN UP EVENTUALLY
-if(runSerializer)
-{	
 		CompiledStylesheetBundle.createBundle(root,compiledTemplates);
-}
     }
   }
   
@@ -402,7 +391,7 @@ if(runSerializer)
         compileElemLiteralResult((ElemLiteralResult)kid,body,interpretVector);
 		break;
 
-		// TODO: ***** Redirection of attr value not working yet.	
+		// TODO: ***** Redirection of attr value not working yet.
 	//case Constants.ELEMNAME_ATTRIBUTE:
     //    compileElemAttribute((ElemAttribute)kid,body,interpretVector);
 	//    break;
@@ -829,7 +818,7 @@ if(runSerializer)
         +"// so all the variables can be popped at once when we're done.\n"
         +"org.apache.xpath.VariableStack "+varstackName+" = transformer.getXPathContext().getVarStack();\n"
         +varstackName+".pushElemFrame();\n"
-        +"SourceLocator "+savedLocatorName+" = xctxt.getSAXLocator();\n"
+        +"javax.xml.transform.SourceLocator "+savedLocatorName+" = xctxt.getSAXLocator();\n"
         );
 
       body.append("try {\n\n");
@@ -916,16 +905,20 @@ if(runSerializer)
     }
 
 	// Try to pick up the same classpath we're executing under. That
-	// ought to include everything in Xalan and the parser...
+	// ought to include everything in Xalan and the standard libraries.
     String classpath=System.getProperty ("java.class.path");
 	
-	// TODO: These should probably be exposed as params or properties.
-    boolean debug=true;
-    boolean generateDebug=true;
+	// If compiling with the -g switch (Java debugging), we should retain 
+	// the Java source code to support debugging into the synthesized class.
+	// Some additional diagnostics are also turned on as a side effect.
+	// TODO: Find a better place to put the debugging control.
+	String javac_options=
+			System.getProperty("org.apache.xalan.processor.CompilingStylesheetHandler.options","");
+	boolean debug=(javac_options.indexOf("-g")>=0);
 
 	// Run the compilation. Encapsulates the fallbacks and
 	// workarounds needed to achieve this in various environments.
-	JavaUtils.setDebug(generateDebug);
+	JavaUtils.setDebug(debug);
     boolean compileOK=
 		JavaUtils.JDKcompile(filename,classpath);
 	
@@ -943,13 +936,13 @@ if(runSerializer)
         }
         catch(ClassNotFoundException e)
         {
-            System.err.println("ERR: Class load failed for "+
+            System.err.println("ERR: synthesized Template class load failed for "+
                 tClass.getName());
             e.printStackTrace();
         }
         catch(org.apache.xalan.utils.synthetic.SynthesisException e)
         {
-            System.err.println("ERR: Synthetic class realization failed for "+
+            System.err.println("ERR: synthesized Template class realization failed for "+
                 tClass.getName());
             e.printStackTrace();
         }
@@ -957,7 +950,7 @@ if(runSerializer)
     else
     {
         if(debug)
-            System.err.println("\tCompilation failed; retaining .java file");
+            System.err.println("\tTemplate compilation failed; retaining .java file");
         // This should probably be an exception instead
         System.err.println("ERR: Java compilation failed for "+
                 filename);

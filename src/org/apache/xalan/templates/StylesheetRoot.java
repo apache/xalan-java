@@ -488,15 +488,18 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
-   * Get a stylesheet from the global import list.
-   *
-   * NEEDSDOC @param i
+   * Get a stylesheet from the global import list. 
+   * TODO: JKESS PROPOSES SPECIAL-CASE FOR NO IMPORT LIST, TO MATCH COUNT.
+   * 
+   * NEEDSDOC @param i 
    *
    * NEEDSDOC ($objectName$) @return
    */
   public StylesheetComposed getGlobalImport(int i)
   {
-    return (StylesheetComposed) m_globalImportList.elementAt(i);
+    return (i==0)
+		? this
+		  : (StylesheetComposed) m_globalImportList.elementAt(i);
   }
 
   /**
@@ -504,10 +507,13 @@ public class StylesheetRoot extends StylesheetComposed
    * @return The total number of imported stylesheets, including
    * the root stylesheet, thus the number will always be 1 or
    * greater.
+   * TODO: JKESS PROPOSES SPECIAL-CASE FOR NO IMPORT LIST, TO MATCH DESCRIPTION.
    */
   public int getGlobalImportCount()
   {
-    return m_globalImportList.size();
+	  return (m_globalImportList!=null)
+			? m_globalImportList.size() 
+			  : 1;
   }
 
   /**

@@ -461,6 +461,23 @@ public class StylesheetHandler extends DefaultHandler
     m_stylesheetLevel++;
   }
 
+  // support for isParsingComplete
+  private boolean m_parsingComplete=false; 
+
+  
+  /** Test whether the _last_ endDocument() has been processed.
+   * This is needed as guidance for stylesheet optimization
+   * and compilation engines, which generally don't want to start
+   * until all included and imported stylesheets have been fully
+   * parsed.
+   * 
+   * @return true iff the complete stylesheet tree has been built.
+   */
+  public boolean isStylesheetParsingComplete()
+  {
+	  return m_parsingComplete;
+  }
+
   /**
    * Receive notification of the end of the document.
    *
@@ -491,6 +508,13 @@ public class StylesheetHandler extends DefaultHandler
       elemProcessor.startNonText(this);
 
     m_stylesheetLevel--;
+	
+	// WARNING: This test works only as long as stylesheets are parsed
+	// more or less recursively. If we switch to an iterative "work-list"
+	// model, this will become true prematurely. In that case, 
+	// isStylesheetParsingComplete() will have to be adjusted to be aware
+	// of the worklist.
+	m_parsingComplete=(m_stylesheetLevel<0);
   }
 
   /**
