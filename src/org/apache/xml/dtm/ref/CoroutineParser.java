@@ -62,6 +62,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.XMLReader;
 
 /** <p>CoroutineParser is an API for parser threads that operate as
  * coroutines. See CoroutineSAXParser and CoroutineSAXParser_Xerces
@@ -165,5 +166,13 @@ public interface CoroutineParser {
    * request.
    * */
   public void doTerminate(int appCoroutine);
+
+
+    /**
+     *  Initialize the coroutine parser. Same parameters could be passed
+     *  in a non-default constructor, or by using using Class.forName and
+     *  newInstance and then calling init()
+     */
+  public void init( CoroutineManager co, int appCoroutineID, XMLReader parser );
 
 } // class CoroutineParser

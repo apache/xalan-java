@@ -245,7 +245,7 @@ public class DTMManagerDefault extends DTMManager
 
         boolean haveXercesParser =
           (null != reader)
-          && (reader instanceof org.apache.xerces.parsers.SAXParser);
+          && (reader.getClass().getName().equals("org.apache.xerces.parsers.SAXParser") );
 
         if (haveXercesParser)
           incremental = true;  // No matter what.  %REVIEW%
@@ -261,18 +261,24 @@ public class DTMManagerDefault extends DTMManager
 
           // Create an CoRoutine ID for the transformation.
           int appCoroutine = coroutineManager.co_joinCoroutineSet(-1);
-          CoroutineParser coParser;
+          CoroutineParser coParser=null;
 
           if (haveXercesParser)
           {
             // CoroutineSAXParser_Xerces to avoid threading.
             // System.out.println("Using CoroutineSAXParser_Xerces to avoid threading");
-            coParser = new CoroutineSAXParser_Xerces(
-              (org.apache.xerces.parsers.SAXParser) reader, coroutineManager,
-              appCoroutine);
+	    try {
+	      // should be ok, it's in the same package - no need for thread class loader
+	      Class c=Class.forName( "org.apache.xml.dtm.ref.CoroutineSAXParser_Xerces" );
+	      coParser=(CoroutineParser)c.newInstance();
+	      coParser.init( coroutineManager, appCoroutine, reader );
+	    }  catch( Exception ex ) {
+	      ex.printStackTrace();
+	      coParser=null;
+	    }
           }
-          else
-          {
+
+	  if( coParser==null ) {
             // Create a CoroutineSAXParser that will run on the secondary thread.
             if (null == reader)
               coParser = new CoroutineSAXParser(coroutineManager,

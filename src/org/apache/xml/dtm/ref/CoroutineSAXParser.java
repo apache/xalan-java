@@ -127,6 +127,9 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
   // Constructors
   //
 
+  public CoroutineSAXParser() {
+  }
+  
   /** Create a CoroutineSAXParser which is not yet bound to a specific
    * SAX event source.
    *
@@ -141,17 +144,7 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
    * */
   public CoroutineSAXParser(CoroutineManager co, int appCoroutineID)
   {
-    fXMLReader=null;    // No reader yet
-
-    eventcounter=frequency;
-
-    fCoroutineManager = co;
-    fAppCoroutineID = appCoroutineID;
-    fParserCoroutineID = co.co_joinCoroutineSet(-1);
-    if (fParserCoroutineID == -1)
-      throw new RuntimeException("co_joinCoroutineSet() failed");
-
-    fRunningInThread=false; // Unless overridden by the other constructor
+    this.init( co, appCoroutineID, null );
   }
 
   /** Wrap a SAX2 XMLReader (parser or other event source)
@@ -163,20 +156,37 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
    */
   public CoroutineSAXParser(CoroutineManager co, int appCoroutineID,
                             XMLReader parser) {
-    this(co,appCoroutineID);
-    setXMLReader(parser);
-
-    fRunningInThread=true;
-		org.apache.xalan.transformer.TransformerImpl.runTransformThread(this);
-    //Thread t = new Thread(this);
-    //t.setDaemon(false);
-    //t.start();
+    this.init( co, appCoroutineID, parser );
   }
 
   //
   // Public methods
   //
 
+  public void init( CoroutineManager co, int appCoroutineID, XMLReader parser ) {
+    fXMLReader=null;    // No reader yet
+
+    eventcounter=frequency;
+
+    fCoroutineManager = co;
+    fAppCoroutineID = appCoroutineID;
+    fParserCoroutineID = co.co_joinCoroutineSet(-1);
+    if (fParserCoroutineID == -1)
+      throw new RuntimeException("co_joinCoroutineSet() failed");
+
+    fRunningInThread=false; // Unless overridden by the other constructor
+
+    if( parser!=null ) {
+      setXMLReader(parser);
+      
+      fRunningInThread=true;
+      org.apache.xalan.transformer.TransformerImpl.runTransformThread(this);
+      //Thread t = new Thread(this);
+      //t.setDaemon(false);
+      //t.start();
+    }
+  }
+    
   /** Bind to the XMLReader. This operation is ignored if the reader has
    * previously been set.
    *

@@ -97,13 +97,19 @@ implements CoroutineParser
     //
     // Constructors
     //
-
+    public CoroutineSAXParser_Xerces() {
+    }
+    
     public CoroutineSAXParser_Xerces(CoroutineManager co, int appCoroutineID) {
-      this(null,co,appCoroutineID);
+      this.init( co,appCoroutineID, null);
     }
 
+    // XXX the parameter order is confusing, different from CoroutineSAXParser
     public CoroutineSAXParser_Xerces(SAXParser ixsp, CoroutineManager co, int appCoroutineID) {
+      this.init( co, appCoroutineID, ixsp); 
+    }
 
+    public void init( CoroutineManager co, int appCoroutineID, XMLReader ixsp ) {
       if(ixsp!=null)
         incrementalParser=ixsp;
       else
@@ -111,7 +117,7 @@ implements CoroutineParser
       
       // incrementalParser.initHandlers(true, incrementalParser, incrementalParser);
     }
-
+    
     //
     // Factories
     //

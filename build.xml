@@ -167,6 +167,8 @@ Copyright:
          the tests-available property set for them.
     -->
     <available file="${tests.dir}" property="tests-available" />
+    <available property="xerces.present" 
+      classname="org.apache.xerces.parsers.SAXParser"/>
   </target>
 
   <!-- Must depend on jar since we use Xalan to process xml files -->
@@ -224,8 +226,14 @@ Copyright:
     <!-- Compile XPath engine and some common utilities -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           includes="org/apache/xml/**/*.java,${xpath.reldir}/**/*.java"
-           debug="${debug}"/>
+           debug="${debug}" >
+      <include name="org/apache/xml/**/*.java" />
+      <include name="${xpath.reldir}/**/*.java" />
+      <exclude name="**/CoroutineSAXFilterTest.java" 
+	unless="xerces.present"	 />
+      <exclude name="**/CoroutineSAXParser_Xerces.java" 
+	unless="xerces.present"	 />
+    </javac>
     <!-- Compile Xalan main engine (but not xsltc package yet) -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"

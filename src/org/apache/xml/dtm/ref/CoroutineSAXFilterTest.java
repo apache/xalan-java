@@ -8,6 +8,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import java.io.IOException;
+import javax.xml.parsers.*;
 
 /** Primitive unit test for CoroutineSAXParser in filtering mode:
  * Attempt coroutine parsing of documents indicated by arguments (as
@@ -37,8 +38,15 @@ class CoroutineSAXFilterTest implements Runnable
   {
     System.out.println("Starting in Filtering mode...");
 
-    org.xml.sax.XMLReader theSAXParser=
-      new org.apache.xerces.parsers.SAXParser();
+    org.xml.sax.XMLReader theSAXParser=null;
+    try {
+	SAXParserFactory factory=SAXParserFactory.newInstance();
+	SAXParser parser=factory.newSAXParser();
+	theSAXParser=parser.getXMLReader();
+    } catch( Exception ex ) {
+	ex.printStackTrace();
+	return;
+    }
     
     CoroutineManager co = new CoroutineManager();
 
