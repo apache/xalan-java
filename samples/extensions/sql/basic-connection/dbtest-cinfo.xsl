@@ -39,11 +39,11 @@
           
           
           <TR>
-             <xsl:for-each select="$table/row-set/column-header">
+             <xsl:for-each select="$table/sql/metadaata/column-header">
                <TH><xsl:value-of select="@column-label"/></TH>
              </xsl:for-each>
           </TR>
-          <xsl:apply-templates select="$table/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set/row"/>
         </TABLE>
       </BODY>
     </HTML>
