@@ -14,6 +14,7 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
 import trax.Transformer;
 
 /**
@@ -65,6 +66,18 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
     m_root = root;    
   }
+  
+  InputSource m_inputSource;
+  
+  public void setInputSource(InputSource source)
+  {
+    m_inputSource = source;
+  }
+  
+  public InputSource getInputSource()
+  {
+    return m_inputSource;
+  }
 
   /**
    * Implement the setDocumentLocator event.
@@ -73,7 +86,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
   }
   
-  private boolean m_useMultiThreading = true;
+  public boolean m_useMultiThreading = true;
   
   private boolean indexedLookup = false;      // for now   
   
@@ -98,6 +111,8 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     
     if(m_useMultiThreading && (null != m_transformer))
     {
+      if(null != m_inputSource)
+        m_transformer.getXPathContext().getSourceTreeManager().putDocumentInCache(m_root, m_inputSource);
       Thread t = new Thread(m_transformer);
       t.start();
       //m_transformer.transformNode(m_root);
