@@ -78,7 +78,6 @@ import org.apache.xalan.utils.SystemIDResolver;
  * This class bottlenecks all management of source trees.  The methods
  * in this class should allow easy garbage collection of source 
  * trees, and should centralize parsing for those source trees.
- * The SourceTreeManager is also the default 
  */
 public class SourceTreeManager implements URIResolver
 {
