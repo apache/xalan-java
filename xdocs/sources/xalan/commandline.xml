@@ -84,10 +84,8 @@
 -OUT outputFileName
 -V (Version info)
 -QC (Quiet Pattern Conflicts Warnings)
--Q  (Quiet Mode)
--LF (Use linefeeds only on output -- default is CR/LF)
--CR (Use carriage returns only on output -- default is CR/LF)
--INDENT (Number of spaces to indent each level in output tree --default is 0)
+
+-L (Use line numbers for source document)
 -TT (Trace the templates as they are being called)
 -TG (Trace each result tree generation event)
 -TS (Trace each selection event)
@@ -97,10 +95,20 @@
 -TEXT (Use simple Text formatter)
 -HTML (Use HTML formatter)
 -PARAM name value (Set a stylesheet parameter)
--DIAG put out timing diagnostics
+-DIAG (Print number of milliseconds transform operation took)
+-FLAVOR flavorName (Transform with SAX for s2s or DOM for d2d)
 -URIRESOLVER fullClassName (Use a custom URIResolver)
 -ENTITYRESOLVER fullClassName (Use a custom EntityResolver)
 -CONTENTHANDLER fullClassName (Use a custom ContentHandler)
+-INCREMENTAL (Request incremental transform by setting
+  http://xml.apache.org/xalan/features/incremental to true)
+-NOOPTIMIZE (Request no optizimation of stylesheet processing
+  by setting http://xml.apache.org/xalan/features/optimize to
+  false)
+-RL recursionLimit (Set numeric limit on depht of stylesheet 
+  recursion)
+-L (Obtain a SourceLocator that can be used within stylesheet to 
+  report location of nodes within the XML source document)      
 </source>
       <p>Use <code>-IN</code> to specify the XML source document.</p> 
       <p>Use <code>-XSL</code> to specify the XSL stylesheet file.</p>

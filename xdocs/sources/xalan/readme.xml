@@ -79,11 +79,15 @@
      <s3 title="Changes since &xslt4j; 2.2">
      <p>This release does not include support for the deprecated &xslt4j; 1 compatability API.</p>
      <p>This release is integrated with release 2 of &xml4j;.</p>
+     <note>The &xslt4j; 1 compatability code does NOT compile with &xml4j2;</note>
      &done-j;
      </s3>
      <anchor name="other"/>
      <s3 title="Other points of interest">
      <ul>
+     <li>If an attempt is made to coerce a different namespace onto a prefix already in use in xsl:attribute, the attribute will come out 
+     in the wrong namespace. Workaround: either provide an NCName instead of a QName for the attribute, or provide a QName with a prefix not
+     used elsewhere.<br/><br/></li>
      <li>Handling xsl:namespace-alias declarations: In release 2.0.D01, we reported the need to do some research concerning exactly how Xalan
      should handle xsl:namespace-alias declarations. As a result of discussions among members of the W3C Working Group on XSL, we have reached a
      more precise consensus on how namespaces should be represented when an xsl:namespace-alias declaration is in effect.<br/><br/>
