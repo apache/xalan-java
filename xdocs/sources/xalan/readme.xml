@@ -291,7 +291,7 @@ javadoc -doclet xalanjdoc.Standard
 <p>Please email your comments, questions, suggestions, and offers to join the Xalan team to <human-resource-ref idref="xalandev"/>.</p>
  </s2><anchor name="developer-list"/>
  <s2 title="Developers">
-<p>A list of some of people currently working on working on &xslt4c;:</p>
+<p>A list of some of people currently working on working on &xslt4j;:</p>
   <!-- in alphabetical order, by last name -->
   <ul>
   <li><human-resource-ref idref="sboag"/>
