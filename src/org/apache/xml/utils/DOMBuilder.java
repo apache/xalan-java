@@ -300,8 +300,10 @@ public class DOMBuilder
 
     Element elem;
 
+	// Note that the namespace-aware call must be used to correctly
+	// construct a Level 2 DOM, even for non-namespaced nodes.
     if ((null == ns) || (ns.length() == 0))
-      elem = m_doc.createElement(name);
+      elem = m_doc.createElementNS(null,name);
     else
       elem = m_doc.createElementNS(ns, name);
 
