@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001-2002 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -124,7 +124,11 @@ import org.w3c.dom.Node;
  * dependencies to enable easy compilation and usage even when 
  * Xalan, DOM/SAX/JAXP, etc. are not present.</p>
  * 
- * @author Shane_Curcuru@lotus.com
+ * <p>Note: for an improved version of this utility, please see 
+ * the xml-commons' project Which utility which does the same kind 
+ * of thing but in a much simpler manner.</p>
+ *
+ * @author Shane_Curcuru@us.ibm.com
  * @version $Id$
  */
 public class EnvironmentCheck
@@ -364,7 +368,8 @@ public class EnvironmentCheck
   public String[] jarNames =
   {
     "xalan.jar", "xalansamples.jar", "xalanj1compat.jar", "xalanservlet.jar",
-    "xerces.jar", 
+    "xerces.jar",       // Xerces-J 1.x
+    "xercesImpl.jar",   // Xerces-J 2.x
     "testxsl.jar", 
     "crimson.jar", 
     "lotusxsl.jar", 
@@ -779,10 +784,11 @@ public class EnvironmentCheck
     else
     {
       if ("xerces.jar".equalsIgnoreCase(jarName)
+              || "xercesImpl.jar".equalsIgnoreCase(jarName)
               || "xalan.jar".equalsIgnoreCase(jarName))
       {
 
-        // For xalan.jar and xerces.jar, which we ship together:
+        // For xalan.jar and xerces.jar/xercesImpl.jar, which we ship together:
         // The jar is not from a shipped copy of xalan-j, so 
         //  it's up to the user to ensure that it's compatible
         return jarName + " " + WARNING + CLASS_PRESENT;
@@ -931,7 +937,7 @@ public class EnvironmentCheck
   /**
    * Report product version information from common parsers.
    *
-   * Looks for version info in xerces.jar/crimson.jar.
+   * Looks for version info in xerces.jar/xercesImpl.jar/crimson.jar.
    *
    * //@todo actually look up version info in crimson manifest
    *
@@ -1256,9 +1262,22 @@ public class EnvironmentCheck
     jarVersions.put(new Long(732330), "xalan.jar from xalan-j_2_1_0");
     jarVersions.put(new Long(872241), "xalan.jar from xalan-j_2_2_D10");
     jarVersions.put(new Long(882739), "xalan.jar from xalan-j_2_2_D11");
+
+    jarVersions.put(new Long(923866), "xalan.jar from xalan-j_2_2_0");
+    jarVersions.put(new Long(905872), "xalan.jar from xalan-j_2_3_D1");
+    jarVersions.put(new Long(906122), "xalan.jar from xalan-j_2_3_0");
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
     jarVersions.put(new Long(857692), "xalan.jar from lotusxsl-j_2_2");
+
+    jarVersions.put(new Long(596540), "xsltc.jar from xalan-j_2_2_0");
+    jarVersions.put(new Long(590247), "xsltc.jar from xalan-j_2_3_D1");
+    jarVersions.put(new Long(589914), "xsltc.jar from xalan-j_2_3_0");
+    jarVersions.put(new Long(1268634), "xsltc.jar-bundled from xalan-j_2_3_0");
+
+    jarVersions.put(new Long(100196), "xml-apis.jar from xalan-j_2_2_0 or xalan-j_2_3_D1");
+    jarVersions.put(new Long(108484), "xml-apis.jar from xalan-j_2_3_0 from xml-commons-1.0.b2");
+
     // If the below were more common I would update it to report 
     //  errors better; but this is so old hardly anyone has it
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
@@ -1278,6 +1297,9 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1734594), "xerces.jar from Xerces-J-bin.2.0.0.beta3");
     jarVersions.put(new Long(1808883), "xerces.jar from xalan-j_2_2_D10,D11,D12 or xerces-1_4_3.bin");
     jarVersions.put(new Long(1803877), "xerces.jar from XML4J-3_2_1");
+    jarVersions.put(new Long(1812019), "xerces.jar from xalan-j_2_2_0");
+    jarVersions.put(new Long(1720292), "xercesImpl.jar from xalan-j_2_3_D1");
+    jarVersions.put(new Long(1730053), "xercesImpl.jar from xalan-j_2_3_0 from xerces-2_0_0");
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
