@@ -1,8 +1,15 @@
 /*
+ * @(#)XSLTErrorResources_ko.java	1.7 02/03/26
+ *
+ * Copyright 2002 Sun Microsystems, Inc. All rights reserved.
+ * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+
+/*
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +17,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +25,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +33,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -76,7 +83,7 @@ import org.apache.xalan.templates.Constants;
  * fill in the actual message string. Follow the instructions
  * below.
  */
-public class XSLTErrorResources extends XResourceBundleBase
+public class XSLTErrorResources_ko extends XSLTErrorResources
 {
 
   /** The error suffix for construction error property keys.   */
@@ -85,15 +92,14 @@ public class XSLTErrorResources extends XResourceBundleBase
   /** The warning suffix for construction error property keys.   */
   public static final String WARNING_SUFFIX = "WR";
 
-    // New error messages were added after Xalan 2.2-D11
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 253;
+  public static final int MAX_CODE = 216;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 29;
+  public static final int MAX_WARNING = 26;
 
   /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 55;
+  public static final int MAX_OTHERS = 45;
 
   /** Maximum total warnings and error messages.          */
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
@@ -146,7 +152,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_CURLYBRACE][1] =
-      "Error: Can not have '{' within expression";
+      "\uc624\ub958: \ud45c\ud604\uc2dd \uc548\uc5d0 '{'\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_ILLEGAL_ATTRIBUTE          */
@@ -154,7 +160,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ILLEGAL_ATTRIBUTE][1] = "{0} has an illegal attribute: {1}";
+    contents[ER_ILLEGAL_ATTRIBUTE][1] = "{0}\uc5d0 \uc798\ubabb\ub41c \uc18d\uc131 {1}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_NULL_SOURCENODE_APPLYIMPORTS          */
@@ -163,7 +169,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NULL_SOURCENODE_APPLYIMPORTS][1] =
-      "sourceNode is null in xsl:apply-imports!";
+      "sourceNode\ub294 xsl:apply-imports\uc5d0\uc11c \ub110\uc785\ub2c8\ub2e4!";
   }
 
   /** ER_CANNOT_ADD          */
@@ -171,7 +177,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_CANNOT_ADD][1] = "Can not add {0} to {1}";
+    contents[ER_CANNOT_ADD][1] = "{0}\uc744(\ub97c) {1}\uc5d0 \ucd94\uac00\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. ";
   }
 
   /** ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES          */
@@ -180,7 +186,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES][1] =
-      "sourceNode is null in handleApplyTemplatesInstruction!";
+      "sourceNode\ub294 handleApplyTemplatesInstruction\uc5d0\uc11c \ub110\uc785\ub2c8\ub2e4!";
   }
 
   /** ER_NO_NAME_ATTRIB          */
@@ -188,7 +194,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NO_NAME_ATTRIB][1] = "{0} must have a name attribute.";
+    contents[ER_NO_NAME_ATTRIB][1] = "{0}\uc5d0 \uc774\ub984 \uc18d\uc131\uc774 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_TEMPLATE_NOT_FOUND          */
@@ -196,7 +202,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_TEMPLATE_NOT_FOUND][1] = "Could not find template named: {0}";
+    contents[ER_TEMPLATE_NOT_FOUND][1] = "\ud15c\ud50c\ub9ac\ud2b8 {0}\uc744(\ub97c) \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_CANT_RESOLVE_NAME_AVT          */
@@ -205,7 +211,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_RESOLVE_NAME_AVT][1] =
-      "Could not resolve name AVT in xsl:call-template.";
+      "xsl:call-template\uc5d0\uc11c \uc774\ub984 AVT\ub97c \uacb0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_REQUIRES_ATTRIB          */
@@ -213,7 +219,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_REQUIRES_ATTRIB][1] = "{0} requires attribute: {1}";
+    contents[ER_REQUIRES_ATTRIB][1] = "{0}\uc5d0 \uc18d\uc131 {1}\uc774(\uac00) \ud544\uc694\ud569\ub2c8\ub2e4.";
   }
 
   /** ER_MUST_HAVE_TEST_ATTRIB          */
@@ -222,7 +228,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MUST_HAVE_TEST_ATTRIB][1] =
-      "{0} must have a 'test' attribute.";
+      "{0}\uc5d0 'test' \uc18d\uc131\uc774 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_BAD_VAL_ON_LEVEL_ATTRIB          */
@@ -231,7 +237,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_BAD_VAL_ON_LEVEL_ATTRIB][1] =
-      "Bad value on level attribute: {0}";
+      "\ub808\ubca8 \uc18d\uc131 {0}\uc5d0 \uc798\ubabb\ub41c \uac12\uc774 \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML          */
@@ -240,7 +246,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML][1] =
-      "processing-instruction name can not be 'xml'";
+      "processing-instruction \uc774\ub984\uc774 'xml'\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.";
   }
 
   /** ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
@@ -249,7 +255,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME][1] =
-      "processing-instruction name must be a valid NCName: {0}";
+      "processing-instruction \uc774\ub984\uc740 \uc62c\ubc14\ub978 NCName {0}\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_NEED_MATCH_ATTRIB          */
@@ -258,7 +264,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NEED_MATCH_ATTRIB][1] =
-      "{0} must have a match attribute if it has a mode.";
+      "{0}\uc774(\uac00) \ubaa8\ub4dc\ub97c \uac00\uc9c0\uace0 \uc788\ub294 \uacbd\uc6b0 \uc77c\uce58 \uc18d\uc131\uc774 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_NEED_NAME_OR_MATCH_ATTRIB          */
@@ -267,7 +273,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NEED_NAME_OR_MATCH_ATTRIB][1] =
-      "{0} requires either a name or a match attribute.";
+      "{0}\uc5d0 \uc774\ub984 \ub610\ub294 \uc77c\uce58 \uc18d\uc131 \uc911 \ud558\ub098\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.";
   }
 
   /** ER_CANT_RESOLVE_NSPREFIX          */
@@ -276,7 +282,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_RESOLVE_NSPREFIX][1] =
-      "Can not resolve namespace prefix: {0}";
+      "\uc774\ub984 \uacf5\uac04 \uc811\ub450\uc5b4 {0}\uc744(\ub97c) \uacb0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_ILLEGAL_VALUE          */
@@ -284,7 +290,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ILLEGAL_VALUE][1] = "xml:space has an illegal value: {0}";
+    contents[ER_ILLEGAL_VALUE][1] = "xml:space\uc5d0 \uc798\ubabb\ub41c \uac12 {0}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_NO_OWNERDOC          */
@@ -293,7 +299,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_OWNERDOC][1] =
-      "Child node does not have an owner document!";
+      "\uc790\uc2dd \ub178\ub4dc\uc5d0 \uc18c\uc720\uc790 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_ELEMTEMPLATEELEM_ERR          */
@@ -301,7 +307,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ELEMTEMPLATEELEM_ERR][1] = "ElemTemplateElement error: {0}";
+    contents[ER_ELEMTEMPLATEELEM_ERR][1] = "ElemTemplateElement \uc624\ub958: {0}";
   }
 
   /** ER_NULL_CHILD          */
@@ -309,7 +315,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NULL_CHILD][1] = "Trying to add a null child!";
+    contents[ER_NULL_CHILD][1] = "\ub110 \uc790\uc2dd\uc744 \ucd94\uac00\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc785\ub2c8\ub2e4!";
   }
 
   /** ER_NEED_SELECT_ATTRIB          */
@@ -317,7 +323,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NEED_SELECT_ATTRIB][1] = "{0} requires a select attribute.";
+    contents[ER_NEED_SELECT_ATTRIB][1] = "{0}\uc5d0 \uc120\ud0dd \uc18d\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4.";
   }
 
   /** ER_NEED_TEST_ATTRIB          */
@@ -326,7 +332,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NEED_TEST_ATTRIB][1] =
-      "xsl:when must have a 'test' attribute.";
+      "xsl:when\uc5d0 'test' \uc18d\uc131\uc774 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_NEED_NAME_ATTRIB          */
@@ -335,7 +341,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NEED_NAME_ATTRIB][1] =
-      "xsl:with-param must have a 'name' attribute.";
+      "xsl:with-param\uc5d0 'name' \uc18d\uc131\uc774 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_NO_CONTEXT_OWNERDOC          */
@@ -344,7 +350,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_CONTEXT_OWNERDOC][1] =
-      "context does not have an owner document!";
+      "\ucee8\ud14d\uc2a4\ud2b8\uc5d0 \uc18c\uc720\uc790 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_COULD_NOT_CREATE_XML_PROC_LIAISON          */
@@ -353,7 +359,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULD_NOT_CREATE_XML_PROC_LIAISON][1] =
-      "Could not create XML TransformerFactory Liaison: {0}";
+      "XML TransformerFactory Liaison {0}\uc744(\ub97c) \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_PROCESS_NOT_SUCCESSFUL          */
@@ -362,7 +368,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESS_NOT_SUCCESSFUL][1] =
-      "Xalan: Process was not successful.";
+      "Xalan: \ud504\ub85c\uc138\uc2a4\uc5d0 \uc131\uacf5\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_NOT_SUCCESSFUL          */
@@ -370,7 +376,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NOT_SUCCESSFUL][1] = "Xalan: was not successful.";
+    contents[ER_NOT_SUCCESSFUL][1] = "Xalan:\uc5d0 \uc131\uacf5\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_ENCODING_NOT_SUPPORTED          */
@@ -378,7 +384,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ENCODING_NOT_SUPPORTED][1] = "Encoding not supported: {0}";
+    contents[ER_ENCODING_NOT_SUPPORTED][1] = "\ucf54\ub4dc\ud654\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4: {0}";
   }
 
   /** ER_COULD_NOT_CREATE_TRACELISTENER          */
@@ -387,7 +393,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULD_NOT_CREATE_TRACELISTENER][1] =
-      "Could not create TraceListener: {0}";
+      "TraceListener {0}\uc744(\ub97c) \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_KEY_REQUIRES_NAME_ATTRIB          */
@@ -396,7 +402,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_KEY_REQUIRES_NAME_ATTRIB][1] =
-      "xsl:key requires a 'name' attribute!";
+      "xsl:key\uc5d0 'name' \uc18d\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4!";
   }
 
   /** ER_KEY_REQUIRES_MATCH_ATTRIB          */
@@ -405,7 +411,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_KEY_REQUIRES_MATCH_ATTRIB][1] =
-      "xsl:key requires a 'match' attribute!";
+      "xsl:key\uc5d0 'match' \uc18d\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4!";
   }
 
   /** ER_KEY_REQUIRES_USE_ATTRIB          */
@@ -414,7 +420,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_KEY_REQUIRES_USE_ATTRIB][1] =
-      "xsl:key requires a 'use' attribute!";
+      "xsl:key\uc5d0 'use' \uc18d\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4!";
   }
 
   /** ER_REQUIRES_ELEMENTS_ATTRIB          */
@@ -423,7 +429,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_REQUIRES_ELEMENTS_ATTRIB][1] =
-      "(StylesheetHandler) {0} requires an 'elements' attribute!";
+      "(StylesheetHandler) {0}\uc5d0 'elements' \uc18d\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4!";
   }
 
   /** ER_MISSING_PREFIX_ATTRIB          */
@@ -432,7 +438,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_PREFIX_ATTRIB][1] =
-      "(StylesheetHandler) {0} attribute 'prefix' is missing";
+      "(StylesheetHandler) {0} \uc18d\uc131 'prefix'\uac00 \ube60\uc84c\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_BAD_STYLESHEET_URL          */
@@ -440,7 +446,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_BAD_STYLESHEET_URL][1] = "Stylesheet URL is bad: {0}";
+    contents[ER_BAD_STYLESHEET_URL][1] = "Stylesheet URL\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4: {0}";
   }
 
   /** ER_FILE_NOT_FOUND          */
@@ -448,7 +454,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_FILE_NOT_FOUND][1] = "Stylesheet file was not found: {0}";
+    contents[ER_FILE_NOT_FOUND][1] = "Stylesheet \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: {0}";
   }
 
   /** ER_IOEXCEPTION          */
@@ -457,7 +463,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IOEXCEPTION][1] =
-      "Had IO Exception with stylesheet file: {0}";
+      "\uc2a4\ud0c0\uc77c \uc2dc\ud2b8 \ud30c\uc77c\ub85c IO \uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc600\uc2b5\ub2c8\ub2e4: {0}";
   }
 
   /** ER_NO_HREF_ATTRIB          */
@@ -466,7 +472,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_HREF_ATTRIB][1] =
-      "(StylesheetHandler) Could not find href attribute for {0}";
+      "(StylesheetHandler) {0}\uc5d0 \ub300\ud55c href \uc18d\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_STYLESHEET_INCLUDES_ITSELF          */
@@ -475,7 +481,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_STYLESHEET_INCLUDES_ITSELF][1] =
-      "(StylesheetHandler) {0} is directly or indirectly including itself!";
+      "(StylesheetHandler) {0}\uc774(\uac00) \uc9c1\uc811 \ub610\ub294 \uac04\uc811\uc801\uc73c\ub85c \uc790\uc2e0\uc744 \ud3ec\ud568\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_PROCESSINCLUDE_ERROR          */
@@ -484,7 +490,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSINCLUDE_ERROR][1] =
-      "StylesheetHandler.processInclude error, {0}";
+      "StylesheetHandler.processInclude \uc624\ub958, {0}";
   }
 
   /** ER_MISSING_LANG_ATTRIB          */
@@ -493,7 +499,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_LANG_ATTRIB][1] =
-      "(StylesheetHandler) {0} attribute 'lang' is missing";
+      "(StylesheetHandler) {0} \uc18d\uc131 'lang'\uc774 \ube60\uc84c\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_MISSING_CONTAINER_ELEMENT_COMPONENT          */
@@ -502,7 +508,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_CONTAINER_ELEMENT_COMPONENT][1] =
-      "(StylesheetHandler) misplaced {0} element?? Missing container element 'component'";
+      "(StylesheetHandler) {0} \uc694\uc18c\uc758 \uc704\uce58\uac00 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4?? container \uc694\uc18c 'component'\uac00 \ube60\uc84c\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_CAN_ONLY_OUTPUT_TO_ELEMENT          */
@@ -511,7 +517,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CAN_ONLY_OUTPUT_TO_ELEMENT][1] =
-      "Can only output to an Element, DocumentFragment, Document, or PrintWriter.";
+      "Element, DocumentFragment, Document \ub610\ub294 PrintWriter\ub85c\ub9cc \ucd9c\ub825\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_PROCESS_ERROR          */
@@ -519,7 +525,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_PROCESS_ERROR][1] = "StylesheetRoot.process error";
+    contents[ER_PROCESS_ERROR][1] = "StylesheetRoot.process \uc624\ub958";
   }
 
   /** ER_UNIMPLNODE_ERROR          */
@@ -527,7 +533,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNIMPLNODE_ERROR][1] = "UnImplNode error: {0}";
+    contents[ER_UNIMPLNODE_ERROR][1] = "UnImplNode \uc624\ub958: {0}";
   }
 
   /** ER_NO_SELECT_EXPRESSION          */
@@ -536,7 +542,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_SELECT_EXPRESSION][1] =
-      "Error! Did not find xpath select expression (-select).";
+      "\uc624\ub958! xpath \uc120\ud0dd \ud45c\ud604\uc2dd(-select)\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
 
   /** ER_CANNOT_SERIALIZE_XSLPROCESSOR          */
@@ -545,7 +551,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_SERIALIZE_XSLPROCESSOR][1] =
-      "Can not serialize an XSLProcessor!";
+      "XSLProcessor\ub97c \uc77c\ub828\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_NO_INPUT_STYLESHEET          */
@@ -554,7 +560,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_INPUT_STYLESHEET][1] =
-      "Stylesheet input was not specified!";
+      "Stylesheet \uc785\ub825\uc744 \uc9c0\uc815\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_FAILED_PROCESS_STYLESHEET          */
@@ -563,7 +569,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FAILED_PROCESS_STYLESHEET][1] =
-      "Failed to process stylesheet!";
+      "stylesheet \ucc98\ub9ac\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_COULDNT_PARSE_DOC          */
@@ -571,7 +577,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_COULDNT_PARSE_DOC][1] = "Could not parse {0} document!";
+    contents[ER_COULDNT_PARSE_DOC][1] = "{0} \ubb38\uc11c\ub97c \uad6c\ubb38 \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_COULDNT_FIND_FRAGMENT          */
@@ -579,7 +585,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_COULDNT_FIND_FRAGMENT][1] = "Could not find fragment: {0}";
+    contents[ER_COULDNT_FIND_FRAGMENT][1] = "\ub2e8\ud3b8 {0}\uc744(\ub97c) \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_NODE_NOT_ELEMENT          */
@@ -588,7 +594,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NODE_NOT_ELEMENT][1] =
-      "Node pointed to by fragment identifier was not an element: {0}";
+      "\ub2e8\ud3b8 \uc2dd\ubcc4\uc790\uc5d0 \uc758\ud574 \uc9c0\uc815\ub41c \ub178\ub4dc\ub294 \uc694\uc18c\uac00 \uc544\ub2d9\ub2c8\ub2e4: {0}";
   }
 
   /** ER_FOREACH_NEED_MATCH_OR_NAME_ATTRIB          */
@@ -597,7 +603,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FOREACH_NEED_MATCH_OR_NAME_ATTRIB][1] =
-      "for-each must have either a match or name attribute";
+      "for-each\uc5d0 \uc77c\uce58 \ub610\ub294 \uc774\ub984 \uc18d\uc131 \uc911 \ud558\ub098\uac00 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_TEMPLATES_NEED_MATCH_OR_NAME_ATTRIB          */
@@ -606,7 +612,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_TEMPLATES_NEED_MATCH_OR_NAME_ATTRIB][1] =
-      "templates must have either a match or name attribute";
+      "\ud15c\ud50c\ub9ac\ud2b8\uc5d0 \uc77c\uce58 \ub610\ub294 \uc774\ub984 \uc18d\uc131 \uc911 \ud558\ub098\uac00 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_NO_CLONE_OF_DOCUMENT_FRAG          */
@@ -615,7 +621,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_CLONE_OF_DOCUMENT_FRAG][1] =
-      "No clone of a document fragment!";
+      "\ubb38\uc11c \ub2e8\ud3b8 \ubcf5\uc81c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_CANT_CREATE_ITEM          */
@@ -624,7 +630,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_CREATE_ITEM][1] =
-      "Can not create item in result tree: {0}";
+      "\uacb0\uacfc \ud2b8\ub9ac {0}\uc5d0 \ud56d\ubaa9\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_XMLSPACE_ILLEGAL_VALUE          */
@@ -633,7 +639,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XMLSPACE_ILLEGAL_VALUE][1] =
-      "xml:space in the source XML has an illegal value: {0}";
+      "\uc18c\uc2a4 XML\uc758 xml:space\uc5d0 \uc798\ubabb\ub41c \uac12 {0}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_NO_XSLKEY_DECLARATION          */
@@ -642,7 +648,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_XSLKEY_DECLARATION][1] =
-      "There is no xsl:key declaration for {0}!";
+      "{0}\uc5d0 \ub300\ud558\uc5ec xsl:key \uc120\uc5b8\uc774 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_CANT_CREATE_URL          */
@@ -650,7 +656,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_CANT_CREATE_URL][1] = "Error! Cannot create url for: {0}";
+    contents[ER_CANT_CREATE_URL][1] = "\uc624\ub958! {0}\uc5d0 \ub300\ud558\uc5ec url\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_XSLFUNCTIONS_UNSUPPORTED          */
@@ -658,7 +664,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_XSLFUNCTIONS_UNSUPPORTED][1] = "xsl:functions is unsupported";
+    contents[ER_XSLFUNCTIONS_UNSUPPORTED][1] = "xsl:functions\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_PROCESSOR_ERROR          */
@@ -666,7 +672,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_PROCESSOR_ERROR][1] = "XSLT TransformerFactory Error";
+    contents[ER_PROCESSOR_ERROR][1] = "XSLT TransformerFactory \uc624\ub958";
   }
 
   /** ER_NOT_ALLOWED_INSIDE_STYLESHEET          */
@@ -675,7 +681,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NOT_ALLOWED_INSIDE_STYLESHEET][1] =
-      "(StylesheetHandler) {0} not allowed inside a stylesheet!";
+      "(StylesheetHandler) {0}\uc740(\ub294) \uc2a4\ud0c0\uc77c \uc2dc\ud2b8 \ub0b4\ubd80\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_RESULTNS_NOT_SUPPORTED          */
@@ -684,7 +690,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_RESULTNS_NOT_SUPPORTED][1] =
-      "result-ns no longer supported!  Use xsl:output instead.";
+      "result-ns\ub294 \ub354 \uc774\uc0c1 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4! \ub300\uc2e0 xsl:output\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.";
   }
 
   /** ER_DEFAULTSPACE_NOT_SUPPORTED          */
@@ -693,7 +699,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DEFAULTSPACE_NOT_SUPPORTED][1] =
-      "default-space no longer supported!  Use xsl:strip-space or xsl:preserve-space instead.";
+      "default-space\ub294 \ub354 \uc774\uc0c1 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4! \ub300\uc2e0 xsl:preserve-space\ub97c \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.";
   }
 
   /** ER_INDENTRESULT_NOT_SUPPORTED          */
@@ -702,7 +708,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INDENTRESULT_NOT_SUPPORTED][1] =
-      "indent-result no longer supported!  Use xsl:output instead.";
+      "indent-result\ub294 \ub354 \uc774\uc0c1 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4! \ub300\uc2e0 xsl:output\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.";
   }
 
   /** ER_ILLEGAL_ATTRIB          */
@@ -711,7 +717,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_ILLEGAL_ATTRIB][1] =
-      "(StylesheetHandler) {0} has an illegal attribute: {1}";
+      "(StylesheetHandler) {0}\uc5d0 \uc798\ubabb\ub41c \uc18d\uc131 {1}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_UNKNOWN_XSL_ELEM          */
@@ -719,7 +725,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNKNOWN_XSL_ELEM][1] = "Unknown XSL element: {0}";
+    contents[ER_UNKNOWN_XSL_ELEM][1] = "\uc54c \uc218 \uc5c6\ub294 XSL \uc694\uc18c {0}";
   }
 
   /** ER_BAD_XSLSORT_USE          */
@@ -728,7 +734,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_BAD_XSLSORT_USE][1] =
-      "(StylesheetHandler) xsl:sort can only be used with xsl:apply-templates or xsl:for-each.";
+      "(StylesheetHandler) xsl:sort\ub294 xsl:apply-templates \ub610\ub294 xsl:for-each\uc640\ub9cc \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_MISPLACED_XSLWHEN          */
@@ -737,7 +743,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISPLACED_XSLWHEN][1] =
-      "(StylesheetHandler) misplaced xsl:when!";
+      "(StylesheetHandler) xsl:when\uc758 \uc704\uce58\uac00 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_XSLWHEN_NOT_PARENTED_BY_XSLCHOOSE          */
@@ -746,7 +752,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XSLWHEN_NOT_PARENTED_BY_XSLCHOOSE][1] =
-      "(StylesheetHandler) xsl:when not parented by xsl:choose!";
+      "(StylesheetHandler) xsl:when\uc758 \ubd80\ubaa8\ub294 xsl:choose\uac00 \uc544\ub2d9\ub2c8\ub2e4!";
   }
 
   /** ER_MISPLACED_XSLOTHERWISE          */
@@ -755,7 +761,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISPLACED_XSLOTHERWISE][1] =
-      "(StylesheetHandler) misplaced xsl:otherwise!";
+      "(StylesheetHandler) xsl:otherwise\uc758 \uc704\uce58\uac00 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_XSLOTHERWISE_NOT_PARENTED_BY_XSLCHOOSE          */
@@ -764,7 +770,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XSLOTHERWISE_NOT_PARENTED_BY_XSLCHOOSE][1] =
-      "(StylesheetHandler) xsl:otherwise not parented by xsl:choose!";
+      "(StylesheetHandler) xsl:otherwise\uc758 \ubd80\ubaa8\ub294 xsl:choose\uac00 \uc544\ub2d9\ub2c8\ub2e4!";
   }
 
   /** ER_NOT_ALLOWED_INSIDE_TEMPLATE          */
@@ -773,7 +779,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NOT_ALLOWED_INSIDE_TEMPLATE][1] =
-      "(StylesheetHandler) {0} is not allowed inside a template!";
+      "(StylesheetHandler) {0}\uc740(\ub294) \ud15c\ud50c\ub9ac\ud2b8 \ub0b4\ubd80\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_UNKNOWN_EXT_NS_PREFIX          */
@@ -782,7 +788,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_UNKNOWN_EXT_NS_PREFIX][1] =
-      "(StylesheetHandler) {0} extension namespace prefix {1} unknown";
+      "(StylesheetHandler) {0} \ud655\uc7a5 \uc774\ub984 \uacf5\uac04 \uc811\ub450\uc5b4 {1}\uc744(\ub97c) \uc54c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_IMPORTS_AS_FIRST_ELEM          */
@@ -791,7 +797,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IMPORTS_AS_FIRST_ELEM][1] =
-      "(StylesheetHandler) Imports can only occur as the first elements in the stylesheet!";
+      "(StylesheetHandler) \uac00\uc838\uc624\uae30\ub294 \uc2a4\ud0c0\uc77c \uc2dc\ud2b8\uc758 \uccab \ubc88\uc9f8 \uc694\uc18c\ub85c\ub9cc \ubc1c\uc0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_IMPORTING_ITSELF          */
@@ -800,7 +806,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IMPORTING_ITSELF][1] =
-      "(StylesheetHandler) {0} is directly or indirectly importing itself!";
+      "(StylesheetHandler) {0}\uc774(\uac00) \uc9c1\uc811 \ub610\ub294 \uac04\uc811\uc801\uc73c\ub85c \uc790\uc2e0\uc744 \uac00\uc838\uc624\uace0 \uc788\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_XMLSPACE_ILLEGAL_VAL          */
@@ -809,7 +815,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XMLSPACE_ILLEGAL_VAL][1] =
-      "(StylesheetHandler) " + "xml:space has an illegal value: {0}";
+      "(StylesheetHandler) " + "xml:space\uc5d0 \uc798\ubabb\ub41c \uac12 {0}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL          */
@@ -818,7 +824,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL][1] =
-      "processStylesheet not succesfull!";
+      "processStylesheet\uac00 \uc131\uacf5\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_SAX_EXCEPTION          */
@@ -826,7 +832,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_SAX_EXCEPTION][1] = "SAX Exception";
+    contents[ER_SAX_EXCEPTION][1] = "SAX \uc608\uc678";
   }
 
   /** ER_FUNCTION_NOT_SUPPORTED          */
@@ -834,7 +840,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_FUNCTION_NOT_SUPPORTED][1] = "Function not supported!";
+    contents[ER_FUNCTION_NOT_SUPPORTED][1] = "\uae30\ub2a5\uc774 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_XSLT_ERROR          */
@@ -842,7 +848,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_XSLT_ERROR][1] = "XSLT Error";
+    contents[ER_XSLT_ERROR][1] = "XSLT \uc624\ub958";
   }
 
   /** ER_CURRENCY_SIGN_ILLEGAL          */
@@ -851,7 +857,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CURRENCY_SIGN_ILLEGAL][1] =
-      "currency sign is not allowed in format pattern string";
+      "\ud615\uc2dd \ud328\ud134 \ubb38\uc790\uc5f4\uc5d0 \ud1b5\ud654 \ubd80\ud638\uac00 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_DOCUMENT_FUNCTION_INVALID_IN_STYLESHEET_DOM          */
@@ -860,7 +866,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DOCUMENT_FUNCTION_INVALID_IN_STYLESHEET_DOM][1] =
-      "Document function not supported in Stylesheet DOM!";
+      "Stylesheet DOM\uc5d0\uc11c \ubb38\uc11c \uae30\ub2a5\uc774 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_CANT_RESOLVE_PREFIX_OF_NON_PREFIX_RESOLVER          */
@@ -869,7 +875,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_RESOLVE_PREFIX_OF_NON_PREFIX_RESOLVER][1] =
-      "Can't resolve prefix of non-Prefix resolver!";
+      "\uc811\ub450\uc5b4\uac00 \uc5c6\ub294 \uacb0\uc815\uc790\uc758 \uc811\ub450\uc5b4\ub97c \uacb0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_REDIRECT_COULDNT_GET_FILENAME          */
@@ -878,7 +884,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_REDIRECT_COULDNT_GET_FILENAME][1] =
-      "Redirect extension: Could not get filename - file or select attribute must return vald string.";
+      "Redirect \ud655\uc7a5: \ud30c\uc77c \uc774\ub984\uc744 \uac00\uc838\uc62c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4 - \ud30c\uc77c \ub610\ub294 \uc120\ud0dd \uc18d\uc131\uc774 \uc62c\ubc14\ub978 \ubb38\uc790\uc5f4\uc744 \ubc18\ud658\ud574\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_CANNOT_BUILD_FORMATTERLISTENER_IN_REDIRECT          */
@@ -887,7 +893,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_BUILD_FORMATTERLISTENER_IN_REDIRECT][1] =
-      "Can not build FormatterListener in Redirect extension!";
+      "Redirect \ud655\uc7a5\uc5d0 FormatterListener\ub97c \uad6c\ucd95\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_INVALID_PREFIX_IN_EXCLUDERESULTPREFIX          */
@@ -896,7 +902,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INVALID_PREFIX_IN_EXCLUDERESULTPREFIX][1] =
-      "Prefix in exclude-result-prefixes is not valid: {0}";
+      "exclude-result-prefixes\uc758 \uc811\ub450\uc5b4\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4: {0}";
   }
 
   /** ER_MISSING_NS_URI          */
@@ -905,7 +911,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_NS_URI][1] =
-      "Missing namespace URI for specified prefix";
+      "\uc9c0\uc815\ub41c \uc811\ub450\uc5b4\uc5d0 \ub300\ud55c \uc774\ub984 \uacf5\uac04 URI\uac00 \ube60\uc84c\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_MISSING_ARG_FOR_OPTION          */
@@ -914,7 +920,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_ARG_FOR_OPTION][1] =
-      "Missing argument for option: {0}";
+      "\uc635\uc158 {0}\uc5d0 \ub300\ud55c \uc778\uc790\uac00 \ube60\uc84c\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_INVALID_OPTION          */
@@ -922,7 +928,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_INVALID_OPTION][1] = "Invalid option: {0}";
+    contents[ER_INVALID_OPTION][1] = "\uc798\ubabb\ub41c \uc635\uc158: {0}";
   }
 
   /** ER_MALFORMED_FORMAT_STRING          */
@@ -930,7 +936,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_MALFORMED_FORMAT_STRING][1] = "Malformed format string: {0}";
+    contents[ER_MALFORMED_FORMAT_STRING][1] = "\uc798\ubabb\ub41c \ud615\uc2dd \ubb38\uc790\uc5f4: {0}";
   }
 
   /** ER_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
@@ -939,7 +945,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_STYLESHEET_REQUIRES_VERSION_ATTRIB][1] =
-      "xsl:stylesheet requires a 'version' attribute!";
+      "xsl:stylesheet\uc5d0 'version' \uc18d\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4!";
   }
 
   /** ER_ILLEGAL_ATTRIBUTE_VALUE          */
@@ -948,7 +954,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_ILLEGAL_ATTRIBUTE_VALUE][1] =
-      "Attribute: {0} has an illegal value: {1}";
+      "\uc18d\uc131: {0}\uc5d0 \uc798\ubabb\ub41c \uac12 {1}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_CHOOSE_REQUIRES_WHEN          */
@@ -956,7 +962,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_CHOOSE_REQUIRES_WHEN][1] = "xsl:choose requires an xsl:when";
+    contents[ER_CHOOSE_REQUIRES_WHEN][1] = "xsl:choose\uc5d0 xsl:when\uc774 \ud544\uc694\ud569\ub2c8\ub2e4.   ";
   }
 
   /** ER_NO_APPLY_IMPORT_IN_FOR_EACH          */
@@ -965,7 +971,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_APPLY_IMPORT_IN_FOR_EACH][1] =
-      "xsl:apply-imports not allowed in a xsl:for-each";
+      "xsl:apply-imports\ub294 xsl:for-each\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_CANT_USE_DTM_FOR_OUTPUT          */
@@ -974,7 +980,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_USE_DTM_FOR_OUTPUT][1] =
-      "Cannot use a DTMLiaison for an output DOM node... pass a org.apache.xpath.DOM2Helper instead!";
+      "\ucd9c\ub825 DOM \ub178\ub4dc\ub85c DTMLiaison\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4... \ub300\uc2e0 org.apache.xpath.DOM2Helper\ub97c \uc804\ub2ec\ud558\uc2ed\uc2dc\uc624!";
   }
 
   /** ER_CANT_USE_DTM_FOR_INPUT          */
@@ -983,7 +989,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_USE_DTM_FOR_INPUT][1] =
-      "Cannot use a DTMLiaison for a input DOM node... pass a org.apache.xpath.DOM2Helper instead!";
+      "\uc785\ub825 DOM \ub178\ub4dc\ub85c DTMLiaison\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4... \ub300\uc2e0 org.apache.xpath.DOM2Helper\ub97c \uc804\ub2ec\ud558\uc2ed\uc2dc\uc624!";
   }
 
   /** ER_CALL_TO_EXT_FAILED          */
@@ -992,7 +998,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CALL_TO_EXT_FAILED][1] =
-      "Call to extension element failed: {0}";
+      "\ud655\uc7a5 \uc694\uc18c\uc5d0 \ub300\ud55c \ud638\ucd9c\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4: {0}";
   }
 
   /** ER_PREFIX_MUST_RESOLVE          */
@@ -1001,7 +1007,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PREFIX_MUST_RESOLVE][1] =
-      "Prefix must resolve to a namespace: {0}";
+      "\uc811\ub450\uc5b4\uac00 \uc774\ub984 \uacf5\uac04 {0}\uc73c\ub85c(\ub85c) \uacb0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** ER_INVALID_UTF16_SURROGATE          */
@@ -1010,7 +1016,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INVALID_UTF16_SURROGATE][1] =
-      "Invalid UTF-16 surrogate detected: {0} ?";
+      "\uc798\ubabb\ub41c UTF-16 \ub300\ub9ac\uac00 \uac10\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4: {0} ?";
   }
 
   /** ER_XSLATTRSET_USED_ITSELF          */
@@ -1019,7 +1025,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XSLATTRSET_USED_ITSELF][1] =
-      "xsl:attribute-set {0} used itself, which will cause an infinite loop.";
+      "xsl:attribute-set {0}\uc774(\uac00) \uc790\uc2e0\uc744 \uc0ac\uc6a9\ud558\uc600\uba70, \uc774\ub85c \uc778\ud574 \ubb34\ud55c \ub8e8\ud504\uac00 \ubc1c\uc0dd\ud569\ub2c8\ub2e4.";
   }
 
   /** ER_CANNOT_MIX_XERCESDOM          */
@@ -1028,7 +1034,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_MIX_XERCESDOM][1] =
-      "Can not mix non Xerces-DOM input with Xerces-DOM output!";
+      "Xerces-DOM\uc774 \uc544\ub2cc \uc785\ub825\uacfc Xerces-DOM \ucd9c\ub825\uc744 \ud568\uaed8 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** ER_TOO_MANY_LISTENERS          */
@@ -1046,7 +1052,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IN_ELEMTEMPLATEELEM_READOBJECT][1] =
-      "In ElemTemplateElement.readObject: {0}";
+      "ElemTemplateElement.readObject\uc5d0: {0}";
   }
 
   /** ER_DUPLICATE_NAMED_TEMPLATE          */
@@ -1055,7 +1061,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DUPLICATE_NAMED_TEMPLATE][1] =
-      "Found more than one template named: {0}";
+      "\uac19\uc740 \uc774\ub984 {0}\uc744(\ub97c) \uac00\uc9c4 \ub458 \uc774\uc0c1\uc758 \ud15c\ud50c\ub9ac\ud2b8\ub97c \ucc3e\uc558\uc2b5\ub2c8\ub2e4.";
   }
 
   /** ER_INVALID_KEY_CALL          */
@@ -1064,316 +1070,316 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INVALID_KEY_CALL][1] =
-      "Invalid function call: recursive key() calls are not allowed";
+      "\uc798\ubabb\ub41c \ud568\uc218 \ud638\ucd9c: \uc21c\ud658\uc801 key() \ud638\ucd9c\uc740 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
   /** Variable is referencing itself          */
   public static final int ER_REFERENCING_ITSELF = 107;
 
   static
   {
     contents[ER_REFERENCING_ITSELF][1] =
-      "Variable {0} is directly or indirectly referencing itself!";
+      "{0} \ubcc0\uc218\uac00 \uc9c1\uc811 \ub610\ub294 \uac04\uc811\uc801\uc73c\ub85c \uc790\uc2e0\uc744 \ucc38\uc870\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4!";
   }
-
+  
   /** Illegal DOMSource input          */
   public static final int ER_ILLEGAL_DOMSOURCE_INPUT = 108;
 
   static
   {
     contents[ER_ILLEGAL_DOMSOURCE_INPUT][1] =
-      "The input node can not be null for a DOMSource for newTemplates!";
+      "newTemplates\uc758 DOMSource\uc5d0\uc11c \uc785\ub825 \ub178\ub4dc\uac00 \ub110\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
-
+	
 	/** Class not found for option         */
   public static final int ER_CLASS_NOT_FOUND_FOR_OPTION = 109;
 
   static
   {
     contents[ER_CLASS_NOT_FOUND_FOR_OPTION][1] =
-			"Class file not found for option {0}";
+			"\uc635\uc158 {0}\uc758 \ud074\ub798\uc2a4 \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.    ";
   }
-
+	
 	/** Required Element not found         */
   public static final int ER_REQUIRED_ELEM_NOT_FOUND = 110;
 
   static
   {
     contents[ER_REQUIRED_ELEM_NOT_FOUND][1] =
-			"Required Element not found: {0}";
+			"\ud544\uc218 \uc694\uc18c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: {0}";
   }
-
+  
   /** InputStream cannot be null         */
   public static final int ER_INPUT_CANNOT_BE_NULL = 111;
 
   static
   {
     contents[ER_INPUT_CANNOT_BE_NULL][1] =
-			"InputStream cannot be null";
+			"InputStream\uc740 \ub110\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** URI cannot be null         */
   public static final int ER_URI_CANNOT_BE_NULL = 112;
 
   static
   {
     contents[ER_URI_CANNOT_BE_NULL][1] =
-			"URI cannot be null";
+			"URI\ub294 \ub110\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** File cannot be null         */
   public static final int ER_FILE_CANNOT_BE_NULL = 113;
 
   static
   {
     contents[ER_FILE_CANNOT_BE_NULL][1] =
-			"File cannot be null";
+			"\ud30c\uc77c\uc740 \ub110\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** InputSource cannot be null         */
   public static final int ER_SOURCE_CANNOT_BE_NULL = 114;
 
   static
   {
     contents[ER_SOURCE_CANNOT_BE_NULL][1] =
-			"InputSource cannot be null";
+			"InputSource\ub294 \ub110\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** Can't overwrite cause         */
   public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
 
   static
   {
     contents[ER_CANNOT_OVERWRITE_CAUSE][1] =
-			"Cannot overwrite cause";
+			"\uacb9\uccd0\uc4f8 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** Could not initialize BSF Manager        */
   public static final int ER_CANNOT_INIT_BSFMGR = 116;
 
   static
   {
     contents[ER_CANNOT_INIT_BSFMGR][1] =
-			"Could not initialize BSF Manager";
+			"BSF \uad00\ub9ac\uc790\ub97c \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** Could not compile extension       */
   public static final int ER_CANNOT_CMPL_EXTENSN = 117;
 
   static
   {
     contents[ER_CANNOT_CMPL_EXTENSN][1] =
-			"Could not compile extension";
+			"\ud655\uc7a5\uc790\ub97c \ucef4\ud30c\uc77c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** Could not create extension       */
   public static final int ER_CANNOT_CREATE_EXTENSN = 118;
 
   static
   {
     contents[ER_CANNOT_CREATE_EXTENSN][1] =
-      "Could not create extension: {0} because of: {1}";
+      "{1}\ub85c \uc778\ud574 \ud655\uc7a5\uc790 {0}\uc744(\ub97c) \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
-
+  
   /** Instance method call to method {0} requires an Object instance as first argument       */
   public static final int ER_INSTANCE_MTHD_CALL_REQUIRES = 119;
 
   static
   {
     contents[ER_INSTANCE_MTHD_CALL_REQUIRES][1] =
-      "Instance method call to method {0} requires an Object instance as first argument";
+      "\uba54\uc18c\ub4dc {0}\uc5d0 \ub300\ud55c \uc778\uc2a4\ud134\uc2a4 \uba54\uc18c\ub4dc \ud638\ucd9c\uc5d0\uc11c \uac1d\uccb4 \uc778\uc2a4\ud134\uc2a4\uac00 \uccab \ubc88\uc9f8 \uc778\uc790\uac00 \ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
-
+  
   /** Invalid element name specified       */
   public static final int ER_INVALID_ELEMENT_NAME = 120;
 
   static
   {
     contents[ER_INVALID_ELEMENT_NAME][1] =
-      "Invalid element name specified {0}";
+      "\uc798\ubabb\ub41c \uc774\ub984 \uc694\uc18c {0}\uc774(\uac00) \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.   ";
   }
-
+  
    /** Element name method must be static      */
   public static final int ER_ELEMENT_NAME_METHOD_STATIC = 121;
 
   static
   {
     contents[ER_ELEMENT_NAME_METHOD_STATIC][1] =
-      "Element name method must be static {0}";
+      "\uc774\ub984 \uc694\uc18c \uba54\uc18c\ub4dc\ub294 \uc815\uc801 {0}\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
-
+  
    /** Extension function {0} : {1} is unknown      */
   public static final int ER_EXTENSION_FUNC_UNKNOWN = 122;
 
   static
   {
     contents[ER_EXTENSION_FUNC_UNKNOWN][1] =
-             "Extension function {0} : {1} is unknown";
+             "\ud655\uc7a5 \uae30\ub2a5 {0} : {1}\uc744(\ub97c) \uc54c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /** More than one best match for constructor for       */
   public static final int ER_MORE_MATCH_CONSTRUCTOR = 123;
 
   static
   {
     contents[ER_MORE_MATCH_CONSTRUCTOR][1] =
-             "More than one best match for constructor for {0}";
+             "{0}\uc758 \uad6c\uc131\uc790\uc640 \uc77c\uce58\ud558\ub294 \uac83\uc774 \ub450 \uac1c \uc774\uc0c1\uc785\ub2c8\ub2e4.   ";
   }
-
+  
    /** More than one best match for method      */
   public static final int ER_MORE_MATCH_METHOD = 124;
 
   static
   {
     contents[ER_MORE_MATCH_METHOD][1] =
-             "More than one best match for method {0}";
+             "{0} \uba54\uc18c\ub4dc\uc640 \uc77c\uce58\ud558\ub294 \uac83\uc774 \ub450 \uac1c \uc774\uc0c1\uc785\ub2c8\ub2e4";
   }
-
+  
    /** More than one best match for element method      */
   public static final int ER_MORE_MATCH_ELEMENT = 125;
 
   static
   {
     contents[ER_MORE_MATCH_ELEMENT][1] =
-             "More than one best match for element method {0}";
+             "{0} \uc694\uc18c \uba54\uc18c\ub4dc\uc640 \uc77c\uce58\ud558\ub294 \uac83\uc774 \ub450 \uac1c \uc774\uc0c1\uc785\ub2c8\ub2e4";
   }
-
+  
    /** Invalid context passed to evaluate       */
   public static final int ER_INVALID_CONTEXT_PASSED = 126;
 
   static
   {
     contents[ER_INVALID_CONTEXT_PASSED][1] =
-             "Invalid context passed to evaluate {0}";
+             "{0} \ud3c9\uac00\ub97c \uc704\ud574 \uc804\ub2ec\ub41c \ucee8\ud14d\uc2a4\ud2b8\uac00 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /** Pool already exists       */
   public static final int ER_POOL_EXISTS = 127;
 
   static
   {
     contents[ER_POOL_EXISTS][1] =
-             "Pool already exists";
+             "\ud480\uc774 \uc774\ubbf8 \uc788\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** No driver Name specified      */
   public static final int ER_NO_DRIVER_NAME = 128;
 
   static
   {
     contents[ER_NO_DRIVER_NAME][1] =
-             "No driver Name specified";
+             "\uc9c0\uc815\ub41c \ub4dc\ub77c\uc774\ubc84 \uc774\ub984\uc774 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** No URL specified     */
   public static final int ER_NO_URL = 129;
 
   static
   {
     contents[ER_NO_URL][1] =
-             "No URL specified";
+             "\uc9c0\uc815\ub41c URL\uc774 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Pool size is less than one    */
   public static final int ER_POOL_SIZE_LESSTHAN_ONE = 130;
 
   static
   {
     contents[ER_POOL_SIZE_LESSTHAN_ONE][1] =
-             "Pool size is less than one!";
+             "\ud480 \ud06c\uae30\uac00 1\ubcf4\ub2e4 \uc791\uc2b5\ub2c8\ub2e4!";
   }
-
+  
    /** Invalid driver name specified    */
   public static final int ER_INVALID_DRIVER = 131;
 
   static
   {
     contents[ER_INVALID_DRIVER][1] =
-             "Invalid driver name specified!";
+             "\uc9c0\uc815\ub41c \ub4dc\ub77c\uc774\ubc84 \uc774\ub984\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4!";
   }
-
+  
    /** Did not find the stylesheet root    */
   public static final int ER_NO_STYLESHEETROOT = 132;
 
   static
   {
     contents[ER_NO_STYLESHEETROOT][1] =
-             "Did not find the stylesheet root!";
+             "\uc2a4\ud0c0\uc77c \uc2dc\ud2b8 \ub8e8\ud2b8\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
-
+  
    /** Illegal value for xml:space     */
   public static final int ER_ILLEGAL_XMLSPACE_VALUE = 133;
 
   static
   {
     contents[ER_ILLEGAL_XMLSPACE_VALUE][1] =
-         "Illegal value for xml:space";
+         "xml:space\uc5d0 \ub300\ud55c \uac12\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** processFromNode failed     */
   public static final int ER_PROCESSFROMNODE_FAILED = 134;
 
   static
   {
     contents[ER_PROCESSFROMNODE_FAILED][1] =
-         "processFromNode failed";
+         "processFromNode\uac00 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** The resource [] could not load:     */
   public static final int ER_RESOURCE_COULD_NOT_LOAD = 135;
 
   static
   {
     contents[ER_RESOURCE_COULD_NOT_LOAD][1] =
-        "The resource [ {0} ] could not load: {1} \n {2} \t {3}";
+        "[ {0} ] \uc790\uc6d0\uc774 \ub2e4\uc74c\uc744 \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: {1} \n {2} \t {3}";
   }
-
-
+   
+  
    /** Buffer size <=0     */
   public static final int ER_BUFFER_SIZE_LESSTHAN_ZERO = 136;
 
   static
   {
     contents[ER_BUFFER_SIZE_LESSTHAN_ZERO][1] =
-        "Buffer size <=0";
+        "\ubc84\ud37c \ud06c\uae30 <=0";
   }
-
+  
    /** Unknown error when calling extension    */
   public static final int ER_UNKNOWN_ERROR_CALLING_EXTENSION = 137;
 
   static
   {
     contents[ER_UNKNOWN_ERROR_CALLING_EXTENSION][1] =
-        "Unknown error when calling extension";
+        "\ud655\uc7a5\uc790 \ud638\ucd9c \uc911 \uc54c \uc218 \uc5c6\ub294 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Prefix {0} does not have a corresponding namespace declaration    */
   public static final int ER_NO_NAMESPACE_DECL = 138;
 
   static
   {
     contents[ER_NO_NAMESPACE_DECL][1] =
-        "Prefix {0} does not have a corresponding namespace declaration";
+        "{0} \uc811\ub450\uc5b4\uc5d0 \uad00\ub828 \uc774\ub984 \uacf5\uac04 \uc120\uc5b8\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /** Element content not allowed for lang=javaclass   */
   public static final int ER_ELEM_CONTENT_NOT_ALLOWED = 139;
 
   static
   {
     contents[ER_ELEM_CONTENT_NOT_ALLOWED][1] =
-        "Element content not allowed for lang=javaclass {0}";
-  }
-
+        "lang=javaclass {0}\uc5d0 \uc694\uc18c \ucee8\ud150\ud2b8\uac00 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
+  }   
+  
    /** Stylesheet directed termination   */
   public static final int ER_STYLESHEET_DIRECTED_TERMINATION = 140;
 
   static
   {
     contents[ER_STYLESHEET_DIRECTED_TERMINATION][1] =
-        "Stylesheet directed termination";
+        "\uc2a4\ud0c0\uc77c \uc2dc\ud2b8\uac00 \uc885\ub8cc\ub85c \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** 1 or 2   */
   public static final int ER_ONE_OR_TWO = 141;
 
@@ -1382,7 +1388,7 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[ER_ONE_OR_TWO][1] =
         "1 or 2";
   }
-
+  
    /** 2 or 3   */
   public static final int ER_TWO_OR_THREE = 142;
 
@@ -1391,652 +1397,647 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[ER_TWO_OR_THREE][1] =
         "2 or 3";
   }
-
+  
    /** Could not load {0} (check CLASSPATH), now using just the defaults   */
   public static final int ER_COULD_NOT_LOAD_RESOURCE = 143;
 
   static
   {
     contents[ER_COULD_NOT_LOAD_RESOURCE][1] =
-        "Could not load {0} (check CLASSPATH), now using just the defaults";
+        "\uae30\ubcf8\uac12\ub9cc\uc744 \uc0ac\uc6a9\ud558\uc5ec {0}\uc744(\ub97c) \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4(CLASSPATH\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624).";
   }
-
+  
    /** Cannot initialize default templates   */
   public static final int ER_CANNOT_INIT_DEFAULT_TEMPLATES = 144;
 
   static
   {
     contents[ER_CANNOT_INIT_DEFAULT_TEMPLATES][1] =
-        "Cannot initialize default templates";
+        "\uae30\ubcf8 \ud15c\ud50c\ub9ac\ud2b8\ub97c \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Result should not be null   */
   public static final int ER_RESULT_NULL = 145;
 
   static
   {
     contents[ER_RESULT_NULL][1] =
-        "Result should not be null";
+        "\uacb0\uacfc\ub294 \ub110\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+    
    /** Result could not be set   */
   public static final int ER_RESULT_COULD_NOT_BE_SET = 146;
 
   static
   {
     contents[ER_RESULT_COULD_NOT_BE_SET][1] =
-        "Result could not be set";
+        "\uacb0\uacfc\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** No output specified   */
   public static final int ER_NO_OUTPUT_SPECIFIED = 147;
 
   static
   {
     contents[ER_NO_OUTPUT_SPECIFIED][1] =
-        "No output specified";
+        "\uc9c0\uc815\ub41c \ucd9c\ub825\uc774 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Can't transform to a Result of type   */
   public static final int ER_CANNOT_TRANSFORM_TO_RESULT_TYPE = 148;
 
   static
   {
     contents[ER_CANNOT_TRANSFORM_TO_RESULT_TYPE][1] =
-        "Can't transform to a Result of type {0}";
+        "\uc720\ud615\uc774 {0}\uc778 \uacb0\uacfc\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /** Can't transform to a Source of type   */
   public static final int ER_CANNOT_TRANSFORM_SOURCE_TYPE = 149;
 
   static
   {
     contents[ER_CANNOT_TRANSFORM_SOURCE_TYPE][1] =
-        "Can't transform a Source of type {0}";
+        "\uc720\ud615\uc774 {0}\uc778 \uc18c\uc2a4\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. ";
   }
-
+  
    /** Null content handler  */
   public static final int ER_NULL_CONTENT_HANDLER = 150;
 
   static
   {
     contents[ER_NULL_CONTENT_HANDLER][1] =
-        "Null content handler";
+        "\ucee8\ud150\ud2b8 \ucc98\ub9ac\uae30\uac00 \ub110\uc785\ub2c8\ub2e4";
   }
-
+  
    /** Null error handler  */
   public static final int ER_NULL_ERROR_HANDLER = 151;
 
   static
   {
     contents[ER_NULL_ERROR_HANDLER][1] =
-        "Null error handler";
+        "\uc624\ub958 \ucc98\ub9ac\uae30\uac00 \ub110\uc785\ub2c8\ub2e4";
   }
-
+  
    /** parse can not be called if the ContentHandler has not been set */
   public static final int ER_CANNOT_CALL_PARSE = 152;
 
   static
   {
     contents[ER_CANNOT_CALL_PARSE][1] =
-        "parse can not be called if the ContentHandler has not been set";
+        "ContentHandler\ub97c \uc124\uc815\ud558\uc9c0 \uc54a\uc73c\uba74 \uad6c\ubb38 \ubd84\uc11d\uc774 \ud638\ucd9c\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  No parent for filter */
   public static final int ER_NO_PARENT_FOR_FILTER = 153;
 
   static
   {
     contents[ER_NO_PARENT_FOR_FILTER][1] =
-        "No parent for filter";
+        "\ud544\ud130\uc5d0 \ub300\ud55c \ubd80\ubaa8\uac00 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
-
+  
+  
    /**  No stylesheet found in: {0}, media */
   public static final int ER_NO_STYLESHEET_IN_MEDIA = 154;
 
   static
   {
     contents[ER_NO_STYLESHEET_IN_MEDIA][1] =
-         "No stylesheet found in: {0}, media= {1}";
+         "{0}\uc5d0 \uc2a4\ud0c0\uc77c \uc2dc\ud2b8\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. \ub9e4\uccb4= {1}";
   }
-
+  
    /**  No xml-stylesheet PI found in */
   public static final int ER_NO_STYLESHEET_PI = 155;
 
   static
   {
     contents[ER_NO_STYLESHEET_PI][1] =
-         "No xml-stylesheet PI found in: {0}";
+         "{0}\uc5d0 xml-stylesheet PI\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. ";
   }
-
+  
    /**  No default implementation found */
   public static final int ER_NO_DEFAULT_IMPL = 156;
 
   static
   {
     contents[ER_NO_DEFAULT_IMPL][1] =
-         "No default implementation found ";
+         "\uae30\ubcf8 \uad6c\ud604\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  ChunkedIntArray({0}) not currently supported */
   public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
 
   static
   {
     contents[ER_CHUNKEDINTARRAY_NOT_SUPPORTED][1] =
-       "ChunkedIntArray({0}) not currently supported";
+       "ChunkedIntArray({0})\ub294 \ud604\uc7ac \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  Offset bigger than slot */
   public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
 
   static
   {
     contents[ER_OFFSET_BIGGER_THAN_SLOT][1] =
-       "Offset bigger than slot";
+       "\uc624\ud504\uc14b\uc774 \uc2ac\ub86f\ubcf4\ub2e4 \ud07d\ub2c8\ub2e4";
   }
-
+  
    /**  Coroutine not available, id= */
   public static final int ER_COROUTINE_NOT_AVAIL = 159;
 
   static
   {
     contents[ER_COROUTINE_NOT_AVAIL][1] =
-       "Coroutine not available, id={0}";
+       "Coroutine\uc740 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4, ID={0}";
   }
-
+  
    /**  CoroutineManager recieved co_exit() request */
   public static final int ER_COROUTINE_CO_EXIT = 160;
 
   static
   {
     contents[ER_COROUTINE_CO_EXIT][1] =
-       "CoroutineManager received co_exit() request";
+       "CoroutineManager\uac00 co_exit() \uc694\uccad\uc744 \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  co_joinCoroutineSet() failed */
   public static final int ER_COJOINROUTINESET_FAILED = 161;
 
   static
   {
     contents[ER_COJOINROUTINESET_FAILED][1] =
-       "co_joinCoroutineSet() failed";
+       "co_joinCoroutineSet()\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Coroutine parameter error () */
   public static final int ER_COROUTINE_PARAM = 162;
 
   static
   {
     contents[ER_COROUTINE_PARAM][1] =
-       "Coroutine parameter error ({0})";
+       "Coroutine \ub9e4\uac1c\ubcc0\uc218 \uc624\ub958({0})";
   }
-
+  
    /**  UNEXPECTED: Parser doTerminate answers  */
   public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
 
   static
   {
     contents[ER_PARSER_DOTERMINATE_ANSWERS][1] =
-       "\nUNEXPECTED: Parser doTerminate answers {0}";
+       "\n\uc608\uc0c1\uce58 \ubabb\ud55c \ubb38\uc81c: doTerminate \uad6c\ubb38 \ubd84\uc11d\uae30\uac00 {0}\uc5d0 \uc751\ub2f5\ud588\uc2b5\ub2c8\ub2e4. ";
   }
-
+  
    /**  parse may not be called while parsing */
   public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
 
   static
   {
     contents[ER_NO_PARSE_CALL_WHILE_PARSING][1] =
-       "parse may not be called while parsing";
+       "\uad6c\ubb38 \ubd84\uc11d\ud558\ub294 \ub3d9\uc548\uc5d0\ub294 \uad6c\ubb38 \ubd84\uc11d\uc744 \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Error: typed iterator for axis  {0} not implemented  */
   public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
 
   static
   {
     contents[ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED][1] =
-       "Error: typed iterator for axis  {0} not implemented";
+       "\uc624\ub958: {0} \ucd95\uc5d0 \ub300\ud574 \uc785\ub825\ub41c \ubc18\ubcf5\uae30\uac00 \uad6c\ud604\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  Error: iterator for axis {0} not implemented  */
   public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
 
   static
   {
     contents[ER_ITERATOR_AXIS_NOT_IMPLEMENTED][1] =
-       "Error: iterator for axis {0} not implemented ";
+       "\uc624\ub958: {0} \ucd95\uc5d0 \ub300\ud55c \ubc18\ubcf5\uae30\uac00 \uad6c\ud604\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. ";
   }
-
+  
    /**  Iterator clone not supported  */
   public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
 
   static
   {
     contents[ER_ITERATOR_CLONE_NOT_SUPPORTED][1] =
-       "Iterator clone not supported";
+       "\ubc18\ubcf5\uae30 \ubcf5\uc81c\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Unknown axis traversal type  */
   public static final int ER_UNKNOWN_AXIS_TYPE = 168;
 
   static
   {
     contents[ER_UNKNOWN_AXIS_TYPE][1] =
-       "Unknown axis traversal type: {0}";
+       "\uc54c \uc218 \uc5c6\ub294 \ucd95 \uc21c\ud68c \uc720\ud615: {0}";
   }
-
+  
    /**  Axis traverser not supported  */
   public static final int ER_AXIS_NOT_SUPPORTED = 169;
 
   static
   {
     contents[ER_AXIS_NOT_SUPPORTED][1] =
-       "Axis traverser not supported: {0}";
+       "\ucd95 \uc21c\ud68c\uae30\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4: {0}";
   }
-
+  
    /**  No more DTM IDs are available  */
   public static final int ER_NO_DTMIDS_AVAIL = 170;
 
   static
   {
     contents[ER_NO_DTMIDS_AVAIL][1] =
-       "No more DTM IDs are available";
+       "\ub354 \uc774\uc0c1 DTM ID\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  Not supported  */
   public static final int ER_NOT_SUPPORTED = 171;
 
   static
   {
     contents[ER_NOT_SUPPORTED][1] =
-       "Not supported: {0}";
+       "\uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4: {0}";
   }
-
+  
    /**  node must be non-null for getDTMHandleFromNode  */
   public static final int ER_NODE_NON_NULL = 172;
 
   static
   {
     contents[ER_NODE_NON_NULL][1] =
-       "Node must be non-null for getDTMHandleFromNode";
+       "\ub178\ub4dc\ub294 getDTMHandleFromNode\uc5d0 \ub300\ud574 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4";
   }
-
+  
    /**  Could not resolve the node to a handle  */
   public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
 
   static
   {
     contents[ER_COULD_NOT_RESOLVE_NODE][1] =
-       "Could not resolve the node to a handle";
+       "\ub178\ub4dc\ub97c \ud578\ub4e4\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  startParse may not be called while parsing */
   public static final int ER_STARTPARSE_WHILE_PARSING = 174;
 
   static
   {
     contents[ER_STARTPARSE_WHILE_PARSING][1] =
-       "startParse may not be called while parsing";
+       "startParse\ub294 \uad6c\ubb38 \ubd84\uc11d \uc911\uc5d0 \ud638\ucd9c\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  startParse needs a non-null SAXParser  */
   public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
 
   static
   {
     contents[ER_STARTPARSE_NEEDS_SAXPARSER][1] =
-       "startParse needs a non-null SAXParser";
+       "startParse\uc5d0\ub294 \ub110\uc774 \uc544\ub2cc SAXParser\uac00 \ud544\uc694\ud569\ub2c8\ub2e4";
   }
-
+  
    /**  could not initialize parser with */
   public static final int ER_COULD_NOT_INIT_PARSER = 176;
 
   static
   {
     contents[ER_COULD_NOT_INIT_PARSER][1] =
-       "could not initialize parser with";
+       "\ub2e4\uc74c\uc73c\ub85c \uad6c\ubb38 \ubd84\uc11d\uae30\ub97c \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: ";
   }
-
+  
    /**  Value for property {0} should be a Boolean instance  */
   public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
 
   static
   {
     contents[ER_PROPERTY_VALUE_BOOLEAN][1] =
-       "Value for property {0} should be a Boolean instance";
+       "{0} \ud2b9\uc131\uc5d0 \ub300\ud55c \uac12\uc774 \ubd80\uc6b8 \uc778\uc2a4\ud134\uc2a4\uc5ec\uc57c \ud569\ub2c8\ub2e4.";
   }
-
+  
    /**  exception creating new instance for pool  */
   public static final int ER_EXCEPTION_CREATING_POOL = 178;
 
   static
   {
     contents[ER_EXCEPTION_CREATING_POOL][1] =
-       "exception creating new instance for pool";
+       "\ud480\uc5d0 \ub300\ud55c \uc0c8 \uc778\uc2a4\ud134\uc2a4 \uc791\uc131 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Path contains invalid escape sequence  */
   public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
 
   static
   {
     contents[ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE][1] =
-       "Path contains invalid escape sequence";
+       "\uacbd\ub85c\uc5d0 \uc798\ubabb\ub41c \uc81c\uc5b4 \ubb38\uc790\uc5f4\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Scheme is required!  */
   public static final int ER_SCHEME_REQUIRED = 180;
 
   static
   {
     contents[ER_SCHEME_REQUIRED][1] =
-       "Scheme is required!";
+       "\uccb4\uacc4\uac00 \ud544\uc694\ud569\ub2c8\ub2e4!";
   }
-
+  
    /**  No scheme found in URI  */
   public static final int ER_NO_SCHEME_IN_URI = 181;
 
   static
   {
     contents[ER_NO_SCHEME_IN_URI][1] =
-       "No scheme found in URI: {0}";
+       "URI\uc5d0  \uccb4\uacc4\uac00 \uc5c6\uc2b5\ub2c8\ub2e4: {0}";
   }
-
+  
    /**  No scheme found in URI  */
   public static final int ER_NO_SCHEME_INURI = 182;
 
   static
   {
     contents[ER_NO_SCHEME_INURI][1] =
-       "No scheme found in URI";
+       "URI\uc5d0 \uccb4\uacc4\uac00 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Path contains invalid character:   */
   public static final int ER_PATH_INVALID_CHAR = 183;
 
   static
   {
     contents[ER_PATH_INVALID_CHAR][1] =
-       "Path contains invalid character: {0}";
+       "\uacbd\ub85c\uc5d0 \uc798\ubabb\ub41c \ubb38\uc790 {0}\uc774(\uac00) \ud3ec\ud568\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  Cannot set scheme from null string  */
   public static final int ER_SCHEME_FROM_NULL_STRING = 184;
 
   static
   {
     contents[ER_SCHEME_FROM_NULL_STRING][1] =
-       "Cannot set scheme from null string";
+       "\ub110 \ubb38\uc790\uc5f4\uc5d0\uc11c \uccb4\uacc4\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  The scheme is not conformant. */
   public static final int ER_SCHEME_NOT_CONFORMANT = 185;
 
   static
   {
     contents[ER_SCHEME_NOT_CONFORMANT][1] =
-       "The scheme is not conformant.";
+       "\uccb4\uacc4\uac00 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  Host is not a well formed address  */
   public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
 
   static
   {
     contents[ER_HOST_ADDRESS_NOT_WELLFORMED][1] =
-       "Host is not a well formed address";
+       "\ud638\uc2a4\ud2b8 \uc8fc\uc18c\uac00 \uc62c\ubc14\ub978 \ud615\uc2dd\uc774 \uc544\ub2d9\ub2c8\ub2e4";
   }
-
+  
    /**  Port cannot be set when host is null  */
   public static final int ER_PORT_WHEN_HOST_NULL = 187;
 
   static
   {
     contents[ER_PORT_WHEN_HOST_NULL][1] =
-       "Port cannot be set when host is null";
+       "\ud638\uc2a4\ud2b8\uac00 \ub110\uc774\uba74 \ud3ec\ud2b8\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Invalid port number  */
   public static final int ER_INVALID_PORT = 188;
 
   static
   {
     contents[ER_INVALID_PORT][1] =
-       "Invalid port number";
+       "\uc798\ubabb\ub41c \ud3ec\ud2b8 \ubc88\ud638\uc785\ub2c8\ub2e4";
   }
-
+  
    /**  Fragment can only be set for a generic URI  */
   public static final int ER_FRAG_FOR_GENERIC_URI = 189;
 
   static
   {
     contents[ER_FRAG_FOR_GENERIC_URI][1] =
-       "Fragment can only be set for a generic URI";
+       "\ub2e8\ud3b8\uc740 \uc77c\ubc18 URI\uc5d0 \ub300\ud574\uc11c\ub9cc \uc124\uc815\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Fragment cannot be set when path is null  */
   public static final int ER_FRAG_WHEN_PATH_NULL = 190;
 
   static
   {
     contents[ER_FRAG_WHEN_PATH_NULL][1] =
-       "Fragment cannot be set when path is null";
+       "\uacbd\ub85c\uac00 \ub110\uc774\uba74 \ub2e8\ud3b8\uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Fragment contains invalid character  */
   public static final int ER_FRAG_INVALID_CHAR = 191;
 
   static
   {
     contents[ER_FRAG_INVALID_CHAR][1] =
-       "Fragment contains invalid character";
+       "\ub2e8\ud3b8\uc5d0 \uc798\ubabb\ub41c \ubb38\uc790\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4";
   }
-
-
-
+  
+ 
+  
    /** Parser is already in use  */
   public static final int ER_PARSER_IN_USE = 192;
 
   static
   {
     contents[ER_PARSER_IN_USE][1] =
-        "Parser is already in use";
+        "\uad6c\ubb38 \ubd84\uc11d\uae30\uac00 \uc774\ubbf8 \uc0ac\uc6a9 \uc911\uc785\ub2c8\ub2e4";
   }
-
+  
    /** Parser is already in use  */
   public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
 
   static
   {
     contents[ER_CANNOT_CHANGE_WHILE_PARSING][1] =
-        "Cannot change {0} {1} while parsing";
+        "\uad6c\ubb38 \ubd84\uc11d \uc911\uc5d0\ub294 {0} {1}\uc744(\ub97c) \ubcc0\uacbd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Self-causation not permitted  */
   public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
 
   static
   {
     contents[ER_SELF_CAUSATION_NOT_PERMITTED][1] =
-        "Self-causation not permitted";
+        "\uc790\uccb4 \uc6d0\uc778 \uc81c\uacf5\uc740 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** src attribute not yet supported for  */
-  public static final int ER_COULD_NOT_FIND_EXTERN_SCRIPT = 195;
+  public static final int ER_SRC_ATTRIB_NOT_SUPPORTED = 195;
 
   static
   {
-    contents[ER_COULD_NOT_FIND_EXTERN_SCRIPT][1] =
-         "Could not get to external script at {0}";
+    contents[ER_SRC_ATTRIB_NOT_SUPPORTED][1] =
+       "{0}\uc5d0\uc11c \uc678\ubd80 \uc2a4\ud06c\ub9bd\ud2b8\ub97c \uc5bb\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** The resource [] could not be found     */
   public static final int ER_RESOURCE_COULD_NOT_FIND = 196;
 
   static
   {
     contents[ER_RESOURCE_COULD_NOT_FIND][1] =
-        "The resource [ {0} ] could not be found.\n {1}";
+        "[ {0} ] \uc790\uc6d0\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.\n {1}";
   }
-
+  
    /** output property not recognized:  */
   public static final int ER_OUTPUT_PROPERTY_NOT_RECOGNIZED = 197;
 
   static
   {
     contents[ER_OUTPUT_PROPERTY_NOT_RECOGNIZED][1] =
-        "Output property not recognized: {0}";
+        "\ucd9c\ub825 \ud2b9\uc131\uc744 \uc778\uc2dd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: {0}";
   }
-
+  
    /** Userinfo may not be specified if host is not specified   */
   public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
 
   static
   {
     contents[ER_NO_USERINFO_IF_NO_HOST][1] =
-        "Userinfo may not be specified if host is not specified";
+        "\ud638\uc2a4\ud2b8\uac00 \uc9c0\uc815\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc73c\uba74 Userinfo\ub97c \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Port may not be specified if host is not specified   */
   public static final int ER_NO_PORT_IF_NO_HOST = 199;
 
   static
   {
     contents[ER_NO_PORT_IF_NO_HOST][1] =
-        "Port may not be specified if host is not specified";
+        "\ud638\uc2a4\ud2b8\uac00 \uc9c0\uc815\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc73c\uba74 \ud3ec\ud2b8\ub97c \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Query string cannot be specified in path and query string   */
   public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
 
   static
   {
     contents[ER_NO_QUERY_STRING_IN_PATH][1] =
-        "Query string cannot be specified in path and query string";
+        "\uc9c8\uc758 \ubb38\uc790\uc5f4\uc744 \uacbd\ub85c \ub610\ub294 \uc9c8\uc758 \ubb38\uc790\uc5f4 \ub0b4\uc5d0 \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Fragment cannot be specified in both the path and fragment   */
   public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
 
   static
   {
     contents[ER_NO_FRAGMENT_STRING_IN_PATH][1] =
-        "Fragment cannot be specified in both the path and fragment";
+        "\ub2e8\ud3b8\uc744 \uacbd\ub85c\uc640 \ub2e8\ud3b8 \ubaa8\ub450\uc5d0 \uc9c0\uc815\ud560 \uc218\ub294 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Cannot initialize URI with empty parameters   */
   public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
 
   static
   {
     contents[ER_CANNOT_INIT_URI_EMPTY_PARMS][1] =
-        "Cannot initialize URI with empty parameters";
+        "\ube48 \ub9e4\uac1c\ubcc0\uc218\ub85c\ub294 URI\ub97c \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Failed creating ElemLiteralResult instance   */
   public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
 
   static
   {
     contents[ER_FAILED_CREATING_ELEMLITRSLT][1] =
-        "Failed creating ElemLiteralResult instance";
-  }
-
-  //Earlier (JDK 1.4 XALAN 2.2-D11) at key code '204' the key name was ER_PRIORITY_NOT_PARSABLE
-  // In latest Xalan code base key name is  ER_VALUE_SHOULD_BE_NUMBER. This should also be taken care
-  //in locale specific files like XSLTErrorResources_de.java, XSLTErrorResources_fr.java etc.
-  //NOTE: Not only the key name but message has also been changed. 
-
+        "ElemLiteralResult \uc778\uc2a4\ud134\uc2a4 \uc791\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4";
+  }  
+  
    /** Priority value does not contain a parsable number   */
-  public static final int ER_VALUE_SHOULD_BE_NUMBER = 204;
+  public static final int ER_PRIORITY_NOT_PARSABLE = 204;
 
   static
   {
-    contents[ER_VALUE_SHOULD_BE_NUMBER][1] =
-        "Value for {0} should contain a parsable number";
+    contents[ER_PRIORITY_NOT_PARSABLE][1] =
+        "\uc6b0\uc120 \uc21c\uc704 \uac12\uc5d0 \uad6c\ubb38 \ubd84\uc11d\ud560 \uc218 \uc788\ub294 \uc22b\uc790\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Value for {0} should equal 'yes' or 'no'   */
   public static final int ER_VALUE_SHOULD_EQUAL = 205;
 
   static
   {
     contents[ER_VALUE_SHOULD_EQUAL][1] =
-        " Value for {0} should equal yes or no";
+        "{0}\uc5d0 \ub300\ud55c \uac12\uc740 \uc608 \ub610\ub294 \uc544\ub2c8\uc624\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.";
   }
-
+ 
    /**  Failed calling {0} method   */
   public static final int ER_FAILED_CALLING_METHOD = 206;
 
   static
   {
     contents[ER_FAILED_CALLING_METHOD][1] =
-        " Failed calling {0} method";
+        "{0} \uba54\uc18c\ub4dc \ud638\ucd9c\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /** Failed creating ElemLiteralResult instance   */
   public static final int ER_FAILED_CREATING_ELEMTMPL = 207;
 
   static
   {
     contents[ER_FAILED_CREATING_ELEMTMPL][1] =
-        "Failed creating ElemTemplateElement instance";
+        "ElemTemplateElement \uc778\uc2a4\ud134\uc2a4 \uc791\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4";
   }
-
+  
    /**  Characters are not allowed at this point in the document   */
   public static final int ER_CHARS_NOT_ALLOWED = 208;
 
   static
   {
     contents[ER_CHARS_NOT_ALLOWED][1] =
-        "Characters are not allowed at this point in the document";
+        "\uc774 \ubb38\uc11c\uc5d0\uc11c \ubb38\uc790\uac00 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /**  attribute is not allowed on the element   */
   public static final int ER_ATTR_NOT_ALLOWED = 209;
 
   static
   {
     contents[ER_ATTR_NOT_ALLOWED][1] =
-        "\"{0}\" attribute is not allowed on the {1} element!";
+        "\"{0}\" \uc18d\uc131\uc774 {1} \uc694\uc18c\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!";
   }
-
+  
   /**  Method not yet supported    */
   public static final int ER_METHOD_NOT_SUPPORTED = 210;
 
   static
   {
     contents[ER_METHOD_NOT_SUPPORTED][1] =
-        "Method not yet supported ";
+        "\uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \uba54\uc18c\ub4dc\uc785\ub2c8\ub2e4 ";
   }
-
+ 
   /**  Bad value    */
   public static final int ER_BAD_VALUE = 211;
 
   static
   {
     contents[ER_BAD_VALUE][1] =
-     "{0} bad value {1} ";
+     "{0} \uc798\ubabb\ub41c \uac12 {1} ";
   }
-
+  
   /**  attribute value not found   */
   public static final int ER_ATTRIB_VALUE_NOT_FOUND = 212;
 
   static
   {
     contents[ER_ATTRIB_VALUE_NOT_FOUND][1] =
-     "{0} attribute value not found ";
+     "{0} \uc18d\uc131 \uac12\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4 ";
   }
-
+  
   /**  attribute value not recognized    */
   public static final int ER_ATTRIB_VALUE_NOT_RECOGNIZED = 213;
 
   static
   {
     contents[ER_ATTRIB_VALUE_NOT_RECOGNIZED][1] =
-     "{0} attribute value not recognized ";
+     "{0} \uc18d\uc131 \uac12\uc744 \uc778\uc2dd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4 ";
   }
 
   /** IncrementalSAXSource_Filter not currently restartable   */
@@ -2045,424 +2046,28 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INCRSAXSRCFILTER_NOT_RESTARTABLE][1] =
-     "IncrementalSAXSource_Filter not currently restartable";
+     "IncrementalSAXSource_Filter\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** IncrementalSAXSource_Filter not currently restartable   */
   public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
 
   static
   {
     contents[ER_XMLRDR_NOT_BEFORE_STARTPARSE][1] =
-     "XMLReader not before startParse request";
+     "startParse \uc694\uccad \uc804\uc5d0 XMLReader\ub97c \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4";
   }
-
+  
   /** Attempting to generate a namespace prefix with a null URI   */
   public static final int ER_NULL_URI_NAMESPACE = 216;
 
   static
   {
     contents[ER_NULL_URI_NAMESPACE][1] =
-     "Attempting to generate a namespace prefix with a null URI";
-  }
-
-  //New ERROR keys added in XALAN code base after Jdk 1.4 (Xalan 2.2-D11)
-
-  /** Attempting to generate a namespace prefix with a null URI   */
-  public static final int ER_NUMBER_TOO_BIG = 217;
-
-  static
-  {
-    contents[ER_NUMBER_TOO_BIG][1] =
-     "Attempting to format a number bigger than the largest Long integer";
-  }
-
-//ER_CANNOT_FIND_SAX1_DRIVER
-
-  public static final int  ER_CANNOT_FIND_SAX1_DRIVER = 218;
-
-  static
-  {
-    contents[ER_CANNOT_FIND_SAX1_DRIVER][1] =
-     "Cannot find SAX1 driver class {0}";
-  }
-
-//ER_SAX1_DRIVER_NOT_LOADED
-  public static final int  ER_SAX1_DRIVER_NOT_LOADED = 219;
-
-  static
-  {
-    contents[ER_SAX1_DRIVER_NOT_LOADED][1] =
-     "SAX1 driver class {0} found but cannot be loaded";
-  }
-
-//ER_SAX1_DRIVER_NOT_INSTANTIATED
-  public static final int  ER_SAX1_DRIVER_NOT_INSTANTIATED = 220 ;
-
-  static
-  {
-    contents[ER_SAX1_DRIVER_NOT_INSTANTIATED][1] =
-     "SAX1 driver class {0} loaded but cannot be instantiated";
-  }
-
-
-// ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER
-  public static final int ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER = 221;
-
-  static
-  {
-    contents[ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER][1] =
-     "SAX1 driver class {0} does not implement org.xml.sax.Parser";
-  }
-
-// ER_PARSER_PROPERTY_NOT_SPECIFIED
-  public static final int  ER_PARSER_PROPERTY_NOT_SPECIFIED = 222;
-
-  static
-  {
-    contents[ER_PARSER_PROPERTY_NOT_SPECIFIED][1] =
-     "System property org.xml.sax.parser not specified";
-  }
-
-//ER_PARSER_ARG_CANNOT_BE_NULL
-  public static final int  ER_PARSER_ARG_CANNOT_BE_NULL = 223 ;
-
-  static
-  {
-    contents[ER_PARSER_ARG_CANNOT_BE_NULL][1] =
-     "Parser argument must not be null";
-  }
-
-
-// ER_FEATURE
-  public static final int  ER_FEATURE = 224;
-
-  static
-  {
-    contents[ER_FEATURE][1] =
-     "Feature:a {0}";
-  }
-
-
-// ER_PROPERTY
-  public static final int ER_PROPERTY = 225 ;
-
-  static
-  {
-    contents[ER_PROPERTY][1] =
-     "Property:a {0}";
-  }
-
-// ER_NULL_ENTITY_RESOLVER
-  public static final int ER_NULL_ENTITY_RESOLVER  = 226;
-
-  static
-  {
-    contents[ER_NULL_ENTITY_RESOLVER][1] =
-     "Null entity resolver";
-  }
-
-// ER_NULL_DTD_HANDLER
-  public static final int  ER_NULL_DTD_HANDLER = 227 ;
-
-  static
-  {
-    contents[ER_NULL_DTD_HANDLER][1] =
-     "Null DTD handler";
-  }
-
-// No Driver Name Specified!
-  public static final int ER_NO_DRIVER_NAME_SPECIFIED = 228;
-  static
-  {
-    contents[ER_NO_DRIVER_NAME_SPECIFIED][1] =
-     "No Driver Name Specified!";
-  }
-
-
-// No URL Specified!
-  public static final int ER_NO_URL_SPECIFIED = 229;
-  static
-  {
-    contents[ER_NO_URL_SPECIFIED][1] =
-     "No URL Specified!";
-  }
-
-
-// Pool size is less than 1!
-  public static final int ER_POOLSIZE_LESS_THAN_ONE = 230;
-  static
-  {
-    contents[ER_POOLSIZE_LESS_THAN_ONE][1] =
-     "Pool size is less than 1!";
-  }
-
-
-// Invalid Driver Name Specified!
-  public static final int ER_INVALID_DRIVER_NAME = 231;
-  static
-  {
-    contents[ER_INVALID_DRIVER_NAME][1] =
-     "Invalid Driver Name Specified!";
-  }
-
-
-
-// ErrorListener
-  public static final int ER_ERRORLISTENER = 232;
-  static
-  {
-    contents[ER_ERRORLISTENER][1] =
-     "ErrorListener";
-  }
-
-
-// Programmer's error! expr has no ElemTemplateElement parent!
-  public static final int ER_ASSERT_NO_TEMPLATE_PARENT = 233;
-  static
-  {
-    contents[ER_ASSERT_NO_TEMPLATE_PARENT][1] =
-     "Programmer's error! expr has no ElemTemplateElement parent!";
-  }
-
-
-// Programmer's assertion in RundundentExprEliminator: {0}
-  public static final int ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR = 234;
-  static
-  {
-    contents[ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR][1] =
-     "Programmer's assertion in RundundentExprEliminator: {0}";
-  }
-
-// Axis traverser not supported: {0}
-  public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
-  static
-  {
-    contents[ER_AXIS_TRAVERSER_NOT_SUPPORTED][1] =
-     "Axis traverser not supported: {0}";
-  }
-
-// ListingErrorHandler created with null PrintWriter!
-  public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
-  static
-  {
-    contents[ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER][1] =
-     "ListingErrorHandler created with null PrintWriter!";
-  }
-
-  // {0}is not allowed in this position in the stylesheet!
-  public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
-  static
-  {
-    contents[ER_NOT_ALLOWED_IN_POSITION][1] =
-     "{0} is not allowed in this position in the stylesheet!";
-  }
-
-  // Non-whitespace text is not allowed in this position in the stylesheet!
-  public static final int ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 238;
-  static
-  {
-    contents[ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION][1] =
-     "Non-whitespace text is not allowed in this position in the stylesheet!";
-  }
-
-  // This code is shared with warning codes.
-  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
-  public static final int INVALID_TCHAR = 239;
-  // SystemId Unknown
-  static
-  {
-    contents[INVALID_TCHAR][1] =
-     "Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!";
-  }
-
-  public static final int ER_SYSTEMID_UNKNOWN = 240;
-  static
-  {
-    contents[ER_SYSTEMID_UNKNOWN][1] =
-     "SystemId Unknown";
-  }
-
-  // Location of error unknown
-  public static final int ER_LOCATION_UNKNOWN = 241;
-  static
-  {
-    contents[ER_LOCATION_UNKNOWN][1] =
-     "Location of error unknown";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_QNAME
-
-  //The following codes are shared with the warning codes...
-  // Illegal value: {1} used for QNAME attribute: {0}
-  public static final int INVALID_QNAME = 242;
-  static
-  {
-    contents[INVALID_QNAME][1] =
-     "Illegal value:a {1} used for QNAME attribute:a {0}";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "ENUM" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value, {0} is the attribute name, and {2} is a list of valid
-    // values.
-    // INVALID_ENUM
-
-  // Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.
-  public static final int INVALID_ENUM = 243;
-  static
-  {
-    contents[INVALID_ENUM][1] =
-     "Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "NMTOKEN" is the XML data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_NMTOKEN
-
-  // Illegal value:a {1} used for NMTOKEN attribute:a {0}.
-  public static final int INVALID_NMTOKEN = 244;
-  static
-  {
-    contents[INVALID_NMTOKEN][1] =
-     "Illegal value:a {1} used for NMTOKEN attribute:a {0} ";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "NCNAME" is the XML data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_NCNAME
-
-  // Illegal value:a {1} used for NCNAME attribute:a {0}.
-  public static final int INVALID_NCNAME = 245;
-  static
-  {
-    contents[INVALID_NCNAME][1] =
-     "Illegal value:a {1} used for NCNAME attribute:a {0} ";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "boolean" is the XSLT data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_BOOLEAN
-
-  // Illegal value:a {1} used for boolean attribute:a {0}.
-  public static final int INVALID_BOOLEAN = 246;
-
-  static
-  {
-    contents[INVALID_BOOLEAN][1] =
-     "Illegal value:a {1} used for boolean attribute:a {0} ";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "number" is the XSLT data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_NUMBER
-
-  // Illegal value:a {1} used for number attribute:a {0}.
-  public static final int INVALID_NUMBER = 247;
-  static
-  {
-    contents[INVALID_NUMBER][1] =
-     "Illegal value:a {1} used for number attribute:a {0} ";
-  }
-
-
-  // End of shared codes...
-
-// Note to translators:  A "match pattern" is a special form of XPath expression
-// that is used for matching patterns.  The substitution text is the name of
-// a function.  The message indicates that when this function is referenced in
-// a match pattern, its argument must be a string literal (or constant.)
-// ER_ARG_LITERAL - new error message for bugzilla //5202
-
-  // Argument to {0} in match pattern must be a literal.
-  public static final int ER_ARG_LITERAL             = 248;
-  static
-  {
-    contents[ER_ARG_LITERAL][1] =
-     "Argument to {0} in match pattern must be a literal.";
-  }
-
-// Note to translators:  The following message indicates that two definitions of
-// a variable.  A "global variable" is a variable that is accessible everywher
-// in the stylesheet.
-// ER_DUPLICATE_GLOBAL_VAR - new error message for bugzilla #790
-
-  // Duplicate global variable declaration.
-  public static final int ER_DUPLICATE_GLOBAL_VAR    = 249;
-  static
-  {
-    contents[ER_DUPLICATE_GLOBAL_VAR][1] =
-     "Duplicate global variable declaration.";
-  }
-
-
-// Note to translators:  The following message indicates that two definitions of
-// a variable were encountered.
-// ER_DUPLICATE_VAR - new error message for bugzilla #790
-
-  // Duplicate variable declaration.
-  public static final int ER_DUPLICATE_VAR           = 250;
-  static
-  {
-    contents[ER_DUPLICATE_VAR][1] =
-     "Duplicate variable declaration.";
-  }
-
-    // Note to translators:  "xsl:template", "name" and "match" are XSLT keywords
-    // which must not be translated.
-    // ER_TEMPLATE_NAME_MATCH - new error message for bugzilla #789
-
-  // xsl:template must have a name or match attribute (or both)
-  public static final int ER_TEMPLATE_NAME_MATCH     = 251;
-  static
-  {
-    contents[ER_TEMPLATE_NAME_MATCH][1] =
-     "xsl:atemplate must have a name or match attribute (or both)";
-  }
-
-    // Note to translators:  "exclude-result-prefixes" is an XSLT keyword which
-    // should not be translated.  The message indicates that a namespace prefix
-    // encountered as part of the value of the exclude-result-prefixes attribute
-    // was in error.
-    // ER_INVALID_PREFIX - new error message for bugzilla #788
-
-  // Prefix in exclude-result-prefixes is not valid:a {0}
-  public static final int ER_INVALID_PREFIX          = 252;
-  static
-  {
-    contents[ER_INVALID_PREFIX][1] =
-     "Prefix in exclude-result-prefixes is not valid:a {0}";
-  }
-
-    // Note to translators:  An "attribute set" is a set of attributes that can be
-    // added to an element in the output document as a group.  The message indicates
-    // that there was a reference to an attribute set named {0} that was never
-    // defined.
-    // ER_NO_ATTRIB_SET - new error message for bugzilla #782
-
-  // attribute-set named {0} does not exist
-  public static final int ER_NO_ATTRIB_SET           = 253;
-  static
-  {
-    contents[ER_NO_ATTRIB_SET][1] =
-     "attribute-set named {0} does not exist";
-  }
-
-
-
+     "\ub110 URI\ub85c \uc774\ub984 \uacf5\uac04 \uc811\ub450\ubd80\ub97c \uc0dd\uc131\ud558\ub824\uace0 \uc2dc\ub3c4 \uc911\uc785\ub2c8\ub2e4";
+  }    
+  
+  
   /*
     /**  Cannot find SAX1 driver class    *
   public static final int ER_CANNOT_FIND_SAX1_DRIVER = 190;
@@ -2470,92 +2075,92 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_FIND_SAX1_DRIVER][1] =
-      "Cannot find SAX1 driver class {0}";
+      "SAX1 \ub4dc\ub77c\uc774\ubc84 \ud074\ub798\uc2a4 {0}\uc744(\ub97c) \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  SAX1 driver class {0} found but cannot be loaded    *
   public static final int ER_SAX1_DRIVER_NOT_LOADED = 191;
 
   static
   {
     contents[ER_SAX1_DRIVER_NOT_LOADED][1] =
-      "SAX1 driver class {0} found but cannot be loaded";
+      "SAX1 \ub4dc\ub77c\uc774\ubc84 \ud074\ub798\uc2a4 {0}\uc744(\ub97c) \ucc3e\uc558\uc9c0\ub9cc \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  SAX1 driver class {0} found but cannot be instantiated    *
   public static final int ER_SAX1_DRIVER_NOT_INSTANTIATED = 192;
 
   static
   {
     contents[ER_SAX1_DRIVER_NOT_INSTANTIATED][1] =
-      "SAX1 driver class {0} loaded but cannot be instantiated";
+      "SAX1 \ub4dc\ub77c\uc774\ubc84 \ud074\ub798\uc2a4 {0}\uc774(\uac00) \ub85c\ub4dc\ub410\uc9c0\ub9cc \uc778\uc2a4\ud134\uc2a4\ud654 \ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  SAX1 driver class {0} does not implement org.xml.sax.Parser    *
   public static final int ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER = 193;
 
   static
   {
     contents[ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER][1] =
-      "SAX1 driver class {0} does not implement org.xml.sax.Parser";
+      "SAX1 \ub4dc\ub77c\uc774\ubc84 \ud074\ub798\uc2a4 {0}\uc740(\ub294) org.xml.sax.Parser\ub97c \uad6c\ud604\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  System property org.xml.sax.parser not specified    *
   public static final int ER_PARSER_PROPERTY_NOT_SPECIFIED = 194;
 
   static
   {
     contents[ER_PARSER_PROPERTY_NOT_SPECIFIED][1] =
-      "System property org.xml.sax.parser not specified";
+      "org.xml.sax.parser\uc758 \uc2dc\uc2a4\ud15c \ud2b9\uc131\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.";
   }
-
+  
    /**  Parser argument must not be null    *
   public static final int ER_PARSER_ARG_CANNOT_BE_NULL = 195;
 
   static
   {
     contents[ER_PARSER_ARG_CANNOT_BE_NULL][1] =
-      "Parser argument must not be null";
+      "\uad6c\ubb38 \ubd84\uc11d\uae30 \uc778\uc790\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.";
   }
-
+  
    /**  Feature:    *
   public static final int ER_FEATURE = 196;
 
   static
   {
     contents[ER_FEATURE][1] =
-        "Feature: {0}";
+        "\uae30\ub2a5: {0}";
   }
-
+  
    /**  Property:    *
   public static final int ER_PROPERTY = 197;
 
   static
   {
     contents[ER_PROPERTY][1] =
-        "Property: {0}";
+        "\ud2b9\uc131: {0}";
   }
-
+  
    /** Null Entity Resolver  *
   public static final int ER_NULL_ENTITY_RESOLVER = 198;
 
   static
   {
     contents[ER_NULL_ENTITY_RESOLVER][1] =
-        "Null entity resolver";
+        "\ub110 \uc5d4\ud2f0\ud2f0 \uacb0\uc815\uc790";
   }
-
+  
    /** Null DTD handler  *
   public static final int ER_NULL_DTD_HANDLER = 199;
 
   static
   {
     contents[ER_NULL_DTD_HANDLER][1] =
-        "Null DTD handler";
+        "\ub110 DTD \ucc98\ub9ac\uae30";
   }
-
- */
-
+  
+ */ 
+  
 
   // Warnings...
 
@@ -2565,7 +2170,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_FOUND_CURLYBRACE + MAX_CODE][1] =
-      "Found '}' but no attribute template open!";
+      "'}'\ub97c \ucc3e\uc558\uc73c\ub098 \uc18d\uc131 \ud15c\ud50c\ub9ac\ud2b8\ub97c \uc5f4 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!";
   }
 
   /** WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR          */
@@ -2574,7 +2179,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR + MAX_CODE][1] =
-      "Warning: count attribute does not match an ancestor in xsl:number! Target = {0}";
+      "\uacbd\uace0: \uce74\uc6b4\ud2b8 \uc18d\uc131\uc774 xsl:number\uc758 \uc0c1\uc704\uc640 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4! \ub300\uc0c1 = {0}";
   }
 
   /** WG_EXPR_ATTRIB_CHANGED_TO_SELECT          */
@@ -2583,7 +2188,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_EXPR_ATTRIB_CHANGED_TO_SELECT + MAX_CODE][1] =
-      "Old syntax: The name of the 'expr' attribute has been changed to 'select'.";
+      "\uc774\uc804 \uad6c\ubb38: 'expr' \uc18d\uc131\uc758 \uc774\ub984\uc774 'select'\ub85c \ubcc0\uacbd\ub418\uc5c8\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_NO_LOCALE_IN_FORMATNUMBER          */
@@ -2592,7 +2197,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_NO_LOCALE_IN_FORMATNUMBER + MAX_CODE][1] =
-      "Xalan doesn't yet handle the locale name in the format-number function.";
+      "Xalan\uc774 format-number \uae30\ub2a5\uc5d0\uc11c \ub85c\ucf08 \uc774\ub984\uc744 \uc544\uc9c1 \ucc98\ub9ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_LOCALE_NOT_FOUND          */
@@ -2601,7 +2206,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_LOCALE_NOT_FOUND + MAX_CODE][1] =
-      "Warning: Could not find locale for xml:lang={0}";
+      "\uacbd\uace0: xml:lang={0}\uc5d0 \ub300\ud55c \ub85c\ucf08\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_CANNOT_MAKE_URL_FROM          */
@@ -2610,7 +2215,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CANNOT_MAKE_URL_FROM + MAX_CODE][1] =
-      "Can not make URL from: {0}";
+      "{0}\uc5d0\uc11c URL\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_CANNOT_LOAD_REQUESTED_DOC          */
@@ -2619,7 +2224,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CANNOT_LOAD_REQUESTED_DOC + MAX_CODE][1] =
-      "Can not load requested doc: {0}";
+      "\uc694\uccad\ud55c \ubb38\uc11c {0}\uc744(\ub97c) \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_CANNOT_FIND_COLLATOR          */
@@ -2628,7 +2233,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CANNOT_FIND_COLLATOR + MAX_CODE][1] =
-      "Could not find Collator for <sort xml:lang={0}";
+      "<sort xml:lang={0}\uc5d0 \ub300\ud55c \uc870\ud569\uae30\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_FUNCTIONS_SHOULD_USE_URL          */
@@ -2637,7 +2242,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_FUNCTIONS_SHOULD_USE_URL + MAX_CODE][1] =
-      "Old syntax: the functions instruction should use a url of {0}";
+      "\uc774\uc804 \uad6c\ubb38: \ud568\uc218 \uc9c0\uc2dc\uc0ac\ud56d\uc740 {0} url\uc744 \uc0ac\uc6a9\ud574\uc57c \ud569\ub2c8\ub2e4.";
   }
 
   /** WG_ENCODING_NOT_SUPPORTED_USING_UTF8          */
@@ -2646,7 +2251,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ENCODING_NOT_SUPPORTED_USING_UTF8 + MAX_CODE][1] =
-      "encoding not supported: {0}, using UTF-8";
+      "UTF-8\uc744 \uc0ac\uc6a9\ud558\uc5ec \ucf54\ub4dc\ud654\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4: {0}";
   }
 
   /** WG_ENCODING_NOT_SUPPORTED_USING_JAVA          */
@@ -2655,7 +2260,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ENCODING_NOT_SUPPORTED_USING_JAVA + MAX_CODE][1] =
-      "encoding not supported: {0}, using Java {1}";
+      "Java {1}\uc744(\ub97c) \uc0ac\uc6a9\ud558\uc5ec \ucf54\ub4dc\ud654\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4: {0} ";
   }
 
   /** WG_SPECIFICITY_CONFLICTS          */
@@ -2664,7 +2269,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_SPECIFICITY_CONFLICTS + MAX_CODE][1] =
-      "Specificity conflicts found: {0} Last found in stylesheet will be used.";
+      "\ud2b9\uc774\uc131 \ucda9\ub3cc\uc774 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4: \uc2a4\ud0c0\uc77c \uc2dc\ud2b8\uc5d0\uc11c \ub9c8\uc9c0\ub9c9\uc73c\ub85c \ubc1c\uacac\ub41c {0}\uc774(\uac00) \uc0ac\uc6a9\ub429\ub2c8\ub2e4.";
   }
 
   /** WG_PARSING_AND_PREPARING          */
@@ -2673,7 +2278,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_PARSING_AND_PREPARING + MAX_CODE][1] =
-      "========= Parsing and preparing {0} ==========";
+      "========= {0}\uc744(\ub97c) \uad6c\ubb38 \ubd84\uc11d \ubc0f \uc900\ube44 \uc911 ==========";
   }
 
   /** WG_ATTR_TEMPLATE          */
@@ -2681,7 +2286,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[WG_ATTR_TEMPLATE + MAX_CODE][1] = "Attr Template, {0}";
+    contents[WG_ATTR_TEMPLATE + MAX_CODE][1] = "Attr \ud15c\ud50c\ub9ac\ud2b8, {0}";
   }
 
   /** WG_CONFLICT_BETWEEN_XSLSTRIPSPACE_AND_XSLPRESERVESPACE          */
@@ -2691,7 +2296,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CONFLICT_BETWEEN_XSLSTRIPSPACE_AND_XSLPRESERVESPACE + MAX_CODE][1] =
-      "Match conflict between xsl:strip-space and xsl:preserve-space";
+      "xsl:strip-space \ubc0f xsl:preserve-space \uac04\uc758 \uc77c\uce58 \ucda9\ub3cc";
   }
 
   /** WG_ATTRIB_NOT_HANDLED          */
@@ -2700,7 +2305,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ATTRIB_NOT_HANDLED + MAX_CODE][1] =
-      "Xalan does not yet handle the {0} attribute!";
+      "Xalan\uc774 \uc544\uc9c1 {0} \uc18d\uc131\uc744 \ucc98\ub9ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!";
   }
 
   /** WG_NO_DECIMALFORMAT_DECLARATION          */
@@ -2709,7 +2314,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_NO_DECIMALFORMAT_DECLARATION + MAX_CODE][1] =
-      "No declaration found for decimal format: {0}";
+      "\uc2ed\uc9c4\uc218 \ud615\uc2dd {0}\uc5d0 \ub300\ud55c \uc120\uc5b8\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_OLD_XSLT_NS          */
@@ -2717,7 +2322,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[WG_OLD_XSLT_NS + MAX_CODE][1] = "Missing or incorrect XSLT Namespace. ";
+    contents[WG_OLD_XSLT_NS + MAX_CODE][1] = "XSLT \uc774\ub984 \uacf5\uac04\uc774 \ube60\uc84c\uac70\ub098 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. ";
   }
 
   /** WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED          */
@@ -2726,7 +2331,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED + MAX_CODE][1] =
-      "Only one default xsl:decimal-format declaration is allowed.";
+      "\ud558\ub098\uc758 \uae30\ubcf8 xsl:decimal-format \uc120\uc5b8\ub9cc \ud5c8\uc6a9\ub429\ub2c8\ub2e4.";
   }
 
   /** WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE          */
@@ -2735,7 +2340,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE + MAX_CODE][1] =
-      "xsl:decimal-format names must be unique. Name \"{0}\" has been duplicated.";
+      "xsl:decimal-format \uc774\ub984\uc740 \uace0\uc720\ud574\uc57c \ud569\ub2c8\ub2e4. \"{0}\"\uc740(\ub294) \uc911\ubcf5\ub429\ub2c8\ub2e4.";
   }
 
   /** WG_ILLEGAL_ATTRIBUTE          */
@@ -2744,7 +2349,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ILLEGAL_ATTRIBUTE + MAX_CODE][1] =
-      "{0} has an illegal attribute: {1}";
+      "{0}\uc5d0 \uc798\ubabb\ub41c \uc18d\uc131 {1}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.";
   }
 
   /** WG_COULD_NOT_RESOLVE_PREFIX          */
@@ -2753,7 +2358,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_COULD_NOT_RESOLVE_PREFIX + MAX_CODE][1] =
-      "Could not resolve namespace prefix: {0}. The node will be ignored.";
+      "\uc774\ub984 \uacf5\uac04 \uc811\ub450\uc5b4 {0}\uc744(\ub97c) \uacb0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774 \ub178\ub4dc\ub294 \ubb34\uc2dc\ub429\ub2c8\ub2e4.";
   }
 
   /** WG_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
@@ -2762,7 +2367,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_STYLESHEET_REQUIRES_VERSION_ATTRIB + MAX_CODE][1] =
-      "xsl:stylesheet requires a 'version' attribute!";
+      "xsl:stylesheet\uc5d0 'version' \uc18d\uc131\uc774 \ud544\uc694\ud569\ub2c8\ub2e4!";
   }
 
   /** WG_ILLEGAL_ATTRIBUTE_NAME          */
@@ -2771,7 +2376,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ILLEGAL_ATTRIBUTE_NAME + MAX_CODE][1] =
-      "Illegal attribute name: {0}";
+      "\uc798\ubabb\ub41c \uc18d\uc131 \uc774\ub984: {0}";
   }
 
   /** WG_ILLEGAL_ATTRIBUTE_VALUE          */
@@ -2780,7 +2385,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ILLEGAL_ATTRIBUTE_VALUE + MAX_CODE][1] =
-      "Illegal value used for attribute {0}: {1}";
+      "{0} \uc18d\uc131\uc5d0 \uc798\ubabb\ub41c \uac12 {1}\uc774(\uac00) \uc0ac\uc6a9\ub418\uc5c8\uc2b5\ub2c8\ub2e4";
   }
 
   /** WG_EMPTY_SECOND_ARG          */
@@ -2788,188 +2393,39 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ WG_EMPTY_SECOND_ARG + MAX_CODE][1] =
-      "Resulting nodeset from second argument of document function is empty. The first agument will be used.";
+    contents[WG_EMPTY_SECOND_ARG + MAX_CODE][1] =
+      "\ubb38\uc11c \uae30\ub2a5\uc758 \ub450 \ubc88\uc9f8 \uc778\uc790\uc758 \uacb0\uacfc\ub85c \ubc1c\uc0dd\ud55c \ub178\ub4dc \uc138\ud2b8\uac00 \ube44\uc5b4 \uc788\uc2b5\ub2c8\ub2e4. \uccab \ubc88\uc9f8 \uc778\uc790\uac00 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.";
   }
 
-  //Following are the new WARNING keys added in XALAN code base after Jdk 1.4 (Xalan 2.2-D11)
-
-    // Note to translators:  "name" and "xsl:processing-instruction" are keywords
-    // and must not be translated.
-    // WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML
-
-
-  /** WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML          */
-  public static final int WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML = 27;
-  static
-  {
-    contents[ WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML + MAX_CODE][1] =
-      "The value of the 'name' attribute of xsl:aprocessing-instruction name must not be 'xml'";
-  }
-
-    // Note to translators:  "name" and "xsl:processing-instruction" are keywords
-    // and must not be translated.  "NCName" is an XML data-type and must not be
-    // translated.
-    // WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME
-
-  /** WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
-  public static final int WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME = 28;
-  static
-  {
-    contents[ WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME + MAX_CODE][1] =
-      "The value of the 'name' attribute of xsl:aprocessing-instruction must be a valid NCName:a {0}";
-  }
-
-    // Note to translators:  This message is reported if the stylesheet that is
-    // being processed attempted to construct an XML document with an attribute in a
-    // place other than on an element.  The substitution text specifies the name of
-    // the attribute.
-    // WG_ILLEGAL_ATTRIBUTE_POSITION
-
-  /** WG_ILLEGAL_ATTRIBUTE_POSITION         */
-  public static final int WG_ILLEGAL_ATTRIBUTE_POSITION = 29;
-  static
-  {
-    contents[WG_ILLEGAL_ATTRIBUTE_POSITION + MAX_CODE][1] =
-      "Cannot add attribute {0} after child nodes or before an element is produced.  Attribute will be ignored.";
-  }
-
-    //Check: WHY THERE IS A GAP B/W NUMBERS in the XSLTErrorResources properties file?
-
-/**
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "CHAR" is the XSLT data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // invalid value, and {0} is the attribute name.
-    // INVALID_TCHAR
-
-  //The following warning codes are shared with the error codes ...
-  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
-  public static final int WG_INVALID_TCHAR = 239;
-  static
-  {
-    contents[WG_INVALID_TCHAR + MAX_CODE][1] =
-      "Illegal value: {1} used for CHAR attribute:a  {0}.  An attribute of type CHAR must be only 1 character!";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_QNAME
-
-  // Illegal value: {1} used for QNAME attribute: {0}
-  public static final int WG_INVALID_QNAME = 242;
-  static
-  {
-    contents[WG_INVALID_QNAME + MAX_CODE][1] =
-      "Illegal value:a {1} used for QNAME attribute:a {0}";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "ENUM" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value, {0} is the attribute name, and {2} is a list of valid
-    // values.
-    // INVALID_ENUM
-
-  // Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.
-  public static final int WG_INVALID_ENUM = 243;
-  static
-  {
-    contents[WG_INVALID_ENUM + MAX_CODE][1] =
-      "Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "NMTOKEN" is the XML data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_NMTOKEN
-
-  // Illegal value:a {1} used for NMTOKEN attribute:a {0}.
-  public static final int WG_INVALID_NMTOKEN = 244;
-  static
-  {
-    contents[WG_INVALID_NMTOKEN + MAX_CODE][1] =
-      "Illegal value:a {1} used for NMTOKEN attribute:a {0} ";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "NCNAME" is the XML data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_NCNAME
-
-  // Illegal value:a {1} used for NCNAME attribute:a {0}.
-  public static final int WG_INVALID_NCNAME = 245;
-  static
-  {
-    contents[WG_INVALID_NCNAME + MAX_CODE][1] =
-      "Illegal value:a {1} used for NCNAME attribute:a {0} ";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "boolean" is the XSLT data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_BOOLEAN
-
-  // Illegal value:a {1} used for boolean attribute:a {0}.
-  public static final int WG_INVALID_BOOLEAN = 246;
-  static
-  {
-    contents[WG_INVALID_BOOLEAN + MAX_CODE][1] =
-      "Illegal value:a {1} used for boolean attribute:a {0} ";
-  }
-
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "number" is the XSLT data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_NUMBER
-
-  // Illegal value:a {1} used for number attribute:a {0}.
-  public static final int WG_INVALID_NUMBER = 247;
-  static
-  {
-    contents[ WG_INVALID_NUMBER + MAX_CODE][1] =
-      "Illegal value:a {1} used for number attribute:a {0} ";
-  }
-
-  // End of codes that are shared...
-
-*/
   // Other miscellaneous text used inside the code...
   static
   {
     contents[MAX_MESSAGES][0] = "ui_language";
-    contents[MAX_MESSAGES][1] = "en";
+    contents[MAX_MESSAGES][1] = "ko";
     contents[MAX_MESSAGES + 1][0] = "help_language";
-    contents[MAX_MESSAGES + 1][1] = "en";
+    contents[MAX_MESSAGES + 1][1] = "ko";
     contents[MAX_MESSAGES + 2][0] = "language";
-    contents[MAX_MESSAGES + 2][1] = "en";
+    contents[MAX_MESSAGES + 2][1] = "ko";
     contents[MAX_MESSAGES + 3][0] = "BAD_CODE";
     contents[MAX_MESSAGES + 3][1] =
-      "Parameter to createMessage was out of bounds";
+      "createMessage\uc758 \ub9e4\uac1c\ubcc0\uc218\uac00 \ubc14\uc6b4\ub4dc\ub97c \ubc97\uc5b4\ub0ac\uc2b5\ub2c8\ub2e4.";
     contents[MAX_MESSAGES + 4][0] = "FORMAT_FAILED";
     contents[MAX_MESSAGES + 4][1] =
-      "Exception thrown during messageFormat call";
+      "messageFormat \ud638\ucd9c \uc2dc \uc608\uc678 \ubc1c\uc0dd";
     contents[MAX_MESSAGES + 5][0] = "version";
-    contents[MAX_MESSAGES + 5][1] = ">>>>>>> Xalan Version ";
+    contents[MAX_MESSAGES + 5][1] = ">>>>>>> Xalan \ubc84\uc804 ";
     contents[MAX_MESSAGES + 6][0] = "version2";
     contents[MAX_MESSAGES + 6][1] = "<<<<<<<";
     contents[MAX_MESSAGES + 7][0] = "yes";
-    contents[MAX_MESSAGES + 7][1] = "yes";
+    contents[MAX_MESSAGES + 7][1] = "\uc608";
     contents[MAX_MESSAGES + 8][0] = "line";
-    contents[MAX_MESSAGES + 8][1] = "Line #";
+    contents[MAX_MESSAGES + 8][1] = "\ud589 #";
     contents[MAX_MESSAGES + 9][0] = "column";
-    contents[MAX_MESSAGES + 9][1] = "Column #";
+    contents[MAX_MESSAGES + 9][1] = "\uc5f4 #";
     contents[MAX_MESSAGES + 10][0] = "xsldone";
-    contents[MAX_MESSAGES + 10][1] = "XSLProcessor: done";
+    contents[MAX_MESSAGES + 10][1] = "XSLProcessor: \uc644\ub8cc";
     contents[MAX_MESSAGES + 11][0] = "xslProc_option";
-    contents[MAX_MESSAGES + 11][1] = "Xalan-J command line Process class options:";
+    contents[MAX_MESSAGES + 11][1] = "Xalan-J \uba85\ub839\uc904 \ud504\ub85c\uc138\uc2a4 \ud074\ub798\uc2a4 \uc635\uc158:";
     contents[MAX_MESSAGES + 12][0] = "optionIN";
     contents[MAX_MESSAGES + 12][1] = "    -IN inputXMLURL";
     contents[MAX_MESSAGES + 13][0] = "optionXSL";
@@ -2984,105 +2440,80 @@ public class XSLTErrorResources extends XResourceBundleBase
       "   [-LXCOUT compiledStylesheetFileNameOutOut]";
     contents[MAX_MESSAGES + 17][0] = "optionPARSER";
     contents[MAX_MESSAGES + 17][1] =
-      "   [-PARSER fully qualified class name of parser liaison]";
+      "   [-PARSER \uad6c\ubb38 \ubd84\uc11d\uae30 liaison\uc758 \uc644\uc804\ud55c \ud074\ub798\uc2a4 \uc774\ub984]";
     contents[MAX_MESSAGES + 18][0] = "optionE";
-    contents[MAX_MESSAGES + 18][1] = "   [-E (Do not expand entity refs)]";
+    contents[MAX_MESSAGES + 18][1] = "   [-E (\uc5d4\ud2f0\ud2f0 refs\ub97c \ud655\uc7a5\ud558\uc9c0 \ub9c8\uc2ed\uc2dc\uc624.)]";
     contents[MAX_MESSAGES + 19][0] = "optionV";
-    contents[MAX_MESSAGES + 19][1] = "   [-E (Do not expand entity refs)]";
+    contents[MAX_MESSAGES + 19][1] = "   [-E (\uc5d4\ud2f0\ud2f0 refs\ub97c \ud655\uc7a5\ud558\uc9c0 \ub9c8\uc2ed\uc2dc\uc624.)]";
     contents[MAX_MESSAGES + 20][0] = "optionQC";
     contents[MAX_MESSAGES + 20][1] =
-      "   [-QC (Quiet Pattern Conflicts Warnings)]";
+      "   [-QC (\ubb34\uc74c \ud328\ud134 \ucda9\ub3cc \uacbd\uace0)]";
     contents[MAX_MESSAGES + 21][0] = "optionQ";
-    contents[MAX_MESSAGES + 21][1] = "   [-Q  (Quiet Mode)]";
+    contents[MAX_MESSAGES + 21][1] = "   [-Q  (\ubb34\uc74c \ubaa8\ub4dc)]";
     contents[MAX_MESSAGES + 22][0] = "optionLF";
     contents[MAX_MESSAGES + 22][1] =
-      "   [-LF (Use linefeeds only on output {default is CR/LF})]";
+      "   [-LF (\ucd9c\ub825\uc5d0\uc11c\ub9cc \uc904 \ubc14\uafc8\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624. {\uae30\ubcf8\uac12\uc740 CR/LF\uc785\ub2c8\ub2e4.})]";
     contents[MAX_MESSAGES + 23][0] = "optionCR";
     contents[MAX_MESSAGES + 23][1] =
-      "   [-CR (Use carriage returns only on output {default is CR/LF})]";
+      "   [-CR (\ucd9c\ub825\uc5d0\uc11c\ub9cc \uce90\ub9ac\uc9c0 \ub9ac\ud134\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624. {\uae30\ubcf8\uac12\uc740 CR/LF\uc785\ub2c8\ub2e4.})]";
     contents[MAX_MESSAGES + 24][0] = "optionESCAPE";
     contents[MAX_MESSAGES + 24][1] =
-      "   [-ESCAPE (Which characters to escape {default is <>&\"\'\\r\\n}]";
+      "   [-ESCAPE (\uc81c\uc5b4\ud560 \ubb38\uc790 {\uae30\ubcf8\uac12\uc740 <>&\"\'\\r\\n}]";
     contents[MAX_MESSAGES + 25][0] = "optionINDENT";
     contents[MAX_MESSAGES + 25][1] =
-      "   [-INDENT (Control how many spaces to indent {default is 0})]";
+      "   [-INDENT (\ub4e4\uc5ec\uc4f0\uae30\ud560 \uacf5\ubc31 \uc218\ub97c \uc81c\uc5b4\ud569\ub2c8\ub2e4. {\uae30\ubcf8\uac12\uc740 0\uc785\ub2c8\ub2e4.})]";
     contents[MAX_MESSAGES + 26][0] = "optionTT";
     contents[MAX_MESSAGES + 26][1] =
-      "   [-TT (Trace the templates as they are being called.)]";
+      "   [-TT (\ud638\ucd9c\ub420 \ub54c \ud15c\ud50c\ub9ac\ud2b8\ub97c \ucd94\uc801\ud569\ub2c8\ub2e4.)]";
     contents[MAX_MESSAGES + 27][0] = "optionTG";
     contents[MAX_MESSAGES + 27][1] =
-      "   [-TG (Trace each generation event.)]";
+      "   [-TG (\uac01 \uc0dd\uc131 \uc774\ubca4\ud2b8\ub97c \ucd94\uc801\ud569\ub2c8\ub2e4.)]";
     contents[MAX_MESSAGES + 28][0] = "optionTS";
-    contents[MAX_MESSAGES + 28][1] = "   [-TS (Trace each selection event.)]";
+    contents[MAX_MESSAGES + 28][1] = "   [-TS (\uac01 \uc120\ud0dd \uc774\ubca4\ud2b8\ub97c \ucd94\uc801\ud569\ub2c8\ub2e4.)]";
     contents[MAX_MESSAGES + 29][0] = "optionTTC";
     contents[MAX_MESSAGES + 29][1] =
-      "   [-TTC (Trace the template children as they are being processed.)]";
+      "   [-TTC (\ucc98\ub9ac\ub420 \ub54c \ud15c\ud50c\ub9ac\ud2b8 \uc790\uc2dd\uc744 \ucd94\uc801\ud569\ub2c8\ub2e4.)]";
     contents[MAX_MESSAGES + 30][0] = "optionTCLASS";
     contents[MAX_MESSAGES + 30][1] =
-      "   [-TCLASS (TraceListener class for trace extensions.)]";
+      "   [-TCLASS (\ucd94\uc801 \ud655\uc7a5\uc5d0 \ub300\ud55c TraceListener \ud074\ub798\uc2a4\uc785\ub2c8\ub2e4.)]";
     contents[MAX_MESSAGES + 31][0] = "optionVALIDATE";
     contents[MAX_MESSAGES + 31][1] =
-      "   [-VALIDATE (Set whether validation occurs.  Validation is off by default.)]";
+      "   [-VALIDATE (\uac80\uc99d \uc5ec\ubd80\ub97c \uc124\uc815\ud569\ub2c8\ub2e4. \uae30\ubcf8\uac12\uc740 \uac80\uc99d\uc774 \ubc1c\uc0dd\ud558\uc9c0 \uc54a\ub294 \uac83\uc785\ub2c8\ub2e4.)]";
     contents[MAX_MESSAGES + 32][0] = "optionEDUMP";
     contents[MAX_MESSAGES + 32][1] =
-      "   [-EDUMP {optional filename} (Do stackdump on error.)]";
+      "   [-EDUMP {\uc120\ud0dd\uc801 \ud30c\uc77c \uc774\ub984} (\uc624\ub958\uac00 \ubc1c\uc0dd\ud558\uba74 \uc2a4\ud0dd\ub364\ud504 \ud558\uc2ed\uc2dc\uc624.)]";
     contents[MAX_MESSAGES + 33][0] = "optionXML";
     contents[MAX_MESSAGES + 33][1] =
-      "   [-XML (Use XML formatter and add XML header.)]";
+      "   [-XML (XML \ud3ec\ub9e4\ud130\ub97c \uc0ac\uc6a9\ud558\uc5ec XML \ud5e4\ub354\ub97c \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.)]";
     contents[MAX_MESSAGES + 34][0] = "optionTEXT";
     contents[MAX_MESSAGES + 34][1] =
-      "   [-TEXT (Use simple Text formatter.)]";
+      "   [-TEXT (\ub2e8\uc21c \ud14d\uc2a4\ud2b8 \ud3ec\ub9e4\ud130\ub97c \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.)]";
     contents[MAX_MESSAGES + 35][0] = "optionHTML";
-    contents[MAX_MESSAGES + 35][1] = "   [-HTML (Use HTML formatter.)]";
+    contents[MAX_MESSAGES + 35][1] = "   [-HTML (HTML \ud3ec\ub9e4\ud130\ub97c \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.)]";
     contents[MAX_MESSAGES + 36][0] = "optionPARAM";
     contents[MAX_MESSAGES + 36][1] =
-      "   [-PARAM name expression (Set a stylesheet parameter)]";
+      "   [-PARAM \uc774\ub984 \ud45c\ud604\uc2dd (\uc2a4\ud0c0\uc77c \uc2dc\ud2b8 \ub9e4\uac1c\ubcc0\uc218\ub97c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.)]";
     contents[MAX_MESSAGES + 37][0] = "noParsermsg1";
-    contents[MAX_MESSAGES + 37][1] = "XSL Process was not successful.";
+    contents[MAX_MESSAGES + 37][1] = "XSL \ud504\ub85c\uc138\uc2a4\uac00 \uc131\uacf5\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.";
     contents[MAX_MESSAGES + 38][0] = "noParsermsg2";
-    contents[MAX_MESSAGES + 38][1] = "** Could not find parser **";
+    contents[MAX_MESSAGES + 38][1] = "** \uad6c\ubb38 \ubd84\uc11d\uae30\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4 **";
     contents[MAX_MESSAGES + 39][0] = "noParsermsg3";
-    contents[MAX_MESSAGES + 39][1] = "Please check your classpath.";
+    contents[MAX_MESSAGES + 39][1] = "\ud074\ub798\uc2a4 \uacbd\ub85c\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.";
     contents[MAX_MESSAGES + 40][0] = "noParsermsg4";
     contents[MAX_MESSAGES + 40][1] =
-      "If you don't have IBM's XML Parser for Java, you can download it from";
+      "Java\uc6a9 IBM XML \uad6c\ubb38 \ubd84\uc11d\uae30\uac00 \uc5c6\ub294 \uacbd\uc6b0 \ub2e4\uc74c\uc5d0\uc11c \ub2e4\uc6b4\ub85c\ub4dc\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.";
     contents[MAX_MESSAGES + 41][0] = "noParsermsg5";
     contents[MAX_MESSAGES + 41][1] =
-      "IBM's AlphaWorks: http://www.alphaworks.ibm.com/formula/xml";
+      "IBM AlphaWorks: http://www.alphaworks.ibm.com/formula/xml";
 		contents[MAX_MESSAGES + 42][0] = "optionURIRESOLVER";
-    contents[MAX_MESSAGES + 42][1] = "   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]";
+    contents[MAX_MESSAGES + 42][1] = "   [-URIRESOLVER \uc804\uccb4 \ud074\ub798\uc2a4 \uc774\ub984(URI\ub97c \uacb0\uc815\ud558\ub294 \ub370 \uc0ac\uc6a9\ub418\ub294 URIResolver)]";
 		contents[MAX_MESSAGES + 43][0] = "optionENTITYRESOLVER";
-    contents[MAX_MESSAGES + 43][1] = "   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]";
+    contents[MAX_MESSAGES + 43][1] = "   [-ENTITYRESOLVER \uc804\uccb4 \ud074\ub798\uc2a4 \uc774\ub984(\uc5d4\ud2f0\ud2f0\ub97c \uacb0\uc815\ud558\ub294 \ub370 \uc0ac\uc6a9\ub418\ub294 EntityResolver)]";
 		contents[MAX_MESSAGES + 44][0] = "optionCONTENTHANDLER";
-    contents[MAX_MESSAGES + 44][1] = "   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]";
+    contents[MAX_MESSAGES + 44][1] = "   [-CONTENTHANDLER \uc804\uccb4 \ud074\ub798\uc2a4 \uc774\ub984(\ucd9c\ub825\uc744 \uc77c\ub828\ud654\ud558\ub294 \ub370 \uc0ac\uc6a9\ub418\ub294 ContentHandler)]";
     contents[MAX_MESSAGES + 45][0] = "optionLINENUMBERS";
-    contents[MAX_MESSAGES + 45][1] = "   [-L use line numbers for source document]";
-
-    // Following are the new options added in XSLTErrorResources.properties files after Jdk 1.4 (Xalan 2.2-D11)
-
-
-    contents[MAX_MESSAGES + 46][0] = "optionMEDIA";
-    contents[MAX_MESSAGES + 46][1] = " [-MEDIA mediaType (use media attribute to find stylesheet associated with a document.)]";
-    contents[MAX_MESSAGES + 47][0] = "optionFLAVOR";
-    contents[MAX_MESSAGES + 47][1] = " [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)] "; // Added by sboag/scurcuru; experimental
-    contents[MAX_MESSAGES + 48][0] = "optionDIAG";
-    contents[MAX_MESSAGES + 48][1] = " [-DIAG (Print overall milliseconds transform took.)]";
-    contents[MAX_MESSAGES + 49][0] = "optionINCREMENTAL";
-    contents[MAX_MESSAGES + 49][1] = " [-INCREMENTAL (request incremental DTM construction by setting http://xml.apache.org/xalan/features/incremental true.)]";
-    contents[MAX_MESSAGES + 50][0] = "optionNOOPTIMIMIZE";
-    contents[MAX_MESSAGES + 50][1] = " [-NOOPTIMIMIZE (request no stylesheet optimization proccessing by setting http://xml.apache.org/xalan/features/optimize false.)]";
-    contents[MAX_MESSAGES + 51][0] = "optionRL";
-    contents[MAX_MESSAGES + 51][1] = " [-RL recursionlimit (assert numeric limit on stylesheet recursion depth.)]";
-    contents[MAX_MESSAGES + 52][0] = "optionXO";
-    contents[MAX_MESSAGES + 52][1] = " [-XO [transletName] (assign the name to the generated translet)]";
-    contents[MAX_MESSAGES + 53][0] = "optionXD";
-    contents[MAX_MESSAGES + 53][1] = " [-XD destinationDirectory (specify a destination directory for translet)]";
-    contents[MAX_MESSAGES + 54][0] = "optionXJ";
-    contents[MAX_MESSAGES + 54][1] = " [-XJ jarfile (packages translet classes into a jar file of name <jarfile>)]";
-    contents[MAX_MESSAGES + 55][0] = "optionXP";
-    contents[MAX_MESSAGES + 55][1] = " [-XP package (specifies a package name prefix for all generated translet classes)]";
-
-
+    contents[MAX_MESSAGES + 45][1] = "   [-L \uc18c\uc2a4 \ubb38\uc11c\uc758 \uc904 \ubc88\ud638 \uc0ac\uc6a9]";
+		
   }
 
   // ================= INFRASTRUCTURE ======================
@@ -3097,10 +2528,10 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String ERROR_STRING = "#error";
 
   /** String to prepend to error messages.  */
-  public static final String ERROR_HEADER = "Error: ";
+  public static final String ERROR_HEADER = "\uc624\ub958: ";
 
   /** String to prepend to warning messages.    */
-  public static final String WARNING_HEADER = "Warning: ";
+  public static final String WARNING_HEADER = "\uacbd\uace0: ";
 
   /** String to specify the XSLT module.  */
   public static final String XSL_HEADER = "XSLT ";
@@ -3113,158 +2544,12 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String QUERY_HEADER = "PATTERN ";
 
   /**
-   * Get the lookup table.
+   * Get the lookup table. 
    *
    * @return The int to message lookup table.
    */
   public Object[][] getContents()
   {
     return contents;
-  }
-
-  /**
-   *   Return a named ResourceBundle for a particular locale.  This method mimics the behavior
-   *   of ResourceBundle.getBundle().
-   *
-   *   @param className the name of the class that implements the resource bundle.
-   *   @return the ResourceBundle
-   *   @throws MissingResourceException
-   */
-  public static final XSLTErrorResources loadResourceBundle(String className)
-          throws MissingResourceException
-  {
-
-    Locale locale = Locale.getDefault();
-    String suffix = getResourceSuffix(locale);
-
-    try
-    {
-
-      // first try with the given locale
-      return (XSLTErrorResources) ResourceBundle.getBundle(className
-              + suffix, locale);
-    }
-    catch (MissingResourceException e)
-    {
-      try  // try to fall back to en_US if we can't load
-      {
-
-        // Since we can't find the localized property file,
-        // fall back to en_US.
-        return (XSLTErrorResources) ResourceBundle.getBundle(className,
-                new Locale("en", "US"));
-      }
-      catch (MissingResourceException e2)
-      {
-
-        // Now we are really in trouble.
-        // very bad, definitely very bad...not going to get very far
-        throw new MissingResourceException(
-          "Could not load any resource bundles.", className, "");
-      }
-    }
-  }
-
-  /**
-   * Return the resource file suffic for the indicated locale
-   * For most locales, this will be based the language code.  However
-   * for Chinese, we do distinguish between Taiwan and PRC
-   *
-   * @param locale the locale
-   * @return an String suffix which canbe appended to a resource name
-   */
-  private static final String getResourceSuffix(Locale locale)
-  {
-
-    String suffix = "_" + locale.getLanguage();
-    String country = locale.getCountry();
-
-    if (country.equals("TW"))
-      suffix += "_" + country;
-
-    return suffix;
-  }
-
-  /**
-   * Get a string representation of the error code.
-   *
-   * @param errorCode Should be a valid error code less than {@link #MAX_CODE}.
-   *
-   * @return A string representation of the error code, or null if code is
-   * greater than MAX_CODE.
-   */
-  public String getMessageKey(int errorCode)
-  {
-
-    if (errorCode > MAX_CODE)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return ERROR_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get a string representation of the warning code.
-   *
-   * @param errorCode Should be a valid warning code less than {@link #MAX_WARNING}.
-   *
-   * @return A string representation of the warning code, or null if code is
-   * greater than MAX_WARNING.
-   */
-  public String getWarningKey(int errorCode)
-  {
-
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return WARNING_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get a string representation of the message code. (same as getMessageKey).
-   *
-   * @param errorCode Should be a valid error code less than {@link #MAX_CODE}.
-   *
-   * @return A string representation of the error code, or null if code is
-   * greater than MAX_CODE.
-   */
-  public static String getMKey(int errorCode)
-  {
-    if (errorCode > MAX_CODE)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return ERROR_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get a string representation of the warning code.
-   *
-   * @param errorCode Should be a valid warning code less than {@link #MAX_WARNING}.
-   *
-   * @return A string representation of the warning code, or null if code is
-   * greater than MAX_WARNING.
-   */
-  public static String getWKey(int errorCode)
-  {
-
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return WARNING_SUFFIX + df.format(errorCode);
-    }
   }
 }

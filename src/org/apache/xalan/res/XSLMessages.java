@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -56,6 +56,8 @@
  */
 package org.apache.xalan.res;
 
+import org.apache.xml.utils.res.XResourceBundleBase;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.ListResourceBundle;
@@ -75,10 +77,10 @@ public class XSLMessages
   private Locale fLocale = Locale.getDefault();
 
   /** The language specific resource object for Xalan messages.  */
-  private static ResourceBundle XSLTBundle = null;
+  private static XResourceBundleBase XSLTBundle = null;
 
   /** The language specific resource object for XPath messages.  */
-  private static ResourceBundle XPATHBundle = null;
+  private static XResourceBundleBase XPATHBundle = null;
 
   /** The class name of the Xalan error message string table.    */
   private static final String XSLT_ERROR_RESOURCES =
@@ -96,7 +98,7 @@ public class XSLMessages
 
   /**
    * Set the Locale object to use.
-   * 
+   *
    * @param locale non-null reference to Locale object.
    */
    public void setLocale(Locale locale)
@@ -106,7 +108,7 @@ public class XSLMessages
 
   /**
    * Get the Locale object that is being used.
-   * 
+   *
    * @return non-null reference to Locale object.
    */
   public Locale getLocale()
@@ -124,18 +126,18 @@ public class XSLMessages
    *
    * @return The formatted warning string.
    */
-  public static final String createXPATHWarning(int errorCode, Object args[])  //throws Exception 
+  public static final String createXPATHWarning(int errorCode, Object args[])  //throws Exception
   {
 
     if (XPATHBundle == null)
       XPATHBundle =
-        loadResourceBundle(XPATH_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XPATH_ERROR_RESOURCES);
 
-    ResourceBundle fResourceBundle = XPATHBundle;
+    XResourceBundleBase fResourceBundle = XPATHBundle;
 
     if (fResourceBundle != null)
     {
-      String msgKey = XPATHErrorResources.getWarningKey(errorCode);
+      String msgKey = fResourceBundle.getWarningKey(errorCode);
 
       return createXPATHMsg(fResourceBundle, msgKey, args);
     }
@@ -153,25 +155,24 @@ public class XSLMessages
    *
    * @return The formatted message string.
    */
-  public static final String createXPATHMessage(int errorCode, Object args[])  //throws Exception 
+  public static final String createXPATHMessage(int errorCode, Object args[])  //throws Exception
   {
 
     if (XPATHBundle == null)
       XPATHBundle =
-        loadResourceBundle(XPATH_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XPATH_ERROR_RESOURCES);
 
-    ResourceBundle fResourceBundle = XPATHBundle;
+    XResourceBundleBase fResourceBundle = XPATHBundle;
 
     if (fResourceBundle != null)
     {
-      String msgKey = XPATHErrorResources.getMessageKey(errorCode);
+      String msgKey = fResourceBundle.getMessageKey(errorCode);
 
       return createXPATHMsg(fResourceBundle, msgKey, args);
     }
     else
       return "Could not load any resource bundles.";
   }
-  
   /**
    * Creates a message from the specified key and replacement
    * arguments, localized to the given locale.
@@ -182,14 +183,14 @@ public class XSLMessages
    *
    * @return The formatted message string.
    */
-  public static final String createXPATHMessage(String msgKey, Object args[])  //throws Exception 
+  public static final String createXPATHMessage(String msgKey, Object args[])  //throws Exception
   {
 
     if (XPATHBundle == null)
       XPATHBundle =
-        loadResourceBundle(XPATH_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XPATH_ERROR_RESOURCES);
 
-    ResourceBundle fResourceBundle = XPATHBundle;
+    XResourceBundleBase fResourceBundle = XPATHBundle;
 
     if (fResourceBundle != null)
     {
@@ -198,7 +199,6 @@ public class XSLMessages
     else
       return "Could not load any resource bundles.";
   }
-
 
   /**
    * Creates a message from the specified key and replacement
@@ -213,8 +213,8 @@ public class XSLMessages
    *
    * @return The formatted message string.
    */
-  public static final String createXPATHMsg(ResourceBundle fResourceBundle,
-                                            String msgKey, Object args[])  //throws Exception 
+  public static final String createXPATHMsg(XResourceBundleBase fResourceBundle,
+                                            String msgKey, Object args[])  //throws Exception
   {
 
     String fmsg = null;
@@ -273,48 +273,48 @@ public class XSLMessages
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
+   * @return The formatted message string.
+   */
+  public static final String createMessage(String msgKey, Object args[])  //throws Exception
+  {
+
+    if (XSLTBundle == null)
+      XSLTBundle =
+        (XResourceBundleBase) loadResourceBundle(XSLT_ERROR_RESOURCES);
+
+    XResourceBundleBase fResourceBundle = XSLTBundle;
+
+    if (fResourceBundle != null)
+    {
+      return createMsg(fResourceBundle, msgKey, args);
+    }
+    else
+      return "Could not load any resource bundles.";
+  }
+
+  /**
+   * Creates a message from the specified key and replacement
+   * arguments, localized to the given locale.
+   *
+   * @param errorCode The key for the message text.
+   * @param args      The arguments to be used as replacement text
+   *                  in the message created.
+   *
    * @return The formatted warning string.
    */
-  public static final String createWarning(int errorCode, Object args[])  //throws Exception 
+  public static final String createWarning(int errorCode, Object args[])  //throws Exception
   {
 
     if (XSLTBundle == null)
       XSLTBundle =
-        loadResourceBundle(XSLT_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XSLT_ERROR_RESOURCES);
 
-    ResourceBundle fResourceBundle = XSLTBundle;
-
-    if (fResourceBundle != null)
-    {
-      String msgKey = XSLTErrorResources.getWarningKey(errorCode);
-
-      return createMsg(fResourceBundle, msgKey, args);
-    }
-    else
-      return "Could not load any resource bundles.";
-  }
-  
-  /**
-   * Creates a message from the specified key and replacement
-   * arguments, localized to the given locale.
-   *
-   * @param errorCode The key for the message text.
-   * @param args      The arguments to be used as replacement text
-   *                  in the message created.
-   *
-   * @return The formatted message string.
-   */
-  public static final String createMessage(String msgKey, Object args[])  //throws Exception 
-  {
-
-    if (XSLTBundle == null)
-      XSLTBundle =
-        loadResourceBundle(XSLT_ERROR_RESOURCES);
-
-    ResourceBundle fResourceBundle = XSLTBundle;
+    XResourceBundleBase fResourceBundle = XSLTBundle;
 
     if (fResourceBundle != null)
     {
+      String msgKey = fResourceBundle.getWarningKey(errorCode);
+
       return createMsg(fResourceBundle, msgKey, args);
     }
     else
@@ -331,18 +331,18 @@ public class XSLMessages
    *
    * @return The formatted message string.
    */
-  public static final String createMessage(int errorCode, Object args[])  //throws Exception 
+  public static final String createMessage(int errorCode, Object args[])  //throws Exception
   {
 
     if (XSLTBundle == null)
       XSLTBundle =
-        loadResourceBundle(XSLT_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XSLT_ERROR_RESOURCES);
 
-    ResourceBundle fResourceBundle = XSLTBundle;
+    XResourceBundleBase fResourceBundle = XSLTBundle;
 
     if (fResourceBundle != null)
     {
-      String msgKey = XSLTErrorResources.getMessageKey(errorCode);
+      String msgKey = fResourceBundle.getMessageKey(errorCode);
 
       return createMsg(fResourceBundle, msgKey, args);
     }
@@ -363,8 +363,8 @@ public class XSLMessages
    *
    * @return The formatted message string.
    */
-  public static final String createMsg(ResourceBundle fResourceBundle,
-                                       String msgKey, Object args[])  //throws Exception 
+  public static final String createMsg(XResourceBundleBase fResourceBundle,
+                                       String msgKey, Object args[])  //throws Exception
   {
 
     String fmsg = null;
@@ -437,11 +437,11 @@ public class XSLMessages
     int majorCode;
     int minorCode;
     String fmsg = null;
-    ResourceBundle aResourceBundle = null;
+    XResourceBundleBase aResourceBundle = null;
 
-    aResourceBundle = loadResourceBundle(bundleName);
+    aResourceBundle = (XResourceBundleBase) loadResourceBundle(bundleName);
 
-    String msgKey = XSLTErrorResources.getMessageKey(errorCode);
+    String msgKey = aResourceBundle.getMessageKey(errorCode);
     String msg = null;
 
     if (msgKey != null)
@@ -499,19 +499,19 @@ public class XSLMessages
    * @return the ResourceBundle
    * @throws MissingResourceException
    */
-  public static final ResourceBundle loadResourceBundle(String className)
+  public static final ListResourceBundle loadResourceBundle(String className)
           throws MissingResourceException
   {
 
     Locale locale = Locale.getDefault();
 
-    // String suffix = getResourceSuffix(locale);  
+    // String suffix = getResourceSuffix(locale);
     try
     {
 
       //System.out.println("resource " +className+suffix);
       // first try with the given locale
-      return ResourceBundle.getBundle(className, locale);
+      return (ListResourceBundle) ResourceBundle.getBundle(className, locale);
     }
     catch (MissingResourceException e)
     {
@@ -520,7 +520,7 @@ public class XSLMessages
 
         // Since we can't find the localized property file,
         // fall back to en_US.
-        return ResourceBundle.getBundle(
+        return (ListResourceBundle) ResourceBundle.getBundle(
           XSLT_ERROR_RESOURCES, new Locale("en", "US"));
       }
       catch (MissingResourceException e2)

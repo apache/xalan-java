@@ -1,8 +1,15 @@
 /*
+ * @(#)XSLTErrorResources_it.java	1.8 02/03/26
+ *
+ * Copyright 2002 Sun Microsystems, Inc. All rights reserved.
+ * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+ 
+/*
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +17,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +25,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +33,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -76,24 +83,24 @@ import org.apache.xalan.templates.Constants;
  * fill in the actual message string. Follow the instructions
  * below.
  */
-public class XSLTErrorResources extends XResourceBundleBase
+public class XSLTErrorResources_it extends XSLTErrorResources
 {
 
   /** The error suffix for construction error property keys.   */
   public static final String ERROR_SUFFIX = "ER";
 
-  /** The warning suffix for construction error property keys.   */
-  public static final String WARNING_SUFFIX = "WR";
 
-    // New error messages were added after Xalan 2.2-D11
+  /** The warning suffix for construction error property keys.   */
+  public static final String WARNING_SUFFIX = "AV";
+
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 253;
+  public static final int MAX_CODE = 215;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 29;
+  public static final int MAX_WARNING = 26;
 
   /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 55;
+  public static final int MAX_OTHERS = 45;
 
   /** Maximum total warnings and error messages.          */
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
@@ -133,6 +140,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   // Error messages...
 
   /** Error message ID that has a null message, but takes in a single object.    */
+
   public static final int ERROR0000 = 0;
 
   static
@@ -144,9 +152,10 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final int ER_NO_CURLYBRACE = 1;
 
   static
+
   {
     contents[ER_NO_CURLYBRACE][1] =
-      "Error: Can not have '{' within expression";
+      "Errore: Impossibile inserire '{' nell'espressione.";
   }
 
   /** ER_ILLEGAL_ATTRIBUTE          */
@@ -154,16 +163,17 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ILLEGAL_ATTRIBUTE][1] = "{0} has an illegal attribute: {1}";
+    contents[ER_ILLEGAL_ATTRIBUTE][1] = "{0} ha un attributo illegale: {1}.";
   }
 
   /** ER_NULL_SOURCENODE_APPLYIMPORTS          */
+
   public static final int ER_NULL_SOURCENODE_APPLYIMPORTS = 3;
 
   static
   {
     contents[ER_NULL_SOURCENODE_APPLYIMPORTS][1] =
-      "sourceNode is null in xsl:apply-imports!";
+      "sourceNode nullo in xsl:apply-imports";
   }
 
   /** ER_CANNOT_ADD          */
@@ -171,7 +181,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_CANNOT_ADD][1] = "Can not add {0} to {1}";
+    contents[ER_CANNOT_ADD][1] = "Impossibile aggiungere {0} a {1}.";
   }
 
   /** ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES          */
@@ -180,7 +190,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES][1] =
-      "sourceNode is null in handleApplyTemplatesInstruction!";
+      "sourceNode nullo in handleApplyTemplatesInstruction.";
   }
 
   /** ER_NO_NAME_ATTRIB          */
@@ -188,7 +198,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NO_NAME_ATTRIB][1] = "{0} must have a name attribute.";
+    contents[ER_NO_NAME_ATTRIB][1] = "{0} deve avere un attributo nome.";
   }
 
   /** ER_TEMPLATE_NOT_FOUND          */
@@ -196,7 +206,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_TEMPLATE_NOT_FOUND][1] = "Could not find template named: {0}";
+    contents[ER_TEMPLATE_NOT_FOUND][1] = "Impossibile trovare il modello denominato: {0}.";
   }
 
   /** ER_CANT_RESOLVE_NAME_AVT          */
@@ -205,7 +215,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_RESOLVE_NAME_AVT][1] =
-      "Could not resolve name AVT in xsl:call-template.";
+      "Impossibile risolvere il nome AVT in xsl:call-template.";
   }
 
   /** ER_REQUIRES_ATTRIB          */
@@ -213,7 +223,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_REQUIRES_ATTRIB][1] = "{0} requires attribute: {1}";
+    contents[ER_REQUIRES_ATTRIB][1] = "{0} richiede l'attributo: {1}.";
   }
 
   /** ER_MUST_HAVE_TEST_ATTRIB          */
@@ -222,7 +232,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MUST_HAVE_TEST_ATTRIB][1] =
-      "{0} must have a 'test' attribute.";
+      "{0} deve avere un attributo 'test'.";
   }
 
   /** ER_BAD_VAL_ON_LEVEL_ATTRIB          */
@@ -231,7 +241,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_BAD_VAL_ON_LEVEL_ATTRIB][1] =
-      "Bad value on level attribute: {0}";
+      "Valore non valido su attributo livello: {0}";
   }
 
   /** ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML          */
@@ -240,7 +250,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML][1] =
-      "processing-instruction name can not be 'xml'";
+      "Il nome dell'istruzione di elaborazione non pu\u00f2 essere 'xml'.";
   }
 
   /** ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
@@ -249,7 +259,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME][1] =
-      "processing-instruction name must be a valid NCName: {0}";
+      "Il nome dell'istruzione di elaborazione deve essere un NCName valido: {0}.";
   }
 
   /** ER_NEED_MATCH_ATTRIB          */
@@ -258,7 +268,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NEED_MATCH_ATTRIB][1] =
-      "{0} must have a match attribute if it has a mode.";
+      "{0} deve avere un attributo corrispondenza se ha una modalit\u00e0.";
   }
 
   /** ER_NEED_NAME_OR_MATCH_ATTRIB          */
@@ -267,7 +277,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NEED_NAME_OR_MATCH_ATTRIB][1] =
-      "{0} requires either a name or a match attribute.";
+      "{0} richiede un attributo nome o corrispondenza.";
   }
 
   /** ER_CANT_RESOLVE_NSPREFIX          */
@@ -276,7 +286,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_RESOLVE_NSPREFIX][1] =
-      "Can not resolve namespace prefix: {0}";
+      "Impossibile risolvere il prefisso namespace: {0}.";
   }
 
   /** ER_ILLEGAL_VALUE          */
@@ -284,7 +294,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ILLEGAL_VALUE][1] = "xml:space has an illegal value: {0}";
+    contents[ER_ILLEGAL_VALUE][1] = "xml:space ha valore non valido: {0}.";
   }
 
   /** ER_NO_OWNERDOC          */
@@ -293,7 +303,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_OWNERDOC][1] =
-      "Child node does not have an owner document!";
+      "Il nodo secondario non ha alcun documento di propriet\u00e0.";
   }
 
   /** ER_ELEMTEMPLATEELEM_ERR          */
@@ -301,7 +311,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ELEMTEMPLATEELEM_ERR][1] = "ElemTemplateElement error: {0}";
+    contents[ER_ELEMTEMPLATEELEM_ERR][1] = "Errore ElemTemplateElement: {0}.";
   }
 
   /** ER_NULL_CHILD          */
@@ -309,7 +319,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NULL_CHILD][1] = "Trying to add a null child!";
+    contents[ER_NULL_CHILD][1] = "Tentativo di aggiungere un elemento secondario nullo.";
   }
 
   /** ER_NEED_SELECT_ATTRIB          */
@@ -317,16 +327,17 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NEED_SELECT_ATTRIB][1] = "{0} requires a select attribute.";
+    contents[ER_NEED_SELECT_ATTRIB][1] = "{0} richiede un attributo selezione.";
   }
 
   /** ER_NEED_TEST_ATTRIB          */
+
   public static final int ER_NEED_TEST_ATTRIB = 22;
 
   static
   {
     contents[ER_NEED_TEST_ATTRIB][1] =
-      "xsl:when must have a 'test' attribute.";
+      "xsl:when deve avere un attributo 'test'.";
   }
 
   /** ER_NEED_NAME_ATTRIB          */
@@ -335,7 +346,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NEED_NAME_ATTRIB][1] =
-      "xsl:with-param must have a 'name' attribute.";
+      "xsl:with-param deve avere un attributo 'name'.";
   }
 
   /** ER_NO_CONTEXT_OWNERDOC          */
@@ -344,7 +355,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_CONTEXT_OWNERDOC][1] =
-      "context does not have an owner document!";
+      "Il contesto non ha un documento di propriet\u00e0.";
   }
 
   /** ER_COULD_NOT_CREATE_XML_PROC_LIAISON          */
@@ -353,7 +364,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULD_NOT_CREATE_XML_PROC_LIAISON][1] =
-      "Could not create XML TransformerFactory Liaison: {0}";
+      "Impossibile creare un XML TransformerFactory Liaison: {0}";
   }
 
   /** ER_PROCESS_NOT_SUCCESSFUL          */
@@ -362,7 +373,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESS_NOT_SUCCESSFUL][1] =
-      "Xalan: Process was not successful.";
+      "Xalan: il processo non \u00e8 riuscito.";
   }
 
   /** ER_NOT_SUCCESSFUL          */
@@ -370,7 +381,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NOT_SUCCESSFUL][1] = "Xalan: was not successful.";
+    contents[ER_NOT_SUCCESSFUL][1] = "Xalan: non \u00e8 riuscito.";
   }
 
   /** ER_ENCODING_NOT_SUPPORTED          */
@@ -378,7 +389,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ENCODING_NOT_SUPPORTED][1] = "Encoding not supported: {0}";
+    contents[ER_ENCODING_NOT_SUPPORTED][1] = "Codifica non supportata: {0}";
   }
 
   /** ER_COULD_NOT_CREATE_TRACELISTENER          */
@@ -387,7 +398,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULD_NOT_CREATE_TRACELISTENER][1] =
-      "Could not create TraceListener: {0}";
+      "Impossibile creare TraceListener: {0}";
   }
 
   /** ER_KEY_REQUIRES_NAME_ATTRIB          */
@@ -396,16 +407,17 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_KEY_REQUIRES_NAME_ATTRIB][1] =
-      "xsl:key requires a 'name' attribute!";
+      "xsl:key richiede un attributo 'nome'.";
   }
 
   /** ER_KEY_REQUIRES_MATCH_ATTRIB          */
   public static final int ER_KEY_REQUIRES_MATCH_ATTRIB = 31;
 
+
   static
   {
     contents[ER_KEY_REQUIRES_MATCH_ATTRIB][1] =
-      "xsl:key requires a 'match' attribute!";
+      "xsl:key richiede un attributo 'corrispondenza'.";
   }
 
   /** ER_KEY_REQUIRES_USE_ATTRIB          */
@@ -414,7 +426,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_KEY_REQUIRES_USE_ATTRIB][1] =
-      "xsl:key requires a 'use' attribute!";
+      "xsl:key richiede un attributo 'uso'.";
   }
 
   /** ER_REQUIRES_ELEMENTS_ATTRIB          */
@@ -423,7 +435,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_REQUIRES_ELEMENTS_ATTRIB][1] =
-      "(StylesheetHandler) {0} requires an 'elements' attribute!";
+      "(StylesheetHandler) {0} richiede un attributo 'elementi'.";
   }
 
   /** ER_MISSING_PREFIX_ATTRIB          */
@@ -432,7 +444,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_PREFIX_ATTRIB][1] =
-      "(StylesheetHandler) {0} attribute 'prefix' is missing";
+      "(StylesheetHandler) {0} attributo 'prefisso' mancante";
   }
 
   /** ER_BAD_STYLESHEET_URL          */
@@ -440,7 +452,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_BAD_STYLESHEET_URL][1] = "Stylesheet URL is bad: {0}";
+    contents[ER_BAD_STYLESHEET_URL][1] = "URL del foglio di stile non valido: {0}";
   }
 
   /** ER_FILE_NOT_FOUND          */
@@ -448,7 +460,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_FILE_NOT_FOUND][1] = "Stylesheet file was not found: {0}";
+    contents[ER_FILE_NOT_FOUND][1] = "File del foglio di stile non trovato: {0}";
   }
 
   /** ER_IOEXCEPTION          */
@@ -457,7 +469,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IOEXCEPTION][1] =
-      "Had IO Exception with stylesheet file: {0}";
+      "Rilevata eccezione IO con il file del foglio di stile: {0}";
   }
 
   /** ER_NO_HREF_ATTRIB          */
@@ -466,7 +478,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_HREF_ATTRIB][1] =
-      "(StylesheetHandler) Could not find href attribute for {0}";
+      "(StylesheetHandler) Impossibile trovare l'attributo href per {0}";
   }
 
   /** ER_STYLESHEET_INCLUDES_ITSELF          */
@@ -475,7 +487,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_STYLESHEET_INCLUDES_ITSELF][1] =
-      "(StylesheetHandler) {0} is directly or indirectly including itself!";
+      "(StylesheetHandler) {0} include se stesso direttamente o indirettamente.";
   }
 
   /** ER_PROCESSINCLUDE_ERROR          */
@@ -484,7 +496,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSINCLUDE_ERROR][1] =
-      "StylesheetHandler.processInclude error, {0}";
+      "Errore StylesheetHandler.processInclude, {0}";
   }
 
   /** ER_MISSING_LANG_ATTRIB          */
@@ -493,7 +505,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_LANG_ATTRIB][1] =
-      "(StylesheetHandler) {0} attribute 'lang' is missing";
+      "(StylesheetHandler) {0} attributo 'lang' mancante";
   }
 
   /** ER_MISSING_CONTAINER_ELEMENT_COMPONENT          */
@@ -502,7 +514,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_CONTAINER_ELEMENT_COMPONENT][1] =
-      "(StylesheetHandler) misplaced {0} element?? Missing container element 'component'";
+      "(StylesheetHandler) elemento {0} fuori posto? 'Componente' dell'elemento contenitore mancante";
   }
 
   /** ER_CAN_ONLY_OUTPUT_TO_ELEMENT          */
@@ -511,7 +523,8 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CAN_ONLY_OUTPUT_TO_ELEMENT][1] =
-      "Can only output to an Element, DocumentFragment, Document, or PrintWriter.";
+
+      "\u00c8 possibile eseguire l'output solo in Element, DocumentFragment, Document o PrintWriter.";
   }
 
   /** ER_PROCESS_ERROR          */
@@ -519,7 +532,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_PROCESS_ERROR][1] = "StylesheetRoot.process error";
+    contents[ER_PROCESS_ERROR][1] = "Errore in StylesheetRoot.process";
   }
 
   /** ER_UNIMPLNODE_ERROR          */
@@ -527,7 +540,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNIMPLNODE_ERROR][1] = "UnImplNode error: {0}";
+    contents[ER_UNIMPLNODE_ERROR][1] = "Errore in UnImplNode: {0}";
   }
 
   /** ER_NO_SELECT_EXPRESSION          */
@@ -536,7 +549,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_SELECT_EXPRESSION][1] =
-      "Error! Did not find xpath select expression (-select).";
+      "Errore. L'espressione di selezione del percorso (-select) non \u00e8 stata trovata.";
   }
 
   /** ER_CANNOT_SERIALIZE_XSLPROCESSOR          */
@@ -545,7 +558,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_SERIALIZE_XSLPROCESSOR][1] =
-      "Can not serialize an XSLProcessor!";
+      "Impossibile serializzare un XSLProcessor!";
   }
 
   /** ER_NO_INPUT_STYLESHEET          */
@@ -554,7 +567,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_INPUT_STYLESHEET][1] =
-      "Stylesheet input was not specified!";
+      "Input del foglio di stile non specificato.";
   }
 
   /** ER_FAILED_PROCESS_STYLESHEET          */
@@ -563,7 +576,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FAILED_PROCESS_STYLESHEET][1] =
-      "Failed to process stylesheet!";
+      "Elaborazione del foglio di stile non riuscita.";
   }
 
   /** ER_COULDNT_PARSE_DOC          */
@@ -571,7 +584,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_COULDNT_PARSE_DOC][1] = "Could not parse {0} document!";
+    contents[ER_COULDNT_PARSE_DOC][1] = "Impossibile analizzare il documento {0}.";
   }
 
   /** ER_COULDNT_FIND_FRAGMENT          */
@@ -579,7 +592,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_COULDNT_FIND_FRAGMENT][1] = "Could not find fragment: {0}";
+    contents[ER_COULDNT_FIND_FRAGMENT][1] = "Impossibile trovare il frammento: {0}";
   }
 
   /** ER_NODE_NOT_ELEMENT          */
@@ -588,7 +601,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NODE_NOT_ELEMENT][1] =
-      "Node pointed to by fragment identifier was not an element: {0}";
+      "Il nodo a cui puntava l'identificatore del frammento non era un elemento: {0}";
   }
 
   /** ER_FOREACH_NEED_MATCH_OR_NAME_ATTRIB          */
@@ -597,7 +610,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FOREACH_NEED_MATCH_OR_NAME_ATTRIB][1] =
-      "for-each must have either a match or name attribute";
+      "for-each deve avere un attributo corrispondenza o nome.";
   }
 
   /** ER_TEMPLATES_NEED_MATCH_OR_NAME_ATTRIB          */
@@ -606,7 +619,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_TEMPLATES_NEED_MATCH_OR_NAME_ATTRIB][1] =
-      "templates must have either a match or name attribute";
+      "I modelli devono avere un attributo corrispondenza o nome.";
   }
 
   /** ER_NO_CLONE_OF_DOCUMENT_FRAG          */
@@ -615,7 +628,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_CLONE_OF_DOCUMENT_FRAG][1] =
-      "No clone of a document fragment!";
+      "Nessun duplicato di frammento di un documento.";
   }
 
   /** ER_CANT_CREATE_ITEM          */
@@ -624,7 +637,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_CREATE_ITEM][1] =
-      "Can not create item in result tree: {0}";
+      "Impossibile creare un elemento nell'albero del risultato: {0}";
   }
 
   /** ER_XMLSPACE_ILLEGAL_VALUE          */
@@ -633,7 +646,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XMLSPACE_ILLEGAL_VALUE][1] =
-      "xml:space in the source XML has an illegal value: {0}";
+      "xml:space nell'XML sorgente ha valore non valido: {0}";
   }
 
   /** ER_NO_XSLKEY_DECLARATION          */
@@ -642,7 +655,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_XSLKEY_DECLARATION][1] =
-      "There is no xsl:key declaration for {0}!";
+      "Dichiarazione xsl:key mancante per {0}!";
   }
 
   /** ER_CANT_CREATE_URL          */
@@ -650,7 +663,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_CANT_CREATE_URL][1] = "Error! Cannot create url for: {0}";
+    contents[ER_CANT_CREATE_URL][1] = "Errore. Impossibile creare URL per: {0}";
   }
 
   /** ER_XSLFUNCTIONS_UNSUPPORTED          */
@@ -658,7 +671,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_XSLFUNCTIONS_UNSUPPORTED][1] = "xsl:functions is unsupported";
+    contents[ER_XSLFUNCTIONS_UNSUPPORTED][1] = "xsl:functions non supportato";
   }
 
   /** ER_PROCESSOR_ERROR          */
@@ -666,7 +679,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_PROCESSOR_ERROR][1] = "XSLT TransformerFactory Error";
+    contents[ER_PROCESSOR_ERROR][1] = "Errore XSLT TransformerFactory";
   }
 
   /** ER_NOT_ALLOWED_INSIDE_STYLESHEET          */
@@ -675,7 +688,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NOT_ALLOWED_INSIDE_STYLESHEET][1] =
-      "(StylesheetHandler) {0} not allowed inside a stylesheet!";
+      "(StylesheetHandler) {0} non consentito in un foglio di stile.";
   }
 
   /** ER_RESULTNS_NOT_SUPPORTED          */
@@ -684,7 +697,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_RESULTNS_NOT_SUPPORTED][1] =
-      "result-ns no longer supported!  Use xsl:output instead.";
+      "result-ns non \u00e8 pi\u00f9 supportato. Utilizzare xsl:output.";
   }
 
   /** ER_DEFAULTSPACE_NOT_SUPPORTED          */
@@ -693,7 +706,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DEFAULTSPACE_NOT_SUPPORTED][1] =
-      "default-space no longer supported!  Use xsl:strip-space or xsl:preserve-space instead.";
+      "default-space non \u00e8 pi\u00f9 supportato. Utilizzare xsl:strip-space o xsl:preserve-space.";
   }
 
   /** ER_INDENTRESULT_NOT_SUPPORTED          */
@@ -702,7 +715,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INDENTRESULT_NOT_SUPPORTED][1] =
-      "indent-result no longer supported!  Use xsl:output instead.";
+      "indent-result non \u00e8 pi\u00f9 supportato. Utilizzare xsl:output.";
   }
 
   /** ER_ILLEGAL_ATTRIB          */
@@ -711,7 +724,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_ILLEGAL_ATTRIB][1] =
-      "(StylesheetHandler) {0} has an illegal attribute: {1}";
+      "(StylesheetHandler) {0} ha un attributo non valido {1}";
   }
 
   /** ER_UNKNOWN_XSL_ELEM          */
@@ -719,7 +732,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNKNOWN_XSL_ELEM][1] = "Unknown XSL element: {0}";
+    contents[ER_UNKNOWN_XSL_ELEM][1] = "Elemento XSL sconosciuto: {0}";
   }
 
   /** ER_BAD_XSLSORT_USE          */
@@ -728,7 +741,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_BAD_XSLSORT_USE][1] =
-      "(StylesheetHandler) xsl:sort can only be used with xsl:apply-templates or xsl:for-each.";
+      "(StylesheetHandler) xsl:sort pu\u00f2 essere utilizzato solo con xsl:apply-templates o xsl:for-each.";
   }
 
   /** ER_MISPLACED_XSLWHEN          */
@@ -737,7 +750,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISPLACED_XSLWHEN][1] =
-      "(StylesheetHandler) misplaced xsl:when!";
+      "(StylesheetHandler) xsl:when fuori posto.";
   }
 
   /** ER_XSLWHEN_NOT_PARENTED_BY_XSLCHOOSE          */
@@ -746,7 +759,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XSLWHEN_NOT_PARENTED_BY_XSLCHOOSE][1] =
-      "(StylesheetHandler) xsl:when not parented by xsl:choose!";
+      "(StylesheetHandler) xsl:when non dipende da xsl:choose!";
   }
 
   /** ER_MISPLACED_XSLOTHERWISE          */
@@ -755,7 +768,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISPLACED_XSLOTHERWISE][1] =
-      "(StylesheetHandler) misplaced xsl:otherwise!";
+      "(StylesheetHandler) xsl:otherwise fuori posto.";
   }
 
   /** ER_XSLOTHERWISE_NOT_PARENTED_BY_XSLCHOOSE          */
@@ -764,7 +777,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XSLOTHERWISE_NOT_PARENTED_BY_XSLCHOOSE][1] =
-      "(StylesheetHandler) xsl:otherwise not parented by xsl:choose!";
+      "(StylesheetHandler) xsl:otherwise non dipende da xsl:choose.";
   }
 
   /** ER_NOT_ALLOWED_INSIDE_TEMPLATE          */
@@ -773,7 +786,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NOT_ALLOWED_INSIDE_TEMPLATE][1] =
-      "(StylesheetHandler) {0} is not allowed inside a template!";
+      "(StylesheetHandler) {0} non \u00e8 consentito in un modello.";
   }
 
   /** ER_UNKNOWN_EXT_NS_PREFIX          */
@@ -782,7 +795,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_UNKNOWN_EXT_NS_PREFIX][1] =
-      "(StylesheetHandler) {0} extension namespace prefix {1} unknown";
+      "(StylesheetHandler) {0} prefisso namespace di estensione {1} sconosciuto";
   }
 
   /** ER_IMPORTS_AS_FIRST_ELEM          */
@@ -791,7 +804,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IMPORTS_AS_FIRST_ELEM][1] =
-      "(StylesheetHandler) Imports can only occur as the first elements in the stylesheet!";
+      "(StylesheetHandler) Le importazioni sono possibili solo come primi elementi di un foglio di stile.";
   }
 
   /** ER_IMPORTING_ITSELF          */
@@ -800,7 +813,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IMPORTING_ITSELF][1] =
-      "(StylesheetHandler) {0} is directly or indirectly importing itself!";
+      "(StylesheetHandler) {0} sta importando se stesso direttamente o indirettamente.";
   }
 
   /** ER_XMLSPACE_ILLEGAL_VAL          */
@@ -809,7 +822,8 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XMLSPACE_ILLEGAL_VAL][1] =
-      "(StylesheetHandler) " + "xml:space has an illegal value: {0}";
+      "(StylesheetHandler) " + "xml:space ha valore non valido: {0}";
+
   }
 
   /** ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL          */
@@ -818,7 +832,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL][1] =
-      "processStylesheet not succesfull!";
+      "processStylesheet non \u00e8 riuscito.";
   }
 
   /** ER_SAX_EXCEPTION          */
@@ -826,7 +840,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_SAX_EXCEPTION][1] = "SAX Exception";
+    contents[ER_SAX_EXCEPTION][1] = "Eccezione SAX";
   }
 
   /** ER_FUNCTION_NOT_SUPPORTED          */
@@ -834,7 +848,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_FUNCTION_NOT_SUPPORTED][1] = "Function not supported!";
+    contents[ER_FUNCTION_NOT_SUPPORTED][1] = "Funzione non supportata";
   }
 
   /** ER_XSLT_ERROR          */
@@ -842,7 +856,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_XSLT_ERROR][1] = "XSLT Error";
+    contents[ER_XSLT_ERROR][1] = "Errore XSLT";
   }
 
   /** ER_CURRENCY_SIGN_ILLEGAL          */
@@ -851,7 +865,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CURRENCY_SIGN_ILLEGAL][1] =
-      "currency sign is not allowed in format pattern string";
+      "Il segno di valuta non \u00e8 consentito nelle stringhe modello di formato.";
   }
 
   /** ER_DOCUMENT_FUNCTION_INVALID_IN_STYLESHEET_DOM          */
@@ -860,7 +874,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DOCUMENT_FUNCTION_INVALID_IN_STYLESHEET_DOM][1] =
-      "Document function not supported in Stylesheet DOM!";
+      "Funzione documento non supportata nel foglio di stile DOM!";
   }
 
   /** ER_CANT_RESOLVE_PREFIX_OF_NON_PREFIX_RESOLVER          */
@@ -869,7 +883,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_RESOLVE_PREFIX_OF_NON_PREFIX_RESOLVER][1] =
-      "Can't resolve prefix of non-Prefix resolver!";
+      "Impossibile risolvere il prefisso del risolutore non-Prefix.";
   }
 
   /** ER_REDIRECT_COULDNT_GET_FILENAME          */
@@ -878,7 +892,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_REDIRECT_COULDNT_GET_FILENAME][1] =
-      "Redirect extension: Could not get filename - file or select attribute must return vald string.";
+      "Estensione di reindirizzamento: Impossibile trovare il nome file. Il file o l'attributo di selezione devono generare una stringa valida.";
   }
 
   /** ER_CANNOT_BUILD_FORMATTERLISTENER_IN_REDIRECT          */
@@ -887,7 +901,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_BUILD_FORMATTERLISTENER_IN_REDIRECT][1] =
-      "Can not build FormatterListener in Redirect extension!";
+      "Impossibile generare FormatterListener nell'estensione di reindirizzamento.";
   }
 
   /** ER_INVALID_PREFIX_IN_EXCLUDERESULTPREFIX          */
@@ -896,7 +910,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INVALID_PREFIX_IN_EXCLUDERESULTPREFIX][1] =
-      "Prefix in exclude-result-prefixes is not valid: {0}";
+      "Il prefisso in exclude-result-prefixes non \u00e8 valido: {0}";
   }
 
   /** ER_MISSING_NS_URI          */
@@ -905,7 +919,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_NS_URI][1] =
-      "Missing namespace URI for specified prefix";
+      "URI namespace mancante per il prefisso specificato.";
   }
 
   /** ER_MISSING_ARG_FOR_OPTION          */
@@ -914,7 +928,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_MISSING_ARG_FOR_OPTION][1] =
-      "Missing argument for option: {0}";
+      "Argomento mancante per l'opzione: {0}";
   }
 
   /** ER_INVALID_OPTION          */
@@ -922,7 +936,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_INVALID_OPTION][1] = "Invalid option: {0}";
+    contents[ER_INVALID_OPTION][1] = "Opzione non valida: {0}";
   }
 
   /** ER_MALFORMED_FORMAT_STRING          */
@@ -930,7 +944,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_MALFORMED_FORMAT_STRING][1] = "Malformed format string: {0}";
+    contents[ER_MALFORMED_FORMAT_STRING][1] = "Stringa di formato non valida: {0}";
   }
 
   /** ER_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
@@ -939,7 +953,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_STYLESHEET_REQUIRES_VERSION_ATTRIB][1] =
-      "xsl:stylesheet requires a 'version' attribute!";
+      "xsl:stylesheet richiede un attributo 'versione'.";
   }
 
   /** ER_ILLEGAL_ATTRIBUTE_VALUE          */
@@ -948,7 +962,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_ILLEGAL_ATTRIBUTE_VALUE][1] =
-      "Attribute: {0} has an illegal value: {1}";
+      "Attributo: {0} ha un valore non valido: {1}";
   }
 
   /** ER_CHOOSE_REQUIRES_WHEN          */
@@ -956,7 +970,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_CHOOSE_REQUIRES_WHEN][1] = "xsl:choose requires an xsl:when";
+    contents[ER_CHOOSE_REQUIRES_WHEN][1] = "xsl:choose richiede xsl:when";
   }
 
   /** ER_NO_APPLY_IMPORT_IN_FOR_EACH          */
@@ -965,7 +979,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NO_APPLY_IMPORT_IN_FOR_EACH][1] =
-      "xsl:apply-imports not allowed in a xsl:for-each";
+      "xsl:apply-imports non consentito in xsl:for-each";
   }
 
   /** ER_CANT_USE_DTM_FOR_OUTPUT          */
@@ -974,16 +988,17 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_USE_DTM_FOR_OUTPUT][1] =
-      "Cannot use a DTMLiaison for an output DOM node... pass a org.apache.xpath.DOM2Helper instead!";
+      "Impossibile utilizzare un collegamento DTM per un nodo DOM di output. Utilizzare org.apache.xpath.DOM2Helper.";
   }
 
   /** ER_CANT_USE_DTM_FOR_INPUT          */
   public static final int ER_CANT_USE_DTM_FOR_INPUT = 97;
 
+
   static
   {
     contents[ER_CANT_USE_DTM_FOR_INPUT][1] =
-      "Cannot use a DTMLiaison for a input DOM node... pass a org.apache.xpath.DOM2Helper instead!";
+      "Impossibile utilizzare un collegamento DTM per un nodo DOM di input. Utilizzare org.apache.xpath.DOM2Helper.";
   }
 
   /** ER_CALL_TO_EXT_FAILED          */
@@ -992,7 +1007,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CALL_TO_EXT_FAILED][1] =
-      "Call to extension element failed: {0}";
+      "Chiamata all'elemento di estensione non riuscita: {0}";
   }
 
   /** ER_PREFIX_MUST_RESOLVE          */
@@ -1001,7 +1016,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PREFIX_MUST_RESOLVE][1] =
-      "Prefix must resolve to a namespace: {0}";
+      "Il prefisso deve risolvere in namespace: {0}";
   }
 
   /** ER_INVALID_UTF16_SURROGATE          */
@@ -1010,7 +1025,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INVALID_UTF16_SURROGATE][1] =
-      "Invalid UTF-16 surrogate detected: {0} ?";
+      "Rilevato surrogato di UTF-16 non valido: {0} ?";
   }
 
   /** ER_XSLATTRSET_USED_ITSELF          */
@@ -1019,7 +1034,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XSLATTRSET_USED_ITSELF][1] =
-      "xsl:attribute-set {0} used itself, which will cause an infinite loop.";
+      "xsl:attribute-set {0} ha utilizzato se stesso, generando un loop infinito.";
   }
 
   /** ER_CANNOT_MIX_XERCESDOM          */
@@ -1028,7 +1043,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_MIX_XERCESDOM][1] =
-      "Can not mix non Xerces-DOM input with Xerces-DOM output!";
+      "Impossibile combinare un input non Xerces-DOM con un input Xerces-DOM.";
   }
 
   /** ER_TOO_MANY_LISTENERS          */
@@ -1049,13 +1064,14 @@ public class XSLTErrorResources extends XResourceBundleBase
       "In ElemTemplateElement.readObject: {0}";
   }
 
+
   /** ER_DUPLICATE_NAMED_TEMPLATE          */
   public static final int ER_DUPLICATE_NAMED_TEMPLATE = 105;
 
   static
   {
     contents[ER_DUPLICATE_NAMED_TEMPLATE][1] =
-      "Found more than one template named: {0}";
+      "Trovato pi\u00f9 di un modello denominato: {0}";
   }
 
   /** ER_INVALID_KEY_CALL          */
@@ -1064,107 +1080,108 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INVALID_KEY_CALL][1] =
-      "Invalid function call: recursive key() calls are not allowed";
+      "Chiamata di funzione non valida: le chiamate chiave() ricorsive non sono consentite.";
   }
-
+  
   /** Variable is referencing itself          */
   public static final int ER_REFERENCING_ITSELF = 107;
 
   static
   {
     contents[ER_REFERENCING_ITSELF][1] =
-      "Variable {0} is directly or indirectly referencing itself!";
+      "La variabile {0} fa riferimento a se stessa direttamente o indirettamente.";
   }
-
+  
   /** Illegal DOMSource input          */
   public static final int ER_ILLEGAL_DOMSOURCE_INPUT = 108;
 
   static
   {
     contents[ER_ILLEGAL_DOMSOURCE_INPUT][1] =
-      "The input node can not be null for a DOMSource for newTemplates!";
+      "Il nodo di input non pu\u00f2 essere nullo per DOMSource per newTemplates.";
   }
-
+	
 	/** Class not found for option         */
   public static final int ER_CLASS_NOT_FOUND_FOR_OPTION = 109;
 
   static
   {
     contents[ER_CLASS_NOT_FOUND_FOR_OPTION][1] =
-			"Class file not found for option {0}";
+			"File di classe non trovato per l'opzione {0}";
   }
-
+	
 	/** Required Element not found         */
   public static final int ER_REQUIRED_ELEM_NOT_FOUND = 110;
 
   static
   {
     contents[ER_REQUIRED_ELEM_NOT_FOUND][1] =
-			"Required Element not found: {0}";
+			"Elemento richiesto non trovato: {0}";
   }
-
+  
   /** InputStream cannot be null         */
   public static final int ER_INPUT_CANNOT_BE_NULL = 111;
 
   static
   {
     contents[ER_INPUT_CANNOT_BE_NULL][1] =
-			"InputStream cannot be null";
+			"InputStream non pu\u00f2 essere nullo.";
   }
-
+  
   /** URI cannot be null         */
   public static final int ER_URI_CANNOT_BE_NULL = 112;
 
   static
   {
     contents[ER_URI_CANNOT_BE_NULL][1] =
-			"URI cannot be null";
+			"L'URI non pu\u00f2 essere nullo.";
   }
-
+  
   /** File cannot be null         */
   public static final int ER_FILE_CANNOT_BE_NULL = 113;
 
   static
   {
     contents[ER_FILE_CANNOT_BE_NULL][1] =
-			"File cannot be null";
+			"Il file non pu\u00f2 essere nullo.";
   }
-
+  
    /** InputSource cannot be null         */
   public static final int ER_SOURCE_CANNOT_BE_NULL = 114;
 
   static
   {
     contents[ER_SOURCE_CANNOT_BE_NULL][1] =
-			"InputSource cannot be null";
+			"InputSource non pu\u00f2 essere nullo.";
   }
-
+  
   /** Can't overwrite cause         */
   public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
 
   static
   {
     contents[ER_CANNOT_OVERWRITE_CAUSE][1] =
-			"Cannot overwrite cause";
+			"Impossibile sovrascrivere la causa.";
   }
-
+  
   /** Could not initialize BSF Manager        */
   public static final int ER_CANNOT_INIT_BSFMGR = 116;
 
   static
   {
     contents[ER_CANNOT_INIT_BSFMGR][1] =
-			"Could not initialize BSF Manager";
+			"Impossibile inizializzare BSF Manager.";
   }
-
+  
   /** Could not compile extension       */
   public static final int ER_CANNOT_CMPL_EXTENSN = 117;
 
   static
   {
     contents[ER_CANNOT_CMPL_EXTENSN][1] =
-			"Could not compile extension";
+			"Impossibile compilare l'estensione.";
   }
+  
 
   /** Could not create extension       */
   public static final int ER_CANNOT_CREATE_EXTENSN = 118;
@@ -1172,871 +1189,868 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_CREATE_EXTENSN][1] =
-      "Could not create extension: {0} because of: {1}";
+      "Impossibile creare l'estensione: {0} a causa di: {1}";
   }
-
+  
   /** Instance method call to method {0} requires an Object instance as first argument       */
   public static final int ER_INSTANCE_MTHD_CALL_REQUIRES = 119;
 
   static
   {
     contents[ER_INSTANCE_MTHD_CALL_REQUIRES][1] =
-      "Instance method call to method {0} requires an Object instance as first argument";
+      "La chiamata del metodo istanza al metodo {0} richiede un'istanza oggetto come primo argomento.";
   }
-
+  
   /** Invalid element name specified       */
   public static final int ER_INVALID_ELEMENT_NAME = 120;
 
   static
   {
     contents[ER_INVALID_ELEMENT_NAME][1] =
-      "Invalid element name specified {0}";
+      "\u00c8 stato specificato un nome elemento non valido {0}";
   }
-
+  
    /** Element name method must be static      */
   public static final int ER_ELEMENT_NAME_METHOD_STATIC = 121;
 
   static
   {
     contents[ER_ELEMENT_NAME_METHOD_STATIC][1] =
-      "Element name method must be static {0}";
+      "Il metodo del nome elemento deve essere statico {0}";
   }
-
+  
    /** Extension function {0} : {1} is unknown      */
   public static final int ER_EXTENSION_FUNC_UNKNOWN = 122;
 
   static
   {
     contents[ER_EXTENSION_FUNC_UNKNOWN][1] =
-             "Extension function {0} : {1} is unknown";
+             "Funzione estensione {0} : {1} sconosciuta.";
   }
-
+  
    /** More than one best match for constructor for       */
   public static final int ER_MORE_MATCH_CONSTRUCTOR = 123;
 
   static
   {
     contents[ER_MORE_MATCH_CONSTRUCTOR][1] =
-             "More than one best match for constructor for {0}";
+             "Pi\u00f9 di una corrispondenza migliore per costruttore per {0}.";
   }
-
+  
    /** More than one best match for method      */
   public static final int ER_MORE_MATCH_METHOD = 124;
 
   static
   {
     contents[ER_MORE_MATCH_METHOD][1] =
-             "More than one best match for method {0}";
+             "Pi\u00f9 di una corrispondenza migliore per il metodo {0}";
   }
-
+  
    /** More than one best match for element method      */
   public static final int ER_MORE_MATCH_ELEMENT = 125;
 
   static
   {
     contents[ER_MORE_MATCH_ELEMENT][1] =
-             "More than one best match for element method {0}";
+             "Pi\u00f9 di una corrispondenza migliore per il metodo elemento {0}";
   }
-
+  
    /** Invalid context passed to evaluate       */
   public static final int ER_INVALID_CONTEXT_PASSED = 126;
 
   static
   {
     contents[ER_INVALID_CONTEXT_PASSED][1] =
-             "Invalid context passed to evaluate {0}";
+             "Contesto non valido passato da valutare {0}.";
   }
-
+  
    /** Pool already exists       */
   public static final int ER_POOL_EXISTS = 127;
 
   static
   {
     contents[ER_POOL_EXISTS][1] =
-             "Pool already exists";
+             "Pool gi\u00e0 esistente.";
   }
-
+  
    /** No driver Name specified      */
   public static final int ER_NO_DRIVER_NAME = 128;
 
   static
   {
     contents[ER_NO_DRIVER_NAME][1] =
-             "No driver Name specified";
+             "Non \u00e8 stato specificato alcun nome di driver.";
   }
-
+  
    /** No URL specified     */
   public static final int ER_NO_URL = 129;
 
   static
   {
     contents[ER_NO_URL][1] =
-             "No URL specified";
+             "Non \u00e8 stato specificato alcun URL.";
   }
-
+  
    /** Pool size is less than one    */
   public static final int ER_POOL_SIZE_LESSTHAN_ONE = 130;
 
   static
   {
     contents[ER_POOL_SIZE_LESSTHAN_ONE][1] =
-             "Pool size is less than one!";
+             "Le dimensioni del pool sono minori di uno.";
   }
-
+  
    /** Invalid driver name specified    */
   public static final int ER_INVALID_DRIVER = 131;
 
   static
   {
     contents[ER_INVALID_DRIVER][1] =
-             "Invalid driver name specified!";
+             "\u00c8 stato specificato un nome di driver non valido.";
   }
-
+  
    /** Did not find the stylesheet root    */
   public static final int ER_NO_STYLESHEETROOT = 132;
 
   static
   {
     contents[ER_NO_STYLESHEETROOT][1] =
-             "Did not find the stylesheet root!";
+             "Impossibile trovare la root del foglio di stile.";
   }
-
+  
    /** Illegal value for xml:space     */
   public static final int ER_ILLEGAL_XMLSPACE_VALUE = 133;
 
   static
   {
     contents[ER_ILLEGAL_XMLSPACE_VALUE][1] =
-         "Illegal value for xml:space";
+         "Valore non valido per xml:space.";
   }
-
+  
    /** processFromNode failed     */
   public static final int ER_PROCESSFROMNODE_FAILED = 134;
 
   static
   {
     contents[ER_PROCESSFROMNODE_FAILED][1] =
-         "processFromNode failed";
+         "processFromNode non riuscito.";
   }
-
+  
    /** The resource [] could not load:     */
   public static final int ER_RESOURCE_COULD_NOT_LOAD = 135;
 
   static
   {
     contents[ER_RESOURCE_COULD_NOT_LOAD][1] =
-        "The resource [ {0} ] could not load: {1} \n {2} \t {3}";
+        "Impossibile caricare la risorsa [ {0} ]: {1} \n {2} \t {3}";
   }
-
-
+   
+  
    /** Buffer size <=0     */
   public static final int ER_BUFFER_SIZE_LESSTHAN_ZERO = 136;
 
   static
   {
     contents[ER_BUFFER_SIZE_LESSTHAN_ZERO][1] =
-        "Buffer size <=0";
+        "Dimensioni del buffer <=0";
   }
-
+  
    /** Unknown error when calling extension    */
   public static final int ER_UNKNOWN_ERROR_CALLING_EXTENSION = 137;
 
   static
   {
     contents[ER_UNKNOWN_ERROR_CALLING_EXTENSION][1] =
-        "Unknown error when calling extension";
+        "Errore sconosciuto nella chiamata dell'estensione.";
   }
-
+  
    /** Prefix {0} does not have a corresponding namespace declaration    */
   public static final int ER_NO_NAMESPACE_DECL = 138;
 
   static
   {
     contents[ER_NO_NAMESPACE_DECL][1] =
-        "Prefix {0} does not have a corresponding namespace declaration";
+        "Il prefisso {0} non ha una corrispondente dichiarazione namespace.";
   }
-
+  
    /** Element content not allowed for lang=javaclass   */
   public static final int ER_ELEM_CONTENT_NOT_ALLOWED = 139;
 
   static
   {
     contents[ER_ELEM_CONTENT_NOT_ALLOWED][1] =
-        "Element content not allowed for lang=javaclass {0}";
-  }
-
+        "Contenuto dell'elemento non consentito per lang=javaclass {0}.";
+  }   
+  
    /** Stylesheet directed termination   */
   public static final int ER_STYLESHEET_DIRECTED_TERMINATION = 140;
 
   static
   {
     contents[ER_STYLESHEET_DIRECTED_TERMINATION][1] =
-        "Stylesheet directed termination";
+        "Conclusione richiesta dal foglio di stile.";
   }
-
+  
    /** 1 or 2   */
   public static final int ER_ONE_OR_TWO = 141;
 
   static
   {
     contents[ER_ONE_OR_TWO][1] =
-        "1 or 2";
+        "1 o 2";
   }
-
+  
    /** 2 or 3   */
   public static final int ER_TWO_OR_THREE = 142;
 
   static
   {
     contents[ER_TWO_OR_THREE][1] =
-        "2 or 3";
+        "2 o 3";
   }
 
+  
    /** Could not load {0} (check CLASSPATH), now using just the defaults   */
   public static final int ER_COULD_NOT_LOAD_RESOURCE = 143;
 
   static
   {
     contents[ER_COULD_NOT_LOAD_RESOURCE][1] =
-        "Could not load {0} (check CLASSPATH), now using just the defaults";
+        "Impossibile caricare {0} (verificare CLASSPATH). Attualmente sono in uso i valori predefiniti.";
   }
-
+  
    /** Cannot initialize default templates   */
   public static final int ER_CANNOT_INIT_DEFAULT_TEMPLATES = 144;
 
   static
   {
     contents[ER_CANNOT_INIT_DEFAULT_TEMPLATES][1] =
-        "Cannot initialize default templates";
+        "Impossibile inizializzare i modelli predefiniti.";
   }
-
+  
    /** Result should not be null   */
   public static final int ER_RESULT_NULL = 145;
 
   static
   {
     contents[ER_RESULT_NULL][1] =
-        "Result should not be null";
+        "Il risultato non dovrebbe essere nullo.";
   }
-
+    
    /** Result could not be set   */
   public static final int ER_RESULT_COULD_NOT_BE_SET = 146;
 
   static
   {
     contents[ER_RESULT_COULD_NOT_BE_SET][1] =
-        "Result could not be set";
+        "Impossibile stabilire il risultato.";
   }
-
+  
    /** No output specified   */
   public static final int ER_NO_OUTPUT_SPECIFIED = 147;
+
 
   static
   {
     contents[ER_NO_OUTPUT_SPECIFIED][1] =
-        "No output specified";
+        "Nessun output specificato.";
   }
-
+  
    /** Can't transform to a Result of type   */
   public static final int ER_CANNOT_TRANSFORM_TO_RESULT_TYPE = 148;
 
   static
   {
     contents[ER_CANNOT_TRANSFORM_TO_RESULT_TYPE][1] =
-        "Can't transform to a Result of type {0}";
+        "Impossibile trasformare in un risultato di tipo {0}.";
   }
-
+  
    /** Can't transform to a Source of type   */
   public static final int ER_CANNOT_TRANSFORM_SOURCE_TYPE = 149;
 
   static
   {
     contents[ER_CANNOT_TRANSFORM_SOURCE_TYPE][1] =
-        "Can't transform a Source of type {0}";
+        "Impossibile trasformare un sorgente di tipo {0}.";
   }
-
+  
    /** Null content handler  */
   public static final int ER_NULL_CONTENT_HANDLER = 150;
 
   static
   {
     contents[ER_NULL_CONTENT_HANDLER][1] =
-        "Null content handler";
+        "Contenuto gestore nullo";
   }
-
+  
    /** Null error handler  */
   public static final int ER_NULL_ERROR_HANDLER = 151;
 
   static
   {
     contents[ER_NULL_ERROR_HANDLER][1] =
-        "Null error handler";
+        "Errore gestore nullo";
   }
-
+  
    /** parse can not be called if the ContentHandler has not been set */
   public static final int ER_CANNOT_CALL_PARSE = 152;
 
   static
   {
     contents[ER_CANNOT_CALL_PARSE][1] =
-        "parse can not be called if the ContentHandler has not been set";
+        "Impossibile chiamare l'analisi se non \u00e8 impostato ContentHandler.";
   }
-
+  
    /**  No parent for filter */
   public static final int ER_NO_PARENT_FOR_FILTER = 153;
 
   static
   {
     contents[ER_NO_PARENT_FOR_FILTER][1] =
-        "No parent for filter";
+        "Nessun elemento principale per il filtro.";
   }
-
-
+  
+  
    /**  No stylesheet found in: {0}, media */
   public static final int ER_NO_STYLESHEET_IN_MEDIA = 154;
 
   static
   {
     contents[ER_NO_STYLESHEET_IN_MEDIA][1] =
-         "No stylesheet found in: {0}, media= {1}";
+         "Nessun foglio di stile trovato in: {0}, media= {1}";
   }
-
+  
    /**  No xml-stylesheet PI found in */
   public static final int ER_NO_STYLESHEET_PI = 155;
 
   static
   {
     contents[ER_NO_STYLESHEET_PI][1] =
-         "No xml-stylesheet PI found in: {0}";
+         "Nessun xml-stylesheet PI trovato in : {0}";
   }
-
+  
    /**  No default implementation found */
   public static final int ER_NO_DEFAULT_IMPL = 156;
 
   static
   {
     contents[ER_NO_DEFAULT_IMPL][1] =
-         "No default implementation found ";
+         "Non \u00e8 stata trovata alcuna implementazione predefinita ";
   }
-
+  
    /**  ChunkedIntArray({0}) not currently supported */
   public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
 
   static
   {
     contents[ER_CHUNKEDINTARRAY_NOT_SUPPORTED][1] =
-       "ChunkedIntArray({0}) not currently supported";
+       "ChunkedIntArray({0}) non \u00e8 correntemente supportato.";
   }
-
+  
    /**  Offset bigger than slot */
   public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
 
   static
   {
     contents[ER_OFFSET_BIGGER_THAN_SLOT][1] =
-       "Offset bigger than slot";
+       "L'offset \u00e8 maggiore dello slot.";
   }
-
+  
    /**  Coroutine not available, id= */
   public static final int ER_COROUTINE_NOT_AVAIL = 159;
 
   static
   {
     contents[ER_COROUTINE_NOT_AVAIL][1] =
-       "Coroutine not available, id={0}";
+       "Coroutine non disponibile, id={0}";
   }
-
+  
    /**  CoroutineManager recieved co_exit() request */
   public static final int ER_COROUTINE_CO_EXIT = 160;
 
   static
   {
     contents[ER_COROUTINE_CO_EXIT][1] =
-       "CoroutineManager received co_exit() request";
+       "CoroutineManager ha ricevuto una richiesta co_exit().";
   }
-
+  
    /**  co_joinCoroutineSet() failed */
   public static final int ER_COJOINROUTINESET_FAILED = 161;
 
   static
   {
     contents[ER_COJOINROUTINESET_FAILED][1] =
-       "co_joinCoroutineSet() failed";
+       "co_joinCoroutineSet() non riuscito.";
   }
-
+  
    /**  Coroutine parameter error () */
   public static final int ER_COROUTINE_PARAM = 162;
 
   static
   {
     contents[ER_COROUTINE_PARAM][1] =
-       "Coroutine parameter error ({0})";
+       "Errore del parametro di coroutine ({0}).";
   }
-
+  
    /**  UNEXPECTED: Parser doTerminate answers  */
   public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
 
   static
   {
     contents[ER_PARSER_DOTERMINATE_ANSWERS][1] =
-       "\nUNEXPECTED: Parser doTerminate answers {0}";
+       "\nUNEXPECTED: Risposte doTerminate del parser {0}";
   }
-
+  
    /**  parse may not be called while parsing */
   public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
 
   static
   {
     contents[ER_NO_PARSE_CALL_WHILE_PARSING][1] =
-       "parse may not be called while parsing";
+       "Impossibile chiamare l'analisi mentre \u00e8 in esecuzione.";
   }
-
+  
    /**  Error: typed iterator for axis  {0} not implemented  */
   public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
 
   static
   {
     contents[ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED][1] =
-       "Error: typed iterator for axis  {0} not implemented";
+       "Errore: tipo di iteratore per l'asse {0} non implementato.";
   }
-
+  
    /**  Error: iterator for axis {0} not implemented  */
   public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
 
   static
   {
     contents[ER_ITERATOR_AXIS_NOT_IMPLEMENTED][1] =
-       "Error: iterator for axis {0} not implemented ";
+       "Errore: l'iteratore per l'asse {0} non \u00e8 implementato. ";
   }
-
+  
    /**  Iterator clone not supported  */
   public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
 
   static
   {
     contents[ER_ITERATOR_CLONE_NOT_SUPPORTED][1] =
-       "Iterator clone not supported";
+       "Il duplicato dell'iteratore non \u00e8 supportato.";
   }
-
+  
    /**  Unknown axis traversal type  */
   public static final int ER_UNKNOWN_AXIS_TYPE = 168;
 
   static
   {
     contents[ER_UNKNOWN_AXIS_TYPE][1] =
-       "Unknown axis traversal type: {0}";
+       "Tipo di asse trasversale sconosciuto : {0}.";
   }
-
+  
    /**  Axis traverser not supported  */
   public static final int ER_AXIS_NOT_SUPPORTED = 169;
 
   static
   {
     contents[ER_AXIS_NOT_SUPPORTED][1] =
-       "Axis traverser not supported: {0}";
+       "Attraversatore dell'asse non supportato: {0}";
   }
-
+  
    /**  No more DTM IDs are available  */
   public static final int ER_NO_DTMIDS_AVAIL = 170;
 
   static
   {
     contents[ER_NO_DTMIDS_AVAIL][1] =
-       "No more DTM IDs are available";
+       "Non sono pi\u00f9 disponibili ID DTM.";
   }
-
+  
    /**  Not supported  */
   public static final int ER_NOT_SUPPORTED = 171;
 
   static
   {
     contents[ER_NOT_SUPPORTED][1] =
-       "Not supported: {0}";
+       "Non supportato: {0}";
   }
-
+  
    /**  node must be non-null for getDTMHandleFromNode  */
   public static final int ER_NODE_NON_NULL = 172;
 
   static
   {
     contents[ER_NODE_NON_NULL][1] =
-       "Node must be non-null for getDTMHandleFromNode";
+       "Il nodo deve essere non nullo per getDTMHandleFromNode.";
   }
-
+  
    /**  Could not resolve the node to a handle  */
   public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
 
   static
   {
     contents[ER_COULD_NOT_RESOLVE_NODE][1] =
-       "Could not resolve the node to a handle";
+       "Impossibile risolvere il nodo a un handle";
   }
-
+  
    /**  startParse may not be called while parsing */
   public static final int ER_STARTPARSE_WHILE_PARSING = 174;
 
   static
   {
     contents[ER_STARTPARSE_WHILE_PARSING][1] =
-       "startParse may not be called while parsing";
+       "Impossibile chiamare startParse durante l'analisi.";
   }
-
+  
    /**  startParse needs a non-null SAXParser  */
   public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
 
   static
   {
     contents[ER_STARTPARSE_NEEDS_SAXPARSER][1] =
-       "startParse needs a non-null SAXParser";
+       "startParse richiede un SAXParser non nullo.";
   }
-
+  
    /**  could not initialize parser with */
   public static final int ER_COULD_NOT_INIT_PARSER = 176;
 
   static
   {
     contents[ER_COULD_NOT_INIT_PARSER][1] =
-       "could not initialize parser with";
+       "Impossibile inizializzare il parser con";
   }
-
+  
    /**  Value for property {0} should be a Boolean instance  */
   public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
 
   static
   {
     contents[ER_PROPERTY_VALUE_BOOLEAN][1] =
-       "Value for property {0} should be a Boolean instance";
+       "Il valore della propriet\u00e0 {0} deve essere un'istanza booleana";
   }
-
+  
    /**  exception creating new instance for pool  */
   public static final int ER_EXCEPTION_CREATING_POOL = 178;
 
   static
   {
     contents[ER_EXCEPTION_CREATING_POOL][1] =
-       "exception creating new instance for pool";
+       "l'eccezione crea una nuova istanza del pool";
   }
-
+  
    /**  Path contains invalid escape sequence  */
   public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
 
   static
   {
     contents[ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE][1] =
-       "Path contains invalid escape sequence";
+       "Il percorso contiene una sequenza di escape non valida.";
   }
-
+  
    /**  Scheme is required!  */
   public static final int ER_SCHEME_REQUIRED = 180;
 
   static
   {
     contents[ER_SCHEME_REQUIRED][1] =
-       "Scheme is required!";
+       "Lo schema \u00e8 necessario.";
   }
-
+  
    /**  No scheme found in URI  */
   public static final int ER_NO_SCHEME_IN_URI = 181;
 
   static
   {
     contents[ER_NO_SCHEME_IN_URI][1] =
-       "No scheme found in URI: {0}";
+       "Nessuno schema trovato nell'URI: {0}";
   }
-
+  
    /**  No scheme found in URI  */
   public static final int ER_NO_SCHEME_INURI = 182;
 
   static
   {
     contents[ER_NO_SCHEME_INURI][1] =
-       "No scheme found in URI";
+       "Nessuno schema trovato nell'URI";
   }
-
+  
    /**  Path contains invalid character:   */
   public static final int ER_PATH_INVALID_CHAR = 183;
 
   static
   {
     contents[ER_PATH_INVALID_CHAR][1] =
-       "Path contains invalid character: {0}";
+       "Il percorso contiene un carattere non valido: {0}";
   }
-
+  
    /**  Cannot set scheme from null string  */
   public static final int ER_SCHEME_FROM_NULL_STRING = 184;
 
   static
   {
     contents[ER_SCHEME_FROM_NULL_STRING][1] =
-       "Cannot set scheme from null string";
+       "Impossibile impostare lo schema da una stringa nulla.";
   }
-
+  
    /**  The scheme is not conformant. */
   public static final int ER_SCHEME_NOT_CONFORMANT = 185;
 
   static
   {
     contents[ER_SCHEME_NOT_CONFORMANT][1] =
-       "The scheme is not conformant.";
+       "Lo schema non \u00e8 conforme.";
   }
-
+  
    /**  Host is not a well formed address  */
   public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
 
   static
   {
     contents[ER_HOST_ADDRESS_NOT_WELLFORMED][1] =
-       "Host is not a well formed address";
+       "L'host non \u00e8 un indirizzo corretto.";
   }
-
+  
    /**  Port cannot be set when host is null  */
   public static final int ER_PORT_WHEN_HOST_NULL = 187;
 
   static
   {
     contents[ER_PORT_WHEN_HOST_NULL][1] =
-       "Port cannot be set when host is null";
+       "Impossibile impostare la porta quando l'host \u00e8 nullo.";
   }
-
+  
    /**  Invalid port number  */
   public static final int ER_INVALID_PORT = 188;
 
   static
   {
     contents[ER_INVALID_PORT][1] =
-       "Invalid port number";
+       "Numero di porta non valido";
   }
-
+  
    /**  Fragment can only be set for a generic URI  */
   public static final int ER_FRAG_FOR_GENERIC_URI = 189;
 
   static
   {
     contents[ER_FRAG_FOR_GENERIC_URI][1] =
-       "Fragment can only be set for a generic URI";
+       "\u00c8 possibile impostare il frammento solo per un URI generico.";
   }
-
+  
    /**  Fragment cannot be set when path is null  */
   public static final int ER_FRAG_WHEN_PATH_NULL = 190;
 
   static
   {
     contents[ER_FRAG_WHEN_PATH_NULL][1] =
-       "Fragment cannot be set when path is null";
+       "Impossibile impostare il frammento quando il percorso \u00e8 nullo.";
   }
-
+  
    /**  Fragment contains invalid character  */
   public static final int ER_FRAG_INVALID_CHAR = 191;
 
   static
   {
     contents[ER_FRAG_INVALID_CHAR][1] =
-       "Fragment contains invalid character";
+       "Il frammento contiene un carattere non valido.";
   }
-
-
-
+  
+ 
+  
    /** Parser is already in use  */
   public static final int ER_PARSER_IN_USE = 192;
 
   static
   {
     contents[ER_PARSER_IN_USE][1] =
-        "Parser is already in use";
+        "Il parser \u00e8 gi\u00e0 in uso.";
   }
-
+  
    /** Parser is already in use  */
   public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
 
   static
   {
     contents[ER_CANNOT_CHANGE_WHILE_PARSING][1] =
-        "Cannot change {0} {1} while parsing";
+        "Impossibile cambiare {0} {1} durante l'analisi.";
   }
-
+  
    /** Self-causation not permitted  */
   public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
 
   static
   {
     contents[ER_SELF_CAUSATION_NOT_PERMITTED][1] =
-        "Self-causation not permitted";
+        "Non \u00e8 consentito essere causa ed effetto contemporaneamente.";
   }
-
+  
    /** src attribute not yet supported for  */
-  public static final int ER_COULD_NOT_FIND_EXTERN_SCRIPT = 195;
+  public static final int ER_SRC_ATTRIB_NOT_SUPPORTED = 195;
 
   static
   {
-    contents[ER_COULD_NOT_FIND_EXTERN_SCRIPT][1] =
-         "Could not get to external script at {0}";
+    contents[ER_SRC_ATTRIB_NOT_SUPPORTED][1] =
+       "L'attributo src non \u00e8 ancora supportato per {0}.";
   }
-
+  
   /** The resource [] could not be found     */
   public static final int ER_RESOURCE_COULD_NOT_FIND = 196;
 
   static
   {
     contents[ER_RESOURCE_COULD_NOT_FIND][1] =
-        "The resource [ {0} ] could not be found.\n {1}";
+        "Impossibile trovare la risorsa [ {0} ].\n {1}";
   }
-
+  
    /** output property not recognized:  */
   public static final int ER_OUTPUT_PROPERTY_NOT_RECOGNIZED = 197;
 
   static
   {
     contents[ER_OUTPUT_PROPERTY_NOT_RECOGNIZED][1] =
-        "Output property not recognized: {0}";
+        "La propriet\u00e0 dell'output non \u00e8 riconosciuta: {0}";
   }
-
+  
    /** Userinfo may not be specified if host is not specified   */
   public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
 
   static
   {
     contents[ER_NO_USERINFO_IF_NO_HOST][1] =
-        "Userinfo may not be specified if host is not specified";
+        "Impossibile specificare Userinfo se non \u00e8 specificato l'host.";
   }
-
+  
    /** Port may not be specified if host is not specified   */
   public static final int ER_NO_PORT_IF_NO_HOST = 199;
 
   static
   {
     contents[ER_NO_PORT_IF_NO_HOST][1] =
-        "Port may not be specified if host is not specified";
+        "Impossibile specificare la porta se non \u00e8 specificato l'host.";
   }
-
+  
    /** Query string cannot be specified in path and query string   */
   public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
 
   static
   {
     contents[ER_NO_QUERY_STRING_IN_PATH][1] =
-        "Query string cannot be specified in path and query string";
+        "La stringa di query non pu\u00f2 essere specificata nella stringa di percorso e di query.";
   }
-
+  
    /** Fragment cannot be specified in both the path and fragment   */
   public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
 
   static
   {
     contents[ER_NO_FRAGMENT_STRING_IN_PATH][1] =
-        "Fragment cannot be specified in both the path and fragment";
+        "Il frammento non pu\u00f2 essere specificato sia nel percorso sia nel frammento.";
   }
-
+  
    /** Cannot initialize URI with empty parameters   */
   public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
 
   static
   {
     contents[ER_CANNOT_INIT_URI_EMPTY_PARMS][1] =
-        "Cannot initialize URI with empty parameters";
+        "Impossibile inizializzare l'URI con parametri vuoti.";
   }
-
+  
    /** Failed creating ElemLiteralResult instance   */
   public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
 
   static
   {
     contents[ER_FAILED_CREATING_ELEMLITRSLT][1] =
-        "Failed creating ElemLiteralResult instance";
-  }
-
-  //Earlier (JDK 1.4 XALAN 2.2-D11) at key code '204' the key name was ER_PRIORITY_NOT_PARSABLE
-  // In latest Xalan code base key name is  ER_VALUE_SHOULD_BE_NUMBER. This should also be taken care
-  //in locale specific files like XSLTErrorResources_de.java, XSLTErrorResources_fr.java etc.
-  //NOTE: Not only the key name but message has also been changed. 
-
+        "Creazione non riuscita dell'istanza ElemLiteralResult.";
+  }  
+  
    /** Priority value does not contain a parsable number   */
-  public static final int ER_VALUE_SHOULD_BE_NUMBER = 204;
+  public static final int ER_PRIORITY_NOT_PARSABLE = 204;
 
   static
   {
-    contents[ER_VALUE_SHOULD_BE_NUMBER][1] =
-        "Value for {0} should contain a parsable number";
+    contents[ER_PRIORITY_NOT_PARSABLE][1] =
+        "Il valore di priorit\u00e0 non contiene un numero analizzabile.";
   }
-
+  
    /**  Value for {0} should equal 'yes' or 'no'   */
   public static final int ER_VALUE_SHOULD_EQUAL = 205;
 
   static
   {
     contents[ER_VALUE_SHOULD_EQUAL][1] =
-        " Value for {0} should equal yes or no";
+        "Il valore di {0} deve essere s\u00ec o no.";
   }
-
+ 
    /**  Failed calling {0} method   */
   public static final int ER_FAILED_CALLING_METHOD = 206;
 
   static
   {
     contents[ER_FAILED_CALLING_METHOD][1] =
-        " Failed calling {0} method";
+        "Chiamata non riuscita del metodo {0}.";
   }
-
+  
    /** Failed creating ElemLiteralResult instance   */
   public static final int ER_FAILED_CREATING_ELEMTMPL = 207;
 
   static
   {
     contents[ER_FAILED_CREATING_ELEMTMPL][1] =
-        "Failed creating ElemTemplateElement instance";
+        "Creazione non riuscita dell'istanza ElemTemplateElement.";
   }
-
+  
    /**  Characters are not allowed at this point in the document   */
   public static final int ER_CHARS_NOT_ALLOWED = 208;
 
   static
   {
     contents[ER_CHARS_NOT_ALLOWED][1] =
-        "Characters are not allowed at this point in the document";
+        "I caratteri non sono consentiti in questo punto del documento.";
   }
-
+  
   /**  attribute is not allowed on the element   */
   public static final int ER_ATTR_NOT_ALLOWED = 209;
 
   static
   {
     contents[ER_ATTR_NOT_ALLOWED][1] =
-        "\"{0}\" attribute is not allowed on the {1} element!";
+        "\"{0}\": questo attributo non \u00e8 consentito sull'elemento {1}.";
   }
-
+  
   /**  Method not yet supported    */
   public static final int ER_METHOD_NOT_SUPPORTED = 210;
 
   static
   {
     contents[ER_METHOD_NOT_SUPPORTED][1] =
-        "Method not yet supported ";
+        "Metodo non ancora supportato. ";
   }
-
+ 
   /**  Bad value    */
   public static final int ER_BAD_VALUE = 211;
 
   static
   {
     contents[ER_BAD_VALUE][1] =
-     "{0} bad value {1} ";
+     "{0} valore non valido {1} ";
   }
-
+  
   /**  attribute value not found   */
   public static final int ER_ATTRIB_VALUE_NOT_FOUND = 212;
 
   static
   {
     contents[ER_ATTRIB_VALUE_NOT_FOUND][1] =
-     "{0} attribute value not found ";
+     "{0} valore dell'attributo non trovato.";
   }
-
+  
   /**  attribute value not recognized    */
   public static final int ER_ATTRIB_VALUE_NOT_RECOGNIZED = 213;
 
   static
   {
     contents[ER_ATTRIB_VALUE_NOT_RECOGNIZED][1] =
-     "{0} attribute value not recognized ";
+     "{0} valore dell'attributo non riconosciuto ";
   }
 
   /** IncrementalSAXSource_Filter not currently restartable   */
@@ -2045,424 +2059,19 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INCRSAXSRCFILTER_NOT_RESTARTABLE][1] =
-     "IncrementalSAXSource_Filter not currently restartable";
+     "IncrementalSAXSource_Filter non correntemente riavviabile.";
   }
-
+  
   /** IncrementalSAXSource_Filter not currently restartable   */
   public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
 
   static
   {
     contents[ER_XMLRDR_NOT_BEFORE_STARTPARSE][1] =
-     "XMLReader not before startParse request";
+     "XMLReader non prima della richiesta startParse.";
   }
-
-  /** Attempting to generate a namespace prefix with a null URI   */
-  public static final int ER_NULL_URI_NAMESPACE = 216;
-
-  static
-  {
-    contents[ER_NULL_URI_NAMESPACE][1] =
-     "Attempting to generate a namespace prefix with a null URI";
-  }
-
-  //New ERROR keys added in XALAN code base after Jdk 1.4 (Xalan 2.2-D11)
-
-  /** Attempting to generate a namespace prefix with a null URI   */
-  public static final int ER_NUMBER_TOO_BIG = 217;
-
-  static
-  {
-    contents[ER_NUMBER_TOO_BIG][1] =
-     "Attempting to format a number bigger than the largest Long integer";
-  }
-
-//ER_CANNOT_FIND_SAX1_DRIVER
-
-  public static final int  ER_CANNOT_FIND_SAX1_DRIVER = 218;
-
-  static
-  {
-    contents[ER_CANNOT_FIND_SAX1_DRIVER][1] =
-     "Cannot find SAX1 driver class {0}";
-  }
-
-//ER_SAX1_DRIVER_NOT_LOADED
-  public static final int  ER_SAX1_DRIVER_NOT_LOADED = 219;
-
-  static
-  {
-    contents[ER_SAX1_DRIVER_NOT_LOADED][1] =
-     "SAX1 driver class {0} found but cannot be loaded";
-  }
-
-//ER_SAX1_DRIVER_NOT_INSTANTIATED
-  public static final int  ER_SAX1_DRIVER_NOT_INSTANTIATED = 220 ;
-
-  static
-  {
-    contents[ER_SAX1_DRIVER_NOT_INSTANTIATED][1] =
-     "SAX1 driver class {0} loaded but cannot be instantiated";
-  }
-
-
-// ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER
-  public static final int ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER = 221;
-
-  static
-  {
-    contents[ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER][1] =
-     "SAX1 driver class {0} does not implement org.xml.sax.Parser";
-  }
-
-// ER_PARSER_PROPERTY_NOT_SPECIFIED
-  public static final int  ER_PARSER_PROPERTY_NOT_SPECIFIED = 222;
-
-  static
-  {
-    contents[ER_PARSER_PROPERTY_NOT_SPECIFIED][1] =
-     "System property org.xml.sax.parser not specified";
-  }
-
-//ER_PARSER_ARG_CANNOT_BE_NULL
-  public static final int  ER_PARSER_ARG_CANNOT_BE_NULL = 223 ;
-
-  static
-  {
-    contents[ER_PARSER_ARG_CANNOT_BE_NULL][1] =
-     "Parser argument must not be null";
-  }
-
-
-// ER_FEATURE
-  public static final int  ER_FEATURE = 224;
-
-  static
-  {
-    contents[ER_FEATURE][1] =
-     "Feature:a {0}";
-  }
-
-
-// ER_PROPERTY
-  public static final int ER_PROPERTY = 225 ;
-
-  static
-  {
-    contents[ER_PROPERTY][1] =
-     "Property:a {0}";
-  }
-
-// ER_NULL_ENTITY_RESOLVER
-  public static final int ER_NULL_ENTITY_RESOLVER  = 226;
-
-  static
-  {
-    contents[ER_NULL_ENTITY_RESOLVER][1] =
-     "Null entity resolver";
-  }
-
-// ER_NULL_DTD_HANDLER
-  public static final int  ER_NULL_DTD_HANDLER = 227 ;
-
-  static
-  {
-    contents[ER_NULL_DTD_HANDLER][1] =
-     "Null DTD handler";
-  }
-
-// No Driver Name Specified!
-  public static final int ER_NO_DRIVER_NAME_SPECIFIED = 228;
-  static
-  {
-    contents[ER_NO_DRIVER_NAME_SPECIFIED][1] =
-     "No Driver Name Specified!";
-  }
-
-
-// No URL Specified!
-  public static final int ER_NO_URL_SPECIFIED = 229;
-  static
-  {
-    contents[ER_NO_URL_SPECIFIED][1] =
-     "No URL Specified!";
-  }
-
-
-// Pool size is less than 1!
-  public static final int ER_POOLSIZE_LESS_THAN_ONE = 230;
-  static
-  {
-    contents[ER_POOLSIZE_LESS_THAN_ONE][1] =
-     "Pool size is less than 1!";
-  }
-
-
-// Invalid Driver Name Specified!
-  public static final int ER_INVALID_DRIVER_NAME = 231;
-  static
-  {
-    contents[ER_INVALID_DRIVER_NAME][1] =
-     "Invalid Driver Name Specified!";
-  }
-
-
-
-// ErrorListener
-  public static final int ER_ERRORLISTENER = 232;
-  static
-  {
-    contents[ER_ERRORLISTENER][1] =
-     "ErrorListener";
-  }
-
-
-// Programmer's error! expr has no ElemTemplateElement parent!
-  public static final int ER_ASSERT_NO_TEMPLATE_PARENT = 233;
-  static
-  {
-    contents[ER_ASSERT_NO_TEMPLATE_PARENT][1] =
-     "Programmer's error! expr has no ElemTemplateElement parent!";
-  }
-
-
-// Programmer's assertion in RundundentExprEliminator: {0}
-  public static final int ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR = 234;
-  static
-  {
-    contents[ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR][1] =
-     "Programmer's assertion in RundundentExprEliminator: {0}";
-  }
-
-// Axis traverser not supported: {0}
-  public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
-  static
-  {
-    contents[ER_AXIS_TRAVERSER_NOT_SUPPORTED][1] =
-     "Axis traverser not supported: {0}";
-  }
-
-// ListingErrorHandler created with null PrintWriter!
-  public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
-  static
-  {
-    contents[ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER][1] =
-     "ListingErrorHandler created with null PrintWriter!";
-  }
-
-  // {0}is not allowed in this position in the stylesheet!
-  public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
-  static
-  {
-    contents[ER_NOT_ALLOWED_IN_POSITION][1] =
-     "{0} is not allowed in this position in the stylesheet!";
-  }
-
-  // Non-whitespace text is not allowed in this position in the stylesheet!
-  public static final int ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 238;
-  static
-  {
-    contents[ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION][1] =
-     "Non-whitespace text is not allowed in this position in the stylesheet!";
-  }
-
-  // This code is shared with warning codes.
-  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
-  public static final int INVALID_TCHAR = 239;
-  // SystemId Unknown
-  static
-  {
-    contents[INVALID_TCHAR][1] =
-     "Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!";
-  }
-
-  public static final int ER_SYSTEMID_UNKNOWN = 240;
-  static
-  {
-    contents[ER_SYSTEMID_UNKNOWN][1] =
-     "SystemId Unknown";
-  }
-
-  // Location of error unknown
-  public static final int ER_LOCATION_UNKNOWN = 241;
-  static
-  {
-    contents[ER_LOCATION_UNKNOWN][1] =
-     "Location of error unknown";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_QNAME
-
-  //The following codes are shared with the warning codes...
-  // Illegal value: {1} used for QNAME attribute: {0}
-  public static final int INVALID_QNAME = 242;
-  static
-  {
-    contents[INVALID_QNAME][1] =
-     "Illegal value:a {1} used for QNAME attribute:a {0}";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "ENUM" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value, {0} is the attribute name, and {2} is a list of valid
-    // values.
-    // INVALID_ENUM
-
-  // Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.
-  public static final int INVALID_ENUM = 243;
-  static
-  {
-    contents[INVALID_ENUM][1] =
-     "Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "NMTOKEN" is the XML data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_NMTOKEN
-
-  // Illegal value:a {1} used for NMTOKEN attribute:a {0}.
-  public static final int INVALID_NMTOKEN = 244;
-  static
-  {
-    contents[INVALID_NMTOKEN][1] =
-     "Illegal value:a {1} used for NMTOKEN attribute:a {0} ";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "NCNAME" is the XML data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_NCNAME
-
-  // Illegal value:a {1} used for NCNAME attribute:a {0}.
-  public static final int INVALID_NCNAME = 245;
-  static
-  {
-    contents[INVALID_NCNAME][1] =
-     "Illegal value:a {1} used for NCNAME attribute:a {0} ";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "boolean" is the XSLT data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_BOOLEAN
-
-  // Illegal value:a {1} used for boolean attribute:a {0}.
-  public static final int INVALID_BOOLEAN = 246;
-
-  static
-  {
-    contents[INVALID_BOOLEAN][1] =
-     "Illegal value:a {1} used for boolean attribute:a {0} ";
-  }
-
-// Note to translators:  The following message is used if the value of
-// an attribute in a stylesheet is invalid.  "number" is the XSLT data-type
-// of the attribute, and should not be translated.  The substitution text {1} is
-// the attribute value and {0} is the attribute name.
-// INVALID_NUMBER
-
-  // Illegal value:a {1} used for number attribute:a {0}.
-  public static final int INVALID_NUMBER = 247;
-  static
-  {
-    contents[INVALID_NUMBER][1] =
-     "Illegal value:a {1} used for number attribute:a {0} ";
-  }
-
-
-  // End of shared codes...
-
-// Note to translators:  A "match pattern" is a special form of XPath expression
-// that is used for matching patterns.  The substitution text is the name of
-// a function.  The message indicates that when this function is referenced in
-// a match pattern, its argument must be a string literal (or constant.)
-// ER_ARG_LITERAL - new error message for bugzilla //5202
-
-  // Argument to {0} in match pattern must be a literal.
-  public static final int ER_ARG_LITERAL             = 248;
-  static
-  {
-    contents[ER_ARG_LITERAL][1] =
-     "Argument to {0} in match pattern must be a literal.";
-  }
-
-// Note to translators:  The following message indicates that two definitions of
-// a variable.  A "global variable" is a variable that is accessible everywher
-// in the stylesheet.
-// ER_DUPLICATE_GLOBAL_VAR - new error message for bugzilla #790
-
-  // Duplicate global variable declaration.
-  public static final int ER_DUPLICATE_GLOBAL_VAR    = 249;
-  static
-  {
-    contents[ER_DUPLICATE_GLOBAL_VAR][1] =
-     "Duplicate global variable declaration.";
-  }
-
-
-// Note to translators:  The following message indicates that two definitions of
-// a variable were encountered.
-// ER_DUPLICATE_VAR - new error message for bugzilla #790
-
-  // Duplicate variable declaration.
-  public static final int ER_DUPLICATE_VAR           = 250;
-  static
-  {
-    contents[ER_DUPLICATE_VAR][1] =
-     "Duplicate variable declaration.";
-  }
-
-    // Note to translators:  "xsl:template", "name" and "match" are XSLT keywords
-    // which must not be translated.
-    // ER_TEMPLATE_NAME_MATCH - new error message for bugzilla #789
-
-  // xsl:template must have a name or match attribute (or both)
-  public static final int ER_TEMPLATE_NAME_MATCH     = 251;
-  static
-  {
-    contents[ER_TEMPLATE_NAME_MATCH][1] =
-     "xsl:atemplate must have a name or match attribute (or both)";
-  }
-
-    // Note to translators:  "exclude-result-prefixes" is an XSLT keyword which
-    // should not be translated.  The message indicates that a namespace prefix
-    // encountered as part of the value of the exclude-result-prefixes attribute
-    // was in error.
-    // ER_INVALID_PREFIX - new error message for bugzilla #788
-
-  // Prefix in exclude-result-prefixes is not valid:a {0}
-  public static final int ER_INVALID_PREFIX          = 252;
-  static
-  {
-    contents[ER_INVALID_PREFIX][1] =
-     "Prefix in exclude-result-prefixes is not valid:a {0}";
-  }
-
-    // Note to translators:  An "attribute set" is a set of attributes that can be
-    // added to an element in the output document as a group.  The message indicates
-    // that there was a reference to an attribute set named {0} that was never
-    // defined.
-    // ER_NO_ATTRIB_SET - new error message for bugzilla #782
-
-  // attribute-set named {0} does not exist
-  public static final int ER_NO_ATTRIB_SET           = 253;
-  static
-  {
-    contents[ER_NO_ATTRIB_SET][1] =
-     "attribute-set named {0} does not exist";
-  }
-
-
-
+  
+  
   /*
     /**  Cannot find SAX1 driver class    *
   public static final int ER_CANNOT_FIND_SAX1_DRIVER = 190;
@@ -2470,92 +2079,93 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_FIND_SAX1_DRIVER][1] =
-      "Cannot find SAX1 driver class {0}";
+      "Impossibile trovare la classe di driver SAX1 {0}.";
   }
-
+  
    /**  SAX1 driver class {0} found but cannot be loaded    *
   public static final int ER_SAX1_DRIVER_NOT_LOADED = 191;
 
   static
   {
     contents[ER_SAX1_DRIVER_NOT_LOADED][1] =
-      "SAX1 driver class {0} found but cannot be loaded";
+      "La classe di driver SAX1 {0} \u00e8 stata trovata ma non \u00e8 possibile caricarla.";
   }
-
+  
    /**  SAX1 driver class {0} found but cannot be instantiated    *
   public static final int ER_SAX1_DRIVER_NOT_INSTANTIATED = 192;
 
   static
   {
     contents[ER_SAX1_DRIVER_NOT_INSTANTIATED][1] =
-      "SAX1 driver class {0} loaded but cannot be instantiated";
+      "La classe di driver SAX1 {0} \u00e8 stata caricata ma non \u00e8 possibile creare istanze.";
   }
-
+  
    /**  SAX1 driver class {0} does not implement org.xml.sax.Parser    *
   public static final int ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER = 193;
 
   static
   {
     contents[ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER][1] =
-      "SAX1 driver class {0} does not implement org.xml.sax.Parser";
+      "La classe di driver SAX1 {0} non implementa org.xml.sax.Parser.";
   }
-
+  
    /**  System property org.xml.sax.parser not specified    *
   public static final int ER_PARSER_PROPERTY_NOT_SPECIFIED = 194;
 
   static
   {
     contents[ER_PARSER_PROPERTY_NOT_SPECIFIED][1] =
-      "System property org.xml.sax.parser not specified";
+      "Propriet\u00e0 di sistema org.xml.sax.parser non specificata.";
   }
-
+  
    /**  Parser argument must not be null    *
   public static final int ER_PARSER_ARG_CANNOT_BE_NULL = 195;
 
   static
   {
     contents[ER_PARSER_ARG_CANNOT_BE_NULL][1] =
-      "Parser argument must not be null";
+      "L'argomento del Parser non deve essere nullo.";
   }
-
+  
    /**  Feature:    *
   public static final int ER_FEATURE = 196;
 
   static
   {
     contents[ER_FEATURE][1] =
-        "Feature: {0}";
+        "Caratteristica: {0}";
   }
-
+  
    /**  Property:    *
   public static final int ER_PROPERTY = 197;
 
   static
   {
     contents[ER_PROPERTY][1] =
-        "Property: {0}";
+        "Propriet\u00e0: {0}";
   }
-
+  
    /** Null Entity Resolver  *
   public static final int ER_NULL_ENTITY_RESOLVER = 198;
 
   static
   {
     contents[ER_NULL_ENTITY_RESOLVER][1] =
-        "Null entity resolver";
+        "Il risolutore dell'entit\u00e0 \u00e8 nullo.";
   }
-
+  
    /** Null DTD handler  *
   public static final int ER_NULL_DTD_HANDLER = 199;
 
   static
   {
     contents[ER_NULL_DTD_HANDLER][1] =
-        "Null DTD handler";
+        "Il gestore DTD \u00e8 nullo.";
   }
+  
+ */ 
 
- */
-
+  
 
   // Warnings...
 
@@ -2565,7 +2175,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_FOUND_CURLYBRACE + MAX_CODE][1] =
-      "Found '}' but no attribute template open!";
+      "Trovato '}' ma non vi \u00e8 alcun modello di attributi aperto.";
   }
 
   /** WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR          */
@@ -2574,7 +2184,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR + MAX_CODE][1] =
-      "Warning: count attribute does not match an ancestor in xsl:number! Target = {0}";
+      "Avvertenza: l'attributo di conteggio non corrisponde a un predecessore in xsl:number! Target = {0}.";
   }
 
   /** WG_EXPR_ATTRIB_CHANGED_TO_SELECT          */
@@ -2583,7 +2193,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_EXPR_ATTRIB_CHANGED_TO_SELECT + MAX_CODE][1] =
-      "Old syntax: The name of the 'expr' attribute has been changed to 'select'.";
+      "Sintassi precedente: il nome dell'attributo 'expr' \u00e8 stato cambiato in 'select'.";
   }
 
   /** WG_NO_LOCALE_IN_FORMATNUMBER          */
@@ -2592,7 +2202,8 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_NO_LOCALE_IN_FORMATNUMBER + MAX_CODE][1] =
-      "Xalan doesn't yet handle the locale name in the format-number function.";
+
+      "Xalan non gestisce ancora il nome locale nella funzione format-number.";
   }
 
   /** WG_LOCALE_NOT_FOUND          */
@@ -2601,7 +2212,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_LOCALE_NOT_FOUND + MAX_CODE][1] =
-      "Warning: Could not find locale for xml:lang={0}";
+      "Avvertenza: impossibile trovare la versione locale per xml:lang={0}.";
   }
 
   /** WG_CANNOT_MAKE_URL_FROM          */
@@ -2610,7 +2221,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CANNOT_MAKE_URL_FROM + MAX_CODE][1] =
-      "Can not make URL from: {0}";
+      "Impossibile creare l'URL da: {0}.";
   }
 
   /** WG_CANNOT_LOAD_REQUESTED_DOC          */
@@ -2619,7 +2230,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CANNOT_LOAD_REQUESTED_DOC + MAX_CODE][1] =
-      "Can not load requested doc: {0}";
+      "Impossibile caricare il documento richiesto: {0}";
   }
 
   /** WG_CANNOT_FIND_COLLATOR          */
@@ -2628,7 +2239,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CANNOT_FIND_COLLATOR + MAX_CODE][1] =
-      "Could not find Collator for <sort xml:lang={0}";
+      "Impossibile trovare il collatore per <sort xml:lang={0}.";
   }
 
   /** WG_FUNCTIONS_SHOULD_USE_URL          */
@@ -2637,7 +2248,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_FUNCTIONS_SHOULD_USE_URL + MAX_CODE][1] =
-      "Old syntax: the functions instruction should use a url of {0}";
+      "Sintassi precedente: l'istruzione delle funzioni deve utilizzare l'URL {0}";
   }
 
   /** WG_ENCODING_NOT_SUPPORTED_USING_UTF8          */
@@ -2646,7 +2257,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ENCODING_NOT_SUPPORTED_USING_UTF8 + MAX_CODE][1] =
-      "encoding not supported: {0}, using UTF-8";
+      "codifica non supportata: {0}, utilizzando UTF-8";
   }
 
   /** WG_ENCODING_NOT_SUPPORTED_USING_JAVA          */
@@ -2655,7 +2266,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ENCODING_NOT_SUPPORTED_USING_JAVA + MAX_CODE][1] =
-      "encoding not supported: {0}, using Java {1}";
+      "Codifica non supportata: {0}, utilizzando Java {1}";
   }
 
   /** WG_SPECIFICITY_CONFLICTS          */
@@ -2664,7 +2275,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_SPECIFICITY_CONFLICTS + MAX_CODE][1] =
-      "Specificity conflicts found: {0} Last found in stylesheet will be used.";
+      "Trovati conflitti di specificit\u00e0: {0} Sar\u00e0 utilizzato l'ultimo trovato nel foglio di stile.";
   }
 
   /** WG_PARSING_AND_PREPARING          */
@@ -2673,15 +2284,16 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_PARSING_AND_PREPARING + MAX_CODE][1] =
-      "========= Parsing and preparing {0} ==========";
+      "========= Analisi e preparazione {0} ==========";
   }
+
 
   /** WG_ATTR_TEMPLATE          */
   public static final int WG_ATTR_TEMPLATE = 14;
 
   static
   {
-    contents[WG_ATTR_TEMPLATE + MAX_CODE][1] = "Attr Template, {0}";
+    contents[WG_ATTR_TEMPLATE + MAX_CODE][1] = "Modello attr., {0}";
   }
 
   /** WG_CONFLICT_BETWEEN_XSLSTRIPSPACE_AND_XSLPRESERVESPACE          */
@@ -2691,7 +2303,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CONFLICT_BETWEEN_XSLSTRIPSPACE_AND_XSLPRESERVESPACE + MAX_CODE][1] =
-      "Match conflict between xsl:strip-space and xsl:preserve-space";
+      "Conflitto di corrispondenza tra xsl:strip-space e xsl:preserve-space.";
   }
 
   /** WG_ATTRIB_NOT_HANDLED          */
@@ -2700,7 +2312,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ATTRIB_NOT_HANDLED + MAX_CODE][1] =
-      "Xalan does not yet handle the {0} attribute!";
+      "Xalan non gestisce ancora l'attributo {0}.";
   }
 
   /** WG_NO_DECIMALFORMAT_DECLARATION          */
@@ -2709,7 +2321,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_NO_DECIMALFORMAT_DECLARATION + MAX_CODE][1] =
-      "No declaration found for decimal format: {0}";
+      "Non \u00e8 stata trovata alcuna dichiarazione per il formato decimale: {0}";
   }
 
   /** WG_OLD_XSLT_NS          */
@@ -2717,7 +2329,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[WG_OLD_XSLT_NS + MAX_CODE][1] = "Missing or incorrect XSLT Namespace. ";
+    contents[WG_OLD_XSLT_NS + MAX_CODE][1] = "XSLT Namespace mancante o non valido. ";
   }
 
   /** WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED          */
@@ -2726,7 +2338,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED + MAX_CODE][1] =
-      "Only one default xsl:decimal-format declaration is allowed.";
+      "\u00c8 consentita solo una dichiarazione xsl:decimal-format predefinita.";
   }
 
   /** WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE          */
@@ -2735,7 +2347,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE + MAX_CODE][1] =
-      "xsl:decimal-format names must be unique. Name \"{0}\" has been duplicated.";
+      "I nomi xsl:decimal-format devono essere univoci. Il nome \"{0}\" \u00e8 duplicato.";
   }
 
   /** WG_ILLEGAL_ATTRIBUTE          */
@@ -2744,7 +2356,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ILLEGAL_ATTRIBUTE + MAX_CODE][1] =
-      "{0} has an illegal attribute: {1}";
+      "{0} ha un attributo non valido: {1}";
   }
 
   /** WG_COULD_NOT_RESOLVE_PREFIX          */
@@ -2753,7 +2365,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_COULD_NOT_RESOLVE_PREFIX + MAX_CODE][1] =
-      "Could not resolve namespace prefix: {0}. The node will be ignored.";
+      "Impossibile risolvere il prefisso namespace: {0}. Nodo ignorato.";
   }
 
   /** WG_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
@@ -2762,7 +2374,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_STYLESHEET_REQUIRES_VERSION_ATTRIB + MAX_CODE][1] =
-      "xsl:stylesheet requires a 'version' attribute!";
+      "xsl:stylesheet richiede un attributo 'versione'.";
   }
 
   /** WG_ILLEGAL_ATTRIBUTE_NAME          */
@@ -2771,7 +2383,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ILLEGAL_ATTRIBUTE_NAME + MAX_CODE][1] =
-      "Illegal attribute name: {0}";
+      "Nome attributo non valido: {0}";
   }
 
   /** WG_ILLEGAL_ATTRIBUTE_VALUE          */
@@ -2780,7 +2392,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ILLEGAL_ATTRIBUTE_VALUE + MAX_CODE][1] =
-      "Illegal value used for attribute {0}: {1}";
+      "Valore non valido per l'attributo {0}: {1}.";
   }
 
   /** WG_EMPTY_SECOND_ARG          */
@@ -2788,188 +2400,39 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ WG_EMPTY_SECOND_ARG + MAX_CODE][1] =
-      "Resulting nodeset from second argument of document function is empty. The first agument will be used.";
+    contents[WG_EMPTY_SECOND_ARG + MAX_CODE][1] =
+      "Il nodeset risultante dal secondo argomento della funzione documento \u00e8 vuoto. Sar\u00e0 utilizzato il primo argomento.";
   }
 
-  //Following are the new WARNING keys added in XALAN code base after Jdk 1.4 (Xalan 2.2-D11)
-
-    // Note to translators:  "name" and "xsl:processing-instruction" are keywords
-    // and must not be translated.
-    // WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML
-
-
-  /** WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML          */
-  public static final int WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML = 27;
-  static
-  {
-    contents[ WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML + MAX_CODE][1] =
-      "The value of the 'name' attribute of xsl:aprocessing-instruction name must not be 'xml'";
-  }
-
-    // Note to translators:  "name" and "xsl:processing-instruction" are keywords
-    // and must not be translated.  "NCName" is an XML data-type and must not be
-    // translated.
-    // WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME
-
-  /** WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
-  public static final int WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME = 28;
-  static
-  {
-    contents[ WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME + MAX_CODE][1] =
-      "The value of the 'name' attribute of xsl:aprocessing-instruction must be a valid NCName:a {0}";
-  }
-
-    // Note to translators:  This message is reported if the stylesheet that is
-    // being processed attempted to construct an XML document with an attribute in a
-    // place other than on an element.  The substitution text specifies the name of
-    // the attribute.
-    // WG_ILLEGAL_ATTRIBUTE_POSITION
-
-  /** WG_ILLEGAL_ATTRIBUTE_POSITION         */
-  public static final int WG_ILLEGAL_ATTRIBUTE_POSITION = 29;
-  static
-  {
-    contents[WG_ILLEGAL_ATTRIBUTE_POSITION + MAX_CODE][1] =
-      "Cannot add attribute {0} after child nodes or before an element is produced.  Attribute will be ignored.";
-  }
-
-    //Check: WHY THERE IS A GAP B/W NUMBERS in the XSLTErrorResources properties file?
-
-/**
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "CHAR" is the XSLT data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // invalid value, and {0} is the attribute name.
-    // INVALID_TCHAR
-
-  //The following warning codes are shared with the error codes ...
-  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
-  public static final int WG_INVALID_TCHAR = 239;
-  static
-  {
-    contents[WG_INVALID_TCHAR + MAX_CODE][1] =
-      "Illegal value: {1} used for CHAR attribute:a  {0}.  An attribute of type CHAR must be only 1 character!";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_QNAME
-
-  // Illegal value: {1} used for QNAME attribute: {0}
-  public static final int WG_INVALID_QNAME = 242;
-  static
-  {
-    contents[WG_INVALID_QNAME + MAX_CODE][1] =
-      "Illegal value:a {1} used for QNAME attribute:a {0}";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "ENUM" is the XML data-type of
-    // the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value, {0} is the attribute name, and {2} is a list of valid
-    // values.
-    // INVALID_ENUM
-
-  // Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.
-  public static final int WG_INVALID_ENUM = 243;
-  static
-  {
-    contents[WG_INVALID_ENUM + MAX_CODE][1] =
-      "Illegal value:a {1} used for ENUM attribute:a {0}.  Valid values are:a {2}.";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "NMTOKEN" is the XML data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_NMTOKEN
-
-  // Illegal value:a {1} used for NMTOKEN attribute:a {0}.
-  public static final int WG_INVALID_NMTOKEN = 244;
-  static
-  {
-    contents[WG_INVALID_NMTOKEN + MAX_CODE][1] =
-      "Illegal value:a {1} used for NMTOKEN attribute:a {0} ";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "NCNAME" is the XML data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_NCNAME
-
-  // Illegal value:a {1} used for NCNAME attribute:a {0}.
-  public static final int WG_INVALID_NCNAME = 245;
-  static
-  {
-    contents[WG_INVALID_NCNAME + MAX_CODE][1] =
-      "Illegal value:a {1} used for NCNAME attribute:a {0} ";
-  }
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "boolean" is the XSLT data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_BOOLEAN
-
-  // Illegal value:a {1} used for boolean attribute:a {0}.
-  public static final int WG_INVALID_BOOLEAN = 246;
-  static
-  {
-    contents[WG_INVALID_BOOLEAN + MAX_CODE][1] =
-      "Illegal value:a {1} used for boolean attribute:a {0} ";
-  }
-
-
-    // Note to translators:  The following message is used if the value of
-    // an attribute in a stylesheet is invalid.  "number" is the XSLT data-type
-    // of the attribute, and should not be translated.  The substitution text {1} is
-    // the attribute value and {0} is the attribute name.
-    // INVALID_NUMBER
-
-  // Illegal value:a {1} used for number attribute:a {0}.
-  public static final int WG_INVALID_NUMBER = 247;
-  static
-  {
-    contents[ WG_INVALID_NUMBER + MAX_CODE][1] =
-      "Illegal value:a {1} used for number attribute:a {0} ";
-  }
-
-  // End of codes that are shared...
-
-*/
   // Other miscellaneous text used inside the code...
   static
   {
     contents[MAX_MESSAGES][0] = "ui_language";
-    contents[MAX_MESSAGES][1] = "en";
+    contents[MAX_MESSAGES][1] = "it";
     contents[MAX_MESSAGES + 1][0] = "help_language";
-    contents[MAX_MESSAGES + 1][1] = "en";
+    contents[MAX_MESSAGES + 1][1] = "it";
     contents[MAX_MESSAGES + 2][0] = "language";
-    contents[MAX_MESSAGES + 2][1] = "en";
+    contents[MAX_MESSAGES + 2][1] = "it";
     contents[MAX_MESSAGES + 3][0] = "BAD_CODE";
     contents[MAX_MESSAGES + 3][1] =
-      "Parameter to createMessage was out of bounds";
+      "I parametri di createMessage sono esterni ai limiti";
     contents[MAX_MESSAGES + 4][0] = "FORMAT_FAILED";
     contents[MAX_MESSAGES + 4][1] =
-      "Exception thrown during messageFormat call";
+      "Eccezione generata durante la chiamata di messageFormat";
     contents[MAX_MESSAGES + 5][0] = "version";
-    contents[MAX_MESSAGES + 5][1] = ">>>>>>> Xalan Version ";
+    contents[MAX_MESSAGES + 5][1] = ">>>>>>> Xalan Versione ";
     contents[MAX_MESSAGES + 6][0] = "version2";
     contents[MAX_MESSAGES + 6][1] = "<<<<<<<";
     contents[MAX_MESSAGES + 7][0] = "yes";
-    contents[MAX_MESSAGES + 7][1] = "yes";
+    contents[MAX_MESSAGES + 7][1] = "s\u00ec";
     contents[MAX_MESSAGES + 8][0] = "line";
-    contents[MAX_MESSAGES + 8][1] = "Line #";
+    contents[MAX_MESSAGES + 8][1] = "Linea #";
     contents[MAX_MESSAGES + 9][0] = "column";
-    contents[MAX_MESSAGES + 9][1] = "Column #";
+    contents[MAX_MESSAGES + 9][1] = "Colonna #";
     contents[MAX_MESSAGES + 10][0] = "xsldone";
     contents[MAX_MESSAGES + 10][1] = "XSLProcessor: done";
     contents[MAX_MESSAGES + 11][0] = "xslProc_option";
-    contents[MAX_MESSAGES + 11][1] = "Xalan-J command line Process class options:";
+    contents[MAX_MESSAGES + 11][1] = "opzioni dalla riga di comando della classe Process di Xalan-J:";
     contents[MAX_MESSAGES + 12][0] = "optionIN";
     contents[MAX_MESSAGES + 12][1] = "    -IN inputXMLURL";
     contents[MAX_MESSAGES + 13][0] = "optionXSL";
@@ -2984,106 +2447,82 @@ public class XSLTErrorResources extends XResourceBundleBase
       "   [-LXCOUT compiledStylesheetFileNameOutOut]";
     contents[MAX_MESSAGES + 17][0] = "optionPARSER";
     contents[MAX_MESSAGES + 17][1] =
-      "   [-PARSER fully qualified class name of parser liaison]";
+      "   [-PARSER nome di classe pienamente qualificato del collegamento parser]";
     contents[MAX_MESSAGES + 18][0] = "optionE";
-    contents[MAX_MESSAGES + 18][1] = "   [-E (Do not expand entity refs)]";
+    contents[MAX_MESSAGES + 18][1] = "   [-E (Non espandere i rif entit\u00e0)]";
     contents[MAX_MESSAGES + 19][0] = "optionV";
-    contents[MAX_MESSAGES + 19][1] = "   [-E (Do not expand entity refs)]";
+    contents[MAX_MESSAGES + 19][1] = "   [-E (Non espandere i rif entit\u00e0)]";
     contents[MAX_MESSAGES + 20][0] = "optionQC";
     contents[MAX_MESSAGES + 20][1] =
-      "   [-QC (Quiet Pattern Conflicts Warnings)]";
+      "   [-QC (Avvertenze di conflitti Quiet Pattern)]";
     contents[MAX_MESSAGES + 21][0] = "optionQ";
-    contents[MAX_MESSAGES + 21][1] = "   [-Q  (Quiet Mode)]";
+    contents[MAX_MESSAGES + 21][1] = "   [-Q  (Modalit\u00e0 Quiet)]";
     contents[MAX_MESSAGES + 22][0] = "optionLF";
     contents[MAX_MESSAGES + 22][1] =
-      "   [-LF (Use linefeeds only on output {default is CR/LF})]";
+      "   [-LF (Usa nuove righe solo su output {valore predefinito CR/LF})]";
     contents[MAX_MESSAGES + 23][0] = "optionCR";
     contents[MAX_MESSAGES + 23][1] =
-      "   [-CR (Use carriage returns only on output {default is CR/LF})]";
+      "   [-CR (Usa ritorno a capo solo su output {valore predefinito CR/LF})]";
     contents[MAX_MESSAGES + 24][0] = "optionESCAPE";
     contents[MAX_MESSAGES + 24][1] =
-      "   [-ESCAPE (Which characters to escape {default is <>&\"\'\\r\\n}]";
+      "   [-ESCAPE (Quali carattere saltare {valore predefinito <>&\"\'\\r\\n}]";
     contents[MAX_MESSAGES + 25][0] = "optionINDENT";
     contents[MAX_MESSAGES + 25][1] =
-      "   [-INDENT (Control how many spaces to indent {default is 0})]";
+      "   [-INDENT (Controlla il numero di spazi del rientro {valore predefinito 0})]";
     contents[MAX_MESSAGES + 26][0] = "optionTT";
     contents[MAX_MESSAGES + 26][1] =
-      "   [-TT (Trace the templates as they are being called.)]";
+      "   [-TT (Traccia i modelli man mano che sono chiamati)]";
     contents[MAX_MESSAGES + 27][0] = "optionTG";
     contents[MAX_MESSAGES + 27][1] =
-      "   [-TG (Trace each generation event.)]";
+      "   [-TG (Traccia ogni evento di generazione)]";
     contents[MAX_MESSAGES + 28][0] = "optionTS";
-    contents[MAX_MESSAGES + 28][1] = "   [-TS (Trace each selection event.)]";
+    contents[MAX_MESSAGES + 28][1] = "   [-TS (Traccia ogni evento di selezione)]";
     contents[MAX_MESSAGES + 29][0] = "optionTTC";
     contents[MAX_MESSAGES + 29][1] =
-      "   [-TTC (Trace the template children as they are being processed.)]";
+      "   [-TTC (Traccia gli elementi secondari del modello man mano che sono elaborati)]";
     contents[MAX_MESSAGES + 30][0] = "optionTCLASS";
     contents[MAX_MESSAGES + 30][1] =
-      "   [-TCLASS (TraceListener class for trace extensions.)]";
+      "   [-TCLASS (Classe TraceListener per le estensioni di traccia)]";
     contents[MAX_MESSAGES + 31][0] = "optionVALIDATE";
     contents[MAX_MESSAGES + 31][1] =
-      "   [-VALIDATE (Set whether validation occurs.  Validation is off by default.)]";
+      "   [-VALIDATE (Imposta se eseguire la validazione. Il valore predefinito \u00e8 validazione disattivata.)]";
     contents[MAX_MESSAGES + 32][0] = "optionEDUMP";
     contents[MAX_MESSAGES + 32][1] =
-      "   [-EDUMP {optional filename} (Do stackdump on error.)]";
+      "   [-EDUMP {nome file opzionale} (Esegue il dump dello stack in caso di errore)]";
     contents[MAX_MESSAGES + 33][0] = "optionXML";
     contents[MAX_MESSAGES + 33][1] =
-      "   [-XML (Use XML formatter and add XML header.)]";
+      "   [-XML (Utilizza il formattatore XML e aggiunge l'intestazione XML)]";
     contents[MAX_MESSAGES + 34][0] = "optionTEXT";
     contents[MAX_MESSAGES + 34][1] =
-      "   [-TEXT (Use simple Text formatter.)]";
+      "   [-TEXT (Utilizza il formattatore di testo semplice)]";
     contents[MAX_MESSAGES + 35][0] = "optionHTML";
-    contents[MAX_MESSAGES + 35][1] = "   [-HTML (Use HTML formatter.)]";
+    contents[MAX_MESSAGES + 35][1] = "   [-HTML (Utilizza il formattatore HTML)]";
     contents[MAX_MESSAGES + 36][0] = "optionPARAM";
     contents[MAX_MESSAGES + 36][1] =
-      "   [-PARAM name expression (Set a stylesheet parameter)]";
+      "   [-PARAM espressione nome (Imposta un parametro di foglio di stile)]";
     contents[MAX_MESSAGES + 37][0] = "noParsermsg1";
-    contents[MAX_MESSAGES + 37][1] = "XSL Process was not successful.";
+    contents[MAX_MESSAGES + 37][1] = "Processo XSL non riuscito.";
     contents[MAX_MESSAGES + 38][0] = "noParsermsg2";
-    contents[MAX_MESSAGES + 38][1] = "** Could not find parser **";
+    contents[MAX_MESSAGES + 38][1] = "** Impossibile trovare il parser **";
     contents[MAX_MESSAGES + 39][0] = "noParsermsg3";
-    contents[MAX_MESSAGES + 39][1] = "Please check your classpath.";
+    contents[MAX_MESSAGES + 39][1] = "Verificare il classpath.";
     contents[MAX_MESSAGES + 40][0] = "noParsermsg4";
     contents[MAX_MESSAGES + 40][1] =
-      "If you don't have IBM's XML Parser for Java, you can download it from";
+      "Se non si dispone del parser XML IBM per Java, scaricarlo da";
     contents[MAX_MESSAGES + 41][0] = "noParsermsg5";
     contents[MAX_MESSAGES + 41][1] =
-      "IBM's AlphaWorks: http://www.alphaworks.ibm.com/formula/xml";
+      "AlphaWorks IBM: http://www.alphaworks.ibm.com/formula/xml";
 		contents[MAX_MESSAGES + 42][0] = "optionURIRESOLVER";
-    contents[MAX_MESSAGES + 42][1] = "   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]";
+    contents[MAX_MESSAGES + 42][1] = "   [-URIRESOLVER nome classe completo (URIResolver da utilizzare per risolvere gli URI)]";
 		contents[MAX_MESSAGES + 43][0] = "optionENTITYRESOLVER";
-    contents[MAX_MESSAGES + 43][1] = "   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]";
+    contents[MAX_MESSAGES + 43][1] = "   [-ENTITYRESOLVER nome classe completo (EntityResolver da utilizzare per risolvere le entit\u00e0)]";
 		contents[MAX_MESSAGES + 44][0] = "optionCONTENTHANDLER";
-    contents[MAX_MESSAGES + 44][1] = "   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]";
+    contents[MAX_MESSAGES + 44][1] = "   [-CONTENTHANDLER nome classe completo (ContentHandler da utilizzare per serializzare l'output)]";
     contents[MAX_MESSAGES + 45][0] = "optionLINENUMBERS";
-    contents[MAX_MESSAGES + 45][1] = "   [-L use line numbers for source document]";
-
-    // Following are the new options added in XSLTErrorResources.properties files after Jdk 1.4 (Xalan 2.2-D11)
-
-
-    contents[MAX_MESSAGES + 46][0] = "optionMEDIA";
-    contents[MAX_MESSAGES + 46][1] = " [-MEDIA mediaType (use media attribute to find stylesheet associated with a document.)]";
-    contents[MAX_MESSAGES + 47][0] = "optionFLAVOR";
-    contents[MAX_MESSAGES + 47][1] = " [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)] "; // Added by sboag/scurcuru; experimental
-    contents[MAX_MESSAGES + 48][0] = "optionDIAG";
-    contents[MAX_MESSAGES + 48][1] = " [-DIAG (Print overall milliseconds transform took.)]";
-    contents[MAX_MESSAGES + 49][0] = "optionINCREMENTAL";
-    contents[MAX_MESSAGES + 49][1] = " [-INCREMENTAL (request incremental DTM construction by setting http://xml.apache.org/xalan/features/incremental true.)]";
-    contents[MAX_MESSAGES + 50][0] = "optionNOOPTIMIMIZE";
-    contents[MAX_MESSAGES + 50][1] = " [-NOOPTIMIMIZE (request no stylesheet optimization proccessing by setting http://xml.apache.org/xalan/features/optimize false.)]";
-    contents[MAX_MESSAGES + 51][0] = "optionRL";
-    contents[MAX_MESSAGES + 51][1] = " [-RL recursionlimit (assert numeric limit on stylesheet recursion depth.)]";
-    contents[MAX_MESSAGES + 52][0] = "optionXO";
-    contents[MAX_MESSAGES + 52][1] = " [-XO [transletName] (assign the name to the generated translet)]";
-    contents[MAX_MESSAGES + 53][0] = "optionXD";
-    contents[MAX_MESSAGES + 53][1] = " [-XD destinationDirectory (specify a destination directory for translet)]";
-    contents[MAX_MESSAGES + 54][0] = "optionXJ";
-    contents[MAX_MESSAGES + 54][1] = " [-XJ jarfile (packages translet classes into a jar file of name <jarfile>)]";
-    contents[MAX_MESSAGES + 55][0] = "optionXP";
-    contents[MAX_MESSAGES + 55][1] = " [-XP package (specifies a package name prefix for all generated translet classes)]";
-
-
+    contents[MAX_MESSAGES + 45][1] = "   [-L utilizza i numeri di linea per i documenti sorgente]";
+		
   }
+
 
   // ================= INFRASTRUCTURE ======================
 
@@ -3097,10 +2536,10 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String ERROR_STRING = "#error";
 
   /** String to prepend to error messages.  */
-  public static final String ERROR_HEADER = "Error: ";
+  public static final String ERROR_HEADER = "Errore: ";
 
   /** String to prepend to warning messages.    */
-  public static final String WARNING_HEADER = "Warning: ";
+  public static final String WARNING_HEADER = "Avvertenza: ";
 
   /** String to specify the XSLT module.  */
   public static final String XSL_HEADER = "XSLT ";
@@ -3113,7 +2552,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String QUERY_HEADER = "PATTERN ";
 
   /**
-   * Get the lookup table.
+   * Get the lookup table. 
    *
    * @return The int to message lookup table.
    */
@@ -3121,150 +2560,6 @@ public class XSLTErrorResources extends XResourceBundleBase
   {
     return contents;
   }
-
-  /**
-   *   Return a named ResourceBundle for a particular locale.  This method mimics the behavior
-   *   of ResourceBundle.getBundle().
-   *
-   *   @param className the name of the class that implements the resource bundle.
-   *   @return the ResourceBundle
-   *   @throws MissingResourceException
-   */
-  public static final XSLTErrorResources loadResourceBundle(String className)
-          throws MissingResourceException
-  {
-
-    Locale locale = Locale.getDefault();
-    String suffix = getResourceSuffix(locale);
-
-    try
-    {
-
-      // first try with the given locale
-      return (XSLTErrorResources) ResourceBundle.getBundle(className
-              + suffix, locale);
-    }
-    catch (MissingResourceException e)
-    {
-      try  // try to fall back to en_US if we can't load
-      {
-
-        // Since we can't find the localized property file,
-        // fall back to en_US.
-        return (XSLTErrorResources) ResourceBundle.getBundle(className,
-                new Locale("en", "US"));
-      }
-      catch (MissingResourceException e2)
-      {
-
-        // Now we are really in trouble.
-        // very bad, definitely very bad...not going to get very far
-        throw new MissingResourceException(
-          "Could not load any resource bundles.", className, "");
-      }
-    }
-  }
-
-  /**
-   * Return the resource file suffic for the indicated locale
-   * For most locales, this will be based the language code.  However
-   * for Chinese, we do distinguish between Taiwan and PRC
-   *
-   * @param locale the locale
-   * @return an String suffix which canbe appended to a resource name
-   */
-  private static final String getResourceSuffix(Locale locale)
-  {
-
-    String suffix = "_" + locale.getLanguage();
-    String country = locale.getCountry();
-
-    if (country.equals("TW"))
-      suffix += "_" + country;
-
-    return suffix;
-  }
-
-  /**
-   * Get a string representation of the error code.
-   *
-   * @param errorCode Should be a valid error code less than {@link #MAX_CODE}.
-   *
-   * @return A string representation of the error code, or null if code is
-   * greater than MAX_CODE.
-   */
-  public String getMessageKey(int errorCode)
-  {
-
-    if (errorCode > MAX_CODE)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return ERROR_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get a string representation of the warning code.
-   *
-   * @param errorCode Should be a valid warning code less than {@link #MAX_WARNING}.
-   *
-   * @return A string representation of the warning code, or null if code is
-   * greater than MAX_WARNING.
-   */
-  public String getWarningKey(int errorCode)
-  {
-
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return WARNING_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get a string representation of the message code. (same as getMessageKey).
-   *
-   * @param errorCode Should be a valid error code less than {@link #MAX_CODE}.
-   *
-   * @return A string representation of the error code, or null if code is
-   * greater than MAX_CODE.
-   */
-  public static String getMKey(int errorCode)
-  {
-    if (errorCode > MAX_CODE)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return ERROR_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get a string representation of the warning code.
-   *
-   * @param errorCode Should be a valid warning code less than {@link #MAX_WARNING}.
-   *
-   * @return A string representation of the warning code, or null if code is
-   * greater than MAX_WARNING.
-   */
-  public static String getWKey(int errorCode)
-  {
-
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return WARNING_SUFFIX + df.format(errorCode);
-    }
-  }
 }
+
+

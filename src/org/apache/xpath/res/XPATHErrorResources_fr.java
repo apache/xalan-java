@@ -1,4 +1,11 @@
 /*
+ * @(#)XPATHErrorResources_fr.java	1.7 02/03/26
+ *
+ * Copyright 2002 Sun Microsystems, Inc. All rights reserved.
+ * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+
+/*
  * The Apache Software License, Version 1.1
  *
  *
@@ -54,6 +61,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 package org.apache.xpath.res;
 
 import org.apache.xml.utils.res.XResourceBundleBase;
@@ -74,7 +82,7 @@ import java.text.DecimalFormat;
  * fill in the actual message string. Follow the instructions
  * below.
  */
-public class XPATHErrorResources extends XResourceBundleBase
+public class XPATHErrorResources_fr extends XPATHErrorResources
 {
 
   /** Field ERROR_SUFFIX          */
@@ -83,9 +91,9 @@ public class XPATHErrorResources extends XResourceBundleBase
   /** Field WARNING_SUFFIX          */
   public static final String WARNING_SUFFIX = "WR";
 
-  //XXX MANITS_XALAN : Changed from 83 to 116
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 116;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 83;  // this is needed to keep track of the number of messages          
+
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -102,10 +110,12 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   /*
   * Now fill in the message keys.
+
   * This does not need to be updated. If MAX_CODE and MAX_WARNING
   * are correct, the keys will get filled in automatically with
   * the value ERxxxx (WRxxxx for warnings) where xxxx is a
   * formatted number corresponding to the error code (i.e. ER0001).
+
   */
   static
   {
@@ -121,16 +131,21 @@ public class XPATHErrorResources extends XResourceBundleBase
   }
 
   /*
+
   * Now fill in the message text.
+
   * First create an int for the message code. Make sure you
   * update MAX_CODE for error messages and MAX_WARNING for warnings
   * Then fill in the message text for that message code in the
   * array. Use the new error code as the index into the array.
+
   */
+
 
   // Error messages...
 
   /** Field ERROR0000          */
+
   public static final int ERROR0000 = 0;
 
   static
@@ -141,10 +156,11 @@ public class XPATHErrorResources extends XResourceBundleBase
   /** Field ER_CURRENT_NOT_ALLOWED_IN_MATCH          */
   public static final int ER_CURRENT_NOT_ALLOWED_IN_MATCH = 1;
 
+
   static
   {
     contents[ER_CURRENT_NOT_ALLOWED_IN_MATCH][1] =
-      "The current() function is not allowed in a match pattern!";
+      "La fonction current() n\u2019est pas admise dans la correspondance \u00e0 la forme !";
   }
 
   /** Field ER_CURRENT_TAKES_NO_ARGS          */
@@ -153,7 +169,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CURRENT_TAKES_NO_ARGS][1] =
-      "The current() function does not accept arguments!";
+      "La fonction current() n\u2019admet pas les arguments !";
   }
 
   /** Field ER_DOCUMENT_REPLACED          */
@@ -162,7 +178,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DOCUMENT_REPLACED][1] =
-      "document() function implementation has been replaced by org.apache.xalan.xslt.FuncDocument!";
+      "la mise en \u0153uvre de la fonction document() a \u00e9t\u00e9 remplac\u00e9e par org.apache.xalan.xslt.FuncDocument!";
   }
 
   /** Field ER_CONTEXT_HAS_NO_OWNERDOC          */
@@ -171,7 +187,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CONTEXT_HAS_NO_OWNERDOC][1] =
-      "context does not have an owner document!";
+      "le contexte n\u2019a pas de document propri\u00e9taire !";
   }
 
   /** Field ER_LOCALNAME_HAS_TOO_MANY_ARGS          */
@@ -180,7 +196,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_LOCALNAME_HAS_TOO_MANY_ARGS][1] =
-      "local-name() has too many arguments.";
+      "local-name() a trop d\u2019arguments.";
   }
 
   /** Field ER_NAMESPACEURI_HAS_TOO_MANY_ARGS          */
@@ -189,7 +205,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NAMESPACEURI_HAS_TOO_MANY_ARGS][1] =
-      "namespace-uri() has too many arguments.";
+      "namespace-uri() a trop d\u2019arguments.";
   }
 
   /** Field ER_NORMALIZESPACE_HAS_TOO_MANY_ARGS          */
@@ -198,7 +214,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NORMALIZESPACE_HAS_TOO_MANY_ARGS][1] =
-      "normalize-space() has too many arguments.";
+      "normalize-space() a trop d\u2019arguments.";
   }
 
   /** Field ER_NUMBER_HAS_TOO_MANY_ARGS          */
@@ -207,7 +223,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NUMBER_HAS_TOO_MANY_ARGS][1] =
-      "number() has too many arguments.";
+      "number() a trop d\u2019arguments.";
   }
 
   /** Field ER_NAME_HAS_TOO_MANY_ARGS          */
@@ -215,7 +231,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_NAME_HAS_TOO_MANY_ARGS][1] = "name() has too many arguments.";
+    contents[ER_NAME_HAS_TOO_MANY_ARGS][1] = "name() a trop d\u2019arguments.";
   }
 
   /** Field ER_STRING_HAS_TOO_MANY_ARGS          */
@@ -224,7 +240,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_STRING_HAS_TOO_MANY_ARGS][1] =
-      "string() has too many arguments.";
+      "string() a trop d\u2019arguments.";
   }
 
   /** Field ER_STRINGLENGTH_HAS_TOO_MANY_ARGS          */
@@ -233,7 +249,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_STRINGLENGTH_HAS_TOO_MANY_ARGS][1] =
-      "string-length() has too many arguments.";
+      "string-length() a trop d\u2019arguments.";
   }
 
   /** Field ER_TRANSLATE_TAKES_3_ARGS          */
@@ -242,7 +258,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_TRANSLATE_TAKES_3_ARGS][1] =
-      "The translate() function takes three arguments!";
+      "La fonction translate() a trois arguments !";
   }
 
   /** Field ER_UNPARSEDENTITYURI_TAKES_1_ARG          */
@@ -251,7 +267,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_UNPARSEDENTITYURI_TAKES_1_ARG][1] =
-      "The unparsed-entity-uri function should take one argument!";
+      "La fonction unparsed-entity-uri ne peut avoir qu\u2019un seul argument !";
   }
 
   /** Field ER_NAMESPACEAXIS_NOT_IMPLEMENTED          */
@@ -260,7 +276,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NAMESPACEAXIS_NOT_IMPLEMENTED][1] =
-      "namespace axis not implemented yet!";
+      "l'axe namespace n\u2019est pas encore mis en \u0153uvre !";
   }
 
   /** Field ER_UNKNOWN_AXIS          */
@@ -268,7 +284,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNKNOWN_AXIS][1] = "unknown axis: {0}";
+    contents[ER_UNKNOWN_AXIS][1] = "axe inconnu : {0}";
   }
 
   /** Field ER_UNKNOWN_MATCH_OPERATION          */
@@ -276,7 +292,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNKNOWN_MATCH_OPERATION][1] = "unknown match operation!";
+    contents[ER_UNKNOWN_MATCH_OPERATION][1] = "op\u00e9ration de correspondance inconnue !";
   }
 
   /** Field ER_INCORRECT_ARG_LENGTH          */
@@ -285,7 +301,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INCORRECT_ARG_LENGTH][1] =
-      "Arg length of processing-instruction() node test is incorrect!";
+      "La longueur d\u2019argument du test du n\u0153ud processing-instruction() n\u2019est pas correcte !";
   }
 
   /** Field ER_CANT_CONVERT_TO_NUMBER          */
@@ -294,7 +310,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_CONVERT_TO_NUMBER][1] =
-      "Can not convert {0} to a number";
+      "Impossible de convertir {0} en fonction number";
   }
 
   /** Field ER_CANT_CONVERT_TO_NODELIST          */
@@ -303,7 +319,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_CONVERT_TO_NODELIST][1] =
-      "Can not convert {0} to a NodeList!";
+      "Impossible de convertir {0} en fonction NodeList !";
   }
 
   /** Field ER_CANT_CONVERT_TO_MUTABLENODELIST          */
@@ -312,7 +328,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_CONVERT_TO_MUTABLENODELIST][1] =
-      "Can not convert {0} to a NodeSetDTM!";
+      "Impossible de convertir {0} en fonction NodeSetDTM !";
   }
 
   /** Field ER_CANT_CONVERT_TO_TYPE          */
@@ -321,7 +337,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_CONVERT_TO_TYPE][1] =
-      "Can not convert {0} to a type//{1}";
+      "Impossible de convertir {0} en type#{1}";
   }
 
   /** Field ER_EXPECTED_MATCH_PATTERN          */
@@ -330,7 +346,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_EXPECTED_MATCH_PATTERN][1] =
-      "Expected match pattern in getMatchScore!";
+      "Correspondance \u00e0 la forme attendue dans getMatchScore !";
   }
 
   /** Field ER_COULDNOT_GET_VAR_NAMED          */
@@ -339,7 +355,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULDNOT_GET_VAR_NAMED][1] =
-      "Could not get variable named {0}";
+      "Impossible de trouver la variable nomm\u00e9e {0}";
   }
 
   /** Field ER_UNKNOWN_OPCODE          */
@@ -347,7 +363,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNKNOWN_OPCODE][1] = "ERROR! Unknown op code: {0}";
+    contents[ER_UNKNOWN_OPCODE][1] = "ERREUR ! Code d\u2019op\u00e9ration inconnu : {0}";
   }
 
   /** Field ER_EXTRA_ILLEGAL_TOKENS          */
@@ -355,7 +371,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_EXTRA_ILLEGAL_TOKENS][1] = "Extra illegal tokens: {0}";
+    contents[ER_EXTRA_ILLEGAL_TOKENS][1] = "Unit\u00e9s lexicales suppl\u00e9mentaires non autoris\u00e9es : {0}";
   }
 
   /** Field ER_EXPECTED_DOUBLE_QUOTE          */
@@ -364,7 +380,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_EXPECTED_DOUBLE_QUOTE][1] =
-      "misquoted literal... expected double quote!";
+      "libell\u00e9 mal pr\u00e9sent\u00e9... guillemet attendu !";
   }
 
   /** Field ER_EXPECTED_SINGLE_QUOTE          */
@@ -373,7 +389,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_EXPECTED_SINGLE_QUOTE][1] =
-      "misquoted literal... expected single quote!";
+      "libell\u00e9 mal pr\u00e9sent\u00e9... apostrophe attendue !";
   }
 
   /** Field ER_EMPTY_EXPRESSION          */
@@ -381,7 +397,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_EMPTY_EXPRESSION][1] = "Empty expression!";
+    contents[ER_EMPTY_EXPRESSION][1] = "Expression vide !";
   }
 
   /** Field ER_EXPECTED_BUT_FOUND          */
@@ -389,7 +405,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_EXPECTED_BUT_FOUND][1] = "Expected {0}, but found: {1}";
+    contents[ER_EXPECTED_BUT_FOUND][1] = "{0} attendu(e), mais : {1} trouv\u00e9(e)";
   }
 
   /** Field ER_INCORRECT_PROGRAMMER_ASSERTION          */
@@ -398,7 +414,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INCORRECT_PROGRAMMER_ASSERTION][1] =
-      "Programmer assertion is incorrect! - {0}";
+      "Assertion de programmeur incorrecte ! - {0}";
   }
 
   /** Field ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL          */
@@ -407,7 +423,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL][1] =
-      "boolean(...) argument is no longer optional with 19990709 XPath draft.";
+      "L\u2019argument boolean(...) n\u2019est plus facultatif avec la version brouillon 19990709 XPath .";
   }
 
   /** Field ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG          */
@@ -416,7 +432,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG][1] =
-      "Found ',' but no preceding argument!";
+      "',' trouv\u00e9 sans argument avant !";
   }
 
   /** Field ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG          */
@@ -425,7 +441,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG][1] =
-      "Found ',' but no following argument!";
+      "',' trouv\u00e9 sans argument apr\u00e8s !";
   }
 
   /** Field ER_PREDICATE_ILLEGAL_SYNTAX          */
@@ -434,7 +450,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PREDICATE_ILLEGAL_SYNTAX][1] =
-      "'..[predicate]' or '.[predicate]' is illegal syntax.  Use 'self::node()[predicate]' instead.";
+      "'..[predicate]' ou '.[predicate]' constitue une mauvaise syntaxe. Utilisez 'self::node()[predicate]' \u00e0 la place.";
   }
 
   /** Field ER_ILLEGAL_AXIS_NAME          */
@@ -442,7 +458,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ILLEGAL_AXIS_NAME][1] = "illegal axis name: {0}";
+    contents[ER_ILLEGAL_AXIS_NAME][1] = "nom d\u2019axe non autoris\u00e9 : {0}";
   }
 
   /** Field ER_UNKNOWN_NODETYPE          */
@@ -450,7 +466,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNKNOWN_NODETYPE][1] = "Unknown nodetype: {0}";
+    contents[ER_UNKNOWN_NODETYPE][1] = "Type de n\u0153ud inconnu : {0}";
   }
 
   /** Field ER_PATTERN_LITERAL_NEEDS_BE_QUOTED          */
@@ -459,7 +475,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PATTERN_LITERAL_NEEDS_BE_QUOTED][1] =
-      "Pattern literal ({0}) needs to be quoted!";
+      "Le libell\u00e9 de la forme ({0}) doit \u00eatre entre guillemets !";
   }
 
   /** Field ER_COULDNOT_BE_FORMATTED_TO_NUMBER          */
@@ -468,7 +484,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULDNOT_BE_FORMATTED_TO_NUMBER][1] =
-      "{0} could not be formatted to a number!";
+      "{0} ne peut pas \u00eatre format\u00e9(e) en number\u00a0!";
   }
 
   /** Field ER_COULDNOT_CREATE_XMLPROCESSORLIAISON          */
@@ -477,7 +493,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULDNOT_CREATE_XMLPROCESSORLIAISON][1] =
-      "Could not create XML TransformerFactory Liaison: {0}";
+      "Impossible de cr\u00e9er XML TransformerFactory Liaison : {0}";
   }
 
   /** Field ER_DIDNOT_FIND_XPATH_SELECT_EXP          */
@@ -486,7 +502,8 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DIDNOT_FIND_XPATH_SELECT_EXP][1] =
-      "Error! Did not find xpath select expression (-select).";
+
+      "Erreur ! Impossible de trouver l\u2019expression de s\u00e9lection xpath (-select).";
   }
 
   /** Field ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH          */
@@ -495,7 +512,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH][1] =
-      "ERROR! Could not find ENDOP after OP_LOCATIONPATH";
+      "ERREUR ! Impossible de trouver ENDOP apr\u00e8s OP_LOCATIONPATH";
   }
 
   /** Field ER_ERROR_OCCURED          */
@@ -503,7 +520,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_ERROR_OCCURED][1] = "Error occured!";
+    contents[ER_ERROR_OCCURED][1] = "Une erreur s\u2019est produite !";
   }
 
   /** Field ER_ILLEGAL_VARIABLE_REFERENCE          */
@@ -512,7 +529,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_ILLEGAL_VARIABLE_REFERENCE][1] =
-      "VariableReference given for variable out of context or without definition!  Name = {0}";
+      "L'\u00e9l\u00e9ment VariableReference a \u00e9t\u00e9 fourni pour la variable hors contexte ou sans d\u00e9finition !  Nom = {0}";
   }
 
   /** Field ER_AXES_NOT_ALLOWED          */
@@ -521,7 +538,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_AXES_NOT_ALLOWED][1] =
-      "Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = {0}";
+      "Seuls les axes child:: et attribute:: sont admis dans les correspondances \u00e0 la forme !  Axes erron\u00e9s = {0}";
   }
 
   /** Field ER_KEY_HAS_TOO_MANY_ARGS          */
@@ -530,7 +547,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_KEY_HAS_TOO_MANY_ARGS][1] =
-      "key() has an incorrect number of arguments.";
+      "key() dispose d\u2019un nombre incorrect d\u2019arguments.";
   }
 
   /** Field ER_COUNT_TAKES_1_ARG          */
@@ -539,15 +556,16 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COUNT_TAKES_1_ARG][1] =
-      "The count function should take one argument!";
+      "La fonction count ne doit avoir qu\u2019un seul argument !";
   }
+
 
   /** Field ER_COULDNOT_FIND_FUNCTION          */
   public static final int ER_COULDNOT_FIND_FUNCTION = 47;
 
   static
   {
-    contents[ER_COULDNOT_FIND_FUNCTION][1] = "Could not find function: {0}";
+    contents[ER_COULDNOT_FIND_FUNCTION][1] = "Impossible de trouver la fonction : {0}";
   }
 
   /** Field ER_UNSUPPORTED_ENCODING          */
@@ -555,7 +573,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNSUPPORTED_ENCODING][1] = "Unsupported encoding: {0}";
+    contents[ER_UNSUPPORTED_ENCODING][1] = "Codage non pris en charge : {0}";
   }
 
   /** Field ER_PROBLEM_IN_DTM_NEXTSIBLING          */
@@ -564,7 +582,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROBLEM_IN_DTM_NEXTSIBLING][1] =
-      "Problem occured in DTM in getNextSibling... trying to recover";
+      "Un incident s\u2019est produit au niveau de DTM dans getNextSibling... Tentative de r\u00e9cup\u00e9ration";
   }
 
   /** Field ER_CANNOT_WRITE_TO_EMPTYNODELISTIMPL          */
@@ -573,7 +591,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANNOT_WRITE_TO_EMPTYNODELISTIMPL][1] =
-      "Programmer error: EmptyNodeList can not be written to.";
+      "Erreur de programmation : Impossible d\u2019\u00e9crire dans EmptyNodeList.";
   }
 
   /** Field ER_SETDOMFACTORY_NOT_SUPPORTED          */
@@ -582,7 +600,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_SETDOMFACTORY_NOT_SUPPORTED][1] =
-      "setDOMFactory is not supported by XPathContext!";
+      "setDOMFactory n\u2019est pas pris en charge par XPathContext!";
   }
 
   /** Field ER_PREFIX_MUST_RESOLVE          */
@@ -591,7 +609,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PREFIX_MUST_RESOLVE][1] =
-      "Prefix must resolve to a namespace: {0}";
+      "Le pr\u00e9fixe doit se r\u00e9soudre en nom d'espace : {0}";
   }
 
   /** Field ER_PARSE_NOT_SUPPORTED          */
@@ -600,7 +618,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PARSE_NOT_SUPPORTED][1] =
-      "parse (InputSource source) not supported in XPathContext! Can not open {0}";
+      "parse (source InputSource) non pris en charge dans XpathContext ! Impossible d\u2019ouvrir {0}";
   }
 
   /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
@@ -609,7 +627,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CREATEDOCUMENT_NOT_SUPPORTED][1] =
-      "createDocument() not supported in XPathContext!";
+      "createDocument() non pris en charge dans XpathContext !";
   }
 
   /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
@@ -618,7 +636,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CHILD_HAS_NO_OWNER_DOCUMENT][1] =
-      "Attribute child does not have an owner document!";
+      "L\u2019attribut child n\u2019a pas de document propri\u00e9taire !";
   }
 
   /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
@@ -627,7 +645,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT][1] =
-      "Attribute child does not have an owner document element!";
+      "L\u2019attribute child n\u2019a pas d\u2019\u00e9l\u00e9ment de document propri\u00e9taire !";
   }
 
   /** Field ER_SAX_API_NOT_HANDLED          */
@@ -636,7 +654,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_SAX_API_NOT_HANDLED][1] =
-      "SAX API characters(char ch[]... not handled by the DTM!";
+      "Les caract\u00e8res SAX API (char ch[]... ne sont pas pris en charge par DTM !";
   }
 
   /** Field ER_IGNORABLE_WHITESPACE_NOT_HANDLED          */
@@ -645,7 +663,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_IGNORABLE_WHITESPACE_NOT_HANDLED][1] =
-      "ignorableWhitespace(char ch[]... not handled by the DTM!";
+      "ignorableWhitespace(char ch[]... ne sont pas pris en charge par DTM !";
   }
 
   /** Field ER_DTM_CANNOT_HANDLE_NODES          */
@@ -654,7 +672,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_DTM_CANNOT_HANDLE_NODES][1] =
-      "DTMLiaison can not handle nodes of type {0}";
+      "DTMLiaison ne peut pas prendre en charge les n\u0153uds de type {0}";
   }
 
   /** Field ER_XERCES_CANNOT_HANDLE_NODES          */
@@ -663,7 +681,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XERCES_CANNOT_HANDLE_NODES][1] =
-      "DOM2Helper can not handle nodes of type {0}";
+      "DOM2Helper ne peut pas prendre en charge les n\u0153uds de type {0}";
   }
 
   /** Field ER_XERCES_PARSE_ERROR_DETAILS          */
@@ -672,7 +690,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XERCES_PARSE_ERROR_DETAILS][1] =
-      "DOM2Helper.parse error: SystemID - {0} line - {1}";
+      "Erreur DOM2Helper.parse : ID syst\u00e8me - {0} ligne - {1}";
   }
 
   /** Field ER_XERCES_PARSE_ERROR          */
@@ -680,7 +698,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_XERCES_PARSE_ERROR][1] = "DOM2Helper.parse error";
+    contents[ER_XERCES_PARSE_ERROR][1] = "Erreur DOM2Helper.parse";
   }
 
   /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
@@ -689,7 +707,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_OUTPUT_TEXT_BEFORE_DOC][1] =
-      "Warning: can't output text before document element!  Ignoring...";
+      "Attention : impossible de sortir le texte avant l\u2019\u00e9l\u00e9ment document !  Op\u00e9ration ignor\u00e9e ...";
   }
 
   /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
@@ -698,7 +716,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_HAVE_MORE_THAN_ONE_ROOT][1] =
-      "Can't have more than one root on a DOM!";
+      "Impossible d\u2019avoir plus d\u2019une racine sur un DOM !";
   }
 
   /** Field ER_INVALID_UTF16_SURROGATE          */
@@ -707,7 +725,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_INVALID_UTF16_SURROGATE][1] =
-      "Invalid UTF-16 surrogate detected: {0} ?";
+      "Substitut UTF-16 incorrect d\u00e9tect\u00e9 : {0} ?";
   }
 
   /** Field ER_OIERROR          */
@@ -715,7 +733,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_OIERROR][1] = "IO error";
+    contents[ER_OIERROR][1] = "Erreur d\u2019E/S";
   }
 
   /** Field ER_CANNOT_CREATE_URL          */
@@ -723,15 +741,16 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_CANNOT_CREATE_URL][1] = "Cannot create url for: {0}";
+    contents[ER_CANNOT_CREATE_URL][1] = "Impossible de cr\u00e9er une url pour : {0}";
   }
 
   /** Field ER_XPATH_READOBJECT          */
   public static final int ER_XPATH_READOBJECT = 68;
 
+
   static
   {
-    contents[ER_XPATH_READOBJECT][1] = "In XPath.readObject: {0}";
+    contents[ER_XPATH_READOBJECT][1] = "Dans XPath.readObject : {0}";
   }
   
   /** Field ER_XPATH_READOBJECT         */
@@ -740,7 +759,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FUNCTION_TOKEN_NOT_FOUND][1] =
-      "function token not found.";
+      "Unit\u00e9 lexicale function introuvable.";
   }
   
    /**  Argument 'localName' is null  */
@@ -749,16 +768,17 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_ARG_LOCALNAME_NULL][1] =
-       "Argument 'localName' is null";
+       "L\u2019argument 'localName' est \u00e9gal \u00e0 null";
   }
   
+
    /**  Can not deal with XPath type:   */
   public static final int ER_CANNOT_DEAL_XPATH_TYPE = 71;
 
   static
   {
     contents[ER_CANNOT_DEAL_XPATH_TYPE][1] =
-       "Can not deal with XPath type: {0}";
+       "Impossible d\u2019op\u00e9rer avec le type : {0} XPath";
   }
   
    /**  This NodeSet is not mutable  */
@@ -767,7 +787,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NODESET_NOT_MUTABLE][1] =
-       "This NodeSet is not mutable";
+       "Cet \u00e9l\u00e9ment NodeSet n\u2019est pas mutable";
   }
   
    /**  This NodeSetDTM is not mutable  */
@@ -776,7 +796,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NODESETDTM_NOT_MUTABLE][1] =
-       "This NodeSetDTM is not mutable";
+       "Cet \u00e9l\u00e9ment NodeSetDTM n\u2019est pas mutable";
   }
   
    /**  Variable not resolvable:   */
@@ -785,7 +805,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_VAR_NOT_RESOLVABLE][1] =
-        "Variable not resolvable: {0}";
+        "Variable non r\u00e9solue : {0}";
   }
   
    /** Null error handler  */
@@ -794,7 +814,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_NULL_ERROR_HANDLER][1] =
-        "Null error handler";
+        "Gestionnaire d\u2019erreur vide";
   }
   
    /**  Programmer's assertion: unknown opcode  */
@@ -803,7 +823,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_PROG_ASSERT_UNKNOWN_OPCODE][1] =
-       "Programmer's assertion: unknown opcode: {0}";
+       "Assertion du programmeur : code op\u00e9ration inconnu : {0}";
   }
   
    /**  0 or 1   */
@@ -812,8 +832,18 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_ZERO_OR_ONE][1] =
-       "0 or 1";
+       "0 ou 1";
   }
+  
+   /**  2 or 3   */
+  public static final int ER_TWO_OR_THREE = 78;
+
+  static
+  {
+    contents[ER_TWO_OR_THREE][1] =
+       "0 ou 1";
+  }
+  
   
   
    /**  rtf() not supported by XRTreeFragSelectWrapper   */
@@ -822,7 +852,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER][1] =
-       "rtf() not supported by XRTreeFragSelectWrapper";
+       "rtf() n\u2019est pas pris en charge par XRTreeFragSelectWrapper";
   }
   
    /**  asNodeIterator() not supported by XRTreeFragSelectWrapper   */
@@ -830,8 +860,9 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
+
     contents[ER_ASNODEITERATOR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER][1] =
-       "asNodeIterator() not supported by XRTreeFragSelectWrapper";
+       "asNodeIterator() n\u2019est pas pris en charge par XRTreeFragSelectWrapper";
   }
   
    /**  fsb() not supported for XStringForChars   */
@@ -840,7 +871,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FSB_NOT_SUPPORTED_XSTRINGFORCHARS][1] =
-       "fsb() not supported for XStringForChars";
+       "fsb() n\u2019est pas pris en charge pour XStringForChars";
   }
   
    /**  Could not find variable with the name of   */
@@ -849,7 +880,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_COULD_NOT_FIND_VAR][1] =
-      "Could not find variable with the name of {0}";
+      "Impossible de trouver la variable nomm\u00e9e {0}";
   }
   
    /**  XStringForChars can not take a string for an argument   */
@@ -858,7 +889,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_XSTRINGFORCHARS_CANNOT_TAKE_STRING][1] =
-      "XStringForChars can not take a string for an argument";
+      "XStringForChars ne peut pas avoir de cha\u00eene comme argument";
   }
   
    /**  The FastStringBuffer argument can not be null   */
@@ -867,366 +898,9 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_FASTSTRINGBUFFER_CANNOT_BE_NULL][1] =
-      "The FastStringBuffer argument can not be null";
+      "L\u2019argument FastStringBuffer ne peut pas \u00eatre \u00e9gal \u00e0 null";
   }  
-  /* MANTIS_XALAN CHANGE: BEGIN */ 
-   /**  2 or 3   */
-  public static final int ER_TWO_OR_THREE = 84;
-
-  static
-  {
-    contents[ER_TWO_OR_THREE][1] =
-       "2 or 3";
-  }
-
-   /** Variable accessed before it is bound! */
-  public static final int ER_VARIABLE_ACCESSED_BEFORE_BIND = 85;
-
-  static
-  {
-    contents[ER_VARIABLE_ACCESSED_BEFORE_BIND][1] =
-       "Variable accessed before it is bound!";
-  }
-
-   /** XStringForFSB can not take a string for an argument! */
-  public static final int ER_FSB_CANNOT_TAKE_STRING = 86;
-
-  static
-  {
-    contents[ER_FSB_CANNOT_TAKE_STRING][1] =
-       "XStringForFSB can not take a string for an argument!";
-  }
-
-   /** Error! Setting the root of a walker to null! */
-  public static final int ER_SETTING_WALKER_ROOT_TO_NULL = 87;
-
-  static
-  {
-    contents[ER_SETTING_WALKER_ROOT_TO_NULL][1] =
-       "\n !!!! Error! Setting the root of a walker to null!!!";
-  }
-
-   /** This NodeSetDTM can not iterate to a previous node! */
-  public static final int ER_NODESETDTM_CANNOT_ITERATE = 88;
-
-  static
-  {
-    contents[ER_NODESETDTM_CANNOT_ITERATE][1] =
-       "This NodeSetDTM can not iterate to a previous node!";
-  }
-
-  /** This NodeSet can not iterate to a previous node! */
-  public static final int ER_NODESET_CANNOT_ITERATE = 89;
-
-  static
-  {
-    contents[ER_NODESET_CANNOT_ITERATE][1] =
-       "This NodeSet can not iterate to a previous node!";
-  }
-
-  /** This NodeSetDTM can not do indexing or counting functions! */
-  public static final int ER_NODESETDTM_CANNOT_INDEX = 90;
-
-  static
-  {
-    contents[ER_NODESETDTM_CANNOT_INDEX][1] =
-       "This NodeSetDTM can not do indexing or counting functions!";
-  }
-
-  /** This NodeSet can not do indexing or counting functions! */
-  public static final int ER_NODESET_CANNOT_INDEX = 91;
-
-  static
-  {
-    contents[ER_NODESET_CANNOT_INDEX][1] =
-       "This NodeSet can not do indexing or counting functions!";
-  }
-
-  /** Can not call setShouldCacheNodes after nextNode has been called! */
-  public static final int ER_CANNOT_CALL_SETSHOULDCACHENODE = 92;
-
-  static
-  {
-    contents[ER_CANNOT_CALL_SETSHOULDCACHENODE][1] =
-       "Can not call setShouldCacheNodes after nextNode has been called!";
-  }
-
-  /** {0} only allows {1} arguments */
-  public static final int ER_ONLY_ALLOWS = 93;
-
-  static
-  {
-    contents[ER_ONLY_ALLOWS][1] =
-       "{0} only allows {1} arguments";
-  }
-
-  /** Programmer's assertion in getNextStepPos: unknown stepType: {0} */
-  public static final int ER_UNKNOWN_STEP = 94;
-
-  static
-  {
-    contents[ER_UNKNOWN_STEP][1] =
-       "Programmer's assertion in getNextStepPos: unknown stepType: {0}";
-  }
-
-  //Note to translators:  A relative location path is a form of XPath expression.
-  // The message indicates that such an expression was expected following the
-  // characters '/' or '//', but was not found.
-
-  /** Problem with RelativeLocationPath */
-  public static final int ER_EXPECTED_REL_LOC_PATH = 95;
-
-  static
-  {
-    contents[ER_EXPECTED_REL_LOC_PATH][1] =
-       "A relative location path was expected following the '/' or '//' token.";
-  }
-
-  // Note to translators:  A location path is a form of XPath expression.
-  // The message indicates that syntactically such an expression was expected,but
-  // the characters specified by the substitution text were encountered instead.
-
-  /** Problem with LocationPath */
-  public static final int ER_EXPECTED_LOC_PATH = 96;
-
-  static
-  {
-    contents[ER_EXPECTED_LOC_PATH][1] =
-       "A location path was expected, but the following token was encountered\u003a  {0}";
-  }
-
-  // Note to translators:  A location step is part of an XPath expression.
-  // The message indicates that syntactically such an expression was expected
-  // following the specified characters.
-
-  /** Problem with Step */
-  public static final int ER_EXPECTED_LOC_STEP = 97;
-
-  static
-  {
-    contents[ER_EXPECTED_LOC_STEP][1] =
-       "A location step was expected following the '/' or '//' token.";
-  }
-
-  // Note to translators:  A node test is part of an XPath expression that is
-  // used to test for particular kinds of nodes.  In this case, a node test that
-  // consists of an NCName followed by a colon and an asterisk or that consists
-  // of a QName was expected, but was not found.
-
-  /** Problem with NodeTest */
-  public static final int ER_EXPECTED_NODE_TEST = 98;
-
-  static
-  {
-    contents[ER_EXPECTED_NODE_TEST][1] =
-       "A node test that matches either NCName:* or QName was expected.";
-  }
-
-  // Note to translators:  A step pattern is part of an XPath expression.
-  // The message indicates that syntactically such an expression was expected,
-  // but the specified character was found in the expression instead.
-
-  /** Expected step pattern */
-  public static final int ER_EXPECTED_STEP_PATTERN = 99;
-
-  static
-  {
-    contents[ER_EXPECTED_STEP_PATTERN][1] =
-       "A step pattern was expected, but '/' was encountered.";
-  }
-
-  // Note to translators: A relative path pattern is part of an XPath expression.
-  // The message indicates that syntactically such an expression was expected,
-  // but was not found.
- 
-  /** Expected relative path pattern */
-  public static final int ER_EXPECTED_REL_PATH_PATTERN = 100;
-
-  static
-  {
-    contents[ER_EXPECTED_REL_PATH_PATTERN][1] =
-       "A relative path pattern was expected.";
-  }
-
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The localname is the portion after the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** localname in QNAME should be a valid NCName */
-  public static final int ER_ARG_LOCALNAME_INVALID = 101;
-
-  static
-  {
-    contents[ER_ARG_LOCALNAME_INVALID][1] =
-       "Localname in QNAME should be a valid NCName";
-  }
   
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The prefix is the portion before the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** prefix in QNAME should be a valid NCName */
-  public static final int ER_ARG_PREFIX_INVALID = 102;
-
-  static
-  {
-    contents[ER_ARG_PREFIX_INVALID][1] =
-       "Prefix in QNAME should be a valid NCName";
-  }
-
-  // Note to translators:  The substitution text is the name of a data type.  The
-  // message indicates that a value of a particular type could not be converted
-  // to a value of type string.
-
-  /** Field ER_CANT_CONVERT_TO_BOOLEAN          */
-  public static final int ER_CANT_CONVERT_TO_BOOLEAN = 103;
-
-  static
-  {
-    contents[ER_CANT_CONVERT_TO_BOOLEAN][1] =
-       "Cannot convert {0} to a boolean.";
-  }
-
-  // Note to translators: Do not translate ANY_UNORDERED_NODE_TYPE and 
-  // FIRST_ORDERED_NODE_TYPE.
-
-  /** Field ER_CANT_CONVERT_TO_SINGLENODE       */
-  public static final int ER_CANT_CONVERT_TO_SINGLENODE = 104;
-
-  static
-  {
-    contents[ER_CANT_CONVERT_TO_SINGLENODE][1] =
-       "Cannot convert {0} to a single node. This getter applies to types ANY_UNORDERED_NODE_TYPE and FIRST_ORDERED_NODE_TYPE.";
-  }
-
-  // Note to translators: Do not translate UNORDERED_NODE_SNAPSHOT_TYPE and
-  // ORDERED_NODE_SNAPSHOT_TYPE.
-
-  /** Field ER_CANT_GET_SNAPSHOT_LENGTH         */
-  public static final int ER_CANT_GET_SNAPSHOT_LENGTH = 105;
-
-  static
-  {
-    contents[ER_CANT_GET_SNAPSHOT_LENGTH][1] =
-       "Cannot get snapshot length on type: {0}. This getter applies to types UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE.";
-  }
-
-  /** Field ER_NON_ITERATOR_TYPE                */
-  public static final int ER_NON_ITERATOR_TYPE        = 106;
-
-  static
-  {
-    contents[ER_NON_ITERATOR_TYPE][1] =
-       "Cannot iterate over non-iterator type: {0}";
-  }
-
-  // Note to translators: This message indicates that the document being operated
-  // upon changed, so the iterator object that was being used to traverse the
-  // document has now become invalid.
-
-  /** Field ER_DOC_MUTATED                      */
-  public static final int ER_DOC_MUTATED              = 107;
-
-  static
-  {
-    contents[ER_DOC_MUTATED][1] =
-       "Document mutated since result was returned. Iterator is invalid.";
-  }
-
-  /** Field ER_INVALID_XPATH_TYPE               */
-  public static final int ER_INVALID_XPATH_TYPE       = 108;
-
-  static
-  {
-    contents[ER_INVALID_XPATH_TYPE][1] =
-       "Invalid XPath type argument: {0}";
-  }
-
-  /** Field ER_EMPTY_XPATH_RESULT                */
-  public static final int ER_EMPTY_XPATH_RESULT       = 109;
-
-  static
-  {
-    contents[ER_EMPTY_XPATH_RESULT][1] =
-       "Empty XPath result object";
-  }
-
-  /** Field ER_INCOMPATIBLE_TYPES                */
-  public static final int ER_INCOMPATIBLE_TYPES       = 110;
-
-  static
-  {
-    contents[ER_INCOMPATIBLE_TYPES][1] =
-       "The returned type: {0} cannot be coerced into the specified type: {1}";
-  }
-
-  /** Field ER_NULL_RESOLVER                     */
-  public static final int ER_NULL_RESOLVER            = 111;
-
-  static
-  {
-    contents[ER_NULL_RESOLVER][1] =
-       "Unable to resolve prefix with null prefix resolver.";
-  }
-
-  // Note to translators:  The substitution text is the name of a data type.  The
-  // message indicates that a value of a particular type could not be converted
-  // to a value of type string.
-
-  /** Field ER_CANT_CONVERT_TO_STRING            */
-  public static final int ER_CANT_CONVERT_TO_STRING   = 112;
-
-  static
-  {
-    contents[ER_CANT_CONVERT_TO_STRING][1] =
-       "Cannot convert {0} to a string.";
-  }
-
-  // Note to translators: Do not translate snapshotItem,
-  // UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE.
-
-  /** Field ER_NON_SNAPSHOT_TYPE                 */
-  public static final int ER_NON_SNAPSHOT_TYPE       = 113;
-
-  static
-  {
-    contents[ER_NON_SNAPSHOT_TYPE][1] =
-       "Cannot call snapshotItem on type: {0}. This method applies to types UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE.";
-  }
-
-  // Note to translators:  XPathEvaluator is a Java interface name.  An
-  // XPathEvaluator is created with respect to a particular XML document, and in
-  // this case the expression represented by this object was being evaluated with
-  // respect to a context node from a different document.
-
-  /** Field ER_WRONG_DOCUMENT                    */
-  public static final int ER_WRONG_DOCUMENT          = 114;
-
-  static
-  {
-    contents[ER_WRONG_DOCUMENT][1] =
-       "Context node does not belong to the document that is bound to this XPathEvaluator.";
-  }
-
-  // Note to translators:  The XPath expression cannot be evaluated with respect
-  // to this type of node.
-  /** Field ER_WRONG_NODETYPE                    */
-  public static final int ER_WRONG_NODETYPE          = 115;
-
-  static
-  {
-    contents[ER_WRONG_NODETYPE ][1] =
-       "The context node type is not supported.";
-  }
-
-  /** Field ER_XPATH_ERROR                       */
-  public static final int ER_XPATH_ERROR             = 116;
-
-  static
-  {
-    contents[ER_XPATH_ERROR ][1] =
-       "Unknown error in XPath.";
-  }
 
 
   // Warnings...
@@ -1237,16 +911,17 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_LOCALE_NAME_NOT_HANDLED + MAX_CODE][1] =
-      "locale name in the format-number function not yet handled!";
+      "Le nom de l'environnement local dans la fonction format-number n\u2019est pas encore g\u00e9r\u00e9 !";
   }
 
   /** Field WG_PROPERTY_NOT_SUPPORTED          */
+
   public static final int WG_PROPERTY_NOT_SUPPORTED = 2;
 
   static
   {
     contents[WG_PROPERTY_NOT_SUPPORTED + MAX_CODE][1] =
-      "XSL Property not supported: {0}";
+      "XSL Property non pris en charge : {0}";
   }
 
   /** Field WG_DONT_DO_ANYTHING_WITH_NS          */
@@ -1255,7 +930,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_DONT_DO_ANYTHING_WITH_NS + MAX_CODE][1] =
-      "Do not currently do anything with namespace {0} in property: {1}";
+      "Ne rien faire pour l\u2019instant avec le nom d'espace {0} dans la propri\u00e9t\u00e9 : {1}";
   }
 
   /** Field WG_SECURITY_EXCEPTION          */
@@ -1264,7 +939,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_SECURITY_EXCEPTION + MAX_CODE][1] =
-      "SecurityException when trying to access XSL system property: {0}";
+      "Interception de SecurityException ors de la tentative d\u2019acc\u00e8s \u00e0 la propri\u00e9t\u00e9 syst\u00e8me XSL : {0}";
   }
 
   /** Field WG_QUO_NO_LONGER_DEFINED          */
@@ -1273,16 +948,17 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_QUO_NO_LONGER_DEFINED + MAX_CODE][1] =
-      "Old syntax: quo(...) is no longer defined in XPath.";
+      "L\u2019ancienne syntaxe: quo(...) n\u2019est plus d\u00e9finie dans XPath.";
   }
 
   /** Field WG_NEED_DERIVED_OBJECT_TO_IMPLEMENT_NODETEST          */
+
   public static final int WG_NEED_DERIVED_OBJECT_TO_IMPLEMENT_NODETEST = 6;
 
   static
   {
     contents[WG_NEED_DERIVED_OBJECT_TO_IMPLEMENT_NODETEST + MAX_CODE][1] =
-      "XPath needs a derived object to implement nodeTest!";
+      "XPath requiert un objet d\u00e9riv\u00e9 pour mettre en oeuvre nodeTest !";
   }
 
   /** Field WG_FUNCTION_TOKEN_NOT_FOUND          */
@@ -1291,7 +967,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_FUNCTION_TOKEN_NOT_FOUND + MAX_CODE][1] =
-      "function token not found.";
+      "Unit\u00e9 lexicale function introuvable.";
   }
 
   /** Field WG_COULDNOT_FIND_FUNCTION          */
@@ -1300,7 +976,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_COULDNOT_FIND_FUNCTION + MAX_CODE][1] =
-      "Could not find function: {0}";
+      "Impossible de trouver la fonction : {0}";
   }
 
   /** Field WG_CANNOT_MAKE_URL_FROM          */
@@ -1309,7 +985,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_CANNOT_MAKE_URL_FROM + MAX_CODE][1] =
-      "Can not make URL from: {0}";
+      "Impossible de cr\u00e9er une URL \u00e0 partir de : {0}";
   }
 
   /** Field WG_EXPAND_ENTITIES_NOT_SUPPORTED          */
@@ -1318,7 +994,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_EXPAND_ENTITIES_NOT_SUPPORTED + MAX_CODE][1] =
-      "-E option not supported for DTM parser";
+      "L\u2019option -E n\u2019est pas pris en charge pour l\u2019analyseur syntaxique DTM";
   }
 
   /** Field WG_ILLEGAL_VARIABLE_REFERENCE          */
@@ -1327,7 +1003,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ILLEGAL_VARIABLE_REFERENCE + MAX_CODE][1] =
-      "VariableReference given for variable out of context or without definition!  Name = {0}";
+      "L'\u00e9l\u00e9ment VariableReference a \u00e9t\u00e9 fourni pour la variable hors contexte ou sans d\u00e9finition !  Nom = {0}";
   }
 
   /** Field WG_UNSUPPORTED_ENCODING          */
@@ -1335,57 +1011,57 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[ER_UNSUPPORTED_ENCODING][1] = "Unsupported encoding: {0}";
+    contents[ER_UNSUPPORTED_ENCODING][1] = "Codage non pris en charge : {0}";
   }
 
   // Other miscellaneous text used inside the code...
   static
   {
     contents[MAX_MESSAGES][0] = "ui_language";
-    contents[MAX_MESSAGES][1] = "en";
+    contents[MAX_MESSAGES][1] = "fr";
     contents[MAX_MESSAGES + 1][0] = "help_language";
-    contents[MAX_MESSAGES + 1][1] = "en";
+    contents[MAX_MESSAGES + 1][1] = "fr";
     contents[MAX_MESSAGES + 2][0] = "language";
-    contents[MAX_MESSAGES + 2][1] = "en";
+    contents[MAX_MESSAGES + 2][1] = "fr";
     contents[MAX_MESSAGES + 3][0] = "BAD_CODE";
     contents[MAX_MESSAGES + 3][1] =
-      "Parameter to createMessage was out of bounds";
+      "Param\u00e8tre pour createMessage hors limites";
     contents[MAX_MESSAGES + 4][0] = "FORMAT_FAILED";
     contents[MAX_MESSAGES + 4][1] =
-      "Exception thrown during messageFormat call";
+      "Exception \u00e9mise pendant l\u2019appel de messageFormat";
     contents[MAX_MESSAGES + 5][0] = "version";
-    contents[MAX_MESSAGES + 5][1] = ">>>>>>> Xalan Version ";
+    contents[MAX_MESSAGES + 5][1] = ">>>>>>> Version Xalan ";
     contents[MAX_MESSAGES + 6][0] = "version2";
     contents[MAX_MESSAGES + 6][1] = "<<<<<<<";
     contents[MAX_MESSAGES + 7][0] = "yes";
-    contents[MAX_MESSAGES + 7][1] = "yes";
+    contents[MAX_MESSAGES + 7][1] = "oui";
     contents[MAX_MESSAGES + 8][0] = "line";
-    contents[MAX_MESSAGES + 8][1] = "Line //";
+    contents[MAX_MESSAGES + 8][1] = "N\u00b0 de ligne";
     contents[MAX_MESSAGES + 9][0] = "column";
-    contents[MAX_MESSAGES + 9][1] = "Column //";
+    contents[MAX_MESSAGES + 9][1] = "N\u00b0 de colonne";
     contents[MAX_MESSAGES + 10][0] = "xsldone";
-    contents[MAX_MESSAGES + 10][1] = "XSLProcessor: done";
+    contents[MAX_MESSAGES + 10][1] = "XSLProcessor: termin\u00e9";
     contents[MAX_MESSAGES + 11][0] = "xpath_option";
-    contents[MAX_MESSAGES + 11][1] = "xpath options: ";
+    contents[MAX_MESSAGES + 11][1] = "options xpath : ";
     contents[MAX_MESSAGES + 12][0] = "optionIN";
     contents[MAX_MESSAGES + 12][1] = "   [-in inputXMLURL]";
     contents[MAX_MESSAGES + 13][0] = "optionSelect";
-    contents[MAX_MESSAGES + 13][1] = "   [-select xpath expression]";
+    contents[MAX_MESSAGES + 13][1] = "   [expression xpath -select]";
     contents[MAX_MESSAGES + 14][0] = "optionMatch";
     contents[MAX_MESSAGES + 14][1] =
-      "   [-match match pattern (for match diagnostics)]";
+      "   [correspondance \u00e0 la forme -match (pour les diagnostics de correspondance)]";
     contents[MAX_MESSAGES + 15][0] = "optionAnyExpr";
     contents[MAX_MESSAGES + 15][1] =
-      "Or just an xpath expression will do a diagnostic dump";
+      "Ou une expression xpath provoquera un \u00e9chec de diagnostic";
     contents[MAX_MESSAGES + 16][0] = "noParsermsg1";
-    contents[MAX_MESSAGES + 16][1] = "XSL Process was not successful.";
+    contents[MAX_MESSAGES + 16][1] = "Echec de XSL Process.";
     contents[MAX_MESSAGES + 17][0] = "noParsermsg2";
-    contents[MAX_MESSAGES + 17][1] = "** Could not find parser **";
+    contents[MAX_MESSAGES + 17][1] = "** Impossible de trouver l\u2019analyseur syntaxique**";
     contents[MAX_MESSAGES + 18][0] = "noParsermsg3";
-    contents[MAX_MESSAGES + 18][1] = "Please check your classpath.";
+    contents[MAX_MESSAGES + 18][1] = "Veuillez v\u00e9rifier votre chemin de classe.";
     contents[MAX_MESSAGES + 19][0] = "noParsermsg4";
     contents[MAX_MESSAGES + 19][1] =
-      "If you don't have IBM's XML Parser for Java, you can download it from";
+      "Si vous ne disposez pas de l\u2019analyseur XML d\u2019IBM pour Java, vous pouvez le t\u00e9l\u00e9charger \u00e0 l\u2019adresse suivante";
     contents[MAX_MESSAGES + 20][0] = "noParsermsg5";
     contents[MAX_MESSAGES + 20][1] =
       "IBM's AlphaWorks: http://www.alphaworks.ibm.com/formula/xml";
@@ -1401,16 +1077,18 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   /** Field ERROR_RESOURCES          */
   public static final String ERROR_RESOURCES =
+
     "org.apache.xpath.res.XPATHErrorResources";
 
+
   /** Field ERROR_STRING          */
-  public static final String ERROR_STRING = "//error";
+  public static final String ERROR_STRING = "#error";
 
   /** Field ERROR_HEADER          */
-  public static final String ERROR_HEADER = "Error: ";
+  public static final String ERROR_HEADER = "Erreur : ";
 
   /** Field WARNING_HEADER          */
-  public static final String WARNING_HEADER = "Warning: ";
+  public static final String WARNING_HEADER = "Attention : ";
 
   /** Field XSL_HEADER          */
   public static final String XSL_HEADER = "XSL ";
@@ -1419,7 +1097,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   public static final String XML_HEADER = "XML ";
 
   /** Field QUERY_HEADER          */
-  public static final String QUERY_HEADER = "PATTERN ";
+  public static final String QUERY_HEADER = "FORME ";
 
   /**
    * Get the association list.
@@ -1429,151 +1107,5 @@ public class XPATHErrorResources extends XResourceBundleBase
   public Object[][] getContents()
   {
     return contents;
-  }
-
-  /**
-   * Return a named ResourceBundle for a particular locale.  This method mimics the behavior
-   * of ResourceBundle.getBundle().
-   *
-   * @param res the name of the resource to load.
-   * @param locale the locale to prefer when searching for the bundle
-   *
-   * @param className Name of local-specific subclass.
-   * @return the ResourceBundle
-   * @throws MissingResourceException
-   */
-  public static final XPATHErrorResources loadResourceBundle(String className)
-          throws MissingResourceException
-  {
-
-    Locale locale = Locale.getDefault();
-    String suffix = getResourceSuffix(locale);
-
-    try
-    {
-
-      // first try with the given locale
-      return (XPATHErrorResources) ResourceBundle.getBundle(className
-              + suffix, locale);
-    }
-    catch (MissingResourceException e)
-    {
-      try  // try to fall back to en_US if we can't load
-      {
-
-        // Since we can't find the localized property file,
-        // fall back to en_US.
-        return (XPATHErrorResources) ResourceBundle.getBundle(className,
-                new Locale("en", "US"));
-      }
-      catch (MissingResourceException e2)
-      {
-
-        // Now we are really in trouble.
-        // very bad, definitely very bad...not going to get very far
-        throw new MissingResourceException(
-          "Could not load any resource bundles.", className, "");
-      }
-    }
-  }
-
-  /**
-   * Return the resource file suffic for the indicated locale
-   * For most locales, this will be based the language code.  However
-   * for Chinese, we do distinguish between Taiwan and PRC
-   *
-   * @param locale the locale
-   * @return an String suffix which canbe appended to a resource name
-   */
-  private static final String getResourceSuffix(Locale locale)
-  {
-
-    String suffix = "_" + locale.getLanguage();
-    String country = locale.getCountry();
-
-    if (country.equals("TW"))
-      suffix += "_" + country;
-
-    return suffix;
-  }
-
-  /**
-   * Get the error string associated with the error code
-   *
-   * @param errorCode Error code
-   *
-   * @return error string associated with the given error code
-   */
-  public String getMessageKey(int errorCode)
-  {
-
-    if (errorCode > MAX_CODE)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return ERROR_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get the warning string associated with the error code
-   *
-   * @param errorCode Error code
-   * 
-   * @return warning string associated with the given error code
-   */
-  public String getWarningKey(int errorCode)
-  {
-
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return WARNING_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get the key string for an error based on the integer representation.
-   *
-   * @param errorCode Error code
-   * 
-   * @return key string that may be used for lookup in the association table.
-   */
-  public static String getMKey(int errorCode)
-  {
-
-    if (errorCode > MAX_CODE)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return ERROR_SUFFIX + df.format(errorCode);
-    }
-  }
-
-  /**
-   * Get the key string for an warning based on the integer representation.
-   *
-   * @param errorCode Error code
-   * 
-   * @return key string that may be used for lookup in the association table.
-   */
-  public static String getWKey(int errorCode)
-  {
-
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
-    {
-      DecimalFormat df = new DecimalFormat("0000");
-
-      return WARNING_SUFFIX + df.format(errorCode);
-    }
   }
 }
