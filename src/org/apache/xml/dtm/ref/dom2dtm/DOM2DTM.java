@@ -79,6 +79,8 @@ import org.apache.xml.utils.NodeVector;
 
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
 
 /** The <code>DOM2DTM</code> class serves up a DOM's contents via the
  * DTM API.
@@ -207,6 +209,15 @@ public class DOM2DTM extends DTMDefaultBaseIterators
                         int previousSibling, int forceNodeType)
   {
     int nodeIndex = m_nodes.size();
+    // Report DTM overflow
+    if(nodeIndex>DTMManager.IDENT_NODE_DEFAULT)
+    {
+      // %REVIEW% Wrong error message, but I've been told we're trying
+      // not to add messages right not for I18N reasons.
+      // %REVIEW% Should this be a Fatal Error?
+      error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+    }
+
     m_size++;
     // ensureSize(nodeIndex);
     

@@ -809,9 +809,17 @@ public class SAX2DTM extends DTMDefaultBaseIterators
                         int parentIndex, int previousSibling,
                         int dataOrPrefix, boolean canHaveFirstChild)
   {
-
     // Common to all nodes:
     int nodeIndex = m_size++;
+
+    // Report DTM overflow
+    if(nodeIndex>DTMManager.IDENT_NODE_DEFAULT)
+    {
+      // %REVIEW% Wrong error message, but I've been told we're trying
+      // not to add messages right not for I18N reasons.
+      // %REVIEW% Should this be a Fatal Error?
+      error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+    }
     m_firstch.addElement(canHaveFirstChild ? NOTPROCESSED : DTM.NULL);
     m_nextsib.addElement(NOTPROCESSED);
     m_prevsib.addElement(previousSibling);
