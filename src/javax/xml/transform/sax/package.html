@@ -20,26 +20,7 @@
   specify the SAX source.</p>
 <p>The {@link javax.xml.transform.sax.SAXResult} class allows the
   setting of a {@link org.xml.sax.ContentHandler} to be the receiver of
-  SAX2 events from the transformation. The following code fragment illustrates
-  the use of the SAXSource and SAXResult objects.</p>
-<code>
-<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXSource.FEATURE) &amp;&amp; tfactory.getFeature(SAXResult.FEATURE))
-    {      
-      // Get a transformer.
-      Transformer transformer 
-        = tfactory.newTransformer(new StreamSource(xslID));
-      
-      // Create an reader for reading.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-
-      transformer.transform(new SAXSource(reader, new InputSource(sourceID)),
-                            new SAXResult(new ExampleContentHandler()));
-    }
-</pre>
-</code>
+  SAX2 events from the transformation. 
 <p>The {@link javax.xml.transform.sax.SAXTransformerFactory} extends
   {@link javax.xml.transform.TransformerFactory} to provide factory
   methods for creating {@link javax.xml.transform.sax.TemplatesHandler},
@@ -48,25 +29,8 @@
 <p>To obtain a {@link javax.xml.transform.sax.SAXTransformerFactory},
   the caller must cast the {@link javax.xml.transform.TransformerFactory}
   instance returned from
-  {@link javax.xml.transform.TransformerFactory#newInstance}. For
-  example:</p>
-<code>
-<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
+  {@link javax.xml.transform.TransformerFactory#newInstance}. 
 
-    // Does this factory support the SAXTransformerFactory feature?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      // If so, we can safely cast.
-      SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
-      
-      // A TransformerHandler is a ContentHandler that will listen for 
-      // SAX events, and transform them to the result.
-      TransformerHandler handler 
-        = stfactory.newTransformerHandler(new StreamSource(xslID));
-      // ...
-    }
-</pre>
-</code>
 <p>The {@link javax.xml.transform.sax.TransformerHandler} interface
   allows a transformation to be created from SAX2 parse events, which is a "push"
   model rather than the "pull" model that normally occurs for a transformation.
@@ -83,42 +47,8 @@
   Transformer handler, a {@link javax.xml.transform.Transformer} reference
   will need to be obtained from
   {@link javax.xml.transform.sax.TransformerHandler#getTransformer}, and
-  the methods invoked from that reference. The following illustrates the feeding
-  of SAX events from an {@link org.xml.sax.XMLReader} to a
-  Transformer.</p>
-<code>
-<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
+  the methods invoked from that reference. 
 
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      // If so, we can safely cast.
-      SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
-      
-      // A TransformerHandler is a ContentHandler that will listen for 
-      // SAX events, and transform them to the result.
-      TransformerHandler handler 
-        = stfactory.newTransformerHandler(new StreamSource(xslID));
-
-      // Set the result handling to be a serialization to System.out.
-      handler.setResult(new StreamResult(System.out));
-      
-      handler.getTransformer().setParameter("a-param",
-                                            "hello to you!");
-      
-      // Create a reader, and set it's content handler to be the TransformerHandler.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-      reader.setContentHandler(handler);
-      
-      // It's a good idea for the parser to send lexical events.
-      // The TransformerHandler is also a LexicalHandler.
-      reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-      
-      // Parse the source XML, and send the parse events to the TransformerHandler.
-      reader.parse(sourceID);
-    }
-</pre>
-</code>
 <p>The {@link javax.xml.transform.sax.TemplatesHandler} interface
   allows the creation of {@link javax.xml.transform.Templates} objects
   from SAX2 parse events. Once the {@link org.xml.sax.ContentHandler}
@@ -126,41 +56,7 @@
   {@link javax.xml.transform.sax.TemplatesHandler#getTemplates}. Note that
   {@link javax.xml.transform.sax.TemplatesHandler#setSystemId} should
   normally be called in order to establish a base system ID from which relative
-  URLs may be resolved. The following code fragment illustrates the creation of a
-  Templates object from SAX2 events sent from an XMLReader.</p>
-<code>
-<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      // If so, we can safely cast.
-      SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
-      
-      // Have the factory create a special ContentHandler that will 
-      // create a Templates object.
-      TemplatesHandler handler = stfactory.newTemplatesHandler();
-      
-      // If you don't do this, the TemplatesHandler won't know how to 
-      // resolve relative URLs.
-      handler.setSystemId(xslID);
-      
-      // Create a reader, and set it's content handler to be the TemplatesHandler.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-      reader.setContentHandler(handler);
-      
-      // Parse the source XML, and send the parse events to the TemplatesHandler.
-      reader.parse(xslID);
-      
-      // Get the Templates reference from the handler.
-      Templates templates = handler.getTemplates();
-      
-      // Ready to transform.
-      Transformer transformer = templates.newTransformer();
-      transformer.transform(new StreamSource(sourceID), new StreamResult(System.out));
-    }
-</pre>
-</code>
+  URLs may be resolved. 
 <p>The
   {@link javax.xml.transform.sax.SAXTransformerFactory#newXMLFilter}
   method allows the creation of a {@link org.xml.sax.XMLFilter}, which
@@ -169,42 +65,5 @@
   parent {@link org.xml.sax.XMLReader}, and the final transformation is
   caused by invoking {@link org.xml.sax.XMLReader#parse} on the final
   reader in the chain.</p>
-<code>
-<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
-    
-    // Does this factory support SAX features?
-    if (tfactory.getFeature(SAXTransformerFactory.FEATURE))
-    {
-      Templates stylesheet1 = tfactory.newTemplates(new StreamSource(xslID_1));
-      Transformer transformer1 = stylesheet1.newTransformer();
-      
-      SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-
-      XMLFilter filter1 = stf.newXMLFilter(new StreamSource(xslID_1));
-      XMLFilter filter2 = stf.newXMLFilter(new StreamSource(xslID_2));
-      XMLFilter filter3 = stf.newXMLFilter(new StreamSource(xslID_3));
-
-      // transformer1 will use a SAX parser as it's reader.    
-      filter1.setParent(reader);
-
-      // transformer2 will use transformer1 as it's reader.
-      filter2.setParent(filter1);
-
-      // transform3 will use transform2 as it's reader.
-      filter3.setParent(filter2);
-
-      filter3.setContentHandler(new ExampleContentHandler());
-      // filter3.setContentHandler(new org.xml.sax.helpers.DefaultHandler());
-
-      // Now, when you call transformer3 to parse, it will set  
-      // itself as the ContentHandler for transform2, and 
-      // call transform2.parse, which will set itself as the 
-      // content handler for transform1, and call transform1.parse, 
-      // which will set itself as the content listener for the 
-      // SAX parser, and call parser.parse(new InputSource("xml/foo.xml")).
-      filter3.parse(new InputSource(sourceID));
-    }</pre>
-</code>
 </body>
 </html>

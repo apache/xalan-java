@@ -54,11 +54,14 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+/**
+ * $Id$
+ */
 package javax.xml.transform;
 
 /**
  * <p>To provide customized error handling, implement this interface and
- * use the setErrorListener method to register an instance of the implmentation 
+ * use the setErrorListener method to register an instance of the implmentation
  * with the Transformer. The Transformer then reports all errors and warnings through this interface.</p>
  *
  * <p>If an application does <em>not</em>
@@ -73,9 +76,8 @@ package javax.xml.transform;
  * <p>Transformers may use this mechanism to report XML parsing errors
  * as well as transformation errors.</p>
  */
-public interface ErrorListener 
-{
-  
+public interface ErrorListener {
+
     /**
      * Receive notification of a warning.
      *
@@ -83,7 +85,7 @@ public interface ErrorListener
      * are not errors or fatal errors.  The default behaviour is to
      * take no action.</p>
      *
-     * <p>After invoking this method, the Transformer must continue with 
+     * <p>After invoking this method, the Transformer must continue with
      * the transformation. It should still be possible for the
      * application to process the document through to the end.</p>
      *
@@ -95,47 +97,44 @@ public interface ErrorListener
      *
      * @see javax.xml.transform.TransformerException
      */
-  public abstract void warning (TransformerException exception)
-    throws TransformerException;
-  
-  
-  /**
-   * Receive notification of a recoverable error.
-   *
-   * <p>The transformer must continue to provide normal parsing events
-   * after invoking this method.  It should still be possible for the
-   * application to process the document through to the end.</p>
-   *
-   * @param exception The error information encapsulated in a
-   *                  transformer exception.
-   * 
-   * @throws javax.xml.transform.TransformerException if the application
-   * chooses to discontinue the transformation.
-   * 
-   * @see javax.xml.transform.TransformerException 
-   */
-  public abstract void error (TransformerException exception)
-    throws TransformerException;
-  
-  
-  /**
-   * Receive notification of a non-recoverable error.
-   *
-   * <p>The application must assume that the transformation cannot 
-   * continue after the Transformer has invoked this method, 
-   * and should continue (if at all) only to collect
-   * addition error messages. In fact, Transformers are free 
-   * to stop reporting events once this method has been invoked.</p>
-   *
-   * @param exception The error information encapsulated in a
-   *                  transformer exception.
-   * 
-   * @throws javax.xml.transform.TransformerException if the application
-   * chooses to discontinue the transformation.
-   * 
-   * @see javax.xml.transform.TransformerException 
-   */
-  public abstract void fatalError (TransformerException exception)
-    throws TransformerException;
-  
+    public abstract void warning(TransformerException exception)
+        throws TransformerException;
+
+    /**
+     * Receive notification of a recoverable error.
+     *
+     * <p>The transformer must continue to provide normal parsing events
+     * after invoking this method.  It should still be possible for the
+     * application to process the document through to the end.</p>
+     *
+     * @param exception The error information encapsulated in a
+     *                  transformer exception.
+     *
+     * @throws javax.xml.transform.TransformerException if the application
+     * chooses to discontinue the transformation.
+     *
+     * @see javax.xml.transform.TransformerException
+     */
+    public abstract void error(TransformerException exception)
+        throws TransformerException;
+
+    /**
+     * Receive notification of a non-recoverable error.
+     *
+     * <p>The application must assume that the transformation cannot
+     * continue after the Transformer has invoked this method,
+     * and should continue (if at all) only to collect
+     * addition error messages. In fact, Transformers are free
+     * to stop reporting events once this method has been invoked.</p>
+     *
+     * @param exception The error information encapsulated in a
+     *                  transformer exception.
+     *
+     * @throws javax.xml.transform.TransformerException if the application
+     * chooses to discontinue the transformation.
+     *
+     * @see javax.xml.transform.TransformerException
+     */
+    public abstract void fatalError(TransformerException exception)
+        throws TransformerException;
 }

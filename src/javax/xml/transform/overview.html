@@ -6,12 +6,8 @@
 </head>
 <body> 
   
-<h2>Transformation API For XML (TrAX)</h2> 
+<h2>Transformation API For XML </h2> 
   
-<p>
-<b>Edit Date: </b>November 12, 2000</p> 
-   
-    
   
 <h3>Introduction</h3> 
   
@@ -147,64 +143,6 @@
 </ul> 
    
   
-<h3>Requirements</h3> 
-  
-<p>The following requirements have been determined from broad experience
-	 with XML projects from the various members participating on the JCP.</p> 
-  
-<ol>
-<li>TrAX must provide a clean, simple
-		interface for simple uses.</li>
-<li>TrAX must be powerful enough to be
-		applied to a wide range of uses, such as, e-commerce, content management,
-		server content delivery, and client applications.</li>
-<li>A processor that implements a TrAX
-		interface must be optimizeable. Performance is a critical issue for most
-		transformation use cases.</li>
-<li>As a specialization of the above
-		requirement, a TrAX processor must be able to support a compiled model, so that
-		a single set of transformation instructions can be compiled, optimized, and
-		applied to a large set of input sources.</li>
-<li>TrAX must not be dependent an any
-		given type of transformation instructions. For instance, it must remain
-		independent of <A href="http://www.w3.org/TR/xslt">XSLT</A>.</li>
-<li>TrAX must be able to allow processors
-		to transform DOM trees.</li>
-<li>TrAX must be able to allow processors to
-		produce DOM trees.</li>
-<li>TrAX must allow processors to transform
-		SAX events.</li>
-<li>TrAX must allow processors to produce SAX
-		events.</li>
-<li>TrAX must allow processors to
-		transform streams of XML.</li>
-<li>TrAX must allow processors to produce
-		XML, HTML, and other types of streams.</li>
-<li>TrAX must allow processors to
-		implement the various combinations of inputs and outputs within a single
-		processor.</li>
-<li>TrAX must allow processors
-		to implement only a limited set of inputs. For instance, it should be possible
-		to write a processor that implements the TrAX interfaces and that only
-		processes DOM trees, not streams or SAX events.</li>
-<li>TrAX should allow a
-		processor to implement transformations of proprietary data structures. For
-		instance, it should be possible to implement a processor that provides TrAX
-		interfaces that performs transformation of JDOM trees.</li>
-<li>TrAX must allow the setting
-		of serialization properties, without constraint as to what the details of those
-		properties are.</li>
-<li>TrAX must allow the setting
-		of parameters to the transformation instructions.</li>
-<li>TrAX must support the
-		setting of parameters and properties as XML Namespaced items (i.e., qualified
-		names).</li>
-<li>TrAX must support URL
-		resolution from within the transformation, and have it return the needed data
-		structure.</li>
-<li>TrAX must have a mechanism for
-		reporting errors and warnings to the calling application.</li>
-</ol>   
   
 <h3>Model</h3> 
   
@@ -234,7 +172,7 @@
   
 <p>The process of transformation from a tree, either in the form of an
 	 object model, or in the form of parse events, into a stream, is known as
-	 <U>serialization</U>. We believe this is the most suitable term for
+	 <code>serialization</code>. We believe this is the most suitable term for
 	 this process, despite the overlap with Java object serialization.</p>
   
 <H3>TRaX Patterns</H3>

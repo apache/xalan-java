@@ -12,45 +12,27 @@
 		transformation. It achieves this by defining
 		{@link javax.xml.transform.Source} and
 		{@link javax.xml.transform.Result} interfaces.</p>
-<p>To define concrete classes for the user, TrAX defines specializations
-		of the interfaces found at the TrAX root level. These interfaces are found in
+<p>To define concrete classes for the user, the API defines specializations
+		of the interfaces found at the root level. These interfaces are found in
 		{@link javax.xml.transform.sax}, {@link javax.xml.transform.dom},
 		and {@link javax.xml.transform.stream}.</p>
-<p>The following illustrates a simple transformation from input URI to
-		result stream.</p>
-<code>
-<pre>    // Create a transform factory instance.
-    TransformerFactory tfactory = TransformerFactory.newInstance();
-    
-    // Create a transformer for the stylesheet.
-    Transformer transformer 
-      = tfactory.newTransformer(new StreamSource(xslID));
-    
-    // Transform the source XML to System.out.
-    transformer.transform( new StreamSource(sourceID),
-                           new StreamResult(System.out));
-</pre>
-</code> 
 		
 <h3>Creating Objects</h3> 
 		
-<p>TrAX allows a concrete
+<p>The API allows a concrete
 		  {@link javax.xml.transform.TransformerFactory} object to be created from
 		  the static function
-		  {@link javax.xml.transform.TransformerFactory#newInstance}. The
-		  "javax.xml.transform.TransformerFactory" system property determines which
-		  factory implementation to instantiate. This property names a concrete subclass
-		  of the TransformerFactory abstract class. If this system property is not
-		  defined, a platform default is used.</p> 
+		  {@link javax.xml.transform.TransformerFactory#newInstance}.
 	  
 		
 <h3>Specification of Inputs and Outputs</h3> 
 		
-<p>TrAX defines two interface objects called
+<p>This API defines two interface objects called
 		  {@link javax.xml.transform.Source} and
 		  {@link javax.xml.transform.Result}. In order to pass Source and Result
-		  objects to the TrAX interfaces, concrete classes must be used. TrAX defines
-		  three concrete representations for each of these objects:
+		  objects to the interfaces, concrete classes must be used. 
+		  Three concrete representations are defined for each of these 
+		  objects:
 		  {@link javax.xml.transform.stream.StreamSource} and
 		  {@link javax.xml.transform.stream.StreamResult},
 		  {@link javax.xml.transform.sax.SAXSource} and
@@ -103,7 +85,7 @@
 	 
 <p>For example, if a URI and local name were obtained from an element
 		defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
-		then the TrAX Qualified Name would be "{http://xyz.foo.com/yada/baz.html}foo".
+		then the Qualified Name would be "{http://xyz.foo.com/yada/baz.html}foo".
 		Note that the prefix is lost.</p> 
    
 	 
@@ -117,7 +99,7 @@
 		{@link javax.xml.transform.OutputKeys} class. Other strings can be
 		specified as well. If the transformer does not recognize an output key, a
 		{@link java.lang.IllegalArgumentException} is thrown, unless the
-		unless the key name is <A href="#qname-delimiter">namespace qualified</A>. Output key names that are
+		key name is <A href="#qname-delimiter">namespace qualified</A>. Output key names that are
 		qualified by a namespace are ignored or passed on to the serializer
 		mechanism.</p> 
 	 
@@ -127,25 +109,13 @@
 		{@link javax.xml.transform.TransformerFactory#newTransformer()} method
 		with no arguments. This method creates a Transformer that effectively copies
 		the source to the result. This method may be used to create a DOM from SAX
-		events or to create an XML or HTML stream from a DOM or SAX events. The
-		following example illustrates the serialization of a DOM node to an XML
-		stream.</p> 
+		events or to create an XML or HTML stream from a DOM or SAX events.  </p> 
 	 
-<code>
-<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();    
-    Transformer serializer = tfactory.newTransformer();
-    Properties oprops = new Properties();
-    oprops.put("method", "html");
-    oprops.put("indent-amount", "2");
-    serializer.setOutputProperties(oprops);
-    serializer.transform(new DOMSource(doc), 
-                         new StreamResult(System.out));</pre>
-</code> 
  
   
 <h3>Exceptions and Error Reporting</h3> 
   
-<p>The TrAX APIs throw three types of specialized exceptions. A
+<p>The transformation API throw three types of specialized exceptions. A
 	 {@link javax.xml.transform.TransformerFactoryConfigurationError} is parallel to
 	 the {@link javax.xml.parsers.FactoryConfigurationError}, and is thrown
 	 when a configuration problem with the TransformerFactory exists. This error
@@ -188,7 +158,7 @@
   
 <h3>Resolution of URIs within a transformation</h3> 
   
-<p>TrAX provides a way for URIs referenced from within the stylesheet
+<p>The API provides a way for URIs referenced from within the stylesheet
 	 instructions or within the transformation to be resolved by the calling
 	 application. This can be done by creating a class that implements the
 	 URIResolver interface, with its one method,
@@ -202,65 +172,6 @@
 	 The returned {@link javax.xml.transform.Source} object must be usable by
 	 the transformer, as specified in its implemented features.</p> 
   
-<p>The following example illustrates the use of the URI resolver to
-	 resolve URIs to DOM nodes, in a transformation whose input is totally DOM
-	 based.</p> 
-  
-<code>
-<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
-
-    if (tfactory.getFeature(DOMSource.FEATURE) &amp;&amp; tfactory.getFeature(StreamResult.FEATURE))
-    {
-      DocumentBuilderFactory dfactory =
-                                       DocumentBuilderFactory.newInstance();
-      dfactory.setNamespaceAware(true); // Always, required for XSLT
-      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-      
-      // Set up to resolve URLs that correspond to our inc1.xsl, 
-      // to a DOM node. Use an anonymous class for the URI resolver.
-      final Node xslInc1 = docBuilder.parse("xsl/inc1/inc1.xsl");
-      final Node xslInc2 = docBuilder.parse("xsl/inc2/inc2.xsl");
-      tfactory.setURIResolver(new URIResolver() { 
-        public Source resolve(String href, String base) 
-        throws TransformerException
-        {
-        // ignore base because we're lazy, or we don't care.
-        return (href.equals("inc1/inc1.xsl"))  
-        ? new DOMSource(xslInc1) : 
-          (href.equals("inc2/inc2.xsl")) 
-          ? new DOMSource(xslInc2) : null;
-        }});
-
-      // The TransformerFactory will call the anonymous URI 
-      // resolver set above when it encounters 
-      // &lt;xsl:include href="inc1/inc1.xsl"/&gt;
-      Templates templates 
-        = tfactory.newTemplates(new DOMSource(docBuilder.parse(xslID), xslID));
-
-      // Get a transformer from the templates.
-      Transformer transformer = templates.newTransformer();
-      
-      // Set up to resolve URLs that correspond to our foo2.xml, to 
-      // a DOM node.  Use an anonymous class for the URI resolver.
-      // Be sure to return the same DOM tree every time for the 
-      // given URI.
-      final Node xmlSubdir1Foo2Node = docBuilder.parse("xml/subdir1/foo2.xml");
-      transformer.setURIResolver(new URIResolver() { 
-        public Source resolve(String href, String base) 
-        throws TransformerException
-        {
-        // ignore base because we're lazy, or we don't care.
-        return (href.equals("subdir1/foo2.xml"))  
-        ? new DOMSource(xmlSubdir1Foo2Node) : null;
-        }});
-
-      // Now the transformer will call our anonymous URI resolver 
-      // when it encounters the document('subdir1/foo2.xml') invocation.
-      transformer.transform(new DOMSource(docBuilder.parse(sourceID), sourceID), 
-                            new StreamResult(System.out));
-    }
-</pre>
-</code>
 
 </body>
 </html>
