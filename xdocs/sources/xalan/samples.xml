@@ -460,6 +460,20 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       Interface</link></p>
      </s2><anchor name="validate"/>
      <s2 title="Validate">
+     <ul>
+     <li><link anchor="validatexmlinput">ValidateXMLInput</link></li>
+     <li><link anchor="validateutility">Validate utility</link></li>
+     </ul><anchor name="validatexmlinput"/>
+     <s3 title="ValidateXMLInput">
+     <p>What it does: Uses <jump href="apidocs/javax/xml/parsers/SAXParserFactory.html">SAXParserFactory</jump> to turn on validation, and 
+     <jump href="apidocs/org/xml/sax/XMLReader.html">XMLReader</jump> to parse the XML input and report errors and warnings to a SAX event
+     handler. The XML input (birds.xml) contains an internal DOCTYPE declaration, and a few minor document type violations, which you are 
+     invited to fix, add to, and vary in any way you find useful.</p>
+     <p>Run this sample from the Validate subdirectory with</p>
+     <p><code>java ValidateXMLInput</code></p>
+     <note>This sample also shows you how to check validation without using an event handler to report validation errors.</note>
+     </s3><anchor name="validateutility"/>
+     <s3 title="Validate utility">
      <p>What it does: Uses the <jump href="apidocs\javax\xml\parsers\SAXParser.html">JAXP SAXParser</jump> with a SAX event handler 
      (extends <jump href="apidocs/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</jump> and implements 
      <jump href="apidocs/org/xml/sax/ext/LexicalHandler.html">LexicalHandler</jump>) to verify that XML files conform to their declared 
@@ -472,6 +486,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
      <note>A limitation: Files containing document parts appear to fail if you check them with Validate. Check readme.xml, 
      which "includes" by entity reference a number of files, and it passes. The parse operation scans the entire document
      with the includes. Check an "included" file (such as history.xml) as if it were an independent document and it fails.</note>
+     </s3>
      </s2>
      <anchor name="trax"/>
      <s2 title="trax">

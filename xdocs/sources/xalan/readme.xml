@@ -86,6 +86,9 @@
      <p>Beginning with this release, we are placing two distribution files in the <resource-ref idref="xslt4j-distdir"/>: a binary
      distribution file, which includes everything needed to run &xslt4j; and build applications, and a source distribution. For
      more information, see <link idref="getstarted" anchor="download">Downloading what you need</link>.</p>
+     <p>This release also includes <link idref="samples" anchor="validatexmlinput">ValidateXMLInput</link>, a sample that illustrates 
+     how you can verify that the XML input you are transforming adheres to its document type. It is in the samples/validate subdirectory
+     along with a Validate utility that you can use to validate XML files without performing a transformation.</p>
      &done-j;
      </s3>
      <anchor name="other"/>
