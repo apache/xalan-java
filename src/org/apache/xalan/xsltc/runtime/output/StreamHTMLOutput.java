@@ -73,7 +73,7 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
-public class HtmlOutput extends StreamOutput {
+public class StreamHTMLOutput extends StreamOutput {
 
     private static final String HREF_STR = "href";
     private static final String CITE_STR = "cite";
@@ -91,7 +91,7 @@ public class HtmlOutput extends StreamOutput {
 
     private boolean _inStyleScript = false;
 
-    public HtmlOutput(Writer writer, String encoding) {
+    public StreamHTMLOutput(Writer writer, String encoding) {
 	_writer = writer;
 	_encoding = encoding;
 	if (encoding.equalsIgnoreCase("iso-8859-1")) {
@@ -99,7 +99,7 @@ public class HtmlOutput extends StreamOutput {
 	}
     }
 
-    public HtmlOutput(OutputStream out, String encoding) 
+    public StreamHTMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	try {
