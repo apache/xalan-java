@@ -191,6 +191,12 @@ public final class TransformerImpl extends Transformer
     private TransformerFactoryImpl _tfactory = null;
 
     /**
+     * A reference to the XSLTCDTMManager which is used to build the DOM/DTM
+     * for this transformer.
+     */
+    private XSLTCDTMManager _dtmManager = null;
+
+    /**
      * A reference to an object that creates and caches XMLReader objects.
      */
     private XMLReaderManager _readerManager = XMLReaderManager.getInstance();
@@ -452,10 +458,12 @@ public final class TransformerImpl extends Transformer
                  boolean hasIdCall = (_translet != null) ? _translet.hasIdCall()
                                                          : false;
 
-                 XSLTCDTMManager dtmManager =
+                 if (_dtmManager == null) {
+                     _dtmManager =
                          (XSLTCDTMManager)_tfactory.getDTMManagerClass()
                                                    .newInstance();
-                 dom = (DOM)dtmManager.getDTM(source, false, wsfilter, true,
+                 }
+                 dom = (DOM)_dtmManager.getDTM(source, false, wsfilter, true,
                                               false, false, 0, hasIdCall);
             } else if (_dom != null) {
                  dom = _dom;
@@ -481,6 +489,14 @@ public final class TransformerImpl extends Transformer
         }
     }
  
+    /**
+     * Returns the {@link org.apache.xalan.xsltc.trax.TransformerFactoryImpl}
+     * object that create this <code>Transformer</code>.
+     */
+    protected TransformerFactoryImpl getTransformerFactory() {
+        return _tfactory;
+    }
+
     private void transformIdentity(Source source, SerializationHandler handler)
 	throws Exception 
     {
@@ -584,7 +600,7 @@ public final class TransformerImpl extends Transformer
              * situations, since there is no clear spec. how to create 
              * an empty tree when both SAXSource() and StreamSource() are used.
              */
-             if ((source instanceof StreamSource && source.getSystemId()==null 
+            if ((source instanceof StreamSource && source.getSystemId()==null 
                 && ((StreamSource)source).getInputStream()==null &&
                 ((StreamSource)source).getReader()==null)||
                 (source instanceof SAXSource &&
@@ -603,26 +619,24 @@ public final class TransformerImpl extends Transformer
                         if (systemID != null) {
                           source.setSystemId(systemID);
                         }
-             }           
+            }           
 	    if (_isIdentity) {
 		transformIdentity(source, handler);
-	    }
-	    else {
+	    } else {
 		_translet.transform(getDOM(source), handler);
 	    }
-	}
-	catch (TransletException e) {
+	} catch (TransletException e) {
 	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
-	}
-	catch (RuntimeException e) {
+	} catch (RuntimeException e) {
 	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
-	}
-	catch (Exception e) {
+	} catch (Exception e) {
 	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
-	}
+	} finally {
+            _dtmManager = null;
+        }
     }
 
     /**
