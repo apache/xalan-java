@@ -418,7 +418,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         if ((child & DTMManager.IDENT_DTM_DEFAULT) != docID)
         {
           dtm = xctxt.getDTM(child);
-          docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
+          docID = child & DTMManager.IDENT_DTM_DEFAULT;
         }
 
         //final int exNodeType = dtm.getExpandedTypeID(child);
