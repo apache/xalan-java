@@ -81,7 +81,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  * method to create a StylesheetRoot and improve performance for a stylesheet performing multiple transformations.
  * Also required for XSLTProcessor to function as SAX DocumentHandler.
  */
-public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
+public class StylesheetRoot extends Stylesheet
 {
   
   private String m_liaisonClassUsedToCreate = null;
@@ -96,7 +96,8 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
   public StylesheetRoot(XSLTEngineImpl processor,
                         String baseIdentifier)
     throws TransformerConfigurationException
-  {   
+  { 
+		super(null);
     m_sRootObject = new org.apache.xalan.templates.StylesheetRoot(processor.getTransformerFactory().getErrorListener()); 
     if (processor.getXMLProcessorLiaison()!= null)
       m_liaisonClassUsedToCreate = ((Object)processor.getXMLProcessorLiaison()).getClass().getName();
@@ -111,6 +112,7 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
    */
   public StylesheetRoot(org.apache.xalan.templates.StylesheetRoot s)    
   { 
+		super(null);
     m_sRootObject = s;     
   }
   
