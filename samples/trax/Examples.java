@@ -618,6 +618,8 @@ public class Examples
 
       Transformer transformer = templates.newTransformer();
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+      // Note you must always setNamespaceAware when building .xsl stylesheets
+      dfactory.setNamespaceAware(true);
       DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
       org.w3c.dom.Document outNode = docBuilder.newDocument();
       Node doc = docBuilder.parse(new InputSource(sourceID));
