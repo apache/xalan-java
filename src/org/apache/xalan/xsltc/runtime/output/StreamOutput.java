@@ -63,6 +63,40 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
+import java.io.Writer;
 
-public class StreamOutput extends OutputBase {
+class StreamOutput extends OutputBase {
+
+    protected static final String AMP      = "&amp;";
+    protected static final String LT       = "&lt;";
+    protected static final String GT       = "&gt;";
+    protected static final String CRLF     = "&#xA;";
+    protected static final String QUOTE    = "&quot;";
+    protected static final String NBSP     = "&nbsp;";
+
+    protected static final String CHAR_ESC_START  = "&#";
+
+    protected static final char[] INDENT = "                    ".toCharArray();
+    protected static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
+    protected static final int MAX_INDENT       = INDENT.length;
+
+    protected static final int BUFFER_SIZE = 32 * 1024;
+    protected static final int OUTPUT_BUFFER_SIZE = 4 * 1024;
+
+    protected Writer  _writer = null;
+    protected StringBuffer _buffer = new StringBuffer(BUFFER_SIZE);
+
+    protected boolean _startTagOpen = false;
+    protected boolean _is8859Encoded = false;
+
+    protected boolean _indent = false;
+    protected boolean _omitHeader = false;
+
+    protected boolean _lineFeedNextStartTag = false;
+    protected boolean _linefeedNextEndTag = false;
+    protected boolean _indentNextEndTag = false;
+    protected int     _indentLevel = 0;
+
+    protected boolean _escaping = true;
+
 }
