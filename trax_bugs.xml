@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<?xm-well_formed path="E:\xml-xalan\java\bugs.dtd"?>
+<!-- This should contain *only* SPRs (Software Problem Reports) for the TrAX API 
+     interfaces and classes. -->
+<Sprs><Spr><Name>TRAXSPR0001</Name>
+<DateCreated>11/15/2000</DateCreated>
+<State>Open</State>
+<TestDesc>SAXTransformerFactoty#FEATURE should document support for all TransformerFactories.</TestDesc><Details><![CDATA[In SAXTransformerFactoty:
+
+    /** If {@link javax.xml.transform.TransformerFactory#getFeature}
+     * returns true when passed this value as an argument,
+     * the TransformerFactory returned from
+     * {@link javax.xml.transform.TransformerFactory#newInstance} may
+     * be safely cast to a SAXTransformerFactory.
+     */
+    public static final String FEATURE =
+
+I propose you remove the phrase "returned from
+TransforerFactory.newInstance". Isn't the intent that feature testing
+can be done on all TransformerFactories, regardless how they are
+created? It can be like this instead:
+
+    /** If {@link javax.xml.transform.TransformerFactory#getFeature}
+     * returns true when passed this value as an argument,
+     * the TransformerFactory can be safely cast to a
+     * SAXTransformerFactory.
+     */]]></Details></Spr><Spr><Name>TRAXSPR0002</Name>
+<DateCreated>11/15/2000</DateCreated>
+<State>Open</State>
+<TestDesc>OutputKeys#method should document qname instead of qname-but-not-ncname</TestDesc><Details><![CDATA[In OutputKeys:
+
+    /**
+     * method = "xml" | "html" | "text" | <var>qname-but-not-ncname</var>.
+     *
+     * <p>The method attribute identifies the overall method that
+     * should be used for outputting the result tree.  Other
+     * non-namespaced values may be used,
+
+This is contradictary, change "qname-but-not-ncname" to "qname".]]></Details></Spr>
+<Spr><Name>TRAXSPR0003</Name>
+<DateCreated>11/15/2000</DateCreated>
+<State>Open</State>
+<TestDesc></TestDesc><Details><![CDATA[]]></Details></Spr>
+<Spr><Name>TRAXSPR0004</Name>
+<DateCreated>11/15/2000</DateCreated>
+<State>Open</State>
+<TestDesc></TestDesc><Details><![CDATA[]]></Details></Spr>
+<Spr><Name>TRAXSPR0005</Name>
+<DateCreated>11/15/2000</DateCreated>
+<State>Open</State>
+<TestDesc></TestDesc><Details><![CDATA[]]></Details></Spr>
+
+</Sprs>
