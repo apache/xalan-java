@@ -235,14 +235,17 @@ public class TreeWalker
     case Node.ELEMENT_NODE :
       NamedNodeMap atts = ((Element) node).getAttributes();
       int nAttrs = atts.getLength();
+      // System.out.println("TreeWalker#startNode: "+node.getNodeName());
 
       for (int i = 0; i < nAttrs; i++)
       {
         Node attr = atts.item(i);
         String attrName = attr.getNodeName();
 
+        // System.out.println("TreeWalker#startNode: attr["+i+"] = "+attrName+", "+attr.getNodeValue());
         if (attrName.equals("xmlns") || attrName.startsWith("xmlns:"))
         {
+          // System.out.println("TreeWalker#startNode: attr["+i+"] = "+attrName+", "+attr.getNodeValue());
           int index;
           // Use "" instead of null, as Xerces likes "" for the 
           // name of the default namespace.  Fix attributed 
@@ -253,11 +256,15 @@ public class TreeWalker
           this.m_contentHandler.startPrefixMapping(prefix,
                                                    attr.getNodeValue());
         }
+        
       }
 
       // System.out.println("m_dh.getNamespaceOfNode(node): "+m_dh.getNamespaceOfNode(node));
       // System.out.println("m_dh.getLocalNameOfNode(node): "+m_dh.getLocalNameOfNode(node));
-      this.m_contentHandler.startElement(m_dh.getNamespaceOfNode(node),
+      String ns = m_dh.getNamespaceOfNode(node);
+      if(null == ns)
+        ns = "";
+      this.m_contentHandler.startElement(ns,
                                          m_dh.getLocalNameOfNode(node),
                                          node.getNodeName(),
                                          new AttList(atts, m_dh));
@@ -358,7 +365,12 @@ public class TreeWalker
       this.m_contentHandler.endDocument();
       break;
     case Node.ELEMENT_NODE :
-      this.m_contentHandler.endElement("", "", node.getNodeName());
+      String ns = m_dh.getNamespaceOfNode(node);
+      if(null == ns)
+        ns = "";
+      this.m_contentHandler.endElement(ns,
+                                         m_dh.getLocalNameOfNode(node),
+                                         node.getNodeName());
 
       NamedNodeMap atts = ((Element) node).getAttributes();
       int nAttrs = atts.getLength();
