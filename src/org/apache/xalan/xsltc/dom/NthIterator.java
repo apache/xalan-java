@@ -99,6 +99,7 @@ public final class NthIterator extends NodeIteratorBase {
 	
     public NodeIterator reset() {
 	_source.reset();
+	_ready = true;
 	return this;
     }
     

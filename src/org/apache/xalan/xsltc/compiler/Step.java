@@ -416,7 +416,6 @@ final class Step extends RelativeLocationPath {
 	    else if (predicate.isNthPositionFilter()) {
 		if ((_axis == 4) || (_axis == 5)) {
 		    il.append(methodGen.loadDOM());
-		    System.err.println("node type is "+_nodeType);
 		    il.append(new PUSH(cpg, _nodeType));
 		    predicate.translate(classGen, methodGen);
 		    int iter = cpg.addInterfaceMethodref(DOM_INTF,
