@@ -40,7 +40,7 @@ import org.xml.sax.SAXParseException;
  * @author Santiago Pericas-Geertsen
  * @author G. Todd Miller 
  */
-abstract class SerializerBase
+public abstract class SerializerBase
     implements SerializationHandler, SerializerConstants
 {
     
