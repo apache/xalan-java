@@ -59,7 +59,7 @@ public class Examples
     exampleParam("foo.xml", "param.xsl");
     System.out.println("\n==== exampleOutputFormat ====");
     exampleOutputFormat("foo.xml", "foo.xsl");
-    // System.out.println("==== exampleUseAssociated ====");
+    System.out.println("==== exampleUseAssociated ====");
   }
   
   /**
@@ -200,7 +200,15 @@ public class Examples
 
     if(processor.getFeature("http://xml.org/trax/features/dom/input"))
     {
-      Templates templates = processor.process(new InputSource(xslID));
+      Templates templates;
+      {
+        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+        org.w3c.dom.Document outNode = docBuilder.newDocument();
+        Node doc = docBuilder.parse(new InputSource(xslID));
+
+        templates = processor.processFromNode(doc);
+      }
       Transformer transformer = templates.newTransformer();
 
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
