@@ -64,6 +64,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import java.net.URL;
+import java.net.MalformedURLException;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -98,60 +101,157 @@ import org.apache.xml.dtm.DTM;
 
 public final class Stylesheet extends SyntaxTreeNode {
 
-    private String       _version;
-    private QName        _name;
-    private String       _systemId;
-    private Stylesheet   _parentStylesheet;
+    /**
+     * XSLT version defined in the stylesheet.
+     */
+    private String _version;
+    
+    /**
+     * Internal name of this stylesheet used as a key into the symbol table.
+     */
+    private QName _name;
+    
+    /**
+     * A URI that represents the system ID for this stylesheet.
+     */
+    private String _systemId;
+    
+    /**
+     * A reference to the parent stylesheet or null if topmost.
+     */
+    private Stylesheet _parentStylesheet;
 	
-    // Contains global variables and parameters defined in the stylesheet
+    /**
+     * Contains global variables and parameters defined in the stylesheet.
+     */
     private Vector _globals = new Vector();
 
-    // Used to cache the result returned by <code>hasLocalParams()</code>.
+    /**
+     * Used to cache the result returned by <code>hasLocalParams()</code>.
+     */
     private Boolean _hasLocalParams = null;
 
-    //  The name of the class being generated.
+    /**
+     * The name of the class being generated.
+     */
     private String _className;
     
-    // Contains all templates defined in this stylesheet
+    /**
+      * Contains all templates defined in this stylesheet
+      */
     private final Vector _templates = new Vector();
+    
+    /**
+     * Used to cache result of <code>getAllValidTemplates()</code>. Only
+     * set in top-level stylesheets that include/import other stylesheets.
+     */
+    private Vector _allValidTemplates = null;
 
+    /**
+     * Counter to generate unique mode suffixes.
+     */
     private int _nextModeSerial = 1;
+    
+    /**
+     * Mapping between mode names and Mode instances.
+     */
     private final Hashtable _modes = new Hashtable();
+    
+    /**
+     * A reference to the default Mode object.
+     */
+    private Mode _defaultMode;
+
+    /**
+     * Mapping between extension URIs and their prefixes.
+     */
     private final Hashtable _extensions = new Hashtable();
 
-    public  Stylesheet _importedFrom = null;
-    public  Stylesheet _includedFrom = null;
+    /**
+     * Reference to the stylesheet from which this stylesheet was
+     * imported (if any).
+     */
+    public Stylesheet _importedFrom = null;
+    
+    /**
+     * Reference to the stylesheet from which this stylesheet was
+     * included (if any).
+     */
+    public Stylesheet _includedFrom = null;
+    
+    /** 
+     * Array of all the stylesheets imported or included from this one.
+     */
     private Vector _includedStylesheets = null;
+    
+    /**
+     * Import precendence for this stylesheet.
+     */
     private int _importPrecedence = 1;
-    private Mode _defaultMode;
-    private boolean _multiDocument = false;
-    private boolean _callsNodeset = false;
-
-    // All named key elements (needed by Key/IdPattern)
+    
+    /**
+     * Mapping between key names and Key objects (needed by Key/IdPattern).
+     */
     private Hashtable _keys = new Hashtable();
 
-    private boolean _numberFormattingUsed = false;
-
-    private boolean _simplified = false;
-
+    /** 
+     * A reference to the SourceLoader set by the user (a URIResolver
+     * if the JAXP API is being used).
+     */
     private SourceLoader _loader = null;
 
+    /**
+     * Flag indicating if format-number() is called.
+     */
+    private boolean _numberFormattingUsed = false;
+
+    /**
+     * Flag indicating if this is a simplified stylesheets. A template
+     * matching on "/" must be added in this case.
+     */
+    private boolean _simplified = false;
+
+    /**
+     * Flag indicating if multi-document support is needed.
+     */
+    private boolean _multiDocument = false;
+    
+    /**
+     * Flag indicating if nodset() is called.
+     */
+    private boolean _callsNodeset = false;
+
+    /**
+     * Flag indicating if id() is called.
+     */
+    private boolean _hasIdCall = false;
+    
+    /**
+     * Set to true to enable template inlining optimization.
+     */
     private boolean _templateInlining = true;
 
-    private boolean _forwardReference = false;
-    
-    private boolean _hasIdCall = false;
-
+    /**
+     * A reference to the last xsl:output object found in the styleshet.
+     */
     private Output  _lastOutputElement = null;
+    
+    /**
+     * Output properties for this stylesheet.
+     */
     private Properties _outputProperties = null;
     
+    /**
+     * Output method for this stylesheet (must be set to one of
+     * the constants defined below).
+     */ 
+    private int _outputMethod = UNKNOWN_OUTPUT;
+
     // Output method constants
     public static final int UNKNOWN_OUTPUT = 0;
-    public static final int XML_OUTPUT = 1;
-    public static final int HTML_OUTPUT = 2;
-    public static final int TEXT_OUTPUT = 3;
-    
-    private int _outputMethod = UNKNOWN_OUTPUT;
+    public static final int XML_OUTPUT     = 1;
+    public static final int HTML_OUTPUT    = 2;
+    public static final int TEXT_OUTPUT    = 3;
     
     /**
      * Return the output method
@@ -175,11 +275,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	            _outputMethod = TEXT_OUTPUT;
 	    }
 	}
-    }
-    
-
-    public void setForwardReference() {
-	_forwardReference = true;
     }
 
     public boolean getTemplateInlining() {
@@ -320,7 +415,36 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public void setSystemId(String systemId) {
-	_systemId = systemId;
+        URL systemIdURL = null; 
+        
+        if (systemId != null && systemId.length() > 0) {
+            try {
+                systemIdURL = new URL(systemId);
+            }
+            catch (MalformedURLException e) {
+                String userDir = System.getProperty("user.dir");
+                String fileSep = System.getProperty("file.separator");
+                
+                // Make it absolute if a relative path (drive letters?)
+                if (!systemId.startsWith(fileSep)) {
+                    systemId = userDir + fileSep + systemId;
+                }
+                try {
+                    systemIdURL = new URL("file", "", systemId);
+                }
+                catch (MalformedURLException ep) {
+                    try {
+                        systemIdURL = new URL("file", "", userDir + fileSep);
+                    }
+                    catch (MalformedURLException epp) {
+                        // ignore
+                    }
+                }
+            }
+        }
+        if (systemIdURL != null) {
+            _systemId = systemIdURL.toString();
+        }
     }
     
     public String getSystemId() {
@@ -1162,18 +1286,29 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public Vector getAllValidTemplates() {
-        if (_includedStylesheets != null) {
-            Vector templates = new Vector();
+        // Return templates if no imported/included stylesheets
+        if (_includedStylesheets == null) {
+            return _templates;
+        }
+        
+        // Is returned value cached?
+        if (_allValidTemplates == null) {
+           Vector templates = new Vector();
             int size = _includedStylesheets.size();
             for (int i = 0; i < size; i++) {
                 Stylesheet included =(Stylesheet)_includedStylesheets.elementAt(i);
                 templates.addAll(included.getAllValidTemplates());
             }
             templates.addAll(_templates);
-            return templates;
-        }
-        else
-            return _templates;
+
+            // Cache results in top-level stylesheet only
+            if (_parentStylesheet != null) {
+                return templates;
+            }
+            _allValidTemplates = templates;
+         }
+        
+        return _allValidTemplates;
     }
     
     protected void addTemplate(Template template) {
