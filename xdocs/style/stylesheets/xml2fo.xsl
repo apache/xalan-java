@@ -142,6 +142,7 @@ TBD: - The faq doesn't show in the content
             space-after.optimum="15pt"
             background-color="blue"
             color="white"
+            keep-with-next.within-page="always"
             text-align="center">
      <xsl:attribute name="id">
      <xsl:value-of select="translate(@title,' ),-.(','____')"/>
@@ -156,7 +157,7 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="16pt" 
             font-family="sans-serif" 
             line-height="20pt"
-            keep-with-next="always"            
+            keep-with-next.within-page="always"            
             space-before.optimum="15pt"
             space-after.optimum="12pt"
             text-align="start"
@@ -172,7 +173,7 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="14pt" 
             font-family="sans-serif" 
             line-height="18pt"
-            keep-with-next="always"            
+            keep-with-next.within-page="always"
             space-before.optimum="10pt"
             space-after.optimum="9pt"
             text-align="start"
@@ -252,6 +253,12 @@ TBD: - The faq doesn't show in the content
 </xsl:template>
 -->
 
+<xsl:template match="img">
+  <fo:block>
+    <fo:external-graphic src="file:build/docs/images/{@src}"/>
+  </fo:block>
+</xsl:template>
+
 <!-- faqs -->
 <xsl:template match ="faqs">
    <fo:block font-size="18pt" 
@@ -271,12 +278,6 @@ TBD: - The faq doesn't show in the content
     <xsl:apply-templates/> 
 </xsl:template>
 
-<xsl:template match="img">
-  <fo:block>
-    <fo:external-graphic src="file:build/docs/images/{@src}"/>
-  </fo:block>
-</xsl:template>
-
 <!-- faq -->
 <xsl:template match ="faq">
     <xsl:apply-templates/> 
@@ -287,7 +288,7 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="14pt" 
             font-family="sans-serif" 
             line-height="18pt"
-            keep-with-next="always"
+            keep-with-next.within-page="always"
             space-before.optimum="10pt"
             space-after.optimum="9pt"
             text-align="start"
