@@ -90,7 +90,7 @@ public abstract class SyntaxTreeNode implements Constants {
     private final int _line;
 
     // Reference to this node's parent node
-    private SyntaxTreeNode _parent;
+    protected SyntaxTreeNode _parent;
     // Contains all child nodes of this node
     private final Vector   _contents = new Vector(2);
 
@@ -212,7 +212,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	_parser = parser;
     }
 
-    protected final void setParent(SyntaxTreeNode parent) {
+    protected void setParent(SyntaxTreeNode parent) {
 	if (_parent == null)
 	    _parent = parent;
     }

@@ -229,6 +229,7 @@ public abstract class AbstractTranslet implements Translet {
      * Get the value of a variable given its index.
      */
     public final Object getVariable(int vindex) {
+	Object blob = varsStack.elementAt(vbase + vindex);
 	return varsStack.elementAt(vbase + vindex);
     }
 
@@ -236,7 +237,9 @@ public abstract class AbstractTranslet implements Translet {
      * Set the value of a variable in the current frame.
      */
     public final void addVariable(int vindex, Object value) {
-	varsStack.insertElementAt(value, vbase + vindex);
+	final int index = vbase + vindex;
+	if (index > varsStack.size()) varsStack.setSize(index);
+	varsStack.insertElementAt(value, index);
     }
 
     /************************************************************************

@@ -72,6 +72,7 @@ import de.fub.bytecode.generic.Instruction;
 import de.fub.bytecode.generic.*;
 import de.fub.bytecode.classfile.Field;
 import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.dom.Axis;
 
 final class Variable extends TopLevelElement {
 

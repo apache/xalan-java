@@ -293,20 +293,101 @@ final class Predicate extends Expression {
     }
 
     /**
+     * Method to see if we can optimise the predicate by using a specialised
+     * iterator for expressions like '/foo/bar[@attr = $var]', which are
+     * very common in many stylesheets
+     */
+    public boolean isNodeValueTest() {
+	if ((getStep() != null) && (getCompareValue() != null))
+	    return true;
+	else
+	    return false;
+    }
+
+    private Expression _value = null;
+    private Expression _step = null;
+
+    /**
+     * Utility method for optimisation. See isNodeValueTest()
+     */
+    public Expression getCompareValue() {
+	if (_value != null) return _value;
+	if (_exp == null) return null;
+
+	if (_exp instanceof EqualityExpr) {
+	    EqualityExpr exp = (EqualityExpr)_exp;
+	    Expression left = exp.getLeft();
+	    Expression right = exp.getRight();
+
+	    Type tleft = left.getType();
+	    Type tright = right.getType();
+
+	    
+	    if (left instanceof CastExpr) left = ((CastExpr)left).getExpr();
+	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
+	    
+	    try {
+		if ((tleft == Type.String) && (!(left instanceof Step)))
+		    _value = exp.getLeft();
+		if ((left instanceof VariableRef) ||
+		    (left instanceof ParameterRef))
+		    _value = new CastExpr(left, Type.String);
+	    }
+	    catch (TypeCheckError e) { }
+
+	    try {
+		if ((tright == Type.String) && (!(right instanceof Step)))
+		    _value = exp.getRight();
+		if ((right instanceof VariableRef) || 
+		    (right instanceof ParameterRef))
+		    _value = new CastExpr(right, Type.String);
+	    }
+	    catch (TypeCheckError e) { }
+
+	}
+	return _value;
+    }
+
+    /**
+     * Utility method for optimisation. See isNodeValueTest()
+     */
+    public Expression getStep() {
+	if (_step != null) return _step;
+	if (_exp == null) return null;
+
+	if (_exp instanceof EqualityExpr) {
+	    EqualityExpr exp = (EqualityExpr)_exp;
+	    Expression left = exp.getLeft();
+	    Expression right = exp.getRight();
+
+	    if (left instanceof CastExpr) left = ((CastExpr)left).getExpr();
+	    if (left instanceof Step) _step = left;
+	    
+	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
+	    if (right instanceof Step) _step = right;
+	}
+	return _step;
+    }
+
+    /**
      * Translate a predicate expression. This translation pushes
      * two references on the stack: a reference to a newly created
      * filter object and a reference to the predicate's closure.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
 	if (_nthPositionFilter || _nthDescendant) {
 	    _exp.translate(classGen, methodGen);
 	}
+	else if (isNodeValueTest()) {
+	    _value.translate(classGen, methodGen);
+	    il.append(new PUSH(cpg, ((EqualityExpr)_exp).getOp()));
+	}
 	else {
 	    compileFilter(classGen, methodGen);
-	
-	    final ConstantPoolGen cpg = classGen.getConstantPool();
-	    final InstructionList il = methodGen.getInstructionList();
 	    il.append(new NEW(cpg.addClass(_className)));
 	    il.append(DUP);
 	    il.append(new INVOKESPECIAL(cpg.addMethodref(_className,

@@ -1474,11 +1474,88 @@ public final class DOMImpl implements DOM, Externalizable {
 
     } // end of StrippingIterator
 
-    public NodeIterator strippingIterator(NodeIterator iterator, short[] mapping,
+    public NodeIterator strippingIterator(NodeIterator iterator,
+					  short[] mapping,
 					  StripWhitespaceFilter filter) {
 	return(new StrippingIterator(iterator, mapping, filter));
     }
-                                
+
+    /**************************************************************
+     * This is a specialised iterator for predicates comparing node or
+     * attribute values to variable or parameter values.
+     */
+    private final class NodeValueIterator extends NodeIteratorBase {
+
+	private NodeIterator _source;
+	private String _value;
+	private boolean _op;
+	private final boolean _isReverse;
+
+	public NodeValueIterator(NodeIterator source,
+				 String value, boolean op) {
+	    _source = source;
+	    _value = value;
+	    _op = op;
+	    _isReverse = source.isReverse();
+	}
+
+	public boolean isReverse() {
+	    return _isReverse;
+	}
+    
+	public NodeIterator cloneIterator() {
+	    try {
+		NodeValueIterator clone = (NodeValueIterator)super.clone();
+		clone._isRestartable = false;
+		clone._source = _source.cloneIterator();
+		clone._value = _value;
+		clone._op = _op;
+		return clone.reset();
+	    }
+	    catch (CloneNotSupportedException e) {
+		BasisLibrary.runTimeError("Iterator clone not supported."); 
+		return null;
+	    }
+	}
+    
+	public NodeIterator reset() {
+	    _source.reset();
+	    return resetPosition();
+	}
+
+	public int next() {
+
+	    int node;
+	    while ((node = _source.next()) != END) {
+		String val = getNodeValue(node);
+		if (_value.equals(val) == _op) {
+		    return _parent[node];
+		}
+	    }
+	    return END;
+	}
+
+	public NodeIterator setStartNode(int node) {
+	    if (_isRestartable) {
+		_source.setStartNode(_startNode = node); 
+		return resetPosition();
+	    }
+	    return this;
+	}
+
+	public void setMark() {
+	    _source.setMark();
+	}
+
+	public void gotoMark() {
+	    _source.gotoMark();
+	}
+    }                       
+
+    public NodeIterator getNodeValueIterator(NodeIterator iterator,
+					     String value, boolean op) {
+	return(new NodeValueIterator(iterator, value, op));
+    }
 
     /**************************************************************
      * Iterator that assured that a single node is only returned once

@@ -153,6 +153,13 @@ final class Step extends RelativeLocationPath {
 
 
     /**
+     *
+     */
+    protected void setParent(SyntaxTreeNode node) {
+	_parent = node;
+    }
+
+    /**
      * Returns 'true' if this step has a parent pattern
      */
     public boolean hasParent() {
@@ -349,8 +356,28 @@ final class Step extends RelativeLocationPath {
 	    final Predicate predicate = (Predicate)_predicates.lastElement();
 	    _predicates.remove(predicate);
 
+	    // Handle '//blob[@attr = $var]' expression
+	    if (predicate.isNodeValueTest()) {
+		Step step = (Step)(predicate.getStep());
+		ParentLocationPath path = new ParentLocationPath(this, step);
+
+		try {
+		    path.typeCheck(getParser().getSymbolTable());
+		}
+		catch (TypeCheckError e) {}
+
+		il.append(methodGen.loadDOM());
+		path.translate(classGen, methodGen);
+		
+		final String signature =
+		    "("+NODE_ITERATOR_SIG+STRING_SIG+"Z)"+NODE_ITERATOR_SIG;
+		final int iter = cpg.addMethodref(DOM_CLASS,
+						  "getNodeValueIterator",
+						  signature);
+		il.append(new INVOKEVIRTUAL(iter));
+	    }
 	    // Handle '//*[n]' expression
-	    if (predicate.isNthDescendant()) {
+	    else if (predicate.isNthDescendant()) {
 		il.append(methodGen.loadDOM());
 		il.append(methodGen.loadContextNode());
 		predicate.translate(classGen, methodGen);
@@ -372,20 +399,18 @@ final class Step extends RelativeLocationPath {
 		il.append(new INVOKESPECIAL(initNI));
 	    }
 	    else {
-		final int initCNLI =
-		    cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
-				     "<init>",
-				     "("
-				     + NODE_ITERATOR_SIG
-				     + CURRENT_NODE_LIST_FILTER_SIG
-				     + NODE_SIG // current node
-				     + TRANSLET_SIG
-				     + ")V");
+		final int init = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
+						  "<init>",
+						  "("
+						  + NODE_ITERATOR_SIG
+						  + CURRENT_NODE_LIST_FILTER_SIG
+						  + NODE_SIG
+						  + TRANSLET_SIG
+						  + ")V");
 		// create new CurrentNodeListIterator
 		il.append(new NEW(cpg.addClass(CURRENT_NODE_LIST_ITERATOR)));
 		il.append(DUP);
 		translatePredicates(classGen, methodGen); // recursive call
-		
 		predicate.translate(classGen, methodGen);
 		
 		il.append(methodGen.loadCurrentNode());
@@ -394,7 +419,7 @@ final class Step extends RelativeLocationPath {
 		    final String className = classGen.getClassName();
 		    il.append(new CHECKCAST(cpg.addClass(className)));
 		}
-		il.append(new INVOKESPECIAL(initCNLI));
+		il.append(new INVOKESPECIAL(init));
 	    }
 	}
     }

@@ -105,7 +105,7 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     private static final char[] ENDPI    = "?>".toCharArray();
     private static final char[] GT_CR    = ">\n".toCharArray();
     private static final char[] GT_LT_SL = "></".toCharArray();
-    private static final char[] SL_GT    = "/>".toCharArray();
+    private static final char[] SL_GT    = "/>\n".toCharArray();
     private static final char[] XMLNS    = " xmlns".toCharArray();
 
     // All of these are used to control/track output indentation

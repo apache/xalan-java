@@ -86,7 +86,7 @@ import java_cup.runtime.Symbol;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.runtime.AttributeList;
 
-public final class Parser implements Constants, ContentHandler {
+public class Parser implements Constants, ContentHandler {
 
     private static final String XSL = "xsl";            // standard prefix
     private static final String TRANSLET = "translet"; // extension prefix
@@ -179,6 +179,10 @@ public final class Parser implements Constants, ContentHandler {
 
     public SyntaxTreeNode lookupVariable(QName name) {
 	return (SyntaxTreeNode)_variableScope.get(name);
+    }
+
+    public void setXSLTC(XSLTC xsltc) {
+	_xsltc = xsltc;
     }
 
     public XSLTC getXSLTC() {
@@ -409,6 +413,10 @@ public final class Parser implements Constants, ContentHandler {
 	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
 	}
 	return null;
+    }
+
+    public SyntaxTreeNode getDocumentRoot() {
+	return _root;
     }
 
     /**

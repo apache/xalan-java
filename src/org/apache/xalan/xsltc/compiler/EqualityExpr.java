@@ -92,6 +92,21 @@ final class EqualityExpr extends Expression implements Operators {
 	return Operators.names[_op] + '(' + _left + ", " + _right + ')';
     }
 
+    public Expression getLeft() {
+	return _left;
+    }
+
+    public Expression getRight() {
+	return _right;
+    }
+
+    public boolean getOp() {
+	if (_op == Operators.NE)
+	    return false;
+	else
+	    return true;
+    }
+
     private void swapArguments() {
 	final Expression temp = _left;
 	_left = _right;

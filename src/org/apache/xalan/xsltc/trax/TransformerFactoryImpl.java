@@ -92,7 +92,7 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
  * Implementation of a JAXP1.1 TransformerFactory for Translets.
  */
 public class TransformerFactoryImpl
-    extends TransformerFactory implements SourceLoader {
+    extends SAXTransformerFactory implements SourceLoader {
 
     // This constant should be removed once all abstract methods are impl'ed.
     private static final String NYI = "Not yet implemented";

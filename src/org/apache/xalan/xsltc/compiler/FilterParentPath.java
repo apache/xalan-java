@@ -98,6 +98,11 @@ final class FilterParentPath extends Expression {
 	    if (ftype instanceof ReferenceType)  {
 		_filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
 	    }
+	    /*
+	    else if (ftype instanceof ResultTreeType)  {
+		_filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
+	    }
+	    */
 	    else if (ftype instanceof NodeType)  {
 		_filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
 	    }

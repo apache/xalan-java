@@ -113,7 +113,7 @@ public final class TextOutput implements TransletOutputHandler {
     private static final char[] ENDCDATA = "]]>".toCharArray();
     private static final char[] CNTCDATA = "]]]]><![CDATA[>".toCharArray();
     private static final char[] BEGCOMM  = "<!--".toCharArray();
-    private static final char[] ENDCOMM  = "-->".toCharArray();
+    private static final char[] ENDCOMM  = "-->\n".toCharArray();
 
     private static final String EMPTYSTRING = "";
 

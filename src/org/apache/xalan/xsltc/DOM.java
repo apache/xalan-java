@@ -95,6 +95,8 @@ public interface DOM {
     public NodeIterator getTypedAxisIterator(final int axis, final int type);
     public NodeIterator getNthDescendant(int node, int n);
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns);
+    public NodeIterator getNodeValueIterator(NodeIterator iter,
+					     String value, boolean op);
     public NodeIterator orderNodes(NodeIterator source, int node);
     public String getNodeName(final int node);
     public String getNamespaceName(final int node);

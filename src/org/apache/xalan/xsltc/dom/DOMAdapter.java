@@ -144,6 +144,11 @@ public final class DOMAdapter implements DOM {
 	return _domImpl.getNthDescendant(node, n);
     }
 
+    public NodeIterator getNodeValueIterator(NodeIterator iterator,
+					     String value, boolean op) {
+	return _domImpl.getNodeValueIterator(iterator, value, op);
+    }
+
     public NodeIterator orderNodes(NodeIterator source, int node) {
 	return _domImpl.orderNodes(source, node);
     }
