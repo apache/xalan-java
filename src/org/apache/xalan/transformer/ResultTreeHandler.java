@@ -1001,14 +1001,14 @@ public class ResultTreeHandler extends QueuedEvents
         if ((null == foundURI) ||!foundURI.equals(ns))
         {
           startPrefixMapping(prefix, ns, false);
-					
-					// LRE10: Need to register it as an attr too, since our serializer
-					// currently doesn't handle getting only startPrefixMapping.
-					// ALTERNATIVE would be to fix that...
-					m_attributes.addAttribute("http://www.w3.org/2000/xmlns/", 
-																		prefix, 
-																		"xmlns"+(prefix.length()==0 ? "" : ":")+prefix, 
-																		"CDATA", ns);
+                                        
+          // Bugzilla1133: Generate attribute as well as namespace event.
+          // SAX does expect both.
+
+          m_attributes.addAttribute("http://www.w3.org/2000/xmlns/", 
+                                    prefix, 
+                                    "xmlns"+(prefix.length()==0 ? "" : ":")+prefix, 
+                                    "CDATA", ns);
         }
       }
     }
