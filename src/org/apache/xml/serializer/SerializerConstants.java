@@ -19,11 +19,8 @@
 package org.apache.xml.serializer;
 
 /**
- * @author minchau
- *
  * Constants used in serialization, such as the string "xmlns"
- * @author Jacek Ambroziak
- * @author Santiago Pericas-Geertsen
+ * @xsl.usage internal
  */
 public interface SerializerConstants
 {
