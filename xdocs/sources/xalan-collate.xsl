@@ -4,7 +4,8 @@
 
 <xsl:template match ="/">
   <documentation>
-    <chapter id="index"><xsl:copy-of select="document('xalan/index.xml')"/></chapter>  
+    <chapter id="index"><xsl:copy-of select="document('xalan/dtm.xml')"/></chapter>  
+    <!--chapter id="index"><xsl:copy-of select="document('xalan/index.xml')"/></chapter>  
     <chapter id="whatsnew"><xsl:copy-of select="document('xalan/whatsnew.xml')"/></chapter>
     <chapter id="overview"><xsl:copy-of select="document('xalan/overview.xml')"/></chapter>
     <chapter id="getstarted"><xsl:copy-of select="document('xalan/getstarted.xml')"/></chapter>
@@ -24,7 +25,7 @@
           <li><jump href="compat_apidocs/index.html">Xalan-Java 1 compatibility API</jump></li>
         </ul>         
       </s1>
-    </chapter>
+    </chapter-->
   </documentation>
 </xsl:template>
 </xsl:stylesheet>

@@ -10,12 +10,12 @@
     <li><link anchor="xsltchistory">History of XSLTC software changes</link></li>
 </ul>
 <anchor name="xsltcnew"/>
-<s3 title="Changes since &xslt4j; 2.2.D13">
+<s3 title="Changes since &xslt4j; 2.2.D14">
 &xsltcdone;
 </s3>
 <anchor name="xsltcconf"/>
 <s3 title="XSLT 1.0 Conformance and Extensions">
-<p>XSLTC does not yet support the following features of the <resource-ref idref="xsl"/>:</p>
+<p>XSLTC does not yet support the following feature of the <resource-ref idref="xslt"/>:</p>
 <ul>
   <li>The namespace axis is not implemented. You cannot get a node set containing the namespace nodes
     in scope from a context node in the document tree. Otherwise, namespace functionality is implemented.</li>
@@ -161,6 +161,195 @@ The message is of the form:<br/><br/>
 <anchor name="xsltchistory"/>
 <s3 title="History of XSLTC software changes">
 <p>The following sections list XSLT changes back to the incorporation of XSLTC into &xslt4c;.</p>
+<s4 title="Changes for &xslt4j; 2.2.D14">
+<p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XslAttribute.java<br/><ref>Committer's log entry: </ref>Fixed bug for xsl:attribute
+ PR: 4175
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Fix for properly creating a SAX InputSource from a TrAX InputStream for
+ encapsulating a stylesheet before it is compiled.
+ PR: bugzilla 4711 (I hope to God)
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Fix for last putback.<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Stylesheet.java<br/><ref>Committer's log entry: </ref>This fix should take care of a regression introduced by the code that was
+ added on the 29.10.2001 to take care of forward referenced variables.
+ This little patch ensures that variables that do not have any dependencies
+ are kept in order.
+ PR: bugzilla 4779
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler xpath.cup<br/><ref>Committer's log entry: </ref>Fixed a minor regression after the fix for 3592. A literal number zero was
+ always interpreted as an integer zero and never as a double -0 opr 0.0.
+ PR: bugzill 4810
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>Fixed the code that prevents escaping of text inside &lt;script&gt; and &lt;style&gt;
+ elements in HTML. The code did not handle upper case element names.
+ PR: bugzilla 2517
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>11/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java<br/><ref>Committer's log entry: </ref>bug fix 4906<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Mode.java
+ Template.java xpath.cup<br/><ref>Committer's log entry: </ref>Fix for nested parent location paths / filter parent paths with key() or
+ id() root. These paths would in some case returnt he root node when they
+ should not.
+ PR: bugzilla 4781
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Sort.java<br/><ref>Committer's log entry: </ref>Fix for a big in the &lt;xsl:sort&gt; implementation. The element would not always
+ work properly in the innermost loop in nested &lt;xsl:for-each&gt; elements.
+ PR: bugzilla 4921
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler ApplyTemplates.java
+ Sort.java<br/><ref>Committer's log entry: </ref>A fix for a regression introduced by a fix for &lt;xsl:sort/&gt; and nested
+ &lt;xsl:for-each/&gt; elements.
+ PR: bugzilla 4921
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>Fix to ensure that double quotes are escaped inside attribute values in
+ HTML output.
+ PR: bugzilla 4845
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler ApplyTemplates.java<br/><ref>Committer's log entry: </ref>Fix for a bug caused by &lt;xsl:apply-templates/&gt; not always passing parameters 
+to
+ the invoked template(s). Parameters would not be put on the stack if the
+ 'select' attribute contained wildcards.
+ PR: bugzilla 4718
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler/util
+ StringType.java
+ java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java<br/><ref>Committer's log entry: </ref>Fixed conversion between strings and numbers. Empty strings should return
+ 0 and not NaN.
+ PR: bugzilla 4783
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Choose.java
+ Parser.java SyntaxTreeNode.java Text.java
+ java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>Fix for a whole wack of bugs related to text-nodes and handling of whitespace
+ and special characters.
+ PR: bugzilla 1403, 1520, 3005, 3418 and 3690
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DOMImpl.java<br/><ref>Committer's log entry: </ref>Prevented the namespace-uri() from returning anything for namespace nodes.
+ PR: bugzilla 4896
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XslElement.java<br/><ref>Committer's log entry: </ref>Added test in &lt;xsl:element&gt; to verify that the local name of the created
+ element is legal (must have contents, but no whitespaces or colon).
+ PR: bugzilla 4894
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java<br/><ref>Committer's log entry: </ref>A small fix for the substring() function to output an empty string if the
+ start index is an infinite value.
+ PR: bugzilla 4813
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Constants.java
+ Stylesheet.java<br/><ref>Committer's log entry: </ref>Fix for XHTML output.
+ PR: bugzilla 4904
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Message.java<br/><ref>Committer's log entry: </ref>A cleanup in the Message class. Making way for a fix for 4874
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Predicate.java<br/><ref>Committer's log entry: </ref>A fix for position predicates used within parameters and variables.
+ PR: bugzilla 4783
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XslAttribute.java<br/><ref>Committer's log entry: </ref>A small fix needed after a fix for stripping/preserving text nodes. The fix
+ for text-nodes caused us to insert text nodes before &lt;xsl:attribute&gt; elements
+ in the AST, which again caused the XslAttribute class to complain.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc DOM.java
+ java/src/org/apache/xalan/xsltc/compiler Message.java
+ java/src/org/apache/xalan/xsltc/dom DOMAdapter.java
+ DOMImpl.java MultiDOM.java<br/><ref>Committer's log entry: </ref>Added a new method to the DOM interface for retrieving the DOM as a single
+ string. This method is different from the existing getStringValue() in the
+ way that it generates element brackets and copies PIs and comments.
+ PR: bugzilla 4874
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DOMImpl.java
+ FilteredStepIterator.java StepIterator.java
+ UnionIterator.java<br/><ref>Committer's log entry: </ref>Updated the StepIterator and FilteredStepIterator's cloneIterator() and
+ reset() methods so that the _isRestartable flag is set correctly.
+ PR: bugzilla 4905
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Parser.java<br/><ref>Committer's log entry: </ref>Another fix for 3005 (special characters inside CDATA).
+ PR: bugzilla 3005
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java<br/><ref>Committer's log entry: </ref>A fix for decimal formatting
+ PR: bugzilla 4901
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler AttributeSet.java<br/><ref>Committer's log entry: </ref>A fix for a regression introduced by a fix for whitespace handling.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler FilterExpr.java
+ Predicate.java VariableRefBase.java
+ java/src/org/apache/xalan/xsltc/dom
+ CurrentNodeListIterator.java DOMImpl.java
+ FilteredStepIterator.java KeyIndex.java
+ MatchingIterator.java MultiDOM.java
+ NthIterator.java StepIterator.java
+ UnionIterator.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java<br/><ref>Committer's log entry: </ref>A fix for trees of step iterators stored inside variables.
+ Also some fixes for recently introduced regressions.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.iorg<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java<br/><ref>Committer's log entry: </ref>A fix for the TrAX API when used from within an environment that does _not_
+ use one of the standard classloaders.
+ PR: bigzilla 5130
+ Obtained from: n/a
+ Submitted by: Jochen.Cordes@t-online.de
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Sort.java
+ java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java<br/><ref>Committer's log entry: </ref>A fix for multilevel sort-keys. If a set of translets (representing different
+ stylesheets) are running one the same JVM, and two or more of these translets
+ use NodeSortRecord objects to represent &lt;xsl:sort/&gt; elements, then the number
+ of sort keys would be set in the NodeSortRecord _class_ constructor instead of
+ being set locally for each occurance of &lt;xsl:sort/&gt;.
+ PR: bugzilla 4755
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler CastExpr.java
+ EqualityExpr.java Expression.java LastCall.java
+ Predicate.java VariableRefBase.java
+ java/src/org/apache/xalan/xsltc/dom DOMImpl.java
+ StepIterator.java<br/><ref>Committer's log entry: </ref>A fix for resetting the source iterator of a node-value iterator.
+ PR: bugzilla 5152
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler
+ DecimalFormatting.java
+ java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java<br/><ref>Committer's log entry: </ref>A fix for a few regressions from yesterday.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/30/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler xpath.cup<br/><ref>Committer's log entry: </ref>A fix to the XPath parser to make sure (again!) that non-prefixed elements
+ in XPath expressions/patterns are not assigned the default namespace but
+ rather the null namespace.
+ PR: bugzilla 4904
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/30/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Stylesheet.java<br/><ref>Committer's log entry: </ref>Modified the order in which top-level elements are parsed. This to make sure
+ that xsl:namespace-alias elements are parsed before xsl:import and include,
+ so that namespace aliases are global to all included stylesheets.
+ PR: bugzilla 4876
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li></ul>
+</s4>
 <s4 title="Changes for &xslt4j; 2.2.D12 and 2.2.D13">
 <p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>10/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/><ref>Committer's log entry: </ref>Changed the values for the output properties "OMIT_XML_DECLARATION" and
  "INDENT" from "true" and "false" to "yes" and "no".

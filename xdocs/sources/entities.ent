@@ -2,14 +2,14 @@
 
 <!ENTITY xslt4j "Xalan-Java">
 <!ENTITY xslt4j2 "Xalan-Java 2">
-<!ENTITY xslt4j-dist "xalan-j_2_2_D14">
+<!ENTITY xslt4j-dist "xalan-j_2_2">
 <!ENTITY xslt4j-dist-bin "&xslt4j-dist;-bin">
 <!ENTITY xslt4j-dist-src "&xslt4j-dist;-src">
-<!ENTITY xslt4j-current "&xslt4j; version 2.2.D14">
+<!ENTITY xslt4j-current "&xslt4j; version 2.2">
 <!ENTITY xslt4j-distdir "http://xml.apache.org/dist/xalan-j/">
 <!ENTITY xml4j "Xerces-Java">
 <!ENTITY xml4j2 "Xerces-Java 2">
-<!ENTITY xml4j-used "&xml4j; version 1.4.3">
+<!ENTITY xml4j-used "&xml4j; version 1.4.4">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
 <!ENTITY download "The &xslt4j-current; download from xml.apache.org includes xerces.jar from &xml4j-used;.">

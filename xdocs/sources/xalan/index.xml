@@ -72,15 +72,12 @@
      <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
   </s2>
   <s2 title="How about this release?">
-  <p>&xslt4j-current; is intended to be the final release in the current series of Developer releases incorporating
-  the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
-  standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
+  <p>Following a series of Developer releases, &xslt4j-current; represents a stable, production-quality release with 
+  the <link idref="dtm">DTM (Document Table Model)</link>. &xslt4j; uses the DTM to represent the XML source document 
+  to be transformed.</p>
   <p>Starting with 2.2.D12, we have reduced xalan.jar to just include the &xslt4j; implementation, placing the SAX, DOM, 
   and JAVAX interfaces in xml-apis.jar. These interfaces are shared by a number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a 
   separate JAR simplifies coordination and reduces risk of duplication. <em>Be sure to put both JAR files on your classpath!</em></p>
-
-  <note>To improve performance, &xslt4j; uses the Document Table Model (<link idref="dtm">DTM</link>) to represent the XML source document 
-  to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</note>
   </s2> 
   <s2 title="How do I get it?">
     <p>To get the binary distribution (all you need to use and develop applications with &xslt4j;), download and unzip either of the following:</p>

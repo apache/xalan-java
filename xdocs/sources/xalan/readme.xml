@@ -64,6 +64,8 @@
  -->
 <s1 title="Release Notes">
 <p>&xslt4j-current;</p>
+<note>This is the last &xslt4j; release to include support for the &xslt4j; 1 compatability API (deprecated).<br/><br/>
+Starting with our next major point release (&xslt4j; 2.3), we plan to integrate &xslt4j; with release 2 of &xml4j;.</note>
  <ul>
   <li><link anchor="status0">Status</link></li>&xsltcreleasenotesentry;
   <li><link anchor="build">Build Notes</link></li>
@@ -72,24 +74,17 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.2.D13</link></li>
+    <li><link anchor="done">Changes since version 2.2.D14</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D13">
-     <p>&xslt4j; 2.2.D14 is intended to be the final release in the current series of Developer releases incorporating
-     the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
-     standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
-     <p>&xslt4j; 2.2.D14 also includes a new <jump href="apidocs/org/apache/xpath/CachedXPathAPI.html">CachedXPathAPI</jump> class that
-     provides an enhanced alternative to the XPath convenience methods in <jump href="apidocs/org/apache/xpath/XPathAPI.html">XPathAPI</jump>.</p>
-     <p>Beginning with 2.2.D12, xalan.jar contains just the &xslt4j; implementation. The source files for the SAX level 2, DOM 2, 
-     and JAXP 1.1 interfaces are pulled from the xml-commons repository (<resource-ref idref="xmlapirepository"/>), and are built as
-     xml-apis.jar. These interfaces are shared by a number of tools, so placing them in their own jar simplifies coordination and reduces 
-     the risk of duplication. <em>To run &xslt4j;, you must add xml-apis.jar to your classpath.</em> See <link idref="getstarted"
-     anchor="classpath">Setting up the system class path</link>.</p>
+     <s3 title="Changes since &xslt4j; 2.2.D14">
+     <p>Following a series of Developer releases, &xslt4j-current; represents a stable, production-quality release with 
+      the <link idref="dtm">DTM (Document Table Model)</link>. &xslt4j; uses the DTM to represent the XML source document 
+      to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
      &done-j;
      </s3>
      <anchor name="other"/>

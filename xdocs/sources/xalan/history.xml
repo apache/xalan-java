@@ -1,3 +1,94 @@
+<s3 title="Changes for &xslt4j; 2.2.D14">
+<p>&xslt4j; 2.2.D14 is intended to be the final release in the current series of Developer releases incorporating
+     the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
+     standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
+     <p>&xslt4j; 2.2.D14 also includes a new <jump href="apidocs/org/apache/xpath/CachedXPathAPI.html">CachedXPathAPI</jump> class that
+     provides an enhanced alternative to the XPath convenience methods in <jump href="apidocs/org/apache/xpath/XPathAPI.html">XPathAPI</jump>.</p>
+     <p>Beginning with 2.2.D12, xalan.jar contains just the &xslt4j; implementation. The source files for the SAX level 2, DOM 2, 
+     and JAXP 1.1 interfaces are pulled from the xml-commons repository (<resource-ref idref="xmlapirepository"/>), and are built as
+     xml-apis.jar. These interfaces are shared by a number of tools, so placing them in their own jar simplifies coordination and reduces 
+     the risk of duplication. <em>To run &xslt4j;, you must add xml-apis.jar to your classpath.</em> See <link idref="getstarted"
+     anchor="classpath">Setting up the system class path</link>.</p>
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Reorder slightly and add test to not synthesize xmlns:xsl declaration
+ if one was already present on the DOM's root element.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan Version.java<br/><ref>Committer's log entry: </ref>D13 internal version number update<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>D13 internal version number update<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeList.java<br/><ref>Committer's log entry: </ref>Bugzilla4842, secondary complaint (glitch in getChildren)... &lt;blush/&gt;<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>Bugzilla4842: Expand the proxy layer to support more of the DOM API.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Namespace decls are themselves not namespace-aware, in the
+ Namespaces 1.0 REC. Use the qname.Grumble.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>"Tupograflica eror". Sorry 'bout that!<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Sigh. The XML Namespaces spec it itself imperfectly
+ namespace-aware. While there's a plan to fix that, it's
+ safer for now if we test the QName when looking for
+ explicit instances of xmlns:xml in the source document.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql DTMDocument.java
+ java/src/org/apache/xalan/templates ElemApplyTemplates.java
+ java/src/org/apache/xalan/xslt Process.java
+ java/src/org/apache/xml/dtm DTMManager.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDefaultBaseIterators.java
+ DTMDefaultBaseTraversers.java
+ DTMManagerDefault.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Another fairly large change in the DTM architexture (sic)....
+
+ We've changed DTM's internal behavior so it can now assign
+ more than one "DTM ID" to a single document, cascading from
+ one ID to the next. This means that the size of a single DTM is
+ no longer limited by the bits available in the low part of the DTM
+ Node Handle. This means we can support larger documents.
+
+ That has allowed us to reduce the number of bits reserved
+ for that portion of the node addresing scheme... which in turn has
+ increased the number of bits available for use in the DTM ID. This
+ means we can now have many more documents active at once.
+
+ The trade-off is that huge documents will require more than one
+ DTM ID and thus cut into the number of documents, But since we
+ now have 16 bits of DTM ID space, I don't think we're really likely
+ to run into both limits at once. And the changes are essentially
+ limited to the DTM layer; the rest of Xalan should be unaffected.
+
+ In the process of making this change, I've also encapsulated the
+ conversions between DTM API node handles and DTMDefaultBase's
+ internal node indices. That should be safer all 'round.
+
+ NOTE: One side effect of this change is that the strings
+ generated by the key() function have changed again.
+ I've updated the IDKEY testcases to reflect this.
+
+ Smoketest is currently passing everything except
+ axes109 and the API's TraceListenerTest . But I believe
+ those failures are due to a glitch in my test directory
+ since they also happen when I run the D13 code there,
+ whereas D13 runs fine in the directory where I built it.
+ I'm going to assume that "same result is no new bug"
+ for now.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref
+ DTMDefaultBaseTraversers.java<br/><ref>Committer's log entry: </ref>Found the glitch causing the axes108 bug -- exptype/type.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Added option to set the recursion limit (which we're having trouble with
+ right now; the code that supported it seems to be disabled...) and
+ selfdoc for this and a few other newer options.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>11/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Catch exceptions from the output content handler in flush(), and throw a
+ SAXParseException with line numbers filled in.
+ If we don't do this, and the exception is a RuntimeException,
+ good line numbers of where the exception occured in the stylesheet
+ won't get reported. I tried just catching RuntimeException, but
+ for whatever reason it didn't seem to catch.
+ Fix for Christina's DOMException error problem.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Added: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm
+ DOM2DTMdefaultNamespaceDeclarationNode.java<br/><ref>Committer's log entry: </ref>Moved default namespace declaration node object out of its "inner
+ class" status, since I think I want to perform an instanceof test on it.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMManagerDefault.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xpath XPathAPI.java<br/><ref>Added: </ref>java/src/org/apache/xpath CachedXPathAPI.java<br/><ref>Committer's log entry: </ref>Bugzilla 4336 -- fix for presenting symptom (since the implicit
+ xml: declaration pseudo-DOM node is resynthesized in each
+ DTM, find the _corresponding_ node), and a first draft of
+ CachedXPathAPI which should be a fix for the larger symptom
+ (XPathAPI creates a new DTM every time, which is potentially
+ very ugly for applications that want to run XPaths repeatedly
+ on a single document).
+
+ Also caught and fixed another node-handle/node-identity confusion.
+ The fact that DTM.get...() allowed us to be sloppy about that
+ distinction in the past means there may still be a few others lurking
+ in the code. Ye gods, I _wish_ Java had typedef!<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>Minor tweaks<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib Redirect.java<br/><ref>Committer's log entry: </ref>Patch to enable optional 'append' attribute on redirect:open and
+ redirect:write elements to append to file; note that behavior may
+ not be what you expect when using xml output, since the xml decl
+ will currently be output *each* time you newly write to the file
+ Submitted by: jpvdm@iafrica.com<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>Implement getDocumentElement. If the DTM doesn't represent a
+ wellformed Document, this call is undefined and throws an exception...
+ which isn't DOMlike but that's a non-DOMlike situation.<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
+</s3>
 <s3 title="Changes for &xslt4j; 2.2.D12 and 2.2.D13">
 <p>&xslt4j; 2.2.D13 is intended to be the final release in the current series of Developer releases incorporating
      the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
