@@ -3281,23 +3281,27 @@ public class SAX2DTM2 extends SAX2DTM
    public void copyNS(final int nodeID, SerializationHandler handler)
         throws SAXException
     {
-      int current = nodeID;
+      int current =  DTM.NULL; 
+      int eType = DTM.NULL;
+      int type = DTM.NULL;
       try{
-          while (true)
-          {
-              current++;
-              int eType = _exptype2(current);
-              int type = _exptype2Type(eType);
-         
-              if (type == DTM.ATTRIBUTE_NODE) {
-                 continue;
+        for (int elementID = nodeID; elementID != DTM.ROOT_NODE; elementID = _parent2(elementID)){
+              current =  elementID;    
+              while (true){
+                  current++;
+                  eType = _exptype2(current);
+                  type = _exptype2Type(eType);
+             
+                  if (type == DTM.ATTRIBUTE_NODE) {
+                     continue;
+                  }
+                  else if (type == DTM.NAMESPACE_NODE) {
+                      handler.startPrefixMapping(getNodeNameX(makeNodeHandle(current)), getNodeValue(makeNodeHandle(current)), false);                       
+                  }
+                  else
+                      break;
+                  }
               }
-              else if (type == DTM.NAMESPACE_NODE) {
-                  handler.namespaceAfterStartElement(getNodeNameX(makeNodeHandle(current)), getNodeValue(makeNodeHandle(current)));            
-              }
-              else
-                  break;
-                        }
         }catch (Exception e) {
             throw new SAXException(e);
         }
