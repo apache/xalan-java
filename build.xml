@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- ===================================================================
 
-   Build file for Xalan-J 2.x - for use with the Jakarta Ant java build tool
+   Build file for Xalan-J 3.x - for use with the Jakarta Ant java build tool
    
 Setup instructions: 
    Before running an Ant build, you must
@@ -38,6 +38,7 @@ Other Important Notes:
 Authors:
   Shane Curcuru <shane_curcuru@lotus.com>
   Don Leslie <donald_leslie@lotus.com>
+  Scott Boag <scott_boag@us.ibm.com>
 
 Copyright:
   Copyright (c) 1999-2001 The Apache Software Foundation.
@@ -124,7 +125,7 @@ Copyright:
   <property name="compat.src.dir" value="./compat_src"/>
   <property name="build.compat.classes" value="${build.dir}/compat_classes"/>
   <property name="build.compat.jar" value="${build.dir}/${compat.jar}"/>
-  <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>        
+  <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>
 
    <!-- xml-commons sources (for Javadoc) -->                                                                        
    <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-src.tar.gz"/>                                                                         
@@ -150,13 +151,55 @@ Copyright:
   <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
   <property name="xdocs.DONE.file" value="${xdocs.dir}/sources/xalan/DONE"/>
   <property name="xdocs.XSLTCDONE.file" value="XSLTCDONE"/>
-  <property name="xdocs.XSLTCDONE.location" value="${xdocs.dir}/sources/xalan/${xdocs.XSLTCDONE.file}"/>    
+  <property name="xdocs.XSLTCDONE.location" value="${xdocs.dir}/sources/xalan/${xdocs.XSLTCDONE.file}"/>   
+
+  <!-- XPath 2.0 parser production properties -->
+  <!-- Specifies the desired grammar subset for many targets. -->
+  <property name="spec" value="xpath"/>
+
+  <property name="grammar-file" value="xpath-grammar.xml"/>
+  <property name="spec-file" value="XPathXQuery.xml"/>
+  <property name="fs-spec-file" value="XPathXQuerySemantics.xml"/>
+  <property name="spec-out-name" value="${spec}"/>
+
+  <property name="specxsl" value="shared.xsl"/>
+  <property name="spectype" value="html"/>
+
+  <property name="pubdir" value="F:\"/>
+  
+  <!-- Turns debugging trace on for the parsers. -->
+  <property name="debug" value="false"/>
+  
+  <!-- The value of this depends on how well color-changes works for a spec.  -->
+  <property name="color-changes" value="no"/>
+  
+  <!-- If this is set to true, the tests fail.  Not sure why.  Need to investigate. -->
+  <property name="unicodeinput" value="false"/>
+  
+  <!-- used for the test-xquery-major target. -->
+  <property name="dump" value=""/>
+
+  <property name="yacc" value="bison"/>
+  <property name="lex" value="bin\uflex"/>
+  <!-- property name="lex" value="flex"/ -->
+  <!-- property name="lex" value="bin\uflex"/ -->
+  <property name="yacc.xsl" value="ytree.xsl"/>
+  <property name="lex.xsl" value="lex.xsl"/>
+  <property name="cc" value="gcc"/>
+  <property name="cplus" value="g++"/>
+  <property name="yacc_src" value="${spec}-ysrc"/>
+  <property name="lex_name" value="${spec}.l"/>
+  <property name="yacc_name" value="${spec}.y"/>
+
+  <!-- The default is to build the Xalan parser, but  
+       diagnostic parsers can be built via jjtree.xsl -->
+  <property name="tree.xsl" value="grammar/etree.xsl"/>
+
+ 
   <path id="docs.class.path">
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
     <pathelement location="${bsf.jar}" />
-    <pathelement location="${bcel.jar}" />
-    <pathelement location="${runtime.jar}" />
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
     <pathelement location="${build.xalan.jar}" />
@@ -952,7 +995,7 @@ Copyright:
   </target>
   <target name="smoketest-run" if="tests-available" depends="jar" >
     <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Smoketest" />
-    <ant dir="${test.relpath}" antfile="build.xml" target="smoketest.dev" >
+    <ant dir="${test.relpath}" antfile="build.xml" target="smoke2.dev" >
     </ant>
   </target>
 
@@ -1051,5 +1094,89 @@ Copyright:
     <zip zipfile="./build/xalan-j-docs.zip" basedir="./xml-site/target/xalan-j" includes="**"/>
   </target>
 
- 
+  <!-- =================================================================== -->
+  <!-- XLST 2.0/XPath 2.0 Parser production properties                     -->
+  <!-- =================================================================== -->
+
+   <target name="gen-grammar">
+    <!-- style="javacc.xsl" -->
+    <mkdir dir="${spec}-src"/>
+    <!-- mkdir dir="${spec}-src/org"/>
+    <mkdir dir="${spec}-src/org/apache"/>
+    <mkdir dir="${spec}-src/org/apache/xpath"/>
+    <mkdir dir="${spec}-src/org/apache/xpath/parser"/ -->
+
+    <property name="target.parser" value="${spec}-src"/>
+    
+    <!-- copy file="grammar/SimpleNode.java" todir="${target.parser}"/>
+    <copy file="grammar/Test.java" todir="${target.parser}"/ -->
+    <!-- copy file="XPathApplet.java" todir="${spec}-src"/ -->
+    <style style="${tree.xsl}" in="grammar/xpath-grammar.xml" 
+	   out="${spec}-src/xpath-grammar.jjt" force="yes" extension=".jjt" destdir="${spec}-src">
+      <param name="spec" expression="${spec}"/>
+    </style>
+  </target>
+  
+  <target name="jjtree" depends="gen-grammar">
+    <jjtree target="${spec}-src/xpath-grammar.jjt" 
+	    javacchome="bin"
+	    />
+  </target>
+  
+  <!-- for debugging when you want to modify the .jjt file directly -->
+  <target name="jjtree-only">
+    <jjtree target="${spec}-src/xpath-grammar.jjt" javacchome="bin"/>
+  </target>
+  
+  <target name="javacc" depends="jjtree">
+    <javacc target="${spec}-src/xpath-grammar.jj" 
+	    javacchome="bin"
+	    debugtokenmanager="${debug}"
+	    debugparser="${debug}"
+	    sanitycheck="true"
+	    unicodeinput="${unicodeinput}"
+	    javaunicodeescape="${unicodeinput}"
+      outputdirectory="F:\xalan3\xml-xalan\java\src\org\apache\xpath\parser"
+	    />
+      <copy file="${spec}-src/XPathTreeConstants.java" todir="F:\xalan3\xml-xalan\java\src\org\apache\xpath\parser"/>
+  </target>
+  
+  <target name="compile.parser" depends="javacc">
+    <mkdir dir="${spec}-classes"/>
+    <javac srcdir="${spec}-src" destdir="${spec}-classes"/>
+  </target>
+  
+  <target name="jar.parser" depends="compile.parser"  
+	  description="Build one of the grammar parser jars.  You must specify&#10;
+	  -Dspec=xpath|pathx1|xquery, or the jar will default&#10;
+	  to the xquery.jar">
+    <jar jarfile="grammar/${spec}.jar" manifest="grammar/${spec}-manifest.txt">
+      <fileset dir="${spec}-classes"/>
+    </jar>
+  </target>
+  
+  <target name="xpath.jar" description="Build xpath.jar">
+    <antcall target="jar.parser">
+      <param name="spec" value="xpath"/>
+    </antcall>
+  </target>
+  
+  <target name="pathx1.jar" description="Build pathx1.jar">
+    <antcall target="jar.parser">
+      <param name="spec" value="pathx1"/>
+    </antcall>
+  </target>
+  
+  <target name="xquery.jar" description="Build xquery.jar">
+    <antcall target="jar.parser">
+      <param name="spec" value="xquery"/>
+    </antcall>
+  </target>
+
+  <target name="core.jar" description="Build core.jar">
+    <antcall target="jar.parser">
+      <param name="spec" value="core"/>
+    </antcall>
+  </target>
+
 </project>

@@ -32,7 +32,7 @@ if "%_ANT_HOME%" == "" set _ANT_HOME=.
 rem Default locations of jars we depend on to run Ant on our build.xml file
 rem Set our local vars to all start with _underscore
 set _ANT_JAR=%ANT_JAR%
-if "%_ANT_JAR%" == "" set _ANT_JAR=bin\ant.jar
+if "%_ANT_JAR%" == "" set _ANT_JAR=bin\optional.jar;bin\ant.jar;bin\JavaCC.jar;bin\xalan.jar
 set _PARSER_JAR=%PARSER_JAR%
 if "%_PARSER_JAR%" == "" set _PARSER_JAR=bin\xercesImpl.jar
 set _XML-APIS_JAR=%XML-APIS_JAR%
@@ -43,7 +43,7 @@ rem Use _underscore prefix to not conflict with user's settings
 set _CLASSPATH=%CLASSPATH%
 if exist "%JAVA_HOME%\lib\tools.jar" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
 if exist "%JAVA_HOME%\lib\classes.zip" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\classes.zip
-set _CLASSPATH=%_ANT_JAR%;%_XML-APIS_JAR%;%_PARSER_JAR%;%_CLASSPATH%
+set _CLASSPATH=%_ANT_JAR%;%_XML-APIS_JAR%;%_PARSER_JAR%;%_CLASSPATH%;bin\Tidy.jar
 
 @echo on
 "%_JAVACMD%" -mx64m %JAVA_OPTS% -Dant.home="%ANT_HOME%" -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
