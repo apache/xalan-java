@@ -140,7 +140,7 @@ public class FuncDocument extends Function2Args
         else
           base = xctxt.getSourceTreeManager().findURIFromDoc(baseDoc);
       }
-      else
+      else 
       {
         base = arg2.str();
       }
@@ -210,48 +210,39 @@ public class FuncDocument extends Function2Args
   Node getDoc(XPathContext xctxt, Node context, String uri, String base)
     throws org.xml.sax.SAXException
   {
+    // System.out.println("base: "+base+", uri: "+uri);
     SourceTreeManager treeMgr = xctxt.getSourceTreeManager();
     Node newDoc = treeMgr.findNodeFromURL(uri);
+    if(null != newDoc)
+      return newDoc;
+
+    // If the uri length is zero, get the uri of the stylesheet.
+    if(uri.length() == 0)
+      uri = xctxt.getNamespaceContext().getBaseIdentifier();
+    
+    try
+    {
+      if((null != uri) && (uri.toString().length() > 0))
+      {
+        newDoc = treeMgr.getSourceTree(base, uri);
+        // System.out.println("newDoc: "+((Document)newDoc).getDocumentElement().getNodeName());
+      }
+      else
+        warn(xctxt, XSLTErrorResources.WG_CANNOT_MAKE_URL_FROM, new Object[]{((base == null) ? "" : base )+uri}); //"Can not make URL from: "+((base == null) ? "" : base )+uri);
+    }
+    catch(Exception e)
+    {
+      newDoc = null;
+      // path.warn(XSLTErrorResources.WG_ENCODING_NOT_SUPPORTED_USING_JAVA, new Object[]{((base == null) ? "" : base )+uri}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+    }
     if(null == newDoc)
     {
-      if(uri.length() == 0)
-      {
-        uri = xctxt.getNamespaceContext().getBaseIdentifier();
-      }
-      // TransformerImpl transformer = (TransformerImpl)xctxt;
-      TransformerImpl transformer = (TransformerImpl)xctxt.getOwnerObject();
-      
-      { 
-        String url = null;
-        try
-        {
-          url = xctxt.getAbsoluteURI(uri, base);
-          if((null != url) && (url.toString().length() > 0))
-          {
-            InputSource inputSource = new InputSource(url);
-            // System.out.println("Trying to parse: "+url.toString());
-            newDoc = transformer.parseToNode(inputSource);
-          }
-          else
-          {
-            warn(xctxt, XSLTErrorResources.WG_CANNOT_MAKE_URL_FROM, new Object[]{((base == null) ? "" : base )+uri}); //"Can not make URL from: "+((base == null) ? "" : base )+uri);
-          }
-        }
-        catch(Exception e)
-        {
-          newDoc = null;
-          // path.warn(XSLTErrorResources.WG_ENCODING_NOT_SUPPORTED_USING_JAVA, new Object[]{((base == null) ? "" : base )+uri}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
-        }
-        if(null == newDoc)
-        {
-          warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC, new Object[]{url== null ?((base == null) ? "" : base)+uri : url.toString()}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
-        }
-        else
-        {
-          // TBD: What to do about XLocator?
-          // xctxt.getSourceTreeManager().associateXLocatorToNode(newDoc, url, null);
-        }
-      }
+      warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC, new Object[]{uri== null ?((base == null) ? "" : base)+uri : uri.toString()}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+    }
+    else
+    {
+      // TBD: What to do about XLocator?
+      // xctxt.getSourceTreeManager().associateXLocatorToNode(newDoc, url, null);
     }
     return newDoc;
   }
