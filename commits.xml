@@ -39,4 +39,304 @@
 <Log>Double-semicolon fixed so Henri's compiler stops complaining about an 
 unreachable statement. &lt;grin/&gt;</Log>
 </Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>03/21/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java</Modified>
+<Added>java/compat_src/org/apache/xalan/xpath/xdom
+ XercesLiaison.java</Added>
+<Log>Add XercesLiaison class to APIs. Also fix the code in XSLTEngineImpl so that 
+when a liaison is passed in, use it and only it to parse the stylesheet.</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>03/22/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt EnvironmentCheck.java</Modified>
+<Log>Added more .jar sizes to jarVersions listing</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>03/22/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
+<Log>We've reworked the algorithm again. The fixed-chunk-size mode (initial
+ and max. chunk sizes equal) runs essentially unchanged, though with a
+ few cycles less overhead. The variable-chunk-size mode now uses a
+ recursive-encapsulation scheme, where the first chunk may itself be a
+ FastStringBuffer whose total length equals one chunk; every so often
+ we push the existing data down one level and restart with a larger
+ chunk size. The new scheme has been stress-tested and is apparently
+ working. At this writing, however, Xalan uses only the fixed-size
+ mode (initial size equals max size), and no effort has been made to
+ find the optimial values for the tuning parameters. It does appear
+ likely that the best values will vary with usage patterns, but we hope
+ to find a good compromise.
+
+ I'll probably be putting this aside for a while to work on other things.
+ If someone wants to experiment with varying the block sizes and
+ how frequently they grow, and suggest good performance/memory
+ tradeoff points, go for it!</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>03/22/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
+<Log>Minor tweak to the javadoc.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>03/23/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
+<Log>reset() versus setLength(0).</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemForEach.java</Modified>
+<Log>Fix for bug# 1116, getMatchedTemplate throws ClassCastException.
+ Don't push template unless it is a xsl:template.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates OutputProperties.java</Modified>
+<Log>Patches submitted by Patrick Moore &lt;patrickm@rioport.com&gt;
+ on 03/15/2001 01:25 PM:
+
+ This proposed change does a number of things:
+
+ 1. Problem: HTML output method does not uses XML output properties as
+ default.
+
+ In both org/apache/xalan/templates/output_html.properties and in the java
+ doc for
+ org/apache/xalan/templates/OutputProperties#getDefaultMethodProperties(Strin
+ g) It specifically states that all OutputProperties use the
+ output_xml.properties as a base. In the code this is not true for html. This
+ is now changed to match the comments
+
+ 2. Problem: unclear IOException.
+
+ If there was a problem loading the XML properties file. The wrapped
+ exception now will say which file was trying to be loaded. If the file did
+ not exist I was getting a very strange "Stream closed" IOException message.
+
+ 3. Problem: the streams were not closed after reading the property file.
+
+ Fixed.
+
+ 4. Problem: the double-check locking mechanism does not work in Java (see
+ bug #919)
+
+ &lt;http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-toolbox.html&gt;
+
+ 5. QUESTION: now if there is a default properties (i.e.
+ output_xml.properties has been loaded) but the expected properties file does
+ not exist a error message will be printed to System.err and the processing
+ will continuing using just the default properties (output_xml.properties) I
+ felt that this is the best behavior.
+
+ (comment by sboag: I think it's better to
+ throw a runtime exception in this case.
+ but we can discuss this over time. For now
+ the patch was modified to do the runtime exception).</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>03/27/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt StylesheetRoot.java</Modified>
+<Added>java/compat_src/org/apache/xalan/xslt Stylesheet.java</Added>
+<Log>Add Stylesheet class to APIs. Change StylesheetRoot to extend from Stylesheet.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/27/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLTSchema.java
+ java/src/org/apache/xalan/stree SourceTreeHandler.java
+ java/src/org/apache/xalan/templates ElemForEach.java
+ ElemLiteralResult.java
+ java/src/org/apache/xalan/transformer QueuedSAXEvent.java
+ ResultTreeHandler.java TransformerImpl.java
+ java/src/org/apache/xml/utils BoolStack.java
+ java/src/org/apache/xpath XPathContext.java</Modified>
+<Log>This check-in contains a couple things that overlapped on my
+ system, so I'm checking them in together.
+ 1) Unfinished (in progress) implementation of TransformSnapshot mechanism,
+ which will hopefully allow a result ContentHandler to take a snapshot
+ at a given point, and the restart execution from that point at some
+ later time. For tooling support.
+ 2) Check to make sure SourceTreeHandler isn't being entered twice,
+ which is related to the cocoon bug from a couple of weeks ago. This
+ will just help diagnose such a problem in the future.
+ 3) Removed the error stack trace print from postExceptionFromThread.
+ 4) Report exception in SourceTreeHandler#endDocument after
+ the join, if we can determine that the posted exception won't be
+ caught elsewhere.
+ 5) removed some catches that simply rethrew the exception
+ (thanks to Patrick Moore &lt;patrickm@rioport.com&gt;).
+ See my note on 3/27/2001 to Patrick for more info
+ on the last two.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/27/2001</DateCommitted>
+<Added>java/src/org/apache/xalan/transformer TransformSnapshot.java
+ TransformSnapshotImpl.java</Added>
+<Log>Unfinished (in progress) implementation of TransformSnapshot mechanism,
+ which will hopefully allow a result ContentHandler to take a snapshot
+ at a given point, and the restart execution from that point at some
+ later time. For tooling support.on the last two.</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>03/28/2001</DateCommitted>
+<Added>java/compat_src/org/apache/xalan/xslt
+ XSLProcessorException.java</Added>
+<Log>Add XSLProcessorException class to compatibility classes</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>03/29/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor
+ ProcessorStylesheetElement.java
+ ProcessorTemplateElem.java StylesheetHandler.java
+ XSLTElementDef.java XSLTElementProcessor.java
+ XSLTSchema.java</Modified>
+<Log>Try to catch element order and required element errors during stylesheet 
+object creation. This new code adds an order and a required field to 
+XSLElementDef objects where it is applicable.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>04/02/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Fix bugzilla bug 1170. If we're trying an xsl:apply-imports at the top level 
+(ie there are no
+ imported stylesheets), we need to indicate that there is no matching template 
+and prevent and infinite recursion by using the built-in template.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>04/02/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/extensions MethodResolver.java</Modified>
+<Log>Code cleanup submitted by Art Welch &lt;art_w@EASTPOINT.COM&gt;.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>04/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils TreeWalker.java</Modified>
+<Log>Add locator support to TreeWalker</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>04/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ QueuedStartElement.java</Modified>
+<Log>Small fix made for getCurrentNode.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>04/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils TreeWalker.java</Modified>
+<Log>Commented out extra call to getData()... this could be a big performance
+ improvement for some stylesheets.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>04/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ TransformSnapshotImpl.java TransformerImpl.java</Modified>
+<Log>Additional support for tooling. Allow tools to take a snapshot of context and 
+restart execution at that point.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>04/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor
+ XSLTElementProcessor.java
+ java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/transformer
+ TransformSnapshotImpl.java TransformerImpl.java</Modified>
+<Log>Misc stuff left out from previous check in</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>04/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/functions FuncCurrent.java</Modified>
+<Log>Don't assume that the object returned by getSubContextList() is a 
+PredicatedNodeTest object.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>04/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor ProcessorInclude.java
+ TransformerFactoryImpl.java
+ java/src/org/apache/xalan/transformer
+ TransformerIdentityImpl.java
+ java/src/org/apache/xml/utils TreeWalker.java</Modified>
+<Log>Create new TreeWalker constructor that takes a systemId parameter. Change 
+TreeWalker to change fields in the locator and not set it for each node.</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>04/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath XPath.java</Modified>
+<Log>Fix Bugzilla bug:
+ PR: 1106
+ Submitted by: elharo@metalab.unc.edu</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>04/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql QueryParameter.java
+ SQLExtensionError.java XConnection.java</Modified>
+<Log>Minor Javadoc updates (add @author name, remove declared but unthrown @throws)</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>04/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql Column.java
+ ColumnAttribute.java ColumnData.java
+ ColumnHeader.java Row.java RowSet.java
+ StreamableNode.java XConnection.java
+ XStatement.java</Modified>
+<Log>Support for Streamable Mode- John Gentilin</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>04/24/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XObject.java</Modified>
+<Log>Resolve bugzilla bug 1015 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1015&gt;.
+ Fix prevents null pointer exceptions when null non-XSLT arguments are
+ passed to an extension function.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>04/24/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/extensions MethodResolver.java</Modified>
+<Log>Resolve bugzilla bug 1015 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1015&gt;.
+ Fix prevents null pointer exceptions when null non-XSLT arguments are
+ passed to an extension function.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>04/24/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java</Modified>
+<Log>Fix copy/paste error. Want to use TransformerFactoryImpl's class loader.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>04/24/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ TransformSnapshotImpl.java</Modified>
+<Log>Keep a copy of current contextNodeList is there is one</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>04/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt EnvironmentCheck.java</Modified>
+<Log>Added checkDirForJars() which checks java.ext.dirs as well now</Log>
+</Commit>
 </Commits>
