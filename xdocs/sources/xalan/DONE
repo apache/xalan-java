@@ -6,12 +6,14 @@
    matches (xsl:strip-space).<br/><br/></li>
   <li>Fixed a bug running Norm Walsh's DocBook stylesheets by not setting the variable stack position if the TreeWalker is not owned by a
   top-level NodeIterator.<br/><br/></li>
-  <li>Also fixed a null pointer problem that surfaced processing DocBook styleshets.<br/><br/></li>
+  <li>Fixed a problem with null namespace being passed from xsl:element. This bug also surfaced while processing DocBook
+   stylesheets.<br/><br/></li>
   <li>In the interest of stability, we now treat "unknown error in XPath" as a fatal error.<br/><br/></li>
   <li>Added support in stylesheet processing instructions for "text/xml" and "application/xml+xslt" mime types.<br/><br/></li>
-  <li>Fixed tokenizing of stylesheet processing instructions to allow parameters to be passed to server in href attributes.</li>
-  <li>Fixed a bug passing Transformer creation error messages to ErrorListener when an ErrorListener has been set on TransformerFactory.</li>
-  <li>When using an Exception to instantiate a FactoryConfigurationError (extends Error), propagate the Exception message to super().</li>
+  <li>Fixed tokenizing of stylesheet processing instructions to allow parameters to be passed to server in href attributes.<br/><br/></li>
+  <li>Fixed a bug passing Transformer creation error messages to ErrorListener when an ErrorListener has been set on
+   TransformerFactory.<br/><br/></li>
+  <li>When using an Exception to instantiate a FactoryConfigurationError (extends Error), we now propagate the Exception message to super().</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
