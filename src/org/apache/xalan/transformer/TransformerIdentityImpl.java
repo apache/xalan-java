@@ -327,7 +327,7 @@ public class TransformerIdentityImpl extends Transformer
         {
           try
           {
-            if(dNode.getNodeType() != Node.DOCUMENT_NODE)
+            if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
               this.startDocument();
             try
             {
@@ -345,7 +345,7 @@ public class TransformerIdentityImpl extends Transformer
             }
             finally
             {
-              if(dNode.getNodeType() != Node.DOCUMENT_NODE)
+              if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
                 this.endDocument();
             }
           }
