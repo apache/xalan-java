@@ -100,7 +100,10 @@ public class ElemSort extends ElemTemplateElement
    */
   public void setSelect(XPath v)
   {
-    m_selectExpression = v;
+    if (v.getPatternString().indexOf("{") < 0)    
+      m_selectExpression = v;          
+    else
+      error(XSLTErrorResources.ER_NO_CURLYBRACE, null);
   }
 
   /**
