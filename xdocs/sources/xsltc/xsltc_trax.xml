@@ -67,6 +67,7 @@
   <li><link anchor="conclusion">Conclusion</link></li>
   <li><link anchor="appendix">Appendix</link></li>      
 </ul>
+<p>See also: <jump href="../xsltc_usage.html#api">Calling XSLTC with the TrAX/JAXP API</jump></p>
 <anchor name="abstract"/>
 <s2 title="Abstract">
 <p>This document describes what I have so far as a prototype for integrating
