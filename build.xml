@@ -334,13 +334,14 @@ Copyright:
 
     <!-- Copy over pre-built documentation and javadoc, and samples src and jar -->
     <copydir src="${build.docs}" dest="${dist.dir}/docs"/>
-    <copydir src="${samples.dir}" dest="${dist.dir}/samples"/>   
+    <copydir src="${samples.dir}" dest="${dist.dir}/samples"/> 
     <copyfile src="${build.dir}/xalansamples.jar" dest="${dist.dir}/bin/xalansamples.jar"/>
     <copyfile src="${build.dir}/xalanservlet.jar" dest="${dist.dir}/bin/xalanservlet.jar"/>
 
     <!-- Copy xalan jar into the bin directory (subject to change) -->
     <copyfile src="${build.dir}/${xalan.jar}" dest="${dist.dir}/bin/${xalan.jar}"/>
 
+    <copyfile src="readme.html" dest="${dist.dir}/readme.html"/>      
     <copyfile src="build.xml" dest="${dist.dir}/build.xml"/>
     <copyfile src="build.sh" dest="${dist.dir}/build.sh"/>
     <copyfile src="build.bat" dest="${dist.dir}/build.bat"/>
