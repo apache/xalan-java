@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,20 +56,33 @@
  */
 package org.apache.xalan.templates;
 
-import java.io.IOException;
+// Java imports
 import java.io.ObjectInputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+
+import java.text.DecimalFormatSymbols;
+
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
 
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xml.dtm.DTM;
+// Xalan imports
+import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringVector;
-import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xpath.XPath;
+
+// DOM Imports
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Document;
+import org.apache.xml.dtm.DTM;
+
+// SAX2 Imports
+import javax.xml.transform.TransformerException;
+import org.xml.sax.Locator;
+
+import javax.xml.transform.SourceLocator;
 
 /**
  * Represents a stylesheet element.
@@ -435,7 +448,13 @@ public class Stylesheet extends ElemTemplateElement
    * @serial
    */
   private String m_Version;
-
+  
+  /**
+   * Whether or not the stylesheet is in "Forward Compatibility Mode" 
+   * @serial
+   */
+  private boolean m_isCompatibleMode = false;
+ 
   /**
    * Set the "version" property.
    * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
@@ -445,6 +464,17 @@ public class Stylesheet extends ElemTemplateElement
   public void setVersion(String v)
   {
     m_Version = v;
+    m_isCompatibleMode = (Double.valueOf(v).doubleValue() > Constants.XSLTVERSUPPORTED);
+  }
+
+  /**
+   * Get whether or not the stylesheet is in "Forward Compatibility Mode"
+   * 
+   * @return true if in forward compatible mode, false otherwise
+   */
+  public boolean getCompatibleMode()
+  {
+       return m_isCompatibleMode;
   }
 
   /**

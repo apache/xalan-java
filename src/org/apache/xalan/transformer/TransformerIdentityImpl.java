@@ -322,6 +322,16 @@ public class TransformerIdentityImpl extends Transformer
         m_systemID = dsource.getSystemId();
   
         Node dNode = dsource.getNode();
+        
+      // As per JAXP1.2 spec if Zero-argument default constructor DOMSource()
+      // is used, and no DOM source is set, then the Transformer will create
+      // an empty source Document using newDocument().
+        if(null == dNode){
+            try{
+                dNode = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            }
+            catch(Exception e){ }
+        }
   
         if (null != dNode)
         {
@@ -383,6 +393,17 @@ public class TransformerIdentityImpl extends Transformer
         if (source instanceof SAXSource)
           reader = ((SAXSource) source).getXMLReader();
           
+        //As per JAXP1.2 spec, if a SAXSource is created using a SAX InputSource then
+        // the Transformer or SAXTransformerFactory creates a reader via 
+        //org.xml.sax.helpers.XMLReaderFactory (if setXMLReader is not used), 
+        //sets itself as the reader s org.xml.sax.ContentHandler , and calls 
+        //reader.parse(inputSource).
+        if (null == reader)
+        {
+          reader = XMLReaderFactory.createXMLReader();
+          reader.setFeature("http://xml.org/sax/features/namespaces", true);
+        } 
+        
         if (null == reader)
         {
   
@@ -410,11 +431,7 @@ public class TransformerIdentityImpl extends Transformer
           catch (AbstractMethodError ame){}
         }
   
-        if (null == reader)
-        {
-          reader = XMLReaderFactory.createXMLReader();
-        }
-  
+        
         try
         {
           reader.setFeature("http://xml.org/sax/features/namespace-prefixes",

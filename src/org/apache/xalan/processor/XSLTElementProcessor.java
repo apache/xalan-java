@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,16 +56,23 @@
  */
 package org.apache.xalan.processor;
 
-import java.util.Vector;
+import org.xml.sax.InputSource;
+import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.ContentHandler;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Constants;
 import org.apache.xml.utils.IntStack;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+
+import java.util.Vector;
 
 /**
  * This class acts as the superclass for all stylesheet element
@@ -326,7 +333,13 @@ public class XSLTElementProcessor extends ElemTemplateElement
   {
 
     XSLTElementDef def = getElemDef();
-    AttributesImpl undefines = throwError ? null : new AttributesImpl();
+   
+    AttributesImpl undefines = null;
+    boolean isCompatibleMode = ((null != handler.getStylesheet() 
+                                 && handler.getStylesheet().getCompatibleMode())
+                                || !throwError);
+    if (isCompatibleMode)
+      undefines = new AttributesImpl();
 
     // Keep track of which XSLTAttributeDefs have been processed, so 
     // I can see which default values need to be set.
@@ -351,7 +364,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
 
       if (null == attrDef)
       {
-        if (throwError)
+        if (!isCompatibleMode)
         {
 
           // Then barf, because this element does not allow this attribute.
