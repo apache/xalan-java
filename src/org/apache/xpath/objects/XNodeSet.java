@@ -92,6 +92,7 @@ public class XNodeSet extends XObject
    */
   protected XNodeSet()
   {
+    m_precedence = XObject.ORDER_NODESET;
   }
 
   /**
@@ -103,6 +104,7 @@ public class XNodeSet extends XObject
   {
     super(val);
     m_dtmMgr = val.getDTMManager();
+    m_precedence = XObject.ORDER_NODESET;
   }
 
   /**
@@ -113,6 +115,7 @@ public class XNodeSet extends XObject
   {
     super(new NodeSetDTM(dtmMgr));
     m_dtmMgr = dtmMgr;
+    m_precedence = XObject.ORDER_NODESET;
   }
 
   /**
@@ -130,6 +133,7 @@ public class XNodeSet extends XObject
     {
       ((NodeSetDTM) m_obj).addNode(n);
     }
+    m_precedence = XObject.ORDER_NODESET;
   }
 
   /**

@@ -79,6 +79,9 @@ public class Equals extends Operation
   public XObject operate(XObject left, XObject right)
           throws javax.xml.transform.TransformerException
   {
-    return left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+    if (right.getOrder() > left.getOrder())
+      return left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+    else
+      return right.equals(left) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
 }

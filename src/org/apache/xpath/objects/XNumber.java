@@ -82,6 +82,7 @@ public class XNumber extends XObject
     super();
 
     m_val = d;
+    m_precedence = XObject.ORDER_NUMBER;
   }
   
   /**
@@ -96,6 +97,7 @@ public class XNumber extends XObject
 
     m_val = num.doubleValue();
     m_obj = num;
+    m_precedence = XObject.ORDER_NUMBER;
   }
 
   /**

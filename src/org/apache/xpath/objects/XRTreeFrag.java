@@ -106,6 +106,7 @@ public class XRTreeFrag extends XObject implements Cloneable
     m_dtmRoot = root;
     m_xctxt = xctxt;
     m_dtm = xctxt.getDTM(root);
+    m_precedence = XObject.ORDER_RTF;
   }
   
   /**

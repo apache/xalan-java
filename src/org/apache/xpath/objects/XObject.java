@@ -88,11 +88,27 @@ public class XObject extends Expression implements Serializable, Cloneable
    *  @serial  
    */
   protected Object m_obj;  // This may be NULL!!!
+  
+  /* Constants for precedence order of object types */
+  protected static final short ORDER_RTF = 1;
+  protected static final short ORDER_NODESET = 2;
+  protected static final short ORDER_BOOLEAN = 3;
+  protected static final short ORDER_NUMBER = 4;
+  protected static final short ORDER_STRING = 5;
+  protected static final short ORDER_OBJECT = -1;
+  
+  /**
+   * The precedence order of this object, according to XSLT rules
+   */ 
+  protected short m_precedence;
 
   /**
    * Create an XObject.
    */
-  public XObject(){}
+  public XObject()
+  {
+    m_precedence = ORDER_OBJECT;  
+  }
 
   /**
    * Create an XObject.
@@ -103,6 +119,7 @@ public class XObject extends Expression implements Serializable, Cloneable
   public XObject(Object obj)
   {
     m_obj = obj;
+    m_precedence = ORDER_OBJECT;
   }
 
   /**
@@ -231,6 +248,16 @@ public class XObject extends Expression implements Serializable, Cloneable
   public int getType()
   {
     return CLASS_UNKNOWN;
+  }
+  
+  /**
+   * Get this objects precedence order.
+   *
+   * @return precedence order 
+   */
+  public short getOrder()
+  {
+    return m_precedence;
   }
 
   /**

@@ -93,6 +93,7 @@ public class XBoolean extends XObject
     super();
 
     m_val = b;
+    m_precedence = XObject.ORDER_BOOLEAN;
   }
   
   /**
@@ -107,6 +108,7 @@ public class XBoolean extends XObject
 
     m_val = b.booleanValue();
     m_obj = b;
+    m_precedence = XObject.ORDER_BOOLEAN;
   }
 
 

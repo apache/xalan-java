@@ -87,6 +87,7 @@ public class XString extends XObject implements XMLString
   protected XString(Object val)
   {
     super(val);
+    m_precedence = XObject.ORDER_STRING;
   }
 
   /**
@@ -97,6 +98,7 @@ public class XString extends XObject implements XMLString
   public XString(String val)
   {
     super(val);
+    m_precedence = XObject.ORDER_STRING;
   }
 
   /**
