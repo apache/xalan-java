@@ -107,9 +107,16 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /**
    * All the character content, including attribute values, are stored in
    * this buffer.
-   * %REVIEW% Should this have an option of being shared?
+   *
+   * %REVIEW% Should this have an option of being shared across DTMs?
+   * Sequentially only; not threadsafe... Currently, I think not.
+   *
+   * %REVIEW%  Initial size should be pushed way down to reduce weight of RTFs,
+   * pending reduction in number of RTFs.
+   * However, I've got a bug in whitespace normalization to fix first.
    */
   private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
+  //private FastStringBuffer m_chars = new FastStringBuffer(5, 13);
 
   /** This vector holds offset and length data. */
   protected SuballocatedIntVector m_data;
@@ -231,7 +238,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     super(mgr, source, dtmIdentity, whiteSpaceFilter, 
           xstringfactory, doIndexing);
           
-    m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
+    // %REVIEW%  Initial size pushed way down to reduce weight of RTFs
+    // (I'm not entirely sure 0 would work, so I'm playing it safe for now.)
+    //m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
+    m_data = new SuballocatedIntVector(32, 1024);
+
     m_data.addElement(0);   // Need placeholder in case index into here must be <0.
 
     m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
