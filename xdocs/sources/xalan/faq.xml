@@ -94,7 +94,6 @@
     <p>For more information, see <link idref="getstarted" anchor="classpath">Setting up the system classpath</link>.</p></a>
    </faq>
  
-
 	<faq title="Stylesheet validation">
 		<q>How do I validate an XSL stylesheet?</q>
 		<a>
@@ -105,5 +104,20 @@
       XML.</p>
       <p>You can use the xsl:stylesheet doctype defined in xsl-html40s.dtd for stylesheets that generate HTML.</p>
 		</a>
-	</faq> 
+	</faq>
+    
+    <faq title="Retrieving nodes in the default namespace">
+     <q>XPath isn't retrieving nodes that are in the default namespace I defined. How do I get them?</q>
+     <a><p>If you are looking for nodes in a namespace, the XPath expression must include a namespace prefix that you have mapped to the
+       namespace with an xmlns declaration. If you have declared a default namespace, it does not have a prefix (see 
+       <jump href="http://www.w3.org/TR/xpath.html#node-tests">XPath Node Tests</jump>). In order to construct XPath expressions 
+       to retrieve nodes from this namespace, you must add a namespace declaration that provides a prefix you can include in the XPath
+        expressions.</p>
+       <p>Suppose, for example, you you want to locate nodes in a default namespace declared as follows:<br/>
+       <code>xmlns="http://my-namespace"</code></p>
+       <p>Add a nampespace declaration with a prefix:<br/>
+       <code>xmlns:foo="http://my-namespace"</code></p>       
+       <p>Then you can use foo: in your XPath expression.</p>
+       <p>Hint: Don't use default namespaces, and the problem doesn't arise.</p></a>
+    </faq>   
 </faqs>
