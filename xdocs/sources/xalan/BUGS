@@ -1,5 +1,5 @@
 <s3 title="Open bugs and bug reporting">
-<p>&xslt4j-current; passes all conformance tests in our comprehensive test suite. We are not aware of any outstanding bugs in this release. We are aware, however, of a Xerces bug in &xml4j-used; which does affect &xslt4j;:</p>
+<p>&xslt4j-current; passes all conformance tests in our test suite. We are not aware of any outstanding bugs in this release. We are aware, however, of a Xerces bug in &xml4j-used; which does affect &xslt4j;:</p>
 <ul>
 <li>&xml4j; 1.2.3 does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16 documents. 
 Xerces will post a fix shortly.<br/><br/></li>
