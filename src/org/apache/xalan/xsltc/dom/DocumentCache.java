@@ -95,6 +95,11 @@ public final class DocumentCache implements DOMCache {
     private SAXParser _parser;
     private XMLReader _reader;
 
+    private static final int REFRESH_INTERVAL = 1000;
+
+    private static final String NAMESPACE_FEATURE =
+	"http://xml.org/sax/features/namespaces";
+
     /*
      * Inner class containing a DOMImpl object and DTD handler
      */
@@ -200,6 +205,12 @@ public final class DocumentCache implements DOMCache {
 	try {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    try {
+		factory.setFeature(NAMESPACE_FEATURE,true);
+	    }
+	    catch (Exception e) {
+		factory.setNamespaceAware(true);
+	    }
 	    _parser = factory.newSAXParser();
 	    _reader = _parser.getXMLReader();
 	}
@@ -284,7 +295,7 @@ public final class DocumentCache implements DOMCache {
 	    long chk = doc.getLastChecked();
 	    doc.setLastChecked(now);
 	    // Has the modification time for this file been checked lately?
-	    if (now > (chk + 600000)) {
+	    if (now > (chk + REFRESH_INTERVAL)) {
 		doc.setLastChecked(now);
 		long last = getLastModified(uri);
 		// Reload document if it has been modified since last download
