@@ -97,6 +97,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
+	setIndent(true);  // default for HTML
 // System.out.println("StreamHTMLOutput.<init>");
     }
 

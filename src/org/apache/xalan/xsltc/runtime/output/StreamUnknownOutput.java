@@ -90,7 +90,6 @@ public class StreamUnknownOutput extends StreamOutput {
     // Cache calls to output properties events
     private String       _mediaType          = null;
     private boolean      _callStartDocument  = false;
-    private boolean      _callSetIndent      = false;
     private boolean      _callSetVersion     = false;
     private boolean      _callSetDoctype     = false;
 
@@ -247,12 +246,12 @@ public class StreamUnknownOutput extends StreamOutput {
 	_callSetDoctype = true;
     }
 
+    /**
+     * This method cannot be cached because default is different in 
+     * HTML and XML (we need more than a boolean).
+     */
     public void setIndent(boolean indent) { 
 	_handler.setIndent(indent);
-
-	// Cache call to setIndent()
-	super.setIndent(indent);
-	_callSetIndent = true;
     }
 
     public void setVersion(String version) { 
@@ -294,10 +293,6 @@ public class StreamUnknownOutput extends StreamOutput {
 	if (_isHtmlOutput) {
 	    _handler = new StreamHTMLOutput(_handler);
 
-	    // Transfer output properties (HTML only)
-	    if (_callSetIndent) {
-		_handler.setIndent(_indent);
-	    }
 	    if (_callSetVersion) {
 		_handler.setVersion(_version);
 	    }
