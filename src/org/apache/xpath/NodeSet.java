@@ -924,7 +924,10 @@ public class NodeSet extends NodeVector
       throw new RuntimeException(
         "This NodeSet can not do indexing or counting functions!");
 
-    return elementAt(m_next);
+    int saved = m_next;
+    Node n = elementAt(m_next-1);
+    m_next = saved; // HACK: I think this is a bit of a hack.  -sb
+    return n;
   }
 
   /** NEEDSDOC Field m_mutable          */
