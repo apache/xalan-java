@@ -1,15 +1,16 @@
-<s2 title="XSLTC Usage Constraints">
-<p>As of this release, the following changes, additions, omissions, oddities, problems, etc exist in XSLT may impact 
-your use of XSLTC.
+<anchor name="xsltcreleasenotes"/>
+<s2 title="XSLTC Release Notes">
+<p>For this release, please note the following changes, additions, omissions, problems, procedures for running demos, and new support 
+for the TrAX API.
 </p>
 <ul>
-  <li><link anchor="new">Changes and New Features</link></li>
-  <li><link anchor="conf">Conformance</link></li>
-  <li><link anchor="demos">Running Demos</link></li>
-  <li><link anchor="knownproblems">Known Problems</link></li>
-  <li><link anchor="trax">Translets and TrAX</link></li>
+  <li><link anchor="xsltcnew">Changes and New Features</link></li>
+  <li><link anchor="xsltcconf">Conformance</link></li>
+  <li><link anchor="xsltcknownproblems">Known Problems</link></li>
+  <li><link anchor="xsltcdemos">Running Demos</link></li>  
+  <li><link anchor="xsltctrax">Translets and TrAX</link></li>
 </ul>
-<anchor name="new"/>
+<anchor name="xsltcnew"/>
 <s3 title="Changes and New Features">
 <p>This - being the first release of XSLTC on Apache (xml.apache.org) - "What's changed" is 
 relative to Preview 5 of XSLTC posted on www.sun.com/xml/developers.</p>
@@ -26,7 +27,7 @@ relative to Preview 5 of XSLTC posted on www.sun.com/xml/developers.</p>
   and exception is encountered.</li>
 </ul>
 </s3>
-<anchor name="conf"/>
+<anchor name="xsltcconf"/>
 <s3 title="XSLT 1.0 Conformance and Extensions">
 <p>XSLTC does not yet support the following features of the <resource-ref idref="xsl"/>:</p>
 <ul>
@@ -47,28 +48,8 @@ but which are supported by a number of other XSLT processors:</p>
     node-sets. This would enable sorting and grouping of nodes assigned to a tree </li>
 </ul>
 </s3>
-<anchor name="demos"/>
-<s3 title="Running Demos">
-<p>XSLTC provides demos for using XSLTC as a servlet and as a handler for 
-Brazil (a new and powerful Web techology from Sun labs). To run these demos,
-download Brazil from sunlabs:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;<jump href="http://research.sun.com/research/download/index.html">http://research.sun.com/research/download/index.html</jump></code></p>
-<p>and the java extensions for servlets from Sun:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;
-<jump href="http://java.sun.com/products/servlet/download.html">
-http://java.sun.com/products/servlet/download.html</jump>
-</code></p>
-<p>The translet must be specified as a pure class name, accessible
-through the Brazil handler's classpath. For example:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;translet=mk054</code></p>
-<p>The document must be specified as a valid URL. For example:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;document=http://server/path/to/filename.xml</code></p>
-<p>If the file is local to the Brazil handler, it has to be
-specified using the "file:filename.xml" format.</p>
-<note>You also need to make the Brazil and javax classes available from you classpath</note>
-</s3>
-<anchor name="knowproblems"/>
-<s3 title="Know Problems">
+<anchor name="xsltcknownproblems"/>
+<s3 title="Known Problems">
 <ul>
   <li>Casting variables. XSLTC requires you to explicitly type cast values 
   returned by variables or expressions, when you use them in tests. Always a good
@@ -102,7 +83,29 @@ specified using the "file:filename.xml" format.</p>
   about too many branches.</li>
 </ul>
 </s3>
-<anchor name="trax"/>
+<anchor name="xsltcdemos"/>
+<s3 title="Running Demos">
+<p>XSLTC provides demos for using XSLTC as a servlet and as a handler for 
+Brazil (a new and powerful Web techology from Sun labs). To run these demos,
+download Brazil from sunlabs:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;<jump href="http://research.sun.com/research/download/index.html">http://research.sun.com/research/download/index.html</jump></code></p>
+<p>and the java extensions for servlets from Sun:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;
+<jump href="http://java.sun.com/products/servlet/download.html">
+http://java.sun.com/products/servlet/download.html</jump>
+</code></p>
+<p>The translet must be specified as a pure class name, accessible
+through the Brazil handler's classpath. For example:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;translet=mk054</code></p>
+<p>The document must be specified as a valid URL. For example:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;document=http://server/path/to/filename.xml</code></p>
+<p>If the file is local to the Brazil handler, it has to be
+specified using the "file:filename.xml" format.</p>
+<note>You also need to make the Brazil and javax classes available from your classpath</note>
+<p>See also: <link idref="samples" anchor="translets">sample JAXP translets</link>.</p>
+</s3>
+
+<anchor name="xsltctrax"/>
 <s3 title="Translets and TrAX">
 <p>
 The Translet API has been extended to conform with the JAXP1.1 TrAX model.

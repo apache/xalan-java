@@ -1,6 +1,5 @@
 <?xml version="1.0" standalone="no"?>
-<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
-<!ENTITY xsltc_constraints SYSTEM "xsltc_constraints.xml">]>
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
 <!--
  * The Apache Software License, Version 1.1
  *
@@ -386,5 +385,8 @@ transformer.transform(new StreamSource(xmlInURI),
 <p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc2">JAXPTransletMultipleTransformations</link>.</p>
 </s3>
 </s2><anchor name="constraints"/>
-&xsltc_constraints;
+<s2 title="XSLTC usage constraints">
+<p>See <link idref="readme" anchor="xsltcconf">Conformance issues</link> and <link idref="readme" 
+anchor="xsltcknownproblems">Known problems</link>.</p>
+</s2>
 </s1>

@@ -2,6 +2,7 @@
 <!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
 <!ENTITY done-j SYSTEM "DONE">
 <!ENTITY status-j SYSTEM "STATUS">
+<!ENTITY xsltcreleasenotes SYSTEM "xsltc_constraints.xml">
 <!ENTITY history-j SYSTEM "history.xml">]>
 
 <!--
@@ -63,7 +64,7 @@
 <s1 title="Release Notes">
 <p>&xslt4j-current;</p>
  <ul>
-  <li><link anchor="status0">Status</link></li>
+  <li><link anchor="status0">Status</link></li>&xsltcreleasenotesentry;
   <li><link anchor="build">Build Notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
   <li><link anchor="history">History of software changes</link></li>
@@ -77,15 +78,11 @@
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.0.1">&xsltcreadme;
+     <s3 title="Changes since &xslt4j; 2.0.1">
+     &xsltcdone;
      <p>This release also includes a number of bug fixes to the &xslt4j; and TrAX core and Xalan-Java 1 compability API. 
      We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple
      client transformation requests involving the same stylesheet.</p>
-     <ul>
-     <li></li>
-     <li><br/><br/></li> 
-     <li></li>
-     </ul>
      &done-j;
      </s3>
      <anchor name="other"/>
@@ -142,8 +139,8 @@
        <jump href="http://xml.apache.org/websrc/cvsweb.cgi/xml-xalan/java/todo.xml">xml-xalan/java/todo.xml</jump>.</p>
       </s3> 
   </s2>
-  <anchor name="build"/>
-  
+  &xsltcreleasenotes;
+  <anchor name="build"/>  
   <s2 title="Build Notes">
 <ul>
 <li><link anchor="ant">Using Ant</link></li>
