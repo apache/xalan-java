@@ -650,6 +650,7 @@ Copyright:
 
     <!-- Copy various built .jar files into the bin directory (subject to change) -->
     <copy file="${build.xalan.jar}" todir="${dist.dir}/bin"/>
+    <copy file="${build.xml-apis.jar}" todir="${dist.dir}/bin"/>
     <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
     <copy file="${build.xsltc.jar}" todir="${dist.dir}/bin"/>
 
