@@ -1236,4 +1236,342 @@ make testing those features easier.</Log>
  for us to access its incremental controls. In that case, we are
  forced to fall back on the _Filter solution and coroutines.</Log>
 </Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>11/02/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForFSB.java</Modified>
+<Log>Bugzilla 4396: Defaulting to the super hashCode(). This causes us to create 
+a string, but at this point this only seems to get called in key processing. 
+Maybe we can live with it?</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>11/02/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt EnvironmentCheck.java</Modified>
+<Log>Use appropriate context class loader as done in JAXP's FactoryFinder;
+ Added various new jars; added checkAntVersion()</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>11/04/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize HTMLEntities.res</Modified>
+<Log>Commented out mainly greek entities that Netscape seems not to handle.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>11/04/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize Encodings.java
+ SerializerToHTML.java SerializerToText.java
+ SerializerToXML.java</Modified>
+<Log>Progress on Bugzilla Bug 1639 : Xalan escaping characters for ISO encodings 
+other than ISO-8859-1.
+
+ The problem is that you can't tell from the Java Writers if they can encode
+ a character, and you can't tell which character they are going to encode to.
+ So...
+
+ Do a one-time-only reflection to see if a sun.io.CharToByteConverter for the
+ specific encoding is available. I'm hoping this will work for most or all
+ platforms... but only some extensive testing will tell for sure. If the
+ CharToByteConverter is not available, it falls back to the old behavior.
+ If it is available, use the canConvert method to see if the UTF-16 character
+ can be encoded. If it can be, just send it to the writer, otherwise escape 
+it.
+ This doesn't need to be done for &lt; 128, so I'm suspecting the performance
+ hit won't be too bad.
+
+ The alternative is to create lookups for all the encodings that tell which
+ blocks of characters can't be encoded. Too much work for me this
+ weekend, though it remains a possibility. I want to try the use of
+ CharToByteConverter.canConvert first.
+
+ One problem I've encountered is that CharToByteConverter.canConvert
+ returns true for (utf-16 code points) 127-159. And so they go unescaped.
+ How bad of a problem is this? This seems like a bug in the Java
+ CharToByteConverter for ISO-8859-7.
+
+ It remains to be seen if this problem exists with other encodings, or if this 
+is
+ the best approach.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Sort.java
+ java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java
+ NodeSortRecordFactory.java</Modified>
+<Log>Changed the 'order' and 'data-type' attributes of the &lt;xsl:sort&gt; element
+ from plain attributes to attribute value templates. This required a change
+ not inly in the way we interpret these attributes but also in the time at
+ which these attributes are intrepreted. Since these are not treated as AVTs
+ we need to wait until runtime before reading the values of the attributes.
+ PR: bugzilla 3835
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc DOM.java
+ java/src/org/apache/xalan/xsltc/compiler PositionCall.java
+ StepPattern.java
+ java/src/org/apache/xalan/xsltc/dom DOMAdapter.java
+ DOMImpl.java MultiDOM.java NodeSortRecord.java</Modified>
+<Removed>java/src/org/apache/xalan/xsltc/compiler Mode.java.old</Removed>
+<Log>Fix for patterns on the format "/foo/*/bar" and "/foo/*[n]/bar".
+ PR: bugzilla 4604
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Step.java
+ java/src/org/apache/xalan/xsltc/dom
+ CurrentNodeListIterator.java DOMImpl.java</Modified>
+<Log>Fixed the last() function for the typed and untyped ancestor iterators.
+ I also updated our node list iterator (used to implement some predicates)
+ to handle the last() function properly for reverse-order axes.
+ PR: bugzilla 4602
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>11/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize SerializerToXML.java</Modified>
+<Log>Check for control characters for canConvert, and return false if it is a 
+control
+ character, so that it will be escaped.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>11/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java</Modified>
+<Log>Don't set the ErrorHandler if it is already set.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler XslAttribute.java</Modified>
+<Log>A fix for a regression after a previous fix for bug 3320.
+ PR: bugzilla 4656
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler BinOpExpr.java
+ CastExpr.java EqualityExpr.java Expression.java
+ LastCall.java LogicalExpr.java PositionCall.java
+ Predicate.java RelationalExpr.java Step.java
+ StepPattern.java UnaryOpExpr.java</Modified>
+<Log>Fix for compound predicates used in patterns.
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>11/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Minor fix to JavaDoc for setRecursionLimit.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/operations Operation.java
+ UnaryOperation.java</Modified>
+<Log>Bugzilla 4679: Accessors for left and right operands</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>11/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize SerializerToHTML.java</Modified>
+<Log>Do not escape the percent '%' character anymore.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>11/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes LocPathIterator.java
+ OneStepIterator.java PredicatedNodeTest.java</Modified>
+<Log>Bugzilla 4638: When we are in a subcontext we need to clip off the predicate 
+when evaluating. If not, we end up with the wrong nodeset. This also relates to 
+test position68.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/07/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ ClonerToResultTree.java ResultTreeHandler.java</Modified>
+<Log>Bugzilla 4607; allow explicitly cloning namespace nodes rather than
+ throwing exception.</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>11/07/2001</DateCommitted>
+<Removed>java/src/META-INF/services
+ javax.xml.parsers.SAXParserFactory
+ javax.xml.parsers.DocumentBuilderFactory</Removed>
+<Log>Remove services/javax.xml.parsers.* references; we assume parsers have their 
+own</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>11/07/2001</DateCommitted>
+<Removed>java/src/javax/xml/transform ErrorListener.java
+ FactoryFinder.java OutputKeys.java Result.java
+ Source.java SourceLocator.java Templates.java
+ Transformer.java
+ TransformerConfigurationException.java
+ TransformerException.java TransformerFactory.java
+ TransformerFactoryConfigurationError.java
+ URIResolver.java overview.html package.html
+ java/src/javax/xml/transform/dom DOMLocator.java
+ DOMResult.java DOMSource.java package.html
+ java/src/javax/xml/transform/sax SAXResult.java
+ SAXSource.java SAXTransformerFactory.java
+ TemplatesHandler.java TransformerHandler.java
+ package.html
+ java/src/javax/xml/transform/stream StreamResult.java
+ StreamSource.java package.html
+ java/src/org/w3c/dom Attr.java CDATASection.java
+ CharacterData.java Comment.java DOMException.java
+ DOMImplementation.java Document.java
+ DocumentFragment.java DocumentType.java
+ Element.java Entity.java EntityReference.java
+ NamedNodeMap.java Node.java NodeList.java
+ Notation.java ProcessingInstruction.java Text.java
+ package.html
+ java/src/org/w3c/dom/ranges DocumentRange.java Range.java
+ RangeException.java package.html
+ java/src/org/w3c/dom/traversal DocumentTraversal.java
+ NodeFilter.java NodeIterator.java TreeWalker.java
+ package.html
+ java/src/org/xml/sax AttributeList.java Attributes.java
+ ContentHandler.java DTDHandler.java
+ DocumentHandler.java EntityResolver.java
+ ErrorHandler.java HandlerBase.java InputSource.java
+ Locator.java Parser.java SAXException.java
+ SAXNotRecognizedException.java
+ SAXNotSupportedException.java
+ SAXParseException.java XMLFilter.java
+ XMLReader.java package.html
+ java/src/org/xml/sax/ext DeclHandler.java
+ LexicalHandler.java package.html
+ java/src/org/xml/sax/helpers AttributeListImpl.java
+ AttributesImpl.java DefaultHandler.java
+ LocatorImpl.java NamespaceSupport.java
+ ParserAdapter.java ParserFactory.java
+ XMLFilterImpl.java XMLReaderAdapter.java
+ XMLReaderFactory.java package.html</Removed>
+<Log>Use a condensed copy of xml-commons sources instead of individual sources;
+ remove xalan-specific copies of commons files</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler
+ AttributeValueTemplate.java Constants.java
+ FilterParentPath.java LiteralAttribute.java
+ LiteralElement.java LiteralExpr.java Mode.java
+ ParentLocationPath.java Parser.java
+ SimpleAttributeValue.java SyntaxTreeNode.java
+ Text.java UnionPathExpr.java</Modified>
+<Log>A bit of a code cleanup. I also added a small fix for ensuring document order
+ of node sets returned by union expressions.
+ PR: bugzilla 4677
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Sort.java
+ java/src/org/apache/xalan/xsltc/compiler/util
+ ErrorMessages.java ErrorMessages_no.java
+ ErrorMsg.java</Modified>
+<Log>Added a test to verify that &lt;xsl:sort/&gt; elements are only used within
+ &lt;xsl:apply-templates/&gt; or &lt;xsl:for-each/&gt; elements.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom Axis.java</Modified>
+<Log>Added an array to the Axis class to give an easy indication to the direction
+ of an axis.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc DOMCache.java
+ java/src/org/apache/xalan/xsltc/cmdline Transform.java
+ java/src/org/apache/xalan/xsltc/compiler FunctionCall.java
+ java/src/org/apache/xalan/xsltc/dom
+ NodeSortRecordFactory.java
+ java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java</Modified>
+<Added>java/src/org/apache/xalan/xsltc/runtime TransletLoader.java</Added>
+<Log>Added a new TransletLoader class to the runtime package. This class will
+ be used only when the default Class.forName() call fails. The forName()
+ call will fail if XSLTC is packed in a JAR and installed under
+ $JAVA_HOME/jre/lib/ext. This is because the extensions class
+ loader is used instead of the bootstrap class loader, and that the
+ extensions class loader does not load classes for the default class path.
+ But, if the extensions class loader is being used, then we know two things:
+
+ (1) XSLTC is running on Java 1.2 or later (when extensions were introduced)
+ (2) XSLTC has access to the ClassLoader.getSystemClassLoader() method
+
+ This class takes advantage of this and uses a privileged call to this
+ method to get a reference to the bootstrap class loader. It then uses this
+ class loader to load the desired class.
+ PR: none
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Parser.java
+ java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java</Modified>
+<Log>Added a "debug" attribute to the TransformerFactory implementation.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/templates ElemNumber.java
+ java/src/org/apache/xml/utils/res XResources_cy.java
+ XResources_el.java XResources_ja_JP_A.java
+ XResources_ja_JP_HA.java XResources_ja_JP_HI.java
+ XResources_ja_JP_I.java XResources_zh_CN.java
+ XResources_zh_TW.java</Modified>
+<Log>Bugzilla 4601: Change ElemNumber to use a long integer for the value of the 
+number. This will allow us to format bigger numbers. As far as japanese 
+multipliers, we decided to document as a xalan limitation the fact that the 
+last 2 japanese multipliers will not be supported. If anyone has a strong and 
+valid user case for this, we will reconsider. For now, we could not justify the 
+expense of moving to BigInteger to support these multipliers.</Log>
+</Commit>
 </Commits>
