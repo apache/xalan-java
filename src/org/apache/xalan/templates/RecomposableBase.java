@@ -67,6 +67,8 @@ interface RecomposableBase
 
   /**
    * Recomposes this object with others of its type.
+   * 
+   * @param root The owning root stylesheet
    */
   public void recompose(StylesheetRoot root) throws TransformerException;
 }

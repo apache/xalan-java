@@ -106,7 +106,7 @@ public class ElemText extends ElemTemplateElement
    * or xsl:text element should be output without any escaping.
    * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Boolean flag indicating whether this element should disable escaping
    */
   public void setDisableOutputEscaping(boolean v)
   {
@@ -131,7 +131,7 @@ public class ElemText extends ElemTemplateElement
    * or xsl:text element should be output without any escaping.
    * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Boolean flag indicating whether this element should disable escaping
    */
   public boolean getDisableOutputEscaping()
   {
@@ -153,7 +153,7 @@ public class ElemText extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -163,9 +163,9 @@ public class ElemText extends ElemTemplateElement
   /**
    * Add a child to the child list.
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to children list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Child added to children list
    *
    * @throws DOMException
    */

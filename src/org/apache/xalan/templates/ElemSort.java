@@ -101,7 +101,7 @@ public class ElemSort extends ElemTemplateElement
    * is ., which will cause the string-value of the current node to
    * be used as the sort key.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "select" attribute
    */
   public void setSelect(XPath v)
   {
@@ -124,7 +124,7 @@ public class ElemSort extends ElemTemplateElement
    * is ., which will cause the string-value of the current node to
    * be used as the sort key.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "select" attribute
    */
   public XPath getSelect()
   {
@@ -142,7 +142,7 @@ public class ElemSort extends ElemTemplateElement
    * range of values as xml:lang [XML]; if no lang value is
    * specified, the language should be determined from the system environment.
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "lang" attribute
    */
   public void setLang(AVT v)
   {
@@ -155,7 +155,7 @@ public class ElemSort extends ElemTemplateElement
    * range of values as xml:lang [XML]; if no lang value is
    * specified, the language should be determined from the system environment.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "lang" attribute
    */
   public AVT getLang()
   {
@@ -198,7 +198,7 @@ public class ElemSort extends ElemTemplateElement
    * leverage XML Schemas to define further values for this
    * attribute.</blockquote>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "data-type" attribute
    */
   public void setDataType(AVT v)
   {
@@ -235,7 +235,7 @@ public class ElemSort extends ElemTemplateElement
    * leverage XML Schemas to define further values for this
    * attribute.</blockquote>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "data-type" attribute
    */
   public AVT getDataType()
   {
@@ -254,7 +254,7 @@ public class ElemSort extends ElemTemplateElement
    * or descending order; ascending specifies ascending order; descending
    * specifies descending order; the default is ascending.
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "order" attribute
    */
   public void setOrder(AVT v)
   {
@@ -267,7 +267,7 @@ public class ElemSort extends ElemTemplateElement
    * or descending order; ascending specifies ascending order; descending
    * specifies descending order; the default is ascending.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "order" attribute
    */
   public AVT getOrder()
   {
@@ -289,7 +289,7 @@ public class ElemSort extends ElemTemplateElement
    * case-order="upper-first" and a A b B are sorted with case-order="lower-first".
    * The default value is language dependent.
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "case-order" attribute
    */
   public void setCaseOrder(AVT v)
   {
@@ -305,7 +305,7 @@ public class ElemSort extends ElemTemplateElement
    * case-order="upper-first" and a A b B are sorted with case-order="lower-first".
    * The default value is language dependent.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "case-order" attribute
    */
   public AVT getCaseOrder()
   {
@@ -316,7 +316,7 @@ public class ElemSort extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID of the element
    */
   public int getXSLToken()
   {
@@ -326,7 +326,7 @@ public class ElemSort extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -336,9 +336,9 @@ public class ElemSort extends ElemTemplateElement
   /**
    * Add a child to the child list.
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to the child list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Child just added to the child list
    *
    * @throws DOMException
    */

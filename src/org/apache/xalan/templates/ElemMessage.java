@@ -95,7 +95,7 @@ public class ElemMessage extends ElemTemplateElement
    * XSLT transformer should terminate processing after sending
    * the message. The default value is no.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "terminate" attribute. 
    */
   public void setTerminate(boolean v)
   {
@@ -108,7 +108,7 @@ public class ElemMessage extends ElemTemplateElement
    * XSLT transformer should terminate processing after sending
    * the message. The default value is no.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return value of "terminate" attribute.
    */
   public boolean getTerminate()
   {
@@ -119,7 +119,7 @@ public class ElemMessage extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -129,7 +129,7 @@ public class ElemMessage extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return name of the element 
    */
   public String getNodeName()
   {

@@ -94,7 +94,7 @@ public class ElemPI extends ElemTemplateElement
    * Set the "name" attribute.
    * DJD
    *
-   * NEEDSDOC @param v
+   * @param v Value for the name attribute
    */
   public void setName(AVT v)
   {
@@ -105,7 +105,7 @@ public class ElemPI extends ElemTemplateElement
    * Get the "name" attribute.
    * DJD
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "name" attribute 
    */
   public AVT getName()
   {
@@ -116,7 +116,7 @@ public class ElemPI extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for the element
    */
   public int getXSLToken()
   {
@@ -126,7 +126,7 @@ public class ElemPI extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -189,9 +189,9 @@ public class ElemPI extends ElemTemplateElement
   /**
    * Add a child to the child list.
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to child list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The child just added to the child list
    *
    * @throws DOMException
    */

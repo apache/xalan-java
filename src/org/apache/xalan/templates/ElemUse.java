@@ -94,7 +94,7 @@ public class ElemUse extends ElemTemplateElement
    * sets. Each name is specified as a QName, which is expanded as
    * described in [2.4 Qualified Names].
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "use-attribute-sets" attribute. 
    */
   public void setUseAttributeSets(Vector v)
   {
@@ -118,7 +118,7 @@ public class ElemUse extends ElemTemplateElement
    * sets. Each name is specified as a QName, which is expanded as
    * described in [2.4 Qualified Names].
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "use-attribute-sets" attribute. 
    */
   public void setUseAttributeSets(QName[] v)
   {
@@ -136,7 +136,7 @@ public class ElemUse extends ElemTemplateElement
    * sets. Each name is specified as a QName, which is expanded as
    * described in [2.4 Qualified Names].
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "use-attribute-sets" attribute. 
    */
   public QName[] getUseAttributeSets()
   {
@@ -151,8 +151,8 @@ public class ElemUse extends ElemTemplateElement
    * set with higher import precedence that also contains the attribute."
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * NEEDSDOC @param stylesheet
-   * NEEDSDOC @param attributeSetsNames
+   * @param stylesheet The owning root stylesheet
+   * @param attributeSetsNames List of attribute sets names to apply
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *

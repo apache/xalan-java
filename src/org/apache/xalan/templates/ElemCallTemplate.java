@@ -96,7 +96,7 @@ public class ElemCallTemplate extends ElemForEach
    * An xsl:call-template element invokes a template by name;
    * it has a required name attribute that identifies the template to be invoked.
    *
-   * NEEDSDOC @param name
+   * @param name Name attribute to set
    */
   public void setName(QName name)
   {
@@ -108,7 +108,7 @@ public class ElemCallTemplate extends ElemForEach
    * An xsl:call-template element invokes a template by name;
    * it has a required name attribute that identifies the template to be invoked.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Name attribute of this element
    */
   public QName getName()
   {
@@ -124,7 +124,7 @@ public class ElemCallTemplate extends ElemForEach
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element 
    */
   public int getXSLToken()
   {
@@ -134,7 +134,7 @@ public class ElemCallTemplate extends ElemForEach
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The name of this element
    */
   public String getNodeName()
   {
@@ -199,12 +199,12 @@ public class ElemCallTemplate extends ElemForEach
     }
   }
 
-  /** NEEDSDOC Field m_paramElems          */
+  /** Vector of xsl:param elements associated with this element   */
   protected Vector m_paramElems = null;
 
   /**
-   * Get the count xsl:sort elements associated with this element.
-   * @return The number of xsl:sort elements.
+   * Get the count xsl:param elements associated with this element.
+   * @return The number of xsl:param elements.
    */
   public int getParamElemCount()
   {
@@ -212,11 +212,11 @@ public class ElemCallTemplate extends ElemForEach
   }
 
   /**
-   * Get a xsl:sort element associated with this element.
+   * Get a xsl:param element associated with this element.
    *
-   * NEEDSDOC @param i
+   * @param i Index of element to find
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return xsl:param element at given index
    */
   public ElemWithParam getParamElem(int i)
   {
@@ -224,9 +224,9 @@ public class ElemCallTemplate extends ElemForEach
   }
 
   /**
-   * Set a xsl:sort element associated with this element.
+   * Set a xsl:param element associated with this element.
    *
-   * NEEDSDOC @param ParamElem
+   * @param ParamElem xsl:param element to set. 
    */
   public void setParamElem(ElemWithParam ParamElem)
   {
@@ -245,9 +245,9 @@ public class ElemCallTemplate extends ElemForEach
    *   mode %qname; #IMPLIED
    * >
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to this node's children list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The child that was just added the children list 
    *
    * @throws DOMException
    */

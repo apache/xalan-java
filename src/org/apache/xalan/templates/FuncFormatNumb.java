@@ -185,9 +185,9 @@ public class FuncFormatNumb extends Function3Args
   /**
    * Warn the user of a problem.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param xctxt The XPath runtime state.
+   * @param msg Warning message code
+   * @param args Arguments to be used in warning message
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -205,10 +205,10 @@ public class FuncFormatNumb extends Function3Args
   }
 
   /**
-   * NEEDSDOC Method checkNumberArgs 
+   * Overide the superclass method to allow one or two arguments. 
    *
    *
-   * NEEDSDOC @param argNum
+   * @param argNum Number of arguments passed in
    *
    * @throws WrongNumberArgsException
    */

@@ -86,7 +86,7 @@ import org.w3c.dom.traversal.NodeIterator;
 public class FuncKey extends Function2Args
 {
 
-  /** NEEDSDOC Field ISTRUE          */
+  /** Dummy value to be used in usedrefs hashtable           */
   static private Boolean ISTRUE = new Boolean(true);
 
   /**

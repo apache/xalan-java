@@ -97,7 +97,7 @@ public class ElemAttribute extends ElemTemplateElement
   /**
    * Set the "name" attribute.
    *
-   * NEEDSDOC @param name
+   * @param name name attribute to set 
    */
   public void setName(AVT name)
   {
@@ -107,7 +107,7 @@ public class ElemAttribute extends ElemTemplateElement
   /**
    * Get the "name" attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the "name" attribute.
    */
   public AVT getName()
   {
@@ -117,7 +117,7 @@ public class ElemAttribute extends ElemTemplateElement
   /**
    * Set the "namespace" attribute.
    *
-   * NEEDSDOC @param name
+   * @param name Namspace attribute to set
    */
   public void setNamespace(AVT name)
   {
@@ -127,7 +127,7 @@ public class ElemAttribute extends ElemTemplateElement
   /**
    * Get the "namespace" attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the "namespace" attribute.
    */
   public AVT getNamespace()
   {
@@ -138,7 +138,7 @@ public class ElemAttribute extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -148,7 +148,7 @@ public class ElemAttribute extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element name 
    */
   public String getNodeName()
   {
@@ -302,9 +302,9 @@ public class ElemAttribute extends ElemTemplateElement
    *   %space-att;
    * >
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to append to the list of this node's children
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node we just appended to the children list 
    *
    * @throws DOMException
    */

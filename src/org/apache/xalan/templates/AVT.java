@@ -435,7 +435,7 @@ public class AVT implements java.io.Serializable
   /**
    * Get the AVT as the original string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The AVT as the original string
    */
   public String getSimpleString()
   {
@@ -480,12 +480,12 @@ public class AVT implements java.io.Serializable
   /**
    * Evaluate the AVT and return a String.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt Te XPathContext to use to evaluate this. 
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
    * @param NodeList The current Context Node List.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The AVT evaluated as a string
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -537,7 +537,7 @@ public class AVT implements java.io.Serializable
    *  Currently the only case we recognize is simple strings.
    * ADDED 9/5/2000 to support compilation experiment
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the m_simpleString member of this AVT is not null
    */
   public boolean isContextInsensitive()
   {

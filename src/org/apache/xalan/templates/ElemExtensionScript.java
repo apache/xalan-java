@@ -58,7 +58,7 @@ package org.apache.xalan.templates;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ElemExtensionScript <needs-comment/>
+ * Implement Script extension element
  */
 public class ElemExtensionScript extends ElemTemplateElement
 {
@@ -73,14 +73,14 @@ public class ElemExtensionScript extends ElemTemplateElement
     // System.out.println("ElemExtensionScript ctor");
   }
 
-  /** NEEDSDOC Field m_lang          */
+  /** Language used in extension          */
   private String m_lang = null;
 
   /**
-   * NEEDSDOC Method setLang 
+   * Set language used by extension
    *
    *
-   * NEEDSDOC @param v
+   * @param v Language used by extension
    */
   public void setLang(String v)
   {
@@ -88,24 +88,24 @@ public class ElemExtensionScript extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getLang 
+   * Get language used by extension
    *
    *
-   * NEEDSDOC (getLang) @return
+   * @return Language used by extension
    */
   public String getLang()
   {
     return m_lang;
   }
 
-  /** NEEDSDOC Field m_src          */
+  /** Extension handler          */
   private String m_src = null;
 
   /**
-   * NEEDSDOC Method setSrc 
+   * Set Extension handler name for this extension
    *
    *
-   * NEEDSDOC @param v
+   * @param v Extension handler name to set
    */
   public void setSrc(String v)
   {
@@ -113,10 +113,10 @@ public class ElemExtensionScript extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getSrc 
+   * Get Extension handler name for this extension
    *
    *
-   * NEEDSDOC (getSrc) @return
+   * @return Extension handler name
    */
   public String getSrc()
   {
@@ -127,7 +127,7 @@ public class ElemExtensionScript extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element 
    */
   public int getXSLToken()
   {

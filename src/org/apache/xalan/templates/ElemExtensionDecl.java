@@ -74,7 +74,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ElemExtensionDecl <needs-comment/>
+ * Implement the declaration of an extension element 
  */
 public class ElemExtensionDecl extends ElemTemplateElement
 {
@@ -89,14 +89,14 @@ public class ElemExtensionDecl extends ElemTemplateElement
     // System.out.println("ElemExtensionDecl ctor");
   }
 
-  /** NEEDSDOC Field m_prefix          */
+  /** Prefix string for this extension element         */
   private String m_prefix = null;
 
   /**
-   * NEEDSDOC Method setPrefix 
+   * Set the prefix for this extension element  
    *
    *
-   * NEEDSDOC @param v
+   * @param v Prefix to set for this extension element
    */
   public void setPrefix(String v)
   {
@@ -104,24 +104,24 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getPrefix 
+   * Set the prefix for this extension element
    *
    *
-   * NEEDSDOC (getPrefix) @return
+   * @return Prefix for this extension element
    */
   public String getPrefix()
   {
     return m_prefix;
   }
 
-  /** NEEDSDOC Field m_functions          */
+  /** StringVector holding the names of functions defined in this extension     */
   private StringVector m_functions = new StringVector();
 
   /**
-   * NEEDSDOC Method setFunctions 
+   * Set the names of functions defined in this extension  
    *
    *
-   * NEEDSDOC @param v
+   * @param v StringVector holding the names of functions defined in this extension
    */
   public void setFunctions(StringVector v)
   {
@@ -129,10 +129,10 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getFunctions 
+   * Get the names of functions defined in this extension
    *
    *
-   * NEEDSDOC (getFunctions) @return
+   * @return StringVector holding the names of functions defined in this extension
    */
   public StringVector getFunctions()
   {
@@ -140,12 +140,12 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getFunction 
+   * Get a function at a given index in this extension element 
    *
    *
-   * NEEDSDOC @param i
+   * @param i Index of function to get
    *
-   * NEEDSDOC (getFunction) @return
+   * @return Name of Function at given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -159,24 +159,24 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getFunctionCount 
+   * Get count of functions defined in this extension element
    *
    *
-   * NEEDSDOC (getFunctionCount) @return
+   * @return count of functions defined in this extension element
    */
   public int getFunctionCount()
   {
     return (null != m_functions) ? m_functions.size() : 0;
   }
 
-  /** NEEDSDOC Field m_elements          */
+  /** StringVector of elements defined in this extension         */
   private StringVector m_elements = null;
 
   /**
-   * NEEDSDOC Method setElements 
+   * Set StringVector of elements for this extension
    *
    *
-   * NEEDSDOC @param v
+   * @param v StringVector of elements to set
    */
   public void setElements(StringVector v)
   {
@@ -184,10 +184,10 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getElements 
+   * Get StringVector of elements defined for this extension  
    *
    *
-   * NEEDSDOC (getElements) @return
+   * @return StringVector of elements defined for this extension
    */
   public StringVector getElements()
   {
@@ -195,12 +195,12 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getElement 
+   * Get the element at the given index
    *
    *
-   * NEEDSDOC @param i
+   * @param i Index of element to get
    *
-   * NEEDSDOC (getElement) @return
+   * @return The element at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -214,10 +214,10 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getElementCount 
+   * Return the count of elements defined for this extension element 
    *
    *
-   * NEEDSDOC (getElementCount) @return
+   * @return the count of elements defined for this extension element
    */
   public int getElementCount()
   {
@@ -228,7 +228,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {

@@ -110,7 +110,7 @@ public class StylesheetComposed extends Stylesheet
    * Tell if this can be cast to a StylesheetComposed, meaning, you
    * can ask questions from getXXXComposed functions.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True since this is a StylesheetComposed 
    */
   public boolean isAggregatedType()
   {
@@ -217,7 +217,7 @@ public class StylesheetComposed extends Stylesheet
     }
   }
 
-  /** NEEDSDOC Field m_importNumber          */
+  /** Order in import chain         */
   private int m_importNumber = -1;
 
   /** The precedence of this stylesheet in the global import list.
@@ -246,9 +246,9 @@ public class StylesheetComposed extends Stylesheet
    * Get a stylesheet from the "import" list.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of stylesheet in import list 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The stylesheet at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -270,7 +270,7 @@ public class StylesheetComposed extends Stylesheet
    * The lowest precedence is 0.  A higher number has a higher precedence.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the precedence of this stylesheet in the global import list.
    */
   public int getImportCountComposed()
   {
@@ -286,7 +286,7 @@ public class StylesheetComposed extends Stylesheet
    * Recompose the value of the composed include list.  Builds a composite
    * list of all stylesheets included by this stylesheet to any depth.
    *
-   * @param including
+   * @param including Stylesheet to recompose
    */
   void recomposeIncludes(Stylesheet including)
   {
@@ -311,9 +311,9 @@ public class StylesheetComposed extends Stylesheet
    * Get an "xsl:include" property.
    * @see <a href="http://www.w3.org/TR/xslt#include">include in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of stylesheet in "include" list 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The stylesheet at the given index in the "include" list 
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -334,7 +334,7 @@ public class StylesheetComposed extends Stylesheet
    * Get the number of included stylesheets.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of included stylesheets.
    */
   public int getIncludeCountComposed()
   {
@@ -351,7 +351,8 @@ public class StylesheetComposed extends Stylesheet
    * NOTE: GLP 29-Nov-00 I've left this method in so that CompilingStylesheetHandler will compile.  However,
    *                     I'm not sure why it's needed or what it does and I've commented out the body.
    *
-   * NEEDSDOC @param flushFirst
+   * @param flushFirst Flag indicating the option of overwriting
+   * (rather than appending to) previous composition.
    *
    * @throws TransformerException
    */

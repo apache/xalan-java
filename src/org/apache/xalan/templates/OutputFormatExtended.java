@@ -75,160 +75,158 @@ public class OutputFormatExtended extends OutputFormat
 	implements java.io.Serializable, RecomposableBase
 {
 
-  // Flag to tell us when to record that an attribute 
-  // has been set.
-
-  /** NEEDSDOC Field m_shouldRecordHasBeenSet          */
+  /** Flag to tell us when to record that an attribute
+   *  has been set.        */
   private boolean m_shouldRecordHasBeenSet;
 
-  /** NEEDSDOC Field m_methodHasBeenSet          */
+  /** Flag to tell us that a method has been set         */
   private boolean m_methodHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method methodHasBeenSet 
+   * Return local flag to tell us that a method has been set
    *
    *
-   * NEEDSDOC (methodHasBeenSet) @return
+   * @return Flag to tell us that a method has been set
    */
   public boolean methodHasBeenSet()
   {
     return m_methodHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_versionHasBeenSet          */
+  /** Flag to tell us that a version has been set          */
   private boolean m_versionHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method versionHasBeenSet 
+   * Return local flag to tell us that a version has been set
    *
    *
-   * NEEDSDOC (versionHasBeenSet) @return
+   * @return Flag to tell us that a version has been set
    */
   public boolean versionHasBeenSet()
   {
     return m_versionHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_indentHasBeenSet          */
+  /** Flag to tell us that an indent value has been set          */
   private boolean m_indentHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method indentHasBeenSet 
+   * Return local flag to tell us that an indent value has been set 
    *
    *
-   * NEEDSDOC (indentHasBeenSet) @return
+   * @return Flag to tell us that an indent value has been set
    */
   public boolean indentHasBeenSet()
   {
     return m_indentHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_encodingHasBeenSet          */
+  /** Flag to tell us that an encoding has been set          */
   private boolean m_encodingHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method encodingHasBeenSet 
+   * Return local flag to tell us that an encoding has been set
    *
    *
-   * NEEDSDOC (encodingHasBeenSet) @return
+   * @return Flag to tell us that an encoding has been set
    */
   public boolean encodingHasBeenSet()
   {
     return m_encodingHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_mediaTypeHasBeenSet          */
+  /** Flag to tell us that a media type has been set          */
   private boolean m_mediaTypeHasBeenSet;
 
   /**
-   * NEEDSDOC Method mediaTypeHasBeenSet 
+   * Return local flag to tell us that a media type has been set
    *
    *
-   * NEEDSDOC (mediaTypeHasBeenSet) @return
+   * @return Flag to tell us that a media type has been set
    */
   public boolean mediaTypeHasBeenSet()
   {
     return m_mediaTypeHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_doctypeSystemHasBeenSet          */
+  /** Flag to tell us that a doctypesystem has been set          */
   private boolean m_doctypeSystemHasBeenSet;
 
   /**
-   * NEEDSDOC Method doctypeSystemHasBeenSet 
+   * Return local flag to tell us that a doctypesystem has been set
    *
    *
-   * NEEDSDOC (doctypeSystemHasBeenSet) @return
+   * @return Flag to tell us that a doctypesystem has been set
    */
   public boolean doctypeSystemHasBeenSet()
   {
     return m_doctypeSystemHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_doctypePublicHasBeenSet          */
+  /** Flag to tell us that a doctypepublic has been set          */
   private boolean m_doctypePublicHasBeenSet;
 
   /**
-   * NEEDSDOC Method doctypePublicHasBeenSet 
+   * Return local flag to tell us that a doctypepublic has been set 
    *
    *
-   * NEEDSDOC (doctypePublicHasBeenSet) @return
+   * @return Flag to tell us that a doctypepublic has been set
    */
   public boolean doctypePublicHasBeenSet()
   {
     return m_doctypePublicHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_omitXmlDeclarationHasBeenSet          */
+  /** Flag to tell us that omitXMLDeclaration has been set         */
   private boolean m_omitXmlDeclarationHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method omitXmlDeclarationHasBeenSet 
+   * Return local flag to tell us that omitXMLDeclaration has been set 
    *
    *
-   * NEEDSDOC (omitXmlDeclarationHasBeenSet) @return
+   * @return Flag to tell us that omitXMLDeclaration has been set
    */
   public boolean omitXmlDeclarationHasBeenSet()
   {
     return m_omitXmlDeclarationHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_standaloneHasBeenSet          */
+  /** Flag to tell us that standalone has been set          */
   private boolean m_standaloneHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method standaloneHasBeenSet 
+   * Return local flag to tell us that standalone has been set
    *
    *
-   * NEEDSDOC (standaloneHasBeenSet) @return
+   * @return Flag to tell us that standalone has been set
    */
   public boolean standaloneHasBeenSet()
   {
     return m_standaloneHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_cdataElementsHasBeenSet          */
+  /** Flag to tell us that cdataElements has been set          */
   private boolean m_cdataElementsHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method cdataElementsHasBeenSet 
+   * Return local flag to tell us that cdataElements has been set 
    *
    *
-   * NEEDSDOC (cdataElementsHasBeenSet) @return
+   * @return Flag to tell us that cdataElements has been set
    */
   public boolean cdataElementsHasBeenSet()
   {
     return m_cdataElementsHasBeenSet;
   }
 
-  /** NEEDSDOC Field m_nonEscapingElementsHasBeenSet          */
+  /** Flag to tell us that nonEscapingElements has been set          */
   private boolean m_nonEscapingElementsHasBeenSet = false;
 
   /**
-   * NEEDSDOC Method nonEscapingElementsHasBeenSet 
+   * Return local flag to tell us that nonEscapingElements has been set
    *
    *
-   * NEEDSDOC (nonEscapingElementsHasBeenSet) @return
+   * @return Flag to tell us that nonEscapingElements has been set
    */
   public boolean nonEscapingElementsHasBeenSet()
   {
@@ -237,6 +235,8 @@ public class OutputFormatExtended extends OutputFormat
 
   /**
    * Constructs a new output format with the default values.
+   * 
+   * @param docOrderNumber The Document Order 
    */
   public OutputFormatExtended(int docOrderNumber)
   {
@@ -266,10 +266,10 @@ public class OutputFormatExtended extends OutputFormat
   }
 
   /**
-   * NEEDSDOC Method copyFrom 
+   * Create a copy of a given OutputFormatExtended object  
    *
    *
-   * NEEDSDOC @param of
+   * @param of OutputFormatExtended object to copy from
    */
   void copyFrom(OutputFormatExtended of)
   {
@@ -341,10 +341,10 @@ public class OutputFormatExtended extends OutputFormat
   }
 
   /**
-   * NEEDSDOC Method copyFrom 
+   * Create a OutputFormatExtended from an OutputFormat object 
    *
    *
-   * NEEDSDOC @param of
+   * @param of OutputFormat object to copy from
    */
   void copyFrom(OutputFormat of)
   {
@@ -374,7 +374,7 @@ public class OutputFormatExtended extends OutputFormat
   /**
    * The doctype-public attribute.
    *
-   * NEEDSDOC @param publicId
+   * @param publicId value of doctype-public attribute.
    */
   public void setDoctypePublic(String publicId)
   {
@@ -390,7 +390,7 @@ public class OutputFormatExtended extends OutputFormat
   /**
    * The doctype-system attribute.
    *
-   * NEEDSDOC @param systemId
+   * @param systemId value of doctype-system attribute.
    */
   public void setDoctypeSystem(String systemId)
   {
@@ -405,7 +405,8 @@ public class OutputFormatExtended extends OutputFormat
   /**
    * The omit-xml-declaration attribute.
    *
-   * NEEDSDOC @param omit
+   * @param omit value of omit-xml-declaration attribute: true if 
+   * xml declaration should be omitted.
    */
   public void setOmitXmlDeclaration(boolean omit)
   {
@@ -419,8 +420,9 @@ public class OutputFormatExtended extends OutputFormat
   /**
    * The cdata-section-elements attribute.
    *
-   * NEEDSDOC @param elements
-   */
+   * @param elements value of cdata-section-elements attribute (a 
+   * vector of CDATA names).
+   */ 
   public void setCdataSectionElements(Vector elements)
   {
 
@@ -441,7 +443,8 @@ public class OutputFormatExtended extends OutputFormat
   /**
    * The cdata-section-elements attribute.
    *
-   * NEEDSDOC @param elements
+   * @param elements value of cdata-section-elements attribute (an 
+   * array of CDATA names).
    */
   public void setCdataSectionElements(org.apache.xml.utils.QName[] elements)
   {
@@ -548,9 +551,8 @@ public class OutputFormatExtended extends OutputFormat
    * the {@link org.apache.xalan.processor.XSLTSchema
    * XSLTSchema} class.</p>
    *
-   * @param on True if indentation should be on
+   * @param indent True if indentation should be on
    *
-   * NEEDSDOC @param indent
    */
   public void setIndent(boolean indent)
   {

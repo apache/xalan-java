@@ -77,7 +77,7 @@ public abstract class AVTPart implements java.io.Serializable
   /**
    * Get the AVT part as the original string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the AVT part as the original string.
    */
   public abstract String getSimpleString();
 
@@ -85,7 +85,7 @@ public abstract class AVTPart implements java.io.Serializable
    * Write the evaluated value into the given
    * string buffer.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath context to use to evaluate this AVT.
    * @param buf Buffer to write into.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
@@ -101,7 +101,7 @@ public abstract class AVTPart implements java.io.Serializable
   /**
    * Set the XPath support.
    *
-   * NEEDSDOC @param support
+   * @param support XPathContext to set. 
    */
   public void setXPathSupport(XPathContext support){}
 }

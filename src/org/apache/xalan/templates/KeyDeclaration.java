@@ -94,7 +94,7 @@ public class KeyDeclaration extends ElemTemplateElement
    * of the name attribute is a QName, which is expanded as
    * described in [2.4 Qualified Names].
    *
-   * NEEDSDOC @param name
+   * @param name Value to set for the "name" attribute.
    */
   public void setName(QName name)
   {
@@ -107,7 +107,7 @@ public class KeyDeclaration extends ElemTemplateElement
    * of the name attribute is a QName, which is expanded as
    * described in [2.4 Qualified Names].
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "name" attribute.
    */
   public QName getName()
   {
@@ -126,7 +126,7 @@ public class KeyDeclaration extends ElemTemplateElement
    * pattern specified in the match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "match" attribute.
    */
   public void setMatch(XPath v)
   {
@@ -140,7 +140,7 @@ public class KeyDeclaration extends ElemTemplateElement
    * pattern specified in the match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "match" attribute.
    */
   public XPath getMatch()
   {
@@ -158,7 +158,7 @@ public class KeyDeclaration extends ElemTemplateElement
    * of the key; the expression is evaluated once for each node
    * that matches the pattern.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "use" attribute.
    */
   public void setUse(XPath v)
   {
@@ -171,23 +171,23 @@ public class KeyDeclaration extends ElemTemplateElement
    * of the key; the expression is evaluated once for each node
    * that matches the pattern.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "use" attribute.
    */
   public XPath getUse()
   {
     return m_use;
   }
 
-  /** NEEDSDOC Field UNBUILT          */
+  /** Constant for build state of this key          */
   public static int UNBUILT = -1;
 
-  /** NEEDSDOC Field BUILDING          */
+  /** Constant for build state of this key          */
   public static int BUILDING = 0;
 
-  /** NEEDSDOC Field BUILT          */
+  /** Constant for build state of this key           */
   public static int BUILT = 1;
 
-  /** NEEDSDOC Field m_buildState          */
+  /** Hold the build state of this key           */
   private int m_buildState = UNBUILT;
 
   /**

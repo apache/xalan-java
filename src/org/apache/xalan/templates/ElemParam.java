@@ -92,7 +92,7 @@ public class ElemParam extends ElemVariable
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID of the element
    */
   public int getXSLToken()
   {
@@ -102,7 +102,7 @@ public class ElemParam extends ElemVariable
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -112,7 +112,7 @@ public class ElemParam extends ElemVariable
   /**
    * Copy constructor.
    *
-   * NEEDSDOC @param param
+   * @param param Element from an xsl:param
    *
    * @throws TransformerException
    */

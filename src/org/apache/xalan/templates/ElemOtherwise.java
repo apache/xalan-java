@@ -80,7 +80,7 @@ public class ElemOtherwise extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -90,7 +90,7 @@ public class ElemOtherwise extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {

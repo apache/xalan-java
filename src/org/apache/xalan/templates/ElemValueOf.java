@@ -97,7 +97,7 @@ public class ElemValueOf extends ElemTemplateElement
    * is evaluated and the resulting object is converted to a
    * string as if by a call to the string function.
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "select" attribute.
    */
   public void setSelect(XPath v)
   {
@@ -110,7 +110,7 @@ public class ElemValueOf extends ElemTemplateElement
    * is evaluated and the resulting object is converted to a
    * string as if by a call to the string function.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "select" attribute.
    */
   public XPath getSelect()
   {
@@ -140,7 +140,7 @@ public class ElemValueOf extends ElemTemplateElement
    * or xsl:text element should be output without any escaping.
    * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "disable-output-escaping" attribute.
    */
   public void setDisableOutputEscaping(boolean v)
   {
@@ -165,7 +165,7 @@ public class ElemValueOf extends ElemTemplateElement
    * or xsl:text element should be output without any escaping.
    * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "disable-output-escaping" attribute.
    */
   public boolean getDisableOutputEscaping()
   {
@@ -187,7 +187,7 @@ public class ElemValueOf extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node name
    */
   public String getNodeName()
   {
@@ -253,9 +253,9 @@ public class ElemValueOf extends ElemTemplateElement
   /**
    * Add a child to the child list.
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to children list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Child just added to children list
    *
    * @throws DOMException
    */

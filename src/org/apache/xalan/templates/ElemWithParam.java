@@ -92,7 +92,7 @@ public class ElemWithParam extends ElemTemplateElement
    * The "select" attribute specifies the value of the
    * argument, if element content is not specified.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "select" attribute. 
    */
   public void setSelect(XPath v)
   {
@@ -104,7 +104,7 @@ public class ElemWithParam extends ElemTemplateElement
    * The "select" attribute specifies the value of the
    * argument, if element content is not specified.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "select" attribute. 
    */
   public XPath getSelect()
   {
@@ -123,7 +123,7 @@ public class ElemWithParam extends ElemTemplateElement
    * Set the "name" attribute.
    * DJD
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "name" attribute.
    */
   public void setName(QName v)
   {
@@ -134,7 +134,7 @@ public class ElemWithParam extends ElemTemplateElement
    * Get the "name" attribute.
    * DJD
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "name" attribute.
    */
   public QName getName()
   {
@@ -156,7 +156,7 @@ public class ElemWithParam extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the node name.
    */
   public String getNodeName()
   {

@@ -90,7 +90,7 @@ public class ElemWhen extends ElemTemplateElement
    * Each xsl:when element has a single attribute, test,
    * which specifies an expression.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "test" attribute.
    */
   public void setTest(XPath v)
   {
@@ -102,7 +102,7 @@ public class ElemWhen extends ElemTemplateElement
    * Each xsl:when element has a single attribute, test,
    * which specifies an expression.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "test" attribute.
    */
   public XPath getTest()
   {
@@ -124,7 +124,7 @@ public class ElemWhen extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node name
    */
   public String getNodeName()
   {

@@ -234,14 +234,15 @@ public class FuncDocument extends Function2Args
   }
 
   /**
-   * HandleDocExpr
+   * Get the document from the given URI and base
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param context
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param base
+   * @param xctxt The XPath runtime state.
+   * @param context The current context node
+   * @param uri Relative(?) URI of the document
+   * @param base Base to resolve relative URI from.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The document Node pointing to the document at the given URI
+   * or null
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -387,9 +388,9 @@ public class FuncDocument extends Function2Args
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param xctxt The XPath runtime state.
+   * @param msg The error message code
+   * @param args Arguments to be used in the error message
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -413,9 +414,9 @@ public class FuncDocument extends Function2Args
   /**
    * Warn the user of a problem.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param xctxt The XPath runtime state.
+   * @param msg Warning message code
+   * @param args Arguments to be used in the warning message
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -436,15 +437,11 @@ public class FuncDocument extends Function2Args
       System.out.println(formattedMsg);
   }
 
-  /*
+ /**
    * Overide the superclass method to allow one or two arguments.
-   */
-
-  /**
-   * NEEDSDOC Method checkNumberArgs 
    *
    *
-   * NEEDSDOC @param argNum
+   * @param argNum Number of arguments passed in to this function
    *
    * @throws WrongNumberArgsException
    */

@@ -80,7 +80,7 @@ public class ElemApplyImport extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Token ID for xsl:apply-imports element types
    */
   public int getXSLToken()
   {
@@ -90,7 +90,7 @@ public class ElemApplyImport extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Element name
    */
   public String getNodeName()
   {
@@ -138,9 +138,9 @@ public class ElemApplyImport extends ElemTemplateElement
    * Add a child to the child list.
    * <!ELEMENT xsl:apply-imports EMPTY>
    *
-   * NEEDSDOC @param newChild
+   * @param newChild New element to append to this element's children list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null, xsl:apply-Imports cannot have children 
    *
    * @throws DOMException
    */

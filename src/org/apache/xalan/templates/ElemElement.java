@@ -70,7 +70,7 @@ import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Implement xsl:decimal-format.
+ * Implement xsl:element
  * <pre>
  * <!ELEMENT xsl:element %template;>
  * <!ATTLIST xsl:element
@@ -98,7 +98,7 @@ public class ElemElement extends ElemUse
    * It is an error if the string that results from instantiating the
    * attribute value template is not a QName.
    *
-   * NEEDSDOC @param v
+   * @param v Name attribute to set for this element
    */
   public void setName(AVT v)
   {
@@ -111,7 +111,7 @@ public class ElemElement extends ElemUse
    * It is an error if the string that results from instantiating the
    * attribute value template is not a QName.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Name attribute for this element
    */
   public AVT getName()
   {
@@ -133,7 +133,7 @@ public class ElemElement extends ElemUse
    * instantiating the attribute value template should be a URI reference.
    * It is not an error if the string is not a syntactically legal URI reference.
    *
-   * NEEDSDOC @param v
+   * @param v NameSpace attribute to set for this element
    */
   public void setNamespace(AVT v)
   {
@@ -147,7 +147,7 @@ public class ElemElement extends ElemUse
    * instantiating the attribute value template should be a URI reference.
    * It is not an error if the string is not a syntactically legal URI reference.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Namespace attribute for this element
    */
   public AVT getNamespace()
   {
@@ -163,7 +163,7 @@ public class ElemElement extends ElemUse
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -173,7 +173,7 @@ public class ElemElement extends ElemUse
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This element's name 
    */
   public String getNodeName()
   {

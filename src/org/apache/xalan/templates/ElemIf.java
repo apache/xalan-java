@@ -93,7 +93,7 @@ public class ElemIf extends ElemTemplateElement
    * Set the "test" attribute.
    * The xsl:if element must have a test attribute, which specifies an expression.
    *
-   * NEEDSDOC @param v
+   * @param v test attribute to set
    */
   public void setTest(XPath v)
   {
@@ -104,7 +104,7 @@ public class ElemIf extends ElemTemplateElement
    * Get the "test" attribute.
    * The xsl:if element must have a test attribute, which specifies an expression.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the "test" attribute for this element. 
    */
   public XPath getTest()
   {
@@ -115,7 +115,7 @@ public class ElemIf extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -125,7 +125,7 @@ public class ElemIf extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the element's name
    */
   public String getNodeName()
   {

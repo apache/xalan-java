@@ -91,31 +91,31 @@ public class ElemExtensionCall extends ElemLiteralResult
 
   // ExtensionNSHandler nsh;
 
-  /** NEEDSDOC Field m_extns          */
+  /** The Namespace URI for this extension call element          */
   String m_extns;
 
   // String m_extHandlerLookup;
 
-  /** NEEDSDOC Field isAvailable          */
+  /** Flag indicating if the extension is available for execution    */
   transient boolean isAvailable = false;
 
-  /** NEEDSDOC Field m_lang          */
+  /** Language used by extension          */
   String m_lang;
 
-  /** NEEDSDOC Field m_srcURL          */
+  /** URL pointing to extension          */
   String m_srcURL;
 
-  /** NEEDSDOC Field m_scriptSrc          */
+  /** Source for script          */
   String m_scriptSrc;
 
-  /** NEEDSDOC Field m_decl          */
+  /** Declaration for Extension element          */
   ElemExtensionDecl m_decl = null;
 
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   *@return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -125,7 +125,7 @@ public class ElemExtensionCall extends ElemLiteralResult
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
 
   // public String getNodeName()
@@ -195,13 +195,13 @@ public class ElemExtensionCall extends ElemLiteralResult
   }
 
   /**
-   * NEEDSDOC Method getElemExtensionDecl 
+   * Return the ElemExtensionDecl for this extension element 
    *
    *
-   * NEEDSDOC @param stylesheet
-   * NEEDSDOC @param namespace
+   * @param stylesheet Stylesheet root associated with this extension element
+   * @param namespace Namespace associated with this extension element
    *
-   * NEEDSDOC (getElemExtensionDecl) @return
+   * @return the ElemExtensionDecl for this extension element. 
    */
   private ElemExtensionDecl getElemExtensionDecl(StylesheetRoot stylesheet,
           String namespace)
@@ -331,9 +331,9 @@ public class ElemExtensionCall extends ElemLiteralResult
   /**
    * Return the raw value of the attribute.
    *
-   * NEEDSDOC @param rawName
+   * @param rawName Raw name of the attribute to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the raw value of the attribute or null if not found
    */
   public String getAttribute(String rawName)
   {
@@ -353,11 +353,11 @@ public class ElemExtensionCall extends ElemLiteralResult
    * Value Template (in other words, you can use curly expressions
    * such as href="http://{website}".
    *
-   * NEEDSDOC @param rawName
+   * @param rawName Raw name of the attribute to get
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @param transformer non-null reference to the the current transform-time state.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the value of the attribute
    *
    * @throws TransformerException
    */

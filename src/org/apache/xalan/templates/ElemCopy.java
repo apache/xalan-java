@@ -91,7 +91,7 @@ public class ElemCopy extends ElemUse
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element 
    */
   public int getXSLToken()
   {
@@ -101,7 +101,7 @@ public class ElemCopy extends ElemUse
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This element's name
    */
   public String getNodeName()
   {

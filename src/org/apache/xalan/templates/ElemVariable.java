@@ -105,7 +105,7 @@ public class ElemVariable extends ElemTemplateElement
    * evaluating the expression. In this case, the content
    * of the variable must be empty.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "select" attribute.
    */
   public void setSelect(XPath v)
   {
@@ -120,7 +120,7 @@ public class ElemVariable extends ElemTemplateElement
    * evaluating the expression. In this case, the content
    * of the variable must be empty.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "select" attribute.
    */
   public XPath getSelect()
   {
@@ -140,7 +140,7 @@ public class ElemVariable extends ElemTemplateElement
    * as described in [2.4 Qualified Names].
    * @see <a href="http://www.w3.org/TR/xslt#qname">qname in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "name" attribute.
    */
   public void setName(QName v)
   {
@@ -155,7 +155,7 @@ public class ElemVariable extends ElemTemplateElement
    * as described in [2.4 Qualified Names].
    * @see <a href="http://www.w3.org/TR/xslt#qname">qname in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "name" attribute.
    */
   public QName getName()
   {
@@ -171,7 +171,8 @@ public class ElemVariable extends ElemTemplateElement
    * Set if this is a top-level variable or param, or not.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Boolean indicating whether this is a top-level variable 
+   * or param, or not.
    */
   public void setIsTopLevel(boolean v)
   {
@@ -182,7 +183,8 @@ public class ElemVariable extends ElemTemplateElement
    * Get if this is a top-level variable or param, or not.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Boolean indicating whether this is a top-level variable 
+   * or param, or not.
    */
   public boolean getIsTopLevel()
   {
@@ -204,7 +206,7 @@ public class ElemVariable extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node name
    */
   public String getNodeName()
   {
@@ -214,7 +216,7 @@ public class ElemVariable extends ElemTemplateElement
   /**
    * Copy constructor.
    *
-   * NEEDSDOC @param param
+   * @param param An element created from an xsl:variable
    *
    * @throws TransformerException
    */
@@ -258,7 +260,7 @@ public class ElemVariable extends ElemTemplateElement
    * @param transformer non-null reference to the the current transform-time state.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the XObject representation of the variable.
    *
    * @throws TransformerException
    */

@@ -108,7 +108,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
   /**
    * Get the mode attribute for this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The mode attribute for this element
    */
   public QName getMode()
   {
@@ -129,7 +129,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * regard to processing modes.
    * @see <a href="http://www.w3.org/TR/xslt#built-in-rule">built-in-rule in XSLT Specification</a>
    *
-   * NEEDSDOC @param b
+   * @param b boolean value to set. 
    */
   public void setIsDefaultTemplate(boolean b)
   {
@@ -140,7 +140,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Token ID for this element types
    */
   public int getXSLToken()
   {
@@ -150,7 +150,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Element name
    */
   public String getNodeName()
   {
@@ -203,10 +203,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
   }
 
   /**
-   * NEEDSDOC Method needToPushParams 
+   * Return whether or not we need to push default arguments on the stack   
    *
    *
-   * NEEDSDOC (needToPushParams) @return
+   * @return whether or not to push default arguments on the stack
    */
   boolean needToPushParams()
   {
@@ -214,11 +214,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
   }
 
   /**
-   * NEEDSDOC Method pushParams 
+   * Push default arguments on the stack
    *
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime state for this transformation.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
@@ -238,10 +238,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
   }
 
   /**
-   * NEEDSDOC Method popParams 
+   * Pop the stack of default arguments after we're done with them 
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime state for this transformation.
    */
   void popParams(XPathContext xctxt)
   {

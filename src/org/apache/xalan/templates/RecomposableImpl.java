@@ -72,7 +72,7 @@ class RecomposableImpl implements Recomposable
   private StylesheetComposed m_owningStylesheet;
 
   /**
-   * The document order in which which object was encountered.
+   * The document order in which object was encountered.
    */
   private int m_docOrderNumber;
 
@@ -81,6 +81,13 @@ class RecomposableImpl implements Recomposable
    */
   private RecomposableBase m_obj;
 
+  /**
+   *  Constructor
+   * 
+   * @param owningStylesheet Owning composed stylesheet for this object
+   * @parm uid The document order for this object
+   * @parm o The underlying object for the recomposition.
+   */ 
   RecomposableImpl(StylesheetComposed owningStylesheet, int uid, RecomposableBase o)
   {
     m_owningStylesheet = owningStylesheet;
@@ -90,6 +97,8 @@ class RecomposableImpl implements Recomposable
 
   /**
    *  Returns the composed stylesheet to which this recomposable element belongs.
+   * 
+   * @return The composed stylesheet with which this object is associated.
    */ 
   public StylesheetComposed getStylesheetComposed()
   {
@@ -98,6 +107,8 @@ class RecomposableImpl implements Recomposable
 
   /**
    *  Returns the relative document order for this recomposable element.
+   * 
+   * @return the relative document order for this recomposable element.
    */ 
   public int getUid()
   {
@@ -132,6 +143,8 @@ class RecomposableImpl implements Recomposable
 
   /**
    * Recomposes this object with others of its type.
+   * 
+   * @parm root The owning root stylesheet for this object
    */
   public void recompose(StylesheetRoot root) throws TransformerException
   {

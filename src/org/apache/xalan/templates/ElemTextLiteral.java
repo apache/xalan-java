@@ -82,7 +82,8 @@ public class ElemTextLiteral extends ElemTemplateElement
   /**
    * Set whether or not space should be preserved.
    *
-   * NEEDSDOC @param v
+   * @param v Boolean flag indicating whether 
+   * or not space should be preserved
    */
   public void setPreserveSpace(boolean v)
   {
@@ -92,7 +93,8 @@ public class ElemTextLiteral extends ElemTemplateElement
   /**
    * Get whether or not space should be preserved.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Boolean flag indicating whether 
+   * or not space should be preserved 
    */
   public boolean getPreserveSpace()
   {
@@ -107,7 +109,7 @@ public class ElemTextLiteral extends ElemTemplateElement
   /**
    * Set the characters that will be output to the result tree..
    *
-   * NEEDSDOC @param v
+   * @param v Array of characters that will be output to the result tree 
    */
   public void setChars(char[] v)
   {
@@ -117,7 +119,7 @@ public class ElemTextLiteral extends ElemTemplateElement
   /**
    * Get the characters that will be output to the result tree..
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Array of characters that will be output to the result tree
    */
   public char[] getChars()
   {
@@ -147,7 +149,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    * or xsl:text element should be output without any escaping.
    * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Boolean value for "disable-output-escaping" attribute.
    */
   public void setDisableOutputEscaping(boolean v)
   {
@@ -172,7 +174,7 @@ public class ElemTextLiteral extends ElemTemplateElement
    * or xsl:text element should be output without any escaping.
    * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Boolean value of "disable-output-escaping" attribute.
    */
   public boolean getDisableOutputEscaping()
   {
@@ -194,7 +196,7 @@ public class ElemTextLiteral extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {

@@ -128,7 +128,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Tell if this template is a compiled template.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Boolean flag indicating whether this is a compiled template   
    */
   public boolean isCompiledTemplate()
   {
@@ -150,7 +150,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An invalid node name
    */
   public String getNodeName()
   {
@@ -190,7 +190,7 @@ public class ElemTemplateElement extends UnImplNode
    * on a Stylesheet object, which will Get the owning
    * aggregated stylesheet, or that stylesheet if it is aggregated.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the owning "composed" stylesheet.
    */
   public StylesheetComposed getStylesheetComposed()
   {
@@ -202,7 +202,7 @@ public class ElemTemplateElement extends UnImplNode
    * inheritance chain until it calls getStylesheet
    * on a Stylesheet object, which will return itself.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the owning stylesheet
    */
   public Stylesheet getStylesheet()
   {
@@ -215,7 +215,7 @@ public class ElemTemplateElement extends UnImplNode
    * on a Stylesheet object, which will return a reference
    * to the root stylesheet.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the owning root stylesheet
    */
   public StylesheetRoot getStylesheetRoot()
   {
@@ -273,7 +273,7 @@ public class ElemTemplateElement extends UnImplNode
    * Throw a template element runtime error.  (Note: should we throw a TransformerException instead?)
    *
    * @param msg Description of the error that occured.
-   * NEEDSDOC @param args
+   * @param args Arguments to be used in the message
    */
   public void error(int msg, Object[] args)
   {
@@ -295,10 +295,10 @@ public class ElemTemplateElement extends UnImplNode
    * first to remove it from its previous context. Failing to do so will
    * damage the tree.
    *
+   * @param newChild Child to be added to child list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Child just added to the child list
    * @exception DOMException
-   * @param newChild
    */
   public Node appendChild(Node newChild) throws DOMException
   {
@@ -329,7 +329,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Tell if there are child nodes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if there are child nodes
    */
   public boolean hasChildNodes()
   {
@@ -339,7 +339,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the type of the node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Constant for this node type
    */
   public short getNodeType()
   {
@@ -349,7 +349,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Return the nodelist (same reference).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The nodelist containing the child nodes (this)
    */
   public NodeList getChildNodes()
   {
@@ -363,10 +363,10 @@ public class ElemTemplateElement extends UnImplNode
    * ... which is less well checked, but more convenient in some cases.
    * Given that we assume only experts are calling this class, it might
    * be preferable. It's less DOMish, though.
-   * @param oldChild The child to remove. This operation is a no-op
+   * 
+   * @param childETE The child to remove. This operation is a no-op
    * if oldChild is not a child of this node.
    *
-   * NEEDSDOC @param childETE
    * @return the removed child, or null if the specified
    * node was not a child of this element.
    *
@@ -399,10 +399,10 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Replace the old child with a new child.
    *
-   * NEEDSDOC @param newChild
-   * NEEDSDOC @param oldChild
+   * @param newChild New child to replace with
+   * @param oldChild Old child to be replaced
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The new child
    *
    * @throws DOMException
    */
@@ -439,7 +439,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * NodeList method: Count the immediate children of this node
    *
-   * @return int
+   * @return The count of children of this node
    */
   public int getLength()
   {
@@ -462,8 +462,8 @@ public class ElemTemplateElement extends UnImplNode
    * NodeList method: Return the Nth immediate child of this node, or
    * null if the index is out of bounds.
    *
-   * @param index
-   * @return org.w3c.dom.Node
+   * @param index Index of child to find
+   * @return org.w3c.dom.Node: the child node at given index
    */
   public Node item(int index)
   {
@@ -484,7 +484,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the stylesheet owner.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The stylesheet owner
    */
   public Document getOwnerDocument()
   {
@@ -494,7 +494,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Return the element name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element name
    */
   public String getTagName()
   {
@@ -504,7 +504,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Return the base identifier.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The base identifier 
    */
   public String getBaseIdentifier()
   {
@@ -513,7 +513,7 @@ public class ElemTemplateElement extends UnImplNode
     return this.getSystemId();
   }
 
-  /** NEEDSDOC Field m_lineNumber          */
+  /** line number where the current document event ends         */
   private int m_lineNumber;
 
   /**
@@ -528,7 +528,7 @@ public class ElemTemplateElement extends UnImplNode
     return m_lineNumber;
   }
 
-  /** NEEDSDOC Field m_columnNumber          */
+  /** the column number where the current document event ends        */
   private int m_columnNumber;
 
   /**
@@ -574,7 +574,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Set the location information for this element.
    *
-   * NEEDSDOC @param locator
+   * @param locator Source Locator with location information for this element
    */
   public void setLocaterInfo(SourceLocator locator)
   {
@@ -613,7 +613,7 @@ public class ElemTemplateElement extends UnImplNode
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the xml:space attribute
    */
   public boolean getXmlSpace()
   {
@@ -630,7 +630,8 @@ public class ElemTemplateElement extends UnImplNode
    * Return a table that contains all prefixes available
    * within this element context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Vector containing the prefixes available within this
+   * element context 
    */
   public Vector getDeclaredPrefixes()
   {
@@ -1025,7 +1026,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the parent as a Node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's parent node
    */
   public Node getParentNode()
   {
@@ -1035,7 +1036,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the parent as an ElemTemplateElement.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's parent as an ElemTemplateElement
    */
   public ElemTemplateElement getParentElem()
   {
@@ -1051,7 +1052,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the next sibling (as a Node) or return null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return this node's next sibling or null
    */
   public Node getNextSibling()
   {
@@ -1065,7 +1066,7 @@ public class ElemTemplateElement extends UnImplNode
    * TODO: If we were sure parents and sibs are always ElemTemplateElements,
    * we could hit the fields directly rather than thru accessors.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's previous sibling or null
    */
   public Node getPreviousSibling()
   {
@@ -1086,7 +1087,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the next sibling (as a ElemTemplateElement) or return null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's next sibling (as a ElemTemplateElement) or null 
    */
   public ElemTemplateElement getNextSiblingElem()
   {
@@ -1102,7 +1103,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the first child as a Node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's first child or null
    */
   public Node getFirstChild()
   {
@@ -1112,7 +1113,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the first child as a ElemTemplateElement.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's first child (as a ElemTemplateElement) or null
    */
   public ElemTemplateElement getFirstChildElem()
   {
@@ -1122,7 +1123,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Get the last child.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's last child
    */
   public Node getLastChild()
   {
@@ -1138,7 +1139,7 @@ public class ElemTemplateElement extends UnImplNode
     return lastChild;
   }
 
-  /** NEEDSDOC Field m_DOMBackPointer          */
+  /** DOM backpointer that this element originated from.          */
   private Node m_DOMBackPointer;
 
   /**
@@ -1146,7 +1147,7 @@ public class ElemTemplateElement extends UnImplNode
    * DOM backpointer that this element originated from.
    * For tooling use.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return DOM backpointer that this element originated from or null.
    */
   public Node getDOMBackPointer()
   {
@@ -1158,7 +1159,7 @@ public class ElemTemplateElement extends UnImplNode
    * DOM backpointer that this element originated from.
    * For tooling use.
    *
-   * NEEDSDOC @param n
+   * @param n DOM backpointer that this element originated from.
    */
   public void setDOMBackPointer(Node n)
   {
@@ -1171,6 +1172,7 @@ public class ElemTemplateElement extends UnImplNode
    * composed stylesheet and the getUid() of this element.
    * Returns a negative integer, zero, or a positive integer as this
    * object is less than, equal to, or greater than the specified object.
+   * 
    * @param o The object to be compared to this object
    * @returns a negative integer, zero, or a positive integer as this object is
    *          less than, equal to, or greater than the specified object.

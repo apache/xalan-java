@@ -92,10 +92,10 @@ import javax.xml.transform.TransformerException;
 public class ElemTemplate extends ElemTemplateElement
 {
 
-  /** NEEDSDOC Field m_publicId          */
+  /** The public identifier for the current document event          */
   private String m_publicId;
 
-  /** NEEDSDOC Field m_systemId          */
+  /** The system identifier for the current document event          */
   private String m_systemId;
 
   /**
@@ -128,7 +128,7 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * Set the location information for this element.
    *
-   * NEEDSDOC @param locator
+   * @param locator SourceLocator holding location information 
    */
   public void setLocaterInfo(SourceLocator locator)
   {
@@ -148,9 +148,10 @@ public class ElemTemplate extends ElemTemplateElement
   private Stylesheet m_stylesheet;
 
   /**
-   * Get the owning stylesheet.
-   *
-   * NEEDSDOC ($objectName$) @return
+   * Get the stylesheet composed (resolves includes and
+   * imports and has methods on it that return "composed" properties.
+   * 
+   * @return The stylesheet composed.
    */
   public StylesheetComposed getStylesheetComposed()
   {
@@ -160,7 +161,7 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * Get the owning stylesheet.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The owning stylesheet.
    */
   public Stylesheet getStylesheet()
   {
@@ -170,7 +171,7 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * Set the owning stylesheet.
    *
-   * NEEDSDOC @param sheet
+   * @param sheet The owning stylesheet for this element
    */
   public void setStylesheet(Stylesheet sheet)
   {
@@ -178,9 +179,9 @@ public class ElemTemplate extends ElemTemplateElement
   }
 
   /**
-   * Get the owning stylesheet.
+   * Get the root stylesheet.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The root stylesheet for this element
    */
   public StylesheetRoot getStylesheetRoot()
   {
@@ -202,7 +203,7 @@ public class ElemTemplate extends ElemTemplateElement
    * value of the match attribute to contain a VariableReference.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for the "match" attribute
    */
   public void setMatch(XPath v)
   {
@@ -218,7 +219,7 @@ public class ElemTemplate extends ElemTemplateElement
    * value of the match attribute to contain a VariableReference.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "match" attribute 
    */
   public XPath getMatch()
   {
@@ -237,7 +238,7 @@ public class ElemTemplate extends ElemTemplateElement
    * also have a match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set the "name" attribute
    */
   public void setName(QName v)
   {
@@ -251,7 +252,7 @@ public class ElemTemplate extends ElemTemplateElement
    * also have a match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "name" attribute
    */
   public QName getName()
   {
@@ -271,7 +272,7 @@ public class ElemTemplate extends ElemTemplateElement
    * does not have a match attribute, it must not have a mode attribute.
    * @see <a href="http://www.w3.org/TR/xslt#modes">modes in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set the "mode" attribute
    */
   public void setMode(QName v)
   {
@@ -285,7 +286,7 @@ public class ElemTemplate extends ElemTemplateElement
    * does not have a match attribute, it must not have a mode attribute.
    * @see <a href="http://www.w3.org/TR/xslt#modes">modes in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of the "mode" attribute
    */
   public QName getMode()
   {
@@ -306,7 +307,7 @@ public class ElemTemplate extends ElemTemplateElement
    * Number with an optional leading minus sign (-).
    * @see <a href="http://www.w3.org/TR/xslt#conflict">conflict in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v The value to set for the "priority" attribute
    */
   public void setPriority(double v)
   {
@@ -321,7 +322,7 @@ public class ElemTemplate extends ElemTemplateElement
    * Number with an optional leading minus sign (-).
    * @see <a href="http://www.w3.org/TR/xslt#conflict">conflict in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "priority" attribute
    */
   public double getPriority()
   {
@@ -332,7 +333,7 @@ public class ElemTemplate extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for the element
    */
   public int getXSLToken()
   {
@@ -342,7 +343,7 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {

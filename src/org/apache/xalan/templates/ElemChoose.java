@@ -85,7 +85,7 @@ public class ElemChoose extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -95,7 +95,7 @@ public class ElemChoose extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name 
    */
   public String getNodeName()
   {
@@ -109,7 +109,7 @@ public class ElemChoose extends ElemTemplateElement
   public ElemChoose(){}
 
   /**
-   * NEEDSDOC Method execute 
+   * Execute the xsl:choose transformation. 
    *
    *
    * @param transformer non-null reference to the the current transform-time state.
@@ -173,9 +173,9 @@ public class ElemChoose extends ElemTemplateElement
   /**
    * Add a child to the child list.
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to this node's child list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The child that was just added to the child list
    *
    * @throws DOMException
    */

@@ -93,7 +93,7 @@ public class ElemCopyOf extends ElemTemplateElement
    * Set the "select" attribute.
    * The required select attribute contains an expression.
    *
-   * NEEDSDOC @param expr
+   * @param expr Expression for select attribute 
    */
   public void setSelect(XPath expr)
   {
@@ -101,10 +101,10 @@ public class ElemCopyOf extends ElemTemplateElement
   }
 
   /**
-   * Get the "use-attribute-sets" attribute.
+   * Get the "select" attribute.
    * The required select attribute contains an expression.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Expression for select attribute 
    */
   public XPath getSelect()
   {
@@ -115,7 +115,7 @@ public class ElemCopyOf extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -125,7 +125,7 @@ public class ElemCopyOf extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -234,9 +234,9 @@ public class ElemCopyOf extends ElemTemplateElement
   /**
    * Add a child to the child list.
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to this node's child list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Child just added to child list
    *
    * @throws DOMException
    */

@@ -120,7 +120,7 @@ public class ElemNumber extends ElemTemplateElement
    * current node has an expanded-name, with the same expanded-name
    * as the current node.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "count" attribute. 
    */
   public void setCount(XPath v)
   {
@@ -136,7 +136,7 @@ public class ElemNumber extends ElemTemplateElement
    * current node has an expanded-name, with the same expanded-name
    * as the current node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of "count" attribute.
    */
   public XPath getCount()
   {
@@ -165,7 +165,7 @@ public class ElemNumber extends ElemTemplateElement
    * Only nodes after the first node before the
    * current node that match the from pattern are considered.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "from" attribute.
    */
   public void setFrom(XPath v)
   {
@@ -182,7 +182,7 @@ public class ElemNumber extends ElemTemplateElement
    * Only nodes after the first node before the
    * current node that match the from pattern are considered.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of "from" attribute.
    */
   public XPath getFrom()
   {
@@ -222,7 +222,7 @@ public class ElemNumber extends ElemTemplateElement
    * be considered; it has the values single, multiple or any. The default
    * is single.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "level" attribute.
    */
   public void setLevel(int v)
   {
@@ -235,7 +235,7 @@ public class ElemNumber extends ElemTemplateElement
    * be considered; it has the values single, multiple or any. The default
    * is single.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of "level" attribute.
    */
   public int getLevel()
   {
@@ -255,7 +255,7 @@ public class ElemNumber extends ElemTemplateElement
    * and the resulting object is converted to a number as if by a call to the
    * number function.
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "value" attribute.
    */
   public void setValue(XPath v)
   {
@@ -268,7 +268,7 @@ public class ElemNumber extends ElemTemplateElement
    * and the resulting object is converted to a number as if by a call to the
    * number function.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of "value" attribute.
    */
   public XPath getValue()
   {
@@ -288,7 +288,7 @@ public class ElemNumber extends ElemTemplateElement
    * numbers into a string.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "format" attribute.
    */
   public void setFormat(AVT v)
   {
@@ -301,7 +301,7 @@ public class ElemNumber extends ElemTemplateElement
    * numbers into a string.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of "format" attribute.
    */
   public AVT getFormat()
   {
@@ -323,7 +323,7 @@ public class ElemNumber extends ElemTemplateElement
    * Implementers should document for which languages they support numbering.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "lang" attribute.
    */
   public void setLang(AVT v)
   {
@@ -339,7 +339,7 @@ public class ElemNumber extends ElemTemplateElement
    * Implementers should document for which languages they support numbering.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value ofr "lang" attribute.
    */
   public AVT getLang()
   {
@@ -358,7 +358,7 @@ public class ElemNumber extends ElemTemplateElement
    * that use letters.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "letter-value" attribute.
    */
   public void setLetterValue(AVT v)
   {
@@ -371,7 +371,7 @@ public class ElemNumber extends ElemTemplateElement
    * that use letters.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value to set for "letter-value" attribute.
    */
   public AVT getLetterValue()
   {
@@ -392,7 +392,7 @@ public class ElemNumber extends ElemTemplateElement
    * numbering sequences.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "grouping-separator" attribute.
    */
   public void setGroupingSeparator(AVT v)
   {
@@ -406,7 +406,7 @@ public class ElemNumber extends ElemTemplateElement
    * numbering sequences.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of "grouping-separator" attribute.
    */
   public AVT getGroupingSeparator()
   {
@@ -423,7 +423,7 @@ public class ElemNumber extends ElemTemplateElement
    * The optional grouping-size specifies the size (normally 3) of the grouping.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value to set for "grouping-size" attribute.
    */
   public void setGroupingSize(AVT v)
   {
@@ -435,7 +435,7 @@ public class ElemNumber extends ElemTemplateElement
    * The optional grouping-size specifies the size (normally 3) of the grouping.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value of "grouping-size" attribute.
    */
   public AVT getGroupingSize()
   {
@@ -472,7 +472,7 @@ public class ElemNumber extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -482,7 +482,7 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -523,9 +523,9 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Add a child to the child list.
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to child list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Child just added to child list
    *
    * @throws DOMException
    */
@@ -545,14 +545,14 @@ public class ElemNumber extends ElemTemplateElement
    * and a context, find the first ancestor that matches the
    * pattern (including the context handed in).
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime state for this.
    * @param fromMatchPattern The ancestor must match this pattern.
    * @param countMatchPattern The ancestor must also match this pattern.
    * @param context The node that "." expresses.
    * @param namespaceContext The context in which namespaces in the
    * queries are supposed to be expanded.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the first ancestor that matches the given pattern
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -593,17 +593,15 @@ public class ElemNumber extends ElemTemplateElement
    * Given a 'from' pattern (ala xsl:number), a match pattern
    * and a context, find the first ancestor that matches the
    * pattern (including the context handed in).
-   * @param matchPatternString The match pattern.
-   * @param node The node that "." expresses.
-   *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param fromMatchPattern
-   * NEEDSDOC @param countMatchPattern
-   * NEEDSDOC @param context
+   * @param xctxt The XPath runtime state for this.
+   * @param fromMatchPattern The ancestor must match this pattern.
+   * @param countMatchPattern The ancestor must also match this pattern.
+   * @param context The node that "." expresses.
    * @param namespaceContext The context in which namespaces in the
    * queries are supposed to be expanded.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the first preceding, ancestor or self node that 
+   * matches the given pattern
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -657,10 +655,10 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Get the count match pattern, or a default value.
    *
-   * NEEDSDOC @param support
-   * NEEDSDOC @param contextNode
+   * @param support The XPath runtime state for this.
+   * @param contextNode The node that "." expresses.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the count match pattern, or a default value. 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -719,10 +717,10 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Given an XML source node, get the count according to the
    * parameters set up by the xsl:number attributes.
-   * @param transformer The node being counted.
+   * @param transformer non-null reference to the the current transform-time state.
    * @param sourceNode The source node being counted.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The count of nodes
    *
    * @throws TransformerException
    */
@@ -777,10 +775,10 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Get the previous node to be counted.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param pos
+   * @param xctxt The XPath runtime state for this.
+   * @param pos The current node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the previous node to be counted.
    *
    * @throws TransformerException
    */
@@ -865,10 +863,10 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Get the target node that will be counted..
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime state for this.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the target node that will be counted
    *
    * @throws TransformerException
    */
@@ -897,12 +895,14 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Get the ancestors, up to the root, that match the
    * pattern.
+   * 
    * @param patterns if non-null, count only nodes
    * that match this pattern, if null count all ancestors.
-   *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime state for this.
    * @param node Count this node and it's ancestors.
-   * NEEDSDOC @param stopAtFirstFound
+   * @param stopAtFirstFound Flag indicating to stop after the
+   * first node is found (difference between level = single
+   * or multiple)
    * @return The number of ancestors that match the pattern.
    *
    * @throws javax.xml.transform.TransformerException
@@ -955,9 +955,10 @@ public class ElemNumber extends ElemTemplateElement
    * Get the locale we should be using.
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * NEEDSDOC @param contextNode
+   * @param contextNode The node that "." expresses.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The locale to use. May be specified by "lang" attribute,
+   * but if not, use default locale on the system. 
    *
    * @throws TransformerException
    */
@@ -1000,12 +1001,12 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   *
+   * Get the number formatter to be used the format the numbers
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * NEEDSDOC @param contextNode
+   * @param contextNode The node that "." expresses.
    *
-   * NEEDSDOC ($objectName$) @return
+   * ($objectName$) @return The number formatter to be used
    *
    * @throws TransformerException
    */
@@ -1054,11 +1055,11 @@ public class ElemNumber extends ElemTemplateElement
 
   /**
    * Format a vector of numbers into a formatted string.
+   * 
    * @param xslNumberElement Element that takes %conversion-atts; attributes.
-   *
    * @param transformer non-null reference to the the current transform-time state.
    * @param list Array of one or more integer numbers.
-   * NEEDSDOC @param contextNode
+   * @param contextNode The node that "." expresses.
    * @return String that represents list according to
    * %conversion-atts; attributes.
    * TODO: Optimize formatNumberList so that it caches the last count and
@@ -1211,20 +1212,22 @@ public class ElemNumber extends ElemTemplateElement
   */
 
   /**
-   * NEEDSDOC Method getFormattedNumber 
+   * Format the given number and store it in the given buffer 
    *
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * NEEDSDOC @param contextNode
-   * NEEDSDOC @param numberType
-   * NEEDSDOC @param numberWidth
-   * NEEDSDOC @param listElement
-   * NEEDSDOC @param formattedNumber
+   * @param contextNode The node that "." expresses.
+   * @param numberType Type to format to
+   * @param numberWidth Maximum length of formatted number
+   * @param listElement Number to format
+   * @param formattedNumber Buffer to store formatted number
    *
    * @throws javax.xml.transform.TransformerException
    */
   private void getFormattedNumber(
-          TransformerImpl transformer, Node contextNode, char numberType, int numberWidth, int listElement, FastStringBuffer formattedNumber)
+          TransformerImpl transformer, Node contextNode, 
+          char numberType, int numberWidth, int listElement, 
+          FastStringBuffer formattedNumber)
             throws javax.xml.transform.TransformerException
   {
 
@@ -1500,6 +1503,7 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Convert a long integer into alphabetic counting, in other words
    * count using the sequence A B C ... Z.
+   * 
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
    * @return String representing alpha count of number.
@@ -1523,11 +1527,12 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Convert a long integer into alphabetic counting, in other words
    * count using the sequence A B C ... Z AA AB AC.... etc.
+   * 
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
-   * NEEDSDOC @param aTable
-   * NEEDSDOC @param stringBuf
-   * @return String representing alpha count of number.
+   * @param aTable Array of alpha characters representing numbers
+   * @param stringBuf Buffer where to save the string representing alpha count of number.
+   * 
    * @see TransformerImpl#DecimalToRoman
    *
    * Note that the radix of the conversion is inferred from the size
@@ -1624,9 +1629,11 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Convert a long integer into traditional alphabetic counting, in other words
    * count using the traditional numbering.
+   * 
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
-   * NEEDSDOC @param thisBundle
+   * @param thisBundle Resource bundle to use
+   * 
    * @return String representing alpha count of number.
    * @see XSLProcessor#DecimalToRoman
    *
@@ -1888,19 +1895,19 @@ public class ElemNumber extends ElemTemplateElement
   class NumberFormatStringTokenizer
   {
 
-    /** NEEDSDOC Field currentPosition          */
+    /** Current position in the format string          */
     private int currentPosition;
 
-    /** NEEDSDOC Field maxPosition          */
+    /** Index of last character in the format string      */
     private int maxPosition;
 
-    /** NEEDSDOC Field str          */
+    /** Format string to be tokenized        */
     private String str;
 
     /**
      * Construct a NumberFormatStringTokenizer.
      *
-     * NEEDSDOC @param str
+     * @param str Format string to be tokenized
      */
     public NumberFormatStringTokenizer(String str)
     {

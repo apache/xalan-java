@@ -59,7 +59,7 @@ package org.apache.xalan.templates;
 /**
  * This interface defines a recomposable stylesheet element.  The interface requires
  * the compareTo() method.
- * When we migrate to Java2, ththe compareTo method should be removed this interface
+ * When we migrate to Java2, the compareTo method should be removed this interface
  * should also extend java.lang.Comparable.
  */
 

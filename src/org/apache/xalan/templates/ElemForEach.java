@@ -113,7 +113,7 @@ public class ElemForEach extends ElemTemplateElement
   /**
    * Set the "select" attribute.
    *
-   * NEEDSDOC @param xpath
+   * @param xpath The XPath expression for the "select" attribute.
    */
   public void setSelect(XPath xpath)
   {
@@ -121,9 +121,9 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * Set the "select" attribute.
+   * Get the "select" attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The XPath expression for the "select" attribute.
    */
   public XPath getSelect()
   {
@@ -131,9 +131,10 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * Set the "select" attribute.
+   * Get the "select" attribute or default selection pattern.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the "select" attribute or if null, the 
+   * default selection pattern ("node()")
    */
   public XPath getSelectOrDefault()
   {
@@ -141,7 +142,7 @@ public class ElemForEach extends ElemTemplateElement
            ? getStylesheetRoot().m_selectDefault : m_selectExpression;
   }
 
-  /** NEEDSDOC Field m_sortElems          */
+  /** Vector containing the xsl:sort elements associated with this element         */
   protected Vector m_sortElems = null;
 
   /**
@@ -156,9 +157,9 @@ public class ElemForEach extends ElemTemplateElement
   /**
    * Get a xsl:sort element associated with this element.
    *
-   * NEEDSDOC @param i
+   * @param i Index of xsl:sort element to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return xsl:sort element at given index
    */
   public ElemSort getSortElem(int i)
   {
@@ -168,7 +169,7 @@ public class ElemForEach extends ElemTemplateElement
   /**
    * Set a xsl:sort element associated with this element.
    *
-   * NEEDSDOC @param sortElem
+   * @param sortElem xsl:sort element to set
    */
   public void setSortElem(ElemSort sortElem)
   {
@@ -183,7 +184,7 @@ public class ElemForEach extends ElemTemplateElement
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -193,7 +194,7 @@ public class ElemForEach extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -201,7 +202,7 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method execute 
+   * Execute the xsl:for-each transformation 
    *
    *
    * @param transformer non-null reference to the the current transform-time state.
@@ -231,10 +232,10 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method getTemplateMatch 
+   * Get template element associated with this
    *
    *
-   * NEEDSDOC (getTemplateMatch) @return
+   * @return template element associated with this (itself)
    */
   protected ElemTemplateElement getTemplateMatch()
   {
@@ -242,14 +243,14 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method sortNodes 
+   * Sort given nodes
    *
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param keys
-   * NEEDSDOC @param sourceNodes
+   * @param xctxt The XPath runtime state for the sort. 
+   * @param keys Vector of sort keyx
+   * @param sourceNodes Iterator of nodes to sort
    *
-   * NEEDSDOC (sortNodes) @return
+   * @return iterator of sorted nodes
    *
    * @throws TransformerException
    */
@@ -292,10 +293,10 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method needToPushParams 
+   * Return whether or not default parameters need to be pushed into stack   
    *
    *
-   * NEEDSDOC (needToPushParams) @return
+   * @return False, no need to push parameters here.
    */
   boolean needToPushParams()
   {
@@ -303,11 +304,11 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method pushParams 
+   * Push default parameters into the stack 
    *
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime state.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
@@ -324,10 +325,10 @@ public class ElemForEach extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method popParams 
+   * Pop Default parameters from the stack 
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime state.
    */
   void popParams(XPathContext xctxt)
   {
@@ -530,9 +531,9 @@ public class ElemForEach extends ElemTemplateElement
    *   mode %qname; #IMPLIED
    * >
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to add to child list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Child just added to child list
    *
    * @throws DOMException
    */

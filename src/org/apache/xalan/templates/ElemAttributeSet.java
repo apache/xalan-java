@@ -93,7 +93,7 @@ public class ElemAttributeSet extends ElemUse
    * Set the "name" attribute.
    * The name attribute specifies the name of the attribute set.
    *
-   * NEEDSDOC @param name
+   * @param name Name attribute to set
    */
   public void setName(QName name)
   {
@@ -104,7 +104,7 @@ public class ElemAttributeSet extends ElemUse
    * Get the "name" attribute.
    * The name attribute specifies the name of the attribute set.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The name attribute of the attribute set
    */
   public QName getName()
   {
@@ -115,7 +115,7 @@ public class ElemAttributeSet extends ElemUse
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Token ID of the element 
    */
   public int getXSLToken()
   {
@@ -125,7 +125,7 @@ public class ElemAttributeSet extends ElemUse
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The name of this element
    */
   public String getNodeName()
   {
@@ -177,9 +177,9 @@ public class ElemAttributeSet extends ElemUse
    *   use-attribute-sets %qnames; #IMPLIED
    * >
    *
-   * NEEDSDOC @param newChild
+   * @param newChild Child to be added to this node's list of children
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The child that was just added to the list of children
    *
    * @throws DOMException
    */
