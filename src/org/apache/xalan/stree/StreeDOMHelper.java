@@ -9,10 +9,10 @@ public class StreeDOMHelper extends DOM2Helper
   /**
    * Create an empty DOM Document.  Mainly used for RTFs.
    */
-  public Document createDocument()
-  {
-    return new DocumentImpl();
-  }
+  // public Document createDocument()
+  // {
+  //  return new DocumentImpl();
+  // }
   
   public String getUniqueID(Node node)
   {
