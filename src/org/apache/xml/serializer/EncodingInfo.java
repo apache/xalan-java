@@ -21,6 +21,7 @@ package org.apache.xml.serializer;
  * Holds information about a given encoding, which is the Java name for the
  * encoding, the equivalent ISO name, and the integer value of the last pritable
  * character in the encoding.
+ * @xsl.usage internal
  */
 public class EncodingInfo extends Object
 {
