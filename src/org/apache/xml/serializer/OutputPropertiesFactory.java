@@ -147,6 +147,8 @@ public class OutputPropertiesFactory
     private static final String PROP_FILE_TEXT = "output_text.properties";
     /** property file for default HTML properties */
     private static final String PROP_FILE_HTML = "output_html.properties";
+    /** property file for default XHTML properties */
+    private static final String PROP_FILE_XHTML = "output_xhtml.properties";
     /** property file for default UNKNOWN (Either XML or HTML, to be determined later) properties */
     private static final String PROP_FILE_UNKNOWN = "output_unknown.properties";
 
@@ -160,6 +162,9 @@ public class OutputPropertiesFactory
     /** The default properties when method="html". */
     private static Properties m_html_properties = null;
 
+    /** The default properties when method="xhtml". */
+    private static Properties m_xhtml_properties = null;
+    
     /** The default properties when method="text". */
     private static Properties m_text_properties = null;
 
@@ -228,6 +233,17 @@ public class OutputPropertiesFactory
                 if (null == m_html_properties) // double check
                 {
                     fileName = PROP_FILE_HTML;
+                    m_html_properties =
+                        loadPropertiesFile(fileName, m_xml_properties);
+                }
+
+                defaultProperties = m_html_properties;
+            }
+            else if (method.equals(Method.XHTML))
+            {
+                if (null == m_xhtml_properties) // double check
+                {
+                    fileName = PROP_FILE_XHTML;
                     m_html_properties =
                         loadPropertiesFile(fileName, m_xml_properties);
                 }

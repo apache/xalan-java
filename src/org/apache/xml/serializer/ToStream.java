@@ -2650,7 +2650,7 @@ abstract public class ToStream extends SerializerBase
         return null;
     }
 
-    private void ensurePrefixIsDeclared(String ns, String rawName)
+    protected void ensurePrefixIsDeclared(String ns, String rawName)
         throws org.xml.sax.SAXException
     {
 

@@ -327,7 +327,7 @@ public class ToHTMLStream extends ToStream
                     | ElemDesc.BLOCK
                     | ElemDesc.BLOCKFORM
                     | ElemDesc.BLOCKFORMFIELDSET));
-        m_elementFlags.put("HTML", new ElemDesc(0 | ElemDesc.BLOCK));
+        m_elementFlags.put("HTML", new ElemDesc(0 | ElemDesc.BLOCK | ElemDesc.HTMLELEM));
 
         // From "John Ky" <hand@syd.speednet.com.au
         // Transitional Document Type Definition ()
@@ -1014,7 +1014,7 @@ public class ToHTMLStream extends ToStream
      * 
      * @return should be a two character string.
      */
-    private String makeHHString(int i)
+    private static String makeHHString(int i)
     {
         String s = Integer.toHexString(i).toUpperCase();
         if (s.length() == 1)
@@ -1933,6 +1933,7 @@ public class ToHTMLStream extends ToStream
         m_inDTD = false;
 //        m_isRawStack.clear();
         m_omitMetaTag = false;
-        m_specialEscapeURLs = true;     
+        m_specialEscapeURLs = true;   
+        m_charInfo = m_htmlcharInfo;  
     }
 }

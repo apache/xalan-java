@@ -137,6 +137,9 @@ public final class ElemDesc
 
     /** Bit position if this element type is a header element (i.e. HEAD). */
     public static final int HEADELEM = (1 << 22);
+    
+    /** Bit position if this element is the "HTML" element */
+    public static final int HTMLELEM = (1 << 23);
 
     /** Bit position if this attribute type is a URL. */
     public static final int ATTRURL = (1 << 1);
