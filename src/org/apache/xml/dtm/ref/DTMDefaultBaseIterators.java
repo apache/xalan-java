@@ -943,7 +943,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       if (_isRestartable)
       {
         _startNode = node;
-        _currentNode = getFirstAttribute(node);
+        _currentNode = getFirstAttributeIdentity(makeNodeIdentity(node));
 
         return resetPosition();
       }
@@ -961,9 +961,12 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       final int node = _currentNode;
 
-      _currentNode = getNextAttribute(node);
+      if (node != NULL) {
+        _currentNode = getNextAttributeIdentity(node);
+        return returnNode(makeNodeHandle(node));
+      }
 
-      return returnNode(node);
+      return NULL;
     }
   }  // end of AttributeIterator
 

@@ -552,7 +552,6 @@ public abstract class DTMDefaultBase implements DTM
    */
   protected int _nextsib(int identity)
   {
-
     // Boiler-plate code for each of the _xxx functions, except for the array.
     int info = (identity >= m_size) ? NOTPROCESSED : m_nextsib.elementAt(identity);
 
@@ -1040,15 +1039,23 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getFirstAttribute(int nodeHandle)
   {
+    int nodeID = makeNodeIdentity(nodeHandle);
 
-    int type = getNodeType(nodeHandle);
+    return makeNodeHandle(getFirstAttributeIdentity(nodeID));
+  }
+
+  /**
+   * Given a node identity, get the index of the node's first attribute.
+   *
+   * @param identity int identity of the node.
+   * @return Identity of first attribute, or DTM.NULL to indicate none exists.
+   */
+  protected int getFirstAttributeIdentity(int identity) {
+    int type = _type(identity);
 
     if (DTM.ELEMENT_NODE == type)
     {
-
       // Assume that attributes and namespaces immediately follow the element.
-      int identity = makeNodeIdentity(nodeHandle);
-
       while (DTM.NULL != (identity = getNextNodeIdentity(identity)))
       {
 
@@ -1057,7 +1064,7 @@ public abstract class DTMDefaultBase implements DTM
 
         if (type == DTM.ATTRIBUTE_NODE)
         {
-          return makeNodeHandle(identity);
+          return identity;
         }
         else if (DTM.NAMESPACE_NODE != type)
         {
@@ -1163,28 +1170,35 @@ public abstract class DTMDefaultBase implements DTM
    * @return int DTM node-number of the resolved attr,
    * or DTM.NULL to indicate none exists.
    */
-  public int getNextAttribute(int nodeHandle)
-  {
+  public int getNextAttribute(int nodeHandle) {
+    int nodeID = makeNodeIdentity(nodeHandle);
 
-    int type = getNodeType(nodeHandle);
+    if (_type(nodeID) == DTM.ATTRIBUTE_NODE) {
+      return makeNodeHandle(getNextAttributeIdentity(nodeID));
+    }
 
-    if (DTM.ATTRIBUTE_NODE == type)
-    {
-      // Assume that attributes and namespace nodes immediately follow the element.
-      int identity = makeNodeIdentity(nodeHandle);
+    return DTM.NULL;
+  }
 
-      while (DTM.NULL != (identity = getNextNodeIdentity(identity)))
-      {
-        type = _type(identity);
+  /**
+   * Given a node identity for an attribute, advance to the next attribute.
+   *
+   * @param identity int identity of the attribute node.  This
+   * <strong>must</strong> be an attribute node.
+   *
+   * @return int DTM node-identity of the resolved attr,
+   * or DTM.NULL to indicate none exists.
+   *
+   */
+  protected int getNextAttributeIdentity(int identity) {
+    // Assume that attributes and namespace nodes immediately follow the element
+    while (DTM.NULL != (identity = getNextNodeIdentity(identity))) {
+      int type = _type(identity);
 
-        if (type == DTM.ATTRIBUTE_NODE)
-        {
-          return makeNodeHandle(identity);
-        }
-        else if (type != DTM.NAMESPACE_NODE)
-        {
-          break;
-        }
+      if (type == DTM.ATTRIBUTE_NODE) {
+        return identity;
+      } else if (type != DTM.NAMESPACE_NODE) {
+        break;
       }
     }
 
