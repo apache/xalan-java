@@ -295,8 +295,7 @@ public class WalkerFactory
     }
     else
     { 
-      if(canCrissCross(analysis) && !isSet(analysis, BIT_NAMESPACE) && 
-         !isSet(analysis, BIT_FILTER))
+      if(canCrissCross(analysis) && !isSet(analysis, BIT_NAMESPACE))
       {
 //        if (DEBUG_ITERATOR_CREATION)
 //          diagnoseIterator("MatchPatternIterator", analysis, compiler);
