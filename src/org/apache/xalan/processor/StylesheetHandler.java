@@ -606,7 +606,7 @@ public class StylesheetHandler extends DefaultHandler
           String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-      NamespaceSupport nssupport = this.getNamespaceSupport();
+    NamespaceSupport nssupport = this.getNamespaceSupport();
     nssupport.pushContext();
     
     int n = m_prefixMappings.size();
@@ -654,8 +654,16 @@ public class StylesheetHandler extends DefaultHandler
     XSLTElementProcessor elemProcessor = getProcessorFor(uri, localName,
                                            rawName);
 
-    this.pushProcessor(elemProcessor);
-    elemProcessor.startElement(this, uri, localName, rawName, attributes);
+    if(null != elemProcessor)  // defensive, for better multiple error reporting. -sb
+    {
+      this.pushProcessor(elemProcessor);
+      elemProcessor.startElement(this, uri, localName, rawName, attributes);
+    }
+    else
+    {
+      m_shouldProcess = false;
+      popSpaceHandling();
+    }
                 
   }
 
