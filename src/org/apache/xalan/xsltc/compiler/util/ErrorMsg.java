@@ -166,6 +166,8 @@ public final class ErrorMsg {
     public static final int STRAY_SORT_ERR          = 74;
     public static final int UNSUPPORTED_ENCODING    = 75;
     public static final int SYNTAX_ERR              = 76;
+    public static final int CONSTRUCTOR_NOT_FOUND   = 77;
+    public static final int NO_JAVA_FUNCT_THIS_REF  = 78;
 
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.

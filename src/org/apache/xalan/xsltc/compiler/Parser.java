@@ -754,7 +754,7 @@ public class Parser implements Constants, ContentHandler {
 	MethodType B_V  = new MethodType(Type.Boolean, Type.Void);
 	MethodType B_B  = new MethodType(Type.Boolean, Type.Boolean);
 	MethodType B_S  = new MethodType(Type.Boolean, Type.String);
-	MethodType D_T  = new MethodType(Type.NodeSet, Type.ResultTree);
+	MethodType D_X  = new MethodType(Type.NodeSet, Type.Object);
 	MethodType R_RR = new MethodType(Type.Real, Type.Real, Type.Real);
 	MethodType I_II = new MethodType(Type.Int, Type.Int, Type.Int);
 	MethodType B_RR = new MethodType(Type.Boolean, Type.Real, Type.Real);
@@ -840,7 +840,7 @@ public class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("system-property", S_S);
 
 	// Extensions
-	_symbolTable.addPrimop("nodeset", D_T);
+	_symbolTable.addPrimop("nodeset", D_X);
 
 	// Operators +, -, *, /, % defined on real types.
 	_symbolTable.addPrimop("+", R_RR);	

@@ -83,7 +83,7 @@ public class ErrorMessages extends ResourceBundle {
 	// CLASS_NOT_FOUND_ERR
 	"Cannot find class ''{0}''.",
 	// METHOD_NOT_FOUND_ERR
-	"Cannot find external method ''{0}'' (must be static and public).",
+	"Cannot find external method ''{0}'' (must be public).",
 	// ARGUMENT_CONVERSION_ERR
 	"Cannot convert argument/return type in call to method ''{0}''",
 	// FILE_NOT_FOUND_ERR
@@ -265,7 +265,11 @@ public class ErrorMessages extends ResourceBundle {
 	// UNSUPPORTED_ENCODING
 	"Output encoding ''{0}'' is not supported on this JVM.",
 	// SYNTAX_ERR
-	"Syntax error in ''{0}''."
+	"Syntax error in ''{0}''.",
+	// CONSTRUCTOR_NOT_FOUND 
+	"Cannot find external constructor ''{0}''.",
+	// NO_JAVA_FUNCT_THIS_REF 
+	"First argument to non-static Java function ''{0}'' is not valid object ref."
     };
 
     private static Vector _keys;

@@ -615,4 +615,12 @@ public abstract class AbstractTranslet implements Translet {
 	if (_auxClasses == null) return null;
 	return((Class)_auxClasses.get(className));
     }
+
+    // GTM added (see pg 110)
+    public String[] getNamesArray() {
+	return namesArray;
+    }
+    public String[] getNamespaceArray() {
+	return namespaceArray;
+    }
 }

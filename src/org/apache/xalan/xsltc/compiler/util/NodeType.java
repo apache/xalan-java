@@ -129,6 +129,9 @@ public final class NodeType extends Type {
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
+	else if (type == Type.Object) {
+	    translateTo(classGen, methodGen, (ObjectType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), type.toString());
@@ -225,6 +228,16 @@ public final class NodeType extends Type {
 	final int init = cpg.addMethodref(SINGLETON_ITERATOR, "<init>",
 					  "(" + NODE_SIG +")V");
 	il.append(new INVOKESPECIAL(init));
+    }
+
+    /**
+     * Subsume Node into ObjectType.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ObjectType type) {
+	    methodGen.getInstructionList().append(NOP);	
     }
 
     /**

@@ -109,6 +109,7 @@ final class CastExpr extends Expression {
 	InternalTypeMap.put(Type.NodeSet, Type.String);
 	InternalTypeMap.put(Type.NodeSet, Type.Node);
 	InternalTypeMap.put(Type.NodeSet, Type.Reference);
+	InternalTypeMap.put(Type.NodeSet, Type.Object);
 
 	InternalTypeMap.put(Type.Node, Type.Node);
 	InternalTypeMap.put(Type.Node, Type.Boolean);
@@ -116,6 +117,7 @@ final class CastExpr extends Expression {
 	InternalTypeMap.put(Type.Node, Type.String);
 	InternalTypeMap.put(Type.Node, Type.NodeSet);
 	InternalTypeMap.put(Type.Node, Type.Reference);
+	InternalTypeMap.put(Type.Node, Type.Object);
 
 	InternalTypeMap.put(Type.ResultTree, Type.ResultTree);
 	InternalTypeMap.put(Type.ResultTree, Type.Boolean);
@@ -123,6 +125,7 @@ final class CastExpr extends Expression {
 	InternalTypeMap.put(Type.ResultTree, Type.String);
 	InternalTypeMap.put(Type.ResultTree, Type.NodeSet);
 	InternalTypeMap.put(Type.ResultTree, Type.Reference);
+	InternalTypeMap.put(Type.ResultTree, Type.Object);
 
 	InternalTypeMap.put(Type.Reference, Type.Reference);
 	InternalTypeMap.put(Type.Reference, Type.Boolean);
@@ -132,6 +135,9 @@ final class CastExpr extends Expression {
 	InternalTypeMap.put(Type.Reference, Type.Node);
 	InternalTypeMap.put(Type.Reference, Type.NodeSet);
 	InternalTypeMap.put(Type.Reference, Type.ResultTree);
+	InternalTypeMap.put(Type.Reference, Type.Object);
+
+	InternalTypeMap.put(Type.Object, Type.String);
 
 	InternalTypeMap.put(Type.Void, Type.String);
     }

@@ -113,12 +113,48 @@ public final class NodeSetType extends Type {
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
+	else if (type == Type.Object) {
+	    translateTo(classGen, methodGen, (ObjectType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), type.toString());
 	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
+
+    /**
+     * Translates an external Java Class into an internal type.
+     * Expects the Java object on the stack, pushes the internal type
+     */
+    public void translateFrom(ClassGenerator classGen, 
+	MethodGenerator methodGen, Class clazz) 
+    {
+		
+  	InstructionList il = methodGen.getInstructionList();
+	ConstantPoolGen cpg = classGen.getConstantPool();
+	if (clazz.getName().equals("org.w3c.dom.NodeList")) {
+	   // w3c NodeList is on the stack from the external Java function call.
+	   // call BasisFunction to consume NodeList and leave Iterator on
+	   //    the stack. 
+	   il.append(classGen.loadTranslet());   // push translet onto stack
+	   il.append(methodGen.loadDOM());   	 // push DOM onto stack
+	   final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+					"nodeList2Iterator",
+					"("		
+					 + "Lorg/w3c/dom/NodeList;"
+					 + TRANSLET_INTF_SIG 
+					 + DOM_INTF_SIG 
+					 + ")" + NODE_ITERATOR_SIG );
+	   il.append(new INVOKESTATIC(convert));
+	}
+	else {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+		toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
+	} 
+    }
+
 
     /**
      * Translates a node-set into a synthesized boolean.
@@ -177,6 +213,16 @@ public final class NodeSetType extends Type {
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    NodeType type) {
 	getFirstNode(classGen, methodGen);
+    }
+
+    /**
+     * Subsume node-set into ObjectType.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ObjectType type) {
+	    methodGen.getInstructionList().append(NOP);	
     }
 
     /**

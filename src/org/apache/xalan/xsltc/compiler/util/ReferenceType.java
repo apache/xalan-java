@@ -116,6 +116,9 @@ public final class ReferenceType extends Type {
 	else if (type == Type.ResultTree) {
 	    translateTo(classGen, methodGen, (ResultTreeType) type);
 	}
+	else if (type == Type.Object) {
+	    translateTo(classGen, methodGen, (ObjectType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, type.toString());
 	    classGen.getParser().reportError(Constants.FATAL, err);
@@ -225,6 +228,17 @@ public final class ReferenceType extends Type {
 	int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToResultTree", 
 				     "(" + OBJECT_SIG + ")" + DOM_INTF_SIG);
 	il.append(new INVOKESTATIC(index));
+    }
+
+
+    /**
+     * Subsume reference into ObjectType.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ObjectType type) {
+	    methodGen.getInstructionList().append(NOP);	
     }
 
     /**
