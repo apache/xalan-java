@@ -28,6 +28,9 @@ import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -75,13 +78,24 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   // static fields
 
   /** BSFManager package name */
-  private static final String BSF_MANAGER = "com.ibm.bsf.BSFManager";
-
-  /** BSFEngine package name */
-  private static final String BSF_ENGINE = "com.ibm.bsf.BSFEngine";
-
+  private static String BSF_MANAGER ;
+  
+  /** Default BSFManager name */
+  private static final String DEFAULT_BSF_MANAGER = "org.apache.bsf.BSFManager";
+  
+  /** Property name to load the BSFManager class */
+  private static final String propName = "org.apache.xalan.extensions.bsf.BSFManager";
+  
   /** Negative one integer */
   private static final Integer NEG1INT = new Integer(-1);
+
+  static{
+          BSF_MANAGER =  ObjectFactory.lookUpFactoryClassName(propName, null, null);
+ 
+          if (BSF_MANAGER == null){
+                  BSF_MANAGER = DEFAULT_BSF_MANAGER;               
+          }          
+  }
 
   /**
    * Construct a new extension namespace handler given all the information

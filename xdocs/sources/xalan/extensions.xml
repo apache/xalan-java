@@ -70,55 +70,26 @@ more information.</note><br></br>
    other than Java, &xslt4j; uses the <resource-ref idref="bsf"/>, an architecture for incorporating 
    scripting into Java applications and applets. BSF allows an application to take advantage of 
    scripting while being independent of any specific scripting language. To date, we have tested 
-   extensions implemented in JavaScript. Other languages with BSF support appear in the table below.</p>
-<p>BSF requires bsf.jar on the classpath. This JAR file is shipped with &xslt4j; and is required 
-   only if you have extensions written in languages other than Java. The additional JAR files or DLLs 
-   required to support extensions written in other languages are listed in the table below. These files 
-   are available from the sources indicated and are not shipped with &xslt4j;.</p>
-<table>
-  <tr>
-    <td><em>Language</em></td>
-    <td><em>Version</em></td>
-    <td><em>Requirements</em></td>
-  </tr>
-  <tr>
-    <td>Mozilla Rhino (JavaScript)<br/><br/></td>
-    <td>1.5<br/><br/></td>
-    <td>js.jar available from http://www.mozilla.org/rhino<br/><br/></td>
-  </tr>
-  <tr>
-    <td>NetRexx<br/><br/></td>
-    <td>1.148 up <br/><br/></td>
-    <td>NetRexxC.zip available from http://www2.hursley.ibm.com/netrexx<br/><br/></td>
-  </tr>
-    <tr>
-    <td>BML<br/><br/></td>
-    <td>2.4<br/><br/></td>
-    <td>bmlall.jar available from http://oss.software.ibm.com/developerworks/projects/bsf<br/><br/></td>
-  </tr>
-    <tr>
-    <td>JPython<br/><br/></td>
-    <td>1.1-beta3<br/><br/></td>
-    <td>python.jar available from http://www.jpython.org/<br/><br/></td>
-  </tr>
-    <tr>
-    <td>Jacl<br/><br/></td>
-    <td>1.1.1<br/><br/></td>
-    <td> jacl.jar and tcljava.jar from http://www.scriptics.com/java<br/><br/></td>
-  </tr>
-    <tr>
-    <td>Win32 ActiveScript langs
-	JScript, VBScript<br/><br/></td>
-    <td><br/><br/></td>
-    <td>MSVCP60.DLL from Microsoft, appropriate language DLLs from Microsoft 
-    http://msdn.microsoft.com/scripting<br/><br/></td>
-  </tr>
-    <tr>
-    <td>PerlScript<br/><br/></td>
-    <td><br/><br/></td>
-    <td>ActivePerl from http://www.activestate.com/<br/><br/></td>
-  </tr>  
-</table>
+   extensions implemented in JavaScript. The set of scripting languages supported using BSF is determined
+   by the BSF implementation you are using. If you are using Jakarta BSF, please refer to 
+   <jump href="http://jakarta.apache.org/bsf/index.html">Jakarta BSF Supported Languages</jump> for other
+   scripting languages with BSF support.</p>
+<p>BSF requires bsf.jar on the classpath. This JAR file is no longer shipped with &xslt4j;. It can be 
+   downloaded from <jump href="http://jakarta.apache.org/bsf/index.html">the Apache Jakarta BSF project 
+   web site</jump>. It is required only if you have extensions written in languages other than Java. 
+   The additional JAR files or DLLs required to support extensions written in other languages are 
+   listed at Jakarta BSF web site as <jump href="http://jakarta.apache.org/bsf/projects.html"> 
+   Related Projects </jump> . These files are available from the sources indicated and are not shipped 
+   with &xslt4j;. </p>
+<p>By default Xalan-Java assumes BSF support is provided by the Jakarta BSF implementation. There are three 
+   ways of specifying the class that provides the BSF Manager service:.</p>
+<ul><li>Set the system property org.apache.xalan.extensions.bsf.BSFManager;</li>
+    <li>In the property file "/lib/xalan.properties" in the JRE directory, add the key 
+    org.apache.xalan.extensions.bsf.BSFManager with the value that is the fully qualified BSF 
+    implementation class name;</li>
+    <li>Include a META-INF/services/org.apache.xalan.extensions.bsf.BSFManager 
+    file in your classpath;</li>
+</ul>
 </s2><anchor name="basic-pattern"/>
 <s2 title="The basic pattern">
 <p>Let's examine a simple example. The stylesheet below uses an extension element and an 

@@ -74,8 +74,6 @@ $Id$
   <property name="xmlapis.jar" value="${bin.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name" value="xercesImpl.jar"/>
   <property name="parser.jar" value="${bin.dir}/${parser.jar.name}"/>
-  <property name="bsf.jar.name" value="bsf.jar"/>
-  <property name="bsf.jar" value="${bin.dir}/${bsf.jar.name}"/>
   <property name="stylebook.jar.name" value="stylebook-1.0-b3_xalan-2.jar"/>
   <property name="stylebook.jar" value="${bin.dir}/${stylebook.jar.name}"/>
   <property name="doclet.jar.name" value="xalan2jdoc.jar"/>
@@ -172,7 +170,6 @@ $Id$
   <path id="docs.class.path">
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
-    <pathelement location="${bsf.jar}" />
     <pathelement location="${bcel.jar}" />
     <pathelement location="${runtime.jar}" />
     <pathelement location="${stylebook.jar}" />
@@ -217,7 +214,6 @@ $Id$
     <!-- xsltc.jar will only be picked up if it has been built -->
     <include name="${dist.file}/bin/xsltc.jar"/>      
     <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
-    <include name="${dist.file}/bin/${bsf.jar.name}"/>
     <include name="${dist.file}/bin/${parser.jar.name}"/>
     <include name="${dist.file}/bin/xalansamples.jar"/>
     <include name="${dist.file}/bin/xalanservlet.war"/>
@@ -237,7 +233,6 @@ $Id$
     <!-- xsltc.jar will only be picked up if it has been built -->
     <include name="${dist.file}/bin/xsltc.jar"/>      
     <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
-    <include name="${dist.file}/bin/${bsf.jar.name}"/>
     <include name="${dist.file}/bin/${parser.jar.name}"/>
     <include name="${dist.file}/bin/xalansamples.jar"/>
     <include name="${dist.file}/bin/xalanservlet.war"/>
@@ -254,7 +249,6 @@ $Id$
     <include name="${dist.file}/bin/ant.jar"/>
     <include name="${dist.file}/bin/${parser.jar.name}"/>
     <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
-    <include name="${dist.file}/bin/${bsf.jar.name}"/>
     <include name="${dist.file}/bin/${stylebook.jar.name}"/>
     <include name="${dist.file}/bin/${doclet.jar.name}"/>
     <include name="${dist.file}/bin/${taglet.jar.name}"/>
