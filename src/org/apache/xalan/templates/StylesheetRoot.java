@@ -419,7 +419,7 @@ public class StylesheetRoot
    * <meta name="usage" content="advanced"/>
    * Get the default template for text.
    */
-  public ElemTemplate getDefaultTextRule()
+  public final ElemTemplate getDefaultTextRule()
   {
     return m_defaultTextRule;
   }
@@ -437,7 +437,7 @@ public class StylesheetRoot
    * <meta name="usage" content="advanced"/>
    * Get the default template for elements.
    */
-  public ElemTemplate getDefaultRule()
+  public final ElemTemplate getDefaultRule()
   {
     return m_defaultRule;
   }
@@ -459,7 +459,7 @@ public class StylesheetRoot
    * <meta name="usage" content="advanced"/>
    * Get the default template for a root node.
    */
-  public ElemTemplate getDefaultRootRule()
+  public final ElemTemplate getDefaultRootRule()
   {
     return m_defaultRootRule;
   }
