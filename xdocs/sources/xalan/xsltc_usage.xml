@@ -130,7 +130,7 @@ runtime.jar).
   <td>required</td>  
 </tr>
 <tr>
-  <td>Jlex.jar</td>
+  <td>JLex.jar</td>
   <td></td>
   <td></td>
   <td>required</td>  
@@ -155,7 +155,7 @@ runtime.jar).
 <anchor name="compile"/>
 <s2 title="Compiling translets from the command line">
     <ul>
-      <li><link anchor="comp-synopsis">Synopis</link></li>
+      <li><link anchor="comp-synopsis">Synopsis</link></li>
       <li><link anchor="comp-args">Flags and arguments</link></li>
       <li><link anchor="comp-examples">Examples</link></li>
     </ul>
@@ -245,12 +245,12 @@ runtime.jar).
 </s2><anchor name="run"/>
 <s2 title="Running translets from the command line">
     <ul>
-      <li><link anchor="run-synopsis">Synopis</link></li>
+      <li><link anchor="run-synopsis">Synopsis</link></li>
       <li><link anchor="run-args">Flags and arguments</link></li>
       <li><link anchor="run-examples">Examples</link></li>
     </ul>
 
-    <p>The Sun XSLT runtime processor is a Java-based tool for 
+    <p>The XSLT runtime processor is a Java-based tool for 
 	transforming XML document files using a translet (compiled 
 	stylesheet). </p>
 
@@ -259,11 +259,11 @@ runtime.jar).
 	with J2ME CLDC (Java 2 Micro Edition, Connected Limited Device
 	Configuration).</p>
     
-    <p>To run  translet from the command line or a script, <link anchor="classpath">set the classpath</link> (be sure to include
-     the translet) and run the translset with the appropriate flags and arguments (described below).</p>
+    <p>To run a  translet from the command line or a script, <link anchor="classpath">set the classpath</link> (be sure to include
+     the translet) and run the translet with the appropriate flags and arguments (described below).</p>
 <anchor name="run-synopsis"/>
 <s3 title="Synopsis">
-<p><code>java &lt;translet&gt;</code><br/>
+<p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp; {-u &lt;document_url&gt; | &lt;document&gt;} &lt;class&gt;</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp; [&lt;name1&gt;=&lt;value1&gt; ...]</code></p>
 
