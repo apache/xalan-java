@@ -153,6 +153,9 @@ public class XSLTEngineImpl implements  XSLTProcessor
   private Hashtable m_stylesheetParams;
   StylesheetRoot m_stylesheetRoot = null;
   
+  Vector m_evalList = null;
+  boolean m_needToEval = false;
+  
   /*
   * If this is true, then the diag function will
   * be called.
@@ -399,6 +402,34 @@ public class XSLTEngineImpl implements  XSLTProcessor
       if(null != inputSource)
         sourceTree = getSourceTreeFromInput(inputSource);
       Templates templates = null;
+      if (m_needToEval)
+      {
+        Node node = null;
+        if (null != stylesheetSource)
+        {
+          Source ssSource = stylesheetSource.getSourceObject();
+          if(ssSource instanceof DOMSource)
+          {
+            node = ((DOMSource)ssSource).getNode();
+          }
+        }
+        if (null == node)
+        {
+          node = new DOM2Helper().createDocument() ; 
+        }
+        for (int i=0; i< m_evalList.size(); i++)
+        {
+          String name = (String)m_evalList.elementAt(i);
+          String expression = (String)m_stylesheetParams.get(name);
+          try{
+            org.apache.xpath.objects.XObject val = org.apache.xpath.XPathAPI.eval(node, expression);
+            
+            m_stylesheetParams.put(name, val);
+          }
+          catch(TransformerException te)
+          {}
+        }
+      }
       if(null != stylesheetSource)
       {
         try{
@@ -2272,13 +2303,17 @@ public class XSLTEngineImpl implements  XSLTProcessor
    * @param expression An expression that will be evaluated.
    */
   public void setStylesheetParam(String key, String expression)
-  {
+  {    
+    if (m_evalList == null)
+      m_evalList = new Vector();
+    m_evalList.addElement(key);
     if (m_transformerImpl != null)
       m_transformerImpl.setParameter(key, null, expression);
     else
     {
       setParameter(key, expression);
     }
+    m_needToEval = true;
   }
   
   /**
