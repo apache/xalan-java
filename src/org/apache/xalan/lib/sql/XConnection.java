@@ -69,6 +69,7 @@ import java.sql.Time;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.StringTokenizer;
+import java.lang.IllegalArgumentException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
@@ -81,6 +82,8 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xpath.objects.XBooleanStatic;
+
 import org.w3c.dom.*;
 import java.sql.*;
 import java.util.*;
@@ -238,18 +241,22 @@ public class XConnection
    * @param ConnPoolName
    * @return
    */
-  public XConnection connect( ExpressionContext exprContext, String ConnPoolName )
+  public XBooleanStatic connect( ExpressionContext exprContext, String ConnPoolName )
   {
     try
     {
       m_ConnectionPool = m_PoolMgr.getPool(ConnPoolName);
+
+      if (m_ConnectionPool == null)
+        throw new java.lang.IllegalArgumentException("Invalid Pool Name");
+
       m_IsDefaultPool = false;
-      return this;
+      return new XBooleanStatic(true);
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
 
   }
@@ -261,22 +268,22 @@ public class XConnection
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @return
    */
-  public XConnection connect( ExpressionContext exprContext, String driver, String dbURL )
+  public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL )
   {
     try
     {
       init(driver, dbURL, new Properties());
-      return this;
+      return new XBooleanStatic(true);
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
   }
 
@@ -285,22 +292,22 @@ public class XConnection
    * @param protocolElem
    * @return
    */
-  public XConnection connect( ExpressionContext exprContext, Element protocolElem )
+  public XBooleanStatic connect( ExpressionContext exprContext, Element protocolElem )
   {
     try
     {
       initFromElement(protocolElem);
-      return this;
+      return new XBooleanStatic(true);
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
   }
 
@@ -309,22 +316,22 @@ public class XConnection
    * @param list
    * @return
    */
-  public XConnection connect( ExpressionContext exprContext, NodeList list )
+  public XBooleanStatic connect( ExpressionContext exprContext, NodeList list )
   {
     try
     {
       initFromElement( (Element) list.item(0) );
-      return this;
+      return new XBooleanStatic(true);
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
   }
 
@@ -337,7 +344,7 @@ public class XConnection
    * @param password connection password.
    * @return
    */
-  public XConnection connect( ExpressionContext exprContext, String driver, String dbURL, String user, String password )
+  public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL, String user, String password )
   {
     try
     {
@@ -347,17 +354,17 @@ public class XConnection
 
       init(driver, dbURL, prop);
 
-      return this;
+      return new XBooleanStatic(true);
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
   }
 
@@ -371,7 +378,7 @@ public class XConnection
    * normally including at least "user" and "password".
    * @return
    */
-  public XConnection connect( ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
+  public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
   {
     try
     {
@@ -386,17 +393,17 @@ public class XConnection
 
       init(driver, dbURL, prop);
 
-      return this;
+      return new XBooleanStatic(true);
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return null;
+      return new XBooleanStatic(false);
     }
   }
 
@@ -428,7 +435,7 @@ public class XConnection
    * @return
    * @throws SQLException
    */
-  private void initFromElement( Element e )throws SQLException 
+  private void initFromElement( Element e )throws SQLException
   {
 
     Properties prop = new Properties();
@@ -519,8 +526,10 @@ public class XConnection
    * @return
    * @throws SQLException
    */
-  private void init( String driver, String dbURL, Properties prop )throws SQLException 
+  private void init( String driver, String dbURL, Properties prop )throws SQLException
   {
+    Connection con = null;
+
     if (DEBUG)
       System.out.println("XConnection, Connection Init");
 
@@ -562,10 +571,33 @@ public class XConnection
 
       m_PoolMgr.registerPool(poolName, defpool);
       m_ConnectionPool = defpool;
+
+
     }
 
     m_IsDefaultPool = true;
 
+    //
+    // Let's test to see if we really can connect
+    // Just remember to give it back after the test.
+    //
+    try
+    {
+      con = m_ConnectionPool.getConnection();
+    }
+    catch(SQLException e)
+    {
+      if (con != null)
+      {
+        m_ConnectionPool.releaseConnectionOnError(con);
+        con = null;
+      }
+      throw e;
+    }
+    finally
+    {
+      m_ConnectionPool.releaseConnection(con);
+    }
   }
 
 
@@ -726,17 +758,17 @@ public class XConnection
 
       if (DEBUG) System.out.println("..building Prepared Statement");
 
-      Enumeration enum = m_ParameterList.elements();
-      indx = 1;
-      while (enum.hasMoreElements())
-      {
-        QueryParameter qp = (QueryParameter) enum.nextElement();
-        setParameter(indx, stmt, qp);
-        indx++;
-      }
-
       try
       {
+        Enumeration enum = m_ParameterList.elements();
+        indx = 1;
+        while (enum.hasMoreElements())
+        {
+          QueryParameter qp = (QueryParameter) enum.nextElement();
+          setParameter(indx, stmt, qp);
+          indx++;
+        }
+
         rs = stmt.executeQuery();
       }
       catch(SQLException e)
@@ -873,18 +905,17 @@ public class XConnection
 
       if (DEBUG) System.out.println("..building Prepared Statement");
 
-      Enumeration enum = m_ParameterList.elements();
-      indx = 1;
-      while (enum.hasMoreElements())
-      {
-        QueryParameter qp = (QueryParameter) enum.nextElement();
-        setParameter(indx, stmt, qp);
-        indx++;
-      }
-
-
       try
       {
+        Enumeration enum = m_ParameterList.elements();
+        indx = 1;
+        while (enum.hasMoreElements())
+        {
+          QueryParameter qp = (QueryParameter) enum.nextElement();
+          setParameter(indx, stmt, qp);
+          indx++;
+        }
+
         rs = stmt.executeQuery();
       }
       catch(SQLException e)
@@ -1165,7 +1196,7 @@ public class XConnection
    * @return
    * @throws SQLException
    */
-  public void close( )throws SQLException 
+  public void close( )throws SQLException
   {
 
     if (DEBUG)
@@ -1194,7 +1225,7 @@ public class XConnection
    * @return
    * @throws SQLException
    */
-  public void close( SQLDocument sqldoc )throws SQLException 
+  public void close( SQLDocument sqldoc )throws SQLException
   {
     if (DEBUG)
       System.out.println("Entering XConnection.close");
@@ -1220,7 +1251,7 @@ public class XConnection
    * @return
    * @throws SQLException
    */
-  public void setParameter( int pos, PreparedStatement stmt, QueryParameter p )throws SQLException 
+  public void setParameter( int pos, PreparedStatement stmt, QueryParameter p )throws SQLException
   {
     String type = p.getType();
     if (type.equalsIgnoreCase("string"))
