@@ -32,22 +32,6 @@
 <Added>java/src/org/apache/xalan/xslt EnvironmentCheck.java</Added>
 <Log>Utility class to check your JVM environment for common problems</Log>
 </Commit>
-<Commit category="compat">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>03/20/2001</DateCommitted>
-<Modified>java/compat_src/org/apache/xalan/xpath XNumber.java</Modified>
-<Log>Double-semicolon fixed so Henri's compiler stops complaining about an 
-unreachable statement. &lt;grin/&gt;</Log>
-</Commit>
-<Commit category="compat">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>03/21/2001</DateCommitted>
-<Modified>java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java</Modified>
-<Added>java/compat_src/org/apache/xalan/xpath/xdom
- XercesLiaison.java</Added>
-<Log>Add XercesLiaison class to APIs. Also fix the code in XSLTEngineImpl so that 
-when a liaison is passed in, use it and only it to parse the stylesheet.</Log>
-</Commit>
 <Commit category="core">
 <Who>curcuru@apache.org</Who>
 <DateCommitted>03/22/2001</DateCommitted>
@@ -140,13 +124,6 @@ when a liaison is passed in, use it and only it to parse the stylesheet.</Log>
  but we can discuss this over time. For now
  the patch was modified to do the runtime exception).</Log>
 </Commit>
-<Commit category="compat">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>03/27/2001</DateCommitted>
-<Modified>java/compat_src/org/apache/xalan/xslt StylesheetRoot.java</Modified>
-<Added>java/compat_src/org/apache/xalan/xslt Stylesheet.java</Added>
-<Log>Add Stylesheet class to APIs. Change StylesheetRoot to extend from Stylesheet.</Log>
-</Commit>
 <Commit category="core">
 <Who>sboag@apache.org</Who>
 <DateCommitted>03/27/2001</DateCommitted>
@@ -185,13 +162,6 @@ when a liaison is passed in, use it and only it to parse the stylesheet.</Log>
  which will hopefully allow a result ContentHandler to take a snapshot
  at a given point, and the restart execution from that point at some
  later time. For tooling support.on the last two.</Log>
-</Commit>
-<Commit category="compat">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>03/28/2001</DateCommitted>
-<Added>java/compat_src/org/apache/xalan/xslt
- XSLProcessorException.java</Added>
-<Log>Add XSLProcessorException class to compatibility classes</Log>
 </Commit>
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
@@ -528,5 +498,120 @@ ThreadControler
  Xalan itself doesn't implement a thread pool right now ( for mosts uses it's
  not even needed - if you just do few transforms for example ), instead
  a server that runs xalan could plug it's own thread pool.</Log>
+</Commit>
+<Commit category="core">
+<Who>Gary L Peskin &lt;garyp@firstech.com&gt;</Who>
+<DateCommitted>05/15/2001</DateCommitted>
+<Log>
+&gt; Use the context class loader if available.
+&gt;
+&gt; The implementation is based on ExtensionHandler, and it's needed in order
+&gt; to work in certain environments ( like tomcat ).
+>
+></Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>05/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql ExtensionError.java</Modified>
+<Log>Fixed "conflict" in javadoc comments.</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>05/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql package.html</Modified>
+<Log>Editing pass.</Log>
+</Commit>
+<Commit category="core">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>05/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc TransletOutputHandler.java</Modified>
+<Log>bug # 1406 fixed, omit xml header implemented</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>05/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>Update Javadoc and remove commented out reference to properties file
+ PR:Bugzilla1627</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer ResultTreeHandler.java</Modified>
+<Log>Resolve bug 1330 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1330&gt;.
+ setContentHandler failed to also reset m_lexicalHandler if the ContentHandler
+ was also a LexicalHandler. This caused the old LexicalHandler to be used 
+which
+ was pointing to a previous result tree.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java</Modified>
+<Log>Resolve bug 1762 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1762&gt;.
+ TransformerFactoryImpl's URIResolver was not propagated to created 
+Transformers.
+ Modified code to propagate.</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>05/19/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils TreeWalker.java
+ SystemIDResolver.java</Modified>
+<Log>Catch SecurityException whenever accessing System.getProperty("user.dir");
+ minor javadoc update</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>05/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemCopy.java
+ ElemValueOf.java
+ java/src/org/apache/xalan/transformer TreeWalker2Result.java
+ java/src/org/apache/xpath/functions FuncLast.java</Modified>
+<Log>Fix for bugs reported by the Eclipse folks for TransformState, where
+ some operations (xsl:value-of, xsl-copy) were not pushing the
+ current node on the current node stack. Addresses
+ http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1524.</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>05/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates OutputProperties.java</Modified>
+<Log>Catch SecurityException as needed
+ PR: Bugzilla1258</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates OutputProperties.java</Modified>
+<Log>Fix to the following bug reported by dims@yahoo.com:
+
+ loadPropertiesFile method in org\apache\xalan\templates\OutputProperties.java 
+does not fall back
+ to the Thread Context Class Loader to load properties files like 
+output_xml.properties etc. This
+ is causing problems in ServletExec_3_1+C2.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates OutputProperties.java</Modified>
+<Log>Correct implementation of ContextClassLoader to support case where properties 
+file is to be loaded by a different ClassLoader than the OutputProperties 
+class. Thanks to Davanum Srinivas &lt;dims@yahoo.com&gt; for this code and for 
+reporting this bug.
+ loadPropertiesFile should eventually be moved into a thread-specific class.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>05/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java
+ java/src/org/apache/xalan/serialize CharInfo.java
+ java/src/org/apache/xpath/functions FuncSystemProperty.java</Modified>
+<Log>Modify getResourceAsStream calls to use the contextClassLoader, if available.
+ This is a temporary fix until we can centralize this function.</Log>
 </Commit>
 </Commits>
