@@ -56,6 +56,10 @@
  */
 package javax.xml.transform;
 
+import java.lang.reflect.Method;
+import java.lang.IllegalAccessException;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.xml.transform.SourceLocator;
 
 /**
@@ -177,5 +181,145 @@ public class TransformerException extends Exception
 
     this.containedException = e;
     this.locator = locator;
+  }
+  
+  /**
+   * Print the the trace of methods from where the error 
+   * originated.  This will trace all nested exception 
+   * objects, as well as this object.
+   * @param s The stream where the dump will be sent to.
+   */
+  public void printStackTrace(java.io.PrintStream s) 
+  {
+    if(s == null)
+      s = System.err;
+    try
+    {
+      super.printStackTrace(s);
+    }
+    catch(Exception e){}
+    Exception exception = getException();
+    for(int i = 0; (i < 10) && (null != exception); i++)
+    {
+      s.println("---------");
+      exception.printStackTrace(s);
+      try
+      {
+        Method meth = ((Object)exception).getClass().getMethod("getException", null);
+        if(null != meth)
+        {
+          Exception prev = exception;
+          exception = (Exception)meth.invoke(exception, null);
+          if(prev == exception)
+            break;
+        }
+        else
+        {
+          exception = null;
+        }
+      }
+      catch(InvocationTargetException ite)
+      {
+        exception = null;
+      }
+      catch(IllegalAccessException iae)
+      {
+        exception = null;
+      }
+      catch(NoSuchMethodException nsme)
+      {
+        exception = null;
+      }
+    }
+  }
+    
+  private void appendMessageAndInfo(StringBuffer sbuffer)
+  {
+    String message = super.getMessage();    
+    if(null != message)
+    {
+      sbuffer.append(message);
+    }
+    if(null != locator)
+    {
+      String systemID = locator.getSystemId();
+      int line = locator.getLineNumber();
+      int column = locator.getColumnNumber();
+
+      if(null != systemID)
+      {
+        sbuffer.append("; SystemID: ");
+        sbuffer.append(systemID);
+      }
+      if(0 != line)
+      {
+        sbuffer.append("; Line#: ");
+        sbuffer.append(line);
+      }
+      if(0 != column)
+      {
+        sbuffer.append("; Column#: ");
+        sbuffer.append(column);
+      }
+    }
+  }
+  
+
+  /**
+   * Print the the trace of methods from where the error 
+   * originated.  This will trace all nested exception 
+   * objects, as well as this object.
+   * @param s The writer where the dump will be sent to.
+   */
+  public void printStackTrace(java.io.PrintWriter s) 
+  {
+    if(s == null)
+      s = new java.io.PrintWriter(System.err);
+    try
+    {
+      super.printStackTrace(s);
+    }
+    catch(Exception e){}
+    Exception exception = getException();
+    
+    for(int i = 0; (i < 10) && (null != exception); i++)
+    {
+      s.println("---------");
+      try
+      {
+        exception.printStackTrace(s);
+      }
+      catch(Exception e)
+      {
+        s.println("Could not print stack trace...");
+      }
+      try
+      {
+        Method meth = ((Object)exception).getClass().getMethod("getException", null);
+        if(null != meth)
+        {
+          Exception prev = exception;
+          exception = (Exception)meth.invoke(exception, null);
+          if(prev == exception)
+            break;
+        }
+        else
+        {
+          exception = null;
+        }
+      }
+      catch(InvocationTargetException ite)
+      {
+        exception = null;
+      }
+      catch(IllegalAccessException iae)
+      {
+        exception = null;
+      }
+      catch(NoSuchMethodException nsme)
+      {
+        exception = null;
+      }
+    }
   }
 }
