@@ -95,7 +95,8 @@ final class ValueOf extends Instruction {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_select.typeCheck(stable).identicalTo(Type.String) == false)
+	Type type = _select.typeCheck(stable);
+	if ((type != null) && (type.identicalTo(Type.String) == false))
 	    _select = new CastExpr(_select, Type.String);
 	return Type.Void;
     }

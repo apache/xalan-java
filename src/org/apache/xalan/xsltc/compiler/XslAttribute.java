@@ -71,20 +71,26 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class XslAttribute extends Instruction {
+
+    // Error messages:
+    private final static String ILLEGAL_ATTRIBUTE_NAME =
+	"Illegal attribute name: 'xmlns'";
+
+    // Attribute contents
     private AttributeValue _name; // name treated as AVT (7.1.3)
     private AttributeValueTemplate _namespace = null;
     private String _prefix;
     private boolean _ignore = false;
 
     /**
-     *
+     * Returns the name of the attribute
      */
     public AttributeValue getName() {
 	return _name;
     }
 
     /**
-     *
+     * Displays the contents of the attribute
      */
     public void display(int indent) {
 	indent(indent);
@@ -166,6 +172,13 @@ final class XslAttribute extends Instruction {
 							       stable,false);
 		}
 	    }
+	}
+
+	if (name.equals("xmlns")) {
+	    final ErrorMsg msg = 
+		new ErrorMsg(ILLEGAL_ATTRIBUTE_NAME, getLineNumber());
+	    parser.reportError(Constants.ERROR, msg);
+	    return;
 	}
 
 	if (parent instanceof LiteralElement) {

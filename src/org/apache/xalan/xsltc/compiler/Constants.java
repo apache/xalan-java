@@ -334,7 +334,7 @@ public interface Constants extends InstructionConstants {
 	= "reset";
 
     public static final String ATTR_SET_SIG
-	= "(" + TRANSLET_OUTPUT_SIG + ")V";
+	= "(" + TRANSLET_OUTPUT_SIG + NODE_ITERATOR_SIG + ")V";
 
     public static final String GET_NODE_NAME_SIG   
 	= "(" + NODE_SIG + ")" + STRING_SIG;
