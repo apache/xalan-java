@@ -2550,11 +2550,12 @@ public final class DOMImpl implements DOM, Externalizable {
     public String getElementValue(final int element) {
 	// optimization: only create StringBuffer if > 1 child
 	final int child = _offsetOrChild[element];
-	return child != NULL
-	    ? (_type[child] == TEXT && _nextSibling[child] == NULL
-	       ? makeStringValue(child)
-	       : stringValueAux(new StringBuffer(), element).toString())
-	    : EMPTYSTRING;
+	if (child == NULL)
+	    return EMPTYSTRING;
+	if ((_type[child] == TEXT) && (_nextSibling[child] == NULL))
+	    return makeStringValue(child);
+	else
+	    return stringValueAux(new StringBuffer(), element).toString();
     }
 
     /**
@@ -2573,11 +2574,12 @@ public final class DOMImpl implements DOM, Externalizable {
 			      _lengthOrAttr[child]);
 		break;
 	    case PROCESSING_INSTRUCTION:
+		/* This method should not return anything for PIs
 		buffer.append(_text,
 			      _offsetOrChild[child],
 			      _lengthOrAttr[child]);
+		*/
 		break;
-		// !!! at the moment default can only be an element???
 	    default:
 		stringValueAux(buffer, child);
 	    }
