@@ -62,9 +62,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.dom.DOMResult;
 
-// Imported java.io class
+// Imported java.io classes
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
@@ -81,7 +82,7 @@ import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 
-// Imported JAVA API for XML Parsing 1.0 classes
+// Imported JAVA API for XML Parsing classes
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
@@ -95,26 +96,32 @@ public class TransformToDom
 {
 	public static void main(String[] args)
     throws TransformerException, TransformerConfigurationException, FileNotFoundException,
-           org.xml.sax.SAXNotSupportedException, IOException
+           ParserConfigurationException, SAXException, IOException
   {    
-	TransformerFactory tFactory = TransformerFactory.newInstance();
+	  TransformerFactory tFactory = TransformerFactory.newInstance();
 
-    if(tFactory.getFeature(DOMResult.FEATURE))
+    if(tFactory.getFeature(DOMSource.FEATURE) && tFactory.getFeature(DOMResult.FEATURE))
     {
-    	Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
+      // Process the stylesheet StreamSource and generate a Transformer.
+      Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
+      
+      //Instantiate a DocumentBuilderFactory.
+      DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+      
+      //Use the DocumentBuilderFactory to create a DocumentBuilder.
+      DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
+      
+      //Use the DocumentBuilder to parse the XML input.
+      Document doc = dBuilder.parse("foo.xml");
+      
+      // Create an empty DOMResult for the Result.
       DOMResult domResult = new DOMResult();
   
-  	  // Perform the transformation, placing the output in the DOM
-	    // Document Node.
-      transformer.transform(new StreamSource("foo.xml"), domResult);
+  	  // Perform the transformation, placing the output in the DOMResult.
+      transformer.transform(new DOMSource(doc), domResult);
 	  
-      // If also wanted to process DOM input, replace the preceding statement with
-	  // the following:
-      // Node doc = docBuilder.parse(new InputSource("foo.xml"));
-      // transformer.transformNode(doc, new Result(outNode));
-	  
-	  //Instantiate an XML serializer and use it to serialize the output DOM to System.out
-	  // using a default output format.
+	    //Instantiate an XML serializer and use it to serialize the output DOM to System.out
+	    // using a default output format.
       Serializer serializer = SerializerFactory.getSerializer("xml");
       serializer.setOutputStream(System.out);
       serializer.asDOMSerializer().serialize(domResult.getNode());
