@@ -745,6 +745,13 @@ public class ElemLiteralResult extends ElemUse
             else
                 throw new TransformerException(se);
         }
+        
+        /* If an exception was thrown in the middle but not with startElement() or
+         * or endElement() then its time to let it percolate.
+         */ 
+        if (tException != null)
+            throw tException; 
+        
         unexecuteNSDecls(transformer);
 
         // JJK Bugzilla 3464, test namespace85 -- balance explicit start.

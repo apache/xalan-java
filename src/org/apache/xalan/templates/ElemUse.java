@@ -60,6 +60,8 @@ import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 
@@ -202,6 +204,12 @@ public class ElemUse extends ElemTemplateElement
 
             attrSet.execute(transformer);
           }
+        } 
+        else 
+        {
+          throw new TransformerException(
+              XSLMessages.createMessage(XSLTErrorResources.ER_NO_ATTRIB_SET, 
+                  new Object[] {qname}),this); 
         }
       }
     }
