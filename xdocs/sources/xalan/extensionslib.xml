@@ -215,6 +215,7 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 <code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
 </s2><anchor name="sql"/>
 <s2 title= "SQL library">
+<note>For UML Diagrams of the SQL Library, see <jump href="http://xml.apache.org/xalan-j/Xalan-SQL-Extension/DiagramIndex.html">SQL Library UML Diagrams</jump>.</note>
 <ul>
 <li><link anchor="sqlconn">Setting up a connection</link></li>
 <li><link anchor="sqlparam">Parameterized queries</link></li>
