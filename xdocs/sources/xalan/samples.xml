@@ -74,6 +74,7 @@
 <li><link anchor="trace">Trace</link></li>
 <li><link anchor="validate">Validate</link></li>
 <li><link anchor="trax">trax</link></li>
+<li><link anchor="transformthread">TransformThread</link></li>
 </ul>
 <p>&xslt4ji; servlet samples:</p>
 <ul>
@@ -568,5 +569,14 @@ information.<br/><br/></item>
      <p>Run this sample from the trax subdirectory with</p>
      <p><code>java Examples</code></p>
      <p>and examine the source in Examples.java and ExampleContentHandler.java.</p>
-     </s2>&xsltcsamples;
+     </s2>
+     
+     <anchor name="transformthread"/>
+     <s2 title="TransformThread">
+     <p>What it does: spawns multiple threads, with each thread running two transformations on two different XML files.</p>
+     <p>Run this sample from the TransformThread subdirectory with</p>
+     <p><code>java TransformThread</code></p>
+     <p>and examine the source in TransformThread.java. A more detailed description along with configuration options are listed in the header.</p>
+     </s2>
+     &xsltcsamples;
 </s1>
