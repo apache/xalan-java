@@ -71,12 +71,11 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * Execute the LocalPart() (xf:local-name) function.
+ * Execute the xf:node-kind function.
  * <meta name="usage" content="advanced"/>
  */
-public class FuncLocalPart extends FunctionDef1Arg
+public class FuncNodeKind extends FunctionDef1Arg
 {
-
   /**
    * Execute the function.  The function must return
    * a valid object.
@@ -87,15 +86,45 @@ public class FuncLocalPart extends FunctionDef1Arg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
     int context = getArg0AsNode(xctxt);
-    if(DTM.NULL == context)
-      return XString.EMPTYSTRING;
-    DTM dtm = xctxt.getDTM(context);
-    String s = (context != DTM.NULL) ? dtm.getLocalName(context) : "";
-    if(s.startsWith("#") || s.equals("xmlns"))
-      return XString.EMPTYSTRING;
+    String s=null;
+    
+    if(DTM.NULL != context)
+    {
+	    DTM dtm = xctxt.getDTM(context);
+    	switch (dtm.getNodeType(context))
+	    {
+    		case DTM.ATTRIBUTE_NODE:
+    			s="attribute";
+    			break;
+	    	case DTM.DOCUMENT_NODE:
+    			s="document";
+    			break;
+	    	case DTM.COMMENT_NODE:
+    			s="comment";
+    			break;
+    		case DTM.ELEMENT_NODE:
+    			s="element";
+    			break;
+    		case DTM.NAMESPACE_NODE:
+    			s="namespace";
+				break;
+    		case DTM.PROCESSING_INSTRUCTION_NODE:
+    			s="processing-instruction";
+    			break;
+    		case DTM.TEXT_NODE:
+    			s="text";
+    			break;
+    		default:
+    			// leave it unknown? SHOULD NOT ARISE!
+    			break;
+	    }
+    }
 
-    return new XString(s);
+	// s *should* never be left as null, since we shouldn't be called
+	// unless the parameter is a Node. But it's unclear whether we
+	// should throw a runtime exception or return something else
+	// in that case.
+	return (s==null) ? XString.EMPTYSTRING : new XString(s);
   }
 }

@@ -314,6 +314,9 @@ m_builtInFunctions.put(
 m_builtInFunctions.put(
       new QName("dateTime-greater-than"),
       new FuncDateTimeGT());
+m_builtInFunctions.put(
+      new QName("node-kind"),
+      new FuncNodeKind());
   }
 
   /**
