@@ -33,12 +33,11 @@ and new support for the TrAX API.</p>
 <p>XSLTC supports a number of features that are not required by the XSLT 1.0 specification, 
   but which are supported by a number of other XSLT processors:</p>
 <ul>
-  <li><em>Calling external Java methods from a Translet.</em><br/>
-    At the time of writing, only static methods are supported. A call to a function 
-    whose namespace is either <code>&lt;http://xml.apache.org/xslt/java</code> 
-    or <code>&lt;http://xml.apache.org/xalan/xsltc/java</code> 
-    is resolved by loading the appropriate class and calling a static method that 
-    matches the signature of the function. The class can be specified as part 
+  <li><em>Calling external Java functions from a Translet.</em><br/>
+    Constructors, static, and nonstatic functions are supported. You may use  
+    either the <code>&lt;http://xml.apache.org/xslt/java</code> 
+    or the <code>&lt;http://xml.apache.org/xalan/xsltc/java</code> namespace to 
+    call your external function. The class can be specified as part 
     of the namespace URI or as part of the function call as shown in the following 
     example:<br/> 
     <source> &lt;xsl:stylesheet version=&quot;1.0&quot;
@@ -49,7 +48,41 @@ and new support for the TrAX API.</p>
      &lt;xsl:value-of select=&quot;java:java.lang.System.currentTimeMillis()&quot;/&gt;
      &lt;xsl:value-of select=&quot;java-system:currentTimeMillis()&quot;/&gt;
   &lt;/xsl:template&gt;
-&lt;/xsl:stylesheet&gt;</source><br/></li>
+  &lt;/xsl:stylesheet&gt;</source><br/>
+  The following example shows you how to call constructors, static, and nonstatic functions<br/>
+
+  <source>&lt;xsl:stylesheet version=&quot;1.0&quot;
+    xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;
+    xmlns:java=&quot;http://xml.apache.org/xslt/java&quot;
+    exclude-result-prefixes=&quot;java&quot;&gt;
+
+  &lt;!--
+  * test: construction of Date object using a parameter calculated
+  *       by a static call to the java.lang.Math object. Then call
+  *       a non-static method (getTime()) on the newly created Date
+  *       object. Demonstrates calling constructors, static functions
+  *       (Math.max) and non-static functions (getTime()).
+  *
+  * Output:
+  *   &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+  *     Date of object: Sat Nov 30 17:32:41 EST 2002
+  *     Time of object: 1038695561000
+  *
+  --&gt;
+
+  &lt;xsl:template match=&quot;/&quot;&gt;
+   &lt;!-- create Date object with calculated parameter --&gt;
+   &lt;xsl:variable name=&quot;dateObject&quot;
+     select=&quot;java:java.util.Date.new(
+         java:java.lang.Math.max(1027695561000,1038695561000)
+     )&quot;/&gt;
+   Date of object: &lt;xsl:value-of select=&quot;$dateObject&quot;/&gt;
+   Time of object: &lt;xsl:value-of select=&quot;java:getTime($dateObject)&quot;/&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;/xsl:stylesheet&gt;
+  </source><br/>
+  </li>
   <li><em>Result Tree Fragments as Node Sets</em><br/>
     Result Tree Fragments (RTFs) can be captured as the template content of a 
     variable or parameter and then the variable can be passed to a for-each or 
