@@ -96,6 +96,8 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xml.utils.SystemIDResolver;
+
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.StripFilter;
@@ -1205,13 +1207,28 @@ public final class TransformerImpl extends Transformer
      * @param translet A reference to the translet requesting the document
      */
     public DOM retrieveDocument(String baseURI, String href, Translet translet) {
-	try {
-        
-        // Argument to document function was: document('');
-        if (href.length() == 0) {
-            href = new String(baseURI);
-        }    
-	    return getDOM(_uriResolver.resolve(href, baseURI));
+	try {        
+            // Argument to document function was: document('');
+            if (href.length() == 0) {
+                href = new String(baseURI);
+            }    
+
+            /*
+             *  Fix for bug 24188
+             *  Incase the _uriResolver.resolve(href,base) is null
+             *  try to still  retrieve the document before returning null 
+             *  and throwing the FileNotFoundException in
+             *  org.apache.xalan.xsltc.dom.LoadDocument
+             *
+             */
+            Source resolvedSource = _uriResolver.resolve(href, baseURI);
+            if (resolvedSource == null)  {
+                StreamSource streamSource = new StreamSource(
+                     SystemIDResolver.getAbsoluteURI(href, baseURI));
+                return getDOM(streamSource) ;
+            } 
+
+            return getDOM(resolvedSource);
 	}
 	catch (TransformerException e) {
 	    if (_errorListener != null)
