@@ -101,7 +101,7 @@ public class Constants
 	S_VENDOR = "Apache Software Foundation", 
 	S_VENDORURL = "http://xml.apache.org";
 
-  /** S_BUILTIN_EXTENSIONS_URL is a mnemonit for the XML Namespace 
+  /** S_BUILTIN_EXTENSIONS_URL is a mnemonic for the XML Namespace 
    *(http://xml.apache.org/xslt) predefined to signify Xalan's
    * built-in XSLT Extensions. When used in stylesheets, this is often 
    * bound to the "xalan:" prefix.
