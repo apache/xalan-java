@@ -61,6 +61,7 @@ import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.ExprContext;
 import org.apache.xpath.expression.ExpressionFactory;
 import org.apache.xpath.expression.ForAndQuantifiedExpr;
+import org.apache.xpath.expression.InstanceOfExpr;
 import org.apache.xpath.expression.Literal;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.expression.OperatorExpr;
@@ -216,6 +217,11 @@ public class TestSamples
                     {
                         return false;
                     }
+                    
+					public boolean visitInstanceOf(InstanceOfExpr expr)
+										{
+											return false;
+										}
                 });
 
             // Simple Evaluation check
@@ -320,6 +326,19 @@ public class TestSamples
                         System.err.print(
                             "Bad external or internal representation: ");
                         System.err.println(ab + "  !=  " + xpathString);
+                        
+						tree.dump("|");
+
+													// Produce the raw tree
+													System.err.println("Raw tree is");
+
+													SimpleNode.PRODUCE_RAW_TREE = true;
+
+													parser = new XPath(new StringReader(xpathString));
+													tree = parser.XPath2();
+													tree.dump("|");
+
+													SimpleNode.PRODUCE_RAW_TREE = false;
                         testOK = false;
                     }
                 }

@@ -55,7 +55,7 @@
  */
 package org.apache.xpath.impl;
 
-import org.apache.xpath.datamodel.SingleType;
+import org.apache.xpath.datamodel.ItemType;
 import org.apache.xpath.expression.CastableExpr;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.impl.parser.Node;
@@ -116,7 +116,7 @@ public class CastableExprImpl extends ExprImpl implements CastableExpr {
 	/**
 	 * @see org.apache.xpath.expression.CastableExpr#getSingleType()
 	 */
-	public SingleType getSingleType() {
+	public ItemType getSingleType() {
 		return null;
 	}
     

@@ -101,5 +101,10 @@ public interface Visitor {
      * @param
 	 */
 	boolean visitForOrQuantifiedExpr(ForAndQuantifiedExpr expr);
+	
+	/**
+	 * Visit instance of expression
+	 */
+	boolean visitInstanceOf(InstanceOfExpr expr);
 
 }

@@ -57,8 +57,51 @@ package org.apache.xpath.datamodel;
 
 /**
  * Marker interface defining a Sequence in the XPath Data Model
- * (as opposed to a SingleType).
+ * (as opposed to a ItemType).
  */
 public interface SequenceType {
 
+	/**
+	 * Denote the empty sequence type
+	 */
+	final short EMPTY_SEQ = -1;
+
+	/**
+	 * Item type constants
+	 */
+	final short ELEMENT_ITEM_TYPE = 0;
+	final short ATTRIBUTE_ITEM_TYPE = 1;
+	final short NODE_ITEM_TYPE = 2;
+	final short PI_ITEM_TYPE = 3;
+	final short COMMENT_ITEM_TYPE = 4;
+	final short TEXT_ITEM_TYPE = 5;
+	final short DOCUMENT_ITEM_TYPE = 6;
+	final short ITEM_ITEM_TYPE = 7;
+	final short ATOMIC_ITEM_TYPE = 8;
+
+	/**
+	 * Occurrence indicator constants
+	 */
+	final short ZERO_OR_MORE = 0;
+	final short ONE_OR_MORE = 1;
+	final short ZERO_OR_ONE = 2;
+	final short ONE = 3;
+
+	/**
+	 * Gets the type of xpath values in the sequence
+	 * @return short One of the item type constants or EMPTY_TYPE.
+	 */
+	short getItemType();
+
+	/**
+	 * Gets the occurrence indicator of the item type 
+	 * @return short One of the occurrence indicator constants or -1 in case of empty sequence type
+	 */
+	short getOccurrenceIndicator();
+
+	/**
+	 * Gets the type corresponding of either element or attribute or atomic item type.
+	 * @return String  
+	 */
+	String getType();
 }

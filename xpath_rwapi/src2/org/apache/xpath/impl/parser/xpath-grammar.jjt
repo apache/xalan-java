@@ -1139,7 +1139,7 @@ void IfExpr() #IfExpr(> 1) :
 void InstanceofExpr() #InstanceofExpr(> 1) :
 {}
 {
-  CastableExpr() (<Instanceof>{jjtThis.processToken(token);} #Instanceof(true) SequenceType())?
+  CastableExpr() (<Instanceof> SequenceType())?
 }
 
 void CastableExpr() #CastableExpr(> 1) :
@@ -1571,7 +1571,7 @@ void SequenceType()  :
   ((ItemType() OccurrenceIndicator()) | <Empty>{jjtThis.processToken(token);} #Empty(true))
 }
 
-void ItemType()  :
+void ItemType()  #void :
 {}
 {
   (((<ElementType>{jjtThis.processToken(token);} #ElementType(true) | <AttributeType>{jjtThis.processToken(token);} #AttributeType(true)) [ElemOrAttrType()]) | <Node>{jjtThis.processToken(token);} #Node(true) | <ProcessingInstruction>{jjtThis.processToken(token);} #ProcessingInstruction(true) | <Comment>{jjtThis.processToken(token);} #Comment(true) | <Text>{jjtThis.processToken(token);} #Text(true) | (<Document>{jjtThis.processToken(token);} #Document(true)) | <Item>{jjtThis.processToken(token);} #Item(true) | AtomicType() | <Untyped>{jjtThis.processToken(token);} #Untyped(true) | <AtomicValue>{jjtThis.processToken(token);} #AtomicValue(true))
@@ -1595,7 +1595,7 @@ void AtomicType()  :
   <QName>{jjtThis.processToken(token);} #QName(true)
 }
 
-void OccurrenceIndicator()  :
+void OccurrenceIndicator()  #void :
 {}
 {
   [(<Star>{jjtThis.processToken(token);} #Star(true) | <Multiply>{jjtThis.processToken(token);} #Multiply(true) | <Plus>{jjtThis.processToken(token);} #Plus(true) | <QMark>{jjtThis.processToken(token);} #QMark(true))]

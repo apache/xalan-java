@@ -55,7 +55,7 @@
  */
 package org.apache.xpath.expression;
 
-import org.apache.xpath.datamodel.SingleType;
+import org.apache.xpath.datamodel.ItemType;
 
 /**
  * Represent "castable as" expression.
@@ -67,7 +67,7 @@ public interface CastableExpr extends Expr {
     /**
      * 
      */
-    SingleType getSingleType();
+    ItemType getSingleType();
     
     /**
      * 

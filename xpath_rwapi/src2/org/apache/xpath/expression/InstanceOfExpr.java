@@ -65,12 +65,14 @@ import org.apache.xpath.datamodel.SequenceType;
 public interface InstanceOfExpr extends Expr {
     
     /**
-     * 
+     * Gets the sequence type against which the expression is tested on.
+     * @return The sequence type of the 'instance of' expression
      */
     SequenceType getSequenceType();
     
     /**
-     * 
+     * Gets the tested expression
+     * @return The tested expression of the 'instance of' expression
      */
     Expr getTestedExpr();
 

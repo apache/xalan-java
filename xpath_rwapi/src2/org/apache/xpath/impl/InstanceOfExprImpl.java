@@ -64,7 +64,7 @@ import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
 
 /**
- *
+ * Default implementation of instanceof expression.
  */
 public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
 
@@ -74,6 +74,8 @@ public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
 	 */
 	public InstanceOfExprImpl(int i) {
 		super(i);
+		
+		children = new Node[2];
 	}
 
 	/**
@@ -83,20 +85,33 @@ public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
 	 */
 	public InstanceOfExprImpl(XPath p, int i) {
 		super(p, i);
+		
+		children = new Node[2];
+	}
+	
+	/**
+	 * Constructor for cloning	 
+	 */
+	private InstanceOfExprImpl(InstanceOfExprImpl expr) {
+		super(expr.id);
+		
+		children = new Node[2];
+		children[0] = (Node) expr.getTestedExpr().cloneExpression();
+		children[1] = (Node) expr.getSequenceType();
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.InstanceOfExpr#getSequenceType()
 	 */
 	public SequenceType getSequenceType() {
-		return null;
+		return (SequenceType) children[1];
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.InstanceOfExpr#getTestedExpr()
 	 */
 	public Expr getTestedExpr() {
-		return null;
+		return (Expr) children[0];
 	}
 
 	/**
@@ -110,20 +125,14 @@ public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
 	 * @see org.apache.xpath.expression.Expr#cloneExpression()
 	 */
 	public Expr cloneExpression() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Expr#getString(boolean)
-	 */
-	public String getString(boolean abbreviate) {
-		return null;
+		return new InstanceOfExprImpl(this);
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.Visitable#visited(Visitor)
 	 */
 	public void visited(Visitor visitor) {
+		visitor.visitInstanceOf(this);
 	}
     
     /**
@@ -137,11 +146,14 @@ public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
         }
     }
     
-    /**
-     * @see org.apache.xpath.impl.parser.SimpleNode#canBeReduced()
-     */
-    public boolean canBeReduced() {
-        return children.length == 1; // means that there is no SequenceType (pos=1)
-    }
+    
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.impl.parser.SimpleNode#getString(java.lang.StringBuffer, boolean)
+	 */
+	public void getString(StringBuffer expr, boolean abbreviate) {
+		((ExprImpl) getTestedExpr()).getString(expr, abbreviate);
+		expr.append(" instance of ");
+		((SimpleNode) getSequenceType()).getString(expr, abbreviate);
+	}
 
 }

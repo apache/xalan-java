@@ -59,6 +59,7 @@ package org.apache.xpath.datamodel;
  * Marker interface defining a single Item in the XPath Data Model
  * (as opposed to a SequenceType).
  */
-public interface SingleType {
+public interface ItemType {
+
 
 }

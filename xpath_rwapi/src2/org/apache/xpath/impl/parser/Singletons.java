@@ -77,8 +77,8 @@ public class Singletons extends SimpleNode
     protected static final Singletons SLASH = new Singletons(XPathTreeConstants.JJTSLASH);
 
     /**
-    * At singleton
-    */
+     * At singleton
+     */
     protected static final Singletons AT = new Singletons(XPathTreeConstants.JJTAT);
 
     /**
@@ -102,7 +102,7 @@ public class Singletons extends SimpleNode
     protected static final Singletons MINUS = new Singletons(XPathTreeConstants.JJTMINUS);
 
     /**
-     * Plus singleton
+     * Plus singleton (arithmetic and occurrence indicator)
      */
     protected static final Singletons PLUS = new Singletons(XPathTreeConstants.JJTPLUS);
 
@@ -115,11 +115,72 @@ public class Singletons extends SimpleNode
      * Dot singleton
      */
     protected static final Singletons DOT = new Singletons(XPathTreeConstants.JJTDOT);
+
+    /**
+     * Empty singleton (appear in sequencetype)
+     */
+    protected static final Singletons EMPTY = new Singletons(XPathTreeConstants.JJTEMPTY);
+
+ 
+    /**
+     * Element type singleton (appear in sequencetype)
+     */
+    protected static final Singletons ELEMENT = new Singletons(XPathTreeConstants.JJTELEMENTTYPE);
+
+    /**
+     * Attribute type singleton (appear in sequencetype)
+     */
+    protected static final Singletons ATTRIBUTE = new Singletons(XPathTreeConstants.JJTATTRIBUTETYPE);
+
+    /**
+     * Atomic type singleton (appear in sequencetype)
+     */
+    protected static final Singletons ATOMIC = new Singletons(XPathTreeConstants.JJTATOMICTYPE);
+
+    /**
+     * Node type singleton (appear in sequencetype)
+     */
+    protected static final Singletons NODE = new Singletons(XPathTreeConstants.JJTNODE);
+
+    /**
+     * PI type singleton (appear in sequencetype)
+     */
+    protected static final Singletons PI = new Singletons(XPathTreeConstants.JJTPROCESSINGINSTRUCTION);
+
+    /**
+     * Comment type singleton (appear in sequencetype)
+     */
+    protected static final Singletons COMMENT = new Singletons(XPathTreeConstants.JJTCOMMENT);
+
+    /**
+     * Text type singleton (appear in sequencetype)
+     */
+    protected static final Singletons TEXT = new Singletons(XPathTreeConstants.JJTTEXT);
+
+    /**
+     * Document type singleton (appear in sequencetype)
+     */
+    protected static final Singletons DOCUMENT = new Singletons(XPathTreeConstants.JJTDOCUMENT);
+
+    /**
+     * Item type singleton (appear in sequencetype)
+     */
+    protected static final Singletons ITEM = new Singletons(XPathTreeConstants.JJTITEM);
     
 	/**
-		 * Dot kind test singleton
-		 */
-		static final public KindTestImpl DOT_KIND_TEST ;
+		* Multiply occurrence indicator singleton (appear in sequencetype)
+		*/
+	   protected static final Singletons MULTIPLY = new Singletons(XPathTreeConstants.JJTMULTIPLY);
+	   
+	/**
+	 * Question mark occurrence indicator singleton (appear in sequencetype)
+	 */
+	protected static final Singletons QMARK = new Singletons(XPathTreeConstants.JJTQMARK);
+
+    /**
+     * Dot kind test singleton
+     */
+    static final public KindTestImpl DOT_KIND_TEST;
 
     static
     {
@@ -128,15 +189,15 @@ public class Singletons extends SimpleNode
 
         SLASHSLASH = new StepExprImpl(StepExpr.AXIS_DESCENDANT_OR_SELF, kt);
 
-		DOT_KIND_TEST = new KindTestImpl();
+        DOT_KIND_TEST = new KindTestImpl();
 
         //		well use any kind test for dot, but it's more than that..
-		DOT_KIND_TEST.setKindTest(NodeTest.ANY_KIND_TEST);
-        
+        DOT_KIND_TEST.setKindTest(NodeTest.ANY_KIND_TEST);
     }
 
     /**
      * Constructor for Singletons.
+     *
      * @param i
      */
     private Singletons(int i)
@@ -146,6 +207,7 @@ public class Singletons extends SimpleNode
 
     /**
      * Constructor for Singletons.
+     *
      * @param p
      * @param i
      */

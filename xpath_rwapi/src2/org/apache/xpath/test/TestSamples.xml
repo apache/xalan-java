@@ -822,6 +822,57 @@
 		</ast>
 	</expr>
 	
+	<!-- Instanceof expr -->
+	
+	<expr value="$var instance of empty">
+		<ast>
+			<node name="ExprSequence">
+				<node name="InstanceofExpr">
+					<node name="VarName"/>
+					<node name="SequenceType"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="$var instance of processing-instruction">
+		<ast>
+			<node name="ExprSequence">
+				<node name="InstanceofExpr">
+					<node name="VarName"/>
+					<node name="SequenceType"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="$var instance of node+">
+		<ast>
+			<node name="ExprSequence">
+				<node name="InstanceofExpr">
+					<node name="VarName"/>
+					<node name="SequenceType"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="5 instance of xs:integer">
+		<ast>
+			<node name="ExprSequence">
+				<node name="InstanceofExpr">
+					<node name="IntegerLiteral"/>
+					<node name="SequenceType"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<!-- Cast expr -->
+	
+	
+	
+	<!-- Castable expr -->
 	
 	<!-- For expr -->
 	

@@ -12,8 +12,10 @@ import org.apache.xpath.impl.LiteralImpl;
 import org.apache.xpath.impl.NameTestImpl;
 import org.apache.xpath.impl.OperatorImpl;
 import org.apache.xpath.impl.PathExprImpl;
+import org.apache.xpath.impl.SequenceTypeImpl;
 import org.apache.xpath.impl.StepExprImpl;
 import org.apache.xpath.impl.VariableImpl;
+
 
 /**
  * Representation of an XPath AST node.
@@ -48,7 +50,8 @@ public class SimpleNode implements Node
         }
 
         Node newNode;
-        NodeFactory nodeFactory = (p.m_nodeFactory == null) ? DEFAULT_NODE_FACTORY : p.m_nodeFactory;
+        NodeFactory nodeFactory = (p.m_nodeFactory == null)
+            ? DEFAULT_NODE_FACTORY : p.m_nodeFactory;
 
         switch (id)
         {
@@ -62,7 +65,7 @@ public class SimpleNode implements Node
 
                 break;
 
-            case XPathTreeConstants.JJTPROCESSINGINSTRUCTIONTEST:			
+            case XPathTreeConstants.JJTPROCESSINGINSTRUCTIONTEST:
             case XPathTreeConstants.JJTCOMMENTTEST:
             case XPathTreeConstants.JJTTEXTTEST:
             case XPathTreeConstants.JJTANYKINDTEST:
@@ -84,8 +87,6 @@ public class SimpleNode implements Node
                 }
 
                 break;
-
-            
 
             case XPathTreeConstants.JJTINTEGERLITERAL:
             case XPathTreeConstants.JJTDOUBLELITERAL:
@@ -151,9 +152,6 @@ public class SimpleNode implements Node
 
                 break;
 
-          
-        
-
             case XPathTreeConstants.JJTPATHEXPR:
                 newNode = nodeFactory.createPathNode(id);
 
@@ -164,8 +162,8 @@ public class SimpleNode implements Node
 
                 break;
 
-			case XPathTreeConstants.JJTEXPRSEQUENCE:
-			case XPathTreeConstants.JJTUNARYEXPR:
+            case XPathTreeConstants.JJTEXPRSEQUENCE:
+            case XPathTreeConstants.JJTUNARYEXPR:
             case XPathTreeConstants.JJTADDITIVEEXPR:
             case XPathTreeConstants.JJTMULTIPLICATIVEEXPR:
             case XPathTreeConstants.JJTUNIONEXPR:
@@ -198,6 +196,16 @@ public class SimpleNode implements Node
                 if (newNode == null)
                 {
                     newNode = new VariableImpl(id);
+                }
+
+                break;
+
+            case XPathTreeConstants.JJTSEQUENCETYPE:
+                newNode = nodeFactory.createSequenceTypeNode(id);
+
+                if (newNode == null)
+                {
+                    newNode = new SequenceTypeImpl(id);
                 }
 
                 break;
@@ -263,6 +271,68 @@ public class SimpleNode implements Node
 
                 // can use a singleton (but children need to be reinitialized)
                 break;
+
+            case XPathTreeConstants.JJTEMPTY:
+                newNode = Singletons.EMPTY;
+
+                break;
+
+          
+
+            case XPathTreeConstants.JJTELEMENTTYPE:
+                newNode = Singletons.ELEMENT;
+
+                break;
+
+            case XPathTreeConstants.JJTATTRIBUTETYPE: //92;
+                newNode = Singletons.ATTRIBUTE;
+
+                break;
+
+            case XPathTreeConstants.JJTATOMICTYPE: //104;
+                newNode = Singletons.ATOMIC;
+
+                break;
+
+            case XPathTreeConstants.JJTNODE: //93;
+                newNode = Singletons.NODE;
+
+                break;
+
+            case XPathTreeConstants.JJTPROCESSINGINSTRUCTION: //94;
+                newNode = Singletons.PI;
+
+                break;
+
+            case XPathTreeConstants.JJTCOMMENT: //95;
+                newNode = Singletons.COMMENT;
+
+                break;
+
+            case XPathTreeConstants.JJTTEXT: //96;
+                newNode = Singletons.TEXT;
+
+                break;
+
+            case XPathTreeConstants.JJTDOCUMENT: //97;
+                newNode = Singletons.DOCUMENT;
+
+                break;
+
+            case XPathTreeConstants.JJTITEM: //98;
+                newNode = Singletons.ITEM;
+
+                break;
+                
+			case XPathTreeConstants.JJTMULTIPLY: //106;
+				newNode = Singletons.MULTIPLY;
+				break;
+				
+					case XPathTreeConstants.JJTQMARK: //107;
+					newNode = Singletons.QMARK;
+					break;
+					
+			
 
             case XPathTreeConstants.JJTROOT:
                 newNode = Singletons.ROOT;
@@ -355,7 +425,6 @@ public class SimpleNode implements Node
             case XPathTreeConstants.JJTEVERY:
             case XPathTreeConstants.JJTIN:
             case XPathTreeConstants.JJTSATISFIES:
-            case XPathTreeConstants.JJTINSTANCEOF: //31;
             case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR: //37;           
             case XPathTreeConstants.JJTVALIDATEEXPR: //44;
             case XPathTreeConstants.JJTRBRACE: //47;
@@ -364,27 +433,12 @@ public class SimpleNode implements Node
             case XPathTreeConstants.JJTSCHEMACONTEXT: //84;
             case XPathTreeConstants.JJTSCHEMAGLOBALCONTEXT: //85;
             case XPathTreeConstants.JJTSCHEMACONTEXTSTEP: //87;
-            case XPathTreeConstants.JJTSEQUENCETYPE: //88;
-            case XPathTreeConstants.JJTEMPTY: //89;
-            case XPathTreeConstants.JJTITEMTYPE: //90;
-            case XPathTreeConstants.JJTELEMENTTYPE: //91;
-            case XPathTreeConstants.JJTATTRIBUTETYPE: //92;
-            case XPathTreeConstants.JJTNODE: //93;
-            case XPathTreeConstants.JJTPROCESSINGINSTRUCTION: //94;
-            case XPathTreeConstants.JJTCOMMENT: //95;
-            case XPathTreeConstants.JJTTEXT: //96;
-            case XPathTreeConstants.JJTDOCUMENT: //97;
-            case XPathTreeConstants.JJTITEM: //98;
-            case XPathTreeConstants.JJTUNTYPED: //99;
+			case XPathTreeConstants.JJTUNTYPED: //99;
             case XPathTreeConstants.JJTATOMICVALUE: //100;
             case XPathTreeConstants.JJTELEMORATTRTYPE: //101;
             case XPathTreeConstants.JJTSCHEMATYPE: //102;
             case XPathTreeConstants.JJTOFTYPE: //103;
-            case XPathTreeConstants.JJTATOMICTYPE: //104;
-            case XPathTreeConstants.JJTOCCURRENCEINDICATOR: //105;
-            case XPathTreeConstants.JJTMULTIPLY: //106;
-            case XPathTreeConstants.JJTQMARK: //107;
-            
+        
 
             default:
 
@@ -437,6 +491,8 @@ public class SimpleNode implements Node
 
     /**
      * Insert child at the first position
+     *
+     * @param n DOCUMENT ME!
      */
     public void jjtInsertChild(Node n)
     {
@@ -456,6 +512,8 @@ public class SimpleNode implements Node
 
     /**
      * Insert children of the given node at the first position
+     *
+     * @param sn DOCUMENT ME!
      */
     public void jjtInsertNodeChildren(Node sn)
     {
@@ -488,13 +546,27 @@ public class SimpleNode implements Node
         return (children == null) ? 0 : children.length;
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor.
+     *
+     * @param visitor DOCUMENT ME!
+     * @param data DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public Object jjtAccept(XPathVisitor visitor, Object data)
     {
         return visitor.visit(this, data);
     }
 
-    /** Accept the visitor. **/
+    /**
+     * Accept the visitor.
+     *
+     * @param visitor DOCUMENT ME!
+     * @param data DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     public Object childrenAccept(XPathVisitor visitor, Object data)
     {
         if (children != null)
@@ -518,6 +590,7 @@ public class SimpleNode implements Node
 
     /**
      * Method processToken.
+     *
      * @param token
      */
     public void processToken(Token token)
@@ -525,8 +598,8 @@ public class SimpleNode implements Node
     }
 
     /**
-     *
-     */
+                 *
+                 */
     public boolean canBeReduced()
     {
         return false;
@@ -571,12 +644,14 @@ public class SimpleNode implements Node
             }
         }
     }
-    
-	/**
-	 * Gets the node as an string
-	 */
-	 public void getString(StringBuffer expr, boolean abbreviate)
-	 {
-	 }
 
+    /**
+     * Gets the node as an string
+     *
+     * @param expr DOCUMENT ME!
+     * @param abbreviate DOCUMENT ME!
+     */
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+    }
 }

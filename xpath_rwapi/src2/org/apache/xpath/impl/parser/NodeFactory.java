@@ -61,6 +61,7 @@ import org.apache.xpath.impl.LiteralImpl;
 import org.apache.xpath.impl.NameTestImpl;
 import org.apache.xpath.impl.OperatorImpl;
 import org.apache.xpath.impl.PathExprImpl;
+import org.apache.xpath.impl.SequenceTypeImpl;
 import org.apache.xpath.impl.StepExprImpl;
 import org.apache.xpath.impl.VariableImpl;
 
@@ -135,6 +136,14 @@ public interface NodeFactory
      * @return a new VarName AST node or null.
      */
     VariableImpl createVarNameNode(int id);
+    
+
+	/**
+	 * Creates SequenceType AST node
+	 *
+	 * @return a new SequenceType AST node or null.
+	 */
+	SequenceTypeImpl createSequenceTypeNode(int id);
 
     /**
      * Creates a generic AST node for the given tree node ID.

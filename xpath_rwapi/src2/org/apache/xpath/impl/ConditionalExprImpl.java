@@ -171,7 +171,7 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
      */
     public void visit(Visitor visitor)
-    {
+    {	
        visitor.visitConditional(this);
     }
 

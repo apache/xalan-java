@@ -61,6 +61,7 @@ import org.apache.xpath.impl.LiteralImpl;
 import org.apache.xpath.impl.NameTestImpl;
 import org.apache.xpath.impl.OperatorImpl;
 import org.apache.xpath.impl.PathExprImpl;
+import org.apache.xpath.impl.SequenceTypeImpl;
 import org.apache.xpath.impl.StepExprImpl;
 import org.apache.xpath.impl.VariableImpl;
 
@@ -132,6 +133,14 @@ public class DefaultNodeFactory implements NodeFactory {
 	 */
 	public VariableImpl createVarNameNode(int id) {
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.impl.parser.NodeFactory#createSequenceTypeNode(int)
+	 */
+	public SequenceTypeImpl createSequenceTypeNode(int id) {
+		return null;
+
 	}
 
 }
