@@ -56,22 +56,19 @@
  */
 package org.apache.xalan.transformer;
 
-import java.io.Writer;
 import java.io.OutputStream;
-
+import java.io.Writer;
 import java.util.Properties;
 
-import org.apache.xalan.templates.StylesheetRoot;
-
-import org.xml.sax.ContentHandler;
-
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.serialize.Method;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
-import org.apache.xalan.serialize.Method;
 import org.apache.xalan.templates.OutputProperties;
+
+import org.xml.sax.ContentHandler;
 
 /**
  * This is a helper class that decides if Xalan needs to switch

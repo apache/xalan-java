@@ -62,8 +62,6 @@
 
 package org.apache.xalan.xsltc;
 
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.dom.DOMImpl;
 
 public interface DOMCache {
 

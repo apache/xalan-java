@@ -63,8 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 
 final class CurrentCall extends FunctionCall {
     public CurrentCall(QName fname) {

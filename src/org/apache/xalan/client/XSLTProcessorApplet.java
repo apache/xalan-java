@@ -57,35 +57,24 @@
 package org.apache.xalan.client;
 
 import java.applet.Applet;
-
 import java.awt.Graphics;
-
-import java.net.URL;
-import java.net.MalformedURLException;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.StringReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import java.util.Properties;
-
-// Needed Xalan classes
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-
-// Needed TRaX classes
-import javax.xml.transform.Result;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.Templates;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * <meta name="usage" content="general"/>

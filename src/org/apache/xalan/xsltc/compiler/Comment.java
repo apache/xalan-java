@@ -64,19 +64,15 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
-
-import java.util.Vector;
-import java.util.Enumeration;
-
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GETFIELD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
-
-import org.apache.bcel.generic.*;
-import org.apache.bcel.classfile.JavaClass;
-
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
 final class Comment extends Instruction {
 

@@ -63,13 +63,13 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.util.Stack;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.Constants;
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.runtime.Constants;
 
 abstract class SAXOutput extends OutputBase implements Constants { 
 

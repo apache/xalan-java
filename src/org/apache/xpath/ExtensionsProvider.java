@@ -56,8 +56,9 @@
  */
 package org.apache.xpath;
 
-import org.apache.xpath.functions.FuncExtFunction;
 import java.util.Vector;
+
+import org.apache.xpath.functions.FuncExtFunction;
 
 /**
  * Interface that XPath objects can call to obtain access to an 

@@ -56,7 +56,6 @@
  */
 package org.apache.xpath.objects;
 
-//import org.w3c.dom.*;
 import java.util.Locale;
 
 import org.apache.xml.dtm.DTM;
@@ -66,9 +65,6 @@ import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
 
 /**
  * <meta name="usage" content="general"/>

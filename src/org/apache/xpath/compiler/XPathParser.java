@@ -56,24 +56,15 @@
  */
 package org.apache.xpath.compiler;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNumber;
-import org.apache.xalan.res.XSLMessages;
-
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Locator;
-import org.xml.sax.helpers.LocatorImpl;
-
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.ErrorListener;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="general"/>

@@ -56,16 +56,6 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.ElemLiteralResult;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.ElemExtensionCall;
-import org.apache.xalan.templates.ElemTemplate;
-import org.apache.xalan.templates.Constants;
-import org.apache.xpath.XPath;
-import org.apache.xalan.templates.StylesheetRoot;
-
-import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 /**

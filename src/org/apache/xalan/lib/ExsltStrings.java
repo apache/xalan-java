@@ -56,10 +56,18 @@
  */
 package org.apache.xalan.lib;
 
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import org.apache.xpath.NodeSet;
 import java.util.StringTokenizer;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xpath.NodeSet;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * <meta name="usage" content="general"/>

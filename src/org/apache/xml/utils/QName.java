@@ -59,10 +59,10 @@ package org.apache.xml.utils;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-import org.w3c.dom.Element;
-
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+
+import org.w3c.dom.Element;
 
 /**
  * <meta name="usage" content="general"/>

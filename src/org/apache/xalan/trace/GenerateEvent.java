@@ -56,13 +56,8 @@
  */
 package org.apache.xalan.trace;
 
-import org.xml.sax.*;
-
-import java.util.*;
-
-import java.io.*;
-
 import org.apache.xalan.transformer.TransformerImpl;
+import org.xml.sax.Attributes;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -56,31 +56,35 @@
  */
 package org.apache.xml.dtm.ref.dom2dtm;
 
-import org.apache.xml.dtm.ref.*;
-import org.apache.xml.dtm.*;
-import org.apache.xml.utils.SuballocatedIntVector;
-import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xml.utils.StringBufferPool;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-
-import org.w3c.dom.*;
-
 import java.util.Vector;
 
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.SourceLocator;
-import org.xml.sax.ContentHandler;
+import javax.xml.transform.dom.DOMSource;
 
-import org.apache.xml.utils.NodeVector;
-
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.dtm.ref.DTMDefaultBaseIterators;
+import org.apache.xml.dtm.ref.DTMManagerDefault;
+import org.apache.xml.dtm.ref.ExpandedNameTable;
+import org.apache.xml.dtm.ref.IncrementalSAXSource;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.StringBufferPool;
+import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.XMLString;
+import org.apache.xml.utils.XMLStringFactory;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Entity;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.ContentHandler;
 
 /** The <code>DOM2DTM</code> class serves up a DOM's contents via the
  * DTM API.

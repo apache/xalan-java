@@ -63,14 +63,25 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TemplatesHandler;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.xml.sax.XMLFilter;
-import org.xml.sax.InputSource;
-import org.apache.xalan.xsltc.compiler.XSLTC;
-import org.apache.xalan.xsltc.compiler.SourceLoader;
 
 /**
  * Implementation of a transformer factory that uses an XSLTC 

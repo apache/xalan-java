@@ -64,8 +64,12 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.GOTO;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 
 final class NotCall extends FunctionCall {
     public NotCall(QName fname, Vector arguments) {

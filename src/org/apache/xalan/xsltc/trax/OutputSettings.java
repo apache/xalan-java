@@ -62,12 +62,6 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import javax.xml.transform.*;
-
-import org.apache.xalan.xsltc.Translet;
-import org.apache.xalan.xsltc.compiler.*;
-import org.apache.xalan.xsltc.runtime.*;
-
 import java.util.Properties;
 
 public final class OutputSettings {

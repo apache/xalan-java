@@ -63,15 +63,13 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.io.Writer;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-
-import java.util.Vector;
+import java.io.Writer;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;

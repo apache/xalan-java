@@ -63,31 +63,26 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.Hashtable;
 
-import org.xml.sax.XMLReader;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
 import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.DTDHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import org.xml.sax.AttributeList;
-import org.xml.sax.helpers.AttributeListImpl;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import java.io.IOException;
-import org.w3c.dom.Entity;
-import org.w3c.dom.Notation;
 
 public class DOM2SAX implements XMLReader, Locator {
 

@@ -56,14 +56,8 @@
  */
 package org.apache.xpath.objects;
 
-//import org.w3c.dom.traversal.NodeIterator;
-//import org.w3c.dom.DocumentFragment;
-
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
 
 /**
  * <meta name="usage" content="general"/>

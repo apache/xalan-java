@@ -56,27 +56,27 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.ElemLiteralResult;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.ElemExtensionCall;
-import org.apache.xalan.templates.ElemTemplate;
-import org.apache.xalan.templates.Constants;
-import org.apache.xalan.templates.XMLNSDecl;
+import java.util.Vector;
+
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xpath.XPath;
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemExtensionCall;
+import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xpath.XPath;
 
-import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
-
-import javax.xml.transform.TransformerConfigurationException;
-import org.apache.xml.utils.SAXSourceLocator;
-
-import java.util.Vector;
 
 /**
  * <meta name="usage" content="internal"/>

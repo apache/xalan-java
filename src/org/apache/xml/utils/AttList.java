@@ -56,12 +56,11 @@
  */
 package org.apache.xml.utils;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
-import org.xml.sax.*;
-
-import org.apache.xml.utils.DOMHelper;
-import org.apache.xml.utils.DOM2Helper;
+import org.xml.sax.Attributes;
 
 /**
  * <meta name="usage" content="internal"/>

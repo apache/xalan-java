@@ -65,10 +65,17 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.PUSH;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class WithParam extends Instruction {
 

@@ -56,7 +56,6 @@
  */
 
 package org.apache.xml.dtm.ref;
-import java.util.Vector;
 import java.util.Hashtable;
 
 /** <p>CustomStringPool is an example of appliction provided data structure

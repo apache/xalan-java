@@ -56,24 +56,16 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Hashtable;
 import java.util.StringTokenizer;
 
-import org.apache.xpath.res.XPATHErrorResources;
-
-//import org.w3c.dom.Node;
-//import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-
-import java.util.Vector;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
 import org.apache.xml.utils.StringVector;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="advanced"/>

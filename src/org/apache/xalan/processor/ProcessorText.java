@@ -59,8 +59,6 @@ package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemText;
 
-import javax.xml.transform.TransformerException;
-
 /**
  * Process xsl:text.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>

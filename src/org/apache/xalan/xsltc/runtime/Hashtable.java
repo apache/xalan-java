@@ -61,7 +61,6 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import java.io.*;
 import java.util.Enumeration;
 
 /**

@@ -58,7 +58,7 @@ package org.apache.xpath.axes;
 
 import java.util.Vector;
 
-import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMIterator;
@@ -67,10 +67,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.patterns.NodeTest;
-
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
 
 /**
  * Serves as common interface for axes Walkers, and stores common

@@ -64,7 +64,6 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.DOM;
-
 import org.apache.xml.dtm.DTM;
 
 public interface NodeTest {

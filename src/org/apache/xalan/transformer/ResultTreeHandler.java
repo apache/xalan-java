@@ -58,39 +58,31 @@ package org.apache.xalan.transformer;
 
 import java.util.Enumeration;
 
-import org.apache.xalan.processor.StylesheetHandler;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.trace.GenerateEvent;
-import org.apache.xml.utils.MutableAttrListImpl;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.ObjectPool;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPathContext;
+import org.apache.xalan.trace.TraceManager;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.utils.MutableAttrListImpl;
+import org.apache.xml.utils.NamespaceSupport2;
+import org.apache.xml.utils.XMLCharacterRecognizer;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
-
-import org.xml.sax.helpers.NamespaceSupport;
-import org.apache.xml.utils.NamespaceSupport2;
 import org.xml.sax.Locator;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.Transformer;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * This class is a layer between the direct calls to the result

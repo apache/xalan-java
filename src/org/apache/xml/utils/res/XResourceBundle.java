@@ -56,7 +56,10 @@
  */
 package org.apache.xml.utils.res;
 
-import java.util.*;
+import java.util.ListResourceBundle;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * <meta name="usage" content="internal"/>

@@ -63,11 +63,9 @@
 package org.apache.xalan.xsltc.cmdline.getopt; 
 
 import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.List;
+import java.util.ListIterator;
 
-import org.apache.xalan.xsltc.cmdline.getopt.IllegalArgumentException;
-import org.apache.xalan.xsltc.cmdline.getopt.MissingOptArgException;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 

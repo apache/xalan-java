@@ -58,14 +58,12 @@ package org.apache.xalan.templates;
 
 import java.io.Serializable;
 
-//import org.w3c.dom.Node;
-
 import javax.xml.transform.TransformerException;
 
+import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.patterns.StepPattern;
-import org.apache.xml.utils.QName;
 
 /**
  * A class to contain a match pattern and it's corresponding template.

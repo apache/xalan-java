@@ -64,10 +64,8 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
-
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.Instruction;
 import org.apache.xalan.xsltc.compiler.Stylesheet;
 
 /**

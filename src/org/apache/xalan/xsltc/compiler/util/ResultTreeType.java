@@ -64,15 +64,22 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.xalan.xsltc.DOM;
-
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Parser;
-import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
+import org.apache.bcel.generic.CHECKCAST;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GETFIELD;
+import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.Constants;
-
-import org.apache.xml.dtm.DTM;
+import org.apache.xalan.xsltc.compiler.FlowList;
 
 public final class ResultTreeType extends Type {
     private final String _methodName;

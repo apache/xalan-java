@@ -56,15 +56,12 @@
  */
 package org.apache.xpath.objects;
 
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
-import java.util.Locale;
 
 /**
  * This class will wrap a FastStringBuffer and allow for

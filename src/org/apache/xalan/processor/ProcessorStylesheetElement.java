@@ -56,14 +56,14 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.StylesheetRoot;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
+import org.apache.xalan.templates.StylesheetRoot;
 
-import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
-
-import javax.xml.transform.TransformerConfigurationException;
 
 /**
  * TransformerFactory for xsl:stylesheet or xsl:transform markup.

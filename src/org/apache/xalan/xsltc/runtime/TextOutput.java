@@ -65,16 +65,16 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Stack;
-import java.util.Enumeration;
+
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.xalan.xsltc.*;
 
 /**
  * Serializer for SAX events.

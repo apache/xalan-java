@@ -63,8 +63,7 @@
 
 package org.apache.xalan.xsltc;
 
-import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.ref.*;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 public interface Translet {
 

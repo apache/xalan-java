@@ -57,11 +57,8 @@
 
 package org.apache.xml.dtm.ref;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import java.io.IOException;
-import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 /** <p>CoroutineParser is an API for parser threads that operate as

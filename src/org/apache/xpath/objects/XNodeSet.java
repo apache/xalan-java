@@ -56,22 +56,15 @@
  */
 package org.apache.xpath.objects;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.Text;
-//import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.NodeList;
-
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.axes.NodeSequence;
-import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.axes.NodeSequence;
+
+import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * <meta name="usage" content="general"/>

@@ -66,26 +66,34 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.io.*;
-import java.net.URL;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Properties;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.StringTokenizer;
+import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Stack;
-import java.net.MalformedURLException;
-
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import java_cup.runtime.Symbol;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodType;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.runtime.AttributeList;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 
 public class Parser implements Constants, ContentHandler {
 

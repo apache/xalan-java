@@ -56,18 +56,12 @@
  */
 package org.apache.xpath.functions;
 
-//import org.w3c.dom.Node;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XString;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.res.XPATHErrorResources;
-
-import org.apache.xml.utils.XMLString;
-
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="advanced"/>

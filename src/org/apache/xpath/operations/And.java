@@ -56,13 +56,9 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xpath.Expression;
-import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XBoolean;
-
-import org.w3c.dom.Node;
+import org.apache.xpath.objects.XObject;
 
 /**
  * The 'and' operation expression executer.

@@ -64,22 +64,20 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.StripFilter;
-import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
-
+import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMManager;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public final class MultiDOM implements DOM {
 

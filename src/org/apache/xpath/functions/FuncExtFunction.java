@@ -58,23 +58,16 @@ package org.apache.xpath.functions;
 
 import java.util.Vector;
 
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
-import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.ExtensionsProvider;
-import org.apache.xpath.objects.*;
-import org.apache.xml.dtm.DTMIterator;
-
-//import org.w3c.dom.Node;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.traversal.NodeIterator;
-
-import org.apache.xml.dtm.*;
-import org.apache.xpath.axes.*;
+import org.apache.xpath.objects.XNull;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
 
 /**
  * <meta name="usage" content="advanced"/>

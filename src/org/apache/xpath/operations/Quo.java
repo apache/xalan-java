@@ -56,8 +56,8 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
 
 /**
  * The 'quo' operation expression executer. (no longer supported by XPath).

@@ -56,26 +56,23 @@
  */
 package org.apache.xalan.extensions;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.traversal.NodeIterator;
-
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XRTreeFrag;
-import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.ref.DTMNodeIterator;
-import org.apache.xml.dtm.ref.DTMNodeList;
-import org.apache.xml.dtm.ref.DTMNodeProxy;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-
-import javax.xml.transform.TransformerException;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.ref.DTMNodeIterator;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.objects.XString;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * Utility class to help resolve method overloading with Xalan XSLT 

@@ -56,10 +56,10 @@
  */
 package org.apache.xalan.lib;
 
+import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xpath.NodeSet;
-import org.apache.xalan.extensions.ExpressionContext;
 
 /**
  * <meta name="usage" content="general"/>

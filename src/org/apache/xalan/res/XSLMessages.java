@@ -56,11 +56,7 @@
  */
 package org.apache.xalan.res;
 
-
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.ListResourceBundle;
-import java.util.MissingResourceException;
 
 import org.apache.xpath.res.XPATHMessages;
 

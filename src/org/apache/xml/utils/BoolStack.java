@@ -56,7 +56,6 @@
  */
 package org.apache.xml.utils;
 
-import java.util.EmptyStackException;
 
 /**
  * <meta name="usage" content="internal"/>

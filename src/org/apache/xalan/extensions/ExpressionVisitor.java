@@ -56,11 +56,11 @@
  */
 package org.apache.xalan.extensions;
 
-import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.ExpressionOwner;
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.Function;
 
 /**
  * When {@link org.apache.xalan.templates.StylesheetHandler} creates 

@@ -56,14 +56,11 @@
  */
 package org.apache.xpath;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
-
 import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="internal"/>

@@ -56,24 +56,16 @@
  */
 package org.apache.xalan.transformer;
 
+import java.text.CollationKey;
 import java.util.Vector;
 
-import java.text.NumberFormat;
-import java.text.CollationKey;
+import javax.xml.transform.TransformerException;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-
-import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
-import org.apache.xml.utils.NodeVector;
-
-import javax.xml.transform.TransformerException;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="internal"/>

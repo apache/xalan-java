@@ -56,8 +56,7 @@
  */
 package org.apache.xml.dtm.ref;
 
-import java.util.*;
-import org.apache.xml.dtm.*;
+import java.util.BitSet;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;

@@ -56,21 +56,13 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.transformer.TransformerImpl;
-
-//import org.w3c.dom.Node;
-
-import java.util.Vector;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.ExtensionsProvider;
-import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>

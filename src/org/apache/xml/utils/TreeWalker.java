@@ -56,13 +56,18 @@
  */
 package org.apache.xml.utils;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Element;
+import org.w3c.dom.EntityReference;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.Text;
 
-import org.xml.sax.*;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.LocatorImpl;
-
-import org.apache.xml.utils.NodeConsumer;
 
 /**
  * <meta name="usage" content="advanced"/>

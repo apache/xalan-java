@@ -56,13 +56,11 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.utils.IntVector;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
-
-import java.util.Vector;
 
 /**
  * <code>DTMAxisNodeList</code> gives us an implementation of the DOM's

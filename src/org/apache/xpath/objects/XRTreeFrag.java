@@ -56,18 +56,15 @@
  */
 package org.apache.xpath.objects;
 
-import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
-import org.w3c.dom.NodeList;
-
-import org.apache.xml.dtm.Axis;
 import org.apache.xpath.axes.RTFIterator;
+
+import org.w3c.dom.NodeList;
 
 /**
  * <meta name="usage" content="general"/>

@@ -56,9 +56,9 @@
  */
 package org.apache.xml.dtm;
 
-import org.apache.xml.utils.XMLString;
-
 import javax.xml.transform.SourceLocator;
+
+import org.apache.xml.utils.XMLString;
 
 /**
  * <code>DTM</code> is an XML document model expressed as a table

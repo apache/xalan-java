@@ -56,40 +56,32 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xml.utils.res.XResourceBundle;
-
-//import org.w3c.dom.*;
-//import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-//import org.w3c.dom.xpath.XPathResult;
-import org.xml.sax.*;
-
-import java.util.*;
-
+import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.text.DecimalFormat;
-
-import org.apache.xpath.*;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.StringBufferPool;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xalan.res.*;
-import org.apache.xalan.transformer.DecimalToRoman;
-import org.apache.xalan.transformer.CountersTable;
-import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.utils.NodeVector;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 
 import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.CountersTable;
+import org.apache.xalan.transformer.DecimalToRoman;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.StringBufferPool;
+import org.apache.xml.utils.res.XResourceBundle;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+
+import org.w3c.dom.Node;
+
+import org.xml.sax.SAXException;
 
 // import org.apache.xalan.dtm.*;
 

@@ -62,8 +62,8 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.*;
 
 final class SlotAllocator {
 

@@ -56,12 +56,11 @@
  */
 package org.apache.xml.utils.synthetic;
 
-import org.apache.xml.utils.synthetic.SynthesisException;
-import org.apache.xml.utils.synthetic.reflection.Constructor;
-import org.apache.xml.utils.synthetic.reflection.Method;
-import org.apache.xml.utils.synthetic.reflection.Field;
-
 import java.lang.reflect.Modifier;
+
+import org.apache.xml.utils.synthetic.reflection.Constructor;
+import org.apache.xml.utils.synthetic.reflection.Field;
+import org.apache.xml.utils.synthetic.reflection.Method;
 
 /* WORK NEEDED:
     Factories/Libraries: We currently have forClass and

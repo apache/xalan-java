@@ -64,11 +64,11 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import org.xml.sax.*;
-import org.xml.sax.ext.*;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.dom.DOMBuilder;
+
+import org.xml.sax.SAXException;
 
 public final class SAXAdapter implements TransletOutputHandler {
 

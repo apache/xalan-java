@@ -56,19 +56,12 @@
  */
 package org.apache.xalan.templates;
 
-//import org.w3c.dom.*;
-import org.apache.xml.dtm.DTM;
+import javax.xml.transform.TransformerException;
 
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
-import org.apache.xpath.objects.XObject;
-import org.apache.xalan.trace.SelectionEvent;
-import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
-
-import javax.xml.transform.TransformerException;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>

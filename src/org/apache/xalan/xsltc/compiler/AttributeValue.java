@@ -62,7 +62,7 @@
  */
 
 package org.apache.xalan.xsltc.compiler;
-import org.apache.xalan.xsltc.compiler.util.*;
+
 
 abstract class AttributeValue extends Expression {
 

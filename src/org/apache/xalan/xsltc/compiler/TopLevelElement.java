@@ -60,12 +60,13 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Enumeration;
-
+import org.apache.bcel.generic.InstructionList;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 class TopLevelElement extends SyntaxTreeNode {
 

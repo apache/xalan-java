@@ -64,8 +64,6 @@
 package org.apache.xalan.xsltc.compiler.util;
 
 import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class Util {

@@ -56,11 +56,14 @@
  */
 package org.apache.xalan.trace;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -66,25 +66,23 @@ package org.apache.xalan.xsltc.trax;
 import java.io.File;
 import java.io.IOException;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import org.xml.sax.ext.LexicalHandler;
-
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import javax.xml.transform.Source;
 
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.dom.*;
+import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-
-import org.apache.xml.dtm.DTMManager;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
+import org.apache.xalan.xsltc.dom.SAXImpl;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 public final class XSLTCSource implements Source {
 

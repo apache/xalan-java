@@ -62,16 +62,11 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.TransletException;
-
-import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
-import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.ref.DTMDefaultBase;
-
-import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.util.IntegerArray;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 
 /**
  * Removes duplicates and sorts a source iterator. The nodes from the 

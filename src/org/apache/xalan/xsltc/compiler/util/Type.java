@@ -64,11 +64,11 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Parser;
-import org.apache.xalan.xsltc.compiler.NodeTest;
-import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.bcel.generic.BranchInstruction;
+import org.apache.bcel.generic.Instruction;
 import org.apache.xalan.xsltc.compiler.Constants;
+import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.NodeTest;
 
 public abstract class Type implements Constants {
     public static final Type Int        = new IntType();

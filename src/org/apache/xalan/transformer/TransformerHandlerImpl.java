@@ -58,38 +58,29 @@ package org.apache.xalan.transformer;
 
 import java.io.IOException;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.Attributes;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.ext.LexicalHandler;
-
-import org.apache.xpath.objects.XString;
-
-// import org.xml.sax.ext.DeclHandler;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.sax.TransformerHandler;
 
-import org.apache.xpath.XPathContext;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.ref.IncrementalSAXSource;
 import org.apache.xml.dtm.ref.IncrementalSAXSource_Filter;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
+import org.apache.xpath.XPathContext;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 
 /**

@@ -65,11 +65,32 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.BranchInstruction;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GOTO;
+import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.IFNE;
+import org.apache.bcel.generic.IF_ICMPEQ;
+import org.apache.bcel.generic.IF_ICMPNE;
+import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.PUSH;
+import org.apache.xalan.xsltc.compiler.util.BooleanType;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.IntType;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.NodeSetType;
+import org.apache.xalan.xsltc.compiler.util.NodeType;
+import org.apache.xalan.xsltc.compiler.util.NumberType;
+import org.apache.xalan.xsltc.compiler.util.RealType;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
+import org.apache.xalan.xsltc.compiler.util.ResultTreeType;
+import org.apache.xalan.xsltc.compiler.util.StringType;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.runtime.Operators;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
 
 final class EqualityExpr extends Expression implements Operators {
     private final int _op;

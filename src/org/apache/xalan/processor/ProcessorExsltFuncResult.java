@@ -56,25 +56,14 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemExsltFunction;
 import org.apache.xalan.templates.ElemExsltFuncResult;
-import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.ElemExsltFunction;
 import org.apache.xalan.templates.ElemParam;
-import org.apache.xalan.templates.ElemFallback;
-import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemVariable;
 
-import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.NoSuchMethodException;
-import java.lang.InstantiationException;
-import java.lang.IllegalAccessException;
-
-import java.util.Vector;
 
 /**
  * <meta name="usage" content="internal"/>

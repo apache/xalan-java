@@ -63,12 +63,11 @@
 
 package org.apache.xalan.xsltc;
 
+import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xml.dtm.DTMAxisIterator;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.ref.*;
-import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public interface DOM {
     public final static int  FIRST_TYPE             = 0;

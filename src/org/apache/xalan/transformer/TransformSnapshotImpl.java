@@ -56,23 +56,19 @@
  */
 package org.apache.xalan.transformer;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.VariableStack;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xml.utils.NodeVector;
-import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xalan.templates.ElemTemplateElement;
-
+import java.util.Enumeration;
 import java.util.Stack;
 
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.NamespaceSupport2;
+import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.ObjectStack;
+import org.apache.xpath.VariableStack;
+import org.apache.xpath.XPathContext;
 
 import org.xml.sax.helpers.NamespaceSupport;
-import org.apache.xml.utils.NamespaceSupport2;
-import org.apache.xml.utils.ObjectStack;
-
-import java.util.Enumeration;
 
 /**
  * This class holds a "snapshot" of it's current transformer state,

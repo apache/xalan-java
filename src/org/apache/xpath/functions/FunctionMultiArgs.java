@@ -56,14 +56,11 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Vector;
-
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.functions.Function3Args.Arg2Owner;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
 
 /**
  * <meta name="usage" content="advanced"/>

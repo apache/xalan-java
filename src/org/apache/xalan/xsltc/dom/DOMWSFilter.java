@@ -61,10 +61,7 @@ package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.StripFilter;
-import org.apache.xalan.xsltc.dom.SAXImpl;
-import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMWSFilter;
 

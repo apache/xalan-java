@@ -58,16 +58,10 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
-import org.apache.xml.dtm.DTM;
-
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.*;
-import org.apache.xml.utils.QName;
-
-import java.util.StringTokenizer;
-
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.QName;
 
 /**
  * <meta name="usage" content="advanced"/>

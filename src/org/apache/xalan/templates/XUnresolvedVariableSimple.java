@@ -56,7 +56,6 @@
  */
 package org.apache.xalan.templates;
 
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;

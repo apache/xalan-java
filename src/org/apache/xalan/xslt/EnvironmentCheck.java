@@ -59,17 +59,13 @@ package org.apache.xalan.xslt;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-
-import java.lang.reflect.Method;
 import java.lang.reflect.Field;
-
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-// Used in append* methods only
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

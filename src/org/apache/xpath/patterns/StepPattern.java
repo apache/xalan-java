@@ -56,9 +56,6 @@
  */
 package org.apache.xpath.patterns;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;

@@ -56,45 +56,28 @@
  */
 package org.apache.xalan.templates;
 
-import java.lang.InstantiationException;
-
 import java.io.Serializable;
-
 import java.util.Enumeration;
 import java.util.Vector;
 
-// Xalan imports
-import org.apache.xml.utils.UnImplNode;
-import org.apache.xml.utils.NameSpace;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.StringToStringTable;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.ResultNameSpace;
-import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xpath.VariableStack;
-import org.apache.xpath.WhitespaceStrippingElementMatcher;
-import org.apache.xpath.ExpressionNode;
-
-// TRaX imports
-import javax.xml.transform.Templates;
 import javax.xml.transform.SourceLocator;
-
-// DOM Imports
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.apache.xml.dtm.DTM;
-
-// SAX Imports
-import org.xml.sax.Locator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.UnImplNode;
+import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.WhitespaceStrippingElementMatcher;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import org.xml.sax.helpers.NamespaceSupport;
-import org.apache.xml.utils.NamespaceSupport2;
 
 /**
  * <meta name="usage" content="advanced"/>

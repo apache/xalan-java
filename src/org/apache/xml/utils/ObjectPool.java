@@ -56,7 +56,7 @@
  */
 package org.apache.xml.utils;
 
-import java.util.*;
+import java.util.Vector;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;

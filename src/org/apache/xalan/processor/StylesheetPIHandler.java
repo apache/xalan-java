@@ -56,19 +56,19 @@
  */
 package org.apache.xalan.processor;
 
-import org.xml.sax.helpers.DefaultHandler;
-import javax.xml.transform.TransformerException;
-import org.xml.sax.InputSource;
-import org.xml.sax.Attributes;
-
-import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
+import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xml.utils.SystemIDResolver;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Search for the xml-stylesheet processing instructions in an XML document.

@@ -56,23 +56,16 @@
  */
 package org.apache.xalan.processor;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.Attributes;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.ContentHandler;
+import java.util.Vector;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.Constants;
 import org.apache.xml.utils.IntStack;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-
-import java.util.Vector;
 
 /**
  * This class acts as the superclass for all stylesheet element

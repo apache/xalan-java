@@ -63,9 +63,13 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Template;
 
 public final class MatchGenerator extends MethodGenerator {
     private static int CURRENT_INDEX = 1;

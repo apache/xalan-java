@@ -56,9 +56,6 @@
  */
 package org.apache.xpath.functions;
 
-//import org.w3c.dom.Node;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;

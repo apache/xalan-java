@@ -56,16 +56,14 @@
  */
 package org.apache.xalan.processor;
 
-import java.lang.StringBuffer;
-import org.w3c.dom.Node;
-
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.Constants;
 import org.apache.xml.utils.XMLCharacterRecognizer;
+
+import org.w3c.dom.Node;
 
 /**
  * This class processes character events for a XSLT template element.

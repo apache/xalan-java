@@ -56,7 +56,8 @@
  */
 package org.apache.xpath.axes;
 
-import java.util.*;
+import java.util.Vector;
+
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.WrappedRuntimeException;
 

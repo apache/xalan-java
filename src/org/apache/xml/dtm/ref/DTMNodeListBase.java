@@ -55,9 +55,7 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xml.dtm.ref;
-import org.apache.xml.dtm.*;
 import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
 
 /**
  * <code>DTMNodeList</code> gives us an implementation of the DOM's

@@ -64,32 +64,36 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Properties;
 import java.util.Enumeration;
-import java.util.StringTokenizer;
+import java.util.Hashtable;
 import java.util.Iterator;
-import java.net.URL;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
-
-import org.apache.xalan.xsltc.compiler.util.Type;
-
-import org.apache.bcel.generic.*;
-import org.apache.bcel.util.*;
-import org.apache.bcel.classfile.JavaClass;
-
-import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.bcel.generic.ANEWARRAY;
+import org.apache.bcel.generic.ASTORE;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.FieldGen;
+import org.apache.bcel.generic.GETFIELD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.PUSH;
+import org.apache.bcel.generic.PUTFIELD;
+import org.apache.bcel.generic.TargetLostException;
+import org.apache.bcel.util.InstructionFinder;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
-import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-
-import org.apache.xalan.xsltc.DOM;
-
 import org.apache.xml.dtm.DTM;
 
 public final class Stylesheet extends SyntaxTreeNode {

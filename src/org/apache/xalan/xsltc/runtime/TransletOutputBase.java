@@ -65,8 +65,8 @@
 package org.apache.xalan.xsltc.runtime;
 
 
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
 
 public class TransletOutputBase implements TransletOutputHandler {
     public void startDocument() throws TransletException {}

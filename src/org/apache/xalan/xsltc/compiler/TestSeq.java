@@ -65,14 +65,14 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Hashtable;
 import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.Vector;
 
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.bcel.generic.GOTO_W;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 
 /**
  * A test sequence is a sequence of patterns that

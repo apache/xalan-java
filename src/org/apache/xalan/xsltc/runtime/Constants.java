@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import org.apache.xalan.xsltc.DOM;
-
 import org.apache.xml.dtm.DTM;
 
 /**

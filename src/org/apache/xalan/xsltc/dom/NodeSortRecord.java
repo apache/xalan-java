@@ -65,14 +65,13 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.util.Vector;
-import java.util.Locale;
-import java.text.Collator;
 import java.text.CollationKey;
+import java.text.Collator;
+import java.util.Locale;
 
+import org.apache.xalan.xsltc.CollatorFactory;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.CollatorFactory;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 /**

@@ -66,41 +66,36 @@
 
 package org.apache.xalan.xsltc.runtime;
 
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import java.text.NumberFormat;
-import java.text.MessageFormat;
-import java.text.FieldPosition;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
-import org.xml.sax.AttributeList;
-
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.dom.DOMAdapter;
-import org.apache.xalan.xsltc.dom.Axis;
-import org.apache.xalan.xsltc.dom.DOMAdapter;
-import org.apache.xalan.xsltc.dom.MultiDOM;
-import org.apache.xalan.xsltc.dom.AbsoluteIterator;
-import org.apache.xalan.xsltc.dom.SingletonIterator;
-import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
-
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
-import org.apache.xalan.xsltc.dom.StepIterator;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilderFactory; 
-import javax.xml.parsers.DocumentBuilder; 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.Translet;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.dom.AbsoluteIterator;
+import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xalan.xsltc.dom.DOMAdapter;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.MultiDOM;
+import org.apache.xalan.xsltc.dom.SingletonIterator;
+import org.apache.xalan.xsltc.dom.StepIterator;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 

@@ -65,13 +65,22 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import org.apache.xalan.xsltc.compiler.util.*;
-
 import java.util.Vector;
 
-import org.apache.bcel.generic.*;
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GOTO_W;
+import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.xalan.xsltc.compiler.util.BooleanType;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodType;
+import org.apache.xalan.xsltc.compiler.util.NodeSetType;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
 abstract class Expression extends SyntaxTreeNode {
     /**

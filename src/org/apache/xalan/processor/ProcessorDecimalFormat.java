@@ -57,8 +57,6 @@
 package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.DecimalFormatProperties;
-
-import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 /**

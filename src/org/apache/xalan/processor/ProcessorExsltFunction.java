@@ -56,20 +56,8 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.ElemLiteralResult;
-import org.apache.xalan.templates.ElemElement;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.ElemExtensionCall;
-import org.apache.xalan.templates.ElemTemplate;
-import org.apache.xalan.templates.ElemExsltFunction;
-import org.apache.xalan.templates.ElemExsltFuncResult;
-import org.apache.xalan.templates.ElemFallback;
-import org.apache.xalan.templates.ElemVariable;
-import org.apache.xalan.templates.ElemParam;
-import org.apache.xalan.templates.ElemValueOf;
-import org.apache.xalan.templates.ElemText;
-import org.apache.xalan.templates.ElemTextLiteral;
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xalan.templates.ElemApplyImport;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
@@ -77,22 +65,24 @@ import org.apache.xalan.templates.ElemCallTemplate;
 import org.apache.xalan.templates.ElemComment;
 import org.apache.xalan.templates.ElemCopy;
 import org.apache.xalan.templates.ElemCopyOf;
+import org.apache.xalan.templates.ElemElement;
+import org.apache.xalan.templates.ElemExsltFuncResult;
+import org.apache.xalan.templates.ElemExsltFunction;
+import org.apache.xalan.templates.ElemFallback;
+import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemPI;
-import org.apache.xalan.templates.Constants;
-import org.apache.xpath.XPath;
-import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.ElemParam;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemText;
+import org.apache.xalan.templates.ElemTextLiteral;
+import org.apache.xalan.templates.ElemValueOf;
+import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.Stylesheet;
 
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import org.apache.xalan.res.XSLTErrorResources;
 
 
 /**

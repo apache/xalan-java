@@ -63,14 +63,11 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.util.Vector;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.util.IntegerArray;
-
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;

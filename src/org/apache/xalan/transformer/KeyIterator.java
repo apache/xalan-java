@@ -59,6 +59,7 @@ package org.apache.xalan.transformer;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.KeyDeclaration;
@@ -66,7 +67,6 @@ import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.OneStepIteratorForward;
 
 /**

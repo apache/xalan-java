@@ -56,16 +56,12 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xpath.*;
-import org.apache.xpath.Expression;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.XPathParser;
 import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xpath.ExpressionOwner;
-
-//import org.w3c.dom.*;
-import org.apache.xml.dtm.DTM;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathFactory;
+import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="internal"/>

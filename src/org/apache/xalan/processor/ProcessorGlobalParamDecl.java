@@ -56,11 +56,8 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemParam;
-
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Attributes;
+import org.apache.xalan.templates.ElemTemplateElement;
 
 /**
  * This class processes parse events for an xsl:param element.

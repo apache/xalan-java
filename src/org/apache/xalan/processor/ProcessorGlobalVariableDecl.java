@@ -59,9 +59,6 @@ package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemVariable;
 
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Attributes;
-
 /**
  * This class processes parse events for an xsl:variable element.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>

@@ -63,8 +63,7 @@
  */
 package org.apache.xml.utils.synthetic;
 
-import org.apache.xml.utils.synthetic.Class;
-import org.apache.xml.utils.synthetic.reflection.*;
+import org.apache.xml.utils.synthetic.reflection.Method;
 
 /**
  * <meta name="usage" content="internal"/>

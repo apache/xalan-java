@@ -64,49 +64,57 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.net.UnknownServiceException;
-
-import java.lang.IllegalArgumentException;
 import java.util.Enumeration;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.xml.sax.*;
-import org.xml.sax.ext.LexicalHandler;
-
-import org.w3c.dom.Document;
-
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
-import org.apache.xalan.xsltc.StripFilter;
-import org.apache.xalan.xsltc.DOMCache;
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.dom.*;
-import org.apache.xalan.xsltc.compiler.Constants;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.runtime.output.*;
-import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMManager;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DOMWSFilter;
+import org.apache.xalan.xsltc.dom.SAXImpl;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 import org.apache.xml.dtm.DTMWSFilter;
 
-import java.util.Properties;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.ext.LexicalHandler;
 
 public final class TransformerImpl extends Transformer
     implements DOMCache, ErrorListener

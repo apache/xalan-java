@@ -65,12 +65,10 @@ package org.apache.xalan.xsltc.runtime.output;
 
 import java.util.Stack;
 
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.runtime.Hashtable;
-
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.runtime.Constants;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public abstract class OutputBase implements TransletOutputHandler, Constants {

@@ -56,16 +56,9 @@
  */
 package org.apache.xalan.transformer;
 
-import java.util.Stack;
 import java.util.Vector;
 
-import org.apache.xml.utils.ObjectPool;
-
-import org.xml.sax.Attributes;
-import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.MutableAttrListImpl;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemTemplate;
 
 
 /**

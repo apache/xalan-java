@@ -64,23 +64,44 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-import java.util.NoSuchElementException;
 import java.text.Collator;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-
-import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.*;
-import org.apache.bcel.Constants;
-
-import org.apache.xalan.xsltc.dom.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ANEWARRAY;
+import org.apache.bcel.generic.CHECKCAST;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GETFIELD;
+import org.apache.bcel.generic.ICONST;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.NOP;
+import org.apache.bcel.generic.PUSH;
+import org.apache.bcel.generic.PUTFIELD;
+import org.apache.bcel.generic.TABLESWITCH;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.CompareGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.IntType;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.NodeSortRecordFactGenerator;
+import org.apache.xalan.xsltc.compiler.util.NodeSortRecordGenerator;
+import org.apache.xalan.xsltc.compiler.util.StringType;
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xalan.xsltc.dom.Axis;
 
 
 final class Sort extends Instruction implements Closure {

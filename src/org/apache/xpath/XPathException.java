@@ -56,10 +56,8 @@
  */
 package org.apache.xpath;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
 import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.Node;
 
 /**

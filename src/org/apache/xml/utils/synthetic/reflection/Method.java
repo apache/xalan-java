@@ -56,8 +56,6 @@
  */
 package org.apache.xml.utils.synthetic.reflection;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**

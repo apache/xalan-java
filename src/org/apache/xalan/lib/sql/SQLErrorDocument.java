@@ -60,9 +60,10 @@
 
 package org.apache.xalan.lib.sql;
 
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTM;
 import java.sql.SQLException;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 
 /**
  *

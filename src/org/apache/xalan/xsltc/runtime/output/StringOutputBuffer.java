@@ -62,9 +62,6 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.io.Writer;
-import java.io.BufferedWriter;
-import java.io.IOException;
 
 class StringOutputBuffer implements OutputBuffer {
     private StringBuffer _buffer;

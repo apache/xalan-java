@@ -62,11 +62,7 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-
 import java.util.Vector;
-import java.util.Enumeration;
 
 public class AttributeList implements org.xml.sax.Attributes {
 

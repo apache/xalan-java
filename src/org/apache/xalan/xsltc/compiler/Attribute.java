@@ -63,7 +63,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class Attribute extends Instruction {
     private QName _name;

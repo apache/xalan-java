@@ -65,18 +65,14 @@
 
 package org.apache.xalan.xsltc.cmdline;
 
-import java.io.*;
-import java.util.Vector;
+import java.io.File;
 import java.net.URL;
+import java.util.Vector;
 
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.Translet;
-import org.apache.xalan.xsltc.TransletOutputHandler;
-
+import org.apache.xalan.xsltc.cmdline.getopt.GetOpt;
+import org.apache.xalan.xsltc.cmdline.getopt.GetOptsException;
 import org.apache.xalan.xsltc.compiler.XSLTC;
-import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.cmdline.getopt.*;
 
 public final class Compile {
 

@@ -57,11 +57,9 @@
 
 package org.apache.xalan.lib.sql;
 
-import java.util.Properties;
-import java.lang.String;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.*;
+import java.util.Properties;
 
 /**
  * An interface used to build wrapper classes around existing

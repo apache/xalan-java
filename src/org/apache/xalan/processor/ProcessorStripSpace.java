@@ -56,13 +56,13 @@
  */
 package org.apache.xalan.processor;
 
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Attributes;
+import java.util.Vector;
+
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.WhiteSpaceInfo;
 import org.apache.xpath.XPath;
 
-import java.util.Vector;
+import org.xml.sax.Attributes;
 
 /**
  * TransformerFactory for xsl:strip-space markup.

@@ -57,24 +57,24 @@
 
 package org.apache.xml.dtm.ref;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.ext.LexicalHandler;
+import java.io.IOException;
+
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.ThreadControllerWrapper;
+
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import java.io.IOException;
-import org.apache.xml.dtm.ref.IncrementalSAXSource;
-
-import org.apache.xml.utils.ThreadControllerWrapper;
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
+import org.xml.sax.ext.LexicalHandler;
 
 /** <p>IncrementalSAXSource_Filter implements IncrementalSAXSource, using a
  * standard SAX2 event source as its input and parcelling out those

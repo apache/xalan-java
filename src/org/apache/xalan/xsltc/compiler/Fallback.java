@@ -62,17 +62,12 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.StringTokenizer;
-
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
-
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
 final class Fallback extends Instruction {
 

@@ -62,20 +62,21 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.TransletOutputHandler;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.runtime.DefaultSAXOutputHandler;
+import org.apache.xalan.xsltc.runtime.TextOutput;
 import org.apache.xalan.xsltc.trax.SAX2DOM;
+
+import org.w3c.dom.Node;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 public class TransletOutputHandlerFactory {
 

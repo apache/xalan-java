@@ -66,13 +66,12 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.xalan.xsltc.compiler.Stylesheet;
-import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
-
-import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.text.MessageFormat;
+
+import org.apache.xalan.xsltc.compiler.Stylesheet;
+import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
 
 public final class ErrorMsg {
 

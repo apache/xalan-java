@@ -56,8 +56,6 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Vector;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;

@@ -58,10 +58,6 @@
  */
 package org.apache.xml.utils.res;
 
-import org.apache.xml.utils.res.XResourceBundle;
-
-import java.util.*;
-
 //
 //  LangResources_ko.properties
 //

@@ -64,9 +64,21 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GOTO;
+import org.apache.bcel.generic.IFLT;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class AncestorPattern extends RelativePathPattern {
 

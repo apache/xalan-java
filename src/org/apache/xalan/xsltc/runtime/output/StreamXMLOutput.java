@@ -63,18 +63,11 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.util.Stack;
-import java.util.Vector;
-
-import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.TransletException;
 
 public class StreamXMLOutput extends StreamOutput {
 

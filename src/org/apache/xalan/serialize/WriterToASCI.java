@@ -56,7 +56,9 @@
  */
 package org.apache.xalan.serialize;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 
 /**
  * This class writes ASCII to a byte stream as quickly as possible.  For the 

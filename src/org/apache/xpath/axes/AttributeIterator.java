@@ -56,16 +56,8 @@
  */
 package org.apache.xpath.axes;
 
-import javax.xml.transform.TransformerException;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.patterns.NodeTest;
-import org.apache.xpath.objects.XObject;
-
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMFilter;
+import org.apache.xpath.compiler.Compiler;
 
 /**
  * <meta name="usage" content="advanced"/>

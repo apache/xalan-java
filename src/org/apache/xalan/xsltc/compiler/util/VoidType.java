@@ -63,9 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Parser;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class VoidType extends Type {

@@ -63,9 +63,11 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.xalan.xsltc.compiler.Parser;
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ClassGen;
+import org.apache.bcel.generic.Instruction;
 import org.apache.xalan.xsltc.compiler.Constants;
-import org.apache.bcel.generic.*;
+import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.Stylesheet;
 
 /**

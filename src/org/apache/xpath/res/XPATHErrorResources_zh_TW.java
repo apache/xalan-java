@@ -56,14 +56,6 @@
  */
 package org.apache.xpath.res;
 
-import org.apache.xml.utils.res.XResourceBundleBase;
-
-
-import java.util.*;
-
-import java.text.DecimalFormat;
-
-
 /**
  * <meta name="usage" content="advanced"/>
  * Set up error messages.

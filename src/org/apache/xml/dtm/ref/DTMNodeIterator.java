@@ -55,10 +55,14 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xml.dtm.ref;
-import org.apache.xml.dtm.*;
-import org.w3c.dom.Node;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMDOMException;
+import org.apache.xml.dtm.DTMIterator;
+
 import org.w3c.dom.DOMException;
-import org.w3c.dom.traversal.*;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeFilter;
 
 /**
  * <code>DTMNodeIterator</code> gives us an implementation of the 

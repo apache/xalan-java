@@ -63,11 +63,6 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import java.lang.Class;
-import java.lang.ClassLoader;
-import java.lang.Thread;
-
-import java.net.*;	// temporary
 
 /**
  * This class is intended used when the default Class.forName() method fails.

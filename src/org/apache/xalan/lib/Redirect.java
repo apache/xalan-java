@@ -56,26 +56,24 @@
  */
 package org.apache.xalan.lib;
 
-import java.util.*;
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Hashtable;
 
-import org.xml.sax.ContentHandler;
-
-import org.apache.xalan.extensions.XSLProcessorContext;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.ElemExtensionCall;
-import org.apache.xalan.templates.OutputProperties;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPath;
-
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.*;
+import org.apache.xalan.extensions.XSLProcessorContext;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.ElemExtensionCall;
+import org.apache.xalan.templates.OutputProperties;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XObject;
+
+import org.xml.sax.ContentHandler;
 
 /**
  * Implements three extension elements to allow an XSLT transformation to

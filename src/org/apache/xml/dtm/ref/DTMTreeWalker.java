@@ -56,14 +56,12 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-import org.w3c.dom.*;
-
-import org.xml.sax.*;
-import org.xml.sax.ext.LexicalHandler;
-
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.NodeConsumer;
 import org.apache.xml.utils.XMLString;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -56,16 +56,19 @@
  */
 package org.apache.xml.utils;
 
-import org.xml.sax.*;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.SourceLocator;
-
-import org.apache.xml.res.XMLMessages;
-import org.apache.xml.res.XMLErrorResources;
- 
-import java.io.PrintWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 
 /**

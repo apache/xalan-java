@@ -56,17 +56,11 @@
  */
 package org.apache.xalan.serialize;
 
-import org.xml.sax.*;
+import java.io.IOException;
 
-import java.util.*;
-
-import java.io.*;
-
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.templates.OutputProperties;
-
-import javax.xml.transform.OutputKeys;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="general"/>

@@ -58,19 +58,17 @@ package org.apache.xml.utils;
 
 import java.io.IOException;
 
-import java.util.StringTokenizer;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
+
 import org.xml.sax.InputSource;
-import org.xml.sax.Parser;
-
-import javax.xml.parsers.*;
-
-import javax.xml.transform.TransformerException;
 
 /**
  * @deprecated Since the introduction of the DTM, this class will be removed.

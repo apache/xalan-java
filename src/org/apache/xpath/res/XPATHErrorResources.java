@@ -56,11 +56,10 @@
  */
 package org.apache.xpath.res;
 
-
-
-import java.util.*;
-
-import java.text.DecimalFormat;
+import java.util.ListResourceBundle;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -62,11 +62,11 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.SAXException;
-
 import org.apache.xalan.xsltc.TransletException;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 public class SAXTextOutput extends SAXOutput {
 

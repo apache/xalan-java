@@ -56,14 +56,8 @@
  */
 package org.apache.xpath.functions;
 
-//import org.w3c.dom.Node;
-
-import java.util.Vector;
-
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.objects.XString;
 
 /**

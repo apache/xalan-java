@@ -56,8 +56,26 @@
  */
 package org.apache.xpath.compiler;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.dtm.Axis;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xpath.Expression;
+import org.apache.xpath.axes.UnionPathIterator;
+import org.apache.xpath.axes.WalkerFactory;
+import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
-import org.apache.xpath.operations.Bool;
 import org.apache.xpath.operations.Div;
 import org.apache.xpath.operations.Equals;
 import org.apache.xpath.operations.Gt;
@@ -74,26 +92,11 @@ import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.objects.*;
-import org.apache.xpath.axes.*;
-import org.apache.xpath.patterns.*;
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.FuncExtFunction;
-import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.*;
+import org.apache.xpath.patterns.FunctionPattern;
+import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.patterns.StepPattern;
+import org.apache.xpath.patterns.UnionPattern;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.PrefixResolver;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.SourceLocator;
-import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.Axis;
-
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="advanced"/>

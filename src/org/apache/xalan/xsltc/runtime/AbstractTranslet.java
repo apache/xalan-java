@@ -66,21 +66,22 @@
 package org.apache.xalan.xsltc.runtime;
 
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
-import org.apache.xalan.xsltc.*;
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.Translet;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.KeyIndex;
-import org.apache.xalan.xsltc.util.IntegerArray;
-import org.apache.xalan.xsltc.runtime.output.*;
-
+import org.apache.xalan.xsltc.dom.SAXImpl;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.ref.DTMNodeIterator;
 
 public abstract class AbstractTranslet implements Translet {
 

@@ -56,25 +56,15 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Properties;
-
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-
-import java.lang.ClassLoader;
-
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.res.XPATHErrorResources;
-
-//import org.w3c.dom.Node;
-
-import java.util.Vector;
+import java.util.Properties;
 
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="advanced"/>

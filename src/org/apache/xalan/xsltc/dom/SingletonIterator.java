@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
-
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 

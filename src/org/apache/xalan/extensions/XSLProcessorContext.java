@@ -56,30 +56,27 @@
  */
 package org.apache.xalan.extensions;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.dtm.*;
-
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xalan.transformer.ClonerToResultTree;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xml.utils.QName;
-
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XRTreeFrag;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.transformer.ClonerToResultTree;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.DescendantIterator;
 import org.apache.xpath.axes.OneStepIterator;
-
-import org.apache.xml.dtm.DTM;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.objects.XString;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.traversal.NodeIterator;
 
 // import org.apache.xalan.xslt.*;
 

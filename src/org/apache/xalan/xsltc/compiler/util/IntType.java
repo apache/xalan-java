@@ -63,11 +63,31 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.Parser;
-import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.BranchInstruction;
+import org.apache.bcel.generic.CHECKCAST;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GOTO;
+import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.IFGE;
+import org.apache.bcel.generic.IFGT;
+import org.apache.bcel.generic.IFLE;
+import org.apache.bcel.generic.IFLT;
+import org.apache.bcel.generic.IF_ICMPGE;
+import org.apache.bcel.generic.IF_ICMPGT;
+import org.apache.bcel.generic.IF_ICMPLE;
+import org.apache.bcel.generic.IF_ICMPLT;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionConstants;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.NEW;
 import org.apache.xalan.xsltc.compiler.Constants;
+import org.apache.xalan.xsltc.compiler.FlowList;
 
 public final class IntType extends NumberType {
     protected IntType() {}

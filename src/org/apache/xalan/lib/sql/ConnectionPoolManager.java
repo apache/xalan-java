@@ -59,7 +59,7 @@
  package org.apache.xalan.lib.sql;
 
 import java.util.Hashtable;
-import java.lang.IllegalArgumentException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 

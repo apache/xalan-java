@@ -63,13 +63,22 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.bcel.generic.BranchHandle;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GOTO_W;
+import org.apache.bcel.generic.IF_ICMPEQ;
+import org.apache.bcel.generic.ILOAD;
+import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.PUSH;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
-
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
-
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xml.dtm.DTM;
 
 final class AbsolutePathPattern extends LocationPathPattern {

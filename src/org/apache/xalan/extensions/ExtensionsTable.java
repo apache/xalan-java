@@ -58,29 +58,12 @@ package org.apache.xalan.extensions;
 
 import java.util.Hashtable;
 import java.util.Vector;
-import org.apache.xml.utils.StringVector;
-
-import org.apache.xpath.objects.XNull;
-import org.apache.xpath.XPathProcessorException;
-import org.apache.xpath.functions.FuncExtFunction;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-
-import org.apache.xalan.transformer.TransformerImpl;
-
-import org.apache.xalan.templates.Constants;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.TemplateList;
-
-import org.apache.xpath.XPathContext;
-
-import org.apache.xml.utils.QName;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.apache.xpath.XPathProcessorException;
+import org.apache.xpath.functions.FuncExtFunction;
 
 /**
  * <meta name="usage" content="internal"/>

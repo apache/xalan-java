@@ -56,11 +56,9 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.utils.IntVector;
-
-import java.util.Vector;
 import java.util.Hashtable;
+
+import org.apache.xml.dtm.DTM;
 
 /**
  * This is a default implementation of a table that manages mappings from

@@ -56,9 +56,6 @@
  */
 package org.apache.xpath.axes;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;

@@ -56,12 +56,12 @@
  */
 package org.apache.xalan.lib;
 
+import java.util.Hashtable;
+
+import org.apache.xml.utils.DOMHelper;
+import org.apache.xpath.NodeSet;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.apache.xpath.NodeSet;
-import org.apache.xml.utils.DOMHelper;
-import java.util.Hashtable;
-import javax.xml.parsers.*;
 
 /**
  * <meta name="usage" content="general"/>

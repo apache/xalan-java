@@ -56,12 +56,9 @@
  */
 package org.apache.xpath.axes;
 
-import org.apache.xpath.XPathContext;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.Axis;
 
 /**
  * <meta name="usage" content="internal"/>

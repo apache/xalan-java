@@ -56,8 +56,6 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.*;
-
 /**
  * <meta name="usage" content="advanced"/>
  * This class represents an XPath boolean object, and is capable of

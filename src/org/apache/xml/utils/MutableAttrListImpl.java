@@ -56,12 +56,9 @@
  */
 package org.apache.xml.utils;
 
-import org.apache.xml.utils.StringVector;
-
-import org.xml.sax.Attributes;
-
 import java.io.Serializable;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**

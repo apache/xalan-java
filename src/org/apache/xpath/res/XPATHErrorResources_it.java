@@ -57,12 +57,7 @@
 */
 package org.apache.xpath.res;
 
-import org.apache.xml.utils.res.XResourceBundleBase;
-
-
-import java.util.*;
-
-import java.text.DecimalFormat;
+import java.util.Locale;
 
 
 /**

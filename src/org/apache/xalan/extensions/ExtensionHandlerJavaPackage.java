@@ -56,29 +56,22 @@
  */
 package org.apache.xalan.extensions;
 
-import java.util.Hashtable;
-import java.util.Vector;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Vector;
 
-//import org.w3c.dom.Element;
-//import org.w3c.dom.Node;
+import javax.xml.transform.TransformerException;
 
-import org.apache.xml.dtm.DTM;
-
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xml.utils.QName;
-
-import org.apache.xpath.objects.XObject;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.functions.FuncExtFunction;
-import javax.xml.transform.TransformerException;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="internal"/>

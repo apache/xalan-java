@@ -62,35 +62,29 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.io.PrintWriter;
 import java.io.File;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLConnection;
-import java.net.MalformedURLException;
-import java.util.Hashtable;
+import java.net.URLDecoder;
 import java.util.Date;
+import java.util.Hashtable;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
+import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.Translet;
-import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.runtime.Constants;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.runtime.Constants;
 
-import org.apache.xml.dtm.DTMManager;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.sax.SAXSource;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 public final class DocumentCache implements DOMCache {
 

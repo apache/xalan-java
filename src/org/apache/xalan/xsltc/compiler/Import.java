@@ -67,17 +67,15 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.io.File;
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.Enumeration;
 
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
-
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
-import org.apache.bcel.generic.*;
+import org.xml.sax.InputSource;
 
 final class Import extends TopLevelElement {
 
