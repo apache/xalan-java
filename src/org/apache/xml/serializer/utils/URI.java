@@ -288,7 +288,7 @@ final class URI
 
     if (p_scheme == null || p_scheme.trim().length() == 0)
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_SCHEME_REQUIRED, null)); //"Scheme is required!");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_SCHEME_REQUIRED, null)); //"Scheme is required!");
     }
 
     if (p_host == null)
@@ -296,13 +296,13 @@ final class URI
       if (p_userinfo != null)
       {
         throw new MalformedURIException(
-          Utils.messages.createMessage(SerializerMessages.ER_NO_USERINFO_IF_NO_HOST, null)); //"Userinfo may not be specified if host is not specified!");
+          Utils.messages.createMessage(MsgKey.ER_NO_USERINFO_IF_NO_HOST, null)); //"Userinfo may not be specified if host is not specified!");
       }
 
       if (p_port != -1)
       {
         throw new MalformedURIException(
-          Utils.messages.createMessage(SerializerMessages.ER_NO_PORT_IF_NO_HOST, null)); //"Port may not be specified if host is not specified!");
+          Utils.messages.createMessage(MsgKey.ER_NO_PORT_IF_NO_HOST, null)); //"Port may not be specified if host is not specified!");
       }
     }
 
@@ -311,13 +311,13 @@ final class URI
       if (p_path.indexOf('?') != -1 && p_queryString != null)
       {
         throw new MalformedURIException(
-          Utils.messages.createMessage(SerializerMessages.ER_NO_QUERY_STRING_IN_PATH, null)); //"Query string cannot be specified in path and query string!");
+          Utils.messages.createMessage(MsgKey.ER_NO_QUERY_STRING_IN_PATH, null)); //"Query string cannot be specified in path and query string!");
       }
 
       if (p_path.indexOf('#') != -1 && p_fragment != null)
       {
         throw new MalformedURIException(
-          Utils.messages.createMessage(SerializerMessages.ER_NO_FRAGMENT_STRING_IN_PATH, null)); //"Fragment cannot be specified in both the path and fragment!");
+          Utils.messages.createMessage(MsgKey.ER_NO_FRAGMENT_STRING_IN_PATH, null)); //"Fragment cannot be specified in both the path and fragment!");
       }
     }
 
@@ -371,7 +371,7 @@ final class URI
             && (p_uriSpec == null || p_uriSpec.trim().length() == 0))
     {
       throw new MalformedURIException(
-        Utils.messages.createMessage(SerializerMessages.ER_CANNOT_INIT_URI_EMPTY_PARMS, null)); //"Cannot initialize URI with empty parameters.");
+        Utils.messages.createMessage(MsgKey.ER_CANNOT_INIT_URI_EMPTY_PARMS, null)); //"Cannot initialize URI with empty parameters.");
     }
 
     // just make a copy of the base if spec is empty
@@ -392,7 +392,7 @@ final class URI
     {
       if (p_base == null)
       {
-        throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_NO_SCHEME_IN_URI, new Object[]{uriSpec})); //"No scheme found in URI: "+uriSpec);
+        throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_NO_SCHEME_IN_URI, new Object[]{uriSpec})); //"No scheme found in URI: "+uriSpec);
       }
     }
     else
@@ -601,7 +601,7 @@ final class URI
 
     if (scheme.length() == 0)
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_NO_SCHEME_INURI, null)); //"No scheme found in URI.");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_NO_SCHEME_INURI, null)); //"No scheme found in URI.");
     }
     else
     {
@@ -752,14 +752,14 @@ final class URI
                 ||!isHex(p_uriSpec.charAt(index + 2)))
         {
           throw new MalformedURIException(
-            Utils.messages.createMessage(SerializerMessages.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE, null)); //"Path contains invalid escape sequence!");
+            Utils.messages.createMessage(MsgKey.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE, null)); //"Path contains invalid escape sequence!");
         }
       }
       else if (!isReservedCharacter(testChar)
                &&!isUnreservedCharacter(testChar))
       {
         if ('\\' != testChar)
-          throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_PATH_INVALID_CHAR, new Object[]{String.valueOf(testChar)})); //"Path contains invalid character: "
+          throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_PATH_INVALID_CHAR, new Object[]{String.valueOf(testChar)})); //"Path contains invalid character: "
                                           //+ testChar);
       }
 
@@ -1017,12 +1017,12 @@ final class URI
 
     if (p_scheme == null)
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_SCHEME_FROM_NULL_STRING, null)); //"Cannot set scheme from null string!");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_SCHEME_FROM_NULL_STRING, null)); //"Cannot set scheme from null string!");
     }
 
     if (!isConformantSchemeName(p_scheme))
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_SCHEME_NOT_CONFORMANT, null)); //"The scheme is not conformant.");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_SCHEME_NOT_CONFORMANT, null)); //"The scheme is not conformant.");
     }
 
     m_scheme = p_scheme.toLowerCase();
@@ -1105,7 +1105,7 @@ final class URI
     }
     else if (!isWellFormedAddress(p_host))
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_HOST_ADDRESS_NOT_WELLFORMED, null)); //"Host is not a well formed address!");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_HOST_ADDRESS_NOT_WELLFORMED, null)); //"Host is not a well formed address!");
     }
 
     m_host = p_host;
@@ -1130,12 +1130,12 @@ final class URI
       if (m_host == null)
       {
         throw new MalformedURIException(
-          Utils.messages.createMessage(SerializerMessages.ER_PORT_WHEN_HOST_NULL, null)); //"Port cannot be set when host is null!");
+          Utils.messages.createMessage(MsgKey.ER_PORT_WHEN_HOST_NULL, null)); //"Port cannot be set when host is null!");
       }
     }
     else if (p_port != -1)
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_INVALID_PORT, null)); //"Invalid port number!");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_INVALID_PORT, null)); //"Invalid port number!");
     }
 
     m_port = p_port;
@@ -1193,7 +1193,7 @@ final class URI
 
     if (!isURIString(p_addToPath))
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_PATH_INVALID_CHAR, new Object[]{p_addToPath})); //"Path contains invalid character!");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_PATH_INVALID_CHAR, new Object[]{p_addToPath})); //"Path contains invalid character!");
     }
 
     if (m_path == null || m_path.trim().length() == 0)
@@ -1292,16 +1292,16 @@ final class URI
     else if (!isGenericURI())
     {
       throw new MalformedURIException(
-        Utils.messages.createMessage(SerializerMessages.ER_FRAG_FOR_GENERIC_URI, null)); //"Fragment can only be set for a generic URI!");
+        Utils.messages.createMessage(MsgKey.ER_FRAG_FOR_GENERIC_URI, null)); //"Fragment can only be set for a generic URI!");
     }
     else if (getPath() == null)
     {
       throw new MalformedURIException(
-        Utils.messages.createMessage(SerializerMessages.ER_FRAG_WHEN_PATH_NULL, null)); //"Fragment cannot be set when path is null!");
+        Utils.messages.createMessage(MsgKey.ER_FRAG_WHEN_PATH_NULL, null)); //"Fragment cannot be set when path is null!");
     }
     else if (!isURIString(p_fragment))
     {
-      throw new MalformedURIException(Utils.messages.createMessage(SerializerMessages.ER_FRAG_INVALID_CHAR, null)); //"Fragment contains invalid character!");
+      throw new MalformedURIException(Utils.messages.createMessage(MsgKey.ER_FRAG_INVALID_CHAR, null)); //"Fragment contains invalid character!");
     }
     else
     {

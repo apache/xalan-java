@@ -26,90 +26,90 @@ public class SerializerMessages_pl extends ListResourceBundle {
     Object[][] contents =  new Object[][] {
         // BAD_MSGKEY needs translation
         // BAD_MSGFORMAT needs translation
-      { SerializerMessages.ER_SERIALIZER_NOT_CONTENTHANDLER,
+      { MsgKey.ER_SERIALIZER_NOT_CONTENTHANDLER,
         "Klasa szereguj\u0105ca ''{0}'' nie implementuje procedury obs\u0142ugi org.xml.sax.ContentHandler."},
 
-      { SerializerMessages.ER_RESOURCE_COULD_NOT_FIND,
+      { MsgKey.ER_RESOURCE_COULD_NOT_FIND,
         "Nie mo\u017cna znale\u017a\u0107 zasobu [ {0} ].\n {1}"},
 
-      { SerializerMessages.ER_RESOURCE_COULD_NOT_LOAD,
+      { MsgKey.ER_RESOURCE_COULD_NOT_LOAD,
         "Zas\u00f3b [ {0} ] nie m\u00f3g\u0142 za\u0142adowa\u0107: {1} \n {2} \n {3}"},
 
-      { SerializerMessages.ER_BUFFER_SIZE_LESSTHAN_ZERO,
+      { MsgKey.ER_BUFFER_SIZE_LESSTHAN_ZERO,
         "Wielko\u015b\u0107 bufora <=0"},
 
-      { SerializerMessages.ER_INVALID_UTF16_SURROGATE,
+      { MsgKey.ER_INVALID_UTF16_SURROGATE,
         "Wykryto niepoprawny surogat UTF-16: {0} ?"},
 
-      { SerializerMessages.ER_OIERROR,
+      { MsgKey.ER_OIERROR,
         "B\u0142\u0105d we/wy"},
 
-      { SerializerMessages.ER_ILLEGAL_ATTRIBUTE_POSITION,
+      { MsgKey.ER_ILLEGAL_ATTRIBUTE_POSITION,
         "Nie mo\u017cna doda\u0107 atrybutu {0} po w\u0119z\u0142ach potomnych ani przed wyprodukowaniem elementu.  Atrybut zostanie zignorowany."},
 
-      { SerializerMessages.ER_NAMESPACE_PREFIX,
+      { MsgKey.ER_NAMESPACE_PREFIX,
         "Nie zadeklarowano przestrzeni nazw dla przedrostka ''{0}''."},
 
         // ER_STRAY_ATTRIBUTE needs translation
-      { SerializerMessages.ER_STRAY_NAMESPACE,
+      { MsgKey.ER_STRAY_NAMESPACE,
         "Deklaracja przestrzeni nazw ''{0}''=''{1}'' poza elementem."},
 
-      { SerializerMessages.ER_COULD_NOT_LOAD_RESOURCE,
+      { MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
         "Nie mo\u017cna za\u0142adowa\u0107 ''{0}'' (sprawd\u017a CLASSPATH), u\u017cywane s\u0105 teraz warto\u015bci domy\u015blne"},
 
         // ER_ILLEGAL_CHARACTER needs translation
-      { SerializerMessages.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
+      { MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
         "Nie mo\u017cna za\u0142adowa\u0107 pliku w\u0142a\u015bciwo\u015bci ''{0}'' dla metody wyj\u015bciowej ''{1}'' (sprawd\u017a CLASSPATH)"},
 
-      { SerializerMessages.ER_INVALID_PORT,
+      { MsgKey.ER_INVALID_PORT,
         "Niepoprawny numer portu"},
 
-      { SerializerMessages.ER_PORT_WHEN_HOST_NULL,
+      { MsgKey.ER_PORT_WHEN_HOST_NULL,
         "Nie mo\u017cna ustawi\u0107 portu, kiedy host jest pusty"},
 
-      { SerializerMessages.ER_HOST_ADDRESS_NOT_WELLFORMED,
+      { MsgKey.ER_HOST_ADDRESS_NOT_WELLFORMED,
         "Host nie jest poprawnie skonstruowanym adresem"},
 
-      { SerializerMessages.ER_SCHEME_NOT_CONFORMANT,
+      { MsgKey.ER_SCHEME_NOT_CONFORMANT,
         "Schemat nie jest zgodny."},
 
-      { SerializerMessages.ER_SCHEME_FROM_NULL_STRING,
+      { MsgKey.ER_SCHEME_FROM_NULL_STRING,
         "Nie mo\u017cna ustawi\u0107 schematu z pustego ci\u0105gu znak\u00f3w"},
 
-      { SerializerMessages.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
+      { MsgKey.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
         "\u015acie\u017cka zawiera niepoprawn\u0105 sekwencj\u0119 o zmienionym znaczeniu"},
 
-      { SerializerMessages.ER_PATH_INVALID_CHAR,
+      { MsgKey.ER_PATH_INVALID_CHAR,
         "\u015acie\u017cka zawiera niepoprawny znak {0}"},
 
-      { SerializerMessages.ER_FRAG_INVALID_CHAR,
+      { MsgKey.ER_FRAG_INVALID_CHAR,
         "Fragment zawiera niepoprawny znak"},
 
-      { SerializerMessages.ER_FRAG_WHEN_PATH_NULL,
+      { MsgKey.ER_FRAG_WHEN_PATH_NULL,
         "Nie mo\u017cna ustawi\u0107 fragmentu, kiedy \u015bcie\u017cka jest pusta"},
 
-      { SerializerMessages.ER_FRAG_FOR_GENERIC_URI,
+      { MsgKey.ER_FRAG_FOR_GENERIC_URI,
         "Fragment mo\u017cna ustawi\u0107 tylko dla og\u00f3lnego URI"},
 
-      { SerializerMessages.ER_NO_SCHEME_IN_URI,
+      { MsgKey.ER_NO_SCHEME_IN_URI,
         "Nie znaleziono schematu w URI {0}"},
 
-      { SerializerMessages.ER_CANNOT_INIT_URI_EMPTY_PARMS,
+      { MsgKey.ER_CANNOT_INIT_URI_EMPTY_PARMS,
         "Nie mo\u017cna zainicjowa\u0107 URI z pustymi parametrami"},
 
-      { SerializerMessages.ER_NO_FRAGMENT_STRING_IN_PATH,
+      { MsgKey.ER_NO_FRAGMENT_STRING_IN_PATH,
         "Nie mo\u017cna poda\u0107 fragmentu jednocze\u015bnie w \u015bcie\u017cce i fragmencie"},
 
-      { SerializerMessages.ER_NO_QUERY_STRING_IN_PATH,
+      { MsgKey.ER_NO_QUERY_STRING_IN_PATH,
         "Tekstu zapytania nie mo\u017cna poda\u0107 w tek\u015bcie \u015bcie\u017cki i zapytania"},
 
-      { SerializerMessages.ER_NO_PORT_IF_NO_HOST,
+      { MsgKey.ER_NO_PORT_IF_NO_HOST,
         "Nie mo\u017cna poda\u0107 portu, je\u015bli nie podano hosta"},
 
-      { SerializerMessages.ER_NO_USERINFO_IF_NO_HOST,
+      { MsgKey.ER_NO_USERINFO_IF_NO_HOST,
         "Nie mo\u017cna poda\u0107 informacji o u\u017cytkowniku, je\u015bli nie podano hosta"},
 
-      { SerializerMessages.ER_SCHEME_REQUIRED,
+      { MsgKey.ER_SCHEME_REQUIRED,
         "Schemat jest wymagany!"}
 
     };

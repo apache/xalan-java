@@ -39,55 +39,55 @@ public class SerializerMessages_sv extends ListResourceBundle {
         // ER_COULD_NOT_LOAD_RESOURCE needs translation
         // ER_ILLEGAL_CHARACTER needs translation
         // ER_COULD_NOT_LOAD_METHOD_PROPERTY needs translation
-      { SerializerMessages.ER_INVALID_PORT,
+      { MsgKey.ER_INVALID_PORT,
         "Ogiltigt portnummer"},
 
-      { SerializerMessages.ER_PORT_WHEN_HOST_NULL,
+      { MsgKey.ER_PORT_WHEN_HOST_NULL,
         "Port kan inte s\u00e4ttas n\u00e4r v\u00e4rd \u00e4r null"},
 
-      { SerializerMessages.ER_HOST_ADDRESS_NOT_WELLFORMED,
+      { MsgKey.ER_HOST_ADDRESS_NOT_WELLFORMED,
         "V\u00e4rd \u00e4r inte en v\u00e4lformulerad adress"},
 
-      { SerializerMessages.ER_SCHEME_NOT_CONFORMANT,
+      { MsgKey.ER_SCHEME_NOT_CONFORMANT,
         "Schemat \u00e4r inte likformigt."},
 
-      { SerializerMessages.ER_SCHEME_FROM_NULL_STRING,
+      { MsgKey.ER_SCHEME_FROM_NULL_STRING,
         "Kan inte s\u00e4tta schema fr\u00e5n null-str\u00e4ng"},
 
-      { SerializerMessages.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
+      { MsgKey.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
         "V\u00e4g inneh\u00e5ller ogiltig flyktsekvens"},
 
-      { SerializerMessages.ER_PATH_INVALID_CHAR,
+      { MsgKey.ER_PATH_INVALID_CHAR,
         "V\u00e4g inneh\u00e5ller ogiltigt tecken: {0}"},
 
-      { SerializerMessages.ER_FRAG_INVALID_CHAR,
+      { MsgKey.ER_FRAG_INVALID_CHAR,
         "Fragment inneh\u00e5ller ogiltigt tecken"},
 
-      { SerializerMessages.ER_FRAG_WHEN_PATH_NULL,
+      { MsgKey.ER_FRAG_WHEN_PATH_NULL,
         "Fragment kan inte s\u00e4ttas n\u00e4r v\u00e4g \u00e4r null"},
 
-      { SerializerMessages.ER_FRAG_FOR_GENERIC_URI,
+      { MsgKey.ER_FRAG_FOR_GENERIC_URI,
         "Fragment kan bara s\u00e4ttas f\u00f6r en allm\u00e4n URI"},
 
-      { SerializerMessages.ER_NO_SCHEME_IN_URI,
+      { MsgKey.ER_NO_SCHEME_IN_URI,
         "Schema saknas i URI: {0}"},
 
-      { SerializerMessages.ER_CANNOT_INIT_URI_EMPTY_PARMS,
+      { MsgKey.ER_CANNOT_INIT_URI_EMPTY_PARMS,
         "Kan inte initialisera URI med tomma parametrar"},
 
-      { SerializerMessages.ER_NO_FRAGMENT_STRING_IN_PATH,
+      { MsgKey.ER_NO_FRAGMENT_STRING_IN_PATH,
         "Fragment kan inte anges i b\u00e5de v\u00e4gen och fragmentet"},
 
-      { SerializerMessages.ER_NO_QUERY_STRING_IN_PATH,
+      { MsgKey.ER_NO_QUERY_STRING_IN_PATH,
         "F\u00f6rfr\u00e5gan-str\u00e4ng kan inte anges i v\u00e4g och f\u00f6rfr\u00e5gan-str\u00e4ng"},
 
-      { SerializerMessages.ER_NO_PORT_IF_NO_HOST,
+      { MsgKey.ER_NO_PORT_IF_NO_HOST,
         "Port f\u00e5r inte anges om v\u00e4rden inte \u00e4r angiven"},
 
-      { SerializerMessages.ER_NO_USERINFO_IF_NO_HOST,
+      { MsgKey.ER_NO_USERINFO_IF_NO_HOST,
         "Userinfo f\u00e5r inte anges om v\u00e4rden inte \u00e4r angiven"},
 
-      { SerializerMessages.ER_SCHEME_REQUIRED,
+      { MsgKey.ER_SCHEME_REQUIRED,
         "Schema kr\u00e4vs!"}
 
     };

@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.ContentHandler;
 
@@ -160,7 +160,7 @@ public final class SerializerFactory
                   // ContentHandler, ... very bad
                    throw new Exception(
                        Utils.messages.createMessage(
-                           SerializerMessages.ER_SERIALIZER_NOT_CONTENTHANDLER,
+                           MsgKey.ER_SERIALIZER_NOT_CONTENTHANDLER,
                                new Object[] { className}));
                }
 

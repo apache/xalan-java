@@ -26,90 +26,90 @@ public class SerializerMessages_tr extends ListResourceBundle {
     Object[][] contents =  new Object[][] {
         // BAD_MSGKEY needs translation
         // BAD_MSGFORMAT needs translation
-      { SerializerMessages.ER_SERIALIZER_NOT_CONTENTHANDLER,
+      { MsgKey.ER_SERIALIZER_NOT_CONTENTHANDLER,
         "Diziselle\u015ftirici s\u0131n\u0131f\u0131 ''{0}'' org.xml.sax.ContentHandler i\u015flevini uygulam\u0131yor."},
 
-      { SerializerMessages.ER_RESOURCE_COULD_NOT_FIND,
+      { MsgKey.ER_RESOURCE_COULD_NOT_FIND,
         "Kaynak [ {0} ] bulunamad\u0131.\n {1}"},
 
-      { SerializerMessages.ER_RESOURCE_COULD_NOT_LOAD,
+      { MsgKey.ER_RESOURCE_COULD_NOT_LOAD,
         "Kaynak [ {0} ] y\u00fckleyemedi: {1} \n {2} \n {3}"},
 
-      { SerializerMessages.ER_BUFFER_SIZE_LESSTHAN_ZERO,
+      { MsgKey.ER_BUFFER_SIZE_LESSTHAN_ZERO,
         "Arabellek b\u00fcy\u00fckl\u00fc\u011f\u00fc <=0"},
 
-      { SerializerMessages.ER_INVALID_UTF16_SURROGATE,
+      { MsgKey.ER_INVALID_UTF16_SURROGATE,
         "UTF-16 yerine kullan\u0131lan de\u011fer ge\u00e7ersiz: {0} ?"},
 
-      { SerializerMessages.ER_OIERROR,
+      { MsgKey.ER_OIERROR,
         "G\u00c7 hatas\u0131"},
 
-      { SerializerMessages.ER_ILLEGAL_ATTRIBUTE_POSITION,
+      { MsgKey.ER_ILLEGAL_ATTRIBUTE_POSITION,
         "Alt d\u00fc\u011f\u00fcmlerden sonra ya da bir \u00f6\u011fe \u00fcretilmeden \u00f6nce {0} \u00f6zniteli\u011fi eklenemez. \u00d6znitelik yoksay\u0131lacak."},
 
-      { SerializerMessages.ER_NAMESPACE_PREFIX,
+      { MsgKey.ER_NAMESPACE_PREFIX,
         "''{0}'' \u00f6nekine ili\u015fkin ad alan\u0131 bildirilmedi."},
 
         // ER_STRAY_ATTRIBUTE needs translation
-      { SerializerMessages.ER_STRAY_NAMESPACE,
+      { MsgKey.ER_STRAY_NAMESPACE,
         "''{0}''=''{1}'' ad alan\u0131 bildirimi \u00f6\u011fenin d\u0131\u015f\u0131nda."},
 
-      { SerializerMessages.ER_COULD_NOT_LOAD_RESOURCE,
+      { MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
         "''{0}'' y\u00fcklenemedi (CLASSPATH de\u011fi\u015fkeninizi inceleyin), yaln\u0131zca varsay\u0131lanlar kullan\u0131l\u0131yor"},
 
         // ER_ILLEGAL_CHARACTER needs translation
-      { SerializerMessages.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
+      { MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
         "''{1}'' \u00e7\u0131k\u0131\u015f y\u00f6ntemi i\u00e7in ''{0}'' \u00f6zellik dosyas\u0131 y\u00fcklenemedi (CLASSPATH de\u011fi\u015fkenini inceleyin)"},
 
-      { SerializerMessages.ER_INVALID_PORT,
+      { MsgKey.ER_INVALID_PORT,
         "Kap\u0131 numaras\u0131 ge\u00e7ersiz"},
 
-      { SerializerMessages.ER_PORT_WHEN_HOST_NULL,
+      { MsgKey.ER_PORT_WHEN_HOST_NULL,
         "Anasistem bo\u015f de\u011ferliyken kap\u0131 tan\u0131mlanamaz"},
 
-      { SerializerMessages.ER_HOST_ADDRESS_NOT_WELLFORMED,
+      { MsgKey.ER_HOST_ADDRESS_NOT_WELLFORMED,
         "Anasistem do\u011fru bi\u00e7imli bir adres de\u011fil"},
 
-      { SerializerMessages.ER_SCHEME_NOT_CONFORMANT,
+      { MsgKey.ER_SCHEME_NOT_CONFORMANT,
         "\u015eema uyumlu de\u011fil."},
 
-      { SerializerMessages.ER_SCHEME_FROM_NULL_STRING,
+      { MsgKey.ER_SCHEME_FROM_NULL_STRING,
         "Bo\u015f de\u011ferli dizgiden \u015fema tan\u0131mlanamaz"},
 
-      { SerializerMessages.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
+      { MsgKey.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
         "Yol ge\u00e7ersiz ka\u00e7\u0131\u015f dizisi i\u00e7eriyor"},
 
-      { SerializerMessages.ER_PATH_INVALID_CHAR,
+      { MsgKey.ER_PATH_INVALID_CHAR,
         "Yol ge\u00e7ersiz karakter i\u00e7eriyor: {0}"},
 
-      { SerializerMessages.ER_FRAG_INVALID_CHAR,
+      { MsgKey.ER_FRAG_INVALID_CHAR,
         "Par\u00e7a ge\u00e7ersiz karakter i\u00e7eriyor"},
 
-      { SerializerMessages.ER_FRAG_WHEN_PATH_NULL,
+      { MsgKey.ER_FRAG_WHEN_PATH_NULL,
         "Yol bo\u015f de\u011ferliyken par\u00e7a tan\u0131mlanamaz"},
 
-      { SerializerMessages.ER_FRAG_FOR_GENERIC_URI,
+      { MsgKey.ER_FRAG_FOR_GENERIC_URI,
         "Par\u00e7a yaln\u0131zca soysal URI i\u00e7in tan\u0131mlanabilir"},
 
-      { SerializerMessages.ER_NO_SCHEME_IN_URI,
+      { MsgKey.ER_NO_SCHEME_IN_URI,
         "URI i\u00e7inde \u015fema bulunamad\u0131: {0}"},
 
-      { SerializerMessages.ER_CANNOT_INIT_URI_EMPTY_PARMS,
+      { MsgKey.ER_CANNOT_INIT_URI_EMPTY_PARMS,
         "Bo\u015f de\u011fi\u015ftirgelerle URI kullan\u0131ma haz\u0131rlanamaz"},
 
-      { SerializerMessages.ER_NO_FRAGMENT_STRING_IN_PATH,
+      { MsgKey.ER_NO_FRAGMENT_STRING_IN_PATH,
         "Par\u00e7a hem yolda, hem de par\u00e7ada belirtilemez"},
 
-      { SerializerMessages.ER_NO_QUERY_STRING_IN_PATH,
+      { MsgKey.ER_NO_QUERY_STRING_IN_PATH,
         "Yol ve sorgu dizgisinde sorgu dizgisi belirtilemez"},
 
-      { SerializerMessages.ER_NO_PORT_IF_NO_HOST,
+      { MsgKey.ER_NO_PORT_IF_NO_HOST,
         "Anasistem belirtilmediyse kap\u0131 belirtilemez"},
 
-      { SerializerMessages.ER_NO_USERINFO_IF_NO_HOST,
+      { MsgKey.ER_NO_USERINFO_IF_NO_HOST,
         "Anasistem belirtilmediyse kullan\u0131c\u0131 bilgisi belirtilemez"},
 
-      { SerializerMessages.ER_SCHEME_REQUIRED,
+      { MsgKey.ER_SCHEME_REQUIRED,
         "\u015eema gerekli!"}
 
     };

@@ -25,7 +25,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.SAXException;
 
@@ -450,7 +450,7 @@ public final class ToXMLStream extends ToStream
 
             // Create the warning message
             String msg = Utils.messages.createMessage(
-                    SerializerMessages.ER_ILLEGAL_ATTRIBUTE_POSITION,new Object[]{ localName });
+                    MsgKey.ER_ILLEGAL_ATTRIBUTE_POSITION,new Object[]{ localName });
 
             try {
                 // Prepare to issue the warning message

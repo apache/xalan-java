@@ -25,7 +25,7 @@ import java.util.Properties;
 
 import javax.xml.transform.Result;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -1443,7 +1443,7 @@ public final class ToHTMLStream extends ToStream
             {
                 throw new org.xml.sax.SAXException(
                     Utils.messages.createMessage(
-                        SerializerMessages.ER_OIERROR,
+                        MsgKey.ER_OIERROR,
                         null),
                     ioe);
                 //"IO error", ioe);
@@ -1510,7 +1510,7 @@ public final class ToHTMLStream extends ToStream
             {
                 throw new org.xml.sax.SAXException(
                     Utils.messages.createMessage(
-                        SerializerMessages.ER_OIERROR,
+                        MsgKey.ER_OIERROR,
                         null),
                     ioe);
                 //"IO error", ioe);

@@ -20,7 +20,7 @@ package org.apache.xml.serializer;
 
 import java.io.IOException;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -350,7 +350,7 @@ void writeNormalizedChars(
                          */ 
                         String integralValue = Integer.toString(c);
                         throw new SAXException(Utils.messages.createMessage(
-                            SerializerMessages.ER_ILLEGAL_CHARACTER,
+                            MsgKey.ER_ILLEGAL_CHARACTER,
                             new Object[]{ integralValue, encoding}));
                     }
                     else 
@@ -398,7 +398,7 @@ void writeNormalizedChars(
                      */ 
                     String integralValue = Integer.toString(c);
                     throw new SAXException(Utils.messages.createMessage(
-                        SerializerMessages.ER_ILLEGAL_CHARACTER,
+                        MsgKey.ER_ILLEGAL_CHARACTER,
                         new Object[]{ integralValue, encoding}));
                 }
                 else 

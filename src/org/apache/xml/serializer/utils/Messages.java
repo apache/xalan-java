@@ -104,16 +104,6 @@ public final class Messages
     private String m_resourceBundleName;
 
 
-    /** 
-     * String to use if a bad message key is used.
-     * The ListResourceBundle should define a message with this key.
-     */
-    private static String BAD_MSGKEY = "BAD_CODE";
-
-    /** String to use if the message format operation failed. 
-     * The ListResourceBundle should define a message with this key.
-     */
-    private static String BAD_MSGFORMAT = "FORMAT_FAILED";
 
     /**
      * Constructor.
@@ -132,10 +122,6 @@ public final class Messages
         m_resourceBundleName = resourceBundle;
     }
     
-    // This method is dropped because it makes the singleton messages object
-    // mutable, and this messages object is used as long as the JVM stays up,
-    // potentially by different users in a server situation.
-    // This method was also never called anywhere in the serializer... so it's gone.
     /*
      * Set the Locale object to use. If this method is not called the
      * default locale is used. This method needs to be called before
@@ -234,7 +220,7 @@ public final class Messages
 
                 msg =
                     java.text.MessageFormat.format(
-                        BAD_MSGKEY,
+                        MsgKey.BAD_MSGKEY,
                         new Object[] { msgKey, m_resourceBundleName });
             }
             catch (Exception e)
@@ -275,7 +261,7 @@ public final class Messages
                     // Get the message that the format failed.
                     fmsg =
                         java.text.MessageFormat.format(
-                            BAD_MSGFORMAT,
+                            MsgKey.BAD_MSGFORMAT,
                             new Object[] { msgKey, m_resourceBundleName });
                     fmsg += " " + msg;
                 }

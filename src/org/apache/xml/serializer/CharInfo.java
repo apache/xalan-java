@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.SystemIDResolver;
 import org.apache.xml.serializer.utils.Utils;
 import org.apache.xml.serializer.utils.WrappedRuntimeException;
@@ -216,7 +216,7 @@ final class CharInfo
                 if (is == null) {
                     throw new RuntimeException(
                         Utils.messages.createMessage(
-                            SerializerMessages.ER_RESOURCE_COULD_NOT_FIND,
+                            MsgKey.ER_RESOURCE_COULD_NOT_FIND,
                             new Object[] {entitiesResource, entitiesResource}));
                 }
 
@@ -287,7 +287,7 @@ final class CharInfo
             } catch (Exception e) {
                 throw new RuntimeException(
                     Utils.messages.createMessage(
-                        SerializerMessages.ER_RESOURCE_COULD_NOT_LOAD,
+                        MsgKey.ER_RESOURCE_COULD_NOT_LOAD,
                         new Object[] { entitiesResource,
                                        e.toString(),
                                        entitiesResource,

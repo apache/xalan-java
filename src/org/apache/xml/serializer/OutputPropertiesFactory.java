@@ -28,7 +28,7 @@ import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.apache.xml.serializer.utils.WrappedRuntimeException;
 
@@ -302,7 +302,7 @@ public final class OutputPropertiesFactory
         {
             throw new WrappedRuntimeException(
                 Utils.messages.createMessage(
-                    SerializerMessages.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
+                    MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
                     new Object[] { fileName, method }),
                 ioe);
         }
@@ -371,7 +371,7 @@ public final class OutputPropertiesFactory
             {
                 throw new WrappedRuntimeException(
                     Utils.messages.createMessage(
-                        SerializerMessages.ER_COULD_NOT_LOAD_RESOURCE,
+                        MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
                         new Object[] { resourceName }),
                     ioe);
                 //"Could not load '"+resourceName+"' (check CLASSPATH), now using just the defaults ", ioe);
@@ -388,7 +388,7 @@ public final class OutputPropertiesFactory
             {
                 throw new WrappedRuntimeException(
                     Utils.messages.createMessage(
-                        SerializerMessages.ER_COULD_NOT_LOAD_RESOURCE,
+                        MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
                         new Object[] { resourceName }),
                     se);
                 //"Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);

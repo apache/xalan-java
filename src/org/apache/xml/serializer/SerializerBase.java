@@ -24,7 +24,7 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -862,7 +862,7 @@ public abstract class SerializerBase
                 {
                     throw new RuntimeException(
                         Utils.messages.createMessage(
-                            SerializerMessages.ER_NAMESPACE_PREFIX,
+                            MsgKey.ER_NAMESPACE_PREFIX,
                             new Object[] { qname.substring(0, col) }  ));
                 }
             }

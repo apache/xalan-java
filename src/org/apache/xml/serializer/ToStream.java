@@ -29,7 +29,7 @@ import java.util.Vector;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 
-import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
 import org.apache.xml.serializer.utils.WrappedRuntimeException;
 import org.w3c.dom.Node;
@@ -986,7 +986,7 @@ abstract public class ToStream extends SerializerBase
         {
             throw new IOException(
                 Utils.messages.createMessage(
-                    SerializerMessages.ER_INVALID_UTF16_SURROGATE,
+                    MsgKey.ER_INVALID_UTF16_SURROGATE,
                     new Object[] { Integer.toHexString((int) c)}));
             //"Invalid UTF-16 surrogate detected: "
 
@@ -999,7 +999,7 @@ abstract public class ToStream extends SerializerBase
             if (!(0xdc00 <= next && next < 0xe000))
                 throw new IOException(
                     Utils.messages.createMessage(
-                        SerializerMessages.ER_INVALID_UTF16_SURROGATE,
+                        MsgKey.ER_INVALID_UTF16_SURROGATE,
                         new Object[] {
                             Integer.toHexString((int) c)
                                 + " "
@@ -1289,7 +1289,7 @@ abstract public class ToStream extends SerializerBase
         {
             throw new org.xml.sax.SAXException(
                 Utils.messages.createMessage(
-                    SerializerMessages.ER_OIERROR,
+                    MsgKey.ER_OIERROR,
                     null),
                 ioe);
             //"IO error", ioe);
@@ -1618,7 +1618,7 @@ abstract public class ToStream extends SerializerBase
                 {
                     throw new IOException(
                         Utils.messages.createMessage(
-                            SerializerMessages.ER_INVALID_UTF16_SURROGATE,
+                            MsgKey.ER_INVALID_UTF16_SURROGATE,
                             new Object[] { Integer.toHexString(ch)}));
                     //"Invalid UTF-16 surrogate detected: "
 
@@ -1631,7 +1631,7 @@ abstract public class ToStream extends SerializerBase
                     if (!(0xdc00 <= next && next < 0xe000))
                         throw new IOException(
                             Utils.messages.createMessage(
-                                SerializerMessages
+                                MsgKey
                                     .ER_INVALID_UTF16_SURROGATE,
                                 new Object[] {
                                     Integer.toHexString(ch)
