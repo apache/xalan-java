@@ -80,6 +80,10 @@
             title="TRaX (Transformation API for XML)" 
             location="apidocs/javax/xml/transform/trax.html"/>
             
+  <resource id="compatapi"
+            title="Xalan-Java 1 compatibility Javadoc"
+            location="compat_apidocs/index.html"/>
+            
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 
                   mailto="xalan-dev@xml.apache.org"/>

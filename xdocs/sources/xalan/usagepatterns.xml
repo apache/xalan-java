@@ -449,6 +449,6 @@ fw.close();</source>
 <li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatibility layer does not support. <br/><br/></li>
 <li>Run the recompiled application with xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar.</li>
 </ol>
-<p>We urge our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <jump href="compat_apidocs/index.html">Xalan-Java 1 compatibility Javadoc</jump>. For example, the compatibility layer does not support the use of Xalan-Java 1.x extensions. If you feel that we should extend our compatibility JAR to support additional Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
+<p>We urge our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <resource-ref idref="compatapi"/>. For example, the compatibility layer does not support the use of Xalan-Java 1.x extensions. If you feel that we should extend our compatibility JAR to support additional Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
 </s2>
 </s1>
