@@ -102,10 +102,7 @@ public final class Util {
     {
 	InputSource input = null;
 
-	String systemId = source.getSystemId();
-	if (systemId == null) {
-	    systemId = "";
-	}
+	String systemId = source.getSystemId();         
 
 	try {
 	    // Try to get InputSource from SAXSource input
