@@ -165,6 +165,11 @@ public class ElemExtensionDecl extends ElemTemplateElement
     String scriptSrc = null;
     String prefix = getPrefix();
     String declNamespace = getNamespaceForPrefix(prefix);
+
+    if (null == declNamespace)
+      throw new SAXException("Prefix " + prefix + " does not have a corresponding "
+                                               + "namespace declaration");
+
     for(ElemTemplateElement child = getFirstChildElem();
         child != null; child = child.getNextSiblingElem())
     {
