@@ -63,7 +63,8 @@ package org.apache.xml.utils.synthetic;
 public class SynthesisException extends Exception
 {
 
-  /** Field code          */
+  /** Field code.
+   *  @serial          */
   int code;
 
   // Manefest constants
@@ -124,7 +125,6 @@ public class SynthesisException extends Exception
    * Method getCode 
    *
    *
-   * @return
    */
   int getCode()
   {

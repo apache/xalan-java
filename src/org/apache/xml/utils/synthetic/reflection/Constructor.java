@@ -61,6 +61,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**
+ * <meta name="usage" content="internal"/>
  * Constructor provides information about, and access to, a
  * single constructor for a class.
  *
@@ -70,11 +71,6 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  * throws an IllegalArgumentException if a narrowing
  * conversion would occur.
  *
- * @see Member
- * @see Class
- * @see getConstructors
- * @see getConstructor
- * @see getDeclaredConstructors
  */
 public class Constructor extends EntryPoint implements Member
 {

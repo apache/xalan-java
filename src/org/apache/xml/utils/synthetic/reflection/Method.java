@@ -61,6 +61,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**
+ * <meta name="usage" content="internal"/>
  * A Method provides information about, and access to, a
  * single method on a class or interface. The reflected
  * method may be a class method or an instance method
@@ -76,12 +77,6 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  * That may or may not imply retaining the final return value
  * separately and passing in a how-to-use-it mechanism...?
  *
- * @see Member
- * @see Class
- * @see getMethods
- * @see getMethod
- * @see getDeclaredMethods
- * @see getDeclaredMethod
  */
 public class Method extends EntryPoint implements Member
 {
@@ -138,7 +133,6 @@ public class Method extends EntryPoint implements Member
    * for the underlying method's declaring class name
    * and the method's name.
    *
-   * @return
    */
 
   /**
@@ -238,7 +232,6 @@ public class Method extends EntryPoint implements Member
    * @param obj
    * @param args
    *
-   * @return
    *
    * @throws IllegalAccessException
    * @throws IllegalArgumentException

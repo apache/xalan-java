@@ -60,6 +60,7 @@ import org.apache.xml.utils.synthetic.Class;
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**
+ * <meta name="usage" content="internal"/>
  * A Field provides information about, and dynamic access
  * to, a single field of a class or an interface. The reflected
  * field may be a class (static) field or an instance field.
@@ -69,12 +70,6 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  * IllegalArgumentException if a narrowing conversion
  * would occur.
  *
- * @see Member
- * @see  Class
- * @see  getFields
- * @see  getField
- * @see  getDeclaredFields
- * @see  getDeclaredField
  */
 public class Field extends Object implements Member
 {
@@ -129,7 +124,6 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    */
   public boolean equals(Object obj)
   {
@@ -178,7 +172,6 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -205,14 +198,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public boolean getBoolean(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -231,14 +221,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public byte getByte(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -257,14 +244,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public char getChar(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -281,7 +265,6 @@ public class Field extends Object implements Member
    * interface that declares the field represented by this
    * Field object.
    *
-   * @return
    */
   public org.apache.xml.utils.synthetic.Class getDeclaringClass()
   {
@@ -300,14 +283,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public double getDouble(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -326,14 +306,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public float getFloat(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -351,14 +328,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public int getInt(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -377,14 +351,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public long getLong(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -402,10 +373,6 @@ public class Field extends Object implements Member
    * Modifier class should be used to decode the
    * modifiers.
    *
-   * @see
-   * Modifier
-   *
-   * @return
    */
   public int getModifiers()
   {
@@ -461,14 +428,11 @@ public class Field extends Object implements Member
    *
    * @param obj
    *
-   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
    * if the field value cannot be converted to the
    * return type by a widening conversion.
-   * @see
-   * get
    */
   public short getShort(Object obj)
           throws IllegalArgumentException, IllegalAccessException
@@ -484,7 +448,6 @@ public class Field extends Object implements Member
    * Returns a Class object that identifies the declared
    * type for the field represented by this Field object.
    *
-   * @return
    */
   public Class getType()
   {
@@ -519,7 +482,6 @@ public class Field extends Object implements Member
    * the underlying field's declaring class name and its
    * name.
    *
-   * @return
    */
   public int hashCode()
   {
@@ -606,8 +568,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setBoolean(Object obj, boolean z)
           throws IllegalArgumentException, IllegalAccessException
@@ -633,8 +593,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setByte(Object obj, byte b)
           throws IllegalArgumentException, IllegalAccessException
@@ -660,8 +618,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setChar(Object obj, char c)
           throws IllegalArgumentException, IllegalAccessException
@@ -700,8 +656,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setDouble(Object obj, double d)
           throws IllegalArgumentException, IllegalAccessException
@@ -727,8 +681,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setFloat(Object obj, float f)
           throws IllegalArgumentException, IllegalAccessException
@@ -754,8 +706,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setInt(Object obj, int i)
           throws IllegalArgumentException, IllegalAccessException
@@ -781,8 +731,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setLong(Object obj, long l)
           throws IllegalArgumentException, IllegalAccessException
@@ -825,8 +773,6 @@ public class Field extends Object implements Member
    * the class or interface declaring the
    * underlying field, or if an unwrapping
    * conversion fails.
-   * @see
-   * set
    */
   public void setShort(Object obj, short s)
           throws IllegalArgumentException, IllegalAccessException
@@ -856,7 +802,6 @@ public class Field extends Object implements Member
    * and then other modifiers in the following order:
    * static, final, transient, volatile.
    *
-   * @return
    */
   public String toString()
   {
@@ -870,7 +815,6 @@ public class Field extends Object implements Member
   /**
    * Output the Field as Java sourcecode
    *
-   * @return
    */
   public String toSource()
   {

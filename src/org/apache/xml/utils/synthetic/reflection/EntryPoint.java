@@ -60,14 +60,15 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.xml.utils.synthetic.SynthesisException;
 
-/**
- * *** OPEN ISSUES:
+/*
+ * OPEN ISSUES:
  *   Reflection doesn't tell us about deprecation; if we want
  *   that info, MFC advises mousing our way into the class (ugh).
  *   Should we at least model that for synthetics?
  */
 
 /**
+ * <meta name="usage" content="internal"/>
  * API/behaviors shared between Constructors and Methods.
  * They're mostly similar, except for what they proxy and
  * a few specific calls (name, invoke/getInstance).
@@ -203,7 +204,6 @@ abstract public class EntryPoint implements Member
    *
    * @param obj
    *
-   * @return
    */
   public boolean equals(Object obj)
   {
@@ -227,7 +227,6 @@ abstract public class EntryPoint implements Member
    * declares the constructor represented by this
    * Constructor object.
    *
-   * @return
    */
   public org.apache.xml.utils.synthetic.Class getDeclaringClass()
   {
@@ -239,7 +238,6 @@ abstract public class EntryPoint implements Member
    * will be returned by this EntryPoint. Needed by the Method
    * API, but made meaningful for Constructors as well.
    *
-   * @return
    */
   public org.apache.xml.utils.synthetic.Class getReturnType()
   {
@@ -253,7 +251,6 @@ abstract public class EntryPoint implements Member
    * Constructor object. Returns an array of length 0 if
    * the constructor throws no checked exceptions.
    *
-   * @return
    */
   public org.apache.xml.utils.synthetic.Class[] getExceptionTypes()
   {
@@ -306,10 +303,6 @@ abstract public class EntryPoint implements Member
    * as an integer. The Modifier class should be used to
    * decode the modifiers.
    *
-   * @see
-   * Modifier
-   *
-   * @return
    */
   public int getModifiers()
   {
@@ -357,7 +350,6 @@ abstract public class EntryPoint implements Member
    * Returns an array of length 0 if the underlying
    * constructor takes no parameters.
    *
-   * @return
    */
   public org.apache.xml.utils.synthetic.Class[] getParameterTypes()
   {
@@ -430,7 +422,6 @@ abstract public class EntryPoint implements Member
    * xor'ed (for Methods) with the method name.
    * (Implemented in the subclasses rather than here.)
    *
-   * @return
    */
   abstract public int hashCode();
 
@@ -489,7 +480,6 @@ abstract public class EntryPoint implements Member
    * <p>
    * Methods will also display their checked exceptions.
    *
-   * @return
    */
   public String toString()
   {
@@ -562,7 +552,6 @@ abstract public class EntryPoint implements Member
    * method body. Note that this returns a mutable object,
    * for editing etc. Slightly sloppy first cut.
    *
-   * @return
    */
   public StringBuffer getBody()
   {
@@ -577,7 +566,6 @@ abstract public class EntryPoint implements Member
    * Extension: For synthesis, we need a place to hang a
    * method body.
    *
-   * @return
    */
   public String getLanguage()
   {
@@ -589,7 +577,6 @@ abstract public class EntryPoint implements Member
    *
    * @param basetab
    *
-   * @return
    */
   public String toSource(String basetab)
   {

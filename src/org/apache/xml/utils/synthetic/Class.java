@@ -63,7 +63,7 @@ import org.apache.xml.utils.synthetic.reflection.Field;
 
 import java.lang.reflect.Modifier;
 
-/* ***** WORK NEEDED:
+/* WORK NEEDED:
     Factories/Libraries: We currently have forClass and
     forName(request reified, complain if no real class),
     and declareClass (request unreified, create unreified
@@ -77,6 +77,7 @@ import java.lang.reflect.Modifier;
 */
 
 /**
+ * <meta name="usage" content="internal"/>
  * org.apache.xml.utils.synthetic.Class is a mutable equivalent of java.lang.Class.
  * Instances represent classes and interfaces in a running Java
  * application, or class descriptions under construction. In the
@@ -108,8 +109,6 @@ import java.lang.reflect.Modifier;
  *   (Java source, NetRexx source, etc.)
  *
  * @since  2000/2/10
- * @see    java.lang.class
- * @see    defineClass
  */
 public class Class extends Object implements java.io.Serializable
 {
@@ -118,7 +117,8 @@ public class Class extends Object implements java.io.Serializable
   private static java.util.Hashtable global_classtable =
     new java.util.Hashtable();
 
-  /** fully-qualified path.classname */
+  /** fully-qualified path.classname.
+   *  @serial */
   private java.lang.String name;
 
   /**
@@ -128,19 +128,19 @@ public class Class extends Object implements java.io.Serializable
    * a shared Interface), and allows "in-place compilation"
    * to replace a generated description with an
    * directly runnable class.
+   * @serial
    */
   private java.lang.Class realclass = null;
 
   /** Field modifiers: Java language modifiers for this class 
    * or interface, encoded in an integer.
-   * @see getModifiers
-   * @see setModifiers
+   * @serial
    */
   private int modifiers;
 
   /** Field isInterface: True if the Class object represents
    *  an interface type.
-   * @see isInterface */
+   * @serial */
   private boolean isInterface = false;
 
   /** Field superclass:  If this object represents the class
@@ -149,41 +149,33 @@ public class Class extends Object implements java.io.Serializable
    * is determined when needed. In synthesis mode it's explicitly
    * set by the user, and if null the superclass will be assumed
    * to be Object.
-   * @see getSuperclass
-   * @see setSuperclass */
+   * @serial */
   private Class superclass = null;
 
   /** Field declaringclass: If this object represents an inner class,
    * the Class object that represents the class that declared it.
    * Otherwise null.
-   * @see addInnerClass
-   * @see getDeclaringClass 
+   * @serial
    * */
   private Class declaringclass = null;
 
   /** Field interfaces: A list of all interfaces implemented by the class 
    * or interface represented by this object.
-   * @see getInterfaces
-   * @see declareInterface
-   * @see getClasses
-   * @see getDeclaredClasses
-   * @see addExtends
+   * @serial
    *  */
   private Class[] interfaces = new Class[0];
 
   /** Field allclasses:  an array containing Class objects representing all 
    * the public classes and interfaces that are members of the class 
    * represented by this Class object. 
-   * @see getClasses
-   * @see addExtends
+   * @serial
    */
   private Class[] allclasses = new Class[0];
 
   /** Field declaredclasses: an array of Class objects reflecting all the 
    * classes and interfaces declared as members of the class represented 
    * by this Class object. Excludes inherited classes and interfaces.
-   * @see getDeclaredClasses
-   * @see addExtends
+   * @serial
    */
   private Class[] declaredclasses = new Class[0];
 
@@ -193,8 +185,7 @@ public class Class extends Object implements java.io.Serializable
    * class has no public constructors. In proxy mode only public
    * constructors will be displayed; in synthesis mode, all declared
    * constructors will be displayed.
-   * @see getConstructors
-   * @see declareConstructor
+   * @serial
    * */
   private Constructor[] allconstructors = new Constructor[0];
 
@@ -202,24 +193,28 @@ public class Class extends Object implements java.io.Serializable
    * reflecting all the constructors declared by the class 
    * represented by this Class object. Includes non-public
    * constructors, but excludes inherited ones.
-   * @see getDeclaredConstructors
-   * @see declareConstructor
+   * @serial
    *  */
   private Constructor[] declaredconstructors = new Constructor[0];
 
-  /** Field allmethods          */
+  /** Field allmethods.
+   *  @serial          */
   private Method[] allmethods = new Method[0];
 
-  /** Field declaredmethods          */
+  /** Field declaredmethods.
+   *  @serial          */
   private Method[] declaredmethods = new Method[0];
 
-  /** Field allfields          */
+  /** Field allfields.
+   *  @serial          */
   private Field[] allfields = new Field[0];
 
-  /** Field declaredfields          */
+  /** Field declaredfields.
+   *  @serial          */
   private Field[] declaredfields = new Field[0];
 
-  /** Field innerclasses          */
+  /** Field innerclasses.
+   *  @serial          */
   private Class[] innerclasses = new Class[0];
 
   /**
@@ -253,9 +248,8 @@ public class Class extends Object implements java.io.Serializable
    * get the shared instances.
    * <p>
    * Creation date: (12-25-99 12:15:23 PM)
-   * @param name java.lang.String
    *
-   * @param fullname
+   * @param fullname full name of the class that is synthetized.
    */
   Class(String fullname)
   {
@@ -307,9 +301,9 @@ public class Class extends Object implements java.io.Serializable
    * inner clases. As with forName, if this can not be resolved
    * we throw an exception.
    *
-   * @param classname
+   * @param classname the full or partial class name.
    *
-   * @return
+   * @return The Class name that matches the argument.
    *
    * @throws ClassNotFoundException
    */
@@ -471,8 +465,7 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param className the fully qualified name of the desired class.
    * @return the synthetic Class descriptor for the class with the specified name.
-   * @throws SynthesisException
-   * if the class has been reified.  
+   * @throws SynthesisException if the class has been reified.  
    */
   public static Class declareClass(String className) throws SynthesisException
   {
@@ -538,7 +531,7 @@ public class Class extends Object implements java.io.Serializable
    * marginally useful, which is no doubt one of the reasons folks
    * have declined to implement it.
    *
-   * @return
+   * @return an array of classes.
    */
   public Class[] getClasses()
   {
@@ -561,12 +554,9 @@ public class Class extends Object implements java.io.Serializable
   /**
    * Determines the class loader for the class.
    *
-   * @return
    * the class loader that created the class or
    * interface represented by this object, or null
    * if the org.apache.xml.utils.synthetic.Class was not created by a class loader.
-   * @see
-   * ClassLoader
    */
   public ClassLoader getClassLoader()
   {
@@ -582,9 +572,8 @@ public class Class extends Object implements java.io.Serializable
    * types, this will currently return false unless we are
    * proxying such a type.
    *
-   * @see  Array
-   *
-   * @return
+   * @return the Class object representing the component type of
+   * the array, otherwise returns null.
    */
   public Class getComponentType()
   {
@@ -605,15 +594,18 @@ public class Class extends Object implements java.io.Serializable
    * exactly the same formal parameter types.
    *
    *
-   * @param parameterTypes
+   * @param parameterTypes array of Class
+   * objects that identify the constructor's formal
+   * parameter types, in declared order.
    *
-   * @return
+   * @return a Constructor object that reflects the
+   * specified public constructor of the class
+   * represented by this Class object.
+   * 
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Constructor
    * @throws SynthesisException
    */
   public Constructor getConstructor(Class parameterTypes[])
@@ -642,11 +634,12 @@ public class Class extends Object implements java.io.Serializable
    * constructors.
    *
    *
-   * @return
+   * @return an array containing Constructor objects
+   * reflecting all the public constructors of the class
+   * represented by this Class object.
+   * 
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Constructor
    */
   public Constructor[] getConstructors() throws SecurityException
   {
@@ -680,7 +673,10 @@ public class Class extends Object implements java.io.Serializable
    * this Class object represents a primitive type.
    *
    *
-   * @return
+   * @return an array of Class objects reflecting all the
+   * classes and interfaces declared as members of the
+   * class represented by this Class object.
+   * 
    * @throws SecurityException
    * if access to the information is denied.
    */
@@ -710,12 +706,9 @@ public class Class extends Object implements java.io.Serializable
    * Adds an "extends" description for the class or
    * interface represented by this Class object
    *
-   *
-   * @param newclass
+   * @param newclass The class that this class extends.
    * @throws SynthesisException
    * if the class has been reified.
-   * @see
-   * class
    */
   public void addExtends(Class newclass) throws SynthesisException
   {
@@ -740,15 +733,18 @@ public class Class extends Object implements java.io.Serializable
    * parameter types, in declared order.
    *
    *
-   * @param parameterTypes
+   * @param parameterTypes array of Class
+   * objects that identify the constructor's formal
+   * parameter types, in declared order.
    *
-   * @return
+   * @return a Constructor object that reflects the
+   * specified declared constructor of the class or
+   * interface represented by this Class object.
+   * 
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Constructor
    */
   public Constructor getDeclaredConstructor(Class parameterTypes[])
           throws NoSuchMethodException, SecurityException
@@ -760,12 +756,10 @@ public class Class extends Object implements java.io.Serializable
    * Adds a Constructor description for  the class or
    * interface represented by this Class object
    *
-   *
-   * @return
+   * @return The constructor object.
+   * 
    * @throws SynthesisException
    * if the class has been reified.
-   * @see
-   * Constructor
    */
   public Constructor declareConstructor() throws SynthesisException
   {
@@ -798,14 +792,9 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param newifce org.apache.xml.utils.synthetic.Class representing the interface we want to add.
    *
-   * @return
-   * @exception org.apache.xml.utils.synthetic.SynthesisException if the Class isn't an interface
-   * @see setSuperClass
-   * @see declareConstructor
-   * @see declareMethod
-   * @see declareField
-   *
-   * @throws SynthesisException
+   * @return The new interface class.
+   * 
+   * @throws org.apache.xml.utils.synthetic.SynthesisException if the Class isn't an interface
    */
   public Class declareInterface(Class newifce) throws SynthesisException
   {
@@ -845,11 +834,12 @@ public class Class extends Object implements java.io.Serializable
    * See The Java Language Specification, section 8.2.
    *
    *
-   * @return
+   * @return an array of Constructor objects reflecting
+   * all the constructors declared by the class
+   * represented by this Class object.
+   * 
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Constructor
    */
   public Constructor[] getDeclaredConstructors() throws SecurityException
   {
@@ -878,15 +868,17 @@ public class Class extends Object implements java.io.Serializable
    * field.
    *
    *
-   * @param name
+   * @param name String that specifies the simple name of the desired
+   * field.
    *
-   * @return
+   * @return a Field object that reflects the specified
+   * declared field of the class or interface represented
+   * by this Class object.
+   * 
    * @throws NoSuchFieldException
    * if a field with the specified name is not found.
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Field
    */
   public Field getDeclaredField(String name)
           throws NoSuchFieldException, SecurityException
@@ -899,13 +891,12 @@ public class Class extends Object implements java.io.Serializable
    * interface represented by this Class object
    *
    *
-   * @param name
+   * @param name The name of the field.
    *
-   * @return
+   * @return The field description.
+   * 
    * @throws SynthesisException
    * if the class has been reified.
-   * @see
-   * Constructor
    */
   public Field declareField(String name) throws SynthesisException
   {
@@ -942,11 +933,12 @@ public class Class extends Object implements java.io.Serializable
    * Specification, sections 8.2 and 8.3.
    *
    *
-   * @return
+   * @return array of Field objects reflecting all the
+   * fields declared by the class or interface represented
+   * by this Class object.
+   * 
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Field
    */
   public Field[] getDeclaredFields() throws SecurityException
   {
@@ -977,16 +969,21 @@ public class Class extends Object implements java.io.Serializable
    * types, in declared order.
    *
    *
-   * @param name
-   * @param parameterTypes
+   * @param name String that specifies the simple
+   * name of the desired method.
+   * 
+   * @param parameterTypes array of Class
+   * objects that identify the method's formal parameter
+   * types, in declared order.
    *
-   * @return
+   * @return Method object that reflects the specified
+   * declared method of the class or interface
+   * represented by this Class object.
+   * 
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Method
    */
   public Method getDeclaredMethod(String name, Class parameterTypes[])
           throws NoSuchMethodException, SecurityException
@@ -999,13 +996,12 @@ public class Class extends Object implements java.io.Serializable
    * interface represented by this Class object
    *
    *
-   * @param name
+   * @param name Name of method.
    *
-   * @return
+   * @return The method object.
+   * 
    * @throws SynthesisException
    * if the class has been reified.
-   * @see
-   * Constructor
    */
   public Method declareMethod(String name) throws SynthesisException
   {
@@ -1042,12 +1038,12 @@ public class Class extends Object implements java.io.Serializable
    * <p>
    * See The Java Language Specification, section 8.2.
    *
-   *
-   * @return
+   * @return array of Method objects reflecting all
+   * the methods declared by the class or interface
+   * represented by this Class object.
+   * 
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Method
    */
   public Method[] getDeclaredMethods() throws SecurityException
   {
@@ -1077,7 +1073,6 @@ public class Class extends Object implements java.io.Serializable
    * class or interface is not a member of any other
    * class.
    *
-   * @return
    */
   public Class getDeclaringClass()
   {
@@ -1132,9 +1127,8 @@ public class Class extends Object implements java.io.Serializable
    * hierarchy is established by the class within which it is
    * created.
    * @return org.apache.xml.utils.synthetic.Class object for the contained class.
-   * @exception org.apache.xml.utils.synthetic.SynthesisException if class could not be created.
+   * @throws org.apache.xml.utils.synthetic.SynthesisException if class could not be created.
    * @since 2/2000
-   * @see forName
    *
    * @throws SynthesisException
    */
@@ -1173,7 +1167,6 @@ public class Class extends Object implements java.io.Serializable
    * This may be empty if none such exist, or if the class is
    * reified (since reflection doesn't report this information).
    * @since 3/2000
-   * @see forName
    */
   public Class[] getInnerClasses()
   {
@@ -1198,14 +1191,11 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param name
    *
-   * @return
    * @throws NoSuchFieldException
    * if a field with the specified name is not
    * found.
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Field
    */
   public Field getField(String name)
           throws NoSuchFieldException, SecurityException
@@ -1237,10 +1227,8 @@ public class Class extends Object implements java.io.Serializable
    * and 8.3.
    *
    *
-   * @return
    * @throws SecurityException
    * if access to the information is denied.
-   * @see Field
    */
   public Field[] getFields() throws SecurityException
   {
@@ -1283,7 +1271,6 @@ public class Class extends Object implements java.io.Serializable
    * If the class or interface implements no interfaces,
    * the method returns an array of length 0.
    *
-   * @return
    * an array of interfaces implemented by this
    * class.
    */
@@ -1313,8 +1300,6 @@ public class Class extends Object implements java.io.Serializable
    * @param newclass
    * @throws SynthesisException
    * if the class has been reified.
-   * @see
-   * class
    */
   public void addImplements(Class newclass) throws SynthesisException
   {
@@ -1353,13 +1338,10 @@ public class Class extends Object implements java.io.Serializable
    * @param name
    * @param parameterTypes
    *
-   * @return
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
    * if access to the information is denied.
-   * @see
-   * Method
    */
   public Method getMethod(String name, Class parameterTypes[])
           throws NoSuchMethodException, SecurityException
@@ -1380,10 +1362,8 @@ public class Class extends Object implements java.io.Serializable
    * and 8.4.
    *
    *
-   * @return
    * @throws SecurityException
    * if access to the information is denied.
-   * @see Method
    */
   public Method[] getMethods() throws SecurityException
   {
@@ -1417,7 +1397,6 @@ public class Class extends Object implements java.io.Serializable
    * See Also:
    * java.lang.reflect.Modifier
    *
-   * @return
    */
   public int getModifiers()
   {
@@ -1457,9 +1436,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @return java.lang.String
    * @since 12/95
-   * @see getShortName
-   * @see getJavaName
-   * @see getJavaShortName
    */
   public java.lang.String getName()
   {
@@ -1472,8 +1448,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @return java.lang.String
    * @since 3/2000
-   * @see getName
-   * @see getJavaShortName
    */
   public java.lang.String getJavaName()
   {
@@ -1505,10 +1479,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @return java.lang.String
    * @since 12/99
-   * @see getName
-   * @see getPackageName
-   * @see getJavaName
-   * @see getJavaShortName
    */
   public java.lang.String getShortName()
   {
@@ -1535,8 +1505,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @return java.lang.String
    * @since 3/2000
-   * @see getJavaName
-   * @see getShortName
    */
   public java.lang.String getJavaShortName()
   {
@@ -1568,10 +1536,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @return java.lang.String
    * @since 12/95
-   * @see getName
-   * @see getShortName
-   * @see getJavaName
-   * @see getJavaShortName
    */
   public java.lang.String getPackageName()
   {
@@ -1698,12 +1662,9 @@ public class Class extends Object implements java.io.Serializable
    * @param
    * name - the string representing the resource to
    * be found.
-   * @return
    * the URL object having the specified name, or
    * null if no resource with the specified name
    * is found.
-   * @see  ClassLoader
-   * @see  getResourceAsStream
    */
   public java.net.URL getResource(String name)
   {
@@ -1726,12 +1687,9 @@ public class Class extends Object implements java.io.Serializable
    * @param
    * name - the string representing the resource to
    * be found
-   * @return
    * the InputStream object having the
    * specified name, or null if no resource with
    * the specified name is found.
-   * @see ClassLoader
-   * @see  getResource
    */
   public java.io.InputStream getResourceAsStream(String name)
   {
@@ -1741,7 +1699,6 @@ public class Class extends Object implements java.io.Serializable
   /**
    * Get the signers of this class.
    *
-   * @return
    */
   public Object[] getSigners()
   {
@@ -1757,7 +1714,6 @@ public class Class extends Object implements java.io.Serializable
    * Object or this object represents an interface, null is
    * returned.
    *
-   * @return
    * the superclass of the class represented by this
    * object.
    */
@@ -1781,7 +1737,6 @@ public class Class extends Object implements java.io.Serializable
    * If this Class object represents an array type, returns
    * true, otherwise returns false.
    *
-   * @return
    */
   public boolean isArray()
   {
@@ -1808,7 +1763,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param cls
    *
-   * @return
    * @throws NullPointerException if the specified Class parameter is null.
    */
   public boolean isAssignableFrom(Class cls)
@@ -1840,7 +1794,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param cls
    *
-   * @return
    * @throws NullPointerException if the specified Class parameter is null.
    */
   public boolean isAssignableFrom(java.lang.Class cls)
@@ -1876,7 +1829,6 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param obj The object to check
    *
-   * @return
    */
   public boolean isInstance(Object obj)
   {
@@ -1893,7 +1845,6 @@ public class Class extends Object implements java.io.Serializable
    * Determines if the specified Class object represents
    * an interface type.
    *
-   * @return
    * true if this object represents an interface;
    * false otherwise.
    */
@@ -1939,7 +1890,6 @@ public class Class extends Object implements java.io.Serializable
    * only Class objects for which this method returns
    * true.
    *
-   * @return
    */
   public boolean isPrimitive()
   {
@@ -1949,7 +1899,6 @@ public class Class extends Object implements java.io.Serializable
   /**
    * Creates a new instance of a class.
    *
-   * @return
    * a newly allocated instance of the class
    * represented by this object. This is done
    * exactly as if by a new expression with an

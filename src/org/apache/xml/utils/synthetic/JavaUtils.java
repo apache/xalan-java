@@ -61,7 +61,9 @@ package org.apache.xml.utils.synthetic;
 
 import java.io.IOException;
 
-/** This class supports invoking Java compilation from within
+/** 
+ * <meta name="usage" content="internal"/>
+ * This class supports invoking Java compilation from within
  * a Java program. Recent versions of the Java environment have
  * provided such an API (in tools.jar). But that isn't available
  * on all platforms, and a fallback to the command line may be needed

@@ -59,6 +59,7 @@ package org.apache.xml.utils.synthetic.reflection;
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**
+ * <meta name="usage" content="internal"/>
  * Member is an interface that reflects identifying
  * information about a single member (a field or a method)
  * or a constructor.
@@ -67,11 +68,7 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  * java.lang.reflect.Member, due to questions about how to handle
  * declarignClass.
  *
- * @see Field
- * @see Method
- * @see Constructor
  * @see org.apache.xml.utils.synthetic.Class
- * @see java.lang.reflect.Member
  */
 public interface Member
 {
@@ -81,7 +78,6 @@ public interface Member
    * interface that declares the member or constructor
    * represented by this Member.
    *
-   * @return
    */
   public abstract org.apache.xml.utils.synthetic.Class getDeclaringClass();
 
@@ -91,9 +87,6 @@ public interface Member
    * Member, as an integer. The Modifier class should
    * be used to decode the modifiers in the integer.
    *
-   * @see Modifier
-   *
-   * @return
    */
   public abstract int getModifiers();
 
@@ -115,8 +108,6 @@ public interface Member
    * member or constructor represented by this
    * Member, as an integer. The Modifier class should
    * be used to decode the modifiers in the integer.
-   *
-   * @see Modifier
    *
    * @param modifiers
    *
