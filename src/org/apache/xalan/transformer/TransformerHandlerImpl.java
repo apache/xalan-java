@@ -200,6 +200,28 @@ public class TransformerHandlerImpl
         System.out.println("...exiting clearCoRoutine");
     }
   }
+  
+  /** 
+   * Wait for initial events.  This has to be called by the secondary thread 
+   * upon startup.
+   */
+  protected void waitForInitialEvents()
+  {
+    
+    if(m_dtm instanceof SAX2DTM)
+    {
+      if(DEBUG)
+        System.out.println("In clearCoRoutine...");
+      SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);
+      if(null != m_contentHandler 
+         && m_contentHandler instanceof CoroutineSAXParser)
+      {
+        CoroutineSAXParser sp = (CoroutineSAXParser)m_contentHandler;
+        sp.doMore(true, sax2dtm.getAppCoroutineID()); 
+      }
+    }
+  }
+
 
   ////////////////////////////////////////////////////////////////////
   // Implementation of javax.xml.transform.sax.TransformerHandler.
@@ -392,25 +414,27 @@ public class TransformerHandlerImpl
 
    // Thread listener = new Thread(m_transformer);
 
-    //m_transformer.setTransformThread(listener);
-    if(DTMManager.getIncremental())
+    if (m_contentHandler != null)
     {
-      m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
-          
-      int cpriority = Thread.currentThread().getPriority();
-  
-      // runTransformThread is equivalent with the 2.0.1 code,
-      // except that the Thread may come from a pool.
-      m_transformer.runTransformThread( cpriority );
-    }
+      m_contentHandler.startDocument();
+    
+      //m_transformer.setTransformThread(listener);
+      if(DTMManager.getIncremental())
+      {
+        m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
+            
+        int cpriority = Thread.currentThread().getPriority();
+    
+        // runTransformThread is equivalent with the 2.0.1 code,
+        // except that the Thread may come from a pool.
+        m_transformer.runTransformThread( cpriority );
+      }
+      
+   }
         
    //listener.setDaemon(false);
    //listener.start();
 
-    if (m_contentHandler != null)
-    {
-      m_contentHandler.startDocument();
-    }
   }
 
   /**
