@@ -273,6 +273,7 @@ final class LiteralElement extends Instruction {
 	for (int i = 0; i < count; i++) {
 
 	    final QName qname = parser.getQName(_attributes.getQName(i));
+	    final String uri = qname.getNamespace();
 	    final String val = _attributes.getValue(i);
 
 	    // Handle xsl:use-attribute-sets. Attribute sets are placed first
@@ -282,8 +283,8 @@ final class LiteralElement extends Instruction {
 		setFirstAttribute(new UseAttributeSets(val, parser));
 	    }
 	    // Ignore all other attributes in XSL namespace
-	    else if (qname.getNamespace().equals(XSLT_URI)) {
-
+	    else if ((uri != null) && (uri.equals(XSLT_URI))) {
+		
 	    }
 	    // Handle xsl:extension-element-prefixes
 	    else if (qname == parser.getExtensionElementPrefixes()) {
