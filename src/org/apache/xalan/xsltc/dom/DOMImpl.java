@@ -1255,10 +1255,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	    while (curr >= 0) {
 		if (curr == 0)
 		    curr = -1;
-		else
+		else {
 		    curr = _parent[curr];
-		if (_type[curr] == _nodeType)
-		    last = curr;
+		    if (_type[curr] == _nodeType)
+			last = curr;
+		}
 	    }
 	    return(last);
 	}
