@@ -248,7 +248,7 @@ public class ElemExtensionCall extends ElemLiteralResult
         try
         {
           transformer.pushElemTemplateElement(child);
-          ((ElemFallback) child).execute(transformer, sourceNode, mode, true);
+          ((ElemFallback) child).executeFallback(transformer, sourceNode, mode);
         }
         finally
         {

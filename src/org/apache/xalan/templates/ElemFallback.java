@@ -130,13 +130,11 @@ public class ElemFallback extends ElemTemplateElement
    * @param transformer non-null reference to the the current transform-time state.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
-   * @param dummyArg used to indicate that this method, rather than the three argument method
-   *        is to be executed resulting in processing of the fallback elements.
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode, boolean dummyArg)
+  public void executeFallback(
+          TransformerImpl transformer, Node sourceNode, QName mode)
             throws TransformerException
   {
 
