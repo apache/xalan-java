@@ -114,11 +114,18 @@ public class DOM2DOM
       //Use the DocumentBuilder to parse the XML input.
       Document doc = dBuilder.parse("birds.xml");
       
+      // Use the DOM Document to define a DOMSource object.
+      DOMSource domSource = new DOMSource(doc);
+      
+      // Set the base URI for the DOMSource so any relative URIs it contains can
+      // be resolved.
+      domSource.setSystemId("birds.xml");
+      
       // Create an empty DOMResult for the Result.
       DOMResult domResult = new DOMResult();
   
   	  // Perform the transformation, placing the output in the DOMResult.
-      transformer.transform(new DOMSource(doc), domResult);
+      transformer.transform(domSource, domResult);
 	  
 	    //Instantiate an XML serializer and use it to serialize the output DOM to System.out
 	    // using a default output format.
