@@ -61,37 +61,34 @@
  *
  */
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.xml.sax.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.runtime.output.*;
-import org.apache.xalan.xsltc.dom.*;
+import org.xml.sax.SAXException;
 
 /**
  * This servlet demonstrates how XSL transformations can be made available as
  * a web service. See the CompileServlet for an example on how stylesheets
  * can be pre-compiled before this servlet is invoked.
  *
- * Note that the XSLTC transformation engine is invoked through its native
- * interface and not the javax.xml.transform (JAXP) interface. This because
- * XSLTC still does not offer precompiled transformations through JAXP.
+ * Note that the XSLTC transformation engine is invoked through the JAXP
+ * interface, using the XSLTC "use-classpath" attribute.  The
+ * "use-classpath" attribute specifies to the XSLTC TransformerFactory
+ * that a precompiled version of the stylesheet (translet) may be available,
+ * and that that should be used in preference to recompiling the stylesheet.
  */
 public final class TransformServlet extends HttpServlet {
-
-    /*
-     * This is a document cache with 32 document slots. This servlet returns
-     * cache statistics if the 'stats' parameter is passed with the HTTP
-     * request in doGet().
-     */
-    private static DocumentCache cache = null;
 
     /**
      * Main servlet entry point
@@ -105,62 +102,34 @@ public final class TransformServlet extends HttpServlet {
 	PrintWriter out = response.getWriter();
 
 	// Get the two paramters "class" and "source".
-	String className   = request.getParameter("class");
-	String documentURI = request.getParameter("source");
+	String transletName = request.getParameter("translet");
+	String documentURI  = request.getParameter("source");
 
 	try {
-	    // Initialize document cache with 32 DOM slots
-	    if (cache == null) cache = new DocumentCache(32);
-
-	    if (request.getParameter("stats") != null) {
-		cache.getStatistics(out);
-	    }
-	    else if ((className == null) || (documentURI == null)) {
+	    if ((transletName == null) || (documentURI == null)) {
 	        out.println("<h1>XSL transformation error</h1>");
 		out.println("The parameters <b><tt>class</tt></b> and " +
 			    "<b><tt>source</tt></b> must be specified");
 	    }
 	    else {
-		// Get a reference to the translet class (not object yet)
-	        Class tc = Class.forName(className);
-		// Instanciate a translet object (inherits AbstractTranslet)
-		AbstractTranslet translet = (AbstractTranslet)tc.newInstance();
-
-		// Set the document cache for the translet. This is needed in
-		// case the translet uses the document() function.
-		translet.setDOMCache(cache);
-
-		// Read input document from the DOM cache
-		DOMImpl dom = cache.retrieveDocument(documentURI, 0, translet);
-
-		// Create output handler
-		TransletOutputHandlerFactory tohFactory = 
-		    TransletOutputHandlerFactory.newInstance();
-		tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
-		tohFactory.setEncoding(translet._encoding);
-		tohFactory.setOutputMethod(translet._method);
-		tohFactory.setWriter(out);
+                TransformerFactory tf = TransformerFactory.newInstance();
+                try {
+                    tf.setAttribute("use-classpath", Boolean.TRUE);
+                } catch (IllegalArgumentException iae) {
+                    System.err.println(
+                           "Could not set XSLTC-specific TransformerFactory "
+                         + "attributes.  Transformation failed.");
+                }
+                Transformer t =
+                         tf.newTransformer(new StreamSource(transletName));
 
 		// Start the transformation
 		final long start = System.currentTimeMillis();
-		translet.transform(dom, tohFactory.getTransletOutputHandler());
+		t.transform(new StreamSource(documentURI),
+                            new StreamResult(out));
 		final long done = System.currentTimeMillis() - start;
 		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
 	    }
-	}
-	catch (IOException e) {
-	    out.println("<h1>Error</h1>");
-	    out.println("Could not locate source document: " + documentURI);
-	    out.println(e.toString());
-	}
-	catch (ClassNotFoundException e) {
-	  out.println("<h1>Error</h1>");
-	  out.println("Could not locate the translet class: " + className);
-	  out.println(e.toString());
-	}
-	catch (SAXException e) {
-	    out.println("<h1>Error</h1>");
-	    out.println("Error parsing document " + documentURI);
 	}
 	catch (Exception e) {
 	    out.println("<h1>Error</h1>");
