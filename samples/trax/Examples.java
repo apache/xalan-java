@@ -810,7 +810,7 @@ public class Examples
     if( ex instanceof TransformerConfigurationException ) {
       System.out.println();
       System.out.println("Internal exception: " );
-      Exception ex1=((TransformerConfigurationException)ex).getException();
+      Throwable ex1=((TransformerConfigurationException)ex).getException();
       ex1.printStackTrace();
 
       if( ex1 instanceof SAXException ) {
