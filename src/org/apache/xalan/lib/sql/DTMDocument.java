@@ -460,7 +460,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    */
   protected void getNodeData(int nodeIdx, FastStringBuffer buf)
   {
-    for ( int child = m_firstch.elementAt(nodeIdx) ; child != DTM.NULL ; child = m_nextsib.elementAt(child) )
+    for ( int child = _firstch(nodeIdx) ; child != DTM.NULL ; child = _nextsib(child) )
     {
       Object o = m_ObjectArray.getAt(child);
       if ( o == S_ELEMENT_NODE )
