@@ -154,8 +154,19 @@ class VariableRefBase extends Expression {
 	}
 
 	// Insert a dependency link from one variable to another
-	VariableBase parent = findParentVariable();
-	if (parent != null) parent.addDependency(_variable);
+        VariableBase parent = findParentVariable();
+        if (parent != null) {
+            VariableBase var = _variable;
+            if (_variable._ignore) {
+                if (_variable instanceof Variable) {
+                    var = parent.getSymbolTable()
+                                .lookupVariable(_variable._name);
+                } else if (_variable instanceof Param) {
+                    var = parent.getSymbolTable().lookupParam(_variable._name);
+                }
+            }
+            parent.addDependency(var);
+        }
 
         // Attempt to get the cached variable type
         _type = _variable.getType();
