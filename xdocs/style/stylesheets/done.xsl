@@ -10,7 +10,7 @@
   <xsl:template match="Commits">
   <xsl:comment>This XML fragment contains a list of source code updates to place in an &lt;s3&gt; section of readme.xml</xsl:comment>
     <xsl:if test="count(Commit[@category='core'])>0">
-      <p>Core source code updates:</p>
+      <p> Core (Non-XSLTC) source code updates:</p>
       <ul>
       <xsl:for-each select="Commit[@category='core']">
         <li><xsl:apply-templates select="Who|DateCommitted|Modified|Added|Removed|Log"/></li>
@@ -18,7 +18,7 @@
       </ul>
     </xsl:if>
     <xsl:if test="count(Commit[@category='core'])=0">
-      <note>This release includes no updates of the core source code.</note>
+      <note>This release includes no updates of the non-XSLTC core source code.</note>
     </xsl:if>
     <xsl:if test="count(Commit[@category='compat'])>0">
       <p>Compatibility source code updates:</p>
@@ -29,7 +29,18 @@
       </ul>
     </xsl:if>
     <xsl:if test="count(Commit[@category='compat'])=0">
-      <note>This release includes no updates of the compatibility source code.</note>
+      <note>This release includes no updates of the compatibility source code (now deprecated).</note>
+    </xsl:if>
+    <xsl:if test="count(Commit[@category='xsltc'])>0">
+      <p>XSLTC source code updates:</p>
+      <ul>
+      <xsl:for-each select="Commit[@category='xsltc']">
+        <li><xsl:apply-templates select="Who|DateCommitted|Modified|Added|Removed|Log"/></li>
+      </xsl:for-each>
+      </ul>
+    </xsl:if>
+    <xsl:if test="count(Commit[@category='xsltc'])=0">
+      <note>This release includes no updates of the XSLTC source code.</note>
     </xsl:if>
   </xsl:template>
   
