@@ -152,6 +152,7 @@ public final class XSLTC {
      */
     public void init() {
 	reset();
+	_reader = null;
 	_classes = new Vector();
     }
     
@@ -159,7 +160,6 @@ public final class XSLTC {
      * Initializes the compiler to produce a new translet
      */
     private void reset() {
-	_reader = null;
 	_nextGType      = DOM.NTYPES;
 	_elements       = new Hashtable();
 	_attributes     = new Hashtable();
@@ -249,7 +249,7 @@ public final class XSLTC {
     public boolean compile(InputSource input, String name) {
 	try {
 	    // Reset globals in case we're called by compile(Vector v);
-	    reset();   // GTM,Morten- this reset sets _reader back to null
+	    reset();
 
 	    // The systemId may not be set, so we'll have to check the URL
 	    String systemId = null; 
@@ -297,6 +297,7 @@ public final class XSLTC {
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
 	}
 	finally {
+	    _reader = null; // reset this here to be sure it is not re-used
 	    return !_parser.errorsFound();
 	}
     }
