@@ -133,7 +133,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     
     if(doFragment)
     {
-      m_root = new DocumentFragmentImpl();
+      m_root = new DocumentFragmentImpl(1024);
       m_docFrag = (DocumentFragmentImpl)m_root;
     }
     else

@@ -77,7 +77,7 @@ public abstract class DocImpl extends Parent
   /** This holds all the characters used, copied from the 
    * characters events.  This allows us to not have to allocate 
    * a million little arrays.  */
-  FastStringBuffer m_chars = new FastStringBuffer(1024 * 8);
+  FastStringBuffer m_chars;
   
   /** Contains exception thrown from transformation thread, 
    * if one occured. */
@@ -89,8 +89,20 @@ public abstract class DocImpl extends Parent
   public DocImpl()
   {
     super(null);
+    m_chars = new FastStringBuffer(1024 * 8);
     m_id = m_idCount++;
   }
+  
+  /**
+   * Constructor DocImpl
+   */
+  public DocImpl(int charBufSize)
+  {
+    super(null);
+    m_chars = new FastStringBuffer(charBufSize);
+    m_id = m_idCount++;
+  }
+
 
   /** A reference back to the source tree 
    * handler that is creating this tree.    */

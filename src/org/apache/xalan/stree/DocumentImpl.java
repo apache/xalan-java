@@ -91,6 +91,16 @@ public class DocumentImpl extends DocImpl
     setDoc(this);
     // m_bUpIndexer = new LevelIndexer();
   }
+  
+  /**
+   * Constructor DocumentImpl
+   */
+  public DocumentImpl(int charBufSize)
+  {
+    super(charBufSize);
+    setDoc(this);
+  }
+
 
   /**
    * Constructor DocumentImpl

@@ -76,6 +76,15 @@ public class DocumentFragmentImpl extends DocumentImpl
 
     super();
   }
+  
+  /**
+   * Constructor DocumentFragmentImpl
+   */
+  public DocumentFragmentImpl(int charBufSize)
+  {
+    super(charBufSize);
+  }
+
 
   /**
    * A short integer indicating what type of node this is. The named
