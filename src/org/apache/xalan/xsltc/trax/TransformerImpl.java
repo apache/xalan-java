@@ -769,13 +769,14 @@ public final class TransformerImpl extends Transformer
     private Properties createOutputProperties() {
 	
 	// Level3: Return the default property value
+ 	// bug # 6751 fixed by removing setProperty lines for 
+  	//  OutputKeys.(DOCTYPE_PUBLIC|DOCTYPE_SYSTEM|CDATA_SECTION_ELEMENTS)
+  	//  instead of setting them to "" (EMPTY_STRING). Fix contributed
+  	//  by Derek Sayeau.   
 	Properties third = new Properties();
 	third.setProperty(OutputKeys.ENCODING, "UTF-8");
 	third.setProperty(OutputKeys.METHOD, XML_STRING);
 	third.setProperty(OutputKeys.INDENT, NO_STRING);
-	third.setProperty(OutputKeys.DOCTYPE_PUBLIC, EMPTY_STRING);
-	third.setProperty(OutputKeys.DOCTYPE_SYSTEM, EMPTY_STRING);
-	third.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, EMPTY_STRING);
 	third.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
 	third.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
 	third.setProperty(OutputKeys.STANDALONE, NO_STRING);
