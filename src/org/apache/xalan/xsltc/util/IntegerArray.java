@@ -87,7 +87,8 @@ public final class IntegerArray {
     }
 
     public Object clone() {
-	final IntegerArray clone = new IntegerArray(_array);
+	final IntegerArray clone = new IntegerArray(_free);
+	System.arraycopy(_array, 0, clone._array, 0, _free);
 	clone._free = _free;
 	return clone;
     }
@@ -200,7 +201,7 @@ public final class IntegerArray {
     }
     
     private static int partition(int[] array, int p, int r) {
-	final int x = array[p];
+	final int x = array[(p + r) >>> 1];
 	int i = p - 1; int j = r + 1;
 
 	while (true) {
