@@ -60,9 +60,9 @@ Copyright:
   <property name="src.dir" value="./src"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
-  <property name="trax.reldir" value="org/apache/trax"/>
+  <property name="trax.reldir" value="javax/xml/trax"/>
   <property name="serialize.reldir" value="org/apache/serialize"/>
-  <property name="serializer.reldir" value="org/apache/xml/serialize/transition"/>
+  <property name="serializer.reldir" value="org/apache/xalan/serialize"/>
   <property name="jaxp.reldir" value="javax/xml/parsers"/>
   <property name="sax.reldir" value="org/xml/sax"/>
   <property name="w3c.reldir" value="org/w3c"/>    
@@ -83,6 +83,8 @@ Copyright:
   <property name="version.file" value="org/apache/xalan/processor/XSLProcessorVersion.java"/>
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
+  <property name="xalanonly-styledocs"
+            value="dtd/xsl-html40s.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl"/>
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
@@ -101,6 +103,7 @@ Copyright:
   <target name="prepare.docs" depends="prepare">
     <gunzip src="${doc.generator.styletargz}"/>
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
+	<delete file="${doc.generator.styletar}"/>
     <mkdir dir="${build.docs}"/>
     <mkdir dir="${build.apidocs}"/>
   </target>
@@ -136,13 +139,14 @@ Copyright:
   <!-- =================================================================== -->
    
   <target name="compile" depends="prepare">
-    <echo message="compile entire source tree and copy "/>
-    <echo message="  .properties and .res files to build tree." />
+    <echo message="compile entire source tree and copy  .properties and .res files to build tree."/>
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="**/*.java"
            debug="${debug}"/>
-    <copydir src="${src.dir}" dest="${build.classes}" includes="**/*.properties,**/*.res"/>
+    <copy todir="${build.classes}">
+	  <fileset dir="${src.dir}" includes="**/*.properties,**/*.res"/>
+	</copy>  
   </target>
     
   <!-- =================================================================== -->
@@ -157,7 +161,7 @@ Copyright:
   <target name="compile.serialize" depends="prepare">
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           includes="${serialize.reldir}/**,${serializer.reldir}/**" 
+           includes="${serialize.reldir}/**" 
            debug="${debug}"/>
   </target>
   <target name="compile.sax" depends="prepare">
@@ -176,7 +180,6 @@ Copyright:
            debug="${debug}"/>
   </target>
   
-
   <!-- =================================================================== -->
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
@@ -274,7 +277,7 @@ Copyright:
          public="true"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
-         packagenames="org.apache.*,org.xml.*,org.w3c.*,javax.xml.parsers"
+         packagenames="org.apache.*,org.xml.*,org.w3c.*,javax.xml.*"
          author="true"
          version="true"
          use="true"
@@ -284,16 +287,16 @@ Copyright:
           <doclet name="xalanjdoc.Standard" path="${bin.dir}/xalanjdoc.jar">
             <param name="-d" value="${build.apidocs}"/>
           </doclet>
-          <group title="TrAX" packages="org.apache.trax"/>  
+          <group title="TrAX" packages="javax.xml.trax*"/>
           <group title="Xalan_Core"
                  packages="org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer"/>
           <group title="XPath" packages="org.apache.xpath*"/>
-          <group title="Xalan_Other"               packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils*:org.apache.xalan.xslt"/>
+          <group title="Xalan_Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils*:org.apache.xalan.xslt"/>
           <group title="Xalan_Extensions" packages="org.apache.xalan.lib*"/>
-          <group title="Serializers" packages="org.apache.serialize*:org.apache.xml.serialize.transition"/>
+          <group title="Serializers" packages="org.apache.serialize*:org.apache.xalan.serialize"/>
           <group title="SAX_2" packages="org.xml.sax*"/>
           <group title="DOM_2" packages="org.w3c.dom*"/>
-          <group title="XML_PARSING" packages="javax.xml.parsers"/>
+          <group title="XML_Parsing" packages="javax.xml.parsers"/>
     </javadoc>
     <!-- generate patterns.html, a TRaX "patterns design" document -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/${xalan.jar}">
@@ -317,16 +320,13 @@ Copyright:
   <!--           in the source tree                                        -->
   <!-- =================================================================== -->
   <target name="clean">
-    <property name="xalanonly-styledocs"
-              value="dtd/xsl-html40s.dtd, stylesheets/patterns.xsl, stylesheets/notice.xsl,${xdocs.dir}/xml-site-style.tar"/>
-    <deltree dir="${build.dir}"/>
-    <deltree dir="${site.root}"/>
-    <!-- Until we are ready to maintain this, comment out deletion of various 
-         doc miscellaneous files from the xml-site-style stuff
-    <delete dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/>
-    --> 
+    <delete dir="${build.dir}"/>
+    <delete dir="${site.root}"/>
+    <delete>
+      <fileset dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/>
+    </delete>
   </target>
-  
+ 
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
@@ -342,27 +342,37 @@ Copyright:
     <mkdir dir="${dist.dir}/docs"/>
     <mkdir dir="${dist.dir}/docs/apidocs"/>
     <mkdir dir="${dist.dir}/samples"/>
+	
+	<!-- Copy bin directory -->
+    <copy todir="${dist.dir}/bin">
+	  <fileset dir="${bin.dir}"/>
+	</copy>  
 
-    <!-- Copy over tools, sources and source documentation -->
-    <copydir src="${bin.dir}" dest="${dist.dir}/bin"/>
-    <copydir src="${src.dir}" dest="${dist.dir}/src"/>
-    <copydir src="${xdocs.dir}" dest="${dist.dir}/xdocs"/>
-
-    <!-- Copy over pre-built documentation and javadoc, and samples src and jar -->
-    <copydir src="${build.docs}" dest="${dist.dir}/docs"/>
-    <copydir src="${samples.dir}" dest="${dist.dir}/samples"/> 
-    <copyfile src="${build.dir}/xalansamples.jar" dest="${dist.dir}/bin/xalansamples.jar"/>
-    <copyfile src="${build.dir}/xalanservlet.jar" dest="${dist.dir}/bin/xalanservlet.jar"/>
+    <!-- Copy sources and source documentation -->
+    <copy todir="${build.dist}/src">
+      <fileset dir="${src.dir}"/>
+    </copy>
+    <copy todir="${build.dist}/xdocs">
+      <fileset dir="${xdocs.dir}"/>
+    </copy>
+    
+    <!-- Copy built documentation and javadoc, and samples src and jars -->
+    <copy todir="${build.dist}/docs">
+      <fileset dir="${build.docs}"/>
+    </copy>  
+    <copy todir="${build.dist}/samples">
+      <fileset dir="${samples.dir}"/>
+    </copy>   
+    <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
 
     <!-- Copy xalan jar into the bin directory (subject to change) -->
-    <copyfile src="${build.dir}/${xalan.jar}" dest="${dist.dir}/bin/${xalan.jar}"/>
+    <copy file="${build.dir}/${xalan.jar}" todir="${dist.dir}/bin"/>
 
-    <copyfile src="readme.html" dest="${dist.dir}/readme.html"/>      
-    <copyfile src="build.xml" dest="${dist.dir}/build.xml"/>
-    <copyfile src="build.sh" dest="${dist.dir}/build.sh"/>
-    <copyfile src="build.bat" dest="${dist.dir}/build.bat"/>
-    <copyfile src="KEYS" dest="${dist.dir}/KEYS"/>
-   
+    <copy todir="${dist.dir}">
+      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat"/>
+    </copy>
+	  
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
     <tar tarfile="${build.dir}/${dist.file}.tar" basedir="${build.dir}" includes="${dist.file}/**"/>
     <gzip src="${build.dir}/${dist.file}.tar" zipfile="${build.dir}/${dist.file}.tar.gz"/>
@@ -373,15 +383,15 @@ Copyright:
   <!-- =================================================================== -->
   <target name="site">
  
-    <mkdir dir="${site.dir}"/>
     <mkdir dir="${site.dir}/apidocs"/>
     
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar"> 
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
 	</java>	 
        
-    <!--copydir src="${build.docs}/resources" dest="${site.dir}/docs/resources"/-->
-    <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
+    <copy todir="${site.dir}/apidocs">
+	  <fileset dir="${build.apidocs}"/>
+	</copy>  
   </target>
    
 </project>
