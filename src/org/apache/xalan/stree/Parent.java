@@ -179,14 +179,26 @@ public class Parent extends Child
     m_children[childCount] = child;
     child.SetChildPosition(childCount);
 
-    DocumentImpl doc = (DocumentImpl)this.getOwnerDocument();
-    doc.incrementDocOrderCount();
-    child.setUid(doc.getDocOrderCount());
+    DocumentImpl doc;
+    try
+    {
+      doc = (DocumentImpl)this.getOwnerDocument();
+      doc.incrementDocOrderCount();
+      child.setUid(doc.getDocOrderCount());
+    }
+    catch(ClassCastException cce)
+    {
+      // TODO: Make ResultTreeFrag be an Stree DocumentFragment, or some such.
+      // No owner doc, so we can't set the document order count, 
+      // which will be a problem when result tree fragments need to 
+      // be treated like node-sets.
+      doc = null;
+    }
     child.setParent(this);
     child.setLevel((short)(getLevel() + 1));
 	  // getDocumentImpl().getLevelIndexer().insertNode(child);
     
-    if(Node.ELEMENT_NODE == child.getNodeType())
+    if((null != doc) && (Node.ELEMENT_NODE == child.getNodeType()))
     {
       SourceTreeHandler sh = doc.getSourceTreeHandler();
       TransformerImpl transformer = sh.getTransformer();

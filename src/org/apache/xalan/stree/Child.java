@@ -121,7 +121,9 @@ public class Child extends UnImplNode
   {
     Child n = this;
     while(n.getUid() > 1)
-      n = (Child)n.getParentNode(); 
+      n = (Child)n.getParentNode();
+    // if((n == null) || !(n instanceof DocumentImpl))
+    //    return null;
     return (DocumentImpl)n;
   }
 

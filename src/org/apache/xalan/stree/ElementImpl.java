@@ -353,7 +353,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     {
       for (int i = 0; i < getAttrCount(); i++)
       {
-        AttrImplNS attr = (AttrImplNS)getChildAttribute(i);
+        AttrImpl attr = (AttrImpl)getChildAttribute(i);
         if (attr.getLocalName().equals(localPart) &&
             attr.getNamespaceURI().equals(uri))
           return i;
@@ -514,6 +514,16 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
         return null;
       
     }
+    
+    /**
+     * The number of nodes (attributes) in this map. 
+     * The range of valid child node indices 
+     * is <code>0</code> to <code>length-1</code> inclusive. 
+     */
+    public int getLength()
+    {
+      return getAttrCount();
+    } // getLength():int
 
     /**
      *  Returns the <code>index</code> th item in the map. If 
