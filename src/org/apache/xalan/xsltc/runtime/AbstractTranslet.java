@@ -78,6 +78,7 @@ import org.apache.xalan.xsltc.dom.StripWhitespaceFilter;
 import org.apache.xalan.xsltc.dom.KeyIndex;
 
 // GTM added all these
+import org.apache.xalan.xsltc.runtime.DefaultSAXOutputHandler;
 import javax.xml.transform.Transformer;	
 import javax.xml.transform.Source;
 import javax.xml.transform.Result;
@@ -94,7 +95,9 @@ import javax.xml.parsers.SAXParser;
 import org.xml.sax.XMLReader;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import java.io.File;
+import java.io.Writer;
 import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
@@ -467,11 +470,63 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
     public void transform(Source xmlsrc, Result outputTarget)
         throws TransformerException 
     {
+/********************
 	doTransform( xmlsrc.getSystemId(), 
 		     ((StreamResult)outputTarget).getOutputStream() ); 
+*******************************/
+
+	// try to get the encoding from Translet
+	final Translet translet = (Translet)this;
+	String encoding = translet.getOutputEncoding();
+	if (encoding == null) encoding = "UTF-8";
+
+
+	// create a DefaultSAXOutputHandler
+	DefaultSAXOutputHandler saxHandler = null;
+	StreamResult target = (StreamResult)outputTarget;	
+	java.io.Writer writer = target.getWriter();
+	java.io.OutputStream os = target.getOutputStream();
+	String systemid = target.getSystemId();
+	if (writer != null) {
+	    // no constructor that takes encoding yet...
+	    try {
+	        saxHandler = new DefaultSAXOutputHandler(writer); 
+	    } catch (java.io.IOException e) {
+	        throw new TransformerException(
+                    "IOException creating DefaultSAXOutputHandler");
+	    }
+	} else if (os != null) {
+	    try {
+	        saxHandler = new DefaultSAXOutputHandler(os, encoding); 
+	    } catch (java.io.IOException e) {
+                throw new TransformerException(
+                    "IOException creating DefaultSAXOutputHandler");
+            }
+	} else if (systemid != null) {
+	    String filePrefix = new String("file:///");
+	    if (systemid.startsWith(filePrefix)) {
+	        systemid = systemid.substring(filePrefix.length());
+	    }
+	    try {
+                saxHandler = new DefaultSAXOutputHandler(
+		    ((OutputStream)new FileOutputStream(systemid)), 
+		    encoding);
+	    } catch (java.io.FileNotFoundException e) {
+	        throw new TransformerException(
+		    "Transform output target could not be opened.");
+	    } catch (java.io.IOException e) {
+	        throw new TransformerException(
+		    "Transform output target could not be opened.");
+	    }
+	}
+
+	// finally do the transformation...	
+	doTransform(xmlsrc.getSystemId(), saxHandler, encoding);
     }
 
-    private void doTransform(String xmlDocName, OutputStream ostream) {
+    private void doTransform(String xmlDocName, 
+	DefaultSAXOutputHandler saxHandler, String encoding) 
+    {
         try {
             final Translet translet = (Translet)this; // GTM added
 
@@ -503,12 +558,12 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
             setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
 
             // Transform the document
-            String encoding = translet.getOutputEncoding();
-            if (encoding == null) encoding = "UTF-8";
+            //String encoding = translet.getOutputEncoding();
+            //if (encoding == null) encoding = "UTF-8";
 
             //TextOutput textOutput = new TextOutput(System.out, encoding);
-            DefaultSAXOutputHandler saxHandler = new
-                DefaultSAXOutputHandler(ostream, encoding);
+            //DefaultSAXOutputHandler saxHandler = new
+             //   DefaultSAXOutputHandler(ostream, encoding);
             TextOutput textOutput = new TextOutput(saxHandler, encoding);
             translet.transform(dom, textOutput);
             textOutput.flush();
