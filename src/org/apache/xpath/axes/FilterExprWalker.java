@@ -110,7 +110,8 @@ public class FilterExprWalker extends AxesWalker
     case OpCodes.OP_VARIABLE :
       m_expr = compiler.compile(opPos);
       m_expr.exprSetParent(this);
-      if((OpCodes.OP_FUNCTION == stepType) && (m_expr instanceof org.apache.xalan.templates.FuncKey))
+      //if((OpCodes.OP_FUNCTION == stepType) && (m_expr instanceof org.apache.xalan.templates.FuncKey))
+      if(m_expr instanceof org.apache.xpath.operations.Variable)
       {
       	// hack/temp workaround
       	m_canDetachNodeset = false;
@@ -144,7 +145,10 @@ public class FilterExprWalker extends AxesWalker
   public void detach()
   {  
   	super.detach();
-  	m_exprObj.detach();
+  	if (m_canDetachNodeset)
+  	{
+  	  m_exprObj.detach();
+  	}
   	m_exprObj = null;
   }
 
