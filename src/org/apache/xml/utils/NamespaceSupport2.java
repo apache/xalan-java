@@ -293,7 +293,7 @@ public class NamespaceSupport2
 
 	// JJK: This recopying is required because processName may return
 	// a cached result. I Don't Like It. *****
-	System.arrayCopy(name,0,parts,0,3);
+	System.arraycopy(name,0,parts,0,3);
 	return parts;
     }
 
@@ -343,19 +343,16 @@ public class NamespaceSupport2
      * want all of the prefixes, use the {@link #getPrefixes}
      * method instead.</p>
      *
-     * <p><strong>Note:</strong> this will never return the empty (default) prefix;
-     * to check for a default prefix, use the {@link #getURI getURI}
-     * method with an argument of "".</p>
+     * <p><strong>Note:</strong> this will never return the empty
+     * (default) prefix; to check for a default prefix, use the {@link
+     * #getURI getURI} method with an argument of "".</p>
      *
      * @param uri The Namespace URI.
-     * @param isAttribute true if this prefix is for an attribute
-     *        (and the default Namespace is not allowed).
      * @return One of the prefixes currently mapped to the URI supplied,
      *         or null if none is mapped or if the URI is assigned to
      *         the default Namespace.
      * @see #getPrefixes(java.lang.String)
-     * @see #getURI
-     */
+     * @see #getURI */
     public String getPrefix (String uri)
     {
         return currentContext.getPrefix(uri);
@@ -371,29 +368,83 @@ public class NamespaceSupport2
      * which one you get, use the {@link #getPrefix getPrefix}
      *  method instead.</p>
      *
-     * <p><strong>Note:</strong> the empty (default) prefix is <em>never</em> included
-     * in this enumeration; to check for the presence of a default
-     * Namespace, use the {@link #getURI getURI} method with an
-     * argument of "".</p>
+     * <p><strong>Note:</strong> the empty (default) prefix is
+     * <em>never</em> included in this enumeration; to check for the
+     * presence of a default Namespace, use the {@link #getURI getURI}
+     * method with an argument of "".</p>
      *
      * @param uri The Namespace URI.
      * @return An enumeration of all prefixes declared in the
      *         current context.
      * @see #getPrefix
      * @see #getDeclaredPrefixes
-     * @see #getURI
-     */
+     * @see #getURI */
     public Enumeration getPrefixes (String uri)
     {
-        Vector prefixes = new Vector();
-        Enumeration allPrefixes = getPrefixes();
-        while (allPrefixes.hasMoreElements()) {
-            String prefix = (String)allPrefixes.nextElement();
-            if (uri.equals(getURI(prefix))) {
-                prefixes.addElement(prefix);
-            }
-        }
-        return prefixes.elements();
+	// JJK: The old code involved creating a vector, filling it
+	// with all the matching prefixes, and then getting its
+	// elements enumerator. Wastes storage, wastes cycles if we
+	// don't actually need them all. Better to either implement
+	// a specific enumerator for these prefixes... or a filter
+	// around the all-prefixes enumerator, which comes out to
+	// roughly the same thing.
+	
+//          Vector prefixes = new Vector();
+//          Enumeration allPrefixes = getPrefixes();
+//          while (allPrefixes.hasMoreElements()) {
+//              String prefix = (String)allPrefixes.nextElement();
+//              if (uri.equals(getURI(prefix))) {
+//                  prefixes.addElement(prefix);
+//              }
+//          }
+//          return prefixes.elements();
+
+	// Anonymous implementation of Enumeration filter, wrapped
+	// aroung the get-all-prefixes version of the operation.
+	return new Enumeration()
+	    {
+		private Enumeration allPrefixes;
+		private String uri;
+		private String lookahead=null;
+	     
+		// Kluge: Since one can't do a constructor on an
+		// anonymous class (as far as I know)...
+		Enumeration setup(String uri, Enumeration allPrefixes)
+		{
+		    this.uri=uri;
+		    this.allPrefixes=allPrefixes;
+		    return this;
+		}
+		
+		public boolean hasMoreElements()
+		{
+		    if(lookahead!=null)
+			return true;
+		    
+		    while(allPrefixes.hasMoreElements())
+			{
+			    String prefix=(String)allPrefixes.nextElement();
+			    if(uri.equals(getURI(prefix)))
+				{
+				    lookahead=prefix;
+				    return true;
+				}
+			}
+		    return false;
+		}
+		
+		public Object nextElement()
+		{
+		    if(hasMoreElements())
+			{
+			    String tmp=lookahead;
+			    lookahead=null;
+			    return tmp;
+			}
+		    else
+			throw new java.util.NoSuchElementException();
+		}
+	    }.setup(uri,getPrefixes());	
     }
 
 
