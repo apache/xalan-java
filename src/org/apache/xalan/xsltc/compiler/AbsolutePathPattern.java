@@ -132,6 +132,10 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
 						     GET_PARENT,
 						     GET_PARENT_SIG)));
+	if (_left instanceof AncestorPattern) {
+	    il.append(methodGen.loadDOM());
+	    il.append(SWAP);
+	}
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
 						     "getType", "(I)I")));
 	il.append(new PUSH(cpg, DOM.ROOT));
