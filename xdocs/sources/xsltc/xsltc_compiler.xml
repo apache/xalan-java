@@ -198,7 +198,7 @@
     &lt;xsl:stylesheet .......&gt;
       &lt;xsl:template match="chapter"&gt;
         &lt;xsl:text&gt;Chapter&lt;/xsl:text&gt;
-        &lt;xslvalue-of select="."&gt;
+        &lt;xsl:value-of select="."&gt;
       &lt;/xsl:template&gt;
     &lt;/xsl&gt;stylesheet&gt;</source>
 
