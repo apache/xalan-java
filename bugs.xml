@@ -155,7 +155,7 @@
 <Spr>
 <Name>DMAN4TAUNL</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>mdocserr02</TestID>
 <TestDesc>Need to raise error when document() has zero arguments</TestDesc>
 <Subsystem>XSLT</Subsystem>
