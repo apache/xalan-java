@@ -4,7 +4,7 @@
   <xsl:template match="/">
     <HTML>
       <HEAD>
-         <TITLE>Xalan for Java Version 2</TITLE>
+         <TITLE>Xalan-Java Version 2</TITLE>
       </HEAD>
       <BODY>
         <!-- H1>Xalan for Java Version 2</H1 -->
