@@ -279,62 +279,30 @@ final class XslElement extends Instruction {
 	}
 
 	if (!_ignore) {
+	    // Push handler for call to endElement()
 	    il.append(methodGen.loadHandler());
+
+	    // Push name and namespace URI
 	    _name.translate(classGen, methodGen);
-
-	    // Call BasisLibrary.getPrefix() and store result in local variable
-	    il.append(DUP);
-	    final int getPrefix = cpg.addMethodref(BASIS_LIBRARY_CLASS, "getPrefix",
-					      "(" + STRING_SIG + ")" + STRING_SIG);
-	    il.append(new INVOKESTATIC(getPrefix));
-	    il.append(DUP);
-	    local = methodGen.addLocalVariable("prefix", 
-					       org.apache.bcel.generic.Type.STRING,
-					       il.getEnd(), null);
-	    il.append(new ASTORE(local.getIndex()));
-
-	    // If prefix is null then generate a prefix at runtime
-	    final BranchHandle ifNotNull = il.append(new IFNONNULL(null));
 	    if (_namespace != null) {
-		final int generatePrefix = cpg.addMethodref(BASIS_LIBRARY_CLASS, 
-							    "generatePrefix", 
-							    "()" + STRING_SIG);
-		il.append(new INVOKESTATIC(generatePrefix));
-		il.append(DUP);
-		il.append(new ASTORE(local.getIndex()));
-
-		// Prepend newly generated prefix to the name
-		final int makeQName = cpg.addMethodref(BASIS_LIBRARY_CLASS, "makeQName", 
-				       "(" + STRING_SIG + STRING_SIG + ")" + STRING_SIG);
-		il.append(new INVOKESTATIC(makeQName));
-	    }
-	    ifNotNull.setTarget(il.append(DUP2));
-	    il.append(methodGen.startElement());
-
-	    if (_namespace != null) {
-		il.append(methodGen.loadHandler());
-		il.append(new ALOAD(local.getIndex()));
 		_namespace.translate(classGen, methodGen);
-		il.append(methodGen.namespace());
 	    }
 	    else {
-		// If prefix not known at compile time, call DOM.lookupNamespace()
-		il.append(new ALOAD(local.getIndex()));
-		final BranchHandle ifNull = il.append(new IFNULL(null));
-		il.append(methodGen.loadHandler());
-		il.append(new ALOAD(local.getIndex()));
-
-		il.append(methodGen.loadDOM());
-		il.append(methodGen.loadCurrentNode());
-		il.append(new ALOAD(local.getIndex()));
-
-		final int lookupNamespace = cpg.addInterfaceMethodref(DOM_INTF, 
-					"lookupNamespace", 
-				        "(I" + STRING_SIG + ")" + STRING_SIG);
-		il.append(new INVOKEINTERFACE(lookupNamespace, 3));
-		il.append(methodGen.namespace());
-		ifNull.setTarget(il.append(NOP));
+		il.append(ACONST_NULL);
 	    }
+
+	    // Push additional arguments
+	    il.append(methodGen.loadHandler());
+	    il.append(methodGen.loadDOM());
+	    il.append(methodGen.loadCurrentNode());
+
+	    // Invoke BasisLibrary.startXslElement()
+	    il.append(new INVOKESTATIC(
+		cpg.addMethodref(BASIS_LIBRARY_CLASS, "startXslElement",
+		      "(" + STRING_SIG 
+			  + STRING_SIG 
+			  + TRANSLET_OUTPUT_SIG 
+			  + DOM_INTF_SIG + "I)" + STRING_SIG)));
 	}
 
 	translateContents(classGen, methodGen);
