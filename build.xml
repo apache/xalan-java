@@ -89,7 +89,7 @@ Copyright:
   
   <property name="site.root" value="./xml-site"/>
   <property name="site.dir" value="${site.root}/target/xalan"/>
-  <property name="site.book" value="${xdocs.dir}/sources/xalan.xml"/>
+  <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
 
   <!-- =================================================================== -->
   <!-- Prepares the xdocs/style and the build directories                  -->
