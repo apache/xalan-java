@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -64,6 +64,7 @@ import org.w3c.dom.NamedNodeMap;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
+
 /**
  * <meta name="usage" content="experimental"/>
  * Represents a col node from a row node.
@@ -81,7 +82,7 @@ public class Column extends StreamableNode
   private static final boolean DEBUG = false;
 
   /** Column data          */
-  ColumnData m_text;
+  ColumnData m_text = null;
 
   /**
    * Constructor Column
@@ -93,14 +94,18 @@ public class Column extends StreamableNode
    * @param metadata Meta data (column header).
    */
   public Column(XStatement statement, Row parent, int columnIndex,
-                ResultSetMetaData metadata)
+                ResultSetMetaData metadata, ResultSet resultSet)
   {
 
     super(statement);
 
     m_columnIndex = columnIndex;
     m_parent = parent;
-    m_text = null;
+
+    // Get the column data right away so it is not lost when
+    // streamable mode is turned off.
+    // JCG 4/1/2001
+    m_text = new ColumnData(statement, this, resultSet);
   }
 
   /**
@@ -127,15 +132,14 @@ public class Column extends StreamableNode
    * Return the col text node (the column value).
    *
    * @return the column value
+   * @throws Exception, Let all errors be handled by the XConnection
    */
   public Node getFirstChild()
+    throws DOMException
   {
 
     if (DEBUG)
       System.out.println("In Column.getFirstChild");
-
-    if (null == m_text)
-      m_text = new ColumnData(this.getXStatement(), this);
 
     return m_text;
   }
@@ -159,7 +163,7 @@ public class Column extends StreamableNode
   /**
    * The parent node of col is a row.
    *
-   * @return The parent node of this column 
+   * @return The parent node of this column
    */
   public Node getParentNode()
   {

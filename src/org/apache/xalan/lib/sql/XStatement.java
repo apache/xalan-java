@@ -93,7 +93,7 @@ public class XStatement extends StreamableNode
 {
 
   /** Flag for DEBUG mode          */
-  private static final boolean DEBUG = false; 
+  private static final boolean DEBUG = false;
 
   /**
    * Ths JDBC Statement that is used for the query.
@@ -105,7 +105,9 @@ public class XStatement extends StreamableNode
   private PreparedStatement m_pstatement;
 
   /** Node counter          */
-  private int m_nodeCounter = 0;
+  private int               m_nodeCounter = 0;
+
+  private boolean           m_ShouldCacheNodes = true;
 
   /**
    * Get And Increment Node Counter
@@ -184,14 +186,22 @@ public class XStatement extends StreamableNode
    *
    * @throws SQLException
    */
-  public XStatement(XConnection connection, String queryString)
-          throws SQLException
+  public XStatement(
+      XConnection connection,
+      String queryString,
+      boolean shouldCacheNodes)
+      throws SQLException
   {
 
     super(null);
 
     if (DEBUG)
+    {
       System.out.println("In XStatement constructor");
+      System.out.println("Query = " + queryString);
+    }
+
+    m_ShouldCacheNodes = shouldCacheNodes;
 
     // The SQL statement which lets us execute commands against the connection.
     m_xconnection = connection;
@@ -207,14 +217,21 @@ public class XStatement extends StreamableNode
       System.out.println("Exiting XStatement constructor");
   }
 
-  public XStatement(XConnection connection, String queryString, Vector pList)
-          throws SQLException
+  public XStatement(
+      XConnection connection,
+      String queryString,
+      Vector pList,
+      boolean shouldCacheNodes)
+      throws SQLException
   {
 
     super(null);
 
     if (DEBUG)
       System.out.println("In XStatement constructor for pquery");
+
+
+    m_ShouldCacheNodes = shouldCacheNodes;
 
     // The SQL statement which lets us execute commands against the connection.
     m_xconnection = connection;
@@ -520,7 +537,14 @@ public class XStatement extends StreamableNode
 
     try
     {
-      if ((this.getNodeTest().getNamespace() == null)
+
+      if (getNodeTest() == null)
+      {
+        // We are not searching for any thing so return the row-set
+        return m_rowset;
+      }
+
+      if ((getNodeTest().getNamespace() == null)
               && (this.getNodeTest().getLocalName().equals(S_DOCELEMENTNAME)))
         return m_rowset;
       else
@@ -611,15 +635,24 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * Set whether nodes should be cached - not implemented
    *
+   * Determines if the data returned from the SQL Query should
+   * be used to build an in memory model of a DOM. If not, only
+   * the current row will be avaiable. Otherwise, build a memory
+   * model but that model will only be built up as the rows are
+   * traversed.
    *
    * @param b Flag indicating whether nodes should be cached
+   *
    */
   public void setShouldCacheNodes(boolean b)
   {
+    m_ShouldCacheNodes = b;
+  }
 
-    // Set streamable?
+  public boolean getShouldCacheNodes()
+  {
+    return m_ShouldCacheNodes;
   }
 
   /**
@@ -726,4 +759,5 @@ public class XStatement extends StreamableNode
   {
     m_last = last;
   }
+
 }

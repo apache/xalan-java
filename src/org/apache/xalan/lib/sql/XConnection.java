@@ -125,8 +125,12 @@ public class XConnection
    * For PreparedStatements, we need a place to
    * to store the parameters in a vector.
    */
-   public Vector        m_ParameterList = new Vector();
+   private Vector        m_ParameterList = new Vector();
 
+  /**
+   * Determine if we will build an in-memory copy of the SQL Data
+   */
+  private boolean      m_ShouldCacheNodes = true;
 
   // The original constructors will be kept around for backwards
   // compatibility. Future Stylesheets should use the approaite
@@ -540,7 +544,7 @@ public class XConnection
   {
     try
     {
-      return new XStatement(this, queryString);
+      return new XStatement(this, queryString, m_ShouldCacheNodes);
     }
     catch(SQLException e)
     {
@@ -581,7 +585,9 @@ public class XConnection
   {
     try
     {
-      return new XStatement(this, queryString, m_ParameterList);
+      return new XStatement(
+        this, queryString,
+        m_ParameterList, m_ShouldCacheNodes);
     }
     catch(SQLException e)
     {
@@ -637,7 +643,9 @@ public class XConnection
         }
       }
 
-      return new XStatement(this, queryString, m_ParameterList);
+      return new XStatement(
+        this, queryString,
+        m_ParameterList, m_ShouldCacheNodes);
     }
     catch(SQLException e)
     {
@@ -805,6 +813,17 @@ public class XConnection
   }
 
   /**
+   *
+   * Clear the parameter list for the Prameter based
+   * queries. Allows for XConnection reuse.
+   *
+   */
+  public void clearParameters()
+  {
+    m_ParameterList.removeAllElements();
+  }
+
+  /**
    * Close the connection to the data source.
    *
    *
@@ -836,6 +855,16 @@ public class XConnection
 
     if (DEBUG)
       System.out.println("Exiting XConnection.close");
+  }
+
+  public void enableCacheNodes()
+  {
+    m_ShouldCacheNodes = true;
+  }
+
+  public void disableCacheNodes()
+  {
+    m_ShouldCacheNodes = false;
   }
 
   protected void finalize()

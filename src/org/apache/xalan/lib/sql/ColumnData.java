@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -75,7 +75,14 @@ public class ColumnData extends StreamableNode implements Text
 {
 
   /** The column for which this is the data          */
-  Column m_parent;
+  Column  m_parent;
+
+  /**
+   * The value of this Column, this value is set inside the
+   * constructor
+   */
+  String  m_Data;
+
 
   /** Flag for debug mode         */
   private static final boolean DEBUG = false;
@@ -86,13 +93,36 @@ public class ColumnData extends StreamableNode implements Text
    *
    * @param statement Owning document
    * @param parent Owning column
+   * @throws SQLException, make the Column Class deal with the problem
+   *
    */
-  public ColumnData(XStatement statement, Column parent)
+  public ColumnData(XStatement statement, Column parent, ResultSet resultSet)
   {
 
     super(statement);
-
     m_parent = parent;
+
+    try
+    {
+      int columnIndex = m_parent.m_columnIndex;
+
+      if (DEBUG)
+          System.out.println("In ColumnData.constructor, columnIndex: "
+                           + columnIndex);
+
+
+      if (columnIndex < m_parent.m_parent.m_childCount)
+      {
+        m_Data = resultSet.getString(columnIndex + 1);
+      }
+    }
+    catch(SQLException e)
+    {
+      m_Data = null;
+    }
+
+    // Always make the column Data equal a valid value
+    if (null == m_Data) m_Data = "";
   }
 
   /**
@@ -105,60 +135,23 @@ public class ColumnData extends StreamableNode implements Text
     return Node.TEXT_NODE;
   }
 
-  /**
-   * splitText - not supported
-   *
-   *
-   * @param offset Offset where to split text
-   *
-   * @return null
-   *
-   * @throws DOMException
-   */
-  public Text splitText(int offset) throws DOMException
-  {
-
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-
-    return null;
-  }
 
   /**
-   * Return the value for this col element text node. I.e., return a String representation
+   * Return the value for this col element text node.
+   * I.e., return a String representation
    * of the data for this column in the current row.
    *
    * @return the data for this column
    *
-   * @throws DOMException
    */
-  public String getData() throws DOMException
+  public String getData()
   {
-
-    try
-    {
-      ResultSet rs = this.getXStatement().getResultSet();
-      int columnIndex = m_parent.m_columnIndex;
-
-      if (DEBUG)
-        System.out.println("In ColumnData.getData, columnIndex: "
-                           + columnIndex);
-
-      if (columnIndex < m_parent.m_parent.m_childCount)
-      {
-        String s = rs.getString(columnIndex + 1);
-        return (null != s) ? s : "";
-      }
-      else
-        return "";
-    }
-    catch (SQLException sqle)
-    {
-      return "";
-    }
+    return m_Data;
   }
 
   /**
-   * Return the value for this col element text node. I.e., return a String representation
+   * Return the value for this col element text node.
+   * I.e., return a String representation
    * of the data for this column in the current row.
    * Calls @link #getNodeValue() getNodeValue()}.
    *
@@ -179,98 +172,83 @@ public class ColumnData extends StreamableNode implements Text
    *
    * @return Number of characters in data
    */
+
   public int getLength()
   {
-
-    String s = getData();
-
-    return (null != s) ? s.length() : 0;
+    return m_Data.length();
   }
 
   /**
-   * substringData - Not supported.
+   *
+   * substringData
    *
    * @param offset Starting offset of substring
-   * @param count Number of characters isn substring 
+   * @param count Number of characters in substring
    *
-   * @return null
+   * @return String
    *
-   * @throws DOMException
    */
-  public String substringData(int offset, int count) throws DOMException
+  public String substringData(int offset, int count)
   {
-
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-
-    return null;
+    return m_Data.substring(offset, offset+count);
   }
 
   /**
-   * Not supported.
+   * Append Data to the Column Data
    *
-   * @param arg
+   * @param arg String data to append
    *
-   * @throws DOMException
    */
-  public void appendData(String arg) throws DOMException
+  public void appendData(String arg)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    StringBuffer s = new StringBuffer(m_Data);
+    s.append(arg);
+    m_Data = s.toString();
   }
 
   /**
-   * Not supported.
+   *
+   * Insert data into the Column Data
    *
    * @param offset
    * @param arg
    *
-   * @throws DOMException
    */
-  public void insertData(int offset, String arg) throws DOMException
+  public void insertData(int offset, String arg)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    StringBuffer s = new StringBuffer(m_Data);
+    s.insert(offset, arg.getBytes());
+    m_Data = s.toString();
   }
 
   /**
-   * Not supported.
+   * Delete Content from the Column Data
    *
    * @param offset
    * @param count
    *
-   * @throws DOMException
    */
-  public void deleteData(int offset, int count) throws DOMException
+  public void deleteData(int offset, int count)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
-   * Not supported.
-   *
    * @param offset
    * @param count
    * @param arg
    *
-   * @throws DOMException
    */
-  public void replaceData(int offset, int count, String arg)
-          throws DOMException
+  public void replaceData(int start, int rSize, String str)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
-   * Not supported.
-   *
    * @param data
    *
-   * @throws DOMException
    */
-  public void setData(String data) throws DOMException
+  public void setData(String data)
   {
-
-    // TODO: It would be cool to make this callable, to set 
-    // a value in the database.
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    m_Data = data;
   }
 
   /**

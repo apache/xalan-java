@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,6 +60,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
+
+import org.apache.xpath.patterns.NodeTest;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -140,39 +142,30 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
     if (DEBUG)
       System.out.println("In ColumnHeader.getNextSibling");
 
-    // try
+    NodeTest nt = this.getNodeTest();
+    if ((null == nt) || nt.getNamespace() == null)
     {
-      org.apache.xpath.patterns.NodeTest nt = this.getNodeTest();
-      if ((null == nt) || nt.getNamespace() == null)
+      if (
+        (null == nt) ||
+        nt.getLocalName().equals(XStatement.S_COLUMNHEADERNAME))
       {
-        if ((null == nt) || nt.getLocalName().equals(
-                XStatement.S_COLUMNHEADERNAME))
+        int nextIndex = m_columnIndex + 1;
+
+        if (nextIndex < m_parent.m_columnHeaders.length)
         {
-          int nextIndex = m_columnIndex + 1;
-
-          if (nextIndex < m_parent.m_columnHeaders.length)
+          if (null == m_parent.m_columnHeaders[nextIndex])
           {
-            if (null == m_parent.m_columnHeaders[nextIndex])
-              m_parent.m_columnHeaders[nextIndex] =
-                new ColumnHeader(getXStatement(), m_parent, nextIndex,
-                                 m_metaData);
-
-            return m_parent.m_columnHeaders[nextIndex];
+            m_parent.m_columnHeaders[nextIndex] =
+              new ColumnHeader(getXStatement(),m_parent,nextIndex,m_metaData);
           }
-          else if(nt == null)
-          {
-            return new Row(getXStatement(), m_parent);
-          }
-          else
-            return null;
+          return m_parent.m_columnHeaders[nextIndex];
         }
+        else if(nt == null)
+        {
+          return new Row(getXStatement(), m_parent, null);
+        }
+        else return null;
       }
-    }
-
-    // catch(SQLException sqle)
-    {
-
-      // diagnostics?
     }
 
     return null;
@@ -271,7 +264,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
    *
    * @param name Attribute name
    *
-   * @return Attribute with given name or null if not found 
+   * @return Attribute with given name or null if not found
    */
   public Node getNamedItem(String name)
   {
@@ -294,7 +287,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
    *
    * @param index Index of attribut to get
    *
-   * @return Attribute node at given index or null if not found  
+   * @return Attribute node at given index or null if not found
    */
   public Node item(int index)
   {
@@ -360,7 +353,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * Remove an attribute - Not supported 
+   * Remove an attribute - Not supported
    *
    *
    * @param name
@@ -378,7 +371,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * Set namespaced attribute - Not supported 
+   * Set namespaced attribute - Not supported
    *
    *
    * @param arg
