@@ -693,7 +693,7 @@ public class TransformerHandlerImpl
    */
   public void fatalError(SAXParseException e) throws SAXException
   {
-System.err.println("In fatalError!");
+
     clearCoRoutine(e);
 
     if (m_errorHandler != null)
