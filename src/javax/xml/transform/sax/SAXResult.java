@@ -125,7 +125,7 @@ public class SAXResult implements Result {
      * @param handler A non-null LexicalHandler for
      * handling lexical parse events.
      */
-    void setLexicalHandler(LexicalHandler handler) {
+    public void setLexicalHandler(LexicalHandler handler) {
         this.lexhandler = lexhandler;
     }
 
@@ -134,7 +134,7 @@ public class SAXResult implements Result {
      *
      * @return A LexicalHandler, or null.
      */
-    LexicalHandler getLexicalHandler() {
+    public LexicalHandler getLexicalHandler() {
         return lexhandler;
     }
 
