@@ -56,16 +56,10 @@
  */
 package org.apache.xpath.compiler;
 
-import java.util.Vector;
-
-import org.apache.xml.utils.IntVector;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.ObjectVector;
-import org.apache.xml.utils.IntVector;
-import org.apache.xml.utils.ObjectVector;
-import org.apache.xml.utils.QName;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
 
 /**
  * This class represents the data structure basics of the XPath
