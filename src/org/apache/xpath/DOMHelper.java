@@ -443,11 +443,11 @@ public class DOMHelper
 
   /**
    * <meta name="usage" content="internal"/>
-   * Get the depth level of this node in the tree (count from 1).
+   * Get the depth level of this node in the tree (equals 1 for
+   * a parentless node).
    *
-   * NEEDSDOC @param n
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param n Node to be examined.
+   * @return the number of ancestors, plus one
    */
   public short getLevel(Node n)
   {
@@ -463,13 +463,23 @@ public class DOMHelper
   }
 
   /**
-   * Given a prefix and a namespace context, return the expanded namespace.
+   * Given an XML Namespace prefix and a context in which the prefix
+   * is to be evaluated, return the Namespace Name this prefix was 
+   * bound to. Note that DOM Level 3 is expected to provide a version of
+   * this which deals with the DOM's "early binding" behavior.
+   * 
    * Default handling:
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param namespaceContext
+   * @param prefix String containing namespace prefix to be resolved, 
+   * without the ':' which separates it from the localname when used 
+   * in a Node Name. The empty sting signifies the default namespace
+   * at this point in the document.
+   * @param namespaceContext Element which provides context for resolution.
+   * (We could extend this to work for other nodes by first seeking their
+   * nearest Element ancestor.)
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a String containing the Namespace URI which this prefix
+   * represents in the specified context.
    */
   public String getNamespaceForPrefix(String prefix, Element namespaceContext)
   {
@@ -480,38 +490,47 @@ public class DOMHelper
 
     if (prefix.equals("xml"))
     {
-      namespace = QName.S_XMLNAMESPACEURI;
+      namespace = QName.S_XMLNAMESPACEURI; // Hardcoded, per Namespace spec
+    }
+	else if(prefix.equals("xmlns"))
+    {
+	  // Hardcoded in the DOM spec, expected to be adopted by
+	  // Namespace spec. NOTE: Namespace declarations _must_ use
+	  // the xmlns: prefix; other prefixes declared as belonging
+	  // to this namespace will not be recognized and should
+	  // probably be rejected by parsers as erroneous declarations.
+      namespace = "http://www.w3.org/2000/xmlns/"; 
     }
     else
     {
+	  // Attribute name for this prefix's declaration
+	  String declname=(prefix=="")
+			? "xmlns"
+			: "xmlns:"+prefix;
+					   
+	  // Scan until we run out of Elements or have resolved the namespace
       while ((null != parent) && (null == namespace)
              && (((type = parent.getNodeType()) == Node.ELEMENT_NODE)
                  || (type == Node.ENTITY_REFERENCE_NODE)))
       {
         if (type == Node.ELEMENT_NODE)
         {
-          NamedNodeMap nnm = parent.getAttributes();
-
-          for (int i = 0; i < nnm.getLength(); i++)
-          {
-            Node attr = nnm.item(i);
-            String aname = attr.getNodeName();
-            boolean isPrefix = aname.startsWith("xmlns:");
-
-            if (isPrefix || aname.equals("xmlns"))
-            {
-              int index = aname.indexOf(':');
-              String p = isPrefix ? aname.substring(index + 1) : "";
-
-              if (p.equals(prefix))
-              {
+			
+			// Look for the appropriate Namespace Declaration attribute,
+			// either "xmlns:prefix" or (if prefix is "") "xmlns".
+			// TODO: This does not handle "implicit declarations"
+			// which may be created when the DOM is edited. DOM Level
+			// 3 will define how those should be interpreted. But
+			// this issue won't arise in freshly-parsed DOMs.
+			
+	        // NOTE: declname is set earlier, outside the loop.
+			Attr attr=((Element)parent).getAttributeNode(declname);
+			if(attr!=null)
+			{
                 namespace = attr.getNodeValue();
-
                 break;
-              }
-            }
-          }
-        }
+			}
+		}
 
         parent = getParentOfNode(parent);
       }
