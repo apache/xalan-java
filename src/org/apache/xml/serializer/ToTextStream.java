@@ -662,7 +662,7 @@ void writeNormalizedChars(
         // no namespace support for HTML
     }    
 
-    public void flushPending()
+    public void flushPending() throws org.xml.sax.SAXException
     {
         try
         {

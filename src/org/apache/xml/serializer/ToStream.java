@@ -2700,7 +2700,7 @@ abstract public class ToStream extends SerializerBase
      * This method flushes any pending events, which can be startDocument()
      * closing the opening tag of an element, or closing an open CDATA section.
      */
-    public void flushPending()
+    public void flushPending() throws SAXException
     {
         try
         {
