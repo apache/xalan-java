@@ -843,8 +843,9 @@ public final class TransformerImpl extends Transformer
 	// Get a list of all the defined properties
 	Enumeration names = properties.propertyNames();
 	while (names.hasMoreElements()) {
+	    // Note the use of get() instead of getProperty()
 	    String name  = (String) names.nextElement();
-	    String value = (String) properties.getProperty(name);
+	    String value = (String) properties.get(name);
 
 	    // Pass property value to translet - override previous setting
 	    if (name.equals(OutputKeys.ENCODING)) {
