@@ -594,10 +594,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int _currentChild;
 	private int _last = -1;
 
-	public NodeIterator setStartNode(final int node) {
-	    if (node != _startNode) _last = -1;
-
+	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = NULL;
+		if (node != _startNode) _last = -1;
 		_startNode = node;
 		if (_includeSelf) {
 		    _currentChild = -1;
@@ -710,6 +710,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = NULL;
 		_currentChild = hasChildren(node)
 		    ? _offsetOrChild[_startNode = node] : END;
 		return resetPosition();
@@ -762,6 +763,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = NULL;
 		_currentChild = hasChildren(node)
 		    ? _offsetOrChild[_startNode = node] : END;
 		return resetPosition();
@@ -846,6 +848,7 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = NULL;
 		_node = _startNode = node;
 		return resetPosition();
 	    }
@@ -975,6 +978,7 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = NULL;
 		int tmp = NULL;
 		_startNode = node;
 		_mom = _parent[node];
@@ -1068,6 +1072,7 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = _parent[node];
 		_node = _startNode = node;
 		_mom  = _parent[_startNode];
 		return resetPosition();
@@ -1132,6 +1137,7 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = _parent[node];
 		_startNode = node;
 		// find rightmost descendant (or self)
 		int current;
@@ -1212,6 +1218,7 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		if (node >= _firstAttributeNode) node = _parent[node];
 		if (_includeSelf)
 		    _startNode = node;
 		else
