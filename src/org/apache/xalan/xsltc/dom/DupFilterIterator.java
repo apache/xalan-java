@@ -75,9 +75,6 @@ public final class DupFilterIterator extends NodeIteratorBase {
     private int _last = 0;              // the number of nodes in this iterator
     private int _current = 0;
 
-    // NOTE: NodeIteratorBase has a _startNode global variable
-    //private int _start = -1;
-
     /**
      * Creates a new duplicate filter iterator based on an existing iterator.
      * This iterator should be used with union expressions and other complex
@@ -89,8 +86,6 @@ public final class DupFilterIterator extends NodeIteratorBase {
     public DupFilterIterator(NodeIterator source) {
 	// Save a reference to the source iterator
 	_source = source;
-
-	// THIS HERE IS WHAT WE MIGHT WANT TO DO FOR ALL ABSOLUTE ITERATORS
 
 	// Cache contents of id() or key() index right away. Necessary for
 	// union expressions containing multiple calls to the same index, and
@@ -119,9 +114,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
 	    _startNode = node;
 	    _last = 0;
 	    _source.setStartNode(node);
-		
-	    if ((_data == null) || (_data.length != INIT_DATA_SIZE))
-		_data = new int[INIT_DATA_SIZE];
+	    _data = new int[INIT_DATA_SIZE];
 
 	    // Gather all nodes from the source iterator, eliminate dups
 	    while ((node = _source.next()) != END) {
