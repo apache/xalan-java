@@ -90,9 +90,9 @@ public class ExsltDatetime
     static final String d = "yyyy-MM-dd";
     static final String gym = "yyyy-MM";
     static final String gy = "yyyy";
-    static final String gmd = "MM-dd";
-    static final String gm = "MM";
-    static final String gd = "dd";
+    static final String gmd = "--MM-dd";
+    static final String gm = "--MM--";
+    static final String gd = "---dd";
     static final String t = "HH:mm:ss";
 
     /**
@@ -306,7 +306,9 @@ public class ExsltDatetime
      * The permitted formats are as follows: 
      *    xs:dateTime (CCYY-MM-DDThh:mm:ss) 
      *    xs:date (CCYY-MM-DD) 
-     *    xs:gYearMonth (CCYY-MM) 
+     *    xs:gYearMonth (CCYY-MM)
+     *    xs:gMonth (--MM--) 
+     *    xs:gMonthDay (--MM-DD)
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
     public static XNumber monthInYear(String datetimeIn)
@@ -317,7 +319,7 @@ public class ExsltDatetime
       if (datetime == null)
         return new XNumber(Double.NaN);      
       
-      String[] formats = {dt, d, gym};
+      String[] formats = {dt, d, gym, gm, gmd};
       return new XNumber(getNumber(datetime, formats, Calendar.MONTH));
     }
     
@@ -821,7 +823,7 @@ public class ExsltDatetime
       String leader = "";
       String datetime = in;
       String zone = "";
-      if (in.charAt(0)=='-')
+      if (in.charAt(0)=='-' && !in.startsWith("--"))
       {
         leader = "-"; //  '+' is implicit , not allowed
         datetime = in.substring(1);
@@ -931,11 +933,6 @@ public class ExsltDatetime
         }
         catch (ParseException pe)
         {
-          // If ParseException occurred during input string, input is invalid.
-          // If the ParseException occurred at the end of the input string,
-          // another format may work.
-          if (pe.getErrorOffset() < in.length())
-            return "";
         }
       }
       return "";
