@@ -1,3 +1,190 @@
+<s3 title="Changes for &xslt4j; 2.2.D12 and 2.2.D13">
+<p>&xslt4j; 2.2.D13 is intended to be the final release in the current series of Developer releases incorporating
+     the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
+     standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
+     <p>Beginning with this release, xalan.jar contains just the &xslt4j; implementation. The source files for the SAX level 2, DOM 2, 
+     and JAXP 1.1 interfaces are pulled from the xml-commons repository (<resource-ref idref="xmlapirepository"/>), and are built as
+     xml-apis.jar. These interfaces are shared by a number of tools, so placing them in their own jar simplifies coordination and reduces 
+     the risk of duplication. <em>To run &xslt4j;, you must add xml-apis.jar to your classpath.</em> See <link idref="getstarted"
+     anchor="classpath">Setting up the system class path</link>.</p>
+     <p>Beginning with this release, we are placing two distribution files in the <resource-ref idref="xslt4j-distdir"/>: a binary
+     distribution file, which includes everything needed to run &xslt4j; and build applications, and a source distribution. For
+     more information, see <link idref="getstarted" anchor="download">Downloading what you need</link>.</p>
+     <p>This release also includes <link idref="samples" anchor="validatexmlinput">ValidateXMLInput</link>, a sample that illustrates 
+     how you can verify that the XML input you are transforming adheres to its document type. It is in the samples/validate subdirectory
+     along with a Validate utility that you can use to validate XML files without performing a transformation.</p>     
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath VariableStack.java<br/><ref>Committer's log entry: </ref>Bugzilla3995: Removed "final" keywords. That doesn't by itself
+ provide the requested enhancement, but it makes prototyping one
+ a bit easier.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bugzilla 3384. See comments in the toDouble method; I suspect this may be 
+wasted micro-optimization.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Is " 12 34 . 56 78 " really considered acceptable?
+ Or should whitespace within the value be treated as NAN?<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>10/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>Updated build number to 2.2.D12.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>10/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>Updated build number to 2.2.D12.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemLiteralResult.java<br/><ref>Committer's log entry: </ref>Fix for Bugzilla1133, LRE21: xsl:extension-element-prefixes should be 
+considered an exclusion<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemLiteralResult.java<br/><ref>Committer's log entry: </ref>Fix for Bugzilla 3464. Exposes errors in conformance tests namespace93 and 94.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>10/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize CharInfo.java
+ HTMLEntities.res XMLEntities.res<br/><ref>Committer's log entry: </ref>Fix Bugzilla#4000, force reading of *Entites.res to be in UTF-8; added 
+comments
+ PR: Bugzilla#4000<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Avoid overgenerality of isDigits
+ Combine most character tests into a single switch for performance
+ Reject values with embedded (as opposed to leading/trailing) whitespace.
+
+ Note that this is "more correct:" than the old solution of calling Java's
+ toDouble, since (I think) XSLT doesn't officially accept leading + or
+ scientific notation. If folks want to accept those notations, an
+ extension function specifically for that purpose seems the
+ simplest/safest/most-portable solution.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Gaaah. Typo.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>10/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java
+ java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Added: </ref>java/src/org/apache/xalan Version.java<br/><ref>Committer's log entry: </ref>Added new org.apache.xalan.Version class for better versioning info;
+ Deprecated org.apache.xalan.processor.XSLProcessorVersion;
+ Updated EnvironmentCheck with this info<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan Version.java<br/><ref>Committer's log entry: </ref>Be careful with parentheses when using ?: operator.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java
+ IncrementalSAXSource_Xerces.java<br/><ref>Removed: </ref>java/src/org/apache/xml/dtm/ref CoroutineSAXParser.java
+ CoroutineSAXParser_Xerces.java<br/><ref>Committer's log entry: </ref>CoroutineParser API was replaced by IncrementalSAXSource; dropping obsolete 
+code.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/18/2001<br/><ref>Removed: </ref>java/src/org/apache/xml/dtm/ref CoroutineSAXFilterTest.java<br/><ref>Committer's log entry: </ref>CoroutineParser API was replaced by IncrementalSAXSource; dropping obsolete 
+code.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan Version.java<br/><ref>Committer's log entry: </ref>Whups; sloppy: Actually, problem was that the latter two arguments to ?:
+ must agree in datatype. Dropped in a quick-and-dirty int-to-string hint.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Preliminary Xerces-2 support. Doesn't leverage Xerces-2 incremental features
+ yet, but should at least compile and run under the new parser without
+ breaking support for the old one. Still working on improving this.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>10/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemApplyTemplates.java
+ ElemCallTemplate.java<br/><ref>Committer's log entry: </ref>Bugzilla 4218: Make sure that the stack frame gets restored to the frame that 
+was previously set. Just calling unlink() may restore to the wrong frame, and 
+get us out of synch.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/18/2001<br/><ref>Modified: </ref>java/src/org/xml/sax/helpers ParserAdapter.java<br/><ref>Committer's log entry: </ref>Java 1.1.8 back-compatability requires not using Java 1.2 collection calls.
+ (Still waiting for community consensus before abandoning 1.1)<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>10/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath VariableStack.java<br/><ref>Committer's log entry: </ref>Bugzilla 4218: Make sure that the stack frame gets restored to the frame that 
+was previously set. Just calling unlink() may restore to the wrong frame, and 
+get us out of synch.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref
+ IncrementalSAXSource_Xerces.java<br/><ref>Committer's log entry: </ref>In Xerces2, SAXParser no longer seems to inherit from
+ XMLReader; explicit casts needed to work around that.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>10/23/2001<br/><ref>Removed: </ref>java/src/javax/xml/parsers SAXParserFactory.java
+ SAXParser.java ParserConfigurationException.java
+ package.html FactoryFinder.java
+ FactoryConfigurationError.java
+ DocumentBuilderFactory.java DocumentBuilder.java<br/><ref>Committer's log entry: </ref>Remove javax.xml.parsers package from xalan sources since we no longer ship 
+with these files<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize CharInfo.java<br/><ref>Committer's log entry: </ref>Microsoft VJ++ workaround. Should never arise in any reasonably
+ standards-compliant Java environment, but VJ++ isn't...<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize CharInfo.java<br/><ref>Committer's log entry: </ref>Additional "big scary" docs for Microsoft VJ++ workaround.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>10/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/compiler XPathParser.java<br/><ref>Committer's log entry: </ref>Added fix for bug reported by Myriam for match="//x/a" patterns. On the
+ second "/" on "//", the parser wasn't swallowing the token, which caused
+ the "x" pattern to be ancestor instead of parent. If you don't have this fix,
+ it will cause 'a' to be matched when it has any ancestor that is 'x'.
+ This fix should be localized to only match patterns. The reason this probably
+ wasn't reported before, is because "//" at the head of a match pattern is
+ pretty useless, "x/a" being equivelent.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>10/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToHTML.java<br/><ref>Committer's log entry: </ref>By longstanding request, don't URL-escape spaces. This is consistent with the
+ specification, and the opinion of the right thing to do by several people on 
+the
+ XSL working group, including Mike Kay, and by the LotusXSLTeam.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/30/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLTElementDef.java<br/><ref>Committer's log entry: </ref>Improved safety net: When running with Xerces2, the "uri" field may be null.
+ (Also reordered tests to encourage optimization of code.)<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/31/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Add command-line switches for the options introduced at same time as DTM, to 
+make testing those features easier.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/02/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetPIHandler.java<br/><ref>Committer's log entry: </ref>Bugzilla 4575: Add the EOL character to the list of token delimiters.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/02/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java
+ IncrementalSAXSource_Xerces.java<br/><ref>Committer's log entry: </ref>Leverage Xerces-2 incremental parsing feature, when possible,
+
+ Making this compile _and_ run under both the old and new versions of
+ the parser involves a lot of reflection... especially since Xerces-2
+ no longer provides a way to directly request incremental delivery
+ of SAX events; we now have to assemble that concept ourselves,
+ using XNI components.
+
+ Note that if you pass an existing Xerces-2 SAXParser into the
+ IncrementalSAXSource_Xerces wrapper, there is currently no way
+ for us to access its incremental controls. In that case, we are
+ forced to fall back on the _Filter solution and coroutines.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/02/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bugzilla 4396: Defaulting to the super hashCode(). This causes us to create 
+a string, but at this point this only seems to get called in key processing. 
+Maybe we can live with it?<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>11/02/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>Use appropriate context class loader as done in JAXP's FactoryFinder;
+ Added various new jars; added checkAntVersion()<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>11/04/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize HTMLEntities.res<br/><ref>Committer's log entry: </ref>Commented out mainly greek entities that Netscape seems not to handle.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>11/04/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize Encodings.java
+ SerializerToHTML.java SerializerToText.java
+ SerializerToXML.java<br/><ref>Committer's log entry: </ref>Progress on Bugzilla Bug 1639 : Xalan escaping characters for ISO encodings 
+other than ISO-8859-1.
+
+ The problem is that you can't tell from the Java Writers if they can encode
+ a character, and you can't tell which character they are going to encode to.
+ So...
+
+ Do a one-time-only reflection to see if a sun.io.CharToByteConverter for the
+ specific encoding is available. I'm hoping this will work for most or all
+ platforms... but only some extensive testing will tell for sure. If the
+ CharToByteConverter is not available, it falls back to the old behavior.
+ If it is available, use the canConvert method to see if the UTF-16 character
+ can be encoded. If it can be, just send it to the writer, otherwise escape 
+it.
+ This doesn't need to be done for &lt; 128, so I'm suspecting the performance
+ hit won't be too bad.
+
+ The alternative is to create lookups for all the encodings that tell which
+ blocks of characters can't be encoded. Too much work for me this
+ weekend, though it remains a possibility. I want to try the use of
+ CharToByteConverter.canConvert first.
+
+ One problem I've encountered is that CharToByteConverter.canConvert
+ returns true for (utf-16 code points) 127-159. And so they go unescaped.
+ How bad of a problem is this? This seems like a bug in the Java
+ CharToByteConverter for ISO-8859-7.
+
+ It remains to be seen if this problem exists with other encodings, or if this 
+is
+ the best approach.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>11/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToXML.java<br/><ref>Committer's log entry: </ref>Check for control characters for canConvert, and return false if it is a 
+control
+ character, so that it will be escaped.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>11/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Don't set the ErrorHandler if it is already set.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>11/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Minor fix to JavaDoc for setRecursionLimit.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/operations Operation.java
+ UnaryOperation.java<br/><ref>Committer's log entry: </ref>Bugzilla 4679: Accessors for left and right operands<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToHTML.java<br/><ref>Committer's log entry: </ref>Do not escape the percent '%' character anymore.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes LocPathIterator.java
+ OneStepIterator.java PredicatedNodeTest.java<br/><ref>Committer's log entry: </ref>Bugzilla 4638: When we are in a subcontext we need to clip off the predicate 
+when evaluating. If not, we end up with the wrong nodeset. This also relates to 
+test position68.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/07/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ ClonerToResultTree.java ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Bugzilla 4607; allow explicitly cloning namespace nodes rather than
+ throwing exception.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>11/07/2001<br/><ref>Removed: </ref>java/src/META-INF/services
+ javax.xml.parsers.SAXParserFactory
+ javax.xml.parsers.DocumentBuilderFactory<br/><ref>Committer's log entry: </ref>Remove services/javax.xml.parsers.* references; we assume parsers have their 
+own<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>11/07/2001<br/><ref>Removed: </ref>java/src/javax/xml/transform ErrorListener.java
+ FactoryFinder.java OutputKeys.java Result.java
+ Source.java SourceLocator.java Templates.java
+ Transformer.java
+ TransformerConfigurationException.java
+ TransformerException.java TransformerFactory.java
+ TransformerFactoryConfigurationError.java
+ URIResolver.java overview.html package.html
+ java/src/javax/xml/transform/dom DOMLocator.java
+ DOMResult.java DOMSource.java package.html
+ java/src/javax/xml/transform/sax SAXResult.java
+ SAXSource.java SAXTransformerFactory.java
+ TemplatesHandler.java TransformerHandler.java
+ package.html
+ java/src/javax/xml/transform/stream StreamResult.java
+ StreamSource.java package.html
+ java/src/org/w3c/dom Attr.java CDATASection.java
+ CharacterData.java Comment.java DOMException.java
+ DOMImplementation.java Document.java
+ DocumentFragment.java DocumentType.java
+ Element.java Entity.java EntityReference.java
+ NamedNodeMap.java Node.java NodeList.java
+ Notation.java ProcessingInstruction.java Text.java
+ package.html
+ java/src/org/w3c/dom/ranges DocumentRange.java Range.java
+ RangeException.java package.html
+ java/src/org/w3c/dom/traversal DocumentTraversal.java
+ NodeFilter.java NodeIterator.java TreeWalker.java
+ package.html
+ java/src/org/xml/sax AttributeList.java Attributes.java
+ ContentHandler.java DTDHandler.java
+ DocumentHandler.java EntityResolver.java
+ ErrorHandler.java HandlerBase.java InputSource.java
+ Locator.java Parser.java SAXException.java
+ SAXNotRecognizedException.java
+ SAXNotSupportedException.java
+ SAXParseException.java XMLFilter.java
+ XMLReader.java package.html
+ java/src/org/xml/sax/ext DeclHandler.java
+ LexicalHandler.java package.html
+ java/src/org/xml/sax/helpers AttributeListImpl.java
+ AttributesImpl.java DefaultHandler.java
+ LocatorImpl.java NamespaceSupport.java
+ ParserAdapter.java ParserFactory.java
+ XMLFilterImpl.java XMLReaderAdapter.java
+ XMLReaderFactory.java package.html<br/><ref>Committer's log entry: </ref>Use a condensed copy of xml-commons sources instead of individual sources;
+ remove xalan-specific copies of commons files<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/08/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/templates ElemNumber.java
+ java/src/org/apache/xml/utils/res XResources_cy.java
+ XResources_el.java XResources_ja_JP_A.java
+ XResources_ja_JP_HA.java XResources_ja_JP_HI.java
+ XResources_ja_JP_I.java XResources_zh_CN.java
+ XResources_zh_TW.java<br/><ref>Committer's log entry: </ref>Bugzilla 4601: Change ElemNumber to use a long integer for the value of the 
+number. This will allow us to format bigger numbers. As far as japanese 
+multipliers, we decided to document as a xalan limitation the fact that the 
+last 2 japanese multipliers will not be supported. If anyone has a strong and 
+valid user case for this, we will reconsider. For now, we could not justify the 
+expense of moving to BigInteger to support these multipliers.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/08/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Bugzilla 4735: We should at least report an error when we overflow DTM 
+addressing...<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/08/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor ProcessorInclude.java<br/><ref>Committer's log entry: </ref>Bugzilla 4355: Make sure that when finding out if a stylesheet imports 
+itself, we use the resolved href.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/08/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath NodeSetDTM.java<br/><ref>Committer's log entry: </ref>Bugzilla 4158: Make sure we get the current, not the node pointed to by 
+m_next, which has been already incremented.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/09/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Bugzilla 4344: discard attrs which don't have an element to belong to<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/09/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Bugzilla 4344: more efficient.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Reorder slightly and add test to not synthesize xmlns:xsl declaration
+ if one was already present on the DOM's root element.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan Version.java<br/><ref>Committer's log entry: </ref>D13 internal version number update<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>D13 internal version number update<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
+</s3>
 <s3 title="Changes for &xslt4j; 2.2.D11">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>09/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
  java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java

@@ -72,28 +72,22 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.2.D11</link></li>
+    <li><link anchor="done">Changes since version 2.2.D13</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D11">
-     <p>&xslt4j-current; is intended to be the final release in the current series of Developer releases incorporating
+     <s3 title="Changes since &xslt4j; 2.2.D13">
+     <p>&xslt4j; 2.2.D14 is intended to be the final release in the current series of Developer releases incorporating
      the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
      standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
-     <p>Beginning with this release, xalan.jar contains just the &xslt4j; implementation. The source files for the SAX level 2, DOM 2, 
+     <p>Beginning with 2.2.D12, xalan.jar contains just the &xslt4j; implementation. The source files for the SAX level 2, DOM 2, 
      and JAXP 1.1 interfaces are pulled from the xml-commons repository (<resource-ref idref="xmlapirepository"/>), and are built as
      xml-apis.jar. These interfaces are shared by a number of tools, so placing them in their own jar simplifies coordination and reduces 
      the risk of duplication. <em>To run &xslt4j;, you must add xml-apis.jar to your classpath.</em> See <link idref="getstarted"
      anchor="classpath">Setting up the system class path</link>.</p>
-     <p>Beginning with this release, we are placing two distribution files in the <resource-ref idref="xslt4j-distdir"/>: a binary
-     distribution file, which includes everything needed to run &xslt4j; and build applications, and a source distribution. For
-     more information, see <link idref="getstarted" anchor="download">Downloading what you need</link>.</p>
-     <p>This release also includes <link idref="samples" anchor="validatexmlinput">ValidateXMLInput</link>, a sample that illustrates 
-     how you can verify that the XML input you are transforming adheres to its document type. It is in the samples/validate subdirectory
-     along with a Validate utility that you can use to validate XML files without performing a transformation.</p>     
      &done-j;
      </s3>
      <anchor name="other"/>
