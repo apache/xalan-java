@@ -59,6 +59,158 @@
 <s1 title="History of software changes">
 <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
 &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.5.1">
+<p> Core (Non-XSLTC) source code updates:</p>
+<ul><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xslt EnvironmentCheck.java xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>
+Applying Sarah McNamara's (mcnamara@ca.ibm.com) patches to update
+version numbers in XalanJ.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/10<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan commandline_xsltc.xml commandline.xml history.xml index.xml readme.xml resources.xml samples.xml whatsnew.xml xsltc_history.xml xsltc_usage.xml xml-xalan/java/xdocs/sources entities.ent xalan-jlocal.xml xalan-jsite.xml xml-xalan/java commits.xml build.xml xml-xalan/java/xdocs/style/stylesheets done.xsl xml-xalan/java/xdocs xml-site-style.tar.gz<br/><ref>Committer's log entry: </ref>
+Sarah McNamara's (mcnamara@ca.ibm.co) documentation patch.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java<br/><ref>Committer's log entry: </ref>
+Added comments before a couple of messages to assist translators, and fixed a typo in the class name mentioned in a message.
+<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java xml-xalan/java/src/org/apache/xml/dtm/ref DTMAxisIteratorBase.java EmptyIterator.java<br/><ref>Committer's log entry: </ref>
+Applying patches from Igor Hersht (igorh@ca.ibm.com) for bug 15200 and
+bug 18585.
+
+Pulled EmptyIterator class out of SAXImpl to allow for more widespread use.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/23<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan faq.xml<br/><ref>Committer's log entry: </ref>
+New FAQ from Christine Li (jycli@ca.ibm.com) for using Xalan in Tomcat
+with JDK 1.4.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2003/04/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java<br/><ref>Committer's log entry: </ref>
+Fix for array out of bounds exception in findNamespaceContext, where the index was allowed to go to -1.  This is a blind fix, and someone who knows the code better should take a look to see what they think.
+<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>2003/04/23<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemCallTemplate.java<br/><ref>Committer's log entry: </ref>
+Made it a static error in compose(...) if a reference is made to a non-existent template.  Note this might cause some existing stylesheets to not work, since the error would never have been flagged if the code was not run.  Note the old code was marked for %REVIEW%, so I don't think this was ever resolved.  I think it's clear that this should be a static error.
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/04/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>
+Change in comments only. Deleted old commented out (and incorrect)
+double-checked locking code.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemElement.java<br/><ref>Committer's log entry: </ref>
+Duplicate trace was event being issued.  One from ElemElement and then 
+from its parent class: ElemUse.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Dropping properties files that contain English messages.
+xml-xalan/java/src/org/apache/xalan/res/XSLTErrorResources.properties has been
+replaced by xml-xalan/java/src/org/apache/xalan/res/XSLTErrorResources.java.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.properties<br/><ref>Committer's log entry: </ref>
+Dropping properties files that contain English messages.
+xml-xalan/java/src/org/apache/xpath/res/XPATHErrorResources.properties has been
+replaced by xml-xalan/java/src/org/apache/xpath/res/XPATHErrorResources.java.
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/04/30<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltStrings.java Extensions.java xml-xalan/java/src/org/apache/xml/serializer CharInfo.java<br/><ref>Committer's log entry: </ref>
+Changed incorrect double-check locking code with an inner class
+with a static field.  Synchronization is covered by the class loader.
+Loading happens when first referenced. A cool, efficient, safe 
+way to lazy load a static field.
+
+PR: bugzilla 19029
+Obtained from: Henry Zongaro
+Submitted by: Brian Minchau
+Reviewed by: Henry Zongaro
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToHTMLStream.java ToStream.java ToXMLSAXHandler.java<br/><ref>Committer's log entry: </ref>
+Cleared two helper fields, m_elementURI and m_elementLocalName in endElement()
+Both of these fields are out of scope after the element is ended
+so it is correct to null them out at endElement()
+
+PR: bugzilla 19388
+Obtained from: bruno@outerthought.org (Bruno Dumon) and Brian Minchau
+Submitted by: bruno@outerthought.org (Bruno Dumon)
+Reviewed by: Brian Minchau
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToHTMLStream.java<br/><ref>Committer's log entry: </ref>
+endDTD() for ToHTMLStream now does nothing. It used to incorrectly
+write out some closing characters, but that was already hanled in startDocumentIntermal()
+
+PR: 19587
+Submitted by: bruno@outerthought.org (Bruno Dumon)
+Reviewed by: Brian Minchau
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToStream.java<br/><ref>Committer's log entry: </ref>
+Performance fix for double buffering.  Don't use WriterToUTF8Buffered if the 
+writer class is "BufferedServletOutputStream".
+
+PR: bugzilla 19474
+Submitted by: Brian Minchau
+Reviewed by: Ilene Seelemann
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer SerializerBase.java<br/><ref>Committer's log entry: </ref>
+Fix for flushing occuring in trace code even when tracing is not being done.
+
+PR: bugzilla 19471
+Submitted by: Brian Minchau
+Reviewed by: Ilene Seelemann
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/05/07<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan usagepatterns.xml<br/><ref>Committer's log entry: </ref>
+Serializer properties files have moved to the new org.apache.xml.serializer
+package.  Corrected part of documentation that didn't yet reflect that.
+<br/><br/></li>
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer SerializerBase.java ToHTMLSAXHandler.java ToHTMLStream.java ToSAXHandler.java ToStream.java ToTextSAXHandler.java ToTextStream.java ToXMLSAXHandler.java ToXMLStream.java<br/><ref>Committer's log entry: </ref>
+Guarded the fireXXX(); calls to trace events with if (m_tracer != null),
+strictly for performance reasons. This should run faster than making the call and then checking.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/05/09<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan faq.xml<br/><ref>Committer's log entry: </ref>
+Title of FAQ for Xerces version read, "Which version of Xerces-J 2.4.0 should I
+use?" answering it's own question.  Fixed that to make for a more suspenseful
+read.
+<br/><br/></li><li><ref>Committed by </ref>grchiu@apache.org<ref> on </ref>2003/05/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorTemplateElem.java xml-xalan/java/src/org/apache/xalan/templates ElemAttributeSet.java ElemElement.java ElemLiteralResult.java ElemTemplateElement.java ElemUse.java<br/><ref>Committer's log entry: </ref>
+Some Trace-related fixes: Two trace events were being fired for ElemCopy,
+and for templates elements derived from ElemUse the trace end event was
+being fired before child templates were executed. Also saved locator
+information for the end tag of stylesheet elements.
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer SerializerBase.java ToHTMLStream.java ToStream.java ToXMLSAXHandler.java<br/><ref>Committer's log entry: </ref>
+See bugzilla # 19900 for a laundry list of small performance 
+enhancements.
+
+PR: bugzilla 19900
+Submitted by: Brian Minchau
+Reviewed by: Henry Zongaro
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer Encodings.java OutputPropertiesFactory.java SerializerFactory.java Utils.java<br/><ref>Committer's log entry: </ref>
+Performance enhancement. Cache the loading of classes via Class.forName(classname)
+ in the serializer.  The same class is otherwise loaded over and over with each request
+to a server, e.g. in a servlet. 
+PR: bugzilla # 19960
+Submitted by: Brian Minchau
+Reviewed by: Morris Kwan
+<br/><br/></li><li><ref>Committed by </ref>grchiu@apache.org<ref> on </ref>2003/05/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemExsltFuncResult.java<br/><ref>Committer's log entry: </ref>
+Adding missing trace events for the func:result element.
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToHTMLStream.java<br/><ref>Committer's log entry: </ref>
+The HTML serializer should do nothing with the methods on the 
+DeclHandler interface, so they are now defined with empty
+bodies.  Also the comment() method does nothing when in a
+DTD.
+PR: bugzilla 19640
+Submitted by: Bruno Dumon (bruno@outerthought.org)
+Reviewed by: Brian Minchau
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/05/22<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan faq.xml<br/><ref>Committer's log entry: </ref>
+Added a new FAQ to describe a situation some users have encountered of late
+using XSLTC with JDK 1.4.
+Contributed by Christine Li (jycli@ca.ibm.com) with some editorial input from
+myself.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/05/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespacesManager.java<br/><ref>Committer's log entry: </ref>
+Fix a compatibility problem when using the old "http://xml.apache.org/xslt"
+namespace with extension functions in org.apache.xalan.xslt.Extensions.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/05/26<br/><ref>Modified: </ref> xml-xalan/java build.xml xml-xalan/java/xdocs/sources/xalan builds.xml downloads.xml resources.xml xml-xalan/java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>
+Patch from Sarah McNamara (mcnamara@ca.ibm.com) which improves documentation
+about packaging and adds support for building and testing an alternate 
+binary distribution which provides xalan-interpretive and xsltc in separate jars.
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>
+One line fix to get a lexical handler, was casting the wrong reference.
+PR: bugzilla 20237
+Submitted by: Bernard D'Have (bdhaveos@wanadoo.be)
+Reviewed by: Brian Minchau
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/05/27<br/><ref>Modified: </ref> xml-xalan/java/samples/extensions/sql/basic-connection dbinfo.xml dbtest.xsl<br/><ref>Committer's log entry: </ref>
+Update to the SQL extension sample from Christine Li (jycli@ca.ibm.com).
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/05/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>
+Applying Christine Li's (jycli@ca.ibm.com) fix for bug 19522.  When a
+SerializationHandler object is created for Xalan-J Interpretive, it needs to
+be informed which Transformer object is associated with the serialization.
+<br/><br/></li><li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/05/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer AttributesImplSerializer.java<br/><ref>Committer's log entry: </ref>
+AttributesImplSerializer now uses the older (faster) org.xml.sax.helpers.AttributesImpl
+up until about 12 attributes and switches over to using a Hashtable for faster lookup
+of attributes, avoiding an order N*N performance problem for large
+number of attributes, but faster for lower number of attributes.
+PR: bugzilla 20273
+Submitted by: Brian Minchau
+Reviewed by: Henry Zongaro
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/05/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemExsltFunction.java xml-xalan/java/src/org/apache/xpath VariableStack.java<br/><ref>Committer's log entry: </ref>
+Patch from Christine Li (jycli@ca.ibm.com) for bugzilla #18926.
+
+Variables weren't being cleared from stack between calls to func:function.
+<br/><br/></li></ul>
+</s2>
 <s2 title="Changes for &xslt4j; 2.5.0">
 <p> Core (Non-XSLTC) source code updates:</p>
 <ul><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>

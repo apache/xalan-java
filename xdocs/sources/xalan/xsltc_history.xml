@@ -58,7 +58,39 @@
  -->
 <s1 title="XSLTC software changes">
 <p>The following sections list <link idref="xsltc_usage">XSLTC</link> changes back to the incorporation of XSLTC into &xslt4j;.</p>
-<s2 title="Changes or &xslt4j; 2.5.0">
+<s2 title="Changes for &xslt4j; 2.5.1">
+<p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler DocumentCall.java xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java<br/><ref>Committer's log entry: </ref>
+Applying patches from Igor Hersht (igorh@ca.ibm.com) for bug 15200 and
+bug 18585.
+
+Fixed up code that processes the document function when it has two arguments,
+the second of which must be a node-set; the code didn't always resolve the
+value of the first argument against the first node in the second argument, as it
+should have.
+
+In addition, in order to simplify run-time processing, added a new
+LoadDocument.documentF method that is used when the second argument to the XSLT
+document function is present; if that argument is an empty node-set, the result
+of the document function should be an empty node-set, and that logic is much
+easier to code in the run-time than via generated code.
+<br/><br/></li><li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/04/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java<br/><ref>Committer's log entry: </ref>
+
+ Set SourceLocator in stylesheet instead of XSLTC object. This ensures
+ proper use of user-defined URIResolvers in a TemplatesHandler.
+<br/><br/></li><li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/04/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler XSLTC.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java<br/><ref>Committer's log entry: </ref>
+
+ Output properties were not properly cleared when reusing the same instance
+ of a TemplatesHandlerImpl. The top-level stylesheet in the XSLTC object
+ referenced by TemplatesHandlerImpl (indirectly via an instance of Parser)
+ was not reset after the first use of the instance.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/05/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>
+Fix a multithread safety issue in the use-classpath option. The old code
+reuses a Translet object for all newTransformer() calls, which is not the
+right thing to do. We should pass in a Class array and let TemplateImpl
+create a new Translet instance for each newTransformer() call.
+<br/><br/></li></ul>
+</s2>
+<s2 title="Changes for &xslt4j; 2.5.0">
 <p>XSLTC source code updates:</p>
 <ul><li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/02/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java Message.java<br/><ref>Committer's log entry: </ref>
  New implementation of xsl:message that does not use RTFs. Using RTFs
