@@ -340,7 +340,8 @@ public class ResultTreeHandler
               else
               {
                 OutputStream os = serializer.getOutputStream();
-                serializer.setOutputStream(os);
+                if(null != os)
+                  serializer.setOutputStream(os);
               }
               m_transformer.setSerializer(serializer);
               ContentHandler ch = serializer.asContentHandler();
