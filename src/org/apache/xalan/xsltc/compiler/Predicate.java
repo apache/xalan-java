@@ -279,6 +279,8 @@ final class Predicate extends Expression implements Closure {
 		        _canOptimize = false;
 		    else if (fexp instanceof ParentLocationPath)
 			_canOptimize = false;
+		    else if (fexp instanceof FilterParentPath)
+			_canOptimize = false;
 		    else if (fexp instanceof UnionPathExpr)
 			_canOptimize = false;
 		    else if (_exp.hasPositionCall() && _exp.hasLastCall())
