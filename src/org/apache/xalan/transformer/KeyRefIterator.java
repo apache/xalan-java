@@ -219,7 +219,10 @@ public class KeyRefIterator extends LocPathIterator
   {
     NodeSet m_cachedNodes = getCachedNodes();
     if (null != m_cachedNodes)
-      m_cachedNodes.addElement(node);
+    {
+      if(!m_cachedNodes.contains(node))
+        m_cachedNodes.addElement(node);
+    }
   }  
        
 }
