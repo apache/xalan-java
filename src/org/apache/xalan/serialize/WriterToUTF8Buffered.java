@@ -135,20 +135,24 @@ public final class WriterToUTF8Buffered extends Writer
   public void write(final int c) throws IOException
   {
 
-    if (count >= buf.length)
-    {
-      flushBuffer();
-    }
-
+  
     if (c < 0x80)
+    {
+      if (count >= buf.length)
+        flushBuffer();
       buf[count++] = (byte) (c);
+    }
     else if (c < 0x800)
     {
+      if (count+1 >= buf.length)
+        flushBuffer();
       buf[count++] = (byte) (0xc0 + (c >> 6));
       buf[count++] = (byte) (0x80 + (c & 0x3f));
     }
     else
     {
+      if (count+2 >= buf.length)
+        flushBuffer();
       buf[count++] = (byte) (0xe0 + (c >> 12));
       buf[count++] = (byte) (0x80 + ((c >> 6) & 0x3f));
       buf[count++] = (byte) (0x80 + (c & 0x3f));
@@ -242,7 +246,13 @@ public final class WriterToUTF8Buffered extends Writer
           throws java.io.IOException
   {
 
-    if (length >= buf.length)
+    // We multiply the length by three since this is the maximum length
+    // of the characters that we can put into the buffer.  It is possible
+    // for each Unicode character to expand to three bytes.
+
+    int lengthx3 = (length << 1) + length;
+
+    if (lengthx3 >= buf.length)
     {
 
       /* If the request length exceeds the size of the output buffer,
@@ -254,7 +264,7 @@ public final class WriterToUTF8Buffered extends Writer
       return;
     }
 
-    if (length > buf.length - count)
+    if (lengthx3 > buf.length - count)
     {
       flushBuffer();
     }
@@ -294,7 +304,13 @@ public final class WriterToUTF8Buffered extends Writer
 
     final int length = s.length();
 
-    if (length >= buf.length)
+    // We multiply the length by three since this is the maximum length
+    // of the characters that we can put into the buffer.  It is possible
+    // for each Unicode character to expand to three bytes.
+
+    int lengthx3 = (length << 1) + length;
+
+    if (lengthx3 >= buf.length)
     {
 
       /* If the request length exceeds the size of the output buffer,
@@ -306,7 +322,7 @@ public final class WriterToUTF8Buffered extends Writer
       return;
     }
 
-    if (length > buf.length - count)
+    if (lengthx3 > buf.length - count)
     {
       flushBuffer();
     }
