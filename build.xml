@@ -697,9 +697,71 @@ Copyright:
       <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,xsltc_todo.xml,todo.xsl,commits.xml"/>
     </copy>
           
-    <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
-    <tar tarfile="${build.dir}/${dist.file}.tar" basedir="${build.dir}" includes="${dist.file}/**"/>
-    <gzip src="${build.dir}/${dist.file}.tar" zipfile="${build.dir}/${dist.file}.tar.gz"/>
+    <!-- Build separate -src and -bin distros for both .zip and .tar.gz -->
+    <!-- Explicitly list xerces.jar in patternsets since we definitely want Xerces in distros -->
+    <patternset id="bin-distro" >
+      <include name="${dist.file}/readme.html"/>
+      <include name="${dist.file}/License"/>
+      <include name="${dist.file}/KEYS"/>
+      <include name="${dist.file}/bin/${name}.jar"/>
+      <include name="${dist.file}/bin/xsltc.jar"/>
+      <include name="${dist.file}/bin/xerces.jar"/>
+      <include name="${dist.file}/bin/${bsf.jar.name}"/>
+      <include name="${dist.file}/bin/xalansamples.jar"/>
+      <include name="${dist.file}/bin/xalanservlet.jar"/>
+      <include name="${dist.file}/samples/"/>
+      <include name="${dist.file}/docs/"/>
+    </patternset>
+    <patternset id="src-distro" >
+      <include name="${dist.file}/*"/>
+      <include name="${dist.file}/bin/ant*"/>
+      <include name="${dist.file}/bin/xerces.jar"/>
+      <include name="${dist.file}/bin/${bsf.jar.name}"/>
+      <include name="${dist.file}/bin/${stylebook.jar.name}"/>
+      <include name="${dist.file}/bin/${doclet.jar.name}"/>
+      <include name="${dist.file}/samples/"/>
+      <include name="${dist.file}/src/"/>
+      <include name="${dist.file}/xdocs/"/>
+      <include name="${dist.file}/compat_src/"/>
+    </patternset>
+    <patternset id="xsltc-deps-jars" >
+      <include name="${dist.file}/bin/${bcel.jar.name}"/>
+      <include name="${dist.file}/bin/${java_cup.jar.name}"/>
+      <include name="${dist.file}/bin/${jlex.jar.name}"/>
+      <include name="${dist.file}/bin/${runtime.jar.name}"/>
+      <include name="${dist.file}/bin/${xml.jar.name}"/>
+    </patternset>
+
+    <tar tarfile="${build.dir}/${dist.file}-bin.tar" >
+      <tarfileset dir="${build.dir}">
+        <patternset refid="bin-distro"/>
+        <patternset refid="xsltc-deps-jars"/>
+      </tarfileset>
+    </tar>
+    <gzip src="${build.dir}/${dist.file}-bin.tar" zipfile="${build.dir}/${dist.file}-bin.tar.gz"/>
+    <delete file="${build.dir}/${dist.file}-bin.tar" />
+
+    <tar tarfile="${build.dir}/${dist.file}-src.tar" >
+      <tarfileset dir="${build.dir}">
+        <patternset refid="src-distro"/>
+        <patternset refid="xsltc-deps-jars"/>
+      </tarfileset>
+    </tar>
+    <gzip src="${build.dir}/${dist.file}-src.tar" zipfile="${build.dir}/${dist.file}-src.tar.gz"/>
+    <delete file="${build.dir}/${dist.file}-src.tar" />
+
+    <zip zipfile="${build.dir}/${dist.file}-bin.zip" >
+      <fileset dir="${build.dir}">
+        <patternset refid="bin-distro"/>
+        <patternset refid="xsltc-deps-jars"/>
+      </fileset>
+    </zip>
+    <zip zipfile="${build.dir}/${dist.file}-src.zip" >
+      <fileset dir="${build.dir}">
+        <patternset refid="src-distro"/>
+        <patternset refid="xsltc-deps-jars"/>
+      </fileset>
+    </zip>
   </target>
   
   <!-- =================================================================== -->
