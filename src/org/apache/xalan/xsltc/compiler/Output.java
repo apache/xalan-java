@@ -59,6 +59,7 @@ final class Output extends TopLevelElement {
     private boolean _indent = false;
     private String  _mediaType;
     private String  _cdataToMerge;
+    private String _indentamount;
 
     // Disables this output element (when other element has higher precedence)
     private boolean _disabled = false;
@@ -236,7 +237,17 @@ final class Output extends TopLevelElement {
 	else if (_method != null && _method.equals("html")) {
 	    _indent = true;
 	}
-
+	
+        // indent-amount: extension attribute of xsl:output
+        _indentamount = getAttributes().getValue(lookupPrefix("http://xml.apache.org/xalan"),"indent-amount");
+        //  Hack for supporting Old Namespace URI.
+        if(_indentamount == null || _indentamount.equals(EMPTYSTRING)){
+            _indentamount = getAttributes().getValue(lookupPrefix("http://xml.apache.org/xslt"),"indent-amount");
+        }
+        if(_indentamount != null && !_indentamount.equals(EMPTYSTRING)) {
+            outputProperties.setProperty("indent_amount", _indentamount);
+        }
+        
 	// Get the MIME type for the output file
 	_mediaType = getAttribute("media-type");
 	if (_mediaType.equals(Constants.EMPTYSTRING)) {
@@ -348,6 +359,14 @@ final class Output extends TopLevelElement {
 	    il.append(new PUTFIELD(field));
 	}
 
+        //Compile code to set indent amount.
+        if(_indentamount != null && !_indentamount.equals(EMPTYSTRING)){
+            field = cpg.addFieldref(TRANSLET_CLASS, "_indentamount", "I");
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, Integer.parseInt(_indentamount)));
+	    il.append(new PUTFIELD(field));
+        }
+        
 	// Forward to the translet any elements that should be output as CDATA
 	if (_cdata != null) {
 	    int index = cpg.addMethodref(TRANSLET_CLASS,

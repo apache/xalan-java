@@ -66,6 +66,7 @@ public abstract class AbstractTranslet implements Translet {
     public boolean _indent = false;
     public String  _mediaType = null;
     public Vector _cdata = null;
+    public int _indentamount = -1;
 
     public static final int FIRST_TRANSLET_VERSION = 100;
     public static final int VER_SPLIT_NAMES_ARRAY = 101;
@@ -646,6 +647,7 @@ public abstract class AbstractTranslet implements Translet {
 		    handler.setVersion(_version);
 		}
 		handler.setIndent(_indent);
+		handler.setIndentAmount(_indentamount);
 		if (_doctypeSystem != null) {
 		    handler.setDoctype(_doctypeSystem, _doctypePublic);
 		}
