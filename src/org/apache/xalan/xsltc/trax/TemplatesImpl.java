@@ -68,6 +68,7 @@ package org.apache.xalan.xsltc.trax;
 import java.io.Serializable;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.security.AccessController;
@@ -132,7 +133,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * A reference to the transformer factory that this templates
      * object belongs to.
      */
-    private TransformerFactoryImpl _tfactory = null;
+    private transient TransformerFactoryImpl _tfactory = null;
 
     private class TransletClassLoader extends ClassLoader {
 
@@ -143,6 +144,7 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    return super.defineClass(null, b, 0, b.length);
 	}
     }
+
 
    /**
      * The only way to create an XSLTC emplate object
@@ -160,21 +162,22 @@ public final class TemplatesImpl implements Templates, Serializable {
 	_tfactory = tfactory;
     }
 
-    public synchronized void writeExternal(ObjectOutput out) 
-	throws IOException 
-    {
-	out.writeObject(_name);
-	out.writeObject(_bytecodes);
-	out.flush();
-    }
+    /**
+     * Need for de-serialization, see readObject().
+     */
+    public TemplatesImpl() { }
 
-    public synchronized void readExternal(ObjectInput in)
-	throws IOException, ClassNotFoundException 
+    /**
+     *  Overrides the default readObject implementation since we decided
+     *  it would be cleaner not to serialize the entire tranformer
+     *  factory.  [ ref bugzilla 12317 ]
+     */
+    private void  readObject(ObjectInputStream is) 
+      throws IOException, ClassNotFoundException 
     {
-	_name      = (String)in.readObject();
-	_bytecodes = (byte[][])in.readObject();
-	_class     = null; // must be created again...
-    }
+	is.defaultReadObject();
+	_tfactory = new TransformerFactoryImpl();
+    } 
 
      /**
      * Store URIResolver needed for Transformers.

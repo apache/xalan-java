@@ -162,7 +162,7 @@ public class TransformerFactoryImpl
     /**
      * The above hashtable stores objects of this class.
      */
-    private class PIParamWrapper {
+    private static class PIParamWrapper {
 	public String _media = null;
 	public String _title = null;
 	public String _charset = null;
