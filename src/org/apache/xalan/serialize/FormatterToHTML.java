@@ -451,7 +451,6 @@ public class FormatterToHTML extends FormatterToXML
   {
 
     super();
-
     m_charInfo = m_htmlcharInfo;
   }
 
@@ -522,6 +521,7 @@ public class FormatterToHTML extends FormatterToXML
           String namespaceURI, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
+    // System.out.println("FormatterToHTML#startElement("+namespaceURI+", "+localName+", "+name+", ...);");
 
     if (null != namespaceURI && namespaceURI.length() > 0)
     {
@@ -615,7 +615,7 @@ public class FormatterToHTML extends FormatterToXML
   public void endElement(String namespaceURI, String localName, String name)
           throws org.xml.sax.SAXException
   {
-
+    // System.out.println("FormatterToHTML#endElement("+namespaceURI+", "+localName+", "+name+");");
     if (null != namespaceURI && namespaceURI.length() > 0)
     {
       super.endElement(namespaceURI, localName, name);
