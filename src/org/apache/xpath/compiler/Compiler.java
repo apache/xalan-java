@@ -750,7 +750,7 @@ public class Compiler extends OpMap
       return NodeFilter.SHOW_COMMENT;
     case OpCodes.NODETYPE_TEXT :
 //      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT;
-      return NodeFilter.SHOW_TEXT;
+      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_CDATA_SECTION ;
     case OpCodes.NODETYPE_PI :
       return NodeFilter.SHOW_PROCESSING_INSTRUCTION;
     case OpCodes.NODETYPE_NODE :
