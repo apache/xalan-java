@@ -144,7 +144,7 @@
   </xsl:template>
 
   <xsl:template match="ref">
-    <i><xsl:apply-templates/></i>
+    <center><i><xsl:apply-templates/></i></center>
   </xsl:template>
   
   <xsl:template match="code">
@@ -187,7 +187,7 @@
   </xsl:template>
 
   <xsl:template match="/s1/s2//img">
-    <img src="images/{@src}"/>
+    <center><img src="images/{@src}"/></center>
   </xsl:template>
 
   <xsl:template match="resource-ref">

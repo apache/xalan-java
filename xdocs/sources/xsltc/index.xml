@@ -188,7 +188,7 @@
     describes the components and structure of the internal DOM, support for
     DOM2 navigation, the DOM adapter, DOM multiplexer, and DOM builder.</p>
 
-    <p>The <link idref="xsltc_iterator">iterator design</link> document
+    <p>The <link idref="xsltc_iterators">iterator design</link> document
     describes the general design of the internal DOM iterators and describes
     some of the more complicated iterators in detail.</p>
 
