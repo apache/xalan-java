@@ -357,7 +357,7 @@ abstract public class ToSAXHandler extends SerializerBase
     }
     
     /**
-     * This method gets the nodes value as a String and uses that String as if
+     * This method gets the node's value as a String and uses that String as if
      * it were an input character notification.
      * @param node the Node to serialize
      * @throws org.xml.sax.SAXException
@@ -371,9 +371,13 @@ abstract public class ToSAXHandler extends SerializerBase
             m_state.setCurrentNode(node);
         }
         
-        // do what the stream serializers do
-        super.characters(node);
-       }    
+        // Get the node's value as a String and use that String as if
+        // it were an input character notification.
+        String data = node.getNodeValue();
+        if (data != null) {
+            this.characters(data);
+        }
+    }    
 
     /**
      * @see org.xml.sax.ErrorHandler#fatalError(SAXParseException)
