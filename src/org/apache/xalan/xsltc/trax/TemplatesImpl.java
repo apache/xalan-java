@@ -67,6 +67,7 @@ package org.apache.xalan.xsltc.trax;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -132,16 +133,18 @@ public final class TemplatesImpl implements Templates, Serializable {
 
     /**
      * This URIResolver is passed to all Transformers.
+     * Declaring it transient to fix bug 22438 
      */
-    private URIResolver _uriResolver = null;
+    private transient URIResolver _uriResolver = null;
 
     /**
      * Cache the DTM for the stylesheet in a thread local variable,
      * which is used by the document('') function.
      * Use ThreadLocal because a DTM cannot be shared between
      * multiple threads. 
+     * Declaring it transient to fix bug 22438 
      */
-    private ThreadLocal _sdom = new ThreadLocal();
+    private transient ThreadLocal _sdom = new ThreadLocal();
     
     /**
      * A reference to the transformer factory that this templates
@@ -204,13 +207,40 @@ public final class TemplatesImpl implements Templates, Serializable {
      *  Overrides the default readObject implementation since we decided
      *  it would be cleaner not to serialize the entire tranformer
      *  factory.  [ ref bugzilla 12317 ]
+     *  We need to check if the user defined class for URIResolver also
+     *  implemented Serializable
+     *  if yes then we need to deserialize the URIResolver
+     *  Fix for bugzilla bug 22438
      */
     private void  readObject(ObjectInputStream is) 
       throws IOException, ClassNotFoundException 
     {
 	is.defaultReadObject();
+        if (is.readBoolean()) {
+            _uriResolver = (URIResolver) is.readObject();
+        }
+
 	_tfactory = new TransformerFactoryImpl();
     } 
+
+
+    /**
+     *  This is to fix bugzilla bug 22438
+     *  If the user defined class implements URIResolver and Serializable
+     *  then we want it to get serialized
+     */
+    private void writeObject(ObjectOutputStream os)
+        throws IOException, ClassNotFoundException {
+        os.defaultWriteObject();
+        if (_uriResolver instanceof Serializable) {
+            os.writeBoolean(true);
+            os.writeObject((Serializable) _uriResolver);
+        }
+        else {
+            os.writeBoolean(false);
+        }
+    }
+
 
      /**
      * Store URIResolver needed for Transformers.
