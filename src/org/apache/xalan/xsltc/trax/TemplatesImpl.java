@@ -100,6 +100,11 @@ public final class TemplatesImpl implements Templates, Serializable {
      * any auxiliary classes.
      */
     private byte[][] _bytecodes = null;
+    
+    /**
+     * The Translet instance from which the template is created.
+     */
+    private Translet _translet = null;
 
     /**
      * Contains the translet class definition(s). These are created when 
@@ -146,9 +151,9 @@ public final class TemplatesImpl implements Templates, Serializable {
 
 
    /**
-     * The only way to create an XSLTC emplate object
+     * Create an XSLTC template object from the bytecodes.
      * The bytecodes for the translet and auxiliary classes, plus the name of
-     * the main translet class, must be supplied
+     * the main translet class, must be supplied.
      */
     protected TemplatesImpl(byte[][] bytecodes, String transletName,
 	Properties outputProperties, int indentNumber,
@@ -160,6 +165,21 @@ public final class TemplatesImpl implements Templates, Serializable {
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
     }
+    
+    /**
+     * Create an XSLTC template object from a Translet instance.
+     */
+    protected TemplatesImpl(Translet translet, String transletName,
+	Properties outputProperties, int indentNumber,
+	TransformerFactoryImpl tfactory) 
+    {
+	_translet  = translet;
+	_name      = transletName;
+	_outputProperties = outputProperties;
+	_indentNumber = indentNumber;
+	_tfactory = tfactory;
+    }
+    
 
     /**
      * Need for de-serialization, see readObject().
@@ -337,9 +357,16 @@ public final class TemplatesImpl implements Templates, Serializable {
     public synchronized Transformer newTransformer()
 	throws TransformerConfigurationException 
     {
-	final TransformerImpl transformer =
-	    new TransformerImpl(getTransletInstance(), _outputProperties,
-			        _indentNumber, _tfactory);
+	TransformerImpl transformer;
+	if (_translet != null) {
+	    transformer = new TransformerImpl(_translet, _outputProperties,
+			      _indentNumber, _tfactory);
+	}
+	else {
+	    transformer = new TransformerImpl(getTransletInstance(), _outputProperties,
+			      _indentNumber, _tfactory);
+	}
+	
 	if (_uriResolver != null) {
 	    transformer.setURIResolver(_uriResolver);
 	}

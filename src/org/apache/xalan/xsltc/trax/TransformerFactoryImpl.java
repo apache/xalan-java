@@ -100,6 +100,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.runtime.TransletLoader;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLFilter;
@@ -111,6 +112,18 @@ import org.xml.sax.XMLReader;
 public class TransformerFactoryImpl
     extends SAXTransformerFactory implements SourceLoader, ErrorListener 
 {
+    // Public constants for attributes supported by the XSLTC TransformerFactory.
+    public final static String TRANSLET_NAME = "translet-name";
+    public final static String DESTINATION_DIRECTORY = "destination-directory";
+    public final static String PACKAGE_NAME = "package-name";
+    public final static String JAR_NAME = "jar-name";
+    public final static String GENERATE_TRANSLET = "generate-translet";
+    public final static String AUTO_TRANSLET = "auto-translet";
+    public final static String USE_CLASSPATH = "use-classpath";
+    public final static String DEBUG = "debug";
+    public final static String ENABLE_INLINING = "enable-inlining";
+    public final static String INDENT_NUMBER = "indent-number";
+    
     /**
      * This error listener is used only for this factory and is not passed to
      * the Templates or Transformer objects that we create.
@@ -203,6 +216,12 @@ public class TransformerFactoryImpl
      * is only used if its timestamp is newer than the timestamp of the stylesheet.
      */
     private boolean _autoTranslet = false;
+    
+    /**
+     * If this is set to <code>true</code>, we attempt to load the translet from the
+     * CLASSPATH.
+     */
+    private boolean _useClasspath = false;
 
     /**
      * Number of indent spaces when indentation is turned on.
@@ -263,13 +282,13 @@ public class TransformerFactoryImpl
 	throws IllegalArgumentException 
     { 
 	// Return value for attribute 'translet-name'
-	if (name.equals("translet-name")) {
+	if (name.equals(TRANSLET_NAME)) {
 	    return _transletName;
 	}
-	else if (name.equals("generate-translet")) {
+	else if (name.equals(GENERATE_TRANSLET)) {
 	    return new Boolean(_generateTranslet);
 	}
-	else if (name.equals("auto-translet")) {
+	else if (name.equals(AUTO_TRANSLET)) {
 	    return new Boolean(_autoTranslet);
 	}
 
@@ -291,23 +310,23 @@ public class TransformerFactoryImpl
     { 
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
-	if (name.equals("translet-name") && value instanceof String) {
+	if (name.equals(TRANSLET_NAME) && value instanceof String) {
 	    _transletName = (String) value;	      
 	    return;
 	}
-	else if (name.equals("destination-directory") && value instanceof String) {
+	else if (name.equals(DESTINATION_DIRECTORY) && value instanceof String) {
 	    _destinationDirectory = (String) value;
 	    return;
 	}
-	else if (name.equals("package-name") && value instanceof String) {
+	else if (name.equals(PACKAGE_NAME) && value instanceof String) {
 	    _packageName = (String) value;
 	    return;
 	}
-	else if (name.equals("jar-name") && value instanceof String) {
+	else if (name.equals(JAR_NAME) && value instanceof String) {
 	    _jarFileName = (String) value;
 	    return;
 	}
-	else if (name.equals("generate-translet")) {
+	else if (name.equals(GENERATE_TRANSLET)) {
 	    if (value instanceof Boolean) {
 		_generateTranslet = ((Boolean) value).booleanValue();
 		return;
@@ -317,7 +336,7 @@ public class TransformerFactoryImpl
 		return;
 	    }
 	}
-	else if (name.equals("auto-translet")) {
+	else if (name.equals(AUTO_TRANSLET)) {
 	    if (value instanceof Boolean) {
 		_autoTranslet = ((Boolean) value).booleanValue();
 		return;
@@ -327,7 +346,17 @@ public class TransformerFactoryImpl
 		return;
 	    }
 	}
-	else if (name.equals("debug")) {
+	else if (name.equals(USE_CLASSPATH)) {
+	    if (value instanceof Boolean) {
+		_useClasspath = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_useClasspath = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }	    
+	}
+	else if (name.equals(DEBUG)) {
 	    if (value instanceof Boolean) {
 		_debug = ((Boolean) value).booleanValue();
 		return;
@@ -337,7 +366,7 @@ public class TransformerFactoryImpl
 		return;
 	    }
 	}
-	else if (name.equals("enable-inlining")) {
+	else if (name.equals(ENABLE_INLINING)) {
 	    if (value instanceof Boolean) {
 		_enableInlining = ((Boolean) value).booleanValue();
 		return;
@@ -347,7 +376,7 @@ public class TransformerFactoryImpl
 		return;
 	    }
 	}
-	else if (name.equals("indent-number")) {
+	else if (name.equals(INDENT_NUMBER)) {
 	    if (value instanceof String) {
 		try {
 		    _indentNumber = Integer.parseInt((String) value);
@@ -532,6 +561,24 @@ public class TransformerFactoryImpl
     }
 
     /**
+     * Load the translet class using the context class loader of the current
+     * thread or the default class loader.
+     */
+    private Class loadTranslet(String name)
+        throws ClassNotFoundException
+    {
+	// First try to load the class using the context class loader of the current thread
+	try {
+	    TransletLoader loader = new TransletLoader();
+	    return loader.loadTranslet(name);
+	}
+	catch (ClassNotFoundException e) {
+	    // Then try to load the class using the default class loader.
+	    return Class.forName(name);
+	}
+    }
+    
+    /**
      * javax.xml.transform.sax.TransformerFactory implementation.
      * Process the Source into a Templates object, which is a a compiled
      * representation of the source.
@@ -543,11 +590,40 @@ public class TransformerFactoryImpl
     public Templates newTemplates(Source source)
 	throws TransformerConfigurationException 
     {
+	// If the _useClasspath attribute is true, try to load the translet from
+	// the CLASSPATH and create a template object using the loaded
+	// translet.
+	if (_useClasspath) {
+	    String transletName = getTransletBaseName(source);
+	            
+	    if (_packageName != null)
+	        transletName = _packageName + "." + transletName;
+	        
+	    try {
+	        final Class clazz = loadTranslet(transletName);
+	        final Translet translet = (Translet)clazz.newInstance();	            
+	        resetTransientAttributes();
+	            
+	        return new TemplatesImpl(translet, transletName, null, _indentNumber, this);
+	    }
+	    catch (ClassNotFoundException cnfe) {
+	        ErrorMsg err = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, transletName);
+	        throw new TransformerConfigurationException(err.toString());
+	    }
+	    catch (Exception e) {
+	        ErrorMsg err = new ErrorMsg(ErrorMsg.getTransletErrorMessage() + e.getMessage());
+	        throw new TransformerConfigurationException(err.toString());
+	    }
+	}
+	
 	// If _autoTranslet is true, we will try to load the bytecodes
 	// from the translet classes without compiling the stylesheet.
 	if (_autoTranslet)  {
 	    byte[][] bytecodes = null;
-	    String transletClassName = getTransletClassName(source);
+	    String transletClassName = getTransletBaseName(source);
+	    
+	    if (_packageName != null)
+	        transletClassName = _packageName + "." + transletClassName;
 	    
 	    if (_jarFileName != null)
 	    	bytecodes = getBytecodesFromJar(source, transletClassName);
@@ -598,8 +674,7 @@ public class TransformerFactoryImpl
 	int outputType = XSLTC.BYTEARRAY_OUTPUT;
 	if (_generateTranslet || _autoTranslet) {
 	    // Set the translet name
-	    if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
-	        xsltc.setClassName(_transletName);
+	    xsltc.setClassName(getTransletBaseName(source));
 	  
 	    if (_destinationDirectory != null)
 	    	xsltc.setDestDirectory(_destinationDirectory);
@@ -1182,22 +1257,25 @@ public class TransformerFactoryImpl
     }
 
     /**
-     * Return the fully qualified class name of the translet
+     * Return the base class name of the translet.
+     * The translet name is resolved using the following rules:
+     * 1. if the _transletName attribute is set and its value is not "GregorSamsa",
+     *    then _transletName is returned.
+     * 2. otherwise get the translet name from the base name of the system ID
+     * 3. return "GregorSamsa" if the result from step 2 is null.
      *
-     * @param source The Source
-     * @return The full name of the translet class
+     * @param source The input Source
+     * @return The name of the translet class
      */
-    private String getTransletClassName(Source source)
+    private String getTransletBaseName(Source source)
     {      
         String transletBaseName = null;
         if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
-            transletBaseName = _transletName;
+            return _transletName;
       	else {
             String systemId = source.getSystemId();
             if (systemId != null) {
           	String baseName = Util.baseName(systemId);
-                //if (baseName != null)
-            	//   transletBaseName = Util.noExtName(baseName);
 		if (baseName != null) {
 		    baseName = Util.noExtName(baseName);
 		    transletBaseName = Util.toJavaName(baseName);
@@ -1205,13 +1283,7 @@ public class TransformerFactoryImpl
             }
       	}
       
-        if (transletBaseName == null)
-            transletBaseName = DEFAULT_TRANSLET_NAME;
-        
-        if (_packageName != null)
-            return _packageName + "." + transletBaseName;
-        else
-            return transletBaseName;
+        return (transletBaseName != null) ? transletBaseName : DEFAULT_TRANSLET_NAME;
     }
         
     /**
