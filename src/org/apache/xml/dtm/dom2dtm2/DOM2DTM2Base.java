@@ -84,6 +84,7 @@ import org.apache.xml.utils.SparseVector;
 import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.objects.XSequence;
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
@@ -2338,6 +2339,12 @@ public abstract class DOM2DTM2Base implements DTM
 		: makeNodeHandle(m_resolver.findID(
 			doc.getElementById( elementId)
 			));
+  }
+  
+  public NodeVector getElementByIdref(String elementIdref)
+  {
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));   
+    return null;
   }
 
   /**
