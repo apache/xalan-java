@@ -88,7 +88,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
         Stylesheet stylesheet;
         try
         {
-          stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
+          stylesheet = getStylesheetRoot(handler);
         }
         catch(TransformerConfigurationException tfe)
         {
@@ -308,6 +308,19 @@ public class ProcessorLRE extends ProcessorTemplateElem
   }
 
   /**
+   * This method could be over-ridden by a class that extends this class.
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @return an object that represents the stylesheet element.
+   */
+  protected Stylesheet getStylesheetRoot(StylesheetHandler handler) throws TransformerConfigurationException
+  {
+    Stylesheet stylesheet;
+    stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
+    return stylesheet;
+  }
+  
+
+/**
    * Receive notification of the end of an element.
    *
    * @param name The element type name.

@@ -43,8 +43,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * TransformerFactory class for xsl:include markup.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#include">include in XSLT Specification</a>
+ * 
+ * @xsl.usage internal
  */
-class ProcessorInclude extends XSLTElementProcessor
+public class ProcessorInclude extends XSLTElementProcessor
 {
 
   /**
@@ -223,6 +225,9 @@ class ProcessorInclude extends XSLTElementProcessor
         source = new StreamSource(absURL);
       }
       
+      // possible callback to a class that over-rides this method.
+      source = processSource(handler, source);
+      
       XMLReader reader = null;
       
       if(source instanceof SAXSource)
@@ -281,5 +286,17 @@ class ProcessorInclude extends XSLTElementProcessor
     {
       handler.error(te.getMessage(), te);
     }
+  }
+
+  /**
+   * This method does nothing, but a class that extends this class could
+   * over-ride it and do some processing of the source.
+   * @param handler The calling StylesheetHandler/TemplatesBuilder.
+   * @param source The source of the included stylesheet.
+   * @return the same or an equivalent source to what was passed in.
+   */
+  protected Source processSource(StylesheetHandler handler, Source source)
+  {
+      return source;
   }
 }

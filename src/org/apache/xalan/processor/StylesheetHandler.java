@@ -1086,7 +1086,7 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @return The TransformerFactoryImpl that owns this handler.
    */
-  TransformerFactoryImpl getStylesheetProcessor()
+  public TransformerFactoryImpl getStylesheetProcessor()
   {
     return m_stylesheetProcessor;
   }
@@ -1094,20 +1094,23 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * If {@link #getStylesheetType} returns this value, the current stylesheet
    *  is a root stylesheet.
+   * @xsl.usage internal
    */
-  static final int STYPE_ROOT = 1;
+  public static final int STYPE_ROOT = 1;
 
   /**
    * If {@link #getStylesheetType} returns this value, the current stylesheet
    *  is an included stylesheet.
+   * @xsl.usage internal
    */
-  static final int STYPE_INCLUDE = 2;
+  public static final int STYPE_INCLUDE = 2;
 
   /**
    * If {@link #getStylesheetType} returns this value, the current stylesheet
    *  is an imported stylesheet.
+   * @xsl.usage internal
    */
-  static final int STYPE_IMPORT = 3;
+  public static final int STYPE_IMPORT = 3;
 
   /** The current stylesheet type. */
   private int m_stylesheetType = STYPE_ROOT;
@@ -1263,8 +1266,9 @@ public class StylesheetHandler extends DefaultHandler
    * transition content handlers, create elements, etc.
    *
    * @return The root XSLT Schema, which should never be null.
+   * @xsl.usage internal
    */
-  XSLTSchema getSchema()
+  public XSLTSchema getSchema()
   {
     return m_schema;
   }

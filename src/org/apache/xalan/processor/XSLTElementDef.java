@@ -414,8 +414,9 @@ public class XSLTElementDef
    * Get the allowed elements for this type.
    *
    * @return An array of allowed child element defs, or null.
+   * @xsl.usage internal
    */
-  XSLTElementDef[] getElements()
+  public XSLTElementDef[] getElements()
   {
     return m_elements;
   }
@@ -622,8 +623,9 @@ public class XSLTElementDef
    * Return the XSLTElementProcessor for this element.
    *
    * @return The element processor for this element.
+   * @xsl.usage internal
    */
-  XSLTElementProcessor getElementProcessor()
+  public XSLTElementProcessor getElementProcessor()
   {
     return m_elementProcessor;
   }
@@ -632,8 +634,9 @@ public class XSLTElementDef
    * Set the XSLTElementProcessor for this element.
    *
    * @param handler The element processor for this element.
+   * @xsl.usage internal
    */
-  void setElementProcessor(XSLTElementProcessor handler)
+  public void setElementProcessor(XSLTElementProcessor handler)
   {
 
     if (handler != null)

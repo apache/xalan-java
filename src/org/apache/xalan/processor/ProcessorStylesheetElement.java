@@ -31,8 +31,10 @@ import org.xml.sax.Attributes;
  * TransformerFactory for xsl:stylesheet or xsl:transform markup.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#stylesheet-element">stylesheet-element in XSLT Specification</a>
+ * 
+ * @xsl.usage internal
  */
-class ProcessorStylesheetElement extends XSLTElementProcessor
+public class ProcessorStylesheetElement extends XSLTElementProcessor
 {
 
   /**
@@ -66,7 +68,7 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
       {
         try
         {
-          stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
+          stylesheet = getStylesheetRoot(handler);
         }
         catch(TransformerConfigurationException tfe)
         {
@@ -109,6 +111,17 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
   }
 
   /**
+   * This method can be over-ridden by a class that extends this one.
+   * @param handler The calling StylesheetHandler/TemplatesBuilder.
+   */
+  protected Stylesheet getStylesheetRoot(StylesheetHandler handler) throws TransformerConfigurationException
+  {
+    Stylesheet stylesheet;
+    stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
+    return stylesheet;
+  }
+
+/**
    * Receive notification of the end of an element.
    *
    * @param name The element type name.

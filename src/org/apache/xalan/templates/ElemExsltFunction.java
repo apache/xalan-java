@@ -118,6 +118,20 @@ public class ElemExsltFunction extends ElemTemplate
     
   }
   
+  private static String m_extensionHandlerClass = "org.apache.xalan.extensions.ExtensionHandlerExsltFunction";
+  
+  /**
+   * This internal method allows the setting of the java class
+   * to handle the extension function (if other than the default one.
+   * 
+   * @xsl.usage internal
+   */
+  public static String setExtensionHandlerClass(String handlerClassName) {
+      String oldvalue = m_extensionHandlerClass;
+      m_extensionHandlerClass = handlerClassName;
+      return oldvalue;
+  }
+      
   /**
    * Called after everything else has been
    * recomposed, and allows the function to set remaining
@@ -130,7 +144,7 @@ public class ElemExsltFunction extends ElemTemplate
     
     // Register the function namespace (if not already registered).
     String namespace = getName().getNamespace();
-    String handlerClass = "org.apache.xalan.extensions.ExtensionHandlerExsltFunction";    
+    String handlerClass = m_extensionHandlerClass;
     Object[] args ={namespace, sroot};
     ExtensionNamespaceSupport extNsSpt = 
                          new ExtensionNamespaceSupport(namespace, handlerClass, args);

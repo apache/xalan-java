@@ -24,8 +24,10 @@ import org.apache.xalan.res.XSLTErrorResources;
  * This class processes parse events for an xsl:import element.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
+ * 
+ * @xsl.usage internal
  */
-class ProcessorImport extends ProcessorInclude
+public class ProcessorImport extends ProcessorInclude
 {
 
   /**
