@@ -91,11 +91,11 @@ final class UnresolvedRef extends VariableRefBase {
     }
 
     private VariableRefBase resolve(CompilerContext ccontext) {
-        final Parser parser = ccontext.getParser();
+        final StaticContext scontext = getStaticContext();
 
 	// At this point the AST is already built and we should be able to
 	// find any declared global variable or parameter
-	VariableBase ref = parser.lookupVariable(_variableName);
+	VariableBase ref = scontext.getVariable(_variableName);
 	if (ref == null) {
             ref = getStaticContext().getVariable(_variableName);
 	}
@@ -106,15 +106,17 @@ final class UnresolvedRef extends VariableRefBase {
 
 	// Insert the referenced variable as something the parent variable
 	// is dependent of (this class should only be used under variables)
-	if ((_var = findParentVariable()) != null) _var.addDependency(ref);
+	if ((_var = findParentVariable()) != null) {
+            _var.addDependency(ref);
+	}
 
-	// Instanciate a true variable/parameter ref
-	if (ref instanceof Variable)
-	    return(new VariableRef((Variable)ref));
-	else if (ref instanceof Param)
-	    return(new ParameterRef((Param)ref));
-	else
-	    return null;
+	if (ref instanceof Variable) {
+	    return(new VariableRef((Variable) ref));
+	}
+	else if (ref instanceof Param) {
+	    return(new ParameterRef((Param) ref));
+	}
+        return null;
     }
 
     public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
@@ -130,10 +132,12 @@ final class UnresolvedRef extends VariableRefBase {
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	if (_ref != null)
+	if (_ref != null) {
 	    _ref.translate(classGen, methodGen);
-	else
+	}
+	else {
 	    reportError();
+	}
     }
 
     public String toString() {

@@ -90,6 +90,11 @@ final class Number extends Instruction implements Closure {
 	"___any_node_counter"			   // LEVEL_ANY
     };
 
+    /**
+     * A thread local variable that holds an array of field indexes.
+     */
+    static private ThreadLocal _numberFieldIndexes = new ThreadLocal();
+
     private Pattern _from = null;
     private Pattern _count = null;
     private Expression _value = null;
@@ -121,6 +126,18 @@ final class Number extends Instruction implements Closure {
      */
     public Closure getParentClosure() {
 	return null;
+    }
+
+    private int[] getNumberFieldIndexes() {
+        int[] result = (int[]) _numberFieldIndexes.get();
+        if (result == null) {
+            _numberFieldIndexes.set(result = new int[] {
+                -1, 	// LEVEL_SINGLE
+                -1, 	// LEVEL_MULTIPLE
+                -1	// LEVEL_ANY
+            });
+        }
+        return result;
     }
 
     /**
@@ -250,7 +267,7 @@ final class Number extends Instruction implements Closure {
 	ConstantPoolGen cpg = classGen.getConstantPool();
 	InstructionList il = methodGen.getInstructionList();
 
-	int[] fieldIndexes = getXSLTC().getNumberFieldIndexes();
+	int[] fieldIndexes = getNumberFieldIndexes();
 
 	if (fieldIndexes[_level] == -1) {
 	    Field defaultNode = new Field(ACC_PRIVATE,
@@ -399,7 +416,7 @@ final class Number extends Instruction implements Closure {
 	MatchGenerator matchGen;
 	NodeCounterGenerator nodeCounterGen;
 
-	_className = getXSLTC().getHelperClassName();
+	_className = CompilerContext.getInstance().getFreshClassName();
 	nodeCounterGen = new NodeCounterGenerator(_className,
 						  ClassNames[_level],
 						  toString(),

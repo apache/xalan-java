@@ -150,7 +150,7 @@ final class XslElement extends Instruction {
 		return;
 	    }
 
-	    final QName qname = parser.getQNameSafe(name);
+	    final QName qname = parser.getQName(name, true);
 	    String prefix = qname.getPrefix();
 	    String local = qname.getLocalPart();
 
@@ -176,7 +176,7 @@ final class XslElement extends Instruction {
 		    if (isLiteral(namespace)) {
 			prefix = lookupPrefix(namespace);
 			if (prefix == null) {
-			    prefix = ccontext.generateNamespacePrefix();
+			    prefix = ccontext.getFreshNsPrefix();
 			}
 		    }
 

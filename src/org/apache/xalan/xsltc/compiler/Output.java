@@ -275,7 +275,7 @@ final class Output extends TopLevelElement {
 	}
 
 	// Set output properties in current stylesheet
-	parser.getCurrentStylesheet().setOutputProperties(outputProperties);
+        getStylesheet().setOutputProperties(outputProperties);
     }
 
     /**

@@ -78,12 +78,18 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class LiteralElement extends Instruction {
 
+    private static final String XMLNS_STRING = "xmlns";
+    private static final QName USE_ATTRIBUTE_SETS =
+        new QName(XSLT_URI, "xsl", "use-attribute-sets");
+    private static final QName EXCLUDE_RESULT_PREFIXES =
+        new QName(XSLT_URI, "xsl", "exclude-result-prefixes");
+    private static final QName EXTENSION_ELEMENT_PREFIXES =
+        new QName(XSLT_URI, "xsl", "extension-element-prefixes");
+
     private String _name;
     private LiteralElement _literalElemParent;
     private ArrayList _attributeElements = null;
     private HashMap _accessedPrefixes = null;
-
-    private final static String XMLNS_STRING = "xmlns";
 
     /**
      * Returns the QName for this literal element
@@ -108,7 +114,7 @@ final class LiteralElement extends Instruction {
      * definition for each namespace, so we stuff them in a hashtable.
      */
     public void registerNamespace(String prefix, String uri, boolean declared) {
-	StaticContextImpl scontext = getStaticContext();
+	StaticContext scontext = getStaticContext();
 
 	// Check if the parent has a declaration for this namespace
 	if (_literalElemParent != null) {
@@ -132,7 +138,7 @@ final class LiteralElement extends Instruction {
 		    if (old.equals(uri))
 			return;
 		    else
-			prefix = getCompilerContext().generateNamespacePrefix();
+			prefix = getCompilerContext().getFreshNsPrefix();
 		}
 	    }
 	}
@@ -161,7 +167,7 @@ final class LiteralElement extends Instruction {
 	}
 
 	// Check if we must translate the prefix
-	StaticContextImpl scontext = getStaticContext();
+	StaticContext scontext = getStaticContext();
 	final String alternative = scontext.getPrefixAlias(prefix);
 	if (alternative != null) {
 	    scontext.setExcludePrefixes(prefix);
@@ -250,7 +256,7 @@ final class LiteralElement extends Instruction {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-	final StaticContextImpl scontext = getStaticContext();
+	final StaticContext scontext = getStaticContext();
 
 	// Find the closest literal element ancestor (if there is one)
 	SyntaxTreeNode _literalElemParent = getParent();
@@ -274,15 +280,15 @@ final class LiteralElement extends Instruction {
 	    // Handle xsl:use-attribute-sets. Attribute sets are placed first
 	    // in the vector or attributes to make sure that later local
 	    // attributes can override an attributes in the set.
-	    if (qname == parser.getUseAttributeSets()) {
+	    if (qname.equals(USE_ATTRIBUTE_SETS)) {
 		setFirstAttribute(new UseAttributeSets(val, parser));
 	    }
 	    // Handle xsl:extension-element-prefixes
-	    else if (qname == parser.getExtensionElementPrefixes()) {
+	    else if (qname.equals(EXTENSION_ELEMENT_PREFIXES)) {
 		scontext.setExcludePrefixes(val);
 	    }
 	    // Handle xsl:exclude-result-prefixes
-	    else if (qname == parser.getExcludeResultPrefixes()) {
+	    else if (qname.equals(EXCLUDE_RESULT_PREFIXES)) {
 		scontext.setExcludePrefixes(val);
 	    }
 	    else {
@@ -325,11 +331,11 @@ final class LiteralElement extends Instruction {
 	    final String val = _attributes.getValue(i);
 
 	    // Handle xsl:extension-element-prefixes
-	    if (qname == parser.getExtensionElementPrefixes()) {
+	    if (qname.equals(EXTENSION_ELEMENT_PREFIXES)) {
 		scontext.setUnexcludePrefixes(val);
 	    }
 	    // Handle xsl:exclude-result-prefixes
-	    else if (qname == parser.getExcludeResultPrefixes()) {
+	    else if (qname.equals(EXCLUDE_RESULT_PREFIXES)) {
 		scontext.setUnexcludePrefixes(val);
 	    }
 	}

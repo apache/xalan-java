@@ -86,7 +86,7 @@ final class Variable extends VariableBase {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-        final StaticContextImpl scontext = getStaticContext();
+        final StaticContext scontext = getStaticContext();
 
 	// Parse 'name' and 'select' attributes plus parameter contents
 	super.parse(ccontext);

@@ -568,7 +568,9 @@ public class TransformerFactoryImpl
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
-	if (_enableInlining) xsltc.setTemplateInlining(true);
+	if (_enableInlining) {
+            xsltc.getCompilerContext().setTemplateInlining(true);
+	}
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined

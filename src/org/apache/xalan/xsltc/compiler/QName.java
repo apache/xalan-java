@@ -65,26 +65,46 @@
 package org.apache.xalan.xsltc.compiler;
 
 final class QName {
-    private final String _localname;
+
+    /**
+     * The local part of this qname.
+     */
+    private String _localname;
+
+    /**
+     * The prefix of this qname.
+     */
     private String _prefix;
+
+    /**
+     * The namespace URI of this qname.
+     */
     private String _namespace;
+
+    /**
+     * A string representation of the expanded qname. Either
+     * prefix:localname or localname if no prefix is available.
+     */
     private String _stringRep;
-    private int    _hashCode;
+
+    /**
+     * A cached hash code value computed from the expanded
+     * qname.
+     */
+    private int _hashCode;
 
     public QName(String namespace, String prefix, String localname) {
 	_namespace = namespace;
 	_prefix    = prefix;
 	_localname = localname;
 
-	_stringRep = 
-	    (namespace != null && !namespace.equals(Constants.EMPTYSTRING)) ?
-	    (namespace + ':' + localname) : localname;
-
-	_hashCode  = _stringRep.hashCode() + 19; // cached for speed
+	_stringRep = (namespace.length() == 0) ? localname :
+            (namespace + ':' + localname);
+	_hashCode = _stringRep.hashCode() + 19;   // cached for speed
     }
 
     public void clearNamespace() {
-	_namespace = Constants.EMPTYSTRING;
+	_namespace = "";
     }
 
     public String toString() {
@@ -96,7 +116,14 @@ final class QName {
     }
 
     public boolean equals(Object other) {
-	return (this == other);
+	try {
+            final QName temp = (QName) other;
+            return (_namespace.equals(temp._namespace) &&
+                    _localname.equals(temp._localname));
+        }
+        catch (ClassCastException e) {
+            return false;
+        }
     }
 
     public String getLocalPart() {
@@ -116,7 +143,7 @@ final class QName {
     }
 
     public String dump() {
-	return new String("QName: " + _namespace + "(" + _prefix + "):" 
+	return new String("QName: " + _namespace + "(" + _prefix + "):"
 	    + _localname);
     }
 }

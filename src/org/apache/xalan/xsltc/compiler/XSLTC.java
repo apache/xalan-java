@@ -92,40 +92,9 @@ import org.apache.bcel.classfile.JavaClass;
 
 public final class XSLTC {
 
-    // A reference to the main stylesheet parser object.
-    private Parser _parser;
-
-    // A reference to an external XMLReader (SAX parser) passed to us
-    private XMLReader _reader = null;
-
-    // A reference to an external SourceLoader (for use with include/import)
-    private SourceLoader _loader = null;
-
-    // A reference to the stylesheet being compiled.
-    private Stylesheet _stylesheet = null;
-
-    // Counters used by various classes to generate unique names.
-    // private int _variableSerial     = 1;
-    private int _modeSerial         = 1;
-    private int _stylesheetSerial   = 1;
-    private int _stepPatternSerial  = 1;
-    private int _helperClassSerial  = 0;
-    private int _attributeSetSerial = 0;
-
-    private int[] _numberFieldIndexes;
-
-    // Name index tables
-    private int       _nextGType;  // Next available element type
-    private ArrayList    _namesIndex; // Index of all registered QNames
-    private HashMap _elements;   // HashMap of all registered elements
-    private HashMap _attributes; // HashMap of all registered attributes
-
-    // Namespace index tables
-    private int       _nextNSType; // Next available namespace type
-    private ArrayList    _namespaceIndex; // Index of all registered namespaces
-    private HashMap _namespaces; // HashMap of all registered namespaces
-
-    // These define the various methods for outputting the translet
+    /**
+     * These constants define the various translet output methods.
+     */
     public static final int FILE_OUTPUT        = 0;
     public static final int JAR_OUTPUT         = 1;
     public static final int BYTEARRAY_OUTPUT   = 2;
@@ -133,58 +102,80 @@ public final class XSLTC {
     public static final int BYTEARRAY_AND_FILE_OUTPUT = 4;
     public static final int BYTEARRAY_AND_JAR_OUTPUT  = 5;
 
-
-    // Compiler options (passed from command line or XSLTC client)
-    private boolean _debug = false;      // -x
-    private String  _jarFileName = null; // -j <jar-file-name>
-    private String  _className = null;   // -o <class-name>
-    private String  _packageName = null; // -p <package-name>
-    private File    _destDir = null;     // -d <directory-name>
-    private int     _outputType = FILE_OUTPUT; // by default
-
-    private ArrayList  _classes;
-    private ArrayList  _bcelClasses;
-    private boolean _callsNodeset = false;
-    private boolean _multiDocument = false;
+    /**
+     * A reference to the parser object.
+     */
+    private Parser _parser;
 
     /**
-     * Set to true if template inlining is requested. Template
-     * inlining used to be the default, but we have found that
-     * Hotspots does a better job with shorter methods, so the
-     * default is *not* to inline now.
+     * A reference to the XMLReader (producer of SAX events) from
+     * which the stylesheet will be read.
      */
-    private boolean _templateInlining = false;
+    private XMLReader _reader = null;
+
+    /**
+     * The source loader used for xsl:include and xsl:import.
+     */
+    private SourceLoader _loader = null;
+
+    /**
+     * A reference to the stylesheet being compiled.
+     */
+    private Stylesheet _stylesheet = null;
+
+    /**
+     * Class name either set by -o <class-name> or inferred
+     * from stylesheet name.
+     */
+    private String _className = null;
+
+    /**
+     * Command-line option -x.
+     */
+    private boolean _debug = false;
+
+    /**
+     * Command-line option -j <jar-file-name>
+     */
+    private String _jarFileName = null;
+
+    /**
+     * Command-line option -p <package-name>
+     */
+    private String _packageName = null;
+
+    /**
+     * Command-line option -d <directory-name>
+     */
+    private File _destDir = null;
+
+    /**
+     * Compiler's output type.
+     */
+    private int _outputType = FILE_OUTPUT;
+
+    /**
+     * Array of classes represented as byte arrays. This array holds
+     * all the classes compiled by XSLTC.
+     */
+    private ArrayList _classes;
+
+    /**
+     * Array needed for the generation of jar files (-j option).
+     */
+    private ArrayList _bcelClasses;
+
+    /**
+     * A reference to the (single) instance of the compiler context.
+     */
+    private CompilerContext _ccontext;
 
     /**
      * XSLTC compiler constructor
      */
     public XSLTC() {
 	_parser = new Parser(this);
-    }
-
-    public Parser getParser() {
-        return _parser;
-    }
-
-    /**
-     * Only for user by the internal TrAX implementation.
-     */
-    public void setParser(Parser parser) {
-	_parser = parser;
-    }
-
-    /**
-     * Only for user by the internal TrAX implementation.
-     */
-    public void setOutputType(int type) {
-	_outputType = type;
-    }
-
-    /**
-     * Only for user by the internal TrAX implementation.
-     */
-    public Properties getOutputProperties() {
-	return _parser.getOutputProperties();
+	_ccontext = CompilerContext.getInstance(this);
     }
 
     /**
@@ -201,31 +192,67 @@ public final class XSLTC {
      * Initializes the compiler to produce a new translet
      */
     private void reset() {
-	_nextGType      = DOM.NTYPES;
-	_elements       = new HashMap();
-	_attributes     = new HashMap();
-	_namespaces     = new HashMap();
-	_namespaces.put("",new Integer(_nextNSType));
-	_namesIndex     = new ArrayList(128);
-	_namespaceIndex = new ArrayList(32);
 	_parser.init();
-	//_variableSerial     = 1;
-	_modeSerial         = 1;
-	_stylesheetSerial   = 1;
-	_stepPatternSerial  = 1;
-	_helperClassSerial  = 0;
-	_attributeSetSerial = 0;
-	_multiDocument      = false;
-	_numberFieldIndexes = new int[] {
-	    -1, 	// LEVEL_SINGLE
-	    -1, 	// LEVEL_MULTIPLE
-	    -1		// LEVEL_ANY
-	};
+	_ccontext.init();
+
+        // IMPORTANT TODO - reset all thread variables here!!!
+        // How are we going to do this. Can we get a list
+        // of all the thread variables???
     }
 
     /**
-     * Defines an external SourceLoader to provide the compiler with documents
-     * referenced in xsl:include/import
+     * Returns a reference to the parser object.
+     */
+    public Parser getParser() {
+        return _parser;
+    }
+
+    /**
+     * Sets a new parser object (used by TrAX).
+     */
+    public void setParser(Parser parser) {
+        _parser = parser;
+    }
+
+    /**
+     * Returns a reference to the compiler context (used by TrAX).
+     */
+    public CompilerContext getCompilerContext() {
+        return _ccontext;
+    }
+
+    /**
+     * Set the output type of the transform (used by TrAX).
+     */
+    public void setOutputType(int type) {
+        _outputType = type;
+    }
+
+    /**
+     * Turn debugging messages on/off.
+     */
+    public void setDebug(boolean debug) {
+        _debug = debug;
+    }
+
+    /**
+     * Get current debugging message setting.
+     */
+    public boolean getDebug() {
+        return _debug;
+    }
+
+    /**
+     * Returns the output properties (used by TrAX).
+     */
+    public Properties getOutputProperties() {
+        return _parser.getOutputProperties();
+    }
+
+    /**
+     * Defines an external SourceLoader to provide the compiler with
+     * documents referenced in xsl:include and xsl:import.
+     *
      * @param loader The SourceLoader to use for include/import
      */
     public void setSourceLoader(SourceLoader loader) {
@@ -233,19 +260,10 @@ public final class XSLTC {
     }
 
     /**
-     * Set a flag indicating if templates are to be inlined or not. The
-     * default is to do inlining, but this causes problems when the
-     * stylesheets have a large number of templates (e.g. branch targets
-     * exceeding 64K or a length of a method exceeding 64K).
-     */
-    public void setTemplateInlining(boolean templateInlining) {
-	_templateInlining = templateInlining;
-    }
-
-    /**
      * Set the parameters to use to locate the correct <?xml-stylesheet ...?>
      * processing instruction in the case where the input document to the
      * compiler (and parser) is an XML document.
+     *
      * @param media The media attribute to be matched. May be null, in which
      * case the prefered templates will be used (i.e. alternate = no).
      * @param title The value of the title attribute to match. May be null.
@@ -257,6 +275,7 @@ public final class XSLTC {
 
     /**
      * Compiles an XSL stylesheet pointed to by a URL
+     *
      * @param url An URL containing the input XSL stylesheet
      */
     public boolean compile(URL url) {
@@ -274,9 +293,10 @@ public final class XSLTC {
     }
 
     /**
-     * Compiles an XSL stylesheet pointed to by a URL
-     * @param url An URL containing the input XSL stylesheet
-     * @param name The name to assign to the translet class
+     * Compiles an XSL stylesheet pointed to by a URL.
+     *
+     * @param url An URL containing the input XSL stylesheet.
+     * @param name The name to assign to the translet class.
      */
     public boolean compile(URL url, String name) {
 	try {
@@ -287,21 +307,61 @@ public final class XSLTC {
 	    return compile(input, name);
 	}
 	catch (IOException e) {
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.reportError(Constants.FATAL,
+                                new ErrorMsg(e.getMessage()));
 	    return false;
 	}
     }
 
     /**
-     * Compiles an XSL stylesheet passed in through an InputStream
-     * @param input An InputStream that will pass in the stylesheet contents
-     * @param name The name of the translet class to generate
-     * @return 'true' if the compilation was successful
+     * Compiles an XSL stylesheet from an InputStream.
+     *
+     * @param input An InputStream that will pass in the stylesheet
+     *        contents.
+     * @param name The name of the translet class to generate.
+     * @return 'true' if the compilation was successful.
      */
     public boolean compile(InputStream stream, String name) {
 	final InputSource input = new InputSource(stream);
 	input.setSystemId(name); // We have nothing else!!!
 	return compile(input, name);
+    }
+
+    /**
+     * Compiles a set of stylesheets from a list of URLs.
+     *
+     * @param stylesheets A ArrayList containing URLs.
+     * @return 'true' if the compilation was successful.
+     */
+    public boolean compile(ArrayList stylesheets) {
+        // Get the number of stylesheets (ie. URLs) in the vector
+        final int count = stylesheets.size();
+
+        // Return straight away if the vector is empty
+        if (count == 0) return true;
+
+        // Special handling needed if the URL count is one, becuase the
+        // _className global must not be reset if it was set explicitly
+        if (count == 1) {
+            final Object url = stylesheets.get(0);
+            if (url instanceof URL) {
+                return compile((URL)url);
+            }
+            return false;
+        }
+        else {
+            // Traverse all elements in the vector and compile
+            final Iterator urls = stylesheets.iterator();
+
+            while (urls.hasNext()) {
+                _className = null; // reset, so that new name will be computed
+                final Object url = urls.next();
+                if (url instanceof URL) {
+                    if (!compile((URL)url)) return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -323,12 +383,15 @@ public final class XSLTC {
 
 	    // Set the translet class name if not already set
 	    if (_className == null) {
-		if (name != null)
+		if (name != null) {
 		    setClassName(name);
-		else if ((systemId != null) && (!systemId.equals("")))
+		}
+		else if ((systemId != null) && (!systemId.equals(""))) {
 		    setClassName(Util.baseName(systemId));
-		else
+		}
+		else {
 		    setClassName("GregorSamsa"); // default translet name
+		}
 	    }
 
 	    // Get the root node of the abstract syntax tree
@@ -341,23 +404,23 @@ public final class XSLTC {
 	    }
 
 	    // Compile the translet - this is where the work is done!
-	    if ((!_parser.errorsFound()) && (element != null)) {
+	    if (!_parser.errorsFound() && element != null) {
 		// Create a Stylesheet element from the root node
 		_stylesheet = _parser.makeStylesheet(element);
 		_stylesheet.setSourceLoader(_loader);
 		_stylesheet.setSystemId(systemId);
 		_stylesheet.setParentStylesheet(null);
-		_stylesheet.setTemplateInlining(_templateInlining);
-		_parser.setCurrentStylesheet(_stylesheet);
 
-		// Create AST under the Stylesheet element (parse & type-check)
+                // Set current stylesheet in static context
+                StaticContext scontext = StaticContext.getInstance(null);
+                scontext.setCurrentStylesheet(_stylesheet);
+
+		// Create, parse and typecheck AST
 		_parser.createAST(_stylesheet);
 	    }
-	    // Generate the bytecodes and output the translet class(es)
-	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
-		_stylesheet.setCallsNodeset(_callsNodeset);
-		_stylesheet.setMultiDocument(_multiDocument);
 
+	    // Generate the bytecodes and output the translet class(es)
+	    if (!_parser.errorsFound() && _stylesheet != null) {
 		// Class synchronization is needed for BCEL
 		synchronized (getClass()) {
 		    _stylesheet.translate();
@@ -379,66 +442,35 @@ public final class XSLTC {
     }
 
     /**
-     * Compiles a set of stylesheets pointed to by a ArrayList of URLs
-     * @param stylesheets A ArrayList containing URLs pointing to the stylesheets
-     * @return 'true' if the compilation was successful
-     */
-    public boolean compile(ArrayList stylesheets) {
-	// Get the number of stylesheets (ie. URLs) in the vector
-	final int count = stylesheets.size();
-
-	// Return straight away if the vector is empty
-	if (count == 0) return true;
-
-	// Special handling needed if the URL count is one, becuase the
-	// _className global must not be reset if it was set explicitly
-	if (count == 1) {
-	    final Object url = stylesheets.get(0);
-	    if (url instanceof URL)
-		return compile((URL)url);
-	    else
-		return false;
-	}
-	else {
-	    // Traverse all elements in the vector and compile
-	    final Iterator urls = stylesheets.iterator();
-	    while (urls.hasNext()) {
-		_className = null; // reset, so that new name will be computed
-		final Object url = urls.next();
-		if (url instanceof URL) {
-		    if (!compile((URL)url)) return false;
-		}
-	    }
-	}
-	return true;
-    }
-
-    /**
-     * Returns an array of bytecode arrays generated by a compilation.
-     * @return JVM bytecodes that represent translet class definition
+     * Returns an array of bytecode arrays generated by the compilation
+     * process.
+     *
+     * @return JVM bytecodes for translet and helper classes.
      */
     public byte[][] getBytecodes() {
 	final int count = _classes.size();
 	final byte[][] result = new byte[count][1];
-	for (int i = 0; i < count; i++)
+	for (int i = 0; i < count; i++) {
 	    result[i] = (byte[])_classes.get(i);
+	}
 	return result;
     }
 
     /**
-     * Compiles a stylesheet pointed to by a URL. The result is put in a
-     * set of byte arrays. One byte array for each generated class.
-     * @param name The name of the translet class to generate
-     * @param input An InputSource that will pass in the stylesheet contents
-     * @param outputType The output type
-     * @return JVM bytecodes that represent translet class definition
+     * Compiles a stylesheet from an InputSource. The result is returned
+     * as an array of byte arrays.
+     *
+     * @param name The name of the translet class to generate.
+     * @param input An InputSource that will pass in the stylesheet contents.
+     * @param outputType The output type.
+     * @return JVM bytecodes that represent translet class definition.
      */
     public byte[][] compile(String name, InputSource input, int outputType) {
 	_outputType = outputType;
-	if (compile(input, name))
+	if (compile(input, name)) {
 	    return getBytecodes();
-	else
-	    return null;
+	}
+        return null;
     }
 
     /**
@@ -491,31 +523,6 @@ public final class XSLTC {
     }
 
     /**
-     * This method is called by the XPathParser when it encounters a call
-     * to the document() function. Affects the DOM used by the translet.
-     */
-    protected void setMultiDocument(boolean flag) {
-	_multiDocument = flag;
-    }
-
-    public boolean isMultiDocument() {
-	return _multiDocument;
-    }
-
-    /**
-     * This method is called by the XPathParser when it encounters a call
-     * to the nodeset() extension function. Implies multi document.
-     */
-    protected void setCallsNodeset(boolean flag) {
-	if (flag) setMultiDocument(flag);
-	_callsNodeset = flag;
-    }
-
-    public boolean callsNodeset() {
-	return _callsNodeset;
-    }
-
-    /**
      * Set the class name for the generated translet. This class name is
      * overridden if multiple stylesheets are compiled in one go using the
      * compile(ArrayList urls) method.
@@ -526,10 +533,12 @@ public final class XSLTC {
 	final String noext = Util.noExtName(base);
 	String name  = Util.toJavaName(noext);
 
-	if (_packageName == null)
+	if (_packageName == null) {
 	    _className = name;
-	else
+	}
+	else {
 	    _className = _packageName + '.' + name;
+	}
     }
 
     /**
@@ -551,10 +560,12 @@ public final class XSLTC {
      * Generate an output File object to send the translet to
      */
     private File getOutputFile(String className) {
-	if (_destDir != null)
+	if (_destDir != null) {
 	    return new File(_destDir, classFileName(className));
-	else
+	}
+	else {
 	    return new File(classFileName(className));
+	}
     }
 
     /**
@@ -587,10 +598,12 @@ public final class XSLTC {
      */
     public void setJarFileName(String jarFileName) {
 	final String JAR_EXT = ".jar";
-	if (jarFileName.endsWith(JAR_EXT))
+	if (jarFileName.endsWith(JAR_EXT)) {
 	    _jarFileName = jarFileName;
-	else
+	}
+	else {
 	    _jarFileName = jarFileName + JAR_EXT;
+	}
 	_outputType = JAR_OUTPUT;
     }
 
@@ -610,108 +623,6 @@ public final class XSLTC {
      */
     public Stylesheet getStylesheet() {
 	return _stylesheet;
-    }
-
-    /**
-     * Registers an attribute and gives it a type so that it can be mapped to
-     * DOM attribute types at run-time.
-     */
-    public int registerAttribute(QName name) {
-	Integer code = (Integer)_attributes.get(name.toString());
-	if (code == null) {
-	    code = new Integer(_nextGType++);
-	    _attributes.put(name.toString(), code);
-	    final String uri = name.getNamespace();
-	    final String local = "@"+name.getLocalPart();
-	    if ((uri != null) && (!uri.equals("")))
-		_namesIndex.add(uri+":"+local);
-	    else
-		_namesIndex.add(local);
-	    if (name.getLocalPart().equals("*")) {
-		registerNamespace(name.getNamespace());
-	    }
-	}
-	return code.intValue();
-    }
-
-    /**
-     * Registers an element and gives it a type so that it can be mapped to
-     * DOM element types at run-time.
-     */
-    public int registerElement(QName name) {
-	// Register element (full QName)
-	Integer code = (Integer)_elements.get(name.toString());
-	if (code == null) {
-	    _elements.put(name.toString(), code = new Integer(_nextGType++));
-	    _namesIndex.add(name.toString());
-	}
-	if (name.getLocalPart().equals("*")) {
-	    registerNamespace(name.getNamespace());
-	}
-	return code.intValue();
-    }
-
-    /**
-     * Registers an element and gives it a type so that it can be mapped to
-     * DOM element types at run-time.
-     */
-    public int registerNamespace(QName name, StaticContext scontext) {
-	final String uri = scontext.getNamespace(name.toString());
-	return registerNamespace(uri);
-    }
-
-    /**
-     * Registers a namespace and gives it a type so that it can be mapped to
-     * DOM namespace types at run-time.
-     */
-    public int registerNamespace(String namespaceURI) {
-	Integer code = (Integer)_namespaces.get(namespaceURI);
-	if (code == null) {
-	    code = new Integer(_nextNSType++);
-	    _namespaces.put(namespaceURI,code);
-	    _namespaceIndex.add(namespaceURI);
-	}
-	return code.intValue();
-    }
-
-    public int nextModeSerial() {
-	return _modeSerial++;
-    }
-
-    public int nextStylesheetSerial() {
-	return _stylesheetSerial++;
-    }
-
-    public int nextStepPatternSerial() {
-	return _stepPatternSerial++;
-    }
-
-    public int[] getNumberFieldIndexes() {
-	return _numberFieldIndexes;
-    }
-
-    public int nextHelperClassSerial() {
-	return _helperClassSerial++;
-    }
-
-    public int nextAttributeSetSerial() {
-	return _attributeSetSerial++;
-    }
-
-    public ArrayList getNamesIndex() {
-	return _namesIndex;
-    }
-
-    public ArrayList getNamespaceIndex() {
-	return _namespaceIndex;
-    }
-
-    /**
-     * Returns a unique name for every helper class needed to
-     * execute a translet.
-     */
-    public String getHelperClassName() {
-	return getClassName() + '$' + _helperClassSerial++;
     }
 
     public void dumpClass(JavaClass clazz) {
@@ -783,11 +694,13 @@ public final class XSLTC {
 	final String now = (new Date()).toString();
 	final java.util.jar.Attributes.Name dateAttr =
 	    new java.util.jar.Attributes.Name("Date");
+
 	while (classes.hasNext()) {
 	    final JavaClass clazz = (JavaClass)classes.next();
 	    final String className = clazz.getClassName().replace('.','/');
 	    final java.util.jar.Attributes attr = new java.util.jar.Attributes();
-	    attr.put(dateAttr, now);
+
+            attr.put(dateAttr, now);
 	    map.put(className+".class", attr);
 	}
 
@@ -795,7 +708,8 @@ public final class XSLTC {
 	final JarOutputStream jos =
 	    new JarOutputStream(new FileOutputStream(jarFile), manifest);
 	classes = _bcelClasses.iterator();
-	while (classes.hasNext()) {
+
+        while (classes.hasNext()) {
 	    final JavaClass clazz = (JavaClass)classes.next();
 	    final String className = clazz.getClassName().replace('.','/');
 	    jos.putNextEntry(new JarEntry(className+".class"));
@@ -805,19 +719,4 @@ public final class XSLTC {
 	}
 	jos.close();
     }
-
-    /**
-     * Turn debugging messages on/off
-     */
-    public void setDebug(boolean debug) {
-	_debug = debug;
-    }
-
-    /**
-     * Get current debugging message setting
-     */
-    public boolean debug() {
-	return _debug;
-    }
-
 }

@@ -438,7 +438,8 @@ final class Whitespace extends TopLevelElement {
 		    qname = parser.getQName(rule.getElement());
 
 		// Register the element.
-		final int elementType = xsltc.registerElement(qname);
+		final int elementType =
+                    CompilerContext.getInstance().registerElement(qname);
 		il.append(new ILOAD(paramType));
 		il.append(new PUSH(cpg, elementType));
 

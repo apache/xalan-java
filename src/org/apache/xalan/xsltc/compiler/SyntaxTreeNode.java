@@ -110,6 +110,16 @@ public abstract class SyntaxTreeNode implements Constants {
     private int _line;
 
     /**
+     * Reference to the owning template (null if top-level).
+     */
+    private Template _template;
+
+    /**
+     * Reference to the owning stylesheet.
+     */
+    private Stylesheet _stylesheet;
+
+    /**
      * A "sentinel" that is used to denote unrecognised syntaxt
      * tree nodes.
      */
@@ -122,19 +132,23 @@ public abstract class SyntaxTreeNode implements Constants {
     public SyntaxTreeNode() {
 	_line = 0;
 	_qname = null;
+        init();
     }
 
     /**
      * Creates a new SyntaxTreeNode with a 'null' QName.
+     *
      * @param line Source file line number reference
      */
     public SyntaxTreeNode(int line) {
 	_line = line;
 	_qname = null;
+        init();
     }
 
     /**
      * Creates a new SyntaxTreeNode with no source file line number reference.
+     *
      * @param uri The element's namespace URI
      * @param prefix The element's namespace prefix
      * @param local The element's local name
@@ -142,6 +156,17 @@ public abstract class SyntaxTreeNode implements Constants {
     public SyntaxTreeNode(String uri, String prefix, String local) {
 	_line = 0;
 	setQName(uri, prefix, local);
+        init();
+    }
+
+    /**
+     * Sets stylesheet and template references based on the static
+     * context.
+     */
+    private void init() {
+        final StaticContext scontext = getStaticContext();
+        _template = scontext.getCurrentTemplate();
+        _stylesheet = scontext.getCurrentStylesheet();
     }
 
     /**
@@ -150,6 +175,23 @@ public abstract class SyntaxTreeNode implements Constants {
      */
     protected final boolean isDummy() {
         return this == Dummy;
+    }
+
+    // -- Stylsheet and Template -----------------------------------------
+
+    /**
+     * Returns a reference to the stylesheet that holds this node.
+     */
+    public Stylesheet getStylesheet() {
+        return _stylesheet;
+    }
+
+    /**
+     * Returns a reference to the template that holds this node,
+     * or null if the node is a top-level element.
+     */
+    public Template getTemplate() {
+        return _template;
     }
 
     // -- Line number info  ----------------------------------------------
@@ -316,11 +358,12 @@ public abstract class SyntaxTreeNode implements Constants {
      */
     protected final void parseContents(CompilerContext ccontext) {
 	ArrayList locals = null;
-        StaticContextImpl scontext = getStaticContext();
+        StaticContext scontext = getStaticContext();
 
 	final int count = _contents.size();
 	for (int i = 0; i < count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode) _contents.get(i);
+            scontext.setCurrentNode(child);
 	    child.parse(ccontext);
 
             // Is variable or parameter?
@@ -415,12 +458,12 @@ public abstract class SyntaxTreeNode implements Constants {
     /**
      * Get the import precedence of this element. The import precedence equals
      * the import precedence of the stylesheet in which this element occured.
+     *
      * @return The import precedence of this syntax tree node.
      */
     protected int getImportPrecedence() {
-        Stylesheet stylesheet = getStylesheet();
-        if (stylesheet == null) return Integer.MIN_VALUE;
-        return stylesheet.getImportPrecedence();
+        if (_stylesheet == null) return Integer.MIN_VALUE;
+        return _stylesheet.getImportPrecedence();
     }
 
     // -- Dependency on evaluation context  ------------------------------
@@ -532,15 +575,15 @@ public abstract class SyntaxTreeNode implements Constants {
      * Returns a reference to the static context using this node as
      * current.
      */
-    public StaticContextImpl getStaticContext() {
-        return StaticContextImpl.getInstance(this);
+    public StaticContext getStaticContext() {
+        return StaticContext.getInstance(this);
     }
 
     /**
      * Returns a reference to the compiler context.
      */
-    public CompilerContextImpl getCompilerContext() {
-        return CompilerContextImpl.getInstance();
+    public CompilerContext getCompilerContext() {
+        return CompilerContext.getInstance();
     }
 
     // -------------------------------------------------------------------
@@ -564,22 +607,12 @@ public abstract class SyntaxTreeNode implements Constants {
 
     // TEMP - this should go away !
     public final Parser getParser() {
-        return CompilerContextImpl.getInstance().getParser();
+        return CompilerContext.getInstance().getParser();
     }
 
     // TEMP - this should go away !
     protected final XSLTC getXSLTC() {
         return getCompilerContext().getXSLTC();
-    }
-
-    // TEMP - this should go away !
-    protected Template getTemplate() {
-        return getStaticContext().getCurrentTemplate();
-    }
-
-    // TEMP - this should go away !
-    public Stylesheet getStylesheet() {
-        return getStaticContext().getStylesheet();
     }
 
     // TEMP - this should go away !

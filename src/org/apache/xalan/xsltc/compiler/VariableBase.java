@@ -233,6 +233,7 @@ class VariableBase extends TopLevelElement {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
+        final StaticContext scontext = getStaticContext();
 
 	// Get the 'name attribute
 	String name = getAttribute("name");
@@ -244,7 +245,7 @@ class VariableBase extends TopLevelElement {
 	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 
 	// Check whether variable/param of the same name is already in scope
-	VariableBase other = parser.lookupVariable(_name);
+	VariableBase other = scontext.getVariable(_name);
 	if ((other != null) && (other.getParent() == getParent())) {
 	    reportError(this, parser, ErrorMsg.VARIABLE_REDEF_ERR, name);
 	}

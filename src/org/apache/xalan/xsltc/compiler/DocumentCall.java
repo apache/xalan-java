@@ -103,7 +103,8 @@ final class DocumentCall extends FunctionCall {
 	if (_uri instanceof LiteralExpr) {
 	    LiteralExpr expr = (LiteralExpr)_uri;
 	    if (expr.getValue().equals(EMPTYSTRING)) {
-		Stylesheet stylesheet = getStylesheet();
+		final Stylesheet stylesheet = getStylesheet();
+
 		if (stylesheet == null) {
 		    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
 		    throw new TypeCheckError(msg);
@@ -121,7 +122,7 @@ final class DocumentCall extends FunctionCall {
 	if (ac == 2) {
 	    _base = argument(1);
 	    final Type baseType = _base.typeCheck(ccontext);
-	    
+
 	    if (baseType.identicalTo(Type.Node)) {
 		_base = new CastExpr(_base, Type.NodeSet);
 	    }
@@ -136,7 +137,7 @@ final class DocumentCall extends FunctionCall {
 
 	return _type = Type.NodeSet;
     }
-	
+
     /**
      * Translates the document() function call to a call to LoadDocument()'s
      * static method document().
@@ -176,7 +177,8 @@ final class DocumentCall extends FunctionCall {
 	     il.append(methodGen.loadContextNode());
 	}
 	il.append(new INVOKEINTERFACE(uriIdx, 2));
-	il.append(new PUSH(cpg, getStylesheet().getSystemId()));
+        Stylesheet stylesheet = getStylesheet();
+	il.append(new PUSH(cpg, stylesheet.getSystemId()));
 
 	// Feck the rest of the parameters on the stack
 	il.append(classGen.loadTranslet());

@@ -180,14 +180,14 @@ public final class ErrorMsg {
     public static final int ERROR_MSG                   = 88;
     public static final int TRANSFORM_WITH_TRANSLET_STR = 89;
     public static final int TRANSFORM_WITH_JAR_STR      = 90;
-    
+
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.
     private static String[] _errorMessages;
     private static String   _compileError;
     private static String   _compileWarning;
     private static String   _runtimeError;
-    
+
     public final static String ERROR_MESSAGES_KEY   = "error-messages";
     public final static String COMPILER_ERROR_KEY   = "compile-error";
     public final static String COMPILER_WARNING_KEY = "compile-warning";
@@ -205,7 +205,7 @@ public final class ErrorMsg {
 	_code = code;
 	_line = 0;
     }
-	
+
     public ErrorMsg(String message) {
 	_code = -1;
 	_message = message;
@@ -274,11 +274,11 @@ public final class ErrorMsg {
     }
 
     private String getFileName(SyntaxTreeNode node) {
-	Stylesheet stylesheet = node.getStylesheet();
-	if (stylesheet != null)
+	final Stylesheet stylesheet = node.getStylesheet();
+	if (stylesheet != null) {
 	    return stylesheet.getSystemId();
-	else
-	    return null;
+	}
+        return null;
     }
 
     private String formatLine() {
@@ -294,26 +294,26 @@ public final class ErrorMsg {
 	}
 	return result.toString();
     }
-	
+
     /**
      * This version of toString() uses the _params instance variable
      * to format the message. If the <code>_code</code> is negative
      * the use _message as the error string.
      */
     public String toString() {
-	String suffix = (_params == null) ? 
+	String suffix = (_params == null) ?
 	    (_code >= 0 ? new String(_errorMessages[_code]) : _message)
 	    : MessageFormat.format(_errorMessages[_code], _params);
 	return formatLine() + suffix;
     }
-	
+
     public String toString(Object obj) {
 	Object params[] = new Object[1];
 	params[0] = obj.toString();
 	String suffix = MessageFormat.format(_errorMessages[_code], params);
 	return formatLine() + suffix;
     }
-	
+
     public String toString(Object obj0, Object obj1) {
 	Object params[] = new Object[2];
 	params[0] = obj0.toString();

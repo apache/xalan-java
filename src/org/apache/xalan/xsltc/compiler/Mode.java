@@ -487,7 +487,8 @@ for (int i = 0; i < _templates.size(); i++) {
 	// Complete test sequence for "@*" with "attribute::node()"
 	completeTestSequences(DOM.ATTRIBUTE, _attribNodeGroup);
 
-	final ArrayList names = _stylesheet.getXSLTC().getNamesIndex();
+	final ArrayList names =
+            CompilerContext.getInstance().getNamesIndex();
 	if (starGroup != null || atStarGroup != null ||
 	    _childNodeGroup != null || _attribNodeGroup != null)
 	{
@@ -713,8 +714,9 @@ for (int i = 0; i < _templates.size(); i++) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
 	// Append switch() statement - namespace test dispatch loop
-	final ArrayList namespaces = xsltc.getNamespaceIndex();
-	final ArrayList names = xsltc.getNamesIndex();
+        CompilerContext ccontext = CompilerContext.getInstance();
+	final ArrayList namespaces = ccontext.getNamespaceIndex();
+	final ArrayList names = ccontext.getNamesIndex();
 	final int namespaceCount = namespaces.size() + 1;
 	final int namesCount = names.size();
 
@@ -736,7 +738,7 @@ for (int i = 0; i < _templates.size(); i++) {
 		if ((isNamespace[i]) && (isAttribute[i] == attrFlag)) {
 		    String name = (String)names.get(i-DOM.NTYPES);
 		    String namespace = name.substring(0,name.lastIndexOf(':'));
-		    final int type = xsltc.registerNamespace(namespace);
+		    final int type = ccontext.registerNamespace(namespace);
 
 		    if ((i < _testSeq.length) &&
 			(_testSeq[i] != null)) {
@@ -774,7 +776,8 @@ for (int i = 0; i < _templates.size(); i++) {
     public void compileApplyTemplates(ClassGenerator classGen) {
 	final XSLTC xsltc = classGen.getParser().getXSLTC();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final ArrayList names = xsltc.getNamesIndex();
+	final ArrayList names =
+            CompilerContext.getInstance().getNamesIndex();
 
 	// Create the applyTemplates() method
 	final org.apache.bcel.generic.Type[] argTypes =
@@ -1085,7 +1088,8 @@ for (int i = 0; i < _templates.size(); i++) {
     public void compileApplyImports(ClassGenerator classGen, int min, int max) {
 	final XSLTC xsltc = classGen.getParser().getXSLTC();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final ArrayList names      = xsltc.getNamesIndex();
+	final ArrayList names =
+            CompilerContext.getInstance().getNamesIndex();
 
 	// Clear some datastructures
 	_namedTemplates = new HashMap();

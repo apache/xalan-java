@@ -655,7 +655,7 @@ class FunctionCall extends Expression {
 
 	if (_type != null) {
 	    if (_type == Type.NodeSet) {
-            	getXSLTC().setMultiDocument(true);
+            	ccontext.setMultiDocument(true);
             }
 	    return _type;
 	}

@@ -84,7 +84,6 @@ final class FormatNumberCall extends FunctionCall {
     }
 
     public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
-
 	// Inform stylesheet to instantiate a DecimalFormat object
 	getStylesheet().numberFormattingUsed();
 
@@ -101,7 +100,7 @@ final class FormatNumberCall extends FunctionCall {
 
 	    if (_name instanceof LiteralExpr) {
 		final LiteralExpr literal = (LiteralExpr) _name;
-		_resolvedQName = 
+		_resolvedQName =
 		    getParser().getQNameIgnoreDefaultNs(literal.getValue());
 	    }
 	    else if (tname instanceof StringType == false) {
@@ -110,7 +109,7 @@ final class FormatNumberCall extends FunctionCall {
 	}
 	return _type = Type.String;
     }
-    
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -127,7 +126,7 @@ final class FormatNumberCall extends FunctionCall {
 					 "getDecimalFormat",
 					 "(Ljava/lang/String;)"+
 					 "Ljava/text/DecimalFormat;");
-	
+
 	il.append(classGen.loadTranslet());
 	if (_name == null) {
 	    il.append(new PUSH(cpg, EMPTYSTRING));

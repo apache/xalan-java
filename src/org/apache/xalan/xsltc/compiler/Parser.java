@@ -89,39 +89,92 @@ import org.apache.xalan.xsltc.runtime.AttributeList;
 
 public class Parser implements Constants, ContentHandler {
 
-    private static final String XSL = "xsl";            // standard prefix
-    private static final String TRANSLET = "translet"; // extension prefix
-
-    private Locator _locator = null;
-
-    private XSLTC _xsltc;             // Reference to the compiler object.
-    private XPathParser _xpathParser; // Reference to the XPath parser.
-    private ArrayList _errors;           // Contains all compilation errors
-    private ArrayList _warnings;         // Contains all compilation errors
-
-    private HashMap   _instructionClasses; // Maps instructions to classes
-    private HashMap   _instructionAttrs;;  // reqd and opt attrs
-    private HashMap   _qNames;
-    private HashMap   _namespaces;
-    private QName       _useAttributeSets;
-    private QName       _excludeResultPrefixes;
-    private QName       _extensionElementPrefixes;
-    private HashMap   _variableScope;
-    private Stylesheet  _currentStylesheet;
-    private Output      _output = null;
-    private Template    _template;    // Reference to the template being parsed.
+    /**
+     * Standard prefix bound to XSL uri.
+     */
+    private static final String XSL = "xsl";
 
     /**
-     * A reference to the static context implementation.
+     * Extension prefix.
      */
-    private StaticContextImpl _staticContext;
+    private static final String TRANSLET = "translet";
 
-    private boolean     _rootNamespaceDef = false; // Used for validity check
+    /**
+     * SAX locator object. Used to obtain the location of any content
+     * handler event in the XML source document.
+     */
+    private Locator _locator = null;
 
+    /**
+     * Mapping between an instruction name (e.g. template) to the
+     * name of the class implementing that instruction. Java
+     * reflection is used to load the class from its name.
+     */
+    private HashMap _instructionClasses;
+
+    /**
+     * Mapping between an instruction name (e.g. template) to an
+     * array of strings contaning all the attributes allowed for
+     * that instruction. Used for error reporting.
+     */
+    private HashMap _instructionAttrs;
+
+    /**
+     * A reference to the XSLTC object.
+     */
+    private XSLTC _xsltc;
+
+    /**
+     * A list of all the errors encountered during compilation.
+     */
+    private ArrayList _errors;
+
+    /**
+     * A list of all the warnings encountered during compilation.
+     */
+    private ArrayList _warnings;
+
+    /**
+     * A reference to the XPath parser generated using Javacup/JLex.
+     */
+    private XPathParser _xpathParser;
+
+    /**
+     * A reference to the static context.
+     */
+    private StaticContext _staticContext;
+
+    /**
+     * A reference to the parsed xsl:output object. Multiple output
+     * declarations are merged as defined in the XSLT spec.
+     */
+    private Output _output = null;
+
+    /**
+     * A reference to the template being parsed.
+     */
+    private Template _template;
+
+    /**
+     * A reference to the stylesheet's root element.
+     */
     private SyntaxTreeNode _root = null;
 
+    /**
+     * Set to true if the XSL namespace is defined in the stylesheet.
+     * Used to handle stylsheets specified via the xml-stylesheet PI.
+     */
+    private boolean  _rootNamespaceDef = false;
+
+    /**
+     * Target of xml-stylesheet PI (if present).
+     */
     private String _target;
 
+    /**
+     * Current import precendence. This is incremented every time a
+     * stylesheet is imported.
+     */
     private int _currentImportPrecedence = 1;
 
     public Parser(XSLTC xsltc) {
@@ -129,31 +182,20 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public void init() {
-	_qNames              = new HashMap(512);
-	_namespaces          = new HashMap();
 	_instructionClasses  = new HashMap();
 	_instructionAttrs    = new HashMap();
-	_variableScope       = new HashMap();
 	_template            = null;
 	_errors              = new ArrayList();
 	_warnings            = new ArrayList();
-	_currentStylesheet   = null;
 	_currentImportPrecedence = 1;
-	_staticContext       = StaticContextImpl.getInstance(null);
+	_staticContext       = StaticContext.getInstance(null);
         _xpathParser         =
-            new XPathParser(CompilerContextImpl.getInstance(), _staticContext);
+            new XPathParser(CompilerContext.getInstance(), _staticContext);
 
 	initStdClasses();
 	initInstructionAttrs();
 	initExtClasses();
 	initStaticContextPrimops();
-
-	_useAttributeSets =
-	    getQName(XSLT_URI, XSL, "use-attribute-sets");
-	_excludeResultPrefixes =
-	    getQName(XSLT_URI, XSL, "exclude-result-prefixes");
-	_extensionElementPrefixes =
-	    getQName(XSLT_URI, XSL, "extension-element-prefixes");
     }
 
     public void setOutput(Output output) {
@@ -181,53 +223,12 @@ public class Parser implements Constants, ContentHandler {
 	return getTopLevelStylesheet().getOutputProperties();
     }
 
-    public void addVariable(Variable var) {
-	addVariableOrParam(var);
-    }
-
-    public void addParameter(Param param) {
-	addVariableOrParam(param);
-    }
-
-    private void addVariableOrParam(VariableBase var) {
-	Object existing = _variableScope.get(var.getName());
-	if (existing != null) {
-	    if (existing instanceof Stack) {
-		Stack stack = (Stack)existing;
-		stack.push(var);
-	    }
-	    else if (existing instanceof VariableBase) {
-		Stack stack = new Stack();
-		stack.push(existing);
-		stack.push(var);
-		_variableScope.put(var.getName(), stack);
-	    }
-	}
-	else {
-	    _variableScope.put(var.getName(), var);
-	}
-    }
-
-    public void removeVariable(QName name) {
-	Object existing = _variableScope.get(name);
-	if (existing instanceof Stack) {
-	    Stack stack = (Stack)existing;
-	    if (!stack.isEmpty()) stack.pop();
-	    if (!stack.isEmpty()) return;
-	}
-	_variableScope.remove(name);
-    }
-
-    public VariableBase lookupVariable(QName name) {
-	Object existing = _variableScope.get(name);
-	if (existing instanceof VariableBase) {
-	    return((VariableBase)existing);
-	}
-	else if (existing instanceof Stack) {
-	    Stack stack = (Stack)existing;
-	    return((VariableBase)stack.peek());
-	}
-	return(null);
+    /**
+     * Store the document locator to later retrieve line numbers of all
+     * elements from the stylesheet
+     */
+    public void setDocumentLocator(Locator locator) {
+        _locator = locator;
     }
 
     public void setXSLTC(XSLTC xsltc) {
@@ -238,141 +239,16 @@ public class Parser implements Constants, ContentHandler {
 	return _xsltc;
     }
 
+    public Stylesheet getTopLevelStylesheet() {
+        return _xsltc.getStylesheet();
+    }
+
     public int getCurrentImportPrecedence() {
 	return _currentImportPrecedence;
     }
 
     public int getNextImportPrecedence() {
 	return ++_currentImportPrecedence;
-    }
-
-    public void setCurrentStylesheet(Stylesheet stylesheet) {
-	_currentStylesheet = stylesheet;
-    }
-
-    public Stylesheet getCurrentStylesheet() {
-	return _currentStylesheet;
-    }
-
-    public Stylesheet getTopLevelStylesheet() {
-	return _xsltc.getStylesheet();
-    }
-
-    public QName getQNameSafe(final String stringRep) {
-	StaticContext scontext =
-            StaticContextImpl.getInstance(_currentStylesheet);
-
-	// parse and retrieve namespace
-	final int colon = stringRep.lastIndexOf(':');
-	if (colon != -1) {
-	    final String prefix = stringRep.substring(0, colon);
-	    final String localname = stringRep.substring(colon + 1);
-	    String namespace = null;
-
-	    // Get the namespace uri from the symbol table
-	    if (prefix.equals(XMLNS_PREFIX) == false) {
-		namespace = _staticContext.getNamespace(prefix);
-		if (namespace == null) namespace = EMPTYSTRING;
-	    }
-	    return getQName(namespace, prefix, localname);
-	}
-	else {
-	    final String uri = stringRep.equals(XMLNS_PREFIX) ? null
-		: _staticContext.getNamespace(EMPTYSTRING);
-	    return getQName(uri, null, stringRep);
-	}
-    }
-
-    public QName getQName(final String stringRep) {
-	return getQName(stringRep, true, false);
-    }
-
-    public QName getQNameIgnoreDefaultNs(final String stringRep) {
-	return getQName(stringRep, true, true);
-    }
-
-    public QName getQName(final String stringRep, boolean reportError) {
-	return getQName(stringRep, reportError, false);
-    }
-
-    private QName getQName(final String stringRep, boolean reportError,
-	boolean ignoreDefaultNs)
-    {
-	// parse and retrieve namespace
-	final int colon = stringRep.lastIndexOf(':');
-	if (colon != -1) {
-	    final String prefix = stringRep.substring(0, colon);
-	    final String localname = stringRep.substring(colon + 1);
-	    String namespace = null;
-
-	    // Get the namespace uri from the symbol table
-	    if (prefix.equals(XMLNS_PREFIX) == false) {
-		namespace = _staticContext.getNamespace(prefix);
-		if (namespace == null && reportError) {
-		    final int line = _locator.getLineNumber();
-		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
-						line, prefix);
-		    reportError(ERROR, err);
-		}
-	    }
-	    return getQName(namespace, prefix, localname);
-	}
-	else {
-	    if (stringRep.equals(XMLNS_PREFIX)) {
-		ignoreDefaultNs = true;
-	    }
-	    final String defURI = ignoreDefaultNs ? null
-				  : _staticContext.getNamespace(EMPTYSTRING);
-	    return getQName(defURI, null, stringRep);
-	}
-    }
-
-    public QName getQName(String namespace, String prefix, String localname) {
-	if (namespace == null || namespace.equals(EMPTYSTRING)) {
-	    QName name = (QName)_qNames.get(localname);
-	    if (name == null) {
-		name = new QName(null, prefix, localname);
-		_qNames.put(localname, name);
-	    }
-	    return name;
-	}
-	else {
-	    HashMap space = (HashMap) _namespaces.get(namespace);
-	    if (space == null) {
-		final QName name = new QName(namespace, prefix, localname);
-		_namespaces.put(namespace, space = new HashMap());
-		space.put(localname, name);
-		return name;
-	    }
-	    else {
-		QName name = (QName)space.get(localname);
-		if (name == null) {
-		    name = new QName(namespace, prefix, localname);
-		    space.put(localname, name);
-		}
-		return name;
-	    }
-	}
-    }
-
-    public QName getQName(String scope, String name) {
-	return getQName(scope + name);
-    }
-
-    public QName getQName(QName scope, QName name) {
-	return getQName(scope.toString() + name.toString());
-    }
-
-    public QName getUseAttributeSets() {
-	return _useAttributeSets;
-    }
-
-    public QName getExtensionElementPrefixes() {
-	return _extensionElementPrefixes;
-    }
-
-    public QName getExcludeResultPrefixes() {
-	return _excludeResultPrefixes;
     }
 
     /**
@@ -413,7 +289,7 @@ public class Parser implements Constants, ContentHandler {
     public void createAST(Stylesheet stylesheet) {
 	try {
 	    if (stylesheet != null) {
-		stylesheet.parse(CompilerContextImpl.getInstance());
+		stylesheet.parse(CompilerContext.getInstance());
 		final int precedence = stylesheet.getImportPrecedence();
 		final Iterator elements = stylesheet.iterator();
 		while (elements.hasNext()) {
@@ -426,7 +302,7 @@ public class Parser implements Constants, ContentHandler {
 		    }
 		}
 		if (!errorsFound()) {
-		    stylesheet.typeCheck(CompilerContextImpl.getInstance());
+		    stylesheet.typeCheck(CompilerContext.getInstance());
 		}
 	    }
 	}
@@ -450,23 +326,23 @@ public class Parser implements Constants, ContentHandler {
 	    return (SyntaxTreeNode)getStylesheet(_root);
 	}
 	catch (IOException e) {
-	    if (_xsltc.debug()) e.printStackTrace();
+	    if (_xsltc.getDebug()) e.printStackTrace();
 	    reportError(ERROR,new ErrorMsg(e.getMessage()));
 	}
 	catch (SAXException e) {
 	    Throwable ex = e.getException();
-	    if (_xsltc.debug()) {
+	    if (_xsltc.getDebug()) {
 		e.printStackTrace();
 		if (ex != null) ex.printStackTrace();
 	    }
 	    reportError(ERROR, new ErrorMsg(e.getMessage()));
 	}
 	catch (CompilerException e) {
-	    if (_xsltc.debug()) e.printStackTrace();
+	    if (_xsltc.getDebug()) e.printStackTrace();
 	    reportError(ERROR, new ErrorMsg(e.getMessage()));
 	}
 	catch (Exception e) {
-	    if (_xsltc.debug()) e.printStackTrace();
+	    if (_xsltc.getDebug()) e.printStackTrace();
 	    reportError(ERROR, new ErrorMsg(e.getMessage()));
 	}
 	return null;
@@ -669,8 +545,6 @@ public class Parser implements Constants, ContentHandler {
 	   new String[] {"stylesheet-prefix", "result-prefix"});
     }
 
-
-
     /**
      * Initialize the _instructionClasses HashMap, which maps XSL element
      * names to Java classes in this package.
@@ -719,7 +593,8 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public boolean elementSupported(String namespace, String localName) {
-	return(_instructionClasses.get(getQName(namespace, XSL, localName)) != null);
+	return(_instructionClasses.get(getQName(namespace, XSL, localName))
+               != null);
     }
 
     public boolean functionSupported(String fname) {
@@ -930,7 +805,7 @@ public class Parser implements Constants, ContentHandler {
 	String local, Attributes attributes)
     {
 	SyntaxTreeNode node = null;
-	QName  qname = getQName(uri, prefix, local);
+	QName qname = getQName(uri, prefix, local);
 	String className = (String)_instructionClasses.get(qname);
 
 	if (className != null) {
@@ -1038,7 +913,6 @@ public class Parser implements Constants, ContentHandler {
         }
     }
 
-
     /**
      * Parse an XPath expression:
      *  @parent - XSL element where the expression occured
@@ -1114,7 +988,7 @@ public class Parser implements Constants, ContentHandler {
 					    expression, parent));
 	}
 	catch (Exception e) {
-	    if (_xsltc.debug()) e.printStackTrace();
+	    if (_xsltc.getDebug()) e.printStackTrace();
 	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
 					    expression, parent));
 	}
@@ -1123,7 +997,7 @@ public class Parser implements Constants, ContentHandler {
         return SyntaxTreeNode.Dummy;
     }
 
-    /************************ ERROR HANDLING SECTION ************************/
+    // -- Error Handling -------------------------------------------------
 
     /**
      * Returns true if there were any errors during compilation
@@ -1199,7 +1073,56 @@ public class Parser implements Constants, ContentHandler {
 	return _warnings;
     }
 
-    /************************ SAX2 ContentHandler INTERFACE *****************/
+    // -- QName creation -------------------------------------------------
+
+    public QName getQName(final String stringRep) {
+        return getQName(stringRep, true, false);
+    }
+
+    public QName getQNameIgnoreDefaultNs(final String stringRep) {
+        return getQName(stringRep, true, true);
+    }
+
+    public QName getQName(final String stringRep, boolean reportError) {
+        return getQName(stringRep, reportError, false);
+    }
+
+    private QName getQName(final String stringRep, boolean reportError,
+        boolean ignoreDefaultNs)
+    {
+        // parse and retrieve namespace
+        final int colon = stringRep.lastIndexOf(':');
+        if (colon != -1) {
+            String namespace = "";
+            String prefix = stringRep.substring(0, colon);
+            String localname = stringRep.substring(colon + 1);
+
+            // Get the namespace uri from the symbol table
+            if (!prefix.equals(XMLNS_PREFIX)) {
+                namespace = _staticContext.getNamespace(prefix);
+                if (namespace == null && reportError) {
+                    final int line = _locator.getLineNumber();
+                    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
+                                                line, prefix);
+                    reportError(ERROR, err);
+                }
+            }
+            return getQName(namespace, prefix, localname);
+        }
+        else {
+            if (stringRep.equals(XMLNS_PREFIX)) {
+                ignoreDefaultNs = true;
+            }
+            return getQName(ignoreDefaultNs ? "" :
+                _staticContext.getNamespace(""), "", stringRep);
+        }
+    }
+
+    public QName getQName(String namespace, String prefix, String localname) {
+        return new QName(namespace, prefix, localname);
+    }
+
+    // -- SAX2 ContentHandler implementation -----------------------------
 
     private Stack _parentStack = null;
     private HashMap _prefixMapping = null;
@@ -1218,7 +1141,6 @@ public class Parser implements Constants, ContentHandler {
      * SAX2: Receive notification of the end of a document.
      */
     public void endDocument() { }
-
 
     /**
      * SAX2: Begin the scope of a prefix-URI Namespace mapping.
@@ -1312,11 +1234,12 @@ public class Parser implements Constants, ContentHandler {
 	if (parent instanceof Stylesheet) return;
 
         // Get last element of parent
-	SyntaxTreeNode bro = parent.get(parent.elementCount() - 1);
-	if ((bro != null) && (bro instanceof Text)) {
-	    Text text = (Text)bro;
+        int n = parent.elementCount();
+	SyntaxTreeNode bro = (n > 0) ? parent.get(n - 1) : null;
+	if (bro != null && bro instanceof Text) {
+	    Text text = (Text) bro;
 	    if (!text.isTextElement()) {
-		if ((length > 1) || ( ((int)ch[0]) < 0x100)) {
+		if (length > 1 || ((int) ch[0]) < 0x100) {
 		    text.setText(string);
 		    return;
 		}
@@ -1379,13 +1302,4 @@ public class Parser implements Constants, ContentHandler {
      * IGNORED - we do not have to do anything with skipped entities
      */
     public void skippedEntity(String name) { }
-
-    /**
-     * Store the document locator to later retrieve line numbers of all
-     * elements from the stylesheet
-     */
-    public void setDocumentLocator(Locator locator) {
-	_locator = locator;
-    }
-
 }

@@ -75,6 +75,12 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 class StepPattern extends RelativePathPattern {
 
+    /**
+     * A thread local variable that holds a serial number for
+     * step patterns.
+     */
+    static private SerialNumber _stepPatternSerial = new SerialNumber(1);
+
     private static final int NO_CONTEXT = 0;
     private static final int SIMPLE_CONTEXT = 1;
     private static final int GENERAL_CONTEXT = 2;
@@ -181,7 +187,7 @@ class StepPattern extends RelativePathPattern {
     }
 
     private String getNextFieldName() {
-	return  "__step_pattern_iter_" + getXSLTC().nextStepPatternSerial();
+	return  "__step_pattern_iter_" + _stepPatternSerial.getNextValue();
     }
 
     public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {

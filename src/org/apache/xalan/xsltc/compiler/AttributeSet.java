@@ -78,6 +78,12 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class AttributeSet extends TopLevelElement {
 
+    /**
+     * A thread local variable that holds a serial number for
+     * attribute sets.
+     */
+    static private SerialNumber _attributeSetSerial = new SerialNumber(0);
+
     // This prefix is used for the method name of attribute set methods
     private static final String AttributeSetPrefix = "$as$";
 
@@ -119,7 +125,7 @@ final class AttributeSet extends TopLevelElement {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-        final StaticContextImpl scontext = getStaticContext();
+        final StaticContext scontext = getStaticContext();
 
 	// Get this attribute set's name
 	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
@@ -166,7 +172,7 @@ final class AttributeSet extends TopLevelElement {
         // _mergeSet Point to any previous definition of this attribute set
 	_mergeSet = getStaticContext().addAttributeSet(this);
 
-	_method = AttributeSetPrefix + getXSLTC().nextAttributeSetSerial();
+	_method = AttributeSetPrefix + _attributeSetSerial.getNextValue();
 
 	if (_useSets != null) _useSets.typeCheck(ccontext);
 	typeCheckContents(ccontext);

@@ -87,12 +87,26 @@ final class UnionPathExpr extends Expression {
 	_rest     = rest;
     }
 
-    public void setParent(Parser parser) {
-	// find all expressions in this Union
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+        // Collect and flatten components first
+        prepareComponents(ccontext);
+
+        final int length = _components.length;
+        for (int i = 0; i < length; i++) {
+            if (_components[i].typeCheck(ccontext) != Type.NodeSet) {
+                _components[i] = new CastExpr(_components[i], Type.NodeSet);
+            }
+        }
+        return _type = Type.NodeSet;
+    }
+
+    private void prepareComponents(CompilerContext ccontext) {
+	// Find all expressions in this Union
 	final ArrayList components = new ArrayList();
 	flatten(components);
 	final int size = components.size();
 	_components = (Expression[])components.toArray(new Expression[size]);
+
 	for (int i = 0; i < size; i++) {
 	    _components[i].setParent(this);
 	    if (_components[i] instanceof Step) {
@@ -108,22 +122,9 @@ final class UnionPathExpr extends Expression {
 		if (Axis.isReverse[axis]) _reverse = true;
 	    }
 	}
+
 	// No need to reverse anything if another expression lies on top of this
 	if (getParent() instanceof Expression) _reverse = false;
-    }
-
-    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
-	final int length = _components.length;
-	for (int i = 0; i < length; i++) {
-	    if (_components[i].typeCheck(ccontext) != Type.NodeSet) {
-		_components[i] = new CastExpr(_components[i], Type.NodeSet);
-	    }
-	}
-	return _type = Type.NodeSet;
-    }
-
-    public String toString() {
-	return "union(" + _pathExpr + ", " + _rest + ')';
     }
 
     private void flatten(ArrayList components) {
@@ -173,5 +174,9 @@ final class UnionPathExpr extends Expression {
 	    il.append(new INVOKEINTERFACE(order, 3));
 
 	}
+    }
+
+    public String toString() {
+        return "union(" + _pathExpr + ", " + _rest + ')';
     }
 }

@@ -87,10 +87,17 @@ import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xalan.xsltc.compiler.util.SerialNumber;
 
 import org.apache.xalan.xsltc.DOM;
 
 public final class Stylesheet extends SyntaxTreeNode {
+
+    /**
+     * A thread local variable that holds a serial number for
+     * stylesheets.
+     */
+    static private SerialNumber _stylesheetSerial = new SerialNumber(1);
 
     private String       _version;
     private QName        _name;
@@ -276,7 +283,8 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     private QName makeStylesheetName(String prefix) {
-	return getParser().getQName(prefix+getXSLTC().nextStylesheetSerial());
+	return getParser().getQName(prefix +
+                                    _stylesheetSerial.getNextValue());
     }
 
     /**
@@ -340,7 +348,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public void excludeExtensionPrefixes(Parser parser) {
-	final StaticContextImpl scontext = getStaticContext();
+	final StaticContext scontext = getStaticContext();
     	final String excludePrefixes = getAttribute("exclude-result-prefixes");
 	final String extensionPrefixes = getAttribute("extension-element-prefixes");
 
@@ -358,7 +366,7 @@ public final class Stylesheet extends SyntaxTreeNode {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-	final StaticContextImpl scontext = getStaticContext();
+	final StaticContext scontext = getStaticContext();
 
 	/*
 	// Make sure the XSL version set in this stylesheet
@@ -575,7 +583,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 						     "<init>", "()V")));
 
 	// Put the names array into the translet - used for dom/translet mapping
-	final ArrayList names = getXSLTC().getNamesIndex();
+	final ArrayList names =
+            CompilerContext.getInstance().getNamesIndex();
 	il.append(classGen.loadTranslet());
 	il.append(new PUSH(cpg, names.size()));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));
@@ -592,7 +601,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 					       NAMES_INDEX_SIG)));
 
 	// Put the namespace names array into the translet
-	final ArrayList namespaces = getXSLTC().getNamespaceIndex();
+	final ArrayList namespaces =
+            CompilerContext.getInstance().getNamespaceIndex();
 	il.append(classGen.loadTranslet());
 	il.append(new PUSH(cpg, namespaces.size()));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));

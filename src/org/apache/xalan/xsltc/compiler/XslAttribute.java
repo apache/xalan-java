@@ -147,7 +147,7 @@ final class XslAttribute extends Instruction {
 		    _prefix = prefix;
 		}
 		else {
-		    _prefix = ccontext.generateNamespacePrefix();
+		    _prefix = ccontext.getFreshNsPrefix();
 		    generated = true;
 		}
 	    }

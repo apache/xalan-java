@@ -386,7 +386,8 @@ final class Sort extends Instruction implements Closure {
 	String sortRecordClass)
     {
 	final XSLTC  xsltc = ((Sort)sortObjects.get(0)).getXSLTC();
-	final String className = xsltc.getHelperClassName();
+	final String className =
+            CompilerContext.getInstance().getFreshClassName();
 
 	final NodeSortRecordFactGenerator sortRecordFactory =
 	    new NodeSortRecordFactGenerator(className,
@@ -521,7 +522,8 @@ final class Sort extends Instruction implements Closure {
 					    ClassGenerator classGen,
 					    MethodGenerator methodGen) {
 	final XSLTC  xsltc = ((Sort)sortObjects.get(0)).getXSLTC();
-	final String className = xsltc.getHelperClassName();
+	final String className =
+            CompilerContext.getInstance().getFreshClassName();
 
 	// This generates a new class for handling this specific sort
 	final NodeSortRecordGenerator sortRecord =

@@ -105,9 +105,9 @@ final class DecimalFormatting extends TopLevelElement {
 	    _name = parser.getQNameIgnoreDefaultNs(EMPTYSTRING);
 	}
 
-	// Check if a set of symbols has already been registered 
+	// Check if a set of symbols has already been registered
 	// under this name
-	StaticContextImpl scontext = getStaticContext();
+	StaticContext scontext = getStaticContext();
 	if (scontext.getDecimalFormatting(_name) != null) {
 	    reportWarning(this, parser, ErrorMsg.SYMBOLS_REDEF_ERR,
 		_name.toString());

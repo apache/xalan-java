@@ -318,7 +318,7 @@ final class Predicate extends Expression implements Closure {
 	LocalVariableGen local;
 	FilterGenerator filterGen;
 
-	_className = getXSLTC().getHelperClassName();
+	_className = CompilerContext.getInstance().getFreshClassName();
 	filterGen = new FilterGenerator(_className,
 					"java.lang.Object",
 					toString(),

@@ -89,19 +89,20 @@ final class Import extends TopLevelElement {
 
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-	final Stylesheet context = parser.getCurrentStylesheet();
+        final StaticContext scontext = getStaticContext();
+	final Stylesheet stylesheet = getStylesheet();
 
 	try {
 	    String docToLoad = getAttribute("href");
-	    if (context.checkForLoop(docToLoad)) {
+	    if (stylesheet.checkForLoop(docToLoad)) {
 		final int errno = ErrorMsg.CIRCULAR_INCLUDE_ERR;
 		final ErrorMsg msg = new ErrorMsg(errno, docToLoad, this);
 		parser.reportError(Constants.FATAL, msg);
 		return;
 	    }
 
-	    String currLoadedDoc = context.getSystemId();
-	    SourceLoader loader = context.getSourceLoader();
+	    String currLoadedDoc = stylesheet.getSystemId();
+	    SourceLoader loader = stylesheet.getSourceLoader();
 	    InputSource input = null;
 
 	    if (loader != null) {
@@ -132,15 +133,15 @@ final class Import extends TopLevelElement {
 
 	    _imported.setSourceLoader(loader);
 	    _imported.setSystemId(docToLoad);
-	    _imported.setParentStylesheet(context);
-	    _imported.setImportingStylesheet(context);
+	    _imported.setParentStylesheet(stylesheet);
+	    _imported.setImportingStylesheet(stylesheet);
 
 	    // precedence for the including stylesheet
 	    final int currPrecedence = parser.getCurrentImportPrecedence();
 	    final int nextPrecedence = parser.getNextImportPrecedence();
 	    _imported.setImportPrecedence(currPrecedence);
-	    context.setImportPrecedence(nextPrecedence);
-	    parser.setCurrentStylesheet(_imported);
+	    stylesheet.setImportPrecedence(nextPrecedence);
+	    scontext.setCurrentStylesheet(_imported);
 	    _imported.parse(ccontext);
 
 	    final Iterator elements = _imported.iterator();
@@ -164,7 +165,7 @@ final class Import extends TopLevelElement {
 	    e.printStackTrace();
 	}
 	finally {
-	    parser.setCurrentStylesheet(context);
+	    scontext.setCurrentStylesheet(stylesheet);
 	}
     }
 

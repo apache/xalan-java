@@ -89,7 +89,8 @@ final class Include extends TopLevelElement {
 
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-	final Stylesheet context = parser.getCurrentStylesheet();
+        final StaticContext scontext = getStaticContext();
+	final Stylesheet context = getStylesheet();
 
 	String docToLoad = getAttribute("href");
 	try {
@@ -159,7 +160,7 @@ final class Include extends TopLevelElement {
 	    // as the stylesheet that included it.
 	    final int precedence = context.getImportPrecedence();
 	    _included.setImportPrecedence(precedence);
-	    parser.setCurrentStylesheet(_included);
+	    scontext.setCurrentStylesheet(_included);
 	    _included.parse(ccontext);
 
 	    final Iterator elements = _included.iterator();
@@ -199,7 +200,7 @@ final class Include extends TopLevelElement {
 	    e.printStackTrace();
 	}
 	finally {
-	    parser.setCurrentStylesheet(context);
+	    scontext.setCurrentStylesheet(context);
 	}
     }
 

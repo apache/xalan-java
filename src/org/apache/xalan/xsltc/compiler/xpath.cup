@@ -107,10 +107,16 @@ parser code {:
      */
     public StaticContext _scontext;
 
+    /**
+     * Reference to the compiler context.
+     */
+    public CompilerContext _ccontext;
+
     public XPathParser(CompilerContext ccontext, StaticContext scontext) {
         _parser = ccontext.getParser();
 	_xsltc = ccontext.getXSLTC();
 	_scontext = scontext;
+	_ccontext = ccontext;
     }
 
     public int getLineNumber() {
@@ -122,11 +128,11 @@ parser code {:
     }    
 
     public void setMultiDocument(boolean flag) {
-          _xsltc.setMultiDocument(flag);
+          _ccontext.setMultiDocument(flag);
     }
 
     public void setCallsNodeset(boolean flag) {
-          _xsltc.setCallsNodeset(flag);
+          _ccontext.setCallsNodeset(flag);
     }
 
     public int findNodeType(int axis, Object test) {
@@ -140,15 +146,14 @@ parser code {:
         }
         else {
 	    QName name = (QName)test;
+	    final String local = name.getLocalPart();
 
 	    if (axis == Axis.NAMESPACE) {
-		return (name.toString().equals("*")) ? -1
-		    : _xsltc.registerNamespace(name, _scontext);
+		return (local.equals("*")) ? -1
+		    : _ccontext.registerPrefix(local);
             }
 
 	    if (name.getNamespace() == null) {
-		final String local = name.getLocalPart();
-
 		if (local.equals("*")) {
 		    return (axis == Axis.ATTRIBUTE) ? NodeTest.ATTRIBUTE
 			: NodeTest.ELEMENT;
@@ -158,8 +163,8 @@ parser code {:
 		}
 	    }
 
-	    return (axis == Axis.ATTRIBUTE) ? _xsltc.registerAttribute(name)
-		: _xsltc.registerElement(name); 
+	    return (axis == Axis.ATTRIBUTE) ? _ccontext.registerAttribute(name)
+		: _ccontext.registerElement(name); 
         }
     }
 
@@ -195,7 +200,7 @@ parser code {:
      */
     final SyntaxTreeNode lookupName(QName name) {
         // Is it a local var or param ?
-        final SyntaxTreeNode result = _parser.lookupVariable(name);
+        final SyntaxTreeNode result = _scontext.getVariable(name);
 	if (result != null)
             return(result);
         else

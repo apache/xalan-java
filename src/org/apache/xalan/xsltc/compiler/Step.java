@@ -309,7 +309,8 @@ final class Step extends RelativeLocationPath {
 		break;
 	    default:
 		final XSLTC xsltc = getParser().getXSLTC();
-		final ArrayList ni = xsltc.getNamesIndex();
+		final ArrayList ni =
+                    CompilerContext.getInstance().getNamesIndex();
 		String name = null;
 		int star = 0;
 
@@ -325,7 +326,8 @@ final class Step extends RelativeLocationPath {
 		    else
 			namespace = name.substring(0,star-1);
 
-		    final int nsType = xsltc.registerNamespace(namespace);
+		    final int nsType = CompilerContext.getInstance()
+                       .registerNamespace(namespace);
 		    final int ns = cpg.addInterfaceMethodref(DOM_INTF,
 						    "getNamespaceAxisIterator",
 						    "(II)"+NODE_ITERATOR_SIG);
@@ -395,7 +397,7 @@ final class Step extends RelativeLocationPath {
 		else {
 		    ParentLocationPath path = new ParentLocationPath(this,step);
 		    try {
-			path.typeCheck(CompilerContextImpl.getInstance());
+			path.typeCheck(CompilerContext.getInstance());
 		    }
 		    catch (TypeCheckError e) { }
 		    path.translate(classGen, methodGen);

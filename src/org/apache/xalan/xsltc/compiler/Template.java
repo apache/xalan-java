@@ -190,7 +190,7 @@ public final class Template extends TopLevelElement {
 	final String priority = getAttribute("priority");
         final Parser parser = ccontext.getParser();
 
-	_stylesheet = super.getStylesheet();
+	_stylesheet = getStylesheet();
 
 	if (name.length() > 0) {
 	    _name = parser.getQNameIgnoreDefaultNs(name);
@@ -245,7 +245,7 @@ public final class Template extends TopLevelElement {
      */
     public void parseSimplified(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-        final Stylesheet stylesheet = getStaticContext().getStylesheet();
+        final Stylesheet stylesheet = getStylesheet();
 
 	_stylesheet = stylesheet;
 	setParent(stylesheet);
