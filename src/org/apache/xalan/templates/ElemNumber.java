@@ -1499,6 +1499,15 @@ public class ElemNumber extends ElemTemplateElement
       formattedNumber.append(numString);
     }
   }
+  
+  /**
+   * Get a string value for zero, which is not really defined by the 1.0 spec, 
+   * thought I think it might be cleared up by the erreta.
+   */
+   String getZeroString()
+   {
+     return ""+0;
+   }
 
   /**
    * Convert a long integer into alphabetic counting, in other words
@@ -1519,7 +1528,9 @@ public class ElemNumber extends ElemTemplateElement
 
     // TODO:  throw error on out of range input
     if (val > radix)
-      return "#E(" + val + ")";
+    {
+      return getZeroString();
+    }
     else
       return (new Character(table[val - 1])).toString();  // index into table is off one, starts at 0
   }
@@ -1851,7 +1862,7 @@ public class ElemNumber extends ElemTemplateElement
 
     if (val <= 0)
     {
-      return "#E(" + val + ")";
+      return getZeroString();
     }
 
     String roman = "";
