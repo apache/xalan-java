@@ -1467,7 +1467,6 @@ public class FormatterToXML
   public void characters(char chars[], int start, int length)
           throws SAXException
   {
-
     if (m_inEntityRef)
       return;
 
@@ -1490,17 +1489,25 @@ public class FormatterToXML
 
     writeParentTagEnd();
 
-    m_ispreserve = true;
-
     int startClean = start;
     int lengthClean = 0;
 
     // int pos = 0;
     int end = start + length;
+    boolean checkWhite = true;
 
     for (int i = start; i < end; i++)
     {
       char ch = chars[i];
+      
+      if(checkWhite)
+      {
+        if(!Character.isWhitespace(ch))
+        {
+          m_ispreserve = true;
+          checkWhite = false;
+        }
+      }
 
       if ((ch < SPECIALSSIZE) && (m_charsMap[ch] != 'S'))
       {
@@ -1526,7 +1533,6 @@ public class FormatterToXML
     {
       accum(chars, startClean, lengthClean);
     }
-
     m_isprevtext = true;
   }
 
