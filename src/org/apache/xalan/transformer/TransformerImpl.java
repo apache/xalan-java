@@ -889,8 +889,8 @@ public class TransformerImpl extends XMLFilterImpl
     if(null == selectPattern)
     {
       if(null == m_selectDefault)
-        m_selectDefault = new XPath("node()", template, template, XPath.SELECT);
-
+        m_selectDefault = new XPath("node()", xslInstruction, xslInstruction, XPath.SELECT);
+        
       selectPattern = m_selectDefault;
     }
     
