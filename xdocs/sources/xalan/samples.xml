@@ -63,6 +63,7 @@
 <li><link anchor="usestylesheetparam">UseStylesheetParam</link></li>
 <li><link anchor="sax2sax">SAX2SAX</link></li>
 <li><link anchor="pipe">Pipe</link></li>
+<li><link anchor="applyxpath">ApplyXPath</link></li>
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
 <li><link anchor="servlet">Servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
@@ -121,6 +122,23 @@
       another. Each Transformer operates as a SAX2 XMLFilter/XMLReader.</p>
     <p>Run this sample from the Pipe subdirectory with</p> 
     <p><code>java Pipe</code></p>
+    </s2><anchor name="applyxpath"/>
+    <s2 title="ApplyXPath">
+    <p>What it does: ApplyXPath uses the <jump href="apidocs/org/apache/xpath/XPathAPI.html">XPathAPI</jump> convenience methods to
+    execute an XPath expression against an XML document and return the nodes (if any) it finds.</p>
+     <note>You can use this sample as an aid when you want to find out what a given XPath expression returns from a
+     given XML file. Keep in mind that the context node (base point of evaluation) for the XPath expression is the document
+     root.</note>
+    <p>Run this sample from the ApplyXPath subdirectory with</p> 
+    <p><code>java ApplyXPath <ref>XMLFile XPathExpression</ref></code></p>
+    <p>where <ref>XMLFile</ref> is an XML source file and <ref>XPathExpression</ref> is an XPath expression to
+     apply to that file. The ApplyXPath subdirectory contains an XML file named foo.xml --<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;doc&gt;&lt;name first="David" last="Marston"/&gt;...&lt;/doc></code><br/> -- so you can try command
+     lines like</p>
+    <p><code>java ApplyXPath foo.xml /</code></p>
+    <p>and</p>
+    <p><code>java ApplyXPath foo.xml /doc/name/@first</code></p>
+    <p>For more information, see <link idref="usagepatterns" anchor="xpath">Working with XPath expressions</link>.</p>
     </s2><anchor name="appletxmltohtml"/>
     <s2 title="AppletXMLtoHTML">
     <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the

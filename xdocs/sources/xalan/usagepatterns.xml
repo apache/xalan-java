@@ -1,4 +1,4 @@
--<?xml version="1.0" standalone="no"?> 
+<?xml version="1.0" standalone="no"?> 
 <!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
 <!--
  * The Apache Software License, Version 1.1
@@ -202,7 +202,9 @@ trax.Result result = new trax.Result(resultDoc);
 <note>If you are using the Xerces implementation of the <ref>Java API for XML Parsing</ref> (in xerces.jar), the default value for the javax.xml.parsers.DocumentBuilderFactory system property is org.apache.xerces.jaxp.DocumentBuilderFactoryImpl. The Xerces implementations of DocumentBuilder and DOM Document are org.apache.xerces.jaxp.DocumentBuilderImpl and org.apache.xerces.dom.DocumentImpl.</note>
 </s2><anchor name="xpath"/>
 <s2 title="Working with XPath expressions">
-<p><ref>To be written.</ref></p>
+<p>XSLT stylesheets use XPath expressions to select nodes, specify conditions, and generate text for the result tree. XPath provides an API that you can call directly. For example, you may want to select nodes programmatically and do your own processing without a stylesheet.</p>
+<p>XPath is an independent entity, with clients other than XSLT processors (such as XPointer). Accordingly, &xslt4j2; has packaged XPath as a separate module (org.apache.xpath and its subpackages), although this module does use some utility classes packaged in org.apache.xalan.utils. The org.apache.xpath.XPathAPI class contains convenience methods that you can use to return single DOM Nodes, NodeIterators, and XObjects. Apart from their own functionality, these methods also provide a path into the lower-level XPath API that you may find useful.</p>
+<p>For an example that uses the XPathAPI convenience methods to execute XPath expressions against XML source files, see <link idref="samples" anchor="applyxpath">ApplyXPath</link>.</p>
 </s2><anchor name="applet"/>
 <s2 title="Using the &xslt4j; applet wrapper">
 <ol> 
