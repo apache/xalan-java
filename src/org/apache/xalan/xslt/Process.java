@@ -136,16 +136,10 @@ public class Process
     System.out.println(resbundle.getString("optionIN")); //"    -IN inputXMLURL");
     System.out.println(resbundle.getString("optionXSL")); //"   [-XSL XSLTransformationURL]");
     System.out.println(resbundle.getString("optionOUT")); //"   [-OUT outputFileName]");
-    System.out.println(resbundle.getString("optionLXCIN")); //"   [-LXCIN compiledStylesheetFileNameIn]");
-    System.out.println(resbundle.getString("optionLXCOUT")); //"   [-LXCOUT compiledStylesheetFileNameOutOut]");
-    System.out.println(resbundle.getString("optionPARSER")); //"   [-PARSER fully qualified class name of parser liaison]");
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
     System.out.println(resbundle.getString("optionV")); //"   [-V (Version info)]");
     System.out.println(resbundle.getString("optionQC")); //"   [-QC (Quiet Pattern Conflicts Warnings)]");
     System.out.println(resbundle.getString("optionQ")); //"   [-Q  (Quiet Mode)]");
-    System.out.println(resbundle.getString("optionLF")); //"   [-LF (Use linefeeds only on output {default is CR/LF})]");
-    System.out.println(resbundle.getString("optionCR")); //"   [-CR (Use carriage returns only on output {default is CR/LF})]");
-    System.out.println(resbundle.getString("optionINDENT")); //"   [-INDENT (Control how many spaces to indent {default is 0})]");
     System.out.println(resbundle.getString("optionTT")); //"   [-TT (Trace the templates as they are being called.)]");
     System.out.println(resbundle.getString("optionTG")); //"   [-TG (Trace each generation event.)]");
     System.out.println(resbundle.getString("optionTS")); //"   [-TS (Trace each selection event.)]");
@@ -158,7 +152,6 @@ public class Process
     System.out.println(resbundle.getString("optionHTML")); //"   [-HTML (Use HTML formatter.)]");
     System.out.println(resbundle.getString("optionPARAM")); //"   [-PARAM name expression (Set a stylesheet parameter)]");
     System.out.println("[-MEDIA use media attribute to find stylesheet associated with a document.]"); //"   [-PARAM name expression (Set a stylesheet parameter)]");
-    System.out.println("[-SX (User Xerces Serializers]"); //"   [-PARAM name expression (Set a stylesheet parameter)]");
   }
   
   static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
@@ -166,38 +159,6 @@ public class Process
   /**
    * Command line interfact to transform the XML according to
    * the instructions found in the XSL stylesheet.
-   * <pre>
-   *    -IN inputXMLURL
-   *    -XSL XSLTransformationURL
-   *    -OUT outputFileName
-   *    -LXCIN compiledStylesheetFileNameIn
-   *    -LXCOUT compiledStylesheetFileNameOut
-   *    -PARSER fully qualified class name of parser liaison
-   *    -V (Version info)
-   *    -QC (Quiet Pattern Conflicts Warnings)
-   *    -Q  (Quiet Mode)
-   *    -LF (Use linefeeds only on output -- default is CR/LF)
-   *    -CR (Use carriage returns only on output -- default is CR/LF)
-   *    -INDENT (Number of spaces to indent each level in output tree --default is 0)
-   *    -TT (Trace the templates as they are being called)
-   *    -TG (Trace each result tree generation event)
-   *    -TS (Trace each selection event)
-   *    -TTC (Trace the template children as they are being processed)
-   *    -VALIDATE (Validate the XML and XSL input -- validation is off by default)
-   *    -EDUMP [optional]FileName (Do stackdump on error)
-   *    -XML (Use XML formatter and add XML header)
-   *    -TEXT (Use simple Text formatter)
-   *    -HTML (Use HTML formatter)
-   *    -PARAM name expression (Set a stylesheet parameter)
-   *    -DIAG put out timing diagnostics
-   * </pre>
-   *  <p>Use -IN to specify the XML source document. To specify the XSL stylesheet, use -XSL
-   *  or -LXCIN. To compile an XSL stylesheet for future use as -LXCIN input, use -LXCOUT.</p>
-   *  <p>Include -PARSER if you supply your own parser liaison class, which is required
-   *  if you do not use the &xml4j; parser.</p>
-   *  <p>Use -TEXT if you want the output to include only element values (not element tags with element names and
-   *  attributes). Use -HTML to write 4.0 transitional HTML (some elements, such as &lt;br&gt;, are
-   *  not well formed.</p>
    *  <p>To set stylesheet parameters from the command line, use -PARAM name expression. If
    *  you want to set the parameter to a string value, enclose the string in single quotes (') to
    */
@@ -403,11 +364,6 @@ public class Process
           }
 
           // xmlProcessorLiaison.setUseValidation(shouldValidate.equalsIgnoreCase("yes"));
-        }
-        else if("-PARSER".equalsIgnoreCase(argv[i]))
-        {
-          i++;
-          // Handled above
         }
         else if("-DIAG".equalsIgnoreCase(argv[i]))
         {
