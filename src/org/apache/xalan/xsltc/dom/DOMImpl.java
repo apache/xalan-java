@@ -2282,12 +2282,17 @@ public final class DOMImpl implements DOM, Externalizable {
 	throws TransletException {
 	final char[] text = _text;
 	final int start = _offsetOrChild[node];
-	int i = start + 1;
-	while (text[i] != ' ') ++i;
-
 	final int length = _lengthOrAttr[node];
-	handler.processingInstruction(new String(text, start, i - start),
-				      new String(text, i + 1, length - i));
+
+	// Target and Value are separated by a whitespace - find it!
+	int i = start;
+	while (text[i] != ' ') i++;
+
+	final int len = i - start;
+	final String target = new String(text, start, len);
+	final String value  = new String(text, i + 1, length - len);
+
+	handler.processingInstruction(target, value);
     }
 
     /**
@@ -2845,8 +2850,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    final int node = nextNode();
 	    _type[node] = PROCESSING_INSTRUCTION;
 	    linkChildren(node);
-	    // This is really stupid - do NOT create String object here!!!
-	    //characters(target + ' ' + data);
 	    characters(target);
 	    characters(" ");
 	    characters(data);

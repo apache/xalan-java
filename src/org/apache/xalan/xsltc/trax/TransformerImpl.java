@@ -65,20 +65,24 @@ package org.apache.xalan.xsltc.trax;
 
 import java.io.File;
 import java.io.Writer;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.lang.IllegalArgumentException;
+import java.util.Enumeration;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
@@ -94,12 +98,26 @@ public final class TransformerImpl extends Transformer {
     private String           _encoding = null;
     private ContentHandler   _handler = null;
 
+    private ErrorListener _errorListener = null;
+    private URIResolver   _uriResolver = null;
+    private Properties    _properties = null;
+
+    // Used for default output property settings
+    private final static String EMPTY_STRING = "";
+    private final static String NO_STRING    = "no";
+    private final static String YES_STRING   = "yes";
+    private final static String XML_STRING   = "xml";
+    
+    // List all error messages here
     private final static String TRANSLET_ERR_MSG = 
 	"The transformer has no encapsulated translet object.";
     private final static String HANDLER_ERR_MSG = 
 	"No defined output handler for transformation result.";
+    private static final String ERROR_LISTENER_NULL =
+	"Attempting to set ErrorListener for Transformer to null";
 
     /**
+     * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
      */
     public TransformerImpl(Translet translet) {
@@ -107,7 +125,11 @@ public final class TransformerImpl extends Transformer {
     }
 
     /**
-     * JAXP interface implementation
+     * Implements JAXP's Transformer.transform()
+     *
+     * @param source Contains the input XML document
+     * @param result Will contain the output from the transformation
+     * @throws TransformerException
      */
     public void transform(Source source, Result result)
 	throws TransformerException {
@@ -118,7 +140,7 @@ public final class TransformerImpl extends Transformer {
 	if (_handler == null) throw new TransformerException(HANDLER_ERR_MSG);
 	
 	// Run the transformation
-	transform(source.getSystemId(), _handler, _encoding);
+	transform(source, _handler, _encoding);
     }
 
     /**
@@ -165,7 +187,7 @@ public final class TransformerImpl extends Transformer {
     /**
      * Internal transformation method - uses the internal APIs of XSLTC
      */
-    private void transform(String source,
+    private void transform(Source source,
 			   ContentHandler handler,
 			   String encoding) throws TransformerException {
 	try {
@@ -181,20 +203,34 @@ public final class TransformerImpl extends Transformer {
 	    final DTDMonitor dtdMonitor = new DTDMonitor();
 	    dtdMonitor.handleDTD(reader);
  
-	    dom.setDocumentURI(source);
-	    if (source.startsWith("file:/")) {   
-		reader.parse(source);
-	    } else {                                
-	        reader.parse("file:"+(new File(source).getAbsolutePath()));
+	    String url = source.getSystemId();
+	    if (url != null) {
+		dom.setDocumentURI(url);
+		if (url.startsWith("file:/")) {   
+		    reader.parse(url);
+		} else {                                
+		    reader.parse("file:"+(new File(url).getAbsolutePath()));
+		}
 	    }
-
+	    else if (source instanceof StreamSource) {
+		InputStream stream = ((StreamSource)source).getInputStream();
+		InputSource input = new InputSource(stream);
+		reader.parse(input);
+	    }
+	    else {
+		throw new TransformerException("Unsupported input.");
+	    }
+	    
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
 	    // If there are any elements with ID attributes, build an index
 	    dtdMonitor.buildIdIndex(dom, 0, _translet);
 	    // Pass unparsed entity URIs to the translet
 	    _translet.setDTDMonitor(dtdMonitor);
- 
+
+	    // Pass output properties to the translet
+	    setOutputProperties(_translet, _properties);
+
 	    // Transform the document
 	    TextOutput textOutput = new TextOutput(handler, _encoding);
 	    _translet.transform(dom, textOutput);
@@ -231,95 +267,183 @@ public final class TransformerImpl extends Transformer {
 	}
     }
 
-    // TrAX support methods, get/setErrorListener
-    private ErrorListener _errorListener = null;
-
     /**
-     * Get the TrAX error listener
+     * Implements JAXP's Transformer.getErrorListener()
+     * Get the error event handler in effect for the transformation.
+     *
+     * @return The error event handler currently in effect
      */
     public ErrorListener getErrorListener() {  
 	return _errorListener; 
     }
 
     /**
-     * Set the TrAX error listener
+     * Implements JAXP's Transformer.setErrorListener()
+     * Set the error event listener in effect for the transformation.
+     *
+     * @param listener The error event listener to use
+     * @throws IllegalArgumentException
      */
     public void setErrorListener(ErrorListener listener)
 	throws IllegalArgumentException {
-        if (listener == null) {
-            throw new IllegalArgumentException(
-	       "Error: setErrorListener() call where ErrorListener is null");
-        }
+        if (listener == null)
+            throw new IllegalArgumentException(ERROR_LISTENER_NULL);
         _errorListener = listener;
     }
 
     /**
      * Inform TrAX error listener of an error
      */
-    private void postErrorToListener(String msg) {
+    private void postErrorToListener(String message) {
         try {
-            _errorListener.error(new TransformerException(
-		  "Translet Error: " + msg));
-        } catch (TransformerException e) {
-            // TBD
+            _errorListener.error(new TransformerException(message));
+	}
+	catch (TransformerException e) {
+            // ignored - transformation cannot be continued
         }
     }
 
     /**
      * Inform TrAX error listener of a warning
      */
-    private void postWarningToListener(String msg) {
+    private void postWarningToListener(String message) {
         try {
-            _errorListener.warning(new TransformerException(
-		    "Translet Warning: " + msg));
-        } catch (TransformerException e) {
-            // TBD
+            _errorListener.warning(new TransformerException(message));
+        }
+	catch (TransformerException e) {
+            // ignored - transformation cannot be continued
         }
     }
 
     /**
      * Implements JAXP's Transformer.getOutputProperties().
-     * Returns a copy of the output properties for the transformation.
+     * Returns a copy of the output properties for the transformation. Note that
+     * this method will only return properties that were set in this class.
+     * The output settings defined in the stylesheet's <xsl:output> element
+     * and default XSLT output settings will not be returned by this method.
+     *
+     * @return Properties explicitly set for this Transformer
      */
-    public Properties getOutputProperties() throws IllegalArgumentException { 
-	// TODO
-	return(null);
+    public Properties getOutputProperties() {
+	return(_properties);
     }
 
     /**
      * Implements JAXP's Transformer.getOutputProperty().
-     * Set an output property that will be in effect for the transformation.
+     * Get an output property that is in effect for the transformation. The
+     * property specified may be a property that was set with setOutputProperty,
+     * or it may be a property specified in the stylesheet.
+     *
+     * @param name A non-null string that contains the name of the property
+     * @throws IllegalArgumentException if the property name is not known
      */
     public String getOutputProperty(String name)
-	throws IllegalArgumentException { 
-	// TODO
-	return(null);
+	throws IllegalArgumentException {
+
+	// First check if the property is overridden in this Transformer
+	if (_properties != null) {
+	    String value = _properties.getProperty(name);
+	    if (value != null) return value;
+	}
+
+	// Then check if it is set in the translet
+	if (_translet != null) {
+	    // TODO: get propertie value from translet
+	    if (name.equals(OutputKeys.ENCODING)) {
+		return _encoding;
+	    }
+	    else if (name.equals(OutputKeys.METHOD)) {
+
+	    }
+	    
+	}
+
+	// Then return the default values
+	if (name.equals(OutputKeys.ENCODING))
+	    return _encoding;
+	else if (name.equals(OutputKeys.METHOD))
+	    return XML_STRING;
+	else if (name.equals(OutputKeys.INDENT))
+	    return NO_STRING;
+	else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
+	    return EMPTY_STRING;
+	else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
+	    return EMPTY_STRING;
+	else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
+	    return EMPTY_STRING;
+	else if (name.equals(OutputKeys.MEDIA_TYPE))
+	    return "text/xml";
+	else if (name.equals(OutputKeys.OMIT_XML_DECLARATION))
+	    return NO_STRING;
+	else if (name.equals(OutputKeys.STANDALONE))
+	    return NO_STRING;
+	else if (name.equals(OutputKeys.VERSION))
+	    return "1.0";
+
+
+	return null;
     }
 
     /**
      * Implements JAXP's Transformer.setOutputProperties().
      * Set the output properties for the transformation. These properties
      * will override properties set in the Templates with xsl:output.
+     * Unrecognised properties will be quitely ignored.
+     *
+     * @param properties The properties to use for the Transformer
+     * @throws IllegalArgumentException Never, errors are ignored
      */
-    public void setOutputProperties(Properties props)
+    public void setOutputProperties(Properties properties)
 	throws IllegalArgumentException {
-	// TODO
+	_properties = properties;
     }
 
     /**
      * Implements JAXP's Transformer.setOutputProperty().
      * Get an output property that is in effect for the transformation. The
-     * property specified may be a property that was set with
+     * property specified may be a property that was set with 
      * setOutputProperty(), or it may be a property specified in the stylesheet.
+     *
+     * @param name The name of the property to set
+     * @param value The value to assign to the property
+     * @throws IllegalArgumentException Never, errors are ignored
      */
     public void setOutputProperty(String name, String value)
-	throws 	IllegalArgumentException  {
-	// TODO
+	throws IllegalArgumentException {
+	if (_properties == null) _properties = new Properties();
+	_properties.setProperty(name, value);
+    }
+
+    /**
+     * Internal method to pass any properties to the translet prior to
+     * initiating the transformation
+     */
+    private void setOutputProperties(AbstractTranslet translet,
+				     Properties properties) {
+	// TODO - pass properties to the translet
+	Enumeration names = properties.propertyNames();
+	while (names.hasMoreElements()) {
+	    String name = (String)names.nextElement();
+	    if (name.equals(OutputKeys.ENCODING)) {
+		_encoding = (String)properties.getProperty(name);
+	    }
+	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) {
+		// ignored - too late now, translet is already compiled
+	    }
+	    else if (name.equals(OutputKeys.METHOD)) {
+
+	    }
+	}
     }
 
     /**
      * Implements JAXP's Transformer.setParameter()
-     * Add a parameter for the transformation.
+     * Add a parameter for the transformation. The parameter is simply passed
+     * on to the translet - no validation is performed - so any unused
+     * parameters are quitely ignored by the translet.
+     *
+     * @param name The name of the parameter
+     * @param value The value to assign to the parameter
      */
     public void setParameter(String name, Object value) { 
 	_translet.addParameter(name, value, false);
@@ -327,7 +451,8 @@ public final class TransformerImpl extends Transformer {
 
     /**
      * Implements JAXP's Transformer.clearParameters()
-     * Clears the parameter stack.
+     * Clear all parameters set with setParameter. Clears the translet's
+     * parameter stack.
      */
     public void clearParameters() {  
 	_translet.clearParameters();
@@ -335,23 +460,34 @@ public final class TransformerImpl extends Transformer {
 
     /**
      * Implements JAXP's Transformer.getParameter()
-     * Returns the value of a given parameter
+     * Returns the value of a given parameter. Note that the translet will not
+     * keep values for parameters that were not defined in the stylesheet.
+     *
+     * @param name The name of the parameter
+     * @return An object that contains the value assigned to the parameter
      */
     public final Object getParameter(String name) {
 	return(_translet.getParameter(name));
     }
 
     /**
-     * These two methods need to pass the URI resolver to the dom/LoadDocument
-     * class, which again must use the URI resolver if present.
+     * Implements JAXP's Transformer.getURIResolver()
+     * Set the object currently used to resolve URIs used in document().
+     *
+     * @returns The URLResolver object currently in use
      */
     public URIResolver getURIResolver() {
-	// TODO
-	return null;
+	return _uriResolver;
     }
 
+    /**
+     * Implements JAXP's Transformer.setURIResolver()
+     * Set an object that will be used to resolve URIs used in document().
+     *
+     * @param resolver The URIResolver to use in document()
+     */
     public void setURIResolver(URIResolver resolver) { 
-	// TODO
+	_uriResolver = resolver;
     }
 
 }

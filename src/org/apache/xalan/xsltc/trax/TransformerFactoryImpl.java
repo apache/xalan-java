@@ -88,6 +88,7 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -95,164 +96,208 @@ import java.net.MalformedURLException;
 /**
  * Implementation of a JAXP1.1 SAXTransformerFactory for Translets.
  */
-public class TransformerFactoryImpl extends TransformerFactory {
-    public TransformerFactoryImpl() { /* nothing yet */ }
+public class TransformerFactoryImpl extends SAXTransformerFactory {
 
-    ////////////////////////////////////////////////////// 
-    // SAXTransformerFactory (subclass of TransformerFactory)
-    //
-    public TemplatesHandler newTemplatesHandler() 
-	throws TransformerConfigurationException 
-    { 
-	/*TBD*/
-	throw new TransformerConfigurationException(
-	    "TransformerFactoryImpl:newTemplatesHandler() " +
-	    "not implemented yet."); 
-	//return null; 
-    }
-    public TransformerHandler newTransformerHandler() 
-	throws TransformerConfigurationException 
-    {
-	/*TBD*/ 
-        throw new TransformerConfigurationException(
-            "TransformerFactoryImpl:newTransformerHandler() " +
-            "not implemented yet."); 
-	// return null; 
-    }
-    public TransformerHandler newTransformerHandler(Source src) 
-	throws TransformerConfigurationException 
-    { 
-        /*TBD*/ 
-        throw new TransformerConfigurationException(
-            "TransformerFactoryImpl:newTransformerHandler(Source) " +
-            "not implemented yet."); 
-	// return null; 
-    }
-    public TransformerHandler newTransformerHandler(Templates templates) 
-	throws TransformerConfigurationException 
-    { 
-        /*TBD*/ 
-        throw new TransformerConfigurationException(
-            "TransformerFactoryImpl:newTransformerHandler(Templates) " +
-            "not implemented yet."); 
-	//return null; 
-    }
+    // This constant should be removed once all abstract methods are impl'ed.
+    private static final String NYI = "Not yet implemented";
+
+    // This error listener is used only for this factory and is not passed to
+    // the Templates or Transformer objects that we create!!!
+    private ErrorListener _errorListener = null; 
+
+    // This URIResolver is passed to all created Templates and Transformers
+    private URIResolver _uriResolver = null;
+
+    // Cache for the newTransformer() method - see method for details
+    private Transformer _copyTransformer = null;
+    private static final String COPY_TRANSLET_NAME = "GregorSamsa";
+    private static final String COPY_TRANSLET_CODE =
+	"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"+
+	"<xsl:template match=\"/\"><xsl:copy-of select=\".\"/></xsl:template>"+
+	"</xsl:stylesheet>";
+
+    // All used error messages should be listed here
+    private static final String ERROR_LISTENER_NULL =
+	"Attempting to set ErrorListener for TransformerFactory to null";
+    private static final String SOURCE_NOT_SUPPORTED =
+	"Only StreamSource is supported by XSLTC";
+    private static final String STREAM_SOURCE_ERROR =
+	"StreamSource must have a system id or be an InputStream";
+    private static final String COMPILATION_ERROR =
+	"Could not compile stylesheet";
 
 
-  /**
-   * Create an XMLFilter that uses the given source as the
-   * transformation instructions.
-   *
-   * @param src The source of the transformation instructions.
-   *
-   * @return An XMLFilter object, or null if this feature is not supported.
-   *
-   * @throws TransformerConfigurationException
-   */
-    public XMLFilter newXMLFilter(Source src) 
-	throws TransformerConfigurationException 
-    {
-	Templates templates = newTemplates(src);
-	if (templates == null ) {
-	    return null; 
-	}
-	return newXMLFilter(templates);
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Contains nothing yet
+     */
+    public TransformerFactoryImpl() {
+	// Don't need anything here so far...
     }
 
-    public XMLFilter newXMLFilter(Templates templates) 
-	throws TransformerConfigurationException 
-    {
-	try {
-      	    return new org.apache.xalan.xsltc.trax.TrAXFilter(templates);
-    	} catch( TransformerConfigurationException ex ) {
-      	    if( _errorListener != null) {
-                try {
-          	    _errorListener.fatalError( ex );
-          	    return null;
-        	} catch( TransformerException ex1 ) {
-          	    new TransformerConfigurationException(ex1);
-        	}
-      	    }
-      	    throw ex;
-    	}
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Set the error event listener for the TransformerFactory, which is used
+     * for the processing of transformation instructions, and not for the
+     * transformation itself.
+     *
+     * @param listener The error listener to use with the TransformerFactory
+     * @throws IllegalArgumentException
+     */
+    public void setErrorListener(ErrorListener listener) 
+	throws IllegalArgumentException {
+	if (listener == null)
+            throw new IllegalArgumentException(ERROR_LISTENER_NULL);
+	_errorListener = listener;
     }
-    //
-    // End SAXTransformerFactory methods 
-    ////////////////////////////////////////////////////// 
 
-    ////////////////////////////////////////////////////// 
-    // TransformerFactory
-    //
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Get the error event handler for the TransformerFactory.
+     *
+     * @return The error listener used with the TransformerFactory
+     */
     public ErrorListener getErrorListener() { 
 	return _errorListener;
     }
 
-    public void setErrorListener(ErrorListener listener) 
-	throws IllegalArgumentException
-    {
-	if (listener == null) {
-            throw new IllegalArgumentException(
-               "Error: setErrorListener() call where ErrorListener is null");
-	}
-	_errorListener = listener;
-    }
-
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Returns the value set for a TransformerFactory attribute
+     * We are currently not using any attributes with XSLTC. We should try to
+     * avoid using attributes as this can make us less flexible.
+     *
+     * @param name The attribute name
+     * @return An object representing the attribute value
+     * @throws IllegalArgumentException
+     */
     public Object getAttribute(String name) 
-	throws IllegalArgumentException
-    { 
-	/*TBD*/ 
-        throw new IllegalArgumentException(
-            "TransformerFactoryImpl:getAttribute(String) " +
-            "not implemented yet.");
-	//return null; 
+	throws IllegalArgumentException { 
+        throw new IllegalArgumentException(NYI);
     }
-    public void setAttribute(String name, Object value) 
-	throws IllegalArgumentException
-    { 
-	/*TBD*/  
-        throw new IllegalArgumentException(
-            "TransformerFactoryImpl:getAttribute(String) " +
-            "not implemented yet.");
-    }
-    public boolean getFeature(String name) { 
-	if ((StreamSource.FEATURE == name) ||
-	    (StreamResult.FEATURE == name) ||
-	    (SAXTransformerFactory.FEATURE == name)) {
-	    return true;
-	} else if ((StreamSource.FEATURE.equals(name))
-		|| (StreamResult.FEATURE.equals(name))
-		|| (SAXTransformerFactory.FEATURE.equals(name))) {
-	    return true;
-	} else {
- 	    return false; 
-	}
-    } 
-    public URIResolver getURIResolver() { /*TBD*/ return null; } 
-    public void setURIResolver(URIResolver resolver) {/*TBD*/   } 
-    public Source getAssociatedStylesheet(Source src, String media,
-	String title, String charset)  throws TransformerConfigurationException
-    { 
-	/*TBD*/ 
-        throw new TransformerConfigurationException(
-            "TransformerFactoryImpl:getAssociatedStylesheet(Source,String," +
-            "String, String) not implemented yet.");
-	//return null; 
-    }
-    public Transformer newTransformer() throws
-	TransformerConfigurationException 
-    { 
-	/*TBD*/ 
-        throw new TransformerConfigurationException(
-            "TransformerFactoryImpl:newTransformer() " +
-            " not implemented yet.");
-	//return null; 
-    }
-    //
-    // End TransformerFactory methods 
-    ////////////////////////////////////////////////////// 
 
     /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Returns the value set for a TransformerFactory attribute
+     * We are currently not using any attributes with XSLTC. We should try to
+     * avoid using attributes as this can make us less flexible.
      *
+     * @param name The attribute name
+     * @param value An object representing the attribute value
+     * @throws IllegalArgumentException
+     */
+    public void setAttribute(String name, Object value) 
+	throws IllegalArgumentException { 
+        throw new IllegalArgumentException(NYI);
+    }
+
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Look up the value of a feature (to see if it is supported).
+     * This method must be updated as the various methods and features of this
+     * class are implemented.
+     *
+     * @param name The feature name
+     * @return 'true' if feature is supported, 'false' if not
+     */
+    public boolean getFeature(String name) { 
+	if (name.equals(StreamSource.FEATURE) ||
+	    name.equals(StreamResult.FEATURE) ||
+	    name.equals(SAXTransformerFactory.FEATURE)) {
+	    return true;
+	}
+	return false;
+    }
+
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Get the object that is used by default during the transformation to
+     * resolve URIs used in document(), xsl:import, or xsl:include.
+     *
+     * @return The URLResolver used for this TransformerFactory and all
+     * Templates and Transformer objects created using this factory
+     */    
+    public URIResolver getURIResolver() {
+	return(_uriResolver);
+    } 
+
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Set the object that is used by default during the transformation to
+     * resolve URIs used in document(), xsl:import, or xsl:include. Note that
+     * this does not affect Templates and Transformers that are already
+     * created with this factory.
+     *
+     * @param resolver The URLResolver used for this TransformerFactory and all
+     * Templates and Transformer objects created using this factory
+     */    
+    public void setURIResolver(URIResolver resolver) {
+	_uriResolver = resolver;
+    }
+
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Get the stylesheet specification(s) associated via the xml-stylesheet
+     * processing instruction (see http://www.w3.org/TR/xml-stylesheet/) with
+     * the document document specified in the source parameter, and that match
+     * the given criteria.
+     *
+     * @param source The XML source document.
+     * @param media The media attribute to be matched. May be null, in which
+     * case the prefered templates will be used (i.e. alternate = no).
+     * @param title The value of the title attribute to match. May be null.
+     * @param charset The value of the charset attribute to match. May be null.
+     * @return A Source object suitable for passing to the TransformerFactory.
+     * @throws TransformerConfigurationException
+     */
+    public Source getAssociatedStylesheet(Source source, String media,
+					  String title, String charset)
+	throws TransformerConfigurationException {
+        throw new TransformerConfigurationException(NYI);
+    }
+
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Create a Transformer object that copies the input document to the result.
+     *
+     * @return A Transformer object that simply copies the source to the result.
+     * @throws TransformerConfigurationException
+     */    
+    public Transformer newTransformer()
+	throws TransformerConfigurationException { 
+
+	if (_copyTransformer != null) return _copyTransformer;
+
+	byte[][] bytecodes = null; // The translet classes go in here
+
+	XSLTC xsltc = new XSLTC();
+	xsltc.init();
+
+	// Compile the default copy-stylesheet
+	byte[] bytes = COPY_TRANSLET_CODE.getBytes();
+	ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+	bytecodes = xsltc.compile(inputStream, COPY_TRANSLET_NAME, 77);
+
+	// Check that the transformation went well before returning
+	if (bytecodes == null) {
+	    throw new TransformerConfigurationException(COMPILATION_ERROR);
+	}
+
+	// Create a Transformer object and store for other calls
+	Templates templates = new TemplatesImpl(bytecodes, COPY_TRANSLET_NAME);
+	_copyTransformer = templates.newTransformer();
+	return(_copyTransformer);
+    }
+
+    /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Process the Source into a Templates object, which is a a compiled
+     * representation of the source. Note that this method should not be
+     * used with XSLTC, as the time-consuming compilation is done for each
+     * and every transformation.
+     *
+     * @return A Templates object that can be used to create Transformers.
+     * @throws TransformerConfigurationException
      */
     public Transformer newTransformer(Source source) throws
 	TransformerConfigurationException {
@@ -261,29 +306,28 @@ public class TransformerFactoryImpl extends TransformerFactory {
     }
 
     /**
+     * javax.xml.transform.sax.TransformerFactory implementation.
+     * Process the Source into a Templates object, which is a a compiled
+     * representation of the source.
      *
+     * @param stylesheet The input stylesheet. Only StreamSource is suported
+     * for now (otherwise the Source URI must be set using the setSystemId()
+     * method). This methods needs more work!!!
+     * @return A Templates object that can be used to create Transformers.
+     * @throws TransformerConfigurationException
      */
-    public Templates newTemplates(Source stylesheet) throws
-	TransformerConfigurationException {
+    public Templates newTemplates(Source stylesheet)
+	throws TransformerConfigurationException {
+
+	byte[][] bytecodes = null; // The translet classes go in here
 
 	XSLTC xsltc = new XSLTC();
 	xsltc.init();
 
-	// Check if destination has been set with system property
-	// TODO: We probably have to change this.
-	//       Xalan might already have a property defined for this
-	String transletDestDir = System.getProperty("transletPool");
-	if (transletDestDir != null) {
-	    xsltc.setDestDirectory(transletDestDir);
- 	}
-
-        // Get down to business: Compile the stylesheet
-        InputStream inputStream = ((StreamSource)stylesheet).getInputStream();
-        String stylesheetName = stylesheet.getSystemId();
-	URL url = null;
-
-	// Attempt to get a decent name for the translet...
+	// Attempt using the URL returned by the Source's getSystemId() method
+        final String stylesheetName = stylesheet.getSystemId();
         String transletName = "undefined";
+	URL url = null;
 	if (stylesheetName != null) {
 	    final String base  = Util.baseName(stylesheetName);
 	    final String noext = Util.noExtName(base);
@@ -298,18 +342,127 @@ public class TransformerFactoryImpl extends TransformerFactory {
 	    catch (MalformedURLException e) { url = null; }
 	}
 
-	byte[][] bytecodes = null;
-
-	if (url != null)
+	// Now do the actual compilation - store results in the bytecodes array
+	if (url != null) {
 	    bytecodes = xsltc.compile(url, transletName);
-	else if (inputStream != null)
-	    bytecodes = xsltc.compile(inputStream, transletName, 77);
-	else
-	    throw new TransformerConfigurationException(
-		"Stylesheet must have a system id or be an InputStream.");
+	}
+	else if (stylesheet instanceof StreamSource) {
+	    StreamSource streamSource = (StreamSource)stylesheet;
+	    InputStream inputStream = streamSource.getInputStream();
+	    if (inputStream != null)
+		bytecodes = xsltc.compile(inputStream, transletName, 77);
+	}
+	else {
+	    throw new TransformerConfigurationException(STREAM_SOURCE_ERROR);
+	}
+
+	// Check that the transformation went well before returning
+	if (bytecodes == null) {
+	    throw new TransformerConfigurationException(COMPILATION_ERROR);
+	}
 
 	return(new TemplatesImpl(bytecodes, transletName));
     }
 
-    private ErrorListener _errorListener = null; 
+    /**
+     * javax.xml.transform.sax.SAXTransformerFactory implementation.
+     * Get a TemplatesHandler object that can process SAX ContentHandler
+     * events into a Templates object.
+     *
+     * @return A TemplatesHandler object that can handle SAX events
+     * @throws TransformerConfigurationException
+     */
+    public TemplatesHandler newTemplatesHandler() 
+	throws TransformerConfigurationException { 
+	throw new TransformerConfigurationException(NYI);
+    }
+
+    /**
+     * javax.xml.transform.sax.SAXTransformerFactory implementation.
+     * Get a TransformerHandler object that can process SAX ContentHandler
+     * events into a Result.
+     *
+     * @return A TransformerHandler object that can handle SAX events
+     * @throws TransformerConfigurationException
+     */
+    public TransformerHandler newTransformerHandler() 
+	throws TransformerConfigurationException {
+	throw new TransformerConfigurationException(NYI);
+    }
+
+    /**
+     * javax.xml.transform.sax.SAXTransformerFactory implementation.
+     * Get a TransformerHandler object that can process SAX ContentHandler
+     * events into a Result, based on the transformation instructions
+     * specified by the argument.
+     *
+     * @param src The source of the transformation instructions.
+     * @return A TransformerHandler object that can handle SAX events
+     * @throws TransformerConfigurationException
+     */
+    public TransformerHandler newTransformerHandler(Source src) 
+	throws TransformerConfigurationException { 
+        throw new TransformerConfigurationException(NYI);
+    }
+
+    /**
+     * javax.xml.transform.sax.SAXTransformerFactory implementation.
+     * Get a TransformerHandler object that can process SAX ContentHandler
+     * events into a Result, based on the transformation instructions
+     * specified by the argument.
+     *
+     * @param templates Represents a pre-processed stylesheet
+     * @return A TransformerHandler object that can handle SAX events
+     * @throws TransformerConfigurationException
+     */    
+    public TransformerHandler newTransformerHandler(Templates templates) 
+	throws TransformerConfigurationException  { 
+        throw new TransformerConfigurationException(NYI);
+    }
+
+
+    /**
+     * javax.xml.transform.sax.SAXTransformerFactory implementation.
+     * Create an XMLFilter that uses the given source as the
+     * transformation instructions.
+     *
+     * @param src The source of the transformation instructions.
+     * @return An XMLFilter object, or null if this feature is not supported.
+     * @throws TransformerConfigurationException
+     */
+    public XMLFilter newXMLFilter(Source src) 
+	throws TransformerConfigurationException {
+	Templates templates = newTemplates(src);
+	if (templates == null ) return null; 
+	return newXMLFilter(templates);
+    }
+
+    /**
+     * javax.xml.transform.sax.SAXTransformerFactory implementation.
+     * Create an XMLFilter that uses the given source as the
+     * transformation instructions.
+     *
+     * @param src The source of the transformation instructions.
+     * @return An XMLFilter object, or null if this feature is not supported.
+     * @throws TransformerConfigurationException
+     */
+    public XMLFilter newXMLFilter(Templates templates) 
+	throws TransformerConfigurationException {
+	try {
+      	    return new org.apache.xalan.xsltc.trax.TrAXFilter(templates);
+    	}
+	catch(TransformerConfigurationException e1) {
+      	    if(_errorListener != null) {
+                try {
+          	    _errorListener.fatalError(e1);
+          	    return null;
+        	}
+		catch( TransformerException e2) {
+          	    new TransformerConfigurationException(e2);
+        	}
+      	    }
+      	    throw e1;
+    	}
+    }
+
 }

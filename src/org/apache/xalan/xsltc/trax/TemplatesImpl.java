@@ -188,10 +188,12 @@ public final class TemplatesImpl implements Templates, Serializable {
     }
 
     /**
-     * JAXP interface implementation
+     * Implements JAXP's Templates.newTransformer()
+     *
+     * @throws TransformerConfigurationException
      */
-    public Transformer newTransformer() throws 
-	TransformerConfigurationException {
+    public Transformer newTransformer()
+	throws TransformerConfigurationException {
 	Translet translet = getTransletInstance();
 	if (translet == null)
 	    throw new TransformerConfigurationException(TRANSLET_ERR_MSG);
@@ -200,14 +202,19 @@ public final class TemplatesImpl implements Templates, Serializable {
     }
 
     /**
-     * JAXP interface implementation - UNFINISHED!!!
+     * Implements JAXP's Templates.getOutputProperties()
      */
     public Properties getOutputProperties() { 
-	// TODO - this method should extract the output properties stored in
-	// a translet instance. This could prove to be pretty tricky as this
-	// class has a reference to a translet class only and not to an
-	// actual instance of a translet
-	return new Properties(); 
+	// We need to instanciate a translet to get the output settings, so
+	// we might as well just instanciate a Transformer and use its
+	// implementation of this method
+	try {
+	    Transformer transformer = newTransformer();
+	    return transformer.getOutputProperties();
+	}
+	catch (TransformerConfigurationException e) {
+	    return null;
+	}
     }
 
 }
