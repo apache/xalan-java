@@ -146,7 +146,7 @@ Copyright:
            debug="${debug}" />
   </target>
   
-  <target name="compile.other" depends="compile,compile.sax,compile.dom,compile.jaxp">
+  <target name="compile.other" depends="compile,compile.sax,compile.w3c,compile.jaxp">
     <echo message="compiling SAX 2, DOM 2, and Java API for XML Parsing"/>
   </target>  
    
@@ -169,8 +169,8 @@ Copyright:
            destdir="${build.classes}" 
            debug="${debug}"/>
   </target>
-    <target name="compile.dom" depends="prepare">
-    <javac srcdir="${src.dir}/${dom.reldir}" 
+    <target name="compile.w3c" depends="prepare">
+    <javac srcdir="${src.dir}/${w3c.reldir}" 
            destdir="${build.classes}" 
            debug="${debug}"/>
   </target>
