@@ -106,6 +106,15 @@ public final class BoolStack implements Cloneable
   }
 
   /**
+   * Clears the stack.
+   *
+   */
+  public final void clear()
+  {
+  	m_index = -1;
+  }
+
+  /**
    * Pushes an item onto the top of this stack.
    *
    *
