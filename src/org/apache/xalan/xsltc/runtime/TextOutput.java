@@ -585,6 +585,32 @@ public final class TextOutput implements TransletOutputHandler {
     }
 
     /**
+     * Replaces whitespaces in a URL with '%20'
+     */
+    private String quickAndDirtyUrlEncode(String base) {
+	final String pst20 = "%20";
+	final int len = base.length() - 1;
+	int pos;
+	// Slow, very slow indeed
+	while ((pos = base.indexOf(' ')) > -1) {
+	    if (pos == 0) {
+		final String after = base.substring(1);
+		base = pst20 + after;
+	    }
+	    else if (pos == len) {
+		final String before = base.substring(0, pos);
+		base = before + pst20;
+	    }
+	    else {
+		final String before = base.substring(0, pos);
+		final String after = base.substring(pos+1);
+		base = before + pst20 + after;
+	    }
+	}
+	return base;
+    }
+
+    /**
      * Put an attribute and its value in the start tag of an element.
      * Signal an exception if this is attempted done outside a start tag.
      */
@@ -596,17 +622,21 @@ public final class TextOutput implements TransletOutputHandler {
 
 	if (_startTagOpen) {
 
+	    // The following is an attempt to escape an URL stored in a href
+	    // attribute of HTML output. Normally URLs should be encoded at
+	    // the time they are created, since escaping or unescaping a
+	    // completed URI might change its semantics. We limit or escaping
+	    // to include space characters only - and nothing else. This is for
+	    // two reasons: (1) performance and (2) we want to make sure that
+	    // we do not change the meaning of the URL.
+
 	    // URL-encode href attributes in HTML output
-	    /* Nope, does not work properly - find other solution
 	    if (_outputType == HTML) {
 		if  (name.toLowerCase().equals("href")) {
-		    if (value.startsWith("http")) {
-			_attributes.add(name, URLEncoder.encode(value));
-			return;
-		    }
+		    _attributes.add(name, quickAndDirtyUrlEncode(value));
+		    return;
 		}
 	    }
-	    */
 
 	    // Intercept namespace declarations and handle them separately
 	    if (name.startsWith("xml")) {
