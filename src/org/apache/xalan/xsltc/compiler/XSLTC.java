@@ -371,7 +371,7 @@ public final class XSLTC {
 	if (debug()) {
 	    _parser.errorsFound(); // print stack
 	}
-	System.exit(1);
+	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
     }
 
     /**
@@ -384,7 +384,7 @@ public final class XSLTC {
 	if (debug()) {
 	    _parser.errorsFound(); // print stack
 	}
-	System.exit(1);
+	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
     }
 
     /**
@@ -398,7 +398,7 @@ public final class XSLTC {
 	if (debug()) {
 	    _parser.errorsFound(); // print stack
 	}
-	System.exit(1);
+	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
     }
 
     public int nextVariableSerial() {
@@ -517,13 +517,24 @@ public final class XSLTC {
 	setClassName(className);
 	return compile(stylesheetURL) ? outputToArrays() : null;
     }
-    
+
+    /** 
+     * Command line runnability.
+     * o className
+     * d destDirectory
+     * p packageName
+     * j jarFileName
+     * u (isUriSpecified)
+     * x (isDebugSpecified)
+     * h printUsage()
+     * s (don't allow System.exit)
+     */
     public static void main(String[] args) {
 	try {
-	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxh");
+	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhs");
 	    if (args.length < 1) {
 		printUsage();
-		System.exit(1);
+		doSystemExit(1); return;
 	    } 
 	    boolean isUriSpecified = false;
 	    boolean isDebugSpecified = false;
@@ -554,6 +565,9 @@ public final class XSLTC {
 		case 'x':
 		    isDebugSpecified = true;
 		    break;
+		case 's':
+		    allowSystemExit = false;
+		    break;
 		case 'h':
 		    printUsage();
 		    break;
@@ -570,7 +584,7 @@ public final class XSLTC {
 
 	    if (!dir.isDirectory() || (className != null && nStyleSheets > 1)) {
 		printUsage();
-		System.exit(1);
+		doSystemExit(1); return;
 	    }
 
 	    dir = null;
@@ -610,18 +624,27 @@ public final class XSLTC {
 	    }
 	    else {
 		Util.println("compilation failed");
-		System.exit(1);
+		doSystemExit(1); return;
 	    }
 	}
 	catch (GetOptsException ex) {
 	    System.err.println(ex);
 	    printUsage();
-	    System.exit(1);
+	    doSystemExit(1); return;
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
-	    System.exit(1);
+	    doSystemExit(1); return;
 	}
+    }
+
+    /** If we should call System.exit or not */
+    protected static boolean allowSystemExit = true;
+
+    /** Worker method to call System.exit or not */
+    protected static void doSystemExit(int retVal) {
+        if (allowSystemExit)
+            System.exit(retVal);
     }
 
     private final static String USAGE_STRING =
@@ -634,7 +657,8 @@ public final class XSLTC {
 	"         <jarfile> is the name of jar file, do not specify \n" +
 	"         the .jar extension. Example: -j MyJar \n"+
 	"   Note: the -o option should not be used when processing\n"+
-	"         multiple stylesheets.";
+	"         multiple stylesheets. \n"+
+	"   also: [-x] (debug), [-s] (don't allow System.exit)";
     
     public static void printUsage() {
 	System.err.println(USAGE_STRING);

@@ -83,7 +83,7 @@ import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 
-final class DefaultRun {
+public final class DefaultRun {
 
     private TransletOutputHandler _handler;
 
@@ -182,7 +182,7 @@ final class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    System.exit(1);	    
+	    doSystemExit(1); return;	    
 	}
 	catch (RuntimeException e) {
 	    System.err.println("\nRuntime Error: " + e.getMessage());
@@ -190,29 +190,29 @@ final class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    System.exit(1);
+	    doSystemExit(1); return;
 	}
 	catch (FileNotFoundException e) {
 	    System.err.println("Error: File or URI '"+_fileName+"' not found.");
-	    System.exit(1);
+	    doSystemExit(1); return;
 	}
 	catch (MalformedURLException e) {
 	    System.err.println("Error: Invalid URI '"+_fileName+"'.");
-	    System.exit(1);
+	    doSystemExit(1); return;
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println("Error: Cannot find class '"+_className+"'.");
-	    System.exit(1);
+	    doSystemExit(1); return;
 	}
         catch (UnknownHostException e) {
 	    System.err.println("Error: Can't resolve URI specification '"+ 
 			       _fileName+"'.");
-	    System.exit(1);
+	    doSystemExit(1); return;
         }
 	catch (Exception e) {
 	    e.printStackTrace();
 	    System.err.println("Error: internal error.");
-	    System.exit(1);
+	    doSystemExit(1); return;
 	}
     }
 
@@ -228,9 +228,26 @@ final class DefaultRun {
 
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
-	System.exit(1);
+	doSystemExit(1); throw new RuntimeException("System.exit(1) would be called");
     }
 
+    /** If we should call System.exit or not */
+    protected static boolean allowSystemExit = true;
+
+    /** Worker method to call System.exit or not */
+    protected static void doSystemExit(int retVal) {
+        if (allowSystemExit)
+            System.exit(retVal);
+    }
+
+    /** 
+     * Command line runnability.
+     * j jarFileName
+     * u (isUriSpecified)
+     * x (isDebugSpecified)
+     * h printUsage()
+     * s (don't allow System.exit)
+     */
     public static void main(String[] args) {
 	try {
 	    if (args.length > 0) {
@@ -246,6 +263,9 @@ final class DefaultRun {
 		    }
 		    else if (args[i].equals("-x")) {
 			debug = true;
+		    }
+		    else if (args[i].equals("-s")) {
+			allowSystemExit = false;
 		    }
 		    else if (args[i].equals("-j")) {
 			isJarFileSpecified = true;	
@@ -285,7 +305,7 @@ final class DefaultRun {
 		if (i == args.length) {
 		    handler.setParameters(params);
 		    handler.doTransform();
-		    System.exit(0);
+		    doSystemExit(0); return;
 		}
 	    }
 	    printUsage();
