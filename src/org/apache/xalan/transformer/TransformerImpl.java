@@ -2035,24 +2035,27 @@ public class TransformerImpl extends Transformer
     ElemTemplateElement t = elem.getFirstChildElem();
 
     if (null == t)
-      return;
-      
+      return;      
+    
     if(elem.hasTextLitOnly() && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
-    {
+    {      
       char[] chars = ((ElemTextLiteral)t).getChars();
       try
       {
-        // %TBD% Have to push stuff on for tooling...
+        // Have to push stuff on for tooling...
+        this.pushElemTemplateElement(t);
         m_resultTreeHandler.characters(chars, 0, chars.length);
       }
       catch(SAXException se)
       {
         throw new TransformerException(se);
       }
+      finally
+      {
+        this.popElemTemplateElement();
+      }
       return;
     }
-
-    XPathContext xctxt = m_xcontext;
 
 //    // Check for infinite loops if we have to.
 //    boolean check = (m_stackGuard.m_recursionLimit > -1);
@@ -2060,6 +2063,7 @@ public class TransformerImpl extends Transformer
 //    if (check)
 //      getStackGuard().push(elem, xctxt.getCurrentNode());
 
+    XPathContext xctxt = m_xcontext;
     xctxt.pushSAXLocatorNull();
     int currentTemplateElementsTop = m_currentTemplateElementsTop;
     m_currentTemplateElementsTop++;
