@@ -546,6 +546,24 @@ public class ToHTMLStream extends ToStream
             return (ElemDesc)obj;
         return m_dummy;
     }
+    
+    /**
+     * A Trie that is just a copy of the "static" one.
+     * We need this one to be able to use the faster, but not thread-safe
+     * method Trie.get2(name)
+     */
+    private Trie m_htmlInfo = new Trie(m_elementFlags);
+    /**
+     * Calls to this method could be replaced with calls to
+     * getElemDesc(name), but this one should be faster.
+     */
+    private ElemDesc getElemDesc2(String name)
+    {
+        Object obj = m_htmlInfo.get2(name);
+        if (null != obj)
+            return (ElemDesc)obj;
+        return m_dummy;
+    }
 
     /**
      * Default constructor.
@@ -702,7 +720,8 @@ public class ToHTMLStream extends ToStream
         
         try
         {
-            ElemDesc elemDesc = getElemDesc(name);
+            // getElemDesc2(name) is faster than getElemDesc(name)
+            ElemDesc elemDesc = getElemDesc2(name);
             int elemFlags = elemDesc.getFlags();
 
             // deal with indentation issues first
