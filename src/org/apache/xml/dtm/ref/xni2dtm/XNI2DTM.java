@@ -127,7 +127,6 @@ public class XNI2DTM
   
   /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as instantiated.
    * See discussion in addNode */
-  // protected Vector m_actualType=null;
   protected SparseVector m_schemaTypeOverride=new SparseVector();
   
 
@@ -201,7 +200,7 @@ public class XNI2DTM
   protected int addNode(int type, int expandedTypeID,
                         int parentIndex, int previousSibling,
                         int dataOrPrefix, boolean canHaveFirstChild,
-                        XSTypeDecl actualType)
+                        XPath2Type actualType)
   {
     int identity=super.addNode(type,expandedTypeID,
                                parentIndex,previousSibling,
@@ -249,9 +248,9 @@ public class XNI2DTM
         
     if(identity!=DTM.NULL)
     {
-      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      XPath2Type actualType=(XPath2Type)m_schemaTypeOverride.elementAt(identity);
       if(actualType==null)
-        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+        actualType=(XPath2Type)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
 
       if(actualType!=null)
       {
@@ -283,9 +282,9 @@ public class XNI2DTM
         
     if(identity!=DTM.NULL)
     {
-      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      XPath2Type actualType=(XPath2Type)m_schemaTypeOverride.elementAt(identity);
       if(actualType==null)
-        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+        actualType=(XPath2Type)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
       if(actualType!=null)
       {
         return actualType.getTargetNamespace();
@@ -310,9 +309,9 @@ public class XNI2DTM
         
     if(identity!=DTM.NULL)
     {
-      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      XPath2Type actualType=(XPath2Type)m_schemaTypeOverride.elementAt(identity);
       if(actualType==null)
-        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+        actualType=(XPath2Type)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
       if(actualType!=null)
       {
         return actualType.getTypeName();
@@ -337,9 +336,9 @@ public class XNI2DTM
         
     if(identity!=DTM.NULL)
     {
-      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      XPath2Type actualType=(XPath2Type)m_schemaTypeOverride.elementAt(identity);
       if(actualType==null)
-        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+        actualType=(XPath2Type)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
       if(actualType!=null)
         return actualType.derivedFrom(namespace,localname);
     }
@@ -361,9 +360,9 @@ public class XNI2DTM
     if(identity==DTM.NULL)
       return XSequence.EMPTY;
                 
-    XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+    XPath2Type actualType=(XPath2Type)m_schemaTypeOverride.elementAt(identity);
     if(actualType==null)
-      actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+      actualType=(XPath2Type)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
 
     if(actualType==null)
       return XSequence.EMPTY;
@@ -375,71 +374,7 @@ public class XNI2DTM
         
     String textvalue=getNodeValue(nodeHandle);
         
-    return _typedValue(actualType,textvalue);
-  }
- 
-  /** Broken out into a subroutine so I can use it for debugging purposes.
-   * This logic is adapted from the Xerces SimpleTypeUsage.validateString() example.
-   * 
-   * %REVIEW% May be more efficient to fold it back in.
-   * 
-   * @param actualType Xerces PSVI type declaration object
-   * @param textValue Text content to be interpreted
-   * @return DTM_XSequence containing one or more Java values, as appropriate
-   *   to the Built-In Type we have inherited from -- or null if no such 
-   *   mapping exists (eg, if actualType was complex)
-   * */         
-  private XSequence _typedValue(XSTypeDecl actualType,String textvalue)
-  {
-    Object value;
-    DTM_XSequence seq=null;
-
-    if(actualType instanceof XSSimpleTypeDecl)
-    {           
-      //create an instance of 'ValidatedInfo' to get back information (like actual value,
-      //normalizedValue etc..)after content is validated.
-      ValidatedInfo validatedInfo = new ValidatedInfo(); // %REVIEW% Can we reuse???
-
-      //get proper validation context , this is very important we need to get appropriate validation context while validating content
-      //validation context passed is generally different while validating content and  creating simple type (applyFacets)
-      ValidationContext validationState = new ValidationState();
-      // This may need to be refined using:
-      //validationState.setNamespaceSupport(...);
-      //validationState.setSymbolTable(....);
-      //validationState.setFacetChecking(true);
-      //validationState.setExtraChecking(false);        
-
-      // Validate and parse the string
-      try{
-        ((XSSimpleTypeDecl)actualType).validate(textvalue, validationState, validatedInfo);
-      } catch(InvalidDatatypeValueException ex){
-        // Should never happen, since we've already validated...?
-        System.err.println(ex.getMessage());
-        ex.printStackTrace();
-      }
-
-      //now 'validatedInfo' object contains information
-
-      // for number types (decimal, double, float, and types derived from them),
-      // Object return is BigDecimal, Double, Float respectively.
-      // Boolean is handled similarly.
-      // Some types (string and derived) just return the string itself.
-      value = validatedInfo.actualValue;
-
-      //The normalized value of a string type
-      // (Should we check for stings and return this instead?)
-      String normalizedValue = validatedInfo.normalizedValue ;
-
-      // If the type is a union type, then the member type which
-      // actually validated the string value will be:
-      // XSSimpleType memberType = validatedInfo.memberType ;
-
-      // %REVIEW% I presume this handles lists by returning arrays...?
-                
-      seq=new DTM_XSequence(value,(XSSimpleTypeDecl)actualType);
-    }
-        
-    return seq==null ? XSequence.EMPTY : seq;
+    return actualType.typedValue(textvalue);
   }
   
   
@@ -894,6 +829,7 @@ public class XNI2DTM
     // Shouldn't arise in final operation (?); may arise during debugging
     ElementPSVImpl elemPSVI=null;
     XSTypeDecl actualType =null;
+    XPath2Type xp2type=null;
     if(augs!=null)
     {
       // Node added by DTM2XNI?
@@ -901,6 +837,7 @@ public class XNI2DTM
         
       // Extract Experimental Xerces PSVI data          
       elemPSVI=(ElementPSVImpl)augs.getItem(org.apache.xerces.impl.Constants.ELEMENT_PSVI);
+      xp2type=new XPath2Type(elemPSVI,false);
       actualType =
         (elemPSVI==null) ? null : elemPSVI.getTypeDefinition();
       org.apache.xerces.impl.xs.XSElementDecl expectedDecl =  // %REVIEW% OBSOLETE?
@@ -910,9 +847,7 @@ public class XNI2DTM
 
       if (DEBUG)
       {
-      	String[] typebuf=new String[2];
-      	lightResolveTypeName(elemPSVI,typebuf,true);
-        String actualExpandedQName=typebuf[0]+":"+typebuf[1];
+        String actualExpandedQName=xp2type.getTargetNamespace()+":"+xp2type.getTypeName();
 
         System.out.println("\ttypeDefinition (actual): "+ actualType +
                            "\n\t\ttype expanded-qname: " + actualExpandedQName +
@@ -940,6 +875,7 @@ public class XNI2DTM
         // Experimental Xerces PSVI data
         Augmentations attrAugs=attributes.getAugmentations(i);
         AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
+        XPath2Type xp2attrtype=new XPath2Type(attrPSVI,true);
         XSTypeDecl actualAttrType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
         org.apache.xerces.impl.xs.XSAttributeDecl expectedAttrDecl= // %REVIEW% Obsolete?
           (attrPSVI==null) ? null : attrPSVI.getAttributeDecl();                              
@@ -948,9 +884,8 @@ public class XNI2DTM
         // Node added by DTM2XNI?
         boolean syntheticAttribute = null!=attrAugs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE);
 
-      	String[] typebuf=new String[2];
-      	lightResolveTypeName(attrPSVI,typebuf,true);
-        actualExpandedQName=typebuf[0]+":"+typebuf[1];
+        actualExpandedQName=xp2attrtype.getTargetNamespace()+
+        	":"+ xp2attrtype.getTypeName();
         
         System.out.println("\t\ttypeDefinition (actual): "+ actualAttrType +
                            "\n\t\t\ttype expanded-qname: " + actualExpandedQName +
@@ -959,7 +894,7 @@ public class XNI2DTM
         if(actualAttrType!=null)                                                
           System.out.println("\n\t\tDerived from expected (after null recovery): " + actualAttrType.derivedFrom(expectedType) +
                              "\n\t\tDerived from builtin string: "+ actualAttrType.derivedFrom(SCHEMANS,"string") +
-                             "\n\t\tTyped value: " + _typedValue(actualAttrType,attributes.getValue(i))+
+                             "\n\t\tTyped value: " + xp2attrtype.typedValue(attributes.getValue(i))+
                              "\n\t\tSynthesized by DTM2XNI: "+syntheticAttribute
                              );
       } // dump all attrs
@@ -983,7 +918,7 @@ public class XNI2DTM
       ? m_valuesOrPrefixes.stringToIndex(element.rawname) : 0;
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true,
-                           actualType);
+                           xp2type);
 
     if(m_indexing)
       indexNode(exName, elemNode);
@@ -1088,10 +1023,10 @@ public class XNI2DTM
       }
       
       AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
-      XSTypeDecl actualAttrType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
+      XPath2Type xp2attrtype=new XPath2Type(attrPSVI,true);
       
       prev = addNode(nodeType, exName, elemNode, prev, val,
-                     false, actualAttrType);
+                     false, xp2attrtype);
     }
 
     if (DTM.NULL != prev)
@@ -1798,6 +1733,149 @@ public class XNI2DTM
 
 
   //============================================================/  
+  
+  /** Inner class: The full XNI ItemPSVI is far too heavy-weight for
+   * our needs. But their XSTypeDecl isn't quite heavy enough; it gives
+   * us the actual member type, but that may be anonymous... so to get
+   * what XPath2 considers the proper typename, we need to examine
+   * additional fields as well. This class is an attempt to compromise by
+   * resolving the typename and storing that alongside the member type.
+   * 
+   * A more efficient solution undoubtedly exists. But since XNI's PSVI
+   * APIs are still in flux, and since I'm just trying to get an initial
+   * demo running, this will suffice for now.
+   * %REVIEW% periodically!
+   * */
+  protected class XPath2Type
+  {
+  	public XSTypeDecl m_xniType;
+  	public String m_namespace;
+  	public String m_localName;
+  	
+  	/** Constructor for our internal type representation
+  	 *   We will extract the low-level XSTypeDecl for the Member Type,
+  	 *   and determine the proper namespace and localname. Other data
+  	 *   can (hopefully) be GC'd after we're done. This is still NOT
+  	 *   a lightweight beast.
+  	 * 
+  	 * @param psvi XNI Post-Schema-Validation Infoset annotation.
+  	 * @param isAttr True iff we're defining type for an attribute.
+  	 * */
+  	public XPath2Type(ItemPSVI psvi, boolean isAttr)
+  	{
+  		// First get the member type. Need to go down a level...
+  		// not sure whether there's a shared interface
+  		if(psvi==null)
+	  		m_xniType=null;
+  		else if(!isAttr)
+	  		m_xniType=((ElementPSVImpl)psvi).getTypeDefinition();
+  		else
+	  		m_xniType=((AttributePSVImpl)psvi).getTypeDefinition();
+  	
+  		// Now resolve the typename.
+  		// There are some quibbles about algorithm; see comments on
+  		// the resolve methods.
+  		lightResolveTypeName(psvi,isAttr);
+  	}
+  	
+  	/** Identity needs to be defined so we can do sparse storage.
+  	 * %REVIEW% I'm not sure all three fields need to be checked, but...
+  	 * */
+  	public boolean equals(XPath2Type other)
+  	{
+  		return (m_xniType==other.m_xniType ||
+  			m_xniType!=null && m_xniType.equals(other.m_xniType)) &&
+  			// These two won't be null
+  			m_namespace.equals(other.m_namespace) &&
+  			m_localName.equals(other.m_localName);
+  	}
+  	  	
+  	/** Identity needs to be defined so we can do sparse storage.
+  	 * %REVIEW% I'm not sure all three fields need to be checked, but...
+  	 * */
+  	public int hashCode()
+  	{
+  		return m_namespace.hashCode()+m_localName.hashCode()+
+  			(m_xniType==null ? 0 : m_xniType.hashCode());
+  	}
+  	
+  	public String getTargetNamespace() {return m_namespace;}
+  	public String getTypeName() {return m_localName;}
+  	
+  	public boolean derivedFrom(String namespace,String localname)
+  	{
+  		if(m_xniType!=null)
+	  		return m_xniType.derivedFrom(namespace,localname);
+	  		
+	  	// Fallback in case no PSVI info was passed in: exact match
+	  	// (it's got to be the correct m_any*Type).
+	  	else return(m_namespace.equals(namespace) && m_localName.equals(localname));
+  	}
+  	
+  /** Broken out into a subroutine so I can use it for debugging purposes.
+   * This logic is adapted from the Xerces SimpleTypeUsage.validateString() example.
+   * 
+   * %REVIEW% May be more efficient to fold it back in.
+   * 
+   * @param actualType Xerces PSVI type declaration object
+   * @param textValue Text content to be interpreted
+   * @return DTM_XSequence containing one or more Java values, as appropriate
+   *   to the Built-In Type we have inherited from -- or null if no such 
+   *   mapping exists (eg, if actualType was complex)
+   * */         
+  public XSequence typedValue(String textvalue)
+  {
+    Object value;
+    DTM_XSequence seq=null;
+
+    if(m_xniType instanceof XSSimpleTypeDecl)
+    {           
+      //create an instance of 'ValidatedInfo' to get back information (like actual value,
+      //normalizedValue etc..)after content is validated.
+      ValidatedInfo validatedInfo = new ValidatedInfo(); // %REVIEW% Can we reuse???
+
+      //get proper validation context , this is very important we need to get appropriate validation context while validating content
+      //validation context passed is generally different while validating content and  creating simple type (applyFacets)
+      ValidationContext validationState = new ValidationState();
+      // This may need to be refined using:
+      //validationState.setNamespaceSupport(...);
+      //validationState.setSymbolTable(....);
+      //validationState.setFacetChecking(true);
+      //validationState.setExtraChecking(false);        
+
+      // Validate and parse the string
+      try{
+        ((XSSimpleTypeDecl)m_xniType).validate(textvalue, validationState, validatedInfo);
+      } catch(InvalidDatatypeValueException ex){
+        // Should never happen, since we've already validated...?
+        System.err.println(ex.getMessage());
+        ex.printStackTrace();
+      }
+
+      //now 'validatedInfo' object contains information
+
+      // for number types (decimal, double, float, and types derived from them),
+      // Object return is BigDecimal, Double, Float respectively.
+      // Boolean is handled similarly.
+      // Some types (string and derived) just return the string itself.
+      value = validatedInfo.actualValue;
+
+      //The normalized value of a string type
+      // (Should we check for stings and return this instead?)
+      String normalizedValue = validatedInfo.normalizedValue ;
+
+      // If the type is a union type, then the member type which
+      // actually validated the string value will be:
+      // XSSimpleType memberType = validatedInfo.memberType ;
+
+      // %REVIEW% I presume this handles lists by returning arrays...?
+                
+      seq=new DTM_XSequence(value,(XSSimpleTypeDecl)m_xniType);
+    }
+        
+    return seq==null ? XSequence.EMPTY : seq;
+  }
+
   /** Implementation of the XPath2 type-name resolution algorithm
    * (data model 3.5). 
    * 
@@ -1805,45 +1883,39 @@ public class XNI2DTM
    * Heavy-Weight PSVI interfaces (not yet implemented in Xerces)
    * 
    * @param psvi  the psvi information for the current node
-   * @param ret   a String array with size 2
-   *              index 0 is used to return the namespace name;
-   *              index 1 is used to return the local name.
    * @param attr false for element (fallback is xs:anyType)
    *              true for attribute (fallback is xs:anySimpleType)
    * */  
-  protected void heavyResolveTypeName(ItemPSVI psvi, String[] ret, boolean attr)
+  protected void heavyResolveTypeName(ItemPSVI psvi, boolean attr)
   {
   /*
   	// NAME OF THIS CONSTANT IS IN FLUX
   	//int VALID=ItemPSVI.VALIDITY_VALID;
   	int VALID=ItemPSVI.VALID_VALIDITY;
   	
-  	
-  	if(ret==null) ret=new String[2];
-  	
         // check whether the node is valid
         if (psvi == null ||
             psvi.getValidity() != VALID) {
             // if the node is not valid, then return xs:anyType
-            ret[0] = "http://www.w3.org/2001/XMLSchema";
-            ret[1] = attr ? "anySimpleType" : "anyType";
-            return ret;
+            m_namespace = "http://www.w3.org/2001/XMLSchema";
+            m_localName = attr ? "anySimpleType" : "anyType";
+            return;
         }
         
         // try to get the member type definition, and return its name
         XSSimpleTypeDefinition member = psvi.getMemberTypeDefinition();
         if (member != null) {
-            ret[0] = member.getNamespace();
-            ret[1] = member.getName();
-            return ret;
+            m_namespace = member.getNamespace();
+            m_localName = member.getName();
+            return;
         }
         
         // try to get the type definition, and return its name
         XSTypeDefinition type = psvi.getTypeDefinition();
         if (type != null) {
-            ret[0] = type.getNamespace();
-            ret[1] = type.getName();
-            return ret;
+            m_namespace = type.getNamespace();
+            m_localName = type.getName();
+            return;
         }
         
         
@@ -1851,9 +1923,9 @@ public class XNI2DTM
   	// can't proceed to check names independently
 
         // all failed, return xs:anyType
-        ret[0] = "http://www.w3.org/2001/XMLSchema";
-        ret[1] = attr ? "anySimpleType" : "anyType";
-        return ret;
+        m_namespace = "http://www.w3.org/2001/XMLSchema";
+        m_localName = attr ? "anySimpleType" : "anyType";
+        return;
   */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight not yet available");
   }
   
@@ -1866,53 +1938,48 @@ public class XNI2DTM
    * Heavy-Weight PSVI interfaces (not yet implemented in Xerces)
    * 
    * @param psvi  the psvi information for the current node
-   * @param ret   a String array with size 2
-   *              index 0 is used to return the namespace name;
-   *              index 1 is used to return the local name.
    * @param attr false for element (fallback is xs:anyType)
    *              true for attribute (fallback is xs:anySimpleType)
    * */  
-  protected void proposedHeavyResolveTypeName(ItemPSVI psvi, String[] ret, boolean attr)
+  protected void proposedHeavyResolveTypeName(ItemPSVI psvi, boolean attr)
   {
   /*
   	// NAME OF THIS CONSTANT IS IN FLUX
   	//int VALID=ItemPSVI.VALIDITY_VALID;
   	int VALID=ItemPSVI.VALID_VALIDITY;
-
-  	if(ret==null) ret=new String[2];
   	
         // check whether the node is valid
         if (psvi == null ||
             psvi.getValidity() != VALID) {
             // if the node is not valid, then return xs:anyType
-            ret[0] = "http://www.w3.org/2001/XMLSchema";
-	        ret[1] = attr ? "anySimpleType" : "anyType";
-            return ret;
+            m_namespace = "http://www.w3.org/2001/XMLSchema";
+	        m_localName = attr ? "anySimpleType" : "anyType";
+            return;
         }
         
         // try to get the member type definition, and return its name
         XSSimpleTypeDefinition member = psvi.getMemberTypeDefinition();
         if (member != null && member.getName() != null) {
-            ret[0] = member.getNamespace();
-            ret[1] = member.getName();
-            return ret;
+            m_namespace = member.getNamespace();
+            m_localName = member.getName();
+            return;
         }
         
         // try to get the type definition, and return its name
         XSTypeDefinition type = psvi.getTypeDefinition();
         if (type != null && type.getName() != null) {
-            ret[0] = type.getNamespace();
-            ret[1] = type.getName();
-            return ret;
+            m_namespace = type.getNamespace();
+            m_localName = type.getName();
+            return;
         }
         
   	// Member type definitions promised to be available;
   	// can't proceed to check names independently
 
         // all failed, return xs:anyType
-        ret[0] = "http://www.w3.org/2001/XMLSchema";
-        ret[1] = attr ? "anySimpleType" : "anyType";
-        return ret;
+        m_namespace = "http://www.w3.org/2001/XMLSchema";
+        m_localName = attr ? "anySimpleType" : "anyType";
+        return;
   */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight not yet available");
   }
   
@@ -1930,21 +1997,19 @@ public class XNI2DTM
    * @param attr false for element (fallback is xs:anyType)
    *              true for attribute (fallback is xs:anySimpleType)
    * */  
-  protected String[] lightResolveTypeName(ItemPSVI psvi, String[] ret, boolean attr)
+  protected void lightResolveTypeName(ItemPSVI psvi, boolean attr)
   {
   	// NAME OF THIS CONSTANT IS IN FLUX
   	//int VALID=ItemPSVI.VALIDITY_VALID;
   	int VALID=ItemPSVI.VALID_VALIDITY;
-
-  	if(ret==null) ret=new String[2];
   	
         // check whether the node is valid
         if (psvi == null ||
             psvi.getValidity() != VALID) {
             // if the node is not valid, then return xs:anyType
-            ret[0] = "http://www.w3.org/2001/XMLSchema";
-            ret[1] = attr ? "anySimpleType" : "anyType";
-            return ret;
+            m_namespace = "http://www.w3.org/2001/XMLSchema";
+            m_localName = attr ? "anySimpleType" : "anyType";
+            return;
         }
         
 	  	// Member type definitions promised NOT to be available;
@@ -1952,21 +2017,22 @@ public class XNI2DTM
 
 		// Need the second test, apparently
         if (!psvi.isMemberTypeAnonymous() && null!=psvi.getMemberTypeName() ) {
-            ret[0] = psvi.getMemberTypeNamespace();
-            ret[1] = psvi.getMemberTypeName();
-            return ret;
+            m_namespace = psvi.getMemberTypeNamespace();
+            m_localName = psvi.getMemberTypeName();
+            return;
         }
         
 		// Need the second test, apparently
         if (!psvi.isTypeAnonymous() && null!=psvi.getTypeName()) {
-            ret[0] = psvi.getTypeNamespace();
-            ret[1] = psvi.getTypeName();
-            return ret;
+            m_namespace = psvi.getTypeNamespace();
+            m_localName = psvi.getTypeName();
+            return;
         }
         
         // all failed, return xs:anyType
-        ret[0] = "http://www.w3.org/2001/XMLSchema";
-        ret[1] = attr ? "anySimpleType" : "anyType";
-        return ret;
+        m_namespace = "http://www.w3.org/2001/XMLSchema";
+        m_localName = attr ? "anySimpleType" : "anyType";
+        return;
   }
-}
+  } // XPath2Type
+} // XNI2DTM
