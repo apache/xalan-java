@@ -318,11 +318,11 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    return translet;
 	}
 	catch (InstantiationException e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (IllegalAccessException e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
     }
