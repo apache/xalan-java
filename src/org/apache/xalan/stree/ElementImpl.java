@@ -224,7 +224,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
           // Here we have to wait until the element is complete
           while (!isComplete())
           {
-            m_doc.wait();
+            m_doc.wait(100);
             throwIfParseError();
           }
         }
@@ -430,8 +430,11 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
 
     while (null != attr)
     {
+      String attrURI = attr.getNamespaceURI();
+      if(null == attrURI) // defensive, shouldn't have to do this.
+        attrURI = "";
       if (attr.getLocalName().equals(attrImpl.getLocalName())
-              && attr.getNamespaceURI().equals(attrImpl.getNamespaceURI()))
+              && attrURI.equals(attrImpl.getNamespaceURI()))
       {
         if (null != attr.m_prev)
           attr.m_prev.m_next = attr.m_next;
