@@ -171,23 +171,4 @@ public class NodeSetOperations
 		}
 		return true;
 	}
-	
-	public static NodeSet nodeset(Node rtf)
-		throws ParserConfigurationException
-	{
-		if(rtf instanceof DocumentFragment)
-		{  System.out.println("input is DocumentFragment");
-		   XRTreeFrag xr = new XRTreeFrag((DocumentFragment)rtf);
-		   NodeIterator ni = xr.nodeset();
-           NodeSet ns = new NodeSet(ni);
-		   for (int i = 0; i < ns.getLength();i++)
-		   {
-			   Node n = ns.item(i);
-			   System.out.println("Contains " + n.getNodeName());
-			   System.out.println("HasChildNodes = " + n.hasChildNodes());
-		   }
-		   return ns;
-		}
-		return null;
-	}
 }
