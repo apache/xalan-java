@@ -60,6 +60,7 @@
 <ul>
 <li><link anchor="basic">Basic steps</link></li>
 <li><link anchor="plug">Plugging in the Transformer and XML parser</link></li>
+<li><link anchor="outputprops">Setting output properties in your styleshets</link></li>
 <li><link anchor="embed">Working with embedded stylesheets</link></li>
 <li><link anchor="params">Setting stylesheet parameters</link></li>
 <li><link anchor="serialize">Serializing output</link></li>
@@ -125,8 +126,72 @@ transformer.transform
   <label><code>javax.xml.parsers.SAXParserFactory</code></label>
    <item><code>org.apache.xerces.jaxp.SAXParserFactoryImpl</code></item>
  </gloss>  
-<p>For information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Pluggability Layer" in the <ref>Java&#153; API for XML Processing</ref> at 
+<p>For information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Pluggability Layer" in the <ref>Java API for XML Processing</ref> at 
 <jump href="http://java.sun.com/aboutJava/communityprocess/review/jsr063/index.html">JSR-000063 1.1</jump>.</p> 
+</s2><anchor name="outputprops"/>
+<s2 title="Setting output properties in your stylesheets">
+<p>Output properties for XML, HTML, and Text transformation output are defined in property files in the org.apache.xalan.templates package.</p>
+<p>You can change these settings as follows:</p>
+<ol>
+  <li>Declare the xalan namespace in your stylesheet element (xmlns:xalan="http://xml.apache.org/xslt").<br/><br/></li>
+  <li>Use the namespace prefix you assign (we use "xalan" here in the text) to redefine properties of interest in the stylesheet xsl:output
+      element (for example, xalan:indent-amount="5").</li>
+</ol>
+  <p>If you want to change the property settings globally, edit the values in the property files in src/org/apache/xalan/templates, 
+  and use Ant to <link idref="readme" anchor="jar">rebuild xalan.jar</link>.</p>
+<p>The properties files define the following properties:</p>
+<p><ref>output_xml.properties</ref>:</p>
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Default value</th>
+  </tr>  
+  <tr>
+    <td>xalan:indent-amount</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>xalan:content-handler</td>
+    <td>org.apache.xalan.serialize.FormatterToXML</td>
+  </tr>
+</table>
+<p><ref>output_html.properties</ref>:</p>
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Default value</th>
+  </tr>  
+  <tr>
+    <td>xalan:indent-amount</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>xalan:content-handler</td>
+    <td>org.apache.xalan.serialize.FormatterToHTML</td>
+  </tr>
+  <tr>
+    <td>entities</td>
+    <td>HTMLEntities.res</td>
+  </tr>
+  <tr>
+    <td>xalan:use-url-escaping</td>
+    <td>yes</td>
+  </tr>
+</table>
+<note>You can also create your own HTML entity file (mapping characters to entities) 
+or edit src/org/apache/xalan/serialize/HTMLEntities.res and rebuild xalan.jar.</note>
+<p><ref>output_text.properties</ref>:</p>
+<table>  
+  <tr>
+    <th>Property</th>
+    <th>Default value</th>
+  </tr>
+  <tr>
+    <td>xalan:content-handler</td>
+    <td>org.apache.xloan.serialize.FormatterToText</td>
+  </tr>
+</table>
+<p>See also <link idref="readme" anchor="outputprops">Release Notes: Output Properties</link>.</p>
 </s2><anchor name="embed"/>
 <s2 title="Working with embedded stylesheets">
 <p>An XML Source may include an <jump href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet processing instruction</jump> which identifies the stylesheet to be used to process the document. As indicated by the processing instruction <ref>href</ref> attribute, the stylesheet itself may be embedded in the XML document or located elsewhere.</p>
@@ -277,7 +342,7 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 <source>&lt;applet  
     name="xslControl"
     code="org.apache.xalan.client.XSLTProcessorApplet.class"
-    archive="xalan.jar,xerces.jar"
+    archive="../../bin/xalan.jar,../../bin/xerces.jar"
     height="0"
     width"0">
     &lt;param name="documentURL" value="xalanApplets.xml"/&gt;

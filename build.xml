@@ -112,10 +112,10 @@ Copyright:
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
     </java> 
-    <!-- We use a Notes agent to extract Xalan-Java 2 bugs from our SPR database into bugs-j-2.xml.  The following operation 
-    transforms bugs-j-2.xml (just including open bugs) and puts the result in xdocs/sources/xalan for inclusion in the readme.xml -->
+    <!-- We use a Notes agent to extract Xalan-Java 2 bugs from our SPR database into bugs.xml.  The following operation 
+    transforms bugs.xml (just including open bugs) and puts the result in xdocs/sources/xalan for inclusion in the readme.xml -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
-      <arg line="-in bugs-j-2.xml -xsl ${xdocs.style}/stylesheets/bugs.xsl -out ${xdocs.dir}/sources/xalan/BUGS"/>
+      <arg line="-in bugs.xml -xsl ${xdocs.style}/stylesheets/bugs.xsl -out ${xdocs.dir}/sources/xalan/BUGS"/>
     </java>   
            
     <mkdir dir="${build.apidocs}"/>
@@ -403,7 +403,7 @@ Copyright:
     <copy file="${build.dir}/xalan.jar" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs-j-2.xml"/>
+      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
     </copy>
 	  
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>

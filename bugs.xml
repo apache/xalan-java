@@ -1,129 +1,203 @@
 <?xml version="1.0"?>
-<?xm-well_formed path="E:\xml-xalan\java\bugs.dtd"?>
-<Sprs><Spr><Name>SCUU4QWTVZ</Name><DateCreated>11/09/2000</DateCreated>
-<State>Pending</State><TestID>org.apache.qetest.trax.transformerapitest
-r1.2</TestID><TestDesc>Transformer.setParameter(String); getParameter returns
-XString</TestDesc><Details><![CDATA[(0b09CVS-morning)
-Getting parameters back from a Transformer, they're always XObjects or the 
-like.  They should be the actual object type you set.
-
-To reproduce: run org.apache.qetest.trax.TransformerAPITest r1.2; lines 335-363 
-approx.
-Setting a String returns an XString.
-Setting an Integer returns an XObject.]]></Details></Spr>
-<Spr><Name>SCUU4R3JGY</Name><DateCreated>11/14/2000</DateCreated>
-<State>Pending</State><TestID>transformerapitest.java
-r1.4</TestID><TestDesc>TRAX Transformer.setParameter() will not re-set an
-existing param</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 374-406)
-Essentially:
-transformer.setParameter("param3s", new Integer(1234));
-Object tmp = transformer.getParameter("param3s");	// OK, is 
-Integer(1234)
-transformer.setParameter("param3s", new Integer(99));
-tmp = transformer.getParameter("param3s");	// BUG: Fails, is still 
-Integer(1234)
-transformer.setParameter("param3s", "string value");
-tmp = transformer.getParameter("param3s");	// BUG: Fails, is still 
-Integer(1234)
-With Xalan 0b14CVS-morning]]></Details></Spr><Spr><Name>SCUU4R3JPH</Name>
-<DateCreated>11/14/2000</DateCreated><State>Pending</State>
-<TestID>transformerapitest.java r1.4</TestID><TestDesc>TRAX
-identityTransformer.getOutputProperty("method") throws
-NullPointerException</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 374-406)
-Essentially:
-            // See what the default 'identity' transform has by default
-            Properties identityProps = 
-identityTransformer.getOutputProperties();
-            reporter.logHashtable(reporter.STATUSMSG, identityProps, 
-                                  "default 
-identityTransformer.getOutputProperties()");
-
-            // Can you set properties on this transformer?
-            identityTransformer.setOutputProperty(OutputKeys.METHOD, "text");
-            reporter.logTraceMsg("Just identityTransformer 
-setOutputProperty(method,text)");
-            String tmp = 
-identityTransformer.getOutputProperty(OutputKeys.METHOD); // BUG throws npe:
-java.lang.NullPointerException
-	at 
-org.apache.xalan.transformer.TransformerImpl.getOutputProperty(TransformerImpl.j
-ava:667)
-	at org.apache.qetest.trax.TransformerAPITest.testCase2(Compiled Code)
-
-With Xalan 0b14CVS-morning]]></Details></Spr><Spr><Name>SCUU4R3JRR</Name>
-<DateCreated>11/14/2000</DateCreated><State>Pending</State>
-<TestID>transformerapitest.java r1.4; transformerapioutputformat.xsl
-r1.2</TestID><TestDesc>TRAX transformer.getOutputProperties does not return
-some xsl:output props</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 499, 538, 555-575)
-Essentially:
-            outputTemplates = factory.newTemplates(new 
-StreamSource(outputFormatTest.inputName));
-            outputTransformer = outputTemplates.newTransformer();
-            // Validate known output properties from our testfile
-            // @todo validate these are all correct, and can be detected here
-            String knownOutputProps[][] =
-            {
-                { OutputKeys.METHOD, METHOD_VALUE },
-                { OutputKeys.VERSION, VERSION_VALUE },
-                { OutputKeys.ENCODING, ENCODING_VALUE },
-                { OutputKeys.STANDALONE, STANDALONE_VALUE },
-                { OutputKeys.DOCTYPE_PUBLIC, DOCTYPE_PUBLIC_VALUE }, // BUG SPR 
-SCUU4R3JRR - not returned
-                { OutputKeys.DOCTYPE_SYSTEM, DOCTYPE_SYSTEM_VALUE }, // BUG SPR 
-SCUU4R3JRR - not returned
-                { OutputKeys.CDATA_SECTION_ELEMENTS, 
-CDATA_SECTION_ELEMENTS_VALUE }, // BUG SPR SCUU4R3JRR - not returned
-                { OutputKeys.INDENT, INDENT_VALUE },
-                { OutputKeys.MEDIA_TYPE, MEDIA_TYPE_VALUE },
-                { OutputKeys.OMIT_XML_DECLARATION, OMIT_XML_DECLARATION_VALUE }
-            };
-
-            for (int i = 0; i < knownOutputProps.length; i++)
-            {
-                String item = outProps.getProperty(knownOutputProps[i][0]);
-                reporter.check(item, knownOutputProps[i][1], 
-                               "Known prop " + knownOutputProps[i][0] 
-                               + " is: ?" + item + "?");
-            }
-Some of the xsl:output items declared in the stylesheet are not returned in the 
-properties block, namely doctype-public, doctype-system, and 
-cdata-section-elements.
-
-Note: Should these be returned?  Are there any differences between the 
-xsl:output block in the stylesheet and which properties can be accessed 
-programmatically though either transformer.getOutputProperty() or 
-transformer.getOutputProperties()?
-With Xalan 0b14CVS-morning]]></Details><DeveloperComment>The above values should not be returned, as they are NULL by default, and thus will show up in the property lists only if they are set.</DeveloperComment></Spr><Spr><Name>SCUU4R3JZ7</Name>
-<DateCreated>11/14/2000</DateCreated><State>Pending</State>
-<TestID>transformerapitest.java r1.4</TestID><TestDesc>TRAX
-transformer.getOutputProperty after a transform throws
-NullPointerException</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 578-592)
-Essentially:
-- Create templates, transformer
-- transformer.transform(source, result)
-- transformer.getOutputProperty("xml")	// BUG throws 
-NullPointerException
-Problem with set/get output properties(1)
-java.lang.NullPointerException
-java.lang.NullPointerException
-	at 
-org.apache.xalan.transformer.TransformerImpl.getOutputProperty(TransformerImpl.j
-ava:677)
-	at org.apache.qetest.trax.TransformerAPITest.testCase2(Compiled Code)
-
-Note: May be related to / DUPL of SCUU4R3JPH 
-
-With Xalan 0b14CVS-morning
-]]></Details></Spr><Spr><Name>SCUU4R3K6G</Name>
-<DateCreated>11/14/2000</DateCreated><State>Pending</State>
-<TestID>transformerapitest.java r1.4</TestID><TestDesc>TRAX
-transformer.getErrorListener() is null by default</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 line 686)
-Essentially:
-- Create templates, transformer
-- transformer.getErrorListener()	// BUG is null
-
-Javadoc notes this method should never return null.  Note that similar 
-TransformerFactoryAPITest with a new transformerFactory.getErrorListener() 
-properly returns org.apache.xalan.utils.DefaultErrorHandler
-With Xalan 0b14CVS-morning
-]]></Details></Spr></Sprs>
+<Sprs>
+<Spr>
+<Name>DMAN4LKS2C</Name>
+<DateCreated>6/23/2000 </DateCreated>
+<State build="2.0D04">Resolved</State>
+<TestID>axes91</TestID>
+<TestDesc>Path steps beyond a union causes "invalid axis" error; breaks Docbook</TestDesc>
+<Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4QHMD3</Name>
+<DateCreated>10/27/2000</DateCreated>
+<State>Pending</State>
+<TestID></TestID>
+<TestDesc>Need way to call setFeature() on DTM</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4QHQB6</Name>
+<DateCreated>10/27/2000</DateCreated>
+<State build="2.0.0">Resolved</State>
+<TestID></TestID>
+<TestDesc>Applet example needs better instructions</TestDesc>
+<Subsystem>Examples</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4R5TCU</Name>
+<DateCreated>11/16/2000</DateCreated>
+<State>Open</State>
+<TestID>mdocs09,mdocs12,mdocs13, select67,select68,namespace20,mdocserr04</TestID>
+<TestDesc>Need SetSystemID in the harness to make document("") work</TestDesc>
+<Subsystem>Other</Subsystem>
+</Spr>
+<Spr>
+<Name>PDIK4HUPLA</Name>
+<DateCreated>3/28/2000 </DateCreated>
+<State>Closed</State>
+<TestID>atrs20</TestID>
+<TestDesc>We don't match attributes that have xml namespace prefix.</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4QFSHZ</Name>
+<DateCreated>10/25/2000</DateCreated>
+<State>Closed</State>
+<TestID>transformerapitest.java</TestID>
+<TestDesc>TRAX Transformer resetParameters() wipes out xsl:param values</TestDesc>
+<Subsystem></Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4QWTVZ</Name>
+<DateCreated>11/9/2000 </DateCreated>
+<State build="2.0D02">Resolved</State>
+<TestID>org.apache.qetest.trax.transformerapitest r1.2</TestID>
+<TestDesc>Transformer.setParameter(String); getParameter returns XString</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R3JGY</Name>
+<DateCreated>11/14/2000</DateCreated>
+<State build="2.0D02">Resolved</State>
+<TestID>transformerapitest.java r1.4</TestID>
+<TestDesc>TRAX Transformer.setParameter() will not re-set an existing param</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R3JPH</Name>
+<DateCreated>11/14/2000</DateCreated>
+<State build="2.0D02">Resolved</State>
+<TestID>transformerapitest.java r1.4</TestID>
+<TestDesc>TRAX identityTransformer.getOutputProperty("method") throws NullPointerException</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R3JRR</Name>
+<DateCreated>11/14/2000</DateCreated>
+<State build="2.0.0">Resolved</State>
+<TestID>transformerapitest.java r1.4; transformerapioutputformat.xsl r1.2</TestID>
+<TestDesc>TRAX transformer.getOutputProperties does not return some xsl:output props</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R3JZ7</Name>
+<DateCreated>11/14/2000</DateCreated>
+<State build="2.0D02">Resolved</State>
+<TestID>transformerapitest.java r1.4</TestID>
+<TestDesc>TRAX transformer.getOutputProperty after a transform throws NullPointerException</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R3K6G</Name>
+<DateCreated>11/14/2000</DateCreated>
+<State build="2.0D02">Resolved</State>
+<TestID>transformerapitest.java r1.4</TestID>
+<TestDesc>TRAX transformer.getErrorListener() is null by default</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R5JYZ</Name>
+<DateCreated>11/16/2000</DateCreated>
+<State build="2.0D03">Resolved</State>
+<TestID>domsourceapitest.java r1.2</TestID>
+<TestDesc>TRAX transformerFactory.newTemplates(blankDOMSource) throws npe</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R5KLL</Name>
+<DateCreated>11/16/2000</DateCreated>
+<State build="2.0D03">Resolved</State>
+<TestID>domsourceapitest.java r1.2</TestID>
+<TestDesc>TRAX transformer.transform(blankSource, DOMResult) throws TransformerException</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4R5QUY</Name>
+<DateCreated>11/16/2000</DateCreated>
+<State>Open</State>
+<TestID>testmultitypethreads.java r1.1</TestID>
+<TestDesc>TestMultiTypeThreads: various (occasional) exceptions from multithreaded testing</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4RJKG4</Name>
+<DateCreated>11/29/2000</DateCreated>
+<State build="2.0.0">Resolved</State>
+<TestID>domresultapitest.java r1.2</TestID>
+<TestDesc>TRAX Reusing DOMResult throws TransformerException: DOM006 Hierarchy request error</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4RXQYH</Name>
+<DateCreated>12/12/2000</DateCreated>
+<State build="2.0D03">Resolved</State>
+<TestID>transformerapitest.java</TestID>
+<TestDesc>TRAX transformer.getOutputProperties() throws npe</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4RXR6E</Name>
+<DateCreated>12/12/2000</DateCreated>
+<State build="2.0D03">Resolved</State>
+<TestID>transformerapitest.java</TestID>
+<TestDesc>TRAX transformer.getOutputProperty before transforming throws npe</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4RXR9M</Name>
+<DateCreated>12/12/2000</DateCreated>
+<State build="2.0D03">Resolved</State>
+<TestID>transformerapitest.java</TestID>
+<TestDesc>TRAX transform then setOutputProperty blows away all other outputProperties</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4RXSG5</Name>
+<DateCreated>12/12/2000</DateCreated>
+<State build="2.0D03">Resolved</State>
+<TestID>templatesapitest.java</TestID>
+<TestDesc>TRAX templates.getOutputFormat(OutputKeys.CDATA_SECTION_ELEMENTS) has extra space char</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4RXTSQ</Name>
+<DateCreated>12/12/2000</DateCreated>
+<State>Pending</State>
+<TestID>transformerfactoryapitest.java</TestID>
+<TestDesc>TRAX identity transform of embedded stylesheet has missing linefeed</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4RZT78</Name>
+<DateCreated>12/14/2000</DateCreated>
+<State build="2.0.0">Resolved</State>
+<TestID>examplestest.java</TestID>
+<TestDesc>ExamplesTest has different output for similar examples</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4S6JZL</Name>
+<DateCreated>12/19/2000</DateCreated>
+<State>Open</State>
+<TestID>streamsourceapitest.java</TestID>
+<TestDesc>Intermittent failure of imported template rule using Stream sources</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4S6N6Y</Name>
+<DateCreated>12/19/2000</DateCreated>
+<State>Pending</State>
+<TestID>domresultapitest.java</TestID>
+<TestDesc>Various API tests produce different outputs JDK 1.1.8 vs JDK 1.2.2</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4S7UJ3</Name>
+<DateCreated>12/20/2000</DateCreated>
+<State>Open</State>
+<TestID></TestID>
+<TestDesc>ConformanceTest -flavor trax.s2s hangs on expression02.xsl; extend01.xsl; mdocs03</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+</Sprs>
