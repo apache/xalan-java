@@ -60,6 +60,7 @@ import javax.xml.transform.SourceLocator;
 
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXParseException;
 
 import java.io.Serializable;
 
@@ -95,6 +96,20 @@ public class SAXSourceLocator extends LocatorImpl
     this.setLineNumber(locator.getLineNumber());
     this.setPublicId(locator.getPublicId());
     this.setSystemId(locator.getSystemId());
+  }
+  
+  /**
+   * Constructor SAXSourceLocator
+   *
+   *
+   * @param spe SAXParseException exception.
+   */
+  public SAXSourceLocator(SAXParseException spe)
+  {
+    this.setLineNumber( spe.getLineNumber() );
+    this.setColumnNumber( spe.getColumnNumber() );
+    this.setPublicId( spe.getPublicId() );
+    this.setSystemId( spe.getSystemId() );
   }
   
   /**
