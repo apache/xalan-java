@@ -29,12 +29,21 @@ SUBDIRS =
 
 SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)client$(PATHSEP)XSLTProcessorApplet.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)ChunkedIntArray.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTM.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMException.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMLiaison.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMNodeVector.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMProxy.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMProxyMap.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)IntMap.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)IntToObjectMap.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionFunctionHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionNSHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionsTable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)MethodResolver.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLProcessorContext.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLTJavaClassEngine.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)MethodResolver.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)Redirect.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorAttributeSet.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorCharacters.java \
@@ -103,7 +112,6 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ProcessingInstructionImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)SourceTreeHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)StreeDOMHelper.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)StreeLocator.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)TextImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)WhiteSpace.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)AVT.java \
@@ -154,6 +162,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)StylesheetRoot.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)TemplateList.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)WhiteSpaceInfo.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)WhitespaceList.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)XMLNSDecl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)GenerateEvent.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)PrintTraceListener.java \
@@ -164,8 +173,10 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)Counter.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)CountersTable.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)DecimalToRoman.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyIterator.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyManager.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyTable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyWalker.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)MsgMgr.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)NodeSorter.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)NodeSortKey.java \
@@ -177,18 +188,20 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TransformerImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TreeWalker2Result.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)XSLInfiniteLoopException.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyIterator.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)AttList.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)BoolStack.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)DefaultErrorHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)DOMBuilder.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)ElemDesc.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)Heap.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)HeapObject.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)IntStack.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)IntVector.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)MutableAttrListImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NameSpace.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NodeVector.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NSInfo.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)ObjectPool.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)PrefixResolver.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)PrefixResolverDefault.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)QName.java \
@@ -203,9 +216,6 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)Trie.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)UnImplNode.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrongParserException.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)HeapObject.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)Heap.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)ObjectPool.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)StylesheetSpec.java \
   trax$(PATHSEP)Examples.java \
