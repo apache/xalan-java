@@ -132,13 +132,7 @@ public class KeyRefIterator extends LocPathIterator
    *   <code>null</code> if there are no more members in that set.
    */
   public int nextNode()
-  {
-
-   if (m_foundLast)
-   {
-      m_lastFetched = DTM.NULL;
-      return DTM.NULL;
-   }
+  {   
     
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
@@ -149,14 +143,20 @@ public class KeyRefIterator extends LocPathIterator
     // the positions it indicates may not be associated with the 
     // current iterator.
     if ((null != m_cachedNodes)
-            && (m_next < m_cachedNodes.size()))        
+        && (m_next < m_cachedNodes.size()))        
     {
       int next = m_cachedNodes.elementAt(m_next); 
       this.setCurrentPos(++m_next); 
       m_lastFetched = next;
       
       return next;
-    }    
+    }
+    
+    if (m_foundLast)
+    {
+      m_lastFetched = DTM.NULL;
+      return DTM.NULL;
+    }
 
     int next = DTM.NULL;       
     if ( m_ki.getLookForMoreNodes()) 
