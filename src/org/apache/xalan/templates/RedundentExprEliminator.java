@@ -1182,7 +1182,7 @@ public class RedundentExprEliminator extends XSLTVisitor
    * @param elem The xsl instruction element object.
    * @return true if the sub expressions should be traversed.
    */
-   boolean visitTopLevelInstruction(ElemTemplateElement elem)
+   public boolean visitTopLevelInstruction(ElemTemplateElement elem)
    {
      int type = elem.getXSLToken();
      switch(type)
@@ -1202,7 +1202,7 @@ public class RedundentExprEliminator extends XSLTVisitor
    * @param elem The xsl instruction element object.
    * @return true if the sub expressions should be traversed.
    */
-  boolean visitInstruction(ElemTemplateElement elem)
+  public boolean visitInstruction(ElemTemplateElement elem)
   {
     int type = elem.getXSLToken();
     switch (type)

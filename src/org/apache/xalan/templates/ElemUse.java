@@ -181,7 +181,7 @@ public class ElemUse extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  private void applyAttrSets(
+  protected void applyAttrSets(
           TransformerImpl transformer, StylesheetRoot stylesheet, QName attributeSetsNames[])
             throws TransformerException
   {

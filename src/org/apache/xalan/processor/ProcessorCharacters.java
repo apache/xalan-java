@@ -56,8 +56,8 @@
  */
 package org.apache.xalan.processor;
 
-import java.lang.StringBuffer;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import javax.xml.transform.TransformerException;
 
@@ -95,7 +95,15 @@ public class ProcessorCharacters extends XSLTElementProcessor
                 ||!XMLCharacterRecognizer.isWhiteSpace(m_accumulator)) 
                 || handler.isSpacePreserve())
     {
-      ElemTextLiteral elem = new ElemTextLiteral();
+      //ElemTextLiteral elem = new ElemTextLiteral();
+      ElemTextLiteral elem;
+      try {
+        elem = (ElemTextLiteral) ClassesDef.getSingleton().getClass(Constants.ELEMNAME_TEXTLITERALRESULT).newInstance();
+      } catch (InstantiationException e) {
+        throw new SAXException(e);
+      } catch (IllegalAccessException e) {
+        throw new SAXException(e);
+      }
 
       elem.setDOMBackPointer(m_firstBackPointer);
       elem.setLocaterInfo(handler.getLocator());

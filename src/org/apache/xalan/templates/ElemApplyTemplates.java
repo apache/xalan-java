@@ -60,6 +60,8 @@ package org.apache.xalan.templates;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -344,12 +346,18 @@ public class ElemApplyTemplates extends ElemCallTemplate
           case DTM.TEXT_NODE :
             // if(rth.m_elemIsPending || rth.m_docPending)
             //  rth.flushPending(true);
-            transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
-            transformer.setCurrentElement(sroot.getDefaultTextRule());
-            // dtm.dispatchCharactersEvents(child, chandler, false);
-            dtm.dispatchCharactersEvents(child, rth, false);
-            transformer.popCurrentMatched();
-            continue;
+            if ( TransformerFactoryImpl.m_optimize ) {
+                transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
+                transformer.setCurrentElement(sroot.getDefaultTextRule());
+                // dtm.dispatchCharactersEvents(child, chandler, false);
+                dtm.dispatchCharactersEvents(child, rth, false);
+                transformer.popCurrentMatched();
+                continue;
+            } else {
+                template = sroot.getDefaultTextRule();
+            }
+            //continue;
+            break;
           case DTM.DOCUMENT_NODE :
             template = sroot.getDefaultRootRule();
             break;

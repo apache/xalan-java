@@ -168,4 +168,13 @@ public class ElemParam extends ElemVariable
       transformer.getTraceManager().fireTraceEndEvent(this);
   }
   
+  /**
+   * Returns the qnameID.
+   * @return int
+   */
+  public int getQnameID() 
+  {
+	return m_qnameID;
+  }
+
 }

@@ -59,6 +59,7 @@ package org.apache.xpath.objects;
 //import org.w3c.dom.Node;
 //import org.w3c.dom.Text;
 //import org.w3c.dom.DocumentFragment;
+import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -327,6 +328,8 @@ public class XNodeSet extends NodeSequence implements XSequence
     if(node != DTM.NULL)
     {
       m_dtmMgr.getDTM(node).dispatchCharactersEvents(node, ch, false);
+    } else if ( !TransformerFactoryImpl.m_optimize ) {
+      ch.characters( "".toCharArray(), 0, 0);
     }
     
   }

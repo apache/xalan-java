@@ -114,7 +114,7 @@ public class ElemCallTemplate extends ElemForEach
    * The template which is named by QName.
    * @serial
    */
-  private ElemTemplate m_template = null;
+  protected ElemTemplate m_template = null;
 
   /**
    * Get an int constant identifying the type of element.

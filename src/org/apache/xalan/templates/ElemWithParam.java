@@ -278,5 +278,22 @@ public class ElemWithParam extends ElemTemplateElement
   }
 
 
+  /**
+   * Returns the qnameID.
+   * @return int
+   */  
+   public int getQnameID() 
+   {
+	  return m_qnameID;
+   }
+
+  /**
+   * Returns the index.
+   * @return int
+   */
+  public int getIndex() 
+  {
+	return m_index;
+  }
 
 }

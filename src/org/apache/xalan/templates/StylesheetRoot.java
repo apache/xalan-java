@@ -77,6 +77,7 @@ import org.apache.xpath.*;
 import org.apache.xalan.trace.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.processor.ClassesDef;
 import org.apache.xalan.processor.XSLTSchema;
 import org.apache.xalan.transformer.TransformerImpl;
 
@@ -1102,82 +1103,67 @@ public class StylesheetRoot extends StylesheetComposed
     throws TransformerException
   {
 
+    ClassesDef defs = ClassesDef.getSingleton();
+    Class templateClass = defs.getClass(Constants.ELEMNAME_TEMPLATE);
+    Class applytemplateClass = defs.getClass(Constants.ELEMNAME_APPLY_TEMPLATES);
+    Class valueofClass = defs.getClass(Constants.ELEMNAME_VALUEOF);
+    
     // Then manufacture a default
-    m_defaultRule = new ElemTemplate();
-
-    m_defaultRule.setStylesheet(this);
-
-    XPath defMatch =
-      new XPath(
-        "*",
-        this,
-        this,
-        XPath.MATCH,
-        errorListener,
-        getVersionNumber());
-
-    m_defaultRule.setMatch(defMatch);
-
-    ElemApplyTemplates childrenElement = new ElemApplyTemplates();
-
-    childrenElement.setIsDefaultTemplate(true);
-    childrenElement.setSelect(m_selectDefault);
-    m_defaultRule.appendChild(childrenElement);
-
-    m_startRule = m_defaultRule;
-
-    // -----------------------------
-    m_defaultTextRule = new ElemTemplate();
-
-    m_defaultTextRule.setStylesheet(this);
-
-    defMatch =
-      new XPath(
-        "text() | @*",
-        this,
-        this,
-        XPath.MATCH,
-        errorListener,
-        getVersionNumber());
-
-    m_defaultTextRule.setMatch(defMatch);
-
-    ElemValueOf elemValueOf = new ElemValueOf();
-
-    m_defaultTextRule.appendChild(elemValueOf);
-
-    XPath selectPattern =
-      new XPath(
-        ".",
-        this,
-        this,
-        XPath.SELECT,
-        errorListener,
-        getVersionNumber());
-
-    elemValueOf.setSelect(selectPattern);
-
-    //--------------------------------
-    m_defaultRootRule = new ElemTemplate();
-
-    m_defaultRootRule.setStylesheet(this);
-
-    defMatch =
-      new XPath(
-        "/",
-        this,
-        this,
-        XPath.MATCH,
-        errorListener,
-        getVersionNumber());
-
-    m_defaultRootRule.setMatch(defMatch);
-
-    childrenElement = new ElemApplyTemplates();
-
-    childrenElement.setIsDefaultTemplate(true);
-    m_defaultRootRule.appendChild(childrenElement);
-    childrenElement.setSelect(m_selectDefault);
+    try {
+        m_defaultRule = (ElemTemplate) templateClass.newInstance(); //new ElemTemplate();
+        
+        m_defaultRule.setStylesheet(this);
+        
+        XPath defMatch = new XPath("*", this, this, XPath.MATCH, errorListener, getVersionNumber());
+        
+        m_defaultRule.setMatch(defMatch);
+        
+        ElemApplyTemplates childrenElement = (ElemApplyTemplates) applytemplateClass.newInstance(); //new ElemApplyTemplates();
+        
+        childrenElement.setIsDefaultTemplate(true);
+        childrenElement.setSelect(m_selectDefault);
+        m_defaultRule.appendChild(childrenElement);
+        
+        m_startRule = m_defaultRule;
+        
+        // -----------------------------
+        m_defaultTextRule = (ElemTemplate) templateClass.newInstance(); //new ElemTemplate();
+        
+        m_defaultTextRule.setStylesheet(this);
+        
+        defMatch = new XPath("text() | @*", this, this, XPath.MATCH, errorListener, getVersionNumber());
+        
+        m_defaultTextRule.setMatch(defMatch);
+        
+        ElemValueOf elemValueOf = (ElemValueOf) valueofClass.newInstance(); //new ElemValueOf();
+        
+        m_defaultTextRule.appendChild(elemValueOf);
+        
+        XPath selectPattern = new XPath(".", this, this, XPath.SELECT, errorListener, getVersionNumber());
+        
+        elemValueOf.setSelect(selectPattern);
+        
+        //--------------------------------
+        m_defaultRootRule = (ElemTemplate) templateClass.newInstance(); //new ElemTemplate();
+        
+        m_defaultRootRule.setStylesheet(this);
+        
+        defMatch = new XPath("/", this, this, XPath.MATCH, errorListener, getVersionNumber());
+        
+        m_defaultRootRule.setMatch(defMatch);
+        
+        childrenElement = (ElemApplyTemplates) applytemplateClass.newInstance(); //new ElemApplyTemplates();
+        
+        childrenElement.setIsDefaultTemplate(true);
+        m_defaultRootRule.appendChild(childrenElement);
+        childrenElement.setSelect(m_selectDefault);
+    } catch (InstantiationException e) {
+        throw new TransformerException(e);
+    } catch (IllegalAccessException e) {
+        throw new TransformerException(e);
+    } catch (TransformerException e) {
+        throw new TransformerException(e);
+    }
   }
 
   /**

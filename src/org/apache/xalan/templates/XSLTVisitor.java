@@ -75,7 +75,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The xsl instruction element object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitInstruction(ElemTemplateElement elem)
+	public boolean visitInstruction(ElemTemplateElement elem)
 	{
 		return true;
 	}
@@ -86,7 +86,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The xsl instruction element object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitStylesheet(ElemTemplateElement elem)
+	public boolean visitStylesheet(ElemTemplateElement elem)
 	{
 		return true;
 	}
@@ -98,7 +98,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The xsl instruction element object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitTopLevelInstruction(ElemTemplateElement elem)
+	public boolean visitTopLevelInstruction(ElemTemplateElement elem)
 	{
 		return true;
 	}
@@ -109,7 +109,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The xsl instruction element object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitTopLevelVariableOrParamDecl(ElemTemplateElement elem)
+	public boolean visitTopLevelVariableOrParamDecl(ElemTemplateElement elem)
 	{
 		return true;
 	}
@@ -121,7 +121,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The xsl instruction element object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitVariableOrParamDecl(ElemVariable elem)
+	public boolean visitVariableOrParamDecl(ElemVariable elem)
 	{
 		return true;
 	}
@@ -132,7 +132,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The literal result object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitLiteralResultElement(ElemLiteralResult elem)
+	public boolean visitLiteralResultElement(ElemLiteralResult elem)
 	{
 		return true;
 	}
@@ -145,7 +145,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The attribute value template object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitAVT(AVT elem)
+	public boolean visitAVT(AVT elem)
 	{
 		return true;
 	}
@@ -156,7 +156,7 @@ public class XSLTVisitor extends XPathVisitor
 	 * @param elem The extension object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	boolean visitExtensionElement(ElemExtensionCall elem)
+	public boolean visitExtensionElement(ElemExtensionCall elem)
 	{
 		return true;
 	}

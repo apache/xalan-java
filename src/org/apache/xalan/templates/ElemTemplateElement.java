@@ -1214,7 +1214,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @throws TransformerException
    */
-  void executeNSDecls(TransformerImpl transformer) throws TransformerException
+  protected void executeNSDecls(TransformerImpl transformer) throws TransformerException
   {
 
     try
@@ -1249,7 +1249,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @throws TransformerException
    */
-  void unexecuteNSDecls(TransformerImpl transformer) throws TransformerException
+  protected void unexecuteNSDecls(TransformerImpl transformer) throws TransformerException
   {
 
     try

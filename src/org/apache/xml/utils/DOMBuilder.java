@@ -532,7 +532,7 @@ public class DOMBuilder
    * 
    * @return true if the current node is outside the document element.
    */
-   private boolean isOutsideDocElem()
+   protected boolean isOutsideDocElem()
    {
       return (null == m_docFrag) && m_elemStack.size() == 0 && (null == m_currentNode || m_currentNode.getNodeType() == Node.DOCUMENT_NODE);
    }

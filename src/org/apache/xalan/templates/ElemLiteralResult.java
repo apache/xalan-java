@@ -657,6 +657,8 @@ public class ElemLiteralResult extends ElemUse
           TransformerImpl transformer)
             throws TransformerException
   {
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(this);
 
     try
     {
@@ -722,6 +724,10 @@ public class ElemLiteralResult extends ElemUse
     catch (org.xml.sax.SAXException se)
     {
       throw new TransformerException(se);
+    } finally {
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEndEvent(this);
+
     }
   }
 
@@ -766,6 +772,14 @@ public class ElemLiteralResult extends ElemUse
         }
       }
       super.callChildVisitors(visitor, callAttrs);
+    }
+
+   /**
+    * Returns the avts.
+    * @return Vector
+    */
+    protected Vector getAvts() {
+	  return m_avts;
     }
 
 }

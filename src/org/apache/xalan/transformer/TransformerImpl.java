@@ -332,7 +332,7 @@ public class TransformerImpl extends Transformer
   /**
    * The trace manager.
    */
-  private TraceManager m_traceManager = new TraceManager(this);
+  protected TraceManager m_traceManager = new TraceManager(this);
 
   /**
    * If the transform thread throws an exception, the exception needs to

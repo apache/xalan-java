@@ -458,4 +458,13 @@ public class ElemTemplate extends ElemTemplateElement
     root.recomposeTemplates(this);
   }
 
+ /**
+  * Returns the inArgsSize.
+  * @return int
+  */
+  public int getInArgsSize() 
+  {
+	return m_inArgsSize;
+  }
+
 }
