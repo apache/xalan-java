@@ -156,7 +156,7 @@ final class CopyOf extends Instruction {
 	}
 	else {
 	    il.append(classGen.loadTranslet());
-	    _select.translate(classGen, methodGen);	
+	    _select.translate(classGen, methodGen);
 	    il.append(methodGen.loadHandler());
 	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
 							 CHARACTERSW,

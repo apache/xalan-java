@@ -78,11 +78,11 @@ import org.apache.xalan.xsltc.*;
 public final class TextOutput implements TransletOutputHandler {
 
     // These are the various output types we handle
-    public static final int UNKNOWN = -1; // determine type from output contents
-    public static final int TEXT    = 0;
+    public static final int UNKNOWN = 0; // determine type from output contents
     public static final int XML     = 1;
     public static final int HTML    = 2;
-    public static final int QNAME   = 3;  // no special handling
+    public static final int TEXT    = 3;
+    public static final int QNAME   = 4;  // no special handling
 
     // These parameters are set by the <xsl:output> element, or by the
     // get/setOutputProperty() methods in TrAX
@@ -447,36 +447,54 @@ public final class TextOutput implements TransletOutputHandler {
     public void characters(char[] ch, int off, int len)	
 	throws TransletException {
         try {
-	    // Close any open start tag
-	    if (_startTagOpen) closeStartTag();
-	    
-            // Set output type to XML (the default) if still unknown.
-            if (_outputType == UNKNOWN) setTypeInternal(XML);
+	    switch(_outputType) {
+	    case UNKNOWN: // Set type to XML and fall through
+		setTypeInternal(XML);
+	    case XML:
+		// Close any open start tag
+		if (_startTagOpen) closeStartTag();
 
-            // Take special precautions if within a CDATA section. If we
-            // encounter the sequence ']]>' within the CDATA, we need to
-            // break the section in two and leave the ']]' at the end of
-            // the first CDATA and '>' at the beginning of the next. Other
-	    // special characters/sequences are _NOT_ escaped within CDATA.
-	    Integer I = (Integer)_cdataStack.peek();
-	    if ((I.intValue() == _depth) && (!_cdataTagOpen)) {
-		startCDATA(ch, off, len);
-	    }
-	    // Output escaped characters if required. Non-ASCII characters
-            // within HTML attributes should _NOT_ be escaped.
-	    else if (_escapeChars) {
-		if ((_outputType == HTML) && (!_qnameStack.isEmpty())) {
-		    final String qname = (String)_qnameStack.peek();
-		    if ((qname.equals("style")) || (qname.equals("script"))) {
-			_saxHandler.characters(ch, off, len);
-			return;
+		// Take special precautions if within a CDATA section. If we
+		// encounter the sequence ']]>' within the CDATA, we need to
+		// break the section in two and leave the ']]' at the end of
+		// the first CDATA and '>' at the beginning of the next. Other
+		// special characters/sequences are _NOT_ escaped within CDATA.
+		Integer I = (Integer)_cdataStack.peek();
+		if ((I.intValue() == _depth) && (!_cdataTagOpen))
+		    startCDATA(ch, off, len);
+		// Output characters escaped if required.
+		else if (_escapeChars)
+		    escapeCharacters(ch, off, len);
+		// Output the chracters as the are if not.
+		else
+		    _saxHandler.characters(ch, off, len);
+		return;
+
+	    case HTML:
+		// Close any open start tag
+		if (_startTagOpen) closeStartTag();
+
+		// Output escaped characters if required. Non-ASCII characters
+		// within HTML attributes should _NOT_ be escaped.
+		if (_escapeChars) {
+		    if (!_qnameStack.isEmpty()) {
+			final String qname = (String)_qnameStack.peek();
+			if ((qname.equals("style"))||(qname.equals("script"))) {
+			    _saxHandler.characters(ch, off, len);
+			    return;
+			}
 		    }
+		    escapeCharacters(ch, off, len);
 		}
-		escapeCharacters(ch, off, len);
-	    }
-	    // Output the chracters as the are
-	    else {
+		// Output the chracters as the are
+		else {
+		    _saxHandler.characters(ch, off, len);
+		}
+		return;
+
+	    case TEXT:
 		_saxHandler.characters(ch, off, len);
+		return;
 	    }
         }
 	catch (SAXException e) {
@@ -492,48 +510,70 @@ public final class TextOutput implements TransletOutputHandler {
 	throws TransletException {
 
 	try {
-	    // Do not output element tags if output mode is 'text'
-	    if (_outputType == TEXT) return; 
+	    switch(_outputType) {
 
-	    // Close any open start tag
-	    if (_startTagOpen) closeStartTag();
-	    if (_cdataTagOpen) closeCDATA();
-
-	    // If we don't know the output type yet we need to examine
-	    // the very first element to see if it is "html".
-	    if (_outputType == UNKNOWN) {
+	    case UNKNOWN:
+		// If we don't know the output type yet we need to examine
+		// the very first element to see if it is "html".
 		if (elementName.toLowerCase().equals("html"))
 		    setTypeInternal(HTML);
 		else
 		    setTypeInternal(XML);
-	    }
+		startElement(elementName);
+		return;
 
-	    // Handle document type declaration (for first element only)
-	    if (_lexHandler != null) {
-		if (((_outputType == XML) && (_doctypeSystem != null)) ||
-		    ((_doctypeSystem != null) || (_doctypePublic != null)))
-		    _lexHandler.startDTD(elementName,
-					 _doctypePublic,_doctypeSystem);
-		_lexHandler = null;
-	    }
+	    case XML:
+		// Close any open start tag
+		if (_startTagOpen) closeStartTag();
+		if (_cdataTagOpen) closeCDATA();
 
-	    _depth++;
-	    _elementName = elementName;
-	    _attributes.clear();
-	    _startTagOpen = true;
-
-	    _qnameStack.push(elementName);
-
-	    if (_cdata != null) {
-		if (_cdata.get(elementName) != null) {
-		    _cdataStack.push(new Integer(_depth));
+		// Handle document type declaration (for first element only)
+		if (_lexHandler != null) {
+		    if (_doctypeSystem != null)
+			_lexHandler.startDTD(elementName,
+					     _doctypePublic,_doctypeSystem);
+		    _lexHandler = null;
 		}
-	    }
 
-	    // Insert <META> tag directly after <HEAD> element in HTML doc
-	    if (_outputType == HTML)
+		_depth++;
+		_elementName = elementName;
+		_attributes.clear();
+		_startTagOpen = true;
+		_qnameStack.push(elementName);
+		
+		if ((_cdata != null) && (_cdata.get(elementName) != null))
+		    _cdataStack.push(new Integer(_depth));
+		
+		return;
+
+	    case HTML:
+		// Close any open start tag
+		if (_startTagOpen) closeStartTag();
+
+		// Handle document type declaration (for first element only)
+		if (_lexHandler != null) {
+		    if ((_doctypeSystem != null) || (_doctypePublic != null))
+			_lexHandler.startDTD(elementName,
+					     _doctypePublic,_doctypeSystem);
+		    _lexHandler = null;
+		}
+
+		_depth++;
+		_elementName = elementName;
+		_attributes.clear();
+		_startTagOpen = true;
+		_qnameStack.push(elementName);
+
+		// Insert <META> tag directly after <HEAD> element in HTML doc
 		if (elementName.toLowerCase().equals("head"))
 		    _headTagOpen = true;
+		return;
+
+	    case TEXT:
+		// Do not output element tags if output mode is 'text'
+		return;
+		
+	    }
 	}
 	catch (SAXException e) {
             throw new TransletException(e);
@@ -612,17 +652,69 @@ public final class TextOutput implements TransletOutputHandler {
 	return base;
     }
 
+    private String expandAttribute(String qname) throws TransletException {
+	// If this attribute was created using an <xsl:attribute>
+	// element with a 'namespace' attribute and a 'name' attribute
+	// containing an AVT, then we might get an attribute name on
+	// a strange format like 'prefix1:prefix2:localpart', where
+	// prefix1 is from the AVT and prefix2 from the namespace.
+	final int endcol = qname.lastIndexOf(':');
+	if (endcol > 0) {
+	    final int startcol = qname.indexOf(':');
+	    final String localname = qname.substring(endcol+1);
+	    final String prefix = qname.substring(0,startcol);
+	    final String uri = lookupNamespace(prefix);
+	    if (uri == null) {
+		throw new TransletException("Namespace for prefix "+
+					    prefix+" has not been "+
+					    "declared.");
+	    }
+	    // Omit prefix (use default) if the namespace URI is null
+	    if (uri.equals(EMPTYSTRING))
+		return(localname);
+	    // Construct new QName if we've got two alt. prefixes
+	    else if (endcol != startcol)
+		return(prefix+':'+localname);
+	}
+	return qname;
+    }
+
     /**
      * Put an attribute and its value in the start tag of an element.
      * Signal an exception if this is attempted done outside a start tag.
      */
     public void attribute(String name, final String value)
 	throws TransletException {
-	
-	// Do not output attributes if output mode is 'text'
-	if (_outputType == TEXT) return; 
 
-	if (_startTagOpen) {
+	switch(_outputType) {
+	case TEXT:
+	    // Do not output attributes if output mode is 'text'
+	    return;
+	case XML:
+	    if (!_startTagOpen)
+		throw new TransletException("attribute '"+name+
+					    "' outside of element");
+	    // Attributes whose names start with XML need special handling
+	    if (name.startsWith("xml")) {
+		// Output as namespace declaration
+		if (name.startsWith("xmlns")) {
+		    if (name.length() == 5)
+			namespace(EMPTYSTRING, value);
+		    else
+			namespace(name.substring(6),value);
+		}
+		// Output as xml:<blah> attribute
+		_attributes.add(name, value);
+	    }
+	    else {
+		// Output as regular attribute
+		_attributes.add(expandAttribute(name), escapeChars(value));
+	    }
+	    return;
+	case HTML:
+	    if (!_startTagOpen)
+		throw new TransletException("attribute '"+name+
+					    "' outside of element");
 
 	    // The following is an attempt to escape an URL stored in a href
 	    // attribute of HTML output. Normally URLs should be encoded at
@@ -633,58 +725,11 @@ public final class TextOutput implements TransletOutputHandler {
 	    // we do not change the meaning of the URL.
 
 	    // URL-encode href attributes in HTML output
-	    if (_outputType == HTML) {
-		if  (name.toLowerCase().equals("href")) {
-		    _attributes.add(name, quickAndDirtyUrlEncode(value));
-		    return;
-		}
-	    }
-
-	    // Intercept namespace declarations and handle them separately
-	    if (name.startsWith("xml")) {
-		if (name.startsWith("xmlns")) {
-		    if (name.length() == 5)
-			namespace(EMPTYSTRING, value);
-		    else
-			namespace(name.substring(6),value);
-		}
-		else {
-		    namespace(name, value);
-		}
-	    }
-	    else {
-		// If this attribute was created using an <xsl:attribute>
-		// element with a 'namespace' attribute and a 'name' attribute
-		// containing an AVT, then we might get an attribute name on
-		// a strange format like 'prefix1:prefix2:localpart', where
-		// prefix1 is from the AVT and prefix2 from the namespace.
-		final int endcol = name.lastIndexOf(':');
-		final int startcol = name.indexOf(':');
-		if (endcol > 0) {
-		    final String localname = name.substring(endcol+1);
-		    final String prefix = name.substring(0,startcol);
-		    final String uri = lookupNamespace(prefix);
-		    if (uri == null) {
-			throw new TransletException("Namespace for prefix "+
-						    prefix+" has not been "+
-						    "declared.");
-		    }
-		    // Omit prefix (use default) if the namespace URI is null
-		    if (uri.equals(EMPTYSTRING))
-			name = localname;
-		    // Construct new QName if we've got two alt. prefixes
-		    else if (endcol != startcol)
-			name = prefix+':'+localname;
-		}
-		if (_outputType == HTML)
-		    _attributes.add(name, value);
-		else
-		    _attributes.add(name, escapeChars(value));
-	    }
-	}
-	else {
-	    throw new TransletException("attribute '"+name+
-					"' outside of element");
+	    if  (name.toLowerCase().equals("href"))
+		_attributes.add(name, quickAndDirtyUrlEncode(value));
+	    else
+		_attributes.add(expandAttribute(name), value);
+	    return;
 	}
     }
 
@@ -693,25 +738,30 @@ public final class TextOutput implements TransletOutputHandler {
      */
     public void endElement(String elementName) throws TransletException {
 	
-	// Do not output element tags if output mode is 'text'
-	if (_outputType == TEXT) return;
- 
 	try {
-	    boolean closeElement = true;
+	    switch(_outputType) {
+	    case TEXT:
+		// Do not output element tags if output mode is 'text'
+		return;
+	    case XML:
+		// Close any open element
+		if (_startTagOpen) closeStartTag();
+		if (_cdataTagOpen) closeCDATA();
 
-	    // Close any open element
-	    if (_startTagOpen) closeStartTag();
-	    if (_cdataTagOpen) closeCDATA();
-
-	    final String qname = (String)(_qnameStack.pop());
-            if (closeElement) _saxHandler.endElement(null, null, qname);
-
-            popNamespaces();
-
-	    Integer I = (Integer)_cdataStack.peek();
-	    if (I.intValue() == _depth) _cdataStack.pop();
-
-            _depth--;
+		_saxHandler.endElement(null, null, (String)(_qnameStack.pop()));
+		popNamespaces();
+		if (((Integer)_cdataStack.peek()).intValue() == _depth)
+		    _cdataStack.pop();
+		_depth--;
+		return;
+	    case HTML:
+		// Close any open element
+		if (_startTagOpen) closeStartTag();
+		_saxHandler.endElement(null, null, (String)(_qnameStack.pop()));
+		popNamespaces();
+		_depth--;		
+		return;
+	    }
 
         } catch (SAXException e) {
             throw new TransletException(e);
@@ -864,6 +914,7 @@ public final class TextOutput implements TransletOutputHandler {
      * Takes a qname as a string on the format prefix:local-name and
      * returns a strig with the expanded QName on the format uri:local-name.
      */
+    /*
     private String expandQName(String withPrefix) {
 	int col = withPrefix.lastIndexOf(':');
 	if (col == -1) return(withPrefix);
@@ -879,6 +930,7 @@ public final class TextOutput implements TransletOutputHandler {
 	else
 	    return(uri+":"+local);
     }
+    */
 
     /************************************************************************
      * The following are all methods for configuring the output settings

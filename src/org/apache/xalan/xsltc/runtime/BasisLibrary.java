@@ -470,13 +470,13 @@ public final class BasisLibrary implements Operators {
     public static boolean compare(NodeIterator left, NodeIterator right,
 				  int op, int node, DOM dom) {
 	int lnode;
-	left.reset();
+	//left.reset();
 	
 	while ((lnode = left.next()) != NodeIterator.END) {
 	    final String lvalue = dom.getNodeValue(lnode);
 	    
 	    int rnode;
-	    right.reset();
+	    //right.reset();
 	    while ((rnode = right.next()) != NodeIterator.END) {
 		if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
 		    return true;
@@ -493,7 +493,7 @@ public final class BasisLibrary implements Operators {
 				  int op, DOM dom) {
 	final String lvalue = dom.getNodeValue(node);
 	int rnode;
-	nodeSet.reset();
+	//nodeSet.reset();
 	while ((rnode = nodeSet.next()) != NodeIterator.END) {
 	    if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
 		return true;
@@ -504,7 +504,7 @@ public final class BasisLibrary implements Operators {
 
     public static boolean compare(int node, NodeIterator iterator,
 				  int op, int dummy, DOM dom) {
-	iterator.reset();
+	//iterator.reset();
 
 	int rnode;
 	String value;
@@ -552,7 +552,7 @@ public final class BasisLibrary implements Operators {
     public static boolean compare(NodeIterator left, final double rnumber,
 				  final int op, DOM dom) {
 	int node;
-	left.reset();
+	//left.reset();
 
 	switch (op) {
 	case EQ:
@@ -610,7 +610,7 @@ public final class BasisLibrary implements Operators {
     public static boolean compare(NodeIterator left, final String rstring,
 				  int op, DOM dom) {
 	int node;
-	left.reset();
+	//left.reset();
 	while ((node = left.next()) != NodeIterator.END) {
 	    if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
 		return true;
@@ -907,9 +907,7 @@ public final class BasisLibrary implements Operators {
 	try {
 	    if (obj instanceof NodeIterator) {
 		NodeIterator iter = (NodeIterator) obj;
-		//dom.copy(iter.reset(), handler);
-		//!!
-		System.err.println("not implemented copy iter");
+		dom.copy(iter.reset(), handler);
 	    }
 	    else if (obj instanceof Node) {
 		dom.copy(((Node) obj).node, handler);

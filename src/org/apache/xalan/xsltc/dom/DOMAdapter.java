@@ -218,7 +218,7 @@ public final class DOMAdapter implements DOM {
     
     public void characters(final int textNode, TransletOutputHandler handler)
 	throws TransletException {
-	    _domImpl.characters(textNode, handler);
+	_domImpl.characters(textNode, handler);
     }
 
     public Node makeNode(int index) {
