@@ -57,95 +57,92 @@
  * <http://www.apache.org/>.
  *
  * @author Santiago Pericas-Geertsen
- * @author G. Todd Miller 
  *
  */
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.util.Stack;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.helpers.AttributesImpl;
+import org.xml.sax.SAXException;
+
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.runtime.Constants;
 
-abstract class SAXOutput extends OutputBase implements Constants { 
+public class SAXTextOutput extends SAXOutput {
 
-    protected ContentHandler _saxHandler;
-    protected LexicalHandler _lexHandler = null;
-    protected AttributesImpl _attributes = new AttributesImpl();
-    protected String	     _elementName = null;
-    protected String         _encoding = null; 
-
-    public SAXOutput(ContentHandler handler, String encoding) {
-	_saxHandler = handler;
-	_encoding = encoding;	
-    } 
-
-    public SAXOutput(ContentHandler hdler, LexicalHandler lex, String encoding) {
-	_saxHandler = hdler;
-	_lexHandler = lex;
-	_encoding = encoding;
+    public SAXTextOutput(ContentHandler handler, String encoding) 
+    {
+    	super(handler, encoding);
     }
 
-    public void startDocument() throws TransletException {
+    public SAXTextOutput(ContentHandler handler, LexicalHandler lex, 
+        String encoding)
+    {
+        super(handler, lex, encoding);
+    }
+
+    public void startDocument() throws TransletException { 
 	try {
 	    _saxHandler.startDocument();
-	} 
+	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
 	}
     }
 
-    public void characters(String  characters)
-       throws TransletException
+    public void endDocument() throws TransletException { 
+	try {
+	    _saxHandler.endDocument();
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
+    }
+
+    public void startElement(String elementName) 
+	throws TransletException 
     {
-	characters(characters.toCharArray(), 0, characters.length());	
+    }
+
+    public void endElement(String elementName) 
+	throws TransletException 
+    {
+    }
+
+    public void characters(String characters) 
+	throws TransletException 
+    { 
+	try {
+	    _saxHandler.characters(characters.toCharArray(), 0, 
+		characters.length());
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
+    }
+
+    public void characters(char[] characters, int offset, int length)
+	throws TransletException 
+    { 
+	try {
+	    _saxHandler.characters(characters, offset, length);
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
     }
 
     public void comment(String comment) throws TransletException {
-	try {
-	    // Close any open element before emitting comment
-            if (_startTagOpen) {
-		closeStartTag();
-	    }
-	    else if (_cdataTagOpen) {
-		closeCDATA();
-	    }
+    }
 
-	    // Ignore if a lexical handler has not been set
-	    if (_lexHandler != null) {
-		_lexHandler.comment(comment.toCharArray(), 0, comment.length());
-	    }
-	}
-	catch (SAXException e) {
-	    throw new TransletException(e);
-	}
+    public void attribute(String name, String value) 
+	throws TransletException 
+    {
     }
 
     public void processingInstruction(String target, String data) 
-	throws TransletException 
+	throws TransletException
     {
-        // Redefined in SAXXMLOutput
-    }
-
-    /**
-     * returns the local name of a qualified name. If the name has no prefix
-     * then return null.
-     */
-    protected static String getLocalName(String qname) throws 
-	TransletException 
-    {
-        final int col = qname.lastIndexOf(':');
-        return (col > 0) ? qname.substring(col + 1) : null;
-    }
-
-    protected void closeStartTag() throws TransletException {
-    }
-
-    protected void closeCDATA() throws SAXException {
-        // Redefined in SAXXMLOutput
     }
 }
+

@@ -182,8 +182,12 @@ public class TransletOutputHandlerFactory {
 			new SAXHTMLOutput(_handler, _encoding) :
 			new SAXHTMLOutput(_handler, _lexHandler, _encoding);
 		}
+		else if (_method.equalsIgnoreCase("text")) {
+		    return (_lexHandler == null) ? 
+			new SAXTextOutput(_handler, _encoding) :
+			new SAXTextOutput(_handler, _lexHandler, _encoding);
+		}
 	    break;
-
 	}
 	return null;
     }
