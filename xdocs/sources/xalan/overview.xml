@@ -94,19 +94,19 @@
 &lt;/xsl:stylesheet></source>
 <p>foo.out:</p>
 <source>&lt;out>Hello&lt;/out></source>
-<p>By default, &xslt4j; uses the &xml4j; SAXParser, and it may be configured (<link idref="usagepatterns" anchor="xmlreader">with system properties</link>) to work with other parsers. The input may be submitted in the form of a SAX InputStream (from a URI, a character or byte stream, or another transformation) or a DOM Node.</p>
+<p>By default, &xslt4j; uses &xml4j;, and it may be configured with system properties to work with other XML parsers (see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>). The input may be submitted in the form of a SAX InputStream (from a URI, a character or byte stream, or another transformation) or a DOM Node.</p>
 <p>&xslt4j; performs the transformations specified in the XSL stylesheet and packages a sequence of SAX events that may be serialized to an output stream or writer, used to build a DOM tree, or forwarded as input to another transformation.</p>
       </s2><anchor name="features"/>
    	  <s2 title="&xslt4j; Features">
 	    <ul> 
-		    <li>Implements the <resource-ref idref="xslt"/> and the <resource-ref idref="xpath"/>.<br/><br/></li>
-        <li>Builds on <resource-ref idref="trax"/>, <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>,
-            and the <resource-ref idref="jaxp"/>.<br/><br/></li>
-    	  <li>May be configured to work with any XMLReader, such as the 
-        <jump href="http://xml.apache.org/xerces-j/index.html">&xml4j; SAXParser</jump>, that implements the
-        Java API for XML Parsing (see <link idref="usagepatterns" anchor="xmlreader">Setting the
-        XMLReader</link>).<br/><br/></li>
-    	  <li>Can process SAX or DOM input, and output to SAX or DOM.<br/><br/></li>
+		    <li>Implements the relevant W3C specifications: <resource-ref idref="xslt"/> and <resource-ref idref="xpath"/>.<br/><br/></li>
+        <li>Implements <resource-ref idref="trax"/>, now part of <resource-ref idref="jaxp"/>, and builds on
+         <resource-ref idref="sax2"/> and <resource-ref idref="dom2"/>.<br/><br/></li>
+    	  <li>May be configured to work with any XML parser, such
+        <jump href="http://xml.apache.org/xerces-j/index.html">&xml4j;</jump>, that implements <resource-ref
+        idref="jaxp"/> (see <link idref="usagepatterns" anchor="xmlreader">Plugging in an XML
+         parser</link>).<br/><br/></li>
+    	  <li>Can process Stream, SAX or DOM input, and output to a Stream, SAX or DOM.<br/><br/></li>
         <li>Transformations may be chained (the output of one transformation may be the input for
          another).<br/><br/></li>
         <li>May be run from the <link idref="commandline">command line</link> for convenient file-to-file
@@ -114,7 +114,7 @@
     	  <li>Includes an <link idref="getstarted" anchor="applet">applet wrapper</link>.<br/><br/></li>
         <li>May be used in a <link idref="samples" anchor="servlet">servlet</link> to transform XML documents into
         HTML and serve the results to clients.<br/><br/></li>
-        <li>Supports the creation of <link idref="extensions">Java and scripting language extensions</link> and
+        <li>Supports the creation of <link idref="extensions">Java and scripting language extensions</link>. and
          provides a growing library of extension elements and functions.</li>
 	    </ul> 
 	  </s2><anchor name="towork"/>

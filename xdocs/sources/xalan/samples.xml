@@ -60,9 +60,9 @@
 <ul>
 <li><link anchor="simpletransform">SimpleTransform</link></li>
 <li><link anchor="usestylesheetpi">UseStylesheetPI</link></li>
-<li><link anchor="transformtodom">TransformToDom</link></li>
 <li><link anchor="usestylesheetparam">UseStylesheetParam</link></li>
 <li><link anchor="sax2sax">SAX2SAX</link></li>
+<li><link anchor="domtodom">DomToDom</link></li>
 <li><link anchor="pipe">Pipe</link></li>
 <li><link anchor="usexmlfilters">UseXMLFilters</link></li>
 <li><link anchor="applyxpath">ApplyXPath</link></li>
@@ -108,14 +108,6 @@
      <p>You can run it from the UseStylesheetPI subdirectory with</p>
      <p><code>java UseStylesheetPI</code></p>
      <p>For more information, see <link idref="usagepatterns" anchor="embed">Working with embedded stylesheets</link>.</p>
-    </s2><anchor name="transformtodom"/>
-    <s2 title="TransformToDom">
-    <p>What it does: The TransformToDom class uses the foo.xsl stylesheet to transform foo.xml, produces an output
-     DOM, and traverses the DOM, printing the traversal to System.out. In contrast to SimpleTransform,
-      TransformToDom illustrates the procedure for creating an output DOM that is available for further
-      processing.</p>
-   <p>You can run it from the TransformToDom subdirectory with</p>
-    <p><code>java TransformToDom</code></p>
     </s2><anchor name="usestylesheetparam"/>
     <s2 title="UseStylesheetParam">
       <p>What it does: The UseStyleSheetParam class uses foo.xsl and a stylesheet parameter to transform foo.xml,
@@ -128,6 +120,14 @@
   <p>What it does: Explicitly set the SAX XMLReader and SAX ContentHandler for processing the stylesheet, processing the XML input, and producing the output.</p>
   <p>Run this sample from the SAX2SAX subdirectory with</p>
    <p><code>java SAX2SAX</code></p>
+    </s2><anchor name="domtodom"/>
+    <s2 title="DomToDom">
+    <p>What it does: the DomToDom class uses the foo.xsl stylesheet to transform a DOM document derived from foo.xml, produces an output
+     DOM, and traverses the DOM, printing the traversal to System.out. In contrast to SimpleTransform,
+      DomToDom illustrates the procedure for processing an input DOM and creating an output DOM that is available for
+      further processing.</p>
+   <p>You can run it from the DomToDom subdirectory with</p>
+    <p><code>java DomToDom</code></p>
     </s2><anchor name="pipe"/>
     <s2 title="Pipe">
     <p>What it does: Pipes the output from one transformation to a second transformation, then from the second

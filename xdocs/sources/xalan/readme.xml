@@ -62,7 +62,6 @@
  -->
 <s1 title="Release Notes">
 <p>&xslt4j-current; alpha release</p>
-<p>It is our pleasure to thank two new contributors, Gary Peskin and Costin Manolache, for the fantastic help they have provided in producing this first release of Xalan-Java 2, and for the new ideas and creative work we are sure they will continue to provide in the ongoing &xslt4j; saga.</p>
  <ul>
   <li><link anchor="status">Status</link></li>
   <li><link anchor="build">Build Notes</link></li>
@@ -71,14 +70,14 @@
  </ul>
   <s2 title="Status">
    <ul>
-    <!--li><link anchor="done">Changes since version 2.0.D01</link></li-->
+    <li><link anchor="done">Changes since version 2.0.D01</link></li>
     <li><link anchor="bugs">Open bugs and bug reporting</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="notes">Other release notes</link></li>    
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
-     <!--anchor name="done"/>
-     &done-j;   -->  
+     <anchor name="done"/>
+     &done-j;
      <anchor name="bugs"/>
      &bugs-j;
      <anchor name="status"/>
@@ -219,6 +218,5 @@ javadoc -doclet xalanjdoc.Standard -docletpath ../bin/xalanjdoc.jar -private
  </s2><!--anchor name="history"/>
  <s2 title="Cumulative history of software changes">
    <note>We started tracking the changes in earlier releases beginning with &xslt4j; version 1.1.</note>
-
  </s2-->
 </s1>

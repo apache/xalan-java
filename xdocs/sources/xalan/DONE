@@ -1,3 +1,4 @@
 <s3 title="Changes since &xslt4j; version 2.0.D01">
-<p></p>
+<p>The Transformation API for XML (TrAX) that &xslt4j2; implements has undergone substantial revisions since the release of &xslt4j; 2.0.D01. TrAX has joined the Java API for XML Parsing (JAXP) as part of the Sun&reg; <resource-ref idref="jsr063"/>. Accordingly, the TrAX package names have changed. The conceptual organization has also changed somewhat: The primary transformation interfaces are defined in javax.xml.transform, with concrete classes for managing stream input/output, SAX parsers and ContentHandler, and DOM parsers and DOM trees in javax.xml.transform.stream, javax.xml.transform.sax, and javax.xml.transform.dom. For more information, see <resource-ref idref="trax"/>, and review <link idref="usagepatterns">Usage Patterns</link>.</p>
+<p>Other changes:</p>
 </s3>

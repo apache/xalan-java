@@ -49,12 +49,7 @@
   
   <resource id="xpath" 
             title="XML Path Language (XPath) Version 1.0" 
-            location="http://www.w3.org/TR/xpath"/>
-
-  <resource id="trax" 
-            title="TRaX (Transformations for XML)" 
-            location="apidocs/org/apache/trax/trax.html"/>
-            
+            location="http://www.w3.org/TR/xpath"/>            
             
   <resource id="dom" 
             title="DOM" 
@@ -71,10 +66,15 @@
             location="http://www.megginson.com/SAX/Java/index.html"/>
   <resource id="jaxp" 
             title="Java API for XML Parsing" 
-            location="http://java.sun.com/xml/docs/api/index.html"/>            
+            location="http://java.sun.com/xml/docs/api/index.html"/>
+  <resource id="jsr063"
+            title="Java Specification Request 63"
+            location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
+  <resource id="trax" 
+            title="TRaX (Transformation API for XML)" 
+            location="apidocs/javax/xml/transform/trax.html"/>
             
-  
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 
                   mailto="xalan-dev@xml.apache.org"/>
-</resources>
+</resources>         

@@ -99,11 +99,11 @@
 -HTML (Use HTML formatter)
 -PARAM name value (Set a stylesheet parameter)
 -DIAG put out timing diagnostics</source>
-      <p>Use -IN to specify the XML source document.</p> 
-      <p>Use -XSL to specify the XSL stylesheet file.</p>
-      <p>Use -TEXT if you want the output to include only element values (not element tags with element names and
+      <p>Use <code>-IN</code> to specify the XML source document.</p> 
+      <p>Use <code>-XSL</code> to specify the XSL stylesheet file.</p>
+      <p>Use <code>-TEXT</code> if you want the output to include only element values (not element tags with element names and
       attributes).</p>
-      <p>Use -HTML to write 4.0 transitional HTML (some elements, such as &lt;br&gt;, are
+      <p>Use <code>-HTML</code> to write 4.0 transitional HTML (some elements, such as &lt;br&gt;, are
       not well formed XML).</p>
       <p>To set stylesheet parameters from the command line, use <br/>
       <code>java org.apache.xalan.xslt.Process -PARAM <ref>name value</ref></code></p>

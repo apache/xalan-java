@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE spec SYSTEM "../../style/dtd/spec.dtd">
 <spec> 
-  <title>Transformation API For XML (TrAX)</title><frontmatter> 
+  <title>Transformation API For XML (TrAX)</title>
+  <frontmatter> 
   <pubdate>November 12, 2000</pubdate> 
   <copyright>Copyright 2000 Java Community Process (Sun Microsystems,
 	 Inc.)</copyright> 
@@ -11,11 +12,12 @@
 	 <address> 
 		<email>sboag@lotus.com</email> 
 	 </address> 
-  </author></frontmatter> <introduction> 
+  </author></frontmatter> 
+  <introduction> 
   <title>Introduction</title> 
   <para>This overview describes the set of APIs contained in
-	 <ulink url="package-summary.html">javax.xml.transform</ulink>. For the sake of brevity, these interfaces are referred to
-	 as TrAX (Transformations for XML). </para> 
+	 <ulink url="package-summary.html">javax.xml.transform</ulink>, <ulink url="package-summary.html">javax.xml.transform.stream</ulink>, <ulink url="package-summary.html">javax.xml.transform.dom</ulink>, and <ulink url="package-summary.html">javax.xml.transform.sax</ulink>. For the sake of brevity, these interfaces are referred to
+	 as TrAX (Transformation API for XML). </para> 
   <para>There is a broad need for Java applications to be able to transform XML
 	 and related tree-shaped data structures. In fact, XML is not normally very
 	 useful to an application without going through some sort of transformation,
@@ -124,7 +126,8 @@
 			 release</termref>.</listitem> 
 		</varlistentry> 
 	 </variablelist> 
-  </sect2></introduction><requirements> 
+  </sect2></introduction>
+  <requirements> 
   <title>Requirements</title> 
   <para>The following requirements have been determined from broad experience
 	 with XML projects from the various members participating on the JCP.</para> 
@@ -180,7 +183,8 @@
 		structure.</listitem> 
 	 <listitem id="requirement-error-reporting">TrAX must have a mechanism for
 		reporting errors and warnings to the calling application.</listitem> 
-  </orderedlist> </requirements> <model> 
+  </orderedlist> </requirements> 
+  <model> 
   <title>Model</title> 
   <para>The section defines the abstract model for TrAX, apart from the details
 	 of the interfaces.</para> 
@@ -256,11 +260,12 @@
   must be synchronized for edit.</thread-safety> </pattern> </patterns></model> 
   <sect1 id="package"> 
 	 <title>javax.xml.transform</title> 
-	 <para>This package defines the generic <ulink url="trax.html">TrAX</ulink> APIs for processing transformation
-		instructions, and performing a transformation from source to result. These
+	 <para>This package defines the generic APIs for processing transformation instructions,
+		and performing a transformation from source to result. For an overview, see 
+    <ulink url="trax.html">Transformation API for XML (TrAX)</ulink>. The TrAX 
 		interfaces have no dependencies on SAX or the DOM standard, and try to make as
 		few assumptions as possible about the details of the source and result of a
-		transformation. It achieves this by defining 
+		transformation. TrAX achieves this by defining 
 		<plink>javax.xml.transform.Source</plink> and 
 		<plink>javax.xml.transform.Result</plink> interfaces.</para> 
 	 <para>To define concrete classes for the user, TrAX defines specializations
