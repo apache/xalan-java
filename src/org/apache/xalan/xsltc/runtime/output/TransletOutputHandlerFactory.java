@@ -157,8 +157,8 @@ public class TransletOutputHandlerFactory {
                 }
                 else if (_method.equalsIgnoreCase("html")) {
                     return (_lexHandler == null) ? 
-			new SAXXMLOutput(_handler, _encoding) :
-			new SAXXMLOutput(_handler, _lexHandler, _encoding);
+			new SAXHTMLOutput(_handler, _encoding) :
+			new SAXHTMLOutput(_handler, _lexHandler, _encoding);
                 }
             break;
 
