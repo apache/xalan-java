@@ -1,3 +1,246 @@
+<s3 title="Changes for &xslt4j; 2.2.D7">
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/03/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Since the real root of our tree may be a DocumentFragment, we need to
+ use getParent to find the root, instead of getOwnerDocument. Otherwise
+ DOM2DTM#getHandleOfNode will be very unhappy.
+ Result of report via private mail by Carsten Ziegeler of breakage
+ in Cocoon.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToHTML.java
+ SerializerToXML.java<br/><ref>Committer's log entry: </ref>Made m_maxCharacter, accumDefaultEscape,
+ accumDefaultEntity, and m_isRawStack
+ protected by request from Johannes Farrenkopf
+ and Frank Nestel.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/functions FuncNormalizeSpace.java<br/><ref>Committer's log entry: </ref>In executeCharsToContentHandler check first for
+ DTM.NULL before trying to get the DTM.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Fix bug reported by "Carsten Ziegeler" &lt;cziegeler@sundn.de&gt;.
+ Test for this is whitespace23.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SuballocatedIntVector.java<br/><ref>Committer's log entry: </ref>Drop some bounds tests for cases which shouldn't arise in the first place, 
+since this is an inner-loop method.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SuballocatedByteVector.java
+ SuballocatedIntVector.java<br/><ref>Committer's log entry: </ref>Synch SuballocatedByteVector with changed SuballocatedIntVector<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref CoroutineSAXParser.java<br/><ref>Committer's log entry: </ref>Revert back to throwing a shutdownException if (arg == null) in co_yield. I 
+see this
+ occur if the parser is Crimson with output\output01, and it causes
+ a hang if the shutdownException is not thrown.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToXML.java<br/><ref>Committer's log entry: </ref>Make accumDefaultEntity and accumDefaultEscape non-final.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes ChildTestIterator.java
+ OneStepIterator.java
+ java/src/org/apache/xpath/functions FuncExtFunction.java<br/><ref>Committer's log entry: </ref>Fix for John G. for the SQL extension: handle return types of
+ DTM and DTMAxisIterator.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/09/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>In executeChildTemplates, somehow there was a popMode without
+ a corresponding pushMode. The pushMode was added.
+ Addresses bug posted by Stephane Bailliez &lt;sbailliez@imediation.com&gt;
+ on the xalan-dev list on 07/09/2001 07:28 AM.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/extensions ExpressionContext.java
+ java/src/org/apache/xalan/templates StylesheetRoot.java
+ java/src/org/apache/xpath VariableStack.java
+ XPathContext.java<br/><ref>Committer's log entry: </ref>Resolve bugzilla 2355 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2355&gt;. To make the 
+functionality clearer, I've changed the method name from getVariable to 
+getVariableOrParam since the routine will pick up either one. Also fixed a 
+bug where top level variables and parameters were not getting marked as such.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib Extensions.java
+ java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>Resolve bugzilla 2523 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2523&gt;. evaluate extension 
+function was not refactored with DTM. Also need to add function to 
+XPathContext.XPathExpressionContext to allow an extension to obtain the 
+associated XPathContext.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>07/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes DescendantIterator.java<br/><ref>Committer's log entry: </ref>Fix problem with descendant-or-self and from root pattern. When from root, 
+descedant or self was not recognized.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Quick patch to handle case where someone wants to build a DTM from
+ an Element rather than from a Document. The Attr handling might want to
+ move down into addNode.
+
+ This opens several cans of worms -- what if the next user wants the
+ root of their DTM to be an EntityReference node, which has no DTM
+ node equivalent -- but we'll eat those when we get to them.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib Extensions.java<br/><ref>Committer's log entry: </ref>Modify distinct() extension so that it no longer relies on DOMHelper which is 
+deprecated but uses ExpressionContext.toString().<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/trace PrintTraceListener.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java
+ java/src/org/apache/xalan/xslt Process.java
+ java/src/org/apache/xml/dtm DTM.java
+ java/src/org/apache/xml/dtm/ref DTMDocumentImpl.java
+ ExpandedNameTable.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Added: </ref>java/src/org/apache/xalan/lib NodeInfo.java
+ java/src/org/apache/xalan/transformer XalanProperties.java
+ java/src/org/apache/xml/dtm/ref NodeLocator.java<br/><ref>Committer's log entry: </ref>Application of patch submitted by Ovidiu Predescu &lt;ovidiu@cup.hp.com&gt;
+ for file, line, column number information for XML source document.
+
+ [A made one change: m_sourceSystemId, m_sourceLine, and
+ m_sourceColumn are not created with the member variable
+ initializer, since they are initialized in setProperty.]
+
+ The following patch is a rework of a previous patch I've submitted on
+ May 24 against the Stree model, current at that time. This time the
+ patch is against the DTM model, and makes use of DTM features to
+ optimize the lookup time and storage requirements. I hope this time
+ the patch gets incorporated in the CVS repository, before any major
+ rework happens again ;-).
+
+ As with the previous patch, there is no overhead in space or time if
+ source information is not needed.
+
+ From a user perspective, this feature can be turned on by passing the
+ -L flag to Xalan when invoking it from the command
+ line. Programmatically you can also enable it by invoking the
+ setProperty method on the TransformerImpl:
+
+ TransformerImpl impl = ((TransformerImpl) transformer);
+ 
+impl.setProperty(org.apache.xalan.transformer.XalanProperties.SOURCE_LOCATION,
+ Boolean.TRUE);
+
+ A Transformer "property" is different from a "feature": while a
+ feature is specific to all the transformer instances and usually
+ refers to an implementation aspect, a property is a runtime capability
+ that is set per Transformer instance. Currently the only property
+ added by this patch is the source location in the XML source document.
+
+ The patch adds two methods to the DTM interface:
+
+ public void setProperty(String property, Object value);
+ public SourceLocator getSourceLocatorFor(int node);
+
+ The second method is used to obtain the source location given a node
+ handle.
+
+ There are two ways you can make use of the source location. The first
+ one is from within a stylesheet, where you can have something like
+ this:
+
+ &lt;xsl:stylesheet
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:nodeinfo="xalan://org.apache.xalan.lib.NodeInfo"
+ version="1.0"&gt;
+
+ &lt;xsl:template match="*"&gt;
+ //node &lt;xsl:value-of select="name()"/&gt;
+ //file &lt;xsl:value-of select="nodeinfo:systemId()"/&gt;
+ //line &lt;xsl:value-of select="nodeinfo:lineNumber()"/&gt;
+ //column &lt;xsl:value-of select="nodeinfo:columnNumber()"/&gt;
+ &lt;xsl:apply-templates/&gt;
+ &lt;/xsl:template&gt;
+
+ &lt;/xsl:stylesheet&gt;
+
+ If no arguments are passed to the systemId(), lineNumber() or
+ columnNumber() functions, the corresponding information of the current
+ context node is returned. A node can be passed as argument to the
+ above functions, in which case the corresponding information about
+ that node is returned. If a node set containing multiple nodes is
+ passed as argument, only the information of the first node in the set
+ is returned.
+
+ The second way of obtaining the source location is
+ programmatically. Given a Node instance, one can obtain the owner DTM
+ and the node handle (an integer) that represents the
+ node. Unfortunately I didn't see any way of hiding this: if you find
+ one please let me know and I'll fix it.
+
+ The following example is extracted from PrintTraceListener and
+ illustrates the API:
+
+ Node sourceNode = ev.m_sourceNode;
+ int nodeHandler = ((DTMNodeProxy)sourceNode).getDTMNodeNumber();
+ SourceLocator locator = ((DTMNodeProxy)sourceNode).getDTM()
+ .getSourceLocatorFor(nodeHandler);
+
+ m_pw.println("Selected source node '" + sourceNode.getNodeName()
+ + "', at " + locator);<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/compiler Compiler.java<br/><ref>Committer's log entry: </ref>Fix bug 2175 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2175&gt; by 
+adding the current time to the method key to ensure method key uniqueness. 
+Multiple Compilers were getting the same hashCode, particularly in Visual Age 
+for Java, due to aggressive garbage collection. Added the current time in 
+mills to distinguish between the different functions being compiled.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemVariable.java
+ StylesheetRoot.java
+ java/src/org/apache/xpath VariableStack.java
+ java/src/org/apache/xpath/operations Variable.java<br/><ref>Committer's log entry: </ref>Resolve bugzilla 2355 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2355&gt;. Added code to 
+populate m_index for global variables and parameters. If the backward search 
+for templates reaches the top level, use the list of composed top-level 
+variables and parameters from StylesheetRoot.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>Now implements DocumentFragment.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>Updated version to 2.2.0.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>Updated version to 2.2.0.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>Fixed very ugly bug, left-over from DTM1, in getValue, where +1 was being 
+added per the old attribute structure of DTM1.<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql ConnectionPool.java
+ DefaultConnectionPool.java PooledConnection.java
+ QueryParameter.java XConnection.java<br/><ref>Added: </ref>java/src/org/apache/xalan/lib/sql ConnectionPoolManager.java
+ ObjectArray.java SQLDocument.java
+ SQLErrorDocument.java<br/><ref>Removed: </ref>java/src/org/apache/xalan/lib/sql Column.java
+ ColumnAttribute.java ColumnData.java
+ ColumnHeader.java ExtensionError.java Row.java
+ RowSet.java SQLExtensionError.java
+ StreamableNode.java XConnectionPoolManager.java
+ XStatement.java<br/><ref>Committer's log entry: </ref>First round of changes to port DOM mode to DTM Mode
+ Submitted by: John Gentilin mailto://johng@apache.org<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Check if locator property is set before trying to use locator fields<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/trace PrintTraceListener.java<br/><ref>Committer's log entry: </ref>Don't print locator message if locator is null<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ TransformerHandlerImpl.java<br/><ref>Committer's log entry: </ref>In startDocument, run m_contentHandler.startDocument before you start the 
+thread.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Call wait for initial events before the the transform is started.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref CoroutineSAXParser.java<br/><ref>Committer's log entry: </ref>Allow co_yield to be called after the parse has finished.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java
+ SQLErrorDocument.java<br/><ref>Committer's log entry: </ref>Added setProperty and getSourceLocatorFor empty methods.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Fix problem reported by Carsten Ziegeler &lt;cziegeler@sundn.de&gt;. Using 
+ApplyXPath (or doing a transformation) with DOM input was resulting in an NPE 
+due to declareNamespaceInContext() being called before setting m_exptype which 
+is needed by declareNamespaceInContext().<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ TransformerHandlerImpl.java<br/><ref>Committer's log entry: </ref>Add pauseForTransformThreadStartup. Call this in startDocument just
+ after starting the transform thread. This should get rid of any variability
+ with racing threads.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/extensions
+ XSLProcessorContext.java<br/><ref>Committer's log entry: </ref>Fix problem reported by jason heddings &lt;Jason.Heddings@Sun.COM&gt;.
+
+ "In v2.0.1, I was able to pass a Node to this function and have the node
+ be copied to the result tree (as expected). In the source code for
+ XSLProcessorContext, it appears that the only objects that can be sent
+ to the result tree are XObjects. Everything else is converted to a
+ String. So for instance, I can no longer create a ProcessingInstruction
+ and pass it to the result tree via this method since the PI is simply
+ converted to a String."<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToHTML.java<br/><ref>Committer's log entry: </ref>Application of patch submitted by Benjamin Riefenstahl 
+&lt;Benjamin.Riefenstahl@ision.net&gt;
+
+ Motivation: We are using Xalan to generate HTML pages. We have the
+ requirement to integrate code for ad banners. The ad server provider
+ has written the code to use with compatibility to NetScape 4 in mind.
+ The code uses the NetScape proprietory &lt;LAYER&gt; element and &lt;IFRAME&gt;
+ elements for other browsers. The SRC attributes of these elements
+ contain URLs with several URL parameters separated by '&amp;', as is the
+ common convention.
+
+ Problem: The code is integrated in our XSL stylesheets. In the
+ stylesheet the '&amp;' has to be written as the entity '&amp;amp;'. That's
+ ok. The problem is that in the output the '&amp;' is also written as
+ '&amp;amp;' which is not ok, because NetScape doesn't understand that.
+ OTOH the same URL is written with '&amp;' when used in an &lt;A&gt; element.
+
+ Solution: This goes down to a different handling of attribute values
+ in the class SerializeToHTML, depending on whether the attribute in
+ question is known to contain a URI or not. Xalan knows this for &lt;A&gt;
+ but not for &lt;LAYER&gt; and &lt;IFRAME&gt;. When I compare the list in
+ SerializeToHTML.java with the HTML specs, I find a couple of other
+ missing URI attributes in SerializeToHTML.java. When I add the
+ missing pieces, the generation works fine.
+
+ Patch: Here is the patch (diff -c) for xalan-j_2_2_D6. I also have
+ one for xalan-j_2_0_1 which is the version I actually tested this
+ with. Please let me know if this is insufficient or the patch is
+ wrong or if there is something else I can do to fix this problem.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>On code review of previous checkin from Gary P., we determined there
+ was a problem with the point at which type was declared a
+ DTM.NAMESPACE_NODE. So that part was moved back up (actuall
+ a bit higher than where it was before),
+ and the call to declareNamespaceInContext was moved a bit
+ further down.<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql XConnection.java<br/><ref>Committer's log entry: </ref>Project Update
+ Submitted by: John Gentilin mailto://johng@apache.org<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Project Update
+ Submitted by: John gentilin mailto://johng@apache.org<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Fixup from previous check-in, defined new
+ functions.
+ Submitted by: John Gentilin mailto://johng@apache.org<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Project Update<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>reduced Attribute's for testing<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Minor hack to catch an attribute value being null.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>07/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemNumber.java
+ java/src/org/apache/xalan/transformer Counter.java
+ CountersTable.java KeyRefIterator.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xpath NodeSetDTM.java
+ java/src/org/apache/xpath/axes LocPathIterator.java
+ UnionPathIterator.java WalkingIteratorSorted.java
+ java/src/org/apache/xpath/objects XNodeSet.java
+ XRTreeFrag.java<br/><ref>Committer's log entry: </ref>Add new parameter to NodeSetDTM constructor. We need to have a DTMManager on 
+hand. Change code to use the new constructors.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>07/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>OOps! Back out this last change. Old code on my machine!!!<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Fixed a few bugs, almost there
+ Submitted by: John Gentilin mailto://johng@apache.org<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref CoroutineManager.java
+ CoroutineSAXParser.java
+ CoroutineSAXParser_Xerces.java<br/><ref>Added: </ref>java/src/org/apache/xml/dtm/ref IncrementalSAXSource.java
+ IncrementalSAXSource_Filter.java
+ IncrementalSAXSource_Xerces.java<br/><ref>Committer's log entry: </ref>Starting to phase out Coroutine*Parser* in favor of IncrementalSAXSource*.
+ The latter simplifies the code, and should help us avoid some of the
+ confusion that can arise in using the older tools.
+
+ Most importantly, it greatly simplifies the calling sequences, by discarding
+ the "which file do you want to parse" and "do you want to parse any more
+ files" transactions. These now operate _only_ as filters, and only as single
+ -use (though in fact the Xerces-specific version is reusable, and we may
+ reintroduce that feature in the generic filtering version at a later date).
+
+ Note too that we have swept the CoroutineManager completely
+ under the covers of the filter's API. There's no particular reason to expose
+ that implementation detal to the outside world.
+
+ Still to be done: Rework the rest of Xalan to use the new code.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref CoroutineParser.java<br/><ref>Committer's log entry: </ref>Starting to phase out Coroutine*Parser* in favor of IncrementalSAXSource*.
+ See comment in previous check-in; I just missed this one....<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMStringPool.java<br/><ref>Committer's log entry: </ref>doc.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>2.2.D7<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>2.2.D7<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/18/2001<br/><ref>Removed: </ref>java/src/org/apache/xml/dtm/ref DTMBuilder.java<br/><ref>Committer's log entry: </ref>Obsolete<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
+</s3>
 <s3 title="Changes for &xslt4j; 2.2.D6">
      <p><em>Important: Xerces has added a number of DOM level-3 methods to its DOM interfaces. The DOM level-3 proposal
 is currently a working draft (it is not yet a W3C recommendation), and Xalan does not support these new methods. 
