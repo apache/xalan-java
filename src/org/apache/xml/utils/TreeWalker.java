@@ -126,12 +126,10 @@ public class TreeWalker
         m_locator.setSystemId(systemId);
     else {
         try {
-          // Adding dummy.xsl to the baseURI so that relative 
-          // URI's will be resolved correctly.
+          // Bug see Bugzilla  26741
           m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
          }
-         catch (SecurityException se) {// user.dir not accessible from applet
-             m_locator.setSystemId("");
+         catch (SecurityException se) {// user.dir not accessible from applet             
          }
     }
     m_dh = dh;
@@ -147,12 +145,10 @@ public class TreeWalker
     this.m_contentHandler = contentHandler;
     m_contentHandler.setDocumentLocator(m_locator);
     try {
-      // Adding dummy.xsl to the baseURI so that relative 
-      // URI's will be resolved correctly.
+       // Bug see Bugzilla  26741
       m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
     } 
-    catch (SecurityException se){// user.dir not accessible from applet
-      m_locator.setSystemId("");
+    catch (SecurityException se){// user.dir not accessible from applet      
     }
     m_dh = dh;
   }
@@ -168,12 +164,11 @@ public class TreeWalker
                 if (m_contentHandler != null)
                         m_contentHandler.setDocumentLocator(m_locator);
                 try {
-                  // Adding dummy.xsl to the baseURI so that relative 
-                  // URI's will be resolved correctly.
+                   // Bug see Bugzilla  26741
                   m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
                 } 
                 catch (SecurityException se){// user.dir not accessible from applet
-                  m_locator.setSystemId("");
+                  
     }
     m_dh = new DOM2Helper();
   }
