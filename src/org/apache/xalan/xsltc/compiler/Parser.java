@@ -488,6 +488,13 @@ public class Parser implements Constants, ContentHandler {
 				attrs);
     }
 
+    /**
+     * Initializes a mapping between XSL element and a list of attributes
+     * that may appear as part of the element. If a mandatory attribute is
+     * missing, this we'll be reported by each instruction independently.
+     * Attributes that are not listed here are allowed only if their
+     * expanded name has a non-null URI.
+     */
     private void initInstructionAttrs() {
 	initAttrTable("template",
 	    new String[] {"match", "name", "priority", "mode"});
@@ -499,15 +506,15 @@ public class Parser implements Constants, ContentHandler {
 		"exclude-result-prefixes"});
 	initAttrTable("text", new String[] {"disable-output-escaping"});
 	initAttrTable("if", new String[] {"test"});
-	initAttrTable("choose", new String[] {});
+	initAttrTable("choose", null);
 	initAttrTable("when", new String[] {"test"});
-	initAttrTable("otherwise", new String[] {});
+	initAttrTable("otherwise", null);
 	initAttrTable("for-each", new String[] {"select"});
 	initAttrTable("message", new String[] {"terminate"});
 	initAttrTable("number",
 	    new String[] {"level", "count", "from", "value", "format", "lang",
 		"letter-value", "grouping-separator", "grouping-size"});
-		initAttrTable("comment", new String[] {});
+	initAttrTable("comment", null);
 	initAttrTable("copy", new String[] {"use-attribute-sets"});
 	initAttrTable("copy-of", new String[] {"select"});
 	initAttrTable("param", new String[] {"name", "select"});
@@ -521,7 +528,7 @@ public class Parser implements Constants, ContentHandler {
 	initAttrTable("sort",
 	   new String[] {"select", "order", "case-order", "lang", "data-type"});
 	initAttrTable("key", new String[] {"name", "match", "use"});
-	initAttrTable("fallback", new String[] {});
+	initAttrTable("fallback", null);
 	initAttrTable("attribute", new String[] {"name", "namespace"});
 	initAttrTable("attribute-set",
 	    new String[] {"name", "use-attribute-sets"});
@@ -531,7 +538,7 @@ public class Parser implements Constants, ContentHandler {
 	    new String[] {"name", "namespace", "use-attribute-sets"});
 	initAttrTable("call-template", new String[] {"name"});
 	initAttrTable("apply-templates", new String[] {"select", "mode"});
-	initAttrTable("apply-imports", new String[] {});
+	initAttrTable("apply-imports", null);
 	initAttrTable("decimal-format",
 	    new String[] {"name", "decimal-separator", "grouping-separator",
 		"infinity", "minus-sign", "NaN", "percent", "per-mille",
@@ -543,6 +550,27 @@ public class Parser implements Constants, ContentHandler {
 	initAttrTable("processing-instruction", new String[] {"name"});
 	initAttrTable("namespace-alias",
 	   new String[] {"stylesheet-prefix", "result-prefix"});
+
+        // XSLT 2.0
+        initAttrTable("analyze-string",
+           new String[] {"select", "regex", "flags"});
+        initAttrTable("import-schema",
+           new String[] {"namespace", "schema-location"});
+        initAttrTable("for-each-group",
+           new String[] {"select", "group-by", "group-adjacent",
+               "group-starting-with", "group-ending-with",
+               "collation", "as"});
+        initAttrTable("function",
+              new String[] {"name", "override"});
+        initAttrTable("matching-substring", null);
+        initAttrTable("namespace", new String[] {"name"});
+        initAttrTable("non-matching-substring", null);
+        initAttrTable("result",
+              new String[] {"select", "as", "type-information"});
+        initAttrTable("result-document",
+              new String[] {"format", "href", "type-information"});
+        initAttrTable("sort-key",
+              new String[] {"name"});
     }
 
     /**
@@ -587,11 +615,16 @@ public class Parser implements Constants, ContentHandler {
 	initStdClass("namespace-alias", "NamespaceAlias");
 
         // XSLT 2.0
+        initStdClass("analyze-string", "AnalyzeString");
+        initStdClass("import-schema", "ImportSchema");
         initStdClass("for-each-group", "ForEachGroup");
+        initStdClass("function", "Function");
         initStdClass("matching-substring", "MatchingSubstring");
+        initStdClass("namespace", "Namespace");
         initStdClass("non-matching-substring", "NonMatchingSubstring");
         initStdClass("result", "Result");
         initStdClass("result-document", "ResultDocument");
+        initStdClass("sort-key", "SortKey");
     }
 
     private void initStdClass(String elementName, String className) {
@@ -890,6 +923,7 @@ public class Parser implements Constants, ContentHandler {
 	QName qname = node.getQName();
 	boolean isStylesheet = (node instanceof Stylesheet);
         String[] legal = (String[]) _instructionAttrs.get(qname);
+
 	if (versionIsOne && legal != null) {
 	    int j;
 	    final int n = attrs.getLength();
