@@ -280,6 +280,8 @@ public class VariableStack extends Stack
         return;
       }
     }
+    if(frame == m_emptyStackFrame)
+      frame = allocateCurrentFrame();
     frame.push(new Arg(qname, xval, false));
   }
   
