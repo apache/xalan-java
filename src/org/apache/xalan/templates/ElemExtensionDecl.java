@@ -329,7 +329,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
       {
         nsh = new ExtensionHandlerGeneral(declNamespace, this.m_elements,
                                           this.m_functions, lang, srcURL,
-                                          scriptSrc);
+                                          scriptSrc, getSystemId());
 
         // System.out.println("Adding NS Handler: declNamespace = "+
         //                   declNamespace+", lang = "+lang+", srcURL = "+

@@ -1863,12 +1863,12 @@ public class XSLTErrorResources extends XResourceBundleBase
   }
   
    /** src attribute not yet supported for  */
-  public static final int ER_SRC_ATTRIB_NOT_SUPPORTED = 195;
+  public static final int ER_COULD_NOT_FIND_EXTERN_SCRIPT = 195;
 
   static
   {
-    contents[ER_SRC_ATTRIB_NOT_SUPPORTED][1] =
-       "src attribute not yet supported for {0}";
+    contents[ER_COULD_NOT_FIND_EXTERN_SCRIPT][1] =
+         "Could not get to external script at {0}";
   }
   
   /** The resource [] could not be found     */

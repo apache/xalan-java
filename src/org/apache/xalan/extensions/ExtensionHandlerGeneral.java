@@ -60,6 +60,9 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.io.InputStream;
 
 //import org.w3c.dom.Element;
 //import org.w3c.dom.Node;
@@ -71,6 +74,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SystemIDResolver;
 
 import javax.xml.transform.TransformerException;
 
@@ -190,7 +194,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @throws TransformerException
    */
   public ExtensionHandlerGeneral(
-          String namespaceUri, StringVector elemNames, StringVector funcNames, String scriptLang, String scriptSrcURL, String scriptSrc)
+          String namespaceUri, StringVector elemNames, StringVector funcNames, String scriptLang, String scriptSrcURL, String scriptSrc, String systemId)
             throws TransformerException
   {
 
@@ -227,10 +231,55 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
     if (m_scriptSrcURL != null)
     {
-      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_SRC_ATTRIB_NOT_SUPPORTED, new Object[]{scriptLang})); //"src attribute not yet supported for "
-                             //+ scriptLang);
-    }
+      URL url = null;
+      try{
+        url = new URL(m_scriptSrcURL);
+      }
+      catch (java.net.MalformedURLException mue)
+      {
+        int indexOfColon = m_scriptSrcURL.indexOf(':');
+        int indexOfSlash = m_scriptSrcURL.indexOf('/');
 
+        if ((indexOfColon != -1) && (indexOfSlash != -1)
+            && (indexOfColon < indexOfSlash))
+        {
+          // The url is absolute.
+          url = null;
+          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_FIND_EXTERN_SCRIPT, new Object[]{m_scriptSrcURL}), mue); //"src attribute not yet supported for "
+          //+ scriptLang);
+        }
+        else
+        {
+          try{
+            url = new URL(new URL(SystemIDResolver.getAbsoluteURI(systemId)), m_scriptSrcURL);          
+          }        
+          catch (java.net.MalformedURLException mue2)
+          {
+            throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_FIND_EXTERN_SCRIPT, new Object[]{m_scriptSrcURL}), mue2); //"src attribute not yet supported for "
+          //+ scriptLang);
+          }
+        }
+      }
+      if (url != null)
+      {
+        try
+        {
+          URLConnection uc = url.openConnection();
+          InputStream is = uc.getInputStream();
+          byte []bArray = new byte[uc.getContentLength()];
+          is.read(bArray);
+          m_scriptSrc = new String(bArray);
+          
+        }
+        catch (IOException ioe)
+        {
+          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_FIND_EXTERN_SCRIPT, new Object[]{m_scriptSrcURL}), ioe); //"src attribute not yet supported for "
+          //+ scriptLang);
+        }
+      }
+      
+    }
+   
     if (null == managerClass)
       throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_INIT_BSFMGR, null)); //"Could not initialize BSF manager");
 
