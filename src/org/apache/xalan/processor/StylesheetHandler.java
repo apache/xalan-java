@@ -297,7 +297,7 @@ public class StylesheetHandler extends DefaultHandler
    * resolve relative URLs in the stylesheet.
    * @param baseID Base URL for this stylesheet.
    */
-  public void setSystemID(String baseID)
+  public void setSystemId(String baseID)
   {
     pushBaseIndentifier(baseID);
   }

@@ -75,7 +75,6 @@ import org.apache.xalan.transformer.TrAXFilter;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.Features;
 import javax.xml.transform.Source;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.Templates;
@@ -83,8 +82,11 @@ import javax.xml.transform.sax.TemplatesHandler;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.ErrorListener;
 
 import java.io.IOException;
@@ -366,23 +368,25 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
     // Try first with identity comparison, which 
     // will be faster.
-    if (Features.DOM == name)
+    if (   (DOMResult.FEATURE == name) || (DOMSource.FEATURE == name)
+           || (SAXResult.FEATURE == name) || (SAXSource.FEATURE == name)
+           || (StreamResult.FEATURE == name) || (StreamSource.FEATURE == name)
+           || (SAXTransformerFactory.FEATURE == name) 
+           || (SAXTransformerFactory.FEATURE_XMLFILTER == name)
+        )
       return true;
-    else if (Features.SAX == name)
-      return true;
-    else if (Features.STREAM == name)
-      return true;
-    // And now with equality comparisons.
-    else if (Features.DOM.equals(name))
-      return true;
-    else if (Features.SAX.equals(name))
-      return true;
-    else if (Features.STREAM.equals(name))
-      return true;
-
-    return false;
+    else
+      if (   (DOMResult.FEATURE.equals(name)) || (DOMSource.FEATURE.equals(name))
+             || (SAXResult.FEATURE.equals(name)) || (SAXSource.FEATURE.equals(name))
+             || (StreamResult.FEATURE.equals(name)) || (StreamSource.FEATURE.equals(name))
+             || (SAXTransformerFactory.FEATURE.equals(name)) 
+             || (SAXTransformerFactory.FEATURE_XMLFILTER.equals(name))
+          )
+        return true;
+      else
+        return false;
   }
-  
+
   /**
    * Allows the user to set specific attributes on the underlying
    * implementation.
@@ -577,7 +581,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       DOMSource dsource = (DOMSource)source;
       Node node = dsource.getNode();
       String baseID = dsource.getSystemId();
-      builder.setSystemID(baseID);
+      builder.setSystemId(baseID);
       return processFromNode(node, baseID);
     }
     
