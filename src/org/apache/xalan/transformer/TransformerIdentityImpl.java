@@ -299,9 +299,25 @@ public class TransformerIdentityImpl extends Transformer
       {
         try
         {
-          TreeWalker walker = new TreeWalker(this);
-
-          walker.traverse(dNode);
+          this.startDocument();
+          try
+          {
+            if(dNode.getNodeType() == Node.ATTRIBUTE_NODE)
+            {
+              String data = dNode.getNodeValue();
+              char[] chars = data.toCharArray();
+              characters(chars, 0, chars.length);
+            }
+            else
+            {
+              TreeWalker walker = new TreeWalker(this);
+              walker.traverse(dNode);
+            }
+          }
+          finally
+          {
+            this.endDocument();
+          }
         }
         catch (SAXException se)
         {
