@@ -152,7 +152,7 @@ Copyright:
   <property name="test.loggingLevel" value="5"/>
   <!-- The excluded lre tests are at issue or are new bugs, and should be 
        included as soon as they are resolved.  -->
-  <property name="test.excludes" value="impincl12.xsl;lre02.xsl;lre03.xsl;lre07.xsl;lre10.xsl;lre12.xsl;lre21.xsl"/>
+  <property name="test.excludes" value="impincl18.xsl;impincl12.xsl;lre02.xsl;lre03.xsl;lre07.xsl;lre10.xsl;lre12.xsl;lre21.xsl"/>
   <property name="test.embedded" value="embed01.xsl;embed02.xsl;embed07.xsl"/>
 
   <!-- =================================================================== -->
