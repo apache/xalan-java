@@ -171,7 +171,7 @@ public class XConnection
    * to a fixed amount but will not let you traverse the tree more than
    * once since the Row data will be reused for every Row in the Query.
    */
-  private boolean m_IsStreamingEnabled = false;
+  private boolean m_IsStreamingEnabled = true;
 
   /**
    */

@@ -68,6 +68,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.*;
+import org.apache.xml.dtm.ref.*;
 
 /**
  * The SQL Document is the main controlling class the executesa SQL Query
@@ -77,7 +78,7 @@ public class SQLDocument extends DTMDocument
 
   /**
    */
-  private boolean DEBUG = false;
+  private boolean DEBUG = true;
 
   /**
    */
@@ -86,13 +87,24 @@ public class SQLDocument extends DTMDocument
 
   /**
    */
-  private static final String S_COLUMN_HEADER = "column-header";
+  private static final String S_SQL = "sql";
+
   /**
    */
   private static final String S_ROW_SET = "row-set";
+
+  /**
+   */
+  private static final String S_METADATA = "metadata";
+
+  /**
+   */
+  private static final String S_COLUMN_HEADER = "column-header";
+
   /**
    */
   private static final String S_ROW = "row";
+
   /**
    */
   private static final String S_COL = "col";
@@ -146,6 +158,12 @@ public class SQLDocument extends DTMDocument
    */
   private static final String S_ISSEARCHABLE = "searchable";
 
+  /**
+   */
+  private int m_SQL_TypeID = 0;
+  /**
+   */
+  private int m_MetaData_TypeID = 0;
   /**
    */
   private int m_ColumnHeader_TypeID = 0;
@@ -247,11 +265,22 @@ public class SQLDocument extends DTMDocument
    * An indicator on how many columns are in this query
    */
   private int m_ColCount;
+
+  /**
+   * The Index of the MetaData Node. Currently the MetaData Node contains the
+   *
+   */
+  private int m_MetaDataIdx = DTM.NULL;
+
   /**
    * The index of the Row Set node. This is the sibling directly after
    * the last Column Header.
    */
   private int m_RowSetIdx = DTM.NULL;
+
+  /**
+   */
+  private int m_SQLIdx = DTM.NULL;
 
   /**
    * Demark the first row element where we started adding rows into the
@@ -300,6 +329,8 @@ public class SQLDocument extends DTMDocument
     // We need to do this here so at least on row is set up
     // to measure when we are actually reading rows.
     addRowToDTMFromResultSet();
+
+    // this.dumpDTM();
   }
 
 
@@ -316,8 +347,13 @@ public class SQLDocument extends DTMDocument
 
     // Start the document here
     m_DocumentIdx = addElement(0, m_Document_TypeID, DTM.NULL, DTM.NULL);
+
     // Add in the row-set Element
-    m_RowSetIdx = addElement(1, m_RowSet_TypeID,  m_DocumentIdx, DTM.NULL);
+    m_SQLIdx = addElement(1, m_SQL_TypeID,  m_DocumentIdx, DTM.NULL);
+
+    // Add in the MetaData Element
+    m_MetaDataIdx = addElement(1, m_MetaData_TypeID,  m_SQLIdx, DTM.NULL);
+
     try
     {
       m_ColCount = meta.getColumnCount();
@@ -337,7 +373,7 @@ public class SQLDocument extends DTMDocument
     for (i=1; i<= m_ColCount; i++)
     {
       m_ColHeadersIdx[i-1] =
-        addElement(2,m_ColumnHeader_TypeID, m_RowSetIdx, lastColHeaderIdx);
+        addElement(2,m_ColumnHeader_TypeID, m_MetaDataIdx, lastColHeaderIdx);
 
       lastColHeaderIdx = m_ColHeadersIdx[i-1];
       // A bit brute force, but not sure how to clean it up
@@ -547,6 +583,7 @@ public class SQLDocument extends DTMDocument
           S_ATTRIB_NOT_SUPPORTED,
           m_ColAttrib_ISSEARCHABLE_TypeID, lastColHeaderIdx);
       }
+
     }
 
   }
@@ -559,6 +596,12 @@ public class SQLDocument extends DTMDocument
   protected void createExpandedNameTable( )
   {
     super.createExpandedNameTable();
+
+    m_SQL_TypeID =
+      m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_SQL, DTM.ELEMENT_NODE);
+
+    m_MetaData_TypeID =
+      m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_METADATA, DTM.ELEMENT_NODE);
 
     m_ColumnHeader_TypeID =
       m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_COLUMN_HEADER, DTM.ELEMENT_NODE);
@@ -617,6 +660,15 @@ public class SQLDocument extends DTMDocument
   {
     try
     {
+
+
+      // If we have not started the RowSet yet, then add it to the
+      // tree.
+      if (m_RowSetIdx == DTM.NULL)
+      {
+        m_RowSetIdx = addElement(1, m_RowSet_TypeID,  m_SQLIdx, m_MetaDataIdx);
+      }
+
       // Check to see if all the data has been read from the Query.
       // If we are at the end the signal that event
       if ( ! m_ResultSet.next())
@@ -639,7 +691,7 @@ public class SQLDocument extends DTMDocument
       if (m_FirstRowIdx == DTM.NULL)
       {
         m_FirstRowIdx =
-          addElement(2, m_Row_TypeID, m_RowSetIdx, m_ColHeadersIdx[m_ColCount-1]);
+          addElement(2, m_Row_TypeID, m_RowSetIdx, DTM.NULL);
         m_LastRowIdx = m_FirstRowIdx;
 
         if (m_StreamingMode)
@@ -801,5 +853,16 @@ public class SQLDocument extends DTMDocument
 
     return super._nextsib(identity);
   }
+
+  public void documentRegistration()
+  {
+    if (DEBUG) System.out.println("Document Registration");
+  }
+
+  public void documentRelease()
+  {
+    if (DEBUG) System.out.println("Document Release");
+  }
+
 
 }
