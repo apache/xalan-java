@@ -4,13 +4,34 @@
 
  <devs>
   <!-- in alphabetical order, by last name -->
-  <person name="Scott Boag" email="scott_boag@lotus.com" id="SB"/>
-  <person name="Shane Curcuru" email="Shane_Curcuru@lotus.com" id="SC"/>
-  <person name="Joseph Kesselman" email="Joseph_Kesselman@lotus.com" id="JK"/>
-  <person name="Donald Leslie" email="donald_leslie@lotus.com" id="DL"/>
-  <person name="Costin Manolache" email="cmanolache@yahoo.com" id="CM"/>
-  <person name="Myriam Midy" email="myriam_midy@lotus.com" id="MM"/>
-  <person name="Gary L Peskin" email="garyp@firstech.com" id="GP"/>
+  <person name="Scott Boag" email="scott_boag@lotus.com" id="SB" expertise="code">
+    Xalan architect, lead developer on Xalan-J 2.x.
+  </person>
+  <person name="Joseph Kesselman" email="Joseph_Kesselman@lotus.com" id="JK" expertise="code">
+    Xalan-J 2.x developer, compiling/compiled stylesheets experiments.
+  </person>
+  <person name="Costin Manolache" email="cmanolache@yahoo.com" id="CM">
+    Xalan-J 2.x developer.
+  </person>
+  <person name="Myriam Midy" email="myriam_midy@lotus.com" id="MM" expertise="code">
+    Xalan-J 1.x and 2.x developer.
+  </person>
+  <person name="Gary L Peskin" email="garyp@firstech.com" id="GP" expertise="code">
+    Xalan-J 1.x and 2.x developer, especially extension mechanisim.
+  </person>
+
+  <person name="Shane Curcuru" email="Shane_Curcuru@lotus.com" id="SC" expertise="test">
+    Lead tester for API issues, automation framework.
+  </person>
+  <person name="David Marston" email="David_Marston@lotus.com" id="DM" expertise="test">
+    Lead tester for XSLT Conformance stylesheet issues.
+  </person>
+  <person name="Paul Dick" email="Paul_Dick@lotus.com" id="PD" expertise="test">
+    XSLT Conformance stylesheet issues and Xalan-C testing.
+  </person>
+  <person name="Donald Leslie" email="donald_leslie@lotus.com" id="DL" expertise="doc">
+    Xalan-J and -C documentation, servlets and samples.
+  </person>
  </devs>
 
  <actions>
@@ -18,7 +39,7 @@
    <target-release-description>
     <date>12/15/00</date>
     <level>beta</level>
-    <goal type="conformance">XSLT 1.0 and XPath 1.0 complient, 98% conformance test passage.</goal>
+    <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 98% conformance test passage.</goal>
     <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
     <goal type="stability">Stable, reasonable.</goal>
     <goal type="api">API Complete.</goal>
@@ -73,9 +94,20 @@
     Catch multiple definitions of a variable with the same name and scope.
   </action>
 
-  <action context="code">
+  <action context="test" who="SC" category="minitest" priority="medium">
+    Create Minitest automated test for developers to run before checkin; 
+    verifies basic functionality of TRAX interface and Xalan processor.
   </action>
 
+  <action context="test" category="feature" priority="high">
+    Update the xml-xalan\test\viewResults.xsl stylesheet to show 
+    differences between two result files from the same test (eg.
+    show differences from a results-before.xml run before a developer 
+    makes a change, with results-after.xml, which was after the 
+    developer's change.)
+    This could be a bunch of stuff added to viewResults.xsl or could 
+    be a separate stylesheet. See <b>SC</b> for details.
+  </action>
  </actions>
 
  <actions>
@@ -83,7 +115,7 @@
    <target-release-description>
     <date>01/15/01</date>
     <level>production</level>
-    <goal type="conformance">XSLT 1.0 and XPath 1.0 complient, 99% conformance test passage.</goal>
+    <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 99% conformance test passage.</goal>
     <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
     <goal type="stability">Robust.</goal>
     <goal type="api">API Complete.</goal>
@@ -110,18 +142,24 @@
     will be ready in time for this release.</issue>
   </action>
 
-  <action context="code">
+  <action context="test" category="feature" priority="high">
+    @todo need to find an HTML to DOM parser we can use!!
+    Get a good, apache-licensed HTML-to-DOM parser checked into the 
+    xml-xalan\test\java repository, for use by org.apache.qetest.xsl.XHTComparator
   </action>
 
-  <action context="code">
+  <action context="test" category="tests" priority="medium">
+    Get more real-world stylesheets checked into xml-xalan\test\tests\contrib.
+    We need more real-life examples of how people are using stylesheets, along 
+    with expected outputs (in contrib-gold) - we can then run our test driver 
+    over the whole set of them easily to get more test points.
   </action>
 
-  <action context="code">
+  <action context="test" category="tests" priority="high">
+    Get extension tests checked into xml-xalan\test\tests\extend
+    We have some at Lotus we need to cleanup and checkin, and we 
+    hope to get more examples from Gary and other list members.
   </action>
-
-  <action context="code">
-  </action>
-
  </actions>
 
  <actions priority="long-term" >
@@ -130,7 +168,7 @@
    <target-release-description>
     <date>4/15/01</date>
     <level>beta</level>
-    <goal type="conformance">XSLT 1.1 and XPath 1.0+addendum complient, 100% conformance test passage.</goal>
+    <goal type="conformance">XSLT 1.1 and XPath 1.0+addendum compliant, 100% conformance test passage.</goal>
     <goal type="performance">Very good performance. [need metrics]</goal>
     <goal type="stability">Stable, reasonable.</goal>
     <goal type="api">API Complete.</goal>

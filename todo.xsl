@@ -9,6 +9,25 @@
       <BODY>
         <!-- H1>Xalan for Java Version 2</H1 -->
         <H2>Xalan for Java Version 2: <xsl:value-of select="todo/@title"/></H2>
+        <p><font size="-1">See a 
+          <xsl:element name="a">
+            <xsl:attribute name="href">#developer-list</xsl:attribute>
+            <xsl:text>list of developers/initials.</xsl:text>
+          </xsl:element>
+        </font></p>
+        <font size="-1"><p>Planned releases: 
+            <BR/><xsl:for-each select="todo/actions/target-release-description">
+              <xsl:element name="a">
+                <xsl:attribute name="href">#release-date-<xsl:value-of select="date"/></xsl:attribute>
+                <xsl:value-of select="date"/>
+              </xsl:element><xsl:text> </xsl:text><xsl:text> </xsl:text>
+            </xsl:for-each>
+            <xsl:element name="a">
+                <xsl:attribute name="href">#release-date-completed</xsl:attribute>
+                <xsl:text>Completed</xsl:text>
+              </xsl:element>
+
+        </p></font>
         <xsl:for-each select="todo">
           <xsl:for-each select="actions">
               <xsl:for-each select="target-release-description">
@@ -31,7 +50,10 @@
           </xsl:for-each>
 
           <xsl:for-each select="completed">
-            <H3>Completed: </H3>
+              <xsl:element name="a">
+                <xsl:attribute name="name">release-date-completed</xsl:attribute>
+                <H3>Completed: </H3>
+              </xsl:element>
             <xsl:for-each select="action">
               <xsl:if test="normalize-space(.)">
                 <p>
@@ -46,17 +68,7 @@
           <HR/>
         </xsl:for-each>
 
-          <H3>Developers: </H3>
-          <ul>
-          <xsl:for-each select="devs/person">
-            <li>
-              <a href="mailto:{@email}">
-                <xsl:value-of select="@name"/>
-                <xsl:text> (</xsl:text><xsl:value-of select="@id"/><xsl:text>)</xsl:text>
-              </a>
-            </li>
-          </xsl:for-each>
-          </ul>
+        <xsl:call-template name="developer-list"/>
        </xsl:for-each>
 
       </BODY>
@@ -64,14 +76,30 @@
   </xsl:template>
 
   <xsl:template match="action/@*">
-    <b><xsl:value-of select="name(.)"/>:</b><xsl:text> </xsl:text><xsl:value-of select="."/>
+  <!-- Add link to the who attributes to corresponding item in developer-list -->
+    <b><xsl:value-of select="name(.)"/>:</b><xsl:text> </xsl:text>
+      <xsl:choose>
+        <xsl:when test="name(.)='who'">
+          <xsl:element name="a">
+            <xsl:attribute name="href">#personref-<xsl:value-of select="."/></xsl:attribute>
+            <xsl:value-of select="."/>
+          </xsl:element>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
     <xsl:if test="not (position()=last())">
       <xsl:text>, </xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="target-release-description/date">
-    <b>For release: <xsl:value-of select="."/></b>
+      <xsl:element name="a">
+        <xsl:attribute name="name">release-date-<xsl:value-of select="."/></xsl:attribute>
+        <b><xsl:text>For release: </xsl:text><xsl:value-of select="."/></b>
+      </xsl:element>
+    
   </xsl:template>
 
   <xsl:template match="issue">
@@ -88,6 +116,31 @@
     <BR/><b>Goal </b><xsl:text>[</xsl:text><xsl:value-of select="@type"/>
     <xsl:text>]: </xsl:text>
     <xsl:apply-templates/>
+  </xsl:template>
+
+
+  <xsl:template name="developer-list">
+    <H3>
+      <xsl:element name="a">
+        <xsl:attribute name="name">developer-list</xsl:attribute>
+        <xsl:text>Developers:</xsl:text>
+      </xsl:element>
+    </H3>
+    <p>A list of some of people working on Xalan currently:</p>
+    <ul>
+    <xsl:for-each select="devs/person">
+      <li>
+        <a href="mailto:{@email}">
+          <xsl:value-of select="@name"/>
+        </a>
+         <xsl:element name="a">
+           <xsl:attribute name="name"><xsl:text>personref-</xsl:text><xsl:value-of select="@id"/></xsl:attribute>
+           <xsl:text> (</xsl:text><xsl:value-of select="@id"/><xsl:text>)</xsl:text>
+         </xsl:element>
+         <BR/><xsl:value-of select="."/>
+      </li>
+    </xsl:for-each>
+    </ul>
   </xsl:template>
 
 </xsl:stylesheet>
