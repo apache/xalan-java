@@ -756,7 +756,10 @@ public class TransformerImpl extends Transformer
    */
   public Properties getOutputProperties()
   {
-    return m_outputFormat.getProperties();
+    if (null == m_outputFormat) 
+      m_outputFormat = new OutputProperties(m_stylesheetRoot.getOutputProperties());
+    
+    return (Properties)m_outputFormat.getProperties().clone();  
   }
 
   /**

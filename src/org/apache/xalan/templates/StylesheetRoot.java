@@ -188,7 +188,7 @@ public class StylesheetRoot extends StylesheetComposed
    */
   public Properties getOutputProperties()
   {    
-    return getDefaultOutputProps();
+    return getDefaultOutputProps().clone();
   }
 
   //============== End Templates Interface ================
