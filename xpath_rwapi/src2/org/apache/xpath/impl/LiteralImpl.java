@@ -55,7 +55,7 @@
  */
 package org.apache.xpath.impl;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.Literal;
 import org.apache.xpath.expression.Visitor;
@@ -139,21 +139,21 @@ public class LiteralImpl extends ExprImpl implements Literal
     /**
      * @see org.apache.xpath.expression.Literal#getDecimalLiteral()
      */
-    public BigDecimal getDecimalLiteral() throws XPathException
+    public BigDecimal getDecimalLiteral() throws XPath20Exception
     {
         if (getLiteralType() == DECIMAL_LITERAL)
         {
             return (BigDecimal) m_literal;
         }
 
-        throw new XPathException(
+        throw new XPath20Exception(
             "Invalid method call: the literal is not a decimal");
     }
 
     /* (non-Javadoc)
      * @see org.apache.xpath.expression.Literal#getDecimalLiteralAsDouble()
      */
-    public double getDecimalLiteralAsDouble() throws XPathException
+    public double getDecimalLiteralAsDouble() throws XPath20Exception
     {
         return getDecimalLiteral().doubleValue();
     }
@@ -161,35 +161,35 @@ public class LiteralImpl extends ExprImpl implements Literal
     /**
      * @see org.apache.xpath.expression.Literal#getDoubleLiteral()
      */
-    public double getDoubleLiteral() throws XPathException
+    public double getDoubleLiteral() throws XPath20Exception
     {
         if (getLiteralType() == DOUBLE_LITERAL)
         {
             return ((Double) m_literal).doubleValue();
         }
 
-        throw new XPathException(
+        throw new XPath20Exception(
             "Invalid method call: the literal is not a double");
     }
 
     /**
      * @see org.apache.xpath.expression.Literal#getIntegerLiteral()
      */
-    public BigInteger getIntegerLiteral() throws XPathException
+    public BigInteger getIntegerLiteral() throws XPath20Exception
     {
         if (getLiteralType() == INTEGER_LITERAL)
         {
             return (BigInteger) m_literal;
         }
 
-        throw new XPathException(
+        throw new XPath20Exception(
             "Invalid method call: the literal is not a integer"); //I16
     }
 
     /* (non-Javadoc)
      * @see org.apache.xpath.expression.Literal#getIntLiteral()
      */
-    public int getIntegerLiteralAsInt() throws XPathException
+    public int getIntegerLiteralAsInt() throws XPath20Exception
     {
         return getIntegerLiteral().intValue();
     }
@@ -227,14 +227,14 @@ public class LiteralImpl extends ExprImpl implements Literal
     /**
      * @see org.apache.xpath.expression.Literal#getStringLiteral()
      */
-    public String getStringLiteral() throws XPathException
+    public String getStringLiteral() throws XPath20Exception
     {
         if (getLiteralType() == STRING_LITERAL)
         {
             return (String) m_literal;
         }
 
-        throw new XPathException(
+        throw new XPath20Exception(
             "Invalid method call: the literal is not a string");
     }
 

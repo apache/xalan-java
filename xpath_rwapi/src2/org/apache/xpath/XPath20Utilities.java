@@ -1,4 +1,7 @@
 /*
+ * Created on Jul 14, 2003
+ */
+/*
  * The Apache Software License, Version 1.1
  *
  * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
@@ -55,86 +58,99 @@
  */
 package org.apache.xpath;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
+import org.apache.xpath.expression.Expr;
+import org.apache.xpath.expression.NodeTest;
+import org.apache.xpath.expression.OperatorExpr;
+import org.apache.xpath.expression.PathExpr;
+import org.apache.xpath.expression.StepExpr;
 
 /**
- * Implement a common exception object that all XPath classes 
- * will throw in case of an error.
+ * A collection of utility methods for XPath.
+ * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
+ * @version $Id$
  */
-public class XPathException extends Exception
+public class XPath20Utilities
 {
-    /**
-     * Contain our nested exception.
-     */
-    private Exception m_e;
 
-    /**
-     * Construct an XPathException with a specified nested exception.  
-     *
-     * @param e exception to nest
-     */
-    public XPathException(Exception e)
-    {
-        super();
+	/**
+	 * Return true whether the specified expression matches document node.
+	 * The test is performed statically, therefore there is no guarantee
+	 * that the expression will indeed match the document node at runtime.
+	 * (example: node()).
+	 * @param Expr
+	 * @return boolean 		
+	 */
+	static public boolean isMatchDocumentNode(Expr expr)
+	{
+		// TODO: patterns are not supported by the XPath API yet
+		// it means that pattern may be embedded in sequence
+		boolean result;
+		try
+		{
+			switch (expr.getExprType())
+			{
+				case Expr.SEQUENCE_EXPR :
+					OperatorExpr op = (OperatorExpr) expr;
+					switch (op.getOperatorType())
+					{
+						case OperatorExpr.COMMA :
+			
+							if (op.getOperandCount() == 1)
+							{
+								result = isMatchDocumentNode(op.getOperand(0));
+							} else
+							{
+								result = false;
+							}
+							break;
+						case OperatorExpr.UNION_COMBINE :
+							result = false;
+							for (int i = op.getOperandCount() - 1; i >= 0; i--)
+							{
+								if (isMatchDocumentNode(op.getOperand(i)))
+								{
+									result = true;
+									break;
+								}
+							}
+							break;
+						default :
+							result = false;
+					}
+					break;
+				case Expr.PATH_EXPR :
+					PathExpr p = (PathExpr) expr;
+					// TODO: revisit after implementation of fn:root(...)=> operandCount == 1
+						result =
+							(p.isAbsolute() && p.getOperandCount() == 0) // '/'
+			|| (p.getOperandCount() == 1 && isMatchDocumentNode(p.getOperand(0)));
+			
+					break;
+				case Expr.STEP :
+					StepExpr s = (StepExpr) expr;
+					try
+					{
+						result =
+							s.getNodeTest().isKindTest()
+								&& s.getNodeTest().getKindTest()
+									== NodeTest.ANY_KIND_TEST;
+					} catch (XPath20Exception e)
+					{
+						// impossible
+						result = false;
+					}
+					break;
+			
+				default :
+					result = false;
+			}
+		} catch (XPath20Exception e)
+		{
+			// Bug
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
 
-        m_e = e;
-    }
-
-    /**
-     * Construct an XPathException with a specified message
-     *
-     * @see java.lang.Throwable#Throwable(String)
-     */
-    public XPathException(String msg)
-    {
-        super(msg);
-    }
-
-    /**
-     * @see java.lang.Throwable#getLocalizedMessage()
-     */
-    public String getLocalizedMessage()
-    {
-        return (m_e == null) ? super.getLocalizedMessage() : getLocalizedMessage();
-    }
-
-    /**
-     * @see java.lang.Throwable#getMessage()
-     */
-    public String getMessage()
-    {
-        return (m_e == null) ? super.getMessage() : m_e.getMessage();
-    }
-
-    /**
-     * @see java.lang.Throwable#printStackTrace()
-     */
-    public void printStackTrace()
-    {
-        super.printStackTrace();
-        System.out.println("-------------------");
-        m_e.printStackTrace();
-    }
-
-    /**
-     * @see java.lang.Throwable#printStackTrace(PrintStream)
-     */
-    public void printStackTrace(PrintStream s)
-    {
-        super.printStackTrace(s);
-        s.println("----------------");
-        m_e.printStackTrace(s);
-    }
-
-    /**
-     * @see java.lang.Throwable#printStackTrace(PrintWriter)
-     */
-    public void printStackTrace(PrintWriter s)
-    {
-        super.printStackTrace(s);
-        s.println("----------------");
-        m_e.printStackTrace(s);
-    }
 }

@@ -55,7 +55,7 @@
  */
 package org.apache.xpath.expression;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 
 
 /**
@@ -169,45 +169,45 @@ public interface StepExpr extends Expr
      * Gets the type of step axis
      *
      * @return short The axis type corresponding to one of the constants defined above.
-     * @throws XPathException whenever the step is neither a forward step nor a reverse
+     * @throws XPath20Exception whenever the step is neither a forward step nor a reverse
      *         step.
      */
-    short getAxisType() throws XPathException;
+    short getAxisType() throws XPath20Exception;
 
     /**
      * Sets the type of the step axis
      * @param newType The new axis type
-     * @throws XPathException whenever the step is not a forward or reverse
+     * @throws XPath20Exception whenever the step is not a forward or reverse
      *         step.
      */
-    void setAxisType(short newType) throws XPathException;
+    void setAxisType(short newType) throws XPath20Exception;
 
     /**
      * Gets the name of the step axis
      *
      * @return String Full name of the step axis
-     * @throws XPathException whenever the step is not a forward or reverse
+     * @throws XPath20Exception whenever the step is not a forward or reverse
      *         step.
      */
-    String getAxisName() throws XPathException;
+    String getAxisName() throws XPath20Exception;
 
     /**
      * Gets the node test 
      *
      * @return NodeTest
-     * @throws XPathException whenever the step is not a forward or reverse
+     * @throws XPath20Exception whenever the step is not a forward or reverse
      *          step.
      */
-    NodeTest getNodeTest() throws XPathException;
+    NodeTest getNodeTest() throws XPath20Exception;
     
 	/**
 	 * Sets the node test 
 	 *
 	 * @param NodeTest
-	 * @throws XPathException whenever the step is not a forward or reverse
+	 * @throws XPath20Exception whenever the step is not a forward or reverse
 	 *          step.
 	 */
-	void setNodeTest(NodeTest test) throws XPathException;
+	void setNodeTest(NodeTest test) throws XPath20Exception;
 
 
     /**
@@ -215,7 +215,7 @@ public interface StepExpr extends Expr
      *
      * @return Expr The primary expression 
      */
-    Expr getPrimaryExpr() throws XPathException;
+    Expr getPrimaryExpr() throws XPath20Exception;
 
     /**
      * Gets the predicate expression at the specified position

@@ -56,7 +56,7 @@
 package org.apache.xpath.impl;
 
 import org.apache.xml.QName;
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.Variable;
 import org.apache.xpath.expression.Visitor;
@@ -118,7 +118,7 @@ public class VariableImpl extends ExprImpl implements Variable
 	/* (non-Javadoc)
 	 * @see org.apache.xpath.expression.Variable#setVariableName(java.lang.String)
 	 */
-	public void setVariableName(QName name) throws XPathException {
+	public void setVariableName(QName name) throws XPath20Exception {
 		// TODO: check the validity of the var name
 		
 		m_varName = name;

@@ -57,7 +57,7 @@ package org.apache.xpath.impl;
 
 import org.apache.xml.QName;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
@@ -113,15 +113,15 @@ public class NameTestImpl extends SimpleNode implements NodeTest
     /**
      * @see org.apache.xpath.expression.NodeTest#getKindTest()
      */
-    public short getKindTest() throws XPathException
+    public short getKindTest() throws XPath20Exception
     {
-        throw new XPathException("Invalid call of this method on NameTest node"); //I8
+        throw new XPath20Exception("Invalid call of this method on NameTest node"); //I8
     }
 
     /**
      * @see org.apache.xpath.expression.NodeTest#getLocalNameTest()
      */
-    public QName getNameTest() throws XPathException
+    public QName getNameTest() throws XPath20Exception
     {
         return m_qname;
     }

@@ -55,13 +55,13 @@
  */
 package org.apache.xpath.impl;
 
-import org.apache.xpath.XPathFactory;
+import org.apache.xpath.XPath20Factory;
 import org.apache.xpath.expression.ExpressionFactory;
 
 /**
  * Default factory for Expressions.  
  */
-public class XPathFactoryImpl extends XPathFactory {
+public class XPathFactoryImpl extends XPath20Factory {
 
 	/**
 	 * @see org.apache.xpath.XPathFactory#newExpressionFactory()

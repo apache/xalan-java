@@ -4,6 +4,7 @@ package org.apache.xpath.impl.parser;
 import org.apache.xpath.impl.CastOrTreatAsExprImpl;
 import org.apache.xpath.impl.CastableAsExprImpl;
 import org.apache.xpath.impl.ConditionalExprImpl;
+import org.apache.xpath.impl.DefaultNodeFactory;
 import org.apache.xpath.impl.ForAndQuantifiedExprImpl;
 import org.apache.xpath.impl.FunctionCallImpl;
 import org.apache.xpath.impl.InstanceOfExprImpl;
@@ -240,7 +241,7 @@ public class SimpleNode implements Node, Cloneable
 
                 break;
 
-            case XPathTreeConstants.JJTTREATEXPR: //50;
+            case XPathTreeConstants.JJTTREATEXPR: 
                 newNode = nodeFactory.createTreatAsNode(id);
 
                 if (newNode == null)

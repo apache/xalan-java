@@ -57,7 +57,7 @@ package org.apache.xpath.impl;
 
 import org.apache.xml.QName;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
@@ -146,7 +146,7 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     /**
      * @see org.apache.xpath.expression.NodeTest#getKindTest()
      */
-    public short getKindTest() throws XPathException
+    public short getKindTest() throws XPath20Exception
     {
         return m_kindTest;
     }
@@ -154,7 +154,7 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     /**
      * @see org.apache.xpath.expression.NodeTest#getLocalNameTest()
      */
-    public QName getNameTest() throws XPathException
+    public QName getNameTest() throws XPath20Exception
     {
     	if (m_kindTest == PROCESSING_INSTRUCTION_TEST)
     	{
@@ -162,7 +162,7 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     	}
     	else
     	{
-        	throw new XPathException("Invalid call this method on kind test"); // I18N
+        	throw new XPath20Exception("Invalid call this method on kind test"); // I18N
     	}
     }
 

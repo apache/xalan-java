@@ -59,7 +59,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.xml.QName;
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.datamodel.SequenceType;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.LetExpr;
@@ -129,11 +129,11 @@ public class LetExprImpl extends ExprImpl implements LetExpr
 		QName varName,
 		SequenceType type,
 		Expr expr)
-		throws XPathException
+		throws XPath20Exception
 	{
 		if (i > m_varNameList.size())
 		{
-			throw new XPathException("Index out of bounds");
+			throw new XPath20Exception("Index out of bounds");
 		}
 
 		m_varNameList.add(i, varName);
@@ -141,7 +141,7 @@ public class LetExprImpl extends ExprImpl implements LetExpr
 		m_exprList.add(i, expr);
 	}
 
-	public void removeClause(int i) throws XPathException
+	public void removeClause(int i) throws XPath20Exception
 	{
 		try
 		{
@@ -150,7 +150,7 @@ public class LetExprImpl extends ExprImpl implements LetExpr
 			m_exprList.remove(i);
 		} catch (IndexOutOfBoundsException e)
 		{
-			throw new XPathException(e);
+			throw new XPath20Exception(e);
 		}
 
 	}

@@ -55,12 +55,7 @@
  */
 package org.apache.xpath.test;
 
-import javax.xml.transform.TransformerException;
-
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.XObject;
-
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.ExprContext;
 import org.apache.xpath.impl.ExprContextImpl;
@@ -82,20 +77,21 @@ public class XalanEvaluator {
 	 * Evaluate an XPath using Xalan's old XPathAPI.
      * //@TODO change to use ctx.getDynamicContext() once designed.
 	 */
-	public Object evaluate(ExprContextImpl ctx, Expr expr) throws XPathException {
-		try {
-			XObject xobj = XPathAPI.eval((org.w3c.dom.Node) ctx.getContextItem(), expr.getString(true));
-			return xobj;
-		} catch (TransformerException e) {
-			throw new XPathException(e);
-		}
+	public Object evaluate(ExprContextImpl ctx, Expr expr) throws XPath20Exception {
+//		try {
+//			XObject xobj = XPathAPI.eval((org.w3c.dom.Node) ctx.getContextItem(), expr.getString(true));
+//			return xobj;
+//		} catch (TransformerException e) {
+//			throw new XPathException(e);
+//		}
+		return null;
 	}
 
 	/**
 	 * Evaluate an match pattern using Xalan's old XPathAPI.
      * //@TODO not implemented
 	 */
-	public boolean match(ExprContext ctx, Expr expr, Object node) throws XPathException {
+	public boolean match(ExprContext ctx, Expr expr, Object node) throws XPath20Exception {
 		return false;
 	}
 

@@ -60,7 +60,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.xml.QName;
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.datamodel.SequenceType;
 import org.apache.xpath.expression.CastOrTreatAsExpr;
 import org.apache.xpath.expression.ConditionalExpr;
@@ -84,23 +84,23 @@ import org.apache.xpath.impl.parser.XPathTreeConstants;
  */
 public class ExpressionFactoryImpl implements ExpressionFactory {
 
-	public Expr createExpr(String expr) throws XPathException {
+	public Expr createExpr(String expr) throws XPath20Exception {
 		XPath parser = new XPath(new StringReader(expr));
 		try {
 			return (Expr) parser.XPath2().jjtGetChild(0);
 		} catch (ParseException e) {
-            throw new XPathException(e);
+            throw new XPath20Exception(e);
 		}
 	}
 
 	public Expr createExpr(StaticContext ctx, String expr)
-		throws XPathException
+		throws XPath20Exception
 	{
 		XPath parser = new XPath(new StringReader(expr));
 		try {
 			return (Expr) parser.XPath2().jjtGetChild(0);
 		} catch (ParseException e) {
-			throw new XPathException(e);
+			throw new XPath20Exception(e);
 		}
 	}
 

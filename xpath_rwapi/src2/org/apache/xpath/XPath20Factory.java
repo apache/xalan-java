@@ -53,107 +53,58 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.impl.parser;
+package org.apache.xpath;
 
-import org.apache.xpath.impl.FunctionCallImpl;
-import org.apache.xpath.impl.KindTestImpl;
-import org.apache.xpath.impl.LiteralImpl;
-import org.apache.xpath.impl.NameTestImpl;
-import org.apache.xpath.impl.OperatorImpl;
-import org.apache.xpath.impl.PathExprImpl;
-import org.apache.xpath.impl.SequenceTypeImpl;
-import org.apache.xpath.impl.StepExprImpl;
-import org.apache.xpath.impl.VariableImpl;
+import org.apache.xpath.expression.ExpressionFactory;
+import org.apache.xpath.impl.XPathFactoryImpl;
 
 /**
- * Default implementation for node factory.
+ * Factory model for XPath expression manipulation.
+ * Use <code>newExpressionFactory</code> in order to get a factory 
+ * for creating and updating XPath expressions.
+ * 
+ * @author villard@us.ibm.com
+ * @author shane_curcuru@lotus.com
  */
-public class DefaultNodeFactory implements NodeFactory {
+public abstract class XPath20Factory {
 
+	public static final String XPATH_FACTORY_KEY = "org.apache.xpath.XPathFactory";
 
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createFunctionCallNode()
-	 */
-	public FunctionCallImpl createFunctionCallNode(int id) {
-		return null;
+    /** 
+     * Get an XPathFactory, using a lookup or a fallback.  
+     * 
+     * TODO: investigate using JAXP FactoryFinder-like mechanisim 
+     * or something more sophisticated than System.getProperty().
+     */ 
+	public static XPath20Factory newInstance() {
+		// Basic implementation finder: use system properties
+		String className = System.getProperty(XPATH_FACTORY_KEY);
+
+		if (className != null) {
+			try {
+				Class factory = Class.forName(className);
+
+				return (XPath20Factory) factory.newInstance();
+			} catch (ClassNotFoundException e) {
+				System.err.println("DEBUG-FillInErrorHandling: " + e.toString());
+			} catch (InstantiationException e) {
+				System.err.println("DEBUG-FillInErrorHandling: " + e.toString());
+			} catch (IllegalAccessException e) {
+				System.err.println("DEBUG-FillInErrorHandling: " + e.toString());
+			}
+		}
+
+		return new XPathFactoryImpl();
 	}
 
 	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createKindTestNode(int)
+	 * Create a new expression factory.
+	 * @see org.apache.xpath.expression.ExpressionFactory
 	 */
-	public KindTestImpl createKindTestNode(int id) {
-		return null;
-	}
+	public abstract ExpressionFactory newExpressionFactory();
 
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createLiteralNode(int)
-	 */
-	public LiteralImpl createLiteralNode(int id) {
-		return null;
-	}
+	/* public abstract ItemFactory newItemFactory(); */
 
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createNameTestNode()
-	 */
-	public NameTestImpl createNameTestNode(int id) {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createNode(int)
-	 */
-	public Node createNode(int id) {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createOperatorNode(int)
-	 */
-	public OperatorImpl createOperatorNode(int id) {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createPathNode()
-	 */
-	public PathExprImpl createPathNode(int id) {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createStepNode()
-	 */
-	public StepExprImpl createStepNode(int id) {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createVarNameNode()
-	 */
-	public VariableImpl createVarNameNode(int id) {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createSequenceTypeNode(int)
-	 */
-	public SequenceTypeImpl createSequenceTypeNode(int id) {
-		return null;
-
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createCastAsNode(int)
-	 */
-	public SequenceTypeImpl createCastAsNode(int id) {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.impl.parser.NodeFactory#createTreatAsNode(int)
-	 */
-	public SequenceTypeImpl createTreatAsNode(int id) {
-		return null;
-	}
+	/* public abstract EvaluatorFactory newEvaluatorFactory(); */
 
 }

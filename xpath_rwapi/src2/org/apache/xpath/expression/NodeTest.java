@@ -56,7 +56,7 @@
 package org.apache.xpath.expression;
 
 import org.apache.xml.QName;
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 
 /**
  * Represents item test. An item test includes both node tests and the context item
@@ -130,19 +130,19 @@ public interface NodeTest {
     /**
      * Gets the kind test code.
      * @return short One of the kind test constant value
-     * @throws XPathException whenever this node test isn't a kind test
+     * @throws XPath20Exception whenever this node test isn't a kind test
      */
-    short getKindTest() throws XPathException; 
+    short getKindTest() throws XPath20Exception; 
     
     /**
      * Gets the qualified name of the name test or the name of the 'PITarget'
      * when the node test is pi kind test. For the later, only the local
      * part of the qualified name is relevant.
      * @return QName The name test or {@link #WILDCARD}
-     * @throws XPathException whenever this node test isn't a name test
+     * @throws XPath20Exception whenever this node test isn't a name test
      * or a pi kind test
      */
-    QName getNameTest() throws XPathException;
+    QName getNameTest() throws XPath20Exception;
     
    
 }

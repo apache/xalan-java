@@ -58,7 +58,7 @@ package org.apache.xpath.expression;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 
 
 /**
@@ -111,53 +111,53 @@ public interface Literal extends Expr
      *
      * @return DOCUMENT ME!
      *
-     * @throws XPathException when the literal isn't an integer or cannot be
+     * @throws XPath20Exception when the literal isn't an integer or cannot be
      *         represented by the primitive int type (in case of big integer)
      */
-    int getIntegerLiteralAsInt() throws XPathException;
+    int getIntegerLiteralAsInt() throws XPath20Exception;
 
     /**
      * Gets the integer literal
      *
      * @return DOCUMENT ME!
      *
-     * @throws XPathException when the literal isn't an integer
+     * @throws XPath20Exception when the literal isn't an integer
      */
-    BigInteger getIntegerLiteral() throws XPathException;
+    BigInteger getIntegerLiteral() throws XPath20Exception;
 
     /**
      * Gets the decimal literal
      *
      * @return DOCUMENT ME!
      *
-     * @throws XPathException when the literal isn't a decimal
+     * @throws XPath20Exception when the literal isn't a decimal
      */
-    BigDecimal getDecimalLiteral() throws XPathException;
+    BigDecimal getDecimalLiteral() throws XPath20Exception;
 
     /**
      * Gets the decimal literal as a double
      *
      * @return DOCUMENT ME!
      *
-     * @throws XPathException when the literal isn't a decimal
+     * @throws XPath20Exception when the literal isn't a decimal
      */
-    double getDecimalLiteralAsDouble() throws XPathException;
+    double getDecimalLiteralAsDouble() throws XPath20Exception;
 
     /**
      * Gets the double literal
      *
      * @return DOCUMENT ME!
      *
-     * @throws XPathException when the literal isn't a double
+     * @throws XPath20Exception when the literal isn't a double
      */
-    double getDoubleLiteral() throws XPathException;
+    double getDoubleLiteral() throws XPath20Exception;
 
     /**
      * Gets the string literal
      *
      * @return DOCUMENT ME!
      *
-     * @throws XPathException when the literal isn't a string
+     * @throws XPath20Exception when the literal isn't a string
      */
-    String getStringLiteral() throws XPathException;
+    String getStringLiteral() throws XPath20Exception;
 }

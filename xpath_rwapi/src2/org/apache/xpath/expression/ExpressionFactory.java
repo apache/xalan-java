@@ -59,7 +59,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.xml.QName;
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.datamodel.SequenceType;
 
 
@@ -80,20 +80,20 @@ public interface ExpressionFactory
      * Moreover, various checking are not performed, like the existence test
      * of variable declaration</p>
      * @return A XPath expression
-     * @throws XPathException whenever the specified expression is not valid 
+     * @throws XPath20Exception whenever the specified expression is not valid 
      * syntaxically or semantically.
      */
-    public Expr createExpr(String expr) throws XPathException;
+    public Expr createExpr(String expr) throws XPath20Exception;
     
 	/**
      * Creates a new XPath expression from a string representation.
 	 * Use the specified static context to resolve namespaces and perform
 	 * various static type checking.
 	 * @return A XPath expression
-	 * @throws XPathException whenever the specified expression is not valid 
+	 * @throws XPath20Exception whenever the specified expression is not valid 
 	 * syntaxically or semantically.
 	 */
-	public Expr createExpr(StaticContext ctx, String expr) throws XPathException;
+	public Expr createExpr(StaticContext ctx, String expr) throws XPath20Exception;
 
 	/**
 	 * Creates a new empty {@link OperatorExpr expression sequence}

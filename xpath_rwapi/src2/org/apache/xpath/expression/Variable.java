@@ -56,7 +56,7 @@
 package org.apache.xpath.expression;
 
 import org.apache.xml.QName;
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 
 /**
  * Represents variable.
@@ -72,8 +72,8 @@ public interface Variable extends Expr {
 	/**
 	 * Sets the name of the variable.
 	 * @param name New name of the variable
-	 * @throws XPathException whenever the given name is not a valid variable name
+	 * @throws XPath20Exception whenever the given name is not a valid variable name
 	 */
-	void setVariableName(QName name) throws XPathException;
+	void setVariableName(QName name) throws XPath20Exception;
 
 }

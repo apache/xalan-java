@@ -55,7 +55,7 @@
  */
 package org.apache.xpath.expression;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 
 
 /**
@@ -303,7 +303,7 @@ public interface OperatorExpr extends Expr
     /**
      * Gets the operand at the ith position.
      */
-    Expr getOperand(int i) throws XPathException;
+    Expr getOperand(int i) throws XPath20Exception;
 
     /**
      * Gets the operand count
@@ -312,15 +312,15 @@ public interface OperatorExpr extends Expr
 
     /**
      * Append an operand at the end of this expression.
-     * @throws XPathException when the specified operand do not match
+     * @throws XPath20Exception when the specified operand do not match
      * the operator type
      */
-    void addOperand(Expr operand) throws XPathException;
+    void addOperand(Expr operand) throws XPath20Exception;
 
     /**
      * Remove an operand
      */
-    void removeOperand(Expr operand) throws XPathException;
+    void removeOperand(Expr operand) throws XPath20Exception;
 
 	// TODO
 	// void setOperand(Expr operand)
@@ -334,6 +334,6 @@ public interface OperatorExpr extends Expr
      * in the expression <code>a/b</code> is <code>a/b/c/d</code></p>
      * @param expr The expression to append
      */    
-    void append(OperatorExpr expr) throws XPathException;
+    void append(OperatorExpr expr) throws XPath20Exception;
     
 }

@@ -61,7 +61,7 @@ import java.math.BigInteger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.xpath.XPathFactory;
+import org.apache.xpath.XPath20Factory;
 import org.apache.xpath.expression.CastableAsExpr;
 import org.apache.xpath.expression.ConditionalExpr;
 import org.apache.xpath.expression.Expr;
@@ -133,7 +133,7 @@ public class TestSamples
             }
 
             // Test adhoc manual creation
-            ExpressionFactory exprFct = XPathFactory.newInstance()
+            ExpressionFactory exprFct = XPath20Factory.newInstance()
                                                     .newExpressionFactory();
 
             Expr expr = exprFct.createExpr("child::tutu[10]");

@@ -55,7 +55,7 @@
  */
 package org.apache.xpath.impl;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.OperatorExpr;
 import org.apache.xpath.expression.Visitor;
@@ -263,7 +263,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     /**
      * @see org.apache.xpath.expression.OperatorExpr#addOperand(Expr)
      */
-    public void addOperand(Expr operand) throws XPathException
+    public void addOperand(Expr operand) throws XPath20Exception
     {
     	// do not performed the reduction during edition
         super.jjtAddChild((Node) operand,
@@ -273,14 +273,14 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 	/* (non-Javadoc)
 	 * @see org.apache.xpath.expression.OperatorExpr#append(org.apache.xpath.expression.OperatorExpr)
 	 */
-	public void append(OperatorExpr expr) throws XPathException {
+	public void append(OperatorExpr expr) throws XPath20Exception {
 		if (expr.getExprType() == m_exprType && expr.getOperatorType() == m_opType ) {
 			int size = expr.getOperandCount();
 			for (int i = 0; i < size ; i ++ ) {
 				addOperand(expr.getOperand(i));			
 			}
 		} else {
-			throw new XPathException("Mismatched operator expressions"); // I16 + better msg
+			throw new XPath20Exception("Mismatched operator expressions"); // I16 + better msg
 		}
 	}
 
@@ -316,7 +316,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     /**
      * @see org.apache.xpath.expression.OperatorExpr#removeOperand(Expr)
      */
-    public void removeOperand(Expr operand) throws XPathException
+    public void removeOperand(Expr operand) throws XPath20Exception
     {
         super.jjtRemoveChild((Node) operand);
     }

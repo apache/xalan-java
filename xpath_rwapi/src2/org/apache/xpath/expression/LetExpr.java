@@ -57,7 +57,7 @@
 package org.apache.xpath.expression;
 
 import org.apache.xml.QName;
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.datamodel.SequenceType;
 
 /**
@@ -86,34 +86,34 @@ public interface LetExpr extends Expr
 	 * Gets the variable name of the ith let clause
 	 * @param i
 	 * @return QName
-	 * @throws XPathException when the specified index is out of bounds
+	 * @throws XPath20Exception when the specified index is out of bounds
 	 */
-	QName getVariableName(int i) throws XPathException;
+	QName getVariableName(int i) throws XPath20Exception;
 	
 	/**
 	 * Gets the type of the ith let clause
 	 * @param i
 	 * @return A {@link SequenceType} or null when no type is specified.
-	 * @throws XPathException when the specified index is out of bounds
+	 * @throws XPath20Exception when the specified index is out of bounds
 	 */
-	SequenceType getType(int i) throws XPathException;
+	SequenceType getType(int i) throws XPath20Exception;
 	
 	/**
 	 * Gets the expression of the ith let clause
 	 * @param i
 	 * @return An expression
-	 * @throws XPathException when the specified index is out of bounds
+	 * @throws XPath20Exception when the specified index is out of bounds
 	 */
-	Expr getExpr(int i) throws XPathException;
+	Expr getExpr(int i) throws XPath20Exception;
 	
 	/**
 	 * Append a clause at the end of the clause list
 	 * @param varName
 	 * @param type
 	 * @param expr
-	 * @throws XPathException when the specified expression is not a single expression
+	 * @throws XPath20Exception when the specified expression is not a single expression
 	 */
-	void appendClause(QName varName, SequenceType type, Expr expr)  throws XPathException;
+	void appendClause(QName varName, SequenceType type, Expr expr)  throws XPath20Exception;
 	
 	/**
 	 * Insert a clause before the ith position.
@@ -121,15 +121,15 @@ public interface LetExpr extends Expr
 	 * @param varName
 	 * @param type
 	 * @param expr
-	 * @throws XPathException when the specified expression is not a single expression
+	 * @throws XPath20Exception when the specified expression is not a single expression
 	 * or when the specified index is out of bounds
 	 */
-	void insertClause(int i, QName varName, SequenceType type, Expr expr) throws XPathException;
+	void insertClause(int i, QName varName, SequenceType type, Expr expr) throws XPath20Exception;
 	
 	/**
 	 * Remove the clause at the ith position
 	 * @param i
-	 * @throws XPathException when the specified index is out of bounds
+	 * @throws XPath20Exception when the specified index is out of bounds
 	 */
-	void removeClause(int i) throws XPathException;
+	void removeClause(int i) throws XPath20Exception;
 }

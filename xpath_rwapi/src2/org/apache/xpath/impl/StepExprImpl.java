@@ -55,7 +55,7 @@
  */
 package org.apache.xpath.impl;
 
-import org.apache.xpath.XPathException;
+import org.apache.xpath.XPath20Exception;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.expression.StepExpr;
@@ -202,11 +202,11 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.StepExpr#getAxisType()
      */
-    public short getAxisType() throws XPathException
+    public short getAxisType() throws XPath20Exception
     {
         if (m_axisType == STEP_IS_PRIMARYEXPR)
         {
-            throw new XPathException("Invalid call of this method on primary expression");
+            throw new XPath20Exception("Invalid call of this method on primary expression");
         }
 
         return m_axisType;
@@ -215,11 +215,11 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.StepExpr#setAxisType(short)
      */
-    public void setAxisType(short newType) throws XPathException
+    public void setAxisType(short newType) throws XPath20Exception
     {
         if (m_axisType == STEP_IS_PRIMARYEXPR)
         {
-            throw new XPathException("Invalid call of this method on primary expression");
+            throw new XPath20Exception("Invalid call of this method on primary expression");
         }
 
         m_axisType = newType;
@@ -228,11 +228,11 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.StepExpr#getAxisName()
      */
-    public String getAxisName() throws XPathException
+    public String getAxisName() throws XPath20Exception
     {
         if (m_axisType == STEP_IS_PRIMARYEXPR)
         {
-            throw new XPathException("Invalid call of this method on primary expression");
+            throw new XPath20Exception("Invalid call of this method on primary expression");
         }
 
         return StepExprImpl.FULL_AXIS_NAME[m_axisType];
@@ -241,11 +241,11 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.StepExpr#getStepNodeTest()
      */
-    public NodeTest getNodeTest() throws XPathException
+    public NodeTest getNodeTest() throws XPath20Exception
     {
         if (m_axisType == STEP_IS_PRIMARYEXPR)
         {
-            throw new XPathException("Invalid call of this method on step compose of primary expression");
+            throw new XPath20Exception("Invalid call of this method on step compose of primary expression");
         }
 
         return (NodeTest) m_children[0];
@@ -254,10 +254,10 @@ public class StepExprImpl extends ExprImpl implements StepExpr
 	/* (non-Javadoc)
 	 * @see org.apache.xpath.expression.StepExpr#setNodeTest(org.apache.xpath.expression.NodeTest)
 	 */
-	public void setNodeTest(NodeTest test) throws XPathException {
+	public void setNodeTest(NodeTest test) throws XPath20Exception {
 		if (m_axisType == STEP_IS_PRIMARYEXPR)
 		{
-				throw new XPathException("Invalid call of this method on step compose of primary expression");
+				throw new XPath20Exception("Invalid call of this method on step compose of primary expression");
 		}
 		super.jjtAddChild((Node) test, 0);
 	}
@@ -266,11 +266,11 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.StepExpr#getPrimaryExpr()
      */
-    public Expr getPrimaryExpr() throws XPathException
+    public Expr getPrimaryExpr() throws XPath20Exception
     {
         if (m_axisType != STEP_IS_PRIMARYEXPR)
         {
-            throw new XPathException("Invalid call of this method on step compose of node test");
+            throw new XPath20Exception("Invalid call of this method on step compose of node test");
         }
 
         return (Expr) m_children[0];
@@ -455,7 +455,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
                 expr.append(']');
             }
         }
-        catch (XPathException e)
+        catch (XPath20Exception e)
         {
             // never
         }
