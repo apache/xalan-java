@@ -345,10 +345,8 @@ public class XString extends XObject implements XMLString
    * <code>null</code> and is a <code>String</code> object that represents
    * the same sequence of characters as this object.
    *
-   * @param   anObject   the object to compare this <code>String</code>
+   * @param   obj2       the object to compare this <code>String</code>
    *                     against.
-   *
-   * NEEDSDOC @param obj2
    * @return  <code>true</code> if the <code>String </code>are equal;
    *          <code>false</code> otherwise.
    * @see     java.lang.String#compareTo(java.lang.String)
@@ -394,9 +392,8 @@ public class XString extends XObject implements XMLString
   /**
    * Compares two strings lexicographically.
    *
-   * @param   anotherString   the <code>String</code> to be compared.
+   * @param   xstr   the <code>String</code> to be compared.
    *
-   * NEEDSDOC @param xstr
    * @return  the value <code>0</code> if the argument string is equal to
    *          this string; a value less than <code>0</code> if this string
    *          is lexicographically less than the string argument; and a
@@ -1094,7 +1091,7 @@ public class XString extends XObject implements XMLString
   }
   
   /**
-   * @see XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+   * @see org.apache.xpath.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {

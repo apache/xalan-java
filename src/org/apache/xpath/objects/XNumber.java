@@ -50,7 +50,7 @@ public class XNumber extends XObject
   /**
    * Construct a XNodeSet object.
    *
-   * @param d Value of the object
+   * @param num Value of the object
    */
   public XNumber(Number num)
   {
@@ -424,7 +424,7 @@ public class XNumber extends XObject
   }
   
   /**
-   * @see XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+   * @see org.apache.xpath.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {

@@ -102,11 +102,7 @@ public class Compiler extends OpMap
 
   /**
    * Execute the XPath object from a given opcode position.
-   * @param xctxt The execution context.
-   * @param context The current source tree context node.
    * @param opPos The current position in the xpath.m_opMap array.
-   * @param callback Interface that implements the processLocatedNode method.
-   * @param callbackInfo Object that will be passed to the processLocatedNode method.
    * @return The result of the XPath.
    *
    * @throws TransformerException if there is a syntax or other error.

@@ -60,7 +60,7 @@ public class XMLStringFactoryImpl extends XMLStringFactory
    * Create a XMLString from a FastStringBuffer.
    *
    *
-   * @param string FastStringBuffer reference, which must be non-null.
+   * @param fsb FastStringBuffer reference, which must be non-null.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *

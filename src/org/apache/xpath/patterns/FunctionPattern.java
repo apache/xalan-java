@@ -39,9 +39,6 @@ public class FunctionPattern extends StepPattern
    * Construct a FunctionPattern from a
    * {@link org.apache.xpath.functions.Function expression}.
    *
-   *
-   * @param a should be a {@link org.apache.xpath.functions.Function expression}.
-   *
    * NEEDSDOC @param expr
    */
   public FunctionPattern(Expression expr, int axis, int predaxis)

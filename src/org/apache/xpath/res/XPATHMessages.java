@@ -39,7 +39,7 @@ public class XPATHMessages extends XMLMessages
    * Creates a message from the specified key and replacement
    * arguments, localized to the given locale.
    *
-   * @param errorCode The key for the message text.
+   * @param msgKey    The key for the message text.
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
@@ -84,8 +84,6 @@ public class XPATHMessages extends XMLMessages
   /**
    * Creates a message from the specified key and replacement
    * arguments, localized to the given locale.
-   *
-   * @param errorCode The key for the message text.
    *
    * @param fResourceBundle The resource bundle to use.
    * @param msgKey  The message key to use.

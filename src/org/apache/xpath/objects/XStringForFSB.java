@@ -276,10 +276,9 @@ public class XStringForFSB extends XString
    * <code>null</code> and is a <code>String</code> object that represents
    * the same sequence of characters as this object.
    *
-   * @param   anObject   the object to compare this <code>String</code>
+   * @param   obj2       the object to compare this <code>String</code>
    *                     against.
    *
-   * NEEDSDOC @param obj2
    * @return  <code>true</code> if the <code>String </code>are equal;
    *          <code>false</code> otherwise.
    * @see     java.lang.String#compareTo(java.lang.String)
@@ -366,9 +365,7 @@ public class XStringForFSB extends XString
   /**
    * Tell if two objects are functionally equal.
    *
-   * @param obj2 Object to compare this to
-   *
-   * NEEDSDOC @param anotherString
+   * @param anotherString Object to compare this to
    *
    * @return true if the two objects are equal
    *
@@ -408,10 +405,9 @@ public class XStringForFSB extends XString
    * <code>null</code> and is a <code>String</code> object that represents
    * the same sequence of characters as this object.
    *
-   * @param   anObject   the object to compare this <code>String</code>
+   * @param   obj2       the object to compare this <code>String</code>
    *                     against.
    *
-   * NEEDSDOC @param obj2
    * @return  <code>true</code> if the <code>String </code>are equal;
    *          <code>false</code> otherwise.
    * @see     java.lang.String#compareTo(java.lang.String)
@@ -461,9 +457,8 @@ public class XStringForFSB extends XString
   /**
    * Compares two strings lexicographically.
    *
-   * @param   anotherString   the <code>String</code> to be compared.
+   * @param   xstr   the <code>String</code> to be compared.
    *
-   * NEEDSDOC @param xstr
    * @return  the value <code>0</code> if the argument string is equal to
    *          this string; a value less than <code>0</code> if this string
    *          is lexicographically less than the string argument; and a
@@ -510,9 +505,8 @@ public class XStringForFSB extends XString
    * The java.text package provides <em>collators</em> to allow
    * locale-sensitive ordering.
    *
-   * @param   str   the <code>String</code> to be compared.
+   * @param   xstr   the <code>String</code> to be compared.
    *
-   * NEEDSDOC @param xstr
    * @return  a negative integer, zero, or a positive integer as the
    *          the specified String is greater than, equal to, or less
    *          than this String, ignoring case considerations.

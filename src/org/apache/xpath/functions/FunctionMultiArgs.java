@@ -187,7 +187,7 @@ public class FunctionMultiArgs extends Function3Args
 
    
     /**
-     * @see XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+     * @see org.apache.xpath.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
      */
     public void callArgVisitors(XPathVisitor visitor)
     {

@@ -115,7 +115,7 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
   }
   
   /**
-   * @see XPathVisitable#callVisitors(XPathVisitor)
+   * @see org.apache.xpath.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {

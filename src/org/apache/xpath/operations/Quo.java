@@ -23,7 +23,7 @@ import org.apache.xpath.objects.XObject;
 
 /**
  * The 'quo' operation expression executer. (no longer supported by XPath).
- * @deprecated.
+ * @deprecated
  */
 public class Quo extends Operation
 {

@@ -73,7 +73,7 @@ public class OpMapVector {
    * The index must be a value greater than or equal to 0 and less
    * than the current size of the vector.
    *
-   * @param node object to set
+   * @param value object to set
    * @param index Index of where to set the object
    */
   public final void setElementAt(int value, int index)
