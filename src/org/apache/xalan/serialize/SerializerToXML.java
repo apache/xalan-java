@@ -1278,8 +1278,26 @@ public class SerializerToXML
     try
     {
       final Writer writer = m_writer;
+      final int limit = start + length;
+      boolean wasDash = false;
       writer.write("<!--");
-      writer.write(ch, start, length);
+
+      // Detect occurrences of two consecutive dashes, handle as necessary.
+      for (int i = start; i < limit; i++) {
+        if (wasDash && ch[i] == '-') {
+          writer.write(ch, start, i - start);
+          writer.write(" -");
+          start = i + 1;     	  
+        }
+        wasDash = (ch[i] == '-');
+      }      	 
+      
+      // Output the remaining characters.
+      writer.write(ch, start, limit - start);
+      // Protect comment end from a single trailing dash
+      if (ch[limit-1] == '-')
+        writer.write(' ');
+
       writer.write("-->");
     }
     catch(IOException ioe)
