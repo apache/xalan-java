@@ -131,16 +131,7 @@ abstract public class ToSAXHandler extends SerializerBase
      */
     public void comment(String comment) throws SAXException
     {
-
-        // Close any open element before emitting comment
-        if (m_elemContext.m_startTagOpen)
-        {
-            closeStartTag();
-        }
-        else if (m_cdataTagOpen)
-        {
-            closeCDATA();
-        }
+        flushPending();
 
         // Ignore if a lexical handler has not been set
         if (m_lexHandler != null)
