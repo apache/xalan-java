@@ -93,7 +93,7 @@ Copyright:
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
   <property name="xalanonly-styledocs"
-            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/bugs.xsl"/>
+            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/bugs.xsl,loaderdesign.xml,stylesheets/design2project.xsl,stylesheets/designdoc2html.xsl"/>
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
@@ -130,7 +130,13 @@ Copyright:
     transforms bugs.xml (just including open bugs) and puts the result in xdocs/sources/xalan for inclusion in the readme.xml -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in bugs.xml -xsl ${xdocs.style}/stylesheets/bugs.xsl -out ${xdocs.dir}/sources/xalan/BUGS"/>
-    </java>   
+    </java>
+    <!-- Generate the Xalan-J2 design document -->
+    <java fork="yes" classname="${doc.generator}"
+          classpath="${java.class.path}:${build.dir}/xalan.jar"> 
+          <arg line="loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./build/docs/design/
+                     ./xdocs/sources/xalandesign.xml ./xdocs/style"/>
+    </java>
            
     <mkdir dir="${build.apidocs}"/>
   </target>
@@ -431,14 +437,21 @@ Copyright:
   <target name="site" depends="prepare.docs">
  
     <mkdir dir="${site.dir}/apidocs"/>
-    
+    <mkdir dir="${site.dir}/design"/>
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/$xalan.jar"> 
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
-        </java>	<!-- put todo.html in the site directory --> 
+        </java>
+
+   	<!-- put todo.html in the site directory -->     
     <copy file="${build.docs}/todo.html" todir="${site.dir}"/>
+     <!-- put xalan design doc in the site design subdir -->
+    <copy todir="${site.dir}/design">
+      <fileset dir="${build.docs}/design"/>
+    </copy>  
+    <!-- put in the javadoc -->
     <copy todir="${site.dir}/apidocs">
-          <fileset dir="${build.apidocs}"/>
-        </copy>  
+      <fileset dir="${build.apidocs}"/>
+    </copy>  
   </target>
    
   <!-- =================================================================== -->
@@ -544,4 +557,15 @@ Copyright:
     </java>   
   </target>  
 
+  <!-- =================================================================== -->
+  <!-- Creates the xalan design document                                   -->
+  <!-- =================================================================== -->
+    <target name="xalan-j2-design">
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/xalan.jar"> 
+      <arg line="loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./build/docs/design/
+      ./xdocs/sources/xalandesign.xml ./xdocs/style"/>
+    </java>
+  </target>
+
+  
 </project>
