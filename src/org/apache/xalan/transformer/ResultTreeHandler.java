@@ -498,9 +498,14 @@ public class ResultTreeHandler extends QueuedEvents
       m_snapshot.m_currentNode = node;
 
     String data = node.getNodeValue();
-    char [] ch = data.toCharArray();
-    int length = data.length();
+    char [] ch = null;
+    int length = 0;
+    if (data != null)
+    {
+    ch = data.toCharArray();
+    length = data.length();
     m_contentHandler.characters(ch, 0, length);
+    }
     
     if (null != m_tracer)
     {
