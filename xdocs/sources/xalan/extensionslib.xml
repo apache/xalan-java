@@ -67,7 +67,8 @@
 <li><link anchor="distinct">distinct</link></li>
 <li><link anchor="hassamenodes">hasSameNodes</link></li>
 <li><link anchor="sql">SQL extensions</link></li>
-<li><link anchor="evaluate">evaluate</link> <ref>(to be done)</ref></li>
+<li><link anchor="evaluate">evaluate</link></li>
+<li><link anchor="tokenize">tokenize</link></li>
 <li><link anchor="groupitem">group and item</link> <ref>(to be done)</ref></li>
 <li><link anchor="type">type</link> <ref>(to be done)</ref></li>
 <li><link anchor="todate">toDate</link> <ref>(to be done)</ref></li>
@@ -282,14 +283,24 @@ and working incrementally through "streamable" result set.</p>
 </source>
 </s3>
 </s2><anchor name="evaluate"/>
-
 <s2 title= "evaluate">
-<p><em>To be done.</em> Allows the run-time construction and evaluation of XPath expressions.</p>
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
+<code>evaluate (xpath-expression)</code> function returns the result of evaluating the xpath-expression in the current 
+XPath expression context (automatically passed in by the extension mechanism).</p>
+<p>Use the evaluation extension function when the value of the expression is not known until run time.</p>
+</s2><anchor name="tokenize"/>
+<s2 title="tokenize">
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
+<code>tokenize (tokenize-string, delimiters)</code><br/>
+or<br/>
+<code>tokenize (tokenize-string)</code> function returns a node-set containing one text node for each token in the tokenize-string.</p>
+<p>The delimiters determine which characters are used to divide the tokenize-string into individual tokens. If you do not include
+the delimiters argument, the function uses tab (&amp;#x09), linefeed (&amp;#x0A), return (&amp;#x0D), and space (&amp;#x20) as delimiters.
+If tokenize-string is an empty string or contains only delimiters, the result is an empty node-set.</p>
 </s2><anchor name="groupitem"/>
 <s2 title= "group and item">
 <p><em>To be done.</em> Provides efficient grouping of items with a common value.</p>
 </s2><anchor name="type"/>
-
 <s2 title= "type">
 <p><em>To be done.</em> Returns a string that represents the Schema or DTD type.</p>
 </s2><anchor name="todate"/>
