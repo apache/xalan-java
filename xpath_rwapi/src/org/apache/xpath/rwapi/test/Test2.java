@@ -59,6 +59,7 @@ package org.apache.xpath.rwapi.test;
 import java.io.StringReader;
 
 import org.apache.xpath.rwapi.expression.Expr;
+import org.apache.xpath.rwapi.impl.parser.ParseException;
 import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.XPath;
 
@@ -67,14 +68,39 @@ public class Test2 {
 
     public Test2(String[] args) {
         try {
-	    String s = (args.length > 0) ? args[0] : "a/b";
-	    XPath parser = new XPath(new StringReader(s));
-	    parser.XPath2().dump("|");
+        if (args.length == 0) {
+            printIt("a/b");
+            printIt("/a/b");
+            printIt("//a/b");
+            printIt("a//b");
+            printIt("a[b]");
+            printIt("a/@b");
+            printIt("a|b");
+            printIt("a|@b");
+            printIt("a|@b[.='fred']");
+            }
+        else {
+            for (int i = 0; i < args.length; i++) {
+                printIt(args[i]);
+                }            
+            }
+
         } 
-	catch (Exception e) {
+    catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    public static void printIt(String xp) throws ParseException
+    {
+        System.out.println("------- XPATH: " + xp);
+        XPath parser = new XPath(new StringReader(xp));
+        SimpleNode n = parser.XPath2();
+        Expr expr = (Expr) n.jjtGetChild(0);
+        System.out.println("-getString(1): " + expr.getString(true));
+        System.out.println("-getString(0): " + expr.getString(false));
+        n.dump("|");
     }
 
     public static void main(String[] args) {
