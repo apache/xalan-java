@@ -134,11 +134,11 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     private int[]     _lengthOrAttr;  // Serves two purposes !!!
 
     // Holds contents of text/comment nodes and attribute values
-    private char[]    _text;
+   // private char[]    _text;
 
     // Namespace related stuff
     private String[]  _uriArray;
-    private String[]  _prefixArray;
+    //private String[]  _prefixArray;
     private short[]   _namespace;
    // private short[]   _prefix;
     private Hashtable _nsIndex = new Hashtable();
@@ -195,8 +195,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
      */
     public boolean isElement(final int node)
     {
-      final int type = getType(node); //_type[node];
-	    return (((node < _firstAttributeNode) && (type >= DTM.NTYPES)) || getNodeType(node) == DTM.ELEMENT_NODE);
+      return (((node < _firstAttributeNode) && (getType(node) >= DTM.NTYPES)) || getNodeType(node) == DTM.ELEMENT_NODE);
     }
 
     /**
@@ -204,8 +203,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
      */
     public boolean isAttribute(final int node)
     {
-      final int type = getType(node); //_type[node];
-	    return ((node >= _firstAttributeNode) && (type >= DTM.NTYPES));
+      return (((node >= _firstAttributeNode) && (getType(node) >= DTM.NTYPES)) || getNodeType(node) == DTM.ATTRIBUTE_NODE);
     }
 
     /**
@@ -2121,11 +2119,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
      */
     public int getNamespaceType(final int node)
     {
-    	//return 
-    	int i = super.getNamespaceType(node);
+    	return super.getNamespaceType(node);
     	//System.out.println("nsid " + i);
-    	return i;
-       /* int type =  this.getExpandedTypeID(node);
+    	/* int type =  this.getExpandedTypeID(node);
         Integer intType = (Integer)_nsIndex.get(new Integer(type));
         if (intType == null)
         return (0);  // default namespace
@@ -2196,10 +2192,11 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       final int nNames = namesArray.length;
       // Padding with number of names, because they
       // may need to be added, i.e for RTFs. See copy03  
-      final int[] types = new int[m_expandedNameTable.getSize() + nNames]; //(nNames);
+      final int[] types = new int[m_expandedNameTable.getSize() /*+ nNames*/]; //(nNames);
       for (int i = 0; i < nNames; i++)      {
         //types.put(namesArray[i], new Integer(i + DTM.NTYPES));
-          types[getGeneralizedType(namesArray[i])] = getGeneralizedType(namesArray[i]); //(i + DTM.NTYPES);
+          int type = getGeneralizedType(namesArray[i]);
+          types[type] = type; //(i + DTM.NTYPES);
       }
       return types;
     }
@@ -2252,7 +2249,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       for (i = NTYPES; i < exLength; i++) 
       	result[i] = m_expandedNameTable.getType(i); 
       	
-
+/*
       // extended types initialized to "beyond caller's types"
       // unknown element or Attr
       for (i = NTYPES; i < mappingLength; i++) {
@@ -2275,7 +2272,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
           result[getGeneralizedType(name)] = DTM.ATTRIBUTE_NODE;
         else
           result[getGeneralizedType(name)] = DTM.ELEMENT_NODE;      	
-      }
+      }*/
 
       // actual mapping of caller requested names
       for (i = 0; i < namesLength; i++) {
@@ -2376,19 +2373,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       return(result);
     }
 
-    /**
-   * Given a node handle, return an ID that represents the node's expanded name.
-   *
-   * @param nodeHandle The handle to the node in question.
-   *
-   * @return the expanded-name id of the node.
-   *
-  public int getExpandedTypeID(int nodeHandle)
-  {
-    int id = super.getExpandedTypeID(nodeHandle);
-    return _type[getNodeIdent(nodeHandle)];
-  } */
-
+   
     /**
      * Dump the whole tree to a file (serialized)
      */
@@ -2407,10 +2392,10 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       out.writeObject(_offsetOrChild);   // first child of every node in DOM
       out.writeObject(_lengthOrAttr);    // first attr of every node in DOM
 
-      out.writeObject(_text);            // all text in DOM (text, PIs, etc)
+      //out.writeObject(_text);            // all text in DOM (text, PIs, etc)
       out.writeObject(_namesArray);      // names of all element/attr types
       out.writeObject(_uriArray);        // name of all URIs
-      out.writeObject(_prefixArray);     // name of all prefixes
+      //out.writeObject(_prefixArray);     // name of all prefixes
 
       out.writeObject(_whitespace);
 
@@ -2443,10 +2428,10 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       _offsetOrChild = (int[])in.readObject();
       _lengthOrAttr  = (int[])in.readObject();
 
-      _text          = (char[])in.readObject();
+      //_text          = (char[])in.readObject();
       _namesArray    = (String[])in.readObject();
       _uriArray      = (String[])in.readObject();
-      _prefixArray   = (String[])in.readObject();
+      //_prefixArray   = (String[])in.readObject();
 
       _whitespace    = (BitArray)in.readObject();
       
@@ -2502,7 +2487,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       //_nextSibling   = new int[size];
       _offsetOrChild = new int[size];
       _lengthOrAttr  = new int[size];
-      _text          = new char[size * 10];
+      //_text          = new char[size * 10];
       _whitespace    = new BitArray(size);
      // _prefix        = new short[size];
       // _namesArray[] and _uriArray[] are allocated in endDocument
@@ -2588,46 +2573,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	    }
 	    return name;*/
 	}
-    }
- 
-
-    /**
-     * Utilily method to allow calling startElement from within the DOMBuilderImpl Inner class
-     */
-    protected void callStartDocument()
-	    throws SAXException
-    {
-        startDocument();
-    }
-
-    /**
-     * Utilily method to allow calling startElement from within the DOMBuilderImpl Inner class
-     */
-    protected void callStartElement(String uri, String localName,
-				 String qname, Attributes attributes)
-	    throws SAXException
-    {
-        startElement(uri, localName, qname, attributes);
-    }
-
-    /**
-     * Utilily method to allow calling startElement from within the DOMBuilderImpl Inner class
-     */
-    protected void callEndElement(String uri, String localName,
-				 String qname)
-	    throws SAXException
-    {
-        endElement(uri, localName, qname);
-    }
-
-    /**
-     * Utilily method to allow calling startElement from within the DOMBuilderImpl Inner class
-     */
-    protected void callEndDocument()
-	    throws SAXException
-    {
-        endDocument();
-    }
+    }    
 
     /**
      * Returns the namespace URI to which a node belongs
@@ -3366,8 +3312,8 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	private int       _uriCount     = 0;
 	private int       _prefixCount  = 0;
 
-	private int       _nextNamespace = DOM.NULL;
-	private int       _lastNamespace = DOM.NULL;
+	//private int       _nextNamespace = DOM.NULL;
+	//private int       _lastNamespace = DOM.NULL;
 
 	// Stack used to keep track of what whitespace text nodes are protected
 	// by xml:space="preserve" attributes and which nodes that are not.
@@ -3457,17 +3403,17 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
   private int nextAttributeNode()
   {
     final int index = _currentAttributeNode++;
-    if (index == _type2.length)
+   /* if (index == _type2.length)
     {
       resizeArrays2(_type2.length * 2, index);
-    }
+    }*/
     return index;
   }
 
 	/**
 	 * Resize the character array that holds the contents of
 	 * all text nodes, comments and attribute values
-	 */
+	 *
 	private void resizeTextArray(final int newSize)
   {
 	    final char[] newText = new char[newSize];
@@ -3585,7 +3531,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 * string. Otherwise the text is inserted in the array, and the
 	 * offset of the new instance is inserted.
 	 * Updates the globals _baseOffset and _currentOffset
-	 */
+	 *
 	private int maybeReuseText(final int length)
   {
     final int base = _baseOffset;
@@ -3627,7 +3573,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
   private int makeTextNode(boolean isWhitespace)
   {
   	//if (_currentOffset > _baseOffset)
-    {
+    //{
       final int node = getNumberOfNodes()-1; //nextNode();
  //     System.out.println("text ");
       //for (int i =  0; i< _text.length; i++)
@@ -3645,7 +3591,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       	while (_currentNode < node)
       	{
       		int nodeh = makeNodeHandle(++_currentNode);
-       if(getNodeType(nodeh) == DTM.TEXT_NODE)
+    /*   if(getNodeType(nodeh) == DTM.TEXT_NODE)
       {
         int i = 0;  //_baseOffset;
          char[] chars = getNodeValue(nodeh).toCharArray();
@@ -3654,19 +3600,21 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
          while (isWhitespaceChar(chars[i++]) && i < limit);
       //  if ((i == limit) && isWhitespaceChar(_text[i-1]))
          if ((i == limit) && isWhitespaceChar(chars[i-1])) 
+         */
+         if (isWhitespace(nodeh))
         {
         	//System.out.println("<<<set bit2 " + SAXImpl.this.getNodeIdent(node)+ " " + node); 
           _whitespace.setBit(_currentNode);
         }
-      }
-      }
+     // }
+     }
       }
       //_type[node] = DTM.TEXT_NODE;
        // _types.put(new Integer(getExpandedTypeID(node)), new Integer(DTM.TEXT_NODE));
       //linkChildren(node);
       storeTextRef(node);
       return node;
-    }
+    //}
     //return -1;
   }
 
@@ -3686,8 +3634,8 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
   {
 
     	    final int node = nextAttributeNode();
-	    _type2[node] = DTM.NAMESPACE_NODE;
-	    characters(uri);
+	    //_type2[node] = DTM.NAMESPACE_NODE;
+	    //characters(uri);
 	   // storeAttrValRef(node);
 	    return node;
 	}
@@ -3730,13 +3678,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     Integer obj = (Integer)_names.get(name);
     if (obj == null)
     {
-      _type2[node] = (short)_nextNameCode;
+     // _type2[node] = (short)_nextNameCode;
       _names.put(name, obj = new Integer(_nextNameCode++));
     }
-    else
-    {
-      _type2[node] = (short)obj.intValue();
-    }
+   // else
+   // {
+  //    _type2[node] = (short)obj.intValue();
+  //  }
 
    // final int col = qname.lastIndexOf(':');
    // if (col > 0)
@@ -3744,7 +3692,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
    //   _prefix2[node] = registerPrefix(qname.substring(0, col));
    // }
 
-    characters(attList.getValue(i));
+    //characters(attList.getValue(i));
     //storeAttrValRef(node);
     return node;
   }
@@ -3760,14 +3708,14 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
   {
         SAXImpl.this.characters(ch, start, length);
         
-        if (_currentOffset + length > _text.length) {
+   /*     if (_currentOffset + length > _text.length) {
 		// GTM resizeTextArray(_text.length * 2);
 		// bug fix 6189, contributed by Mirko Seifert
 		resizeTextArray(
 		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
-	    _currentOffset += length;
+	*/  _currentOffset += length;
 
 	    _disableEscaping = !_escaping;	
 
@@ -3791,9 +3739,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 
 	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
 	    startPrefixMapping(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
-	    _lengthOrAttr[DTMDefaultBase.ROOTNODE] = _nextNamespace;
+//	    _lengthOrAttr[DTMDefaultBase.ROOTNODE] = _nextNamespace;
 //	    _parent2[_nextNamespace] = DTMDefaultBase.ROOTNODE;
-	    _nextNamespace = DTM.NULL;
+//	    _nextNamespace = DTM.NULL;
 	}
 
 	/**
@@ -3821,13 +3769,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     _types = setupMapping(_namesArray);
 
     // trim arrays' sizes
-    resizeTextArray(_currentOffset);
+    //resizeTextArray(_currentOffset);
 
     _firstAttributeNode = _currentNode;
-    shiftAttributes(_currentNode);
+   // shiftAttributes(_currentNode);
     resizeArrays(_currentNode + _currentAttributeNode, _currentNode);
-    appendAttributes();
-    _treeNodeLimit = _currentNode + _currentAttributeNode;
+   // appendAttributes();
+    //_treeNodeLimit = _currentNode + _currentAttributeNode;
 
     // Fill the _namespace[] and _uriArray[] array
     _namespace = new short[namesSize];
@@ -3851,7 +3799,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       }
     }
 
-    _prefixArray = new String[_prefixCount];
+   /* _prefixArray = new String[_prefixCount];
     Enumeration p = _nsPrefixes.keys();
     while (p.hasMoreElements())
     {
@@ -3859,7 +3807,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       final Stack stack = (Stack)_nsPrefixes.get(prefix);
       final Integer I = (Integer)stack.elementAt(0);
       _prefixArray[I.shortValue()] = prefix;
-    }
+    }*/
         SAXImpl.this.endDocument();
   }
 
@@ -3901,12 +3849,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     // Append any attribute nodes
     if (count > 0)
     {
-      int attr = _currentAttributeNode;
+      //int attr = _currentAttributeNode;
       //if (_lengthOrAttr[node] == DTM.NULL)
       //  _lengthOrAttr[node] = attr;
       for (int i = 0; i<count; i++)
       {
-        attr = makeAttributeNode(node, attributes, i);
+        /*attr =*/ makeAttributeNode(node, attributes, i);
         //_parent2[attr] = node;
        // _nextSibling2[attr] = attr + 1;
       }
@@ -3960,9 +3908,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	    //_type[node] =
        //_types.put(new Integer(getExpandedTypeID(node)), new Integer(DTM.PROCESSING_INSTRUCTION_NODE));
 	    //linkChildren(node);
-	    characters(target);
-	    characters(" ");
-	    characters(data);
+	    //characters(target);
+	    //characters(" ");
+	    //characters(data);
 	    storeTextRef(node);
 	}
 
@@ -3973,12 +3921,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
   {
         SAXImpl.this.ignorableWhitespace(ch, start, length);
-    if (_currentOffset + length > _text.length)
+  /*  if (_currentOffset + length > _text.length)
     {
       resizeTextArray(_text.length * 2);
     }
     System.arraycopy(ch, start, _text, _currentOffset, length);
-    _currentOffset += length;
+  */_currentOffset += length;
     makeTextNode(true);
   }
 
@@ -4009,13 +3957,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
   	if (!prefix.equals(EMPTYSTRING) && !uri.equals(EMPTYSTRING))
      SAXImpl.this.startPrefixMapping(prefix, uri);
     // Get the stack associated with this namespace prefix
-    Stack stack = (Stack)_nsPrefixes.get(prefix);
+   /* Stack stack = (Stack)_nsPrefixes.get(prefix);
     if (stack == null)
     {
       stack = new Stack();
       stack.push(new Integer(_prefixCount++));
       _nsPrefixes.put(prefix, stack);
-    }
+    }*/
 
     // Check if the URI already exists before pushing on stack
         Integer eType = new Integer(getIdForNamespace(uri));
@@ -4025,13 +3973,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     {
       _nsIndex.put(eType, idx = new Integer(_uriCount++));
     }
-    stack.push(uri);
+    //stack.push(uri);
 
     if (!prefix.equals(EMPTYSTRING) || !uri.equals(EMPTYSTRING)) {
       makeTextNode(false);
       int attr = makeNamespaceNode(prefix, uri);
-      if (_nextNamespace == DTM.NULL)
-        _nextNamespace = attr;
+      //if (_nextNamespace == DTM.NULL)
+      //  _nextNamespace = attr;
       //else
       //  _nextSibling2[attr-1] = attr;
      // _nextSibling2[attr] = DTM.NULL;
@@ -4046,8 +3994,8 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
   {
       SAXImpl.this.endPrefixMapping(prefix);
     // Get the stack associated with this namespace prefix
-    final Stack stack = (Stack)_nsPrefixes.get(prefix);
-    if ((stack != null) && (!stack.empty())) stack.pop();
+   // final Stack stack = (Stack)_nsPrefixes.get(prefix);
+   // if ((stack != null) && (!stack.empty())) stack.pop();
   }
 
 	/**
@@ -4058,12 +4006,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         //SAXImpl.this.comment(ch, start, length);
     makeTextNode(false);
     SAXImpl.this.comment(ch, start, length);
-    if (_currentOffset + length > _text.length)
+ /*   if (_currentOffset + length > _text.length)
     {
       resizeTextArray(_text.length * 2);
     }
     System.arraycopy(ch, start, _text, _currentOffset, length);
-    _currentOffset += length;
+*/  _currentOffset += length;
     final int node = makeTextNode(false);
     //_type[node] =
      //_types.put(new Integer(getExpandedTypeID(node)), new Integer(DTM.COMMENT_NODE));
@@ -4086,14 +4034,14 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	private void characters(final String string)
   {
     final int length = string.length();
-    if (_currentOffset + length > _text.length) {
+ /*   if (_currentOffset + length > _text.length) {
 		// GTM: resizeTextArray(_text.length * 2);
 		// bug fix 6189, contributed by Mirko Seifert
 		resizeTextArray(
 		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
 	    string.getChars(0, length, _text, _currentOffset);
-	    _currentOffset += length;
+*/   _currentOffset += length;
     
   }
 
