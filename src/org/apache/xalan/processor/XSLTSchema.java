@@ -343,7 +343,7 @@ public class XSLTSchema extends XSLTElementDef
                                     templateElements /* elements */,  // %template;>
                                     new XSLTAttributeDef[]{ nameAttrRequired,
                                                             selectAttrOpt }, new ProcessorTemplateElem(),
-                                                                             ElemWithParam.class /* class object */);
+                                                                             ElemWithParam.class /* class object */, 19, true);
     XSLTElementDef xslApplyTemplates = new XSLTElementDef(this,
                                          Constants.S_XSLNAMESPACEURL,
                                          "apply-templates", null /*alias */,
