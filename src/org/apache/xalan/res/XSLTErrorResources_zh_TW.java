@@ -81,7 +81,7 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
 {
 
    /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 253;          
+  public static final int MAX_CODE = 200;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 29;
@@ -793,14 +793,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
     ER_SAX_EXCEPTION, "SAX \u7570\u5e38"},
 
 
-  /** ER_FUNCTION_NOT_SUPPORTED          */
-  //public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
-
-
-  {
-    ER_FUNCTION_NOT_SUPPORTED, "\u4e0d\u652f\u63f4\u51fd\u5f0f\uff01"},
-
-
   /** ER_XSLT_ERROR          */
   //public static final int ER_XSLT_ERROR = 81;
 
@@ -1101,15 +1093,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
   {
     ER_SOURCE_CANNOT_BE_NULL,
 			"InputSource \u4e0d\u53ef\u70ba\u7a7a\u503c"},
-
-  
-  /** Can't overwrite cause         */
-  //public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
-
-
-  {
-    ER_CANNOT_OVERWRITE_CAUSE,
-			"\u7121\u6cd5\u6539\u5beb\u539f\u56e0"},
 
   
   /** Could not initialize BSF Manager        */
@@ -1474,141 +1457,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
          "\u5728 {0} \u4e2d\u6c92\u6709\u767c\u73fe XML \u6a23\u5f0f\u8868 PI"},
 
   
-   /**  No default implementation found */
-  //public static final int ER_NO_DEFAULT_IMPL = 156;
-
-
-  {
-    ER_NO_DEFAULT_IMPL,
-         "\u627e\u4e0d\u5230\u9810\u8a2d\u5efa\u7f6e"},
-
-  
-   /**  ChunkedIntArray({0}) not currently supported */
-  //public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
-
-
-  {
-    ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-       "\u76ee\u524d\u4e0d\u652f\u63f4 ChunkedIntArray({0})"},
-
-  
-   /**  Offset bigger than slot */
-  //public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
-
-
-  {
-    ER_OFFSET_BIGGER_THAN_SLOT,
-       "\u504f\u79fb\u5927\u65bc\u4ecb\u9762\u69fd"},
-
-  
-   /**  Coroutine not available, id= */
-  //public static final int ER_COROUTINE_NOT_AVAIL = 159;
-
-
-  {
-    ER_COROUTINE_NOT_AVAIL,
-       "\u6c92\u6709 Coroutine \u53ef\u7528\uff0cid={0}"},
-
-  
-   /**  CoroutineManager recieved co_exit() request */
-  //public static final int ER_COROUTINE_CO_EXIT = 160;
-
-
-  {
-    ER_COROUTINE_CO_EXIT,
-       "CoroutineManager \u6536\u5230 co_exit() \u8981\u6c42"},
-
-  
-   /**  co_joinCoroutineSet() failed */
-  //public static final int ER_COJOINROUTINESET_FAILED = 161;
-
-
-  {
-    ER_COJOINROUTINESET_FAILED,
-       "co_joinCoroutineSet() \u5931\u6548"},
-
-  
-   /**  Coroutine parameter error () */
-  //public static final int ER_COROUTINE_PARAM = 162;
-
-
-  {
-    ER_COROUTINE_PARAM,
-       "Coroutine \u53c3\u6578\u932f\u8aa4 ({0})"},
-
-  
-   /**  UNEXPECTED: Parser doTerminate answers  */
-  //public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
-
-
-  {
-    ER_PARSER_DOTERMINATE_ANSWERS,
-       "\nUNEXPECTED: \u5256\u6790\u5668 doTerminate \u56de\u7b54 {0}"},
-
-  
-   /**  parse may not be called while parsing */
-  //public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
-
-
-  {
-    ER_NO_PARSE_CALL_WHILE_PARSING,
-       "\u5728\u9032\u884c\u5256\u6790\u6642\u672a\u80fd\u547c\u53eb\u5256\u6790"},
-
-  
-   /**  Error: typed iterator for axis  {0} not implemented  */
-  //public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
-
-
-  {
-    ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "\u932f\u8aa4\uff1a\u5c0d\u8ef8 {0} \u8f38\u5165\u7684\u91cd\u8986\u5668\u6c92\u6709\u57f7\u884c"},
-
-  
-   /**  Error: iterator for axis {0} not implemented  */
-  //public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
-
-
-  {
-    ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "\u932f\u8aa4\uff1a\u8ef8 {0} \u7684\u91cd\u8986\u5668\u6c92\u6709\u57f7\u884c "},
-
-  
-   /**  Iterator clone not supported  */
-  //public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
-
-
-  {
-    ER_ITERATOR_CLONE_NOT_SUPPORTED,
-       "\u4e0d\u652f\u63f4\u91cd\u8986\u5668\u8907\u88fd"},
-
-  
-   /**  Unknown axis traversal type  */
-  //public static final int ER_UNKNOWN_AXIS_TYPE = 168;
-
-
-  {
-    ER_UNKNOWN_AXIS_TYPE,
-       "\u672a\u77e5\u8ef8\u904d\u6b77\u985e\u578b\uff1a{0}"},
-
-  
-   /**  Axis traverser not supported  */
-  //public static final int ER_AXIS_NOT_SUPPORTED = 169;
-
-
-  {
-    ER_AXIS_NOT_SUPPORTED,
-       "\u4e0d\u652f\u63f4\u8ef8\u904d\u8a2a\u5668\uff1a{0}"},
-
-  
-   /**  No more DTM IDs are available  */
-  //public static final int ER_NO_DTMIDS_AVAIL = 170;
-
-
-  {
-    ER_NO_DTMIDS_AVAIL,
-       "\u6c92\u6709\u53ef\u7528\u7684 DTM ID"},
-
-  
    /**  Not supported  */
   //public static final int ER_NOT_SUPPORTED = 171;
 
@@ -1618,51 +1466,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
        "\u4e0d\u652f\u63f4\uff1a{0}"},
 
   
-   /**  node must be non-null for getDTMHandleFromNode  */
-  //public static final int ER_NODE_NON_NULL = 172;
-
-
-  {
-    ER_NODE_NON_NULL,
-       "\u5c0d getDTMHandleFromNode \u800c\u8a00\uff0c\u7bc0\u9ede\u5fc5\u9808\u70ba\u975e\u7a7a\u503c"},
-
-  
-   /**  Could not resolve the node to a handle  */
-  //public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
-
-
-  {
-    ER_COULD_NOT_RESOLVE_NODE,
-       "\u7121\u6cd5\u89e3\u8b6f\u7bc0\u9ede\u70ba\u63a7\u9ede"},
-
-  
-   /**  startParse may not be called while parsing */
-  //public static final int ER_STARTPARSE_WHILE_PARSING = 174;
-
-
-  {
-    ER_STARTPARSE_WHILE_PARSING,
-       "\u5728\u9032\u884c\u5256\u6790\u6642\u672a\u547c\u53eb startParse"},
-
-  
-   /**  startParse needs a non-null SAXParser  */
-  //public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
-
-
-  {
-    ER_STARTPARSE_NEEDS_SAXPARSER,
-       "startParse \u9700\u8981\u975e\u7a7a\u503c\u7684 SAXParser"},
-
-  
-   /**  could not initialize parser with */
-  //public static final int ER_COULD_NOT_INIT_PARSER = 176;
-
-
-  {
-    ER_COULD_NOT_INIT_PARSER,
-       "\u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u5256\u6790\u5668\uff0c\u4ee5"},
-
-  
    /**  Value for property {0} should be a Boolean instance  */
   //public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
 
@@ -1670,161 +1473,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
   {
     ER_PROPERTY_VALUE_BOOLEAN,
        "\u5167\u5bb9 {0} \u7684\u503c\u61c9\u8a72\u662f\u4e00\u500b\u5e03\u6797\u6848\u4f8b"},
-
-  
-   /**  exception creating new instance for pool  */
-  //public static final int ER_EXCEPTION_CREATING_POOL = 178;
-
-
-  {
-    ER_EXCEPTION_CREATING_POOL,
-       "\u5efa\u7acb\u5132\u5b58\u6c60\u7684\u65b0\u6848\u4f8b\u6642\u767c\u751f\u7570\u5e38"},
-
-  
-   /**  Path contains invalid escape sequence  */
-  //public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
-
-
-  {
-    ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-       "\u8def\u5f91\u5305\u542b\u7121\u6548\u9038\u51fa\u5e8f\u5217"},
-
-  
-   /**  Scheme is required!  */
-  //public static final int ER_SCHEME_REQUIRED = 180;
-
-
-  {
-    ER_SCHEME_REQUIRED,
-       "\u7db1\u8981\u662f\u5fc5\u9700\u7684\uff01"},
-
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_IN_URI = 181;
-
-
-  {
-    ER_NO_SCHEME_IN_URI,
-       "\u5728 URI \u627e\u4e0d\u5230\u7db1\u8981\uff1a{0}"},
-
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_INURI = 182;
-
-
-  {
-    ER_NO_SCHEME_INURI,
-       "\u5728 URI \u627e\u4e0d\u5230\u7db1\u8981"},
-
-  
-   /**  Path contains invalid character:   */
-  //public static final int ER_PATH_INVALID_CHAR = 183;
-
-
-  {
-    ER_PATH_INVALID_CHAR,
-       "\u8def\u5f91\u5305\u542b\u7121\u6548\u7684\u5b57\u5143\uff1a{0}"},
-
-  
-   /**  Cannot set scheme from null string  */
-  //public static final int ER_SCHEME_FROM_NULL_STRING = 184;
-
-
-  {
-    ER_SCHEME_FROM_NULL_STRING,
-       "\u7121\u6cd5\u5f9e\u7a7a\u5b57\u4e32\u8a2d\u5b9a\u7db1\u8981"},
-
-  
-   /**  The scheme is not conformant. */
-  //public static final int ER_SCHEME_NOT_CONFORMANT = 185;
-
-
-  {
-    ER_SCHEME_NOT_CONFORMANT,
-       "\u7db1\u8981\u4e0d\u4e00\u81f4\u3002"},
-
-  
-   /**  Host is not a well formed address  */
-  //public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
-
-
-  {
-    ER_HOST_ADDRESS_NOT_WELLFORMED,
-       "\u4e3b\u6a5f\u6c92\u6709\u5b8c\u6574\u7684\u4f4d\u5740"},
-
-  
-   /**  Port cannot be set when host is null  */
-  //public static final int ER_PORT_WHEN_HOST_NULL = 187;
-
-
-  {
-    ER_PORT_WHEN_HOST_NULL,
-       "\u4e3b\u6a5f\u70ba\u7a7a\u503c\u6642\uff0c\u7121\u6cd5\u8a2d\u5b9a\u901a\u8a0a\u57e0"},
-
-  
-   /**  Invalid port number  */
-  //public static final int ER_INVALID_PORT = 188;
-
-
-  {
-    ER_INVALID_PORT,
-       "\u7121\u6548\u7684\u901a\u8a0a\u57e0\u7de8\u865f"},
-
-  
-   /**  Fragment can only be set for a generic URI  */
-  //public static final int ER_FRAG_FOR_GENERIC_URI = 189;
-
-
-  {
-    ER_FRAG_FOR_GENERIC_URI,
-       "\u53ea\u80fd\u5c0d\u540c\u5c6c\u7684 URI \u8a2d\u5b9a\u7247\u6bb5"},
-
-  
-   /**  Fragment cannot be set when path is null  */
-  //public static final int ER_FRAG_WHEN_PATH_NULL = 190;
-
-
-  {
-    ER_FRAG_WHEN_PATH_NULL,
-       "\u8def\u5f91\u70ba\u7a7a\u503c\u6642\uff0c\u7121\u6cd5\u8a2d\u5b9a\u7247\u6bb5"},
-
-  
-   /**  Fragment contains invalid character  */
-  //public static final int ER_FRAG_INVALID_CHAR = 191;
-
-
-  {
-    ER_FRAG_INVALID_CHAR,
-       "\u7247\u6bb5\u5305\u542b\u7121\u6548\u5b57\u5143"},
-
-  
- 
-  
-   /** Parser is already in use  */
-  //public static final int ER_PARSER_IN_USE = 192;
-
-
-  {
-    ER_PARSER_IN_USE,
-        "\u5256\u6790\u5668\u5df2\u5728\u4f7f\u7528\u4e2d"},
-
-  
-   /** Parser is already in use  */
-  //public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
-
-
-  {
-    ER_CANNOT_CHANGE_WHILE_PARSING,
-        "\u5256\u6790\u6642\u7121\u6cd5\u8b8a\u66f4 {0} {1}"},
-
-  
-   /** Self-causation not permitted  */
-  //public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
-
-
-  {
-    ER_SELF_CAUSATION_NOT_PERMITTED,
-        "\u4e0d\u5141\u8a31\u81ea\u884c\u5f15\u8d77"},
 
   
    /** src attribute not yet supported for  */
@@ -1852,51 +1500,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
   {
     ER_OUTPUT_PROPERTY_NOT_RECOGNIZED,
         "\u672a\u80fd\u8fa8\u8b58\u8f38\u51fa\u5167\u5bb9\uff1a{0}"},
-
-  
-   /** Userinfo may not be specified if host is not specified   */
-  //public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
-
-
-  {
-    ER_NO_USERINFO_IF_NO_HOST,
-        "\u5982\u679c\u6c92\u6709\u6307\u5b9a\u4e3b\u6a5f\uff0c\u4e0d\u53ef\u6307\u5b9a Userinfo"},
-
-  
-   /** Port may not be specified if host is not specified   */
-  //public static final int ER_NO_PORT_IF_NO_HOST = 199;
-
-
-  {
-    ER_NO_PORT_IF_NO_HOST,
-        "\u5982\u679c\u6c92\u6709\u6307\u5b9a\u4e3b\u6a5f\uff0c\u4e0d\u53ef\u6307\u5b9a\u901a\u8a0a\u57e0"},
-
-  
-   /** Query string cannot be specified in path and query string   */
-  //public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
-
-
-  {
-    ER_NO_QUERY_STRING_IN_PATH,
-        "\u5728\u8def\u5f91\u53ca\u67e5\u8a62\u5b57\u4e32\u4e2d\u4e0d\u53ef\u6307\u5b9a\u67e5\u8a62\u5b57\u4e32"},
-
-  
-   /** Fragment cannot be specified in both the path and fragment   */
-  //public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
-
-
-  {
-    ER_NO_FRAGMENT_STRING_IN_PATH,
-        "\u7121\u6cd5\u5728\u8def\u5f91\u548c\u7247\u6bb5\u4e2d\u6307\u5b9a\u7247\u6bb5"},
-
-  
-   /** Cannot initialize URI with empty parameters   */
-  //public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
-
-
-  {
-    ER_CANNOT_INIT_URI_EMPTY_PARMS,
-        "\u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u7a7a\u767d\u53c3\u6578\u7684 URI"},
 
   
    /** Failed creating ElemLiteralResult instance   */
@@ -1967,15 +1570,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
     ER_ATTR_NOT_ALLOWED,
         "{1} \u5143\u7d20\u4e0a\u4e0d\u5141\u8a31\u6709 \"{0}\" \u5c6c\u6027\uff01"},
 
-  
-  /**  Method not yet supported    */
-  //public static final int ER_METHOD_NOT_SUPPORTED = 210;
-
-
-  {
-    ER_METHOD_NOT_SUPPORTED,
-        "\u4e0d\u652f\u63f4\u65b9\u6cd5 "},
-
  
   /**  Bad value    */
   //public static final int ER_BAD_VALUE = 211;
@@ -2002,24 +1596,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
   {
     ER_ATTRIB_VALUE_NOT_RECOGNIZED,
      "\u4e0d\u80fd\u8fa8\u8b58 {0} \u5c6c\u6027\u503c "},
-
-
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 214;
-
-
-  {
-    ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
-     "IncrementalSAXSource_Filter \u76ee\u524d\u7121\u6cd5\u91cd\u65b0\u555f\u52d5"},
-
-  
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
-
-
-  {
-    ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-     "XMLReader \u4e0d\u5728 startParse \u8981\u6c42\u4e4b\u524d"},
 
   
   /** Attempting to generate a namespace prefix with a null URI   */
@@ -2199,22 +1775,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
        "\u7a0b\u5f0f\u8a2d\u8a08\u5e2b\u5728 RundundentExprEliminator \u4e2d\u7684\u5224\u65b7\uff1a{0}"},
   
 
-  // Axis traverser not supported: {0}
-    //public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
-  
-    {
-      ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-       "\u4e0d\u652f\u63f4\u8ef8\u904d\u6b77\u5668\uff1a{0}"},
-  
-
-  // ListingErrorHandler created with null PrintWriter!
-    //public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
-  
-    {
-      ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
-       "\u5efa\u7acb\u7684 ListingErrorHandler \u5177\u6709\u7a7a PrintWriter\uff01"},
-  
-
   // {0}is not allowed in this position in the stylesheet!
     //public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
   
@@ -2239,21 +1799,6 @@ public class XSLTErrorResources_zh_TW extends XSLTErrorResources
     {
       INVALID_TCHAR,
        "\u4e0d\u6b63\u78ba\u7684\u503c\uff1a{1} \u88ab\u7528\u65bc CHAR \u5c6c\u6027\uff1a{0}\u3002  CHAR \u985e\u578b\u7684\u5c6c\u6027\u53ea\u80fd\u662f 1 \u500b\u5b57\u5143\uff01"},
-  
-
-    //public static final int ER_SYSTEMID_UNKNOWN = 240;
-  
-    {
-      ER_SYSTEMID_UNKNOWN,
-       "SystemId \u672a\u77e5"},
-  
-
-   // Location of error unknown
-    //public static final int ER_LOCATION_UNKNOWN = 241;
-  
-    {
-      ER_LOCATION_UNKNOWN,
-       "\u672a\u77e5\u7684\u932f\u8aa4\u4f4d\u7f6e"},
   
 
    // Note to translators:  The following message is used if the value of

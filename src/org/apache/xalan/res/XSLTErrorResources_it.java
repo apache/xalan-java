@@ -81,7 +81,7 @@ public class XSLTErrorResources_it extends XSLTErrorResources
 {
 
 /** Maximum error messages, this is needed to keep track of the number of messages.    */
- public static final int MAX_CODE = 253;          
+ public static final int MAX_CODE = 200;          
 
  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
  public static final int MAX_WARNING = 29;
@@ -793,14 +793,6 @@ public static final Object[][] contents = {
    ER_SAX_EXCEPTION, "Eccezione SAX"},
 
 
- /** ER_FUNCTION_NOT_SUPPORTED          */
- //public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
-
-
- {
-   ER_FUNCTION_NOT_SUPPORTED, "Funzione non supportata"},
-
-
  /** ER_XSLT_ERROR          */
  //public static final int ER_XSLT_ERROR = 81;
 
@@ -1101,15 +1093,6 @@ public static final Object[][] contents = {
  {
    ER_SOURCE_CANNOT_BE_NULL,
 			"InputSource non pu\u00f2 essere nullo."},
-
- 
- /** Can't overwrite cause         */
- //public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
-
-
- {
-   ER_CANNOT_OVERWRITE_CAUSE,
-			"Impossibile sovrascrivere la causa."},
 
  
  /** Could not initialize BSF Manager        */
@@ -1474,141 +1457,6 @@ public static final Object[][] contents = {
         "Nessun xml-stylesheet PI trovato in : {0}"},
 
  
-  /**  No default implementation found */
- //public static final int ER_NO_DEFAULT_IMPL = 156;
-
-
- {
-   ER_NO_DEFAULT_IMPL,
-        "Non \u00e8 stata trovata alcuna implementazione predefinita "},
-
- 
-  /**  ChunkedIntArray({0}) not currently supported */
- //public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
-
-
- {
-   ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-      "ChunkedIntArray({0}) non \u00e8 correntemente supportato."},
-
- 
-  /**  Offset bigger than slot */
- //public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
-
-
- {
-   ER_OFFSET_BIGGER_THAN_SLOT,
-      "L'offset \u00e8 maggiore dello slot."},
-
- 
-  /**  Coroutine not available, id= */
- //public static final int ER_COROUTINE_NOT_AVAIL = 159;
-
-
- {
-   ER_COROUTINE_NOT_AVAIL,
-      "Coroutine non disponibile, id={0}"},
-
- 
-  /**  CoroutineManager recieved co_exit() request */
- //public static final int ER_COROUTINE_CO_EXIT = 160;
-
-
- {
-   ER_COROUTINE_CO_EXIT,
-      "CoroutineManager ha ricevuto una richiesta co_exit()."},
-
- 
-  /**  co_joinCoroutineSet() failed */
- //public static final int ER_COJOINROUTINESET_FAILED = 161;
-
-
- {
-   ER_COJOINROUTINESET_FAILED,
-      "co_joinCoroutineSet() non riuscito."},
-
- 
-  /**  Coroutine parameter error () */
- //public static final int ER_COROUTINE_PARAM = 162;
-
-
- {
-   ER_COROUTINE_PARAM,
-      "Errore del parametro di coroutine ({0})."},
-
- 
-  /**  UNEXPECTED: Parser doTerminate answers  */
- //public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
-
-
- {
-   ER_PARSER_DOTERMINATE_ANSWERS,
-      "\nUNEXPECTED: Risposte doTerminate del parser {0}"},
-
- 
-  /**  parse may not be called while parsing */
- //public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
-
-
- {
-   ER_NO_PARSE_CALL_WHILE_PARSING,
-      "Impossibile chiamare l'analisi mentre \u00e8 in esecuzione."},
-
- 
-  /**  Error: typed iterator for axis  {0} not implemented  */
- //public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
-
-
- {
-   ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "Errore: tipo di iteratore per l'asse {0} non implementato."},
-
- 
-  /**  Error: iterator for axis {0} not implemented  */
- //public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
-
-
- {
-   ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "Errore: l'iteratore per l'asse {0} non \u00e8 implementato. "},
-
- 
-  /**  Iterator clone not supported  */
- //public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
-
-
- {
-   ER_ITERATOR_CLONE_NOT_SUPPORTED,
-      "Il duplicato dell'iteratore non \u00e8 supportato."},
-
- 
-  /**  Unknown axis traversal type  */
- //public static final int ER_UNKNOWN_AXIS_TYPE = 168;
-
-
- {
-   ER_UNKNOWN_AXIS_TYPE,
-      "Tipo di asse trasversale sconosciuto : {0}."},
-
- 
-  /**  Axis traverser not supported  */
- //public static final int ER_AXIS_NOT_SUPPORTED = 169;
-
-
- {
-   ER_AXIS_NOT_SUPPORTED,
-      "Attraversatore dell'asse non supportato: {0}"},
-
- 
-  /**  No more DTM IDs are available  */
- //public static final int ER_NO_DTMIDS_AVAIL = 170;
-
-
- {
-   ER_NO_DTMIDS_AVAIL,
-      "Non sono pi\u00f9 disponibili ID DTM."},
-
- 
   /**  Not supported  */
  //public static final int ER_NOT_SUPPORTED = 171;
 
@@ -1616,52 +1464,6 @@ public static final Object[][] contents = {
  {
    ER_NOT_SUPPORTED,
       "Non supportato: {0}"},
-
- 
-  /**  node must be non-null for getDTMHandleFromNode  */
- //public static final int ER_NODE_NON_NULL = 172;
-
-
- {
-   ER_NODE_NON_NULL,
-      "Il nodo deve essere non nullo per getDTMHandleFromNode."},
-
- 
-  /**  Could not resolve the node to a handle  */
- //public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
-
-
- {
-   ER_COULD_NOT_RESOLVE_NODE,
-      "Impossibile risolvere il nodo a un handle"},
-
- 
-  /**  startParse may not be called while parsing */
- //public static final int ER_STARTPARSE_WHILE_PARSING = 174;
-
-
- {
-   ER_STARTPARSE_WHILE_PARSING,
-      "Impossibile chiamare startParse durante l'analisi."},
-
- 
-  /**  startParse needs a non-null SAXParser  */
- //public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
-
-
- {
-   ER_STARTPARSE_NEEDS_SAXPARSER,
-      "startParse richiede un SAXParser non nullo."},
-
- 
-  /**  could not initialize parser with */
- //public static final int ER_COULD_NOT_INIT_PARSER = 176;
-
-
- {
-   ER_COULD_NOT_INIT_PARSER,
-      "Impossibile inizializzare il parser con"},
-
  
   /**  Value for property {0} should be a Boolean instance  */
  //public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
@@ -1670,161 +1472,6 @@ public static final Object[][] contents = {
  {
    ER_PROPERTY_VALUE_BOOLEAN,
       "Il valore della propriet\u00e0 {0} deve essere un'istanza booleana"},
-
- 
-  /**  exception creating new instance for pool  */
- //public static final int ER_EXCEPTION_CREATING_POOL = 178;
-
-
- {
-   ER_EXCEPTION_CREATING_POOL,
-      "l'eccezione crea una nuova istanza del pool"},
-
- 
-  /**  Path contains invalid escape sequence  */
- //public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
-
-
- {
-   ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-      "Il percorso contiene una sequenza di escape non valida."},
-
- 
-  /**  Scheme is required!  */
- //public static final int ER_SCHEME_REQUIRED = 180;
-
-
- {
-   ER_SCHEME_REQUIRED,
-      "Lo schema \u00e8 necessario."},
-
- 
-  /**  No scheme found in URI  */
- //public static final int ER_NO_SCHEME_IN_URI = 181;
-
-
- {
-   ER_NO_SCHEME_IN_URI,
-      "Nessuno schema trovato nell'URI: {0}"},
-
- 
-  /**  No scheme found in URI  */
- //public static final int ER_NO_SCHEME_INURI = 182;
-
-
- {
-   ER_NO_SCHEME_INURI,
-      "Nessuno schema trovato nell'URI"},
-
- 
-  /**  Path contains invalid character:   */
- //public static final int ER_PATH_INVALID_CHAR = 183;
-
-
- {
-   ER_PATH_INVALID_CHAR,
-      "Il percorso contiene un carattere non valido: {0}"},
-
- 
-  /**  Cannot set scheme from null string  */
- //public static final int ER_SCHEME_FROM_NULL_STRING = 184;
-
-
- {
-   ER_SCHEME_FROM_NULL_STRING,
-      "Impossibile impostare lo schema da una stringa nulla."},
-
- 
-  /**  The scheme is not conformant. */
- //public static final int ER_SCHEME_NOT_CONFORMANT = 185;
-
-
- {
-   ER_SCHEME_NOT_CONFORMANT,
-      "Lo schema non \u00e8 conforme."},
-
- 
-  /**  Host is not a well formed address  */
- //public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
-
-
- {
-   ER_HOST_ADDRESS_NOT_WELLFORMED,
-      "L'host non \u00e8 un indirizzo corretto."},
-
- 
-  /**  Port cannot be set when host is null  */
- //public static final int ER_PORT_WHEN_HOST_NULL = 187;
-
-
- {
-   ER_PORT_WHEN_HOST_NULL,
-      "Impossibile impostare la porta quando l'host \u00e8 nullo."},
-
- 
-  /**  Invalid port number  */
- //public static final int ER_INVALID_PORT = 188;
-
-
- {
-   ER_INVALID_PORT,
-      "Numero di porta non valido"},
-
- 
-  /**  Fragment can only be set for a generic URI  */
- //public static final int ER_FRAG_FOR_GENERIC_URI = 189;
-
-
- {
-   ER_FRAG_FOR_GENERIC_URI,
-      "\u00c8 possibile impostare il frammento solo per un URI generico."},
-
- 
-  /**  Fragment cannot be set when path is null  */
- //public static final int ER_FRAG_WHEN_PATH_NULL = 190;
-
-
- {
-   ER_FRAG_WHEN_PATH_NULL,
-      "Impossibile impostare il frammento quando il percorso \u00e8 nullo."},
-
- 
-  /**  Fragment contains invalid character  */
- //public static final int ER_FRAG_INVALID_CHAR = 191;
-
-
- {
-   ER_FRAG_INVALID_CHAR,
-      "Il frammento contiene un carattere non valido."},
-
- 
-
- 
-  /** Parser is already in use  */
- //public static final int ER_PARSER_IN_USE = 192;
-
-
- {
-   ER_PARSER_IN_USE,
-       "Il parser \u00e8 gi\u00e0 in uso."},
-
- 
-  /** Parser is already in use  */
- //public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
-
-
- {
-   ER_CANNOT_CHANGE_WHILE_PARSING,
-       "Impossibile cambiare {0} {1} durante l'analisi."},
-
- 
-  /** Self-causation not permitted  */
- //public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
-
-
- {
-   ER_SELF_CAUSATION_NOT_PERMITTED,
-       "Non \u00e8 consentito essere causa ed effetto contemporaneamente."},
 
  
   /** src attribute not yet supported for  */
@@ -1852,51 +1499,6 @@ public static final Object[][] contents = {
  {
    ER_OUTPUT_PROPERTY_NOT_RECOGNIZED,
        "La propriet\u00e0 dell'output non \u00e8 riconosciuta: {0}"},
-
- 
-  /** Userinfo may not be specified if host is not specified   */
- //public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
-
-
- {
-   ER_NO_USERINFO_IF_NO_HOST,
-       "Impossibile specificare Userinfo se non \u00e8 specificato l'host."},
-
- 
-  /** Port may not be specified if host is not specified   */
- //public static final int ER_NO_PORT_IF_NO_HOST = 199;
-
-
- {
-   ER_NO_PORT_IF_NO_HOST,
-       "Impossibile specificare la porta se non \u00e8 specificato l'host."},
-
- 
-  /** Query string cannot be specified in path and query string   */
- //public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
-
-
- {
-   ER_NO_QUERY_STRING_IN_PATH,
-       "La stringa di query non pu\u00f2 essere specificata nella stringa di percorso e di query."},
-
- 
-  /** Fragment cannot be specified in both the path and fragment   */
- //public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
-
-
- {
-   ER_NO_FRAGMENT_STRING_IN_PATH,
-       "Il frammento non pu\u00f2 essere specificato sia nel percorso sia nel frammento."},
-
- 
-  /** Cannot initialize URI with empty parameters   */
- //public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
-
-
- {
-   ER_CANNOT_INIT_URI_EMPTY_PARMS,
-       "Impossibile inizializzare l'URI con parametri vuoti."},
 
  
   /** Failed creating ElemLiteralResult instance   */
@@ -1966,15 +1568,6 @@ public static final Object[][] contents = {
    ER_ATTR_NOT_ALLOWED,
        "\"{0}\": questo attributo non \u00e8 consentito sull'elemento {1}."},
 
- 
- /**  Method not yet supported    */
- //public static final int ER_METHOD_NOT_SUPPORTED = 210;
-
-
- {
-   ER_METHOD_NOT_SUPPORTED,
-       "Metodo non ancora supportato. "},
-
 
  /**  Bad value    */
  //public static final int ER_BAD_VALUE = 211;
@@ -2001,24 +1594,6 @@ public static final Object[][] contents = {
  {
    ER_ATTRIB_VALUE_NOT_RECOGNIZED,
     "{0} valore dell'attributo non riconosciuto "},
-
-
- /** IncrementalSAXSource_Filter not currently restartable   */
- //public static final int ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 214;
-
-
- {
-   ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
-    "IncrementalSAXSource_Filter non correntemente riavviabile."},
-
- 
- /** IncrementalSAXSource_Filter not currently restartable   */
- //public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
-
-
- {
-   ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-    "XMLReader non prima della richiesta startParse."},
 
  
   /** Attempting to generate a namespace prefix with a null URI   */
@@ -2198,22 +1773,6 @@ public static final Object[][] contents = {
       "Affermazione del programmatore in RundundentExprEliminator: {0}"},
   
  
- // Axis traverser not supported: {0}
-   //public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
- 
-   {
-     ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-      "Secante asse non supportata: {0}"},
-  
- 
- // ListingErrorHandler created with null PrintWriter!
-   //public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
- 
-   {
-     ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
-      "ListingErrorHandler creato con PrintWriter nullo."},
-  
- 
    // {0}is not allowed in this position in the stylesheet!
    //public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
  
@@ -2238,21 +1797,6 @@ public static final Object[][] contents = {
    {
      INVALID_TCHAR,
       "Valore non consentito: {1} utilizzato per attributo CHAR: {0}. L'attributo di tipo CHAR deve contenere 1 solo carattere."},
-  
- 
-   //public static final int ER_SYSTEMID_UNKNOWN = 240;
- 
-   {
-     ER_SYSTEMID_UNKNOWN,
-      "ID sistema sconosciuto"},
-  
- 
-   // Location of error unknown
-   //public static final int ER_LOCATION_UNKNOWN = 241;
- 
-   {
-     ER_LOCATION_UNKNOWN,
-      "Ubicazione errore sconosciuta"},
   
  
      // Note to translators:  The following message is used if the value of

@@ -247,7 +247,7 @@ class ProcessorInclude extends XSLTElementProcessor
             
           }
           
-          TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper(), systemId);
+          TreeWalker walker = new TreeWalker(handler, new org.apache.xml.utils.DOM2Helper(), systemId);
 
           try
           {

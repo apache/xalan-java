@@ -88,9 +88,6 @@ public class MsgMgr
   /** Transformer instance          */
   private TransformerImpl m_transformer;
 
-  /** XSLMessages instance, sets things up for issuing messages          */
-  private static XSLMessages m_XSLMessages = new XSLMessages();
-
   /**
    * Warn the user of a problem.
    * This is public for access by extensions.
@@ -187,7 +184,7 @@ public class MsgMgr
           throws TransformerException
   {
 
-    String formattedMsg = m_XSLMessages.createWarning(msg, args);
+    String formattedMsg = XSLMessages.createWarning(msg, args);
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
@@ -291,7 +288,7 @@ public class MsgMgr
   {
 
     //msg  = (null == msg) ? XSLTErrorResources.ER_PROCESSOR_ERROR : msg;
-    String formattedMsg = m_XSLMessages.createMessage(msg, args);
+    String formattedMsg = XSLMessages.createMessage(msg, args);
 
     // Locator locator = m_stylesheetLocatorStack.isEmpty()
     //                   ? null :
@@ -342,7 +339,7 @@ public class MsgMgr
           throws TransformerException
   {
 
-    String formattedMsg = m_XSLMessages.createMessage(msg, args);
+    String formattedMsg = XSLMessages.createMessage(msg, args);
 
     // Locator locator = m_stylesheetLocatorStack.isEmpty()
     //                   ? null :

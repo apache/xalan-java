@@ -59,7 +59,7 @@ package org.apache.xalan.lib;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.apache.xpath.NodeSet;
-import org.apache.xpath.DOMHelper;
+import org.apache.xml.utils.DOMHelper;
 import java.util.Hashtable;
 import javax.xml.parsers.*;
 

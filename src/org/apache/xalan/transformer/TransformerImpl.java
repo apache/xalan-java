@@ -114,8 +114,9 @@ import org.apache.xml.utils.ObjectStack;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.utils.DOMHelper;
+import org.apache.xml.utils.ThreadControllerWrapper;
 import org.apache.xpath.Arg;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
@@ -1023,7 +1024,7 @@ public class TransformerImpl extends Transformer
       }
       else
       {
-        doc = org.apache.xpath.DOMHelper.createDocument();
+        doc = DOMHelper.createDocument();
         outputNode = doc;
         type = outputNode.getNodeType();
 
@@ -3072,83 +3073,6 @@ public class TransformerImpl extends Transformer
     m_modes.pop();
   }
 
-  ////////////////////////
-  // Implement Runnable //  
-  ////////////////////////
-
-  /**
-   * Base thread controler for xalan. Must be overriden with
-   * a derived class to support thread pooling.
-   *
-   * All thread-related stuff is in this class.
-   * 
-   * <p><em>WARNING!</em>  This class will probably move since the DTM 
-   * CoroutineSAXParser depends on it.  This class should move 
-   * to the CoroutineSAXParser.  You can use it, but be aware 
-   * that your code will have to change when the move occurs.</p>
-   */
-  public static class ThreadControler
-  {
-
-    /**
-     * Will get a thread from the pool, execute the task
-     *  and return the thread to the pool.
-     *
-     *  The return value is used only to wait for completion
-     *
-     *
-     * NEEDSDOC @param task
-     * @param priority if >0 the task will run with the given priority
-     *  ( doesn't seem to be used in xalan, since it's allways the default )
-     * @returns The thread that is running the task, can be used
-     *          to wait for completion
-     *
-     * NEEDSDOC ($objectName$) @return
-     */
-    public Thread run(Runnable task, int priority)
-    {
-
-      Thread t = new Thread(task);
-
-      t.start();
-
-      //       if( priority > 0 )
-      //      t.setPriority( priority );
-      return t;
-    }
-
-    /**
-     *  Wait until the task is completed on the worker
-     *  thread.
-     *
-     * NEEDSDOC @param worker
-     * NEEDSDOC @param task
-     *
-     * @throws InterruptedException
-     */
-    public void waitThread(Thread worker, Runnable task)
-            throws InterruptedException
-    {
-
-      // This should wait until the transformThread is considered not alive.
-      worker.join();
-    }
-  }
-
-  /** NEEDSDOC Field tpool          */
-  static ThreadControler tpool = new ThreadControler();
-
-  /**
-   * Change the ThreadControler that will be used to
-   *  manage the transform threads.
-   *
-   * NEEDSDOC @param tp
-   */
-  public static void setThreadControler(ThreadControler tp)
-  {
-    tpool = tp;
-  }
-
   /**
    * Called by SourceTreeHandler to start the transformation
    *  in a separate thread
@@ -3159,8 +3083,7 @@ public class TransformerImpl extends Transformer
   {
 
     // used in SourceTreeHandler
-    Thread t = tpool.run(this, priority);
-
+    Thread t = ThreadControllerWrapper.runThread(this, priority);
     this.setTransformThread(t);
   }
 
@@ -3171,7 +3094,7 @@ public class TransformerImpl extends Transformer
    */
   public void runTransformThread()
   {
-    tpool.run(this, -1);
+    ThreadControllerWrapper.runThread(this, -1);
   }
   
   /**
@@ -3182,7 +3105,7 @@ public class TransformerImpl extends Transformer
    */
   public static void runTransformThread(Runnable runnable)
   {
-    tpool.run(runnable, -1);
+    ThreadControllerWrapper.runThread(runnable, -1);
   }
 
   /**
@@ -3205,7 +3128,7 @@ public class TransformerImpl extends Transformer
     {
       try
       {
-        tpool.waitThread(transformThread, this);
+        ThreadControllerWrapper.waitThread(transformThread, this);
 
         if (!this.hasTransformThreadErrorCatcher())
         {

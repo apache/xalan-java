@@ -878,7 +878,7 @@ public class StylesheetHandler extends DefaultHandler
   public void warn(String msg, Object args[]) throws org.xml.sax.SAXException
   {
 
-    String formattedMsg = m_XSLMessages.createWarning(msg, args);
+    String formattedMsg = XSLMessages.createWarning(msg, args);
     SAXSourceLocator locator = getLocator();
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
 
@@ -972,7 +972,7 @@ public class StylesheetHandler extends DefaultHandler
           throws org.xml.sax.SAXException
   {
 
-    String formattedMsg = m_XSLMessages.createMessage(msg, args);
+    String formattedMsg = XSLMessages.createMessage(msg, args);
 
     error(formattedMsg, e);
   }
@@ -1378,22 +1378,6 @@ public class StylesheetHandler extends DefaultHandler
   ElemTemplateElement popElemTemplateElement()
   {
     return (ElemTemplateElement) m_elems.pop();
-  }
-
-  
-  /**
-   * A XSLMessages instance capable of producing user messages.
-   */
-  private static XSLMessages m_XSLMessages = new XSLMessages();
-
-  /**
-   * Get an XSLMessages instance capable of producing user messages.
-   *
-   * @return non-null reference to the error and warnings table.
-   */
-  XSLMessages getXSLMessages()
-  {
-    return m_XSLMessages;
   }
 
   /**
