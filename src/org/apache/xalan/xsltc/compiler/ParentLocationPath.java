@@ -213,9 +213,12 @@ final class ParentLocationPath extends RelativeLocationPath {
 	il.append(new INVOKESPECIAL(initSI));
 
 	// This is a special case for the //* path with or without predicates
-	if ((_path instanceof Step) && (_step instanceof Step)) {
+	Expression stp = _step;
+	if (stp instanceof ParentLocationPath)
+	    stp = ((ParentLocationPath)stp).getStep();
+	if ((_path instanceof Step) && (stp instanceof Step)) {
 	    final int path = ((Step)_path).getAxis();
-	    final int step = ((Step)_step).getAxis();
+	    final int step = ((Step)stp).getAxis();
 	    if ((path == Axis.DESCENDANTORSELF && step == Axis.CHILD) ||
 		(path == Axis.PRECEDING        && step == Axis.PARENT)) {
 		final int incl = cpg.addMethodref(STEP_ITERATOR_CLASS,
