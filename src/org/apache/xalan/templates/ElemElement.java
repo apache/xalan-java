@@ -215,6 +215,7 @@ public class ElemElement extends ElemUse
     }
     // Only do this if name is valid
     String elemNameSpace = null;
+    String prefix = null;
     if(null != elemName && null != ns)
     {
       if(null != m_namespace_avt)
@@ -225,14 +226,13 @@ public class ElemElement extends ElemUse
         if(null != elemNameSpace && elemNameSpace.length()>0)
         {
           // Get the prefix for that attribute in the result namespace.
-          String prefix = rhandler.getPrefix(elemNameSpace);
+          prefix = rhandler.getPrefix(elemNameSpace);
           
           // If we didn't find the prefix mapping, make up a prefix 
           // and have it declared in the result tree.
           if(null == prefix)
           {
-            prefix = rhandler.getNewUniqueNSPrefix();
-            rhandler.startPrefixMapping(prefix, elemNameSpace);
+            prefix = rhandler.getNewUniqueNSPrefix();            
           }
           // add the prefix to the attribute name.
           elemName = (prefix + ":"+QName.getLocalPart(elemName));       
@@ -240,6 +240,10 @@ public class ElemElement extends ElemUse
       }
 
       rhandler.startElement(elemNameSpace, QName.getLocalPart(elemName), elemName);
+      if(null != prefix)
+      {
+        rhandler.startPrefixMapping(prefix, elemNameSpace);
+      }
     }
     // Instantiate content of xsl:element. Note that if startElement was not
     // called(ie: if invalid element name, the element's attributes will be
