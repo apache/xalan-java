@@ -65,24 +65,21 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
-
 /**
  * This iterator is a wrapper that always returns the position of
  * a node in document order. It is needed for the case where 
  * a call to position() occurs in the context of an XSLT element
  * such as xsl:for-each, xsl:apply-templates, etc. 
  */
-public final class ForwardPositionIterator extends DTMAxisIteratorBase {
+public final class ForwardPositionIterator extends NodeIteratorBase {
 
-    private DTMAxisIterator _source;
+    private NodeIterator _source;
 
-    public ForwardPositionIterator(DTMAxisIterator source) {
+    public ForwardPositionIterator(NodeIterator source) {
 	_source = source;
     }
 
-    public DTMAxisIterator cloneIterator() {
+    public NodeIterator cloneIterator() {
 	try {
 	    final ForwardPositionIterator clone = 
 		(ForwardPositionIterator) super.clone();
@@ -101,14 +98,18 @@ public final class ForwardPositionIterator extends DTMAxisIteratorBase {
 	return returnNode(_source.next());
     }
 	
-    public DTMAxisIterator setStartNode(int node) {
+    public NodeIterator setStartNode(int node) {
 	_source.setStartNode(node);
 	return this;
     }
 
-    public DTMAxisIterator reset() {
+    public NodeIterator reset() {
 	_source.reset();
 	return resetPosition();
+    }
+
+    public int getPosition() {
+	return _position == 0 ? 1 : _position;
     }
 
     public void setMark() {
