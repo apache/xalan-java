@@ -390,7 +390,7 @@ public class StreamHTMLOutput extends StreamOutput {
 		              .append(Integer.toHexString((int) ch));
 		        break;
 		    case '"':
-			result.append("&quot;");
+			result.append("%22");
 			break;
 		    default:	
 		        result.append(ch); 
