@@ -669,7 +669,7 @@ public class XSLTAttributeDef
         try
         {
           meth = elem.getClass().getMethod(setterString, argTypes);
-        }
+       }
         catch(NoSuchMethodException nsme)
         {
           Class cl = ((Object)value).getClass();
