@@ -80,6 +80,7 @@ import org.xml.sax.XMLFilter;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.XSLTC;
+import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 import java.io.File;
@@ -263,14 +264,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
         if (inputStream != null) {
             isSuccessful = xsltc.compile(inputStream, transletName);
         } else if (stylesheetName != null ){
-            int index = stylesheetName.indexOf('.');
-	    if (index > 0) { 
-                transletName = stylesheetName.substring(0,index);
-	    }
-	    else {
-		// indexOf returns -1 if '.' is not present
-		transletName = stylesheetName;
-	    }
+            transletName = Util.toJavaName(Util.noExtName(
+		Util.baseName(stylesheetName)));
             try {
 		if (stylesheetName.startsWith("file:/")) {
                     isSuccessful = xsltc.compile(new URL(stylesheetName));
