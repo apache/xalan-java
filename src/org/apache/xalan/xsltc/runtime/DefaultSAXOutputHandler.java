@@ -448,7 +448,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 	    StringBuffer buf = new StringBuffer("<!DOCTYPE ");
 	    buf.append(name);
 	    if (publicId == null) {
-		buf.append(" SYSTEM ");
+		buf.append(" SYSTEM");
 	    }
 	    else {
 		buf.append(" PUBLIC \"");
