@@ -52,26 +52,11 @@
     Fill in all NEEDSDOC sections.
   </action>
 
-  <action context="code" category="architecture, conformance" priority="high" who="SB">
-    Restructure OutputFormat class to be based on properties.  Make sure 
-    include/import conformance is correct.
-  </action>
-  
-  <action context="code" category="architecture" priority="high" who="SB">
-    Make entities in the html serializer to be resource file driven, and 
-    possibly use radix partitioned tree for character to entity reference 
-    lookup.
-  </action>
-  
-  <action context="code" category="architecture" priority="high" who="SB">
-    Removed linefeed normalization from serializers.  I think.
-  </action>
-
   <action context="code" category="architecture" priority="high" who="SB">
     Fix remaining axes tests.
   </action>
 
-  <action context="code" category="performance" priority="high">
+  <action context="code" category="performance" priority="high" who="MM">
     When using STree for the input, use STree for the document() and
     result tree fragments.
   </action>
@@ -210,6 +195,19 @@
 
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
+
+  <action context="code" category="architecture, conformance" priority="high" who="SB" completed="01/06/00">
+    Restructure OutputFormat class to be based on properties.  Make sure 
+    include/import conformance is correct.
+  </action>
+  
+  <action context="code" category="architecture" priority="high" who="SB" completed="01/06/00">
+    Make entities in the html serializer to be resource file driven.
+  </action>
+  
+  <action context="code" category="architecture" priority="high" who="SB" completed="01/06/00">
+    Removed linefeed normalization from serializers.  I think.
+  </action>
 
   <action context="code" completed-date="10/31/00">
     Make this todo list.
