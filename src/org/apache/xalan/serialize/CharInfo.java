@@ -171,7 +171,15 @@ public class CharInfo
       // Fix Bugzilla#4000: force reading in UTF-8
       //  This creates the de facto standard that Xalan's resource 
       //  files must be encoded in UTF-8
-      reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			// Problem: MSVJ++ doesn't understand this request. Fallback added.
+			try
+			{
+				reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			}
+			catch(java.io.UnsupportedEncodingException e)
+			{
+				reader = new BufferedReader(new InputStreamReader(is));
+			}
       line = reader.readLine();
 
       while (line != null)
