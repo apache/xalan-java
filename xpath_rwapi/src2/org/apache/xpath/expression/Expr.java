@@ -190,7 +190,7 @@ package org.apache.xpath.expression;
  * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
  * @version $Id$
  */
-public interface Expr extends Visitable
+public interface Expr 
 {
 
 	/**
@@ -322,4 +322,9 @@ public interface Expr extends Visitable
 	 */
 	String getString(boolean abbreviate);
 
+	/**
+	 * Visit the expression. Pass through the expression hierarchy and
+	 * invoke corresponding {@link Visitor callbacks}.
+	 */
+    boolean visit(Visitor visitor);
 }
