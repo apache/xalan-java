@@ -1633,6 +1633,34 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     {
       return getDocument();
     }
+    
+    /**
+     * By the nature of the stateless traversal, the context node can not be
+     * returned or the iteration will go into an infinate loop.  So to traverse
+     * an axis, the first function must be used to get the first node.
+     *
+     * <p>This method needs to be overloaded only by those axis that process
+     * the self node. <\p>
+     *
+     * @param context The context node of this traversal. This is the point
+     * of origin for the traversal -- its "root node" or starting point.
+     * @param expandedTypeID The expanded type ID that must match.
+     *
+     * @return the first node in the traversal.
+     */
+    public int first(int context, int expandedTypeID)
+    {
+      if (isIndexed(expandedTypeID))
+      {
+        int identity = 0;
+        int firstPotential = getFirstPotential(identity);
+
+        return makeNodeHandle(getNextIndexed(identity, firstPotential, expandedTypeID));
+      }
+
+      int root = first(context); 
+      return next(root, root, expandedTypeID);
+    }
   }
   
   /**
@@ -1676,6 +1704,35 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     {
       return makeNodeHandle(_firstch(0));
     }
+    
+    /**
+     * By the nature of the stateless traversal, the context node can not be
+     * returned or the iteration will go into an infinate loop.  So to traverse
+     * an axis, the first function must be used to get the first node.
+     *
+     * <p>This method needs to be overloaded only by those axis that process
+     * the self node. <\p>
+     *
+     * @param context The context node of this traversal. This is the point
+     * of origin for the traversal -- its "root node" or starting point.
+     * @param expandedTypeID The expanded type ID that must match.
+     *
+     * @return the first node in the traversal.
+     */
+    public int first(int context, int expandedTypeID)
+    {
+      if (isIndexed(expandedTypeID))
+      {
+        int identity = 0; 
+        int firstPotential = getFirstPotential(identity);
+
+        return makeNodeHandle(getNextIndexed(identity, firstPotential, expandedTypeID));
+      }
+
+      int root = getDocument(); 
+      return next(root, root, expandedTypeID);
+    }
+    
   }
 
 }
