@@ -55,6 +55,9 @@
  */
 package org.apache.xpath.rwapi.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.xpath.rwapi.XPathException;
 import org.apache.xpath.rwapi.expression.Expr;
 import org.apache.xpath.rwapi.expression.Literal;
@@ -118,11 +121,11 @@ public class LiteralImpl extends ExprImpl implements Literal
     /**
      * @see org.apache.xpath.rwapi.expression.Literal#getDecimalLiteral()
      */
-    public float getDecimalLiteral() throws XPathException
+    public BigDecimal getDecimalLiteral() throws XPathException
     {
         if (getLiteralType() == DECIMAL_LITERAL)
         {
-            return ((Float) m_literal).floatValue();
+            return (BigDecimal) m_literal;
         }
 
         throw new XPathException(
@@ -146,11 +149,11 @@ public class LiteralImpl extends ExprImpl implements Literal
     /**
      * @see org.apache.xpath.rwapi.expression.Literal#getIntegerLiteral()
      */
-    public int getIntegerLiteral() throws XPathException
+    public BigInteger getIntegerLiteral() throws XPathException
     {
         if (getLiteralType() == INTEGER_LITERAL)
         {
-            return ((Integer) m_literal).intValue();
+            return (BigInteger) m_literal;
         }
 
         throw new XPathException(
@@ -224,7 +227,7 @@ public class LiteralImpl extends ExprImpl implements Literal
         switch (id)
         {
             case XPathTreeConstants.JJTINTEGERLITERAL:
-                m_literal = new Integer(token.image);
+                m_literal = new BigInteger(token.image);
 
                 break;
 
@@ -238,7 +241,7 @@ public class LiteralImpl extends ExprImpl implements Literal
                 break;
 
             case XPathTreeConstants.JJTDECIMALLITERAL:
-                m_literal = new Float(token.image);
+                m_literal = new BigDecimal(token.image);
 
                 break;
 

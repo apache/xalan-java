@@ -55,6 +55,9 @@
  */
 package org.apache.xpath.rwapi.expression;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.xpath.rwapi.XPathException;
 
 /**
@@ -101,12 +104,12 @@ public interface Literal extends Expr {
     /**
      * @throws XPathException when the literal isn't an integer
      */
-    int getIntegerLiteral() throws XPathException;
+    BigInteger getIntegerLiteral() throws XPathException;
    
     /**
      * @throws XPathException when the literal isn't a decimal
      */
-    float getDecimalLiteral() throws XPathException;
+    BigDecimal getDecimalLiteral() throws XPathException;
    
     /**
      * @throws XPathException when the literal isn't a double
