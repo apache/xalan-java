@@ -121,13 +121,6 @@ public class XNI2DTM
   /** DEBUGGING FLAG: Set true to monitor XNI events and similar diagnostic info. */
   private static final boolean DEBUG = false;
   
-  /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as declared.
-   * See discussion in addNode 
-   * NOTE that the 3/28/03 query datamodel no longer records the type-as-declared,
-   * so this field can probably be eliminated!
-   * */
-  //protected Vector m_expectedType=null; // %REVIEW% OBSOLETE?
-  
   /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as instantiated.
    * See discussion in addNode */
   protected Vector m_actualType=null;
@@ -202,7 +195,6 @@ public class XNI2DTM
   protected int addNode(int type, int expandedTypeID,
                         int parentIndex, int previousSibling,
                         int dataOrPrefix, boolean canHaveFirstChild,
-                        XSTypeDecl expectedType, // %REVIEW% OBSOLETE?
                         XSTypeDecl actualType)
   {
   	int identity=super.addNode(type,expandedTypeID,
@@ -853,11 +845,13 @@ public class XNI2DTM
     // Augs might be null if schema support not turned on in parser. 
     // Shouldn't arise in final operation (?); may arise during debugging
 
+    XSTypeDecl actualType=null;
+    
     if(augs!=null)
     {
       // Extract Experimental Xerces PSVI data		
       ElementPSVImpl elemPSVI=(ElementPSVImpl)augs.getItem(org.apache.xerces.impl.Constants.ELEMENT_PSVI);
-      XSTypeDecl actualType =
+      actualType =
     	(elemPSVI==null) ? null : elemPSVI.getTypeDefinition();
       org.apache.xerces.impl.xs.XSElementDecl expectedDecl =  // %REVIEW% OBSOLETE?
     	(elemPSVI==null) ? null : elemPSVI.getElementDecl();
@@ -893,22 +887,22 @@ public class XNI2DTM
 			       ", value: " + attributes.getValue(i)														 
 			       );
 	    // Experimental Xerces PSVI data
-	    // %REVIEW% Having some problems; Sandy Gao is investigating
 	    Augmentations attrAugs=attributes.getAugmentations(i);
 	    AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
-	    actualType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
+	    XSTypeDecl actualAttrType =
+	      (attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
 	    org.apache.xerces.impl.xs.XSAttributeDecl expectedAttrDecl= // %REVIEW% Obsolete?
 	      (attrPSVI==null) ? null : attrPSVI.getAttributeDecl();			      
-	    expectedType=(expectedAttrDecl==null) ? actualType : expectedAttrDecl.fType;
-	    actualExpandedQName=(actualType==null) ? null : actualType.getTargetNamespace()+":"+actualType.getTypeName();
-	    System.out.println("\t\ttypeDefinition (actual): "+ actualType +
+	    expectedType=(expectedAttrDecl==null) ? actualAttrType : expectedAttrDecl.fType;
+	    actualExpandedQName=(actualAttrType==null) ? null : actualAttrType.getTargetNamespace()+":"+actualAttrType.getTypeName();
+	    System.out.println("\t\ttypeDefinition (actual): "+ actualAttrType +
 			       "\n\t\t\ttype expanded-qname: " + actualExpandedQName +
 			       "\n\t\tattrDecl (expected): " + expectedAttrDecl
 			       );
-	    if(actualType!=null)	  					
-	      System.out.println("\n\t\tDerived from expected (after null recovery): " + actualType.derivedFrom(expectedType) +
-				 "\n\t\tDerived from builtin string: "+ actualType.derivedFrom(SCHEMANS,"string") +
-				 "\n\t\tTyped value: " + _typedValue(actualType,attributes.getValue(i))
+	    if(actualAttrType!=null)	  					
+	      System.out.println("\n\t\tDerived from expected (after null recovery): " + actualAttrType.derivedFrom(expectedType) +
+				 "\n\t\tDerived from builtin string: "+ actualAttrType.derivedFrom(SCHEMANS,"string") +
+				 "\n\t\tTyped value: " + _typedValue(actualAttrType,attributes.getValue(i))
 				 );
 	  }
 	}
@@ -922,7 +916,8 @@ public class XNI2DTM
     int prefixIndex = (null != element.prefix)
                       ? m_valuesOrPrefixes.stringToIndex(element.rawname) : 0;
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
-                           m_parents.peek(), m_previous, prefixIndex, true);
+                           m_parents.peek(), m_previous, prefixIndex, true,
+			   actualType);
 
     if(m_indexing)
       indexNode(exName, elemNode);
@@ -1013,8 +1008,15 @@ public class XNI2DTM
       }
 
       exName = m_expandedNameTable.getExpandedTypeID(attrUri, attrLocalName, nodeType);
+
+      // Experimental Xerces PSVI data
+      Augmentations attrAugs=attributes.getAugmentations(i);
+      AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
+      XSTypeDecl actualAttrType =
+	(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
+
       prev = addNode(nodeType, exName, elemNode, prev, val,
-                     false);
+                     false,actualAttrType);
     }
 
     if (DTM.NULL != prev)
@@ -1065,6 +1067,13 @@ public class XNI2DTM
       	", localname: " + element.localpart + ", qname: "+element.rawname);
 
 	try
+  /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as declared.
+   * See discussion in addNode 
+   * NOTE that the 3/28/03 query datamodel no longer records the type-as-declared,
+   * so this field can probably be eliminated!
+   * */
+  //protected Vector m_expectedType=null; // %REVIEW% OBSOLETE?
+  
 	{
 		super.endElement(element.uri,element.localpart,element.rawname);
   	} 
