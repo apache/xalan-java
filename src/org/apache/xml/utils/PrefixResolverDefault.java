@@ -95,6 +95,8 @@ public class PrefixResolverDefault implements PrefixResolver
       {
         if (type == Node.ELEMENT_NODE)
         {
+                if (parent.getNodeName().indexOf(prefix+":") == 0) 
+                        return parent.getNamespaceURI();                
           NamedNodeMap nnm = parent.getAttributes();
 
           for (int i = 0; i < nnm.getLength(); i++)
