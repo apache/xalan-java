@@ -26,7 +26,6 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.xsltc.DOM;
@@ -1174,22 +1173,17 @@ public final class BasisLibrary implements Operators {
                                     	Translet translet, DOM dom) 
     {
 	// w3c NodeList -> w3c DOM
-	DocumentBuilder docbldr = null;
+	Document doc = null;
 	try {
-	    docbldr = ((AbstractTranslet) translet).newDocumentBuilder();
+	    doc = ((AbstractTranslet) translet).newDocument("", "__top__");
 	} 
         catch (javax.xml.parsers.ParserConfigurationException e) {
 	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
             return null;
 	}
         
-	// create new w3c DOM
-	Document doc = docbldr.newDocument();	
-        org.w3c.dom.Node topElementNode = 
-            doc.appendChild(doc.createElementNS("", "__top__"));
-
         // Copy all the nodes in the nodelist to be under the top element
-        copyNodes(nodeList, doc, topElementNode);
+        copyNodes(nodeList, doc, doc.getDocumentElement());
 
         // w3cDOM -> DTM -> DOMImpl
 	if (dom instanceof MultiDOM) {

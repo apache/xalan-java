@@ -27,8 +27,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.xml.transform.Templates;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.dtm.DTM;
@@ -719,16 +720,17 @@ public abstract class AbstractTranslet implements Translet {
     }    
     
     /************************************************************************
-     * DOMBuilderFactory caching
+     * DOMImplementation caching for basis library
      ************************************************************************/
-    protected DocumentBuilderFactory _domFactory = null;
+    protected DOMImplementation _domImplementation = null;
     
-    public DocumentBuilder newDocumentBuilder() 
+    public Document newDocument(String uri, String qname) 
         throws ParserConfigurationException 
     {
-        if (_domFactory == null) {
-            _domFactory = DocumentBuilderFactory.newInstance();
+        if (_domImplementation == null) {
+            _domImplementation = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder().getDOMImplementation();
         }
-        return _domFactory.newDocumentBuilder();
+        return _domImplementation.createDocument(uri, qname, null);
     }
 }
