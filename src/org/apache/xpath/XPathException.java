@@ -163,7 +163,7 @@ public class XPathException extends TransformerException
     }
     catch (Exception e){}
 
-    Exception exception = m_exception;
+    Throwable exception = m_exception;
 
     for (int i = 0; (i < 10) && (null != exception); i++)
     {
@@ -173,7 +173,7 @@ public class XPathException extends TransformerException
       if (exception instanceof TransformerException)
       {
         TransformerException se = (TransformerException) exception;
-        Exception prev = exception;
+        Throwable prev = exception;
 
         exception = se.getException();
 
@@ -197,7 +197,7 @@ public class XPathException extends TransformerException
   {
 
     String lastMessage = super.getMessage();
-    Exception exception = m_exception;
+    Throwable exception = m_exception;
 
     while (null != exception)
     {
@@ -209,7 +209,7 @@ public class XPathException extends TransformerException
       if (exception instanceof TransformerException)
       {
         TransformerException se = (TransformerException) exception;
-        Exception prev = exception;
+        Throwable prev = exception;
 
         exception = se.getException();
 
@@ -243,7 +243,7 @@ public class XPathException extends TransformerException
     }
     catch (Exception e){}
 
-    Exception exception = m_exception;
+    Throwable exception = m_exception;
 
     for (int i = 0; (i < 10) && (null != exception); i++)
     {
@@ -261,7 +261,7 @@ public class XPathException extends TransformerException
       if (exception instanceof TransformerException)
       {
         TransformerException se = (TransformerException) exception;
-        Exception prev = exception;
+        Throwable prev = exception;
 
         exception = se.getException();
 
@@ -285,7 +285,7 @@ public class XPathException extends TransformerException
    * 
    *  @return The embedded exception, or null if there is none.
    */
-  public Exception getException()
+  public Throwable getException()
   {
     return m_exception;
   }

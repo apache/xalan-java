@@ -319,7 +319,7 @@ public class FuncDocument extends Function2Args
         TransformerException spe = (TransformerException) throwable;
 
         {
-          Exception e = spe;
+          Throwable e = spe;
 
           while (null != e)
           {
