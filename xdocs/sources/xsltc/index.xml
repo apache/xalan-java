@@ -81,7 +81,7 @@
       <li><link anchor="overall">XSLTC overall design</link></li>
       <li><link anchor="compiler">XSLTC compiler design</link></li>
       <li><link anchor="runtime">XSLTC runtime library design</link></li>
-      <li><link anchor="dom">XSLTC internal DOM design</link></li>
+      <li><link anchor="runtime">XSLTC internal DOM design</link></li>
       <li><link anchor="trax">XSLTC TrAX implementation design</link></li>
     </ul>
 

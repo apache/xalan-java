@@ -1,0 +1,115 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
+<!-- 
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 2001, Sun
+ * Microsystems., http://www.sun.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ -->
+
+<s1 title="XSLTC TrAX API">
+
+  <s2 title="The JAXP/TrAX API">
+
+  <p>XSLTC is 100% compliant with the TrAX poriton of the
+  <jump href="http://java.sun.com/xml/jaxp/index.html">JAXP API</jump>. This
+  API is a standard extension to Java and there is not much point in describing
+  it in detail in this document.</p>
+
+  </s2>
+
+  <s2 title="XSLTC's extensions to JAXP/TrAX">
+
+  <p>The <code>Source</code> and <code>Result</code> classes within TrAX are
+  used to handle input and output documents. These classes can be extended to
+  encapsulate additional input types. XSLTC's TrAX implementation contains an
+  extension to the <code>Source</code> class:</p><source>
+    org.apache.xalan.xsltc.trax.XSLTCSource</source>
+
+  <p>This extension class can be used to build and encapsulate XSLTC's internal
+  DOM and DTD handler:</p><source>
+    public void run(String xmlfile, String xslfile) {
+
+        // Set up your factory classes
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        TransformerFactory factory = TransformerFactory.newInstance();
+
+        try {
+            // Create a namespace-aware parser
+            try {
+                factory.setFeature(Constants.NAMESPACE_FEATURE,true);
+            }
+            catch (Exception e) {
+                factory.setNamespaceAware(true);
+            }
+            final SAXParser parser = factory.newSAXParser();
+            final XMLReader reader = parser.getXMLReader();
+
+            // Build an XSLTCSource for the input XML document
+            XSLTCSource source = new XSLTCSource();
+            source.build(reader, xmlfile);
+
+            // Build a StreamSource for the stylesheet
+            StreamSource stylesheet = new StreamSource(xslfile);
+
+            // Create a Transformer instance and process the input
+            Transformer transformer = factory.newTransformer(stylesheet);
+            transformer.transform(source, new StreamResult(System.out));
+        }
+	:
+	:
+    }</source>
+
+  </s2>
+
+</s1>
