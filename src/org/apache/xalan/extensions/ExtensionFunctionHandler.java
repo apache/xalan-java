@@ -293,7 +293,7 @@ public class ExtensionFunctionHandler
           Class[] paramTypes = thisMethod.getParameterTypes();
           MethodResolver.convertParams(methodArgs, convertedArgs, paramTypes, exprContext);
                      
-          return thisMethod.invoke (object, convertedArgs);
+          return thisMethod.invoke (object, convertedArgs[0]);
         }
       }
       catch(Exception e)
@@ -315,7 +315,7 @@ public class ExtensionFunctionHandler
         Constructor c = MethodResolver.getConstructor((Class) object, 
                                                       methodArgs, convertedArgs,
                                                       exprContext);
-        Object obj = c.newInstance (convertedArgs);
+        Object obj = c.newInstance (convertedArgs[0]);
         return obj;
       }
       else 
@@ -324,7 +324,7 @@ public class ExtensionFunctionHandler
         Method m = MethodResolver.getMethod(cl, method,
                                             methodArgs, 
                                             convertedArgs, exprContext);
-        Object returnObj = m.invoke (object, convertedArgs);
+        Object returnObj = m.invoke (object, convertedArgs[0]);
         if(!isNew)
         {
           if(null == m_cachedMethods)
@@ -437,7 +437,14 @@ public class ExtensionFunctionHandler
           else
           {
             argArray = new Object[args.size ()];
-            argStart = 0;
+            if(args.size() > 0)
+            {
+              Object o = args.elementAt (0);
+              argArray[0] = (o instanceof XObject) ? ((XObject)o).object () : o;
+              argStart = 1;
+            }
+            else
+              argStart = 0;
           }
         }
       }
@@ -448,18 +455,28 @@ public class ExtensionFunctionHandler
         argStart = 0;
       }
 
-      // convert the xobject args to their object forms
-      for (int i = 0; i < args.size (); i++) 
-      {
-        Object o = args.elementAt (i);
-        argArray[i+argStart] = 
-                              (o instanceof XObject) ? ((XObject)o).object () : o;
-      }
-
       if(isJava)
+      {
+        // TODO: Fix all this.
+        for (int i = argStart; i < args.size (); i++) 
+        {
+          Object o = args.elementAt (i);
+          argArray[i] = o;
+        }
         return callJava(javaObject, funcName, argArray, methodKey, exprContext);
+      }
       else
+      {
+        // convert the xobject args to their object forms
+        for (int i = 0; i < args.size (); i++) 
+        {
+          Object o = args.elementAt (i);
+          argArray[i+argStart] = 
+                                (o instanceof XObject) ? ((XObject)o).object () : o;
+        }
+        
         return e.call (null, funcName, argArray);
+      }
     }
     catch (Exception e) 
     {

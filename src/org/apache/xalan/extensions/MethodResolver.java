@@ -50,31 +50,31 @@ public class MethodResolver
       int paramStart = 0;
       boolean isFirstExpressionContext = false;
       int scoreStart = 0;
-      System.out.println("numberMethodParams: "+numberMethodParams);
-      System.out.println("argsIn.length: "+argsIn.length);
-      System.out.println("exprContext: "+exprContext);
+      // System.out.println("numberMethodParams: "+numberMethodParams);
+      // System.out.println("argsIn.length: "+argsIn.length);
+      // System.out.println("exprContext: "+exprContext);
       if(numberMethodParams == (argsIn.length+1))
       {
         Class javaClass = paramTypes[0];
-      System.out.println("first javaClass: "+javaClass.getName());
+      // System.out.println("first javaClass: "+javaClass.getName());
         if(javaClass.isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
         {
           isFirstExpressionContext = true;
           scoreStart = 5;
           paramStart++;
-      System.out.println("Incrementing paramStart: "+paramStart);
+      // System.out.println("Incrementing paramStart: "+paramStart);
         }
       }
       if(argsIn.length == (numberMethodParams - paramStart))
       {
         // then we have our candidate.
         int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
-      System.out.println("score: "+score);
+      // System.out.println("score: "+score);
         if(-1 == score)
           continue;
         if(score < bestScore)
         {
-          System.out.println("Assigning best ctor: "+ctor);
+          // System.out.println("Assigning best ctor: "+ctor);
           bestConstructor = ctor;
           bestParamTypes = paramTypes;
           bestScore = score;
@@ -112,6 +112,8 @@ public class MethodResolver
            SecurityException,
            org.xml.sax.SAXException
   {
+    System.out.println("---> Looking for method: "+name);
+    System.out.println("---> classObj: "+classObj);
     Method bestMethod = null;
     Class[] bestParamTypes = null;
     Method[] methods = classObj.getMethods();
@@ -120,6 +122,7 @@ public class MethodResolver
     for(int i = 0; i < nMethods; i++)
     {
       Method method = methods[i];
+      // System.out.println("looking at method: "+method);
       if(method.getName().equals(name))
       {
         Class[] paramTypes = method.getParameterTypes();
@@ -127,13 +130,16 @@ public class MethodResolver
         int paramStart = 0;
         boolean isFirstExpressionContext = false;
         int scoreStart = 0;
+      System.out.println("numberMethodParams: "+numberMethodParams);
+      System.out.println("argsIn.length: "+argsIn.length);
+      System.out.println("exprContext: "+exprContext);
         if(numberMethodParams == (argsIn.length+1))
         {
           Class javaClass = paramTypes[0];
           if(javaClass.isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
           {
             isFirstExpressionContext = true;
-            scoreStart = 10;
+            scoreStart = 5;
             paramStart++;
           }
         }
@@ -141,10 +147,12 @@ public class MethodResolver
         {
           // then we have our candidate.
           int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
+          System.out.println("score: "+score);
           if(-1 == score)
             continue;
           if(score < bestScore)
           {
+            System.out.println("Assigning best method: "+method);
             bestMethod = method;
             bestParamTypes = paramTypes;
             bestScore = score;

@@ -149,7 +149,7 @@ public class XSLTJavaClassEngine extends BSFEngineImpl
         Method m = MethodResolver.getMethod(object.getClass(), method,
                                                       methodArgs, 
                                                       convertedArgs, null);
-        return m.invoke (object, methodArgs);
+        return m.invoke (object, convertedArgs[0]);
       }
     }
     catch (NoSuchMethodException nsme) 
