@@ -182,7 +182,8 @@ public class StreamHTMLOutput extends StreamOutput {
 		_buffer.append('>');
 	    }
 	    else {
-		_buffer.append("></").append(elementName).append('>');
+		closeStartTag();
+		_buffer.append("</").append(elementName).append('>');
 	    }
 	    _startTagOpen = false;
 
