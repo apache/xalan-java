@@ -89,6 +89,7 @@ final class Sort extends Instruction {
     private AttributeValue _caseOrder;
     private AttributeValue _dataType;
 
+    private String         _data = null;
     public  String         _lang;
     public  String         _country;
 
@@ -113,9 +114,7 @@ final class Sort extends Instruction {
 	    .create(this, val.length() > 0 ? val : "upper-first", parser);
 
 	// Get the sort data type; default is text
-	val = getAttribute("data-type");
-	_dataType = AttributeValue
-	    .create(this, val.length() > 0 ? val : "text", parser);
+	_data = getAttribute("data-type");
 
 	// Get the language whose sort rules we will use; default is env.dep.
 	if ((val = getAttribute("lang")) != null) {
@@ -135,9 +134,23 @@ final class Sort extends Instruction {
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final Type tselect = _select.typeCheck(stable);
-	if (tselect instanceof StringType == false) {
+
+	// If the sort data-type is not set we use the natural data-type
+	// of the data we will sort
+	if (tselect instanceof IntType) {
 	    _select = new CastExpr(_select, Type.String);
+	    if ((_data == null) || (_data.length() == 0)) _data = "number";
 	}
+	else if (tselect instanceof StringType) {
+	    if ((_data == null) || (_data.length() == 0)) _data = "text";
+	}
+	else {
+	    _select = new CastExpr(_select, Type.String);
+	    if ((_data == null) || (_data.length() == 0)) _data = "text";
+	}
+
+	_dataType = AttributeValue.create(this, _data, getParser());
+
 	_order.typeCheck(stable);
 	_caseOrder.typeCheck(stable);
 	_dataType.typeCheck(stable);
