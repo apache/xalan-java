@@ -209,9 +209,13 @@ public class Redirect
     
     TransformerImpl transf = context.getTransformer();
     
+    startRedirection(transf, formatter);  // for tracing only
+    
     transf.executeChildTemplates(elem,
                                  context.getContextNode(),
                                  context.getMode(), formatter);
+                                 
+    endRedirection(transf); // for tracing only
     
     if(!inTable)
     {
@@ -409,8 +413,8 @@ public class Redirect
     try
     {
       SerializationHandler flistener = 
-        transformer.createSerializationHandler(new StreamResult(ostream),
-                                               format);
+        createSerializationHandler(transformer, ostream, file, format);
+        
       try
       {
         flistener.startDocument();
@@ -431,5 +435,54 @@ public class Redirect
       throw new javax.xml.transform.TransformerException(te);
     }
     
+  }
+
+  /**
+   * A class that extends this class can over-ride this public method and recieve
+   * a callback that redirection is about to start
+   * @param transf The transformer.
+   * @param formatter The handler that receives the redirected output
+   */
+  public void startRedirection(TransformerImpl transf, ContentHandler formatter)
+  {
+      // A class that extends this class could provide a method body        
+  }
+    
+  /**
+   * A class that extends this class can over-ride this public method and receive
+   * a callback that redirection to the ContentHandler specified in the startRedirection()
+   * call has ended
+   * @param transf The transformer.
+   */
+  public void endRedirection(TransformerImpl transf)
+  {
+      // A class that extends this class could provide a method body        
+  }
+    
+  /**
+   * A class that extends this one could over-ride this public method and receive
+   * a callback for the creation of the serializer used in the redirection.
+   * @param transformer The transformer
+   * @param ostream The output stream that the serializer wraps
+   * @param file The file associated with the ostream
+   * @param format The format parameter used to create the serializer
+   * @return the serializer that the redirection will go to.
+   * 
+   * @throws java.io.IOException
+   * @throws TransformerException
+   */
+  public SerializationHandler createSerializationHandler(
+        TransformerImpl transformer,
+        FileOutputStream ostream,
+        File file,
+        OutputProperties format) 
+        throws java.io.IOException, TransformerException
+  {
+
+      SerializationHandler serializer =
+          transformer.createSerializationHandler(
+              new StreamResult(ostream),
+              format);
+      return serializer;
   }
 }
