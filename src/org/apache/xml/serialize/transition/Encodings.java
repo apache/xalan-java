@@ -97,9 +97,19 @@ class Encodings
     static Writer getWriter( OutputStream output, String encoding )
         throws UnsupportedEncodingException
     {
-        for ( int i = 0 ; i < _encodings.length ; ++i ) {
-            if ( _encodings[ i ].name.equals( encoding ) )
-                return new OutputStreamWriter( output, _encodings[ i ].javaName );
+        for ( int i = 0 ; i < _encodings.length ; ++i ) 
+        {
+          if ( _encodings[ i ].name.equals( encoding ) )
+          {
+            try
+            {
+              return new OutputStreamWriter( output, _encodings[ i ].javaName );
+            }
+            catch(UnsupportedEncodingException usee)
+            {
+              // keep trying
+            }
+          }
         }
         return new OutputStreamWriter( output, encoding );
     }
@@ -167,19 +177,61 @@ class Encodings
      * Constructs a list of all the supported encodings.
      */
     private static final EncodingInfo[] _encodings = new EncodingInfo[] {
-        new EncodingInfo( "ASCII", "ASCII", 0x7F ),
-        new EncodingInfo( "ISO-Latin-1", "ASCII", 0xFF ),
-        new EncodingInfo( "ISO-8859-1", "ISO8859_1", 0xFF ),
-        new EncodingInfo( "ISO-8859-2", "ISO8859_2", 0xFF ),
-        new EncodingInfo( "ISO-8859-3", "ISO8859_3", 0xFF ),
-        new EncodingInfo( "ISO-8859-4", "ISO8859_4", 0xFF ),
-        new EncodingInfo( "ISO-8859-5", "ISO8859_5", 0xFF ),
-        new EncodingInfo( "ISO-8859-6", "ISO8859_6", 0xFF ),
-        new EncodingInfo( "ISO-8859-7", "ISO8859_7", 0xFF ),
-        new EncodingInfo( "ISO-8859-8", "ISO8859_8", 0xFF ),
-        new EncodingInfo( "ISO-8859-9", "ISO8859_9", 0xFF ),
-        new EncodingInfo( "UTF-8", "UTF8", 0xFFFF ),
-        new EncodingInfo( "UNICODE", "Unicode", 0xFFFF )
+      //    <preferred MIME name>, <Java encoding name>
+      // new EncodingInfo( "ISO 8859-1", "CP1252"); // Close enough, I guess
+      new EncodingInfo( "WINDOWS-1250", "Cp1250", 0x00FF), // Peter Smolik
+      new EncodingInfo( "UTF-8", "UTF8", 0xFFFF),
+      new EncodingInfo( "US-ASCII",        "ISO8859_1", 0x7F),
+      new EncodingInfo( "ISO-8859-1",      "ISO8859_1", 0x00FF),
+      new EncodingInfo( "ISO-8859-2",      "ISO8859_2", 0x00FF),
+      new EncodingInfo( "ISO-8859-3",      "ISO8859_3", 0x00FF),
+      new EncodingInfo( "ISO-8859-4",      "ISO8859_4", 0x00FF),
+      new EncodingInfo( "ISO-8859-5",      "ISO8859_5", 0x00FF),
+      new EncodingInfo( "ISO-8859-6",      "ISO8859_6", 0x00FF),
+      new EncodingInfo( "ISO-8859-7",      "ISO8859_7", 0x00FF),
+      new EncodingInfo( "ISO-8859-8",      "ISO8859_8", 0x00FF),
+      new EncodingInfo( "ISO-8859-9",      "ISO8859_9", 0x00FF),
+      new EncodingInfo( "US-ASCII",        "8859_1", 0x00FF),    // ?
+      new EncodingInfo( "ISO-8859-1",      "8859_1", 0x00FF),
+      new EncodingInfo( "ISO-8859-2",      "8859_2", 0x00FF),
+      new EncodingInfo( "ISO-8859-3",      "8859_3", 0x00FF),
+      new EncodingInfo( "ISO-8859-4",      "8859_4", 0x00FF),
+      new EncodingInfo( "ISO-8859-5",      "8859_5", 0x00FF),
+      new EncodingInfo( "ISO-8859-6",      "8859_6", 0x00FF),
+      new EncodingInfo( "ISO-8859-7",      "8859_7", 0x00FF),
+      new EncodingInfo( "ISO-8859-8",      "8859_8", 0x00FF),
+      new EncodingInfo( "ISO-8859-9",      "8859_9", 0x00FF),
+      new EncodingInfo( "ISO-2022-JP",     "JIS", 0xFFFF),
+      new EncodingInfo( "SHIFT_JIS",       "SJIS", 0xFFFF),
+      new EncodingInfo( "EUC-JP",          "EUCJIS", 0xFFFF),
+      new EncodingInfo( "GB2312",          "GB2312", 0xFFFF),
+      new EncodingInfo( "BIG5",            "Big5", 0xFFFF),
+      new EncodingInfo( "EUC-KR",          "KSC5601", 0xFFFF),
+      new EncodingInfo( "ISO-2022-KR",     "ISO2022KR", 0xFFFF),
+      new EncodingInfo( "KOI8-R",          "KOI8_R", 0xFFFF),
+      new EncodingInfo( "EBCDIC-CP-US",    "Cp037", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-CA",    "Cp037", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-NL",    "Cp037", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-DK",    "Cp277", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-NO",    "Cp277", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-FI",    "Cp278", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-SE",    "Cp278", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-IT",    "Cp280", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-ES",    "Cp284", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-GB",    "Cp285", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-FR",    "Cp297", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-AR1",   "Cp420", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-HE",    "Cp424", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-CH",    "Cp500", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-ROECE", "Cp870", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-YU",    "Cp870", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-IS",    "Cp871", 0x00FF),
+      new EncodingInfo( "EBCDIC-CP-AR2",   "Cp918", 0x00FF),
+      new EncodingInfo( "ASCII", "ASCII", 0x7F ),
+      new EncodingInfo( "ISO-Latin-1", "ASCII", 0xFF ),
+      new EncodingInfo( "UTF-8", "UTF8", 0xFFFF ),
+      new EncodingInfo( "UNICODE", "Unicode", 0xFFFF ),
+      new EncodingInfo( "UTF-16", "Unicode", 0xFFFF )
     };
 
 

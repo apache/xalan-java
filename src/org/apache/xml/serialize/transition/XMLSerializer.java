@@ -541,7 +541,7 @@ public final class XMLSerializer
                 String encoding = _format.getEncoding();
                 if ( encoding != null ) {
                     buffer.append( " encoding=\"" );
-                    buffer.append( encoding.toUpperCase() );
+                    buffer.append( encoding );
                     buffer.append( '"' );
                 }
                 if ( _format.getStandalone() && _docTypeSystemId == null &&

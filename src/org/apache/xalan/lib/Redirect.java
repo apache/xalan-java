@@ -289,6 +289,35 @@ public class Redirect
     }
     return fileName;
   }
+  
+  // yuck.
+  private String urlToFileName(String base)
+  {
+    if(null != base)
+    {
+      if(base.startsWith("file:////"))
+      {
+        base = base.substring(7);
+      }
+      else if(base.startsWith("file:///"))
+      {
+        base = base.substring(6);
+      }
+      else if(base.startsWith("file://"))
+      {
+        base = base.substring(5); // absolute?
+      }
+      else if(base.startsWith("file:/"))
+      {
+        base = base.substring(5);
+      }
+      else if(base.startsWith("file:"))
+      {
+        base = base.substring(4);
+      }
+    }
+    return base;
+  }
 
   /**
    * Create a new ContentHandler, based on attributes of the current ContentHandler.
@@ -308,7 +337,7 @@ public class Redirect
 
     if(!file.isAbsolute())
     {
-      String base = elem.getStylesheet().getSystemId();
+      String base = urlToFileName(elem.getStylesheet().getSystemId());
       if(null != base)
       {
         File baseFile = new File(base);

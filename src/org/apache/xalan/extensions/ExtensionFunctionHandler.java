@@ -387,7 +387,29 @@ public class ExtensionFunctionHandler
         Method m = MethodResolver.getMethod(cl, method,
                                             methodArgs, 
                                             convertedArgs, exprContext);
-        Object returnObj = m.invoke (object, convertedArgs[0]);
+        Object returnObj = null;
+        try
+        {
+          returnObj = m.invoke (object, convertedArgs[0]);
+        }
+        catch (java.lang.reflect.InvocationTargetException ive)
+        {
+          // Geez, if the object is a class, try to create the object and invoke.
+          if(object == cl)
+          {
+            object = cl.newInstance();
+            returnObj = m.invoke (object, convertedArgs[0]);
+          }
+        }
+        catch (java.lang.IllegalArgumentException iae) // jview
+        {
+          // Geez, if the object is a class, try to create the object and invoke.
+          if(object == cl)
+          {
+            object = cl.newInstance();
+            returnObj = m.invoke (object, convertedArgs[0]);
+          }
+        }
         if(!isNew)
         {
           if(null == m_cachedMethods)
@@ -407,6 +429,7 @@ public class ExtensionFunctionHandler
     {
       // e.printStackTrace();
       throw new SAXException(e);
+      // return null;
     }
     // should not get here
     // return null;
