@@ -98,9 +98,15 @@ public class FuncNamespace extends FunctionDef1Arg
       }
       else if(t == Node.ATTRIBUTE_NODE)
       {
-        s = xctxt.getDOMHelper().getNamespaceOfNode(context);
+
+        // This function always returns an empty string for namespace nodes.
+        // We check for those here.  Fix inspired by Davanum Srinivas.
+
+        s = context.getNodeName();
         if(s.startsWith("xmlns:") || s.equals("xmlns"))
           return XString.EMPTYSTRING;
+
+        s = xctxt.getDOMHelper().getNamespaceOfNode(context);
       }
       else
         return XString.EMPTYSTRING;
@@ -108,6 +114,6 @@ public class FuncNamespace extends FunctionDef1Arg
     else 
       return XString.EMPTYSTRING;
     
-    return new XString(s);
+    return ((null == s) ? XString.EMPTYSTRING : new XString(s));
   }
 }
