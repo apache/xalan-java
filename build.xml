@@ -562,10 +562,41 @@ Copyright:
   <!-- =================================================================== -->
     <target name="xalan-j2-design">
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/xalan.jar"> 
-      <arg line="loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./build/docs/design/
-      ./xdocs/sources/xalandesign.xml ./xdocs/style"/>
+      <arg line="loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=${build.dir}/docs/design/
+      ${xdocs.dir}/sources/xalandesign.xml ${xdocs.style}"/>
     </java>
   </target>
-
   
+  <!-- =================================================================== -->
+  <!-- Use FOP to create preliminary print (pdf) doc                       -->
+  <!-- Note: fop.jar and xml.jar (from xml-fop) must be on classpath       -->
+
+  <!-- This is VERY preliminary, not yet for inclusion in distribution     -->
+  <!-- =================================================================== -->
+
+  <!--Collate the xml sources into a single xml source with a litle extra structure -->
+  <target name="print.docs">
+    <echo message="fop.jar and xml.jar must be on the classpath"/>
+    <java fork="yes" classname="org.apache.xalan.xslt.Process"
+      classpath="${java.class.path}:${build.dir}/xalan.jar">
+      <arg line="-xsl ${xdocs.dir}/sources/xalan-collate.xsl 
+                 -out ${xdocs.dir}/sources/xalan/xalan-collate.xml"/>
+    </java>
+    
+    <!-- Transform collation into Formatting Objects 
+         (with a little work on links along the way) -->    
+    <java fork="yes" classname="org.apache.xalan.xslt.Process"
+      classpath="${java.class.path}:${build.dir}/xalan.jar">
+      <arg line="-in  ${xdocs.dir}/sources/xalan/xalan-collate.xml
+                 -xsl ${xdocs.style}/stylesheets/xml2fo.xsl 
+                 -out ${build.docs}/xalan-collate.fo"/>
+    </java>
+    
+    <!-- Use FOP to generate a pdf file -->
+    <java fork="yes" classname="org.apache.fop.apps.CommandLine"
+      classpath="${java.class.path}:${build.dir}/xalan.jar:${bin.dir}/fop.jar:${bin.dir}/w3c.jar">
+      <arg line="${build.docs}/xalan-collate.fo build/docs/xalan.pdf"/>
+    </java>
+  </target>    
+
 </project>
