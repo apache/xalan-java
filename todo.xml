@@ -114,6 +114,10 @@
     executed once and then shared?
   </action>
 
+  <action context="code" packages="templates" category="conformance">
+    Catch multiple definitions of a variable with the same name and scope.     
+  </action>
+
   <action context="code">
   </action>
   
