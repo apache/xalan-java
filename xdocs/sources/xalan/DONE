@@ -15,6 +15,7 @@
    TransformerFactory.<br/><br/></li>
   <li>When using an Exception to instantiate a FactoryConfigurationError (extends Error), we now propagate the Exception message to 
   super().<br/><br/></li>
+  <li>Added defensive code to ElemTemplateElement for handling a null URI.<br/><br/></li>
   <li>Fixed a bug (the generation of an unwanted entity reference) performing the identity transformation 
   (see <link idref="usagepatterns" anchor="serialize">Serializing output</link>) with an XML document containing a DOCTYPE declaration.</li>
 </ul>
