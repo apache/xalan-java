@@ -181,6 +181,8 @@ public final class ErrorMsg {
     public static final String TRANSFORM_WITH_TRANSLET_STR = "TRANSFORM_WITH_TRANSLET_STR";
     public static final String TRANSFORM_WITH_JAR_STR = "TRANSFORM_WITH_JAR_STR";
     public static final String COULD_NOT_CREATE_TRANS_FACT = "COULD_NOT_CREATE_TRANS_FACT";
+    public static final String TRANSLET_NAME_JAVA_CONFLICT =
+                                                 "TRANSLET_NAME_JAVA_CONFLICT";
     
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.

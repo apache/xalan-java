@@ -107,6 +107,15 @@ with &xslt4ji;, a message is printed and the option is ignored.</p>
   <li><code>-XT</code><br/>
   Use translet to transform if possible</li>
 </ul>
+<note>The translet name is the same as the name of the Java class that
+implements the translet.  If the name specified by the <code>-XO</code> option
+or derived from the URL for the stylesheet contains characters that are not
+permitted in a Java class name, any such character will be replaced with an
+underscore.  For example, if the translet name specified by the <code>-XO</code>
+option is <code>my-stylesheet</code>, or if the URL of the stylesheet is
+<code>http://example.org/my-stylesheet.xsl</code>, the translet will actually
+be named<code>my_stylesheet</code>.
+</note>
 </s2>
 
 <anchor name="examples"/>

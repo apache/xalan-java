@@ -754,5 +754,18 @@ public static SourceLocator getRootSourceLocator(Throwable exception)
         <p>Thanks to Gunnlauger Thor Briem (gthb@dimon.is) for providing this information.</p>
       </a>
     </faq>
+    <faq title="Translet name doesn't match stylesheet name">
+      <q>My stylesheet is named <code>foo-bar.xsl</code>, but &xslt4jc-short;
+         created a translet named <code>foo_bar</code>.  Is that a bug?</q>
+      <a>
+        <p>No.  The name of a translet is usually the name of the stylesheet,
+           the name specified using the <code>translet-name</code> attribute on
+           the &xslt4jc-short; <code>TransformerFactory</code> or the name
+           specified for the translet on the command-line invocation.
+           However, the name of the translet is also the name of a Java class.
+           Any character that is not permitted in a class name is replaced with
+           an underscore.</p>
+      </a>
+    </faq>
   </group>
 </faqs>

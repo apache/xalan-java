@@ -707,8 +707,8 @@ public class ErrorMessages extends ListResourceBundle {
         "      [-n] [-x] [-s] [-u] [-v] [-h] { <stylesheet> | -i }\n\n"+
         "OPTIONS\n"+
         "   -o <output>    assigns the name <output> to the generated\n"+
-        "                  translet. By default the translet name\n"+
-        "                  is taken from the <stylesheet> name. This option\n"+
+        "                  translet.  By default the translet name is\n"+
+        "                  derived from the <stylesheet> name.  This option\n"+
         "                  is ignored if compiling multiple stylesheets.\n"+
         "   -d <directory> specifies a destination directory for translet\n"+
         "   -j <jarfile>   packages translet classes into a jar file of the\n"+
@@ -894,6 +894,18 @@ public class ErrorMessages extends ListResourceBundle {
         "Could not create an instance of the TransformerFactory class ''{0}''."},
 
         /*
+         * Note to translators:  This message is produced when the user
+         * specified a name for the translet class that contains characters
+         * that are not permitted in a Java class name.  The substitution
+         * text "{0}" specifies the name the user requested, while "{1}"
+         * specifies the name the processor used instead.
+         */
+        {ErrorMsg.TRANSLET_NAME_JAVA_CONFLICT,
+         "The name ''{0}'' could not be used as the name of the translet "+
+         "class because it contains characters that are not permitted in the "+
+         "name of Java class.  The name ''{1}'' was used instead."},
+
+        /*
          * Note to translators:  The following message is used as a header.
          * All the error messages are collected together and displayed beneath
          * this message.
@@ -918,6 +930,7 @@ public class ErrorMessages extends ListResourceBundle {
          */
         {ErrorMsg.RUNTIME_ERROR_KEY,
         "Translet errors:"}
+
     };
 
 

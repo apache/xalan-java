@@ -244,6 +244,15 @@ the compiler; see <link anchor="compile">Compiling translets</link>.</p>
 
 -h Prints usage statement</source>
 
+<note>The translet name is the same as the name of the Java class that
+implements the translet.  If the name specified by the <code>-o</code> option
+or derived from the URL for the stylesheet contains characters that are not
+permitted in a Java class name, any such character will be replaced with an
+underscore.  For example, if the translet name specified by the <code>-o</code>
+option is <code>my-stylesheet</code>, or if the URL of the stylesheet is
+<code>http://example.org/my-stylesheet.xsl</code>, the translet will actually
+be named <code>my_stylesheet</code>.
+</note>
 </s3><anchor name="comp-examples"/>
 <s3 title="Examples">
     <p>The following examples assume that you have already set the
@@ -499,6 +508,13 @@ The JAXP Transform API defines a <code><jump href="apidocs/javax/xml/transform/T
 They only apply to the next invocation of either the <code>newTemplates</code>
 or the <code>newTransformer</code> method on that
 <code>TransformerFactory</code>.</p>
+<note>The translet name is the same as the name of the Java class that
+implements the translet.  If the value specified for the
+<code>translet-name</code> attribute contains characters that are not
+permitted in a Java class name, any such character will be replaced with an
+underscore.  For example, if the translet name specified was
+<code>my-stylesheet</code>, the translet will actually be named
+<code>my_stylesheet</code>.</note>
 </s3><anchor name="api-examples"/>
 <s3 title="Examples">
 <p><em>Example 1:</em> Using a translet/Templates object for multiple
