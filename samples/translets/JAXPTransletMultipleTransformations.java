@@ -85,7 +85,7 @@ public class JAXPTransletMultipleTransformations
  static void doTransform(Templates translet, String xmlInURI, String htmlOutURI)
         throws TransformerException     
   {  
-     // For each transformation, instantiate a new Transformer, and perform
+    // For each transformation, instantiate a new Transformer, and perform
     // the transformation from a StreamSource to a StreamResult;
     Transformer transformer = translet.newTransformer();
     transformer.transform( new StreamSource(xmlInURI),
@@ -98,7 +98,7 @@ public class JAXPTransletMultipleTransformations
   {
  
     // Set the TransformerFactory system property to generate and use translets.
-    String key = "javax.xml.transformer.TransformerFactory";
+    String key = "javax.xml.transform.TransformerFactory";
     String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
     Properties props = System.getProperties();
     props.put(key, value);

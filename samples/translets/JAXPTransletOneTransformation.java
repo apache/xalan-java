@@ -87,7 +87,7 @@ public class JAXPTransletOneTransformation
   {
  
     // Set the TransformerFactory system property to generate and use a translet.
-    String key = "javax.xml.transformer.TransformerFactory";
+    String key = "javax.xml.transform.TransformerFactory";
     String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
     Properties props = System.getProperties();
     props.put(key, value);
@@ -99,6 +99,7 @@ public class JAXPTransletOneTransformation
     // Instantiate the TransformerFactory, and use it along with a SteamSource
     // XSL stylesheet to create a Transformer.
     TransformerFactory tFactory = TransformerFactory.newInstance();
+    System.out.println(tFactory.getClass().getName());
     Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI));
     // Perform the transformation from a StreamSource to a StreamResult;
     transformer.transform(new StreamSource(xmlInURI),

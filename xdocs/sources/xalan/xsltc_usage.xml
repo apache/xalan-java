@@ -333,7 +333,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 ...
 // Set the TransformerFactory system property.
-String key = "javax.xml.transformer.TransformerFactory";
+String key = "javax.xml.transform.TransformerFactory";
 String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
 Properties props = System.getProperties();
 props.put(key, value);
@@ -363,7 +363,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 ...
 // Set the TransformerFactory system property.
-String key = "javax.xml.transformer.TransformerFactory";
+String key = "javax.xml.transform.TransformerFactory";
 String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
 Properties props = System.getProperties();
 props.put(key, value);
