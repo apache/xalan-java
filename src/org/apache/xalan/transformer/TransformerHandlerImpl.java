@@ -103,7 +103,6 @@ public class TransformerHandlerImpl
 {
   
   private boolean m_insideParse = false;
-  private boolean m_hasStarted = false;
 
   ////////////////////////////////////////////////////////////////////
   // Constructors.
@@ -161,9 +160,9 @@ public class TransformerHandlerImpl
          && m_contentHandler instanceof IncrementalSAXSource_Filter)
       {
         IncrementalSAXSource_Filter sp =
-	  (IncrementalSAXSource_Filter)m_contentHandler;
-	// This should now be all that's needed.
-	sp.deliverMoreNodes(false);
+          (IncrementalSAXSource_Filter)m_contentHandler;
+        // This should now be all that's needed.
+        sp.deliverMoreNodes(false);
       }
       
       sax2dtm.clearCoRoutine(true);
@@ -381,8 +380,6 @@ public class TransformerHandlerImpl
         // runTransformThread is equivalent with the 2.0.1 code,
         // except that the Thread may come from a pool.
         m_transformer.runTransformThread( cpriority );
-        if(false == m_hasStarted)
-          System.err.println("Transform thread has still not started after pauseForTransformThreadStartup!");
       }
 
       // This is now done _last_, because IncrementalSAXSource_Filter
