@@ -161,7 +161,7 @@ final class Param extends VariableBase {
 	else if (hasContents()) {
 	    typeCheckContents(stable);
 	}
-	_type = Type.Reference;
+	_type = Type.ResultTree;
 
 	// This element has no type (the parameter does, but the parameter
 	// element itself does not).
