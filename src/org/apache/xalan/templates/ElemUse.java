@@ -149,11 +149,14 @@ public class ElemUse extends ElemTemplateElement
       {
         QName qname = attributeSetsNames[i];
         Vector attrSets = stylesheet.getAttributeSetComposed(qname);
-        int nSets = attrSets.size();
-        for(int k = 0; k < nSets; k++)
-        {
-          ElemAttributeSet attrSet = (ElemAttributeSet)attrSets.elementAt(k);
-          attrSet.execute(transformer, sourceNode, mode);
+        if (null != attrSets)
+        {  
+          int nSets = attrSets.size();
+          for(int k = 0; k < nSets; k++)
+          {
+            ElemAttributeSet attrSet = (ElemAttributeSet)attrSets.elementAt(k);
+            attrSet.execute(transformer, sourceNode, mode);
+          }
         }
       }
     }
@@ -182,7 +185,7 @@ public class ElemUse extends ElemTemplateElement
     if(null != m_attributeSetsNames)
     {
       applyAttrSets(transformer, 
-                    getStylesheetComposed(),
+                    getStylesheetRoot().getStylesheetComposed(),
                     m_attributeSetsNames, 
                     sourceNode, mode);
     }
