@@ -1,0 +1,369 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
+<!--
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 2002 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ -->
+ 
+<!-- apologies in advance for the brief writing style! -sc -->
+
+<s1 title="&xslt4j; Builds">
+<ul>
+<li><link anchor="intro">Introduction</link></li>
+<li><link anchor="developers">Developer Guidelines</link></li>
+<li><link anchor="gump">Nightly GUMP builds</link></li>
+<li><link anchor="builds">Running Product Builds - Overview</link></li>
+<li><link anchor="builds2">Running Product Builds - Details</link></li>
+</ul>
+<note>The product build related sections of this document are still 
+quite thin - they're mainly bullet points almost in checklist style.  
+If you don't fully understand the procedures in this document, then 
+you probably should ask for help first!</note> 
+
+
+<anchor name="intro"/>
+<s2 title="Introduction">
+  <p>A selection of brief checklists for committers and developers 
+  about build procedures for the &xslt4j; community.  Community input 
+  is appreciated; if you have questions, please ask on xalan-dev.</p> 
+</s2>
+
+
+<anchor name="developers"/>
+<s2 title="Developer Guidelines">
+<note>This section is meant to become a set of guidelines for all &xslt4j;
+committers and developers who wish to submit patches.  It's still in progress; 
+suggestions to xalan-dev@xml.apache.org appreciated.</note> 
+  <p>The project's technical mailing list for all committers and developers 
+  interested in the API and inner workings is 
+  <jump href="mailto:xalan-dev@xml.apache.org">xalan-dev@xml.apache.org</jump>; 
+  it's a good idea to subscribe if you plan to work on &xslt4j;.  Logs of all CVS 
+  commits are automatically sent to <jump href="mailto:xalan-cvs@xml.apache.org">xalan-cvs@xml.apache.org</jump>, although 
+  discussions should happen on xalan-dev.  You can read more <jump href="http://xml.apache.org/mail.html">about mailing lists.</jump></p>
+  <p>&xslt4j; is a fairly mature project; one where most committers and many 
+  users expect that the daily build will be mostly functional.  Very risky changes 
+  or major architecture updates should be discussed ahead of time or committed onto 
+  branches.</p> 
+  <p>Developers should always run the Smoketest before checking in files or 
+  submitting patches to the list.  If the Smoketest does not pass, you should 
+  either fix whatever you broke or get consensus from xalan-dev that 
+  it's OK to break the Smoketest temporarily.  The Smoketest is a selection of 
+  API functionality tests and a pass through a wide variety of XSLT conformance 
+  tests that ensure basic functionality.  You can also read a full set of 
+  <jump href="http://xml.apache.org/xalan-j/test/overview.html">documentation about the tests</jump>.</p>
+  <p>
+  (Smoketest doc is TBD!)
+<source>cvs co xml-xalan/java xml-xalan/test
+cd xml-xalan/java
+build smoketest
+# Ant build will fail if smoketest fails.
+</source>
+</p>
+</s2>
+
+
+<anchor name="gump"/>
+<s2 title="Nightly GUMP builds">
+  <p>GUMP is... there really is no easy way to define 'GUMP'.  It's basically 
+  a meta-build system designed to do CVS updates and Ant builds of multiple 
+  projects simultaneously.  Luckily, GUMP is a subproject of jakarta-alexandria that 
+  includes a complete set of <jump href="http://jakarta.apache.org/gump/">GUMP documentation</jump>.</p> 
+  <p>Some committers at jakarta also provide a GUMP service, which runs actual 
+  builds nightly of nearly all xml and jakarta projects.  The 
+  <jump href="http://jakarta.apache.org/builds/gump/">results of nightly builds</jump> 
+  are posted daily, and the actual 
+  <jump href="http://xml.apache.org/dist/xalan-j/nightly/">&xslt4j; nightly build</jump> is also posted (when it succeeds).</p>
+  <p>Discussions about GUMP itself happen on the alexandria-dev@jakarta.apache.org mailing list.  
+  Note: nightly builds are just that - automated builds run nightly, without human intervention.  
+  Use them at your own risk!</p>
+</s2>
+
+
+<anchor name="builds"/>
+<s2 title="Running Product Builds - Overview">
+<p>Official builds of &xslt4j; require a few more steps than simply doing 
+'build dist smoketest'.  This is a quick checklist of the steps; if you are 
+not comfortable following this list, then please seek help on xalan-dev.</p> 
+
+<s3 title="Release Types">
+<p>Official builds come in several flavors:</p>
+<ul>
+<li>Major version releases: when significant new or changed functionality comes out, 
+we bump up the major build number; i.e. from 2.3 to 3.0.  This is fairly rare; 
+anyone reading xalan-dev will know when this is happening.<br/><br/></li>
+<li>Minor version releases happen when we fix bugs or make moderate improvements to 
+the product.  These are moving from 2.3 to 2.4; they should be planned out.<br/><br/></li>
+<li>Maintenance point releases are when we find bugs in an existing version and fix them without 
+adding new functionality; these go from 2.3 to 2.3.1.  They should be done on a 
+branch if the mainline development has already moved forward; the point is to 
+make critical bugfixes for existing customers who want to stay on the stable release.<br/><br/></li>
+<li>Developer releases are very ad hoc; they represent a chunk of progress along the 
+HEAD of our CVS tree towards a new major or minor release. The developer release 
+versions would be going from 2.3 to a new 2.4.D1 - the developer release can is somewhat 
+like a 'beta' towards a new 2.4 minor version release.  Quality standards for developer 
+releases are much less stringent than other releases.<br/><br/></li>
+</ul>
+</s3>
+
+<s3 title="Condensed Build Checklist">
+<p>A very brief list of stages in running a build.</p>
+<ol>
+<li>Email xalan-dev with build plan.<br/><br/></li>
+<li>Verify all code changes are checked in.<br/><br/></li>
+<li>Verify any doc updates for code changes are in.<br/><br/></li>
+<li>Update build numbers in doc, code, and build scripts.<br/><br/></li>
+<li>Do a clean checkout and tag the sources.<br/><br/></li>
+<li>build dist smoketest -logfile ..\dist.log<br/><br/></li>
+<li>Verify smoketest passed; check docs built with new build numbers.<br/><br/></li>
+<li>PGP/GPG sign all .zip/.tar.gz distribution files (distros).<br/><br/></li>
+<li>Copy distros up to the website.<br/><br/></li>
+<li>Update website documentation set.<br/><br/></li>
+<li>Email xalan-dev with build notice!<br/><br/></li>
+</ol>
+</s3>
+
+</s2>
+
+<anchor name="builds2"/>
+<s2 title="Running Product Builds - Details">
+<p>This section is still in progress, but should have all the basics. 
+You should already have read the <link anchor="builds">build overview</link> above and you should already be 
+familiar with our build.xml script and development processes.</p> 
+
+<s3 title="Pre-Build Steps">
+<p>Preparation before you run a build.</p>
+<ul><!-- I'd prefer to use ol's, but the start="num" attr isn't supported in Stylebook -->
+<li>Email xalan-dev with build plan.</li>
+</ul>
+<p>Apache projects are communities: you should always let the community know what 
+the plans for builds are.  The xalan-dev mailing list is the primary communication 
+mechanisim for committers and developers working on &xslt4j;; you may also wish 
+to cc: the xalan-j-users list to let other users and folks know what's coming. 
+For major releases you may also want to cc: the general@xml.apache.org list so that 
+other xml.apache.org projects know our plans, although this is not required.</p>
+<ul>
+<li>Verify all code changes are checked in.</li>
+</ul>
+<p>Ensure that any code changes you're planning to have in this release are actually 
+checked in; make sure any open work by other committers is in a stable state. 
+You should also review any other projects we're dependent on and make sure 
+that (when possible) we've updated to the latest version of their .jar files: 
+like xercesImpl.jar, ant.jar, etc.  Note that occasionally we will have a specific 
+development need to stay with a different version of these projects.</p>
+</s3>
+
+<s3 title="Updating Doc And Version Numbers">
+<p>Getting documentation and version numbers in sync.</p>
+<ul>
+<li>Verify any doc updates for code changes are in.</li>
+</ul>
+<p>Check that the documentation is up to date.  Make sure that any new 
+features or major functionality changes are properly documented.</p>
+<p>Update the commits list and the 'what was done' list in xdocs/sources/xalan/readme.xml 
+and whatsnew.xml.  Note that currently some of the status information for the 
+xsltc portion of &xslt4j; is stored separately in xsltc_history.xml and XSLTCDONE
+</p>
+<p>Check in all your work!</p>
+
+<ul>
+<li>Update build numbers in doc, code, and build scripts.</li>
+</ul>
+<p>Currently the actual version number is stored in several places in 
+the CVS tree - we hope to improve this in the future by using the Ant 
+build system's filtering capabilities.</p>
+<p>Once you know what the version number should be, you'll need to update 
+it in a number of places - both for the product itself, for the build 
+system, and for the documentation.  If you don't understand how to update 
+any of these files, then please get help - <b>don't</b> just try to wing it.</p>
+<note>Version.java should replace XSLProcessorVersion.java; we just haven't 
+gotten around to doing it yet... -Shane</note>
+<ul>
+<li>src/org/apache/xalan/Version.java  (The NEW 2.2+ actual code version of the processor - currently just a wrapper for XSLProcessorVersion, which is deprecated and will be removed after 2.2 gold ships in favor of the simpler Version class, which uses static accessor methods instead of static strings)<br/><br/></li>
+<li>src/org/apache/xalan/processor/XSLProcessorVersion.java  (The old 2.2 and earlier actual code version of the processor)
+Update the int format VERSION, RELEASE, MAINTENANCE, and DEVELOPMENT numbers, each as an integer. The version string will be automagically built from these.<br/><br/></li>
+<li>build.xml 
+Update the following lines for each version field:<br/>
+&lt;property name="version.VERSION" value="2"/><br/>
+&lt;property name="version.RELEASE" value="4"/><br/>
+&lt;property name="version.DEVELOPER" value="D"/>&lt;!-- Set this to "D" if a developer release; blank "" if maintenance point release -->
+&lt;property name="version.MINOR" value="1"/>&lt;!-- EITHER the developer release number, or a maintenance point release number -->
+<br/><br/></li>
+<li>src/org/apache/xalan/xpath/xml/XSLTInfo.properties (only if needed for an XSLT spec change, this will be very rare. This is not the processor version, but the spec version)  
+You probably shouldn't even <b>think</b> about updating this one, so pretend I 
+never mentioned it, OK?<br/><br/></li>
+
+<li>xml-xalan\java\xdocs\sources\entities.ent (xslt4j-current) documentation updates<br/><br/></li>
+<li>xml-xalan\java\xdocs\sources\xalan-jsite (document id="index" label="Xalan-Java x.x")<br/><br/></li>
+
+<li>If you updated xercesImpl.jar or any other dependent .jar files, 
+make sure you update the documentation to reflect this. xml-xalan\java\xdocs\sources\entities.ent (xml4j-used)<br/><br/></li>
+</ul>
+<p>I did remind you to check in all your work, didn't I?</p>
+</s3>
+
+
+<s3 title="Run A Candidate Distribution Build">
+<p>Get clean sources and build a distribution and (at least) the smoketest.</p>
+<ul>
+<li>Do a clean checkout and tag the sources.</li>
+</ul>
+<p>Of course, you checked in all your earlier work to the CVS repository, right?</p>
+<p>The safest way to perform a build for distribution is to check out a fresh 
+new copy of the repository from CVS.  This avoids any potential problems with 
+uncommitted changes or extra files on your local machine.</p>
+<p>Check out a new copy of both xml-xalan/java and xml-xalan/test repositories 
+to a blank directory on your local machine.  You then need to tag the files in 
+the repository with a marker noting that these versions are the actual ones 
+being used in the build (you could actually do this after running the build below). 
+Use the CVS tag command to add the tag to both repositories (/java and /test). 
+The tag name should be something like 'xalan-j_2_4'; look at the log of any file 
+to see the exact format of previous builds.</p>
+
+
+<ul>
+<li>build dist smoketest -logfile ..\dist.log</li>
+</ul>
+<p>The above command will build the 'dist' or distribution .zip/.tar.gz 
+files, as well as building the full product plus all documentation.  It will then 
+run the smoketest, and saves all of it's output in ..\dist.log.  Note that this 
+will take up a moderate amount of space, especially when building the .tar.gz files, 
+so ensure you have plenty of disk space first.</p>
+
+<ul>
+<li>Verify smoketest passed; check docs built with new build numbers.</li>
+</ul>
+<p>Review the dist.log quickly to ensure there were no build errors.  
+Note that you can ignore any 'warnings' from the javadoc target; however any 
+'error's in the documentation must be fixed.</p>
+<p>The logfile should also report the Smoketest results at the end; if it does 
+not say that the Smoketest passed, then you must fix the test results before 
+posting the build.  Even for developer's builds, we must ensure that at least 
+the Smoketest passes.  For major or minor releases, we should also perform more 
+testing to ensure stability.  More detailed log files for the Smoketest can 
+be found in the xml-xalan/test/smoketest/ directory.</p>
+<p>You should also test that the documentation built properly, and that it 
+has the proper build or release number that you edited above.</p>
+<p>IMPORTANT: if you changed any files at all, be sure to check in your work 
+and re-start this process!</p>
+
+</s3>
+
+<s3 title="Code Signing and Posting">
+<p>Sign the distribution units so end-users can trust them, then copy to the website.</p>
+<ul>
+<li>PGP/GPG sign all .zip/.tar.gz distribution files (distros).</li>
+</ul>
+<p>As a security measure, all xml.apache.org projects must sign or otherwise 
+ensure the integrity of their public distributions.  This is most commonly done 
+by signing the actual .zip/.tar.gz files with your personal PGP or GPG key. 
+Note that you must sign the files before copying them up to the website.</p>
+<p>Two prerequisites to signing the distribution are: 1) you must have a 
+personal PGP or GPG key, and 2) the public half of your key must be in the 
+appropriate KEYS file before you begin a build.  If you hadn't previously checked 
+in your public key to the KEYS file before beginning this whole process, you'll 
+have to go back and start again.</p>
+<note>We need some good links on getting <jump href="http://web.mit.edu/network/pgp.html">PGP</jump> 
+and <jump href="http://www.gnupg.org/">GPG</jump>, and on actually 
+code signing and verifying signatures.  Jakarta has some, but they're 
+scattered. This would be a good volunteer project for someone.</note>
+<p>Sign every .zip and .tar.gz file with your personal key, and make a detached 
+text file with the signature - this will usually create a 
+foo.zip.asc or foo.zip.sig file for each foo.zip file you sign.</p>
+<ul>
+<li>Copy distros up to the website.</li>
+</ul>
+<p>You'll need to copy all of the distros plus all of your 
+detached signature files to the website so people can download them.  Note 
+that apache.org machines generally do not allow inbound ftp, so you'll need to 
+either scp them or login to the apache machines and use scp or pftp from there 
+outbound to some server that you've copied them to.</p>
+<p>(Subject to change as www.apache.org/dist gets ready for mirroring) 
+You'll need to log on to xml.apache.org (which is a separate machine 
+from cvs.apache.org) and upload the files to /www/xml.apache.org/xalan-j/dist</p>
+<p>You should also update the distribution directory's html files 
+to note the new build numbers.  Carefully edit the .htaccess file 
+to update the 'Latest Stable Build' and 'Latest Developers Build' lines  
+as needed.  If you don't understand the format of this file, ask for help.</p>
+
+</s3>
+
+<s3 title="Post-Build Docs and Email">
+<p>Update the live website doc and let the community know you're done!</p>
+<ul>
+<li>Update website documentation set.</li>
+</ul>
+<p>Now that the distribution is available for downloading, you should also 
+update the static copy of the documentation that's posted to xml.apache.org.  
+I'll leave this to Donald Leslie to document, since he has 
+it all organized.  (Plus I'm out of time!)</p>
+
+<ul>
+<li>Email xalan-dev with build notice!</li>
+</ul>
+<p>After everything is posted, you need to let the community know that 
+a new build is available.  Write up a short email announcing this with just 
+a couple of the highlights of the new build, and a link to the 
+distribution area.</p>
+
+<p>Make the subject something like:  [ANN] Xalan-J 2.x Point/Developers/Whatever Release posted to xml.apache.org
+and send your email to:  general@xml.apache.org, xalan-dev@xml.apache.org, xalan-j-users@xml.apache.org.  Note 
+that for developers releases, you can omit the general@xml.apache.org address if you 
+don't think it will be of interest to the larger audience.
+</p>
+</s3>
+
+</s2>
+
+</s1> 
