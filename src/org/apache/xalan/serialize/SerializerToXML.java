@@ -456,6 +456,9 @@ public class SerializerToXML
         }
 
         if (null == m_charInfo)
+          m_charInfo = new CharInfo(entitiesFileName);
+
+        if (null == m_charInfo)
         {
           String absoluteEntitiesFileName;
 

@@ -131,14 +131,25 @@ public class CharInfo
 
     try
     {
+      try
+      {
+        ClassLoader cl = CharInfo.class.getClassLoader();
 
+        if (cl == null) {
+          is = ClassLoader.getSystemResourceAsStream(entitiesResource);
+        } else {
+          is = cl.getResourceAsStream(entitiesResource);
+        }
+      }
+      /*  replaced with lines above (adapted from TransformerFactory) for getting a stream resource.
       try {
         java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
         if (getCCL != null) {
           ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
           is = contextClassLoader.getResourceAsStream("org/apache/xalan/serialize/" + entitiesResource);
         }
-      }
+      }    */
+    
       catch (Exception e) {}
 
       if (is == null)
