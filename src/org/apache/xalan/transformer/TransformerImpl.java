@@ -133,6 +133,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.InputSource;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -444,6 +445,8 @@ public class TransformerImpl extends Transformer
     return m_parserEventsOnMain;
   }
 
+  // Both get/setTransformThread are called only from this
+
   /**
    * <meta name="usage" content="internal"/>
    * Get the thread that the transform process is on.
@@ -623,9 +626,12 @@ public class TransformerImpl extends Transformer
           }
           else
           {
-            Thread t = createTransformThread();
-//            m_reportInPostExceptionFromThread = false;
-            t.start();
+	    runTransformThread();
+	    /** Code used in 2.0.1, replaced by runTransformThread
+		Thread t = createTransformThread();
+		//            m_reportInPostExceptionFromThread = false;
+		t.start();
+	    */
             transformNode(doc);
           }
         }
@@ -682,8 +688,9 @@ public class TransformerImpl extends Transformer
     {
       String msg = spe.getMessage();
       SAXSourceLocator loc = new SAXSourceLocator(spe);
-      
-      m_errorHandler.fatalError(new TransformerException( msg, loc ));
+
+      //      m_errorHandler.fatalError(new TransformerException( msg , loc ));
+      m_errorHandler.fatalError(new TransformerException( spe ));
     }
     catch(org.xml.sax.SAXException se)
     {
@@ -2859,21 +2866,100 @@ public class TransformerImpl extends Transformer
   ////////////////////////
   // Implement Runnable //  
   ////////////////////////
-  
-  /**
-   * Create a thread for the transform.  This can be overridden by derived 
-   * implementations to provide their own thread, for thread pooling and the 
-   * like.
-   * 
-   * @return thread suitable to use for the transformation.
-   */
-  public Thread createTransformThread()
-  {
-    Thread t = new Thread(this);
-    // System.out.println("created thread: "+t.getName());
-    return t;
+  /** Base thread controler for xalan. Must be overriden with
+      a derived class to support thread pooling.
+
+      All thread-related stuff is in this class.
+  */
+  public static class ThreadControler {
+    
+    /** Will get a thread from the pool, execute the task
+     *  and return the thread to the pool.
+     *
+     *  The return value is used only to wait for completion
+     *
+     * @param priority if >0 the task will run with the given priority
+     *  ( doesn't seem to be used in xalan, since it's allways the default )
+     * @returns The thread that is running the task, can be used
+     *          to wait for completion
+     */
+    public Thread run( Runnable task, int priority ) {
+      Thread t=new Thread(task);
+      t.start();
+//       if( priority > 0 )
+// 	t.setPriority( priority );
+      return t;
+    }
+
+
+    /**
+     *  Wait until the task is completed on the worker
+     *  thread. 
+     */
+    public void waitThread( Thread worker, Runnable task )
+      throws InterruptedException
+    {
+      // This should wait until the transformThread is considered not alive.
+      worker.join();
+    }
   }
 
+  static ThreadControler tpool=new ThreadControler();
+
+  /** Change the ThreadControler that will be used to
+   *  manage the transform threads.
+   */
+  public static void setThreadControler( ThreadControler tp ) {
+    tpool=tp;
+  }
+  
+  /** Called by SourceTreeHandler to start the transformation
+   *  in a separate thread
+   */
+  public void runTransformThread( int priority ) {
+    // used in SourceTreeHandler
+    Thread t=tpool.run( this, priority );
+    this.setTransformThread( t );
+  }
+
+  /** Called by this.transform() if isParserEventsOnMain()==false.
+   *  Similar with runTransformThread(), but no priority is set
+   *  and setTransformThread is not set.
+   */
+  public void runTransformThread( ) {
+    tpool.run( this, -1);
+  }
+
+
+  /** Used by SourceTreeHandler to wait until the transform
+   *   completes
+   */
+  public void waitTransformThread() throws SAXException {
+    // This is called to make sure the task is done.
+    // It is possible that the thread has been reused -
+    // but for a different transformation. ( what if we 
+    // recycle the transformer ? Not a problem since this is
+    // still in use. )
+    Thread transformThread = this.getTransformThread();
+    if (null != transformThread)
+      {
+        try
+	  {
+	    tpool.waitThread( transformThread, this );
+	    
+	    if(!this.hasTransformThreadErrorCatcher())
+	      {
+		Exception e = this.getExceptionThrown();
+		if(null != e)
+		  throw new org.xml.sax.SAXException(e);
+	      }
+	    this.setTransformThread(null);
+	  }
+        catch (InterruptedException ie){}
+      }
+  }
+
+  
   /**
    * Get the exception thrown by the secondary thread (normally 
    * the transform thread).

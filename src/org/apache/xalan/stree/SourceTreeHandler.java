@@ -365,6 +365,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
       m_sourceTreeHandler.startDocument();
     }
 
+    // Do the transformation in parallel with source reading
     if (m_useMultiThreading && (null != m_transformer))
     {
       if (m_transformer.isParserEventsOnMain())
@@ -401,29 +402,26 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
             resultTransformer.setOutputProperties(resultProps);
             
           }
-        } 
+        }
         
         if(null != m_docFrag)
           m_transformer.setSourceTreeDocForThread(m_docFrag);
         else
           m_transformer.setSourceTreeDocForThread(m_root);
 
-        Thread t = m_transformer.createTransformThread();
-
-        m_transformer.setTransformThread(t);
-
-        int cpriority = Thread.currentThread().getPriority();
-
-        // t.setPriority(cpriority-1);
-        t.setPriority(cpriority);
-        t.start();
+	int cpriority = Thread.currentThread().getPriority();
+	    
+	// runTransformThread is equivalent with the 2.0.1 code,
+	// except that the Thread may come from a pool.
+	m_transformer.runTransformThread( cpriority );
+	
       }
     }
 
     notifyWaiters();
   }
   
-
+ 
   /**
    * Implement the endDocument event.
    *
@@ -467,25 +465,8 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     // printTree(m_root);
     if (m_useMultiThreading && (null != m_transformer))
     {
-      Thread transformThread = m_transformer.getTransformThread();
-
-      if (null != transformThread)
-      {
-        try
-        {
-
-          // This should wait until the transformThread is considered not alive.
-          transformThread.join();
-          if(!m_transformer.hasTransformThreadErrorCatcher())
-          {
-            Exception e = m_transformer.getExceptionThrown();
-            if(null != e)
-              throw new org.xml.sax.SAXException(e);
-          }
-          m_transformer.setTransformThread(null);
-        }
-        catch (InterruptedException ie){}
-      }
+      // may throw SAXException ( if error reading transform )
+      m_transformer.waitTransformThread();
     }
     m_entryCount--; // incremented at the start of startDocument
   }
