@@ -525,6 +525,7 @@ public class Process
             {
               // Parse in the xml data into a DOM
               DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+              dfactory.setCoalescing(true);
               dfactory.setNamespaceAware(true);
               DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
               Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
