@@ -146,7 +146,7 @@ public interface SerializationHandler
      * flush any input that the serializer has which it has not yet sent as
      * output.
      */
-    public void flushPending();
+    public void flushPending() throws SAXException;
 
 
 }

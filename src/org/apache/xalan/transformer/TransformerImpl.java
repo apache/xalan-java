@@ -2373,6 +2373,9 @@ public class TransformerImpl extends Transformer
        {
          throw e;
        }
+       catch (SAXException se) {
+       	 throw new TransformerException(se);
+       }
        finally
        {
          m_serializationHandler = savedHandler;

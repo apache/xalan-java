@@ -1223,7 +1223,7 @@ public class ToUnknownStream extends SerializerBase
     /**
      * @see org.apache.xml.serializer.SerializationHandler#flushPending()
      */
-    public void flushPending()
+    public void flushPending() throws SAXException
     {
  
         flush();

@@ -64,6 +64,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -296,6 +297,9 @@ public class ElemExtensionCall extends ElemLiteralResult
     catch(TransformerException e)
     {
       transformer.getErrorListener().fatalError(e);
+    }
+    catch(SAXException se) {
+      throw new TransformerException(se);
     }
 	if (TransformerImpl.S_DEBUG)
 		transformer.getTraceManager().fireTraceEndEvent(this);

@@ -646,25 +646,17 @@ public class ToHTMLSAXHandler extends ToSAXHandler
      * This method flushes any pending events, which can be startDocument()
      * closing the opening tag of an element, or closing an open CDATA section.
      */
-    public void flushPending()
+    public void flushPending() throws SAXException
     {
 		if (m_needToCallStartDocument)
 		{
-			try {startDocumentInternal();
+			startDocumentInternal();
 			m_needToCallStartDocument = false;
-			} catch (SAXException e) {}
 		}       	
         // Close any open element
         if (m_elemContext.m_startTagOpen)
         {
-            try
-            {
-                closeStartTag();
-            }
-            catch(SAXException se)
-            {
-                // do something ??
-            }
+            closeStartTag();
             m_elemContext.m_startTagOpen = false;
         }
     }

@@ -65,6 +65,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPathContext;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -640,84 +641,126 @@ public class ElemLiteralResult extends ElemUse
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
-  {
-
-	if (TransformerImpl.S_DEBUG)
-	  transformer.getTraceManager().fireTraceEvent(this);
-
-    try
+    public void execute(TransformerImpl transformer)
+        throws TransformerException
     {
-      SerializationHandler rhandler = transformer.getSerializationHandler();
-			
-			// JJK Bugzilla 3464, test namespace85 -- make sure LRE's
-			// namespace is asserted even if default, since xsl:element
-			// may have changed the context.
-			rhandler.startPrefixMapping(getPrefix(),getNamespace());
 
-      // Add namespace declarations.
-      executeNSDecls(transformer);
-      rhandler.startElement(getNamespace(), getLocalName(), getRawName());
+        if (TransformerImpl.S_DEBUG)
+            transformer.getTraceManager().fireTraceEvent(this);
+        SerializationHandler rhandler = transformer.getSerializationHandler();
 
-      try
-      {
-
-        // Process any possible attributes from xsl:use-attribute-sets first
-        super.execute(transformer);
-
-        //xsl:version, excludeResultPrefixes???
-        // Process the list of avts next
-        if (null != m_avts)
+        try
         {
-          int nAttrs = m_avts.size();
+            // JJK Bugzilla 3464, test namespace85 -- make sure LRE's
+            // namespace is asserted even if default, since xsl:element
+            // may have changed the context.
+            rhandler.startPrefixMapping(getPrefix(), getNamespace());
 
-          for (int i = (nAttrs - 1); i >= 0; i--)
-          {
-            AVT avt = (AVT) m_avts.elementAt(i);
-            XPathContext xctxt = transformer.getXPathContext();
-            int sourceNode = xctxt.getCurrentNode();
-            String stringedValue = avt.evaluate(xctxt, sourceNode, this);
-
-            if (null != stringedValue)
-            {
-
-              // Important Note: I'm not going to check for excluded namespace 
-              // prefixes here.  It seems like it's too expensive, and I'm not 
-              // even sure this is right.  But I could be wrong, so this needs 
-              // to be tested against other implementations.
-							
-              rhandler.addAttribute(avt.getURI(), avt.getName(),
-                                    avt.getRawName(), "CDATA", stringedValue);
-            }
-          }  // end for
+            // Add namespace declarations.
+            executeNSDecls(transformer);
+            rhandler.startElement(getNamespace(), getLocalName(), getRawName());
+        }
+        catch (SAXException se)
+        {
+            throw new TransformerException(se);
         }
 
-        // Now process all the elements in this subtree
-        // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
-        transformer.executeChildTemplates(this, true);
-      }
-      finally
-      {
-        // If you don't do this in a finally statement, an exception could 
-        // cause a system hang.
-        rhandler.endElement(getNamespace(), getLocalName(), getRawName());
+        /*
+         * If we make it to here we have done a successful startElement()
+         * we will do an endElement() call for balance, no matter what happens
+         * in the middle.  
+         */
+
+        // tException remembers if we had an exception "in the middle"
+        TransformerException tException = null;
+        try
+        {
+
+            // Process any possible attributes from xsl:use-attribute-sets first
+            super.execute(transformer);
+
+            //xsl:version, excludeResultPrefixes???
+            // Process the list of avts next
+            if (null != m_avts)
+            {
+                int nAttrs = m_avts.size();
+
+                for (int i = (nAttrs - 1); i >= 0; i--)
+                {
+                    AVT avt = (AVT) m_avts.elementAt(i);
+                    XPathContext xctxt = transformer.getXPathContext();
+                    int sourceNode = xctxt.getCurrentNode();
+                    String stringedValue =
+                        avt.evaluate(xctxt, sourceNode, this);
+
+                    if (null != stringedValue)
+                    {
+
+                        // Important Note: I'm not going to check for excluded namespace 
+                        // prefixes here.  It seems like it's too expensive, and I'm not 
+                        // even sure this is right.  But I could be wrong, so this needs 
+                        // to be tested against other implementations.
+
+                        rhandler.addAttribute(
+                            avt.getURI(),
+                            avt.getName(),
+                            avt.getRawName(),
+                            "CDATA",
+                            stringedValue);
+                    }
+                } // end for
+            }
+
+            // Now process all the elements in this subtree
+            // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
+            transformer.executeChildTemplates(this, true);
+        }
+        catch (TransformerException te)
+        {
+            // thrown in finally to prevent original exception consumed by subsequent exceptions
+            tException = te;
+        }
+        catch (SAXException se)
+        {
+            tException = new TransformerException(se);
+        }
+
+        try
+        {
+            /* we need to do this endElement() to balance the
+             * successful startElement() call even if 
+             * there was an exception in the middle.
+             * Otherwise an exception in the middle could cause a system to hang.
+             */            
+            rhandler.endElement(getNamespace(), getLocalName(), getRawName());
+        }
+        catch (SAXException se)
+        {
+            /* we did call endElement(). If thee was an exception
+             * in the middle throw that one, otherwise if there
+             * was an exception from endElement() throw that one.
+             */
+            if (tException != null)
+                throw tException;
+            else
+                throw new TransformerException(se);
+        }
         unexecuteNSDecls(transformer);
-				
-				// JJK Bugzilla 3464, test namespace85 -- balance explicit start.
-				rhandler.endPrefixMapping(getPrefix());
-      }
-    }
-    catch (org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
 
-	if (TransformerImpl.S_DEBUG)
-	  transformer.getTraceManager().fireTraceEndEvent(this);
+        // JJK Bugzilla 3464, test namespace85 -- balance explicit start.
+        try
+        {
+            rhandler.endPrefixMapping(getPrefix());
+        }
+        catch (SAXException se)
+        {
+            throw new TransformerException(se);
+        }
 
-  }
+        if (TransformerImpl.S_DEBUG)
+            transformer.getTraceManager().fireTraceEndEvent(this);
+
+    }
 
   /**
    * Compiling templates requires that we be able to list the AVTs

@@ -662,19 +662,12 @@ void writeNormalizedChars(
         // no namespace support for HTML
     }    
 
-    public void flushPending()
+    public void flushPending() throws org.xml.sax.SAXException
     {
-        try
-        {
             if (m_needToCallStartDocument)
             {
                 startDocumentInternal();
                 m_needToCallStartDocument = false;
             }
-        }
-        catch (SAXException e)
-        { // can we do anything useful here,
-            // or should this method throw a SAXException?
-        }
     }
 }
