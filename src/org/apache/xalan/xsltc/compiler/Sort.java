@@ -428,7 +428,7 @@ final class Sort extends Instruction implements Closure {
 		sort._closureVars.size();
 
 	    for (int i = 0; i < length; i++) {
-		final VariableRef varRef = (VariableRef) sort._closureVars.get(i);
+		final VariableRefBase varRef = (VariableRefBase) sort._closureVars.get(i);
 
 		// Discard duplicate variable references
 		if (dups.contains(varRef)) continue;
@@ -503,7 +503,7 @@ final class Sort extends Instruction implements Closure {
 	// Initialize closure in record class
 	final int ndups = dups.size();
 	for (int i = 0; i < ndups; i++) {
-	    final VariableRef varRef = (VariableRef) dups.get(i);
+	    final VariableRefBase varRef = (VariableRefBase) dups.get(i);
 	    final VariableBase var = varRef.getVariable();
 	    final Type varType = var.getType();
 	    
@@ -567,7 +567,7 @@ final class Sort extends Instruction implements Closure {
 	    final int length = (sort._closureVars == null) ? 0 : 
 		sort._closureVars.size();
 	    for (int i = 0; i < length; i++) {
-		final VariableRef varRef = (VariableRef) sort._closureVars.get(i);
+		final VariableRefBase varRef = (VariableRefBase) sort._closureVars.get(i);
 
 		// Discard duplicate variable references
 		if (dups.contains(varRef)) continue;
