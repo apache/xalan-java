@@ -205,7 +205,7 @@ public class ElemValueOf extends ElemTemplateElement
       transformer.getTraceManager().fireSelectedEvent(sourceNode,
                                                       this, "select", m_selectExpression, value);
     String s = value.str();
-    int len = s.length();
+	int len = (null != s) ? s.length() : 0;
     if(len > 0)
     {
       ResultTreeHandler hth = transformer.getResultTreeHandler();
