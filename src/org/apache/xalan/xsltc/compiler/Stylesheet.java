@@ -67,12 +67,12 @@ package org.apache.xalan.xsltc.compiler;
 import java.net.URL;
 import java.net.MalformedURLException;
 
+import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import org.apache.bcel.generic.ANEWARRAY;
 import org.apache.bcel.generic.ConstantPoolGen;
