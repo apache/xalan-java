@@ -105,8 +105,8 @@ public class TransformerFactoryImpl
     private URIResolver _uriResolver = null;
 
     // Cache for the newTransformer() method - see method for details
+    private String      _defaultTransletName = "GregorSamsa";
     private Transformer _copyTransformer = null;
-    private static final String COPY_TRANSLET_NAME = "GregorSamsa";
     private static final String COPY_TRANSLET_CODE =
 	"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"+
 	"<xsl:template match=\"/\"><xsl:copy-of select=\".\"/></xsl:template>"+
@@ -161,8 +161,6 @@ public class TransformerFactoryImpl
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
      * Returns the value set for a TransformerFactory attribute
-     * We are currently not using any attributes with XSLTC. We should try to
-     * avoid using attributes as this can make us less flexible.
      *
      * @param name The attribute name
      * @return An object representing the attribute value
@@ -170,14 +168,14 @@ public class TransformerFactoryImpl
      */
     public Object getAttribute(String name) 
 	throws IllegalArgumentException { 
-        throw new IllegalArgumentException(NYI);
+	if (name.equals("translet-name"))
+	    return(_defaultTransletName);
+	return(null);
     }
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
-     * Returns the value set for a TransformerFactory attribute
-     * We are currently not using any attributes with XSLTC. We should try to
-     * avoid using attributes as this can make us less flexible.
+     * Sets the value for a TransformerFactory attribute.
      *
      * @param name The attribute name
      * @param value An object representing the attribute value
@@ -185,7 +183,10 @@ public class TransformerFactoryImpl
      */
     public void setAttribute(String name, Object value) 
 	throws IllegalArgumentException { 
-        throw new IllegalArgumentException(NYI);
+	// Set the default translet name (ie. class name), which will be used
+	// for translets that cannot be given a name from their system-id.
+	if ((name.equals("translet-name")) && (value instanceof String))
+	    _defaultTransletName = (String)value;
     }
 
     /**
@@ -200,6 +201,8 @@ public class TransformerFactoryImpl
     public boolean getFeature(String name) { 
 	// All supported features should be listed here
 	String[] features = {
+	    DOMSource.FEATURE,
+	    DOMResult.FEATURE,
 	    SAXSource.FEATURE,
 	    SAXResult.FEATURE,
 	    StreamSource.FEATURE,
@@ -286,8 +289,8 @@ public class TransformerFactoryImpl
 	byte[] bytes = COPY_TRANSLET_CODE.getBytes();
 	ByteArrayInputStream bytestream = new ByteArrayInputStream(bytes);
 	InputSource input = new InputSource(bytestream);
-	input.setSystemId(COPY_TRANSLET_NAME);
-	bytecodes = xsltc.compile(COPY_TRANSLET_NAME, input);
+	input.setSystemId(_defaultTransletName);
+	bytecodes = xsltc.compile(_defaultTransletName, input);
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
@@ -295,7 +298,7 @@ public class TransformerFactoryImpl
 	}
 
 	// Create a Transformer object and store for other calls
-	Templates templates = new TemplatesImpl(bytecodes, COPY_TRANSLET_NAME);
+	Templates templates = new TemplatesImpl(bytecodes,_defaultTransletName);
 	_copyTransformer = templates.newTransformer();
 	if (_uriResolver != null) _copyTransformer.setURIResolver(_uriResolver);
 	return(_copyTransformer);
@@ -481,20 +484,22 @@ public class TransformerFactoryImpl
      */
     public TemplatesHandler newTemplatesHandler() 
 	throws TransformerConfigurationException { 
-	throw new TransformerConfigurationException(NYI);
+	return(new TemplatesHandlerImpl());
     }
 
     /**
      * javax.xml.transform.sax.SAXTransformerFactory implementation.
      * Get a TransformerHandler object that can process SAX ContentHandler
-     * events into a Result.
+     * events into a Result. This method will return a pure copy transformer.
      *
      * @return A TransformerHandler object that can handle SAX events
      * @throws TransformerConfigurationException
      */
     public TransformerHandler newTransformerHandler() 
 	throws TransformerConfigurationException {
-	throw new TransformerConfigurationException(NYI);
+	final Transformer transformer = newTransformer();
+	final TransformerImpl internal = (TransformerImpl)transformer;
+	return(new TransformerHandlerImpl(internal));
     }
 
     /**
@@ -509,7 +514,9 @@ public class TransformerFactoryImpl
      */
     public TransformerHandler newTransformerHandler(Source src) 
 	throws TransformerConfigurationException { 
-        throw new TransformerConfigurationException(NYI);
+	final Transformer transformer = newTransformer(src);
+	final TransformerImpl internal = (TransformerImpl)transformer;
+	return(new TransformerHandlerImpl(internal));
     }
 
     /**
@@ -523,8 +530,10 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */    
     public TransformerHandler newTransformerHandler(Templates templates) 
-	throws TransformerConfigurationException  { 
-        throw new TransformerConfigurationException(NYI);
+	throws TransformerConfigurationException  {
+	final Transformer transformer = templates.newTransformer();
+	final TransformerImpl internal = (TransformerImpl)transformer;
+	return(new TransformerHandlerImpl(internal));
     }
 
 

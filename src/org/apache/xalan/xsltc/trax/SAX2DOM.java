@@ -95,7 +95,7 @@ public class SAX2DOM implements ContentHandler {
     }
 
     public void characters(char[] ch, int start, int length) {
-	Text text = _document.createTextNode(new String(ch));
+	Text text = _document.createTextNode(new String(ch, start, length));
 	Node last = (Node)_nodeStk.peek();
 	last.appendChild(text);
     }

@@ -118,6 +118,9 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     private final static String NO_STRING    = "no";
     private final static String YES_STRING   = "yes";
     private final static String XML_STRING   = "xml";
+
+    // Pre-set DOMImpl to use as input (used only with TransformerHandlerImpl)
+    private DOMImpl _dom = null;
     
     // List all error messages here
     private final static String TRANSLET_ERR_MSG = 
@@ -126,6 +129,10 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	"No defined output handler for transformation result.";
     private static final String ERROR_LISTENER_NULL =
 	"Attempting to set ErrorListener for Transformer to null";
+    private static final String INPUT_SOURCE_EMPTY =
+	"The Source object passed to transform() has no contents.";
+    private static final String OUTPUT_RESULT_EMPTY =
+	"The Result object passed to transform() is invalid.";
 
     /**
      * Implements JAXP's Transformer constructor
@@ -133,6 +140,13 @@ public final class TransformerImpl extends Transformer implements DOMCache {
      */
     public TransformerImpl(Translet translet) {
 	_translet = (AbstractTranslet)translet;
+    }
+
+    /**
+     * Returns the translet wrapped inside this Transformer
+     */
+    protected AbstractTranslet getTranslet() {
+	return(_translet);
     }
 
     /**
@@ -159,7 +173,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	}
 
 	// Run the transformation
-	transform(source, _handler, _encoding);
+	transform(source, (ContentHandler)_handler, _encoding);
 
 	// If a DOMResult, then we must set the DOM Tree so it can
 	// be retrieved later 
@@ -219,8 +233,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		return(new DefaultSAXOutputHandler(ostream, _encoding));
 	    }
 	    else {
-		// Handle error!!!
-		return null;
+		throw new TransformerException(OUTPUT_RESULT_EMPTY);
 	    }
 	}
 	// If we cannot write to the location specified by the SystemId
@@ -239,11 +252,25 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     }
 
     /**
+     * Set the internal DOMImpl that will be used for the next transformation
+     */
+    protected void setDOM(DOMImpl dom) {
+	_dom = dom;
+    }
+
+    /**
      * Builds an internal DOM from a TrAX Source object
      */
     private DOMImpl getDOM(Source source, int mask)
 	throws TransformerException {
 	try {
+	    // Use the pre-defined DOM if present
+	    if (_dom != null) {
+		DOMImpl dom = _dom;
+		_dom = null; // use only once, so reset to 'null'
+		return(dom);
+	    }
+
 	    // Create an internal DOM (not W3C) and get SAX2 input handler
 	    final DOMImpl dom = new DOMImpl();
 	    final ContentHandler inputHandler = dom.getBuilder();
@@ -259,7 +286,6 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final InputSource input  = sax.getInputSource();
 		final String      systemId = sax.getSystemId();
 		dtdMonitor.handleDTD(reader);
-
 		reader.setContentHandler(inputHandler);
 		reader.parse(input);
 		dom.setDocumentURI(systemId);
@@ -273,7 +299,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final String      systemId = domsrc.getSystemId(); 
 		dtdMonitor.handleDTD(dom2sax);
 		dom2sax.setContentHandler(inputHandler);
-		dom2sax.parse(input);
+		dom2sax.parse(input); // need this parameter?
 		dom.setDocumentURI(systemId);
 	    }
 	    // Handle StreamSource input
@@ -300,7 +326,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		else if (systemId != null)
 		    input = new InputSource(systemId);
 		else
-		    input = null; // TODO - signal error!!!!
+		    throw new TransformerException(INPUT_SOURCE_EMPTY);
 		reader.parse(input);
 		dom.setDocumentURI(systemId);
 	    }
@@ -359,6 +385,8 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	catch (RuntimeException e) {
 	    if (_errorListener != null)
 		postErrorToListener("Runtime Error: " + e.getMessage());
+	    System.err.println("Error: "+e.getMessage());
+	    e.printStackTrace();
 	    throw new TransformerException(e);
 	}
 	catch (Exception e) {
