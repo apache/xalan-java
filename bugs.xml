@@ -281,6 +281,22 @@
 <Subsystem>XPath</Subsystem>
 </Spr>
 <Spr>
+<Name>DMAN4TKRB3</Name>
+<DateCreated>2/2/2001 2</DateCreated>
+<State>Open</State>
+<TestID></TestID>
+<TestDesc>Request for performance enhancement to contains() function</TestDesc>
+<Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TNRCN</Name>
+<DateCreated>2/5/2001 2</DateCreated>
+<State>Open</State>
+<TestID></TestID>
+<TestDesc>PATCH DOM2helper.java to avoid casting exceptions</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
 <Name>PDIK4HUPLA</Name>
 <DateCreated>3/28/2000 </DateCreated>
 <State>Closed</State>
@@ -303,6 +319,38 @@
 <TestID>axes68</TestID>
 <TestDesc>Seems that we should be outputting the xml namespace node for document element of xml document.</TestDesc>
 <Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
+<Name>PDIK4TPV4F</Name>
+<DateCreated>2/6/2001 6</DateCreated>
+<State>Open</State>
+<TestID>axes113</TestID>
+<TestDesc>Preceding nodes do not include preceding-sibling nodes.</TestDesc>
+<Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
+<Name>PDIK4TPV6F</Name>
+<DateCreated>2/6/2001 6</DateCreated>
+<State>Open</State>
+<TestID>axes113</TestID>
+<TestDesc>Following axes is not picking up all following nodes.</TestDesc>
+<Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
+<Name>PDIK4TQFRQ</Name>
+<DateCreated>2/7/2001 6</DateCreated>
+<State>Open</State>
+<TestID></TestID>
+<TestDesc>reference a non-existent attribute on an element throws exception</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>PDIK4TSL6G</Name>
+<DateCreated>2/9/2001 1</DateCreated>
+<State>Open</State>
+<TestID></TestID>
+<TestDesc>Stylesheet is outputting comments from a referenced DTD.</TestDesc>
+<Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
 <Name>SBOG4SPP2F</Name>
@@ -611,9 +659,41 @@
 <Spr>
 <Name>SCUU4TCNLH</Name>
 <DateCreated>1/26/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>stylesheetreusetest.java</TestID>
 <TestDesc>xalanj1compat.jar: setStylesheet(s1); process(xml, s2, target); uses s1 instead of s2</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4TXSG4</Name>
+<DateCreated>2/14/2001 </DateCreated>
+<State>Open</State>
+<TestID>errorlistenertest.java</TestID>
+<TestDesc>Errors not raised for illegal top-level elements</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4TZRSR</Name>
+<DateCreated>2/16/2001 </DateCreated>
+<State>New</State>
+<TestID>numberformaterr28.xsl</TestID>
+<TestDesc>format-number error message is incorrect ".. requires 3 arguments"</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4TZSHB</Name>
+<DateCreated>2/16/2001 </DateCreated>
+<State>Open</State>
+<TestID></TestID>
+<TestDesc>TransformerConfigurationException.printStackTrace(pw) is ridiculously long</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4U6R3S</Name>
+<DateCreated>2/21/2001 </DateCreated>
+<State>Open</State>
+<TestID>errorlistenertest.java</TestID>
+<TestDesc>Templates built from DOMSource don't send errors to ErrorListener</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>
