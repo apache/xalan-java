@@ -350,8 +350,8 @@ Copyright:
     <copyfile src="compat.xslt.excludes" dest="${dist.dir}/compat.xslt.excludes"/>
     <copyfile src="compat.excludes" dest="${dist.dir}/compat.excludes"/>
     
-    <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${dist.dir}" />
-    <tar tarfile="${build.dir}/${dist.file}.tar" basedir="${dist.dir}" />
+    <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
+    <tar tarfile="${build.dir}/${dist.file}.tar" basedir="${build.dir}" includes="${dist.file}/**"/>
     <gzip src="${build.dir}/${dist.file}.tar" zipfile="${build.dir}/${dist.file}.tar.gz"/>
   </target>
   
