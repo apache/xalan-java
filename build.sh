@@ -34,7 +34,7 @@ TEMP_CP="$ANT${CLPATHSEP}$TOOLS_JAR${CLPATHSEP}$XERCES${CLPATHSEP}$BSF${CLPATHSE
 echo "Starting Ant with targets: $@"
 echo "        ...with classpath: $TEMP_CP"
 
-"$JAVA_HOME"/bin/java -Dant.home="$BINDIR" -classpath "$TEMP_CP" org.apache.tools.ant.Main $@
+"$JAVA_HOME"/bin/java -Dant.home=. -classpath "$TEMP_CP" org.apache.tools.ant.Main $@
 
 echo "build.sh complete!"
 
