@@ -25,10 +25,6 @@
     Implement DOMSerializer on FormatterToXML.
   </action>
 
-  <action context="code" who="SB"  category="trax">
-    implement javax.trax interfaces.
-  </action>
-
   <action context="code" who="SB" packages="xpath.axes" category="performance">
     implement faster itterators for "foo" and "//foo" patterns.
   </action>
@@ -128,6 +124,10 @@
   
   <action context="code" completed-date="10/31/00">
     Make this todo list.
+  </action>
+
+  <action context="code" who="SB"  category="trax" completed-date="11/06/00">
+    implement javax.trax interfaces.
   </action>
   
  </completed>
