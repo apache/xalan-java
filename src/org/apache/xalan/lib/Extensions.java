@@ -179,9 +179,8 @@ public class Extensions
 
   /**
    * Returns the intersection of two node-sets.
-   * @param n1 NodeIterator for first node-set
-   *
-   * NEEDSDOC @param ni1
+   * 
+   * @param ni1 NodeIterator for first node-set
    * @param ni2 NodeIterator for second node-set
    * @return a NodeSet containing the nodes in ni1 that are also
    * in ni2
@@ -211,9 +210,8 @@ public class Extensions
 
   /**
    * Returns the difference between two node-sets.
-   * @param n1 NodeIterator for first node-set
-   *
-   * NEEDSDOC @param ni1
+   * 
+   * @param ni1 NodeIterator for first node-set
    * @param ni2 NodeIterator for second node-set
    * @return a NodeSet containing the nodes in ni1 that are not
    * in ni2
