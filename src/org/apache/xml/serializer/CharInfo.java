@@ -82,8 +82,10 @@ import org.apache.xml.utils.WrappedRuntimeException;
  * lookup.
  *
  * DEVELOPERS: See Known Issue in the constructor.
+ * 
+ * @xsl.usage internal
  */
-public class CharInfo
+class CharInfo
 {
     /** Lookup table for characters to entity references. */
     private Hashtable m_charToEntityRef = new Hashtable();
@@ -112,9 +114,9 @@ public class CharInfo
     /** This flag is an optimization for HTML entities. It false if entities 
      * other than quot (34), amp (38), lt (60) and gt (62) are defined
      * in the range 0 to 127.
-     */
-    
-    public final boolean onlyQuotAmpLtGt;
+     * @xsl.usage internal
+     */    
+    final boolean onlyQuotAmpLtGt;
     
     /** Copy the first 0,1 ... ASCII_MAX values into an array */
     private static final int ASCII_MAX = 128;
@@ -187,12 +189,12 @@ public class CharInfo
      * be loaded, which describes that mapping of characters to entity
      * references.
      */
-    private CharInfo(String entitiesResource)
+    private CharInfo(String entitiesResource, String method)
     {
-        this(entitiesResource, false);
+        this(entitiesResource, method, false);
     }
 
-    private CharInfo(String entitiesResource, boolean internal)
+    private CharInfo(String entitiesResource, String method, boolean internal)
     {
         ResourceBundle entities = null;
         boolean noExtraEntities = true;
@@ -356,12 +358,17 @@ public class CharInfo
         
         /* Now that we've used get(ch) just above to initialize the
          * two arrays we will change by adding a tab to the set of 
-         * special chars.  We do this because a tab is always a
-         * special character in an attribute, but only a special character
-         * in text if it has an entity defined for it.
+         * special chars for XML (but not HTML!).
+         * We do this because a tab is always a
+         * special character in an XML attribute, 
+         * but only a special character in XML text 
+         * if it has an entity defined for it.
          * This is the reason for this delay.
-         */ 
-        set(S_HORIZONAL_TAB);
+         */
+        if (Method.XML.equals(method)) 
+        {
+            set(S_HORIZONAL_TAB);
+        }
         
 
         onlyQuotAmpLtGt = noExtraEntities;
@@ -383,7 +390,7 @@ public class CharInfo
      * @param name The entity's name
      * @param value The entity's value
      */
-    protected void defineEntity(String name, char value)
+    private void defineEntity(String name, char value)
     {
         CharKey character = new CharKey(value);
 
@@ -407,6 +414,7 @@ public class CharInfo
      * @param value character value that should be resolved to a name.
      *
      * @return name of character entity, or null if not found.
+     * @xsl.usage internal
      */
     synchronized public String getEntityNameForChar(char value)
     {
@@ -423,6 +431,7 @@ public class CharInfo
      * @return true if the character should have any special treatment, 
      * such as when writing out attribute values, 
      * or entity references.
+     * @xsl.usage internal
      */
     public final boolean isSpecialAttrChar(int value)
     {
@@ -445,6 +454,7 @@ public class CharInfo
      * @return true if the character should have any special treatment, 
      * such as when writing out attribute values, 
      * or entity references.
+     * @xsl.usage internal
      */
     public final boolean isSpecialTextChar(int value)
     {
@@ -464,6 +474,7 @@ public class CharInfo
      * a text node (not an attribute value) is "clean".
      * @param value the character to check (0 to 127).
      * @return true if the character can go to the writer as-is
+     * @xsl.usage internal
      */
     public final boolean isTextASCIIClean(int value)
     {
@@ -494,8 +505,11 @@ public class CharInfo
      *
      * @param entitiesResource Name of entities resource file that should
      * be loaded, which describes that mapping of characters to entity references.
+     * @param method the output method type, which should be one of "xml", "html", "text"...
+     * 
+     * @xsl.usage internal
      */
-    public static CharInfo getCharInfo(String entitiesFileName)
+    public static CharInfo getCharInfo(String entitiesFileName, String method)
     {
         CharInfo charInfo = (CharInfo) m_getCharInfoCache.get(entitiesFileName);
         if (charInfo != null) {
@@ -504,14 +518,14 @@ public class CharInfo
 
         // try to load it internally - cache
         try {
-            charInfo = new CharInfo(entitiesFileName, true);
+            charInfo = new CharInfo(entitiesFileName, method, true);
             m_getCharInfoCache.put(entitiesFileName, charInfo);
             return charInfo;
         } catch (Exception e) {}
 
         // try to load it externally - do not cache
         try {
-            return new CharInfo(entitiesFileName);
+            return new CharInfo(entitiesFileName, method);
         } catch (Exception e) {}
 
         String absoluteEntitiesFileName;
@@ -528,7 +542,7 @@ public class CharInfo
             }
         }
 
-        return new CharInfo(absoluteEntitiesFileName, false);
+        return new CharInfo(absoluteEntitiesFileName, method, false);
     }
 
     /** Table of user-specified char infos. */

@@ -86,7 +86,7 @@ public class ToXMLStream extends ToStream
      */
     protected static CharInfo m_xmlcharInfo =
 //      new CharInfo(CharInfo.XML_ENTITIES_RESOURCE);
-        CharInfo.getCharInfo(CharInfo.XML_ENTITIES_RESOURCE);
+        CharInfo.getCharInfo(CharInfo.XML_ENTITIES_RESOURCE, Method.XML);
 
     /**
      * Default constructor.

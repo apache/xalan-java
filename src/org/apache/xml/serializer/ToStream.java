@@ -563,7 +563,11 @@ abstract public class ToStream extends SerializerBase
 
         if (null != entitiesFileName)
         {
-            m_charInfo = CharInfo.getCharInfo(entitiesFileName);
+
+            String method = 
+                (String) format.get(OutputKeys.METHOD);
+            
+            m_charInfo = CharInfo.getCharInfo(entitiesFileName, method);
         }
 
     }
