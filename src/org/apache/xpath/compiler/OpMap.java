@@ -71,6 +71,11 @@ public class OpMap
    */
   protected String m_currentPattern;
   
+  public String toString()
+  {
+    return m_currentPattern;
+  }
+  
   /**
    * Get the pattern string.
    */
