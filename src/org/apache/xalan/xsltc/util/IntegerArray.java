@@ -141,12 +141,50 @@ public final class IntegerArray {
 	}
     }
 
-    public void merge(IntegerArray array) {
-	final int n = array._free;
-	for (int i = 0; i < n; i++) {
-	    addNew(array.at(i));
+    /**
+     * Merge two sorted arrays and eliminate duplicates. 
+     */
+    public void merge(IntegerArray other) {
+	final int newSize = _free + other._free;
+// System.out.println("IntegerArray.merge() begin newSize = " + newSize);
+	int[] newArray = new int[newSize];
+
+	// Merge the two arrays
+	int i = 0, j = 0, k;
+	for (k = 0; i < _free && j < other._free; k++) {
+	    int x = _array[i];
+	    int y = other._array[j];
+
+	    if (x < y) {
+		newArray[k] = x;
+		i++;
+	    }
+	    else if (x > y) {
+		newArray[k] = y;
+		j++;
+	    }
+	    else {
+		newArray[k] = x;
+		i++; j++;
+	    }
 	}
-	sort();		// must be sorted
+
+	// Copy the rest if of different lengths
+	if (i >= _free) {
+	    while (j < other._free) {
+		newArray[k++] = other._array[j++];
+	    }
+	}
+	else {
+	    while (i < _free) {
+		newArray[k++] = _array[i++];
+	    }
+	}
+
+	// Update reference to this array
+	_array = newArray;
+	_free = _size = newSize;
+// System.out.println("IntegerArray.merge() end");
     }
 
     public void sort() {

@@ -57,6 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
@@ -75,10 +76,25 @@ import org.apache.xalan.xsltc.dom.Axis;
 
 final class Key extends TopLevelElement {
 
-    private QName      _name;     // The name of this key (ie. index)
-    private Pattern    _match;    // The nodes to generate index keys from
-    private Expression _use;      // The nodes to include in the key
-    private Type       _useType;  // The data type of the key's contents
+    /**
+     * The name of this key as defined in xsl:key.
+     */
+    private QName _name;
+
+    /**
+     * The pattern to match starting at the root node.
+     */
+    private Pattern _match; 
+
+    /**
+     * The expression that generates the values for this key.
+     */
+    private Expression _use;
+
+    /**
+     * The type of the _use expression.
+     */
+    private Type _useType;
 
     /**
      * Parse the <xsl:key> element and attributes
@@ -114,30 +130,16 @@ final class Key extends TopLevelElement {
 	return _name.toString();
     }
 
-    /**
-     * Run type check on the "use" attribute and make sure it is something
-     * we can use to extract some value from nodes.
-     * @param stable The stylesheet parser's symbol table
-     * @return The data-type of this key (always void)
-     * @throws TypeCheckError If the use attribute does not represent a string,
-     *   a node-set or a number
-     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	// Type check match pattern
 	_match.typeCheck(stable);
+
+	// Cast node values to string values (except for nodesets)
 	_useType = _use.typeCheck(stable);
-
-	// Cast node values to string values
-	if (_useType instanceof NodeType) {
+	if (_useType instanceof StringType == false &&
+	    _useType instanceof NodeSetType == false) 
+	{
 	    _use = new CastExpr(_use, Type.String);
-	    _useType = Type.String;
-	}
-
-	// If the 'use' attribute is not a string, node-set or number
-	if (!(_useType instanceof StringType) &&
-	    !(_useType instanceof NodeSetType) &&
-	    !(_useType instanceof RealType)) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.KEY_USE_ATTR_ERR, this);
-	    throw new TypeCheckError(err);
 	}
 
 	return Type.Void;
@@ -147,8 +149,6 @@ final class Key extends TopLevelElement {
      * This method is called if the "use" attribute of the key contains a
      * node set. In this case we must traverse all nodes in the set and
      * create one entry in this key's index for each node in the set.
-     * @param classGen The Java class generator
-     * @param methodGen The method generator
      */
     public void traverseNodeSet(ClassGenerator classGen,
 				MethodGenerator methodGen,
@@ -186,7 +186,6 @@ final class Key extends TopLevelElement {
 
 	// Prepare to call buildKeyIndex(String name, int node, String value);
 	il.append(classGen.loadTranslet());
-	// il.append(new PUSH(cpg, getName()));
 	il.append(new PUSH(cpg, _name.toString()));
 	il.append(new ILOAD(parentNode.getIndex()));
 
@@ -213,8 +212,6 @@ final class Key extends TopLevelElement {
     /**
      * Gather all nodes that match the expression in the attribute "match"
      * and add one (or more) entries in this key's index.
-     * @param classGen The Java class generator
-     * @param methodGen The method generator
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 
@@ -255,34 +252,18 @@ final class Key extends TopLevelElement {
 	_match.synthesize(classGen, methodGen); // Leaves 0 or 1 on stack
 	final BranchHandle skipNode = il.append(new IFEQ(null));
 	
-	// If this is just a single node we should convert that to a string
-	// and use that string as the value in the index for this key.
-	if (_useType instanceof RealType) {
-	    final int dbl = cpg.addMethodref(DOUBLE_CLASS,"<init>", "(D)V");
-
-	    il.append(classGen.loadTranslet());
-	    il.append(new PUSH(cpg, _name.toString()));
-	    il.append(methodGen.loadCurrentNode());
-	    il.append(new NEW(cpg.addClass(DOUBLE_CLASS)));
-	    il.append(DUP);
-	    _use.translate(classGen,methodGen);
-	    il.append(new INVOKESPECIAL(dbl));
-	    il.append(new INVOKEVIRTUAL(key));
-
-	}
-	else if (_useType instanceof StringType) {
-	    il.append(classGen.loadTranslet());
-	    il.append(new PUSH(cpg, _name.toString()));
-	    il.append(methodGen.loadCurrentNode());
-	    _use.translate(classGen,methodGen);
-	    il.append(new INVOKEVIRTUAL(key));
-	}
 	// If this is a node-set we must go through each node in the set
-	// and create one entry in the key index for each node in the set.
-	else {
+	if (_useType instanceof NodeSetType) {
 	    // Pass current node as parameter (we're indexing on that node)
 	    il.append(methodGen.loadCurrentNode());
-	    traverseNodeSet(classGen,methodGen,key);
+	    traverseNodeSet(classGen, methodGen, key);
+	}
+	else {
+	    il.append(classGen.loadTranslet());
+	    il.append(new PUSH(cpg, _name.toString()));
+	    il.append(methodGen.loadCurrentNode());
+	    _use.translate(classGen, methodGen);
+	    il.append(new INVOKEVIRTUAL(key));
 	}
 	
 	// Get the next node from the iterator and do loop again...

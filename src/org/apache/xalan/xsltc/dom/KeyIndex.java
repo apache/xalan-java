@@ -57,12 +57,14 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Vector;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.DOM;
@@ -73,34 +75,41 @@ import org.apache.xalan.xsltc.util.IntegerArray;
 
 public class KeyIndex extends NodeIteratorBase {
 
+    /**
+     * A mapping between values and nodesets.
+     */
     private Hashtable _index = new Hashtable();
-    // private BitArray  _nodes = null;
+
+    /**
+     * The node set associated to the current value passed
+     * to lookupKey();
+     */
     private IntegerArray _nodes = null;
-    private int       _mark = 0;
-    private int       _save = 0;
-    private int       _start = 0;
-    private int       _node = -1;
+
+    /**
+     * Store position after call to setMark()
+     */
+    private int _markedPosition = 0;
 
     public KeyIndex(int dummy) {
     }
 
     /**
-     * Adds a node to the node list for a given value.
+     * Adds a node to the node list for a given value. Nodes will
+     * always be added in document order.
      */
     public void add(Object value, int node) {
-// System.out.println("KeyIndex.add() value = " + value + " node = " + node);
-
-	if ((_nodes = (IntegerArray) _index.get(value)) == null) {
-	    _index.put(value, _nodes = new IntegerArray());
+	IntegerArray nodes;
+	if ((nodes = (IntegerArray) _index.get(value)) == null) {
+	    _index.put(value, nodes = new IntegerArray());
 	}
-	_nodes.add(node);
+	nodes.add(node);
     }
 
     /**
-     * Merge this node set with nodes from another index
+     * Merge the current value's nodeset set by lookupKey() with _nodes.
      */
     public void merge(KeyIndex other) {
-// System.out.println("KeyIndex.merge()");
 	if (other == null) return;
 
 	if (other._nodes != null) {
@@ -121,29 +130,23 @@ public class KeyIndex extends NodeIteratorBase {
      * key() function.
      */
     public void lookupId(Object value) {
-// System.out.println("KeyIndex.lookupId()");
-	if (value instanceof String) {
-	    final String string = (String)value;
-	    if (string.indexOf(' ') > -1) {
-		StringTokenizer values = new StringTokenizer(string);
+	// Clear _nodes array
+	_nodes = null;
 
-		while (values.hasMoreElements()) {
-		    final IntegerArray nodes = 
-			(IntegerArray)_index.get(values.nextElement());
+	final StringTokenizer values = new StringTokenizer((String) value);
+	while (values.hasMoreElements()) {
+	    final IntegerArray nodes = 
+		(IntegerArray) _index.get(values.nextElement());
 
-		    if (nodes != null) {
-			if (_nodes == null) {
-			    _nodes = nodes;
-			}
-			else {
-			    _nodes.merge(nodes);
-			}
-		    }
-		}
-		return;
+	    if (nodes == null) continue;
+
+	    if (_nodes == null) {
+		_nodes = nodes;
+	    }
+	    else {
+		_nodes.merge(nodes);
 	    }
 	}
-	_nodes = (IntegerArray) _index.get(value);
     }
 
     /**
@@ -151,7 +154,6 @@ public class KeyIndex extends NodeIteratorBase {
      * prior to returning the node iterator.
      */
     public void lookupKey(Object value) {
-// System.out.println("KeyIndex.lookupKey() value = " + value);
 	_nodes = (IntegerArray) _index.get(value);
 	_position = 0;
     }
@@ -160,7 +162,6 @@ public class KeyIndex extends NodeIteratorBase {
      * Callers should not call next() after it returns END.
      */
     public int next() {
-// System.out.println("KeyIndex.next() _nodes = " + _nodes);
 	if (_nodes == null) return END;
 
 	return (_position < _nodes.cardinality()) ? 
@@ -168,24 +169,24 @@ public class KeyIndex extends NodeIteratorBase {
     }
 
     public int containsID(int node, Object value) { 
-	if (value instanceof String) {
-	    final String string = (String)value;
-	    if (string.indexOf(' ') > -1) {
-		final StringTokenizer values = new StringTokenizer(string);
+	final String string = (String)value;
+	if (string.indexOf(' ') > -1) {
+	    final StringTokenizer values = new StringTokenizer(string);
 
-		while (values.hasMoreElements()) {
-		    final IntegerArray nodes = 
-			(IntegerArray) _index.get(values.nextElement());
-		    if (nodes != null && nodes.indexOf(node) >= 0) {
-			return 1;
-		    }
+	    while (values.hasMoreElements()) {
+		final IntegerArray nodes = 
+		    (IntegerArray) _index.get(values.nextElement());
+
+		if (nodes != null && nodes.indexOf(node) >= 0) {
+		    return 1;
 		}
-		return 0;
 	    }
+	    return 0;
 	}
-
-	final IntegerArray nodes = (IntegerArray) _index.get(value);
-	return (nodes != null && nodes.indexOf(node) >= 0) ? 1 : 0;
+	else {
+	    final IntegerArray nodes = (IntegerArray) _index.get(value);
+	    return (nodes != null && nodes.indexOf(node) >= 0) ? 1 : 0;
+	}
     }
 
     public int containsKey(int node, Object value) { 
@@ -197,8 +198,7 @@ public class KeyIndex extends NodeIteratorBase {
      * Resets the iterator to the last start node.
      */
     public NodeIterator reset() {
-	_position = _start;
-	_node = _start - 1;
+	_position = 0;
 	return this;
     }
 
@@ -220,16 +220,14 @@ public class KeyIndex extends NodeIteratorBase {
      * Remembers the current node for the next call to gotoMark().
      */
     public void setMark() {
-	_mark = _position;
-	_save = _node;
+	_markedPosition = _position;
     }
 
     /**
      * Restores the current node remembered by setMark().
      */
     public void gotoMark() {
-	_position = _mark;
-	_node = _save;
+	_position = _markedPosition;
     }
 
     /** 
@@ -252,10 +250,8 @@ public class KeyIndex extends NodeIteratorBase {
     public NodeIterator cloneIterator() {
 	KeyIndex other = new KeyIndex(0);
 	other._index = _index;
-	other._nodes = (_nodes == null) ? _nodes : (IntegerArray)_nodes.clone();
-	other._start = _start;
-	other._node  = _node;
+	other._nodes = _nodes;
+	other._position = _position;
 	return other;
     }
-
 }
