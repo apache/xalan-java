@@ -235,6 +235,10 @@ final class FunctionAvailableCall extends FunctionCall {
      * xslt function 'function-available' was found.
      */
     public boolean getResult() {
+	if (_nameOfFunct == null) { 
+	    return false;
+	}
+
         if (_namespaceOfFunct == null ||
             _namespaceOfFunct.equals(EMPTYSTRING) ||
 	    _namespaceOfFunct.equals(TRANSLET_URI))
