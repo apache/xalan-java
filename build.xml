@@ -413,7 +413,7 @@ Copyright:
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>
    <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.xalan.jar}" 
-           destdir="${build.samples}" excludes="${exclude},sql/ext-connection/*.java" 
+           destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/> 
     <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
          includes="*.class"/>                   
