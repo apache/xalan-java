@@ -355,6 +355,11 @@ abstract public class ToStream extends SerializerBase
         try
         {
             final java.io.Writer writer = m_writer;
+            if (m_needToOutputDocTypeDecl)
+            {
+                outputDocTypeDecl(m_elemContext.m_elementName, false);
+                m_needToOutputDocTypeDecl = false;
+            }            
             if (m_inDoctype)
             {
                 writer.write(" [");
@@ -398,6 +403,11 @@ abstract public class ToStream extends SerializerBase
             return;
         try
         {
+            if (m_needToOutputDocTypeDecl)
+            {
+                outputDocTypeDecl(m_elemContext.m_elementName, false);
+                m_needToOutputDocTypeDecl = false;
+            }        	
             if (m_inDoctype)
             {
                 final java.io.Writer writer = m_writer;
@@ -832,6 +842,11 @@ abstract public class ToStream extends SerializerBase
         try
         {
             final java.io.Writer writer = m_writer;
+            if (m_needToOutputDocTypeDecl)
+            {
+                outputDocTypeDecl(m_elemContext.m_elementName, false);
+                m_needToOutputDocTypeDecl = false;
+            }
             if (m_inDoctype)
             {
                 writer.write(" [");
