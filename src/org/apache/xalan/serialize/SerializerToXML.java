@@ -2236,7 +2236,7 @@ public class SerializerToXML
    */
   public boolean canConvert(char ch)
   {
-    if(ch < 128)
+    if(ch < 127)
     {
       if(ch >= 0x20 || (0x0A == ch || 0x0D == ch || 0x09 == ch) )
         return true;
@@ -2272,7 +2272,7 @@ public class SerializerToXML
         args[0] = new Character( ch );
         Boolean bool 
           = (Boolean)m_canConvertMeth.invoke(m_charToByteConverter, args);
-        return bool.booleanValue();
+        return bool.booleanValue() ? !Character.isISOControl(ch) : false;
       }
       catch(java.lang.reflect.InvocationTargetException ite)
       {
