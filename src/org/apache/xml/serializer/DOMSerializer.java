@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
  * Interface for a DOM serializer implementation.
  * <p>
  * The DOMSerializer is a facet of a serializer and is obtained from the
- * asDOMSerializer() method of the org.apache.xml.serializer.Serializer interface. 
+ * asDOMSerializer() method of the Serializer interface. 
  * A serializer may or may not support a DOM serializer, if it does not then the 
  * return value from asDOMSerializer() is null.
  * <p>
@@ -44,7 +44,7 @@ import org.w3c.dom.Node;
  * dser.serialize(doc);
  * </pre>
  * 
- * @see org.apache.xml.serializer.Serializer
+ * @see Serializer
  * 
  * @xsl.usage general
  *
