@@ -73,7 +73,7 @@
    <ul>
     <li><link anchor="done">Changes since version 2.0.D07</link></li>
     <li><link anchor="other">Other points of interest</link></li>
-    <li><link anchor="bugs">Open bugs and bug reporting</link></li>
+    <li><link anchor="bugs">Open bugs</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
@@ -104,18 +104,18 @@
      the XML parser normalizes line-breaks to line-feeds when it sends character events to the processor.</li>
      </ul>
      </s3><anchor name="bugs"/>
-     <s3 title="Open bugs and bug reporting">
+     <s3 title="Open bugs">
+     <p>If you find a bug that does not appear on the list below, please report it to the <human-resource-ref idref="xalandev"/> with 
+     "[Xalan-J 2 BUG]" in the subject line. We strongly encourage you write patches for problems you find and submit them to
+      xalan-dev@xml.apache.org. We review the patches we receive to make sure they do not break something else, and (assuming they 
+     do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design issues, 
+     we sincerely want (and need!) your active participation in the ongoing development of Xalan.</p>     
      &bugs-j;
      <p>Xerces bug in &xml4j-used;:</p>
      <ul>
        <li>&xml4j; 1.2.3 does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16
         documents. Xerces will post a fix shortly.<br/><br/></li>
      </ul>
-     <p>The Apache XML Bug Tracking System is currently not working. If you find a bug, please report it (with "Xalan-J 2 bug" in the subject
-     line) to the <human-resource-ref idref="xalandev"/>. We strongly encourage you write patches for problems you find and submit them to
-     <human-resource-ref idref="xalandev"/>. We review the patches we receive to make sure they do not break something else, and (assuming they 
-     do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design issues, 
-     we sincerely want (and need!) your active participation in the ongoing development of Xalan.</p>
      </s3>     
      <anchor name="status"/>
      &status-j;
