@@ -90,10 +90,15 @@ public class SystemIDResolver
 
     if (null != curdir)
     {
-                        if (uri != null)
-                                uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
-                        else
-                                uri = "file:///" + curdir + System.getProperty("file.separator");
+      String base;
+      if (curdir.startsWith(File.separator))
+        base = "file://" + curdir;
+      else
+        base = "file:///" + curdir;
+      if (uri != null)
+        uri = base + System.getProperty("file.separator") + uri;
+      else
+        uri = base + System.getProperty("file.separator");
     }
 
     if (null != uri && (uri.indexOf('\\') > -1))
@@ -113,9 +118,17 @@ public class SystemIDResolver
   public static String getAbsoluteURI(String url)
           throws TransformerException
   {
-    if (url.indexOf(':') < 0)
+    if (url.startsWith(".."))
+      url = new File(url).getAbsolutePath();
+    if (url.startsWith(File.separator))
+      url = "file://" + url;
+    else if (url.indexOf(':') < 0)
     {
       url = getAbsoluteURIFromRelative(url);
+    }
+    else if (url.startsWith("file:") && url.charAt(5) != '/') 
+    {
+      url = getAbsoluteURIFromRelative(url.substring(5));
     }
     return url;
   }
@@ -134,8 +147,22 @@ public class SystemIDResolver
           throws TransformerException
   {
     boolean isAbsouteUrl = false;
-    if (urlString.indexOf(':') > 0)
-            isAbsouteUrl = true;
+    boolean needToResolve = false;
+    
+    if (urlString.startsWith("..") && base == null)
+      urlString = new File(urlString).getAbsolutePath();
+    
+    if(urlString.startsWith("file:") && urlString.charAt(5) != '/') 
+    {
+      needToResolve = true;
+    }
+    else if (urlString.indexOf(':') > 0)
+      isAbsouteUrl = true;
+    else if (urlString.startsWith(File.separator))
+    {
+      urlString = "file://" + urlString;
+      isAbsouteUrl = true;
+    }
 
     if ((!isAbsouteUrl) && ((null == base)
             || (base.indexOf(':') < 0)))
@@ -144,8 +171,8 @@ public class SystemIDResolver
     }
 
     // bit of a hack here.  Need to talk to URI person to see if this can be fixed.
-    if ((null != base) && urlString.startsWith("file:")
-            && (urlString.charAt(5) != '/'))
+    if ((null != base) && needToResolve) 
+         
     {
       if(base.equals(urlString))
       {
@@ -154,7 +181,7 @@ public class SystemIDResolver
       else
       {
         urlString = urlString.substring(5);
-                                isAbsouteUrl = false;
+        isAbsouteUrl = false;
       }
     }   
 

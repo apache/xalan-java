@@ -827,9 +827,13 @@ public javax.xml.transform.Templates processFromNode(Node node)
       try
       {
         String currentDir = System.getProperty("user.dir");
-
-        baseID = "file:///" + currentDir + java.io.File.separatorChar
-                 + source.getClass().getName();
+        
+        if (currentDir.startsWith(java.io.File.separator))
+          baseID = "file://" + currentDir + java.io.File.separatorChar
+                   + source.getClass().getName();
+        else
+          baseID = "file:///" + currentDir + java.io.File.separatorChar
+                   + source.getClass().getName();
       }
       catch (SecurityException se)
       {

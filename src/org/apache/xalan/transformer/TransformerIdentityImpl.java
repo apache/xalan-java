@@ -244,7 +244,10 @@ public class TransformerIdentityImpl extends Transformer
 
           if (fileURL.startsWith("file:///"))
           {
-            fileURL = fileURL.substring(8);
+            if (fileURL.substring(8).indexOf(":") >0)
+              fileURL = fileURL.substring(8);
+            else 
+              fileURL = fileURL.substring(7);
           }
 
           m_outputStream = new java.io.FileOutputStream(fileURL);
