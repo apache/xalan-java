@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -53,69 +53,88 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
- 
 package org.apache.xpath.rwapi;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+
 /**
- *
+ * This class implements an exception object that all XPath classes will throw
+ * in case of an error.
  */
-public class XPathException extends Exception {
-    
-    Exception _e;
-    
-    public XPathException(Exception e) {        
+public class XPathException extends Exception
+{
+    /**
+     * Nested exception
+     */
+    Exception m_e;
+
+    /**
+     * Constructs an XPathException with a specified nested exception
+     *
+     * @param e
+     */
+    public XPathException(Exception e)
+    {
         super();
-        
-        _e = e;
+
+        m_e = e;
     }
 
-    public XPathException(String msg) {        
-        super(msg);        
+    /**
+     * Constructs an XPathException with a specified message
+     *
+     * @see java.lang.Throwable#Throwable(String)
+     */
+    public XPathException(String msg)
+    {
+        super(msg);
     }
 
-    
-	/**
-	 * @see java.lang.Throwable#getLocalizedMessage()
-	 */
-	public String getLocalizedMessage() {
-		return _e.getLocalizedMessage();
-	}
+    /**
+     * @see java.lang.Throwable#getLocalizedMessage()
+     */
+    public String getLocalizedMessage()
+    {
+        return m_e.getLocalizedMessage();
+    }
 
-	/**
-	 * @see java.lang.Throwable#getMessage()
-	 */
-	public String getMessage() {
-		return _e.getMessage();
-	}
+    /**
+     * @see java.lang.Throwable#getMessage()
+     */
+    public String getMessage()
+    {
+        return m_e.getMessage();
+    }
 
-	/**
-	 * @see java.lang.Throwable#printStackTrace()
-	 */
-	public void printStackTrace() {
+    /**
+     * @see java.lang.Throwable#printStackTrace()
+     */
+    public void printStackTrace()
+    {
         super.printStackTrace();
         System.out.println("-------------------");
-		_e.printStackTrace();
-	}
+        m_e.printStackTrace();
+    }
 
-	/**
-	 * @see java.lang.Throwable#printStackTrace(PrintStream)
-	 */
-	public void printStackTrace(PrintStream s) {
-		super.printStackTrace(s);
+    /**
+     * @see java.lang.Throwable#printStackTrace(PrintStream)
+     */
+    public void printStackTrace(PrintStream s)
+    {
+        super.printStackTrace(s);
         s.println("----------------");
-        _e.printStackTrace(s);
-	}
+        m_e.printStackTrace(s);
+    }
 
-	/**
-	 * @see java.lang.Throwable#printStackTrace(PrintWriter)
-	 */
-	public void printStackTrace(PrintWriter s) {
-		super.printStackTrace(s);
-         s.println("----------------");
-        _e.printStackTrace(s);
-	}
-
+    /**
+     * @see java.lang.Throwable#printStackTrace(PrintWriter)
+     */
+    public void printStackTrace(PrintWriter s)
+    {
+        super.printStackTrace(s);
+        s.println("----------------");
+        m_e.printStackTrace(s);
+    }
 }
