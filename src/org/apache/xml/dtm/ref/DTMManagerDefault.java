@@ -74,7 +74,11 @@ import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
+
+/**************************************************************
+// EXPERIMENTAL 3/22/02
 import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
+**************************************************************/
 
 // W3C DOM
 import org.w3c.dom.Document;
@@ -117,7 +121,7 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
-  static final boolean JKESS_XNI_EXPERIMENT=false;
+  //static final boolean JKESS_XNI_EXPERIMENT=true;
 
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
@@ -407,6 +411,9 @@ public class DTMManagerDefault extends DTMManager
 
           }
 
+			
+        /**************************************************************
+        // EXPERIMENTAL 3/22/02
           if(JKESS_XNI_EXPERIMENT && m_incremental & 
           	dtm instanceof XNI2DTM && 
           	coParser instanceof IncrementalSAXSource_Xerces)
@@ -420,6 +427,7 @@ public class DTMManagerDefault extends DTMManager
           		// Listen to the SAX stream (will fail, diagnostically...)
 				dtm.setIncrementalSAXSource(coParser);
           } else
+          ***************************************************************/
           
           // Have the DTM set itself up as the IncrementalSAXSource's listener.
           dtm.setIncrementalSAXSource(coParser);
