@@ -47,18 +47,19 @@
    </target-release-description>
 
   <!-- Move to completed section when done. -->
-
-   <action context="code" category="bugs" who="SB">
-    Fix bug with Shane's s2s test hang.
+ 
+   <action context="code" category="feature" who="SB">
+    Integrate John Gentilin <johnglinux@eyecatching.com> code, 
+    for SQL Extension Enhancements.
    </action>
-   
-   <action context="code" category="bugs" who="SB, JK">
-    Fix bug with rare intermittent failures, probably in the STree.
-   </action>
-  
+ 
    <action context="code" category="error-handling" who="SB">
     Simplify some of the exception nesting, maybe, and make sure error listeners 
     are being called for all cases.
+   </action>
+   
+   <action context="code" category="performance" who="SB">
+    For default transformer, do direct transform without stylesheet.
    </action>
    
    <action context="code" category="performance" who="SB">
@@ -78,7 +79,7 @@
     Optimize "/foo/baz" patterns that have no variability, to a global space, 
     and don't re-evaluate each time.
    </action>
-    
+       
    <action context="code" category="conformance" who="GP">
       Verify that the recomposing procedure for each of the recomposable
       elements matches the standard (including errata).
@@ -222,6 +223,15 @@
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
   
+   <action context="code" category="bugs" who="SB" completed="12/31/00">
+    Fix bug with Shane's s2s test hang.
+   </action>
+   
+   <action context="code" category="bugs" who="SB, JK" completed="12/31/00">
+    Fix bug with rare intermittent failures, probably in the STree.
+    <note>Verification testing on JK's machine needed.</note>
+   </action>
+
    <action context="code" category="performance" who="SB" completed="12/26/00">
     Optimize "/foo/baz" patterns to use simple child walkers.
    </action>
