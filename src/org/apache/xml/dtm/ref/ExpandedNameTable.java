@@ -59,6 +59,7 @@ package org.apache.xml.dtm.ref;
 import org.apache.xml.dtm.DTM;
 
 import java.util.Vector;
+import java.util.Hashtable;
 
 /**
  * This is a default implementation of a table that manages mappings from
@@ -103,6 +104,12 @@ public class ExpandedNameTable
   public static final int DOCUMENT_FRAGMENT =((int)DTM.DOCUMENT_FRAGMENT_NODE) ;
   public static final int NOTATION = ((int)DTM.NOTATION_NODE) ;
   public static final int NAMESPACE = ((int)DTM.NAMESPACE_NODE) ;
+  
+  Hashtable m_hashtable = new Hashtable();
+  
+	/** Workspace for lookup. NOT THREAD SAFE!
+	 * */
+	ExtendedType hashET=new ExtendedType(-1,"","");  
   
 
   /**
@@ -166,15 +173,21 @@ public class ExpandedNameTable
 */
     if (null == namespace) 
       namespace = "";
-      if (null == localName) 
+    if (null == localName) 
       localName = "";
-    for (int i = 0; i < m_extendedTypes.size(); i++)
-    {
-      ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt(i);
-      if( type == etype.nodetype && namespace.equals(etype.namespace) && localName.equals(etype.localName)) 
-        return i;
-    }
-    m_extendedTypes.addElement(new ExtendedType(type, namespace, localName));
+    // Set our reusable ExpandedType so we can look
+    // it up in the hashtable. Not threadsafe, but
+    // avoids creating a new object until we know
+    // this isn't one we've seen before.
+    hashET.redefine(type,namespace,localName);
+    
+    Object eType;
+    if ((eType = m_hashtable.get(hashET)) != null )
+      return ((Integer)eType).intValue();
+    
+    ExtendedType newET=new ExtendedType(type, namespace, localName);
+    m_extendedTypes.addElement(newET);
+    m_hashtable.put(newET, new Integer(m_nextType));
     return m_nextType++;
   }
   
@@ -188,18 +201,8 @@ public class ExpandedNameTable
    * @return the expanded-name id of the node.
    */
   public int getExpandedTypeID(int type)
-  {
-    /*int expandedTypeID = (type << (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME));
-
-    return expandedTypeID;
-    */
-    for (int i = 0; i < m_extendedTypes.size(); i++)
-    {
-      ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt(i);
-      if( type == etype.nodetype ) 
-        return i;
-    }
-    return -1; // something's very wrong!
+  {    
+        return type;    
   }
 
   /**
@@ -283,16 +286,61 @@ public class ExpandedNameTable
    */
   private class ExtendedType
   {
-    private int nodetype;
-    private String namespace;
-    private String localName;
+    protected int nodetype;
+    protected String namespace;
+    protected String localName;
+    protected int hash;
     
-    private ExtendedType (int nodetype, String namespace, String localName)
+    protected ExtendedType (int nodetype, String namespace, String localName)
     {
       this.nodetype = nodetype;
       this.namespace = namespace;
       this.localName = localName;
+      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
     }
+
+	/* This is intended to be used ONLY on the hashET
+	 * object. Using it elsewhere will mess up existing
+	 * hashtable entries!
+	 * */
+    protected void redefine(int nodetype, String namespace, String localName)
+    {
+      this.nodetype = nodetype;
+      this.namespace = namespace;
+      this.localName = localName;
+      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
+    }
+    
+    /* Override super method
+	 * */
+    public int hashCode() 
+    {
+    	return hash;
+    }
+
+    /* Override super method
+	 * */
+	public boolean equals(Object other)
+	{
+		//Usually an optimization, but 
+		// won't arise in our usage:
+		//if(other==this) return true;
+		try
+		{
+			ExtendedType et=(ExtendedType)other;
+			return et.nodetype==this.nodetype &&
+				et.localName.equals(this.localName) &&
+				et.namespace.equals(this.namespace);
+		}
+		catch(ClassCastException e)
+		{
+			return false;
+		}
+		catch(NullPointerException e)
+		{
+			return false;
+		}
+	}
   }
   
 }
