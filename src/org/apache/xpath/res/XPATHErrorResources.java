@@ -522,9 +522,45 @@ public class XPATHErrorResources extends PropertyResourceBundle
   public static final int ER_ARG_PREFIX_INVALID = 102;
 
  
+/** Field ER_CANT_CONVERT_TO_BOOLEAN          */
+  public static final int ER_CANT_CONVERT_TO_BOOLEAN = 103;
+  
+  
+/** Field ER_CANT_CONVERT_TO_SINGLENODE       */
+  public static final int ER_CANT_CONVERT_TO_SINGLENODE = 104;  
 
+/** Field ER_CANT_GET_SNAPSHOT_LENGTH         */
+  public static final int ER_CANT_GET_SNAPSHOT_LENGTH = 105;
+  
+/** Field ER_NON_ITERATOR_TYPE                */
+  public static final int ER_NON_ITERATOR_TYPE        = 106;
 
+/** Field ER_DOC_MUTATED                      */
+  public static final int ER_DOC_MUTATED              = 107;
+  
+/** Field ER_INVALID_XPATH_TYPE               */
+  public static final int ER_INVALID_XPATH_TYPE       = 108;
+  
+/** Field ER_EMPTY_XPATH_RESULT                */
+  public static final int ER_EMPTY_XPATH_RESULT       = 109;
 
+/** Field ER_INCOMPATIBLE_TYPES                */
+  public static final int ER_INCOMPATIBLE_TYPES       = 110;  
+  
+/** Field ER_NULL_RESOLVER                     */
+  public static final int ER_NULL_RESOLVER            = 111;
+
+/** Field ER_CANT_CONVERT_TO_STRING            */
+  public static final int ER_CANT_CONVERT_TO_STRING   = 112;
+  
+/** Field ER_NON_SNAPSHOT_TYPE                 */
+  public static final int ER_NON_SNAPSHOT_TYPE       = 113;
+
+/** Field ER_WRONG_DOCUMENT                    */
+  public static final int ER_WRONG_DOCUMENT          = 114;
+ 
+/** Field ER_WRONG_NODETYPE                    */
+  public static final int ER_WRONG_NODETYPE          = 115; 
   
   // Warnings...
 
