@@ -84,11 +84,12 @@ final class Import extends TopLevelElement {
     private Stylesheet _imported = null;
 
     public Stylesheet getImportedStylesheet() {
-	return(_imported);
+	return _imported;
     }
 
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
+
 	try {
 	    String docToLoad = getAttribute("href");
 	    if (context.checkForLoop(docToLoad)) {
@@ -117,7 +118,7 @@ final class Import extends TopLevelElement {
 	    SyntaxTreeNode root = parser.parse(input);
 
 	    if (root == null) return;
-	    final Stylesheet _imported = parser.makeStylesheet(root);
+	    _imported = parser.makeStylesheet(root);
 	    if (_imported == null) return;
 
 	    _imported.setSourceLoader(loader);
@@ -138,14 +139,16 @@ final class Import extends TopLevelElement {
 	    while (elements.hasMoreElements()) {
 		final Object element = elements.nextElement();
 		if (element instanceof TopLevelElement) {
-		    if (element instanceof Variable)
-			topStylesheet.addVariable((Variable)element);
-		    else if (element instanceof Param)
-			topStylesheet.addParam((Param)element);
-		    else
-			topStylesheet.addElement((TopLevelElement)element);
+		    if (element instanceof Variable) {
+			topStylesheet.addVariable((Variable) element);
+		    }
+		    else if (element instanceof Param) {
+			topStylesheet.addParam((Param) element);
+		    }
+		    else {
+			topStylesheet.addElement((TopLevelElement) element);
+		    }
 		}
-		
 	    }
 	}
 	catch (Exception e) {
