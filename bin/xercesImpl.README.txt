@@ -1,0 +1,6 @@
+xercesImpl.jar - Xerces-Java 2 XML Parser.
+
+Source:	  http://xml.apache.org
+Used by: 	Xalan-Java 2
+
+See xercesImpl.LICENSE.txt for the Apache Software license that applies to xercesImpl.jar.
