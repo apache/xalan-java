@@ -70,11 +70,15 @@ Copyright:
   <property name="sax.reldir" value="org/xml/sax"/>
   <property name="w3c.reldir" value="org/w3c"/>    
   <property name="build.dir" value="./build"/>
+  <!-- Where we put the xalan.jar we compile by default -->
+  <property name="built.xalan.jar" value="${build.dir}/xalan.jar"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
   <property name="build.apidocs" value="${build.docs}/apidocs"/>
 
+  <!-- Reference to the top level of the test source code area. -->
+  <property name="tests.dir" value="../test/java/"/>
   <property name="samples.dir" value="./samples"/>
   <property name="bin.dir" value="./bin"/>
   <property name="xerces.jar" value="${bin.dir}/xerces.jar"/>
@@ -103,8 +107,11 @@ Copyright:
   <target name="prepare">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.classes}"/>
-    <available file="${minitest.dir}" property="minitest-available" />
-    <available file="${conftest.dir}" property="conftest-available" />
+    <!-- Note that all testing-related targets *must* depend on 
+         this target, either directly or indirectly, to get 
+         the tests-available property set for them.
+    -->
+    <available file="${tests.dir}" property="tests-available" />
   </target>
   <target name="prepare.docs" depends="prepare">
     <gunzip src="${doc.generator.styletargz}"/>
@@ -201,7 +208,7 @@ Copyright:
   <!-- =================================================================== -->
   <target name="jar" depends="compile"
     description="Jar up xalan.jar" >
-    <jar jarfile="${build.dir}/xalan.jar" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
+    <jar jarfile="${built.xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
   </target>
   <target name="package" depends="jar">
     <!-- OK, what are the 'Apache-standard' names for various targets? -->
@@ -216,37 +223,37 @@ Copyright:
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
     <!-- Since the samples are packageless, they must be compiled separately. -->   
-    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.dir}/xalan.jar"  
+    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${built.xalan.jar}"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.dir}/xalan.jar"
+    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${built.xalan.jar}"
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/DOM2DOM" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/DOM2DOM" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${build.dir}/xalan.jar"  
+    <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${built.xalan.jar}"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>
-   <javac srcdir="${samples.dir}/trax" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+   <javac srcdir="${samples.dir}/trax" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>
-   <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+   <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/> 
     <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
@@ -263,7 +270,7 @@ Copyright:
     description="Compile and jar just the servlet sample" >
      <echo message="To compile and run the sample servlet, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.samples}/servlet"/>
-     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${built.xalan.jar}" 
            destdir="${build.samples}"
            debug="${debug}"/>
       <copy todir="${build.samples}/servlet">
@@ -284,7 +291,7 @@ Copyright:
   
   <target name="autodocs">
     <echo message="autodocs is for automated build process, without dependencies"/>   
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/xalan.jar">
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${built.xalan.jar}">
        <arg line="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>
         </java>	 
   </target>
@@ -303,7 +310,7 @@ Copyright:
     <!-- generate trax.html, a TRaX overview document, and a package.html for each trax package
          (the latter are generated with the the Redirect extension -->
     <mkdir dir="${build.apidocs}/javax/xml/transform"/>         
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/xalan.jar">
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${built.xalan.jar}">
       <arg line="-in ${xdocs.dir}/sources/trax/trax.xml
                  -param package-root '../../../src/'
                  -xsl ${xdocs.style}/stylesheets/spec.xsl 
@@ -402,7 +409,7 @@ Copyright:
     <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
 
     <!-- Copy xalan jar into the bin directory (subject to change) -->
-    <copy file="${build.dir}/xalan.jar" todir="${dist.dir}/bin"/>
+    <copy file="${built.xalan.jar}" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
@@ -434,85 +441,95 @@ Copyright:
   <!-- =================================================================== -->
   <path id="minitest.class.path">
     <pathelement location="${xerces.jar}" />
-    <pathelement location="${build.dir}/xalan.jar" />
+    <pathelement location="${built.xalan.jar}" />
     <pathelement location="${bsf.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
 
-  <property name="minitest.backref" value="../../java/"/>
-  <property name="minitest.dir" value="../test/java/"/>
+  <!-- Reference from the testing directory back to our directory, 
+       used when calling testing targets to set the classpath for 
+       the tests to include jars we just compiled.
+  -->
+  <property name="tests.backref" value="../../java/"/>
 
-  <target name="minitest" depends="minitest-run" 
+  <target name="minitest" depends="prepare,jar,minitest-run,tests-not-available" 
     description="Run the Minitest from xml-xalan/test/java" >
+    <!-- This target explicitly depends on the jar target, since 
+         without xalan.jar the tests won't compile/run.
+         We then call the worker target minitest-run to do 
+         the work of running the minitest.
+         We finally call a helper target tests-not-available 
+         to notify users that they need to checkout the tests 
+         explicitly from CVS - but this only runs if needed.
+    -->
   </target>
-  <target name="minitest-run" >
-    <echo message=" [minitest] Calling ${minitest.dir}build.xml now to run minitest.xalan2" />
-    <ant dir="${minitest.dir}" antfile="build.xml" target="minitest.xalan2" >
-      <property name="name" value="minitest" /> <!-- Set this so that it will create minitest.jar instead of testxsl.jar -->
+  <target name="minitest-run" if="tests-available" depends="prepare" >
+    <echo message=" [minitest] Calling ${tests.dir}build.xml now to run minitest.xalan2" />
+    <ant dir="${tests.dir}" antfile="build.xml" target="minitest.xalan2" >
+      <!-- Set the below testxsl.jar.name so that it will create 
+           minitest.jar instead of testxsl.jar; we only do this here 
+           since this is a commonly-called developer target, and it's 
+           good to differentiate this jar from the regular testing jar 
+           (which has many more test classes in it).
+      -->
+      <property name="testxsl.jar.name" value="minitest.jar" />
       <property name="prepend.class.path"
-                value="${minitest.backref}${xerces.jar}:${minitest.backref}${build.dir}/xalan.jar:${minitest.backref}${bsf.jar}" />
+                value="${tests.backref}${xerces.jar}:${tests.backref}${built.xalan.jar}:${tests.backref}${bsf.jar}" />
     <!-- Why doesn't the following refid work? I get an error referencing it.
       <property name="prepend.class.path" refid="minitest.class.path" />
     -->
     </ant>
   </target>
+
+  <!-- Called from various testing targets if the test dir doesn't exist. -->
+  <target name="tests-not-available" unless="tests-available" >
+    <echo message=" [tests] The tests do not seem to be present!" />
+    <echo message=" [tests] You must have checked out from CVS to run the tests," />
+    <echo message=" [tests]   it is not included in binary distributions." />
+    <echo message=" [tests] See http://xml.apache.org/xalan-j/test/ for more info." />
+  </target>
   
   <!-- =================================================================== -->
   <!-- Compiles and runs the conformance test from xml-xalan\test, if present      -->
   <!-- =================================================================== -->
-  <path id="conftest.class.path">
-    <pathelement location="${xerces.jar}" />
-    <pathelement location="${build.dir}/xalan.jar" />
-    <pathelement location="${bsf.jar}" />
-    <pathelement path="${java.class.path}" />
-  </path>
+  <!-- We should have a duplicate of minitest.class.path that
+       in the future this may need to include references to dirs 
+       where Java-based extension tests keep their .classes.
+  -->
 
-  <property name="conftest.backref" value="../../java/"/>
-  <property name="conftest.dir" value="../test/java/"/>
-
-  <target name="conftest" depends="conftest-run" 
+  <target name="conftest" depends="prepare,jar,conftest-run,tests-not-available" 
     description="Run the ConformanceTest from xml-xalan/test/java" >
   </target>
-  <target name="conftest-run" >
-    <echo message=" [conftest] Calling ${conftest.dir}build.xml now to run conftest.xalan2" />
-    <ant dir="${conftest.dir}" antfile="build.xml" target="conftest.xalan2" >
-      <property name="name" value="conftest" /> <!-- Set this so that it will create conftest.jar instead of testxsl.jar -->
+  <target name="conftest-run" if="tests-available" depends="prepare" >
+    <echo message=" [conftest] Calling ${tests.dir}build.xml now to run conftest.xalan2" />
+    <ant dir="${tests.dir}" antfile="build.xml" target="conftest.xalan2" >
+      <property name="testxsl.jar.name" value="conftest.jar" /> 
+      <!-- Set name above so that it will create conftest.jar instead 
+           of testxsl.jar - but, since the "ConformanceTest" depends 
+           on so many testing classes, it may not be worth calling 
+           this a different name from the default 'testxsl.jar'.  It 
+           does reduce confusion, however, for people who build and 
+           run the tests directly from the testing directory, instead 
+           of doing it from this directory.
+      -->
       <property name="prepend.class.path"
-                value="${conftest.backref}${xerces.jar}:${conftest.backref}${build.dir}/xalan.jar:${conftest.backref}${bsf.jar}" />
-    <!-- Why doesn't the following refid work? I get an error referencing it.
-      <property name="prepend.class.path" refid="conftest.class.path" />
-    -->
+                value="${tests.backref}${xerces.jar}:${tests.backref}${built.xalan.jar}:${tests.backref}${bsf.jar}" />
     </ant>
   </target>
   
   <!-- =================================================================== -->
   <!-- Compiles and runs the smoke test from xml-xalan\test, if present      -->
   <!-- =================================================================== -->
-  <path id="smoketest.class.path">
-    <pathelement location="${xerces.jar}" />
-    <pathelement location="${build.dir}/xalan.jar" />
-    <pathelement location="${bsf.jar}" />
-    <pathelement path="${java.class.path}" />
-  </path>
-
-  <property name="smoketest.backref" value="../../java/"/>
-  <property name="smoketest.dir" value="../test/java/"/>
-
-  <target name="smoketest" depends="smoketest-run" 
-    description="Run the smoke test." >
+  <target name="smoketest" depends="prepare,jar,smoketest-run,tests-not-available" 
+    description="Run the smoke test - to be defined." >
   </target>
-  <target name="smoketest-run" >
-    <ant dir="${smoketest.dir}" antfile="build.xml" target="smoketest-xalan2" >
+  <target name="smoketest-run" if="tests-available" depends="prepare" >
+    <ant dir="${tests.dir}" antfile="build.xml" target="smoketest-xalan2" >
       <property name="prepend.class.path"
-                value="${smoketest.backref}${xerces.jar}:${smoketest.backref}${build.dir}/xalan.jar:${smoketest.backref}${bsf.jar}" />
-    <!-- Why doesn't the following refid work? I get an error referencing it.
-      <property name="prepend.class.path" refid="smoketest.class.path" />
-    -->
+                value="${tests.backref}${xerces.jar}:${tests.backref}${built.xalan.jar}:${tests.backref}${bsf.jar}" />
     </ant>
   </target>
   
-   <!-- target name="smoketest" depends="conftest, minitest"/ -->
- 
   <!-- =================================================================== -->
   <!-- Creates the todo list for the org.apache.xml website                -->
   <!-- =================================================================== -->
