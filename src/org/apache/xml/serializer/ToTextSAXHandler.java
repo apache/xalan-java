@@ -87,7 +87,8 @@ public class ToTextSAXHandler extends ToSAXHandler
      */
     public void endElement(String elemName) throws SAXException
     {
-        super.fireEndElem(elemName);
+        if (m_tracer != null)
+            super.fireEndElem(elemName);
     }
 
     /**
@@ -96,7 +97,8 @@ public class ToTextSAXHandler extends ToSAXHandler
     public void endElement(String arg0, String arg1, String arg2)
         throws SAXException
     {
-        super.fireEndElem(arg2);    	
+		if (m_tracer != null)
+            super.fireEndElem(arg2);    	
     }
 
     public ToTextSAXHandler(ContentHandler hdlr, LexicalHandler lex, String encoding)
@@ -115,7 +117,8 @@ public class ToTextSAXHandler extends ToSAXHandler
     public void comment(char ch[], int start, int length)
         throws org.xml.sax.SAXException
     {
-        super.fireCommentEvent(ch, start, length);
+        if (m_tracer != null)
+            super.fireCommentEvent(ch, start, length);
     }
 
     public void comment(String data) throws org.xml.sax.SAXException
@@ -277,7 +280,8 @@ public class ToTextSAXHandler extends ToSAXHandler
     public void processingInstruction(String arg0, String arg1)
         throws SAXException
     {
-		super.fireEscapingEvent(arg0,arg1);            	
+        if (m_tracer != null)
+            super.fireEscapingEvent(arg0, arg1);
     }
 
     /**
@@ -365,8 +369,9 @@ public class ToTextSAXHandler extends ToSAXHandler
         
         flushPending();
         m_saxHandler.endDocument();
-
-        super.fireEndDoc();
+		
+        if (m_tracer != null)
+            super.fireEndDoc();
     }
  
     /**
@@ -391,7 +396,8 @@ public class ToTextSAXHandler extends ToSAXHandler
         m_saxHandler.characters(characters, offset, length);
 
         // time to fire off characters event
-        super.fireCharEvent(characters, offset, length);                
+		if (m_tracer != null)
+            super.fireCharEvent(characters, offset, length);                
     }
 
     /**

@@ -228,7 +228,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
         // Close output document
         m_saxHandler.endDocument();
 
-        super.fireEndDoc();
+        if (m_tracer != null)
+            super.fireEndDoc();
     }
 
     /**
@@ -298,7 +299,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
 
         m_saxHandler.endElement(namespaceURI, localName, qName);
 
-		super.fireEndElem(qName);       
+        if (m_tracer != null)
+		    super.fireEndElem(qName);       
 
         /* Pop all namespaces at the current element depth.
          * We are not waiting for official endPrefixMapping() calls.
@@ -438,7 +440,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
         if (m_lexHandler != null)
             m_lexHandler.comment(arg0, arg1, arg2);
             
-        super.fireCommentEvent(arg0, arg1, arg2);
+        if (m_tracer != null)            
+            super.fireCommentEvent(arg0, arg1, arg2);
     }
 
     /**
@@ -535,7 +538,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
         }
 
 		// time to generate characters event
-		fireCharEvent(ch, off, len);
+		if (m_tracer != null)
+		    fireCharEvent(ch, off, len);
     }
     
 
@@ -576,7 +580,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
 
         // we don't want to leave serializer to fire off this event,
         // so do it here.
-        super.fireEscapingEvent(target, data);        
+        if (m_tracer != null)
+            super.fireEscapingEvent(target, data);
     }
 
     /**

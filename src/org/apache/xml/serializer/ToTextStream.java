@@ -126,7 +126,8 @@ public class ToTextStream extends ToStream
   {
     flushPending();
     flushWriter();
-    super.fireEndDoc();
+    if (m_tracer != null)
+        super.fireEndDoc();
   }
 
   /**
@@ -169,7 +170,8 @@ public class ToTextStream extends ToStream
     m_currentElemDepth++;
 
     // time to fire off startElement event
-    super.fireStartElem(name);
+    if (m_tracer != null)
+        super.fireStartElem(name);
     return;
   }
 
@@ -203,7 +205,8 @@ public class ToTextStream extends ToStream
           throws org.xml.sax.SAXException
   {
         m_currentElemDepth--;
-		super.fireEndElem(name);           
+        if (m_tracer != null)
+		    super.fireEndElem(name);           
   }
 
   /**
@@ -241,7 +244,8 @@ public class ToTextStream extends ToStream
     try
     {
         writeNormalizedChars(ch, start, length, false);
-		super.fireCharEvent(ch, start, length);      
+		if (m_tracer != null)
+		    super.fireCharEvent(ch, start, length);      
     }
     catch(IOException ioe)
     {
@@ -416,7 +420,8 @@ void writeNormalizedChars(
     try
     {
         writeNormalizedChars(ch, start, length, false);
-        super.fireCDATAEvent(ch, start, length);              
+		if (m_tracer != null)
+            super.fireCDATAEvent(ch, start, length);              
     }
     catch(IOException ioe)
     {
@@ -487,8 +492,10 @@ void writeNormalizedChars(
           throws org.xml.sax.SAXException
   {
     // flush anything pending first
-    flushPending();     
-    super.fireEscapingEvent(target, data);    
+    flushPending();  
+    
+    if (m_tracer != null)
+        super.fireEscapingEvent(target, data);  
   }
 
   /**
@@ -522,8 +529,8 @@ void writeNormalizedChars(
   {
 
     flushPending();
-
-    super.fireCommentEvent(ch, start, length);
+    if (m_tracer != null)
+        super.fireCommentEvent(ch, start, length);
   }
 
   /**
@@ -535,7 +542,8 @@ void writeNormalizedChars(
    */
   public void entityReference(String name) throws org.xml.sax.SAXException
   {
-        super.fireEntityReference(name);    
+        if (m_tracer != null)
+            super.fireEntityReference(name);    
   }
   
     /**
@@ -565,7 +573,8 @@ void writeNormalizedChars(
     public void endElement(String elemName) throws SAXException
     {
         m_currentElemDepth--;
-        super.fireEndElem(elemName);                       
+		if (m_tracer != null)
+            super.fireEndElem(elemName);                       
     }
  
     /**
@@ -582,7 +591,8 @@ void writeNormalizedChars(
         if (m_needToCallStartDocument)
             startDocumentInternal();		
 		// time to fire off startlement event.
-        super.fireStartElem(elementName);
+        if (m_tracer != null)
+            super.fireStartElem(elementName);
         
         return;
     }

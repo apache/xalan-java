@@ -1308,7 +1308,8 @@ abstract public class ToStream extends SerializerBase
             }
 
             // time to fire off CDATA event
-            super.fireCDATAEvent(ch, old_start, length);
+            if (m_tracer != null)
+                super.fireCDATAEvent(ch, old_start, length);
         }
         catch (IOException ioe)
         {
@@ -1400,7 +1401,8 @@ abstract public class ToStream extends SerializerBase
         {
             // Even though the character string is empty, but it is still a character event
             // time to fire off characters generation event
-            super.fireCharEvent(chars, start, length);
+            if (m_tracer != null)
+                super.fireCharEvent(chars, start, length);
             return;
         }
 
@@ -1433,7 +1435,8 @@ abstract public class ToStream extends SerializerBase
             charactersRaw(chars, start, length);
 
             // time to fire off characters generation event
-            super.fireCharEvent(chars, start, length);
+            if (m_tracer != null)
+                super.fireCharEvent(chars, start, length);
 
             return;
         }
@@ -1526,7 +1529,8 @@ abstract public class ToStream extends SerializerBase
         }
 
         // time to fire off characters generation event
-        super.fireCharEvent(chars, start, length);
+        if (m_tracer != null)
+            super.fireCharEvent(chars, start, length);
     }
 
     /**
@@ -1833,7 +1837,8 @@ abstract public class ToStream extends SerializerBase
     {
 
         // finish processing attributes, time to fire off the start element event
-        super.fireStartElem(m_elementName);
+        if (m_tracer != null)
+            super.fireStartElem(m_elementName);
 
         int nAttrs = 0;
         // if passed real SAX attributes, then process only them
@@ -1989,7 +1994,8 @@ abstract public class ToStream extends SerializerBase
 		m_elementLocalName = null;
 
         // fire off the end element event
-        super.fireEndElem(name);
+        if (m_tracer != null)
+            super.fireEndElem(name);
     }
 
     /**
@@ -2174,7 +2180,8 @@ abstract public class ToStream extends SerializerBase
 
         m_startNewLine = true;
         // time to generate comment event
-        super.fireCommentEvent(ch, start_old,length);
+        if (m_tracer != null)
+            super.fireCommentEvent(ch, start_old,length);
     }
 
     /**

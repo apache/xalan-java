@@ -521,7 +521,8 @@ abstract public class SerializerBase
             m_inExternalDTD = false;
         m_inEntityRef = false;
 
-        this.fireEndEntity(name);        
+        if (m_tracer != null)
+            this.fireEndEntity(name);        
     }
 
     /**
@@ -961,7 +962,8 @@ abstract public class SerializerBase
         startEntity(name);
         endEntity(name);
 
-		fireEntityReference(name);
+        if (m_tracer != null)
+		    fireEntityReference(name);
     }
 
     /**
@@ -1264,7 +1266,8 @@ abstract public class SerializerBase
      */
     protected void startDocumentInternal() throws org.xml.sax.SAXException
     {
-    	this.fireStartDoc();
+        if (m_tracer != null)
+            this.fireStartDoc();
     } 
     /**
      * This method is used to set the source locator, which might be used to

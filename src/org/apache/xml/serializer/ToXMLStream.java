@@ -228,7 +228,9 @@ public class ToXMLStream extends ToStream
         }
 
         flushWriter();
-        super.fireEndDoc();
+        
+        if (m_tracer != null)
+            super.fireEndDoc();
     }
 
     /**
@@ -298,7 +300,10 @@ public class ToXMLStream extends ToStream
             try
             {
                 if (m_startTagOpen)
+                {
                     closeStartTag();
+                    m_startTagOpen = false;
+                }
 
                 if (shouldIndent())
                     indent();
@@ -350,7 +355,9 @@ public class ToXMLStream extends ToStream
                 throw new SAXException(e);
             }
         }
-        super.fireEscapingEvent(target, data);        
+        
+        if (m_tracer != null)
+            super.fireEscapingEvent(target, data);  
     }
 
     /**
@@ -381,7 +388,9 @@ public class ToXMLStream extends ToStream
         {
             throw new SAXException(e);
         }
-        super.fireEntityReference(name);            
+        
+        if (m_tracer != null)
+            super.fireEntityReference(name);            
     }
 
 

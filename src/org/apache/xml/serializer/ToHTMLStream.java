@@ -700,8 +700,8 @@ public class ToHTMLStream extends ToStream
         }
 
         flushWriter();
-
-        super.fireEndDoc();
+        if (m_tracer != null)
+            super.fireEndDoc();
     }
 
     /**
@@ -955,7 +955,9 @@ public class ToHTMLStream extends ToStream
 		m_elementLocalName = null;
 
         // fire off the end element event
-        super.fireEndElem(name);        
+
+		if (m_tracer != null)
+            super.fireEndElem(name);        
  
     }
 
@@ -1381,7 +1383,8 @@ public class ToHTMLStream extends ToStream
                 // m_writer.write("]]>");
                 
                 // time to generate characters event
-                super.fireCharEvent(chars, start, length);
+				if (m_tracer != null)
+                    super.fireCharEvent(chars, start, length);
                 
                 return;
             }
@@ -1533,7 +1536,8 @@ public class ToHTMLStream extends ToStream
         }
                
         // now generate the PI event
-        super.fireEscapingEvent(target, data);
+        if (m_tracer != null)
+            super.fireEscapingEvent(target, data);
      }
 
     /**
@@ -1581,7 +1585,8 @@ public class ToHTMLStream extends ToStream
     {
 
         // finish processing attributes, time to fire off the start element event
-        super.fireStartElem(m_elementName);
+        if (m_tracer != null)
+            super.fireStartElem(m_elementName);
                 
         int nAttrs = 0;
         if ((nAttrs = m_attributes.getLength()) > 0)

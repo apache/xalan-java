@@ -176,7 +176,8 @@ abstract public class ToSAXHandler extends SerializerBase
             m_lexHandler.comment(comment.toCharArray(), 0, comment.length());
 
             // time to fire off comment event
-            super.fireCommentEvent(comment.toCharArray(), 0, comment.length());
+            if (m_tracer != null)
+                super.fireCommentEvent(comment.toCharArray(), 0, comment.length());
         }
 
     }
@@ -237,7 +238,8 @@ abstract public class ToSAXHandler extends SerializerBase
         }
 
     	// fire off the start element event
-    	super.fireStartElem(arg2);    	
+        if (m_tracer != null)
+            super.fireStartElem(arg2);
     }
 
     /**
@@ -338,7 +340,8 @@ abstract public class ToSAXHandler extends SerializerBase
         }
 
     	// fire off the start element event
-    	super.fireStartElem(qName);    	        
+        if (m_tracer != null)
+            super.fireStartElem(qName);	        
     }
 
     /**
@@ -353,7 +356,8 @@ abstract public class ToSAXHandler extends SerializerBase
             m_state.resetState(getTransformer());
         }        
     	// fire off the start element event
-    	super.fireStartElem(qName);    	                
+        if (m_tracer != null)
+            super.fireStartElem(qName);              
     }
     
     /**

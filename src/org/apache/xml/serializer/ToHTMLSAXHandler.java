@@ -288,7 +288,8 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         m_saxHandler.endElement(uri, localName, qName);
         
         // time to fire off endElement event
-        super.fireEndElem(qName);
+        if (m_tracer != null)
+            super.fireEndElem(qName);
     }
 
     /**
@@ -334,7 +335,9 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         m_saxHandler.processingInstruction(arg0,arg1);
 
 		// time to fire off processing instruction event
-		super.fireEscapingEvent(arg0,arg1);        
+		
+        if (m_tracer != null)		
+		    super.fireEscapingEvent(arg0,arg1);        
     }
 
     /**
@@ -407,7 +410,8 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         m_lexHandler.comment(ch, start, length);
 
         // time to fire off comment event
-        super.fireCommentEvent(ch, start, length);
+        if (m_tracer != null)
+            super.fireCommentEvent(ch, start, length);
         return;
     }
 
@@ -467,7 +471,8 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         // Close output document
         m_saxHandler.endDocument();
 
-        super.fireEndDoc();        
+        if (m_tracer != null)
+            super.fireEndDoc();        
     }
 
     /**
@@ -605,7 +610,8 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         m_saxHandler.endElement(EMPTYSTRING, elementName, elementName);
 
         // time to fire off endElement event
-        super.fireEndElem(elementName);        
+		if (m_tracer != null)
+            super.fireEndElem(elementName);        
     }
 
     /**
@@ -644,7 +650,8 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         m_saxHandler.characters(ch, off, len);
 
         // time to fire off characters event
-        super.fireCharEvent(ch, off, len);        
+		if (m_tracer != null)
+            super.fireCharEvent(ch, off, len);        
     }
 
     /**
