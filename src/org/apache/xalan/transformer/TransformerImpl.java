@@ -1093,7 +1093,10 @@ public class TransformerImpl extends Transformer
         } 
         else 
         {
-            xoh = new ToXMLSAXHandler(handler, lexHandler, encoding);    
+            ToXMLSAXHandler toXMLSAXHandler = new ToXMLSAXHandler(handler, lexHandler, encoding);
+            toXMLSAXHandler.setShouldOutputNSAttr(false);
+            xoh = toXMLSAXHandler;   
+ 
         } 
 
         String publicID = format.getProperty(OutputKeys.DOCTYPE_PUBLIC); 
