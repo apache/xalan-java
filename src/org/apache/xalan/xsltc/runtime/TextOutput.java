@@ -478,7 +478,8 @@ public final class TextOutput implements TransletOutputHandler {
 		// within HTML attributes should _NOT_ be escaped.
 		if (_escapeChars) {
 		    if (!_qnameStack.isEmpty()) {
-			final String qname = (String)_qnameStack.peek();
+			String qname = (String)_qnameStack.peek();
+			qname = qname.toLowerCase();
 			if ((qname.equals("style"))||(qname.equals("script"))) {
 			    _saxHandler.characters(ch, off, len);
 			    return;
