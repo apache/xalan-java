@@ -349,18 +349,18 @@ Copyright:
 	</copy>  
 
     <!-- Copy sources and source documentation -->
-    <copy todir="${build.dist}/src">
+    <copy todir="${dist.dir}/src">
       <fileset dir="${src.dir}"/>
     </copy>
-    <copy todir="${build.dist}/xdocs">
+    <copy todir="${dist.dir}/xdocs">
       <fileset dir="${xdocs.dir}"/>
     </copy>
     
     <!-- Copy built documentation and javadoc, and samples src and jars -->
-    <copy todir="${build.dist}/docs">
+    <copy todir="${dist.dir}/docs">
       <fileset dir="${build.docs}"/>
     </copy>  
-    <copy todir="${build.dist}/samples">
+    <copy todir="${dist.dir}/samples">
       <fileset dir="${samples.dir}"/>
     </copy>   
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
