@@ -74,7 +74,6 @@
 <li><link anchor="extensions">Creating and using extensions</link></li>
 <li><link anchor="multithreading">Multithreading</link></li>
 <li><link anchor="debugging">Debugger interface</link></li>
-<li><link anchor="compat">Using the &xslt4j; version 1 API</link> <em>[Deprecated]</em></li>
 </ul>
 <anchor name="basic"/>
   <s2 title="Basic steps">
@@ -531,18 +530,5 @@ if (transformer instanceof TransformerImpl) {
 pw.close();
 fw.close();</source>
 <p>For a sample application that uses this technique, see <link idref="samples" anchor="trace">Trace</link>.</p>
-</s2><anchor name="compat"/>
-<s2 title="Using the &xslt4j; version 1 API">
-<note><em>The compatibility jar (xalanj1compat.jar), which provides support for Xalan-Java 1 API, has been deprecated. All 
-support for this API will be removed in the next releaase. If you have not already done so, we stongly urge you to shift immediately to the Xalan-Java 2/JAXP 1.1 API.</em><br/><br/> 
-<em>You cannot build or run xalanj1compat.jar with with &xml4j; 2.0.0.beta3.</em><br/><br/>
-<em>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</em></note>
-<p>The bin directory includes a compatibility jar, xalanj1compat.jar, that lets you rebuild your Xalan-Java 1.x applications to run with Xalan-Java 2. As a point of reference, this JAR includes the API required to recompile the Xalan-Java 1.x core sample applications (excluding the sample extensions) and run them with Xalan-Java 2. To use this compatibility layer with an existing Xalan-Java 1.x application, do the following:</p>
-<ol>
-<li>Place xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar (both are in the bin directory).<br/><br/></li>
-<li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatibility layer does not support. <br/><br/></li>
-<li>Run the recompiled application with xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar.</li>
-</ol>
-<p>We urge our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <resource-ref idref="compatapi"/>. For example, the compatibility layer does not support the use of Xalan-Java 1.x extensions. If you feel that we should extend our compatibility JAR to support additional Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
 </s2>
 </s1>

@@ -72,9 +72,9 @@
      <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
   </s2>
   <s2 title="How about this release?">
-  <p>Following a series of Developer releases, &xslt4j-current; represents a stable, production-quality release with 
-  the <link idref="dtm">DTM (Document Table Model)</link>. &xslt4j; uses the DTM to represent the XML source document 
-  to be transformed.</p>
+  <p>&xslt4j-current; incorporates the <link idref="dtm">DTM (Document Table Model)</link> and has been tested with &xml4j; version 2. As of
+  this release, support for the &xslt4j; release 1 API, which predates the design of the <resource-ref idref="jaxp11"/>JAXP 1.1/<link idref="trax">TrAX
+  </link> interfaces, has been dropped.</p>
   <p>Starting with 2.2.D12, we have reduced xalan.jar to just include the &xslt4j; implementation, placing the SAX, DOM, 
   and JAVAX interfaces in xml-apis.jar. These interfaces are shared by a number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a 
   separate JAR simplifies coordination and reduces risk of duplication. <em>Be sure to put both JAR files on your classpath!</em></p>
@@ -95,8 +95,7 @@
   <s2 title="Where do I get Xerces?">
     <p>The Xalan download includes xerces.jar from &xml4j-used;. This is all you need to run Xalan with the Xerces XML parser. 
     You can, however, download the complete Xerces distribution from the <resource-ref idref="xml4j-distdir"/>. If you are interested in testing
-    or prototyping &xml4j2;, you can run &xslt4j-current; with &xml4j; 2.0.0.beta3; be sure the use the JAVAX interfaces, not the &xml4j; 1
-    compatibility layer, which does not work with &xml4j; 2.0.0.beta3.</p>
+    or prototyping &xml4j2;, you can run &xslt4j-current; with &xml4j; 2.0.0.beta4.</p>
     <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer
      and XML parser</link>.</note> 
   </s2>

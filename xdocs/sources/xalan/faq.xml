@@ -18,8 +18,8 @@
   
   <faq title="Compatibility with &xslt4j; version 1">
    <q>How do I run applications that use the &xslt4j; version 1 API with &xslt4j2;</q>
-   <a><p>Use the Xalan-Java 1 compatibility JAR to recompile and run your &xslt4j; 1 applications with &xslt4j2;. For more information, see 
-   <link idref="usagepatterns" anchor="compat">Using the &xslt4j; version 1 API</link>.</p></a>
+   <a><p>The Xalan-Java 1 compatibility API has been deprecated and now purged, so you must use the &xslt4j2; API. We strongly encourage you to
+   use the JAVAX 1.1/TrAX API. For more information ,see the next FAQ.</p></a>
   </faq>
     
   <faq title="TrAX and JAXP">

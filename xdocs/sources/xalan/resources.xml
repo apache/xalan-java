@@ -105,11 +105,40 @@
             title="xml-commons/java/external/src"
             location="http://cvs.apache.org/viewcvs.cgi/xml-commons/java/external/src/"/>
             
-  <resource id="compatapi"
-            title="Xalan-Java 1 compatibility Javadoc"
-            location="compat_apidocs/index.html"/>
-            
+           
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 
                   mailto="xalan-dev@xml.apache.org"/>
+                  
+  <human-resource id="sboag"
+                  name="Scott Boag"
+                  mailto="scott_boag@us.ibm.com"/>
+  <human-resource id="scurcuru"
+                  name="Shane Curcuru"
+                  mailto="Shane_Curcuru@us.ibm.com"/>
+  <human-resource id="pdick"
+                  name="Paul Dick"
+                  mailto="Paul_Dick@us.ibm.com"/>
+  <human-resource id="jkesselman"
+                  name="Josepah Kesselman"
+                  mailto="keshlam@us.ibm.com"/>
+  <human-resource id="dleslie"
+                  name="Donald Leslie"
+                  mailto="donald_leslie@us.ibm.com"/>
+  <human-resource id="cmanolache"
+                  name="Costin Manolache"
+                  mailto="cmanolache@yahoo.com"/>
+  <human-resource id="dmarston"
+                  name="David Marston"
+                  mailto="David_Marston@us.ibm.com"/>
+  <human-resource id="mmidy"
+                  name="Myriam Midy"
+                  mailto="myriam_midy@us.ibm.com"/>
+  <human-resource id="gpeskin"
+                  name="Gary L Peskin"
+                  mailto="garyp@firstech.com"/>
+  <human-resource id="jgentilin"
+                  name="John Gentilin"
+                  mailto="johng@apache.org"/>
+                  
 </resources>

@@ -1,4 +1,104 @@
-<s3 title="Changes for &xslt4j; 2.2.D14">
+<?xml version="1.0" standalone="no"?> 
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
+ <s1 title="History of software changes">
+   <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
+   &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.2">
+<p>Following a series of Developer releases, &xslt4j-current; represents a stable, production-quality release with 
+the <link idref="dtm">DTM (Document Table Model)</link>. &xslt4j; uses the DTM to represent the XML source document 
+to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>11/30/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>updated version number to 2.2.D14<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>11/30/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>updated version number to 2.2.D14<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/03/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBaseIterators.java<br/><ref>Committer's log entry: </ref>Bugzilla 5242: Special-case initializing iteration from Document node -- 
+one-liner wasn't safe.<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>12/04/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc ProcessorVersion.java<br/><ref>Committer's log entry: </ref>new class to version xsltc software<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Additional debugging printouts, added while analysing Bugzilla 5272 but 
+generally useful.
+ No functional change, and should be optimized away when DEBUG is set false.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Removed the "magic" default which causes us to switch into incremental
+ processing mode whenever we were writing to Standard Output (ie,
+ -OUT had not been specified). If you want incremental processing,
+ please use the (relatively new) -INCREMENTAL switch to explicitly
+ request it.
+
+ (The automatic switchover was causing some confusion
+ when testing against Xerces2. )<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Efficiency improvement to the new DTM "overflow addressing" scheme.
+ In some tests, this one alteration shaved about 30% off the runtime.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath CachedXPathAPI.java
+ XPathContext.java<br/><ref>Committer's log entry: </ref>Changes requested by the xml-security group:
+
+ 1) Provide something a constructor that allows sharing the
+ XPathContext object between CachedXPathAPI objects
+
+ 2) Add getXPathContext(). I'm just a bit nervious about this
+ method, but they assure us they need it and the field isn't
+ private. We may need to discus this one further.
+
+ 3) Make the XPathContext's m_dtmManager member
+ protected rather than private, so their subclass can get to it.
+ We may want to work with them to understand why they're
+ accessing this directly and whether there's a better solution.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref
+ IncrementalSAXSource_Xerces.java<br/><ref>Committer's log entry: </ref>Bugzilla5272 patch suggested by Sandy Gao.
+
+ This startup sequence for incremental SAX parsing under Xerces2
+ really is excessively complicated and excessively fragile as a result.
+ Not to mention being underdocumented. We really need to push the
+ Xerces folks to provide a simple incremental SAX API, similar to that
+ in the Xerces1incremental prototype.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Part 1 of 2: Reducing initial space requirements of a DTM. This may
+ involve a slight performance hit, but should help stylesheets which
+ generate a lot of Result Tree Fragment. Part 2 of this change will be
+ checked in after I resolve a bug in whitespace normalization.
+
+ Note that a better long-term answer will be to reduce the number of
+ DTMs tied up as RTFs, by doing a better job of discarding or reusing
+ them when we're done with them. There are some issues regarding
+ exactly what their lifetimes will be when assigned to variables,
+ especially when one variable is used to build another, which we
+ need to address before we can make that change.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Part 2a of 2: Reducing initial space requirements of a DTM. This may
+ involve a slight performance hit in some circumstances due to
+ smaller and more complex subdivision of FastStringBuffers,, but
+ should help stylesheets which generate a lot of Result Tree
+ Fragments.
+
+ Note that a better long-term answer will be to reduce the number of
+ DTMs tied up as RTFs<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Part 2b of 2: Reducing initial space requirements of a DTM. This may
+ involve a slight performance hit in some circumstances due to
+ smaller and more complex subdivision of FastStringBuffers,, but
+ should help stylesheets which generate a lot of Result Tree
+ Fragments.
+
+ (Leveraging FSB's features more strongly exposed a bug in
+ whitespace normalization, which I've fixed.)
+
+ Note that a better long-term answer will be to reduce the number of
+ DTMs tied up as RTFs<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils AttList.java<br/><ref>Committer's log entry: </ref>Two goofs: Forgetting to use the namespace-aware DOM call, and
+ forgetting to check for a returned null before dereferencing.
+
+ How long has _that_ been lurking in the undergrowth?!<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SuballocatedIntVector.java<br/><ref>Committer's log entry: </ref>Finally following up on an old hunch, I switched from /% addressing
+ to shift-and-mask. Big improvement!<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Performance improvements; Some changes to better leverage the
+ DOM's existing code, others to avoid some call-and-return overhead.
+
+ Combined with other recent changes, we've now got a significant
+ speedup over D14 on some tests. We may want to drop the scheduled
+ December 17th 2.2 release and instead bring 2.2 out on 1/14 (which is
+ when we'd planned 2.3) with performance gains and Xerces2 support.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ DOM2DTMdefaultNamespaceDeclarationNode.java<br/><ref>Committer's log entry: </ref>A few more subtle performance tweaks, and an actual bug.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>12/20/2001<br/><ref>Added: </ref>java/src/org/apache/xml/utils ListingErrorHandler.java<br/><ref>Committer's log entry: </ref>Alternate ErrorHandler/ErrorListener implementation that allows
+ configuration and prints errors out similarly to javac<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>12/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils AttList.java<br/><ref>Committer's log entry: </ref>Bugzilla 5496; previously unimplemented functions.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/03/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils DOMBuilder.java<br/><ref>Committer's log entry: </ref>[Bug 5528] DOMBuilder mixed DOM Level 1 and 2<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>01/11/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>updated release number to 2.2.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>01/11/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>updated release number to 2.2.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>01/13/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SystemIDResolver.java<br/><ref>Committer's log entry: </ref>Fix Bugzilla#5701: incorrect resolution of certain kinds of absolute file: 
+URIs
+ Note: This definitely seems to be more correct in terms of resolving URIs
+ vis-a-vis RFC 2396 than it used to be. The only user case which might now
+ fail where it used to work is a user that supplies an incorrect
+ 'file:subdir/blah' that they intended to be a relative URI (technically
+ it is an absolute URI no matter which way you look at it); this might
+ lead to a change in behavior in this particular case, although the behavior
+ before was incorrect.
+ The major risk factor could be if there are other parts of Xalan code that 
+rely
+ on the previously incorrect behavior, but I can't find any, and the whole test
+ suite runs and passes normally.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>01/14/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Fix Bugzilla#4678 and Bugzilla#5533: call setSystemId on StreamResult
+ in Process command line class; ignored if using System.out
+ This should enable the redirect extension to properly put it's redirected
+ output in a location relative to the output if possible; previously it
+ always put redirected output relative to the input since it
+ never had the systemId of where the output should be<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
+</s2>   
+<s2 title="Changes for &xslt4j; 2.2.D14">
 <p>&xslt4j; 2.2.D14 is intended to be the final release in the current series of Developer releases incorporating
      the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
      standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
@@ -88,8 +188,8 @@
  Submitted by: jpvdm@iafrica.com<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>Implement getDocumentElement. If the DTM doesn't represent a
  wellformed Document, this call is undefined and throws an exception...
  which isn't DOMlike but that's a non-DOMlike situation.<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-</s3>
-<s3 title="Changes for &xslt4j; 2.2.D12 and 2.2.D13">
+</s2>
+<s2 title="Changes for &xslt4j; 2.2.D12 and 2.2.D13">
 <p>&xslt4j; 2.2.D13 is intended to be the final release in the current series of Developer releases incorporating
      the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
      standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
@@ -275,8 +375,8 @@ addressing...<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on
 itself, we use the resolved href.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>11/08/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath NodeSetDTM.java<br/><ref>Committer's log entry: </ref>Bugzilla 4158: Make sure we get the current, not the node pointed to by 
 m_next, which has been already incremented.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/09/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Bugzilla 4344: discard attrs which don't have an element to belong to<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/09/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Bugzilla 4344: more efficient.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>Reorder slightly and add test to not synthesize xmlns:xsl declaration
  if one was already present on the DOM's root element.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan Version.java<br/><ref>Committer's log entry: </ref>D13 internal version number update<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>D13 internal version number update<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-</s3>
-<s3 title="Changes for &xslt4j; 2.2.D11">
+</s2>
+<s2 title="Changes for &xslt4j; 2.2.D11">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>09/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
  java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
  java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Removed the code which precalculated node levels
@@ -327,8 +427,8 @@ DTM nodelist<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> 
  DTMDefaultBaseTraversers.java
  java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
  java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Creating the implied Namespace Node for xml:<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-</s3>
-<s3 title="Changes for &xslt4j; 2.2.D10">
+</s2>
+<s2 title="Changes for &xslt4j; 2.2.D10">
 <note>The SQL Extension library has been updated to work with DTM.</note>
 <p> Core (Non-XSLTC) source code updates:</p><ul>
 <li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Fix bugzilla bug 3056 
@@ -395,8 +495,8 @@ replacing namespace nodes. Store the actual node handle.<br/><br/></li>
 <li><ref>Committed by</ref> mmidy@apache.org<ref> on </ref>08/29/2001<br/><ref>Modified: </ref>
 java/src/org/apache/xpath/compiler Lexer.java<br/><ref>Committer's log entry: </ref>Fix for Bugzilla 2684 StringIndexOutOfBounds Exception. Check if we are at the end of the pattern string.<br/><br/></li>
 </ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-</s3>
-<s3 title="Changes for &xslt4j; 2.2.D9">
+</s2>
+<s2 title="Changes for &xslt4j; 2.2.D9">
 <p> Core (Non-XSLTC) source code updates:</p>
 <ul><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>2.2.D8<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>2.2.D8<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer NodeSortKey.java<br/><ref>Committer's log entry: </ref>Submitted fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2851.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Just added some stuff to diagnose bugs for flavor th.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes WalkerFactory.java
  java/src/org/apache/xpath/compiler Compiler.java
@@ -717,8 +817,8 @@ future changes), as have the IDKEY testcases.<br/><br/></li><li><ref>Committed b
 decreasing the number of DTMs that a DTMManager can track simultaneously. Some 
 other code has been updated to track this change (and to better track posible 
 future changes), as have the IDKEY testcases.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>08/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath NodeSetDTM.java<br/><ref>Committer's log entry: </ref>Try to support getRoot. Fixes problem with TransformStateTest.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes WalkerFactory.java<br/><ref>Committer's log entry: </ref>Fix problem with duplicate nodes produced from a walking iterator<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-</s3>
-<s3 title="Changes for &xslt4j; 2.2.D8">
+</s2>
+<s2 title="Changes for &xslt4j; 2.2.D8">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Code Update
  Submitted by:John Gentilin<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Fixed DTM.NULL compile error<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TreeWalker2Result.java<br/><ref>Committer's log entry: </ref>Redundant test removed, possibly redundant code flagged for %REVIEW%<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java
  java/src/org/apache/xalan/transformer
@@ -821,8 +921,8 @@ to simple step patterns.
  only if the position is [1]. This optimization is not
  used by the xsltmark benchmarks and so does
  not offer any performance benefits.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes DescendantIterator.java<br/><ref>Committer's log entry: </ref>Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1336<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-</s3>
-<s3 title="Changes for &xslt4j; 2.2.D7">
+</s2>
+<s2 title="Changes for &xslt4j; 2.2.D7">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/03/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Since the real root of our tree may be a DocumentFragment, we need to
  use getParent to find the root, instead of getOwnerDocument. Otherwise
  DOM2DTM#getHandleOfNode will be very unhappy.
@@ -1064,8 +1164,8 @@ hand. Change code to use the new constructors.<br/><br/></li><li><ref>Committed 
 
  Still to be done: Rework the rest of Xalan to use the new code.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref CoroutineParser.java<br/><ref>Committer's log entry: </ref>Starting to phase out Coroutine*Parser* in favor of IncrementalSAXSource*.
  See comment in previous check-in; I just missed this one....<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMStringPool.java<br/><ref>Committer's log entry: </ref>doc.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>2.2.D7<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>2.2.D7<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/18/2001<br/><ref>Removed: </ref>java/src/org/apache/xml/dtm/ref DTMBuilder.java<br/><ref>Committer's log entry: </ref>Obsolete<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-</s3>
-<s3 title="Changes for &xslt4j; 2.2.D6">
+</s2>
+<s2 title="Changes for &xslt4j; 2.2.D6">
      <p><em>Important: Xerces has added a number of DOM level-3 methods to its DOM interfaces. The DOM level-3 proposal
 is currently a working draft (it is not yet a W3C recommendation), and Xalan does not support these new methods. 
 To run Xalan in the JDK 1.1.8 platform, you must put xalan.jar (with its DOM level-2 interfaces) in front of 
@@ -1086,9 +1186,9 @@ in front of xerces.jar on the system class path.</em></p>
        <li>Shance Curcuru modified TransformerFactoryImpl.setAttribute() to accept a String ("true" or "false") as well as a Boolean object to set the value of a Boolean attribute.<br/><br/></li>
        <li>TransformerHandlerImpl was threading when incrementality is turned off. Scott Boag has fixed this bug.</li>       
      </ul>
-</s3>     
+</s2>     
    <anchor name="dtm"/>
-     <s3 title="Changes for &xslt4j; 2.2.D2">
+     <s2 title="Changes for &xslt4j; 2.2.D2">
      <p>This release includes the following changes:</p>
      <ul>
        <li>Deprecation of the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatiblity API</link></li>
@@ -1134,12 +1234,12 @@ interpretation.</li>
 <p>&xslt4j; implements two DTM performance features that you can control with the TransformerFactory
 <jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">setAttribute()</jump>
 method. See <link idref="dtm" anchor="settings">DTM performance settings</link></p>
-     </s3>
-     <s3 title="Changes for &xslt4j; 2.1.0">
+     </s2>
+     <s2 title="Changes for &xslt4j; 2.1.0">
      <p>This release includes a number of bug fixes to &xslt4j; and TrAX. 
      We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple
      client transformation requests involving the same stylesheet.</p>
-<!--This XML fragment contains a list of source code updates to place in an <s3> section of readme.xml--><p>Core source code updates:</p><ul><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>03/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetHandler.java
+<!--This XML fragment contains a list of source code updates to place in an <s2> section of readme.xml--><p>Core source code updates:</p><ul><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>03/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetHandler.java
  java/src/org/apache/xpath Expression.java XPath.java
  XPathContext.java
  java/src/org/apache/xpath/compiler Compiler.java
@@ -1377,9 +1477,9 @@ reporting this bug.
  java/src/org/apache/xalan/serialize CharInfo.java
  java/src/org/apache/xpath/functions FuncSystemProperty.java<br/><ref>Committer's log entry: </ref>Modify getResourceAsStream calls to use the contextClassLoader, if available.
  This is a temporary fix until we can centralize this function.<br/><br/></li></ul><note>This release includes no updates of the compatibility source code.</note>
- </s3>
+ </s2>
  
-<s3 title="Changes for &xslt4j; 2.0.1">
+<s2 title="Changes for &xslt4j; 2.0.1">
 <p>This release includes a number of bug fixes to the &xslt4j; and TrAX core and Xalan-Java 1 compability API. We have also</p>
 <ul>
   <li>Entered all known &xslt4j; 2 <link anchor="bugs">bugs</link> in the Apache Bugzilla database<br/><br/></li>
@@ -1664,9 +1764,9 @@ systemId
  java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java<br/><ref>Committer's log entry: </ref>Made changes for change to API for XalanJ2 TreeWalker, which
  now requires that the DOM helper be created by the caller.</li>
  </ul>
-</s3>
+</s2>
 
-<s3 title="Changes for &xslt4j; version 2.0.0">
+<s2 title="Changes for &xslt4j; version 2.0.0">
 <p>Release 2.0 includes several bug fixes to the &xslt4j; and TrAX core and to the Xalan-Java 1 compatibility API. We also updated bsf.jar to the <resource-ref idref="bsf"/> release candidate 2.2, which fixes a bug running JPython extensions.</p>
 <p><em>Core bug fixes:</em></p>
 <ul>
@@ -1732,9 +1832,9 @@ systemId
    with the processStylesheet() method.</li>
 </ul>
 <p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
-</s3>
+</s2>
 
-<s3 title="Changes for &xslt4j; version 2.0.D07">
+<s2 title="Changes for &xslt4j; version 2.0.D07">
 <p>&xslt4j; 2.0.D07 incorporates a <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility jar</link>, some performance enhancements, and a number of bug fixes for bugs found in version 2.0.D06.</p>
 <ul>
 <li>Fixed handling of disable-output-escaping="no".  Previously, once it was turned on, it could not be turned off.<br/><br/></li>
@@ -1751,8 +1851,8 @@ systemId
 <li>Fixed intermittent threading problem with text nodes being dropped.<br/><br/></li>
 <li>Fixed problem with variable evaluation inside of union expressions.</li>
 </ul>
-</s3>
-<s3 title="Changes for &xslt4j; version 2.0.D06">
+</s2>
+<s2 title="Changes for &xslt4j; version 2.0.D06">
 <p>We have fixed the bugs reported in &xslt4j; 2.0.D05. Along with several other enhancements, 
 we have also fixed a number of bugs found by testing and our users:</p>
 <ul>
@@ -1767,8 +1867,8 @@ Note: To support incremental output, &xslt4j; performs the transformation in a s
 <jump href="apidocs/org/apache/xalan/serialize/package-summary.html">Package org.apache.xalan.serialize</jump>.<br/><br/></li>
 <li>Improved debugging support in a number of areas.</li>
 </ul>
-</s3>
-<s3 title="Changes for &xslt4j; version 2.0.D05">
+</s2>
+<s2 title="Changes for &xslt4j; version 2.0.D05">
 <p>All of the bugs reported in &xslt4j; 2.0.D01 have been fixed. The remainder of this section discusses two changes that we believe are of particular importance:</p>
 <p><em>TrAX</em></p>
 <p>The Transformation API for XML (TrAX) that &xslt4j2; implements has undergone substantial revisions since the release of &xslt4j; 2.0.D01. TrAX has joined the Java API for XML Parsing (JAXP) as part of the Sun&reg; <resource-ref idref="jsr063"/>. Accordingly, the TrAX package names have changed. The conceptual organization has also changed somewhat: The primary transformation interfaces are defined in javax.xml.transform, with concrete classes for managing stream input/output, SAX parsers and ContentHandler, and DOM parsers and DOM trees in javax.xml.transform.stream, javax.xml.transform.sax, and javax.xml.transform.dom. For more information, see <link idref="trax">TRaX (Transformation API for XML)</link>, and review <link idref="usagepatterns">Usage Patterns</link>.</p>
@@ -1802,4 +1902,5 @@ lala 125</source>
 <source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;out&gt;&amp;lala;&lt;/out&gt;</source>
 <p>See also <link idref="usagepatterns" anchor="outputprops">Setting output properties in your stylesheets</link>.</p>
-</s3>
+</s2>
+</s1>

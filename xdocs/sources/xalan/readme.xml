@@ -1,10 +1,6 @@
 <?xml version="1.0" standalone="no"?> 
 <!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
-<!ENTITY done-j SYSTEM "DONE">
-<!ENTITY xsltcdone SYSTEM "XSLTCDONE">
-<!ENTITY xsltcreleasenotes SYSTEM "xsltc_constraints.xml">
-
-<!ENTITY history-j SYSTEM "history.xml">]>
+<!ENTITY done-j SYSTEM "DONE">]>
 
 <!--
  * The Apache Software License, Version 1.1
@@ -64,13 +60,12 @@
  -->
 <s1 title="Release Notes">
 <p>&xslt4j-current;</p>
-<note>This is the last &xslt4j; release to include support for the &xslt4j; 1 compatability API (deprecated).<br/><br/>
-Starting with our next major point release (&xslt4j; 2.3), we plan to integrate &xslt4j; with release 2 of &xml4j;.</note>
+
  <ul>
   <li><link anchor="status0">Status</link></li>&xsltcreleasenotesentry;
   <li><link anchor="build">Build Notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
-  <li><link anchor="history">History of software changes</link></li>
+  <li><link idref="history">History of software changes</link></li>
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
@@ -78,13 +73,12 @@ Starting with our next major point release (&xslt4j; 2.3), we plan to integrate 
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
-    <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
+    <li><link anchor="developer-list">Xalan developers</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D14">
-     <p>Following a series of Developer releases, &xslt4j-current; represents a stable, production-quality release with 
-      the <link idref="dtm">DTM (Document Table Model)</link>. &xslt4j; uses the DTM to represent the XML source document 
-      to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
+     <s3 title="Changes since &xslt4j; 2.2">
+     <p>This release does not include support for the deprecated &xslt4j; 1 compatability API.</p>
+     <p>This release is integrated with release 2 of &xml4j;.</p>
      &done-j;
      </s3>
      <anchor name="other"/>
@@ -151,7 +145,6 @@ Starting with our next major point release (&xslt4j; 2.3), we plan to integrate 
        <jump href="http://xml.apache.org/websrc/cvsweb.cgi/xml-xalan/java/todo.xml">xml-xalan/java/todo.xml</jump>.</p>
       </s3> 
   </s2>
-    &xsltcreleasenotes;  
   <anchor name="build"/>  
   <s2 title="Build Notes">
   <p>We provide two distributions: a binary distribution, and a source distribution. See <link idref="getstarted" anchor="download">Downloading
@@ -296,9 +289,41 @@ javadoc -doclet xalanjdoc.Standard
  <s2 title="Getting in Touch">
   <p>Your feedback is more than welcome. Offers of help are even more so! Perhaps you would like to take on an active role in the ongoing development, testing, and documentation of &xslt4j;?</p> 
 <p>Please email your comments, questions, suggestions, and offers to join the Xalan team to <human-resource-ref idref="xalandev"/>.</p>
- </s2><anchor name="history"/>
- <s2 title="Cumulative history of software changes">
-   <p>The following sections list the changes in each release since &xslt4j; version 2.0.D01.</p>
-   &history-j;
+ </s2><anchor name="developer-list"/>
+ <s2 title="Developers">
+<p>A list of some of people currently working on working on &xslt4c;:</p>
+  <!-- in alphabetical order, by last name -->
+  <ul>
+  <li><human-resource-ref idref="sboag"/>
+    <br/>Xalan architect, lead developer on Xalan-J 2.x.
+  </li>
+  <li><human-resource-ref idref="scurcuru"/>
+    <br/>Lead tester for API issues, automation framework.
+  </li>
+  <li><human-resource-ref idref="pdick"/>
+    <br/>XSLT Conformance stylesheet issues and Xalan-C testing.
+  </li>
+  <li><human-resource-ref idref="jkesselman"/>
+    <br/>Xalan-J 2.x developer, compiling/compiled stylesheets experiments.
+  </li>
+  <li><human-resource-ref idref="dleslie"/>
+    <br/>Xalan-J and -C documentation, servlets, applets, and samples.
+  </li>
+  <li><human-resource-ref idref="cmanolache"/>
+    <br/>Xalan-J 2.x developer and JAXP expert.
+  </li>
+  <li><human-resource-ref idref="dmarston"/>
+    <br/>Lead tester for XSLT Conformance stylesheet issues.
+  </li>
+  <li><human-resource-ref idref="mmidy"/>
+    <br/>Xalan-J 1.x and 2.x developer.
+  </li>
+  <li><human-resource-ref idref="gpeskin"/>
+    <br/>Xalan-J 1.x and 2.x developer, especially extension mechanisim.
+  </li>
+  <li><human-resource-ref idref="jgentilin"/>
+    <br/>Major work on the SQL extensions library.
+  </li>
+ </ul>
  </s2>
 </s1>

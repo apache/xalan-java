@@ -84,6 +84,9 @@
   <document id="extensionslib" label="Extensions Library" source="xalan/extensionslib.xml"/>
   <separator/>
   <document id="readme" label="Release Notes" source="xalan/readme.xml"/>
+  <hidden id="history" source="xalan/history.xml"/>
+  <hidden id="xsltc_constraints" source="xalan/xsltc_constraints.xml"/>
+  <hidden id="xsltc_history" source="xalan/xsltc_history.xml"/>
   <separator/>
   <external href="design/design2_0_0.html" label="Xalan 2 Design"/>
   <external href="xsltc/index.html" label="XSLTC Design"/>  
@@ -91,6 +94,6 @@
   <external href="readme.html#bugs" label="Bugs"/>  
   <external href="http://xml.apache.org/xalan-j/test/overview.html" label="Testing"/>
   <separator/>
-  <external href="todo.html#developer-list" label="Credits"/>
+  <external href="readme.html#developer-list" label="Credits"/>
   <external href="xsltc/todo.html#developer-list" label="XSLTC Credits"/>      
 </book>

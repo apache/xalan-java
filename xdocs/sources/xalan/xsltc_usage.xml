@@ -649,7 +649,7 @@ stylesheet into a translet, parse an input XML document, and then transform
 the XML document using the translet.</p>
 </s3></s2><anchor name="constraints"/>
 <s2 title="XSLTC usage constraints">
-<p>See <link idref="readme" anchor="xsltcconf">Conformance issues</link> and <link idref="readme" 
+<p>See <link idref="xsltc_constraints" anchor="xsltcconf">Conformance issues</link> and <link idref="xsltc_constraints" 
 anchor="xsltcknownproblems">Known problems</link>.</p>
 </s2>
 </s1>
