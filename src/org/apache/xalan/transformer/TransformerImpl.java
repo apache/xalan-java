@@ -348,6 +348,9 @@ public class TransformerImpl extends XMLFilterImpl
       }
       catch(org.apache.xalan.utils.WrappedRuntimeException wre)
       {
+        Throwable throwable = wre.getException();
+        while(throwable instanceof org.apache.xalan.utils.WrappedRuntimeException)
+          throwable = ((org.apache.xalan.utils.WrappedRuntimeException)throwable).getException();
         throw new TransformException(wre.getException());
       }
       catch(SAXException se)
