@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,77 +55,114 @@
  */
 package org.apache.xpath.impl;
 
+import org.apache.xpath.XPathException;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.Variable;
 import org.apache.xpath.expression.Visitor;
 import org.apache.xpath.impl.parser.Token;
 import org.apache.xpath.impl.parser.XPath;
 
+
 /**
- *
+ * Default implementation of variable.
  */
-public class VariableImpl extends ExprImpl implements Variable {
+public class VariableImpl extends ExprImpl implements Variable
+{
+    /**
+     * Name of the variable
+     */
+    String m_varName;
 
-    String m_varName;    
+    /**
+     * Constructor for VariableImpl. Internal use only.
+     *
+     * @param i
+     */
+    public VariableImpl(int i)
+    {
+        super(i);
+    }
 
-	/**
-	 * Constructor for VariableImpl.
-	 * @param i
+    /**
+     * Constructor for VariableImpl. Internal use only.
+     *
+     * @param p
+     * @param i
+     */
+    public VariableImpl(XPath p, int i)
+    {
+        super(p, i);
+    }
+
+    /**
+     * Constructor for cloning.
+     *
+     * @param expr
+     */
+    protected VariableImpl(VariableImpl expr)
+    {
+        super(expr.id);
+
+        m_varName = expr.m_varName;
+    }
+
+    /**
+     * @see org.apache.xpath.expression.Variable#getVariableName()
+     */
+    public String getVariableName()
+    {
+        return m_varName;
+    }
+    
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.Variable#setVariableName(java.lang.String)
 	 */
-	public VariableImpl(int i) {
-		super(i);
+	public void setVariableName(String name) throws XPathException {
+		// TODO: check the validity of the var name
+		
+		m_varName = name;
 	}
 
-	/**
-	 * Constructor for VariableImpl.
-	 * @param p
-	 * @param i
-	 */
-	public VariableImpl(XPath p, int i) {
-		super(p, i);
-	}
+    /**
+     * @see org.apache.xpath.expression.Expr#getExprType()
+     */
+    public short getExprType()
+    {
+        return VARIABLE_REF_EXPR;
+    }
 
-	/**
-	 * @see org.apache.xpath.expression.Variable#getVariableName()
-	 */
-	public String getVariableName() {
-		return m_varName;
-	}
+    /**
+     * @see org.apache.xpath.expression.Expr#cloneExpression()
+     */
+    public Expr cloneExpression()
+    {
+        return new VariableImpl(this);
+    }
 
-	/**
-	 * @see org.apache.xpath.expression.Expr#getExprType()
-	 */
-	public short getExprType() {
-		return VARIABLE_REF_EXPR;
-	}
+    /**
+     * @see org.apache.xpath.expression.Visitable#visited(Visitor)
+     */
+    public void visited(Visitor visitor)
+    {
+        visitor.visitVariable(this);
+    }
 
-	/**
-	 * @see org.apache.xpath.expression.Expr#cloneExpression()
-	 */
-	public Expr cloneExpression() {
-		// TODO
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Visitable#visited(Visitor)
-	 */
-	public void visited(Visitor visitor) {
-	}
-
-	/**
-	 * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
-	 */
-	public void processToken(Token token) {
-		super.processToken(token);
+    /**
+     * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
+     */
+    public void processToken(Token token)
+    {
+        super.processToken(token);
         m_varName = token.image.trim();
-	}
+    }
 
-	/**
-	 * @see org.apache.xpath.impl.ExprImpl#getString(StringBuffer, boolean)
-	 */
-	public void getString(StringBuffer expr, boolean abbreviate) {
-		expr.append('$').append(m_varName);
-	}
+    /**
+     * @see org.apache.xpath.impl.ExprImpl#getString(StringBuffer, boolean)
+     */
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+        expr.append('$').append(m_varName);
+    }
+	
 
 }

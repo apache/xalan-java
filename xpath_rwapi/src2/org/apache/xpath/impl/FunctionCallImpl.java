@@ -93,7 +93,7 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	/**
 	 * @see org.apache.xpath.expression.FunctionCall#getFunctionName()
 	 */
-	public String getFunctionName() {		
+	public String getFunctionQName() {		
 		return m_qname.toString();
 	}
 

@@ -55,8 +55,10 @@
  */
 package org.apache.xpath.expression;
 
+import org.apache.xpath.XPathException;
+
 /**
- * Basic implementation of a Variable.
+ * Represents variable.
  */
 public interface Variable extends Expr {
 
@@ -65,5 +67,12 @@ public interface Variable extends Expr {
      * @return String
      */
     String getVariableName();
+    
+	/**
+	 * Sets the name of the variable.
+	 * @param name New name of the variable
+	 * @throws XPathException whenever the given name is not a valid variable name
+	 */
+	void setVariableName(String name) throws XPathException;
 
 }

@@ -280,7 +280,7 @@ public class SimpleNode implements Node
                 break;
 
             case XPathTreeConstants.JJTDOT:
-                newNode = Singletons.DOT;
+                newNode = Singletons.DOT_KIND_TEST;
 
                 break;
 
@@ -311,52 +311,52 @@ public class SimpleNode implements Node
 
                 break;
 
-            case XPathTreeConstants.JJTATTRIBUTETYPE: //92;
+            case XPathTreeConstants.JJTATTRIBUTETYPE: 
                 newNode = Singletons.ATTRIBUTE;
 
                 break;
 
-            case XPathTreeConstants.JJTATOMICTYPE: //104;
+            case XPathTreeConstants.JJTATOMICTYPE: 
                 newNode = Singletons.ATOMIC;
 
                 break;
 
-            case XPathTreeConstants.JJTNODE: //93;
+            case XPathTreeConstants.JJTNODE:
                 newNode = Singletons.NODE;
 
                 break;
 
-            case XPathTreeConstants.JJTPROCESSINGINSTRUCTION: //94;
+            case XPathTreeConstants.JJTPROCESSINGINSTRUCTION: 
                 newNode = Singletons.PI;
 
                 break;
 
-            case XPathTreeConstants.JJTCOMMENT: //95;
+            case XPathTreeConstants.JJTCOMMENT:
                 newNode = Singletons.COMMENT;
 
                 break;
 
-            case XPathTreeConstants.JJTTEXT: //96;
+            case XPathTreeConstants.JJTTEXT: 
                 newNode = Singletons.TEXT;
 
                 break;
 
-            case XPathTreeConstants.JJTDOCUMENT: //97;
+            case XPathTreeConstants.JJTDOCUMENT: 
                 newNode = Singletons.DOCUMENT;
 
                 break;
 
-            case XPathTreeConstants.JJTITEM: //98;
+            case XPathTreeConstants.JJTITEM: 
                 newNode = Singletons.ITEM;
 
                 break;
 
-            case XPathTreeConstants.JJTMULTIPLY: //106;
+            case XPathTreeConstants.JJTMULTIPLY:
                 newNode = Singletons.MULTIPLY;
 
                 break;
 
-            case XPathTreeConstants.JJTQMARK: //107;
+            case XPathTreeConstants.JJTQMARK: 
                 newNode = Singletons.QMARK;
 
                 break;
@@ -441,6 +441,7 @@ public class SimpleNode implements Node
 
                 break;
 
+			// Below: xpath grammar unit not implemented yet
             case XPathTreeConstants.JJTMATCHPATTERN:
             case XPathTreeConstants.JJTPATTERN:
             case XPathTreeConstants.JJTPATHPATTERN:
@@ -455,7 +456,6 @@ public class SimpleNode implements Node
             case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR: //37;           
             case XPathTreeConstants.JJTVALIDATEEXPR: //44;
             case XPathTreeConstants.JJTRBRACE: //47;
-
             case XPathTreeConstants.JJTSCHEMACONTEXT: //84;
             case XPathTreeConstants.JJTSCHEMAGLOBALCONTEXT: //85;
             case XPathTreeConstants.JJTSCHEMACONTEXTSTEP: //87;

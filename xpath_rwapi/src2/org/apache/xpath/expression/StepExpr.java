@@ -59,7 +59,7 @@ import org.apache.xpath.XPathException;
 
 
 /**
- * Represents step expression.
+ * Represents step.
  * <pre>
  * [20]   StepExpr   ::=   (ForwardStep |  ReverseStep |  Literal) Predicates
  * [39]   ForwardStep   ::=   (ForwardAxis NodeTest) |  AbbreviatedForwardStep

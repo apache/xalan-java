@@ -55,9 +55,6 @@
  */
 package org.apache.xpath.impl;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.apache.xpath.XPathException;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.Literal;
@@ -66,17 +63,22 @@ import org.apache.xpath.impl.parser.Token;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 
 /**
- *
+ * Default implementation of literal XPath expression type.
  */
 public class LiteralImpl extends ExprImpl implements Literal
 {
-    Object m_literal;
+    /**
+     * Literal object. Either BigInteger, BigDecimal, String or Double
+     */
+    protected Object m_literal;
 
     /**
-     *
-     *
+     * Constructor for LiteralImpl. Internal uses only.
      */
     protected LiteralImpl()
     {
@@ -84,7 +86,8 @@ public class LiteralImpl extends ExprImpl implements Literal
     }
 
     /**
-     * Constructor for PrimaryExprImpl.
+     * Constructor for LiteralImpl. Internal uses only.
+     *
      * @param i
      */
     public LiteralImpl(int i)
@@ -93,7 +96,8 @@ public class LiteralImpl extends ExprImpl implements Literal
     }
 
     /**
-     * Constructor for PrimaryExprImpl.
+     * Constructor for LiteralImpl. Internal uses only.
+     *
      * @param p
      * @param i
      */
@@ -101,6 +105,18 @@ public class LiteralImpl extends ExprImpl implements Literal
     {
         super(p, i);
     }
+    
+	/**
+		 * Constructor for cloning.
+		 *
+		 */
+		public LiteralImpl(LiteralImpl expr)
+		{
+			super(expr.id);
+			
+			m_literal = expr.m_literal; 
+			// no cloning since m_literal reference is immutable
+		}
 
     /**
      * @see org.apache.xpath.expression.Expr#getExprType()
@@ -115,7 +131,7 @@ public class LiteralImpl extends ExprImpl implements Literal
      */
     public Expr cloneExpression()
     {
-        return null;
+        return new LiteralImpl(this);
     }
 
     /**
@@ -130,6 +146,14 @@ public class LiteralImpl extends ExprImpl implements Literal
 
         throw new XPathException(
             "Invalid method call: the literal is not a decimal");
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.xpath.expression.Literal#getDecimalLiteralAsDouble()
+     */
+    public double getDecimalLiteralAsDouble() throws XPathException
+    {
+        return getDecimalLiteral().doubleValue();
     }
 
     /**
@@ -157,7 +181,15 @@ public class LiteralImpl extends ExprImpl implements Literal
         }
 
         throw new XPathException(
-            "Invalid method call: the literal is not a integer");
+            "Invalid method call: the literal is not a integer"); //I16
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.xpath.expression.Literal#getIntLiteral()
+     */
+    public int getIntegerLiteralAsInt() throws XPathException
+    {
+        return getIntegerLiteral().intValue();
     }
 
     /**
@@ -185,7 +217,7 @@ public class LiteralImpl extends ExprImpl implements Literal
             //break;
             default:
 
-                // bug
+                // Invalid state of this object
                 throw new RuntimeException("Invalid JJTree id:" + id);
         }
     }
@@ -215,7 +247,10 @@ public class LiteralImpl extends ExprImpl implements Literal
     /**
      * @see org.apache.xpath.expression.Visitable#visited(Visitor)
      */
-    public void visited(Visitor visitor) {}
+    public void visited(Visitor visitor)
+    {
+    	visitor.visitLiteral(this);
+    }
 
     /**
      * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
@@ -235,6 +270,7 @@ public class LiteralImpl extends ExprImpl implements Literal
                 m_literal = new Double(token.image);
 
                 break;
+
             case XPathTreeConstants.JJTSTRINGLITERAL:
                 m_literal = token.image;
 
@@ -261,25 +297,29 @@ public class LiteralImpl extends ExprImpl implements Literal
     }
 
     /**
+     * DOCUMENT ME!
+     *
      * @param value
      */
-    protected void setIntValue(int value)
+    protected void setIntValue(BigInteger value)
     {
-        m_literal = new Integer(value);
+        m_literal = value;
         id = XPathTreeConstants.JJTINTEGERLITERAL;
     }
 
     /**
+     * DOCUMENT ME!
      *
      * @param value
      */
-    protected void setDecimalValue(float value)
+    protected void setDecimalValue(BigDecimal value)
     {
-        m_literal = new Float(value);
+        m_literal = value;
         id = XPathTreeConstants.JJTDECIMALLITERAL;
     }
 
     /**
+     * DOCUMENT ME!
      *
      * @param value
      */
@@ -290,6 +330,7 @@ public class LiteralImpl extends ExprImpl implements Literal
     }
 
     /**
+     * DOCUMENT ME!
      *
      * @param value
      */
@@ -300,13 +341,13 @@ public class LiteralImpl extends ExprImpl implements Literal
     }
 
     /**
-     * Override to print out useful instance data.  
+     * Override to print out useful instance data.
+     *
      * @see org.apache.xpath.impl.parser.SimpleNode#toString()
      */
     public String toString()
     {
-        return XPathTreeConstants.jjtNodeName[id] + " " 
-                + getClass() + " " 
-                + getString(false);
+        return XPathTreeConstants.jjtNodeName[id] + " " + getClass() + " "
+        + getString(false);
     }
 }

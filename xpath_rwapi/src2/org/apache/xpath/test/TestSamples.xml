@@ -107,12 +107,6 @@
 		</ast>
 	</expr>
 	
-	<expr value="()" normalized-round-trip="">
-		<ast>
-			<node name="ExprSequence">				
-			</node>
-		</ast>
-	</expr>
 	
 	<expr value="(10)" normalized-round-trip="10">
 		<ast>
@@ -251,12 +245,12 @@
 	</expr>
 	
 	<!-- abbreviate step -->
-	<expr value=".">
+	<expr value="." normalized-round-trip="self::.">
 		<ast>
 			<node name="ExprSequence">
 				<node name="PathExpr">
 					<node name="StepExpr">
-						<node name="AnyKindTest"/>
+						<node name="Dot"/>
 					</node>
 				</node>
 			</node>
@@ -531,7 +525,8 @@
 	</expr>
 	
 	
-	<expr value="tutu/toto|titi">
+	<expr value="tutu/toto|titi" normalized-round-trip="(tutu/toto|titi)">
+		<!-- maybe not the good normalization!! -->
 		<ast>
 			<node name="ExprSequence">
 				<node name="UnionExpr">
@@ -670,7 +665,9 @@
 		</ast>
 	</expr>
 	
-	<expr value="4 div 12">
+	<expr value="4 div 12" normalized-round-trip="(4 div 12)">
+		<!-- maybe not the good normalization!! -->
+	
 		<ast>
 			<node name="ExprSequence">
 				<node name="MultiplicativeExpr">
@@ -993,12 +990,9 @@
 	</expr>
 
 	<!-- Semantically invalid expression (parser should return an error) -->	
-	<expr value="9876543210" valid="false"/>
 	
 	<expr value="toto/(45+23)" valid="false"/>
 	<expr value="a/(b,c)/d" valid="false"/>
-	
-	<expr value="if (a) then b" valid="false"/>
 	
 	<!-- Expressions for which no common AST has been decided yet -->
 	

@@ -56,6 +56,8 @@
 package org.apache.xpath.impl;
 
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.apache.xpath.XPathException;
 import org.apache.xpath.datamodel.SequenceType;
@@ -73,9 +75,8 @@ import org.apache.xpath.impl.parser.ParseException;
 import org.apache.xpath.impl.parser.XPath;
 
 /**
- * Implement the ExpressionFactory to create XPath AST nodes.
+ * Default implementation expression factory to create XPath AST nodes.
  * //@TODO not fully implemented! 13-Mar-03 -sc
- * @author villard
  */
 public class ExpressionFactoryImpl implements ExpressionFactory {
 
@@ -173,26 +174,52 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createCastExpr(org.apache.xpath.datamodel.SequenceType, org.apache.xpath.expression.OperatorExpr)
 	 */
-	public CastOrTreatAsExpr createCastExpr(SequenceType seqType, OperatorExpr parExpr) {
+	public CastOrTreatAsExpr createCastAsExpr(SequenceType seqType, OperatorExpr parExpr) {
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.ExpressionFactory#createTreatAsExpr(org.apache.xpath.datamodel.SequenceType, org.apache.xpath.expression.OperatorExpr)
+	 */
+	public CastOrTreatAsExpr createTreatAsExpr(
+		SequenceType seqType,
+		OperatorExpr parExpr) {
+		return null;
+
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createIntegerLiteralExpr(int)
 	 */
-	public Literal createIntegerLiteralExpr(int value) {
+	public Literal createIntegerLiteralExpr(BigInteger value) {
 		LiteralImpl lit = new LiteralImpl();
 		lit.setIntValue(value);
 		return lit;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.ExpressionFactory#createIntegerLiteralExpr(int)
+	 */
+	public Literal createIntegerLiteralExpr(int value) {
+		return createIntegerLiteralExpr(BigInteger.valueOf(value));
+	}
+
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createDecimalLiteralExpr(float)
 	 */
-	public Literal createDecimalLiteralExpr(float value) {
+	public Literal createDecimalLiteralExpr(double value) {
+		return createDecimalLiteralExpr(new BigDecimal(value));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.ExpressionFactory#createDecimalLiteralExpr(java.math.BigDecimal)
+	 */
+	public Literal createDecimalLiteralExpr(BigDecimal value) {
 		LiteralImpl lit = new LiteralImpl();
 		lit.setDecimalValue(value);
 		return lit;
+
 	}
 
 	/**
@@ -212,5 +239,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 		lit.setDoubleValue(value);
 		return lit;
 	}
+
+
 
 }

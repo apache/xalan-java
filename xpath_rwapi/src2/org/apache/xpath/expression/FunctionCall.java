@@ -63,13 +63,9 @@ package org.apache.xpath.expression;
 public interface FunctionCall extends OperatorExpr {
 
     /**
-     * 
+     * Gets the qualified name of the function
      */
-    String getFunctionName();
+    String getFunctionQName();
     
-    /**
-     * 
-     */
-    String getFunctionPrefix();
 
 }

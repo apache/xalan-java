@@ -112,11 +112,6 @@ public class Singletons extends SimpleNode
     static final public StepExprImpl SLASHSLASH;
 
     /**
-     * Dot singleton
-     */
-    protected static final Singletons DOT = new Singletons(XPathTreeConstants.JJTDOT);
-
-    /**
      * Empty singleton (appear in sequencetype)
      */
     protected static final Singletons EMPTY = new Singletons(XPathTreeConstants.JJTEMPTY);
@@ -189,10 +184,8 @@ public class Singletons extends SimpleNode
 
         SLASHSLASH = new StepExprImpl(StepExpr.AXIS_DESCENDANT_OR_SELF, kt);
 
-        DOT_KIND_TEST = new KindTestImpl();
-
-        //		well use any kind test for dot, but it's more than that..
-        DOT_KIND_TEST.setKindTest(NodeTest.ANY_KIND_TEST);
+        DOT_KIND_TEST = new KindTestImpl(XPathTreeConstants.JJTDOT);
+        DOT_KIND_TEST.setKindTest(NodeTest.CONTEXT_ITEM_TEST);
     }
 
     /**

@@ -63,35 +63,41 @@ public interface Visitor {
 	/**
 	 * Visit path expression
      * @param path
+     * @return true to continue visiting the container expression
 	 */
 	boolean visitPath(PathExpr path);
 
 	/**
 	 * Visit step expression
-     * @param
+     * @param     
+     * @return true to continue visiting the container expression
 	 */
 	boolean visitStep(StepExpr step);
 
 	/**
 	 * Visit literal expression
      * @param
+     * * @return true to continue visiting the container expression
 	 */
 	boolean visitLiteral(Literal literal);
 	
 	/**
 	 * Visit variable expression
 	 * @param
+	 * @return true to continue visiting the container expression
 	 */
 	boolean visitVariable(Variable var);
 
 	/**
 	 * Visit operator expression
      * @param
+     * @return true to continue visiting the container expression
 	 */
 	boolean visitOperator(OperatorExpr arithmetic);
 
 	/**
 	 * Visit conditional expression
+	 * @return true to continue visiting the container expression
      * @param
 	 */
 	boolean visitConditional(ConditionalExpr condition);
@@ -99,16 +105,19 @@ public interface Visitor {
 	/**
 	 * Visit for or quantified expression
      * @param
+     * @return true to continue visiting the container expression
 	 */
 	boolean visitForOrQuantifiedExpr(ForAndQuantifiedExpr expr);
 	
 	/**
 	 * Visit instance of expression
+	 * @return true to continue visiting the container expression
 	 */
 	boolean visitInstanceOf(InstanceOfExpr expr);
 	
 	/**
 	 * Visit 'castable as' expression
+	 * @return true to continue visiting the container expression
 	 */
 	boolean visitCastableAs(CastableAsExpr expr);
 

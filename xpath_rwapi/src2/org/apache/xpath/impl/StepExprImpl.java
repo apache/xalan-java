@@ -63,13 +63,14 @@ import org.apache.xpath.expression.Visitor;
 import org.apache.xpath.impl.parser.Axis;
 import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
-import org.apache.xpath.impl.parser.Singletons;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 
 /**
- * Implementation of step expression
+ * Default implementation of step. 
+ * %review% step is not an expression by itself: it's always ebbeded in path expression. 
+ * So make it inherit of SimpleNode?
  */
 public class StepExprImpl extends ExprImpl implements StepExpr
 {
@@ -123,6 +124,14 @@ public class StepExprImpl extends ExprImpl implements StepExpr
         super.jjtAddChild((Node) nodeTest, 0);
 
         //  super.jjtAddChild(new OperatorImpl(XPathTreeConstants.JJTPREDICATES), 1);
+    }
+    
+    /**
+     * Constructor for cloning     
+     */
+    private StepExprImpl(StepExprImpl step)
+    {
+    	
     }
 
     /**
@@ -288,7 +297,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
                 break;
 			case XPathTreeConstants.JJTDOT:
 				m_axisType = AXIS_SELF;
-				super.jjtAddChild(Singletons.DOT_KIND_TEST, 0);
+				super.jjtAddChild(n, 0);
 			break;
             case XPathTreeConstants.JJTAXISCHILD:
             case XPathTreeConstants.JJTAXISDESCENDANT:
@@ -307,8 +316,6 @@ public class StepExprImpl extends ExprImpl implements StepExpr
                 m_axisType = ((Axis) n).getAxis();
 
                 break;
-
-          
 
             case XPathTreeConstants.JJTNODETEST:
 

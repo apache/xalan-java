@@ -58,7 +58,6 @@ package org.apache.xpath.impl;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.NodeTest;
-import org.apache.xpath.expression.Visitor;
 import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
@@ -143,15 +142,7 @@ public class KindTestImpl extends SimpleNode implements NodeTest
         throw new XPathException("Invalid call this method on kind test"); // I8
     }
 
-    /**
-     * @see org.apache.xpath.expression.Expr#getExprType()
-     */
-  //  public short getExprType()
-   // {
-   //     return Expr.KINDTEST_EXPR;
-   // }
-
-    /**
+   /**
      * @see org.apache.xpath.expression.Expr#cloneExpression()
      */
     public Expr cloneExpression()
@@ -168,19 +159,11 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     }
 
     /**
-     * @see org.apache.xpath.expression.Visitable#visited(Visitor)
-     */
-    public void visited(Visitor visitor)
-    {
-    }
-
-    /**
      * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
      */
     public void jjtAddChild(Node n, int i)
     {
-        // filter child
-        // m_kindTest = ((KindTest) n).getKindTest();
+       
     }
 
     /**
