@@ -92,42 +92,50 @@ public class SystemIDResolver
    */
   public static String getAbsoluteURIFromRelative(String localPath)
   {
-    // If the local path is absolute, just prepend the scheme part to
-    // generate the absolute URI.
-    String urlString = localPath;
-    if (isAbsolutePath(localPath))
+    if (localPath == null || localPath.length() == 0)
+      return "";
+      
+    // If the local path is a relative path, then it is resolved against
+    // the "user.dir" system property.
+    String absolutePath = localPath;
+    if (!isAbsolutePath(localPath))
     {
-      if (localPath.startsWith(File.separator))
-        urlString = "file://" + localPath;
-      else
-        urlString = "file:///" + localPath;      
-    }
-    // If it is a relative path, the path is resolved against the current
-    // "user.dir" system property.
-    else
-    {
-      String absolutePath = localPath;
-      try {
-        absolutePath = new File(localPath).getAbsolutePath();
+      try 
+      {
+        absolutePath = getAbsolutePathFromRelativePath(localPath);
       }
       // user.dir not accessible from applet
-      catch (SecurityException se) {}
-
-      if (null != absolutePath)
+      catch (SecurityException se) 
       {
-        if (absolutePath.startsWith(File.separator))
-          urlString = "file://" + absolutePath;
-        else
-          urlString = "file:///" + absolutePath;        
+        return "file:" + localPath;
       }
-      else
-        urlString = "file:///" + localPath;
     }
+
+    String urlString;
+    if (null != absolutePath)
+    {
+      if (absolutePath.startsWith(File.separator))
+        urlString = "file://" + absolutePath;
+      else
+        urlString = "file:///" + absolutePath;        
+    }
+    else
+      urlString = "file:" + localPath;
     
-    String result = replaceChars(urlString);
-    return result;
+    return replaceChars(urlString);
   }
-    
+  
+  /**
+   * Return an absolute path from a relative path.
+   *
+   * @param relativePath A relative path
+   * @return The absolute path
+   */
+  private static String getAbsolutePathFromRelativePath(String relativePath)
+  {
+    return new File(relativePath).getAbsolutePath();
+  }
+  
   /**
    * Return true if the systemId denotes an absolute URI (contains the scheme part).
    *
@@ -208,27 +216,43 @@ public class SystemIDResolver
    */
   public static String getAbsoluteURI(String systemId)
   {
+    String absoluteURI = systemId;
     if (isAbsoluteURI(systemId))
     {
       // Only process the systemId if it starts with "file:".
       if (systemId.startsWith("file:"))
       {
-        int secondColonIndex = systemId.indexOf(':', 5);
-        // If the path contains a drive letter.
-        if (secondColonIndex > 5
-            && Character.isLetter(systemId.charAt(secondColonIndex-1)))
+        String str = systemId.substring(5);
+        
+        // Resolve the absolute path if the systemId starts with "file:///"
+        // or "file:/". Don't do anything if it only starts with "file://".
+        if (str != null && str.startsWith("/"))
         {
-          String localPath = systemId.substring(secondColonIndex-1);
-          if (!isAbsolutePath(localPath))
-            return getAbsoluteURIFromRelative(localPath);
+          if (str.startsWith("///") || !str.startsWith("//"))
+          {
+            // A Windows path containing a drive letter can be relative.
+            // A Unix path starting with "file:/" is always absolute.
+            int secondColonIndex = systemId.indexOf(':', 5);
+            if (secondColonIndex > 0)
+            {
+              String localPath = systemId.substring(secondColonIndex-1);
+              try {
+                if (!isAbsolutePath(localPath))
+                  absoluteURI = systemId.substring(0, secondColonIndex-1) + 
+                                getAbsolutePathFromRelativePath(localPath);
+              }
+              catch (SecurityException se) {
+                return systemId;
+              }
+            }
+          }          
         }
-        else if (systemId.charAt(5) != '/')
+        else
         {
           return getAbsoluteURIFromRelative(systemId.substring(5));
         }
-        
-        String absoluteURI = replaceChars(systemId);
-        return absoluteURI;        
+                
+        return replaceChars(absoluteURI);
       }
       else
         return systemId;
@@ -267,5 +291,6 @@ public class SystemIDResolver
     }
     
     return replaceChars(uri.toString());
-  }  
+  }
+  
 }
