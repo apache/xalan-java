@@ -219,7 +219,7 @@ public class ElemExtensionCall extends ElemLiteralResult
     throws SAXException
   {
     AVT avt = getLiteralResultAttribute(rawName);
-    if(avt.getRawName().equals(rawName))
+    if((null != avt) && avt.getRawName().equals(rawName))
     {
       XPathContext xctxt = transformer.getXPathContext();
       return avt.evaluate(xctxt, sourceNode, this,
