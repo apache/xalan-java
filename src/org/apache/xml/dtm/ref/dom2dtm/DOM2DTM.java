@@ -98,6 +98,7 @@ import org.apache.xalan.res.XSLMessages;
 public class DOM2DTM extends DTMDefaultBaseIterators
 {
   static final boolean JJK_DEBUG=false;
+  static final boolean JJK_NEWCODE=true;
   
   /** Manefest constant
    */
@@ -1018,37 +1019,61 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    */
   public String getLocalName(int nodeHandle)
   {
-
-    String name;
-    short type = getNodeType(nodeHandle);
-
-    switch (type)
+    if(JJK_NEWCODE)
     {
-    case DTM.ATTRIBUTE_NODE :
-    case DTM.ELEMENT_NODE :
-    case DTM.ENTITY_REFERENCE_NODE :
-    case DTM.NAMESPACE_NODE :
-    case DTM.PROCESSING_INSTRUCTION_NODE :
-    {
-      Node node = getNode(nodeHandle);
-
-      // assume not null.
-      name = node.getLocalName();
-
-      if (null == name)
+      int id=makeNodeIdentity(nodeHandle);
+      if(NULL==id) return null;
+      Node newnode=(Node)m_nodes.elementAt(id);
+      String newname=newnode.getLocalName();
+      if (null == newname)
       {
-        String qname = node.getNodeName();
-        int index = qname.indexOf(':');
-
-        name = (index < 0) ? qname : qname.substring(index + 1);
+	// XSLT treats PIs, and possibly other things, as having QNames.
+	String qname = newnode.getNodeName();
+	if('#'==newnode.getNodeName().charAt(0))
+	{
+	  //  Match old default for this function
+	  // This conversion may or may not be necessary
+	  newname="";
+	}
+	else
+	{
+	  int index = qname.indexOf(':');
+	  newname = (index < 0) ? qname : qname.substring(index + 1);
+	}
       }
+      return newname;
     }
-    break;
-    default :
-      name = "";
+    else
+    {
+      String name;
+      short type = getNodeType(nodeHandle);
+      switch (type)
+      {
+      case DTM.ATTRIBUTE_NODE :
+      case DTM.ELEMENT_NODE :
+      case DTM.ENTITY_REFERENCE_NODE :
+      case DTM.NAMESPACE_NODE :
+      case DTM.PROCESSING_INSTRUCTION_NODE :
+	{
+	  Node node = getNode(nodeHandle);
+	  
+	  // assume not null.
+	  name = node.getLocalName();
+	  
+	  if (null == name)
+	  {
+	    String qname = node.getNodeName();
+	    int index = qname.indexOf(':');
+	    
+	    name = (index < 0) ? qname : qname.substring(index + 1);
+	  }
+	}
+	break;
+      default :
+	name = "";
+      }
+      return name;
     }
-
-    return name;
   }
 
   /**
@@ -1114,31 +1139,41 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    */
   public String getNamespaceURI(int nodeHandle)
   {
-
-    String nsuri;
-    short type = getNodeType(nodeHandle);
-
-    switch (type)
+    if(JJK_NEWCODE)
     {
-    case DTM.ATTRIBUTE_NODE :
-    case DTM.ELEMENT_NODE :
-    case DTM.ENTITY_REFERENCE_NODE :
-    case DTM.NAMESPACE_NODE :
-    case DTM.PROCESSING_INSTRUCTION_NODE :
+      int id=makeNodeIdentity(nodeHandle);
+      if(id==NULL) return null;
+      Node node=(Node)m_nodes.elementAt(id);
+      return node.getNamespaceURI();
+    }
+    else
     {
-      Node node = getNode(nodeHandle);
+      String nsuri;
+      short type = getNodeType(nodeHandle);
+      
+      switch (type)
+      {
+      case DTM.ATTRIBUTE_NODE :
+      case DTM.ELEMENT_NODE :
+      case DTM.ENTITY_REFERENCE_NODE :
+      case DTM.NAMESPACE_NODE :
+      case DTM.PROCESSING_INSTRUCTION_NODE :
+	{
+	  Node node = getNode(nodeHandle);
+	  
+	  // assume not null.
+	  nsuri = node.getNamespaceURI();
+	  
+	  // %TBD% Handle DOM1?
+	}
+	break;
+      default :
+	nsuri = null;
+      }
 
-      // assume not null.
-      nsuri = node.getNamespaceURI();
-
-      // %TBD% Handle DOM1?
+      return nsuri;
     }
-    break;
-    default :
-      nsuri = null;
-    }
-
-    return nsuri;
+    
   }
   
   /** Utility function: Given a DOM Text node, determine whether it is
