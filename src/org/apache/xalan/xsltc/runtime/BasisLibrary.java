@@ -460,12 +460,9 @@ public final class BasisLibrary implements Operators {
     public static boolean compare(int node, NodeIterator nodeSet,
 				  int op, DOM dom) {
 	final String lvalue = dom.getNodeValue(node);
-	//System.out.println("lvalue = " + lvalue);
-	
 	int rnode;
 	nodeSet.reset();
 	while ((rnode = nodeSet.next()) != NodeIterator.END) {
-	    //System.out.println("rnode = " + rnode);
 	    if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
 		return true;
 	    }
@@ -475,23 +472,36 @@ public final class BasisLibrary implements Operators {
 
     public static boolean compare(int node, NodeIterator iterator,
 				  int op, int dummy, DOM dom) {
-
 	iterator.reset();
+
 	int rnode;
+	String value;
+
 	switch(op) {
 	case EQ:
+	    /* TODO:
+	     * This needs figuring out: What sort of comparison is done here?
+	     * Are we comparing exact node id's, node types, or node values?
+	     * Values is the obvious for attributes, but what about elements?
+	     */
+	    value = dom.getNodeValue(node);
 	    while ((rnode = iterator.next()) != NodeIterator.END)
-		if (rnode == node) return true;
+		if (value.equals(dom.getNodeValue(rnode))) return true;
+	    // if (rnode == node) return true; It just ain't that easy!!!
 	    break;
 	case NE:
+	    value = dom.getNodeValue(node);
 	    while ((rnode = iterator.next()) != NodeIterator.END)
-		if (rnode != node) return true;
+		if (!value.equals(dom.getNodeValue(rnode))) return true;
+	    // if (rnode != node) return true;
 	    break;
 	case LT:
+	    // Assume we're comparing document order here
 	    while ((rnode = iterator.next()) != NodeIterator.END)
 		if (rnode > node) return true;
 	    break;
 	case GT:
+	    // Assume we're comparing document order here
 	    while ((rnode = iterator.next()) != NodeIterator.END)
 		if (rnode < node) return true;
 	    break;

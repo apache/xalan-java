@@ -91,6 +91,8 @@ public final class TextOutput implements TransletOutputHandler {
     // Contains all elements that should be output as CDATA sections
     private Hashtable _cdataElements = new Hashtable();
 
+    private static final String XML_PREFIX = "xml";
+
     private static final char[] AMP      = "&amp;".toCharArray();
     private static final char[] LT       = "&lt;".toCharArray();
     private static final char[] GT       = "&gt;".toCharArray();
@@ -489,6 +491,8 @@ public final class TextOutput implements TransletOutputHandler {
 	    if (_outputType == UNKNOWN) {
 		if (elementName.toLowerCase().equals("html")) {
 		    setType(HTML);
+		    setIndent(true);
+		    _escapeChars = true;
 		}
 		else {
 		    setType(XML);
@@ -695,6 +699,9 @@ public final class TextOutput implements TransletOutputHandler {
      * Declare a prefix to point to a namespace URI
      */
     private void pushNamespace(String prefix, String uri) throws SAXException {
+
+	if (prefix.equals(XML_PREFIX)) return;
+
 	Stack stack;
 	// Get the stack that contains URIs for the specified prefix
 	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
@@ -714,6 +721,9 @@ public final class TextOutput implements TransletOutputHandler {
      * Undeclare the namespace that is currently pointed to by a given prefix
      */
     private void popNamespace(String prefix) throws SAXException {
+
+	if (prefix.equals(XML_PREFIX)) return;
+
 	Stack stack;
 	if ((stack = (Stack)_namespaces.get(prefix)) != null) {
 	    stack.pop();
