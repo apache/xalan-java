@@ -474,7 +474,7 @@ Copyright:
 
     <!-- Copy xalan jar and compability into the bin directory (subject to change) -->
     <copy file="${build.xalan.jar}" todir="${dist.dir}/bin"/>
-    <copy file="${built.compat.jar}" todir="${dist.dir}/bin"/>    
+    <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
