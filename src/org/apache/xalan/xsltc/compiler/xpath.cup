@@ -473,9 +473,14 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 	       // Expand 'rlp//step' into 'rlp/descendant-or-self::node()/step'
 	       nodeStep = new Step(Axis.DESCENDANTORSELF, 
 					NodeTest.ANODE, null); 
+               /*
 	       RESULT = new ParentLocationPath(
 			    new ParentLocationPath((RelativeLocationPath) rlp, 
 						   nodeStep), step);
+               */
+	       RESULT = new ParentLocationPath((RelativeLocationPath)rlp,
+			    new ParentLocationPath(nodeStep, step));
+
 	   }
         :};
 

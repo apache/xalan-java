@@ -376,13 +376,10 @@ final class Step extends RelativeLocationPath {
 		il.append(new PUSH(cpg, _axis));
 		il.append(new PUSH(cpg, _nodeType));
 		il.append(new INVOKEINTERFACE(ty, 3));
-
-		// Now, for reverse iterators we may need to re-arrange the
-		// node ordering (ancestor-type iterators).
-		if (reverseNodeSet())
-		    orderIterator(classGen, methodGen);
+		//orderIterator(classGen, methodGen);
 		break;
 	    }
+
 	}
     }
 
@@ -513,6 +510,8 @@ final class Step extends RelativeLocationPath {
      */
     public void orderIterator(ClassGenerator classGen,
 			      MethodGenerator methodGen) {
+	if (!reverseNodeSet()) return;
+
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
