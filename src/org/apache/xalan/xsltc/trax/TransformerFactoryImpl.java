@@ -397,6 +397,9 @@ public class TransformerFactoryImpl
 
 	InputSource input = null;
 	String systemId = source.getSystemId();
+	if (systemId == null) {
+	    systemId = "";
+	}
 
 	try {
 
@@ -426,19 +429,14 @@ public class TransformerFactoryImpl
 		    input = new InputSource(istream);
 		else if (reader != null)
 		    input = new InputSource(reader);
+		else if ((new File(systemId)).exists()) {
+		    input = new InputSource(
+			new File(systemId).toURL().toExternalForm());
+		}
 	    }
 	    else {
 		throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
 	    }
-
-	    if ((new File(systemId)).exists()) {
-		systemId = new File(systemId).toURL().toExternalForm(); 
- 	    }
-
-	    // Try to create an InputStream from the SystemId if no input so far
-	    if (input == null) input = new InputSource(systemId);
-
-	    // Pass system id to InputSource just to be on the safe side
 	    input.setSystemId(systemId);
 	}
 	catch (NullPointerException e) {
