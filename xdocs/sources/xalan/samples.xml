@@ -327,7 +327,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <note>js.jar must be on the classpath.</note>
       <p>Run this sample from the extensions subdirectory with</p>
       <p><code>java org.apache.xalan.xslt.Process -in 2-basicJscript.xml</code>
-         <br/>&nbsp;&nbsp;<code>-xsl 2-jbasicJscript.xsl</code></p>     
+         <br/>&nbsp;&nbsp;<code>-xsl 2-basicJscript.xsl</code></p>     
       </s3><anchor name="ext3"/>
       <s3 title="3-java-namespace">
       <p>What it does: Uses extension functions to format dates. This sample illustrates use of the predefined java
