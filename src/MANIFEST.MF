@@ -32,7 +32,7 @@ Name: org/apache/xalan/xsltc
 Comment: Main XSLTC engine implementing TrAX/JAXP
 Specification-Title: Java API for XML Processing
 Specification-Vendor: Sun Microsystems Inc.
-Specification-Version: 1.1
+Specification-Version: 1.2
 Implementation-Title: org.apache.xalan.xsltc
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
