@@ -205,7 +205,7 @@ final class Step extends RelativeLocationPath {
 	else {
 	    // Special case for '@attr' with no parent or predicates
 	    if ((_axis == Axis.ATTRIBUTE) && (_nodeType!=NodeTest.ATTRIBUTE) &&
-		(!hasParentPattern()) && (_hadPredicates)) {
+		(!hasParentPattern()) && (!_hadPredicates)) {
 		_type = Type.Node;
 	    }
 	    else {
