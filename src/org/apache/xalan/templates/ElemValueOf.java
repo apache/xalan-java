@@ -94,6 +94,10 @@ public class ElemValueOf extends ElemTemplateElement
    */
   private XPath m_selectExpression = null;
   
+  /**
+   * True if the pattern is a simple ".".
+   * @serial
+   */
   private boolean m_isDot = false;
 
   /**
