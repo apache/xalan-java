@@ -212,15 +212,7 @@ public final class DOMAdapter implements DOM {
     public DTMAxisIterator getTypedAxisIterator(final int axis,
                                                 final int type) {
         final int[] reverse = getReverse();
-
-        if (axis == Axis.NAMESPACE) {
-            short[] NSReverse = getNSReverse();
-            if (type == NO_TYPE || type > NSReverse.length) {
-                return _dom.getAxisIterator(axis);
-            } else {
-                return _dom.getTypedAxisIterator(axis, NSReverse[type]);
-            }
-        } else if (_saxImpl != null) {
+        if (_saxImpl != null) {
             return _saxImpl.getTypedAxisIterator(axis, reverse[type]);
         } else {
             return _dom.getTypedAxisIterator(axis, type);

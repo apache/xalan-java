@@ -125,6 +125,8 @@ public final class XSLTC {
     private int       _nextNSType; // Next available namespace type
     private Vector    _namespaceIndex; // Index of all registered namespaces
     private Hashtable _namespaces; // Hashtable of all registered namespaces
+    private Hashtable _namespacePrefixes;// Hashtable of all registered namespace prefixes
+
 
     // All literal text in the stylesheet
     private Vector m_characterData;
@@ -209,6 +211,7 @@ public final class XSLTC {
 	_namespaces.put("",new Integer(_nextNSType));
 	_namesIndex     = new Vector(128);
 	_namespaceIndex = new Vector(32);
+	_namespacePrefixes = new Hashtable();
         _stylesheet     = null;
 	_parser.init();
 	//_variableSerial     = 1;
@@ -675,15 +678,26 @@ public final class XSLTC {
 	return code.intValue();
     }
 
-    /**
-     * Registers an element and gives it a type so that it can be mapped to
-     * DOM element types at run-time.
-     */
-    public int registerNamespace(QName name) {
-	final SymbolTable stable = _parser.getSymbolTable();
-	final String uri = stable.lookupNamespace(name.toString());
-	final int code = registerNamespace(uri);
-	return code;
+     /** 
+      * Registers a namespace prefix and gives it a type so that it can be mapped to
+      * DOM namespace types at run-time.
+      */
+  
+    public int registerNamespacePrefix(QName name) {
+    
+    Integer code = (Integer)_namespacePrefixes.get(name.toString());
+    if (code == null) {   
+        code = new Integer(_nextGType++);
+        _namespacePrefixes.put(name.toString(), code); 
+        final String uri = name.getNamespace();
+        if ((uri != null) && (!uri.equals(""))){
+            // namespace::ext2:ped2 will be made empty in TypedNamespaceIterator
+            _namesIndex.addElement("?"); 
+        } else{        
+           _namesIndex.addElement("?"+name.getLocalPart());        
+        }
+    }   
+    return code.intValue();
     }
 
     /**
