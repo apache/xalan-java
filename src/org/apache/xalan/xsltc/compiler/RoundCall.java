@@ -85,15 +85,8 @@ final class RoundCall extends FunctionCall {
 
 	// Get two copies of the argument on the stack
 	argument().translate(classGen, methodGen);
-	il.append(DUP2);
+	il.append(new INVOKESTATIC(cpg.addMethodref(BASIS_LIBRARY_CLASS, 
+                                                    "roundF", "(D)D"))); 
 
-	// Check if the argument is NaN
-	il.append(new INVOKESTATIC(cpg.addMethodref("java.lang.Double",
-						    "isNaN", "(D)Z")));
-	final BranchHandle skip = il.append(new IFNE(null));
-	il.append(new INVOKESTATIC(cpg.addMethodref(MATH_CLASS,
-						    "round", "(D)J")));
-	il.append(L2D);
-	skip.setTarget(il.append(NOP));
     }
 }
