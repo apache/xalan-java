@@ -233,25 +233,18 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     }
 	
 	 /**
-   * Sets required system properties until we figure out why servlet 
-   * sometimes fails to read properties from properties files.
+   * Sets required system properties.
    */	
     protected void setSystemProperties()
 	{
 	  Properties props = new Properties();
-//	  props.put("org.apache.trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
-	  props.put("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
-	  props.put("serialize.methods", "xml,html,xhtml,Text");
-	  props.put("serialize.xml", "org.apache.xalan.serialize.FormatterToXML");	 
-	  props.put("serialize.html", "org.apache.xalan.serialize.FormatterToHTML");	 
-	  props.put("serialize.text", "org.apache.xalan.serialize.FormatterToText");	 
-	  props.put("serialize.xhtml", "org.apache.xalan.serialize.FormatterToXML"); 
-	  props.put("serialize.wml", "org.apache.xalan.serialize.transition.WMLSerializer");	
-	  props.put("serialize.format.xml", "org.apache.serialize.helpers.XMLOutputFormat");	 
-	  props.put("serialize.format.html", "org.apache.serialize.helpers.HTMLOutputFormat");	 
-	  props.put("serialize.format.xhtml", "org.apache.serialize.helpers.XHTMLOutputFormat");	 
-	  props.put("serialize.format.text", "org.apache.serialize.helpers.TextOutputFormat");	 
-	  
+    props.put("vax.xml.transform.TransformerFactory", 
+              "org.apache.xalan.proccessor.TransformerFactoryImpl");
+    props.put("javax.xml.parsers.DocumentBuilderFactory", 
+              "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+    props.put("javax.xml.parsers.SAXParserFactory", 
+              "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+    
       Properties systemProps = System.getProperties();
       Enumeration propEnum = props.propertyNames();
       while(propEnum.hasMoreElements())
