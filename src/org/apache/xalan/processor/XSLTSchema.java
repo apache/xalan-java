@@ -262,7 +262,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef resultElement
       = new XSLTElementDef(null, "*", 
                            null /*alias */, 
-                           templateElements /* elements */,
+                           templateElementsAndParams /* elements */,
                            new XSLTAttributeDef[] {
                            xslExcludeResultPrefixesAttr, 
                            xslExtensionElementPrefixesAttr,
