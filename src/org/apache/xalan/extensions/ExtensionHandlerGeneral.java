@@ -109,7 +109,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   private Object m_engine;
 
   /** Engine call to invoke scripts */
-  private Method m_engineCall;
+  private Method m_engineCall = null;
 
   // static fields
 
@@ -322,7 +322,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
         }
       }
 
-      if (m_engineCall != null) {
+      if (m_engineCall == null) {
         m_engineCall = m_engine.getClass().getMethod("call",
           new Class[]{ Object.class, String.class, Object[].class });
       }
