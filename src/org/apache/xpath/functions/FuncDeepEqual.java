@@ -168,6 +168,7 @@ public class FuncDeepEqual extends Function3Args
       case DTM.TEXT_NODE:
       case DTM.NAMESPACE_NODE:
      case DTM.PROCESSING_INSTRUCTION_NODE:
+     case DTM.ATTRIBUTE_NODE:
       if (collator != null)
       {
         if (collator.equals(dtm1.getNodeValue(node1), dtm2.getNodeValue(node2)))
@@ -187,6 +188,10 @@ public class FuncDeepEqual extends Function3Args
       {
         int attrNode1 = dtm1.getFirstAttribute(node1);
         int attrNode2 = dtm2.getFirstAttribute(node2);
+        
+        if ((attrNode1 == DTM.NULL || attrNode2 == DTM.NULL) && attrNode2 != attrNode1)
+          return false;
+           
         while (attrNode1 != DTM.NULL && attrNode2 != DTM.NULL)
         {
           attrNode2 = dtm2.getAttributeNode(node2, dtm1.getNamespaceURI(attrNode1), dtm1.getNodeName(attrNode1));	             
@@ -202,7 +207,19 @@ public class FuncDeepEqual extends Function3Args
            break;
         }
         if (attrNode1 != DTM.NULL)
-          return false;  
+          return false;
+       else
+       {
+         attrNode2 = dtm2.getFirstAttribute(node2);
+         while (attrNode2 != DTM.NULL)
+         {
+           if(DTM.NULL == dtm2.getAttributeNode(node1, dtm2.getNamespaceURI(attrNode2), dtm2.getNodeName(attrNode2)))
+               return false;
+           else
+               attrNode2 = dtm2.getNextAttribute(attrNode2);
+         }       
+       }
+            
         
         if (dtm1.hasChildNodes(node1) && dtm2.hasChildNodes(node2))
         {
