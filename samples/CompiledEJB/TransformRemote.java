@@ -60,8 +60,9 @@
  *
  */
 
-import javax.ejb.EJBObject;
 import java.rmi.RemoteException;
+
+import javax.ejb.EJBObject;
 
 /**
  * XSL transformation bean remote interface

@@ -59,17 +59,18 @@
  *
  */
 
-import java.io.*;
-import java.util.NoSuchElementException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import java.util.StringTokenizer;
-import java.util.Vector;
 
-import org.xml.sax.*;
-
-import org.apache.xalan.xsltc.*;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DocumentCache;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.runtime.output.*;
-import org.apache.xalan.xsltc.dom.*;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+
+import org.xml.sax.SAXException;
 
 import sunlabs.brazil.server.Handler;
 import sunlabs.brazil.server.Request;

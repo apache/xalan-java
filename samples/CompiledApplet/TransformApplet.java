@@ -60,23 +60,30 @@
  *
  */
 
-import java.io.*;
-import java.applet.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.applet.Applet;
+
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Frame;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-
-import org.apache.xalan.xsltc.*;
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.MessageHandler;
-import org.apache.xalan.xsltc.runtime.output.*;
-import org.apache.xalan.xsltc.dom.*;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+
+import org.xml.sax.XMLReader;
 
 /**
  * This applet demonstrates how XSL transformations can be made run in

@@ -61,19 +61,20 @@
  *
  */
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.xml.sax.*;
-
-import org.apache.xalan.xsltc.*;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DocumentCache;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.runtime.output.*;
-import org.apache.xalan.xsltc.dom.*;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+
+import org.xml.sax.SAXException;
 
 /**
  * This servlet demonstrates how XSL transformations can be made available as

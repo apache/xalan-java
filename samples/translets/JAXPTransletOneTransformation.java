@@ -57,20 +57,21 @@
  * @author Donald Leslie
  *
  */
-import java.util.Properties;
-import java.io.FileOutputStream;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Templates;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-import java.io.IOException;
 import java.io.FileNotFoundException;
-import org.xml.sax.SAXException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import java.util.Properties;
+
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.xml.sax.SAXException;
 
 
 /**
