@@ -13,67 +13,101 @@
   <person name="Gary L Peskin" email="garyp@firstech.com" id="GP"/>
  </devs>
 
- <actions priority="high" release-for="1/5/01">
+ <actions>
+
+   <target-release-description>
+    <date>12/15/00</date>
+    <level>beta</level>
+    <goal type="conformance">XSLT 1.0 and XPath 1.0 complient, 98% conformance test passage.</goal>
+    <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
+    <goal type="stability">Stable, reasonable.</goal>
+    <goal type="api">API Complete.</goal>
+    <goal type="documentation">Documentation functionally complete.</goal>
+   </target-release-description>
+
   <!-- Move to completed section when done. -->
- 
-  <action context="code" category="performance">
-    When using STree for the input, use STree for the document() and 
+
+  <action context="code" category="documentation" priority="high">
+    Fill in all NEEDSDOC sections.
+  </action>
+
+  <action context="code" category="performance" priority="high">
+    When using STree for the input, use STree for the document() and
     result tree fragments.
   </action>
 
-  <action context="code" packages="serialize" who="SB"  category="feature">
-    Implement DOMSerializer on FormatterToXML.
+  <action context="code" who="SB" packages="xpath.axes" category="performance" priority="high">
+    implement fast iterator for "//foo" pattern.
   </action>
 
-  <action context="code" who="SB" packages="xpath.axes" category="performance">
-    implement faster itterators for "foo" and "//foo" patterns.
+  <action context="code" who="SB" packages="xpath.axes" category="performance" priority="high">
+    implement fast iterator for "@foo" pattern.
   </action>
 
-  <action context="code" category="performance">
-    optimize xsl:key and key() stuff.  
+  <action context="code" who="MM" category="performance" priority="high">
+    optimize xsl:key and key() stuff by building hash table of iterators for
+    each key.
   </action>
 
-  <action context="code" category="code-cleanup">
+  <action context="code" category="code-cleanup" priority="medium">
     Clean up treatment of null namespaces, re "" vs. null.
   </action>
 
-  <action context="code"  category="conformance">
+  <action context="code"  category="conformance" priority="high">
+    Implement namespace aliasing.
+  </action>
+
+  <action context="code"  category="conformance" priority="high">
     Check relative URL resolution with notations and unparsed entities.
-    Not sure if there is a bug here.  See note from Thomal Maesing on 
+    Not sure if there is a bug here.  See note from Thomal Maesing on
     10/24/2000, titled "Antwort: Re:".
   </action>
 
-  <action context="code" category="code-cleanup">
+  <action context="code" category="code-cleanup" priority="medium">
     Move org.apache.xalan.utils package to org.apache.xml.utils.
     remove resource dependencies on xalan and/or xpath package.
   </action>
-  
-  <action context="code" packages="templates" category="conformance">
-    Catch multiple definitions of a variable with the same name and scope.     
+
+  <action context="code" packages="templates" category="conformance" priority="medium"
+          note="done?">
+    Catch multiple definitions of a variable with the same name and scope.
   </action>
 
   <action context="code">
   </action>
-  
+
  </actions>
- 
- <actions priority="medium" release-for="1/5/01">
+
+ <actions>
+
+   <target-release-description>
+    <date>01/15/01</date>
+    <level>production</level>
+    <goal type="conformance">XSLT 1.0 and XPath 1.0 complient, 99% conformance test passage.</goal>
+    <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
+    <goal type="stability">Robust.</goal>
+    <goal type="api">API Complete.</goal>
+    <goal type="documentation">Documentation complete.</goal>
+   </target-release-description>
+
   <!-- Move to completed section when done. -->
 
   <action context="code" category="feature">
-    Don published a list of proposed extensions a while ago.  
-    I would really like to get these implemented.  This is a good 
+    Don published a list of proposed extensions a while ago.
+    I would really like to get these implemented.  This is a good
     area for part-time contributers, as the extensions have limited scope.
   </action>
 
   <action context="code" category="performance">
-    Joe could use help with the stylesheet compiler stuff.  
-    Lots of work to be done there.  In particular, I would like to 
-    figure out how to inline some simple itterator operations, 
-    like select="node()" and select="foo".  Also, we need to figure 
-    out how to analyze a particular stylesheet's dependencies, and 
-    be able to package just those classes in a jar, along with the 
+    Joe could use help with the stylesheet compiler stuff.
+    Lots of work to be done there.  In particular, I would like to
+    figure out how to inline some simple itterator operations,
+    like select="node()" and select="foo".  Also, we need to figure
+    out how to analyze a particular stylesheet's dependencies, and
+    be able to package just those classes in a jar, along with the
     compiled classes.
+    <issue id="issue-compiler-for-january-release">I suspect it is unlikely this
+    will be ready in time for this release.</issue>
   </action>
 
   <action context="code">
@@ -87,45 +121,55 @@
 
   <action context="code">
   </action>
-  
+
  </actions>
- 
+
  <actions priority="long-term" >
   <!-- Move to completed section when done. -->
+
+   <target-release-description>
+    <date>4/15/01</date>
+    <level>beta</level>
+    <goal type="conformance">XSLT 1.1 and XPath 1.0+addendum complient, 100% conformance test passage.</goal>
+    <goal type="performance">Very good performance. [need metrics]</goal>
+    <goal type="stability">Stable, reasonable.</goal>
+    <goal type="api">API Complete.</goal>
+    <goal type="documentation">Documentation functionally complete.</goal>
+   </target-release-description>
 
   <action context="code" category="feature">
     XPointer built on the XPath package.
   </action>
 
   <action context="code" packages="xpath.axes" category="performance">
-    Schema-savy itterators.  
+    Schema-savy itterators.
     This is hard because there is no standard API for schemas yet.
   </action>
 
   <action context="code" id="stylesheet-analysis" packages="processor" category="performance">
-    Stylesheet analysis module.  When I call a template, where is it likely to walk in the tree?  
+    Stylesheet analysis module.  When I call a template, where is it likely to walk in the tree?
     Can I be sure that it will not walk up again?
   </action>
 
   <action context="code" packages="stree" category="performance">
-    Related to stylesheet-analysis, the ability to throw away parts of the tree that have been processed, 
+    Related to stylesheet-analysis, the ability to throw away parts of the tree that have been processed,
     and we know we won't reuse, based on the stylesheet analysis.
   </action>
 
   <action context="code" packages="processor" category="performance">
-    Sub-expression elimination.  When I call a series of 
-    xsl:when tests, are there common subexpressions that can be 
+    Sub-expression elimination.  When I call a series of
+    xsl:when tests, are there common subexpressions that can be
     executed once and then shared?
   </action>
 
   <action context="code">
   </action>
-  
+
  </actions>
 
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
-  
+
   <action context="code" completed-date="10/31/00">
     Make this todo list.
   </action>
@@ -133,7 +177,19 @@
   <action context="code" who="SB"  category="trax" completed-date="11/06/00">
     implement javax.trax interfaces.
   </action>
-  
+
+  <action context="code" packages="serialize" who="SB"  category="feature"
+          completed-date="11/17/00">
+    Implement DOMSerializer on FormatterToXML.
+  </action>
+
+  <action context="code" who="SB" packages="xpath.axes" category="performance"
+          priority="high" completed-date="11/17/00">
+    implement fast iterator for "foo" pattern.
+  </action>
+
+
+
  </completed>
 
 </todo>
