@@ -306,42 +306,53 @@ public class DOMBuilder
 
     append(elem);
 
-    int nAtts = atts.getLength();
-
-    if (0 != nAtts)
+    try
     {
-      for (int i = 0; i < nAtts; i++)
+      int nAtts = atts.getLength();
+  
+      if (0 != nAtts)
       {
-
-        //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
-        // First handle a possible ID attribute
-        if (atts.getType(i).equalsIgnoreCase("ID"))
-          setIDAttribute(atts.getValue(i), elem);
-
-        String attrNS = atts.getURI(i);
-        
-        if(attrNS == null)
-          attrNS = ""; // defensive, shouldn't have to do this.
-
-        // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
-        //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
-        // Crimson won't let us set an xmlns: attribute on the DOM.
-        if ((attrNS.length() == 0) || atts.getQName(i).startsWith("xmlns:"))
-          elem.setAttribute(atts.getQName(i), atts.getValue(i));
-        else
+        for (int i = 0; i < nAtts; i++)
         {
-
-          // elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
-          elem.setAttributeNS(attrNS, atts.getQName(i), atts.getValue(i));
+  
+          //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
+          // First handle a possible ID attribute
+          if (atts.getType(i).equalsIgnoreCase("ID"))
+            setIDAttribute(atts.getValue(i), elem);
+  
+          String attrNS = atts.getURI(i);
+          
+          if(attrNS == null)
+            attrNS = ""; // defensive, shouldn't have to do this.
+  
+          // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
+          //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
+          // Crimson won't let us set an xmlns: attribute on the DOM.
+          String attrQName = atts.getQName(i);
+          if ((attrNS.length() == 0) || attrQName.startsWith("xmlns:") || attrQName.equals("xmlns"))
+            elem.setAttribute(attrQName, atts.getValue(i));
+          else
+          {
+  
+            // elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+            elem.setAttributeNS(attrNS, attrQName, atts.getValue(i));
+          }
         }
       }
+      
+      // append(elem);
+  
+      m_elemStack.push(elem);
+  
+      m_currentNode = elem;
+      
+      // append(elem);
     }
-    
-    // append(elem);
-
-    m_elemStack.push(elem);
-
-    m_currentNode = elem;
+    catch(java.lang.Exception de)
+    {
+      // de.printStackTrace();
+      throw new org.xml.sax.SAXException(de);
+    }
     
   }
 
