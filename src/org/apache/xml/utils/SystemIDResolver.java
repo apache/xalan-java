@@ -259,6 +259,15 @@ public class SystemIDResolver
     }
 
     String uriStr = uri.toString();
+    
+    // Not so sure if this is good.  But, for now, I'll try it. We really must 
+    // make sure the return from this function is a URL!
+    if((Character.isLetter(uriStr.charAt(0)) && (uriStr.charAt(1) == ':') 
+     && (uriStr.charAt(2) == '/') && (uriStr.charAt(3) != '/'))
+       || ((uriStr.charAt(0) == '/') && (uriStr.charAt(1) != '/')))
+    {
+    	uriStr = "file:///"+uriStr;
+    }
     return uriStr;
   }
 }
