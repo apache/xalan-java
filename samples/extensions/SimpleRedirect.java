@@ -65,7 +65,7 @@ import javax.xml.transform.TransformerConfigurationException;
 
 // Imported java.io classes
 import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  *  Use the TraX interface to perform a transformation in the simplest manner possible
@@ -74,7 +74,7 @@ import java.io.FileNotFoundException;
 public class SimpleRedirect
 {
 	public static void main(String[] args)
-    throws TransformerException, TransformerConfigurationException, FileNotFoundException
+    throws TransformerException, TransformerConfigurationException, IOException
   {  
     // Instantiate a TransformerFactory.
   	TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -82,7 +82,7 @@ public class SimpleRedirect
 	  // Use the TransformerFactory to instantiate a Transformer that will work with  
 	  // the stylesheet you specify. This method call also processes the stylesheet
     // into a compiled Templates object.
-	  Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
+	  Transformer transformer = tFactory.newTransformer(new StreamSource("1-redir.xsl"));
 
 	  // Use the transformer to apply the Templates object to an XML document
 	  // (foo.xml). The output that is not redirected by the stylesheet is
