@@ -519,8 +519,6 @@ public class TransformerFactoryImpl
 		passErrorsToListener(xsltc.getErrors());
 	    else
 		xsltc.printErrors();
-	    System.err.println("java.class.path is "+System.getProperty("java.class.path"));
-	    System.err.println("class loader "+this.getClass().getClassLoader());
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
 	    throw new TransformerConfigurationException(err.toString());
 	}
