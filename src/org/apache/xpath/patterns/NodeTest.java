@@ -374,6 +374,9 @@ public class NodeTest extends Expression
           throws javax.xml.transform.TransformerException
   {
 
+    if (m_whatToShow == NodeFilter.SHOW_ALL)
+      return m_score;
+
     short nodeType = context.getNodeType();
     int nodeBit = (m_whatToShow & (0x00000001 << (nodeType - 1)));
 
@@ -459,11 +462,6 @@ public class NodeTest extends Expression
           throws javax.xml.transform.TransformerException
   {
 
-    if (m_whatToShow == NodeFilter.SHOW_ALL)
-      return m_score;
-
-    Node context = xctxt.getCurrentNode();
-
-    return execute(xctxt, context);
+    return execute(xctxt, xctxt.getCurrentNode());
   }
 }
