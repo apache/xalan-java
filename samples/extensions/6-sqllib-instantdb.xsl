@@ -11,20 +11,21 @@
     <xsl:variable name="products"
                   select="sql:new('org.enhydra.instantdb.jdbc.idbDriver',
                                 'jdbc:idb:./instantdb/sample.prp')"/>
+    <!--2. Execute the query -->
+    <xsl:variable name="table" select='sql:query($products, $query)'/>
     <HTML>
       <HEAD>
+        <TITLE>Products</TITLE>
       </HEAD>
       <BODY>
         <TABLE border="1">
-        <!--2. Execute the query -->
-        <xsl:variable name="table" select='sql:query($products, $query)'/>
           <TR>
           <!-- Get column-label attribute from each column-header-->
-          <xsl:for-each select="$table/row-set/column-header">
+          <xsl:for-each select="$table/sql/metadata/column-header">
             <TH><xsl:value-of select="@column-label"/></TH>
           </xsl:for-each>
           </TR>
-          <xsl:apply-templates select="$table/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set/row"/>
           <xsl:text>&#10;</xsl:text>
         </TABLE>
       </BODY>
