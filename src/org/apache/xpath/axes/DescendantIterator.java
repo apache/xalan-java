@@ -106,9 +106,10 @@ public class DescendantIterator extends LocPathIterator
     }
     else if(OpCodes.FROM_ROOT == stepType)
     {
-      // %TBD% orSelf and fromRoot should be considered seperately.
       fromRoot = true;
-      // orSelf = true;
+      // Ugly code... will go away when AST work is done.
+      if(ops[firstStepPos+4] == OpCodes.FROM_DESCENDANTS_OR_SELF)
+        orSelf = true;
       firstStepPos += 8;
     }
     
