@@ -95,32 +95,36 @@ public class KeyTable
   private Node m_docKey;
 
   /**
-   * NEEDSDOC Method getDocKey 
+   * Get the document root matching this key.  
    *
    *
-   * NEEDSDOC (getDocKey) @return
+   * @return the document root matching this key
    */
   public Node getDocKey()
   {
     return m_docKey;
   }
 
-  /**
-   * Hashtable of keys.
-   * The table is:
-   * a) keyed by name,
-   * b) with a value that is a KeyIterator.
+  /** 
+   * The main iterator that will walk through the source  
+   * tree for this key.
    */
   private KeyIterator m_keyIter;
   
-  private Hashtable defsTable;
+  /**
+   * Hashtable of keys.
+   * The table is:
+   * a) keyed by key name,
+   * b) with a value that is a hashtable keyed by key values 
+   * with at value of KeyRefIterator(cloned).
+   */
+  private Hashtable m_defsTable;
 
   /**
    * Build a keys table.
-   * @param doc The owner document key (normally the same as startNode).
-   * @param startNode The node to start itterating from to build the keys index.
+   * @param doc The owner document key.
    * @param nscontext The stylesheet's namespace context.
-   * NEEDSDOC @param name
+   * @param name The key name
    * @param keyDeclarations The stylesheet's xsl:key declarations.
    * @param xmlLiaison The parser liaison for support of getNodeData(useNode).
    *
@@ -135,13 +139,12 @@ public class KeyTable
     m_keyIter = new KeyIterator(doc, nscontext, name, keyDeclarations,
                                 xmlLiaison);
     m_keyIter.setKeyTable(this);
-  }  // end buildKeysTable method
+  }  
 
   /**
    * Given a valid element key, return the corresponding node list.
+   * 
    * @param The name of the key, which must match the 'name' attribute on xsl:key.
-   *
-   * @param name The name of the key
    * @param ref The value that must match the value found by the 'match' attribute on xsl:key.
    * @return If the name was not declared with xsl:key, this will return null,
    * if the identifier is not found, it will return null,
@@ -154,14 +157,17 @@ public class KeyTable
     KeyRefIterator kiRef;
     Hashtable refsTable = null;
 
-    if (defsTable != null)
+    // First look for the key in the existing key names table
+    if (m_defsTable != null)
     {
-      refsTable = (Hashtable)defsTable.get(name);
+      refsTable = (Hashtable)m_defsTable.get(name);
       if (refsTable != null)
       {
         Object kiObj = refsTable.get(ref);
         if (kiObj != null)
         {
+          // An entry already exists for this key name and value.
+          // Return a clone of the node iterator found.
           try
           {
             // clone with reset??
@@ -176,9 +182,10 @@ public class KeyTable
       }
     }
 
+    // No entry was found for this key name and value. Create one.
     {
-      if (defsTable == null)
-        defsTable = new Hashtable();
+      if (m_defsTable == null)
+        m_defsTable = new Hashtable();
       if (refsTable == null)
         refsTable = new Hashtable();
       
@@ -189,16 +196,16 @@ public class KeyTable
         ((KeyWalker)m_keyIter.getFirstWalker()).m_lookupKey = ref;
       kiRef = new KeyRefIterator(ref, m_keyIter);
       refsTable.put(ref, kiRef);
-      defsTable.put(name,refsTable);
+      m_defsTable.put(name,refsTable);
       return kiRef;              
     } 
   }
 
   /**
-   * NEEDSDOC Method getKeyTableName 
+   * Get Key Name for this KeyTable  
    *
    *
-   * NEEDSDOC (getKeyTableName) @return
+   * @return Key name
    */
   public QName getKeyTableName()
   {
@@ -206,8 +213,9 @@ public class KeyTable
   }
   
   /**
-   * Add this ref to the refsTable  
-   *
+   * Add this node to the nodelist matching this key value. 
+   * If there was no existing entry for that key value, create
+   * one.   
    *
    * @param ref Key ref(from key use field)
    * @param node Node matching that ref 
@@ -216,9 +224,9 @@ public class KeyTable
   {
     KeyRefIterator kiRef = null;
     Hashtable refsTable = null;
-    if (defsTable != null)
+    if (m_defsTable != null)
     {
-      refsTable = (Hashtable)defsTable.get(getKeyTableName());
+      refsTable = (Hashtable)m_defsTable.get(getKeyTableName());
       if (refsTable != null)
       {
         Object kiObj = refsTable.get(ref);
@@ -230,12 +238,12 @@ public class KeyTable
     }
     if (kiRef == null)
     {  
-      if (defsTable == null)
-        defsTable = new Hashtable();
+      if (m_defsTable == null)
+        m_defsTable = new Hashtable();
       if (refsTable == null)
       {  
         refsTable = new Hashtable();
-        defsTable.put(getKeyTableName(),refsTable);
+        m_defsTable.put(getKeyTableName(),refsTable);
       }
       kiRef = new KeyRefIterator(ref, m_keyIter);
       refsTable.put(ref, kiRef);      

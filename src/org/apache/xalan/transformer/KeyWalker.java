@@ -77,7 +77,7 @@ import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class KeyWalker <needs-comment/>
+ * Walker for a Key() function.
  */
 public class KeyWalker extends DescendantOrSelfWalker
 {
@@ -85,7 +85,7 @@ public class KeyWalker extends DescendantOrSelfWalker
   /**
    * Construct a KeyWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator: this is usually a KeyIterator
    */
   public KeyWalker(LocPathIterator locPathIterator)
   {
@@ -95,7 +95,7 @@ public class KeyWalker extends DescendantOrSelfWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root Document root node
    */
   public void setRoot(Node root)
   {
@@ -107,22 +107,22 @@ public class KeyWalker extends DescendantOrSelfWalker
     super.setRoot(root);
   }
 
-  /** NEEDSDOC Field m_attrs          */
+  /** List of attribute nodes of the current node      */
   NamedNodeMap m_attrs;
 
-  /** NEEDSDOC Field m_foundAttrs          */
+  /** Flag indicating that attibute nodes were found for the current node    */
   boolean m_foundAttrs;
 
-  /** NEEDSDOC Field m_attrPos          */
+  /** Current position in the attribute nodes list         */
   int m_attrPos;
 
-  /** NEEDSDOC Field m_lookupKey          */
+  /** Key value that this is looking for           */
   String m_lookupKey;
 
   /**
    * Get the next node in document order on the axes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The next node found or null.
    */
   protected Node getNextNode()
   {
@@ -158,9 +158,9 @@ public class KeyWalker extends DescendantOrSelfWalker
    * TreeWalker or NodeIterator. This function will be called by the
    * implementation of TreeWalker and NodeIterator; it is not intended to
    * be called directly from user code.
-   * @param n  The node to check to see if it passes the filter or not.
+   * 
+   * @param testnode  The node to check to see if it passes the filter or not.
    *
-   * NEEDSDOC @param testNode
    * @return  a constant to determine whether the node is accepted,
    *   rejected, or skipped, as defined  above .
    */
@@ -183,6 +183,8 @@ public class KeyWalker extends DescendantOrSelfWalker
       {
         KeyDeclaration kd = (KeyDeclaration) keys.elementAt(i);
 
+        // Only continue if the name on this key declaration
+        // matches the name on the iterator for this walker. 
         if(!kd.getName().equals(name)) 
           continue;
         
@@ -256,12 +258,16 @@ public class KeyWalker extends DescendantOrSelfWalker
    * current node has no next node,  or if the search for nextNode attempts
    * to step upward from the TreeWalker's root node, returns
    * <code>null</code> , and retains the current node.
+   * 
    * @return  The new node, or <code>null</code> if the current node has no
    *   next node  in the TreeWalker's logical view.
    */
   public Node nextNode()
   {
     Node node = super.nextNode();
+    // If there is no next node, we have walked the whole source tree.
+    // Notify the iterator of that so that its callers know that there
+    // are no more nodes to be found.
     if (node == null)
       ((KeyIterator)m_lpi).setLookForMoreNodes(false);
     return node;

@@ -82,13 +82,13 @@ public class KeyManager
   /**
    * Given a valid element key, return the corresponding node list.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param name
-   * NEEDSDOC @param ref
-   * NEEDSDOC @param nscontext
+   * @param xctxt The XPath runtime state
+   * @param doc The document node
+   * @param name The key element name
+   * @param ref The key value we're looking for 
+   * @param nscontext The prefix resolver for the execution context
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A nodelist of nodes mathing the given key
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -68,7 +68,10 @@ import org.w3c.dom.DOMException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class KeyIterator <needs-comment/>
+ * This class implements an optimized iterator for 
+ * "key()" patterns. It uses a KeyIterator to walk the 
+ * source tree and incrementally build a list of nodes that match
+ * a given key name, match pattern and value.  
  */
 public class KeyRefIterator extends LocPathIterator
 {
@@ -99,11 +102,8 @@ public class KeyRefIterator extends LocPathIterator
    * Constructor KeyRefIterator
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param nscontext
-   * NEEDSDOC @param name
-   * NEEDSDOC @param keyDeclarations
-   * NEEDSDOC @param xctxt
+   * @param ref Key value to match
+   * @param ki The main key iterator used to walk the source tree 
    */
   public KeyRefIterator(String ref, KeyIterator ki)
   {

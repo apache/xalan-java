@@ -77,7 +77,10 @@ import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class KeyIterator <needs-comment/>
+ * This class implements an optimized iterator for 
+ * "key()" patterns. This iterator incrementally walks the 
+ * source tree and finds all the nodes that match
+ * a given key name and match pattern.
  */
 public class KeyIterator extends LocPathIterator
 {
@@ -85,7 +88,7 @@ public class KeyIterator extends LocPathIterator
   /** The key table this iterator is associated to          */
   private KeyTable m_keyTable;
 
-  /** NEEDSDOC Field m_name          */
+  /** Key name           */
   private QName m_name;
   
   /** 
@@ -95,24 +98,24 @@ public class KeyIterator extends LocPathIterator
   private boolean m_lookForMoreNodes = true;
 
   /**
-   * NEEDSDOC Method getName 
+   * Get the key name from a key declaration this iterator will process
    *
    *
-   * NEEDSDOC (getName) @return
+   * @return Key name
    */
   public QName getName()
   {
     return m_name;
   }
 
-  /** NEEDSDOC Field m_keyDeclarations          */
+  /** Vector of Key declarations in the stylesheet          */
   private Vector m_keyDeclarations;
 
   /**
-   * NEEDSDOC Method getKeyDeclarations 
+   * Get the key declarations from the stylesheet 
    *
    *
-   * NEEDSDOC (getKeyDeclarations) @return
+   * @return Vector containing the key declarations from the stylesheet
    */
   public Vector getKeyDeclarations()
   {
@@ -123,11 +126,11 @@ public class KeyIterator extends LocPathIterator
    * Constructor KeyIterator
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param nscontext
-   * NEEDSDOC @param name
-   * NEEDSDOC @param keyDeclarations
-   * NEEDSDOC @param xctxt
+   * @param doc The document node
+   * @param nscontext The prefix resolver for the execution context.
+   * @param name The key name
+   * @param keyDeclarations The key declarations from the stylesheet 
+   * @param xctxt The XPath runtime state
    */
   public KeyIterator(Node doc, PrefixResolver nscontext, QName name,
                      Vector keyDeclarations, XPathContext xctxt)
@@ -145,10 +148,12 @@ public class KeyIterator extends LocPathIterator
   }
 
   /**
-   * NEEDSDOC Method nextNode 
-   *
-   *
-   * NEEDSDOC (nextNode) @return
+   * Returns the next node in the set and advances the position of the
+   * iterator in the set. After a NodeIterator is created, the first call
+   * to nextNode() returns the first node in the set.
+   * 
+   * @return  The next <code>Node</code> in the set being iterated over, or
+   *   <code>null</code> if there are no more members in that set.
    *
    * @throws DOMException
    */
@@ -164,10 +169,10 @@ public class KeyIterator extends LocPathIterator
   }
 
   /**
-   * NEEDSDOC Method setLookupKey 
+   * Set the value of the key that this iterator will look for 
    *
    *
-   * NEEDSDOC @param lookupKey
+   * @param lookupKey value of the key to look for
    */
   public void setLookupKey(String lookupKey)
   {
@@ -194,10 +199,10 @@ public class KeyIterator extends LocPathIterator
   }  
   
   /**
-   * Add this ref to the refsTable in KeyTable  
+   * Add this value(ref) to the refsTable in KeyTable  
    *
    *
-   * @param ref Key ref(from key use field)
+   * @param ref Key value(ref)(from key use field)
    * @param node Node matching that ref 
    */
   void addRefNode(String ref, Node node)
