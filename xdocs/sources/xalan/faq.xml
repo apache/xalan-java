@@ -203,7 +203,7 @@
 	    <code>java -Xbootclasspath/p:&lt;path&gt;
 		    org.apache.xalan.xslt.Process</code>
             <br />
-	    <br />where &lt;path&gt; is a colon seperated lists of the paths to the files xalan.jar, 
+	    <br />where &lt;path&gt; is a colon separated lists of the paths to the files xalan.jar, 
 	     xercesImpl.jar, and xml-apis.jar (e.g. bin/xalan.jar:bin/xercesImpl.jar:bin/xml-apis.jar) 
 	     containing the new-version of &xslt4j;.
           </li>
@@ -238,8 +238,8 @@
         The signature file for xalan-j_2_0_1.tar.gz, for example, is xalan-j_2_0_1.tar.gz.sig.
         </p>
         <p>The .sig files are PGP signatures of the actual .zip or .tar.gz
-        download files.  You can use these files to verify the authenticiy of the download. You do not 
-        need the .sig file to use the corresponding donwload file.</p>
+        download files.  You can use these files to verify the authenticity of the download. You do not 
+        need the .sig file to use the corresponding download file.</p>
         <p>To check the authenticity of a &xslt4j; distribution, you need a copy of
         PGP which is available in a number of licenses, including some free
         non-commercial licenses, either from an mit.edu site or on
@@ -346,7 +346,7 @@
           <br />
           <code>xmlns="http://my-namespace"</code>
         </p>
-        <p>Add a nampespace declaration with a prefix:
+        <p>Add a namespace declaration with a prefix:
           <br />
           <code>xmlns:foo="http://my-namespace"</code>
         </p>
@@ -426,7 +426,7 @@ spFactory.setNamespaceAware(true);</source>
     <faq title='Namespace not supported by SAXParser'>
       <q>Why am I getting a "Namespace not supported by SAXParser exception?</q>
       <a>
-        <p>We have seen this probem arise for two quite different reasons:</p>
+        <p>We have seen this problem arise for two quite different reasons:</p>
         <ul>
           <li>SAX1 interfaces are on your classpath in front of the SAX2 interfaces provided with 
               your XML parser.
@@ -485,7 +485,7 @@ spFactory.setNamespaceAware(true);</source>
 	   may set this in other ways, or may not allow you to control it at all; check the 
 	   documentation on your system for details.</p>
         <p>Note too that on some platforms 1MB is an architectural upper limit on the stack size, so 
-           setting -Xss2m (or equivalent) may not allow deeper recusion than -Xss1m.</p>
+           setting -Xss2m (or equivalent) may not allow deeper recursion than -Xss1m.</p>
       </a>
     </faq>
     <faq title='OutOfMemoryError processing multiple documents'>
@@ -517,7 +517,7 @@ spFactory.setNamespaceAware(true);</source>
           to read in the entire document. In fact, you can take advantage of the incremental transform 
           feature even if you are not turning off document caching.
         </p>
-        <p>You can also increase your jvm heap size with the -Xmx or -mx flag, depending on which JVM 
+        <p>You can also increase your JVM heap size with the -Xmx or -mx flag, depending on which JVM 
            you are using (you can include both flags, and the JVM will ignore the one it doesn't 
            understand). For example, to give your JVM 64 meg, try
           <br />
@@ -573,7 +573,7 @@ file:///
            transformation.</p>
         <ul>
           <li>For each transformation in the series, you can set one SAX ContentHandler to process 
-              the input, and another ContenHandler to process the output.
+              the input, and another ContentHandler to process the output.
             <br />
             <br />
           </li>
