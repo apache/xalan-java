@@ -1,0 +1,109 @@
+<?xml version="1.0" standalone="no"?> 
+<!DOCTYPE faqs SYSTEM "../../style/dtd/faqs.dtd">
+
+<faqs title="Frequently asked questions">
+
+  <faq title="Where do I go to learn about XSLT">  
+    <q>Where do I go to learn about XSLT?</q>    
+    <a><p>The definitive sources are the W3C XSLT and XPath recommendations: <resource-ref idref="xslt"/> and 
+    <resource-ref idref="xpath"/>.</p>
+    <p>For a brief listing of tutorials, discussion forums, and other materials, see <link idref="overview"
+     anchor="uptospeed">Getting up to speed with XSLT</link>.</p></a>
+  </faq>
+
+  <faq title="Which version of Xerces should I be using?">  
+    <q>Which version of Xerces should I be using?</q>    
+    <a><p>&xslt4j-current; has been tested with &xml4j-used;. See <link idref="readme" anchor="status">Status</link></p></a>
+  </faq>
+  
+  <faq title="Compatibility with &xslt4j; version 1">
+   <q>How do I run applications that use the &xslt4j; version 1 API with &xslt4j2;</q>
+   <a><p>Use the Xalan-Java 1 compatibility JAR to recompile and run your &xslt4j; 1 applications with &xslt4j2;. For more information, see 
+   <link idref="usagepatterns" anchor="compat">Using the &xslt4j; version 1 API</link>.</p></a>
+  </faq>
+    
+  <faq title="TrAX and JAXP">
+    <q>What are TrAX and JAXP, and are they related?</q>
+    <a><p>TrAX is the Transformation API for XML. In November 2000, TrAX was revised and incorporated into JAXP, the JAVA API for XML
+    Processing. JAXP (including TrAX) provides users a standard, vendor-neutral API for working with (and transforming) XML documents. 
+    You can use this API to build applications that are not bound to the particular implementation details of a given XML parser or XSL
+    transformer.</p>
+    <p>&xslt4j; includes the JAXP packages, implements the TrAX portion of that API (javax.xml.transform....), and includes xerces.jar from
+    &xml4j;, which implements the parser portion of the API (javax.xml.parser....).</p>
+<p>For more information, see <resource-ref idref="trax"/> and <resource-ref idref="jaxp11"/>.</p></a>
+  </faq>
+  <faq title="Chaining transformations">  
+    <q>How do you chain together a series of transformations?"</q>
+    
+    <a><p>&xslt4j; supports two strategies for chaining together a series of transformations such that the output of each 
+    transformation provides input for the next transformation.</p>
+    <ul>
+      <li>For each transformation in the series, you can set one SAX ContentHandler to process the input, and another ContenHandler to process
+       the output.<br/><br/></li>
+      <li>You can also set up a series of parent-child relationships between an XMLReader and one or more XMLFilters.</li> 
+    </ul>
+    <p>For the details and links to examples, see <link idref="usagepatterns" anchor="outasin">Using transformation output as input for 
+    another transformation</link>.</p></a>
+  </faq>
+  
+ 
+  <faq title="Speeding up transformations">
+  
+    <q>What can I do to speed up transformations?</q>
+    
+    <a><p>In the ongoing development of &xslt4j;, enhancing performance is the primary goal of the &xslt4j; team.
+    Here are some preliminary suggestions for you to keep in mind as you set up your applications:</p><ul>
+    <li>Use a Templates object (with a different Transformers for each transformation) to perform multiple transformations with the same 
+    set of stylesheet instructions (see <link idref="usagepatterns" anchor="multithreading">Multithreading</link>).<br/><br/></li>         
+    <li>Set up your stylesheets to function efficiently.<br/><br/></li>
+       <ul>
+         <li>Don't use "//" (descendant axes) patterns near the root of a large document.<br/><br/></li>
+         <li>Use xsl:key elements and the key() function as an efficient way to retrieve node sets.<br/><br/></li>
+         <li>Where possible, use pattern matching rather than xsl:if or xsl:when statements.<br/><br/></li>
+         <li>xsl:for-each is fast because it does not require pattern matching.<br/><br/></li>
+         <li>Keep in mind that xsl:sort prevents incremental processing.<br/><br/></li>
+         <li>When you create variables, &lt;xsl:variable name="fooElem" select="foo"/&gt; is usually faster than
+         &gt;xsl:variable name="fooElem"&gt;&lt;xsl:value-of-select="foo"/&gt;&lt;/xsl:variable&gt;.<br/><br/></li>
+         <li>Be careful using the last() function.<br/><br/></li>
+         <li>The use of index predicates within match patterns can be expensive.<br/><br/></li>
+         <li>Decoding and encoding is expensive.<br/><br/></li>
+       </ul>
+     <li>For the ultimate in server-side scalability, perform transform operations on the client. For examples, see 
+     <link idref="samples" anchor="appletxmltohtml">appletXMLtoHTML</link> and <link idref="samples"
+     anchor="get-todo-list">get-todo-list</link>.</li>
+    </ul></a>
+  </faq>
+
+  <faq title="NoClassDefFound errors">
+  
+    <q>I'm getting a NoClassDefFound error. What has to be on the class path?</q>
+    
+    <a><ol>
+    <li>xalan.jar and xerces.jar (or the XML parser you are using) must always be on the class path.<br/><br/></li>
+    <li>To run the samples in the samples subdirectories, xalansamples.jar must be on the class path. To run the servlet (in
+    samples/servlet), xalanservlet.jar must be on the classpath along with the javax.servlet and javax.servlet.http packages. Sun distributes
+    the javax.servlet packages in the JSWDK servlet.jar file.<br/><br/></li>
+    <li>To run extensions (including the samples in samples/extensions), bsf.jar, and bsfengines.jar must be on the 
+    class path. To run extensions implemented in JavaScript, js.jar must also be on the class path. For information on what 
+    you need to run extensions implemented in other scripting languages, see <link idref="extensions"
+    anchor="supported-lang">Supported languages</link>.<br/><br/></li>
+    <li>To run applications that use the &xslt4j; version 1 API, you must put xalanj1compat.jar on the classpath, recompile the application,
+    and be sure xalanj1compat.jar is on the classpath at run time (see <link idref="usagepatterns" anchor="compat">Using the &xslt4j; version 1
+    API)</link>.</li>
+    </ol>
+    <p>For more information, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p></a>
+   </faq>
+ 
+
+	<faq title="Stylesheet validation">
+		<q>How do I validate an XSL stylesheet?</q>
+		<a>
+      <p>An XSL stylesheet is an XML document, so it can have a DOCTYPE and be subject to validation, right? </p>
+      <p>The XSLT Recommendation includes a <jump href="http://www.w3.org/TR/xslt#dtd">DTD Fragment 
+      for XSL Stylesheets</jump> with some indications of what you need to do to create a complete DTD for a given
+      stylesheet. Keep in mind that stylesheets can include literal result elements and produce output that is not valid
+      XML.</p>
+      <p>You can use the xsl:stylesheet doctype defined in xsl-html40s.dtd for stylesheets that generate HTML.</p>
+		</a>
+	</faq> 
+</faqs>
