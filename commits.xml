@@ -400,4 +400,115 @@ ContentHandler adapters).
 <Log>Bug 6156: Change variable stack reset to just get a new object. Also make 
 sure that the stack of result tree fragments is also cleaned ot during a reset.</Log>
 </Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/04/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XBoolean.java
+ XNodeSet.java XNumber.java XObject.java
+ XRTreeFrag.java XString.java
+ java/src/org/apache/xpath/operations Equals.java</Modified>
+<Log>Bug 5851: Make sure that the equal operation is evaluated by order of 
+precedence of the operands, as defined by XSLT.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/04/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForFSB.java</Modified>
+<Log>Bugzilla 5346: Prevent mantissa overflow when converting string to double.
+ There is still a possible edge-case, since I detect overflow on decimal digit
+ bounds rather than on bit bounds; I'm not sure what the IEEE spec calls for.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/04/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForFSB.java</Modified>
+<Log>Bugzilla 5346: My first-cut messed up fractional values. This one is
+ somewhat better.
+
+ There's an open issue w/r/t numbers with many digits after the
+ decimal point, regarding limits on how large a power of 10 can
+ be contained in a long. In that one case I'm falling back on successive
+ divisions (though as few as possible), and some loss of precision
+ may result.
+
+ Need to find a better algorithm...</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/04/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForFSB.java</Modified>
+<Log>Bugzilla 5346: Oops. Forgot to take out a debugging printout.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/05/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForFSB.java</Modified>
+<Log>Bugzilla 5346: Responding to the re-open; more direct and reliable
+ edge-case test. This does lose a few low bits on many-digit values,
+ so it is not the best long-term solution.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/05/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForFSB.java</Modified>
+<Log>Bug 5346: One more (last, I hope) edge case.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/05/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForFSB.java</Modified>
+<Log>Bug 5346: Gaaah. This regressions was just plain foolish flailing. "Less 
+haste, more speed."</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>02/05/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
+<Log>bug 1520, spec chars in href attributes</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/05/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize CharInfo.java</Modified>
+<Log>Bug 5857: Reusing objects that reuse objects has threading concerns.
+ Three possible solutions: Don't reuse, synchronize reuse, or rewrite
+ to avoid using the objects in the first place. See comments in code.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/06/2002</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java
+ IncrementalSAXSource.java
+ IncrementalSAXSource_Filter.java
+ IncrementalSAXSource_Xerces.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
+<Log>Bug 4244: Incremental wasn't setting up correctly for the
+ DTDHandler stream. It never occurred to me that XSLT would
+ ever have a use for unparsed entities...</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>02/06/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan Version.java
+ java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>Whoops! Never updated release number to 2.3 in these version files!</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>02/06/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>updated version number to 2.3</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/07/2002</DateCommitted>
+<Modified>java/src/org/apache/xpath SourceTreeManager.java</Modified>
+<Log>Bug 6304: Remove print stacktrace</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>02/07/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
+<Log>bug 1520, updating href attr spec char handling</Log>
+</Commit>
 </Commits>
