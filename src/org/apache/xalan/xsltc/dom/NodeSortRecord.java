@@ -82,9 +82,10 @@ public abstract class NodeSortRecord {
     public static int COMPARE_DESCENDING = 1;
 
     protected static Collator _collator = Collator.getInstance();
-    protected static int[] _compareType;
-    protected static int[] _sortOrder;
     protected static int _levels = 1;
+
+    protected int[] _compareType;
+    protected int[] _sortOrder;
 
     private AbstractTranslet _translet = null;
 
@@ -114,12 +115,16 @@ public abstract class NodeSortRecord {
      * to the default constructor.
      */
     public final void initialize(int node, int last, DOM dom,
-				 AbstractTranslet translet) {
+				 AbstractTranslet translet,
+				 int[] order, int[] type) {
 	_dom = dom;
 	_node = node;
 	_last = last;
 	_translet = translet;
 	_scanned = 0;
+
+	_sortOrder = order;
+	_compareType = type;
 
 	_values = new Object[_levels];
     }

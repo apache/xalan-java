@@ -70,10 +70,15 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 public class NodeSortRecordFactory {
+
+    private static int DESCENDING = "descending".length();
+    private static int NUMBER     = "number".length();
+
     private final DOM      _dom;
     private final String   _className;
     private Class _class;
-
+    private int   _order[];
+    private int   _type[];
     private final AbstractTranslet _translet;
 
     /**
@@ -83,7 +88,8 @@ public class NodeSortRecordFactory {
      * class), and the translet parameter is needed for methods called by
      * this object.
      */
-    public NodeSortRecordFactory(DOM dom, String className, Translet translet)
+    public NodeSortRecordFactory(DOM dom, String className, Translet translet,
+				 String order[], String type[])
 	throws TransletException {
 	try {
 	    _dom = dom;
@@ -91,6 +97,16 @@ public class NodeSortRecordFactory {
 	    _class = translet.getAuxiliaryClass(className);
 	    if (_class == null)	_class = Class.forName(className);
 	    _translet = (AbstractTranslet)translet;
+
+	    int levels = order.length;
+	    _order = new int[levels];
+	    _type = new int[levels];
+	    for (int i = 0; i < levels; i++) {
+		if (order[i].length() == DESCENDING)
+		    _order[i] = NodeSortRecord.COMPARE_DESCENDING;
+		if (type[i].length() == NUMBER)
+		    _type[i] = NodeSortRecord.COMPARE_NUMERIC;
+	    }
 	}
 	catch (ClassNotFoundException e) {
 	    throw new TransletException(e);
@@ -111,7 +127,7 @@ public class NodeSortRecordFactory {
 
 	final NodeSortRecord sortRecord =
 	    (NodeSortRecord)_class.newInstance();
-	sortRecord.initialize(node, last, _dom, _translet);
+	sortRecord.initialize(node, last, _dom, _translet, _order, _type);
 	return sortRecord;
     }
 

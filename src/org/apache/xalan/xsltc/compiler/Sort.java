@@ -93,9 +93,6 @@ final class Sort extends Instruction {
     public  String         _lang;
     public  String         _country;
 
-    private final static String EMPTYSTRING = 
-	org.apache.xalan.xsltc.compiler.Constants.EMPTYSTRING;
-
     /**
      * Parse the attributes of the xsl:sort element
      */
@@ -105,16 +102,29 @@ final class Sort extends Instruction {
 
 	// Get the sort order; default is 'ascending'
 	String val = getAttribute("order");
-	_order = AttributeValue
-	    .create(this, val.length() > 0 ? val : "ascending", parser);
+	if (val.length() == 0) val = "ascending";
+	_order = AttributeValue.create(this, val, parser);
 
 	// Get the case order; default is language dependant
 	val = getAttribute("case-order");
-	_caseOrder = AttributeValue
-	    .create(this, val.length() > 0 ? val : "upper-first", parser);
+	if (val.length() == 0) val = "upper-first";
+	_caseOrder = AttributeValue.create(this, val, parser);
 
 	// Get the sort data type; default is text
-	_data = getAttribute("data-type");
+	val = getAttribute("data-type");
+	if (val.length() == 0) {
+	    try {
+		final Type type = _select.typeCheck(parser.getSymbolTable());
+		if (type instanceof IntType)
+		    val = "number";
+		else
+		    val = "text";
+	    }
+	    catch (TypeCheckError e) {
+		val = "text";
+	    }
+	}
+	_dataType = AttributeValue.create(this, val, parser);
 
 	// Get the language whose sort rules we will use; default is env.dep.
 	if ((val = getAttribute("lang")) != null) {
@@ -137,19 +147,9 @@ final class Sort extends Instruction {
 
 	// If the sort data-type is not set we use the natural data-type
 	// of the data we will sort
-	if (tselect instanceof IntType) {
+	if (!(tselect instanceof StringType)) {
 	    _select = new CastExpr(_select, Type.String);
-	    if ((_data == null) || (_data.length() == 0)) _data = "number";
 	}
-	else if (tselect instanceof StringType) {
-	    if ((_data == null) || (_data.length() == 0)) _data = "text";
-	}
-	else {
-	    _select = new CastExpr(_select, Type.String);
-	    if ((_data == null) || (_data.length() == 0)) _data = "text";
-	}
-
-	_dataType = AttributeValue.create(this, _data, getParser());
 
 	_order.typeCheck(stable);
 	_caseOrder.typeCheck(stable);
@@ -161,12 +161,14 @@ final class Sort extends Instruction {
      * These two methods are needed in the static methods that compile the
      * overloaded NodeSortRecord.compareType() and NodeSortRecord.sortOrder()
      */
-    public String getSortType() {
-	return _dataType.toString();
+    public void translateSortType(ClassGenerator classGen,
+				  MethodGenerator methodGen) {
+	_dataType.translate(classGen, methodGen);
     }
     
-    public String getSortOrder() {
-	return _order.toString();
+    public void translateSortOrder(ClassGenerator classGen,
+				   MethodGenerator methodGen) {
+	_order.translate(classGen, methodGen);
     }
     
     /**
@@ -249,7 +251,8 @@ final class Sort extends Instruction {
 	
 	// NodeSortRecordFactory.NodeSortRecordFactory(dom,class,levels,trlet);
 	final String initParams =
-	    "("+DOM_INTF_SIG+STRING_SIG+ TRANSLET_INTF_SIG+")V";
+	    "("+DOM_INTF_SIG+STRING_SIG+TRANSLET_INTF_SIG+
+	    "["+STRING_SIG+"["+STRING_SIG+")V";
 	final int init = cpg.addMethodref(NODE_SORT_FACTORY,
 					  "<init>", initParams);
 
@@ -264,6 +267,30 @@ final class Sort extends Instruction {
 	il.append(methodGen.loadDOM());
 	il.append(new PUSH(cpg, className));
 	il.append(classGen.loadTranslet());
+
+	// Compile code that initializes the static _compareType array
+	final int levels = sortObjects.size();
+	// Compile code that initializes the static _sortOrder
+	il.append(new PUSH(cpg, levels));
+	il.append(new ANEWARRAY(cpg.addClass(STRING)));
+	for (int level = 0; level < levels; level++) {
+	    final Sort sort = (Sort)sortObjects.elementAt(level);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, level));
+	    sort.translateSortOrder(classGen, methodGen);
+	    il.append(AASTORE);
+	}
+
+	il.append(new PUSH(cpg,levels));
+	il.append(new ANEWARRAY(cpg.addClass(STRING)));
+	for (int level = 0; level < levels; level++) {
+	    final Sort sort = (Sort)sortObjects.elementAt(level);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, level));
+	    sort.translateSortType(classGen, methodGen);
+	    il.append(AASTORE);
+	}
+
 	il.append(new INVOKESPECIAL(init));
     }
 
@@ -346,36 +373,6 @@ final class Sort extends Instruction {
 	final int levelsField = cpg.addFieldref(className, "_levels", "I");
 	il.append(new PUSH(cpg, levels));
 	il.append(new PUTSTATIC(levelsField));
-
-	// Compile code that initializes the static _compareType array
-	final int ctype = cpg.addFieldref(className, "_compareType", "[I");
-	il.append(new PUSH(cpg,levels));
-	il.append(new NEWARRAY(de.fub.bytecode.Constants.T_INT));
-	for (int level = 0; level < levels; level++) {
-	    final Sort sort = (Sort)sortObjects.elementAt(level);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, level));
-	    il.append(new PUSH(cpg, sort.getSortType().equals("number")
-			       ? NodeSortRecord.COMPARE_NUMERIC
-			       : NodeSortRecord.COMPARE_STRING));
-	    il.append(IASTORE);
-	}
-	il.append(new PUTSTATIC(ctype));
-	
-	// Compile code that initializes the static _sortOrder
-	final int corder = cpg.addFieldref(className, "_sortOrder", "[I");
-	il.append(new PUSH(cpg, levels));
-	il.append(new NEWARRAY(de.fub.bytecode.Constants.T_INT));
-	for (int level = 0; level < levels; level++) {
-	    final Sort sort = (Sort)sortObjects.elementAt(level);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, level));
-	    il.append(new PUSH(cpg, sort.getSortOrder().equals("descending")
-			       ? NodeSortRecord.COMPARE_DESCENDING
-			       : NodeSortRecord.COMPARE_ASCENDING));
-	    il.append(IASTORE);
-	}
-	il.append(new PUTSTATIC(corder));
 
 	// Compile code that initializes the locale
 	String language = null;
