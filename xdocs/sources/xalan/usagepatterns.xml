@@ -73,6 +73,7 @@
 <li><link anchor="extensions">Creating and using extensions</link></li>
 <li><link anchor="multithreading">Multithreading</link></li>
 <li><link anchor="debugging">Debugger interface</link></li>
+<li><link anchor="compat">Using the &xslt4j; version 1 API</link></li>
 </ul>
 <anchor name="basic"/>
   <s2 title="Basic steps">
@@ -115,18 +116,24 @@ transformer.transform
 </s2><anchor name="plug"/>
 <s2 title="Plugging in a Transformer and XML parser">
 <p>The Java API for XML Processing interfaces enable you to isolate your application from the internal implementation details of a given Transformer, SAX parser, or DOM parser. For each of these objects, there is an abstract Factory class with a static newInstance() method that instantiates a concrete Factory which wraps the underlying implementation. These newInstance() methods use system property settings to determine which implementation to instantiate.</p>
-<p>&xslt4j; is distributed with the following system property settings for the Xalan XSLT Transformer and the Xerces DOM and SAX parsers:</p>
+<p>&xslt4j; is distributed with system property settings for the Xalan XSLT Transformer and the Xerces DOM and SAX parsers. These settings are in xalan.jar in META-INF/services (see src/META-INF/services).</p>
 <gloss>
   <label>System property</label>
-    <item>Default value</item>
-  <label><code>vax.xml.transform.TransformerFactory</code></label>
+    <item>Setting</item>
+  <label><code>javax.xml.transform.TransformerFactory</code></label>
    <item><code>org.apache.xalan.proccessor.TransformerFactoryImpl</code></item>    
   <label><code>javax.xml.parsers.DocumentBuilderFactory</code></label>
    <item><code>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</code></item>    
   <label><code>javax.xml.parsers.SAXParserFactory</code></label>
    <item><code>org.apache.xerces.jaxp.SAXParserFactoryImpl</code></item>
- </gloss>  
-<p>For information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Pluggability Layer" in the <ref>Java API for XML Processing</ref> at 
+ </gloss>
+<p>You can change any of these settings as follows (in order of precedence):</p>
+<ol>
+  <li>Set the system property from the command line when you launch Java or from within your application.<br/><br/></li>
+  <li>Set the system property in jaxp.properties in the JAVA_HOME/lib directory, where JAVA_HOME is the root of the JDK.<br/><br/></li>
+  <li>Revise the entry in src/META-INF/services and rebuild xalan.jar.<br/><br/></li>
+</ol>
+<p>For more information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Pluggability Layer" in the <ref>Java API for XML Processing</ref> at 
 <jump href="http://java.sun.com/aboutJava/communityprocess/review/jsr063/index.html">JSR-000063 1.1</jump>.</p> 
 </s2><anchor name="outputprops"/>
 <s2 title="Setting output properties in your stylesheets">
@@ -227,7 +234,8 @@ instructions:</p>
 <p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. <resource-ref idref="trax"/> and the &xslt4j; Transformer implementation provide direct support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
 </s2><anchor name="params"/>
 <s2 title="Setting stylesheet parameters">
-<p>An XSLT stylesheet may include parameters that are set at run time each time a transformation is performed. To set a stylesheet parameter, use the Transformer <jump href="apidocs/org/apache/trax/Transformer.html#setParameter(java.lang.String,java.lang.Object)">setParameter(String name, Object value)</jump> method. For a working example, see UseStylesheetParam.java in the samples/UseStylesheetParam subdirectory.</p>
+<p>An XSLT stylesheet may include parameters that are set at run time each time a transformation is performed. To set a stylesheet parameter, use the Transformer 
+<jump href="apidocs/javax/xml/transform/Transformer.html#setParameter(java.lang.String,java.lang.Object)">setParameter(String name, Object value)</jump> method. For a working example, see UseStylesheetParam.java in the samples/UseStylesheetParam subdirectory.</p>
 <p>You can also set a parameter with the command-line utility by including the <code>-param</code> flag. For example:</p>
 <p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 foobar</code></p>
 <p>where <code>param</code> is the parameter name and <code>foobar</code> is the parameter value. The parameter namespace is null.</p>
@@ -433,5 +441,14 @@ if (transformer instanceof TransformerImpl) {
 pw.close();
 fw.close();</source>
 <p>For a sample application that uses this technique, see <link idref="samples" anchor="trace">Trace</link>.</p>
+</s2><anchor name="compat"/>
+<s2 title="Using the &xslt4j; version 1 API">
+<p>The bin directory includes a compatibility jar, xalanj1compat.jar, that lets you rebuild your Xalan-Java 1.x applications to run with Xalan-Java 2. As a point of reference, this JAR includes the API required to recompile the Xalan-Java 1.x core sample applications (excluding the sample extensions) and run them with Xalan-Java 2. To use this compatibility layer with an existing Xalan-Java 1.x application, do the following:</p>
+<ol>
+<li>Place xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar (both are in the bin directory).<br/><br/></li>
+<li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatibility layer does not support. <br/><br/></li>
+<li>Run the recompiled application with xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar.</li>
+</ol>
+<p>We want our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <jump href="compat_apidocs/index.html">Xalan-Java 1 compatibility Javadoc</jump>. For example, the compatibility layer does not support the use of Xalan-Java 1.x extensions. If you feel that we should extend our compatibility JAR to support additional Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
 </s2>
 </s1>
