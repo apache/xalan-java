@@ -57,16 +57,16 @@
 package org.apache.xalan.processor;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedInputStream;
-import java.util.Properties;
-import java.util.Enumeration;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import org.w3c.dom.Node;
+
+import org.apache.xalan.utils.TreeWalker;
 
 import trax.Processor;
 import trax.ProcessorException;
@@ -78,43 +78,7 @@ import trax.TemplatesBuilder;
  * interface, processes XSLT Stylesheets into a Templates object.
  */
 public class StylesheetProcessor extends Processor
-{
-  static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
-  
-  /*
-  * Retrieve a propery bundle from a specified file and load it 
-  * int the System properties.
-  * @param file The string name of the property file.  
-  */
-  private static void loadPropertyFileToSystem(String file) 
-  {
-    InputStream is;
-    try
-    {   		   
-      Properties props = new Properties();
-      is = Process.class.getResourceAsStream(file);    
-      // get a buffered version
-      BufferedInputStream bis = new BufferedInputStream (is);
-      props.load (bis);                                     // and load up the property bag from this
-      bis.close ();                                          // close out after reading
-      // OK, now we only want to set system properties that 
-      // are not already set.
-      Properties systemProps = System.getProperties();
-      Enumeration propEnum = props.propertyNames();
-      while(propEnum.hasMoreElements())
-      {
-        String prop = (String)propEnum.nextElement();
-        if(!systemProps.containsKey(prop))
-          systemProps.put(prop, props.getProperty(prop));
-      }
-      System.setProperties(systemProps);
-    }
-    catch (Exception ex)
-    {
-      ex.printStackTrace();
-    }
-  }
-  
+{  
   /**
    * Process the source into a templates object.
    * 
@@ -124,7 +88,6 @@ public class StylesheetProcessor extends Processor
   public Templates process(InputSource source)
     throws ProcessorException, SAXException, IOException
   {
-    loadPropertyFileToSystem(XSLT_PROPERTIES);
     TemplatesBuilder builder = getTemplatesBuilder();
     builder.setBaseID(source.getSystemId());
     XMLReader reader = this.getXMLReader();
@@ -149,7 +112,17 @@ public class StylesheetProcessor extends Processor
   public Templates processFromNode(Node node)
     throws ProcessorException
   {
-    return null;
+    try
+    {
+      TemplatesBuilder builder = getTemplatesBuilder();
+      TreeWalker walker = new TreeWalker(builder);
+      walker.traverse(node);
+      return builder.getTemplates();
+    }
+    catch(SAXException se)
+    {
+      throw new ProcessorException("processFromNode failed", se);
+    }
   }
 
   /**
@@ -177,18 +150,6 @@ public class StylesheetProcessor extends Processor
    * <p>Note that DOM2 has it's own mechanism for discovering stylesheets. 
    * Therefore, there isn't a DOM version of this method.</p>
    * 
-   * <h3>Open issues:</h3>
-   * <dl>
-   *    <dt><h4>Does the xml-stylesheet recommendation really support multiple stylesheets?</h4></dt>
-   *    <dd>Mike Kay wrote:  I don't see any support in the
-   *        xml-stylesheet recommendation for this interpretation of what you should do
-   *        if there's more than one match. Scott Boag replies: It's in the HTML references.  
-   *        But it's a bit subtle.  We talked about this at the last XSL WG F2F, and people 
-   *        agreed to the multiple stylesheet stuff.  I'll try and work out the specific 
-   *        references.  Probably the xml-stylesheet recommendation needs to have a note 
-   *        added to it.</dd>
-   * </dl>
-   * 
    * @param media The media attribute to be matched.  May be null, in which 
    *              case the prefered templates will be used (i.e. alternate = no).
    * @param title The value of the title attribute to match.  May be null.
@@ -201,7 +162,34 @@ public class StylesheetProcessor extends Processor
                                                       String charset)
     throws ProcessorException
   {
-    return null;
+    // What I try to do here is parse until the first startElement
+    // is found, then throw a special exception in order to terminate 
+    // the parse.
+    StylesheetPIHandler handler = new StylesheetPIHandler(source, media, 
+                                                          title, charset);
+    try
+    {
+      XMLReader reader = this.getXMLReader();
+      if(null == reader)
+      {
+        reader = XMLReaderFactory.createXMLReader();
+      }
+      reader.setContentHandler(handler);
+      reader.parse(source);
+    }
+    catch(IOException ioe)
+    {
+      throw new ProcessorException("getAssociatedStylesheets failed", ioe);
+    }
+    catch(SAXException se)
+    {
+      String msg = se.getMessage();
+      if((null == msg) || !msg.equals(StylesheetPIHandler.STARTELEM_FOUND_MSG))
+      {
+        throw new ProcessorException("getAssociatedStylesheets failed", se);
+      }
+    }
+    return handler.getAssociatedStylesheets();
   }
   
   /**
@@ -224,5 +212,45 @@ public class StylesheetProcessor extends Processor
   {
     return new StylesheetHandler(this);
   }
+  
+  /**
+   * Look up the value of a feature.
+   *
+   * <p>The feature name is any fully-qualified URI.  It is
+   * possible for an Processor to recognize a feature name but
+   * to be unable to return its value; this is especially true
+   * in the case of an adapter for a SAX1 Parser, which has
+   * no way of knowing whether the underlying parser is
+   * validating, for example.</p>
+   * 
+   * <h3>Open issues:</h3>
+   * <dl>
+   *    <dt><h4>Should getFeature be changed to hasFeature?</h4></dt>
+   *    <dd>Keith Visco writes: Should getFeature be changed to hasFeature? 
+   *        It returns a boolean which indicated whether the "state" 
+   *        of feature is "true or false". I assume this means whether 
+   *        or not a feature is supported? I know SAX is using "getFeature", 
+   *        but to me "hasFeature" is cleaner.</dd>
+   * </dl>
+   *
+   * @param name The feature name, which is a fully-qualified
+   *        URI.
+   * @return The current state of the feature (true or false).
+   * @exception org.xml.sax.SAXNotRecognizedException When the
+   *            Processor does not recognize the feature name.
+   * @exception org.xml.sax.SAXNotSupportedException When the
+   *            Processor recognizes the feature name but 
+   *            cannot determine its value at this time.
+   */
+  public boolean getFeature (String name)
+    throws SAXNotRecognizedException, SAXNotSupportedException
+  {
+    if("http://xml.org/trax/features/sax/input".equals(name))
+      return true;
+    else if("http://xml.org/trax/features/dom/input".equals(name))
+      return true;
+    throw new SAXNotRecognizedException(name);
+  }
+
 
 }
