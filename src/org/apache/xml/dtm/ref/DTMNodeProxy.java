@@ -76,7 +76,6 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 /**
- * <meta name="usage" content="internal"/>
  * <code>DTMNodeProxy</code> presents a DOM Node API front-end to the DTM model.
  * <p>
  * It does _not_ attempt to address the "node identity" question; no effort
@@ -88,6 +87,7 @@ import org.w3c.dom.Text;
  * DTMNodeProxy may be subclassed further to present specific DOM node types.
  *
  * @see org.w3c.dom
+ * @xsl.usage internal
  */
 public class DTMNodeProxy
   implements Node, Document, Text, Element, Attr,

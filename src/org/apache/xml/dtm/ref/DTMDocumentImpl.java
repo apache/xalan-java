@@ -1772,12 +1772,12 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
         }
 
         /**
-         * <meta name="usage" content="internal"/>
          * Get the depth level of this node in the tree (equals 1 for
          * a parentless node).
          *
          * @param nodeHandle The node id.
          * @return the number of ancestors, plus one
+         * @xsl.usage internal
          */
         public short getLevel(int nodeHandle) {
                 short count = 0;
