@@ -363,6 +363,10 @@ public class XNumber extends XObject
       return sign + s.substring(0, 1) + s.substring(2, e)
              + zeros(exp - nDigits);
 
+    // Eliminate trailing 0's - bugzilla 14241
+    while (s.charAt(e-1) == '0')
+      e--;
+         
     if (exp > 0)
       return sign + s.substring(0, 1) + s.substring(2, 2 + exp) + "."
              + s.substring(2 + exp, e);

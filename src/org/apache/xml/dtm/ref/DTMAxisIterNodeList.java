@@ -122,7 +122,7 @@ public class DTMAxisIterNodeList extends DTMNodeListBase {
      * need this or not, but let's write it and think about it.
      *
      */
-    DTMAxisIterator getDTMAxisIterator() {
+    public DTMAxisIterator getDTMAxisIterator() {
         return m_iter;
     }
   

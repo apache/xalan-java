@@ -123,10 +123,9 @@ public class DTMNodeList extends DTMNodeListBase {
      * need this or not, but let's write it and think about it.
      *
      */
-    DTMIterator getDTMIterator() {
+    public DTMIterator getDTMIterator() {
         return m_iter;
     }
-  
 
     //================================================================
     // org.w3c.dom.NodeList API follows
