@@ -60,6 +60,7 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
@@ -119,8 +120,8 @@ public class DOMWSFilter implements DTMWSFilter {
             DOM dom = (DOM)dtm;
             int type = 0;
 
-            if (dtm instanceof SAXImpl) {
-                SAXImpl saxImpl = (SAXImpl)dtm;
+            if (dtm instanceof DOMEnhancedForDTM) {
+                DOMEnhancedForDTM mappableDOM = (DOMEnhancedForDTM)dtm;
                 
                 short[] mapping;
                 if (dtm == m_currentDTM) {
@@ -129,16 +130,17 @@ public class DOMWSFilter implements DTMWSFilter {
                 else {  
                     mapping = (short[])m_mappings.get(dtm);
                     if (mapping == null) {
-                        mapping = saxImpl.getMapping(m_translet.getNamesArray(),
+                        mapping = mappableDOM.getMapping(
+                                     m_translet.getNamesArray(),
                                      m_translet.getUrisArray(),
                                      m_translet.getTypesArray());
                         m_mappings.put(dtm, mapping);
-                        m_currentDTM = saxImpl;
+                        m_currentDTM = dtm;
                         m_currentMapping = mapping;
                     }
                 }
                 
-                int expType = saxImpl.getExpandedTypeID(node);
+                int expType = mappableDOM.getExpandedTypeID(node);
                 
                 // %OPT% The mapping array does not have information about all the
                 // exptypes. However it does contain enough information about all names

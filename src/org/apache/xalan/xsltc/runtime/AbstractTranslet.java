@@ -77,11 +77,11 @@ import org.apache.xml.dtm.DTM;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.KeyIndex;
-import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -336,18 +336,18 @@ public abstract class AbstractTranslet implements Translet {
      */
     private final void buildIDIndex(DOM document) {
         
-        if (document instanceof SAXImpl) {
-            SAXImpl saxImpl = (SAXImpl)document;
+        if (document instanceof DOMEnhancedForDTM) {
+            DOMEnhancedForDTM enhancedDOM = (DOMEnhancedForDTM)document;
             
             // If the input source is DOMSource, the KeyIndex table is not
             // built at this time. It will be built later by the lookupId()
             // and containsId() methods of the KeyIndex class.
-            if (saxImpl.hasDOMSource()) {
+            if (enhancedDOM.hasDOMSource()) {
                 buildKeyIndex(ID_INDEX_NAME, document);
                 return;
             }
             else {
-                final Hashtable elementsByID = saxImpl.getElementsWithIDs();
+                final Hashtable elementsByID = enhancedDOM.getElementsWithIDs();
 
                 if (elementsByID == null) {
             	    return;

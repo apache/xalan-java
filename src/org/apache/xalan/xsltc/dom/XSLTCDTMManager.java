@@ -68,6 +68,7 @@ import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.ObjectFactory;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xalan.xsltc.trax.DOM2SAX;
 
@@ -83,7 +84,10 @@ public class XSLTCDTMManager extends DTMManagerDefault
 {
 	
     /** The default class name to use as the manager. */
-    private static String defaultClassName =
+    private static final String DEFAULT_CLASS_NAME =
+        "org.apache.xalan.xsltc.dom.XSLTCDTMManager";
+
+    private static final String DEFAULT_PROP_NAME =
         "org.apache.xalan.xsltc.dom.XSLTCDTMManager";
 
     /** Set this to true if you want a dump of the DTM after creation */
@@ -91,7 +95,6 @@ public class XSLTCDTMManager extends DTMManagerDefault
   
     /** Set this to true if you want basic diagnostics */
     private static final boolean DEBUG = false;
-
 
     /**
      * Constructor DTMManagerDefault
@@ -101,21 +104,41 @@ public class XSLTCDTMManager extends DTMManagerDefault
     {
         super();
     } 
-  
+
     /**
      * Obtain a new instance of a <code>DTMManager</code>.
      * This static method creates a new factory instance.
      * The current implementation just returns a new XSLTCDTMManager instance.
-     *
-     * %REVISIT% Do we need the factory lookup mechanism for class loading here?
-     * Factory lookup will add a lot of complexity and also has a performance hit.
-     * There is currently no need to do it unless it is proved to be useful.
      */
     public static XSLTCDTMManager newInstance()
     {
-        XSLTCDTMManager factoryImpl = new XSLTCDTMManager();
-        return factoryImpl;
+        return new XSLTCDTMManager();
     } 
+
+    /**
+     * Look up the class that provides the XSLTC DTM Manager service.
+     * The following lookup procedure is used to find the service provider.
+     * <ol>
+     * <li>The value of the
+     * <code>org.apache.xalan.xsltc.dom.XSLTCDTMManager</code> property, is
+     * checked.</li>
+     * <li>The <code>xalan.propeties</code> file is checked for a property
+     * of the same name.</li>
+     * <li>The
+     * <code>META-INF/services/org.apache.xalan.xsltc.dom.XSLTCDTMManager</code>
+     * file is checked.
+     * </ol>
+     * The default is <code>org.apache.xalan.xsltc.dom.XSLTCDTMManager</code>.
+     */
+    public static Class getDTMManagerClass() {
+        Class mgrClass = ObjectFactory.lookUpFactoryClass(DEFAULT_PROP_NAME,
+                                                          null,
+                                                          DEFAULT_CLASS_NAME);
+        // If no class found, default to this one.  (This should never happen -
+        // the ObjectFactory has already been told that the current class is
+        // the default).
+        return (mgrClass != null) ? mgrClass : XSLTCDTMManager.class;
+    }
 
     /**
      * Get an instance of a DTM, loaded with the content from the
@@ -407,6 +430,10 @@ public class XSLTCDTMManager extends DTMManagerDefault
                 }
                 catch (Exception e) {
                     throw new org.apache.xml.utils.WrappedRuntimeException(e);
+                } finally {
+                    if (!hasUserReader) {
+                        releaseXMLReader(reader);
+                    }
                 }
 
                 if (DUMPTREE) {
