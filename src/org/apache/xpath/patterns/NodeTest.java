@@ -35,7 +35,25 @@ public class NodeTest extends Expression
   }
   
   String m_namespace;
+  
+  /**
+   * Return the namespace to be tested.
+   */
+  public String getNamespace()
+  {
+    return m_namespace;
+  }
+  
   String m_name;
+  
+  /**
+   * Return the local namespace to be tested.
+   */
+  public String getLocalName()
+  {
+    return m_name;
+  }
+  
   XNumber m_score;
   
   static final XNumber SCORE_NODETEST 
