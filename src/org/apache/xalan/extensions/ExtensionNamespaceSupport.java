@@ -54,7 +54,7 @@ public class ExtensionNamespaceSupport
     {
       Class cl = ExtensionHandler.getClassForName(m_handlerClass);
       Constructor con = null;
-      System.out.println("class " + cl + " " + m_args + " " + m_args.length + " " + m_sig);
+      //System.out.println("class " + cl + " " + m_args + " " + m_args.length + " " + m_sig);
       if (m_sig != null)
         con = cl.getConstructor(m_sig);
       else // Pick the constructor based on number of args.
