@@ -213,6 +213,7 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 <code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
 </s2><anchor name="sql"/>
 <s2 title= "SQL library">
+<p><em>[broken in &xslt4j-current; -- does not work with DTM]</em></p>
 <ul>
 <li><link anchor="sqlconn">Setting up a connection</link></li>
 <li><link anchor="sqlparam">Parameterized queries</link></li>
