@@ -76,6 +76,7 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xml.utils.NodeConsumer;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.BoolStack;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.functions.Function;
@@ -453,6 +454,7 @@ public class StylesheetHandler extends DefaultHandler
   public void startDocument() throws org.xml.sax.SAXException
   {
     m_stylesheetLevel++;
+    pushSpaceHandling(false);
   }
 
   
@@ -504,6 +506,8 @@ public class StylesheetHandler extends DefaultHandler
         elemProcessor.startNonText(this);
 
       m_stylesheetLevel--;
+      
+      popSpaceHandling();
 
       // WARNING: This test works only as long as stylesheets are parsed
       // more or less recursively. If we switch to an iterative "work-list"
@@ -618,6 +622,8 @@ public class StylesheetHandler extends DefaultHandler
       return;
 
     flushCharacters();
+    
+    pushSpaceHandling(attributes);
 
     XSLTElementProcessor elemProcessor = getProcessorFor(uri, localName,
                                            rawName);
@@ -653,6 +659,8 @@ public class StylesheetHandler extends DefaultHandler
       m_shouldProcess = false;
 
     flushCharacters();
+    
+    popSpaceHandling();
 
     XSLTElementProcessor p = getCurrentProcessor();
 
@@ -1513,4 +1521,82 @@ public class StylesheetHandler extends DefaultHandler
   {
     return m_originatingNode;
   }
+  
+  /**
+   * Stack of booleans that are pushed and popped in start/endElement depending 
+   * on the value of xml:space=default/preserve.
+   */
+  private BoolStack m_spacePreserveStack = new BoolStack();
+  
+  /**
+   * Return boolean value from the spacePreserve stack depending on the value 
+   * of xml:space=default/preserve.
+   * 
+   * @return true if space should be preserved, false otherwise.
+   */
+  boolean isSpacePreserve()
+  {
+    return m_spacePreserveStack.peek();
+  }
+  
+  /**
+   * Pop boolean value from the spacePreserve stack.
+   */
+  void popSpaceHandling()
+  {
+    m_spacePreserveStack.pop();
+  }
+  
+  /**
+   * Push boolean value on to the spacePreserve stack.
+   * 
+   * @param b true if space should be preserved, false otherwise.
+   */
+  void pushSpaceHandling(boolean b)
+    throws org.xml.sax.SAXParseException
+  {
+    m_spacePreserveStack.push(b);
+  }
+  
+  /**
+   * Push boolean value on to the spacePreserve stack depending on the value 
+   * of xml:space=default/preserve.
+   * 
+   * @param attrs list of attributes that were passed to startElement.
+   */
+  void pushSpaceHandling(Attributes attrs)
+    throws org.xml.sax.SAXParseException
+  {    
+    String value = attrs.getValue("xml:space");
+    if(null == value)
+    {
+      m_spacePreserveStack.push(m_spacePreserveStack.peek());
+    }
+    else if(value.equals("preserve"))
+    {
+      m_spacePreserveStack.push(true);
+    }
+    else if(value.equals("default"))
+    {
+      m_spacePreserveStack.push(false);
+    }
+    else
+    {
+      SAXSourceLocator locator = getLocator();
+      ErrorListener handler = m_stylesheetProcessor.getErrorListener();
+  
+      try
+      {
+        handler.error(new TransformerException("Illegal value for xml:space", locator));
+      }
+      catch (TransformerException te)
+      {
+        throw new org.xml.sax.SAXParseException(te.getMessage(), locator, te);
+      }
+      m_spacePreserveStack.push(m_spacePreserveStack.peek());
+    }
+  }
 }
+
+
+

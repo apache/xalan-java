@@ -82,15 +82,17 @@ public class ProcessorCharacters extends XSLTElementProcessor
    */
   public void startNonText(StylesheetHandler handler) throws org.xml.sax.SAXException
   {
-
     if (this == handler.getCurrentProcessor())
+    {
       handler.popProcessor();
+    }
 
     int nChars = m_accumulator.length();
 
     if ((nChars > 0)
             && ((null != m_xslTextElement)
-                ||!XMLCharacterRecognizer.isWhiteSpace(m_accumulator)))
+                ||!XMLCharacterRecognizer.isWhiteSpace(m_accumulator)) 
+                || handler.isSpacePreserve())
     {
       ElemTextLiteral elem = new ElemTextLiteral();
 
