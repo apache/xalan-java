@@ -135,20 +135,36 @@ public class SystemIDResolver
   }
   
   /**
-   * Return true if the systemId denotes an absolute URI (contains the scheme part).
+   * Return true if the systemId denotes an absolute URI .
    *
    * @param systemId The systemId string
-   * @return true if the systemId contains a scheme part
+   * @return true if the systemId is an an absolute URI
    */
   public static boolean isAbsoluteURI(String systemId)
   {
-    // If there is more than one character before the ':' character,
-    // then it is considered to be an absolute URI; otherwise it is a local path.
-    int colonIndex = systemId.indexOf(':');
-    if (colonIndex > 1)
-      return true;
-    else
-      return false;
+     /** http://www.ietf.org/rfc/rfc2396.txt
+      *   Authors should be aware that a path segment which contains a colon
+      * character cannot be used as the first segment of a relative URI path
+      * (e.g., "this:that"), because it would be mistaken for a scheme name.
+     **/
+     /** %REVIEW% Can we assume here that systemId is a valid URI?
+     **/
+    final int fragmentIndex = systemId.indexOf('#');
+    final int queryIndex = systemId.indexOf('?');
+    final int slashIndex = systemId.indexOf('/');
+    final int colonIndex = systemId.indexOf(':');
+    
+    //finding substring  before '#', '?', and '/' 
+    int index = systemId.length() -1;
+    if(fragmentIndex > 0) 
+        index = fragmentIndex;
+    if((queryIndex > 0) && (queryIndex <index)) 
+        index = queryIndex;
+    if((slashIndex > 0) && (slashIndex <index))
+        index = slashIndex; 
+    // return true if there is ':' before '#', '?', and '/'
+    return ((colonIndex >0) && (colonIndex<index));
+    
   }
   
   /**
