@@ -193,7 +193,7 @@ final class AttributeSet extends TopLevelElement {
 	// Merge the contents of the two attribute sets...
 	final Enumeration attributes = other.elements();
 	while (attributes.hasMoreElements())
-	    addElement((XslAttribute)attributes.nextElement());
+	    setFirstElement((XslAttribute)attributes.nextElement());
     }
 
     /**
