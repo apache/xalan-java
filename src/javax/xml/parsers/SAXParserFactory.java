@@ -315,9 +315,6 @@ public abstract class SAXParserFactory {
     private static String findFactory(String factoryId,
                                       String defaultFactory)
     {
-        if( foundFactory!=null)
-            return foundFactory;
-        
         // Use the system property first
         try {
             foundFactory =
@@ -331,6 +328,10 @@ public abstract class SAXParserFactory {
             
         }catch (SecurityException se) {
         }
+
+        // Then try the previously found one (fix Bugzilla 1490 13-Jun-01 -sc)
+        if( foundFactory!=null)
+            return foundFactory;
 
         // try to read from $java.home/lib/jaxp.properties
         try {
