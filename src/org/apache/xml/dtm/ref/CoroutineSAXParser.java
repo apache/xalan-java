@@ -719,13 +719,9 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
           // %REVIEW% For some reason the (arg == null) condition is occuring.
           // You can replicate this sometimes with:
           // testo attribset\attribset01 -flavor th -edump
-          // Since I'm not sure what good it does to throw a shutdown 
-          // exception here, I'm simply commenting it out for the time 
-          // being.
-          System.err.println(">>> ARG IS NULL!!! <<<");
-          // throw shutdownException;
+          // Or with Crimson running, output\output01.
+          throw shutdownException;
         }
-
 
         else if (arg instanceof Boolean) {
           boolean keepgoing = ((Boolean)arg).booleanValue();
