@@ -1457,6 +1457,7 @@ public class TransformerImpl extends Transformer
   {
     VariableStack varstack = new VariableStack();
     getXPathContext().setVarStack(varstack);
+    m_userParams = null;
   }
 
   /**
