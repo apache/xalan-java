@@ -62,11 +62,11 @@ import java.net.URL;
 
 import org.xml.sax.ContentHandler;
 
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.ElemExtensionCall;
+import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPath;
@@ -169,9 +169,9 @@ public class Redirect
                                                   context.getTransformer());
       boolean mkdirs = (mkdirsExpr != null)
                        ? (mkdirsExpr.equals("true") || mkdirsExpr.equals("yes")) : true;
-	  // ContentHandler fl = 
-	  makeFormatterListener(context, elem, fileName, true, mkdirs);
-	  // fl.startDocument();
+          // ContentHandler fl = 
+          makeFormatterListener(context, elem, fileName, true, mkdirs);
+          // fl.startDocument();
     }
   }
   
@@ -374,7 +374,7 @@ public class Redirect
 
     // This should be worked on so that the output format can be 
     // defined by a first child of the redirect element.
-    OutputFormat format = transformer.getOutputFormat();
+    OutputProperties format = transformer.getOutputFormat();
 
     FileOutputStream ostream = new FileOutputStream(file);
     

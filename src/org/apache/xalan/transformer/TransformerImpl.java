@@ -70,7 +70,6 @@ import java.io.UnsupportedEncodingException;
 // Xalan imports
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.stree.SourceTreeHandler;
-import org.apache.xalan.templates.OutputFormatExtended;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -87,6 +86,7 @@ import org.apache.xalan.templates.ElemCallTemplate;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XUnresolvedVariable;
+import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.NodeVector;
@@ -112,7 +112,6 @@ import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.DOM2Helper;
 
 // Serializer Imports
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.Method;
@@ -203,7 +202,7 @@ public class TransformerImpl extends Transformer
   /**
    * The output format object set by the user.  May be null.
    */
-  private OutputFormat m_outputFormat;
+  private OutputProperties m_outputFormat;
   
   /** The output serializer         */
   private Serializer m_serializer;
@@ -241,15 +240,12 @@ public class TransformerImpl extends Transformer
 
   /** A static text format object, which can be used over and 
    * over to create the text serializers.    */
-  private static OutputFormat m_textformat;
+  private static OutputProperties m_textformat;
 
   static
   {
     // Synchronize??
-    m_textformat = new OutputFormat();
-
-    m_textformat.setMethod("text");
-    m_textformat.setPreserveSpace(true);
+    m_textformat = new OutputProperties(Method.Text);
   }
   
   /** A node vector used as a stack to track the current 
@@ -475,17 +471,17 @@ public class TransformerImpl extends Transformer
 
       // Use JAXP1.1 ( if possible )
       try {
-	  javax.xml.parsers.SAXParserFactory factory=
-	      javax.xml.parsers.SAXParserFactory.newInstance();
-	  factory.setNamespaceAware( true );
-	  javax.xml.parsers.SAXParser jaxpParser=
-	      factory.newSAXParser();
-	  reader=jaxpParser.getXMLReader();
-	  
+          javax.xml.parsers.SAXParserFactory factory=
+              javax.xml.parsers.SAXParserFactory.newInstance();
+          factory.setNamespaceAware( true );
+          javax.xml.parsers.SAXParser jaxpParser=
+              factory.newSAXParser();
+          reader=jaxpParser.getXMLReader();
+          
       } catch( javax.xml.parsers.ParserConfigurationException ex ) {
-	  throw new org.xml.sax.SAXException( ex );
+          throw new org.xml.sax.SAXException( ex );
       } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-	  throw new org.xml.sax.SAXException( ex1.toString() );
+          throw new org.xml.sax.SAXException( ex1.toString() );
       } catch( NoSuchMethodError ex2 ) {
       }
 
@@ -673,61 +669,17 @@ public class TransformerImpl extends Transformer
   public String getOutputProperty(String qnameString)
     throws IllegalArgumentException
   {    
-    OutputFormat of = getOutputFormat();
-    QName qname = QName.getQNameFromString(qnameString);
-    if(qname.getNamespace() != null)
-      return null;  // fix
-    String name = qname.getLocalName();
-    if (of instanceof OutputFormatExtended)
+    String value = null;
+    if(null != m_outputFormat)
     {
-      OutputFormatExtended ofe = (OutputFormatExtended) of;
-      if(name.equals(OutputKeys.METHOD))
-        return ofe.methodHasBeenSet() ? ofe.getMethod() : null;
-      else if(name.equals(OutputKeys.INDENT))
-        return ofe.indentHasBeenSet() ? (ofe.getIndent() ? "yes" : "no") : null;
-      else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
-        return ofe.doctypePublicHasBeenSet() ? ofe.getDoctypePublicId() : null;
-      else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
-        return ofe.doctypeSystemHasBeenSet() ? ofe.getDoctypeSystemId() : null;
-      else if(name.equals(OutputKeys.MEDIA_TYPE))
-        return ofe.mediaTypeHasBeenSet() ? ofe.getMediaType() : null;
-      else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
-        return ofe.omitXmlDeclarationHasBeenSet() ? (ofe.getOmitXMLDeclaration() ? "yes" : "no") : null;
-      else if(name.equals(OutputKeys.STANDALONE))
-        return ofe.standaloneHasBeenSet() ? (ofe.getStandalone() ? "yes" : "no") : null;
-      else if(name.equals(OutputKeys.ENCODING))
-        return ofe.encodingHasBeenSet() ? ofe.getEncoding() : null;
-      else if(name.equals(OutputKeys.VERSION))
-        return ofe.versionHasBeenSet() ? ofe.getVersion() : null;
-      else
-        throw new IllegalArgumentException("output property not recognized: "+qnameString);
-      
+      value = m_outputFormat.getProperty(qnameString);
     }
-    else
+    if(null == value)
     {
-      // Just set them all for now.
-      if(name.equals(OutputKeys.METHOD))
-        return of.getMethod();
-      else if(name.equals(OutputKeys.INDENT))
-        return of.getIndent() ? "yes" : "no";
-      else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
-        return of.getDoctypePublicId();
-      else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
-        return of.getDoctypeSystemId();
-      else if(name.equals(OutputKeys.MEDIA_TYPE))
-        return of.getMediaType();
-      else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
-        return of.getOmitXMLDeclaration() ? "yes" : "no";
-      else if(name.equals(OutputKeys.STANDALONE))
-        return of.getStandalone() ? "yes" : "no";
-      else if(name.equals(OutputKeys.ENCODING))
-        return of.getEncoding();
-      else if(name.equals(OutputKeys.VERSION))
-        return of.getVersion();
-      else
+      if(!m_outputFormat.isLegalPropertyKey(qnameString))
         throw new IllegalArgumentException("output property not recognized: "+qnameString);
     }
-    
+    return value;
   }
   
   /**
@@ -750,44 +702,12 @@ public class TransformerImpl extends Transformer
   public void setOutputProperty(String name, String value)
     throws IllegalArgumentException
   {
-    OutputFormat ofe = getOutputFormat();
+    if(!m_outputFormat.isLegalPropertyKey(name))
+      throw new IllegalArgumentException("output property not recognized: "+name);
     
-    if(name == OutputKeys.METHOD)
-      ofe.setMethod(value);
-    else if(name == OutputKeys.INDENT)
-      ofe.setIndent(value.equals("yes"));
-    else if(name == OutputKeys.DOCTYPE_PUBLIC)
-      ofe.setDoctypePublicId(value);
-    else if(name == OutputKeys.DOCTYPE_SYSTEM)
-      ofe.setDoctypeSystemId(value);
-    else if(name == OutputKeys.MEDIA_TYPE)
-      ofe.setMediaType(value);
-    else if(name == OutputKeys.OMIT_XML_DECLARATION)
-      ofe.setOmitXMLDeclaration(value.equals("yes"));
-    else if(name == OutputKeys.STANDALONE)
-      ofe.setStandalone(value.equals("yes"));
-    else if(name == OutputKeys.ENCODING)
-      ofe.setEncoding(value);
-    else if(name == OutputKeys.VERSION)
-      ofe.setVersion(value);
-    else if(name == OutputKeys.METHOD)
-      ofe.setMethod(value);
-    else if(name.equals(OutputKeys.INDENT))
-      ofe.setIndent(value.equals("yes"));
-    else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
-      ofe.setDoctypePublicId(value);
-    else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
-      ofe.setDoctypeSystemId(value);
-    else if(name.equals(OutputKeys.MEDIA_TYPE))
-      ofe.setMediaType(value);
-    else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
-      ofe.setOmitXMLDeclaration(value.equals("yes"));
-    else if(name.equals(OutputKeys.STANDALONE))
-      ofe.setStandalone(value.equals("yes"));
-    else if(name.equals(OutputKeys.ENCODING))
-      ofe.setEncoding(value);
-    else if(name.equals(OutputKeys.VERSION))
-      ofe.setVersion(value);
+    if(null == m_outputFormat)
+      m_outputFormat = new OutputProperties(Method.XML);
+    m_outputFormat.setProperty(name, value);
   }
   
   /**
@@ -804,29 +724,10 @@ public class TransformerImpl extends Transformer
    */
   public void setOutputProperties(Properties oformat)
   {
-    Enumeration names = oformat.propertyNames();
-    OutputFormat ofe = getOutputFormat();
-    while(names.hasMoreElements())
+    m_outputFormat = new OutputProperties(m_stylesheetRoot.getOutputProperties());
+    if(null != oformat)
     {
-      String name = (String)names.nextElement();
-      if(name.equals(OutputKeys.METHOD))
-        ofe.setMethod(oformat.getProperty(name));
-      else if(name.equals(OutputKeys.INDENT))
-        ofe.setIndent(oformat.getProperty(name).equals("yes"));
-      else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
-        ofe.setDoctypePublicId(oformat.getProperty(name));
-      else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
-        ofe.setDoctypeSystemId(oformat.getProperty(name));
-      else if(name.equals(OutputKeys.MEDIA_TYPE))
-        ofe.setMediaType(oformat.getProperty(name));
-      else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
-        ofe.setOmitXMLDeclaration(oformat.getProperty(name).equals("yes"));
-      else if(name.equals(OutputKeys.STANDALONE))
-        ofe.setStandalone(oformat.getProperty(name).equals("yes"));
-      else if(name.equals(OutputKeys.ENCODING))
-        ofe.setEncoding(oformat.getProperty(name));
-      else if(name.equals(OutputKeys.VERSION))
-        ofe.setVersion(oformat.getProperty(name));
+      m_outputFormat.copyFrom(oformat);
     }
   }
   
@@ -843,49 +744,7 @@ public class TransformerImpl extends Transformer
    */
   public Properties getOutputProperties()
   {
-    OutputFormat outputProps = getOutputFormat();
-    Properties defaultProps = m_stylesheetRoot.getDefaultOutputProps();
-
-    Properties oprops = new Properties(defaultProps);
-        
-    if (outputProps instanceof OutputFormatExtended)
-    {
-      OutputFormatExtended ofe = (OutputFormatExtended) outputProps;
-      if(ofe.methodHasBeenSet())
-        oprops.put(OutputKeys.METHOD, ofe.getMethod());
-      if(ofe.indentHasBeenSet())
-        oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
-      if(ofe.doctypePublicHasBeenSet())
-        oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
-      if(ofe.doctypeSystemHasBeenSet())
-        oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
-      if(ofe.mediaTypeHasBeenSet())
-        oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
-      if(ofe.omitXmlDeclarationHasBeenSet())
-        oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
-      if(ofe.standaloneHasBeenSet())
-        oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
-      if(ofe.encodingHasBeenSet())
-        oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
-      if(ofe.versionHasBeenSet())
-        oprops.put(OutputKeys.VERSION, ofe.getVersion());
-    }
-    else
-    {
-      OutputFormat ofe = outputProps;
-      // Just set them all for now.
-      oprops.put(OutputKeys.METHOD, ofe.getMethod());
-      oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
-      oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
-      oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
-      oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
-      oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
-      oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
-      oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
-      oprops.put(OutputKeys.VERSION, ofe.getVersion());
-    }
-    
-    return oprops;
+    return m_outputFormat.getProperties();
   }
 
   /**
@@ -925,17 +784,17 @@ public class TransformerImpl extends Transformer
 
       // Use JAXP1.1 ( if possible )
       try {
-	  javax.xml.parsers.SAXParserFactory factory=
-	      javax.xml.parsers.SAXParserFactory.newInstance();
-	  factory.setNamespaceAware( true );
-	  javax.xml.parsers.SAXParser jaxpParser=
-	      factory.newSAXParser();
-	  reader=jaxpParser.getXMLReader();
-	  
+          javax.xml.parsers.SAXParserFactory factory=
+              javax.xml.parsers.SAXParserFactory.newInstance();
+          factory.setNamespaceAware( true );
+          javax.xml.parsers.SAXParser jaxpParser=
+              factory.newSAXParser();
+          reader=jaxpParser.getXMLReader();
+          
       } catch( javax.xml.parsers.ParserConfigurationException ex ) {
-	  throw new org.xml.sax.SAXException( ex );
+          throw new org.xml.sax.SAXException( ex );
       } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-	  throw new org.xml.sax.SAXException( ex1.toString() );
+          throw new org.xml.sax.SAXException( ex1.toString() );
       } catch( NoSuchMethodError ex2 ) {
       }
 
@@ -1029,7 +888,7 @@ public class TransformerImpl extends Transformer
 
   /**
    * Create a result ContentHandler from a Result object, based 
-   * on the current OutputFormat.
+   * on the current OutputProperties.
    *
    * @param outputTarget Where the transform result should go, 
    * should not be null.
@@ -1046,11 +905,11 @@ public class TransformerImpl extends Transformer
   }
     
   /**
-   * Create a ContentHandler from a Result object and an OutputFormat.
+   * Create a ContentHandler from a Result object and an OutputProperties.
    *
    * @param outputTarget Where the transform result should go, 
    * should not be null.
-   * @param format The OutputFormat object that will contain 
+   * @param format The OutputProperties object that will contain 
    * instructions on how to serialize the output.
    *
    * @return A valid ContentHandler that will create the 
@@ -1059,7 +918,7 @@ public class TransformerImpl extends Transformer
    * @throws TransformerException
    */
   public ContentHandler createResultContentHandler(
-          Result outputTarget, OutputFormat format) throws TransformerException
+          Result outputTarget, OutputProperties format) throws TransformerException
   {    
     ContentHandler handler;
     
@@ -1101,14 +960,11 @@ public class TransformerImpl extends Transformer
     else if(outputTarget instanceof StreamResult)
     {
       StreamResult sresult = (StreamResult)outputTarget;
-      String method = format.getMethod();
-
-      if (null == method)
-        method = Method.XML;
+      String method = format.getProperty(OutputKeys.METHOD);
 
       try
       {
-        Serializer serializer = SerializerFactory.getSerializer(format);
+        Serializer serializer = SerializerFactory.getSerializer(format.getProperties());
 
         if (null != sresult.getWriter())
           serializer.setWriter(sresult.getWriter());
@@ -1304,12 +1160,10 @@ public class TransformerImpl extends Transformer
    * properties will override properties set in the templates
    * with xsl:output.
    *
-   * @see org.xml.org.apache.xalan.serialize.OutputFormat
-   *
-   * @param oformat A valid OutputFormat object (which will 
+   * @param oformat A valid OutputProperties object (which will 
    * not be mutated), or null.
    */
-  public void setOutputFormat(OutputFormat oformat)
+  public void setOutputFormat(OutputProperties oformat)
   {
     m_outputFormat = oformat;
   }
@@ -1317,17 +1171,15 @@ public class TransformerImpl extends Transformer
   /**
    * Get the output properties used for the transformation.
    *
-   * @see org.xml.org.apache.xalan.serialize.OutputFormat
-   *
    * @return the output format that was set by the user, 
    * otherwise the output format from the stylesheet.
    */
-  public OutputFormat getOutputFormat()
+  public OutputProperties getOutputFormat()
   {
 
     // Get the output format that was set by the user, otherwise get the 
     // output format from the stylesheet.
-    OutputFormat format = (null == m_outputFormat)
+    OutputProperties format = (null == m_outputFormat)
                           ? getStylesheet().getOutputComposed()
                           : m_outputFormat;
 
@@ -1828,7 +1680,7 @@ public class TransformerImpl extends Transformer
     {
       if (null == serializer)
       {
-        serializer = SerializerFactory.getSerializer(m_textformat);
+        serializer = SerializerFactory.getSerializer(m_textformat.getProperties());
 
         m_resultTreeHandler.setSerializer(serializer);
         serializer.setWriter(sw);

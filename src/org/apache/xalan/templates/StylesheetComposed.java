@@ -63,7 +63,6 @@ import java.util.Enumeration;
 import javax.xml.transform.TransformerConfigurationException;
 import org.apache.xpath.XPath;
 import org.apache.xml.utils.QName;
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 
@@ -80,7 +79,7 @@ import java.text.DecimalFormatSymbols;
  * imports.  It has methods on it that
  * return "composed" properties, which mean that:
  * <ol>
- * <li>Properties that are aggregates, like OutputFormat, will
+ * <li>Properties that are aggregates, like OutputProperties, will
  * be composed of properties declared in this stylsheet and all
  * included stylesheets.</li>
  * <li>Properties that aren't found, will be searched for first in
@@ -149,8 +148,7 @@ public class StylesheetComposed extends Stylesheet
       int s = included.getOutputCount();
       for (int j = 0; j < s; j++)
       {
-        OutputFormatExtended ofe = included.getOutput(j);
-        recomposableElements.addElement(new RecomposableImpl(this, ofe.getUid(), ofe));
+        recomposableElements.addElement(included.getOutput(j));
       }
 
       // Next, add in the attribute-set elements

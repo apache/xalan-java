@@ -59,16 +59,19 @@ package org.apache.xalan.transformer;
 import java.io.Writer;
 import java.io.OutputStream;
 
+import java.util.Properties;
+
 import org.apache.xalan.templates.StylesheetRoot;
 
 import org.xml.sax.ContentHandler;
+
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.OutputKeys;
 
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.Method;
-import org.apache.xalan.serialize.OutputFormat;
-import org.apache.xalan.templates.OutputFormatExtended;
+import org.apache.xalan.templates.OutputProperties;
 
 /**
  * This is a helper class that decides if Xalan needs to switch
@@ -78,7 +81,7 @@ public class SerializerSwitcher
 {
 
   /**
-   * NEEDSDOC Method switchSerializerIfHTML 
+   * NEEDSDOC Method switchSerializerIfHTML
    *
    *
    * NEEDSDOC @param transformer
@@ -102,18 +105,16 @@ public class SerializerSwitcher
       if (((null == ns) || (ns.length() == 0))
               && localName.equalsIgnoreCase("html"))
       {
-        OutputFormat oformat = stylesheet.getOutputFormat();
+        OutputProperties oformat = stylesheet.getOutputComposed();
 
-        if (oformat instanceof OutputFormatExtended)
-        {
-          boolean methodHasBeeenSet =
-            ((OutputFormatExtended) oformat).methodHasBeenSet();
+        // Access at level of hashtable to see if the method has been set.
+        if (null != oformat.getProperties().get(OutputKeys.METHOD))
+          return;
 
-          if (methodHasBeeenSet)
-            return;
-        }
+        OutputProperties htmlFormat;
 
-        oformat.setMethod(Method.HTML);
+        htmlFormat = (OutputProperties)oformat.clone();
+        htmlFormat.setProperty(OutputKeys.METHOD, Method.HTML);
 
         try
         {
@@ -121,7 +122,8 @@ public class SerializerSwitcher
 
           if (null != oldSerializer)
           {
-            Serializer serializer = SerializerFactory.getSerializer(oformat);
+            Serializer serializer =
+              SerializerFactory.getSerializer(htmlFormat.getProperties());
             Writer writer = oldSerializer.getWriter();
 
             if (null != writer)

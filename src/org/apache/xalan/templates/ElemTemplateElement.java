@@ -80,10 +80,6 @@ import org.apache.xpath.VariableStack;
 import javax.xml.transform.Templates;
 import javax.xml.transform.SourceLocator;
 
-// Serializer imports
-import org.apache.xalan.serialize.OutputFormat;
-import org.apache.xalan.serialize.Serializer;
-
 // DOM Imports
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

@@ -750,7 +750,7 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * The "xsl:output" properties.  This is a vector of OutputFormatExtended objects.
+   * The "xsl:output" properties.  This is a vector of OutputProperties objects.
    */
   private Vector m_output;
 
@@ -758,9 +758,10 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:output" property.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
-   * @param v OutputFormatExtended element to add to the list
+   * @param v non-null reference to the OutputProperties object to be 
+   *          added to the collection.
    */
-  public void setOutput(OutputFormatExtended v)
+  public void setOutput(OutputProperties v)
   {
     if (null == m_output)
     {
@@ -776,24 +777,24 @@ public class Stylesheet extends ElemTemplateElement
    *
    * @param i Index of OutputFormatExtended to get
    *
-   * @return OutputFormatExtended at the given index
+   * @return non-null reference to an OutputProperties object.
    *
    * @throws ArrayIndexOutOfBoundsException
    */
-  public OutputFormatExtended getOutput(int i) throws ArrayIndexOutOfBoundsException
+  public OutputProperties getOutput(int i) throws ArrayIndexOutOfBoundsException
   {
 
     if (null == m_output)
       throw new ArrayIndexOutOfBoundsException();
 
-    return (OutputFormatExtended) m_output.elementAt(i);
+    return (OutputProperties) m_output.elementAt(i);
   }
 
   /**
    * Get the number of "xsl:output" properties.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
-   * @return the number of "xsl:output" properties.
+   * @return The number of OutputProperties objects contained in this stylesheet.
    */
   public int getOutputCount()
   {
@@ -928,7 +929,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:variable" or "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * @param qname Qualified name of variable or param to get 
+   * @param qname non-null reference to the qualified name of the variable.
    *
    * @return The ElemVariable with the given name in the list or null
    */
@@ -958,7 +959,7 @@ public class Stylesheet extends ElemTemplateElement
    *
    * @param qname Qualified name of the xsl:variable to get 
    *
-   * @return ElemVariable with the given name in the list or null
+   * @return reference to the variable named by qname, or null if not found.
    */
   public ElemVariable getVariable(QName qname)
   {
@@ -1024,7 +1025,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * @param qname The qualified name of the param to get
+   * @param qname non-null reference to qualified name of the parameter.
    *
    * @return ElemParam with the given name in the list or null
    */

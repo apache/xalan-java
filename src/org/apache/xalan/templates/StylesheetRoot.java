@@ -172,23 +172,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   public Properties getDefaultOutputProps()
   {
-    OutputFormat outputProps = m_outputFormatComposed;
-    Properties defaultProps = new Properties();
-    defaultProps.put(OutputKeys.METHOD, outputProps.getMethod());
-    defaultProps.put(OutputKeys.INDENT, outputProps.getIndent() ? "yes" : "no");
-    if(null != outputProps.getDoctypePublicId())
-      defaultProps.put(OutputKeys.DOCTYPE_PUBLIC, outputProps.getDoctypePublicId());
-    if(null != outputProps.getDoctypeSystemId())
-      defaultProps.put(OutputKeys.DOCTYPE_SYSTEM, outputProps.getDoctypeSystemId());
-    if(null != outputProps.getMediaType())
-      defaultProps.put(OutputKeys.MEDIA_TYPE, outputProps.getMediaType());
-    defaultProps.put(OutputKeys.OMIT_XML_DECLARATION, outputProps.getOmitXMLDeclaration() ? "yes" : "no");
-    defaultProps.put(OutputKeys.STANDALONE, outputProps.getStandalone() ? "yes" : "no");
-    if(null != outputProps.getEncoding())
-      defaultProps.put(OutputKeys.ENCODING, outputProps.getEncoding());
-    if(null != outputProps.getVersion())
-      defaultProps.put(OutputKeys.VERSION, outputProps.getVersion());
-    return defaultProps;
+    return m_outputProperties.getProperties();
   }
   
   /**
@@ -205,46 +189,6 @@ public class StylesheetRoot extends StylesheetComposed
   public Properties getOutputProperties()
   {    
     return getDefaultOutputProps();
-  }
-
-  /**
-   * Get the properties for xsl:output.  The object returned will
-   * be a clone of the internal values, and thus it can be mutated
-   * without mutating the Templates object, and then handed in to
-   * the process method.
-   * <p>A stylesheet may contain multiple xsl:output elements and may
-   * include or import stylesheets that also contain xsl:output elements.
-   * All the xsl:output elements occurring in a stylesheet are merged
-   * into a single effective xsl:output element. For the
-   * cdata-section-elements attribute, the effective value is the
-   * union of the specified values. For other attributes, the effective
-   * value is the specified value with the highest import precedence.
-   * It is an error if there is more than one such value for an attribute.
-   * An XSLT processor may signal the error; if it does not signal the
-   * error, if should recover by using the value that occurs last in
-   * the stylesheet. The values of attributes are defaulted after
-   * the xsl:output elements have been merged; different output
-   * methods may have different default values for an attribute.</p>
-   * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
-   * @return A Properties object that may be mutated.
-   *
-   * @see org.xml.org.apache.xalan.serialize.OutputFormat
-   */
-  public OutputFormat getOutputFormat()
-  {
-
-    OutputFormatExtended cloned = new OutputFormatExtended(0);
-
-    if (m_outputFormatComposed instanceof OutputFormatExtended)
-    {
-      cloned.copyFrom((OutputFormatExtended) m_outputFormatComposed);
-    }
-    else
-    {
-      cloned.copyFrom(m_outputFormatComposed);
-    }
-
-    return cloned;
   }
 
   //============== End Templates Interface ================
@@ -304,7 +248,8 @@ public class StylesheetRoot extends StylesheetComposed
 
     // We set up the global variables that will hold the recomposed information.
 
-    m_outputFormatComposed = new OutputFormatExtended(0);
+    m_outputProperties = new OutputProperties(Method.XML);
+    
     m_attrSets = new Hashtable();
     m_decimalFormatSymbols = new Hashtable();
     m_keyDecls = new Vector();
@@ -316,13 +261,14 @@ public class StylesheetRoot extends StylesheetComposed
     // calling the recompose() function on each one.  This will call back into the
     // appropriate routine here to actually do the recomposition.
     // Note that we're going backwards, encountering the highest precedence items first.
-
     for (int i = recomposableElements.size() - 1; i >= 0; i--)
       ((Recomposable) recomposableElements.elementAt(i)).recompose(this);
-
+    
     // Need final composition of TemplateList.  This adds the wild cards onto the chains.
-
     m_templateList.compose();
+    
+    // Need to clear check for properties at the same import level.
+    m_outputProperties.compose();
 
     // Now call the compose() method on every element to give it a chance to adjust
     // based on composed values.
@@ -344,7 +290,9 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Call the compose function for each ElemTemplateElement.
    *
-   * @param templ ElemTemplateElement to compose
+   * @param templ non-null reference to template element that will have 
+   * the composed method called on it, and will have it's children's composed 
+   * methods called.
    */
   static void composeTemplates(ElemTemplateElement templ)
   {
@@ -475,16 +423,18 @@ public class StylesheetRoot extends StylesheetComposed
    * This will be set up with the default values, and then the values
    * will be set as stylesheets are encountered.
    */
-  private OutputFormatExtended m_outputFormatComposed;
+  private OutputProperties m_outputProperties;
 
   /**
    * Recompose the output format object from the included elements.
    *
-   * @param of OutputFormatExtended to recompose 
+   * @param oprops non-null reference to xsl:output properties representation.
    */
-  void recomposeOutput(OutputFormatExtended of)
+  void recomposeOutput(OutputProperties oprops)
+    throws TransformerException
   {
-    m_outputFormatComposed.copyFrom(of);
+    
+    m_outputProperties.copyFrom(oprops);
   }
 
   /**
@@ -492,19 +442,18 @@ public class StylesheetRoot extends StylesheetComposed
    * combined from the included stylesheets.  If a xsl:output
    * is not declared in this stylesheet or an included stylesheet,
    * look in the imports.
-   * Please note that this returns a reference to the OutputFormat
-   * object, not a cloned object, like getOutputFormat does.
+   * Please note that this returns a reference to the OutputProperties
+   * object, not a cloned object, like getOutputProperties does.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
-   * @return the combined "xsl:output" property with the properties
-   * combined from the included stylesheets.
+   * @return non-null reference to composed output properties object.
    */
-  public OutputFormat getOutputComposed()
+  public OutputProperties getOutputComposed()
   {
 
-    // System.out.println("getOutputComposed.getIndent: "+m_outputFormatComposed.getIndent());
-    // System.out.println("getOutputComposed.getIndenting: "+m_outputFormatComposed.getIndenting());
-    return m_outputFormatComposed;
+    // System.out.println("getOutputComposed.getIndent: "+m_outputProperties.getIndent());
+    // System.out.println("getOutputComposed.getIndenting: "+m_outputProperties.getIndenting());
+    return m_outputProperties;
   }
 
   /** Flag indicating whether an output method has been set by the user           */
@@ -724,24 +673,27 @@ public class StylesheetRoot extends StylesheetComposed
    * well as this stylesheet.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * @param support The XPath runtime state.
-   * @param targetNode Node to match
-   * @param mode Template mode
-   * @param quietConflictWarnings Flag for conflict warnings 
+   * @param xctxt non-null reference to XPath runtime execution context.
+   * @param targetNode non-null reference of node that the template must match.
+   * @param mode qualified name of the node, or null.
+   * @param maxImportLevel The maximum importCountComposed that we should consider or -1
+   *        if we should consider all import levels.  This is used by apply-imports to
+   *        access templates that have been overridden.
+   * @param quietConflictWarnings true if conflict warnings should not be reported.
    *
-   * 
-   * @return The ElemTemplate matching the target node 
+   * @return reference to ElemTemplate that is the best match for targetNode, or 
+   *         null if no match could be made.
    *
    * @throws TransformerException
    */
-  public ElemTemplate getTemplateComposed(XPathContext support,
+  public ElemTemplate getTemplateComposed(XPathContext xctxt,
                                           Node targetNode,
                                           QName mode,
                                           int maxImportLevel,
                                           boolean quietConflictWarnings)
             throws TransformerException
   {
-    return m_templateList.getTemplate(support, targetNode, mode, maxImportLevel,
+    return m_templateList.getTemplate(xctxt, targetNode, mode, maxImportLevel,
                                                                 quietConflictWarnings);
   }
 
@@ -750,9 +702,9 @@ public class StylesheetRoot extends StylesheetComposed
    * well as this stylesheet.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * @param qname Qualified name of template to get
+   * @param qname non-null reference to qualified name of template.
    *
-   * @return ElemTemplate matching the given name 
+   * @return reference to named template, or null if not found.
    */
   public ElemTemplate getTemplateComposed(QName qname)
   {
