@@ -169,10 +169,10 @@ public class SimpleNode implements Node
       new QName("divide-yearMonthDuration"),
       new FuncDivYearMonthDuration());
       m_builtInFunctions.put(
-      new QName("get-yearMonthDuration"),
+      new QName("get-yearMonthDuration-from-dateTimes"),
       new FuncGetYMDuration());
       m_builtInFunctions.put(
-      new QName("get-dayTimeDuration"),
+      new QName("get-dayTimeDuration-from-dateTimes"),
       new FuncGetDTDuration());
       m_builtInFunctions.put(
       new QName("add-yearMonthDurationToDateTime"),
@@ -283,7 +283,7 @@ m_builtInFunctions.put(
       new QName("get-seconds-from-time"),
       new FuncGetSFromTime());
 m_builtInFunctions.put(
-      new QName("get-timezone-from-datetime"),
+      new QName("get-timezone-from-dateTime"),
       new FuncGetTZFromDT());
 m_builtInFunctions.put(
       new QName("get-timezone-from-date"),
