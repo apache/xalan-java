@@ -152,7 +152,7 @@ public class ApplyXPath
         e2.printStackTrace();
         return;
       }
-	  XMLSerializer xmlser = new XMLSerializer(System.out, new OutputFormat());
+  	  XMLSerializer xmlser = new XMLSerializer(System.out, new OutputFormat());
 	  Node n = null;
 	  try
 	  {

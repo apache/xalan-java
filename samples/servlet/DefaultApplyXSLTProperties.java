@@ -218,11 +218,11 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
 	  props.put("org.apache.trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
 	  props.put("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
 	  props.put("serialize.methods", "xml,html,Text");
-	  props.put("serialize.xml", "org.apache.xml.serialize.XMLSerializer");	 
-	  props.put("serialize.html", "org.apache.xml.serialize.HTMLSerializer");	 
-	  props.put("serialize.text", "org.apache.xml.serialize.TextSerializer");	 
-	  props.put("serialize.xhtml", "org.apache.xml.serialize.XHTMLSerializer");	 
-	  props.put("serialize.wml", "org.apache.xml.serialize.WMLSerializer");	
+	  props.put("serialize.xml", "org.apache.xml.serialize.transition.XMLSerializer");	 
+	  props.put("serialize.html", "org.apache.xml.serialize.transition.HTMLSerializer");	 
+	  props.put("serialize.text", "org.apache.xml.serialize.transition.XTextSerializer");	 
+	  props.put("serialize.xhtml", "org.apache.xml.serialize.transition.XHTMLSerializer");	 
+	  props.put("serialize.wml", "org.apache.xml.serialize.transition.XWMLSerializer");	
 	  props.put("serialize.format.xml", "serialize.format.XMLOutputFormat");	 
 	  props.put("serialize.format.html", "serialize.format.XMLOutputFormat");	 
 	  props.put("serialize.format.text", "serialize.format.XMLOutputFormat");	 

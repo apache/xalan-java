@@ -76,9 +76,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.SerializerFactory;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -120,8 +120,8 @@ public class TransformToDom
 	  
 	  //Instantiate an XML serializer and use it to serialize the output DOM to System.out
 	  // using a default output format.
-      SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
-      Serializer serializer = sf.makeSerializer(System.out, new OutputFormat());
+      Serializer serializer = SerializerFactory.getSerializer("xml");
+      serializer.setOutputStream(System.out);
       serializer.asDOMSerializer().serialize(outNode);
 	}
     else

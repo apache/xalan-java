@@ -78,9 +78,9 @@ import org.xml.sax.ext.LexicalHandler;
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.SerializerFactory;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -131,8 +131,8 @@ public class Pipe
     transformer2.setContentHandler(transformer3.getInputContentHandler());	
 	
     // transformer3 outputs SAX events to the serializer.
-    SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
-    Serializer serializer = sf.makeSerializer(System.out, new OutputFormat());
+    Serializer serializer = SerializerFactory.getSerializer("xml");
+    serializer.setOutputStream(System.out);
     transformer3.setContentHandler(serializer.asContentHandler());
 
 	// Parse the XML input document. The input ContentHandler and output ContentHandler

@@ -45,17 +45,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.XMLFilterImpl;
 
-
-// Imported Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-
-// Imported JAVA API for XML Parsing 1.0 classes
-import javax.xml.parsers.ParserConfigurationException; 
-
-
-
 /*****************************************************************************************************
  *
  * ApplyXSLT supplies the basic

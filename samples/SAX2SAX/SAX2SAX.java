@@ -76,9 +76,9 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.OutputFormat;
+import org.apache.serialize.SerializerFactory;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.OutputFormat;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -123,10 +123,11 @@ public class SAX2SAX
     // IV. Perform the transformation.
 
     // Set up the ContentHandler for the output.
-    Result result = new Result(new FileOutputStream("foo.out"));
-    SerializerFactory sfactory = SerializerFactory.getSerializerFactory("xml");
-    Serializer serializer = sfactory.makeSerializer (result.getCharacterStream(), 
-	       							                 new OutputFormat());
+	FileOutputStream fos = new FileOutputStream("foo.out");
+    Result result = new Result(fos);
+    Serializer serializer = SerializerFactory.getSerializer("xml");
+    serializer.setOutputStream(fos);
+
     transformer.setContentHandler(serializer.asContentHandler());
 
     // Set up the ContentHandler for the input.
