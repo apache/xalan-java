@@ -533,8 +533,7 @@ Copyright:
     unless="skipcompat" >
     <mkdir dir="${build.compat.apidocs}"/>
     <javadoc
-         private="true"
-	 maxmemory="128m"
+         public="true"
          sourcepath="${compat.src.dir}"
          overview="${compat.src.dir}/compatOverview.html"         
          packagenames="org.apache.xalan.xslt,org.apache.xalan.xpath,org.apache.xalan.xpath.xml"
@@ -699,8 +698,7 @@ Copyright:
       
     <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
-         private="true"
-	 maxmemory="128m"
+         public="true"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
          packagenames="org.apache.*,org.xml.*,org.w3c.*,javax.xml.*"
