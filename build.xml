@@ -32,6 +32,7 @@ Build targets
     - minitest compile and run the minitest in xml-xalan\test
     - conftest compile and run the conftest in xml-xalan\test
     - smoketest run a pre-checkin smoketest (5 to 10 minutes).
+    - print.docs create PDF documentation (requires fop.jar and w3c.jar).
         
 If you build a target that depends on other targets, those other targets are created in 
 the correct order.
