@@ -95,14 +95,15 @@ import org.apache.xml.utils.XMLStringFactory;
 
 import javax.xml.transform.dom.DOMSource;
 
-public final class DOMImpl extends DOM2DTM implements DOM, Externalizable 
+public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 {
 
     // empty String for null attribute values
     private final static String EMPTYSTRING = "";
 
     // empty iterator to be returned when there are no children
-    private final static DTMAxisIterator EMPTYITERATOR = new DTMAxisIteratorBase() {
+    private final static DTMAxisIterator EMPTYITERATOR =
+                                               new DTMAxisIteratorBase() {
 	    public DTMAxisIterator reset() { return this; }
 	    public DTMAxisIterator setStartNode(int node) { return this; }
 	    public int next() { return DTM.NULL; }
@@ -143,6 +144,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 
     // Tracks which textnodes are whitespaces and which are not
     private BitArray  _whitespace; // takes xml:space into acc.
+    // Tracks which bits in _whitespace are valid
+    private BitArray _checkedForWhitespace;
 
     // Tracks which textnodes are not escaped
     private BitArray  _dontEscape = null; 
@@ -295,7 +298,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	int anode, nsnode;
 	final org.apache.xml.dtm.ref.DTMDefaultBaseIterators.AncestorIterator
               ancestors =
-                 new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.AncestorIterator();
+                 new org.apache.xml.dtm.ref.DTMDefaultBaseIterators
+                                                .AncestorIterator();
 	
 	if (isElement(node)) {
 	    ancestors.includeSelf();
@@ -317,7 +321,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	}
 
 	// TODO: Internationalization?
-	throw new TransletException("Namespace prefix '" + prefix + "' is undeclared.");
+	throw new TransletException("Namespace prefix '" + prefix +
+                                 "' is undeclared.");
     }
 
     /**
@@ -415,9 +420,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      * Create an org.w3c.dom.NodeList from a node iterator
      * The iterator most be started before this method is called
      */
-    public NodeList makeNodeList(DTMIterator iter) 
-    {
-      return new DTMNodeList(iter);
+    public NodeList makeNodeList(DTMIterator iter) {
+        return new DTMNodeList(iter);
     }
 
     /**
@@ -551,135 +555,146 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      * whitespace text nodes. The iterator needs to be a supplied
      * with a filter that tells it what nodes are WS text.
      */             
-    private final class StrippingIterator extends InternalAxisIteratorBase //NodeIteratorBase 
-    {
+    private final class StrippingIterator extends InternalAxisIteratorBase {
 
-	private static final int USE_PREDICATE  = 0;
-	private static final int STRIP_SPACE    = 1;
-	private static final int PRESERVE_SPACE = 2;
+        private static final int USE_PREDICATE  = 0;
+        private static final int STRIP_SPACE    = 1;
+        private static final int PRESERVE_SPACE = 2;
 
-	private StripFilter _filter = null;
-	private short[] _mapping = null;
-	private final DTMAxisIterator _source;
-	private boolean _children = false;
-	private int _action = USE_PREDICATE;
-	private int _last = -1;
+        private StripFilter _filter = null;
+        private short[] _mapping = null;
+        private final DTMAxisIterator _source;
+        private boolean _children = false;
+        private int _action = USE_PREDICATE;
+        private int _last = -1;
 
-	public StrippingIterator(DTMAxisIterator source,
-                           short[] mapping,
-                           StripFilter filter) 
-  {
+        public StrippingIterator(DTMAxisIterator source, short[] mapping,
+                                 StripFilter filter) {
+            _filter = filter;
+            _mapping = mapping;
+            _source = source;
 
-    _filter = filter;
-    _mapping = mapping;
-    _source = source;
+            if (_source instanceof ChildrenIterator
+                  || _source instanceof TypedChildrenIterator) {
+                _children = true;
+            }
+        }
 
-    if (_source instanceof ChildrenIterator ||
-        _source instanceof TypedChildrenIterator) 
-    {
-      _children = true;
-    }
-  }
+        public DTMAxisIterator setStartNode(int node) {
+            if (_children){
+                if (_filter.stripSpace((DOM)DOMImpl.this, node,
+                                       _mapping[getType(node)])) {
+                    _action = STRIP_SPACE;
+                } else {
+                    _action = PRESERVE_SPACE;
+                }
+            }
 
-	public DTMAxisIterator setStartNode(int node) 
-  {
-    if (_children) 
-    {
-      if (_filter.stripSpace((DOM)DOMImpl.this, node,
-                             _mapping[getType(node)]))
-        _action = STRIP_SPACE;
-      else
-        _action = PRESERVE_SPACE;
-    }
-
-    _source.setStartNode(node);
-    //return resetPosition();
-    return(this);
-  }
+            _source.setStartNode(node);
+            return this;
+        }
   
-  public int next() 
-  {
-    int node;
-    while ((node = _source.next()) != END) 
-    {
-      switch(_action) 
-      {
-      case STRIP_SPACE:
-        if (_whitespace.getBit(getNodeIdent(node))) continue;
-        // fall through...
-      case PRESERVE_SPACE:
-        return returnNode(node);
-      case USE_PREDICATE:
-      default:
-        if (_whitespace.getBit(getNodeIdent(node)) &&
-            _filter.stripSpace((DOM)DOMImpl.this, node,
-                               _mapping[getType(getParent(node))]))
-          continue;
-        return returnNode(node);
-      }
-    }
-    return END;
-  }
+        public int next() {
+            int node;
+            while ((node = _source.next()) != END) {
+                switch(_action) {
+                case STRIP_SPACE:
+                    if (isWhitespace(node)) {
+                        continue;
+                    }
+                // fall through...
+                case PRESERVE_SPACE:
+                    return returnNode(node);
+                case USE_PREDICATE:
+                default:
+                    if (isWhitespace(node)
+                         && _filter.stripSpace((DOM)DOMImpl.this, node,
+                                         _mapping[getType(getParent(node))])) {
+                        continue;
+                    }
+                    return returnNode(node);
+                }
+            }
+            return END;
+        }
 
 
-	public void setRestartable(boolean isRestartable) {
-	    _isRestartable = isRestartable;
-	    _source.setRestartable(isRestartable);
-	}
-	
+        public void setRestartable(boolean isRestartable) {
+            _isRestartable = isRestartable;
+            _source.setRestartable(isRestartable);
+        }
 
-	public DTMAxisIterator reset() 
-  {
-	    _source.reset();
-	    return this;
-	}
 
-	public void setMark() 
-  {
-	    _source.setMark();
-	}
+        public DTMAxisIterator reset() {
+            _source.reset();
+            return this;
+        }
 
-	public void gotoMark() 
-  {
-	    _source.gotoMark();
-	}
+        public void setMark() {
+            _source.setMark();
+        }
 
-	public int getLast() 
-  {
-    // Return chached value (if we have it)
-    if (_last != -1) return _last;
+        public void gotoMark() {
+            _source.gotoMark();
+        } 
 
-    int count = getPosition();
-    int node;
+        public int getLast() {
+            // Return chached value (if we have it)
+            if (_last != -1) {
+                return _last;
+            }
 
-    _source.setMark();
-    while ((node = _source.next()) != END) 
-    {
-      switch(_action) 
-      {
-      case STRIP_SPACE:
-        if (_whitespace.getBit(getNodeIdent(node)))
-          continue;
-        // fall through...
-      case PRESERVE_SPACE:
-        count++;
-        break;
-      case USE_PREDICATE:
-      default:
-        if (_whitespace.getBit(getNodeIdent(node)) &&
-            _filter.stripSpace((DOM)DOMImpl.this, node,
-                               _mapping[getType(getParent(node))]))
-          continue;
-        else
-          count++;
-      }
-    }
-    _source.gotoMark();
-    _last = count;
-    return(count);
-  }
+            int count = getPosition();
+            int node;
 
-} // end of StrippingIterator
+            _source.setMark();
+            while ((node = _source.next()) != END) {
+                switch(_action) {
+                case STRIP_SPACE:
+                    if (isWhitespace(node)) {
+                        continue;
+                    }
+                    // fall through...
+                case PRESERVE_SPACE:
+                    count++;
+                    break;
+                case USE_PREDICATE:
+                default:
+                    if (isWhitespace(node)
+                         && _filter.stripSpace((DOM)DOMImpl.this, node,
+                                          _mapping[getType(getParent(node))])) {
+                        continue;
+                    } else {
+                         count++;
+                    }
+                }
+            }
+            _source.gotoMark();
+            _last = count;
+            return count;
+        }
+  
+        private boolean isWhitespace(int node) {
+            final int nodeIdent = getNodeIdent(node);
+    
+            // Is this the first time we've visited this node?  If so, check
+            // whether it's whitespace.
+            if (!_checkedForWhitespace.getBit(nodeIdent)) {
+                _checkedForWhitespace.setBit(nodeIdent);
+                final int nodeType = getNodeType(node);
+                if ((nodeType == DTM.TEXT_NODE
+                       || nodeType == DTM.CDATA_SECTION_NODE)
+                     && DOMImpl.this.isWhitespace(node)) {
+                    _whitespace.setBit(nodeIdent);
+                    return true;
+                }
+                return false;
+            }
+
+            return _whitespace.getBit(nodeIdent);
+        }
+
+    } // end of StrippingIterator
 
     public DTMAxisIterator strippingIterator(DTMAxisIterator iterator,
                                           short[] mapping,
@@ -1251,10 +1266,11 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public void initSize(int size) 
     {
-      _offsetOrChild = new int[size];
-      _lengthOrAttr  = new int[size];
-      _text          = new char[size * 10];
-      _whitespace    = new BitArray(size);
+      _offsetOrChild        = new int[size];
+      _lengthOrAttr         = new int[size];
+      _text                 = new char[size * 10];
+      _whitespace           = new BitArray(size);
+      _checkedForWhitespace = new BitArray(size);
     }
 
     /**
@@ -2749,5 +2765,4 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     	}
 
     } // end of DOMBuilder
-
 }
