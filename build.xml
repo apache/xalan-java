@@ -180,7 +180,7 @@ Copyright:
     <echo message="Transform todo.xml and put the result in ${build.docs}"/>
     <java fork="yes" classname="${xalan.cmdline.class}">
       <classpath refid="docs.class.path" />
-      <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
+      <arg line="-in todo.xml -xsl todo.xsl -out build/docs/todo.html"/>
     </java> 
     <!-- We use a Notes agent to periodically extract Xalan-Java 2 commits from our team database into commits.xml.  The following operation 
     transforms commits.xml (just including source code commits) and puts the result in xdocs/sources/xalan for inclusion in the 
@@ -188,7 +188,7 @@ Copyright:
     <echo message="Transform commits.xml and put the result in ${xdocs.dir}"/>
     <java fork="yes" classname="${xalan.cmdline.class}" >
       <classpath refid="docs.class.path" />
-      <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out ${xdocs.dir}/sources/xalan/DONE"/>
+      <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out xdocs/sources/xalan/DONE"/>
     </java>
     <echo message="Generate Xalan-J 2.x design document"/>
     <java fork="yes" classname="${doc.generator}" >
@@ -740,7 +740,7 @@ Copyright:
           classname="${xalan.cmdline.class}"
           classpathref="docs.class.path" >
       <arg line="-xsl ${xdocs.dir}/sources/xalan-collate.xsl 
-                 -out ${xdocs.dir}/sources/xalan/xalan-collate.xml"/>
+                 -out xdocs/sources/xalan/xalan-collate.xml"/>
     </java>
     
     <!-- Transform collation into Formatting Objects 
@@ -752,7 +752,7 @@ Copyright:
                  -param resourceFile '../../sources/xalan/resources.xml'
                  -param project ${Name}      
                  -xsl ${xdocs.style}/stylesheets/xml2fo.xsl 
-                 -out ${build.docs}/xalan-collate.fo"/>
+                 -out build/docs/xalan-collate.fo"/>
     </java>
     
     <!-- Use FOP to generate a pdf file (classpath may need updating! -sc 18-Apr-01)-->
