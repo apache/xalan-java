@@ -89,7 +89,7 @@ Copyright:
   <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
   <property name="year" value="2001"/>
-  <property name="debug" value="off"/>
+  <property name="build.debug" value="on"/>
 
   <!-- Relative locations of source directories -->
   <property name="manifest.mf" value="./src/MANIFEST.MF"/>
@@ -98,12 +98,6 @@ Copyright:
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
   <property name="xsltc.reldir" value="${xalan.reldir}/xsltc"/>
-  <property name="trax.reldir" value="javax/xml/transform"/>
-  <property name="serialize.reldir" value="org/apache/serialize"/>
-  <property name="serializer.reldir" value="org/apache/xalan/serialize"/>
-  <property name="jaxp.reldir" value="javax/xml/parsers"/>
-  <property name="sax.reldir" value="org/xml/sax"/>
-  <property name="w3c.reldir" value="org/w3c"/>    
 
   <!-- Build and distribution output areas -->
   <property name="build.dir" value="./build"/><!-- GUMP: root of all normal builds output -->
@@ -125,7 +119,7 @@ Copyright:
   <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>        
 
   <!-- Documentation and samples information  -->
-  <property name="Name" value="Xalan-Java"/>
+  <property name="Name-in-docs" value="Xalan-Java"/>
   <property name="version.file" value="${xalan.reldir}/processor/XSLProcessorVersion.java"/>
   <property name="samples.dir" value="./samples"/>
   <property name="build.samples.jar" value="${build.dir}/xalansamples.jar"/>
@@ -185,7 +179,7 @@ Copyright:
   <!-- Creates output build directories and doc prerequistes               -->
   <!-- =================================================================== -->
   <target name="prepare">
-    <echo message="Project:${Name} version:${version} build.xml $Revision$"/>
+    <echo message="Project:${Name-in-docs} version:${version} build.xml $Revision$"/>
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.classes}"/>
     <!-- Note that all testing-related targets *must* depend on 
@@ -282,7 +276,7 @@ Copyright:
     <!-- Compile our temp copy of DOM/SAX/JAXP xml-commons classes -->
     <javac srcdir="${build.api.src}"
            destdir="${build.classes}"
-           debug="${debug}"
+           debug="${build.debug}"
            optimize="${optimize}"
            deprecation="off">
       <bootclasspath refid="xslt.boot.class.path" />
@@ -294,11 +288,13 @@ Copyright:
     <!-- Compile XPath engine and some common utilities -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           debug="${debug}" >
+           debug="${build.debug}" >
       <!-- Also compile version info classes here -->
       <include name="${xalan.reldir}/Version.java" />
       <include name="${xalan.reldir}/processor/XSLProcessorVersion.java" />
       <include name="${apachexml.reldir}/**/*.java" />
+      <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
+      <exclude name="${apachexml.reldir}/utils/synthetic/**/*.java" />
       <include name="${xpath.reldir}/**/*.java" />
       <exclude name="**/CoroutineSAXFilterTest.java" 
         unless="xerces.present"	 />
@@ -313,13 +309,13 @@ Copyright:
            destdir="${build.classes}"
            includes="${xalan.reldir}/**/*.java"
            excludes="${xsltc.reldir}/**/*.java,${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${debug}"
+           debug="${build.debug}"
            bootclasspathref="xslt.boot.class.path" />
     <!-- Compile various Xalan-specific extensions and command line class -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${debug}"
+           debug="${build.debug}"
            bootclasspathref="xslt.boot.class.path" />
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
@@ -355,7 +351,7 @@ Copyright:
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="${xsltc.reldir}/util/**/*.java"
-           debug="${debug}">
+           debug="${build.debug}">
       <classpath refid="xsltc.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
     </javac>
@@ -384,7 +380,7 @@ Copyright:
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="${xsltc.reldir}/**/*.java"
-           debug="${debug}">
+           debug="${build.debug}">
       <classpath refid="xsltc.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
     </javac>
@@ -432,7 +428,7 @@ Copyright:
     <javac srcdir="${compat.src.dir}" classpath="${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.classes}"
            includes="**/*.java"
-           debug="${debug}"
+           debug="${build.debug}"
            bootclasspathref="xslt.boot.class.path" />
     <copy todir="${build.compat.classes}">
           <fileset dir="${compat.src.dir}" includes="**/*.properties,**/*.res"/>
@@ -455,8 +451,8 @@ Copyright:
          version="true"
          use="true"
          destdir="${build.compat.apidocs}"
-         windowtitle="${Name} 1 Compatability" 
-         doctitle="${Name} 1 Compatability"
+         windowtitle="${Name-in-docs} 1 Compatability" 
+         doctitle="${Name-in-docs} 1 Compatability"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
       <classpath refid="docs.class.path" />
     </javadoc>
@@ -473,40 +469,40 @@ Copyright:
     <!-- Since the samples are packageless, they must be compiled separately. -->   
     <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.xalan.jar}"  
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.xalan.jar}"
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/DOM2DOM" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${build.xalan.jar}"  
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/trax" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samples.dir}/Validate" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <jar jarfile="${build.samples.jar}" basedir="${build.samples}"
          includes="*.class"/>                   
   </target>
@@ -522,7 +518,7 @@ Copyright:
      <mkdir dir="${build.samples}/servlet"/>
      <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.xalan.jar}" 
             destdir="${build.samples}"
-            debug="${debug}"
+            debug="${build.debug}"
             bootclasspathref="xslt.boot.class.path" />
       <copy todir="${build.samples}/servlet">
         <fileset dir="${samples.dir}/servlet" 
@@ -545,7 +541,7 @@ Copyright:
   <target name="xsltc.samples" depends="jar,xsltc.jar">
     <javac srcdir="${samples.dir}/translets" classpath="${java.class.path}:${build.xsltc.jar}" 
            destdir="${samples.dir}/translets" excludes="${exclude}" 
-           debug="${debug}"
+           debug="${build.debug}"
            bootclasspathref="xslt.boot.class.path" />
   </target>
  
@@ -587,8 +583,8 @@ Copyright:
          author="true"
          version="true"
          use="true"
-         windowtitle="${Name} 2" 
-         doctitle="${Name} 2"
+         windowtitle="${Name-in-docs} 2" 
+         doctitle="${Name-in-docs} 2"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
           <classpath refid="docs.class.path" />
           <doclet name="xalanjdoc.Standard" path="${doclet.jar}">
@@ -641,10 +637,10 @@ Copyright:
   <!-- Install/Uninstall targets - not currently applicable                -->
   <!-- =================================================================== -->
   <target name="install"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
-    <echo message="install target currently not supported in ${Name}; try jar or dist instead"/>
+    <echo message="install target currently not supported in ${Name-in-docs}; try jar or dist instead"/>
   </target>
   <target name="uninstall"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
-    <echo message="uninstall target currently not supported in ${Name}; try distclean instead"/>
+    <echo message="uninstall target currently not supported in ${Name-in-docs}; try distclean instead"/>
   </target>
 
   <!-- =================================================================== -->
@@ -889,7 +885,7 @@ Copyright:
           classpathref="docs.class.path" >
       <arg line="-in  ${xdocs.dir}/sources/xalan/xalan-collate.xml
                  -param resourceFile '../../sources/xalan/resources.xml'
-                 -param project ${Name}      
+                 -param project ${Name-in-docs}      
                  -xsl ${xdocs.style}/stylesheets/xml2fo.xsl 
                  -out build/docs/xalan-collate.fo"/>
     </java>
@@ -914,28 +910,28 @@ Copyright:
     <!--need to use the XalanJ2 XPathAPI, so cannot compile ApplyXPath as is -->   
     <javac srcdir="${samplesj1.dir}/Pipe" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samplesj1.dir}/SimpleTransform" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samplesj1.dir}/TransformToDom" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samplesj1.dir}/PureSAX" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samplesj1.dir}/UseStylesheetParam" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <javac srcdir="${samplesj1.dir}/Servlet" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.samples}" excludes="${exclude}"
-           debug="${debug}" bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
     <jar   jarfile="${build.compat.samples}/xalanjcompatsamples.jar" basedir="${build.compat.samples}"
             includes="*.class"/> 
      <!--put the servlet in a separate jar -->
      <javac srcdir="${samplesj1.dir}/Servlet" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.samples}"
-           debug="${debug}"
+           debug="${build.debug}"
            bootclasspathref="xslt.boot.class.path" />
       <copy todir="${build.compat.samples}/servlet">
         <fileset dir="${samplesj1.dir}/Servlet" 
