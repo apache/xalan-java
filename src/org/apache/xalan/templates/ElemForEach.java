@@ -359,10 +359,15 @@ public class ElemForEach extends ElemTemplateElement
           TransformerImpl transformer, Node sourceNode, ElemTemplateElement template, QName mode)
             throws SAXException
   {
-
+    boolean rdebug = TransformerImpl.S_DEBUG;
     XPathContext xctxt = transformer.getXPathContext();
     XPath selectPattern = getSelectOrDefault();
     XObject selectResult = selectPattern.execute(xctxt, sourceNode, this);
+    
+    if (rdebug)
+      transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+              "test", selectPattern, selectResult);
+    
     Vector keys = transformer.processSortKeys(this, sourceNode);
     NodeIterator sourceNodes = selectResult.nodeset();
 
@@ -388,7 +393,6 @@ public class ElemForEach extends ElemTemplateElement
     StackGuard guard = transformer.getStackGuard();
     boolean check = (guard.m_recursionLimit > -1);
     boolean quiet = transformer.getQuietConflictWarnings();
-    boolean rdebug = TransformerImpl.S_DEBUG;
     boolean needToFindTemplate = (null == template);
 
     try
