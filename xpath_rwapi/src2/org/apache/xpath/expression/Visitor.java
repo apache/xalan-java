@@ -93,7 +93,7 @@ public interface Visitor {
      * @param
      * @return true to continue visiting the container expression
 	 */
-	boolean visitOperator(OperatorExpr arithmetic);
+	boolean visitOperator(OperatorExpr operator);
 
 	/**
 	 * Visit conditional expression

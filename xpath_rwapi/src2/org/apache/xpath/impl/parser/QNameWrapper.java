@@ -84,7 +84,6 @@ public class QNameWrapper extends SimpleNode {
 	 */
 	public QNameWrapper(XPath p, int i) {
 		super(p, i);
-		//m_prefixResolver = p.m_prefixResolver;
 	}
 
 	/**

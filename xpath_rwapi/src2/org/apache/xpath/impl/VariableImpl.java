@@ -55,6 +55,7 @@
  */
 package org.apache.xpath.impl;
 
+import org.apache.xml.QName;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.Variable;
@@ -71,7 +72,7 @@ public class VariableImpl extends ExprImpl implements Variable
     /**
      * Name of the variable
      */
-    String m_varName;
+    QName m_varName;
 
     /**
      * Constructor for VariableImpl. Internal use only.
@@ -109,7 +110,7 @@ public class VariableImpl extends ExprImpl implements Variable
     /**
      * @see org.apache.xpath.expression.Variable#getVariableName()
      */
-    public String getVariableName()
+    public QName getVariableName()
     {
         return m_varName;
     }
@@ -117,7 +118,7 @@ public class VariableImpl extends ExprImpl implements Variable
 	/* (non-Javadoc)
 	 * @see org.apache.xpath.expression.Variable#setVariableName(java.lang.String)
 	 */
-	public void setVariableName(String name) throws XPathException {
+	public void setVariableName(QName name) throws XPathException {
 		// TODO: check the validity of the var name
 		
 		m_varName = name;
@@ -153,7 +154,7 @@ public class VariableImpl extends ExprImpl implements Variable
     public void processToken(Token token)
     {
         super.processToken(token);
-        m_varName = token.image.trim();
+        m_varName = QName.valueOf(token.image.trim());
     }
 
     /**

@@ -166,6 +166,12 @@ public class TestSamples
                 + pathExpr.getString(true));
             System.out.println("/child::toto[50]/descendant::titi =? "
                 + pathExpr.getString(false));
+                
+            pathExpr.removeOperand(se);
+			System.out.println("/descendant::titi =? "
+							+ pathExpr.getString(true));
+						System.out.println("/descendant::titi =? "
+							+ pathExpr.getString(false));
 
             // Test visitor - anonymous class used
             pathExpr.visit(new Visitor()

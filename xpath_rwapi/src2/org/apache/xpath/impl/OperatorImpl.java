@@ -66,6 +66,8 @@ import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathConstants;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
+import java.security.InvalidParameterException;
+
 
 /**
  *
@@ -91,11 +93,19 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         true, false, false, false, false, false, false, true, true, false, false,
         true, true, false, false, false, false, false, false, true, true, true
     };
+
+    /**
+     * Type of the expression
+     */
     short m_exprType;
+
+    /**
+     * Type of the operator
+     */
     short m_opType;
 
     /**
-     * Constructor for OperatorImpl.
+     * Constructor for OperatorImpl. Internal uses only.
      *
      * @param i
      */
@@ -150,7 +160,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
             case XPathTreeConstants.JJTCOMPARISONEXPR:
                 m_exprType = COMPARISON_EXPR;
 
-                //			opType is not known yet
+                // opType is not known yet
                 break;
 
             case XPathTreeConstants.JJTRANGEEXPR:
@@ -160,12 +170,15 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
                 break;
 
             default:
-                System.out.println("OperatorImpl: not implemented yet:" + i);
+
+                // Invalid parameter
+                throw new InvalidParameterException(
+                    "The parameter value does not correspond to an operator identifier"); // I16
         }
     }
 
     /**
-     * Constructor for OperatorImpl.
+     * Constructor for OperatorImpl. Internal uses only.
      *
      * @param p
      * @param i
@@ -173,6 +186,48 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     public OperatorImpl(XPath p, int i)
     {
         super(p, i);
+    }
+
+    /**
+     * Constructor for cloning
+     *
+     * @param expr DOCUMENT ME!
+     */
+    protected OperatorImpl(OperatorImpl expr)
+    {
+        super(expr.id);
+
+        m_exprType = expr.m_exprType;
+        m_opType = expr.m_opType;
+
+        // clone operands
+        int count = getOperandCount();
+
+        for (int i = 0; i < count; i++)
+        {
+            try
+            {
+                addOperand(getOperand(i).cloneExpression());
+            }
+            catch (XPathException e)
+            {
+                // never
+            }
+        }
+    }
+
+    /**
+     * Constructor for OperatorImpl.
+     *
+     * @param exprType DOCUMENT ME!
+     * @param opType DOCUMENT ME!
+     */
+    protected OperatorImpl(short exprType, short opType)
+    {
+        super();
+
+        m_exprType = exprType;
+        m_opType = opType;
     }
 
     /**
@@ -188,19 +243,31 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public Expr cloneExpression()
     {
-        return null;
+        return new OperatorImpl(this);
     }
 
     /**
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
      */
-    public void visit(Visitor visitor)
+    public boolean visit(Visitor visitor)
     {
-        int count = getOperandCount();
-
-        for (int i = 0; i < count; i++)
+        if (visitor.visitOperator(this))
         {
-            getOperand(i).visit(visitor);
+            int count = getOperandCount();
+
+            for (int i = 0; i < count; i++)
+            {
+                if (!getOperand(i).visit(visitor))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -210,7 +277,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     public void addOperand(Expr operand) throws XPathException
     {
         super.jjtAddChild((Node) operand,
-            (children == null) ? 0 : children.length);
+            (m_children == null) ? 0 : m_children.length);
     }
 
     /**
@@ -218,12 +285,12 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public Expr getOperand(int i)
     {
-        if (children == null)
+        if (m_children == null)
         {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        return (Expr) children[i];
+        return (Expr) m_children[i];
     }
 
     /**
@@ -231,7 +298,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public int getOperandCount()
     {
-        return (children == null) ? 0 : children.length;
+        return (m_children == null) ? 0 : m_children.length;
     }
 
     /**
@@ -247,6 +314,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public void removeOperand(Expr operand) throws XPathException
     {
+        super.jjtRemoveChild((Node) operand);
     }
 
     /**
@@ -254,12 +322,6 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public void jjtAddChild(Node n, int i)
     {
-        // Filter operator
-        // if (n.getId() == XPathTreeConstants.JJTSLASH)
-        // {
-        // Filter
-        // }
-        //else 
         if (n.getId() == XPathTreeConstants.JJTMINUS)
         {
             // Minus expression            
@@ -299,7 +361,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     {
         if (m_exprType == SEQUENCE_EXPR)
         {
-            return (children == null) || (children.length <= 1);
+            return (m_children == null) || (m_children.length <= 1);
         }
 
         return super.canBeReduced();
@@ -336,7 +398,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         int size = getOperandCount();
         String oper = getOperatorChar();
         ExprImpl op;
-        
+
         if ((m_opType == MINUS_UNARY) || (m_opType == PLUS_UNARY))
         {
             expr.append(oper);
@@ -346,14 +408,16 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         {
             op = (ExprImpl) getOperand(i);
 
-            if (op.getExprType() == ARITHMETIC_EXPR || op.getExprType() == COMBINE_EXPR)
+            if ((op.getExprType() == ARITHMETIC_EXPR)
+                    || (op.getExprType() == COMBINE_EXPR))
             {
                 expr.append('(');
             }
 
             op.getString(expr, abbreviate);
 
-            if (op.getExprType() == ARITHMETIC_EXPR || op.getExprType() == COMBINE_EXPR)
+            if ((op.getExprType() == ARITHMETIC_EXPR)
+                    || (op.getExprType() == COMBINE_EXPR))
             {
                 expr.append(')');
             }
@@ -519,7 +583,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
                 break;
 
             default:
-            // Bug.. report
+            // never
         }
     }
 }

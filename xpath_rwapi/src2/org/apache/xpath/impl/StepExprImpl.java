@@ -139,7 +139,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
      */
     public Expr getPredicateAt(int i)
     {
-        return (Expr) children[i + 1];
+        return (Expr) m_children[i + 1];
     }
 
     /**
@@ -147,7 +147,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
      */
     public int getPredicateCount()
     {
-        return children.length - 1;
+        return m_children.length - 1;
     }
 
     /**
@@ -155,7 +155,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
      */
     public void appendPredicate(Expr predicate)
     {
-        super.jjtAddChild((Node) predicate, children.length);
+        super.jjtAddChild((Node) predicate, m_children.length);
     }
 
     /**
@@ -166,9 +166,9 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
      */
-    public void visit(Visitor visitor)
+    public boolean visit(Visitor visitor)
     {
-        visitor.visitStep(this);
+        return visitor.visitStep(this);
     }
 
     /**
@@ -244,7 +244,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
             throw new XPathException("Invalid call of this method on step compose of primary expression");
         }
 
-        return (NodeTest) children[0];
+        return (NodeTest) m_children[0];
     }
 
     /**
@@ -257,7 +257,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
             throw new XPathException("Invalid call of this method on step compose of node test");
         }
 
-        return (Expr) children[0];
+        return (Expr) m_children[0];
     }
 
     /**

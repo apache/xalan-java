@@ -93,15 +93,8 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	/**
 	 * @see org.apache.xpath.expression.FunctionCall#getFunctionName()
 	 */
-	public String getFunctionQName() {		
-		return m_qname.toString();
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.FunctionCall#getFunctionPrefix()
-	 */
-	public String getFunctionPrefix() {
-		return m_qname.getPrefix();
+	public QName getFunctionQName() {		
+		return m_qname;
 	}
 
 	/**
@@ -150,14 +143,14 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	 * @see org.apache.xpath.expression.OperatorExpr#getOperand(int)
 	 */
 	public Expr getOperand(int i) {
-		return (Expr) children[i];
+		return (Expr) m_children[i];
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.OperatorExpr#getOperandCount()
 	 */
 	public int getOperandCount() {
-		return (children == null) ? 0 : children.length;
+		return (m_children == null) ? 0 : m_children.length;
 	}
 
 	/**

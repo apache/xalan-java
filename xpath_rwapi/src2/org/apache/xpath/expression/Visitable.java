@@ -60,5 +60,5 @@ package org.apache.xpath.expression;
  */
 public interface Visitable {
 
-    void visit(Visitor visitor);
+    boolean visit(Visitor visitor);
 }

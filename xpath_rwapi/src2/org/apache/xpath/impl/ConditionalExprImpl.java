@@ -76,7 +76,7 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
     public ConditionalExprImpl(int i)
     {
         super(i);
-        children = new Node[3];
+        m_children = new Node[3];
     }
 
     /**
@@ -88,27 +88,43 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
     public ConditionalExprImpl(XPath p, int i)
     {
         super(p, i);
-        children = new Node[3];
+        m_children = new Node[3];
     }
-    
-	/**
-	 * Constructor for ConditionalExprImpl.
-	 *
-	 * @param i
-	 */
-	private ConditionalExprImpl(ConditionalExprImpl expr)
-	{
-		super(expr.id);
-		children = new Node[3];
-		System.arraycopy(expr.children, 0, children, 0, 3);
-	}
+
+    /**
+     * Constructor for ConditionalExprImpl.
+     *
+     * @param expr DOCUMENT ME!
+     */
+    protected ConditionalExprImpl(ConditionalExprImpl expr)
+    {
+        super(expr.id);
+        m_children = new Node[3];
+        System.arraycopy(expr.m_children, 0, m_children, 0, 3);
+    }
+
+    /**
+     * Constructor for ConditionalExprImpl.
+     *
+     * @param test
+     * @param thenClause
+     * @param elseClause DOCUMENT ME!
+     */
+    protected ConditionalExprImpl(Expr test, Expr thenClause, Expr elseClause)
+    {
+        super();
+        m_children = new Node[3];
+        m_children[0] = (Node) test;
+        m_children[1] = (Node) thenClause;
+        m_children[2] = (Node) elseClause;
+    }
 
     /**
      * @see org.apache.xpath.expression.ConditionalExpr#getElseExpr()
      */
     public Expr getElseExpr()
     {
-        return (Expr) children[2];
+        return (Expr) m_children[2];
     }
 
     /**
@@ -116,7 +132,7 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
      */
     public Expr getTestExpr()
     {
-        return (Expr) children[0];
+        return (Expr) m_children[0];
     }
 
     /**
@@ -124,7 +140,7 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
      */
     public Expr getThenExpr()
     {
-        return (Expr) children[1];
+        return (Expr) m_children[1];
     }
 
     /* (non-Javadoc)
@@ -132,7 +148,7 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
      */
     public void setElseExpr(Expr expr)
     {
-        children[2] = (Node) expr;
+        m_children[2] = (Node) expr;
     }
 
     /* (non-Javadoc)
@@ -140,7 +156,7 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
      */
     public void setTestExpr(Expr expr)
     {
-        children[0] = (Node) expr;
+        m_children[0] = (Node) expr;
     }
 
     /* (non-Javadoc)
@@ -148,14 +164,14 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
      */
     public void setThenExpr(Expr expr)
     {
-        children[1] = (Node) expr;
+        m_children[1] = (Node) expr;
     }
 
     /**
      * @see org.apache.xpath.expression.Expr#cloneExpression()
      */
     public Expr cloneExpression()
-    {        
+    {
         return new ConditionalExprImpl(this);
     }
 
@@ -170,9 +186,16 @@ public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
     /**
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
      */
-    public void visit(Visitor visitor)
-    {	
-       visitor.visitConditional(this);
+    public boolean visit(Visitor visitor)
+    {
+        if ( visitor.visitConditional(this) ) {
+        	if ( getTestExpr().visit(visitor)) {
+        		if ( getThenExpr().visit(visitor) ) {
+        			return getElseExpr().visit(visitor);
+        		}
+        	}
+        }
+        return false;
     }
 
     /**

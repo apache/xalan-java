@@ -117,17 +117,19 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
     /**
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
      */
-    public void visit(Visitor visitor)
+    public boolean visit(Visitor visitor)
     {
-        visitor.visitPath(this);
+        if (visitor.visitPath(this))
+        {
+            // visit each step (operand)
+            return super.visit(visitor);
+        }
 
-        // visit each step (operand)
-        super.visit(visitor);
+        return false;
     }
 
     /**
-     * @see org.apache.xpath.impl.ExprImpl#getString(StringBuffer,
-     *      boolean)
+     * @see org.apache.xpath.impl.ExprImpl#getString(StringBuffer, boolean)
      */
     public void getString(StringBuffer expr, boolean abbreviate)
     {
@@ -180,9 +182,9 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
     public boolean canBeReduced()
     {
         // Can be reduced whenever there is only one step and this step is a primary expression
-        if ((children != null) && (children.length == 1))
+        if ((m_children != null) && (m_children.length == 1))
         {
-            Expr step = (Expr) children[0];
+            Expr step = (Expr) m_children[0];
             int et = step.getExprType();
 
             return (((et == STEP) && ((StepExpr) step).isPrimaryExpr())

@@ -65,7 +65,7 @@ import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 
 /**
- * Default implementation of <code>CastOrTreatAsExpr</code> interface. 
+ * Default implementation of <code>CastOrTreatAsExpr</code> interface.
  */
 public class CastOrTreatAsExprImpl extends ExprImpl implements CastOrTreatAsExpr
 {
@@ -78,7 +78,7 @@ public class CastOrTreatAsExprImpl extends ExprImpl implements CastOrTreatAsExpr
     {
         super(i);
 
-        children = new Node[2];
+        m_children = new Node[2];
     }
 
     /**
@@ -91,7 +91,7 @@ public class CastOrTreatAsExprImpl extends ExprImpl implements CastOrTreatAsExpr
     {
         super(p, i);
 
-        children = new Node[2];
+        m_children = new Node[2];
     }
 
     /**
@@ -99,12 +99,28 @@ public class CastOrTreatAsExprImpl extends ExprImpl implements CastOrTreatAsExpr
      *
      * @param expr DOCUMENT ME!
      */
-    public CastOrTreatAsExprImpl(CastOrTreatAsExprImpl expr) {
-    	super(expr.id);
-    	
-		children = new Node[2];
-		children[0] = children[0]; // TODO: clone
-		children[1] = (Node) ((Expr) children[1]).cloneExpression();
+    protected CastOrTreatAsExprImpl(CastOrTreatAsExprImpl expr)
+    {
+        super(expr.id);
+
+        m_children = new Node[2];
+        m_children[0] = m_children[0]; // TODO: clone
+        m_children[1] = (Node) ((Expr) m_children[1]).cloneExpression();
+    }
+
+    /**
+     * Constructor for factory
+     *
+     * @param type DOCUMENT ME!
+     * @param expr DOCUMENT ME!
+     */
+    public CastOrTreatAsExprImpl(SequenceType type, Expr expr, boolean isCast)
+    {
+        super( (isCast) ? XPathTreeConstants.JJTCASTEXPR:XPathTreeConstants.JJTTREATEXPR);
+
+        m_children = new Node[2];
+        m_children[0] = (Node) type;
+        m_children[1] = (Node) expr;
     }
 
     /**
@@ -120,16 +136,16 @@ public class CastOrTreatAsExprImpl extends ExprImpl implements CastOrTreatAsExpr
      */
     public short getExprType()
     {
-        return (id == XPathTreeConstants.JJTCASTEXPR) ? CAST_AS_EXPR : TREAT_AS_EXPR;
+        return (id == XPathTreeConstants.JJTCASTEXPR) ? CAST_AS_EXPR
+                                                      : TREAT_AS_EXPR;
     }
 
-  
     /**
      * @see org.apache.xpath.expression.CastExpr#getParenthesizedExpr()
      */
     public Expr getExpr()
     {
-        return (Expr) children[1];
+        return (Expr) m_children[1];
     }
 
     /**
@@ -137,7 +153,7 @@ public class CastOrTreatAsExprImpl extends ExprImpl implements CastOrTreatAsExpr
      */
     public SequenceType getSequenceType()
     {
-        return (SequenceType) children[0];
+        return (SequenceType) m_children[0];
     }
 
     /**
@@ -154,15 +170,16 @@ public class CastOrTreatAsExprImpl extends ExprImpl implements CastOrTreatAsExpr
             super.jjtAddChild(n, i);
         }
     }
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.impl.parser.SimpleNode#getString(java.lang.StringBuffer, boolean)
-	 */
-	public void getString(StringBuffer expr, boolean abbreviate) {
-		expr.append( (getExprType() == CAST_AS_EXPR) ? "cast as " : "treat as ");
-		((SimpleNode) getSequenceType()).getString(expr, abbreviate);
-		expr.append('(');
-		((ExprImpl) getExpr()).getString(expr, abbreviate);
-		expr.append(')');
-	}
 
+    /* (non-Javadoc)
+     * @see org.apache.xpath.impl.parser.SimpleNode#getString(java.lang.StringBuffer, boolean)
+     */
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+        expr.append((getExprType() == CAST_AS_EXPR) ? "cast as " : "treat as ");
+        ((SimpleNode) getSequenceType()).getString(expr, abbreviate);
+        expr.append('(');
+        ((ExprImpl) getExpr()).getString(expr, abbreviate);
+        expr.append(')');
+    }
 }

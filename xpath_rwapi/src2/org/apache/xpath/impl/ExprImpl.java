@@ -108,8 +108,8 @@ public abstract class ExprImpl extends SimpleNode implements Expr{
 	/**
 	 * @see org.apache.xpath.expression.Visitable#visit(Visitor)
 	 */
-	public void visit(Visitor visitor) {
-        // by default: nothing
+	public boolean visit(Visitor visitor) {
+       return true;
 	}
 
 }

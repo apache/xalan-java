@@ -105,18 +105,20 @@ public class LiteralImpl extends ExprImpl implements Literal
     {
         super(p, i);
     }
-    
-	/**
-		 * Constructor for cloning.
-		 *
-		 */
-		public LiteralImpl(LiteralImpl expr)
-		{
-			super(expr.id);
-			
-			m_literal = expr.m_literal; 
-			// no cloning since m_literal reference is immutable
-		}
+
+    /**
+     * Constructor for cloning.
+     *
+     * @param expr DOCUMENT ME!
+     */
+    public LiteralImpl(LiteralImpl expr)
+    {
+        super(expr.id);
+
+        m_literal = expr.m_literal;
+
+        // no cloning since m_literal reference is immutable
+    }
 
     /**
      * @see org.apache.xpath.expression.Expr#getExprType()
@@ -249,7 +251,7 @@ public class LiteralImpl extends ExprImpl implements Literal
      */
     public void visited(Visitor visitor)
     {
-    	visitor.visitLiteral(this);
+        visitor.visitLiteral(this);
     }
 
     /**

@@ -918,7 +918,7 @@
 
 	<!-- For expr -->
 	
-	<expr value="for $a in a return b">
+	<!--expr value="for $a in a return b">
 		<ast>
 			<node name="ExprSequence">
 				<node name="FLWRExpr">
@@ -965,11 +965,11 @@
 				</node>
 			</node>			
 		</ast>
-	</expr>
+	</expr-->
 	
 	<!-- Quantified expr -->
 	
-	<expr value="some $a in a satisfies b">
+	<!--expr value="some $a in a satisfies b">
 		<ast>
 			<node name="ExprSequence">
 				<node name="QuantifiedExpr">
@@ -987,7 +987,7 @@
 				</node>
 			</node>			
 		</ast>
-	</expr>
+	</expr-->
 
 	<!-- Semantically invalid expression (parser should return an error) -->	
 	

@@ -55,17 +55,19 @@
  */
 package org.apache.xpath.expression;
 
+import org.apache.xml.QName;
+
 
 /**
- * Represents function call. 
- * The operands correspond to the function parameters.
+ * Represents function call XPath expression type.
+ * The operands defined in the <code>OperatorExpr</code> correspond to function parameters.
  */
 public interface FunctionCall extends OperatorExpr {
 
     /**
      * Gets the qualified name of the function
      */
-    String getFunctionQName();
+    QName getFunctionQName();
     
 
 }

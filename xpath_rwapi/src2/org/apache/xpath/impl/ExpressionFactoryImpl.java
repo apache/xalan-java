@@ -116,17 +116,10 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	}
 
 	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createPredicate(org.apache.xpath.expression.Expr)
-	 */
-	public Expr createPredicate(Expr expr) {
-		return null;
-	}
-
-	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createCombineExpr(short)
 	 */
 	public OperatorExpr createCombineExpr(short type) {
-		return null;
+		return new OperatorImpl(Expr.COMBINE_EXPR, type);
 	}
 
 	/**
@@ -147,21 +140,21 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	 * @see org.apache.xpath.expression.ExpressionFactory#createAndExpr(org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr)
 	 */
 	public OperatorExpr createAndExpr(Expr firstOperand, Expr secondOperand) {
-		return null;
+		return new OperatorImpl(Expr.LOGICAL_EXPR, OperatorExpr.AND_LOGICAL);
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createOrExpr(org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr)
 	 */
 	public OperatorExpr createOrExpr(Expr firstOperand, Expr secondOperand) {
-		return null;
+		return new OperatorImpl(Expr.LOGICAL_EXPR, OperatorExpr.OR_LOGICAL);
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createIfExpr(org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr)
 	 */
 	public ConditionalExpr createIfExpr(Expr test, Expr thenExpr, Expr elseExpr) {
-		return null;
+		return new ConditionalExprImpl(test, thenExpr, elseExpr);
 	}
 
 	/**
@@ -175,7 +168,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	 * @see org.apache.xpath.expression.ExpressionFactory#createCastExpr(org.apache.xpath.datamodel.SequenceType, org.apache.xpath.expression.OperatorExpr)
 	 */
 	public CastOrTreatAsExpr createCastAsExpr(SequenceType seqType, OperatorExpr parExpr) {
-		return null;
+		return new CastOrTreatAsExprImpl(seqType, parExpr, true);
 	}
 
 	/* (non-Javadoc)
@@ -184,7 +177,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	public CastOrTreatAsExpr createTreatAsExpr(
 		SequenceType seqType,
 		OperatorExpr parExpr) {
-		return null;
+			return new CastOrTreatAsExprImpl(seqType, parExpr, false);
 
 	}
 

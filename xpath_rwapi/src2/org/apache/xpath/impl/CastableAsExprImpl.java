@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -63,101 +63,133 @@ import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
 
+
 /**
  * Default implementation of 'castable as' expression type.
  */
-public class CastableAsExprImpl extends ExprImpl implements CastableAsExpr {
+public class CastableAsExprImpl extends ExprImpl implements CastableAsExpr
+{
+    /**
+     * Constructor for CastableExprImpl. Internal uses only
+     *
+     * @param i
+     */
+    public CastableAsExprImpl(int i)
+    {
+        super(i);
 
-	/**
-	 * Constructor for CastableExprImpl.
-	 * @param i
-	 */
-	public CastableAsExprImpl(int i) {
-		super(i);
-		
-		children = new Node[2];
-	}
+        m_children = new Node[2];
+    }
 
-	/**
-	 * Constructor for CastableExprImpl.
-	 * @param p
-	 * @param i
-	 */
-	public CastableAsExprImpl(XPath p, int i) {
-		super(p, i);
-		
-		children = new Node[2];
-	}
-	
-	/**
-	 * Constructor for cloning
-	 */
-	public CastableAsExprImpl(CastableAsExprImpl expr) 
-	{
-		super(expr.id);
-		
-		
-		children = new Node[2];
-		children[0] = (Node) ((Expr) children[0]).cloneExpression();
-		children[1] = children[1]; // TODO: clone
-	}
+    /**
+     * Constructor for CastableExprImpl. Internal uses only
+     *
+     * @param p
+     * @param i
+     */
+    public CastableAsExprImpl(XPath p, int i)
+    {
+        super(p, i);
 
-	/**
-	 * @see org.apache.xpath.expression.Expr#getExprType()
-	 */
-	public short getExprType() {
-		return Expr.CASTABLE_EXPR;
-	}
+        m_children = new Node[2];
+    }
 
-	/**
-	 * @see org.apache.xpath.expression.Expr#cloneExpression()
-	 */
-	public Expr cloneExpression() {
-		return new CastableAsExprImpl(this);
-	}
+    /**
+     * Constructor for cloning
+     *
+     * @param expr DOCUMENT ME!
+     */
+    protected CastableAsExprImpl(CastableAsExprImpl expr)
+    {
+        super(expr.id);
 
-	/**
-	 * @see org.apache.xpath.expression.CastableExpr#getCastableExpr()
-	 */
-	public Expr getExpr() {
-		return (Expr) children[0];
-	}
+        m_children = new Node[2];
+        m_children[0] = (Node) ((Expr) m_children[0]).cloneExpression();
+        m_children[1] = m_children[1]; // TODO: clone
+    }
 
-	/**
-	 * @see org.apache.xpath.expression.CastableExpr#getSingleType()
-	 */
-	public SequenceType getSingleType() {
-		return (SequenceType) children[1];
-	}
-    
+    /**
+     * Constructor for factory
+     *
+     * @param expr DOCUMENT ME!
+     * @param type DOCUMENT ME!
+     */
+    protected CastableAsExprImpl(Expr expr, SequenceType type)
+    {
+        super();
+
+        m_children = new Node[2];
+        m_children[0] = (Node) expr;
+        m_children[1] = (Node) type;
+    }
+
+    /**
+     * @see org.apache.xpath.expression.Expr#getExprType()
+     */
+    public short getExprType()
+    {
+        return Expr.CASTABLE_EXPR;
+    }
+
+    /**
+     * @see org.apache.xpath.expression.Expr#cloneExpression()
+     */
+    public Expr cloneExpression()
+    {
+        return new CastableAsExprImpl(this);
+    }
+
+    /**
+     * @see org.apache.xpath.expression.CastableExpr#getCastableExpr()
+     */
+    public Expr getExpr()
+    {
+        return (Expr) m_children[0];
+    }
+
+    /**
+     * @see org.apache.xpath.expression.CastableExpr#getSingleType()
+     */
+    public SequenceType getSingleType()
+    {
+        return (SequenceType) m_children[1];
+    }
+
     /**
      * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
      */
-    public void jjtAddChild(Node n, int i) {
-        if (((SimpleNode) n).canBeReduced()) {
+    public void jjtAddChild(Node n, int i)
+    {
+        if (((SimpleNode) n).canBeReduced())
+        {
             super.jjtAddChild(n.jjtGetChild(0), i);
-        } else {
-             super.jjtAddChild(n, i);
+        }
+        else
+        {
+            super.jjtAddChild(n, i);
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.xpath.impl.parser.SimpleNode#getString(java.lang.StringBuffer, boolean)
+     */
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+        ((ExprImpl) getExpr()).getString(expr, abbreviate);
+        expr.append(" castable as ");
+        ((SimpleNode) getSingleType()).getString(expr, abbreviate);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.impl.parser.SimpleNode#getString(java.lang.StringBuffer, boolean)
-	 */
-	public void getString(StringBuffer expr, boolean abbreviate) {
-		((ExprImpl) getExpr()).getString(expr, abbreviate);
-		expr.append(" castable as ");
-		((SimpleNode) getSingleType()).getString(expr, abbreviate);
-	}
+    /* (non-Javadoc)
+     * @see org.apache.xpath.expression.Visitable#visit(org.apache.xpath.expression.Visitor)
+     */
+    public boolean visit(Visitor visitor)
+    {
+        if (visitor.visitCastableAs(this))
+        {
+            return getExpr().visit(visitor);
+        }
 
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.expression.Visitable#visit(org.apache.xpath.expression.Visitor)
-	 */
-	public void visit(Visitor visitor) {
-		visitor.visitCastableAs(this);
-		
-		getExpr().visit(visitor);		
-	}
-
+        return false;
+    }
 }

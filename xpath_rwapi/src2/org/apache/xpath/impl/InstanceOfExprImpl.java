@@ -75,7 +75,7 @@ public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
 	public InstanceOfExprImpl(int i) {
 		super(i);
 		
-		children = new Node[2];
+		m_children = new Node[2];
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
 	public InstanceOfExprImpl(XPath p, int i) {
 		super(p, i);
 		
-		children = new Node[2];
+		m_children = new Node[2];
 	}
 	
 	/**
@@ -95,23 +95,23 @@ public class InstanceOfExprImpl extends ExprImpl implements InstanceOfExpr {
 	private InstanceOfExprImpl(InstanceOfExprImpl expr) {
 		super(expr.id);
 		
-		children = new Node[2];
-		children[0] = (Node) expr.getTestedExpr().cloneExpression();
-		children[1] = (Node) expr.getSequenceType();
+		m_children = new Node[2];
+		m_children[0] = (Node) expr.getTestedExpr().cloneExpression();
+		m_children[1] = (Node) expr.getSequenceType();
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.InstanceOfExpr#getSequenceType()
 	 */
 	public SequenceType getSequenceType() {
-		return (SequenceType) children[1];
+		return (SequenceType) m_children[1];
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.InstanceOfExpr#getTestedExpr()
 	 */
 	public Expr getTestedExpr() {
-		return (Expr) children[0];
+		return (Expr) m_children[0];
 	}
 
 	/**

@@ -24,11 +24,17 @@ public class SimpleNode implements Node
 {
     public static boolean PRODUCE_RAW_TREE = false;
     final static private NodeFactory DEFAULT_NODE_FACTORY = new DefaultNodeFactory();
-    protected Node parent; // to remove
-    protected Node[] children; // to remove
+    
+    /**
+     * List of child nodes
+     */
+    protected Node[] m_children; 
+    
     protected int id; // to remove
 
-    protected SimpleNode() {}
+    protected SimpleNode()
+    {
+    }
 
     /**
      * Creates a new SimpleNode object.
@@ -68,7 +74,7 @@ public class SimpleNode implements Node
 
         Node newNode;
         NodeFactory nodeFactory = (p.m_nodeFactory == null)
-                                  ? DEFAULT_NODE_FACTORY : p.m_nodeFactory;
+            ? DEFAULT_NODE_FACTORY : p.m_nodeFactory;
 
         switch (id)
         {
@@ -118,7 +124,6 @@ public class SimpleNode implements Node
 
                 break;
 
-           
             case XPathTreeConstants.JJTCASTABLEEXPR:
                 newNode = (CastableAsExprImpl) nodeFactory.createNode(id);
 
@@ -208,8 +213,8 @@ public class SimpleNode implements Node
 
                 break;
 
-			case XPathTreeConstants.JJTSEQUENCETYPE:
-			case XPathTreeConstants.JJTSINGLETYPE:
+            case XPathTreeConstants.JJTSEQUENCETYPE:
+            case XPathTreeConstants.JJTSINGLETYPE:
                 newNode = nodeFactory.createSequenceTypeNode(id);
 
                 if (newNode == null)
@@ -311,12 +316,12 @@ public class SimpleNode implements Node
 
                 break;
 
-            case XPathTreeConstants.JJTATTRIBUTETYPE: 
+            case XPathTreeConstants.JJTATTRIBUTETYPE:
                 newNode = Singletons.ATTRIBUTE;
 
                 break;
 
-            case XPathTreeConstants.JJTATOMICTYPE: 
+            case XPathTreeConstants.JJTATOMICTYPE:
                 newNode = Singletons.ATOMIC;
 
                 break;
@@ -326,7 +331,7 @@ public class SimpleNode implements Node
 
                 break;
 
-            case XPathTreeConstants.JJTPROCESSINGINSTRUCTION: 
+            case XPathTreeConstants.JJTPROCESSINGINSTRUCTION:
                 newNode = Singletons.PI;
 
                 break;
@@ -336,17 +341,17 @@ public class SimpleNode implements Node
 
                 break;
 
-            case XPathTreeConstants.JJTTEXT: 
+            case XPathTreeConstants.JJTTEXT:
                 newNode = Singletons.TEXT;
 
                 break;
 
-            case XPathTreeConstants.JJTDOCUMENT: 
+            case XPathTreeConstants.JJTDOCUMENT:
                 newNode = Singletons.DOCUMENT;
 
                 break;
 
-            case XPathTreeConstants.JJTITEM: 
+            case XPathTreeConstants.JJTITEM:
                 newNode = Singletons.ITEM;
 
                 break;
@@ -356,7 +361,7 @@ public class SimpleNode implements Node
 
                 break;
 
-            case XPathTreeConstants.JJTQMARK: 
+            case XPathTreeConstants.JJTQMARK:
                 newNode = Singletons.QMARK;
 
                 break;
@@ -441,7 +446,7 @@ public class SimpleNode implements Node
 
                 break;
 
-			// Below: xpath grammar unit not implemented yet
+            // Below: xpath grammar unit not implemented yet
             case XPathTreeConstants.JJTMATCHPATTERN:
             case XPathTreeConstants.JJTPATTERN:
             case XPathTreeConstants.JJTPATHPATTERN:
@@ -490,12 +495,16 @@ public class SimpleNode implements Node
     /**
      * DOCUMENT ME!
      */
-    public void jjtOpen() {}
+    public void jjtOpen()
+    {
+    }
 
     /**
      * DOCUMENT ME!
      */
-    public void jjtClose() {}
+    public void jjtClose()
+    {
+    }
 
     /**
      * DOCUMENT ME!
@@ -504,7 +513,7 @@ public class SimpleNode implements Node
      */
     public void jjtSetParent(Node n)
     {
-        parent = n;
+       // nothing
     }
 
     /**
@@ -514,7 +523,7 @@ public class SimpleNode implements Node
      */
     public Node jjtGetParent()
     {
-        return parent;
+        return null;
     }
 
     /**
@@ -525,18 +534,18 @@ public class SimpleNode implements Node
      */
     public void jjtAddChild(Node n, int i)
     {
-        if (children == null)
+        if (m_children == null)
         {
-            children = new Node[i + 1];
+            m_children = new Node[i + 1];
         }
-        else if (i >= children.length)
+        else if (i >= m_children.length)
         {
             Node[] c = new Node[i + 1];
-            System.arraycopy(children, 0, c, 0, children.length);
-            children = c;
+            System.arraycopy(m_children, 0, c, 0, m_children.length);
+            m_children = c;
         }
 
-        children[i] = n;
+        m_children[i] = n;
     }
 
     /**
@@ -546,18 +555,18 @@ public class SimpleNode implements Node
      */
     public void jjtInsertChild(Node n)
     {
-        if (children == null)
+        if (m_children == null)
         {
-            children = new Node[1];
+            m_children = new Node[1];
         }
         else
         {
-            Node[] c = new Node[children.length + 1];
-            System.arraycopy(children, 0, c, 1, children.length);
-            children = c;
+            Node[] c = new Node[m_children.length + 1];
+            System.arraycopy(m_children, 0, c, 1, m_children.length);
+            m_children = c;
         }
 
-        children[0] = n;
+        m_children[0] = n;
     }
 
     /**
@@ -567,23 +576,61 @@ public class SimpleNode implements Node
      */
     public void jjtInsertNodeChildren(Node sn)
     {
-        Node[] n = ((SimpleNode) sn).children;
+        Node[] n = ((SimpleNode) sn).m_children;
 
         if (n != null)
         {
-            if (children == null)
+            if (m_children == null)
             {
-                children = new Node[n.length];
+                m_children = new Node[n.length];
             }
             else
             {
-                Node[] c = new Node[children.length + n.length];
-                System.arraycopy(children, 0, c, n.length, children.length);
-                children = c;
+                Node[] c = new Node[m_children.length + n.length];
+                System.arraycopy(m_children, 0, c, n.length, m_children.length);
+                m_children = c;
             }
 
-            System.arraycopy(n, 0, children, 0, n.length);
+            System.arraycopy(n, 0, m_children, 0, n.length);
         }
+    }
+
+    /**
+     * Remove the given node form the list of children
+     *
+     * @param child DOCUMENT ME!
+     *
+     * @return The node that has been removed or null whether the given node
+     *         doesn't belong to the child list
+     */
+    protected Node jjtRemoveChild(Node child)
+    {
+        if ((m_children == null) || (m_children.length == 0))
+        {
+            return null;
+        }
+
+        for (int i = 0; i < m_children.length; i++)
+        {
+            if (m_children[i] == child)
+            {
+                // remove
+                Node[] c = new Node[m_children.length - 1];
+                if ( i > 0 )
+                {
+                	System.arraycopy(m_children, 0, c, 0, i);
+                }
+                if ( i < m_children.length )
+                {
+                	System.arraycopy(m_children, i + 1, c, i, m_children.length - i - 1);
+                }
+                m_children = c;
+
+                return child;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -595,7 +642,7 @@ public class SimpleNode implements Node
      */
     public Node jjtGetChild(int i)
     {
-        return children[i];
+        return m_children[i];
     }
 
     /**
@@ -605,7 +652,7 @@ public class SimpleNode implements Node
      */
     public int jjtGetNumChildren()
     {
-        return (children == null) ? 0 : children.length;
+        return (m_children == null) ? 0 : m_children.length;
     }
 
     /**
@@ -631,11 +678,11 @@ public class SimpleNode implements Node
      */
     public Object childrenAccept(XPathVisitor visitor, Object data)
     {
-        if (children != null)
+        if (m_children != null)
         {
-            for (int i = 0; i < children.length; ++i)
+            for (int i = 0; i < m_children.length; ++i)
             {
-                children[i].jjtAccept(visitor, data);
+                m_children[i].jjtAccept(visitor, data);
             }
         }
 
@@ -655,11 +702,13 @@ public class SimpleNode implements Node
      *
      * @param token
      */
-    public void processToken(Token token) {}
+    public void processToken(Token token)
+    {
+    }
 
     /**
-                     *
-                     */
+                         *
+                         */
     public boolean canBeReduced()
     {
         return false;
@@ -703,11 +752,11 @@ public class SimpleNode implements Node
     {
         out.println(toString(prefix));
 
-        if (children != null)
+        if (m_children != null)
         {
-            for (int i = 0; i < children.length; ++i)
+            for (int i = 0; i < m_children.length; ++i)
             {
-                SimpleNode n = (SimpleNode) children[i];
+                SimpleNode n = (SimpleNode) m_children[i];
 
                 if (n != null)
                 {
@@ -723,5 +772,7 @@ public class SimpleNode implements Node
      * @param expr DOCUMENT ME!
      * @param abbreviate DOCUMENT ME!
      */
-    public void getString(StringBuffer expr, boolean abbreviate) {}
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+    }
 }

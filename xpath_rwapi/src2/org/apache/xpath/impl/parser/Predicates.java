@@ -87,7 +87,7 @@ public class Predicates extends SimpleNode
      */
     public void jjtAddChild(Node n, int i)
     {
-        int last = (children == null) ? 0 : children.length;
+        int last = (m_children == null) ? 0 : m_children.length;
 
         if (((SimpleNode) n).canBeReduced())
         {

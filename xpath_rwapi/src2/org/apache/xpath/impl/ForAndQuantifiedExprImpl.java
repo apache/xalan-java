@@ -204,15 +204,16 @@ public class ForAndQuantifiedExprImpl extends ExprImpl
      */
     public boolean canBeReduced()
     {
-        return children.length == 1; // means that there is no???
+        return m_children.length == 1; // means that there is no???
     }
 
     /**
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
      */
-    public void visit(Visitor visitor)
+    public boolean visit(Visitor visitor)
     {
         // TODO:
+        return true;
     }
 
     /* (non-Javadoc)
