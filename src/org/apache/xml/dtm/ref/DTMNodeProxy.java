@@ -18,8 +18,11 @@
  */
 package org.apache.xml.dtm.ref;
 
+import java.util.Vector;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMDOMException;
+import org.apache.xpath.NodeSet;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
@@ -61,7 +64,10 @@ public class DTMNodeProxy
 
   /** The DTM node handle. */
   int node;
-        
+  
+  /** The return value as Empty String. */
+  private static final String EMPTYSTRING = "";
+          
   /** The DOMImplementation object */
   static final DOMImplementation implementation=new DTMNodeProxyImplementation();
 
@@ -450,9 +456,9 @@ public class DTMNodeProxy
    *
    *
    */
-  public boolean hasAttributeNS(String name, String x)
+  public boolean hasAttributeNS(String namespaceURI, String localName)
   {
-    return DTM.NULL != dtm.getAttributeNode(node,x,name);
+    return DTM.NULL != dtm.getAttributeNode(node,namespaceURI,localName);
   }
 
   /**
@@ -728,9 +734,71 @@ public class DTMNodeProxy
    *
    * @see org.w3c.dom.Document
    */
-  public final NodeList getElementsByTagName(String tagname)
+  public final NodeList getElementsByTagName(String tagname) 
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+       Vector listVector = new Vector();
+       Node retNode = dtm.getNode(node);
+       if (retNode != null) 
+       {
+         boolean isTagNameWildCard = "*".equals(tagname);
+         if (DTM.ELEMENT_NODE == retNode.getNodeType()) 
+         {
+           NodeList nodeList = retNode.getChildNodes();
+           for (int i = 0; i < nodeList.getLength(); i++) 
+           {
+             traverseChildren(listVector, nodeList.item(i), tagname,
+                              isTagNameWildCard);
+           }
+         } else if (DTM.DOCUMENT_NODE == retNode.getNodeType()) {
+           traverseChildren(listVector, dtm.getNode(node), tagname,
+                            isTagNameWildCard);
+         }
+       }
+       int size = listVector.size();
+       NodeSet nodeSet = new NodeSet(size);
+       for (int i = 0; i < size; i++) 
+       {
+         nodeSet.addNode((Node) listVector.elementAt(i));
+       }
+       return (NodeList) nodeSet;
+  }
+  /**
+   * 
+   * @param listVector
+   * @param tempNode
+   * @param tagname
+   * @param isTagNameWildCard
+   * 
+   * 
+   * Private method to be used for recursive iterations to obtain elements by tag name.
+   */
+  private final void traverseChildren
+  (
+    Vector listVector,
+    Node tempNode,
+    String tagname,
+    boolean isTagNameWildCard) {
+    if (tempNode == null) 
+    {
+      return;
+    } 
+    else
+    { 
+      if (tempNode.getNodeType() == DTM.ELEMENT_NODE
+            && (isTagNameWildCard || tempNode.getNodeName().equals(tagname)))
+      {
+        listVector.add(tempNode);
+      }
+      if(tempNode.hasChildNodes())
+      {
+        NodeList nodeList = tempNode.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++)
+        {
+          traverseChildren(listVector, nodeList.item(i), tagname,
+                           isTagNameWildCard);
+        }
+      }
+    }
   }
 
   /**
@@ -792,9 +860,83 @@ public class DTMNodeProxy
   public final NodeList getElementsByTagNameNS(String namespaceURI,
                                                String localName)
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    Vector listVector = new Vector();
+    Node retNode = dtm.getNode(node);
+    if (retNode != null)
+    {               
+      boolean isNamespaceURIWildCard = "*".equals(namespaceURI);
+      boolean isLocalNameWildCard    = "*".equals(localName);
+      if (DTM.ELEMENT_NODE == retNode.getNodeType())
+      {
+        NodeList nodeList = retNode.getChildNodes();                    
+        for(int i = 0; i < nodeList.getLength(); i++)
+        {
+          traverseChildren(listVector, nodeList.item(i), namespaceURI, localName, isNamespaceURIWildCard, isLocalNameWildCard);
+        }
+      }
+      else if(DTM.DOCUMENT_NODE == retNode.getNodeType())
+      {
+        traverseChildren(listVector, dtm.getNode(node), namespaceURI, localName, isNamespaceURIWildCard, isLocalNameWildCard);
+      }
+    }
+    int size = listVector.size();
+    NodeSet nodeSet = new NodeSet(size);
+    for (int i = 0; i < size; i++)
+    {
+      nodeSet.addNode((Node)listVector.elementAt(i));
+    }
+    return (NodeList) nodeSet;
   }
-
+  /**
+   * 
+   * @param listVector
+   * @param tempNode
+   * @param namespaceURI
+   * @param localname
+   * @param isNamespaceURIWildCard
+   * @param isLocalNameWildCard
+   * 
+   * Private method to be used for recursive iterations to obtain elements by tag name 
+   * and namespaceURI.
+   */
+  private final void traverseChildren
+  (
+   Vector listVector, 
+   Node tempNode, 
+   String namespaceURI, 
+   String localname,
+   boolean isNamespaceURIWildCard,
+   boolean isLocalNameWildCard) 
+   {
+    if (tempNode == null)
+    {
+      return;
+    }
+    else 
+    {
+      if (tempNode.getNodeType() == DTM.ELEMENT_NODE
+              && (isLocalNameWildCard
+                      || tempNode.getLocalName().equals(localname)))
+      {         
+        String nsURI = tempNode.getNamespaceURI();
+        if ((namespaceURI == null && nsURI == null)
+               || isNamespaceURIWildCard
+               || (namespaceURI != null && namespaceURI.equals(nsURI)))
+        {     
+          listVector.add(tempNode); 
+        } 
+      }
+      if(tempNode.hasChildNodes())
+      {
+        NodeList nl = tempNode.getChildNodes();                 
+        for(int i = 0; i < nl.getLength(); i++)
+        {
+          traverseChildren(listVector, nl.item(i), namespaceURI, localname,
+                           isNamespaceURIWildCard, isLocalNameWildCard);
+        }
+      }
+    }
+  }
   /**
    *
    * @param elementId
@@ -804,7 +946,7 @@ public class DTMNodeProxy
    */
   public final Element getElementById(String elementId)
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+       return (Element) dtm.getNode(dtm.getElementById(elementId));
   }
 
   /**
@@ -946,7 +1088,7 @@ public class DTMNodeProxy
 
     DTMNamedNodeMap  map = new DTMNamedNodeMap(dtm, node);
     Node node = map.getNamedItem(name);
-    return (null == node) ? null : node.getNodeValue();
+    return (null == node) ? EMPTYSTRING : node.getNodeValue();
   }
 
   /**
@@ -1043,9 +1185,11 @@ public class DTMNodeProxy
    */
   public final String getAttributeNS(String namespaceURI, String localName)
   {
-    DTMNamedNodeMap  map = new DTMNamedNodeMap(dtm, node);
-    Node node = map.getNamedItemNS(namespaceURI,localName);
-    return (null == node) ? null : node.getNodeValue();
+       Node retNode = null;
+       int n = dtm.getAttributeNode(node,namespaceURI,localName);
+       if(n != DTM.NULL)
+               retNode = dtm.getNode(n);
+       return (null == retNode) ? EMPTYSTRING : retNode.getNodeValue();
   }
 
   /**
@@ -1088,7 +1232,11 @@ public class DTMNodeProxy
    */
   public final Attr getAttributeNodeNS(String namespaceURI, String localName)
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+       Attr retAttr = null;
+       int n = dtm.getAttributeNode(node,namespaceURI,localName);
+       if(n != DTM.NULL)
+               retAttr = (Attr) dtm.getNode(n);
+       return retAttr;
   }
 
   /**

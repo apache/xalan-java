@@ -99,7 +99,7 @@ public class DTMNamedNodeMap implements NamedNodeMap
   public Node getNamedItem(String name)
   {
 
-    for (int n = dtm.getFirstAttribute(element); n != -1;
+    for (int n = dtm.getFirstAttribute(element); n != DTM.NULL;
             n = dtm.getNextAttribute(n))
     {
       if (dtm.getNodeName(n).equals(name))
@@ -198,7 +198,22 @@ public class DTMNamedNodeMap implements NamedNodeMap
    */
   public Node getNamedItemNS(String namespaceURI, String localName)
   {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
+       Node retNode = null;
+       for (int n = dtm.getFirstAttribute(element); n != DTM.NULL;
+                       n = dtm.getNextAttribute(n))
+       {
+         if (localName.equals(dtm.getLocalName(n)))
+         {
+           String nsURI = dtm.getNamespaceURI(n); 
+           if ((namespaceURI == null && nsURI == null)
+                  || (namespaceURI != null && namespaceURI.equals(nsURI)))
+           {
+             retNode = dtm.getNode(n);
+             break;
+           }
+         }
+       }
+       return retNode;
   }
 
   /**
