@@ -85,7 +85,7 @@ public class NamespaceSupport2
     // Internal state.
     ////////////////////////////////////////////////////////////////////
 
-    private Context currentContext; // Current point on a linked list
+    private Context currentContext; // Current point on the double-linked stack
 
 
     ////////////////////////////////////////////////////////////////////
@@ -168,13 +168,13 @@ public class NamespaceSupport2
         Context parentContext=currentContext;
         currentContext = parentContext.getChild();
         if (currentContext == null){
-		currentContext = new Context(parent);
-	    }
-	else{
-	    // JJK: This will wipe out any leftover data
-	    // if we're reusing a previously allocated Context.
-	    currentContext.setParent(parentContext);
-	}
+                currentContext = new Context(parentContext);
+            }
+        else{
+            // JJK: This will wipe out any leftover data
+            // if we're reusing a previously allocated Context.
+            currentContext.setParent(parentContext);
+        }
     }
 
 
@@ -274,7 +274,7 @@ public class NamespaceSupport2
      * will not.</p>
      *
      * @param qName The raw XML 1.0 name to be processed.
-     * @param parts An array supplied by the caller, capable of
+     * @param parts A string array supplied by the caller, capable of
      *        holding at least three members.
      * @param isAttribute A flag indicating whether this is an
      *        attribute name (true) or an element name (false).
@@ -284,18 +284,17 @@ public class NamespaceSupport2
      *        is an undeclared prefix.
      * @see #declarePrefix
      * @see java.lang.String#intern */
-    public String [] processName (String qName, String parts[],
+    public String [] processName (String qName, String[] parts,
                                   boolean isAttribute)
     {
-        String myParts[] = currentContext.processName(qName, isAttribute);
-        if (myParts == null) {
-            return null;
-        } else {
-            parts[0] = myParts[0];
-            parts[1] = myParts[1];
-            parts[2] = myParts[2];
-            return parts;
-        }
+        String[] name=currentContext.processName(qName, isAttribute);
+	if(name==null)
+	    return null;
+
+	// JJK: This recopying is required because processName may return
+	// a cached result. I Don't Like It. *****
+	System.arrayCopy(name,0,parts,0,3);
+	return parts;
     }
 
 
@@ -457,15 +456,15 @@ public class NamespaceSupport2
          */
         Context (Context parent)
         {
-	    if(parent==null)
-		{
-		    prefixTable = new Hashtable();
-		    uriTable = new Hashtable();
-		    elementNameTable=new Hashtable(); 
-		    attributeNameTable=new Hashtable(); 
-		}
-	    else
-		setParent(parent);
+            if(parent==null)
+                {
+                    prefixTable = new Hashtable();
+                    uriTable = new Hashtable();
+                    elementNameTable=new Hashtable(); 
+                    attributeNameTable=new Hashtable(); 
+                }
+            else
+                setParent(parent);
         }
         
         
@@ -489,8 +488,8 @@ public class NamespaceSupport2
         
         /**
          * (Re)set the parent of this Namespace context.
-	 * This is separate from the c'tor because it's re-applied
-	 * when a Context is reused by push-after-pop.
+         * This is separate from the c'tor because it's re-applied
+         * when a Context is reused by push-after-pop.
          *
          * @param context The parent Namespace context object.
          */
@@ -610,7 +609,7 @@ public class NamespaceSupport2
                                 // Save in the cache for future use.
             table.put(name[2], name);
             tablesDirty = true;
-            return name;
+	    return name;
         }
         
 
@@ -688,29 +687,35 @@ public class NamespaceSupport2
             }
         }
         
-        
-
         ////////////////////////////////////////////////////////////////
         // Internal methods.
         ////////////////////////////////////////////////////////////////
-
 
         /**
          * Copy on write for the internal tables in this context.
          *
          * <p>This class is optimized for the normal case where most
-         * elements do not contain Namespace declarations.</p>
+         * elements do not contain Namespace declarations. In that case,
+         * the Context will share data structures with its parent.
+         * New tables are obtained only when new declarations are issued,
+         * so they can be popped off the stack.</p>
+         *
+         * <p> JJK: **** Alternative: each Context might declare
+         *  _only_ its local bindings, and delegate upward if not found.</p>
          */     
         private void copyTables ()
         {
-	    // Start by copying our parent's bindings
-	    prefixTable = (Hashtable)prefixTable.clone();
-	    uriTable = (Hashtable)uriTable.clone();
+            // Start by copying our parent's bindings
+            prefixTable = (Hashtable)prefixTable.clone();
+            uriTable = (Hashtable)uriTable.clone();
 
-	    // Replace the caches with empty ones, rather than
-	    // trying to determine which should be flushed.
-	    elementNameTable=new Hashtable(); 
-	    attributeNameTable=new Hashtable(); 
+            // Replace the caches with empty ones, rather than
+            // trying to determine which bindings should be flushed.
+            // As far as I can tell, these caches are never actually
+            // used in Xalan... More efficient to dump the whole
+            // cache system? ****
+            elementNameTable=new Hashtable(); 
+            attributeNameTable=new Hashtable(); 
             tablesDirty = true;
         }
 
