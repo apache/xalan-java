@@ -56,38 +56,32 @@
  */
 package org.apache.xml.dtm.ref;
 
-import java.util.Hashtable;
-import java.util.Vector;
-
 import org.apache.xml.dtm.DTM;
 
 /**
  * This is a default implementation of a table that manages mappings from
  * expanded names to expandedNameIDs.
  *
- * %REVIEW% Note that this is not really a separate table, or a
- * separate pool. Instead, it's an access method build on top of the
- * existing pools, using three pieces of information: the index
- * numbers for a node's namespaceURI, localName, and node type, which
- * are combined to yield a composite index number.
- *
- * %TBD% startup sequence -- how this gets access to the appropriate
- * string pools in the DTMDocument/stylesheet.
- *
- * */
+ * %OPT% The performance of the getExpandedTypeID() method is very important 
+ * to DTM building. To get the best performance out of this class, we implement
+ * a simple hash algorithm directly into this class, instead of using the
+ * inefficient java.util.Hashtable. The code for the get and put operations
+ * are combined in getExpandedTypeID() method to share the same hash calculation
+ * code. We only need to implement the rehash() interface which is used to
+ * expand the hash table.
+ */
 public class ExpandedNameTable
 {
 
-  /** Probably a reference to static pool.     */
-  //private DTMStringPool m_locNamesPool;
+  /** Array of extended types for this document   */
+  private ExtendedType[] m_extendedTypes;
 
-  /** Probably a reference to static pool.   */
-  //private DTMStringPool m_namespaceNames;
-
-  /** Vector of extended types for this document   */
-  private /*static*/ Vector m_extendedTypes;
-
+  /** The initial size of the m_extendedTypes array */
+  private static int m_initialSize = 128;
+  
   /** Next available extended type   */
+  // %REVIEW% Since this is (should be) always equal 
+  // to the length of m_extendedTypes, do we need this? 
   private int m_nextType;
 
   // These are all the types prerotated, for caller convenience.
@@ -105,106 +99,178 @@ public class ExpandedNameTable
   public static final int NOTATION = ((int)DTM.NOTATION_NODE) ;
   public static final int NAMESPACE = ((int)DTM.NAMESPACE_NODE) ;
 
-  Hashtable m_hashtable = new Hashtable();
-
   /** Workspace for lookup. NOT THREAD SAFE!
    * */
-  ExtendedType hashET=new ExtendedType(-1,"","");
+  ExtendedType hashET = new ExtendedType(-1, "", "");
 
-  private static Hashtable m_defaultHashtable;
-  private static Vector m_defaultExtendedTypes;
+  /** The array to store the default extended types. */
+  private static ExtendedType[] m_defaultExtendedTypes;
 
   /**
-   *  Init default vales
+   * The default load factor of the Hashtable.
+   * This is used to calcualte the threshold.
+   */
+  private static float m_loadFactor = 0.75f;
+    
+  /**
+   * The initial capacity of the hash table. Use a bigger number
+   * to avoid the cost of expanding the table.
+   */ 
+  private static int m_initialCapacity = 203;
+  
+  /**
+   * The capacity of the hash table, i.e. the size of the
+   * internal HashEntry array.
+   */ 
+  private int m_capacity;
+  
+  /** 
+   * The threshold of the hash table, which is equal to capacity * loadFactor.
+   * If the number of entries in the hash table is bigger than the threshold,
+   * the hash table needs to be expanded.
+   */
+  private int m_threshold;
+  
+  /**
+   * The internal array to store the hash entries.
+   * Each array member is a slot for a hash bucket.
+   */
+  private HashEntry[] m_table;
+
+  /**
+   * Init default values
    */
   static {
-    // use bigger values than default, to avoid reallocation in the future
-    m_defaultExtendedTypes = new Vector(23);
-    m_defaultHashtable = new Hashtable(23, 0.75f);
+    m_defaultExtendedTypes = new ExtendedType[DTM.NTYPES];
 
     for (int i = 0; i < DTM.NTYPES; i++)
     {
-      ExtendedType newET = new ExtendedType(i, "", "");
-      m_defaultExtendedTypes.addElement(newET);
-      m_defaultHashtable.put(newET, new Integer(i));
+      m_defaultExtendedTypes[i] = new ExtendedType(i, "", "");
     }
   }
 
   /**
-   * Create an expanded name table that uses private string pool lookup.
+   * Create an expanded name table.
    */
   public ExpandedNameTable()
   {
-    //m_locNamesPool = new DTMSafeStringPool();
-    //m_namespaceNames = new DTMSafeStringPool();
+    m_capacity = m_initialCapacity;
+    m_threshold = (int)(m_capacity * m_loadFactor);
+    m_table = new HashEntry[m_capacity];
+    
     initExtendedTypes();
   }
 
-  /**
-   * Constructor ExpandedNameTable
-   *
-   * @param locNamesPool Local element names lookup.
-   * @param namespaceNames Namespace values lookup.
-   */
-  public ExpandedNameTable(DTMStringPool locNamesPool,
-                           DTMStringPool namespaceNames)
-  {
-    //m_locNamesPool = locNamesPool;
-    //m_namespaceNames = namespaceNames;
-    initExtendedTypes();
-  }
 
   /**
    *  Initialize the vector of extended types with the
    *  basic DOM node types.
    */
   private void initExtendedTypes()
-  {
-    // Since objects in the Vector a m_extendedTypes and m_hashtable are never changed
-    // it should be safe to copy default tables
-    m_extendedTypes = (Vector)m_defaultExtendedTypes.clone();
-    m_hashtable = (Hashtable)m_defaultHashtable.clone();
-    m_nextType = m_extendedTypes.size();
+  {    
+    m_extendedTypes = new ExtendedType[m_initialSize];
+    for (int i = 0; i < DTM.NTYPES; i++) {
+        m_extendedTypes[i] = m_defaultExtendedTypes[i];
+        m_table[i] = new HashEntry(m_defaultExtendedTypes[i], i, i, null);
+    }
+    
+    m_nextType = DTM.NTYPES;
   }
 
   /**
-   * Given an expanded name, return an ID.  If the expanded-name does not
-   * exist in the internal tables, the entry will be created, and the ID will
-   * be returned.  Any additional nodes that are created that have this
-   * expanded name will use this ID.
+   * Given an expanded name represented by namespace, local name and node type,
+   * return an ID.  If the expanded-name does not exist in the internal tables,
+   * the entry will be created, and the ID will be returned.  Any additional 
+   * nodes that are created that have this expanded name will use this ID.
    *
-   * @param namespace
-   * @param localName
+   * @param namespace The namespace
+   * @param localName The local name
+   * @param type The node type
    *
    * @return the expanded-name id of the node.
    */
   public int getExpandedTypeID(String namespace, String localName, int type)
   {
-    /*int nsID = (null != namespace) ? m_namespaceNames.stringToIndex(namespace) : 0;
-    int lnID = m_locNamesPool.stringToIndex(localName);
-
-    int expandedTypeID = (type << (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME))
-                       | (nsID << BITS_PER_LOCALNAME) | lnID;
-    return expandedTypeID;
-*/
     if (null == namespace)
       namespace = "";
     if (null == localName)
       localName = "";
-    // Set our reusable ExpandedType so we can look
-    // it up in the hashtable. Not threadsafe, but
-    // avoids creating a new object until we know
-    // this isn't one we've seen before.
-    hashET.redefine(type,namespace,localName);
+    
+    // Calculate the hash code
+    int hash = type + namespace.hashCode() + localName.hashCode();
+    
+    // Redefine the hashET object to represent the new expanded name.
+    hashET.redefine(type, namespace, localName, hash);
+    
+    // Calculate the index into the HashEntry table.
+    int index = hash % m_capacity;
+    if (index < 0)
+      index = -index;
 
-    Object eType;
-    if ((eType = m_hashtable.get(hashET)) != null )
-      return ((Integer)eType).intValue();
+    // Look up the expanded name in the hash table. Return the id if
+    // the expanded name is already in the hash table.
+    for (HashEntry e = m_table[index]; e != null; e = e.next)
+    {
+      if (e.hash == hash && e.key.equals(hashET))
+        return e.value;
+    }
 
-    ExtendedType newET=new ExtendedType(type, namespace, localName);
-    m_extendedTypes.addElement(newET);
-    m_hashtable.put(newET, new Integer(m_nextType));
+    // Expand the internal HashEntry array if necessary.
+    if (m_nextType > m_threshold)
+      rehash();
+    
+    // Create a new ExtendedType object
+    ExtendedType newET = new ExtendedType(type, namespace, localName, hash);
+    
+    // Expand the m_extendedTypes array if necessary.
+    if (m_extendedTypes.length == m_nextType) {
+        ExtendedType[] newArray = new ExtendedType[m_extendedTypes.length * 2];
+        System.arraycopy(m_extendedTypes, 0, newArray, 0,
+                         m_extendedTypes.length);
+        m_extendedTypes = newArray;
+    }
+    
+    m_extendedTypes[m_nextType] = newET;
+    
+    // Create a new hash entry for the new ExtendedType and put it into 
+    // the table.
+    HashEntry entry = new HashEntry(newET, m_nextType, hash, m_table[index]);
+    m_table[index] = entry;
+
     return m_nextType++;
+  }
+
+  /**
+   * Increases the capacity of and internally reorganizes the hashtable, 
+   * in order to accommodate and access its entries more efficiently. 
+   * This method is called when the number of keys in the hashtable exceeds
+   * this hashtable's capacity and load factor.
+   */
+  private void rehash()
+  {
+    int oldCapacity = m_capacity;
+    HashEntry[] oldTable = m_table;
+      
+    int newCapacity = 2 * oldCapacity + 1;
+    m_capacity = newCapacity;
+    m_threshold = (int)(newCapacity * m_loadFactor);
+      
+    m_table = new HashEntry[newCapacity];
+    for (int i = oldCapacity-1; i >=0 ; i--)
+    {
+      for (HashEntry old = oldTable[i]; old != null; )
+      {
+        HashEntry e = old;
+        old = old.next;
+          
+        int newIndex = e.hash % newCapacity;
+        if (newIndex < 0)
+          newIndex = -newIndex;
+          
+        e.next = m_table[newIndex];
+        m_table[newIndex] = e;
+      }
+    }
   }
 
   /**
@@ -229,9 +295,7 @@ public class ExpandedNameTable
    */
   public String getLocalName(int ExpandedNameID)
   {
-    //return m_locNamesPool.indexToString(ExpandedNameID & MASK_LOCALNAME);
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    return etype.localName;
+    return m_extendedTypes[ExpandedNameID].getLocalName();
   }
 
   /**
@@ -240,11 +304,10 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public /*static*/ final int getLocalNameID(int ExpandedNameID)
+  public final int getLocalNameID(int ExpandedNameID)
   {
-    //return (ExpandedNameID & MASK_LOCALNAME);
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    if (etype.localName.equals(""))
+    // ExtendedType etype = m_extendedTypes[ExpandedNameID];
+    if (m_extendedTypes[ExpandedNameID].getLocalName().equals(""))
       return 0;
     else
     return ExpandedNameID;
@@ -260,11 +323,8 @@ public class ExpandedNameTable
    */
   public String getNamespace(int ExpandedNameID)
   {
-
-    //int id = (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
-    //return (0 == id) ? null : m_namespaceNames.indexToString(id);
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    return (etype.namespace.equals("") ? null : etype.namespace);
+    String namespace = m_extendedTypes[ExpandedNameID].getNamespace();
+    return (namespace.equals("") ? null : namespace);
   }
 
   /**
@@ -273,11 +333,10 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this namespace.
    */
-  public /*static*/ final int getNamespaceID(int ExpandedNameID)
+  public final int getNamespaceID(int ExpandedNameID)
   {
-    //return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    if (etype.namespace.equals(""))
+    //ExtendedType etype = m_extendedTypes[ExpandedNameID];
+    if (m_extendedTypes[ExpandedNameID].getNamespace().equals(""))
       return 0;
     else
     return ExpandedNameID;
@@ -291,72 +350,49 @@ public class ExpandedNameTable
    */
   public final short getType(int ExpandedNameID)
   {
-    //return (short)(ExpandedNameID >> ROTAMOUNT_TYPE);
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    return (short)etype.nodetype;
+    //ExtendedType etype = m_extendedTypes[ExpandedNameID];
+    return (short)m_extendedTypes[ExpandedNameID].getNodeType();
   }
-
+  
+  /**
+   * Return the size of the ExpandedNameTable
+   *
+   * @return The size of the ExpandedNameTable
+   */
+  public int getSize()
+  {
+    return m_nextType;
+  }
+  
+  /**
+   * Return the array of extended types
+   *
+   * @return The array of extended types
+   */
+  public ExtendedType[] getExtendedTypes()
+  {
+    return m_extendedTypes;
+  }
 
   /**
-   * Private class representing an extended type object
+   * Inner class which represents a hash table entry.
+   * The field next points to the next entry which is hashed into
+   * the same bucket in the case of "hash collision".
    */
-  private static class ExtendedType
+  private static final class HashEntry
   {
-    protected int nodetype;
-    protected String namespace;
-    protected String localName;
-    protected int hash;
-
-    protected ExtendedType (int nodetype, String namespace, String localName)
+    ExtendedType key;
+    int value;
+    int hash;
+    HashEntry next;
+      
+    protected HashEntry(ExtendedType key, int value, int hash, HashEntry next)
     {
-      this.nodetype = nodetype;
-      this.namespace = namespace;
-      this.localName = localName;
-      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
-    }
-
-	/* This is intended to be used ONLY on the hashET
-	 * object. Using it elsewhere will mess up existing
-	 * hashtable entries!
-	 * */
-    protected void redefine(int nodetype, String namespace, String localName)
-    {
-      this.nodetype = nodetype;
-      this.namespace = namespace;
-      this.localName = localName;
-      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
-    }
-
-    /* Override super method
-	 * */
-    public int hashCode()
-    {
-    	return hash;
-    }
-
-    /* Override super method
-	 * */
-    public boolean equals(Object other)
-    {
-      //Usually an optimization, but
-      // won't arise in our usage:
-      //if(other==this) return true;
-      try
-      {
-          ExtendedType et=(ExtendedType)other;
-          return et.nodetype==this.nodetype &&
-                  et.localName.equals(this.localName) &&
-                  et.namespace.equals(this.namespace);
-      }
-      catch(ClassCastException e)
-      {
-              return false;
-      }
-      catch(NullPointerException e)
-      {
-              return false;
-      }
+      this.key = key;
+      this.value = value;
+      this.hash = hash;
+      this.next = next;
     }
   }
-
+  
 }

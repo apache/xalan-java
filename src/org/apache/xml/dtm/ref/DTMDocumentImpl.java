@@ -179,7 +179,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
         // retrieve them each time. Or this needs to be
         // an interface _implemented_ by this class... which might be simplest!
         private ExpandedNameTable m_expandedNames=
-                new ExpandedNameTable(m_localNames,m_nsNames);
+                new ExpandedNameTable();
 
         private XMLStringFactory m_xsf;
 

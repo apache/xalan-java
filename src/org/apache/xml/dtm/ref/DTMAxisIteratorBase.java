@@ -68,12 +68,12 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
    * Note that this is _not_ the node's handle within the DTM. Also, don't
    * confuse it with the current (most recently returned) position.
    */
-  private int _last = -1;
+  protected int _last = -1;
 
   /** The position of the current node within the iteration, as defined by XPath.
    * Note that this is _not_ the node's handle within the DTM!
    */
-  private int _position = 0;
+  protected int _position = 0;
 
   /** The position of the marked node within the iteration;
    * a saved itaration state that we may want to come back to.
@@ -287,5 +287,30 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
   {
     return -1;
   }
+  
+  public void setRestartable(boolean isRestartable) {
+    _isRestartable = isRestartable;
+  }  
 
+  /**
+   * Return the node at the given position.
+   * 
+   * @param position The position
+   * @return The node at the given position.
+   */
+  public int getNodeByPosition(int position)
+  {
+    if (position > 0) {
+      final int pos = isReverse() ? getLast() - position + 1
+                                   : position;
+      int node;
+      while ((node = next()) != DTMAxisIterator.END) {
+        if (pos == getPosition()) {
+          return node;
+        }
+      }
+    }
+    return END;
+  }
+  
 }

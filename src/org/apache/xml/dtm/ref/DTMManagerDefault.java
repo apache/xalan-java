@@ -368,7 +368,7 @@ public class DTMManagerDefault extends DTMManager
         
         // If the reader is null, but they still requested an incremental build,
         // then we still want to set up the IncrementalSAXSource stuff.
-        if (this.m_incremental && incremental /* || ((null == reader) && incremental) */)
+        if (m_incremental && incremental /* || ((null == reader) && incremental) */)
         {
           IncrementalSAXSource coParser=null;
 

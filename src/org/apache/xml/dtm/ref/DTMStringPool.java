@@ -57,8 +57,6 @@
 
 package org.apache.xml.dtm.ref;
 
-// %REVIEW% Should this be based on SuballocatedIntVector instead?
-// (Unclear. Pools will rarely be huge. But if they ever are...)
 import java.util.Vector;
 
 import org.apache.xml.utils.IntVector;
@@ -100,16 +98,26 @@ public class DTMStringPool
   IntVector m_hashChain;
   public static final int NULL=-1;
 
-  public DTMStringPool()
+  /**
+   * Create a DTMStringPool using the given chain size
+   * 
+   * @param chainSize The size of the hash chain vector
+   */
+  public DTMStringPool(int chainSize)
     {
       m_intToString=new Vector();
-      m_hashChain=new IntVector(512);
+      m_hashChain=new IntVector(chainSize);
       removeAllElements();
       
       // -sb Add this to force empty strings to be index 0.
       stringToIndex("");
     }
   
+  public DTMStringPool()
+    {
+      this(512);	
+    }
+    
   public void removeAllElements()
     {
       m_intToString.removeAllElements();

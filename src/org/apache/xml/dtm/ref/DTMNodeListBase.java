@@ -55,9 +55,6 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xml.dtm.ref;
-
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
 import org.w3c.dom.Node;
 
 /**
@@ -88,44 +85,10 @@ import org.w3c.dom.Node;
  * </ul>
  *
  * <p>State: In progress!!</p>
- * */
-public class DTMNodeList extends DTMNodeListBase {
-    private DTMIterator m_iter;
-
-    //================================================================
-    // Methods unique to this class
-    private DTMNodeList() {
-    }
-
-    /**
-     * Public constructor: Wrap a DTMNodeList around an existing
-     * and preconfigured DTMIterator
-     *
-     * WARNING: THIS HAS THE SIDE EFFECT OF ISSUING setShouldCacheNodes(true)
-     * AGAINST THE DTMIterator.
-     *
-     */
-    public DTMNodeList(DTMIterator dtmIterator) {
-        if (dtmIterator != null) {
-            int pos = dtmIterator.getCurrentPos();
-            try {
-                m_iter=(DTMIterator)dtmIterator.cloneWithReset();
-            } catch(CloneNotSupportedException cnse) {
-                m_iter = dtmIterator;
-            }
-            m_iter.setShouldCacheNodes(true);
-            m_iter.runTo(-1);
-            m_iter.setCurrentPos(pos);
-        }
-    }
-
-    /**
-     * Access the wrapped DTMIterator. I'm not sure whether anyone will
-     * need this or not, but let's write it and think about it.
-     *
-     */
-    public DTMIterator getDTMIterator() {
-        return m_iter;
+ *
+ */
+public class DTMNodeListBase implements org.w3c.dom.NodeList {
+    public DTMNodeListBase() {
     }
 
     //================================================================
@@ -140,17 +103,8 @@ public class DTMNodeList extends DTMNodeListBase {
      *   <code>NodeList</code>, or <code>null</code> if that is not a valid 
      *   index.
      */
-    public Node item(int index)
-    {
-        if (m_iter != null) {
-            int handle=m_iter.item(index);
-            if (handle == DTM.NULL) {
-                return null;
-            }
-            return m_iter.getDTM(handle).getNode(handle);
-        } else {
-            return null;
-        }
+    public Node item(int index) {
+        return null;
     }
 
     /**
@@ -158,6 +112,6 @@ public class DTMNodeList extends DTMNodeListBase {
      * is 0 to <code>length-1</code> inclusive. 
      */
     public int getLength() {
-        return (m_iter != null) ? m_iter.getLength() : 0;
+        return 0;
     }
 }

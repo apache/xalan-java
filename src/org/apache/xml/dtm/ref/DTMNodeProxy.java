@@ -109,7 +109,7 @@ public class DTMNodeProxy
    * @param dtm The DTM Reference, must be non-null.
    * @param node The DTM node handle.
    */
-  DTMNodeProxy(DTM dtm, int node)
+  public DTMNodeProxy(DTM dtm, int node)
   {
     this.dtm = dtm;
     this.node = node;
@@ -392,7 +392,7 @@ public class DTMNodeProxy
     // Annoyingly, AxisIterators do not currently implement DTMIterator, so
     // we can't just wap DTMNodeList around an Axis.CHILD iterator.
     // Instead, we've created a special-case operating mode for that object.
-    return new DTMNodeList(dtm,node);
+    return new DTMChildIterNodeList(dtm,node);
 
     // throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -616,17 +616,17 @@ public class DTMNodeProxy
   public final Element getDocumentElement()
   {
 		int dochandle=dtm.getDocument();
-		int elementhandle=dtm.NULL;
+		int elementhandle=DTM.NULL;
 		for(int kidhandle=dtm.getFirstChild(dochandle);
-				kidhandle!=dtm.NULL;
+				kidhandle!=DTM.NULL;
 				kidhandle=dtm.getNextSibling(kidhandle))
 		{
 			switch(dtm.getNodeType(kidhandle))
 			{
 			case Node.ELEMENT_NODE:
-				if(elementhandle!=dtm.NULL) 
+				if(elementhandle!=DTM.NULL) 
 				{
-					elementhandle=dtm.NULL; // More than one; ill-formed.
+					elementhandle=DTM.NULL; // More than one; ill-formed.
 					kidhandle=dtm.getLastChild(dochandle); // End loop
 				}
 				else
@@ -640,12 +640,12 @@ public class DTMNodeProxy
 				break;
 					
 			default:
-				elementhandle=dtm.NULL; // ill-formed
+				elementhandle=DTM.NULL; // ill-formed
 				kidhandle=dtm.getLastChild(dochandle); // End loop
 				break;
 			}
 		}
-		if(elementhandle==dtm.NULL)
+		if(elementhandle==DTM.NULL)
 			throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
 		else
 			return (Element)(dtm.getNode(elementhandle));

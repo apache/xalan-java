@@ -56,17 +56,14 @@
  */
 package org.apache.xml.dtm.ref;
 
+import org.apache.xml.dtm.*;
+
 import javax.xml.transform.Source;
 
-import org.apache.xml.dtm.Axis;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMAxisTraverser;
-import org.apache.xml.dtm.DTMException;
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.utils.XMLStringFactory;
+
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.XMLStringFactory;
 
 
 /**
@@ -101,6 +98,33 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
   {
     super(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
           doIndexing);
+  }
+
+  /**
+   * Construct a DTMDefaultBaseTraversers object from a DOM node.
+   *
+   * @param mgr The DTMManager who owns this DTM.
+   * @param domSource the DOM source that this DTM will wrap.
+   * @param source The object that is used to specify the construction source.
+   * @param dtmIdentity The DTM identity ID for this DTM.
+   * @param whiteSpaceFilter The white space filter for this DTM, which may
+   *                         be null.
+   * @param xstringfactory The factory to use for creating XMLStrings.
+   * @param doIndexing true if the caller considers it worth it to use
+   *                   indexing schemes.
+   * @param blocksize The block size of the DTM.
+   * @param usePrevsib true if we want to build the previous sibling node array.
+   */
+  public DTMDefaultBaseTraversers(DTMManager mgr, Source source,
+                                  int dtmIdentity,
+                                  DTMWSFilter whiteSpaceFilter,
+                                  XMLStringFactory xstringfactory,
+                                  boolean doIndexing,
+                                  int blocksize,
+                                  boolean usePrevsib)
+  {
+    super(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
+          doIndexing, blocksize, usePrevsib);
   }
 
   /**

@@ -95,7 +95,7 @@ public class DTMNamedNodeMap implements NamedNodeMap
    * @param dtm The DTM Reference, must be non-null.
    * @param element The DTM element handle.
    */
-  DTMNamedNodeMap(DTM dtm, int element)
+  public DTMNamedNodeMap(DTM dtm, int element)
   {
     this.dtm = dtm;
     this.element = element;
