@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -401,7 +401,7 @@ public class ElemVariable extends ElemTemplateElement
     {
       m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
     }
-    else
+    else if (m_parentNode instanceof Stylesheet)
     {
     	// If this is a global, then we need to treat it as if it's a xsl:template, 
     	// and count the number of variables it contains.  So we set the count to 
