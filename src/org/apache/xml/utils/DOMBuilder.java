@@ -525,7 +525,7 @@ public class DOMBuilder
    */
    private boolean isOutsideDocElem()
    {
-      return m_elemStack.size() == 0 && (null == m_currentNode || m_currentNode.getNodeType() == Node.DOCUMENT_NODE);
+      return (null == m_docFrag) && m_elemStack.size() == 0 && (null == m_currentNode || m_currentNode.getNodeType() == Node.DOCUMENT_NODE);
    }
 
   /**
