@@ -147,7 +147,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         {
           Properties props = new Properties();
 
-          is = Process.class.getResourceAsStream(file);
+          is = TransformerFactoryImpl.class.getResourceAsStream(file);
 
           // get a buffered version
           BufferedInputStream bis = new BufferedInputStream(is);
