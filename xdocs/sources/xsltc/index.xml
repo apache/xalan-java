@@ -62,10 +62,8 @@
   <s2 title="User Documentation">
     <p>The following user documentation is currently available:</p>
     <ul>
-      <li>XSLTC <jump href="README">Installation and Requirements</jump>
-      'README' (not updated)</li>
       <li>Command-line <jump href="README.xsltc">compiler</jump> and
-      <jump href="README.xslt">runtime</jump> 'README'</li>
+      <jump href="README.xslt">runtime</jump> man pages.</li>
       <li><link idref="xsltc_native_api">XSLTC Native API reference</link></li>
       <li><link idref="xsltc_trax_api">XSLTC TrAX API reference</link></li>
       <li><link idref="xsltc_performance">XSLTC Performance Hints</link></li>
