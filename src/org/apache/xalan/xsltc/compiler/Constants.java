@@ -127,6 +127,8 @@ public interface Constants extends InstructionConstants {
 	= org.apache.bcel.Constants.ACC_PRIVATE;
     public static final int ACC_PROTECTED 
 	= org.apache.bcel.Constants.ACC_PROTECTED;
+    public static final int ACC_STATIC
+	= org.apache.bcel.Constants.ACC_STATIC;
 
     public static final String STRING_SIG         
 	= "Ljava/lang/String;";
