@@ -44,6 +44,7 @@ import org.apache.xpath.objects.XString;
  */
 public class ElemWithParam extends ElemTemplateElement
 {
+    static final long serialVersionUID = -1070355175864326257L;
   /**
    * This is the index to the stack frame being called, <emph>not</emph> the 
    * stack frame that contains this element.

@@ -24,6 +24,7 @@ package org.apache.xalan.templates;
 public class XMLNSDecl
         implements java.io.Serializable // 20001009 jkess
 {
+    static final long serialVersionUID = 6710237366877605097L;
 
   /**
    * Constructor XMLNSDecl

@@ -37,6 +37,7 @@ import org.apache.xml.utils.QName;
  */
 public class ElemUse extends ElemTemplateElement
 {
+    static final long serialVersionUID = 5830057200289299736L;
 
   /**
    * The value of the "use-attribute-sets" attribute.

@@ -36,6 +36,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemLiteralResult extends ElemUse
 {
+    static final long serialVersionUID = -8703409074421657260L;
 
   /**
    * Tells if this element represents a root element

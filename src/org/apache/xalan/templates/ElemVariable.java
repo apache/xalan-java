@@ -44,6 +44,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  */
 public class ElemVariable extends ElemTemplateElement
 {
+    static final long serialVersionUID = 9111131075322790061L;
 
   /**
    * Constructor ElemVariable

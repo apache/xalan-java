@@ -34,6 +34,7 @@ import org.apache.xpath.XPath;
  */
 public class ElemWhen extends ElemTemplateElement
 {
+    static final long serialVersionUID = 5984065730262071360L;
 
   /**
    * Each xsl:when element has a single attribute, test,

@@ -41,6 +41,7 @@ import org.apache.xpath.XPathContext;
  */
 public class ElemCopy extends ElemUse
 {
+    static final long serialVersionUID = 5478580783896941384L;
 
   /**
    * Get an int constant identifying the type of element.

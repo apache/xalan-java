@@ -31,6 +31,7 @@ import org.apache.xpath.XPathContext;
  */
 public class ElemUnknown extends ElemLiteralResult
 {
+    static final long serialVersionUID = -4573981712648730168L;
 
   /**
    * Get an int constant identifying the type of element.

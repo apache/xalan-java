@@ -24,6 +24,7 @@ package org.apache.xalan.templates;
  */
 public class ElemExtensionScript extends ElemTemplateElement
 {
+    static final long serialVersionUID = -6995978265966057744L;
 
   /**
    * Constructor ElemExtensionScript

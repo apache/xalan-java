@@ -35,6 +35,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  */
 public class ElemText extends ElemTemplateElement
 {
+    static final long serialVersionUID = 1383140876182316711L;
 
   /**
    * Tells if this element should disable escaping.

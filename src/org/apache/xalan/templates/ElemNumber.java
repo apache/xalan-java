@@ -68,6 +68,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemNumber extends ElemTemplateElement 
 {
+    static final long serialVersionUID = 8118472298274407610L;
 
     private class MyPrefixResolver implements PrefixResolver {
         

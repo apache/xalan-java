@@ -43,6 +43,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class ElemCopyOf extends ElemTemplateElement
 {
+    static final long serialVersionUID = -7433828829497411127L;
 
   /**
    * The required select attribute contains an expression.

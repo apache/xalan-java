@@ -44,6 +44,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemElement extends ElemUse
 {
+    static final long serialVersionUID = -324619535592435183L;
 
   /**
    * The name attribute is interpreted as an attribute value template.

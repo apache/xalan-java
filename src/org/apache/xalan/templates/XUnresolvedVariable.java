@@ -31,6 +31,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class XUnresolvedVariable extends XObject
 {  
+    static final long serialVersionUID = -256779804767950188L;
   /** The node context for execution. */
   transient private int m_context;
   

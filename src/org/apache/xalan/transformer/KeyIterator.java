@@ -39,6 +39,7 @@ import org.apache.xpath.axes.OneStepIteratorForward;
  */
 public class KeyIterator extends OneStepIteratorForward
 {
+    static final long serialVersionUID = -1349109910100249661L;
 
   /** Key name.
    *  @serial           */

@@ -41,6 +41,7 @@ import org.apache.xpath.patterns.UnionPattern;
  */
 public class TemplateList implements java.io.Serializable
 {
+    static final long serialVersionUID = 5803675288911728791L;
 
   /**
    * Construct a TemplateList object. Needs to be public so it can

@@ -39,6 +39,7 @@ import org.apache.xml.utils.QName;
  */
 public class ElemAttributeSet extends ElemUse
 {
+    static final long serialVersionUID = -426740318278164496L;
 
   /**
    * The name attribute specifies the name of the attribute set.

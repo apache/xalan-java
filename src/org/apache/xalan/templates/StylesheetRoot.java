@@ -49,6 +49,7 @@ import org.apache.xpath.XPathContext;
 public class StylesheetRoot extends StylesheetComposed
         implements java.io.Serializable, Templates
 {
+    static final long serialVersionUID = 3875353123529147855L;
 
   /**
    * Uses an XSL stylesheet document.
@@ -114,7 +115,7 @@ public class StylesheetRoot extends StylesheetComposed
     return m_availElems;
   }
   
-  private ExtensionNamespacesManager m_extNsMgr = null;
+  private transient ExtensionNamespacesManager m_extNsMgr = null;
   
   /**
    * Only instantiate an ExtensionNamespacesManager if one is called for
@@ -1150,7 +1151,7 @@ public class StylesheetRoot extends StylesheetComposed
       }
     } // end QuickSort2  */
     
-    private ComposeState m_composeState;
+    private transient ComposeState m_composeState;
     
     /**
      * Initialize a new ComposeState.

@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemTextLiteral extends ElemTemplateElement
 {
+    static final long serialVersionUID = -7872620006767660088L;
 
   /**
    * Tell if space should be preserved.

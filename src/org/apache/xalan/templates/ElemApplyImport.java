@@ -34,6 +34,7 @@ import org.apache.xml.dtm.DTM;
  */
 public class ElemApplyImport extends ElemTemplateElement
 {
+    static final long serialVersionUID = 3764728663373024038L;
 
   /**
    * Get an int constant identifying the type of element.

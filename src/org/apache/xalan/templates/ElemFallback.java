@@ -33,6 +33,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemFallback extends ElemTemplateElement
 {
+    static final long serialVersionUID = 1782962139867340703L;
 
   /**
    * Get an int constant identifying the type of element.

@@ -27,6 +27,7 @@ import org.apache.xpath.XPath;
  */
 public class WhiteSpaceInfo extends ElemTemplate
 {
+    static final long serialVersionUID = 6389208261999943836L;
 
   /** Flag indicating whether whitespaces should be stripped.
    *  @serial        */

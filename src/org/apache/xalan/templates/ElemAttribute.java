@@ -44,6 +44,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemAttribute extends ElemElement
 {
+    static final long serialVersionUID = 8817220961566919187L;
 
   /**
    * Get an int constant identifying the type of element.

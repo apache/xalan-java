@@ -38,6 +38,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncKey extends Function2Args
 {
+    static final long serialVersionUID = 9089293100115347340L;
 
   /** Dummy value to be used in usedrefs hashtable           */
   static private Boolean ISTRUE = new Boolean(true);

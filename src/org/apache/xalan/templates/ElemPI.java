@@ -39,6 +39,7 @@ import org.apache.xpath.XPathContext;
  */
 public class ElemPI extends ElemTemplateElement
 {
+    static final long serialVersionUID = 5621976448020889825L;
 
   /**
    * The xsl:processing-instruction element has a required name

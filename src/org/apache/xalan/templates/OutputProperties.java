@@ -47,7 +47,7 @@ import org.apache.xml.utils.QName;
 public class OutputProperties extends ElemTemplateElement
         implements Cloneable
 {
-
+    static final long serialVersionUID = -6975274363881785488L;
   /**
    * Creates an empty OutputProperties with no default values.
    */

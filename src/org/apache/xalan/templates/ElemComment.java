@@ -34,6 +34,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemComment extends ElemTemplateElement
 {
+    static final long serialVersionUID = -8813199122875770142L;
 
   /**
    * Get an int constant identifying the type of element.

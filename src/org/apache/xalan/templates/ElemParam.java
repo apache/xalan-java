@@ -38,6 +38,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class ElemParam extends ElemVariable
 {
+    static final long serialVersionUID = -1131781475589006431L;
   int m_qnameID;
 
   /**

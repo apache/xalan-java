@@ -38,6 +38,7 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncFormatNumb extends Function3Args
 {
+    static final long serialVersionUID = -8869935264870858636L;
 
   /**
    * Execute the function.  The function must return

@@ -49,6 +49,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemApplyTemplates extends ElemCallTemplate
 {
+    static final long serialVersionUID = 2903125371542621004L;
 
   /**
    * mode %qname; #IMPLIED

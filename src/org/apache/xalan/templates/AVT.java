@@ -37,6 +37,7 @@ import org.apache.xpath.XPathContext;
  */
 public class AVT implements java.io.Serializable, XSLTVisitable
 {
+    static final long serialVersionUID = 5167607155517042691L;
   
   /**
     *We are not going to use the object pool if USE_OBJECT_POOL == false.

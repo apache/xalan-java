@@ -32,6 +32,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class XUnresolvedVariableSimple extends XObject
 {
+    static final long serialVersionUID = -1224413807443958985L;
   public XUnresolvedVariableSimple(ElemVariable obj)
   {
     super(obj);

@@ -37,6 +37,7 @@ import org.apache.xpath.XPathContext;
  */
 public class CountersTable extends Hashtable
 {
+    static final long serialVersionUID = 2159100770924179875L;
 
   /**
    * Construct a CountersTable.

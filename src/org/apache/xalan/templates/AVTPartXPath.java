@@ -31,6 +31,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class AVTPartXPath extends AVTPart
 {
+    static final long serialVersionUID = -4460373807550527675L;
 
   /**
    * The XPath object contained in this part.

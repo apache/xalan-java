@@ -26,6 +26,7 @@ package org.apache.xalan.templates;
  */
 public class NamespaceAlias extends ElemTemplateElement
 {
+    static final long serialVersionUID = 456173966637810718L;
   
   /**
    * Constructor NamespaceAlias

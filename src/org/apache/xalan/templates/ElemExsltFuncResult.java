@@ -29,6 +29,19 @@ import org.apache.xpath.objects.XObject;
  */
 public class ElemExsltFuncResult extends ElemVariable
 {
+    static final long serialVersionUID = -3478311949388304563L;
+    /*
+     * To keep the binary compatibility put those three private global 
+     * variables back, although they are never used in this verison
+     */
+    // A flag indicating whether the return result is set
+    private boolean m_isResultSet = false;
+  
+    // The return result
+    private XObject m_result = null;
+  
+    // The frame size of the current caller
+    private int m_callerFrameSize = 0;
  
   /**
    * Generate the EXSLT function return value, and assign it to the variable

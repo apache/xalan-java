@@ -36,6 +36,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class ElemChoose extends ElemTemplateElement
 {
+    static final long serialVersionUID = -3070117361903102033L;
 
   /**
    * Get an int constant identifying the type of element.

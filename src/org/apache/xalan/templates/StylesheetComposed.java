@@ -43,6 +43,7 @@ import javax.xml.transform.TransformerException;
  */
 public class StylesheetComposed extends Stylesheet
 {
+    static final long serialVersionUID = -3444072247410233923L;
 
   /**
    * Uses an XSL stylesheet document.

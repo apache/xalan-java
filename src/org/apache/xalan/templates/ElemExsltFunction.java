@@ -36,6 +36,7 @@ import org.w3c.dom.NodeList;
  */
 public class ElemExsltFunction extends ElemTemplate
 {
+    static final long serialVersionUID = 272154954793534771L;
   /**
    * Get an integer representation of the element type.
    *

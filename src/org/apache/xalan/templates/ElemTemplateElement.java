@@ -58,6 +58,7 @@ public class ElemTemplateElement extends UnImplNode
         implements PrefixResolver, Serializable, ExpressionNode, 
                    WhitespaceStrippingElementMatcher, XSLTVisitable
 {
+    static final long serialVersionUID = 4440018597841834447L;
 
   /**
    * Construct a template element instance.

@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemExtensionCall extends ElemLiteralResult
 {
+    static final long serialVersionUID = 3171339708500216920L;
 
   /** The Namespace URI for this extension call element.
    *  @serial          */

@@ -32,6 +32,7 @@ import org.apache.xpath.XPath;
  */
 public class KeyDeclaration extends ElemTemplateElement
 {
+    static final long serialVersionUID = 7724030248631137918L;
 
   /**
    * Constructs a new element representing the xsl:key.  The parameters

@@ -49,6 +49,7 @@ import org.apache.xpath.XPathContext;
  */
 public class ElemTemplate extends ElemTemplateElement
 {
+    static final long serialVersionUID = -5283056789965384058L;
   /** The public identifier for the current document event.
    *  @serial          */
   private String m_publicId;

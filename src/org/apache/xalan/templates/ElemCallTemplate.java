@@ -42,6 +42,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class ElemCallTemplate extends ElemForEach
 {
+    static final long serialVersionUID = 5009634612916030591L;
 
   /**
    * An xsl:call-template element invokes a template by name;

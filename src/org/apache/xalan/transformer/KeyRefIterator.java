@@ -37,6 +37,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
 {
+    static final long serialVersionUID = 3837456451659435102L;
   /**
    * Constructor KeyRefIterator
    *

@@ -33,6 +33,7 @@ import org.apache.xml.utils.StringVector;
  */
 public class ElemExtensionDecl extends ElemTemplateElement
 {
+    static final long serialVersionUID = -4692738885172766789L;
 
   /**
    * Constructor ElemExtensionDecl

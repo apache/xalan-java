@@ -28,6 +28,7 @@ import org.apache.xpath.XPathContext;
  */
 public abstract class AVTPart implements java.io.Serializable, XSLTVisitable
 {
+    static final long serialVersionUID = -1747749903613916025L;
 
   /**
    * Construct a part.

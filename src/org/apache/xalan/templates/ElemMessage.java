@@ -38,6 +38,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemMessage extends ElemTemplateElement
 {
+    static final long serialVersionUID = 1530472462155060023L;
 
   /**
    * If the terminate attribute has the value yes, then the

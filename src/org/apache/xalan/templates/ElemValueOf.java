@@ -44,6 +44,7 @@ import org.xml.sax.SAXException;
  */
 public class ElemValueOf extends ElemTemplateElement
 {
+    static final long serialVersionUID = 3490728458007586786L;
 
   /**
    * The select expression to be executed.

@@ -79,6 +79,7 @@ import org.apache.xml.utils.SystemIDResolver;
 public class Stylesheet extends ElemTemplateElement
         implements java.io.Serializable /* , Document */
 {
+    static final long serialVersionUID = 2085337282743043776L;
 
   /**
    * Constructor for a Stylesheet.

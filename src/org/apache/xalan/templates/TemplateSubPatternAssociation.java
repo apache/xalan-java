@@ -33,6 +33,7 @@ import org.apache.xpath.patterns.StepPattern;
  */
 class TemplateSubPatternAssociation implements Serializable, Cloneable
 {
+    static final long serialVersionUID = -8902606755229903350L;
 
   /** Step pattern           */
   StepPattern m_stepPattern;

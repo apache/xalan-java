@@ -45,6 +45,7 @@ import org.apache.xml.utils.QName;
  */
 public class DecimalFormatProperties extends ElemTemplateElement
 {
+    static final long serialVersionUID = -6559409339256269446L;
 
   /** An instance of DecimalFormatSymbols for this element.
    *  @serial       */

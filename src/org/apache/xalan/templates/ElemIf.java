@@ -39,6 +39,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class ElemIf extends ElemTemplateElement
 {
+    static final long serialVersionUID = 2158774632427453022L;
 
   /**
    * The xsl:if element must have a test attribute, which specifies an expression.

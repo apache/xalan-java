@@ -33,6 +33,9 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
+import java.io.ObjectInputStream;
+import java.io.IOException;
+
 /**
  * Implement xsl:for-each.
  * <pre>
@@ -53,6 +56,7 @@ import org.apache.xpath.XPathContext;
  */
 public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 {
+    static final long serialVersionUID = 6018140636363583690L;
   /** Set true to request some basic status reports */
   static final boolean DEBUG = false;
   
@@ -531,4 +535,14 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   	m_selectExpression = exp;
   }
 
+  /*
+   * to keep the binary compatibility, assign a default value for newly added
+   * globel varialbe m_xpath during deserialization of an object which was 
+   * serialized using an older version
+   */
+   private void readObject(ObjectInputStream os) throws 
+        IOException, ClassNotFoundException {
+           os.defaultReadObject();
+           m_xpath = null;
+   }
 }

@@ -58,6 +58,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncDocument extends Function2Args
 {
+    static final long serialVersionUID = 2483304325971281424L;
 
   /**
    * Execute the function.  The function must return
