@@ -1013,16 +1013,18 @@ public class ElemNumber extends ElemTemplateElement
   private DecimalFormat getNumberFormatter(
           TransformerImpl transformer, Node contextNode) throws TransformerException
   {
-
-    Locale locale = getLocale(transformer, contextNode);
+    // Patch from Steven Serocki
+    // Maybe we really want to do the clone in getLocale() and return  
+    // a clone of the default Locale??
+    Locale locale = (Locale)getLocale(transformer, contextNode).clone();
 
     // Helper to format local specific numbers to strings.
     DecimalFormat formatter;
 
-    synchronized (locale)
-    {
+    //synchronized (locale)
+    //{
       formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
-    }
+    //}
 
     String digitGroupSepValue =
       (null != m_groupingSeparator_avt)
