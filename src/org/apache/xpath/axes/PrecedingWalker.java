@@ -137,6 +137,17 @@ public class PrecedingWalker extends ReverseAxesWalker
 
     m_nextLevelAmount = 0;
 
+//    if(null != next)
+//    {
+//      Node attrNode = next.getAttributes().getNamedItem("id");
+//      if(null != attrNode)
+//        System.out.println("parentNode: "+attrNode.getNodeValue());
+//      else
+//        System.out.println("parentNode: no id value");
+//    }
+//    else
+//      System.out.println("parentNode: null");
+
     return setCurrentIfNotNull(next);
   }
 
@@ -197,6 +208,17 @@ public class PrecedingWalker extends ReverseAxesWalker
     m_nextLevelAmount = (null == nextNode)
                         ? 0 : (nextNode.hasChildNodes() ? 1 : 0);
 
+//    if(null != nextNode)
+//    {
+//      Node attrNode = nextNode.getAttributes().getNamedItem("id");
+//      if(null != attrNode)
+//        System.out.println("firstChild: "+attrNode.getNodeValue());
+//      else
+//        System.out.println("firstChild: no id value");
+//    }
+//    else
+//      System.out.println("firstChild: null");
+
     return setCurrentIfNotNull(nextNode);
   }
 
@@ -214,12 +236,32 @@ public class PrecedingWalker extends ReverseAxesWalker
       return null;
 
     Node next = m_currentNode.getNextSibling();
-
+    
     if ((null == next) || m_root.equals(next)
-            || isAncestorOfRootContext(next))
+            /* || isAncestorOfRootContext(next) */)
       return null;
+      
+    if(isAncestorOfRootContext(next))
+    {
+      next = next.getFirstChild();
+      
+      if ((null == next) || m_root.equals(next)
+              /* || isAncestorOfRootContext(next) */)
+        return null;
+    }
 
     m_nextLevelAmount = (null == next) ? 0 : (next.hasChildNodes() ? 1 : 0);
+
+//    if(null != next)
+//    {
+//      Node attrNode = next.getAttributes().getNamedItem("id");
+//      if(null != attrNode)
+//        System.out.println("nextSibling: "+attrNode.getNodeValue());
+//      else
+//        System.out.println("nextSibling: no id value");
+//    }
+//    else
+//      System.out.println("nextSibling: null");
 
     return setCurrentIfNotNull(next);
   }
