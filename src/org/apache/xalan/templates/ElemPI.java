@@ -179,7 +179,9 @@ public class ElemPI extends ElemTemplateElement
     {
       error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML);  //"processing-instruction name can not be 'xml'");
     }
-    else if (!isValidNCName(piName))
+    
+    // Only check if an avt was used (ie. this wasn't checked at compose time.)
+    else if ((!m_name_atv.isSimple()) && (!isValidNCName(piName)))
     {
       error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
             new Object[]{ piName });  //"processing-instruction name must be a valid NCName: "+piName);

@@ -934,8 +934,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
   public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
 
   
-   /** Priority value does not contain a parsable number   */
-  public static final int ER_PRIORITY_NOT_PARSABLE = 204;
+   /** Value for {0} should contain a parsable number   */
+  public static final int ER_VALUE_SHOULD_BE_NUMBER = 204;
+
 
   
    /**  Value for {0} should equal 'yes' or 'no'   */
@@ -1022,14 +1023,35 @@ public class XSLTErrorResources extends PropertyResourceBundle
   // Non-whitespace text is not allowed in this position in the stylesheet!
   public static final int ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 238;
   
-  // An XSLT attribute of type T_CHAR must be only 1 character!
-  public static final int ER_ATTR_T_CHAR_ONE_CHAR = 239;
+  // This code is shared with warning codes.
+  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
+  public static final int INVALID_TCHAR = 239;
   
   // SystemId Unknown
   public static final int ER_SYSTEMID_UNKNOWN = 240;
     
   // Location of error unknown  
   public static final int ER_LOCATION_UNKNOWN = 241;
+  
+  //The following codes are shared with the warning codes... 
+  // Illegal value: {1} used for QNAME attribute: {0}
+  public static final int INVALID_QNAME = 242;   
+   
+  // Illegal value\u003a {1} used for ENUM attribute\u003a {0}.  Valid values are\u003a {2}.
+  public static final int INVALID_ENUM = 243;
+   
+  // Illegal value\u003a {1} used for NMTOKEN attribute\u003a {0}. 
+  public static final int INVALID_NMTOKEN = 244;
+      
+  // Illegal value\u003a {1} used for NCNAME attribute\u003a {0}. 
+  public static final int INVALID_NCNAME = 245;  
+   
+  // Illegal value\u003a {1} used for boolean attribute\u003a {0}. 
+  public static final int INVALID_BOOLEAN = 246;  
+
+  // Illegal value\u003a {1} used for number attribute\u003a {0}. 
+  public static final int INVALID_NUMBER = 247;
+  // End of shared codes...
   
 
 
@@ -1182,7 +1204,36 @@ public class XSLTErrorResources extends PropertyResourceBundle
 
   /** WG_EMPTY_SECOND_ARG          */
   public static final int WG_EMPTY_SECOND_ARG = 26;
+  
+  
+  //The following warning codes are shared with the error codes ... 
+  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
+  public static final int WG_INVALID_TCHAR = 239;
+  
+  
+  // Illegal value: {1} used for QNAME attribute: {0}
+  public static final int WG_INVALID_QNAME = 242;
+  
+   
+  // Illegal value\u003a {1} used for ENUM attribute\u003a {0}.  Valid values are\u003a {2}.
+  public static final int WG_INVALID_ENUM = 243;
+  
+   
+  // Illegal value\u003a {1} used for NMTOKEN attribute\u003a {0}. 
+  public static final int WG_INVALID_NMTOKEN = 244;
+  
+      
+  // Illegal value\u003a {1} used for NCNAME attribute\u003a {0}. 
+  public static final int WG_INVALID_NCNAME = 245;
+  
+   
+  // Illegal value\u003a {1} used for boolean attribute\u003a {0}. 
+  public static final int WG_INVALID_BOOLEAN = 246;
+  
 
+  // Illegal value\u003a {1} used for number attribute\u003a {0}. 
+  public static final int WG_INVALID_NUMBER = 247;
+  // End of codes that are shared...
 
   // Other miscellaneous text used inside the code...
 

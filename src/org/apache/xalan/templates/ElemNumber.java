@@ -1144,13 +1144,15 @@ public class ElemNumber extends ElemTemplateElement
       transformer.getXPathContext(), contextNode, this) : null;
       
       
-    // Validate grouping separator
-    if ((digitGroupSepValue != null) && (digitGroupSepValue.length() != 1))
+    // Validate grouping separator if an AVT was used; otherwise this was 
+    // validated statically in XSLTAttributeDef.java.
+    if ((digitGroupSepValue != null) && (!m_groupingSeparator_avt.isSimple()) &&
+        (digitGroupSepValue.length() != 1))
     {
-        transformer.getMsgMgr().warn(
-           this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
-           new Object[]{ Constants.ATTRNAME_NAME, m_groupingSeparator_avt.getName() });   
-    }              
+            transformer.getMsgMgr().warn(
+               this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
+               new Object[]{ Constants.ATTRNAME_NAME, m_groupingSeparator_avt.getName()});   
+    }                  
       
       
     String nDigitsPerGroupValue =

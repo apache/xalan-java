@@ -632,4 +632,11 @@ public class AVT implements java.io.Serializable, XSLTVisitable
   	}
   }
 
+
+  /**
+   * Returns true if this AVT is simple
+   */
+  public boolean isSimple() {
+  	return m_simpleString != null;
+  }
 }

@@ -514,6 +514,13 @@ public class XPATHErrorResources extends PropertyResourceBundle
   
    /** Expected relative path pattern */
   public static final int ER_EXPECTED_REL_PATH_PATTERN = 100;
+  
+  /** localname in QNAME should be a valid NCName */  
+  public static final int ER_ARG_LOCALNAME_INVALID = 101;
+
+  /** prefix in QNAME should be a valid NCName */
+  public static final int ER_ARG_PREFIX_INVALID = 102;
+
  
 
 
