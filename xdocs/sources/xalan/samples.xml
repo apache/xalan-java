@@ -223,8 +223,8 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <p>What it does: Uses the Redirect extension elements shipped with &xslt4j; to direct output to two output
         files.</p>
       <p>Run this sample from the extensions subdirectory with</p> 
-       <p><code>java org.apache.xalan.xslt.Process -in 1-redir.xml</code></p>
-       <p>&nbsp;&nbsp;<code>-xsl 1-redir.xsl</code></p>
+       <p><code>java org.apache.xalan.xslt.Process -in 1-redir.xml</code><br/>
+       &nbsp;&nbsp;<code>-xsl 1-redir.xsl</code></p>
       <p>The standard (non-redirected) output is writen to the screen. The redirected output is written to 1-redir-out, or
       whatever filename you assign to the doc/foo @file attribute in 1-redir.xml. The stylesheet gets the file name for
       redirected output from the XML input file.</p>

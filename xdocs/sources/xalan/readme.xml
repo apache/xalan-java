@@ -66,17 +66,17 @@
   <li><link anchor="status">Status</link></li>
   <li><link anchor="build">Build Notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
-  <li><link anchor="history">History of software changes</link></li>
+  <!--li><link anchor="history">History of software changes</link></li-->
  </ul>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 1.2.D01</link></li>    
+    <!--li><link anchor="done">Changes since version 2.0.D01</link></li-->    
     <li><link anchor="bugs">Open bugs and bug reporting</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
-     <anchor name="done"/>
-     &done-j;     
+     <!--anchor name="done"/>
+     &done-j;   -->  
      <anchor name="bugs"/>
      &bugs-j;
      <anchor name="status"/>
@@ -98,7 +98,6 @@
      Windows32 batch file (build.bat) and a UNIX shell file (build.sh). The build file defines the "targets" that you can use Ant
      to build. The batch and shell files set up the classpath and launch Ant with the target (and any other arguments) you
      provide.</p>
-     <note>We still use makefiles to build the distribution copy of &xslt4j;.</note>
      <p><em>Instructions for using Ant</em></p>
      <ol>
        <li>Set the JAVA_HOME environment variable to the JDK root directory.<br/><br/>
@@ -179,28 +178,28 @@
        <li>To build the API documentation, run the JDK 1.2.2 javadoc tool from the xdocs directory:<br/><br/>
 <code>
 javadoc -doclet xalanjdoc.Standard -docletpath ../bin/xalanjdoc.jar -private
--overview ../src/javadocOverview.html -sourcepath ../src 
--group TrAX "trax" 
--group Xalan_Core "org.apache.xalan.processor:org.apache.xalan.templates:
-org.apache.xalan.transformer"
--group XPath "org.apache.xpath*:org.w3c.xslt" 
--group Xalan_Other "org.apache.xalan.client:org.apache.xalan.dtm:
-org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:
-org.apache.xalan.trace:org.apache.xalan.utils" 
--group Xalan_Extensions "org.apache.xalan.lib*" 
--group Serializers "serialize*" 
--group Xalan-Java_1_Interface "org.apache.xalan.xslt:org.apache.xalan.xpath" 
-org.apache.xalan.client org.apache.xalan.dtm org.apache.xalan.extensions 
-org.apache.xalan.lib org.apache.xalan.lib.sql org.apache.xalan.processor 
-org.apache.xalan.res org.apache.xalan.stree org.apache.xalan.templates 
-org.apache.xalan.trace org.apache.xalan.transformer org.apache.xalan.utils 
-org.apache.xalan.xpath org.apache.xalan.xpath.xml org.apache.xalan.xslt 
-org.apache.xpath org.apache.xpath.axes org.apache.xpath.compiler 
-org.apache.xpath.functions org.apache.xpath.objects org.apache.xpath.operations 
-org.apache.xpath.patterns org.apache.xpath.res org.w3c.xslt 
-serialize serialize.helpers trax 
--d ../build/docs/apidocs -windowtitle "Xalan-Java 2" -doctitle "Xalan-Java 2"
--bottom "Copyright &#169; 2000 Apache XML Project. All Rights Reserved."
+ -overview ../src/javadocOverview.html -sourcepath ../src 
+ -group TrAX "org.apache.trax" 
+ -group Xalan_Core "org.apache.xalan.processor:org.apache.xalan.templates:
+ org.apache.xalan.transformer"
+ -group XPath "org.apache.xpath*:org.w3c.xslt" 
+ -group Xalan_Other "org.apache.xalan.client:org.apache.xalan.dtm:
+ org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:
+ org.apache.xalan.trace:org.apache.xalan.utils:org.apache.xalan.xslt" 
+ -group Xalan_Extensions "org.apache.xalan.lib*" 
+ -group Serializers "org.apache.serialize*:org.apache.xml.serialize.transition" 
+ org.apache.xalan.client org.apache.xalan.dtm org.apache.xalan.extensions 
+ org.apache.xalan.lib org.apache.xalan.lib.sql org.apache.xalan.processor 
+ org.apache.xalan.res org.apache.xalan.stree org.apache.xalan.templates 
+ org.apache.xalan.trace org.apache.xalan.transformer org.apache.xalan.utils 
+ org.apache.xalan.xslt 
+ org.apache.xpath org.apache.xpath.axes org.apache.xpath.compiler 
+ org.apache.xpath.functions org.apache.xpath.objects org.apache.xpath.operations 
+ org.apache.xpath.patterns org.apache.xpath.res org.w3c.xslt 
+ org.apache.serialize org.apache.serialize.helpers org.apache.xml.serialize.transition 
+ org.apache.trax 
+ -d ../build/docs/apidocs -windowtitle "Xalan-Java 2" -doctitle "Xalan-Java 2"
+ -bottom "Copyright &#169; 2000 Apache XML Project. All Rights Reserved."
 </code></li>
 </ul>
   </s3>    
@@ -208,9 +207,9 @@ serialize serialize.helpers trax
  <s2 title="Getting in Touch">
   <p>Your feedback is more than welcome. Offers of help are even more so! Perhaps you would like to take on an active role in the ongoing development, testing, and documentation of &xslt4j;?</p> 
 <p>Please email your comments, questions, suggestions, and offers to join the Xalan team to <human-resource-ref idref="xalandev"/>.</p>
- </s2><anchor name="history"/>
+ </s2><!--anchor name="history"/>
  <s2 title="Cumulative history of software changes">
    <note>We started tracking the changes in earlier releases beginning with &xslt4j; version 1.1.</note>
 
- </s2>
+ </s2-->
 </s1>

@@ -1,10 +1,14 @@
 <s3 title="Open bugs and bug reporting">
-<p>Open bugs:</p>
-
- <p>Outstanding bugs are recorded in the Apache XML <jump href="http://xml.apache.org/bugs/">Bug Tracking System</jump>. 
-  If you find a bug, please use this system to report it.</p> 
-  <note>If the Apache XML Bug Tracking System is not working, please report the bug to the
-  <human-resource-ref idref="xalandev"/>.</note>
+<p>We are aware of the following limitations and problems in this alpha release:</p>
+<ul>
+<li>The processor cannot yet handle XML source documents with stylesheet processing instructions. You must explicitly indicate the styleshee when you perform a transformation.t<br/><br/></li>
+<li>??<br/><br/></li>
+<li>??<br/><br/></li>
+<li><br/><br/></li>
+<li><br/><br/></li>
+<li><br/><br/></li>
+</ul>
+<p>The Apache XML Bug Tracking System is currently not working. If you find a bug, please report it (with "Xalan-J 2 bug" in the subject line) to the <human-resource-ref idref="xalandev"/>.</p>
 </s3>
 
 

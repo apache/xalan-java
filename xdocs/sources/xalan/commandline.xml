@@ -112,15 +112,6 @@
       <p>Use -HTML to write 4.0 transitional HTML (some elements, such as &lt;br&gt;, are
       not well formed XML.</p>
       <p>To set stylesheet parameters from the command line, use <br/>
-      <code>TestXSLT -PARAM <ref>name expression</ref></code><br/>
-      To set the parameter to a string value, enclose the string in single quotes (') to
-      make it an expression.</p>
-      <p><anchor name="compiledstylesheet"/><em>Using a compiled stylesheet</em></p>
-        <p>If you are using a stylesheet repeatedly, you can improve performance by compiling the stylesheet the first time
-          you use it and using the compiled stylesheet for subsequent transformations.</p>
-        <p>For example, the following command line performs a transformation and compiles the stylesheet:"<br/><br/>
-      <code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -lxcout foo.style</code><br/><br/>
-      The following command line uses the compiled stylesheet for the next transformation:<br/><br/>
-      <code>java org.apache.xalan.xslt.Process -in foo2.xml -lxcin foo.style</code></p>
+      <code>TestXSLT -PARAM <ref>name expression</ref></code></p>
    </s2>
 </s1>

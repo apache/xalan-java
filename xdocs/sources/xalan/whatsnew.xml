@@ -81,7 +81,7 @@
 		<label><jump
      href="apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></label> 
 		<item>Processes the stylesheet and produces the Templates object. This package is responsible for
-    implementing the <jump href="apidocs/trax/Processor.html">trax.Processor</jump> abstract class, which 
+    implementing the <jump href="apidocs/org/apache/trax/Processor.html">org.apache.trax.Processor</jump> abstract class, which 
     provides the primary entry point into &xslt4j;.</item> 
 	 </gloss> 
 	 <gloss> 
@@ -89,13 +89,13 @@
      href="apidocs/org/apache/xalan/templates/package-summary.html">org.apache.xalan.templates</jump></label> 
 		 <item>Defines the structure and content of a stylesheet tree (which may include multiple imported and
     included stylesheets). This package is responsible for implementing the <jump
-    href="apidocs/trax/Templates.html">trax.Templates</jump> interface.</item> 
+    href="apidocs/org/apache/trax/Templates.html">org.apache.trax.Templates</jump> interface.</item> 
 	 </gloss> 
 	 <gloss> 
 		<label><jump
     href="apidocs/org/apache/xalan/transformer/package-summary.html">org.apache.xalan.transformer</jump></label> 
 		<item>Applies the Templates object to the XML source and produces the result tree. This package is
-     responsible for implementing the <jump href="apidocs/trax/Transformer.html">trax.Transformer</jump>
+     responsible for implementing the <jump href="apidocs/org/apache/trax/Transformer.html">org.apache.trax.Transformer</jump>
      interface.</item> 
 	 </gloss> 
 	 <gloss> 

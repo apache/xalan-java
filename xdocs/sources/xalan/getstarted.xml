@@ -15,7 +15,7 @@
 <ul>
 <li>The JDK or JRE 1.1.8 or 1.2.2</li>
 <li>xalan.jar</li>
-<li>xerces.jar</li>
+<li>xerces.jar (or another <link idref="usagepatterns" anchor="xmlreader">XMLReader</link>)</li>
 </ul>
 <p>You can get the JDK or JRE from <jump href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
 <p>Download <resource-ref idref="xslt4j-dist-zip"/> or <resource-ref idref="xslt4j-dist-targz"/>. Both of these files contain <resource-ref idref="xslt4j-current"/> (with xalan.jar) and xerces.jar from <resource-ref idref="xml4j-used"/>. You can use a zip or tar utility to expand these files into a full build.</p>
@@ -53,11 +53,11 @@
 <p>You can start by using your own XML source files and XSL stylesheets with the sample applications, which illustrate a number of the <link idref="usagepatterns">basic usage patterns</link>.</p>
 <p>Here is the basic TRaX procedure to keep in mind when you set up a transformation:</p>
 <ol>
-<li>Use trax.Processor.newInstance("xslt") to instantiate a stylesheet processor -- a TRaX <jump href="apidocs/trax/Processor.html">Processor</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetProcessor.html">StylesheetProcessor</jump>.<br/><br/></li>
-<li>Use the Processor process() or processFromNode() method to process the stylesheet (a SAX InputSource or DOM Node) and generate a Templates object -- a TRaX <jump href="apidocs/trax/Templates.html">Templates</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetRoot.html">StylesheetRoot</jump><br/><br/></li>
+<li>Use org.apache.trax.Processor.newInstance("xslt") to instantiate a stylesheet processor -- a TRaX <jump href="apidocs/org/apache/trax/Processor.html">Processor</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetProcessor.html">StylesheetProcessor</jump>.<br/><br/></li>
+<li>Use the Processor process() or processFromNode() method to process the stylesheet (a SAX InputSource or DOM Node) and generate a Templates object -- a TRaX <jump href="apidocs/org/apache/trax/Templates.html">Templates</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetRoot.html">StylesheetRoot</jump><br/><br/></li>
 <li>Use the Templates newTransformer() method to instantiate a Transformer -- a TRaX
-<jump href="apidocs/trax/Transformer.html">Transformer</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/transformer/TransformerImpl.html">TransformerImpl</jump>.<br/><br/></li>
-<li>Use one of the Transformer transform() or transformNode() methods to apply the Templates object to an XML document (a SAX InputSource or DOM Node) and perform the transformation, placing the output in a TRaX <jump href="apidocs/trax/Result.html">Result</jump> object.</li>
+<jump href="apidocs/org/apache/trax/Transformer.html">Transformer</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/transformer/TransformerImpl.html">TransformerImpl</jump>.<br/><br/></li>
+<li>Use one of the Transformer transform() or transformNode() methods to apply the Templates object to an XML document (a SAX InputSource or DOM Node) and perform the transformation, placing the output in a TRaX <jump href="apidocs/org/apache/trax/Result.html">Result</jump> object.</li>
 </ol>
 <p>For more information about this procedure and its variations, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
 </s2>
