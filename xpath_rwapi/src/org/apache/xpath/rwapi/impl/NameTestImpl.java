@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,140 +55,130 @@
  */
 package org.apache.xpath.rwapi.impl;
 
+import org.apache.xml.QName;
+
 import org.apache.xpath.rwapi.XPathException;
-import org.apache.xpath.rwapi.expression.Expr;
 import org.apache.xpath.rwapi.expression.NodeTest;
 import org.apache.xpath.rwapi.impl.parser.Node;
-import org.apache.xpath.rwapi.impl.parser.QName;
 import org.apache.xpath.rwapi.impl.parser.SimpleNode;
-import org.apache.xpath.rwapi.impl.parser.Token;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
+
 
 /**
  *
  */
-public class NameTestImpl extends SimpleNode implements NodeTest {
+public class NameTestImpl extends SimpleNode implements NodeTest
+{
+    /**
+     * Name test
+     */
+    QName m_qname;
 
-    String m_localPart;
-    String m_prefix;
-    
- 
-	/**
-	 * Constructor for NameTestImpl.
-	 * @param i
-	 */
-	public NameTestImpl(int i) {
-		super(i);
-	}
+    /**
+     * Constructor for NameTestImpl.
+     *
+     * @param i
+     */
+    public NameTestImpl(int i)
+    {
+        super(i);
+    }
 
     /**
      * Constructor for NodeTestImpl.
-     * @param p
-     * @param i
+     *
+     * @param namespace DOCUMENT ME!
+     * @param localpart DOCUMENT ME!
      */
-    public NameTestImpl(String localPart, String prefix) {
+    public NameTestImpl(String namespace, String localpart)
+    {
         super(XPathTreeConstants.JJTNAMETEST);
-        m_localPart = localPart;
-        m_prefix = prefix;
+
+        m_qname = new QName(namespace, localpart);
     }
 
-	/**
-	 * @see org.apache.xpath.rwapi.expression.NodeTest#isNameTest()
-	 */
-	public boolean isNameTest() {
-		return true;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.NodeTest#isKindTest()
-	 */
-	public boolean isKindTest() {
-		return false;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.NodeTest#getKindTest()
-	 */
-	public short getKindTest() throws XPathException {
-        throw new XPathException("Invalid call of this method on NameTest node"); //I8
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.NodeTest#getLocalNameTest()
-	 */
-	public String getLocalNameTest() throws XPathException {
-		return m_localPart;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.NodeTest#getPrefix()
-	 */
-	public String getPrefix() throws XPathException {
-		return m_prefix;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.Expr#getExprType()
-	 */
-	//	return Expr.NAMETEST_EXPR;
-	//}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.Expr#cloneExpression()
-	 */
-	//public Expr cloneExpression() {
-	//	return new NameTestImpl(m_localPart, m_prefix);
-	//}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.Expr#getString(boolean)
-	 */
-	public String getString(boolean abbreviate) {
-		return (m_prefix != null) ? m_prefix + ":" + m_localPart : m_localPart;
-	}
-	
-	/**
-	 * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#processToken(Token)
-	 */
-	public void processToken(Token token) {
-            		
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#canBeFiltered()
-	 */
-	protected boolean canBeFiltered() {
-		return false;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
-	 */
-	public void jjtAddChild(Node n, int i) {
-        // don't add n in the tree
-       m_localPart = ((QName) n).getLocalPart();        
-       m_prefix = ((QName) n).getPrefix();        
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
-	 */
-	public void getString(StringBuffer expr, boolean abbreviate) {
-        if ( m_prefix != null ) {
-    		expr.append(m_prefix).append(":").append(m_localPart);
-        } else {
-            expr.append(m_localPart);
-        }
-	}
+    /**
+     * @see org.apache.xpath.rwapi.expression.NodeTest#isNameTest()
+     */
+    public boolean isNameTest()
+    {
+        return true;
+    }
 
     /**
-     * Override to print out useful instance data.  
+     * @see org.apache.xpath.rwapi.expression.NodeTest#isKindTest()
+     */
+    public boolean isKindTest()
+    {
+        return false;
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.NodeTest#getKindTest()
+     */
+    public short getKindTest() throws XPathException
+    {
+        throw new XPathException("Invalid call of this method on NameTest node"); //I8
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.NodeTest#getLocalNameTest()
+     */
+    public String getLocalNameTest() throws XPathException
+    {
+        return m_qname.getLocalPart();
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.NodeTest#getPrefix()
+     */
+    public String getPrefix() throws XPathException
+    {
+        return m_qname.getPrefix();
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.Expr#getString(boolean)
+     */
+    public String getString(boolean abbreviate)
+    {
+        return m_qname.toString();
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#canBeFiltered()
+     */
+    protected boolean canBeFiltered()
+    {
+        return false;
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
+     */
+    public void jjtAddChild(Node n, int i)
+    {
+        // don't add n in the tree
+        m_qname = ((org.apache.xpath.rwapi.impl.parser.QName) n).getQName();
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer,
+     *      boolean)
+     */
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+        expr.append(m_qname.toString());
+    }
+
+    /**
+     * Override to print out useful instance data.
+     *
      * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#toString()
      */
     public String toString()
     {
-        return XPathTreeConstants.jjtNodeName[id] + " " 
-                + getClass() + " " 
-                + getString(false);
+        return XPathTreeConstants.jjtNodeName[id] + " " + getClass() + " "
+        + getString(false);
     }
 }

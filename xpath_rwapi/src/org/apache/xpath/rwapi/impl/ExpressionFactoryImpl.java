@@ -110,7 +110,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
 	 * @see org.apache.xpath.rwapi.expression.ExpressionFactory#createNameTest(java.lang.String, java.lang.String)
 	 */
 	public NodeTest createNameTest(String namespace, String name) {
-		return new NameTestImpl(name, namespace);
+		return new NameTestImpl(namespace, name);
 	}
 
 	/**

@@ -58,14 +58,19 @@ package org.apache.xpath.rwapi.impl.parser;
 import org.apache.xpath.rwapi.expression.NodeTest;
 
 /**
- *
+ * Wrapper to the actual QName
  */
 public class QName extends SimpleNode {
 
 	//PrefixResolver m_prefixResolver;
 	//org.apache.xml.utils.QName m_qname;
-    String m_localPart;
-    String m_prefix;
+   // String m_localPart;
+   // String m_prefix;
+    
+    /**
+     * 
+     */
+    org.apache.xml.QName m_qname;
     
 
 	/**
@@ -91,35 +96,48 @@ public class QName extends SimpleNode {
 	 */
 	public void processToken(Token t) {
 		super.processToken(t);
-
+		String qname;
 		switch (id) {
 			case XPathTreeConstants.JJTSTAR :
-				m_prefix = null;
-                m_localPart = NodeTest.WILDCARD;
+				//m_prefix = null;
+                //m_localPart = NodeTest.WILDCARD;
+                             
+                m_qname = new org.apache.xml.QName(NodeTest.WILDCARD);                
 				break;
 			case XPathTreeConstants.JJTSTARCOLONNCNAME :
-                m_prefix = NodeTest.WILDCARD;
-                m_localPart = t.image.trim(); 
-                m_localPart=m_localPart.substring(m_localPart.indexOf(":")+1);
+                //m_prefix = NodeTest.WILDCARD;
+                //m_localPart = t.image.trim(); 
+                //m_localPart=m_localPart.substring(m_localPart.indexOf(":")+1);
+                qname = t.image.trim();
+                qname = qname.substring(qname.indexOf(":")+1);
+                m_qname = new org.apache.xml.QName(NodeTest.WILDCARD, qname);
+                
 				break;
 			case XPathTreeConstants.JJTNCNAMECOLONSTAR :
             case XPathTreeConstants.JJTQNAME :
             case XPathTreeConstants.JJTQNAMELPAR :
-				String qname = t.image;
+				qname = t.image;
 				int parenIndex = qname.lastIndexOf("("); 
 				if (parenIndex > 0) {
-					qname = qname.substring(0, qname.lastIndexOf("("));
+					qname = qname.substring(0, parenIndex);
 				}
 				qname = qname.trim();
 				//m_qname = new org.apache.xml.utils.QName(qname, m_prefixResolver);
                 int colonIdx = qname.indexOf(":");
+                //String m_prefix;
+                //String m_localPart;
                 if ( colonIdx == -1 ) {
-                    m_prefix = null;
-                    m_localPart = qname;
+                    //m_prefix = null;
+                    //m_localPart = qname;
+					m_qname = new org.apache.xml.QName(qname);
                 } else {
-                m_prefix = qname.substring(0, colonIdx );
-                m_localPart = qname.substring(colonIdx + 1);                
+                //m_prefix = qname.substring(0, colonIdx );
+                //m_localPart = qname.substring(colonIdx + 1);
+                m_qname = new org.apache.xml.QName(null, qname.substring(colonIdx + 1), qname.substring(0, colonIdx ) );                
                 }
+                
+
+			
 				break;
              
                    
@@ -130,19 +148,10 @@ public class QName extends SimpleNode {
 
 
 	/**
-	 * Returns the localPart.
-	 * @return String
+	 * @return org.apache.xml.QName
 	 */
-	public String getLocalPart() {
-		return m_localPart;
-	}
-
-	/**
-	 * Returns the prefix.
-	 * @return String
-	 */
-	public String getPrefix() {
-		return m_prefix;
+	public org.apache.xml.QName getQName() {
+		return m_qname;
 	}
 
 }

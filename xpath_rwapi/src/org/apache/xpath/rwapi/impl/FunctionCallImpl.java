@@ -55,10 +55,10 @@
  */
 package org.apache.xpath.rwapi.impl;
 
+import org.apache.xml.QName;
 import org.apache.xpath.rwapi.expression.Expr;
 import org.apache.xpath.rwapi.expression.FunctionCall;
 import org.apache.xpath.rwapi.impl.parser.Node;
-import org.apache.xpath.rwapi.impl.parser.QName;
 import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.XPath;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
@@ -68,8 +68,12 @@ import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
  */
 public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 
-	String m_localPart;
-	String m_prefix;
+	//String m_localPart;
+	//String m_prefix;
+	/**
+	 * Name of the function
+	 */
+	QName m_qname;
 
 	/**
 	 * Constructor for FunctionCallImpl.
@@ -91,15 +95,15 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	/**
 	 * @see org.apache.xpath.rwapi.expression.FunctionCall#getFunctionName()
 	 */
-	public String getFunctionName() {
-		return m_localPart;
+	public String getFunctionName() {		
+		return m_qname.toString();
 	}
 
 	/**
 	 * @see org.apache.xpath.rwapi.expression.FunctionCall#getFunctionPrefix()
 	 */
 	public String getFunctionPrefix() {
-		return m_prefix;
+		return m_qname.getPrefix();
 	}
 
 	/**
@@ -108,8 +112,10 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	final public void jjtAddChild(Node n, int i) {
 		
 		if (n.getId() == XPathTreeConstants.JJTQNAMELPAR) {
-				m_localPart = ((QName) n).getLocalPart();
-				m_prefix = ((QName) n).getPrefix();
+				//m_localPart = ((QName) n).getLocalPart();
+				//m_prefix = ((QName) n).getPrefix();
+				m_qname = ((org.apache.xpath.rwapi.impl.parser.QName) n).getQName();
+				
 			} else {
 				// parameter
 				// -1 because of QNAMELPAR 
@@ -125,11 +131,7 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	 * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
 	 */
 	public void getString(StringBuffer expr, boolean abbreviate) {
-		if (m_prefix != null) {
-			expr.append(m_prefix).append(":").append(m_localPart);
-		} else {
-			expr.append(m_localPart);
-		}
+		expr.append(m_qname.toString());		
 		expr.append('(');
 		int size = getOperandCount();
 		for (int i = 0; i < size; i++) {
