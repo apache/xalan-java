@@ -61,17 +61,17 @@ import java.util.Vector;
 
 // Xalan imports
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.axes.SubContextList;
-import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.objects.XObject;
+import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.Expression;
-import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTestFilter;
-import org.apache.xml.utils.PrefixResolver;
+import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPath;
 
 // DOM2 imports
 import org.w3c.dom.Node;
@@ -84,10 +84,12 @@ import org.w3c.dom.DOMException;
  * Serves as common interface for axes Walkers, and stores common
  * state variables.
  */
-public abstract class AxesWalker extends NodeTest
-        implements Cloneable, TreeWalker, NodeFilter, SubContextList
+public abstract class AxesWalker extends PredicatedNodeTest
+        implements Cloneable, TreeWalker, NodeFilter
 {
 
+  // These are useful to enable if you want to turn diagnostics messages 
+  // on or off temporarily from another module.
   //  public static boolean DEBUG = true;
   //  public static boolean DEBUG_WAITING = true;
   //  public static boolean DEBUG_TRAVERSAL = true;
@@ -111,36 +113,9 @@ public abstract class AxesWalker extends NodeTest
    *  been 'located' will be posted.  */
   static final boolean DEBUG_LOCATED = false;
 
-  /** If true, diagnostic messages about predicate execution will be posted.  */
-  static final boolean DEBUG_PREDICATECOUNTING = false;
-
   /** String passed to {@link org.w3c.dom.Node#isSupported} to see if it implements 
    *  a {@link org.apache.xpath.patterns.NodeTestFilter} interface. */
   public static final String FEATURE_NODETESTFILTER = "NodeTestFilter";
-
-  /** The owning location path iterator. */
-  protected LocPathIterator m_lpi;
-
-  /**
-   * Get the owning location path iterator.
-   *
-   * @return the owning location path iterator, which should not be null.
-   */
-  public LocPathIterator getLocPathIterator()
-  {
-    return m_lpi;
-  }
-
-  /**
-   * Set the location path iterator owner for this walker.  Besides 
-   * initialization, this function is called during cloning operations.
-   *
-   * @param li non-null reference to the owning location path iterator.
-   */
-  public void setLocPathIterator(LocPathIterator li)
-  {
-    m_lpi = li;
-  }
   
   /**
    * Construct an AxesWalker using a LocPathIterator.
@@ -149,7 +124,7 @@ public abstract class AxesWalker extends NodeTest
    */
   public AxesWalker(LocPathIterator locPathIterator)
   {
-    m_lpi = locPathIterator;
+    super( locPathIterator );
   }
 
   /**
@@ -199,16 +174,6 @@ public abstract class AxesWalker extends NodeTest
     
     AxesWalker clone = (AxesWalker) super.clone();
 
-    if ((null != this.m_proximityPositions)
-            && (this.m_proximityPositions == clone.m_proximityPositions))
-    {
-      clone.m_proximityPositions = new int[this.m_proximityPositions.length];
-
-      System.arraycopy(this.m_proximityPositions, 0,
-                       clone.m_proximityPositions, 0,
-                       this.m_proximityPositions.length);
-    }
-
     //clone.setCurrentNode(clone.m_root);
 
     // clone.m_isFresh = true;
@@ -237,12 +202,30 @@ public abstract class AxesWalker extends NodeTest
       return clone;
     clone = (AxesWalker)this.clone();
     clone.setLocPathIterator(cloneOwner);
-    cloneList.addElement(this);
-    cloneList.addElement(clone);
+    if(null != cloneList)
+    {
+      cloneList.addElement(this);
+      cloneList.addElement(clone);
+    }
+    
+    if(m_lpi.m_lastUsedWalker == this)
+      cloneOwner.m_lastUsedWalker = clone;
+      
     if(null != m_nextWalker)
       clone.m_nextWalker = m_nextWalker.cloneDeep(cloneOwner, cloneList);
-    if(null != m_prevWalker)
-      clone.m_prevWalker = m_prevWalker.cloneDeep(cloneOwner, cloneList);
+      
+    // If you don't check for the cloneList here, you'll go into an 
+    // recursive infinate loop.  
+    if(null != cloneList)
+    {
+      if(null != m_prevWalker)
+        clone.m_prevWalker = m_prevWalker.cloneDeep(cloneOwner, cloneList);
+    }
+    else
+    {
+      if(null != m_nextWalker)
+        clone.m_nextWalker.m_prevWalker = clone;
+    }
     return clone;
   }
   
@@ -250,19 +233,22 @@ public abstract class AxesWalker extends NodeTest
    * Find a clone that corresponds to the key argument.
    * 
    * @param key The original AxesWalker for which there may be a clone.
-   * @param cloneList non-null vector of sources in odd elements, and the 
-   *                  corresponding clones in even vectors.
+   * @param cloneList vector of sources in odd elements, and the 
+   *                  corresponding clones in even vectors, may be null.
    * 
    * @return A clone that corresponds to the key, or null if key not found.
    */
   static AxesWalker findClone(AxesWalker key, Vector cloneList)
   {
-    // First, look for clone on list.
-    int n = cloneList.size();
-    for (int i = 0; i < n; i+=2) 
+    if(null != cloneList)
     {
-      if(key == cloneList.elementAt(i))
-        return (AxesWalker)cloneList.elementAt(i+1);
+      // First, look for clone on list.
+      int n = cloneList.size();
+      for (int i = 0; i < n; i+=2) 
+      {
+        if(key == cloneList.elementAt(i))
+          return (AxesWalker)cloneList.elementAt(i+1);
+      }
     }
     return null;    
   }
@@ -330,274 +316,6 @@ public abstract class AxesWalker extends NodeTest
     m_analysis = a;
   }
 
-  /**
-   * An array of counts that correspond to the number
-   * of predicates the step contains.
-   */
-  protected int[] m_proximityPositions;
-
-  /**
-   * Get the current sub-context position.
-   *
-   * @return The node position of this walker in the sub-context node list.
-   */
-  public int getProximityPosition()
-  {
-
-    // System.out.println("getProximityPosition - m_predicateIndex: "+m_predicateIndex);
-    return getProximityPosition(m_predicateIndex);
-  }
-
-  /**
-   * Get the current sub-context position.
-   *
-   * @param xctxt The XPath runtime context.
-   *
-   * @return The node position of this walker in the sub-context node list.
-   */
-  public int getProximityPosition(XPathContext xctxt)
-  {
-    return getProximityPosition();
-  }
-
-  /**
-   * Get the current sub-context position.
-   *
-   * @param predicateIndex The index of the predicate where the proximity 
-   *                       should be taken from.
-   *
-   * @return The node position of this walker in the sub-context node list.
-   */
-  protected int getProximityPosition(int predicateIndex)
-  {
-    return (predicateIndex >= 0) ? m_proximityPositions[predicateIndex] : 0;
-  }
-
-  /**
-   * Reset the proximity positions counts.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public void resetProximityPositions() throws javax.xml.transform.TransformerException
-  {
-
-    if (m_predicateCount > 0)
-    {
-      if (null == m_proximityPositions)
-        m_proximityPositions = new int[m_predicateCount];
-
-      for (int i = 0; i < m_predicateCount; i++)
-      {
-        initProximityPosition(i);
-      }
-    }
-  }
-
-  /**
-   * Init the proximity position to zero for a forward axes.
-   *
-   * @param i The index into the m_proximityPositions array.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public void initProximityPosition(int i) throws javax.xml.transform.TransformerException
-  {
-    m_proximityPositions[i] = 0;
-  }
-
-  /**
-   * Count forward one proximity position.
-   *
-   * @param i The index into the m_proximityPositions array, where the increment 
-   *          will occur.
-   */
-  protected void countProximityPosition(int i)
-  {
-    if (i < m_proximityPositions.length)
-      m_proximityPositions[i]++;
-  }
-
-  /**
-   * Tells if this is a reverse axes.
-   *
-   * @return false, unless a derived class overrides.
-   */
-  public boolean isReverseAxes()
-  {
-    return false;
-  }
-
-  /**
-   * Which predicate we are executing.
-   */
-  int m_predicateIndex = -1;
-
-  /**
-   * Get which predicate is executing.
-   *
-   * @return The current predicate index, or -1 if no predicate is executing.
-   */
-  public int getPredicateIndex()
-  {
-    return m_predicateIndex;
-  }
-
-  /**
-   * Process the predicates.
-   *
-   * @param context The current context node.
-   * @param xctxt The XPath runtime context.
-   *
-   * @return the result of executing the predicate expressions.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  boolean executePredicates(Node context, XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
-  {
-
-    m_predicateIndex = 0;
-
-    int nPredicates = m_predicateCount;
-    // System.out.println("nPredicates: "+nPredicates);
-    if (nPredicates == 0)
-      return true;
-
-    PrefixResolver savedResolver = xctxt.getNamespaceContext();
-
-    try
-    {
-      xctxt.pushSubContextList(this);
-      xctxt.setNamespaceContext(m_lpi.getPrefixResolver());
-      xctxt.pushCurrentNode(context);
-
-      for (int i = 0; i < nPredicates; i++)
-      {
-        // System.out.println("Executing predicate expression - waiting count: "+m_lpi.getWaitingCount());
-        int savedWaitingBottom = m_lpi.m_waitingBottom;
-        m_lpi.m_waitingBottom = m_lpi.getWaitingCount();
-        XObject pred;
-        try
-        {
-          pred = m_predicates[i].execute(xctxt);
-        }
-        finally
-        {
-          m_lpi.m_waitingBottom = savedWaitingBottom;
-        }
-        // System.out.println("\nBack from executing predicate expression - waiting count: "+m_lpi.getWaitingCount());
-        // System.out.println("pred.getType(): "+pred.getType());
-        if (XObject.CLASS_NUMBER == pred.getType())
-        {
-          if (DEBUG_PREDICATECOUNTING)
-          {
-            System.out.flush();
-            System.out.println("\n===== start predicate count ========");
-            System.out.println("m_predicateIndex: " + m_predicateIndex);
-            // System.out.println("getProximityPosition(m_predicateIndex): "
-            //                   + getProximityPosition(m_predicateIndex));
-            System.out.println("pred.num(): " + pred.num());
-            System.out.println("waiting count: "+m_lpi.getWaitingCount());
-          }
-
-          int proxPos = this.getProximityPosition(m_predicateIndex);
-          if (proxPos != (int) pred.num())
-          {
-            if (DEBUG_PREDICATECOUNTING)
-            {
-              System.out.println("\nnode context: "+nodeToString(context));
-              System.out.println("index predicate is false: "+proxPos);
-              System.out.println("waiting count: "+m_lpi.getWaitingCount());
-              System.out.println("\n===== end predicate count ========");
-            }
-            return false;
-          }
-          else if (DEBUG_PREDICATECOUNTING)
-          {
-            System.out.println("\nnode context: "+nodeToString(context));
-            System.out.println("index predicate is true: "+proxPos);
-            System.out.println("waiting count: "+m_lpi.getWaitingCount());
-            System.out.println("\n===== end predicate count ========");
-          }
-        }
-        else if (!pred.bool())
-          return false;
-
-        countProximityPosition(++m_predicateIndex);
-      }
-    }
-    finally
-    {
-      xctxt.popCurrentNode();
-      xctxt.setNamespaceContext(savedResolver);
-      xctxt.popSubContextList();
-    }
-
-    m_predicateIndex = -1;
-
-    return true;
-  }
-
-  /**
-   * Number of predicates (in effect).
-   */
-  int m_predicateCount;
-
-  /**
-   * Get the number of predicates that this walker has.
-   *
-   * @return the number of predicates that this walker has.
-   */
-  public int getPredicateCount()
-  {
-    return m_predicateCount;
-  }
-
-  /**
-   * Set the number of predicates that this walker has.
-   *
-   * @param count The number of predicates.
-   */
-  public void setPredicateCount(int count)
-  {
-    m_predicateCount = count;
-  }
-
-  /**
-   * Init predicate info.
-   *
-   * @param compiler The Compiler object that has information about this 
-   *                 walker in the op map.
-   * @param opPos The op code position of this location step.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  private void initPredicateInfo(Compiler compiler, int opPos)
-          throws javax.xml.transform.TransformerException
-  {
-
-    int pos = compiler.getFirstPredicateOpPos(opPos);
-
-    m_predicates = compiler.getCompiledPredicates(pos);
-    m_predicateCount = (null == m_predicates) ? 0 : m_predicates.length;
-  }
-
-  /** The list of predicate expressions. Is static and does not need 
-   *  to be deep cloned. */
-  private Expression[] m_predicates;
-
-  /**
-   * Get a predicate expression at the given index.
-   *
-   *
-   * @param index Index of the predicate.
-   *
-   * @return A predicate expression.
-   */
-  Expression getPredicate(int index)
-  {
-    return m_predicates[index];
-  }
 
   /**
    * Tell if the given node is a parent of the
@@ -653,6 +371,7 @@ public abstract class AxesWalker extends NodeTest
   {
 
     m_isFresh = true;
+    m_isDone = false;
     m_root = root;
     m_currentNode = root;
     m_prevReturned = null;
@@ -663,16 +382,7 @@ public abstract class AxesWalker extends NodeTest
         "\n !!!! Error! Setting the root of a walker to null!!!");
     }
 
-    try
-    {
-      resetProximityPositions();
-    }
-    catch (javax.xml.transform.TransformerException se)
-    {
-
-      // TODO: Fix this...
-      throw new RuntimeException(se.getMessage());
-    }
+    resetProximityPositions();
   }
 
   /**
@@ -936,28 +646,6 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * Diagnostics.
-   *
-   * @param n Node to give diagnostic information about, or null.
-   *
-   * @return Informative string about the argument.
-   */
-  protected String nodeToString(Node n)
-  {
-
-    try
-    {
-      return (null != n)
-             ? n.getNodeName() + "{" + ((org.apache.xalan.stree.Child) n).getUid() + "}"
-             : "null";
-    }
-    catch (ClassCastException cce)
-    {
-      return (null != n) ? n.getNodeName() : "null";
-    }
-  }
-
-  /**
    * This is simply a way to bottle-neck the return of the next node, for 
    * diagnostic purposes.
    *
@@ -1135,7 +823,7 @@ public abstract class AxesWalker extends NodeTest
 
       for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
       {
-        AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
+        AxesWalker ws = (AxesWalker) m_lpi.getWaiting(i);
 
         printDebug("[" + ws.toString() + " WAITING... ]");
       }
@@ -1265,7 +953,7 @@ public abstract class AxesWalker extends NodeTest
 
     for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
     {
-      AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
+      AxesWalker ws = (AxesWalker) m_lpi.getWaiting(i);
       AxesWalker prevStepWalker = ws.m_prevWalker;
 
       if (null != prevStepWalker)
@@ -1321,7 +1009,7 @@ public abstract class AxesWalker extends NodeTest
 
     for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
     {
-      AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
+      AxesWalker ws = (AxesWalker) m_lpi.getWaiting(i);
 
       if (first == null)
         first = ws;
@@ -1360,7 +1048,7 @@ public abstract class AxesWalker extends NodeTest
 
     for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
     {
-      AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
+      AxesWalker ws = (AxesWalker) m_lpi.getWaiting(i);
 
       if (ws == walker)
         return true;
@@ -1701,57 +1389,15 @@ public abstract class AxesWalker extends NodeTest
     // System.out.println("pos: "+pos);
     return pos;
   }
-
-  //=============== NodeFilter Implementation ===============
-
+  
   /**
-   *  Test whether a specified node is visible in the logical view of a
-   * TreeWalker or NodeIterator. This function will be called by the
-   * implementation of TreeWalker and NodeIterator; it is not intended to
-   * be called directly from user code.
-   * @param n  The node to check to see if it passes the filter or not.
-   * @return  a constant to determine whether the node is accepted,
-   *   rejected, or skipped, as defined  above .
+   * Tell if this is a special type of walker compatible with ChildWalkerMultiStep.
+   * 
+   * @return true this is a special type of walker compatible with ChildWalkerMultiStep.
    */
-  public short acceptNode(Node n)
+  protected boolean isFastWalker()
   {
-
-    XPathContext xctxt = m_lpi.getXPathContext();
-
-    try
-    {
-      xctxt.pushCurrentNode(n);
-
-      XObject score = execute(xctxt);
-
-      if(DEBUG)
-        System.out.println("\n::acceptNode - score: "+score.num()+"::");
-      if (score != NodeTest.SCORE_NONE)
-      {
-        if (m_predicateCount > 0)
-        {
-          countProximityPosition(0);
-
-          if (!executePredicates(n, xctxt))
-            return NodeFilter.FILTER_SKIP;
-        }
-
-        return NodeFilter.FILTER_ACCEPT;
-      }
-    }
-    catch (javax.xml.transform.TransformerException se)
-    {
-
-      // TODO: Fix this.
-      throw new RuntimeException(se.getMessage());
-    }
-    finally
-    {
-      xctxt.popCurrentNode();
-    }
-
-    return NodeFilter.FILTER_SKIP;
+    return false;
   }
 
-  //============= End NodeFilter Implementation =============
 }

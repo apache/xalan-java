@@ -188,13 +188,13 @@ public class WalkerFactory
                         + Integer.toBinaryString(analysis) + ", "
                          + compiler.toString());
 
-    // Can't have optimized iterators at this time that have predicates.
-    if (BIT_PREDICATE == (analysis & BIT_PREDICATE))
-      return new LocPathIterator(compiler, opPos, true);
+//    // Can't have optimized iterators at this time that have predicates.
+//    if (BIT_PREDICATE == (analysis & BIT_PREDICATE))
+//      return new LocPathIterator(compiler, opPos, true);
 
     if ((BIT_CHILD | 0x00000001) == (analysis & (BIT_CHILD | BITS_COUNT)))
     {
-      if (BIT_CHILD == (analysis & BIT_NODETEST_ANY))
+      if (BIT_CHILD == (analysis & BIT_NODETEST_ANY) && !(BIT_PREDICATE == (analysis & BIT_PREDICATE)))
       {
         if (DEBUG_ITERATOR_CREATION)
           System.out.println("ChildIterator!");
@@ -439,6 +439,7 @@ public class WalkerFactory
     */
     boolean simpleInit = false;
     int totalNumberWalkers = (analysis & BITS_COUNT);
+    boolean prevIsOneStepDown = true;
 
     switch (stepType)
     {
@@ -446,6 +447,7 @@ public class WalkerFactory
     case OpCodes.OP_EXTFUNCTION :
     case OpCodes.OP_FUNCTION :
     case OpCodes.OP_GROUP :
+      prevIsOneStepDown = false;
       ai = new FilterExprWalker(lpi);
       simpleInit = true;
       break;
@@ -453,21 +455,32 @@ public class WalkerFactory
       ai = new RootWalker(lpi);
       break;
     case OpCodes.FROM_ANCESTORS :
+      prevIsOneStepDown = false;
       ai = new AncestorWalker(lpi);
       break;
     case OpCodes.FROM_ANCESTORS_OR_SELF :
+      prevIsOneStepDown = false;
       ai = new AncestorOrSelfWalker(lpi);
       break;
     case OpCodes.FROM_ATTRIBUTES :
       if (1 == totalNumberWalkers)
       {
+        if (DEBUG_WALKER_CREATION)
+          System.out.println("analysis -- AttributeWalkerOneStep: " + analysis
+                             + ", " + compiler.toString());
 
         // TODO: We should be able to do this as long as this is 
         // the last step.
         ai = new AttributeWalkerOneStep(lpi);
       }
       else
+      {
+        if (DEBUG_WALKER_CREATION)
+          System.out.println("analysis -- AttributeWalker: " + analysis
+                             + ", " + compiler.toString());
+                             
         ai = new AttributeWalker(lpi);
+      }
       break;
     case OpCodes.FROM_NAMESPACE :
       ai = new NamespaceWalker(lpi);
@@ -483,7 +496,7 @@ public class WalkerFactory
       }
       else
       {
-        if (0 == ~(BIT_CHILD | BIT_PREDICATE | BITS_COUNT))
+        if (0 == (analysis & ~(BIT_CHILD | BIT_ATTRIBUTE | BIT_NAMESPACE | BIT_PREDICATE | BITS_COUNT)))
         {
           if (DEBUG_WALKER_CREATION)
             System.out.println("analysis -- multi-step child: " + analysis
@@ -498,24 +511,31 @@ public class WalkerFactory
       }
       break;
     case OpCodes.FROM_DESCENDANTS :
+      prevIsOneStepDown = false;
       ai = new DescendantWalker(lpi);
       break;
     case OpCodes.FROM_DESCENDANTS_OR_SELF :
+      prevIsOneStepDown = false;
       ai = new DescendantOrSelfWalker(lpi);
       break;
     case OpCodes.FROM_FOLLOWING :
+      prevIsOneStepDown = false;
       ai = new FollowingWalker(lpi);
       break;
     case OpCodes.FROM_FOLLOWING_SIBLINGS :
+      prevIsOneStepDown = false;
       ai = new FollowingSiblingWalker(lpi);
       break;
     case OpCodes.FROM_PRECEDING :
+      prevIsOneStepDown = false;
       ai = new PrecedingWalker(lpi);
       break;
     case OpCodes.FROM_PRECEDING_SIBLINGS :
+      prevIsOneStepDown = false;
       ai = new PrecedingSiblingWalker(lpi);
       break;
     case OpCodes.FROM_PARENT :
+      prevIsOneStepDown = false;
       ai = new ParentWalker(lpi);
       break;
     case OpCodes.FROM_SELF :

@@ -102,16 +102,7 @@ public class PrecedingWalker extends ReverseAxesWalker
     m_currentNode = m_doc;
     m_nextLevelAmount = root.hasChildNodes() ? 1 : 0;
 
-    try
-    {
-      super.resetProximityPositions();
-    }
-    catch (javax.xml.transform.TransformerException se)
-    {
-
-      // TODO: Fix this...
-      throw new RuntimeException(se.getMessage());
-    }
+    super.resetProximityPositions();
   }
 
   /**
@@ -119,7 +110,7 @@ public class PrecedingWalker extends ReverseAxesWalker
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void resetProximityPositions() throws javax.xml.transform.TransformerException{}
+  public void resetProximityPositions(){}
 
   /**
    *  Moves to and returns the closest visible ancestor node of the current

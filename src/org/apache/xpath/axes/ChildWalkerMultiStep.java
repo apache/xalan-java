@@ -63,8 +63,7 @@ import org.apache.xpath.patterns.NodeTestFilter;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Class ChildWalkerMultiStep
- * <needs-description/>
+ * A child walker multistep is created while only child steps are found.
  *
  * @author sboag@lotus.com
  */
@@ -88,12 +87,11 @@ public class ChildWalkerMultiStep extends AxesWalker
    */
   protected Node getNextNode()
   {
-
     if (m_isFresh)
       m_isFresh = false;
 
     Node current = this.getCurrentNode();
-
+    
     if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
       ((NodeTestFilter) current).setNodeTest(this);
 
@@ -109,12 +107,15 @@ public class ChildWalkerMultiStep extends AxesWalker
       {
         next = next.getNextSibling();
 
-        if (null != next)
-          m_currentNode = next;
-        else
+        if (null == next)
           break;
+        else
+          m_currentNode = next;
       }
-    }
+      
+      if(null == next)
+        m_currentNode = current; // don't advance the current node.
+    }          
 
     if (null == next)
       this.m_isDone = true;
@@ -136,10 +137,22 @@ public class ChildWalkerMultiStep extends AxesWalker
   {
 
     AxesWalker walker = m_lpi.getLastUsedWalker();
+    boolean fast = walker.isFastWalker();
 
     while (null != walker)
     {
-      Node next = walker.getNextNode();
+      Node next;
+      if(fast)
+      {
+        next = walker.getNextNode();
+      }
+      else
+      {
+        next = walker.nextNode();
+        // In this case, nextNode finished the walk, so we just return.
+        if(null != next)
+          return next;
+      }
 
       if (null != next)
       {
@@ -149,6 +162,7 @@ public class ChildWalkerMultiStep extends AxesWalker
 
           walker.setRoot(next);
           m_lpi.setLastUsedWalker(walker);
+          fast = walker.isFastWalker();
         }
         else
           return next;
@@ -158,10 +172,22 @@ public class ChildWalkerMultiStep extends AxesWalker
         walker = walker.m_prevWalker;
 
         if (null != walker)
-          m_lpi.setLastUsedWalker(walker);
+          fast = walker.isFastWalker();
+        m_lpi.setLastUsedWalker(walker);
       }
     }
 
     return null;
   }
+  
+  /**
+   * Tell if this is a special type of walker compatible with ChildWalkerMultiStep.
+   * 
+   * @return true this is a special type of walker compatible with ChildWalkerMultiStep.
+   */
+  protected boolean isFastWalker()
+  {
+    return true;
+  }
+
 }

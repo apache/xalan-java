@@ -108,19 +108,36 @@ public class DescendantIterator extends LocPathIterator
     else
       m_orSelf = false;
 
-    m_nodeTest = new NodeTest();
-
     int whatToShow = compiler.getWhatToShow(firstStepPos);
 
     if ((0 == (whatToShow
                & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
                   | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
-      m_nodeTest.initNodeTest(whatToShow);
+      initNodeTest(whatToShow);
     else
     {
-      m_nodeTest.initNodeTest(whatToShow, compiler.getStepNS(firstStepPos),
+      initNodeTest(whatToShow, compiler.getStepNS(firstStepPos),
                               compiler.getStepLocalName(firstStepPos));
     }
+    initPredicateInfo(compiler, firstStepPos);
+  }
+  
+  /**
+   *  Get a cloned Iterator that is reset to the beginning
+   *  of the query.
+   * 
+   *  @return A cloned NodeIterator set of the start of the query.
+   * 
+   *  @throws CloneNotSupportedException
+   */
+  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  {
+
+    DescendantIterator clone = (DescendantIterator) super.cloneWithReset();
+
+    clone.resetProximityPositions();
+
+    return clone;
   }
 
   /**
@@ -175,6 +192,7 @@ public class DescendantIterator extends LocPathIterator
       else
         pos = m_context;
       m_startContext = pos;
+      resetProximityPositions();
     }
     else
     {
@@ -191,18 +209,10 @@ public class DescendantIterator extends LocPathIterator
     {
       if(getSelf)
       {
-        try
+        if(NodeFilter.FILTER_ACCEPT == acceptNode(pos))
         {
-          XObject score = m_nodeTest.execute(m_execContext, pos);
-          if (NodeTest.SCORE_NONE != score)
-          {
-            next = pos;
-            break;
-          }
-        }
-        catch (TransformerException te)
-        {
-          throw new org.apache.xml.utils.WrappedRuntimeException(te);
+          next = pos;
+          break;
         }
       }
       else
@@ -255,9 +265,6 @@ public class DescendantIterator extends LocPathIterator
   
   /** The top of the subtree, may not be the same as m_context if "//foo" pattern. */ 
   transient private Node m_startContext;
-
-  /** The NodeTest for this iterator. */
-  private NodeTest m_nodeTest;
 
   /** True if this is a descendants-or-self axes. */
   private boolean m_orSelf;

@@ -100,112 +100,158 @@ import org.apache.xpath.VariableStack;
  * the case where the LocPathIterator is "owned" by a UnionPathIterator,
  * in which case the UnionPathIterator will cache the nodes.</p>
  */
-public class LocPathIterator extends Expression
-  implements Cloneable, NodeIterator, 
-  ContextNodeList, NodeList, java.io.Serializable 
+public class LocPathIterator extends PredicatedNodeTest
+        implements Cloneable, NodeIterator, ContextNodeList, NodeList,
+                   java.io.Serializable
 {
 
-  /* The pool for cloned iterators.  Iterators need to be cloned 
-   * because the hold running state, and thus the original iterator 
+  /* The pool for cloned iterators.  Iterators need to be cloned
+   * because the hold running state, and thus the original iterator
    * expression from the stylesheet pool can not be used.          */
+
   // ObjectPool m_pool = new ObjectPool(this.getClass());
 
   /** The last node that was fetched, usually by nextNode. */
   transient public Node m_lastFetched;
 
-  /** If this iterator needs to cache nodes that are fetched, they
-   * are stored here.   */
+  /**
+   * If this iterator needs to cache nodes that are fetched, they
+   * are stored here.
+   */
   transient NodeSet m_cachedNodes;
 
-  /** The last used step walker in the walker list.      */
+  /** The last used step walker in the walker list. */
   protected AxesWalker m_lastUsedWalker;
 
-  /** The head of the step walker list.     */
+  /** The head of the step walker list. */
   protected AxesWalker m_firstWalker;
 
-  /** This is true if nextNode returns null.  */
+  /** This is true if nextNode returns null. */
   protected boolean m_foundLast = false;
 
-  /** Quicker access to the DOM helper than going through the  
-   * XPathContext object.   */
+  /**
+   * Quicker access to the DOM helper than going through the
+   * XPathContext object.
+   */
   transient protected DOMHelper m_dhelper;
 
-  /** The context node for this iterator, which doesn't change through 
-   * the course of the iteration.  */
+  /**
+   * The context node for this iterator, which doesn't change through
+   * the course of the iteration.
+   */
   transient protected Node m_context;
 
-  /** The node context from where the expression is being
-   * executed from (i.e. for current() support).  Different 
-   * from m_context in that this is the context for the entire 
+  /**
+   * The node context from where the expression is being
+   * executed from (i.e. for current() support).  Different
+   * from m_context in that this is the context for the entire
    * expression, rather than the context for the subexpression.
    */
   transient protected Node m_currentContextNode;
 
-  /** Fast access to the current prefix resolver.  It isn't really 
-   * clear that this is needed.  */
+  /**
+   * Fast access to the current prefix resolver.  It isn't really
+   * clear that this is needed.
+   */
   protected PrefixResolver m_prefixResolver;
 
-  /** The XPathContext reference, needed for execution of many 
-   * operations.    */
+  /**
+   * The XPathContext reference, needed for execution of many
+   * operations.
+   */
   transient protected XPathContext m_execContext;
 
-  /** The index of the next node to be fetched.  Useful if this 
-   * is a cached iterator, and is being used as random access 
-   * NodeList.   */
+  /**
+   * The index of the next node to be fetched.  Useful if this
+   * is a cached iterator, and is being used as random access
+   * NodeList.
+   */
   protected int m_next = 0;
 
-  /** The list of "waiting" step walkers.
-   * @see org.apache.xpath.axes.AxesWalker     */
-  Vector m_waiting = new Vector();
-  
+  /**
+   * The list of "waiting" step walkers.
+   * @see org.apache.xpath.axes.AxesWalker
+   */
+  private Vector m_waiting = null;
+
+  /**
+   * Get the waiting walker at the given index.
+   *
+   *
+   * @param i The walker index.
+   *
+   * @return non-null reference to an AxesWalker.
+   */
+  AxesWalker getWaiting(int i)
+  {
+    return (AxesWalker) m_waiting.elementAt(i);
+  }
+
+  /**
+   * Get the number of waiters waiting in the current expression execution.
+   * Note that this may not be the same as the total number of waiters in
+   * the waiting list.
+   *
+   *
+   * @return the number of waiters waiting in the current expression execution.
+   */
   int getWaitingCount()
   {
-    return m_waiting.size() - m_waitingBottom;
+    if(null == m_waiting)
+      return 0;
+    else
+      return m_waiting.size() - m_waitingBottom;
   }
-    
+
   /** The starting point in m_waiting where the waiting step walkers are. */
   int m_waitingBottom = 0;
-  
-  /** An index to the point in the variable stack where we should
+
+  /**
+   * An index to the point in the variable stack where we should
    * begin variable searches for this iterator.
-   * This is -1 if m_isTopLevel is false. 
-   **/
+   * This is -1 if m_isTopLevel is false.
+   */
   int m_varStackPos = -1;
 
-  /** An index into the variable stack where the variable context 
-   * ends, i.e. at the point we should terminate the search and 
-   * go looking for global variables. 
-   **/
+  /**
+   * An index into the variable stack where the variable context
+   * ends, i.e. at the point we should terminate the search and
+   * go looking for global variables.
+   */
   int m_varStackContext;
-  
+
   /**
    * Value determined at compile time, indicates that this is an
-   * iterator at the top level of the expression, rather than inside 
+   * iterator at the top level of the expression, rather than inside
    * a predicate.
    */
   private boolean m_isTopLevel = false;
-  
+
+  /** The index of the last node in the iteration. */
   private int m_last = 0;
 
   /**
    * Create a LocPathIterator object.
    *
-   * @param nscontext The namespace context for this iterator, 
+   * @param nscontext The namespace context for this iterator,
    * should be OK if null.
    */
   public LocPathIterator(PrefixResolver nscontext)
   {
+
+    setLocPathIterator(this);
+
     this.m_prefixResolver = nscontext;
   }
 
   /**
-   * Create a LocPathIterator object, including creation 
-   * of step walkers from the opcode list, and call back 
+   * Create a LocPathIterator object, including creation
+   * of step walkers from the opcode list, and call back
    * into the Compiler to create predicate expressions.
    *
-   * @param compiler The Compiler which is creating 
+   * @param compiler The Compiler which is creating
    * this expression.
-   * @param opPos The position of this iterator in the 
+   * @param opPos The position of this iterator in the
    * opcode list from the compiler.
    *
    * @throws javax.xml.transform.TransformerException
@@ -217,16 +263,16 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Create a LocPathIterator object, including creation 
-   * of step walkers from the opcode list, and call back 
+   * Create a LocPathIterator object, including creation
+   * of step walkers from the opcode list, and call back
    * into the Compiler to create predicate expressions.
-   * 
-   * @param compiler The Compiler which is creating 
+   *
+   * @param compiler The Compiler which is creating
    * this expression.
-   * @param opPos The position of this iterator in the 
+   * @param opPos The position of this iterator in the
    * opcode list from the compiler.
-   * @param shouldLoadWalkers True if walkers should be 
-   * loaded, or false if this is a derived iterator and 
+   * @param shouldLoadWalkers True if walkers should be
+   * loaded, or false if this is a derived iterator and
    * it doesn't wish to load child walkers.
    *
    * @throws javax.xml.transform.TransformerException
@@ -235,6 +281,8 @@ public class LocPathIterator extends Expression
           Compiler compiler, int opPos, boolean shouldLoadWalkers)
             throws javax.xml.transform.TransformerException
   {
+
+    setLocPathIterator(this);
 
     int firstStepPos = compiler.getFirstChildPos(opPos);
 
@@ -247,9 +295,9 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Execute this iterator, meaning create a clone that can  
-   * store state, and initialize it for fast execution from 
-   * the current runtime state.  When this is called, no actual 
+   * Execute this iterator, meaning create a clone that can
+   * store state, and initialize it for fast execution from
+   * the current runtime state.  When this is called, no actual
    * query from the current context node is performed.
    *
    * @param xctxt The XPath execution context.
@@ -258,11 +306,13 @@ public class LocPathIterator extends Expression
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
   {
 
     try
     {
+
       // LocPathIterator clone = (LocPathIterator) m_pool.getInstanceIfFree();
       // if (null == clone)
       LocPathIterator clone = (LocPathIterator) this.clone();
@@ -276,22 +326,25 @@ public class LocPathIterator extends Expression
       throw new javax.xml.transform.TransformerException(ncse);
     }
   }
-    
+
   /**
    * <meta name="usage" content="advanced"/>
-   * Set if this is an iterator at the upper level of 
+   * Set if this is an iterator at the upper level of
    * the XPath.
+   *
+   * @param b true if this location path is at the top level of the
+   *          expression.
    */
   public void setIsTopLevel(boolean b)
   {
     m_isTopLevel = b;
   }
-  
+
   /**
-   * Initialize the context values for this expression 
+   * Initialize the context values for this expression
    * after it is cloned.
    *
-   * @param execContext The XPath runtime context for this 
+   * @param execContext The XPath runtime context for this
    * transformation.
    */
   public void initContext(XPathContext execContext)
@@ -302,23 +355,24 @@ public class LocPathIterator extends Expression
     this.m_execContext = execContext;
     this.m_prefixResolver = execContext.getNamespaceContext();
     this.m_dhelper = execContext.getDOMHelper();
-    if(m_isTopLevel)
+
+    if (m_isTopLevel)
     {
       VariableStack vars = execContext.getVarStack();
+
       this.m_varStackPos = vars.getSearchStartOrTop();
       this.m_varStackContext = vars.getContextPos();
     }
   }
 
   /**
-   * Set the next position index of this iterator. 
+   * Set the next position index of this iterator.
    *
-   * @param next A value greater than or equal to zero that indicates the next 
+   * @param next A value greater than or equal to zero that indicates the next
    * node position to fetch.
    */
   protected void setNextPosition(int next)
   {
-
     m_next = next;
   }
 
@@ -328,7 +382,7 @@ public class LocPathIterator extends Expression
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *
-   * @return A value greater than or equal to zero that indicates the next 
+   * @return A value greater than or equal to zero that indicates the next
    * node position to fetch.
    */
   public final int getCurrentPos()
@@ -337,7 +391,7 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Add one to the current node index. 
+   * Add one to the current node index.
    */
   void incrementNextPosition()
   {
@@ -358,7 +412,7 @@ public class LocPathIterator extends Expression
     else
       m_cachedNodes = null;
   }
-  
+
   /**
    * Get cached nodes.
    *
@@ -371,8 +425,8 @@ public class LocPathIterator extends Expression
 
   /**
    * Set the current position in the node set.
-   * 
-   * @param i Must be a valid index greater 
+   *
+   * @param i Must be a valid index greater
    * than or equal to zero and less than m_cachedNodes.size().
    */
   public void setCurrentPos(int i)
@@ -391,10 +445,10 @@ public class LocPathIterator extends Expression
 
   /**
    * Get the length of the cached nodes.
-   * 
-   * <p>Note: for the moment at least, this only returns 
-   * the size of the nodes that have been fetched to date, 
-   * it doesn't attempt to run to the end to make sure we 
+   *
+   * <p>Note: for the moment at least, this only returns
+   * the size of the nodes that have been fetched to date,
+   * it doesn't attempt to run to the end to make sure we
    * have found everything.  This should be reviewed.</p>
    *
    * @return The size of the current cache list.
@@ -490,10 +544,10 @@ public class LocPathIterator extends Expression
    * This attribute determines which node types are presented via the
    * iterator. The available set of constants is defined in the
    * <code>NodeFilter</code> interface.
-   * 
-   * <p>This is somewhat useless at this time, since it doesn't 
-   * really return information that tells what this iterator will 
-   * show.  It is here only to fullfill the DOM NodeIterator 
+   *
+   * <p>This is somewhat useless at this time, since it doesn't
+   * really return information that tells what this iterator will
+   * show.  It is here only to fullfill the DOM NodeIterator
    * interface.</p>
    *
    * @return For now, always NodeFilter.SHOW_ALL & ~NodeFilter.SHOW_ENTITY_REFERENCE.
@@ -507,8 +561,8 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   *  The filter used to screen nodes.  Not used at this time, 
-   * this is here only to fullfill the DOM NodeIterator 
+   *  The filter used to screen nodes.  Not used at this time,
+   * this is here only to fullfill the DOM NodeIterator
    * interface.
    *
    * @return Always null.
@@ -522,7 +576,7 @@ public class LocPathIterator extends Expression
   /**
    * The root node of the Iterator, as specified when it was created.
    *
-   * @return The "root" of this iterator, which, in XPath terms, 
+   * @return The "root" of this iterator, which, in XPath terms,
    * is the node context for this iterator.
    */
   public Node getRoot()
@@ -542,7 +596,7 @@ public class LocPathIterator extends Expression
    * expansion, use the whatToShow flags to show the entity reference node
    * and set expandEntityReferences to false.
    *
-   * @return Always true, since entity reference nodes are not 
+   * @return Always true, since entity reference nodes are not
    * visible in the XPath model.
    */
   public boolean getExpandEntityReferences()
@@ -571,7 +625,7 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Get a cloned Iterator that is reset to the beginning 
+   * Get a cloned Iterator that is reset to the beginning
    * of the query.
    *
    * @return A cloned NodeIterator set of the start of the query.
@@ -587,9 +641,9 @@ public class LocPathIterator extends Expression
 
     return clone;
   }
-  
+
   /**
-   * Get a cloned LocPathIterator that holds the same 
+   * Get a cloned LocPathIterator that holds the same
    * position as this iterator.
    *
    * @return A clone of this iterator that holds the same node position.
@@ -598,35 +652,36 @@ public class LocPathIterator extends Expression
    */
   public Object clone() throws CloneNotSupportedException
   {
-    
-    LocPathIterator clone = (LocPathIterator) super.clone();
-//    clone.m_varStackPos = this.m_varStackPos;
-//    clone.m_varStackContext = this.m_varStackContext;
 
+    LocPathIterator clone = (LocPathIterator) super.clone();
+
+    //    clone.m_varStackPos = this.m_varStackPos;
+    //    clone.m_varStackContext = this.m_varStackContext;
     if (null != m_firstWalker)
     {
-      Vector clones = new Vector(); // yuck
+      // If we have waiting walkers, we have to check for duplicates.
+      Vector clones = (null != m_waiting) ? new Vector() : null;
+
       clone.m_firstWalker = m_firstWalker.cloneDeep(clone, clones);
-      
-      if(null != m_waiting)
+
+      if (null != m_waiting)
       {
-        clone.m_waiting = (Vector)m_waiting.clone(); // or is new Vector faster?
+        clone.m_waiting = (Vector) m_waiting.clone();  // or is new Vector faster?
+
         int n = m_waiting.size();
-        for (int i = 0; i < n; i++) 
+
+        for (int i = 0; i < n; i++)
         {
-          AxesWalker waiting = (AxesWalker)m_waiting.elementAt(i);
+          AxesWalker waiting = (AxesWalker) m_waiting.elementAt(i);
+
           clone.m_waiting.setElementAt(waiting.cloneDeep(clone, clones), i);
         }
       }
-
-      if(null != m_lastUsedWalker)
-        clone.m_lastUsedWalker = m_lastUsedWalker.cloneDeep(clone, clones);
     }
-             
+
     return clone;
   }
-  
-  
+
   /**
    * Reset the iterator.
    */
@@ -645,7 +700,8 @@ public class LocPathIterator extends Expression
       m_lastUsedWalker = m_firstWalker;
 
       m_firstWalker.setRoot(m_context);
-      m_waiting.removeAllElements();
+      if(null != m_waiting)
+        m_waiting.removeAllElements();
     }
   }
 
@@ -673,7 +729,7 @@ public class LocPathIterator extends Expression
 
       return next;
     }
-    
+
     // If the variable stack position is not -1, we'll have to 
     // set our position in the variable stack, so our variable access 
     // will be correct.  Iterators that are at the top level of the 
@@ -682,7 +738,7 @@ public class LocPathIterator extends Expression
     // may be much later than top-level iterators.  
     // m_varStackPos is set in initContext, which is called 
     // from the execute method.
-    if(-1 == m_varStackPos)
+    if (-1 == m_varStackPos)
     {
       if (null == m_firstWalker.getRoot())
       {
@@ -691,17 +747,19 @@ public class LocPathIterator extends Expression
 
         m_lastUsedWalker = m_firstWalker;
       }
+
       return returnNextNode(m_firstWalker.nextNode());
     }
     else
     {
       VariableStack vars = m_execContext.getVarStack();
-      
+
       // These three statements need to be combined into one operation.
       int savedStart = vars.getSearchStart();
+
       vars.setSearchStart(m_varStackPos);
       vars.pushContextPosition(m_varStackContext);
-      
+
       if (null == m_firstWalker.getRoot())
       {
         this.setNextPosition(0);
@@ -711,7 +769,7 @@ public class LocPathIterator extends Expression
       }
 
       Node n = returnNextNode(m_firstWalker.nextNode());
-      
+
       // These two statements need to be combined into one operation.
       vars.setSearchStart(savedStart);
       vars.popContextPosition();
@@ -763,7 +821,7 @@ public class LocPathIterator extends Expression
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.
    *
-   * @param index The index to run to, or -1 if the iterator 
+   * @param index The index to run to, or -1 if the iterator
    * should run to the end.
    */
   public void runTo(int index)
@@ -792,7 +850,7 @@ public class LocPathIterator extends Expression
    * <meta name="usage" content="advanced"/>
    * Get the head of the walker list.
    *
-   * @return The head of the walker list, or null 
+   * @return The head of the walker list, or null
    * if this iterator does not implement walkers.
    */
   public final AxesWalker getFirstWalker()
@@ -826,14 +884,19 @@ public class LocPathIterator extends Expression
    * <meta name="usage" content="advanced"/>
    * Add a walker to the waiting list.
    *
-   * @param walker A walker that is waiting for 
-   * other step walkers to complete, before it can 
+   * @param walker A walker that is waiting for
+   * other step walkers to complete, before it can
    * continue.
-   * 
+   *
    * @see org.apache.xpath.axes.AxesWalker
    */
   public final void addToWaitList(AxesWalker walker)
   {
+    if (null == m_waiting)
+    {
+      m_waiting = new Vector();
+    }
+    
     m_waiting.addElement(walker);
   }
 
@@ -842,12 +905,13 @@ public class LocPathIterator extends Expression
    * Remove a walker from the waiting list.
    *
    * @param walker A walker that is no longer waiting.
-   * 
+   *
    * @see org.apache.xpath.axes.AxesWalker
    */
   public final void removeFromWaitList(AxesWalker walker)
   {
-    m_waiting.removeElement(walker);
+    if(null != m_waiting) // defensive check.
+      m_waiting.removeElement(walker);
   }
 
   /**
@@ -874,7 +938,7 @@ public class LocPathIterator extends Expression
   /**
    * The DOM helper for the given context;
    *
-   * @return The DOMHelper that should be used, 
+   * @return The DOMHelper that should be used,
    * or null if initContext has not been called.
    */
   public final DOMHelper getDOMHelper()
@@ -923,15 +987,61 @@ public class LocPathIterator extends Expression
   {
     return m_prefixResolver;
   }
-  
+
+  /**
+   * Get the index of the last node in the iteration.
+   *
+   *
+   * @return the index of the last node in the iteration.
+   */
   public int getLast()
   {
     return m_last;
   }
-  
+
+  /**
+   * Set the index of the last node in the iteration.
+   *
+   *
+   * @param last the index of the last node in the iteration.
+   */
   public void setLast(int last)
   {
     m_last = last;
   }
 
+  /**
+   * Get the index of the last node that can be itterated to.
+   * This probably will need to be overridded by derived classes.
+   *
+   * @param xctxt XPath runtime context.
+   *
+   * @return the index of the last node that can be itterated to.
+   */
+  public int getLastPos(XPathContext xctxt)
+  {
+    int pos = getProximityPosition();
+    LocPathIterator clone;
+
+    try
+    {
+      clone = (LocPathIterator) clone();
+    }
+    catch (CloneNotSupportedException cnse)
+    {
+      return -1;
+    }
+
+    clone.setPredicateCount(clone.getPredicateCount() - 1);
+
+    Node next;
+
+    while (null != (next = clone.nextNode()))
+    {
+      pos++;
+    }
+
+    // System.out.println("pos: "+pos);
+    return pos;
+  }
 }

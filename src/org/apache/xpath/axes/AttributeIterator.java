@@ -58,6 +58,7 @@ package org.apache.xpath.axes;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.objects.XObject;
@@ -92,20 +93,19 @@ public class AttributeIterator extends LocPathIterator
 
     super(compiler, opPos, false);
 
-    m_nodeTest = new NodeTest();
-
     int firstStepPos = compiler.getFirstChildPos(opPos);
     int whatToShow = compiler.getWhatToShow(firstStepPos);
 
     if ((0 == (whatToShow
                & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
                   | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
-      m_nodeTest.initNodeTest(whatToShow);
+      initNodeTest(whatToShow);
     else
     {
-      m_nodeTest.initNodeTest(whatToShow, compiler.getStepNS(firstStepPos),
+      initNodeTest(whatToShow, compiler.getStepNS(firstStepPos),
                               compiler.getStepLocalName(firstStepPos));
     }
+    initPredicateInfo(compiler, firstStepPos);
   }
   
   /**
@@ -136,6 +136,8 @@ public class AttributeIterator extends LocPathIterator
     AttributeIterator clone = (AttributeIterator) super.cloneWithReset();
 
     clone.m_attrListPos = 0;
+    
+    clone.resetProximityPositions();
 
     return clone;
   }
@@ -197,6 +199,7 @@ public class AttributeIterator extends LocPathIterator
     if (null == m_attributeList)
     {
       initAttrList();
+      resetProximityPositions();
     }
 
     Node next;
@@ -209,19 +212,10 @@ public class AttributeIterator extends LocPathIterator
 
       if (null != next)
       {
-        try
-        {
-          XObject score = m_nodeTest.execute(m_execContext, next);
-
-          if (NodeTest.SCORE_NONE == score)
-            continue;
-          else
-            break;
-        }
-        catch (TransformerException te)
-        {
-          throw new org.apache.xml.utils.WrappedRuntimeException(te);
-        }
+        if(NodeFilter.FILTER_ACCEPT == acceptNode(next))
+          break;
+        else
+          continue;
       }
       else
         break;
@@ -244,9 +238,19 @@ public class AttributeIterator extends LocPathIterator
       return null;
     }
   }
+  
+  /**
+   * Get the index of the last node that can be itterated to.
+   *
+   * @param xctxt XPath runtime context.
+   *
+   * @return the index of the last node that can be itterated to.
+   */
+  public int getLastPos(XPathContext xctxt)
+  {
+    return m_nAttrs;
+  }
 
-  /** The NodeTest for this iterator. */
-  private NodeTest m_nodeTest;
 
   /** The attribute list for the given context. */
   transient private NamedNodeMap m_attributeList;

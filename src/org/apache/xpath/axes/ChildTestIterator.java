@@ -65,6 +65,7 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -74,9 +75,6 @@ import org.w3c.dom.traversal.NodeFilter;
  */
 public class ChildTestIterator extends LocPathIterator
 {
-
-  /** The NodeTest for this iterator. */
-  NodeTest m_nodeTest;
 
   /**
    * Create a ChildTestIterator object.
@@ -93,20 +91,37 @@ public class ChildTestIterator extends LocPathIterator
 
     super(compiler, opPos, false);
 
-    m_nodeTest = new NodeTest();
-
     int firstStepPos = compiler.getFirstChildPos(opPos);
     int whatToShow = compiler.getWhatToShow(firstStepPos);
 
     if ((0 == (whatToShow
                & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
                   | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
-      m_nodeTest.initNodeTest(whatToShow);
+      initNodeTest(whatToShow);
     else
     {
-      m_nodeTest.initNodeTest(whatToShow, compiler.getStepNS(firstStepPos),
+      initNodeTest(whatToShow, compiler.getStepNS(firstStepPos),
                               compiler.getStepLocalName(firstStepPos));
     }
+    initPredicateInfo(compiler, firstStepPos);
+  }
+  
+  /**
+   *  Get a cloned Iterator that is reset to the beginning
+   *  of the query.
+   * 
+   *  @return A cloned NodeIterator set of the start of the query.
+   * 
+   *  @throws CloneNotSupportedException
+   */
+  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  {
+
+    ChildTestIterator clone = (ChildTestIterator) super.cloneWithReset();
+
+    clone.resetProximityPositions();
+
+    return clone;
   }
 
   /**
@@ -138,6 +153,11 @@ public class ChildTestIterator extends LocPathIterator
 
     if (m_foundLast)
       return null;
+      
+    if(null == m_lastFetched)
+    {
+      resetProximityPositions();
+    }
 
     Node next;
 
@@ -149,19 +169,10 @@ public class ChildTestIterator extends LocPathIterator
 
       if (null != next)
       {
-        try
-        {
-          XObject score = m_nodeTest.execute(m_execContext, next);
-
-          if (NodeTest.SCORE_NONE == score)
-            continue;
-          else
-            break;
-        }
-        catch (TransformerException te)
-        {
-          throw new org.apache.xml.utils.WrappedRuntimeException(te);
-        }
+        if(NodeFilter.FILTER_ACCEPT == acceptNode(next))
+          break;
+        else
+          continue;
       }
       else
         break;
