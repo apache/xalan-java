@@ -150,10 +150,11 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
             m_isAbsolute = true;
             super.jjtAddChild(Singletons.SLASHSLASH, i);
         }
-      //  else if (n.getId() == XPathTreeConstants.JJTSLASHSLASH)
-       // {
-            // expand to /descendant-or-self::node()/
-       //     super.jjtAddChild(Singletons.SLASHSLASH, i);
+
+        //  else if (n.getId() == XPathTreeConstants.JJTSLASHSLASH)
+        // {
+        // expand to /descendant-or-self::node()/
+        //     super.jjtAddChild(Singletons.SLASHSLASH, i);
         //}
         else if (n.getId() == XPathTreeConstants.JJTSLASH)
         {
@@ -163,7 +164,10 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
         {
             if (((SimpleNode) n).canBeReduced())
             {
-                super.jjtInsertChild(n.jjtGetChild(0));
+                if (n.jjtGetNumChildren() > 0)
+                {
+                    super.jjtInsertChild(n.jjtGetChild(0));
+                }
             }
             else
             {
@@ -184,9 +188,9 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
             int et = step.getExprType();
 
             return (((et == STEP) && ((StepExpr) step).isPrimaryExpr())
-                   || (et == LITERAL_EXPR) || (et == FUNCTION_CALL_EXPR)
-                   || (et == SEQUENCE_EXPR) || (et == VARIABLE_REF_EXPR)
-                   || (et == ARITHMETIC_EXPR));
+            || (et == LITERAL_EXPR) || (et == FUNCTION_CALL_EXPR)
+            || (et == SEQUENCE_EXPR) || (et == VARIABLE_REF_EXPR)
+            || (et == ARITHMETIC_EXPR));
         }
 
         return false;

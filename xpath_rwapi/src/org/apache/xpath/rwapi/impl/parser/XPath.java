@@ -4,10 +4,16 @@ package org.apache.xpath.rwapi.impl.parser;
 
 import java.util.Stack;
 
-public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants {/*@bgen(jjtree)*/
+public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, XPathConstants {/*@bgen(jjtree)*/
   protected JJTXPathState jjtree = new JJTXPathState();
       org.apache.xml.utils.PrefixResolver m_prefixResolver;
       org.apache.xpath.patterns.FunctionPattern m_matchFunc = null; // short lived.
+
+
+          /**
+	   * Node factory for customized parser
+       */
+         NodeFactory m_nodeFactory;
 
       int m_predLevel = 0;
 
@@ -20,6 +26,21 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       {
         return m_prefixResolver;
       }
+
+      /**
+       * Sets the node factory
+       */
+      public void setNodeFactory(NodeFactory nodeFactory) {
+                        m_nodeFactory = nodeFactory;
+          }
+
+          /**
+	   * Returns the node factory.
+	   * @return NodeFactory
+	   */
+          public NodeFactory getNodeFactory() {
+                return m_nodeFactory;
+          }
 
           /**
 	   * The "version" property.
@@ -52,6 +73,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       boolean m_isMatchPattern = false;
 
                   Stack binaryTokenStack = new Stack();
+
+                  public Node createNode(int id) {
+                          return null;
+                  }
+
+
+
                   public static void main(String args[])
                      throws Exception
                   {

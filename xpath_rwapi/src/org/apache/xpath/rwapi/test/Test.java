@@ -142,10 +142,10 @@ public class Test
 
                     if (SimpleNode.PRODUCE_RAW_TREE)
                     {
-                        if (dumpTree)
-                        {
+                      //  if (dumpTree)
+                        //{
                             tree.dump("|");
-                        }
+                     //   }
                     }
                     else
                     {

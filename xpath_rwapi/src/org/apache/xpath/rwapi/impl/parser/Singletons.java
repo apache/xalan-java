@@ -102,8 +102,8 @@ public class Singletons extends SimpleNode
     static final protected Singletons MINUS = new Singletons(XPathTreeConstants.JJTMINUS);
 
     /**
-             * Plus singleton
-             */
+     * Plus singleton
+     */
     static final protected Singletons PLUS = new Singletons(XPathTreeConstants.JJTPLUS);
 
     /**
@@ -111,12 +111,23 @@ public class Singletons extends SimpleNode
      */
     static final public StepExprImpl SLASHSLASH;
 
+    /**
+     * Dot singleton
+     */
+    static final protected StepExprImpl DOT;
+
     static
     {
         KindTestImpl kt = new KindTestImpl();
         kt.setKindTest(NodeTest.ANY_KIND_TEST);
 
         SLASHSLASH = new StepExprImpl(StepExpr.AXIS_DESCENDANT_OR_SELF, kt);
+
+        kt = new KindTestImpl();
+
+        //		well use any kind test for dot, but it's more than that..
+        kt.setKindTest(NodeTest.ANY_KIND_TEST);
+        DOT = new StepExprImpl(StepExpr.AXIS_SELF, kt);
     }
 
     /**

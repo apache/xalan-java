@@ -67,7 +67,10 @@ Copyright:
   </target>
   
   <target name="jjtree" depends="gen-grammar">
-    <jjtree target="${target.parser}/xpath-grammar.jjt" javacchome="../bin" outputdirectory="${target.parser}"/>
+    <jjtree target="${target.parser}/xpath-grammar.jjt" 
+    		javacchome="../bin" 
+    		outputdirectory="${target.parser}"
+    		static="false"/>
   </target>
 
   <target name="javacc" depends="jjtree">
@@ -77,6 +80,7 @@ Copyright:
 	    debugtokenmanager="${debug}"
 	    debugparser="${debug}"
 	    sanitycheck="true"
+	    static="false"
 	    unicodeinput="${unicodeinput}"
 	    javaunicodeescape="${unicodeinput}"
         outputdirectory="${target.parser}"/>

@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <exprs>
-	<!-- primary -->
+	<!-- primary expressions -->
 	<expr value="10">
 		<ast>
-			<node name="ExprSequence">
-				<!-- No predicate so filter StepExpr node -->
+			<node name="ExprSequence">	
+				<!-- direct access to primary expression -->
 				<node name="IntegerLiteral"/>
-			</node>
-		</ast>
-	</expr>
-	
-	<expr value="10[$var]">
-		<ast>
-			<node name="ExprSequence">
-				<node name="StepExpr">
-					<node name="IntegerLiteral"/>
-					<node name="VarName"/>
-				</node>
 			</node>
 		</ast>
 	</expr>
@@ -30,7 +19,81 @@
 		</ast>
 	</expr>
 	
-	<expr value="toto,10">
+	<expr value="$var">
+		<ast>
+			<node name="ExprSequence">
+				<node name="VarName"/>
+			</node>
+		</ast>
+	</expr>
+	
+	
+	<expr value="10[$var]">
+		<ast>
+			<node name="ExprSequence">
+				<node name="StepExpr">
+					<!-- first child: the node test -->
+					<node name="IntegerLiteral"/>
+					<!-- second and following children: predicates -->
+					<node name="VarName"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="func()">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FunctionCall"/>
+				<!-- no child since no parameters -->
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="func2('param1',56)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FunctionCall">
+					<!-- children correspond to function call parameters -->
+					<node name="StringLiteral"/>
+					<node name="IntegerLiteral"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="func3(toto[@titi='val'],56)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FunctionCall">
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>
+							<node name="ComparisonExpr">
+								<node name="PathExpr">
+									<node name="StepExpr">
+										<node name="NameTest"/>
+									</node>
+								</node>
+								<node name="StringLiteral"/>
+							</node>				
+						</node>
+					</node>					
+					<node name="IntegerLiteral"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="(10)">
+		<ast>
+			<node name="ExprSequence">				
+				<node name="IntegerLiteral"/>
+			</node>
+		</ast>
+	</expr>
+		
+	<expr value="(toto,10)">
 		<ast>
 			<node name="ExprSequence">
 				<node name="PathExpr">
@@ -43,33 +106,16 @@
 		</ast>
 	</expr>
 	
-	
-	<expr value="func()">
+	<expr value="(toto, (), (10, 'str'))">
 		<ast>
-			<node name="ExprSequence">
-				<node name="FunctionCall"/>
+			<node name="ExprSequence">		
+				<node name="NameTest"/>		
+				<node name="IntegerLiteral"/>
+				<node name="StringLiteral"/>
 			</node>
 		</ast>
 	</expr>
 	
-	<expr value="func2('param1',56)">
-		<ast>
-			<node name="ExprSequence">
-				<node name="FunctionCall">
-					<node name="StringLiteral"/>
-					<node name="IntegerLiteral"/>
-				</node>
-			</node>
-		</ast>
-	</expr>
-	
-	<expr value="$varvar">
-		<ast>
-			<node name="ExprSequence">
-				<node name="VarName"/>
-			</node>
-		</ast>
-	</expr>
 	
 	<!-- nametest (AbbreviateForwardStep) -->
 	<expr value="toto">

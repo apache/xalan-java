@@ -62,6 +62,7 @@ import org.apache.xpath.rwapi.expression.StepExpr;
 import org.apache.xpath.rwapi.expression.Visitor;
 import org.apache.xpath.rwapi.impl.parser.Axis;
 import org.apache.xpath.rwapi.impl.parser.Node;
+import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.XPath;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
 
@@ -296,8 +297,8 @@ public class StepExprImpl extends ExprImpl implements StepExpr
                 break;
 
             case XPathTreeConstants.JJTNAMETEST:
-
-                // At production
+			case XPathTreeConstants.JJTDOT:
+                // At and Dot production: just add child since reduction has been done in SimpleNode
                 super.jjtAddChild(n, 0);
 
                 break;
@@ -327,11 +328,6 @@ public class StepExprImpl extends ExprImpl implements StepExpr
 
                 break;
 
-            case XPathTreeConstants.JJTDOT:
-
-                // TODO : need to extend XPath API?
-                break;
-
             case XPathTreeConstants.JJTINTEGERLITERAL:
             case XPathTreeConstants.JJTSTRINGLITERAL:
             case XPathTreeConstants.JJTDECIMALLITERAL:
@@ -345,7 +341,15 @@ public class StepExprImpl extends ExprImpl implements StepExpr
 
             case XPathTreeConstants.JJTEXPRSEQUENCE:
                 m_axisType = -1;
-                super.jjtAddChild(n.jjtGetChild(0), 0);
+
+                if (((SimpleNode) n).canBeReduced())
+                {
+                    super.jjtAddChild(n.jjtGetChild(0), 0);
+                }
+                else
+                {
+                    super.jjtAddChild(n, 0);
+                }
 
                 break;
 

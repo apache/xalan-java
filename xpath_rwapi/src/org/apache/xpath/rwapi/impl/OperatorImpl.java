@@ -75,32 +75,21 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      * Mapping between operation type and it's external representation
      */
     final private static String[] OPTYPE2STRING = 
-                                                  {
-                                                      "|", "intersect", "except",
-                                                      "+", "-", "to", "eq",
-                                                      "ne", "lt", "le", "gt",
-                                                      "ge", "=", "!=", "<", "<=",
-                                                      ">", ">=", "is", "isnot",
-                                                      "<<", ">>", "and", "or",
-                                                      "+", "-", "/", "//", ",",
-                                                      "*", "div", "idiv", "mod"
-                                                  };
+    {
+        "|", "intersect", "except", "+", "-", "to", "eq", "ne", "lt", "le", "gt",
+        "ge", "=", "!=", "<", "<=", ">", ">=", "is", "isnot", "<<", ">>", "and",
+        "or", "+", "-", "/", "//", ",", "*", "div", "idiv", "mod"
+    };
 
     /**
-            * Indicate whether space is needed around the operator
-             */
+     * Indicate whether space is needed around the operator
+     */
     final private static boolean[] SPACE_NEEDED = 
-                                                  {
-                                                      false, true, true, false,
-                                                      false, true, true, true,
-                                                      true, true, true, true,
-                                                      false, false, false, false,
-                                                      false, false, true, true,
-                                                      false, false, true, true,
-                                                      false, false, false, false,
-                                                      false, false, true, true,
-                                                      true
-                                                  };
+    {
+        false, true, true, false, false, true, true, true, true, true, true,
+        true, false, false, false, false, false, false, true, true, false, false,
+        true, true, false, false, false, false, false, false, true, true, true
+    };
     short m_exprType;
     short m_opType;
 
@@ -114,62 +103,62 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
         switch (i)
         {
-            case XPathTreeConstants.JJTEXPRSEQUENCE:
-                m_exprType = SEQUENCE_EXPR;
-                m_opType = COMMA;
+        case XPathTreeConstants.JJTEXPRSEQUENCE:
+            m_exprType = SEQUENCE_EXPR;
+            m_opType = COMMA;
 
-                break;
+            break;
 
-            case XPathTreeConstants.JJTUNARYEXPR:
-                m_exprType = UNARY_EXPR;
+        case XPathTreeConstants.JJTUNARYEXPR:
+            m_exprType = UNARY_EXPR;
 
-                break;
+            break;
 
-            case XPathTreeConstants.JJTPATHEXPR:
-                m_exprType = PATH_EXPR;
-                m_opType = SLASH_STEP;
+        case XPathTreeConstants.JJTPATHEXPR:
+            m_exprType = PATH_EXPR;
+            m_opType = SLASH_STEP;
 
-                break;
+            break;
 
-            case XPathTreeConstants.JJTUNIONEXPR:
-                m_exprType = COMBINE_EXPR;
+        case XPathTreeConstants.JJTUNIONEXPR:
+            m_exprType = COMBINE_EXPR;
 
-                // opType is not known yet
-                break;
+            // opType is not known yet
+            break;
 
-            case XPathTreeConstants.JJTFUNCTIONCALL:
+        case XPathTreeConstants.JJTFUNCTIONCALL:
 
-                // ignore : see FunctionCallImpl subclass
-                break;
+            // ignore : see FunctionCallImpl subclass
+            break;
 
-            case XPathTreeConstants.JJTADDITIVEEXPR:
-            case XPathTreeConstants.JJTMULTIPLICATIVEEXPR:
-                m_exprType = ARITHMETIC_EXPR;
+        case XPathTreeConstants.JJTADDITIVEEXPR:
+        case XPathTreeConstants.JJTMULTIPLICATIVEEXPR:
+            m_exprType = ARITHMETIC_EXPR;
 
-                // opType is not known yet
-                break;
+            // opType is not known yet
+            break;
 
-            case XPathTreeConstants.JJTOREXPR:
-            case XPathTreeConstants.JJTANDEXPR:
-                m_exprType = LOGICAL_EXPR;
+        case XPathTreeConstants.JJTOREXPR:
+        case XPathTreeConstants.JJTANDEXPR:
+            m_exprType = LOGICAL_EXPR;
 
-                //	opType is not known yet
-                break;
+            //	opType is not known yet
+            break;
 
-            case XPathTreeConstants.JJTCOMPARISONEXPR:
-                m_exprType = COMPARISON_EXPR;
+        case XPathTreeConstants.JJTCOMPARISONEXPR:
+            m_exprType = COMPARISON_EXPR;
 
-                //			opType is not known yet
-                break;
+            //			opType is not known yet
+            break;
 
-            case XPathTreeConstants.JJTRANGEEXPR:
-                m_exprType = RANGE_EXPR;
-                m_opType = RANGE;
+        case XPathTreeConstants.JJTRANGEEXPR:
+            m_exprType = RANGE_EXPR;
+            m_opType = RANGE;
 
-                break;
+            break;
 
-            default:
-                System.out.println("not implemented yet:" + i);
+        default:
+            System.out.println("not implemented yet:" + i);
         }
     }
 
@@ -218,7 +207,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     public void addOperand(Expr operand) throws XPathException
     {
         super.jjtAddChild((Node) operand,
-                          (children == null) ? 0 : children.length);
+            (children == null) ? 0 : children.length);
     }
 
     /**
@@ -253,7 +242,9 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     /**
      * @see org.apache.xpath.rwapi.expression.OperatorExpr#removeOperand(Expr)
      */
-    public void removeOperand(Expr operand) throws XPathException {}
+    public void removeOperand(Expr operand) throws XPathException
+    {
+    }
 
     /**
      * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
@@ -265,15 +256,16 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         {
             // Filter
         }
-		else if (n.getId() == XPathTreeConstants.JJTMINUS)
-				{
-					// Minus expression
-					m_opType = MINUS_UNARY;
-				}else if (n.getId() == XPathTreeConstants.JJTPLUS)
-		{
-			// Plus expression
-			m_opType = PLUS_UNARY;
-		}
+        else if (n.getId() == XPathTreeConstants.JJTMINUS)
+        {
+            // Minus expression            
+            m_opType = MINUS_UNARY;
+        }
+        else if (n.getId() == XPathTreeConstants.JJTPLUS)
+        {
+            // Plus expression
+            m_opType = PLUS_UNARY;
+        }
         else
         {
             //int last = (children == null) ? 0 : children.length;
@@ -293,17 +285,17 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public boolean canBeReduced()
     {
-        switch (m_exprType)
+    	switch (m_exprType)
         {
-            case UNARY_EXPR:
+        case UNARY_EXPR:
 
-                if ((m_opType != MINUS_UNARY) && (m_opType != PLUS_UNARY))
-                {
-                    return true;
-                }
-
-            case SEQUENCE_EXPR:
-                return false;
+            if ((m_opType != MINUS_UNARY) && (m_opType != PLUS_UNARY))
+            {
+                return true;
+            }
+			break;
+        case SEQUENCE_EXPR:
+            return (children == null) || (children.length <= 1);
         }
 
         return super.canBeReduced();
@@ -334,7 +326,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         String oper = getOperatorChar();
         ExprImpl op;
 
-        if (m_opType == MINUS_UNARY || m_opType == PLUS_UNARY)
+        if ((m_opType == MINUS_UNARY) || (m_opType == PLUS_UNARY))
         {
             expr.append(oper);
         }
@@ -377,6 +369,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public void processToken(Token token)
     {
+    	// @TODO: optimization here: use a hashmap
         if (m_exprType == ARITHMETIC_EXPR)
         {
             String op = token.image.trim();
@@ -513,5 +506,6 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
                 m_opType = LATERTHAN_ORDER_COMPARISON;
             }
         }
+        
     }
 }

@@ -169,8 +169,7 @@ public interface Expr extends Visitable {
     /**
      * Instance of
      */
-    short INSTANCE_OF_EXPR = 18;
-    
+    short INSTANCE_OF_EXPR = 18;    
      
     /**
      * Unary expression
@@ -189,7 +188,8 @@ public interface Expr extends Visitable {
 
     /**
      * Gets the expression or expression component type
-     * @return The type of this expression: one of the constants define in this class
+     * @return The type of this expression: one of the constants define in this
+     * interface
      */
     short getExprType();
 

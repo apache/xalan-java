@@ -84,7 +84,6 @@ public interface Visitor {
 	 */
 	boolean visitVariable(Variable var);
 
-
 	/**
 	 * Visit operator expression
      * @param

@@ -67,12 +67,19 @@
 		
 import java.util.Stack;
 
-public class <xsl:value-of select="$parser-class"/> {
+public class <xsl:value-of select="$parser-class"/> implements NodeFactory {
       <xsl:call-template name="extra-parser-code"/>
 
       boolean m_isMatchPattern = false;
 
 		  Stack binaryTokenStack = new Stack();
+		  
+		  public Node createNode(int id) {
+			  return null;
+		  }
+		  
+		  
+		  
 		  public static void main(String args[])
 		     throws Exception
 		  {

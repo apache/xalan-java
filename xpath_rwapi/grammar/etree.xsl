@@ -26,6 +26,12 @@ package org.apache.xpath.rwapi.impl.parser;
       org.apache.xml.utils.PrefixResolver m_prefixResolver;
       org.apache.xpath.patterns.FunctionPattern m_matchFunc = null; // short lived.
 
+
+	  /**
+	   * Node factory for customized parser
+       */
+   	 NodeFactory m_nodeFactory;
+
       int m_predLevel = 0;
 
       public void setPrefixResolver(org.apache.xml.utils.PrefixResolver resolver)
@@ -37,6 +43,21 @@ package org.apache.xpath.rwapi.impl.parser;
       {
         return m_prefixResolver;
       }
+      
+      /**
+       * Sets the node factory
+       */
+      public void setNodeFactory(NodeFactory nodeFactory) {      		
+			m_nodeFactory = nodeFactory;
+	  }
+	
+	  /**
+	   * Returns the node factory.
+	   * @return NodeFactory
+	   */
+	  public NodeFactory getNodeFactory() {
+	 	return m_nodeFactory;
+	  }
       
 	  /**
 	   * The "version" property.
