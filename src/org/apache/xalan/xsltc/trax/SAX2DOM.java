@@ -23,6 +23,7 @@ package org.apache.xalan.xsltc.trax;
 import java.util.Stack;
 import java.util.Vector;
 
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -32,6 +33,7 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.w3c.dom.ProcessingInstruction;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -48,6 +50,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
     private Document _document = null;
     private Stack _nodeStk = new Stack();
     private Vector _namespaceDecls = null;
+    private Node _lastSibling = null;
 
     public SAX2DOM() throws ParserConfigurationException {
 	final DocumentBuilderFactory factory = 
@@ -80,10 +83,15 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	final Node last = (Node)_nodeStk.peek();
 
 	// No text nodes can be children of root (DOM006 exception)
-	if (last != _document) {
-	    final String text = new String(ch, start, length);
-	    last.appendChild(_document.createTextNode(text));
-	}
+        if (last != _document) {
+            final String text = new String(ch, start, length);
+            if( _lastSibling != null && _lastSibling.getNodeType() == Node.TEXT_NODE ){
+                  ((Text)_lastSibling).appendData(text);
+            }
+            else{
+                _lastSibling = last.appendChild(_document.createTextNode(text));
+            }
+        }
     }
 
     public void startDocument() {
@@ -135,10 +143,12 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 
 	// Push this node onto stack
 	_nodeStk.push(tmp);
+	_lastSibling = null;
     }
 
     public void endElement(String namespace, String localName, String qName) {
 	_nodeStk.pop();  
+	_lastSibling = null;
     }
 
     public void startPrefixMapping(String prefix, String uri) {
@@ -167,7 +177,10 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	final Node last = (Node)_nodeStk.peek();
 	ProcessingInstruction pi = _document.createProcessingInstruction(
 		target, data);
-	if (pi != null)  last.appendChild(pi);
+	if (pi != null){
+          last.appendChild(pi);
+          _lastSibling = pi;
+        }
     }
 
     /**
@@ -191,7 +204,10 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
     public void comment(char[] ch, int start, int length) {
 	final Node last = (Node)_nodeStk.peek();
 	Comment comment = _document.createComment(new String(ch,start,length));
-	if (comment != null) last.appendChild(comment);
+	if (comment != null){
+          last.appendChild(comment);
+          _lastSibling = comment;
+        }
     }
 
     // Lexical Handler methods- not implemented
