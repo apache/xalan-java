@@ -76,7 +76,8 @@ import org.xml.sax.ContentHandler;
  * <p>Example:</p>
  * <PRE>
  * &lt;?xml version="1.0"?>
- * &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/XSL/Transform/1.0"
+ * &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+ *                 version="1.0"
  *                 xmlns:redirect="http://xml.apache.org/xalan/redirect"
  *                 extension-element-prefixes="redirect">
  *
