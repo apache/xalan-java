@@ -1360,11 +1360,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           prefix = qname.substring(indexOfNSSep + 1);
         else
           prefix = (indexOfNSSep > 0)
-                   ? qname.substring(0, indexOfNSSep) : ""; //null;
+                   ? qname.substring(0, indexOfNSSep) : null;
       }
       else
       {
-        prefix = ""; //null;  // ??
+        prefix = null;
       }
     }
     else if (null != qname)
@@ -1376,11 +1376,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       else if (qname.startsWith("xmlns:"))
         prefix = qname.substring(indexOfNSSep + 1);
       else
-        prefix = (indexOfNSSep > 0) ? qname.substring(0, indexOfNSSep) : ""; //null;
+        prefix = (indexOfNSSep > 0) ? qname.substring(0, indexOfNSSep) : null;
     }
     else
     {
-      prefix = "";  //null;
+      prefix = null;
     }
 
     return prefix;
