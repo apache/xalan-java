@@ -1040,6 +1040,7 @@ public class FastStringBuffer
     }
 
     boolean whiteSpaceFound = false;
+    boolean needToFlushSpace = false;
     int d = s;
     for (; s < end; s++)
     {
@@ -1052,8 +1053,16 @@ public class FastStringBuffer
           whiteSpaceFound = true;
           if(c != ' ')
           {
-            handler.characters(ch, d, (s-d));
-            handler.characters(m_oneChar, 0, 1);
+            int len = (s-d);
+            if( len > 0)
+            {
+              if(needToFlushSpace)
+                handler.characters(m_oneChar, 0, 1);
+                
+              handler.characters(ch, d, len);
+              needToFlushSpace = true;
+              // handler.characters(m_oneChar, 0, 1);
+            }
             d = s+1;
           }
         }
@@ -1074,7 +1083,16 @@ public class FastStringBuffer
             end = s;
             break; // Let the flush at the end handle it.
           }
-          handler.characters(ch, d, len);
+          if(len > 0)
+          {
+            if(needToFlushSpace)
+            {
+              handler.characters(m_oneChar, 0, 1);
+              needToFlushSpace = false;
+            }
+              
+            handler.characters(ch, d, len);
+          }
 
           whiteSpaceFound = false;
           d = s = z;
@@ -1092,7 +1110,11 @@ public class FastStringBuffer
     int len = (s-d);
     
     if(len > 0)
+    {
+      if(needToFlushSpace)
+        handler.characters(m_oneChar, 0, 1);
       handler.characters(ch, d, len);
+    }
   }
   
   /**
