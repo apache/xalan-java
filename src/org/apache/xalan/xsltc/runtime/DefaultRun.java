@@ -78,6 +78,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.xsltc.*;
@@ -85,6 +86,15 @@ import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.Constants;
+import org.apache.xalan.xsltc.dom.SAXImpl;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
+
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.sax.SAXSource;
+
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTM;
 
 final public class DefaultRun {
 
@@ -138,25 +148,62 @@ final public class DefaultRun {
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
-	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-	    final DOMImpl dom = new DOMImpl();
-	    reader.setContentHandler(dom.getBuilder());
-	    // Create a DTD monitor and pass it to the XMLReader object
+        // Create a DTD monitor and pass it to the XMLReader object
 	    final DTDMonitor dtdMonitor = new DTDMonitor();
 	    dtdMonitor.handleDTD(reader);
 
+	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
+      DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+        String uri;
+        if (_uri)
+		 uri = _fileName;
+	    else
+	      uri = new File(_fileName).toURL().toExternalForm();
+        DTM dtm = dtmManager.getDTM(new SAXSource(reader, new InputSource(uri)), false, null, true, true);
+        final DOMImpl dom;
+        final SAXImpl sax;
+        if (dtm instanceof DOMImpl)
+        { 
+          dom = (DOMImpl)dtm;
+          sax = null;
+          //reader.setContentHandler(dom.getBuilder());
+          dom.setDocumentURI(uri);
+        }
+       else
+       {
+          sax = (SAXImpl)dtm;
+          dom = null;
+          //reader.setContentHandler(sax.getBuilder());
+          sax.setDocumentURI(uri);
+       }
+    
+		//final DOMImpl dom = new DOMImpl();
+	    //reader.setContentHandler(dom.getBuilder());
+
+
 	    _translet = (AbstractTranslet)translet;
-	    dom.setDocumentURI(_fileName);
-	    if (_uri)
-		reader.parse(_fileName);
-	    else {
-	        reader.parse(new File(_fileName).toURL().toExternalForm());
-	    }
+	    //dom.setDocumentURI(_fileName);
+	   // if (_uri)
+	//	reader.parse(_fileName);
+	 //   else {
+	 //       reader.parse(new File(_fileName).toURL().toExternalForm());
+	  //  }
 	    
+	    if (dtm instanceof DOMImpl)
+	    {
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
 	    // If there are any elements with ID attributes, build an index
 	    dtdMonitor.buildIdIndex(dom, 0, _translet);
+	    }
+	    else
+	    {
+	    // Set size of key/id indices
+	    _translet.setIndexSize(sax.getSize());
+	    // If there are any elements with ID attributes, build an index
+	    dtdMonitor.buildIdIndex(sax, 0, _translet);
+	    }
 
 	    _translet.setDTDMonitor(dtdMonitor);
 
@@ -175,14 +222,29 @@ final public class DefaultRun {
 	    TextOutput textOutput =
 		new TextOutput((ContentHandler)saxHandler,
 			       (LexicalHandler)saxHandler, encoding);
+		if (dtm instanceof DOMImpl)
+	    {
 	    translet.transform(dom, textOutput);
+	    }
+	    else
+	    {
+	    translet.transform(sax, textOutput);
+	    }
 
 	    if (_debug) {
 		TransletOutputBase handler = new TransletOutputBase();
 		long start = System.currentTimeMillis();
-		final int nTimes = 100;
+		final int nTimes = 1;
+		if (dtm instanceof DOMImpl)
+	    {
 		for (int i = 0; i < nTimes; i++)
 		    translet.transform(dom, dom.getIterator(), handler);
+	    }
+	    else
+	    {
+		for (int i = 0; i < nTimes; i++)
+		    translet.transform(sax, sax.getIterator(), handler);
+	    }
 		long end = System.currentTimeMillis();
 		System.out.println("total " + (end - start) + " msec for " 
 				   + nTimes + " transformations");

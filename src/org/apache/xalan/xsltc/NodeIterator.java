@@ -63,8 +63,10 @@
 
 package org.apache.xalan.xsltc;
 
+import org.apache.xml.dtm.DTM;
+
 public interface NodeIterator extends Cloneable {
-    public static final int END = DOM.NULL;
+    public static final int END = DTM.NULL;
 
     /** 
      * Callers should not call next() after it returns END.

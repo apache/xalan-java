@@ -66,11 +66,15 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletException;
 
-public final class DupFilterIterator extends NodeIteratorBase {
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
+
+public final class DupFilterIterator extends DTMAxisIteratorBase {
 
     private final static int INIT_DATA_SIZE = 16;
 
-    private final NodeIterator _source; // the source iterator
+    private final DTMAxisIterator _source; // the source iterator
     private int[] _data = null;         // cached nodes from the source
     private int _last = 0;              // the number of nodes in this iterator
     private int _current = 0;
@@ -83,14 +87,14 @@ public final class DupFilterIterator extends NodeIteratorBase {
      * returned by id() and key() iterators.
      * @param source The iterator this iterator will get its nodes from
      */
-    public DupFilterIterator(NodeIterator source) {
+    public DupFilterIterator(DTMAxisIterator source) {
 	// Save a reference to the source iterator
 	_source = source;
 
 	// Cache contents of id() or key() index right away. Necessary for
 	// union expressions containing multiple calls to the same index, and
 	// correct as well since start-node is irrelevant for id()/key() exrp.
-	if (source instanceof KeyIndex) setStartNode(DOM.ROOTNODE);
+	if (source instanceof KeyIndex) setStartNode(DTMDefaultBase.ROOTNODE);
     }
 
     /**
@@ -106,7 +110,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
      * @param node The start node
      * @return A reference to this node iterator
      */
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 
 	int i, j; // loop variables declared first for speed - don't move!!!
 
@@ -185,7 +189,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
 	_current = _markedNode;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_current = 0;
 	return(this);
     }

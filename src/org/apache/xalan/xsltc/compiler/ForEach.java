@@ -182,7 +182,7 @@ final class ForEach extends Instruction {
 	il.append(methodGen.nextNode());
 	il.append(DUP);
 	il.append(methodGen.storeCurrentNode());
-	il.append(new IFNE(loop));
+	il.append(new IFGT(loop));
 
 	// Restore current DOM (if result tree was used instead for this loop)
 	if ((_type != null) && (_type instanceof ResultTreeType)) {

@@ -66,11 +66,14 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 
-public final class AbsoluteIterator extends NodeIteratorBase {
-    private NodeIterator _source;
+public final class AbsoluteIterator extends DTMAxisIteratorBase {
+    private DTMAxisIterator _source;
 	
-    public AbsoluteIterator(NodeIterator source) {
+    public AbsoluteIterator(DTMAxisIterator source) {
 	_source = source;
     }
 
@@ -83,16 +86,16 @@ public final class AbsoluteIterator extends NodeIteratorBase {
 	_source.setRestartable(isRestartable);
     }
 	
-    public NodeIterator setStartNode(int node) {
-	_startNode = DOM.ROOTNODE;
+    public DTMAxisIterator setStartNode(int node) {
+	_startNode = DTMDefaultBase.ROOTNODE;
 	if (_isRestartable) {
 	    resetPosition();
-	    return _source.setStartNode(_startNode = DOM.ROOTNODE);
+	    return _source.setStartNode(_startNode = DTMDefaultBase.ROOTNODE);
 	}
 	return reset();
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final AbsoluteIterator clone = (AbsoluteIterator)super.clone();
 	    clone.setRestartable(false);
@@ -106,7 +109,7 @@ public final class AbsoluteIterator extends NodeIteratorBase {
 	}
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	return resetPosition();
     }

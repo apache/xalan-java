@@ -143,12 +143,15 @@ public abstract class DTMDefaultBase implements DTM
   /**
    * The DTM manager who "owns" this DTM.
    */
-  protected DTMManager m_mgr;
+
+  public DTMManager m_mgr;
+
   /**
    * m_mgr cast to DTMManagerDefault, or null if it isn't an instance
    * (Efficiency hook)
    */
   protected DTMManagerDefault m_mgrDefault=null;
+
 
   /** The document identity number(s). If we have overflowed the addressing
    * range of the first that was assigned to us, we may add others. */
@@ -475,6 +478,8 @@ public abstract class DTMDefaultBase implements DTM
    */
   protected int _exptype(int identity)
   {
+  	if (identity == DTM.NULL)
+  	return NULL;
     // Reorganized test and loop into single flow
     // Tiny performance improvement, saves a few bytes of code, clearer.
     // %OPT% Other internal getters could be treated simliarly
@@ -894,7 +899,7 @@ public abstract class DTMDefaultBase implements DTM
    * @param nodeIdentity Internal offset to this node's records.
    * @return NodeHandle (external representation of node)
    * */
-  final protected int makeNodeHandle(int nodeIdentity)
+  final public int makeNodeHandle(int nodeIdentity)
   {
     if(NULL==nodeIdentity) return NULL;
 		
@@ -921,7 +926,7 @@ public abstract class DTMDefaultBase implements DTM
    * @param NodeHandle (external representation of node)
    * @return nodeIdentity Internal offset to this node's records.
    * */
-  final protected int makeNodeIdentity(int nodeHandle)
+  final public int makeNodeIdentity(int nodeHandle)
   {
     if(NULL==nodeHandle) return NULL;
 
@@ -1057,6 +1062,8 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getNextSibling(int nodeHandle)
   {
+  	if (nodeHandle == DTM.NULL)
+  	return DTM.NULL;
     return makeNodeHandle(_nextsib(makeNodeIdentity(nodeHandle)));
   }
 
@@ -1071,6 +1078,8 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getPreviousSibling(int nodeHandle)
   {
+  	if (nodeHandle == DTM.NULL)
+  	return DTM.NULL;
     return makeNodeHandle(_prevsib(makeNodeIdentity(nodeHandle)));
   }
 
@@ -1662,7 +1671,9 @@ public abstract class DTMDefaultBase implements DTM
    */
   public short getNodeType(int nodeHandle)
   {
-    return m_expandedNameTable.getType(_exptype(makeNodeIdentity(nodeHandle))); 
+  	if (nodeHandle == DTM.NULL)
+  	return DTM.NULL;
+    return m_expandedNameTable.getType(_exptype(makeNodeIdentity(nodeHandle)));
   }
 
   /**
@@ -1678,6 +1689,40 @@ public abstract class DTMDefaultBase implements DTM
     // Apparently, the axis walker stuff requires levels to count from 1.
     int identity = makeNodeIdentity(nodeHandle);
     return (short) (_level(identity) + 1);
+  }
+  
+  /**
+   * <meta name="usage" content="internal"/>
+   * Get the identity of this node in the tree 
+   *
+   * @param nodeHandle The node handle.
+   * @return the node identity
+   */
+  public int getNodeIdent(int nodeHandle)
+  {
+    /*if (nodeHandle != DTM.NULL)
+      return nodeHandle & m_mask;
+    else 
+      return DTM.NULL;*/
+      
+      return makeNodeIdentity(nodeHandle); 
+  }
+  
+  /**
+   * <meta name="usage" content="internal"/>
+   * Get the handle of this node in the tree 
+   *
+   * @param nodeId The node identity.
+   * @return the node handle
+   */
+  public int getNodeHandle(int nodeId)
+  {
+    /*if (nodeId != DTM.NULL)
+      return nodeId | m_dtmIdent;
+    else 
+      return DTM.NULL;*/
+      
+      return makeNodeHandle(nodeId);
   }
 
   // ============== Document query functions ==============

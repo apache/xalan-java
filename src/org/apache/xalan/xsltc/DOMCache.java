@@ -92,6 +92,6 @@ public interface DOMCache {
      *
      *      _dom.setDocumentURI(uri);
      */
-    public DOMImpl retrieveDocument(String uri, int mask, Translet translet);
+    public DOM retrieveDocument(String uri, int mask, Translet translet);
 
 }

@@ -73,6 +73,8 @@ import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
+import org.apache.xml.dtm.DTM;
+
 final class UnionPathExpr extends Expression {
 
     private final Expression _pathExpr;
@@ -102,7 +104,7 @@ final class UnionPathExpr extends Expression {
 		final int axis = step.getAxis();
 		final int type = step.getNodeType();
 		// Put attribute iterators first
-		if ((axis == Axis.ATTRIBUTE) || (type == DOM.ATTRIBUTE)) {
+		if ((axis == Axis.ATTRIBUTE) || (type == DTM.ATTRIBUTE_NODE)) {
 		    _components[i] = _components[0];
 		    _components[0] = step;
 		}

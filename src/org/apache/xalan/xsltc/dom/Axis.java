@@ -69,8 +69,9 @@ package org.apache.xalan.xsltc.dom;
  * org.apache.xml.dtm.Axis (very similar)
  */
 
-public interface Axis {
-
+public interface Axis extends org.apache.xml.dtm.Axis
+{
+/*
     public static final int ANCESTOR         =  0;
     public static final int ANCESTORORSELF   =  1;
     public static final int ATTRIBUTE        =  2;
@@ -102,6 +103,7 @@ public interface Axis {
 	"preceding-sibling",
 	"self"
     };
+    */
 
     public static final boolean[] isReverse = {
 	true,  // ancestor

@@ -79,15 +79,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 
 import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.ref.DTMManagerDefault;
 
 public final class XSLTCSource implements Source {
 
     private String     _systemId = null;
-    private DOMImpl    _dom      = null;
+    private DOM        _dom      = null;
     private DTDMonitor _dtd      = null;
 
     private final static String LEXICAL_HANDLER_PROPERTY =
@@ -98,17 +100,33 @@ public final class XSLTCSource implements Source {
      * @param size The estimated node-count for this DOM. A good guess here
      * speeds up the DOM build process.
      */
-    public XSLTCSource(int size) {
-	_dom = new DOMImpl(size);
-	_dtd = new DTDMonitor();
+    public XSLTCSource(int size) 
+    {
+      DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                                                     org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+      int dtmPos = ((DTMManagerDefault)dtmManager).getFirstFreeDTMID();
+      int documentID = dtmPos << DTMManager.IDENT_DTM_NODE_BITS;
+      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null, dtmManager.getXMLStringFactory(), true,  size);
+      ((DTMManagerDefault)dtmManager).addDTM((DTM)_dom, dtmPos);
+              //((XSLTCDTMManager)dtmManager).getDTM(this, false, null, true, true, size);
+      //_dom = new DOMImpl(size);
+      _dtd = new DTDMonitor();
     }
 
     /**
      * Create a new XSLTC-specific DOM source
      */
-    public XSLTCSource() {
-	_dom = new DOMImpl();
-	_dtd = new DTDMonitor();
+    public XSLTCSource() 
+    {
+      DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                                                     org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
+      int dtmPos = ((DTMManagerDefault)dtmManager).getFirstFreeDTMID();
+      int documentID = dtmPos << DTMManager.IDENT_DTM_NODE_BITS;
+      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null, dtmManager.getXMLStringFactory(), true);
+      ((DTMManagerDefault)dtmManager).addDTM((DTM)_dom, dtmPos);
+              //(DOM)dtmManager.getDTM(this, false, null, true, true);
+      //_dom = new DOMImpl();
+      _dtd = new DTDMonitor();
     }
 
     /**
@@ -124,7 +142,8 @@ public final class XSLTCSource implements Source {
 	    _systemId = "file:"+systemId;
 	else
 	    _systemId = systemId;
-	_dom.setDocumentURI(_systemId);
+
+    ((SAXImpl)_dom).setDocumentURI(_systemId);
     }
 
     /**
@@ -165,7 +184,12 @@ public final class XSLTCSource implements Source {
 	    // build the index used for the id() function
 	    _dtd.handleDTD(reader);
 
-	    DOMBuilder builder = _dom.getBuilder();
+	    DOMBuilder builder;
+        // Can we assume we're dealing with SAX here and therefore use SAXIMPL??
+       // if (_dom instanceof DOMImpl)
+       //   builder = ((DOMImpl)_dom).getBuilder();
+       // else
+          builder = ((SAXImpl)_dom).getBuilder();
 
 	    // Set the DOM builder up to receive content and lexical events
 	    reader.setContentHandler(builder);
@@ -224,7 +248,7 @@ public final class XSLTCSource implements Source {
     /**
      * Returns the internal DOM that is encapsulated in this Source
      */
-    protected DOMImpl getDOM() {
+    protected DOM getDOM() {
 	return(_dom);
     }
 

@@ -75,6 +75,13 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMIterator;
+
 public final class MultiDOM implements DOM {
     private static final int NO_TYPE = DOM.FIRST_TYPE - 2;
     private static final int INITIAL_SIZE = 4;
@@ -87,12 +94,12 @@ public final class MultiDOM implements DOM {
 
     private Hashtable _documents = new Hashtable();
 
-    private final class AxisIterator implements NodeIterator {
+    private final class AxisIterator extends DTMAxisIteratorBase {
 	// constitutive data
 	private final int _axis;
 	private final int _type;
 	// implementation mechanism
-	private NodeIterator _source;
+	private DTMAxisIterator _source;
 	private int _mask;
 	
 	public AxisIterator(final int axis, final int type) {
@@ -102,20 +109,26 @@ public final class MultiDOM implements DOM {
 	
 	public int next() {
 	    if (_source == null) return(END);
-	    if (_mask == 0) return _source.next();
-	    final int node = _source.next();
-	    return node != END ? (node | _mask) : END;
+	    /*if (_mask == 0)*/ return _source.next();
+	  /*  final int node = _source.next();
+	    return node != END ? (node | _mask) : END;*/
 	}
 	
+
 	public void setRestartable(boolean flag) {
 	    _source.setRestartable(flag);
 	}
 
-	public NodeIterator setStartNode(final int node) {
-	    _mask = node & SET;
-	    int dom = node >>> 24;
+	
+	public DTMAxisIterator setStartNode(final int node) {
+		if (node == DTM.NULL) return this;
+		
+		int nodeid = getNodeIdent(node); 
+	    _mask = nodeid & SET;
+	    int dom = getDTMId(node); //nodeid >>> 24;
+
 	    // consider caching these
-	    if ((_type == NO_TYPE) || (_type == DOM.ELEMENT)) {
+	    if ((_type == NO_TYPE) || (_type == DTM.ELEMENT_NODE)) {
 		_source = _adapters[dom].getAxisIterator(_axis);
 	    }
 	    else if (_axis == Axis.CHILD) {
@@ -128,7 +141,7 @@ public final class MultiDOM implements DOM {
 	    return this;
 	}
 
-	public NodeIterator reset() {
+	public DTMAxisIterator reset() {
 	    if (_source != null) _source.reset();
 	    return this;
 	}
@@ -156,7 +169,7 @@ public final class MultiDOM implements DOM {
 	    _source.gotoMark();
 	}
     
-	public NodeIterator cloneIterator() {
+	public DTMAxisIterator cloneIterator() {
 	    final AxisIterator clone = new AxisIterator(_axis, _type);
 	    clone._source = _source.cloneIterator();
 	    clone._mask = _mask;
@@ -170,15 +183,15 @@ public final class MultiDOM implements DOM {
      * This is a specialised iterator for predicates comparing node or
      * attribute values to variable or parameter values.
      */
-    private final class NodeValueIterator extends NodeIteratorBase {
+    private final class NodeValueIterator extends DTMAxisIteratorBase {
 
-	private NodeIterator _source;
+	private DTMAxisIterator _source;
 	private String _value;
 	private boolean _op;
 	private final boolean _isReverse;
 	private int _returnType = RETURN_PARENT;
 
-	public NodeValueIterator(NodeIterator source, int returnType,
+	public NodeValueIterator(DTMAxisIterator source, int returnType,
 				 String value, boolean op) {
 	    _source = source;
 	    _returnType = returnType;
@@ -191,7 +204,7 @@ public final class MultiDOM implements DOM {
 	    return _isReverse;
 	}
     
-	public NodeIterator cloneIterator() {
+	public DTMAxisIterator cloneIterator() {
 	    try {
 		NodeValueIterator clone = (NodeValueIterator)super.clone();
 		clone._source = _source.cloneIterator();
@@ -205,12 +218,13 @@ public final class MultiDOM implements DOM {
 	    }
 	}
 
+
 	public void setRestartable(boolean isRestartable) {
 	    _isRestartable = isRestartable;
 	    _source.setRestartable(isRestartable);
 	}
 
-	public NodeIterator reset() {
+	public DTMAxisIterator reset() {
 	    _source.reset();
 	    return resetPosition();
 	}
@@ -230,7 +244,7 @@ public final class MultiDOM implements DOM {
 	    return END;
 	}
 
-	public NodeIterator setStartNode(int node) {
+	public DTMAxisIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		_source.setStartNode(_startNode = node); 
 		return resetPosition();
@@ -252,6 +266,7 @@ public final class MultiDOM implements DOM {
 	_free = 1;
 	_adapters = new DOM[INITIAL_SIZE];
 	_adapters[0] = main;
+	addDOMAdapter(main);
     }
 
     public int nextMask() {
@@ -265,7 +280,10 @@ public final class MultiDOM implements DOM {
     public int addDOMAdapter(DOM dom) {
 
 	// Add the DOM adapter to the array of DOMs
-	final int domNo = _free++;
+	DTMManager dtmManager = ((DTMDefaultBase)((DOMAdapter)dom).getDOMImpl()).m_mgr;
+    final int domNo = dtmManager.getDTMIdentity((DTM)((DOMAdapter)dom).getDOMImpl()) >>> DTMManager.IDENT_DTM_NODE_BITS;
+  
+	//final int domNo = _free++;
 	if (domNo == _size) {
 	    final DOMAdapter[] newArray = new DOMAdapter[_size *= 2];
 	    System.arraycopy(_adapters, 0, newArray, 0, domNo);
@@ -287,9 +305,22 @@ public final class MultiDOM implements DOM {
 	else
 	    return((domIdx.intValue() << 24));
     }
+    
+    public DOM getDOMAdapter(String uri) {
+	Integer domIdx = (Integer)_documents.get(uri);
+	if (domIdx == null)
+	    return(null);
+	else
+	    return(_adapters[domIdx.intValue()]);
+    }
+    
+    public int getDocument() 
+    {
+      return _adapters[0].getDocument();
+    }
 
     /** returns singleton iterator containg the document root */
-    public NodeIterator getIterator() {
+    public DTMAxisIterator getIterator() {
 	// main source document @ 0
 	return _adapters[0].getIterator();
     }
@@ -302,100 +333,123 @@ public final class MultiDOM implements DOM {
 	return _adapters[0].getTreeString();
     }
     
-    public NodeIterator getChildren(final int node) {
-	return (node & SET) == 0
+    public DTMAxisIterator getChildren(final int node) {
+	return _adapters[getDTMId(node)].getChildren(node);
+	/*(node & SET) == 0
 	    ? _adapters[0].getChildren(node)
-	    : getAxisIterator(Axis.CHILD).setStartNode(node);
+	    : getAxisIterator(Axis.CHILD).setStartNode(node);*/
     }
     
-    public NodeIterator getTypedChildren(final int type) {
+    public DTMAxisIterator getTypedChildren(final int type) {
 	return new AxisIterator(Axis.CHILD, type);
     }
     
-    public NodeIterator getAxisIterator(final int axis) {
+    public DTMAxisIterator getAxisIterator(final int axis) {
 	return new AxisIterator(axis, NO_TYPE);
     }
     
-    public NodeIterator getTypedAxisIterator(final int axis, final int type) {
+    public DTMAxisIterator getTypedAxisIterator(final int axis, final int type) {
 	return new AxisIterator(axis, type);
     }
 
-    public NodeIterator getNthDescendant(int node, int n, boolean includeself) {
-	return _adapters[node>>>24].getNthDescendant(node & CLR,n,includeself);
+    public DTMAxisIterator getNthDescendant(int node, int n, boolean includeself) {
+	return _adapters[getDTMId(node)].getNthDescendant(node & CLR,n,includeself);
     }
 
-    public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
+    public DTMAxisIterator getNodeValueIterator(DTMAxisIterator iterator, int type,
 					     String value, boolean op) {
 	return(new NodeValueIterator(iterator, type, value, op));
     }
 
-    public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
-	NodeIterator iterator = _adapters[0].getNamespaceAxisIterator(axis,ns);
+    public DTMAxisIterator getNamespaceAxisIterator(final int axis, final int ns) {
+	DTMAxisIterator iterator = _adapters[0].getNamespaceAxisIterator(axis,ns);
 	return(iterator);	
     }
 
-    public NodeIterator orderNodes(NodeIterator source, int node) {
-	return _adapters[node>>>24].orderNodes(source, node & CLR);
+    public DTMAxisIterator orderNodes(DTMAxisIterator source, int node) {
+	return _adapters[getDTMId(node)].orderNodes(source, node & CLR);
     }
 
     public int getType(final int node) {
-	return _adapters[node>>>24].getType(node & CLR);
+	return _adapters[getDTMId(node)].getType(node & CLR);
     }
 
     public int getNamespaceType(final int node) {
-	return _adapters[node>>>24].getNamespaceType(node & CLR);
+	return _adapters[getDTMId(node)].getNamespaceType(node & CLR);
     }
     
+    public int getNSType(int node)
+   {
+	return _adapters[getDTMId(node)].getNSType(node & CLR);
+   }
+    
     public int getParent(final int node) {
-	return _adapters[node>>>24].getParent(node & CLR) | node&SET;
+    	if (node == DTM.NULL)
+    	return DTM.NULL;
+	return _adapters[getDTMId(node)].getParent(node & CLR) | node&SET;
     }
     
     public int getTypedPosition(int type, int node) {
-	return _adapters[node>>>24].getTypedPosition(type, node&CLR);
+	return _adapters[getDTMId(node)].getTypedPosition(type, node&CLR);
     }
 
     public int getTypedLast(int type, int node) {
-	return _adapters[node>>>24].getTypedLast(type, node&CLR);
+	return _adapters[getDTMId(node)].getTypedLast(type, node&CLR);
     }
 
     public int getAttributeNode(final int type, final int el) {
-	return _adapters[el>>>24].getAttributeNode(type, el&CLR) | el&SET;
+    	if (el == DTM.NULL)
+    	return DTM.NULL;
+	return _adapters[getDTMId(el)].getAttributeNode(type, el&CLR) | el&SET;
     }
     
     public String getNodeName(final int node) {
-	return _adapters[node>>>24].getNodeName(node & CLR);
+    	if (node == DTM.NULL)
+    	return "";
+	return _adapters[getDTMId(node)].getNodeName(node & CLR);
     }
 
     public String getNamespaceName(final int node) {
-	return _adapters[node>>>24].getNamespaceName(node & CLR);
+    	if (node == DTM.NULL)
+    	return "";
+	return _adapters[getDTMId(node)].getNamespaceName(node & CLR);
     }
     
     public String getNodeValue(final int node) {
-	return _adapters[node>>>24].getNodeValue(node & CLR);
+    	if (node == DTM.NULL)
+    	return "";
+	return _adapters[getDTMId(node)].getNodeValue(node & CLR);
     }
     
     public void copy(final int node, TransletOutputHandler handler)
 	throws TransletException {
-	_adapters[node>>>24].copy(node & CLR, handler);
+		if (node != DTM.NULL)
+	_adapters[getDTMId(node)].copy(node & CLR, handler);
     }
     
-    public void copy(NodeIterator nodes, TransletOutputHandler handler)
+    public void copy(DTMAxisIterator nodes, TransletOutputHandler handler)
 	throws TransletException {
 	int node;
-	while ((node = nodes.next()) != DOM.NULL) {
-	    _adapters[node>>>24].copy(node & CLR, handler);
+	while ((node = nodes.next()) != DTM.NULL) {
+	    _adapters[getDTMId(node)].copy(node & CLR, handler);
 	}
     }
 
 
     public String shallowCopy(final int node, TransletOutputHandler handler)
 	throws TransletException {
-	return _adapters[node>>>24].shallowCopy(node & CLR, handler);
+		if (node == DTM.NULL)
+    	return "";
+	return _adapters[getDTMId(node)].shallowCopy(node & CLR, handler);
     }
     
     public boolean lessThan(final int node1, final int node2) {
-	final int dom1 = node1>>>24;
-	final int dom2 = node2>>>24;
+    	if (node1 == DTM.NULL) return true;
+    	if (node2 == DTM.NULL) return false;
+   // int nodeid1 = getNodeIdent(node1);
+    //int nodeid2 = getNodeIdent(node2); 
+	final int dom1 = getDTMId(node1);
+	final int dom2 = getDTMId(node2);
 	return dom1 == dom2
 	    ? _adapters[dom1].lessThan(node1 & CLR, node2 & CLR)
 	    : dom1 < dom2;
@@ -403,7 +457,7 @@ public final class MultiDOM implements DOM {
     
     public void characters(final int textNode, TransletOutputHandler handler)
 	throws TransletException {
-	    _adapters[textNode>>>24].characters(textNode & CLR, handler);
+	    _adapters[getDTMId(textNode)].characters(textNode & CLR, handler);
     }
 
     public void setFilter(StripFilter filter) {
@@ -413,25 +467,29 @@ public final class MultiDOM implements DOM {
     }
 
     public Node makeNode(int index) {
-	return _adapters[index>>>24].makeNode(index & CLR);
+    	if (index == DTM.NULL)
+    	return null;
+	return _adapters[getDTMId(index)].makeNode(index & CLR);
     }
 
-    public Node makeNode(NodeIterator iter) {
+    public Node makeNode(DTMAxisIterator iter) {
 	// TODO: gather nodes from all DOMs ?
 	return _adapters[0].makeNode(iter);
     }
 
     public NodeList makeNodeList(int index) {
-	return _adapters[index>>>24].makeNodeList(index & CLR);
+    	if (index == DTM.NULL)
+    	return null;
+	return _adapters[getDTMId(index)].makeNodeList(index & CLR);
     }
 
-    public NodeList makeNodeList(NodeIterator iter) {
+    public NodeList makeNodeList(DTMIterator iter) {
 	// TODO: gather nodes from all DOMs ?
 	return _adapters[0].makeNodeList(iter);
     }
 
     public String getLanguage(int node) {
-	return _adapters[node>>>24].getLanguage(node & CLR);
+	return _adapters[getDTMId(node)].getLanguage(node & CLR);
     }
 
     public int getSize() {
@@ -442,15 +500,58 @@ public final class MultiDOM implements DOM {
     }
 
     public String getDocumentURI(int node) {
-	return _adapters[node>>>24].getDocumentURI(0);
+    	if (node == DTM.NULL)
+    	node = DOM.NULL;
+	return _adapters[getDTMId(node)].getDocumentURI(0);
     }
 
     public boolean isElement(final int node) {
-	return(_adapters[node>>>24].isElement(node & CLR));
+    	if (node == DTM.NULL)
+    	return false;
+	return(_adapters[getDTMId(node)].isElement(node & CLR));
     }
 
     public boolean isAttribute(final int node) {
-	return(_adapters[node>>>24].isAttribute(node & CLR));
+    	if (node == DTM.NULL)
+    	return false;
+//    	getNodeIdent(node)>>>24
+	return(_adapters[getDTMId(node)].isAttribute(node & CLR));
+    }
+    
+    public int getDTMId(int nodeHandle)
+    {
+    	DTMManager dtmManager = ((DTMDefaultBase)((DOMAdapter)_adapters[0]).getDOMImpl()).m_mgr;
+    	int id = dtmManager.getDTMIdentity(dtmManager.getDTM(nodeHandle)) >>> DTMManager.IDENT_DTM_NODE_BITS;
+    	return (id == -1 ? 0 : id);
+    }
+    
+    public int getNodeIdent(int nodeHandle)
+    {
+    	int id = getDTMId(nodeHandle);
+    	return (_adapters[id].getNodeIdent(nodeHandle) | id<<24);
+    }
+    
+    public int getNodeHandle(int nodeId)
+    {
+    	return _adapters[nodeId>>>24].getNodeHandle(nodeId & CLR);
+    }
+    
+    public DOM getResultTreeFrag()
+    {
+    	return _adapters[0].getResultTreeFrag();
+    }
+    
+    public DOM getMain()
+    {
+    	return _adapters[0];
+    }
+    
+    /**
+     * Returns a DOMBuilder class wrapped in a SAX adapter.
+     */
+    public TransletOutputHandler getOutputDomBuilder()
+    {
+    	return _adapters[0].getOutputDomBuilder();
     }
 
 }

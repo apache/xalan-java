@@ -99,6 +99,10 @@ public abstract class DTMManager
   /** The default property name to load the manager. */
   private static final String defaultPropName =
     "org.apache.xml.dtm.DTMManager";
+  
+  /** The default class name to use as the manager. */
+  private static String defaultClassName =
+  "org.apache.xml.dtm.ref.DTMManagerDefault";
 
   /**
    * Factory for creating XMLString objects.
@@ -176,8 +180,7 @@ public abstract class DTMManager
            throws DTMConfigurationException
   {
 
-    String classname = findFactory(defaultPropName,
-                                   "org.apache.xml.dtm.ref.DTMManagerDefault");
+    String classname = findFactory(defaultPropName, defaultClassName);
 
     if (classname == null)
     {

@@ -66,10 +66,15 @@ import org.xml.sax.*;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.xml.dtm.DTMManager;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
@@ -81,7 +86,7 @@ public class TransformerHandlerImpl implements TransformerHandler {
     private TransformerImpl  _transformer;
     private AbstractTranslet _translet = null;
     private String           _systemId;
-    private DOMImpl          _dom = null;
+    private SAXImpl          _dom = null;
     private ContentHandler   _handler = null;
     private DTDMonitor       _dtd = null;
     private Result           _result = null;
@@ -173,10 +178,14 @@ public class TransformerHandlerImpl implements TransformerHandler {
 	}
 
 	// Create an internal DOM (not W3C) and get SAX2 input handler
-	_dom = new DOMImpl();
+  DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
+    _dom = (SAXImpl)dtmManager.getDTM(new StreamSource(_systemId) , false, null, true, true);
+		//_dom = new DOMImpl();
 	_handler = _dom.getBuilder();
 
 	// Proxy call
+        // wondering if I need this. I think it would get called during DTM build...
 	_handler.startDocument();
     }
 

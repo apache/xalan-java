@@ -76,6 +76,9 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
+import org.apache.xml.dtm.ref.DTMDefaultBase;
+import org.apache.xml.dtm.DTMAxisIterator;
+
 final public class DTDMonitor implements DTDHandler, DeclHandler {
 
     private final static String EMPTYSTRING = "";
@@ -207,7 +210,7 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
      * buildIdIndex creates the index (##id) that Key Class uses. 
      * The index contains the node index (int) and the id value (String).
      */
-    public final void buildIdIndex(DOMImpl dom, int mask,
+    public final void buildIdIndex(DOM dom, int mask,
 				   AbstractTranslet translet) {
 
 	// These variables are put up here for speed
@@ -228,26 +231,44 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
 	if (elements.nextElement() instanceof String) {
 	    Hashtable newAttributes = new Hashtable();
 	    elements = _idAttributes.keys();
+        if (dom instanceof DOMImpl)
+        {
 	    while (elements.hasMoreElements()) {
 		String element = (String)elements.nextElement();
 		String attribute = (String)_idAttributes.get(element);
-		int elemType = dom.getGeneralizedType(element);
-		int attrType = dom.getGeneralizedType(attribute);
+        int elemType, attrType;
+
+		  elemType = ((DOMImpl)dom).getGeneralizedType(element);
+		  attrType = ((DOMImpl)dom).getGeneralizedType(attribute);
+
 		newAttributes.put(new Integer(elemType), new Integer(attrType));
 	    }
+      }
+        else
+        {
+            while (elements.hasMoreElements()) {
+		      String element = (String)elements.nextElement();
+		      String attribute = (String)_idAttributes.get(element);
+              int elemType, attrType;
+              elemType = ((SAXImpl)dom).getGeneralizedType(element);
+		      attrType = ((SAXImpl)dom).getGeneralizedType(attribute);
+              newAttributes.put(new Integer(elemType), new Integer(attrType));
+            }
+        }
 	    _idAttributes = newAttributes;
 	}
 
 	// Get all nodes in the DOM
-	final NodeIterator iter = dom.getAxisIterator(Axis.DESCENDANT);
-	iter.setStartNode(DOM.ROOTNODE);
+	final DTMAxisIterator iter = dom.getAxisIterator(Axis.DESCENDANT);
+	iter.setStartNode(dom.getDocument()); //.ROOTNODE);
 
 	Integer E = new Integer(typeCache = 0);
 	Integer A = null;
 
-	while ((node = iter.next()) != NodeIterator.END) {
+	while ((node = iter.next()) != DTMAxisIterator.END) {
 	    // Get the node type of this node
-	    type = dom.getType(node);
+	    //type = dom.getType(node);
+	    type = ((DTMDefaultBase)dom).getExpandedTypeID(node);
 	    if (type != typeCache) {
 		E = new Integer(typeCache = type);
 		A = (Integer)_idAttributes.get(E);
@@ -258,7 +279,9 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
 		// Only store the attribute value if the element has this attr.
 		if ((attr = dom.getAttributeNode(A.intValue(), node)) != 0) {
 		    final String value = dom.getNodeValue(attr);
-		    translet.buildKeyIndex(ID_INDEX_NAME, mask|node, value);
+		    //translet.buildKeyIndex(ID_INDEX_NAME, mask|node, value);
+		    translet.buildKeyIndex(ID_INDEX_NAME, dom.getNodeIdent(node), value);
+		    translet.setKeyIndexDom(ID_INDEX_NAME, dom);
 		}
 	    }
 	}

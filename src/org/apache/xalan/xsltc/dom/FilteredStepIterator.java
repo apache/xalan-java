@@ -67,25 +67,32 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class FilteredStepIterator extends StepIterator {
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
+public final class FilteredStepIterator extends StepIterator {
+    //private DTMAxisIterator _source;
+   // private DTMAxisIterator _iterator;
     private Filter _filter;
+
 	
-    public FilteredStepIterator(NodeIterator source,
-				NodeIterator iterator,
+    public FilteredStepIterator(DTMAxisIterator source,
+				DTMAxisIterator iterator,
 				Filter filter) {
+	//_source = source;
+	//_iterator = iterator;
 	super(source, iterator);
 	_filter = filter;
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final FilteredStepIterator clone =
 		(FilteredStepIterator)super.clone();
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
 	    clone._filter = _filter;
-	    clone.setRestartable(false);
+	    clone._isRestartable = false;
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {
@@ -94,6 +101,25 @@ public final class FilteredStepIterator extends StepIterator {
 	    return null;
 	}
     }
+
+    
+    public DTMAxisIterator setStartNode(int node) {
+	if (_isRestartable) {
+	    // iterator is not a clone
+	    _source.setStartNode(_startNode = node);
+	    _iterator.setStartNode(_source.next());
+	    return resetPosition();
+	}
+	return this;
+    }
+
+
+    public DTMAxisIterator reset() {
+	_source.reset();
+	_iterator.setStartNode(_source.next());
+	return resetPosition();
+    }
+    
 
     public int next() {
 	int node;

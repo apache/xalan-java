@@ -65,16 +65,19 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletException;
 
-public final class ReverseIterator extends NodeIteratorBase {
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+
+public final class ReverseIterator extends DTMAxisIteratorBase {
 
     private final static int INIT_DATA_SIZE = 16;
-    private final NodeIterator _source;
+    private final DTMAxisIterator _source;
     private int[] _data = null;
     private int _last = 0;
     private int _current = 0;
     private int _start = -1;
 
-    public ReverseIterator(NodeIterator source) {
+    public ReverseIterator(DTMAxisIterator source) {
 	_source = source;
     }
 
@@ -82,7 +85,7 @@ public final class ReverseIterator extends NodeIteratorBase {
 	return _current > 0 ? _data[--_current] : END;
     }
 	
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if ((_data == null) || (node != _start)) {
 	    _start = node;
 	    _source.setStartNode(node);
@@ -102,7 +105,7 @@ public final class ReverseIterator extends NodeIteratorBase {
 	return this;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_current = _startNode;
 	return this;
     }

@@ -1764,6 +1764,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
   {
     return null;
   }
+
 }
 
 

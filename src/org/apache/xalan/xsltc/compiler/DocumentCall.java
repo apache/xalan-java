@@ -159,15 +159,32 @@ final class DocumentCall extends FunctionCall {
 	    _uri.startResetIterator(classGen, methodGen);
 
 	// The base of the URI may be given as a second argument (a node-set)
-	il.append(methodGen.loadDOM());
+	//il.append(methodGen.loadDOM());
 	if (_base != null) {
+		il.append(methodGen.loadDOM());
 	    _base.translate(classGen, methodGen);
 	    il.append(new INVOKEINTERFACE(nextIdx, 1));
+	    il.append(new INVOKEINTERFACE(uriIdx, 2));
 	}
 	else {
-	     il.append(methodGen.loadContextNode());
+		//TODO: (MM) Need someone to double check me on this
+		// but I think this code was wrong because it would
+		// resolve document() relative to the input xml
+		// rather than relative to the input xsl when there
+		// is no second argument!!!
+		// The context node here would be at runtime in the xml
+		// I think the reason this worked was because if the
+		// xml fails, then the xsl is tried in the current code. 
+	     //il.append(methodGen.loadContextNode());
+	     // Instead just pass in the current stylesheet
+	     // I think this get the stylesheet associated with the
+	     // context node, but...
+	     if (_uriType == Type.NodeSet)
+	     il.append(new PUSH(cpg,""));
+	     else
+	     il.append(new PUSH(cpg, getStylesheet().getSystemId())); 	     
 	}
-	il.append(new INVOKEINTERFACE(uriIdx, 2));
+	//il.append(new INVOKEINTERFACE(uriIdx, 2));
 	il.append(new PUSH(cpg, getStylesheet().getSystemId()));
 
 	// Feck the rest of the parameters on the stack

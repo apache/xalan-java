@@ -105,6 +105,8 @@ public class DTMNodeList implements org.w3c.dom.NodeList
    * AGAINST THE DTMIterator.
    * */
   public DTMNodeList(DTMIterator dtmIterator)
+  {
+    if (dtmIterator != null)
     {
       int pos = dtmIterator.getCurrentPos();
       try
@@ -116,6 +118,7 @@ public class DTMNodeList implements org.w3c.dom.NodeList
       dtm_iter.runTo(-1);
       dtm_iter.setCurrentPos(pos);
     }
+  }
 
   /** Public constructor: Create a NodeList to support
    * DTMNodeProxy.getChildren().

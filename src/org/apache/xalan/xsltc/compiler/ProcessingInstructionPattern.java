@@ -70,6 +70,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
 
+import org.apache.xml.dtm.DTM;
+
 final class ProcessingInstructionPattern extends StepPattern {
 
     private String _name = null;
@@ -79,7 +81,7 @@ final class ProcessingInstructionPattern extends StepPattern {
      * Handles calls with no parameter (current node is implicit parameter).
      */
     public ProcessingInstructionPattern(String name) {
-	super(Axis.CHILD, DOM.PROCESSING_INSTRUCTION, null);
+	super(Axis.CHILD, DTM.PROCESSING_INSTRUCTION_NODE, null);
 	_name = name;
 	//if (_name.equals("*")) _typeChecked = true; no wildcard allowed!
     }
@@ -140,7 +142,7 @@ final class ProcessingInstructionPattern extends StepPattern {
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadCurrentNode());
 	    il.append(new INVOKEINTERFACE(getType, 2));
-	    il.append(new PUSH(cpg, DOM.PROCESSING_INSTRUCTION));
+	    il.append(new PUSH(cpg, DTM.PROCESSING_INSTRUCTION_NODE));
 	    _falseList.add(il.append(new IF_ICMPEQ(null)));
 	}
 

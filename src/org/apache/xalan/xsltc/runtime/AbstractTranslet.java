@@ -74,9 +74,13 @@ import java.text.DecimalFormatSymbols;
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.KeyIndex;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.util.IntegerArray;
+
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMNodeIterator;
 
 public abstract class AbstractTranslet implements Translet {
 
@@ -112,7 +116,9 @@ public abstract class AbstractTranslet implements Translet {
 	throws TransletException {
 	if (dom instanceof DOMImpl)
 	    return new DOMAdapter((DOMImpl)dom, namesArray, namespaceArray);
-	BasisLibrary.runTimeError(BasisLibrary.DOM_ADAPTER_INIT_ERR);
+	else if (dom instanceof SAXImpl)
+	    return new DOMAdapter((SAXImpl)dom, namesArray, namespaceArray);
+	//BasisLibrary.runTimeError(BasisLibrary.DOM_ADAPTER_INIT_ERR);
 	return null;
     }
 
@@ -455,9 +461,19 @@ public abstract class AbstractTranslet implements Translet {
      * This method builds key indexes - it is overridden in the compiled
      * translet in cases where the <xsl:key> element is used
      */
-    public void buildKeys(DOM document, NodeIterator iterator,
+    public void buildKeys(DOM document, DTMAxisIterator iterator,
 			  TransletOutputHandler handler,
 			  int root) throws TransletException {
+			  	
+    }
+    
+    /**
+     * This method builds key indexes - it is overridden in the compiled
+     * translet in cases where the <xsl:key> element is used
+     */
+    public void setKeyIndexDom(String name, DOM document) {
+    	getKeyIndex(name).setDom(document);
+			  	
     }
 
     /************************************************************************
@@ -523,7 +539,7 @@ public abstract class AbstractTranslet implements Translet {
     /**
      * Main transform() method - this is overridden by the compiled translet
      */
-    public abstract void transform(DOM document, NodeIterator iterator,
+    public abstract void transform(DOM document, DTMAxisIterator iterator,
 				   TransletOutputHandler handler)
 	throws TransletException;
 
@@ -542,8 +558,11 @@ public abstract class AbstractTranslet implements Translet {
     public final void characters(final String string,
 				 TransletOutputHandler handler) 
 	throws TransletException {
+        if (string != null)
+        {
 	final int length = string.length();
 	handler.characters(string.toCharArray(), 0, length);
+        }
     }
 
     /**

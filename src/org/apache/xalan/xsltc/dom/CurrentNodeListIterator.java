@@ -69,8 +69,11 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class CurrentNodeListIterator extends NodeIteratorBase {
-    private NodeIterator _source;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.DTMAxisIterator;
+
+public final class CurrentNodeListIterator extends DTMAxisIteratorBase {
+    private DTMAxisIterator _source;
     private boolean _docOrder;
     private final CurrentNodeListFilter _filter;
     private IntegerArray _nodes = new IntegerArray();
@@ -81,14 +84,14 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     private final int _currentNode;
     private int _last;		
 
-    public CurrentNodeListIterator(NodeIterator source, 
+    public CurrentNodeListIterator(DTMAxisIterator source, 
 				   CurrentNodeListFilter filter,
 				   int currentNode,
 				   AbstractTranslet translet) {
 	this(source, !source.isReverse(), filter, currentNode, translet);
     }
 
-    public CurrentNodeListIterator(NodeIterator source, boolean docOrder,
+    public CurrentNodeListIterator(DTMAxisIterator source, boolean docOrder,
 				   CurrentNodeListFilter filter,
 				   int currentNode,
 				   AbstractTranslet translet) {
@@ -97,6 +100,11 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	_translet = translet;
 	_docOrder = docOrder;
 	_currentNode = currentNode;
+    }
+
+    public DTMAxisIterator forceNaturalOrder() {
+	_docOrder = true;
+	return this;
     }
 
     public void setRestartable(boolean isRestartable) {
@@ -108,7 +116,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	return !_docOrder;
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final CurrentNodeListIterator clone =
 		(CurrentNodeListIterator)super.clone();
@@ -123,7 +131,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_current = 0;
 	return resetPosition();
     }
@@ -158,8 +166,8 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	return lastPosition;
     }
 
-    public NodeIterator setStartNode(int node) {
-	NodeIterator retval = this;
+    public DTMAxisIterator setStartNode(int node) {
+	DTMAxisIterator retval = this;
 	
 	if (_isRestartable) {
 	    // iterator is not a clone

@@ -67,9 +67,12 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.NodeIterator;
 
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
+
 public abstract class AnyNodeCounter extends NodeCounter {
     public AnyNodeCounter(Translet translet,
-			  DOM document, NodeIterator iterator) {
+			  DOM document, DTMAxisIterator iterator) {
 	super(translet, document, iterator);
     }
 	
@@ -85,13 +88,16 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	    result = _value;
 	}
 	else {
-	    int next = _node;
+		int next = _node; 
 	    result = 0;
-	    while (next >= 0 && !matchesFrom(next)) {
+	    while (next >=0 && !matchesFrom(next)) {
 		if (matchesCount(next)) {
 		    ++result;	
 		}
-		--next;
+		if (_document.getNodeIdent(next) == DTMDefaultBase.ROOTNODE)
+		break;
+		else
+		--next;		
 	    }
 	}
 	return formatNumbers(result);
@@ -99,13 +105,13 @@ public abstract class AnyNodeCounter extends NodeCounter {
 
     public static NodeCounter getDefaultNodeCounter(Translet translet,
 						    DOM document,
-						    NodeIterator iterator) {
+						    DTMAxisIterator iterator) {
 	return new DefaultAnyNodeCounter(translet, document, iterator);
     }
 
     static class DefaultAnyNodeCounter extends AnyNodeCounter {
 	public DefaultAnyNodeCounter(Translet translet,
-				     DOM document, NodeIterator iterator) {
+				     DOM document, DTMAxisIterator iterator) {
 	    super(translet, document, iterator);
 	}
 
@@ -117,12 +123,15 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	    else {
 		int next = _node;
 		result = 0;
-		final int ntype = _document.getType(_node); 
+		final int ntype = _document.getType(_node);
 		while (next >= 0) {
 		    if (ntype == _document.getType(next)) {
 			result++;
 		    }
-		    next--;
+		if (_document.getNodeIdent(next) == DTMDefaultBase.ROOTNODE)
+		break;
+		else
+		--next;
 		}
 	    }
 	    return formatNumbers(result);

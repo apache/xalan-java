@@ -69,6 +69,7 @@ import java.io.IOException;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 
 public class BitArray implements Externalizable {
@@ -151,7 +152,7 @@ public class BitArray implements Externalizable {
 	    }
 	    startBit = 0;
 	}
-	return(NodeIterator.END);
+	return(DTMAxisIterator.END);
     }
 
     /**

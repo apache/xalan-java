@@ -74,10 +74,13 @@ import java.util.Vector;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.sax.SAXSource;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.xsltc.DOM;
@@ -86,11 +89,10 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 
 import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
-import org.apache.xalan.xsltc.dom.Axis;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+
+import org.apache.xml.dtm.DTMManager;
 
 final public class Transform {
 
@@ -159,9 +161,16 @@ final public class Transform {
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
+        // Create a DTD monitor and pass it to the XMLReader object
+	    final DTDMonitor dtdMonitor = new DTDMonitor(reader);
+	    
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-	    final DOMImpl dom = new DOMImpl();
-	    DOMBuilder builder = dom.getBuilder();
+      DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+
+      final SAXImpl dom = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, new InputSource(_fileName)), false, null, true, true);
+		//final DOMImpl dom = new DOMImpl();
+/*	    DOMBuilder builder = dom.getBuilder();
 	    reader.setContentHandler(builder);
 
 	    try {
@@ -170,18 +179,21 @@ final public class Transform {
 	    }
 	    catch (SAXException e) {
 		// quitely ignored
-	    }
+	    }  */
+
+
 	    
 	    // Create a DTD monitor and pass it to the XMLReader object
-	    final DTDMonitor dtdMonitor = new DTDMonitor(reader);
+	   // final DTDMonitor dtdMonitor = new DTDMonitor(reader);
+
 	    AbstractTranslet _translet = (AbstractTranslet)translet;
 	    dom.setDocumentURI(_fileName);
-	    if (_uri)
+/*	    if (_uri)
 		reader.parse(_fileName);
 	    else
 		reader.parse(new File(_fileName).toURL().toExternalForm());
 
-	    builder = null;
+	    builder = null;  */
 
 	    // If there are any elements with ID attributes, build an index
 	    dtdMonitor.buildIdIndex(dom, 0, _translet);

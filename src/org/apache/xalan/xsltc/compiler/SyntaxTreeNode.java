@@ -563,19 +563,27 @@ public abstract class SyntaxTreeNode implements Constants {
 	final String DOM_CLASS = classGen.getDOMClass();
 
 	// Create new instance of DOM class (with 64 nodes)
-	int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	il.append(new NEW(cpg.addClass(DOM_IMPL)));
+	//int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
+	//il.append(new NEW(cpg.addClass(DOM_IMPL)));
+	
+	il.append(methodGen.loadDOM());
+	int index = cpg.addInterfaceMethodref(DOM_INTF,
+				 "getResultTreeFrag",
+				 "()" + DOM_INTF_SIG);
+	il.append(new INVOKEINTERFACE(index,1));
+
+	
 	il.append(DUP);
-	il.append(DUP);
-	il.append(new PUSH(cpg, 64));
-	il.append(new INVOKESPECIAL(index));
+	//il.append(DUP);
+	//il.append(new PUSH(cpg, 64));
+	//il.append(new INVOKESPECIAL(index));
 
 	// Overwrite old handler with DOM handler
-	index = cpg.addMethodref(DOM_IMPL,
+	index = cpg.addInterfaceMethodref(DOM_INTF,
 				 "getOutputDomBuilder",
 				 "()" + TRANSLET_OUTPUT_SIG);
 
-	il.append(new INVOKEVIRTUAL(index));
+	il.append(new INVOKEINTERFACE(index,1));
 	il.append(DUP);
 	il.append(methodGen.storeHandler());
 
@@ -594,7 +602,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	    // new org.apache.xalan.xsltc.dom.DOMAdapter(DOMImpl,String[]);
 	    index = cpg.addMethodref(DOM_ADAPTER_CLASS,
 				     "<init>",
-				     "("+DOM_IMPL_SIG+
+				     "("+DOM_INTF_SIG+
 				     "["+STRING_SIG+
 				     "["+STRING_SIG+")V");
 	    il.append(new NEW(cpg.addClass(DOM_ADAPTER_CLASS)));

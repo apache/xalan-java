@@ -65,16 +65,18 @@ package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.DOM;
 
+import org.apache.xml.dtm.DTM;
+
 public interface NodeTest {
-    public static final int TEXT      = DOM.TEXT;
-    public static final int COMMENT   = DOM.COMMENT;
-    public static final int PI        = DOM.PROCESSING_INSTRUCTION;
-    public static final int ROOT      = DOM.ROOT;
-    public static final int ELEMENT   = DOM.ELEMENT;
-    public static final int ATTRIBUTE = DOM.ATTRIBUTE;
+    public static final int TEXT      = DTM.TEXT_NODE;
+    public static final int COMMENT   = DTM.COMMENT_NODE;
+    public static final int PI        = DTM.PROCESSING_INSTRUCTION_NODE;
+    public static final int ROOT      = DTM.DOCUMENT_NODE;
+    public static final int ELEMENT   = DTM.ELEMENT_NODE;
+    public static final int ATTRIBUTE = DTM.ATTRIBUTE_NODE;
     
     // generalized type
-    public static final int GTYPE     = DOM.NTYPES;
+    public static final int GTYPE     = DTM.NTYPES;
     
     public static final int ANODE     = DOM.FIRST_TYPE - 1;
 }

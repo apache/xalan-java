@@ -72,6 +72,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.DOM;
 
+import org.apache.xml.dtm.DTM;
+
 final class Step extends RelativeLocationPath {
 
     // This step's axis as defined in class Axis.
@@ -261,26 +263,27 @@ final class Step extends RelativeLocationPath {
 
 	    // Do not reverse nodes if we have a parent step that will reverse
 	    // the nodes for us.
-	    if (hasParentPattern()) return false;
-	    if (hasPredicates()) return false;
-	    if (_hadPredicates) return false;
+	   // if (hasParentPattern()) return false;
+	    if (hasPredicates()) return true; //false;
+	    if (_hadPredicates) return true; //false;
 	    
 	    // Check if this step occured under an <xsl:apply-templates> element
 	    SyntaxTreeNode parent = this;
-	    do {
+	   // do {
 		// Get the next ancestor element and check its type
 		parent = parent.getParent();
 
 		// Order node set if descendant of these elements:
-		if (parent instanceof ApplyImports) return true;
-		if (parent instanceof ApplyTemplates) return true;
-		if (parent instanceof ForEach) return true;
-		if (parent instanceof FilterParentPath) return true;
+		if (parent instanceof ApplyImports) return false; //true;
+		if (parent instanceof ApplyTemplates) return false; //true;
+		if (parent instanceof ForEach) return false; //true;
+		if (parent instanceof FilterExpr/*FilterParentPath*/) return false; //true;
 
 		// No not order node set if descendant of these elements:
-		if (parent instanceof ValueOf) return false;
+		//if (parent instanceof ValueOf) return false;
 
-	    } while (parent != null);
+	  //  } while (parent != null);
+	    return true;
 	}
 	return false;
     }
@@ -371,8 +374,8 @@ final class Step extends RelativeLocationPath {
 		String name = null;
 		int star = 0;
 		
-		if (_nodeType >= DOM.NTYPES) {
-		    name = (String)ni.elementAt(_nodeType-DOM.NTYPES);
+		if (_nodeType >= DTM.NTYPES) {
+		    name = (String)ni.elementAt(_nodeType-DTM.NTYPES);
 		    star = name.lastIndexOf('*');
 		}
 		

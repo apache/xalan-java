@@ -63,19 +63,22 @@
 
 package org.apache.xalan.xsltc;
 
+import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.ref.*;
+
 public interface Translet {
 
     public void transform(DOM document, TransletOutputHandler handler)
 	throws TransletException;
     public void transform(DOM document, TransletOutputHandler[] handlers)
 	throws TransletException;
-    public void transform(DOM document, NodeIterator iterator,
+    public void transform(DOM document, DTMAxisIterator iterator,
 			  TransletOutputHandler handler)
 	throws TransletException;
 
     public Object addParameter(String name, Object value);
 
-    public void buildKeys(DOM document, NodeIterator iterator,
+    public void buildKeys(DOM document, DTMAxisIterator iterator,
 			  TransletOutputHandler handler, int root)
 	throws TransletException;
     public void addAuxiliaryClass(Class auxClass);

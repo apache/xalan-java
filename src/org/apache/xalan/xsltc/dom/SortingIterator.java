@@ -68,15 +68,20 @@ import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class SortingIterator extends NodeIteratorBase {
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+
+public final class SortingIterator extends DTMAxisIteratorBase {
     private final static int INIT_DATA_SIZE = 16;
-    private NodeIterator _source;
+
+    private DTMAxisIterator _source;
     private NodeSortRecordFactory _factory;
+
     private NodeSortRecord[] _data;
     private int _free = 0;
     private int _current;	// index in _nodes of the next node to try
 
-    public SortingIterator(NodeIterator source, 
+    public SortingIterator(DTMAxisIterator source, 
 			   NodeSortRecordFactory factory) {
 	_source = source;
 	_factory = factory;
@@ -86,7 +91,7 @@ public final class SortingIterator extends NodeIteratorBase {
 	return _current < _free ? _data[_current++].getNode() : END;
     }
 	
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	try {
 	    _source.setStartNode(_startNode = node);
 	    _data = new NodeSortRecord[INIT_DATA_SIZE];
@@ -130,7 +135,7 @@ public final class SortingIterator extends NodeIteratorBase {
      * iterator and then sharing the factory and the array of
      * <code>NodeSortRecords</code>.
      */
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final SortingIterator clone = (SortingIterator) super.clone();
 	    clone._source = _source.cloneIterator();  

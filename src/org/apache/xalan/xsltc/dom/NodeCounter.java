@@ -70,15 +70,18 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.dom.Axis;
 
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTM;
+
 public abstract class NodeCounter implements Axis {
-    public static final int END = DOM.NULL;
+    public static final int END = DTM.NULL;
 
     protected int _node = END;
     protected int _nodeType = DOM.FIRST_TYPE - 1;
     protected int _value = Integer.MIN_VALUE;
 
     public final DOM          _document;
-    public final NodeIterator _iterator;
+    public final DTMAxisIterator _iterator;
     public final Translet     _translet;
 
     protected String _format;
@@ -104,7 +107,7 @@ public abstract class NodeCounter implements Axis {
 	{"", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix"};
 
     protected NodeCounter(Translet translet,
-			  DOM document, NodeIterator iterator) {
+			  DOM document, DTMAxisIterator iterator) {
 	_translet = translet;
 	_document = document;
 	_iterator = iterator;

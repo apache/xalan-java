@@ -66,12 +66,17 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class FilterIterator extends NodeIteratorBase {
-    private NodeIterator _source;
-    private final Filter _filter;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.DTMFilter;
+
+public final class FilterIterator extends DTMAxisIteratorBase {
+    private DTMAxisIterator _source;
+    private final DTMFilter _filter;
     private final boolean _isReverse;
 	
-    public FilterIterator(NodeIterator source, Filter filter) {
+    public FilterIterator(DTMAxisIterator source, DTMFilter filter) {
 	_source = source;
 	_filter = filter;
 	_isReverse = source.isReverse();
@@ -81,12 +86,14 @@ public final class FilterIterator extends NodeIteratorBase {
 	return _isReverse;
     }
 
+
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
+
 	try {
 	    final FilterIterator clone = (FilterIterator)super.clone();
 	    clone.setRestartable(false);
@@ -100,7 +107,7 @@ public final class FilterIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	return resetPosition();
     }
@@ -108,14 +115,14 @@ public final class FilterIterator extends NodeIteratorBase {
     public int next() {
 	int node;
 	while ((node = _source.next()) != END) {
-	    if (_filter.test(node)) {
+	    if (_filter.acceptNode(node, DTMFilter.SHOW_ALL) == DTMIterator.FILTER_ACCEPT) {
 		return returnNode(node);
 	    }
 	}
 	return END;
     }
 
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    _source.setStartNode(_startNode = node); 
 	    return resetPosition();

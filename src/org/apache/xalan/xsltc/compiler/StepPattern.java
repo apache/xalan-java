@@ -71,6 +71,8 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.Field;
 
+import org.apache.xml.dtm.DTM;
+
 import org.apache.xalan.xsltc.compiler.util.*;
 
 class StepPattern extends RelativePathPattern {
@@ -218,7 +220,7 @@ class StepPattern extends RelativePathPattern {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	
-	if (_nodeType == DOM.ELEMENT) {
+	if (_nodeType == DTM.ELEMENT_NODE) {
 	    final int check = cpg.addInterfaceMethodref(DOM_INTF,
 							"isElement", "(I)Z");
 	    il.append(methodGen.loadDOM());
@@ -230,7 +232,7 @@ class StepPattern extends RelativePathPattern {
 	    _falseList.add(il.append(new GOTO_W(null)));
 	    icmp.setTarget(il.append(NOP));
 	}
-	else if (_nodeType == DOM.ATTRIBUTE) {
+	else if (_nodeType == DTM.ATTRIBUTE_NODE) {
 	    final int check = cpg.addInterfaceMethodref(DOM_INTF,
 							"isAttribute", "(I)Z");
 	    il.append(methodGen.loadDOM());
@@ -451,7 +453,7 @@ class StepPattern extends RelativePathPattern {
 	begin = il.append(methodGen.nextNode());
 	il.append(DUP);
 	il.append(new ISTORE(node2.getIndex()));
-	_falseList.add(il.append(new IFEQ(null)));	// NodeIterator.END
+	_falseList.add(il.append(new IFLT(null)));	// NodeIterator.END
 
 	il.append(new ILOAD(node2.getIndex()));
 	il.append(new ILOAD(node.getIndex()));

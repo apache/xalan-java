@@ -115,6 +115,10 @@ final class CopyOf extends Instruction {
 
 	final String CPY2_SIG = "("+NODE_SIG+TRANSLET_OUTPUT_SIG+")V";
 	final int cpy2 = cpg.addInterfaceMethodref(DOM_INTF, "copy", CPY2_SIG);
+	
+	final String getDoc_SIG = "()"+NODE_SIG;
+	final int getDoc = cpg.addInterfaceMethodref(DOM_INTF, "getDocument", getDoc_SIG);
+
 
 	if (tselect instanceof NodeSetType) {
 	    il.append(methodGen.loadDOM());
@@ -136,7 +140,8 @@ final class CopyOf extends Instruction {
 	else if (tselect instanceof ResultTreeType) {
 	    _select.translate(classGen, methodGen);	
 	    // We want the whole tree, so we start with the root node
-	    il.append(ICONST_1);
+	    il.append(DUP); //need a pointer to the DOM ;
+	    il.append(new INVOKEINTERFACE(getDoc,1)); //ICONST_0);
 	    il.append(methodGen.loadHandler());
 	    il.append(new INVOKEINTERFACE(cpy2, 3));
 	}

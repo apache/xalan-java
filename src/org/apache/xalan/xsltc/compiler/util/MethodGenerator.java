@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.compiler.util;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Template;
+import org.apache.xalan.xsltc.dom.SAXImpl;
 
 public class MethodGenerator extends MethodGen
     implements org.apache.xalan.xsltc.compiler.Constants {
@@ -101,6 +102,7 @@ public class MethodGenerator extends MethodGen
     private final Instruction _setStartNode;
     private final Instruction _reset;
     private final Instruction _nextNode;
+    private final Instruction _nextNodeId;
 
     private SlotAllocator _slotAllocator;
     
@@ -171,6 +173,9 @@ public class MethodGenerator extends MethodGen
 	index = cpg.addInterfaceMethodref(NODE_ITERATOR, NEXT, NEXT_SIG);
 	_nextNode = new INVOKEINTERFACE(index, 1);
 	
+	index = cpg.addInterfaceMethodref("org.apache.xalan.xsltc.dom.SAXImpl$SingletonNodeIDIterator", NEXTID, NEXT_SIG);
+	_nextNodeId = new INVOKEINTERFACE(index, 1);
+	
 	_slotAllocator = new SlotAllocator();
 	_slotAllocator.initialize(getLocalVariables());
     }
@@ -228,6 +233,10 @@ public class MethodGenerator extends MethodGen
     
     public final Instruction nextNode() {
 	return _nextNode;
+    }
+    
+    public final Instruction nextNodeId() {
+	return _nextNodeId;
     }
     
     public final Instruction startElement() {

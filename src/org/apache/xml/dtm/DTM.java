@@ -126,6 +126,11 @@ public interface DTM
   // eg. org.w3c.dom.Document.ELEMENT_NODE?
 
   /**
+   * The node is a <code>Root</code>.
+   */
+  public static final short ROOT_NODE = 0;
+  
+  /**
    * The node is an <code>Element</code>.
    */
   public static final short ELEMENT_NODE = 1;

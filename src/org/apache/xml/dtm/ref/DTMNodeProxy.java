@@ -94,7 +94,7 @@ public class DTMNodeProxy
    * @param dtm The DTM Reference, must be non-null.
    * @param node The DTM node handle.
    */
-  DTMNodeProxy(DTM dtm, int node)
+  public DTMNodeProxy(DTM dtm, int node)
   {
     this.dtm = dtm;
     this.node = node;

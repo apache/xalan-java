@@ -221,7 +221,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public /*static*/ final int getLocalNameID(int ExpandedNameID)
+  public final int getLocalNameID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_LOCALNAME);
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
@@ -254,7 +254,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this namespace.
    */
-  public /*static*/ final int getNamespaceID(int ExpandedNameID)
+  public final int getNamespaceID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
@@ -272,9 +272,13 @@ public class ExpandedNameTable
    */
   public final short getType(int ExpandedNameID)
   {
-    //return (short)(ExpandedNameID >> ROTAMOUNT_TYPE);
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
     return (short)etype.nodetype;
+  }
+  
+   public int getSize()
+  {
+    return m_nextType;
   }
   
   
@@ -293,6 +297,7 @@ public class ExpandedNameTable
       this.namespace = namespace;
       this.localName = localName;
     }
+
   }
   
 }

@@ -66,43 +66,46 @@ package org.apache.xalan.xsltc;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.ref.*;
+
 public interface DOM {
     public final static int  FIRST_TYPE             = 0;
 
     public final static int  NO_TYPE                = -1;
-    public final static int  ROOT                   = 0;
-    public final static int  TEXT                   = 1;
-    public final static int  NAMESPACE              = 2;
-    public final static int  ELEMENT                = 3;
-    public final static int  ATTRIBUTE              = 4;
-    public final static int  PROCESSING_INSTRUCTION = 5;
-    public final static int  COMMENT                = 6;
+    //public final static int  ROOT                   = 0;
+    //public final static int  TEXT                   = 1;
+    //public final static int  NAMESPACE              = 2;
+   // public final static int  ELEMENT                = 3;
+   // public final static int  ATTRIBUTE              = 4;
+   // public final static int  PROCESSING_INSTRUCTION = 5;
+   // public final static int  COMMENT                = 6;
 	
-    public final static int  NTYPES                 = 7;
+    //public final static int  NTYPES                 = 7;
     
     // 0 is reserved for NodeIterator.END
     public final static int NULL     = 0;
     // index of root node
-    public final static int ROOTNODE = 1;
+    //public final static int ROOTNODE = 1;
 
     // used by some node iterators to know which node to return
     public final static int RETURN_CURRENT = 0;
     public final static int RETURN_PARENT  = 1;
     
     /** returns singleton iterator containg the document root */
-    public NodeIterator getIterator();
+    public DTMAxisIterator getIterator();
     public String getStringValue();
     public String getTreeString(); // this one includes PIs and comments...
 	
-    public NodeIterator getChildren(final int node);
-    public NodeIterator getTypedChildren(final int type);
-    public NodeIterator getAxisIterator(final int axis);
-    public NodeIterator getTypedAxisIterator(final int axis, final int type);
-    public NodeIterator getNthDescendant(int node, int n, boolean includeself);
-    public NodeIterator getNamespaceAxisIterator(final int axis, final int ns);
-    public NodeIterator getNodeValueIterator(NodeIterator iter, int returnType,
+    public DTMAxisIterator getChildren(final int node);
+    public DTMAxisIterator getTypedChildren(final int type);
+    public DTMAxisIterator getAxisIterator(final int axis);
+    public DTMAxisIterator getTypedAxisIterator(final int axis, final int type);
+    public DTMAxisIterator getNthDescendant(int node, int n, boolean includeself);
+    public DTMAxisIterator getNamespaceAxisIterator(final int axis, final int ns);
+    public DTMAxisIterator getNodeValueIterator(DTMAxisIterator iter, int returnType,
 					     String value, boolean op);
-    public NodeIterator orderNodes(NodeIterator source, int node);
+    public DTMAxisIterator orderNodes(DTMAxisIterator source, int node);
     public String getNodeName(final int node);
     public String getNamespaceName(final int node);
     public int getType(final int node);
@@ -112,7 +115,7 @@ public interface DOM {
     public String getNodeValue(final int node);
     public void copy(final int node, TransletOutputHandler handler)
 	throws TransletException;
-    public void copy(NodeIterator nodes, TransletOutputHandler handler)
+    public void copy(DTMAxisIterator nodes, TransletOutputHandler handler)
 	throws TransletException;
     public String shallowCopy(final int node, TransletOutputHandler handler)
 	throws TransletException;
@@ -120,9 +123,9 @@ public interface DOM {
     public void characters(final int textNode, TransletOutputHandler handler)
 	throws TransletException;
     public Node makeNode(int index);
-    public Node makeNode(NodeIterator iter);
+    public Node makeNode(DTMAxisIterator iter);
     public NodeList makeNodeList(int index);
-    public NodeList makeNodeList(NodeIterator iter);
+    public NodeList makeNodeList(DTMIterator iter);
     public String getLanguage(int node);
     public int getSize();
     public String getDocumentURI(int node);
@@ -132,4 +135,10 @@ public interface DOM {
     public void setupMapping(String[] names, String[] namespaces);
     public boolean isElement(final int node);
     public boolean isAttribute(final int node);
+    public int getNodeIdent(final int nodehandle);
+    public int getNodeHandle(final int nodeId);
+    public DOM getResultTreeFrag();
+    public TransletOutputHandler getOutputDomBuilder();
+    public int getNSType(int node);
+    public int getDocument();
 }

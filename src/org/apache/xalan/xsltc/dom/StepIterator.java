@@ -68,16 +68,21 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public class StepIterator extends NodeIteratorBase {
 
-    protected NodeIterator _source;
-    protected NodeIterator _iterator;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+
+public class StepIterator extends DTMAxisIteratorBase {
+
     private int _pos = -1;
+    protected DTMAxisIterator _source;
+    protected DTMAxisIterator _iterator;
 
-    public StepIterator(NodeIterator source, NodeIterator iterator) {
+    public StepIterator(DTMAxisIterator source, DTMAxisIterator iterator) {
 	_source = source;
 	_iterator = iterator;
     }
+
 
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
@@ -85,11 +90,18 @@ public class StepIterator extends NodeIteratorBase {
 	_iterator.setRestartable(true); // must _always_ be restartable
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
+	_isRestartable = false;
 	try {
 	    final StepIterator clone = (StepIterator)super.clone();
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
+
+	    // Special case -> _iterator must be restartable
+	//    if (clone._iterator instanceof DTMAxisIteratorBase) {
+	//	((DTMAxisIteratorBase)(clone._iterator))._isRestartable = true;
+	//    }
+
 	    clone.setRestartable(false);
 	    return clone.reset();
 	}
@@ -100,7 +112,7 @@ public class StepIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    // Set start node for left-hand iterator...
 	    _source.setStartNode(_startNode = node);
@@ -115,7 +127,7 @@ public class StepIterator extends NodeIteratorBase {
 	return this;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	// Special case for //* path - see ParentLocationPath
 	if (_includeSelf)
@@ -145,12 +157,12 @@ public class StepIterator extends NodeIteratorBase {
     public void setMark() {
 	_source.setMark();
 	_iterator.setMark();
-	_pos = _position;
+	//_pos = _position;
     }
 
     public void gotoMark() {
 	_source.gotoMark();
 	_iterator.gotoMark();
-	_position = _pos;
+	//_position = _pos;
     }
 }

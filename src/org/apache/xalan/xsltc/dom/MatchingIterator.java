@@ -66,22 +66,27 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class MatchingIterator extends NodeIteratorBase {
-    private NodeIterator _source;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+
+public final class MatchingIterator extends DTMAxisIteratorBase {
+    private DTMAxisIterator _source;
     private final int    _match;
     private int          _matchPos, _matchLast = -1;
 	
-    public MatchingIterator(int match, NodeIterator source) {
+    public MatchingIterator(int match, DTMAxisIterator source) {
 	_source = source;
 	_match = match;
     }
+
 
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
+
 	try {
 	    final MatchingIterator clone = (MatchingIterator)super.clone();
 	    clone._source = _source.cloneIterator();
@@ -95,7 +100,7 @@ public final class MatchingIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    // iterator is not a clone
 	    _source.setStartNode(node);
@@ -109,7 +114,7 @@ public final class MatchingIterator extends NodeIteratorBase {
 	return this;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	return this;
     }

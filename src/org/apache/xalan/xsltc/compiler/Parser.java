@@ -1013,7 +1013,7 @@ public class Parser implements Constants, ContentHandler {
      * Common error/warning message handler
      */
     public void reportError(final int category, final ErrorMsg error) {
-	switch (category) {
+   switch (category) {
 	case Constants.INTERNAL:
 	    // Unexpected internal errors, such as null-ptr exceptions, etc.
 	    // Immediately terminates compilation, no translet produced

@@ -70,6 +70,8 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
+import org.apache.xml.dtm.DTM;
+
 final class AbsolutePathPattern extends LocationPathPattern {
     private final RelativePathPattern _left; // may be null
 
@@ -139,7 +141,7 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	    il.append(SWAP);
 	}
 	il.append(new INVOKEINTERFACE(getType, 2));
-	il.append(new PUSH(cpg, DOM.ROOT));
+	il.append(new PUSH(cpg, DTM.DOCUMENT_NODE));
 	
 	// long jump: _falseList.add(il.append(new IF_ICMPNE(null)));
 	final BranchHandle skip = il.append(new IF_ICMPEQ(null));

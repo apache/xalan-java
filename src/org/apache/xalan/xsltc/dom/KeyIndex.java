@@ -69,7 +69,10 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
-public class KeyIndex implements NodeIterator {
+
+import org.apache.xml.dtm.DTMAxisIterator;
+
+public class KeyIndex implements DTMAxisIterator {
 
     private Hashtable _index = new Hashtable();
     private BitArray  _nodes = null;
@@ -79,6 +82,7 @@ public class KeyIndex implements NodeIterator {
     private int       _start = 0;
     private int       _arraySize = 0;
     private int       _node = -1;
+    private DOM        _dom;
 
     /**
      * Creates an index for a key defined by xsl:key
@@ -167,7 +171,7 @@ public class KeyIndex implements NodeIterator {
 	if (_nodes == null) return(END);
 	if ((_node = _nodes.getNextBit(++_node)) == END) return(END);
 	_pos++;
-	return(_node | _nodes.getMask());
+	return _dom.getNodeHandle(_node | _nodes.getMask());
     }
 
     public int containsID(int node, Object value) { 
@@ -197,7 +201,7 @@ public class KeyIndex implements NodeIterator {
     /**
      * Resets the iterator to the last start node.
      */
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_pos = _start;
 	_node = _start - 1;
 	return(this);
@@ -240,17 +244,26 @@ public class KeyIndex implements NodeIterator {
      * Set start to END should 'close' the iterator, 
      * i.e. subsequent call to next() should return END.
      */
-    public NodeIterator setStartNode(int start) {
+    public DTMAxisIterator setStartNode(int start) {
 	if (start == END) {
 	    _nodes = null;
 	}
 	else if (_nodes != null) {
 	    // Node count starts with 1, while bit arrays count from 0. Must
 	    // subtract one from 'start' to initialize bit array correctly.
-	    _start = _nodes.getBitNumber(start-1); 
-	    _node = _start - 1;
+	    _start = _nodes.getBitNumber(start);
+	    _node = _start;
 	}
-	return((NodeIterator)this);
+	return((DTMAxisIterator)this);
+    }
+    
+    /** 
+     * Get start to END should 'close' the iterator, 
+     * i.e. subsequent call to next() should return END.
+     */
+    public int getStartNode() 
+    {      
+      return _start;
     }
 
     /**
@@ -263,7 +276,7 @@ public class KeyIndex implements NodeIterator {
     /**
      * Returns a deep copy of this iterator.
      */
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	KeyIndex other = new KeyIndex(_arraySize);
 
 	other._index = _index;
@@ -273,6 +286,11 @@ public class KeyIndex implements NodeIterator {
 	other._node  = _node;
 
 	return(other);
+    }
+    
+    public void setDom(DOM dom)
+    {
+    	_dom = dom;
     }
 
 }

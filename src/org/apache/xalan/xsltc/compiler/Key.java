@@ -165,6 +165,16 @@ final class Key extends TopLevelElement {
 	final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
 							   "getNodeValue",
 							   "(I)"+STRING_SIG);
+							   
+	final int getNodeIdent = cpg.addInterfaceMethodref(DOM_INTF,
+							   "getNodeIdent",
+							   "(I)"+NODE_SIG);	
+							   
+	// AbstractTranslet.SetKeyIndexDom(name, Dom) => void
+	final int keyDom = cpg.addMethodref(TRANSLET_CLASS,
+					 "setKeyIndexDom",
+					 "("+STRING_SIG+DOM_INTF_SIG+")V");				 
+						   					   
 
 	// This variable holds the id of the node we found with the "match"
 	// attribute of xsl:key. This is the id we store, with the value we
@@ -175,6 +185,10 @@ final class Key extends TopLevelElement {
 				       il.getEnd(), null);
 
 	// Get the 'parameter' from the stack and store it in a local var.
+	il.append(new ISTORE(parentNode.getIndex()));	
+	il.append(methodGen.loadDOM());
+	il.append(new ILOAD(parentNode.getIndex()));	
+	il.append(new INVOKEINTERFACE(getNodeIdent, 2));
 	il.append(new ISTORE(parentNode.getIndex()));
 
 	// Save current node and current iterator on the stack
@@ -197,17 +211,22 @@ final class Key extends TopLevelElement {
 	// Now get the node value and feck it on the parameter stack
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadCurrentNode());
-	il.append(new INVOKEINTERFACE(getNodeValue, 2));
+	il.append(new INVOKEINTERFACE(getNodeValue, 2));		
 
 	// Finally do the call to add an entry in the index for this key.
 	il.append(new INVOKEVIRTUAL(buildKeyIndex));
+	
+	il.append(classGen.loadTranslet());
+	il.append(new PUSH(cpg, getName()));
+	il.append(methodGen.loadDOM());
+	il.append(new INVOKEVIRTUAL(keyDom));
 
 	nextNode.setTarget(il.append(methodGen.loadIterator()));
-	il.append(methodGen.nextNode());
+	il.append(methodGen.nextNode());	
 
 	il.append(DUP);
 	il.append(methodGen.storeCurrentNode());
-	il.append(new IFNE(loop)); // Go on to next matching node....
+	il.append(new IFGE(loop)); // Go on to next matching node....
 
 	// Restore current node and current iterator from the stack
 	il.append(methodGen.storeIterator());
@@ -230,6 +249,15 @@ final class Key extends TopLevelElement {
 	final int key = cpg.addMethodref(TRANSLET_CLASS,
 					 "buildKeyIndex",
 					 "("+STRING_SIG+"I"+OBJECT_SIG+")V");
+					 
+	// AbstractTranslet.SetKeyIndexDom(name, Dom) => void
+	final int keyDom = cpg.addMethodref(TRANSLET_CLASS,
+					 "setKeyIndexDom",
+					 "("+STRING_SIG+DOM_INTF_SIG+")V");
+					 
+	final int getNodeIdent = cpg.addInterfaceMethodref(DOM_INTF,
+							   "getNodeIdent",
+							   "(I)"+NODE_SIG);					 				 
 
 	// DOM.getAxisIterator(root) => NodeIterator
 	final int git = cpg.addInterfaceMethodref(DOM_INTF,
@@ -265,21 +293,41 @@ final class Key extends TopLevelElement {
 	    final int dbl = cpg.addMethodref(DOUBLE_CLASS,"<init>", "(D)V");
 
 	    il.append(classGen.loadTranslet());
+	    il.append(DUP);
 	    il.append(new PUSH(cpg, _name.toString()));
+	    il.append(DUP_X1);
 	    il.append(methodGen.loadCurrentNode());
 	    il.append(new NEW(cpg.addClass(DOUBLE_CLASS)));
 	    il.append(DUP);
 	    _use.translate(classGen,methodGen);
 	    il.append(new INVOKESPECIAL(dbl));
+	    il.append(SWAP);
+	    il.append(methodGen.loadDOM());
+	    il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(getNodeIdent, 2));
+	    il.append(SWAP);
 	    il.append(new INVOKEVIRTUAL(key));
+	    
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKEVIRTUAL(keyDom));
 
 	}
 	else if (_useType instanceof StringType) {
 	    il.append(classGen.loadTranslet());
+	    il.append(DUP);
 	    il.append(new PUSH(cpg, _name.toString()));
+	    il.append(DUP_X1);
 	    il.append(methodGen.loadCurrentNode());
 	    _use.translate(classGen,methodGen);
+	    il.append(SWAP);
+	    il.append(methodGen.loadDOM());
+	    il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(getNodeIdent, 2));
+	    il.append(SWAP);
 	    il.append(new INVOKEVIRTUAL(key));
+	    
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKEVIRTUAL(keyDom));
 	}
 	// If this is a node-set we must go through each node in the set
 	// and create one entry in the key index for each node in the set.
@@ -296,7 +344,7 @@ final class Key extends TopLevelElement {
 	il.append(methodGen.nextNode());
 	il.append(DUP);
 	il.append(methodGen.storeCurrentNode());
-	il.append(new IFNE(loop));
+	il.append(new IFGT(loop));
 
 	// Restore current node and current iterator from the stack
 	il.append(methodGen.storeIterator());

@@ -65,6 +65,8 @@ package org.apache.xalan.xsltc.runtime;
 
 import org.apache.xalan.xsltc.DOM;
 
+import org.apache.xml.dtm.DTM;
+
 /**
  * This class defines constants used by both the compiler and the 
  * runtime system.
@@ -73,11 +75,11 @@ public interface Constants {
 
     final static int ANY       = -1;
     final static int ATTRIBUTE = -2;
-    final static int ROOT      = DOM.ROOT;
-    final static int TEXT      = DOM.TEXT;
-    final static int ELEMENT   = DOM.ELEMENT;
-    final static int COMMENT   = DOM.COMMENT;
-    final static int PROCESSING_INSTRUCTION = DOM.PROCESSING_INSTRUCTION;
+    final static int ROOT      = DTM.ROOT_NODE;
+    final static int TEXT      = DTM.TEXT_NODE;
+    final static int ELEMENT   = DTM.ELEMENT_NODE;
+    final static int COMMENT   = DTM.COMMENT_NODE;
+    final static int PROCESSING_INSTRUCTION = DTM.PROCESSING_INSTRUCTION_NODE;
 
     public static String XSLT_URI = "http://www.w3.org/1999/XSL/Transform";
     public static final String NAMESPACE_FEATURE =

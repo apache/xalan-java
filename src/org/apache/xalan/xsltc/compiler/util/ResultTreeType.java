@@ -72,6 +72,8 @@ import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
 import org.apache.xalan.xsltc.compiler.Constants;
 
+import org.apache.xml.dtm.DTM;
+
 public final class ResultTreeType extends Type {
     private final String _methodName;
 
@@ -265,12 +267,17 @@ public final class ResultTreeType extends Type {
 	    il.append(methodGen.loadDOM());
 
 	    // Create new instance of DOM class (with 64 nodes)
-	    int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	    il.append(new NEW(cpg.addClass(DOM_IMPL)));
+	    il.append(methodGen.loadDOM());
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+				 "getResultTreeFrag",
+				 "()" + DOM_INTF_SIG);
+	    il.append(new INVOKEINTERFACE(index,1));
+	   // int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
+	   // il.append(new NEW(cpg.addClass(DOM_IMPL)));
+	   // il.append(DUP);
 	    il.append(DUP);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, 64));
-	    il.append(new INVOKESPECIAL(index));
+	   // il.append(new PUSH(cpg, 64));
+	   // il.append(new INVOKESPECIAL(index));
 	    
 	    // Store new DOM into a local variable
 	    newDom = methodGen.addLocalVariable("rt_to_reference_dom", 
@@ -280,10 +287,15 @@ public final class ResultTreeType extends Type {
 	    il.append(new ASTORE(newDom.getIndex()));
 
 	    // Overwrite old handler with DOM handler
-	    index = cpg.addMethodref(DOM_IMPL,
-				     "getOutputDomBuilder", 
-				     "()" + TRANSLET_OUTPUT_SIG);
-	    il.append(new INVOKEVIRTUAL(index));
+	    index = cpg.addInterfaceMethodref(DOM_INTF,
+				 "getOutputDomBuilder",
+				 "()" + TRANSLET_OUTPUT_SIG);
+
+	    il.append(new INVOKEINTERFACE(index,1));
+	    //index = cpg.addMethodref(DOM_IMPL,
+		//		     "getOutputDomBuilder", 
+		//		     "()" + TRANSLET_OUTPUT_SIG);
+	    //il.append(new INVOKEVIRTUAL(index));
 	    il.append(DUP);
 	    il.append(DUP);
 
@@ -363,7 +375,7 @@ public final class ResultTreeType extends Type {
 	final int iter = cpg.addInterfaceMethodref(DOM_INTF,
 						   "getChildren",
 						   "(I)"+NODE_ITERATOR_SIG);
-	il.append(new PUSH(cpg, DOM.ROOTNODE));
+	il.append(new PUSH(cpg, DTM.ROOT_NODE));
 	il.append(new INVOKEINTERFACE(iter, 2));
     }
 

@@ -98,13 +98,17 @@ public interface Constants extends InstructionConstants {
     public static final String ATTRIBUTES_SIG 
 	= "Lorg/apache/xalan/xsltc/runtime/Attributes;";
     public static final String NODE_ITERATOR_SIG
-	= "Lorg/apache/xalan/xsltc/NodeIterator;";
+	= "Lorg/apache/xml/dtm/DTMAxisIterator;";
     public static final String DOM_INTF_SIG
 	= "Lorg/apache/xalan/xsltc/DOM;";
     public static final String DOM_IMPL_CLASS
-	= "org/apache/xalan/xsltc/dom/DOMImpl";
+	= "org/apache/xalan/xsltc/DOM"; // xml/dtm/ref/DTMDefaultBaseIterators"; //xalan/xsltc/dom/DOMImpl";
+	public static final String SAX_IMPL_CLASS
+	= "org/apache/xalan/xsltc/DOM/SAXImpl"; 
     public static final String DOM_IMPL_SIG
-	= "Lorg/apache/xalan/xsltc/dom/DOMImpl;";
+	= "Lorg/apache/xalan/xsltc/dom/SAXImpl;"; //xml/dtm/ref/DTMDefaultBaseIterators"; //xalan/xsltc/dom/DOMImpl;";
+	public static final String SAX_IMPL_SIG
+	= "Lorg/apache/xalan/xsltc/dom/SAXImpl;";
     public static final String DOM_ADAPTER_CLASS
 	= "org/apache/xalan/xsltc/dom/DOMAdapter";
     public static final String DOM_ADAPTER_SIG
@@ -146,7 +150,7 @@ public interface Constants extends InstructionConstants {
     public static final String NODE               
 	= "int";
     public static final String NODE_ITERATOR      
-	= "org.apache.xalan.xsltc.NodeIterator";
+	= "org.apache.xml.dtm.DTMAxisIterator"; //xalan.xsltc.NodeIterator";
     public static final String SORT_ITERATOR      
 	= "org.apache.xalan.xsltc.dom.SortingIterator";
     public static final String SORT_ITERATOR_SIG     
@@ -213,6 +217,8 @@ public interface Constants extends InstructionConstants {
 	= "()" + NODE_SIG;
     public static final String NEXT               
 	= "next";
+	public static final String NEXTID               
+	= "nextNodeID";
     public static final String MAKE_NODE          
 	= "makeNode";
     public static final String MAKE_NODE_LIST     
@@ -263,7 +269,9 @@ public interface Constants extends InstructionConstants {
     public static final String DOM_INTF
 	= "org.apache.xalan.xsltc.DOM";
     public static final String DOM_IMPL
-	= "org.apache.xalan.xsltc.dom.DOMImpl";
+	= "org.apache.xalan.xsltc.dom.SAXImpl";
+	public static final String SAX_IMPL
+	= "org.apache.xalan.xsltc.dom.SAXImpl";
     public static final String STRING_CLASS 		
 	= "java.lang.String";
     public static final String OBJECT_CLASS 		

@@ -143,7 +143,7 @@ final class AncestorPattern extends RelativePathPattern {
 	    
 	    il.append(DUP);
 	    il.append(storeLocal);
-	    _falseList.add(il.append(new IFEQ(null)));
+	    _falseList.add(il.append(new IFLT(null)));
 	    il.append(loadLocal);
 
 	    _left.translate(classGen, methodGen);

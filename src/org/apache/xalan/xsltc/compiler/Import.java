@@ -107,10 +107,14 @@ final class Import extends TopLevelElement {
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
 	    }
 	    else {
-		File file = new File(currLoadedDoc);
-		if (file.exists()) currLoadedDoc = "file:"+currLoadedDoc;
-		final URL url = new URL(new URL(currLoadedDoc), docToLoad);
+		File file = new File(docToLoad);
+		if (file.exists())
+			docToLoad = "file:///"+docToLoad;
+		else
+		{	
+	    final URL url = new URL(new URL(currLoadedDoc), docToLoad);
 		docToLoad = url.toString();
+		}
 		input = new InputSource(docToLoad);
 	    }
 

@@ -76,6 +76,8 @@ import org.apache.bcel.util.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.DOM;
 
+import org.apache.xml.dtm.DTM;
+
 /**
  * Mode gathers all the templates belonging to a given mode; it is responsible
  * for generating an appropriate applyTemplates + (mode name) function
@@ -321,7 +323,7 @@ final class Mode implements Constants {
      */
     private void prepareTestSequences() {
 	final Vector names = _stylesheet.getXSLTC().getNamesIndex();
-	_testSeq = new TestSeq[DOM.NTYPES + names.size()];
+	_testSeq = new TestSeq[DTM.NTYPES + names.size()];
 	
 	final int n = _patternGroups.length;
 	for (int i = 0; i < n; i++) {
@@ -527,9 +529,9 @@ final class Mode implements Constants {
 	    }
 
 	    // Add test sequences for known namespace types
-	    for (int i = DOM.NTYPES; i < (DOM.NTYPES+namesCount); i++) {
+	    for (int i = DTM.NTYPES; i < (DTM.NTYPES+namesCount); i++) {
 		if ((isNamespace[i]) && (isAttribute[i] == attrFlag)) {
-		    String name = (String)names.elementAt(i-DOM.NTYPES);
+		    String name = (String)names.elementAt(i-DTM.NTYPES);
 		    String namespace = name.substring(0,name.lastIndexOf(':'));
 		    final int type = xsltc.registerNamespace(namespace);
 		    
@@ -596,6 +598,8 @@ final class Mode implements Constants {
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
+	
+	System.out.println("arg " + argTypes[1]);
 
 	final String[] argNames = new String[3];
 	argNames[0] = DOCUMENT_PNAME;
@@ -633,7 +637,7 @@ final class Mode implements Constants {
 
 	// The body of this code can get very large - large than can be handled
 	// by a single IFNE(body.getStart()) instruction - need workaround:
-        final BranchHandle ifeq = ilLoop.append(new IFEQ(null));
+        final BranchHandle ifeq = ilLoop.append(new IFLT(null));
 	final BranchHandle loop = ilLoop.append(new GOTO_W(null));
 	ifeq.setTarget(ilLoop.append(RETURN)); // applyTemplates() ends here!
 	final InstructionHandle ihLoop = ilLoop.getStart();
@@ -649,28 +653,28 @@ final class Mode implements Constants {
 	InstructionHandle ihText = ilText.getStart();
 
 	// Distinguish attribute/element/namespace tests for further processing
-	final int[] types = new int[DOM.NTYPES + names.size()];
+	final int[] types = new int[DTM.NTYPES + names.size()];
 	for (int i = 0; i < types.length; i++) types[i] = i;
 
 	final boolean[] isAttribute = new boolean[types.length];
 	final boolean[] isNamespace = new boolean[types.length];
 	for (int i = 0; i < names.size(); i++) {
 	    final String name = (String)names.elementAt(i);
-	    isAttribute[i+DOM.NTYPES] = isAttributeName(name);
-	    isNamespace[i+DOM.NTYPES] = isNamespaceName(name);
+	    isAttribute[i+DTM.NTYPES] = isAttributeName(name);
+	    isNamespace[i+DTM.NTYPES] = isNamespaceName(name);
 	}
 
 	// (*) Compile all templates - regardless of pattern type
 	compileTemplates(classGen, methodGen, ihLoop);
 
 	// (*) Handle template with explicit "*" pattern
-	final TestSeq elemTest = _testSeq[DOM.ELEMENT];
+	final TestSeq elemTest = _testSeq[DTM.ELEMENT_NODE];
 	InstructionHandle ihElem = ihRecurse;
 	if (elemTest != null)
 	    ihElem = elemTest.compile(classGen, methodGen, ihRecurse);
 
 	// (*) Handle template with explicit "@*" pattern
-	final TestSeq attrTest = _testSeq[DOM.ATTRIBUTE];
+	final TestSeq attrTest = _testSeq[DTM.ATTRIBUTE_NODE];
 	InstructionHandle ihAttr = ihText;
 	if (attrTest != null)
 	    ihAttr = attrTest.compile(classGen, methodGen, ihAttr);
@@ -719,7 +723,7 @@ final class Mode implements Constants {
 
 	// (*) Handle templates with "ns:elem" or "ns:@attr" pattern
 	final InstructionHandle[] targets = new InstructionHandle[types.length];
-	for (int i = DOM.NTYPES; i < targets.length; i++) {
+	for (int i = DTM.NTYPES; i < targets.length; i++) {
 	    final TestSeq testSeq = _testSeq[i];
 	    // Jump straight to namespace tests ?
 	    if (isNamespace[i]) {
@@ -743,43 +747,67 @@ final class Mode implements Constants {
 	}
 
 	// Handle pattern with match on root node - default: traverse children
-	targets[DOM.ROOT] = _rootPattern != null
+	targets[DTM.ROOT_NODE] = _rootPattern != null
 	    ? getTemplateInstructionHandle(_rootPattern.getTemplate())
 	    : ihRecurse;
-	
+
+        // Handle pattern with match on root node - default: traverse children
+	targets[DTM.DOCUMENT_NODE] = _rootPattern != null
+	    ? getTemplateInstructionHandle(_rootPattern.getTemplate())
+	    : ihRecurse;
+
 	// Handle any pattern with match on text nodes - default: output text
-	targets[DOM.TEXT] = _testSeq[DOM.TEXT] != null
-	    ? _testSeq[DOM.TEXT].compile(classGen, methodGen, ihText)
+	targets[DTM.TEXT_NODE] = _testSeq[DTM.TEXT_NODE] != null
+	    ? _testSeq[DTM.TEXT_NODE].compile(classGen, methodGen, ihText)
 	    : ihText;
 
 	// This DOM-type is not in use - default: process next node
-	targets[DOM.NAMESPACE] = ihLoop;
+	targets[DTM.NAMESPACE_NODE] = ihLoop;
 
 	// Match unknown element in DOM - default: check for namespace match
-	targets[DOM.ELEMENT] = elemNamespaceHandle;
+	targets[DTM.ELEMENT_NODE] = elemNamespaceHandle;
 
 	// Match unknown attribute in DOM - default: check for namespace match
-	targets[DOM.ATTRIBUTE] = attrNamespaceHandle;
+	targets[DTM.ATTRIBUTE_NODE] = attrNamespaceHandle;
 
 	// Match on processing instruction - default: process next node
 	InstructionHandle ihPI = ihLoop;
 	if (_nodeTestSeq != null) ihPI = ihElem;
-	if (_testSeq[DOM.PROCESSING_INSTRUCTION] != null)
-	    targets[DOM.PROCESSING_INSTRUCTION] =
-		_testSeq[DOM.PROCESSING_INSTRUCTION].
+	if (_testSeq[DTM.PROCESSING_INSTRUCTION_NODE] != null)
+	    targets[DTM.PROCESSING_INSTRUCTION_NODE] =
+		_testSeq[DTM.PROCESSING_INSTRUCTION_NODE].
 		compile(classGen, methodGen, ihPI);
 	else
-	    targets[DOM.PROCESSING_INSTRUCTION] = ihPI;
+	    targets[DTM.PROCESSING_INSTRUCTION_NODE] = ihPI;
 	
 	// Match on comments - default: process next node
 	InstructionHandle ihComment = ihLoop;
 	if (_nodeTestSeq != null) ihComment = ihElem;
-	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
-	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihComment)
+	targets[DTM.COMMENT_NODE] = _testSeq[DTM.COMMENT_NODE] != null
+	    ? _testSeq[DTM.COMMENT_NODE].compile(classGen, methodGen, ihComment)
 	    : ihComment;
+	    
+	    // This DOM-type is not in use - default: process next node
+	targets[DTM.CDATA_SECTION_NODE] = ihLoop;
+
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.DOCUMENT_FRAGMENT_NODE] = ihLoop;
+	
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.DOCUMENT_TYPE_NODE] = ihLoop;
+
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.ENTITY_NODE] = ihLoop;
+
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.ENTITY_REFERENCE_NODE] = ihLoop;
+	
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.NOTATION_NODE] = ihLoop;
+
 
 	// Now compile test sequences for various match patterns:
-	for (int i = DOM.NTYPES; i < targets.length; i++) {
+	for (int i = DTM.NTYPES; i < targets.length; i++) {
 	    final TestSeq testSeq = _testSeq[i];
 	    // Jump straight to namespace tests ?
 	    if ((testSeq == null) || (isNamespace[i])) {
@@ -958,34 +986,34 @@ final class Mode implements Constants {
 
 	// The body of this code can get very large - large than can be handled
 	// by a single IFNE(body.getStart()) instruction - need workaround:
-        final BranchHandle ifeq = ilLoop.append(new IFEQ(null));
+        final BranchHandle ifeq = ilLoop.append(new IFLT(null));
 	final BranchHandle loop = ilLoop.append(new GOTO_W(null));
 	ifeq.setTarget(ilLoop.append(RETURN)); // applyTemplates() ends here!
 	final InstructionHandle ihLoop = ilLoop.getStart();
 
 	// Distinguish attribute/element/namespace tests for further processing
-	final int[] types = new int[DOM.NTYPES + names.size()];
+	final int[] types = new int[DTM.NTYPES + names.size()];
 	for (int i = 0; i < types.length; i++) types[i] = i;
 
 	final boolean[] isAttribute = new boolean[types.length];
 	final boolean[] isNamespace = new boolean[types.length];
 	for (int i = 0; i < names.size(); i++) {
 	    final String name = (String)names.elementAt(i);
-	    isAttribute[i+DOM.NTYPES] = isAttributeName(name);
-	    isNamespace[i+DOM.NTYPES] = isNamespaceName(name);
+	    isAttribute[i+DTM.NTYPES] = isAttributeName(name);
+	    isNamespace[i+DTM.NTYPES] = isNamespaceName(name);
 	}
 
 	// (*) Compile all templates - regardless of pattern type
 	compileTemplateCalls(classGen, methodGen, ihLoop, min, max);
 
 	// (*) Handle template with explicit "*" pattern
-	final TestSeq elemTest = _testSeq[DOM.ELEMENT];
+	final TestSeq elemTest = _testSeq[DTM.ELEMENT_NODE];
 	InstructionHandle ihElem = ihLoop;
 	if (elemTest != null)
 	    ihElem = elemTest.compile(classGen, methodGen, ihLoop);
 
 	// (*) Handle template with explicit "@*" pattern
-	final TestSeq attrTest = _testSeq[DOM.ATTRIBUTE];
+	final TestSeq attrTest = _testSeq[DTM.ATTRIBUTE_NODE];
 	InstructionHandle ihAttr = ihLoop;
 	if (attrTest != null)
 	    ihAttr = attrTest.compile(classGen, methodGen, ihAttr);
@@ -1035,7 +1063,7 @@ final class Mode implements Constants {
 
 	// (*) Handle templates with "ns:elem" or "ns:@attr" pattern
 	final InstructionHandle[] targets = new InstructionHandle[types.length];
-	for (int i = DOM.NTYPES; i < targets.length; i++) {
+	for (int i = DTM.NTYPES; i < targets.length; i++) {
 	    final TestSeq testSeq = _testSeq[i];
 	    // Jump straight to namespace tests ?
 	    if (isNamespace[i]) {
@@ -1059,43 +1087,67 @@ final class Mode implements Constants {
 	}
 
 	// Handle pattern with match on root node - default: loop
-	targets[DOM.ROOT] = _rootPattern != null
+	targets[DTM.ROOT_NODE] = _rootPattern != null
 	    ? getTemplateInstructionHandle(_rootPattern.getTemplate())
 	    : ihLoop;
+	// Handle pattern with match on root node - default: loop
+	targets[DTM.DOCUMENT_NODE] = _rootPattern != null
+	    ? getTemplateInstructionHandle(_rootPattern.getTemplate())
+	    : ihLoop;    
 	
 	// Handle any pattern with match on text nodes - default: loop
-	targets[DOM.TEXT] = _testSeq[DOM.TEXT] != null
-	    ? _testSeq[DOM.TEXT].compile(classGen, methodGen, ihText)
+	targets[DTM.TEXT_NODE] = _testSeq[DTM.TEXT_NODE] != null
+	    ? _testSeq[DTM.TEXT_NODE].compile(classGen, methodGen, ihText)
 	    : ihText;
 
 	// This DOM-type is not in use - default: process next node
-	targets[DOM.NAMESPACE] = ihLoop;
+	targets[DTM.NAMESPACE_NODE] = ihLoop;
 
 	// Match unknown element in DOM - default: check for namespace match
-	targets[DOM.ELEMENT] = elemNamespaceHandle;
+	targets[DTM.ELEMENT_NODE] = elemNamespaceHandle;
 
 	// Match unknown attribute in DOM - default: check for namespace match
-	targets[DOM.ATTRIBUTE] = attrNamespaceHandle;
+	targets[DTM.ATTRIBUTE_NODE] = attrNamespaceHandle;
 
 	// Match on processing instruction - default: loop
 	InstructionHandle ihPI = ihLoop;
 	if (_nodeTestSeq != null) ihPI = ihElem;
-	if (_testSeq[DOM.PROCESSING_INSTRUCTION] != null)
-	    targets[DOM.PROCESSING_INSTRUCTION] =
-		_testSeq[DOM.PROCESSING_INSTRUCTION].
+	if (_testSeq[DTM.PROCESSING_INSTRUCTION_NODE] != null)
+	    targets[DTM.PROCESSING_INSTRUCTION_NODE] =
+		_testSeq[DTM.PROCESSING_INSTRUCTION_NODE].
 		compile(classGen, methodGen, ihPI);
 	else
-	    targets[DOM.PROCESSING_INSTRUCTION] = ihPI;
+	    targets[DTM.PROCESSING_INSTRUCTION_NODE] = ihPI;
 	
 	// Match on comments - default: process next node
 	InstructionHandle ihComment = ihLoop;
 	if (_nodeTestSeq != null) ihComment = ihElem;
-	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
-	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihComment)
+	targets[DTM.COMMENT_NODE] = _testSeq[DTM.COMMENT_NODE] != null
+	    ? _testSeq[DTM.COMMENT_NODE].compile(classGen, methodGen, ihComment)
 	    : ihComment;
+	    
+	        // This DOM-type is not in use - default: process next node
+	targets[DTM.CDATA_SECTION_NODE] = ihLoop;
+
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.DOCUMENT_FRAGMENT_NODE] = ihLoop;
+	
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.DOCUMENT_TYPE_NODE] = ihLoop;
+
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.ENTITY_NODE] = ihLoop;
+
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.ENTITY_REFERENCE_NODE] = ihLoop;
+	
+	// This DOM-type is not in use - default: process next node
+	targets[DTM.NOTATION_NODE] = ihLoop;
+
+
 
 	// Now compile test sequences for various match patterns:
-	for (int i = DOM.NTYPES; i < targets.length; i++) {
+	for (int i = DTM.NTYPES; i < targets.length; i++) {
 	    final TestSeq testSeq = _testSeq[i];
 	    // Jump straight to namespace tests ?
 	    if ((testSeq == null) || (isNamespace[i])) {
@@ -1159,8 +1211,8 @@ final class Mode implements Constants {
      * Peephole optimization: Remove sequences of [ALOAD, POP].
      */
     private void peepHoleOptimization(MethodGenerator methodGen) {
-	InstructionList il = methodGen.getInstructionList();
-	InstructionFinder find = new InstructionFinder(il);
+    InstructionList il = methodGen.getInstructionList();
+    InstructionFinder find = new InstructionFinder(il);
 	InstructionHandle ih;
 	String pattern;
 
@@ -1198,7 +1250,7 @@ final class Mode implements Constants {
                 // TODO: move target down into the list
             }
         }
-
+        
         // Replace sequences of ALOAD_1, ALOAD_1 with ALOAD_1, DUP 
 	pattern = "`ALOAD_1'`ALOAD_1'`Instruction'";
         for(Iterator iter=find.search(pattern); iter.hasNext();){
@@ -1215,7 +1267,7 @@ final class Mode implements Constants {
                 // TODO: move target down into the list
             }
         }
-
+        
     }
 
     public InstructionHandle getTemplateInstructionHandle(Template template) {

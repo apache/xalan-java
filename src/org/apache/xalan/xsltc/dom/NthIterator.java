@@ -67,13 +67,18 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class NthIterator extends NodeIteratorBase {
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+
+public final class NthIterator extends DTMAxisIteratorBase {
     // ...[N]
-    private NodeIterator _source;
+
+    private final DTMAxisIterator _source;
+
     private final int _position;
     private boolean _ready;
 
-    public NthIterator(NodeIterator source, int n) {
+    public NthIterator(DTMAxisIterator source, int n) {
 	_source = source;
 	_position = n;
     }
@@ -89,24 +94,26 @@ public final class NthIterator extends NodeIteratorBase {
 	    // skip N-1 nodes
 	    final int pos = _position;
 	    for (int n = pos - 1; n-- > 0;) {
-		if (_source.next() == NodeIterator.END) {
-		    return NodeIterator.END;
+		if (_source.next() == DTMAxisIterator.END) {
+		    return DTMAxisIterator.END;
 		}
 	    }
 	    return _source.next();
 	}
-	return NodeIterator.END;
+	return DTMAxisIterator.END;
     }
 	
-    public NodeIterator setStartNode(final int node) {
-	if (_isRestartable) {
-	    _source.setStartNode(node);
-	    _ready = true;
-	}
+
+    public DTMAxisIterator setStartNode(final int node) {
+    	if (_isRestartable) {
+	_source.setStartNode(node);
+	_ready = true;
+    	}
+
 	return this;
     }
 	
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	_ready = true;
 	return this;
@@ -131,9 +138,12 @@ public final class NthIterator extends NodeIteratorBase {
     public void gotoMark() {
 	_source.gotoMark();
     }
-
-    public NodeIterator cloneIterator() {
-	NodeIterator clone = _source.cloneIterator();
+    
+    public DTMAxisIterator cloneIterator() {
+	//!! not clear when cloning is performed
+	// and what's the desired state of the new clone
+	//return new NthIterator(_source.cloneIterator(), _position);
+	DTMAxisIterator clone = _source.cloneIterator();
 	NthIterator other = new NthIterator(clone, _position);
 	other.setRestartable(false);
 	return other.reset();

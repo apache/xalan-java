@@ -68,11 +68,13 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.util.IntegerArray;
 
+import org.apache.xml.dtm.DTMAxisIterator;
+
 public abstract class MultipleNodeCounter extends NodeCounter {
-    private NodeIterator _precSiblings = null;
+    private DTMAxisIterator _precSiblings = null;
 
     public MultipleNodeCounter(Translet translet,
-			       DOM document, NodeIterator iterator) {
+			       DOM document, DTMAxisIterator iterator) {
 	super(translet, document, iterator);
     }
 	
@@ -129,14 +131,14 @@ public abstract class MultipleNodeCounter extends NodeCounter {
 
     public static NodeCounter getDefaultNodeCounter(Translet translet,
 						    DOM document,
-						    NodeIterator iterator) {
+						    DTMAxisIterator iterator) {
 	return new DefaultMultipleNodeCounter(translet, document, iterator);
     }
 
     static class DefaultMultipleNodeCounter extends MultipleNodeCounter {
 	public DefaultMultipleNodeCounter(Translet translet,
 					  DOM document,
-					  NodeIterator iterator) {
+					  DTMAxisIterator iterator) {
 	    super(translet, document, iterator);
 	}
     }

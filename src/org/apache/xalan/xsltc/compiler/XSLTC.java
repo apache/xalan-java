@@ -89,6 +89,8 @@ import org.apache.xalan.xsltc.cmdline.getopt.*;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.bcel.classfile.JavaClass;
 
+import org.apache.xml.dtm.DTM;
+
 public final class XSLTC {
 
     // A reference to the main stylesheet parser object.
@@ -175,7 +177,7 @@ public final class XSLTC {
      * Initializes the compiler to produce a new translet
      */
     private void reset() {
-	_nextGType      = DOM.NTYPES;
+	_nextGType      = DTM.NTYPES;
 	_elements       = new Hashtable();
 	_attributes     = new Hashtable();
 	_namespaces     = new Hashtable();
@@ -322,7 +324,7 @@ public final class XSLTC {
 	    }
 	}
 	catch (Exception e) {
-	    if (_debug) e.printStackTrace();
+	    /*if (_debug)*/ e.printStackTrace();
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
 	}
 	catch (Error e) {

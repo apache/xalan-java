@@ -78,6 +78,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
@@ -86,6 +87,10 @@ import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
+
+import org.apache.xml.dtm.DTMManager;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.sax.SAXSource;
 
 public final class DocumentCache implements DOMCache {
 
@@ -113,7 +118,7 @@ public final class DocumentCache implements DOMCache {
 	private long _buildTime;
 
 	// DOM and DTD handler references
-	private DOMImpl    _dom = null;
+	private SAXImpl    _dom = null;
 	private DTDMonitor _dtdMonitor = null;
 	
 	/**
@@ -135,15 +140,18 @@ public final class DocumentCache implements DOMCache {
 	 */
 	public void loadDocument(String uri) {
 
-	    _dom = new DOMImpl();
+      DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
+      	//_dom = new DOMImpl();
 	    _dtdMonitor = new DTDMonitor();
 
 	    try {
 		final long stamp = System.currentTimeMillis();
+          _dtdMonitor.handleDTD(_reader);
+		//_reader.setContentHandler(_dom.getBuilder());
+        _dom = (SAXImpl)dtmManager.getDTM(new SAXSource(_reader, new InputSource(uri)), false, null, true, true);
 
-		_reader.setContentHandler(_dom.getBuilder());
-		_dtdMonitor.handleDTD(_reader);
-		_reader.parse(uri);
+		//_reader.parse(uri);
 		_dom.setDocumentURI(uri);
 
 		// The build time can be used for statistics for a better
@@ -160,7 +168,7 @@ public final class DocumentCache implements DOMCache {
 	    }
 	}
 
-	public DOMImpl getDocument()       { return(_dom); }
+	public DOM getDocument()       { return(_dom); }
 
 	public DTDMonitor getDTDMonitor()  { return(_dtdMonitor); }
 
@@ -283,7 +291,7 @@ public final class DocumentCache implements DOMCache {
      * Returns a document either by finding it in the cache or
      * downloading it and putting it in the cache.
      */
-    public final DOMImpl retrieveDocument(String uri, int mask, Translet trs) {
+    public final DOM retrieveDocument(String uri, int mask, Translet trs) {
 	CachedDocument doc;
 
 	// Try to get the document from the cache first
@@ -314,7 +322,7 @@ public final class DocumentCache implements DOMCache {
 	}
 
 	// Get the references to the actual DOM and DTD handler
-	final DOMImpl    dom = doc.getDocument();
+	final DOM        dom = doc.getDocument();
 	final DTDMonitor dtd = doc.getDTDMonitor();
 
 	// The dom reference may be null if the URL pointed to a

@@ -83,7 +83,11 @@ public final class SAXAdapter implements TransletOutputHandler {
 
     private void maybeEmitStartElement() throws SAXException {
 	if (_openElementName != null) {
+
+	   // _saxHandler.startElement(null, _openElementName, _openElementName, _attributes);
+
 	    _domBuilder.startElement(null, null, _openElementName, _attributes);
+
 	    _openElementName = null;
 	}
     }

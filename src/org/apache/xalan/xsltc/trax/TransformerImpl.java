@@ -102,10 +102,13 @@ import javax.xml.transform.stream.*;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+
+import org.apache.xml.dtm.DTMManager;
 
 import java.util.Properties;
 
@@ -126,8 +129,8 @@ public final class TransformerImpl extends Transformer
     private final static String YES_STRING   = "yes";
     private final static String XML_STRING   = "xml";
 
-    // Pre-set DOMImpl to use as input (used only with TransformerHandlerImpl)
-    private DOMImpl _dom = null;
+    // Pre-set DOM to use as input (used only with TransformerHandlerImpl)
+    private DOM _dom = null;
 
     private final static String LEXICAL_HANDLER_PROPERTY =
 	"http://xml.org/sax/properties/lexical-handler";
@@ -327,10 +330,12 @@ public final class TransformerImpl extends Transformer
 	    // Common, final handling of all input sources, only used if the
 	    // other contents of the Result object could not be used
 	    if (systemId != null) {
-		if ((new File(systemId)).exists()) systemId = "file:"+systemId;
-		final URL url = new URL(systemId);
-		final URLConnection connection = url.openConnection();
-		final OutputStream ostream = connection.getOutputStream();
+	    	File f;
+		if ((f = new File(systemId)).exists()) systemId = "file:///"+f.getAbsolutePath();
+		//final URL url = new URL(systemId);
+		//final URLConnection connection = url.openConnection();
+		//final OutputStream ostream = connection.getOutputStream();
+		final OutputStream ostream = new java.io.FileOutputStream(f);
 		return(new DefaultSAXOutputHandler(ostream, _encoding));
 	    }
 	    else {
@@ -358,24 +363,24 @@ public final class TransformerImpl extends Transformer
     /**
      * Set the internal DOMImpl that will be used for the next transformation
      */
-    protected void setDOM(DOMImpl dom) {
+    protected void setDOM(DOM dom) {
 	_dom = dom;
     }
 
     /**
      * Builds an internal DOM from a TrAX Source object
      */
-    private DOMImpl getDOM(Source source, int mask)
+    private DOM getDOM(Source source, int mask)
 	throws TransformerException {
 	try {
 	    // Use the pre-defined DOM if present
 	    if (_dom != null) {
-		DOMImpl dom = _dom;
+		DOM dom = _dom;
 		_dom = null; // use only once, so reset to 'null'
 		return(dom);
 	    }
 
-	    DOMImpl dom = null;
+	    DOM dom = null;
 	    DTDMonitor dtd = null;
 
 	    // Handle SAXSource input
@@ -392,8 +397,12 @@ public final class TransformerImpl extends Transformer
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		dom = new DOMImpl();
-		final DOMBuilder builder = dom.getBuilder();
+    DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+
+    dom = (SAXImpl)dtmManager.getDTM(sax, false, null, true, true);
+		//dom = new DOMImpl();
+/*		final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
 		try {
 		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
 		}
@@ -403,8 +412,8 @@ public final class TransformerImpl extends Transformer
 		reader.setContentHandler(builder);
 
 		// Parse the input and build the internal DOM
-		reader.parse(input);
-		dom.setDocumentURI(systemId);
+		reader.parse(input);    */
+		((SAXImpl)dom).setDocumentURI(systemId);
 	    }
 	    // Handle DOMSource input
 	    else if (source instanceof DOMSource) {
@@ -426,22 +435,28 @@ public final class TransformerImpl extends Transformer
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		dom = new DOMImpl();
-		final DOMBuilder builder = dom.getBuilder();
-		dom2sax.setContentHandler(builder);
-
-		// Parse the input and build the internal DOM
+    DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+    
+    dom = (DOMImpl)dtmManager.getDTM(domsrc, false, null, true, true);
+		//dom = new DOMImpl();
+		final DOMBuilder builder = ((DOMImpl)dom).getBuilder();
 		if (!isComplete) {
 		    builder.startDocument();
 		}
-		dom2sax.parse(input); // need this parameter?
 		if (!isComplete) {
 		    builder.endDocument();
 		}
-		dom.setDocumentURI(systemId);
+/*		dom2sax.setContentHandler(builder);
+
+		// Parse the input and build the internal DOM
+
+		dom2sax.parse(input); // need this parameter?  */
+		((DOMImpl)dom).setDocumentURI(systemId);
 	    }
 	    // Handle StreamSource input
-	    else if (source instanceof StreamSource) {
+	    else if (source instanceof StreamSource) 
+      {
 		// Get all info from the input StreamSource object
 		final StreamSource stream = (StreamSource)source;
 		final InputStream  streamInput = stream.getInputStream();
@@ -466,8 +481,23 @@ public final class TransformerImpl extends Transformer
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		dom = new DOMImpl();
-		final DOMBuilder builder = dom.getBuilder();
+    DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+
+    InputSource input;
+		if (streamInput != null)
+		    input = new InputSource(streamInput);
+		else if (streamReader != null)
+		    input = new InputSource(streamReader);
+		else if (systemId != null)
+		    input = new InputSource(systemId);
+		else {
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
+		    throw new TransformerException(err.toString());
+		}
+    dom = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, input), false, null, true, true);
+		//dom = new DOMImpl();
+/*		final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
 		try {
 		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
 		}
@@ -489,8 +519,8 @@ public final class TransformerImpl extends Transformer
 		}
 
 		// Parse the input and build the internal DOM
-		reader.parse(input);
-		dom.setDocumentURI(systemId);
+		reader.parse(input);  */
+		((SAXImpl)dom).setDocumentURI(systemId);
 	    }
 	    // Handle XSLTC-internal Source input
 	    else if (source instanceof XSLTCSource) {
@@ -510,18 +540,18 @@ public final class TransformerImpl extends Transformer
 	    _translet.setDTDMonitor(dtd);
 	    return dom;
 	}
-	catch (FileNotFoundException e) {
-	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
-	catch (MalformedURLException e) {
-	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
-	catch (UnknownHostException e) {
-	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
+	//catch (FileNotFoundException e) {
+//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+//	    throw new TransformerException(e);
+//	}
+	//catch (MalformedURLException e) {
+//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+//	    throw new TransformerException(e);
+//	}
+//	catch (UnknownHostException e) {
+//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+//	    throw new TransformerException(e);
+//	}
 	catch (Exception e) {
 	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
@@ -535,7 +565,7 @@ public final class TransformerImpl extends Transformer
 	throws TransformerException {
 	try {
 	    // Build an iternal DOMImpl from the TrAX Source
-	    DOMImpl dom = getDOM(src, 0);
+	    DOM dom = getDOM(src, 0);
 
 	    // Pass output properties to the translet
 	    setOutputProperties(_translet, _properties);
@@ -915,7 +945,7 @@ public final class TransformerImpl extends Transformer
      * @param mask Contains a document ID (passed from the translet)
      * @param translet A reference to the translet requesting the document
      */
-    public DOMImpl retrieveDocument(String uri, int mask, Translet translet) {
+    public DOM retrieveDocument(String uri, int mask, Translet translet) {
 	try {
 	    return(getDOM(_uriResolver.resolve(uri, ""), mask));
 	}

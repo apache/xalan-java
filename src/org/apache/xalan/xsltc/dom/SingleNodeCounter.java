@@ -67,13 +67,15 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 
+import org.apache.xml.dtm.DTMAxisIterator;
+
 public abstract class SingleNodeCounter extends NodeCounter {
     static private final int[] EmptyArray = new int[] { };
-    NodeIterator _countSiblings = null;
+    DTMAxisIterator _countSiblings = null;
 
     public SingleNodeCounter(Translet translet,
 			     DOM document,
-			     NodeIterator iterator) {
+			     DTMAxisIterator iterator) {
 	super(translet, document, iterator);
     }
 
@@ -120,13 +122,13 @@ public abstract class SingleNodeCounter extends NodeCounter {
 
     public static NodeCounter getDefaultNodeCounter(Translet translet,
 						    DOM document,
-						    NodeIterator iterator) {
+						    DTMAxisIterator iterator) {
 	return new DefaultSingleNodeCounter(translet, document, iterator);
     }
 
     static class DefaultSingleNodeCounter extends SingleNodeCounter {
 	public DefaultSingleNodeCounter(Translet translet,
-					DOM document, NodeIterator iterator) {
+					DOM document, DTMAxisIterator iterator) {
 	    super(translet, document, iterator);
 	}
 

@@ -78,8 +78,11 @@ import org.xml.sax.AttributeList;
 
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
+
+import org.apache.xml.dtm.DTMAxisIterator;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 
@@ -92,7 +95,7 @@ public final class BasisLibrary implements Operators {
     /**
      * Standard function count(node-set)
      */
-    public static int countF(NodeIterator iterator) {
+    public static int countF(DTMAxisIterator iterator) {
 	return(iterator.getLast());
     }
 
@@ -100,11 +103,11 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function sum(node-set). 
      * stringToDouble is inlined
      */
-    public static double sumF(NodeIterator iterator, DOM dom) {
+    public static double sumF(DTMAxisIterator iterator, DOM dom) {
 	try {
 	    double result = 0.0;
 	    int node;
-	    while ((node = iterator.next()) != NodeIterator.END) {
+	    while ((node = iterator.next()) != DTMAxisIterator.END) {
 		result += Double.parseDouble(dom.getNodeValue(node));
 	    }
 	    return result;
@@ -125,8 +128,8 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function string(value)
      */
     public static String stringF(Object obj, DOM dom) {
-	if (obj instanceof NodeIterator) {
-	    return dom.getNodeValue(((NodeIterator)obj).reset().next());
+	if (obj instanceof DTMAxisIterator) {
+	    return dom.getNodeValue(((DTMAxisIterator)obj).reset().next());
 	}
 	else if (obj instanceof Node) {
 	    return dom.getNodeValue(((Node)obj).node);
@@ -143,8 +146,8 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function string(value)
      */
     public static String stringF(Object obj, int node, DOM dom) {
-	if (obj instanceof NodeIterator) {
-	    return dom.getNodeValue(((NodeIterator)obj).reset().next());
+	if (obj instanceof DTMAxisIterator) {
+	    return dom.getNodeValue(((DTMAxisIterator)obj).reset().next());
 	}
 	else if (obj instanceof Node) {
 	    return dom.getNodeValue(((Node)obj).node);
@@ -196,8 +199,8 @@ public final class BasisLibrary implements Operators {
 	else if (obj instanceof String) {
 	    return stringToReal((String) obj);
 	}
-	else if (obj instanceof NodeIterator) {
-	    NodeIterator iter = (NodeIterator) obj;
+	else if (obj instanceof DTMAxisIterator) {
+	    DTMAxisIterator iter = (DTMAxisIterator) obj;
 	    return stringToReal(dom.getNodeValue(iter.reset().next()));
 	}
 	else if (obj instanceof Node) {
@@ -230,9 +233,9 @@ public final class BasisLibrary implements Operators {
 	else if (obj instanceof String) {
 	    return !((String) obj).equals(EMPTYSTRING);
 	}
-	else if (obj instanceof NodeIterator) {
-	    NodeIterator iter = (NodeIterator) obj;
-	    return iter.reset().next() != NodeIterator.END;
+	else if (obj instanceof DTMAxisIterator) {
+	    DTMAxisIterator iter = (DTMAxisIterator) obj;
+	    return iter.reset().next() != DTMAxisIterator.END;
 	}
 	else if (obj instanceof Node) {
 	    return true;
@@ -416,7 +419,7 @@ public final class BasisLibrary implements Operators {
     /**
      * XSLT Standard function namespace-uri(node-set).
      */
-    public static String namespace_uriF(NodeIterator iter, DOM dom) {
+    public static String namespace_uriF(DTMAxisIterator iter, DOM dom) {
 	return namespace_uriF(iter.next(), dom);
     }
 
@@ -483,17 +486,17 @@ public final class BasisLibrary implements Operators {
     /**
      * Utility function: node-set/node-set compare. 
      */
-    public static boolean compare(NodeIterator left, NodeIterator right,
+    public static boolean compare(DTMAxisIterator left, DTMAxisIterator right,
 				  int op, int node, DOM dom) {
 	int lnode;
 	left.reset();
 	
-	while ((lnode = left.next()) != NodeIterator.END) {
+	while ((lnode = left.next()) != DTMAxisIterator.END) {
 	    final String lvalue = dom.getNodeValue(lnode);
 	    
 	    int rnode;
 	    right.reset();
-	    while ((rnode = right.next()) != NodeIterator.END) {
+	    while ((rnode = right.next()) != DTMAxisIterator.END) {
 		if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
 		    return true;
 		}
@@ -505,12 +508,12 @@ public final class BasisLibrary implements Operators {
     /**
      * Utility function: node/node-set compare.
      */
-    public static boolean compare(int node, NodeIterator nodeSet,
+    public static boolean compare(int node, DTMAxisIterator nodeSet,
 				  int op, DOM dom) {
 	final String lvalue = dom.getNodeValue(node);
 	int rnode;
 	//nodeSet.reset();
-	while ((rnode = nodeSet.next()) != NodeIterator.END) {
+	while ((rnode = nodeSet.next()) != DTMAxisIterator.END) {
 	    if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
 		return true;
 	    }
@@ -518,7 +521,7 @@ public final class BasisLibrary implements Operators {
 	return false;
     }
 
-    public static boolean compare(int node, NodeIterator iterator,
+    public static boolean compare(int node, DTMAxisIterator iterator,
 				  int op, int dummy, DOM dom) {
 	//iterator.reset();
 
@@ -533,31 +536,31 @@ public final class BasisLibrary implements Operators {
 	     * Values is the obvious for attributes, but what about elements?
 	     */
 	    value = dom.getNodeValue(node);
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
 		if (value.equals(dom.getNodeValue(rnode))) return true;
 	    // if (rnode == node) return true; It just ain't that easy!!!
 	    break;
 	case NE:
 	    value = dom.getNodeValue(node);
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
 		if (!value.equals(dom.getNodeValue(rnode))) return true;
 	    // if (rnode != node) return true;
 	    break;
 	case LT:
 	    // Assume we're comparing document order here
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
 		if (rnode > node) return true;
 	    break;
 	case GT:
 	    // Assume we're comparing document order here
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
 		if (rnode < node) return true;
 	    break;
 	} 
 	return(false);
     }
 
-    public static boolean compare(NodeIterator left, final double rnumber,
+    public static boolean compare(DTMAxisIterator left, final double rnumber,
 				  final int op, final int node, DOM dom) {
 	return(compare(left,rnumber,op,dom));
     }
@@ -565,49 +568,49 @@ public final class BasisLibrary implements Operators {
     /**
      * Utility function: node-set/number compare.
      */
-    public static boolean compare(NodeIterator left, final double rnumber,
+    public static boolean compare(DTMAxisIterator left, final double rnumber,
 				  final int op, DOM dom) {
 	int node;
 	//left.reset();
 
 	switch (op) {
 	case EQ:
-	    while ((node = left.next()) != NodeIterator.END) {
+	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getNodeValue(node), dom) == rnumber)
 		    return true;
 	    }
 	    break;
 
 	case NE:
-	    while ((node = left.next()) != NodeIterator.END) {
+	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getNodeValue(node), dom) != rnumber)
 		    return true;
 	    }
 	    break;
 
 	case GT:
-	    while ((node = left.next()) != NodeIterator.END) {
+	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getNodeValue(node), dom) > rnumber)
 		    return true;
 	    }
 	    break;
 
 	case LT:
-	    while ((node = left.next()) != NodeIterator.END) {
+	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getNodeValue(node), dom) < rnumber)
 		    return true;
 	    }
 	    break;
 
 	case GE:
-	    while ((node = left.next()) != NodeIterator.END) {
+	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getNodeValue(node), dom) >= rnumber)
 		    return true;
 	    }
 	    break;
 
 	case LE:
-	    while ((node = left.next()) != NodeIterator.END) {
+	    while ((node = left.next()) != DTMAxisIterator.END) {
 		if (numberF(dom.getNodeValue(node), dom) <= rnumber)
 		    return true;
 	    }
@@ -623,11 +626,11 @@ public final class BasisLibrary implements Operators {
     /**
      * Utility function: node-set/string comparison. 
      */
-    public static boolean compare(NodeIterator left, final String rstring,
+    public static boolean compare(DTMAxisIterator left, final String rstring,
 				  int op, DOM dom) {
 	int node;
 	//left.reset();
-	while ((node = left.next()) != NodeIterator.END) {
+	while ((node = left.next()) != DTMAxisIterator.END) {
 	    if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
 		return true;
 	    }
@@ -635,7 +638,7 @@ public final class BasisLibrary implements Operators {
 	return false;
     }
 
-    public static boolean compare(NodeIterator left, final String rstring,
+    public static boolean compare(DTMAxisIterator left, final String rstring,
 				  int op, int node, DOM dom) {
 	
 	if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
@@ -710,7 +713,7 @@ public final class BasisLibrary implements Operators {
 	    }
 
 	    if (hasSimpleType(left) ||
-		left instanceof DOM && right instanceof NodeIterator) {
+		left instanceof DOM && right instanceof DTMAxisIterator) {
 		// swap operands
 		final Object temp = right; right = left; left = temp;
 	    }
@@ -742,10 +745,10 @@ public final class BasisLibrary implements Operators {
 
 	    // Next, node-set/t for t in {real, string, node-set, result-tree}
 
-	    NodeIterator iter = ((NodeIterator)left).reset();
+	    DTMAxisIterator iter = ((DTMAxisIterator)left).reset();
 
-	    if (right instanceof NodeIterator) {
-		result = compare(iter, (NodeIterator)right, op, node, dom);
+	    if (right instanceof DTMAxisIterator) {
+		result = compare(iter, (DTMAxisIterator)right, op, node, dom);
 	    }
 	    else if (right instanceof String) {
 		//result = compare(iter, (String)right, op, node, dom);
@@ -757,7 +760,7 @@ public final class BasisLibrary implements Operators {
 	    }
 	    else if (right instanceof Boolean) {
 		boolean temp = ((Boolean)right).booleanValue();
-		result = (iter.reset().next() != NodeIterator.END) == temp;
+		result = (iter.reset().next() != DTMAxisIterator.END) == temp;
 	    }
 	    else if (right instanceof DOM) {
 		result = compare(iter, ((DOM)right).getStringValue(),
@@ -890,15 +893,15 @@ public final class BasisLibrary implements Operators {
      * Utility function: used to convert references to node-sets. If the
      * obj is an instanceof Node then create a singleton iterator.
      */
-    public static NodeIterator referenceToNodeSet(Object obj) {
+    public static DTMAxisIterator referenceToNodeSet(Object obj) {
 	try {
 	    // Convert var/param -> node
 	    if (obj instanceof Node) {
 		return(new SingletonIterator(((Node)obj).node));
 	    }
 	    // Convert var/param -> node-set
-	    else if (obj instanceof NodeIterator) {
-		return(((NodeIterator)obj).cloneIterator());
+	    else if (obj instanceof DTMAxisIterator) {
+		return(((DTMAxisIterator)obj).cloneIterator());
 	    }
 	    // Convert var/param -> result-tree fragment
 	    else if (obj instanceof DOM) {
@@ -921,7 +924,7 @@ public final class BasisLibrary implements Operators {
      * Utility function: used with nth position filters to convert a sequence
      * of nodes to just one single node (the one at position n).
      */
-    public static NodeIterator getSingleNode(NodeIterator iterator) {
+    public static DTMAxisIterator getSingleNode(DTMAxisIterator iterator) {
 	int node = iterator.next();
 	return(new SingletonIterator(node));
     }
@@ -936,15 +939,16 @@ public final class BasisLibrary implements Operators {
 			    int node,
 			    DOM dom) {
 	try {
-	    if (obj instanceof NodeIterator) {
-		NodeIterator iter = (NodeIterator) obj;
+	    if (obj instanceof DTMAxisIterator) 
+      {
+		DTMAxisIterator iter = (DTMAxisIterator) obj;
 		dom.copy(iter.reset(), handler);
 	    }
 	    else if (obj instanceof Node) {
 		dom.copy(((Node) obj).node, handler);
 	    }
 	    else if (obj instanceof DOM) {
-		((DOM)obj).copy(1, handler);
+		((DOM)obj).copy(((org.apache.xml.dtm.ref.DTMDefaultBase)((DOMAdapter)obj).getDOMImpl()).getDocument(), handler);
 	    }
 	    else {
 		String string = obj.toString();		// or call stringF()

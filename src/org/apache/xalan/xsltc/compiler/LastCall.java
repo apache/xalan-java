@@ -69,6 +69,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
 
+import org.apache.xml.dtm.DTM;
+
 final class LastCall extends FunctionCall {
 
     private int _type = -1;
@@ -103,7 +105,7 @@ final class LastCall extends FunctionCall {
 	    if (getParent().getParent() instanceof Predicate) {
 		Predicate pred = (Predicate)getParent().getParent();
 		_type = pred.getPosType();
-		if ((_type==DOM.ELEMENT) || (_type==DOM.ATTRIBUTE)) _type = -1;
+		if ((_type==DTM.ELEMENT_NODE) || (_type==DTM.ATTRIBUTE_NODE)) _type = -1;
 	    }
 	}
 
@@ -111,7 +113,7 @@ final class LastCall extends FunctionCall {
 	// current node's children and not the last in the current iterator.
 	if (getParent() instanceof Predicate) {
 	    _type = ((Predicate)getParent()).getPosType();
-	    if ((_type==DOM.ELEMENT) || (_type==DOM.ATTRIBUTE)) _type = -1;
+	    if ((_type==DTM.ELEMENT_NODE) || (_type==DTM.ATTRIBUTE_NODE)) _type = -1;
 	    if (getParent().getParent() instanceof Step) {
 		lastChild = true;
 	    }
@@ -137,7 +139,7 @@ final class LastCall extends FunctionCall {
 	    if (lastChild) {
 		il.append(methodGen.loadDOM());
 		il.append(new PUSH(cpg, Axis.CHILD));
-		il.append(new PUSH(cpg, DOM.ELEMENT));
+		il.append(new PUSH(cpg, DTM.ELEMENT_NODE));
 		il.append(new INVOKEINTERFACE(git, 3));
 		il.append(methodGen.loadCurrentNode());
 		il.append(new INVOKEINTERFACE(start, 2));

@@ -73,7 +73,7 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
   /** The position of the current node within the iteration, as defined by XPath.
    * Note that this is _not_ the node's handle within the DTM!
    */
-  private int _position = 0;
+  public int _position = 0;
 
   /** The position of the marked node within the iteration;
    * a saved itaration state that we may want to come back to.
@@ -95,7 +95,7 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
    * we are iterating over a stream that can not be re-scanned, or if
    * the iterator was produced by cloning another iterator.)
    */
-  protected boolean _isRestartable = true;
+  public boolean _isRestartable = true;
   
   /**
    * Get start to END should 'close' the iterator,
@@ -287,5 +287,9 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
   {
     return -1;
   }
-
+  
+  public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+	}  
+  
 }

@@ -70,7 +70,8 @@ public interface DTMAxisIterator extends Cloneable
    *
    * @return The next node handle in the iteration, or END.
    */
-  public int next();
+  public int next();  
+  
 
   /**
    * Resets the iterator to the last start node.
@@ -129,4 +130,9 @@ public interface DTMAxisIterator extends Cloneable
    * from its current position.
    */
   public DTMAxisIterator cloneIterator();
+  
+  /**
+   * Set if restartable.
+   */
+  public void setRestartable(boolean isRestartable);
 }

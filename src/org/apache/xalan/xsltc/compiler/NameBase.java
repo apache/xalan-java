@@ -148,8 +148,10 @@ class NameBase extends FunctionCall {
 				       (BASIS_LIBRARY_CLASS,
 					"referenceToNodeSet",
 					"(Ljava/lang/Object;)" +
-					"Lorg/apache/xalan/xsltc/" +
-					"NodeIterator;")));
+          "Lorg/apache/xml/dtm/ref/" +
+					"DTMAxisIterator;")));
+					//"Lorg/apache/xalan/xsltc/" +
+					//"NodeIterator;")));
 	    il.append(methodGen.nextNode());
 	}
 	// Function was called with node-set parameter
