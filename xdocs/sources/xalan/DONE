@@ -1,5 +1,5 @@
 <s3 title="Changes since &xslt4j; version 2.0.D07">
-<p>This release includes several bug fixes to the &xslt4j; core and to the Xalan-Java 1 compatbility API.</p>
+<p>This release includes several bug fixes to the &xslt4j; and TrAX core and to the Xalan-Java 1 compatibility API.</p>
 <p><em>Core bug fixes:</em></p>
 <ul>
   <li>A threading problem showed up when using multiple processors. We fixed it by using a separate XPathContext object to do whitespace node
@@ -16,10 +16,24 @@
   <li>When using an Exception to instantiate a FactoryConfigurationError (extends Error), we now propagate the Exception message to 
   super().<br/><br/></li>
   <li>Added defensive code to ElemTemplateElement for handling a null URI.<br/><br/></li>
-  <li>When using an Exception to instantiate a TransformerException (extends Exception), we now propagage the Exception message to super() 
+  <li>When using an Exception to instantiate a TransformerException (extends Exception), we now propagate the Exception message to super() 
   rather than a generic message.<br/><br/></li>
   <li>Fixed a bug (the generation of an unwanted entity reference) performing the identity transformation 
-  (see <link idref="usagepatterns" anchor="serialize">Serializing output</link>) with an XML document containing a DOCTYPE declaration.</li>
+  (see <link idref="usagepatterns" anchor="serialize">Serializing output</link>) with an XML document containing a DOCTYPE
+   declaration.<br/><br/></li>
+   <li>Message manager modified so that the SourceLocator must always be passed in,
+  which will make a major difference in getting line number information.<br/><br/></li> 
+  <li>xsl:element's handling of namespace attribute and prefix in
+  name attribute changed so that it no longer manufactures prefixes...
+  it always tries its best to match the prefix entered.<br/><br/></li>
+  
+  <li>Bug fixed with namespace contexts in the stylesheet processor.
+  The bug could cause &lt;a xmlns:a="x"&gt;&lt;b&gt; to produce &lt;a xmlns:a="x"&gt;&lt;b xmlns:a="x"&gt;.<br/><br/></li>
+  
+  <li>Modified processing of xsl:message to enhance it as a debugging aid. Line numbers are now output with each
+  message. If the terminate attribute is true (the default is false) the message is sent to the console, and an exception is thrown with the
+  message "Stylesheet directed termination".<br/><br/></li>
+  <li>In TransformerException, check that the cause != null when checking for a contained exception.</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
