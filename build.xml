@@ -54,7 +54,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Defines variables used by the other targets                         -->
   <!-- =================================================================== -->
-  <property name="version" value="2_0_D07"/>
+  <property name="version" value="2_0_0"/>
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
@@ -256,12 +256,12 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the Xalan-J1 compatability javadoc                          -->
   <!-- =================================================================== -->
-  <target name="compat.apidocs" depends="compile">
+  <target name="compat.apidocs" depends="jar">
     <mkdir dir="${build.compat.apidocs}"/>
     <javadoc
          classpath="${java.class.path}"
          public="true"
-         sourcepath="${compat.src.dir}"
+         sourcepath="${compat.src.dir}:${src.dir}"
          overview="${compat.src.dir}/compatOverview.html"         
          packagenames="org.apache.xalan.*"
          author="true"
