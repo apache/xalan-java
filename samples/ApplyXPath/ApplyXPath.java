@@ -79,11 +79,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
 
 // Imported Serializer classes
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.SerializerFactory;
-import org.apache.xml.serialize.transition.XMLSerializer;
-import org.apache.xml.serialize.transition.TextSerializer;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xalan.serialize.DOMSerializer;
+import org.apache.xalan.serialize.Method;
+
+//import org.apache.xalan.serialize.FormatterToXML;
+//import org.apache.xalan.serialize.helpers.XMLOutputFormat;
 
 /**
  *  Very basic utility for applying an XPath epxression to an xml file and printing information
@@ -125,7 +128,7 @@ public class ApplyXPath
       try
       {
   	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-	    DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+	      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
         doc = docBuilder.parse(in);
       }
 	    catch (ParserConfigurationException pce)
@@ -143,23 +146,24 @@ public class ApplyXPath
       {
         // Use the simple XPath API to select a nodeIterator.
         nl = XPathAPI.selectNodeIterator(doc, xpath);
-	  }
+	    }
       catch (Exception e2)
       {
         System.err.println("selectNodeIterator threw: " + e2.toString() + " perhaps your xpath didn't select any nodes");
         e2.printStackTrace();
         return;
       }
-  	  XMLSerializer xmlser = new XMLSerializer(System.out, new OutputFormat());
-	  Node n = null;
-	  try
-	  {
-		while ((n = nl.nextNode())!= null)
-		{		  
-		  xmlser.serializeXPathReturnNode(n);
-		}
+	    try
+	    {
+   	    Serializer ser = SerializerFactory.getSerializer(Method.XML);
+        DOMSerializer domser = ser.asDOMSerializer();
+	      Node n = null;
+        while ((n = nl.nextNode())!= null)
+		    {
+		      domser.serialize(n);
+		    }
       }
-	  catch (Exception e3)
+	    catch (Exception e3)
       {
         e3.printStackTrace();
         return;
