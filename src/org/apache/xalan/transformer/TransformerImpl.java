@@ -2192,7 +2192,8 @@ public class TransformerImpl extends Transformer
     }
     finally
     {
-      m_xcontext.getVarStack().unlink();
+      if (!isDefaultTextRule)
+        m_xcontext.getVarStack().unlink();
       m_xcontext.popCurrentNode();
       if (!isApplyImports) {
           m_xcontext.popContextNodeList();
