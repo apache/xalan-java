@@ -237,8 +237,7 @@
     <faq title="Using the 'signature' file to verify a download">
       <q>How do I use the "signature" file to verify my download?</q>
       <a>
-        <p>For each &xslt4j; download file in
-          <resource-ref idref='xslt4j-distdir' />, there is a corresponding signature file. 
+        <p>For each &xslt4j; download file there is a corresponding signature file. 
         The signature file for xalan-j_2_0_1.tar.gz, for example, is xalan-j_2_0_1.tar.gz.sig.
         </p>
         <p>The .sig files are PGP signatures of the actual .zip or .tar.gz

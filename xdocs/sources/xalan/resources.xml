@@ -22,44 +22,18 @@
 
   <resource id="xslt4j-distdir" 
             title="xalan-j distribution directory" 
-            location="&xslt4j-distdir;"/>
+            location="http://www.apache.org/dyn/closer.cgi/xml/xalan-j"/>
 
   <resource id="xslt4j-distdir-previous" 
-            title="xalan-j previously posted builds directory" 
-            location="&xslt4j-distdir;old"/>
-
-  <resource id="xslt4j-dist-zip" 
-            title="&xslt4j-dist;.zip" 
-            location="&xslt4j-distdir;&xslt4j-dist;.zip"/>
-  <resource id="xslt4j-dist-targz" 
-            title="&xslt4j-dist;.tar.gz" 
-            location="&xslt4j-distdir;&xslt4j-dist;.tar.gz"/>
-
-  <resource id="xslt4j-dist-bin-zip" 
-            title="&xslt4j-dist-bin;.zip" 
-            location="&xslt4j-distdir;&xslt4j-dist-bin;.zip"/>
-  <resource id="xslt4j-dist-bin-targz" 
-            title="&xslt4j-dist-bin;.tar.gz" 
-            location="&xslt4j-distdir;&xslt4j-dist-bin;.tar.gz"/>
-  <resource id="xslt4j-dist-bin-2jars-zip" 
-            title="&xslt4j-dist-bin;-2jars.zip" 
-            location="&xslt4j-distdir;&xslt4j-dist-bin;-2jars.zip"/>
-  <resource id="xslt4j-dist-bin-2jars-targz" 
-            title="&xslt4j-dist-bin;-2jars.tar.gz" 
-            location="&xslt4j-distdir;&xslt4j-dist-bin;-2jars.tar.gz"/>            
-  <resource id="xslt4j-dist-src-zip" 
-            title="&xslt4j-dist-src;.zip" 
-            location="&xslt4j-distdir;&xslt4j-dist-src;.zip"/>
-  <resource id="xslt4j-dist-src-targz" 
-            title="&xslt4j-dist-src;.tar.gz" 
-            location="&xslt4j-distdir;&xslt4j-dist-src;.tar.gz"/>
+            title="xalan-j archive directory" 
+            location="http://archive.apache.org/dist/xml/xalan-j/"/>
 
   <resource id="xml4j-used" 
             title="&xml4j-used;" 
             location="http://xml.apache.org/xerces2-j/index.html"/>
   <resource id="xml4j-distdir" 
             title="xerces-j distribution directory" 
-            location="http://xml.apache.org/dist/xerces-j/"/>
+            location="http://www.apache.org/dyn/closer.cgi/xml/xerces-j/"/>
   <resource id="ant" title="Ant" 
             location="http://jakarta.apache.org/ant/index.html"/>
   <resource id="ApacheLicense" 

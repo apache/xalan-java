@@ -2119,7 +2119,7 @@ rely
      xml-apis.jar. These interfaces are shared by a number of tools, so placing them in their own jar simplifies coordination and reduces 
      the risk of duplication. <em>To run &xslt4j;, you must add xml-apis.jar to your classpath.</em> See <link idref="getstarted"
      anchor="classpath">Setting up the system class path</link>.</p>
-     <p>Beginning with this release, we are placing two distribution files in the <resource-ref idref="xslt4j-distdir"/>: a binary
+     <p>Beginning with this release, we are shipping two distribution files; a binary
      distribution file, which includes everything needed to run &xslt4j; and build applications, and a source distribution. For
      more information, see <link idref="getstarted" anchor="download">Downloading what you need</link>.</p>
      <p>This release also includes <link idref="samples" anchor="validatexmlinput">ValidateXMLInput</link>, a sample that illustrates 

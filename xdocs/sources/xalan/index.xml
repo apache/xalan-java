@@ -63,9 +63,6 @@
   <li><link anchor="moreinfo">For more information...</link></li>      
   <li><link anchor="license">License</link></li>        
 </ul>
-<!--note>A later Developer release has been posted in the <resource-ref idref="xslt4j-distdir"/>. 
-         For the changes that have occurred since &xslt4j-current;, consult the xml-xalan-cvs@apache.org 
-         mailing list, or download the release and consult the release notes.</note-->
          
 <anchor name="whatisit"/>
 <s2 title="What is it?">
