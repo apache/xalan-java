@@ -62,6 +62,9 @@
    <document id="xsltc_trax"
              label="Translet &amp; TrAX"
              source="xsltc/xsltc_trax.xml"/>
+   <document id="xsltc_predicates"
+             label="XPath Predicates"
+             source="xsltc/xsltc_predicates.xml"/>
  <separator/>
  <external href="todo.html" label="To-do list"/>
             
