@@ -828,10 +828,11 @@ public final class BasisLibrary implements Operators {
     private static double lowerBounds = 0.001;
     private static double upperBounds = 10000000;
     private static DecimalFormat defaultFormatter;
-    private static String defaultPattern = "####################.#########";
+    private static String defaultPattern = "";
 
     static {
 	defaultFormatter = new DecimalFormat();
+	defaultFormatter.setGroupingUsed(false);
     }
 
     /**
