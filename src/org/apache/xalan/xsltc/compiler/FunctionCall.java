@@ -107,8 +107,35 @@ class FunctionCall extends Expression {
 	"http://xml.apache.org/xalan";
 
     protected final static String JAVA_EXT_XALAN =
-	"http://xml.apache.org/xslt/java";
+	"http://xml.apache.org/xalan/java";
 
+    protected final static String JAVA_EXT_XALAN_OLD =
+	"http://xml.apache.org/xslt/java";
+	
+    protected final static String EXSLT_COMMON =
+	"http://exslt.org/common";
+
+    protected final static String EXSLT_MATH =
+	"http://exslt.org/math";
+	
+    protected final static String EXSLT_SETS =
+	"http://exslt.org/sets";
+
+    protected final static String EXSLT_DATETIME =
+	"http://exslt.org/dates-and-times";
+
+    protected final static String EXSLT_STRINGS =
+	"http://exslt.org/strings";
+	
+    // Namespace format constants
+    protected final static int NAMESPACE_FORMAT_JAVA = 0;
+    protected final static int NAMESPACE_FORMAT_CLASS = 1;
+    protected final static int NAMESPACE_FORMAT_PACKAGE = 2;
+    protected final static int NAMESPACE_FORMAT_CLASS_OR_PACKAGE = 3;
+	
+    // Namespace format
+    private int _namespace_format = NAMESPACE_FORMAT_JAVA;
+        
     /**
      * Stores reference to object for non-static Java calls
      */
@@ -116,6 +143,7 @@ class FunctionCall extends Expression {
 
     // External Java function's class/method/signature
     private String      _className;
+    private Class       _clazz;
     private Method      _chosenMethod;
     private Constructor _chosenConstructor;
     private MethodType  _chosenMethodType;
@@ -126,12 +154,20 @@ class FunctionCall extends Expression {
     // If FunctionCall is a external java constructor 
     private boolean     _isExtConstructor = false; 
 
+    // If the java method is static
+    private boolean 	  _isStatic = false;
+
     // Legal conversions between internal and Java types.
     private static final MultiHashtable _internal2Java = new MultiHashtable();
 
     // Legal conversions between Java and internal types.
     private static final Hashtable _java2Internal = new Hashtable();
+    
+    // The mappings between EXSLT extension namespaces and implementation classes
+    private static final Hashtable _extensionNamespaceTable = new Hashtable();
 
+    // Extension functions that are implemented in BasisLibrary
+    private static final Hashtable _extensionFunctionTable = new Hashtable();
     /**
      * inner class to used in internal2Java mappings, contains
      * the Java type and the distance between the internal type and
@@ -165,42 +201,54 @@ class FunctionCall extends Expression {
 	    final Class nodeListClass = Class.forName("org.w3c.dom.NodeList");
 
 	    // Possible conversions between internal and Java types
+	    _internal2Java.put(Type.Boolean, new JavaType(objectClass,2));
+	    _internal2Java.put(Type.Boolean, new JavaType(java.lang.Boolean.class,1));
 	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.TYPE,0));
 
-	    _internal2Java.put(Type.Int, new JavaType(Character.TYPE, 6)); 
-	    _internal2Java.put(Type.Int, new JavaType(Byte.TYPE, 5));
-	    _internal2Java.put(Type.Int, new JavaType(Short.TYPE, 4));
+	    _internal2Java.put(Type.Int, new JavaType(objectClass, 8));
+	    _internal2Java.put(Type.Int, new JavaType(Character.TYPE, 7));
+	    _internal2Java.put(Type.Int, new JavaType(Byte.TYPE, 6));
+	    _internal2Java.put(Type.Int, new JavaType(Short.TYPE, 5));
 	    _internal2Java.put(Type.Int, new JavaType(Integer.TYPE, 0));
-	    _internal2Java.put(Type.Int, new JavaType(Long.TYPE, 1));
-	    _internal2Java.put(Type.Int, new JavaType(Float.TYPE, 2));
-	    _internal2Java.put(Type.Int, new JavaType(Double.TYPE, 3));
+	    _internal2Java.put(Type.Int, new JavaType(java.lang.Integer.class, 1));
+	    _internal2Java.put(Type.Int, new JavaType(Long.TYPE, 2));
+	    _internal2Java.put(Type.Int, new JavaType(Float.TYPE, 3));
+	    _internal2Java.put(Type.Int, new JavaType(Double.TYPE, 4));
 
-	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 6)); 
-	    _internal2Java.put(Type.Real, new JavaType(Byte.TYPE, 5));
-	    _internal2Java.put(Type.Real, new JavaType(Short.TYPE, 4));
-	    _internal2Java.put(Type.Real, new JavaType(Integer.TYPE, 3));
-	    _internal2Java.put(Type.Real, new JavaType(Long.TYPE, 2));
-	    _internal2Java.put(Type.Real, new JavaType(Float.TYPE, 1));
+	    _internal2Java.put(Type.Real, new JavaType(objectClass, 8));
+	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 7)); 
+	    _internal2Java.put(Type.Real, new JavaType(Byte.TYPE, 6));
+	    _internal2Java.put(Type.Real, new JavaType(Short.TYPE, 5));
+	    _internal2Java.put(Type.Real, new JavaType(Integer.TYPE, 4));
+	    _internal2Java.put(Type.Real, new JavaType(Long.TYPE, 3));
+	    _internal2Java.put(Type.Real, new JavaType(Float.TYPE, 2));
+	    _internal2Java.put(Type.Real, new JavaType(java.lang.Double.class, 1));
 	    _internal2Java.put(Type.Real, new JavaType(Double.TYPE, 0));
 
+	    _internal2Java.put(Type.String, new JavaType(objectClass, 1));
 	    _internal2Java.put(Type.String, new JavaType(stringClass, 0)); 
 
 	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 0));  
 	    _internal2Java.put(Type.Node, new JavaType(nodeListClass, 1));
+	    _internal2Java.put(Type.Node, new JavaType(objectClass, 2));
+	    _internal2Java.put(Type.Node, new JavaType(stringClass, 3));
 
-	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10));
+	    _internal2Java.put(Type.NodeSet, new JavaType(stringClass, 3)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(objectClass, 2));
 	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1)); 
 	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass,0)); 
 
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass,0));
 	    _internal2Java.put(Type.ResultTree, new JavaType(objectClass,2));
+	    _internal2Java.put(Type.ResultTree, new JavaType(stringClass,3));
 
 	    _internal2Java.put(Type.Reference, new JavaType(objectClass,0));
 
 	    // Possible conversions between Java and internal types
 	    _java2Internal.put(Boolean.TYPE, Type.Boolean); 
-
+	    _java2Internal.put(Void.TYPE, Type.Void);
 	    _java2Internal.put(Character.TYPE, Type.Real); 
 	    _java2Internal.put(Byte.TYPE, Type.Real);
 	    _java2Internal.put(Short.TYPE, Type.Real);
@@ -216,6 +264,18 @@ class FunctionCall extends Expression {
 	    // Conversions from org.w3c.dom.Node/NodeList are not supported
 	    // GTM
 	    _java2Internal.put(nodeListClass, Type.NodeSet);
+	    
+	    // Initialize the extension namespace table
+	    _extensionNamespaceTable.put(EXT_XALAN, "org.apache.xalan.lib.Extensions");
+	    _extensionNamespaceTable.put(EXSLT_MATH, "org.apache.xalan.lib.ExsltMath");
+	    _extensionNamespaceTable.put(EXSLT_SETS, "org.apache.xalan.lib.ExsltSets");
+	    _extensionNamespaceTable.put(EXSLT_DATETIME, "org.apache.xalan.lib.ExsltDatetime");
+	    _extensionNamespaceTable.put(EXSLT_STRINGS, "org.apache.xalan.lib.ExsltStrings");
+	    
+	    // Initialize the extension function table
+	    _extensionFunctionTable.put(EXSLT_COMMON + ":nodeSet", "nodeset");
+	    _extensionFunctionTable.put(EXSLT_COMMON + ":objectType", "objectType");	    
+	    _extensionFunctionTable.put(EXT_XALAN + ":nodeset", "nodeset");
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println(e);
@@ -251,14 +311,34 @@ class FunctionCall extends Expression {
     public String getClassNameFromUri(String uri) 
 	throws TypeCheckError
     {
-	final int length = 
-	    uri.startsWith(JAVA_EXT_XSLTC) ? JAVA_EXT_XSLTC.length() + 1 :
-	    uri.startsWith(JAVA_EXT_XALAN) ? JAVA_EXT_XALAN.length() + 1 : 0;
-
-	if (length == 0) {
-	    throw new TypeCheckError(this);
-	}
-	return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+    
+        String className = (String)_extensionNamespaceTable.get(uri);
+    
+        if (className != null)
+          return className;
+        else
+        {
+          if (uri.startsWith(JAVA_EXT_XSLTC))
+          {
+      	    int length = JAVA_EXT_XSLTC.length() + 1;
+            return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+          }
+          else if (uri.startsWith(JAVA_EXT_XALAN))
+          {
+      	    int length = JAVA_EXT_XALAN.length() + 1;
+            return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+          }
+          else if (uri.startsWith(JAVA_EXT_XALAN_OLD))
+          {
+      	    int length = JAVA_EXT_XALAN_OLD.length() + 1;
+            return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+          }
+          else
+          {
+      	    int index = uri.lastIndexOf('/');
+      	    return (index > 0) ? uri.substring(index+1) : uri;
+          }      
+        }
     }
 
     /**
@@ -268,45 +348,87 @@ class FunctionCall extends Expression {
     public Type typeCheck(SymbolTable stable) 
 	throws TypeCheckError 
     {
-	if (_type != null) return _type;
+	  if (_type != null) return _type;
 
-	final String namespace = _fname.getNamespace();
-	final String local = _fname.getLocalPart();
+	  final String namespace = _fname.getNamespace();
+	  String local = _fname.getLocalPart();
 
-	if (isExtension()) {
+	  if (isExtension()) {
 	    _fname = new QName(null, null, local);
 	    return typeCheckStandard(stable);
-	}
-	else if (isStandard()) {
+	  }
+	  else if (isStandard()) {
 	    return typeCheckStandard(stable);
-	}
-	// Handle extension functions (they all have a namespace)
-	else {
-	    try {
-		// GTM: namespace = http://xml.apache.org/xslt/java
-		_className = getClassNameFromUri(namespace);
-
-		final int pos = local.lastIndexOf('.');
-		if (pos > 0) {
-		    _className = _className + local.substring(0, pos);
-		    _fname = new QName(namespace, null, 
-			local.substring(pos + 1));
+	  }
+	  // Handle extension functions (they all have a namespace)
+	  else 
+	  {
+	    try 
+            {
+	        _className = getClassNameFromUri(namespace);
+		  
+                final int pos = local.lastIndexOf('.');
+		if (pos > 0) 
+                {
+		  _isStatic = true;
+		  if (_className != null && _className.length() > 0)
+		  {
+		     _namespace_format = NAMESPACE_FORMAT_PACKAGE;
+		     _className = _className + "." + local.substring(0, pos);
+		  }
+		  else
+		  {
+		     _namespace_format = NAMESPACE_FORMAT_JAVA;
+		     _className = local.substring(0, pos);
+		  }
+			  
+		  _fname = new QName(namespace, null, local.substring(pos + 1));
 		}
-		else {
-		    _fname = new QName(namespace, null, local);
+		else 
+		{
+		  if (_className != null && _className.length() > 0)
+		  {
+		    try 
+                    {			  	
+		      TransletLoader loader = new TransletLoader();
+		      _clazz = loader.loadClass(_className);			  	
+		      _namespace_format = NAMESPACE_FORMAT_CLASS;
+		    }
+		    catch (ClassNotFoundException e)
+		    {
+		      _namespace_format = NAMESPACE_FORMAT_PACKAGE;	
+		    }
+		  }
+		  else
+	            _namespace_format = NAMESPACE_FORMAT_JAVA;
+			
+		  if (local.indexOf('-') > 0)
+		  {
+		    local = replaceDash(local);
+		  }
+		    
+		  String extFunction = (String)_extensionFunctionTable.get(namespace + ":" + local);
+		  if (extFunction != null) {
+		     _fname = new QName(null, null, extFunction);
+		     return typeCheckStandard(stable);
+		  }
+		  else
+		     _fname = new QName(namespace, null, local);
 		}
+		  
 		return typeCheckExternal(stable);
 	    } 
-	    catch (TypeCheckError e) {
-		ErrorMsg errorMsg = e.getErrorMsg();
-		if (errorMsg == null) {
+	    catch (TypeCheckError e) 
+	    {
+		  ErrorMsg errorMsg = e.getErrorMsg();
+		  if (errorMsg == null) {
 		    final String name = _fname.getLocalPart();
 		    errorMsg = new ErrorMsg(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
-		}
-		getParser().reportError(ERROR, errorMsg);
-		return _type = Type.Void;
+		  }
+		  getParser().reportError(ERROR, errorMsg);
+		  return _type = Type.Void;
 	    }
-	}
+	  }
     }
 
     /**
@@ -387,7 +509,11 @@ class FunctionCall extends Expression {
 	        _chosenConstructor = constructor;
 	        _isExtConstructor = true;
 		bestConstrDistance = currConstrDistance;
-		_type = new ObjectType(_className);
+		
+		if (_clazz != null)
+	          _type = new ObjectType(_clazz);
+		else
+		  _type = new ObjectType(_className);
 	    }
 	}
 
@@ -395,16 +521,7 @@ class FunctionCall extends Expression {
 	    return _type;
 	}
 
-	final StringBuffer buf = new StringBuffer(_className);
-	buf.append('.').append(_fname.getLocalPart()).append('(');
-	for (int i = 0; i < nArgs; i++) {
-	    final Type intType = (Type)argsType.elementAt(i);
-	    buf.append(intType.toString());
-	    if (i < nArgs - 1) buf.append(", ");
-	}
-	buf.append(')');
-	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, 
-	    buf.toString());
+	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, getMethodSignature(argsType));
     }
 
 
@@ -418,23 +535,46 @@ class FunctionCall extends Expression {
     public Type typeCheckExternal(SymbolTable stable) throws TypeCheckError {
 	int nArgs = _arguments.size();
 	final String name = _fname.getLocalPart();
-
+    
+ 	// check if function is a contructor 'new'
+	if (_fname.getLocalPart().equals("new")) {
+	    return typeCheckConstructor(stable);
+	}
 	// check if we are calling an instance method
-	if (_className.length() == 0) {
-	    if (nArgs > 0) {
-		_thisArgument = (Expression) _arguments.elementAt(0);
-		_arguments.remove(0); nArgs--;  
-		Type type = _thisArgument.typeCheck(stable);	
-		if (type instanceof ObjectType) {
-		    _className = ((ObjectType) type).getJavaClassName();
-		}
-		else {
-		    // TODO: define a new error message
-                    throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, 
-			name);
-		}
-            }
-            else {
+	else
+	{
+	  boolean hasThisArgument = false;
+	  
+	  if (nArgs == 0)
+	    _isStatic = true;
+	  
+	  if (!_isStatic)
+	  {
+	  	if (_namespace_format == NAMESPACE_FORMAT_JAVA ||
+	  	    _namespace_format == NAMESPACE_FORMAT_PACKAGE)
+	  	  hasThisArgument = true;
+	  	  
+	  	Expression firstArg = (Expression)_arguments.elementAt(0);
+	  	Type firstArgType = (Type)firstArg.typeCheck(stable);
+	  	
+	  	if (_namespace_format == NAMESPACE_FORMAT_CLASS &&
+	  	    firstArgType instanceof ObjectType && 
+	  	    ((ObjectType)firstArgType).getJavaClassName().equals(_className))
+	  	  hasThisArgument = true;
+	  	
+	  	if (hasThisArgument)
+	  	{
+	  	  _thisArgument = (Expression) _arguments.elementAt(0);
+	  	  _arguments.remove(0); nArgs--;
+		  if (firstArgType instanceof ObjectType) {
+		    _className = ((ObjectType) firstArgType).getJavaClassName();
+		  }
+		  else
+		   throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, name);  	  	
+	  	}
+	  }
+	  else if (_className.length() == 0)
+	  {
 		/*
 		 * Warn user if external function could not be resolved.
 		 * Warning will _NOT_ be issued is the call is properly
@@ -448,18 +588,14 @@ class FunctionCall extends Expression {
 		}
 		unresolvedExternal = true;
 		return _type = Type.Int;	// use "Int" as "unknown"
-            }	     
+	  }
 	}
- 	// check if function is a contructor 'new'
-	else if (_fname.getLocalPart().equals("new")) {
-	    return typeCheckConstructor(stable);
-	}
-
+	
 	final Vector methods = findMethods();
 	
 	if (methods == null) {
 	    // Method not found in this class
-	    throw new TypeCheckError(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
+	    throw new TypeCheckError(ErrorMsg.METHOD_NOT_FOUND_ERR, _className + "." + name);
 	}
 
 	Class extType = null;
@@ -487,42 +623,59 @@ class FunctionCall extends Expression {
 		}
 		else {
 		    // no mapping available
-		    currMethodDistance = Integer.MAX_VALUE;
-		    break;
+		    if (intType instanceof ObjectType)
+		    {
+		      ObjectType object = (ObjectType)intType;
+		      if (extType.getName().equals(object.getJavaClassName()))
+		        currMethodDistance += 0;
+		      else if (extType.isAssignableFrom(object.getJavaClass()))
+		        currMethodDistance += 1;
+		      else
+		      {
+		      	currMethodDistance = Integer.MAX_VALUE;
+		      	break;
+		      }
+		    }
+		    else
+		    {
+		      currMethodDistance = Integer.MAX_VALUE;
+		      break;
+		    }
 		}
 	    }
 
 	    if (j == nArgs) {
-		// Check if the return type can be converted
-		extType = method.getReturnType();
-		_type = extType.getName().equals("void") ? Type.Void
-		    : (Type) _java2Internal.get(extType);
+		  // Check if the return type can be converted
+		  extType = method.getReturnType();
+		
+		  _type = (Type) _java2Internal.get(extType);
+		  if (_type == null) {
+		    _type = new ObjectType(extType);
+		  }		
 
-		// Use this method if all parameters & return type match
-		if (_type != null && currMethodDistance < bestMethodDistance) {
+		  // Use this method if all parameters & return type match
+		  if (_type != null && currMethodDistance < bestMethodDistance) {
 		    _chosenMethod = method;
 		    bestMethodDistance = currMethodDistance;
-		}
+		  }
 	    }
+	}
+	
+	// It is an error if the chosen method is an instance menthod but we don't
+	// have a this argument.
+	if (_chosenMethod != null && _thisArgument == null &&
+	    !Modifier.isStatic(_chosenMethod.getModifiers())) {
+	  throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, getMethodSignature(argsType));
 	}
 
 	if (_type != null) {
-	    if (_type == Type.NodeSet){
-                getXSLTC().setMultiDocument(true);
-            }
-	    return _type;
+	  if (_type == Type.NodeSet) {
+           getXSLTC().setMultiDocument(true);
+          }
+	  return _type;
 	}
 
-	final StringBuffer buf = new StringBuffer(_className);
-	buf.append('.').append(_fname.getLocalPart()).append('(');
-	for (int i = 0; i < nArgs; i++) {
-	    final Type intType = (Type)argsType.elementAt(i);
-	    buf.append(intType.toString());
-	    if (i < nArgs - 1) buf.append(", ");
-	}
-	buf.append(')');
-	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, 
-	    buf.toString());
+	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, getMethodSignature(argsType));
     }
 
     /**
@@ -666,7 +819,7 @@ class FunctionCall extends Expression {
 	    // Push "this" if it is an instance method
 	    if (_thisArgument != null) {
 		_thisArgument.translate(classGen, methodGen);
-	    }
+	    }	    
 
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
@@ -687,10 +840,9 @@ class FunctionCall extends Expression {
 	    index = cpg.addMethodref(clazz,
 				     _fname.getLocalPart(),
 				     buffer.toString());
-	    il.append(_thisArgument != null ?
-		(InvokeInstruction) new INVOKEVIRTUAL(index) : 
-                (InvokeInstruction) new INVOKESTATIC(index));
-
+	    il.append(_thisArgument != null ? (InvokeInstruction) new INVOKEVIRTUAL(index) :
+	    		  (InvokeInstruction) new INVOKESTATIC(index));
+ 
 	    // Convert the return type back to our internal type
 	    _type.translateFrom(classGen, methodGen,
 				_chosenMethod.getReturnType());
@@ -708,8 +860,7 @@ class FunctionCall extends Expression {
 
     public boolean isExtension() {
 	final String namespace = _fname.getNamespace();
-	return (namespace != null) && (namespace.equals(EXT_XSLTC) 
-	    || namespace.equals(EXT_XALAN));
+	return (namespace != null) && (namespace.equals(EXT_XSLTC));
     }
 
     /**
@@ -718,47 +869,47 @@ class FunctionCall extends Expression {
      * if no such methods exist.
      */
     private Vector findMethods() {
-	Vector result = null;
-	final String namespace = _fname.getNamespace();
+	  
+	  Vector result = null;
+	  final String namespace = _fname.getNamespace();
 
-	if (namespace.startsWith(JAVA_EXT_XSLTC) ||
-	    namespace.startsWith(JAVA_EXT_XALAN)) {
+	  if (_className != null && _className.length() > 0) {
 	    final int nArgs = _arguments.size();
 	    try {
+	      if (_clazz == null) {
 		TransletLoader loader = new TransletLoader();
-		final Class clazz = loader.loadClass(_className);
-
-		if (clazz == null) {
-		    final ErrorMsg msg =
-			new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
-		    getParser().reportError(Constants.ERROR, msg);
+		_clazz = loader.loadClass(_className);
+		
+		if (_clazz == null) {
+		  final ErrorMsg msg =
+		        new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
+		  getParser().reportError(Constants.ERROR, msg);
 		}
-		else {
-		    final String methodName = _fname.getLocalPart();
-		    final Method[] methods = clazz.getDeclaredMethods();
+	      }
 
-		    for (int i = 0; i < methods.length; i++) {
-			final int mods = methods[i].getModifiers();
-			// Is it public and same number of args ?
-			if (Modifier.isPublic(mods)
-			    && methods[i].getName().equals(methodName)
-			    && methods[i].getParameterTypes().length == nArgs)
-			    {
-				if (result == null) {
-				    result = new Vector();
-				}
-				result.addElement(methods[i]);
-			    }
-		    }
+	      final String methodName = _fname.getLocalPart();
+	      final Method[] methods = _clazz.getMethods();
+
+	      for (int i = 0; i < methods.length; i++) {
+		final int mods = methods[i].getModifiers();
+		// Is it public and same number of args ?
+		if (Modifier.isPublic(mods)
+		    && methods[i].getName().equals(methodName)
+		    && methods[i].getParameterTypes().length == nArgs)
+		{
+		  if (result == null) {
+		    result = new Vector();
+	          }
+		  result.addElement(methods[i]);
 		}
+	      }
 	    }
 	    catch (ClassNotFoundException e) {
-		final ErrorMsg msg =
-		    new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
-		getParser().reportError(Constants.ERROR, msg);
+		  final ErrorMsg msg = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
+		  getParser().reportError(Constants.ERROR, msg);
 	    }
-	}
-	return result;
+	  }
+	  return result;
     }
 
     /**
@@ -770,41 +921,38 @@ class FunctionCall extends Expression {
         Vector result = null;
         final String namespace = _fname.getNamespace();
 
-        if (namespace.startsWith(JAVA_EXT_XSLTC) ||
-            namespace.startsWith(JAVA_EXT_XALAN)) {
-            final int nArgs = _arguments.size();
-            try {
-                TransletLoader loader = new TransletLoader();
-                final Class clazz = loader.loadClass(_className);
+        final int nArgs = _arguments.size();
+        try {
+          if (_clazz == null) {
+            TransletLoader loader = new TransletLoader();
+            _clazz = loader.loadClass(_className);
+          
+            if (_clazz == null) {
+              final ErrorMsg msg = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
+              getParser().reportError(Constants.ERROR, msg);
+            }          
+          }
 
-                if (clazz == null) {
-                    final ErrorMsg msg =
-                        new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
-                    getParser().reportError(Constants.ERROR, msg);
-                }
-                else {
-                    final Constructor[] constructors = clazz.getConstructors();
+          final Constructor[] constructors = _clazz.getConstructors();
 
-                    for (int i = 0; i < constructors.length; i++) {
-                        final int mods = constructors[i].getModifiers();
-                        // Is it public, static and same number of args ?
-                        if (Modifier.isPublic(mods) &&
-                           constructors[i].getParameterTypes().length == nArgs)
-                        {
-                            if (result == null) {
-                                result = new Vector();
-                            }
-                            result.addElement(constructors[i]);
-                        }
-                    }
+          for (int i = 0; i < constructors.length; i++) {
+              final int mods = constructors[i].getModifiers();
+              // Is it public, static and same number of args ?
+              if (Modifier.isPublic(mods) &&
+                  constructors[i].getParameterTypes().length == nArgs)
+              {
+                if (result == null) {
+                  result = new Vector();
                 }
-            }
-            catch (ClassNotFoundException e) {
-                final ErrorMsg msg =
-                    new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
-                getParser().reportError(Constants.ERROR, msg);
-            }
+                result.addElement(constructors[i]);
+              }
+          }
         }
+        catch (ClassNotFoundException e) {
+          final ErrorMsg msg = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
+          getParser().reportError(Constants.ERROR, msg);
+        }
+            
         return result;
     }
 
@@ -888,4 +1036,42 @@ class FunctionCall extends Expression {
 	}
 	return sb.append(")V").toString();
     }
+    
+    /**
+     * Return the signature of the current method
+     */
+    private String getMethodSignature(Vector argsType) {
+ 	final StringBuffer buf = new StringBuffer(_className);
+        buf.append('.').append(_fname.getLocalPart()).append('(');
+	  
+	int nArgs = argsType.size();	    
+	for (int i = 0; i < nArgs; i++) {
+	  final Type intType = (Type)argsType.elementAt(i);
+	  buf.append(intType.toString());
+	  if (i < nArgs - 1) buf.append(", ");
+	}
+	  
+	buf.append(')');
+	return buf.toString();
+    }
+
+    /**
+     * To support EXSLT extensions, convert names with dash to allowable Java names: 
+     * e.g., convert abc-xyz to abcXyz.
+     * Note: dashes only appear in middle of an EXSLT function or element name.
+     */
+    private static String replaceDash(String name)
+    {
+      char dash = '-';
+      StringBuffer buff = new StringBuffer("");
+      for (int i = 0; i < name.length(); i++)
+      {
+        if (i > 0 && name.charAt(i-1) == dash)
+          buff.append(Character.toUpperCase(name.charAt(i)));
+        else if (name.charAt(i) != dash)
+          buff.append(name.charAt(i));
+      }
+      return buff.toString();
+    }
+ 	 
 }
