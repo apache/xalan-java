@@ -976,7 +976,7 @@ public class ToHTMLStream extends ToStream
      * 
      * @return should be a two character string.
      */
-    private String makeHHString(int i)
+    private static String makeHHString(int i)
     {
         String s = Integer.toHexString(i).toUpperCase();
         if (s.length() == 1)

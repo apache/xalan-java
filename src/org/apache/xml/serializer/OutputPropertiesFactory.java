@@ -241,7 +241,7 @@ public class OutputPropertiesFactory
                 ioe);
         }
 
-        return defaultProperties;
+        return new Properties(defaultProperties);
     }
 
     /**

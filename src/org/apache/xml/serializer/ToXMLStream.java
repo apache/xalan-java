@@ -39,7 +39,7 @@ public class ToXMLStream extends ToStream
     /**
      * remembers if we need to write out "]]>" to close the CDATA
      */
-    private boolean m_cdataTagOpen = false;
+    boolean m_cdataTagOpen = false;
 
 
     /**
