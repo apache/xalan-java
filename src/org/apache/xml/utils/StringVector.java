@@ -61,7 +61,7 @@ package org.apache.xml.utils;
  * A very simple table that stores a list of strings, optimized
  * for small lists.
  */
-public class StringVector
+public class StringVector implements java.io.Serializable
 {
 
   /** Size of blocks to allocate           */
