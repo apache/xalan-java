@@ -88,7 +88,7 @@
    <document id="xsltc_trax_api"
              label="Xsltc TrAX API" 
              source="xsltc/xsltc_trax_api.xml"/>
-   <document id="xsltc_performance.xml"
+   <document id="xsltc_performance"
              label="Performance Hints" 
              source="xsltc/xsltc_performance.xml"/>
  <separator/>
