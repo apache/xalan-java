@@ -41,7 +41,7 @@ public interface XPathTreeConstants
   public int JJTADDITIVEEXPR = 34;
   public int JJTMULTIPLICATIVEEXPR = 35;
   public int JJTUNIONEXPR = 36;
-  public int JJTINTERSECTEXCEPTEXPR = 37;
+  public int JJTINTERSECTEXPR = 37;
   public int JJTUNARYEXPR = 38;
   public int JJTMINUS = 39;
   public int JJTPLUS = 40;
@@ -112,6 +112,7 @@ public interface XPathTreeConstants
   public int JJTOCCURRENCEINDICATOR = 105;
   public int JJTMULTIPLY = 106;
   public int JJTQMARK = 107;
+  public int JJTEXCEPTEXPR = 108;
 
 
   public String[] jjtNodeName = {

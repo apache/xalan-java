@@ -10,6 +10,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.ExceptPathIterator;
+import org.apache.xpath.axes.IntersectPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.functions.*;
 import org.apache.xpath.objects.XDecimal;
@@ -389,7 +390,10 @@ m_builtInFunctions.put(
       new FuncDistinctNodes());
 m_builtInFunctions.put(
       new QName("distinct-values"),
-      new FuncDistinctValues());
+      new FuncDistinctValues());      
+m_builtInFunctions.put(
+      new QName("avg"),
+      new FuncAverage());
   }
 
   /**
@@ -639,7 +643,11 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTUNIONEXPR :
         newNode = new UnionPathIterator();
         break;
-      case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR :
+      case XPathTreeConstants.JJTINTERSECTEXPR :
+        //newNode = new NonExecutableExpression(p, "JJTUNIONEXPR");
+        newNode = new IntersectPathIterator();
+        break;
+        case XPathTreeConstants.JJTEXCEPTEXPR :
         //newNode = new NonExecutableExpression(p, "JJTUNIONEXPR");
         newNode = new ExceptPathIterator();
         break;

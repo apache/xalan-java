@@ -112,6 +112,10 @@ public class InstanceofExpr extends Expression implements ExpressionOwner
   /** SchemaContext is not executable for the moment, so leave it 
    * as a NEE until we figure out what we want to do with it. **/
   private SchemaContext m_schemaContext;
+  
+  /** Flag indicating whether expression should be reduced.
+   *  False if this has more than one child. **/
+  private boolean m_reduce = true;
 	
   public InstanceofExpr() {
     super();
@@ -154,8 +158,8 @@ public class InstanceofExpr extends Expression implements ExpressionOwner
  	
  	XObject value=m_targetExpr.execute(xctxt);
  	
- 	
- 	switch(value.getType())
+ 	int type = value.getType();
+ 	switch(type)
  	{
  		case XObject.CLASS_UNKNOWN:
 	 		// If not XSLT type, can't be instance of ...?
@@ -230,7 +234,7 @@ public class InstanceofExpr extends Expression implements ExpressionOwner
  			}
  			break;
  	
- 		case XObject.CLASS_BOOLEAN:
+ 		/*case XObject.CLASS_BOOLEAN:
 			isInstance&=(m_elemOrAttrName==null);
 			isInstance&=(m_schemaTypeName==null);
 			isInstance&=(m_whatToShow==0);
@@ -254,11 +258,16 @@ public class InstanceofExpr extends Expression implements ExpressionOwner
 			isInstance&=(m_whatToShow==0);
 			isInstance&=(m_atomicTypeID==XType.STRING);
 			break;
- 			
+ 		*/	
  		default:
+ 		    isInstance&=(m_elemOrAttrName==null);
+			isInstance&=(m_schemaTypeName==null);
+			isInstance&=(m_whatToShow==0);
+			isInstance&=(m_atomicTypeID==type);
+			break;
 			// Should never arise
-			isInstance=false;
- 			break;
+			//isInstance=false;
+ 			//break;
  	}
  	
  	return isInstance ? XBoolean.S_TRUE : XBoolean.S_FALSE;
@@ -296,7 +305,7 @@ public class InstanceofExpr extends Expression implements ExpressionOwner
    */
   public boolean shouldReduceIfOneChild()
   {
-    return (m_whatToShow == 0 && m_atomicTypeID == 0) ? true : false;
+    return (m_whatToShow == 0 && m_atomicTypeID == 0 && m_reduce) ? true : false;
   }
 
 
@@ -409,6 +418,7 @@ public class InstanceofExpr extends Expression implements ExpressionOwner
       m_schemaContext = stype.getSchemaContext();
       m_schemaTypeName = stype.getSchemaTypeName();
       m_whatToShow = stype.getWhatToShow();
+      m_reduce = false;
     }
   }
 

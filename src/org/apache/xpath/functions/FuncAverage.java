@@ -56,30 +56,32 @@
  */
 package org.apache.xpath.functions;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.utils.DateTimeObj;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XSequence;
-import org.apache.xpath.objects.XSequenceImpl;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XNodeSequenceSingleton;
-import org.apache.xpath.objects.XInteger;
-import java.util.Comparator;
-import org.apache.xml.dtm.XType;
-import org.apache.xpath.parser.regexp.*;
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 
-import java.text.Collator;
-import java.net.URL;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMSequence;
+
+import java.util.Vector;
+
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
+import org.apache.xpath.objects.XObjectFactory;
+import org.apache.xpath.objects.XDouble;
+import org.apache.xml.dtm.XType;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the xs:matches() function.
+ * Execute the Count() function.
  */
-public class FuncDistinctNodes extends FunctionOneArg
+public class FuncAverage extends FunctionOneArg
 {
 
   /**
@@ -92,44 +94,34 @@ public class FuncDistinctNodes extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-  	XSequence seqParam = m_arg0.execute(xctxt).xseq();
-  	if (seqParam == XSequence.EMPTY)
-  	  return XSequence.EMPTY;
-  	  	
-  	XSequenceImpl seq = new XSequenceImpl();  	
-  	
-  	int pos = 0;
-  	XObject item;
-  	  
-  	while((item = seqParam.next()) != null)  	
-  	{
-  	  boolean found = false;
-  	  int type = item.getType();
-  	  
-  	  if(type == XType.NODE)
-  	  {
-  	    if(item instanceof XNodeSequenceSingleton)
-        {
-          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-          XObject obj;
-         while((obj = seq.next()) != null)
-          {
-            if (xnss.equals(obj))
-            {
-              found = true;
-              break;
-            }
-          }
-          if (!found)             
-            seq.insertItemAt(item, pos++);
-          seq.reset();    
-  	    }
-  	  }
-  	}
-  	
-  	if (seq.getLength() == 0)
-  	    return XSequence.EMPTY;
-  	    else return seq; 
-    
+    XSequence nl = m_arg0.execute(xctxt).xseq();
+	if (nl.equals(XSequence.EMPTY))
+	 return XSequence.EMPTY;
+	
+	int count = nl.getLength();
+	double sum = 0;
+	XObject item;
+	while ((item = nl.next()) != null)
+	{
+	  int type = item.getValueType();
+	  if(type == XType.ANYTYPE || type == XType.ANYSIMPLETYPE)
+	  {
+	    type = XObject.CLASS_NUMBER;
+	  }
+	  if (type != XObject.CLASS_NUMBER)
+       throw new javax.xml.transform.TransformerException("Argument not Numeric");
+        
+	  if(item instanceof XNodeSequenceSingleton)
+      {
+        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+        sum += xnss.num();
+      }
+      else
+       {
+          sum += item.num();
+       }
+	}
+
+    return new XDouble(sum/count);
   }
 }

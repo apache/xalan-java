@@ -1,5 +1,5 @@
 /*
- * The Apache Software License, Version 1.1 
+ * The Apache Software License, Version 1.1
  *
  *
  * Copyright (c) 1999 The Apache Software Foundation.  All rights 
@@ -75,14 +75,14 @@ import org.apache.xpath.parser.SimpleNode;
  * As each node is iterated via nextNode(), the node is also stored
  * in the NodeVector, so that previousNode() can easily be done.
  */
-public class ExceptPathIterator
-  extends UnionPathIterator
+public class IntersectPathIterator
+  extends ExceptPathIterator
 {
 
   /**
    * Constructor to create an instance which you can add location paths to.
    */
-  public ExceptPathIterator()
+  public IntersectPathIterator()
   {
 
     super();
@@ -99,107 +99,11 @@ public class ExceptPathIterator
   public DTMIterator cloneWithReset() throws CloneNotSupportedException
   {
 
-    ExceptPathIterator clone = (ExceptPathIterator) super.cloneWithReset();
+    IntersectPathIterator clone = (IntersectPathIterator) super.cloneWithReset();
 
     clone.resetProximityPositions();
 
     return clone;
-  }
-
-  /**
-   *  Returns the next node in the set and advances the position of the
-   * iterator in the set. After a DTMIterator is created, the first call
-   * to nextNode() returns the first node in the set.
-   * 
-   * @return  The next <code>Node</code> in the set being iterated over, or
-   *   <code>null</code> if there are no more members in that set.
-   */
-  public int nextNode()
-  {
-    if (m_foundLast)
-      return DTM.NULL;
-
-    if (DTM.NULL == m_lastFetched)
-    {
-      resetProximityPositions();
-    }
-
-    // Loop through the iterators getting the current fetched 
-    // node, and get the earliest occuring in document order
-    int earliestNode = DTM.NULL;
-
-    if (null != m_iterators)
-    {
-      //int n = m_iterators.length;
-     // int iteratorUsed = -1;
-    //  int savedIteratorUsed = -1;
-    //  int savedEarliestNode = DTM.NULL;
-
-      while (true)
-      {
-        //for (int i = 0; i < n; i++)
-       // {
-          int node = m_iterators[0].getCurrentNode();
-
-          if (DTM.NULL == node)
-            break;
-          else
-            if (DTM.NULL == earliestNode)
-            {
-              //iteratorUsed = i;
-              earliestNode = node;
-            }
-            else
-            {
-              if (node == earliestNode)
-              {
-
-                // Found a duplicate, so skip past it.
-                // %REVIEW% Make sure this is really what we 
-                // want to do for XPath 2.0.
-                m_iterators[0].nextNode();
-              }
-              else
-              {
-                DTM dtm = getDTM(node);
-
-                if (dtm.isNodeAfter(node, earliestNode))
-                {
-                  //iteratorUsed = i;
-                  earliestNode = node;
-                }
-              }
-            }
-        //}
-
-        if (DTM.NULL == earliestNode)
-          break;
-
-        else         
-          {
-            m_iterators[0].nextNode();
-            int acceptence = acceptNode(earliestNode);
-
-            if (DTMIterator.FILTER_ACCEPT == acceptence)
-              break;
-              
-            earliestNode = DTM.NULL;
-          }
-      }
-
-      if (DTM.NULL != earliestNode)
-      {
-        // m_iterators[iteratorUsed].nextNode();
-
-        incrementCurrentPos();
-      }
-      else
-        m_foundLast = true;
-    }
-
-    m_lastFetched = earliestNode;
-
-    return earliestNode;
   }
   
   /**
@@ -218,6 +122,7 @@ public class ExceptPathIterator
   	 accept = super.acceptNode(n);
   	if (accept == DTMIterator.FILTER_ACCEPT)
   	{
+  	  accept = DTMIterator.FILTER_SKIP;
   	  try
   	  {
   	    DTMIterator iterator = (DTMIterator)m_iterators[1].clone();
@@ -225,11 +130,14 @@ public class ExceptPathIterator
   		while (node != DTM.NULL)
   		{
   			if (n ==  node)
-  			return DTMIterator.FILTER_SKIP;
+  			{
+  			  accept = DTMIterator.FILTER_ACCEPT;
+  			  break;
+  			}
   			node = iterator.nextNode();
   		}
   	  }
-  	  catch (CloneNotSupportedException ex) {} 
+  	  catch(CloneNotSupportedException ex) {} 
   	}
   	return accept;
   }

@@ -1380,22 +1380,27 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         jj_la1[30] = jj_gen;
         break label_14;
       }
+      SimpleNode jjtn001;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Intersect:
         jj_consume_token(Intersect);
           binaryTokenStack.push(token);
+        UnaryExpr();
+        jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXPR);
         break;
       case Except:
         jj_consume_token(Except);
           binaryTokenStack.push(token);
+        UnaryExpr();
+        jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTEXCEPTEXPR);
         break;
       default:
         jj_la1[31] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      UnaryExpr();
-                  SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXCEPTEXPR);
+      //UnaryExpr();
+                  //SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXCEPTEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
       try {
