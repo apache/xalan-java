@@ -1041,7 +1041,9 @@ public class XSLTAttributeDef
           StylesheetHandler handler, String attrUri, String attrLocalName, String attrRawName, String attrValue, Object elem)
             throws org.xml.sax.SAXException
   {
-
+    if(attrRawName.equals("xmlns") || attrRawName.startsWith("xmlns:"))
+      return;
+      
     String setterString = getSetterMethodName();
 
     // If this is null, then it is a foreign namespace and we 
@@ -1055,10 +1057,10 @@ public class XSLTAttributeDef
 
         if(setterString.equals(S_FOREIGNATTR_SETTER))
         {
-	  // workaround for possible crimson bug
+          // workaround for possible crimson bug
           if( attrUri==null) attrUri="";
-	  // First try to match with the primative value.
-	  Class sclass = attrUri.getClass();
+          // First try to match with the primative value.
+          Class sclass = attrUri.getClass();
           Class[] argTypes = new Class[]{ sclass, sclass,
                                       sclass, sclass };
   
