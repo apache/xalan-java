@@ -96,7 +96,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 public class DecimalFormatProperties extends ElemTemplateElement
 {
 
-  /** NEEDSDOC Field m_dfs          */
+  /** An instance of DecimalFormatSymbols for this element        */
   DecimalFormatSymbols m_dfs;
 
   /**
@@ -132,7 +132,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * method pair there is an attribute defined for the xsl:decimal-format
    * element.</p>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the decimal format Symbols for this element.
    */
   public DecimalFormatSymbols getDecimalFormatSymbols()
   {
@@ -150,7 +150,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * If there is a name attribute, then the element declares a named
    * decimal-format; otherwise, it declares the default decimal-format.
    *
-   * NEEDSDOC @param qname
+   * @param qname The name to set as the "name" attribute.
    */
   public void setName(QName qname)
   {
@@ -162,7 +162,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * If there is a name attribute, then the element declares a named
    * decimal-format; otherwise, it declares the default decimal-format.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the value of the "name" attribute.
    */
   public QName getName()
   {
@@ -178,7 +178,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * decimal-separator specifies the character used for the decimal sign;
    * the default value is the period character (.).
    *
-   * NEEDSDOC @param ds
+   * @param ds Character to set as decimal separator 
    */
   public void setDecimalSeparator(char ds)
   {
@@ -190,7 +190,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * decimal-separator specifies the character used for the decimal sign;
    * the default value is the period character (.).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the character to use as decimal separator
    */
   public char getDecimalSeparator()
   {
@@ -202,7 +202,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * grouping-separator specifies the character used as a grouping
    * (e.g. thousands) separator; the default value is the comma character (,).
    *
-   * NEEDSDOC @param gs
+   * @param gs Character to use a grouping separator 
    */
   public void setGroupingSeparator(char gs)
   {
@@ -214,7 +214,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * grouping-separator specifies the character used as a grouping
    * (e.g. thousands) separator; the default value is the comma character (,).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character to use a grouping separator 
    */
   public char getGroupingSeparator()
   {
@@ -226,7 +226,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * infinity specifies the string used to represent infinity;
    * the default value is the string Infinity.
    *
-   * NEEDSDOC @param inf
+   * @param inf String to use as the "infinity" attribute.
    */
   public void setInfinity(String inf)
   {
@@ -238,7 +238,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * infinity specifies the string used to represent infinity;
    * the default value is the string Infinity.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String to use as the "infinity" attribute.
    */
   public String getInfinity()
   {
@@ -250,7 +250,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * minus-sign specifies the character used as the default minus sign; the
    * default value is the hyphen-minus character (-, #x2D).
    *
-   * NEEDSDOC @param v
+   * @param v Character to use as minus sign
    */
   public void setMinusSign(char v)
   {
@@ -262,7 +262,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * minus-sign specifies the character used as the default minus sign; the
    * default value is the hyphen-minus character (-, #x2D).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character to use as minus sign
    */
   public char getMinusSign()
   {
@@ -274,7 +274,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * NaN specifies the string used to represent the NaN value;
    * the default value is the string NaN.
    *
-   * NEEDSDOC @param v
+   * @param v String to use as the "NaN" attribute.
    */
   public void setNaN(String v)
   {
@@ -286,7 +286,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * NaN specifies the string used to represent the NaN value;
    * the default value is the string NaN.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String to use as the "NaN" attribute.
    */
   public String getNaN()
   {
@@ -298,7 +298,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * percent specifies the character used as a percent sign; the default
    * value is the percent character (%).
    *
-   * NEEDSDOC @param v
+   * @param v Character to use as percent 
    */
   public void setPercent(char v)
   {
@@ -310,7 +310,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * percent specifies the character used as a percent sign; the default
    * value is the percent character (%).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character to use as percent 
    */
   public char getPercent()
   {
@@ -322,7 +322,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * per-mille specifies the character used as a per mille sign; the default
    * value is the Unicode per-mille character (#x2030).
    *
-   * NEEDSDOC @param v
+   * @param v Character to use as per-mille
    */
   public void setPerMille(char v)
   {
@@ -334,7 +334,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * per-mille specifies the character used as a per mille sign; the default
    * value is the Unicode per-mille character (#x2030).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character to use as per-mille 
    */
   public char getPerMille()
   {
@@ -346,7 +346,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * zero-digit specifies the character used as the digit zero; the default
    * value is the digit zero (0).
    *
-   * NEEDSDOC @param v
+   * @param v Character to use as the digit zero
    */
   public void setZeroDigit(char v)
   {
@@ -358,7 +358,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * zero-digit specifies the character used as the digit zero; the default
    * value is the digit zero (0).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character to use as the digit zero
    */
   public char getZeroDigit()
   {
@@ -370,7 +370,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * digit specifies the character used for a digit in the format pattern;
    * the default value is the number sign character (#).
    *
-   * NEEDSDOC @param v
+   * @param v Character to use for a digit in format pattern
    */
   public void setDigit(char v)
   {
@@ -382,7 +382,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * digit specifies the character used for a digit in the format pattern;
    * the default value is the number sign character (#).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character to use for a digit in format pattern
    */
   public char getDigit()
   {
@@ -395,7 +395,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * and negative sub patterns in a pattern; the default value is the
    * semi-colon character (;).
    *
-   * NEEDSDOC @param v
+   * @param v Character to use as a pattern separator
    */
   public void setPatternSeparator(char v)
   {
@@ -408,7 +408,7 @@ public class DecimalFormatProperties extends ElemTemplateElement
    * and negative sub patterns in a pattern; the default value is the
    * semi-colon character (;).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character to use as a pattern separator
    */
   public char getPatternSeparator()
   {
@@ -417,6 +417,8 @@ public class DecimalFormatProperties extends ElemTemplateElement
 
   /**
    * This function is called to recompose() all of the decimal format properties elements.
+   * 
+   * @param root Stylesheet root
    */
   public void recompose(StylesheetRoot root)
   {

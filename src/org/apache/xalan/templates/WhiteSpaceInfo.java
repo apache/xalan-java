@@ -66,7 +66,7 @@ import org.apache.xpath.XPath;
 public class WhiteSpaceInfo extends ElemTemplate
 {
 
-  /** NEEDSDOC Field m_shouldStripSpace          */
+  /** Flag indicating whether whitespaces should be stripped        */
   private boolean m_shouldStripSpace;
 
   /**
@@ -74,7 +74,7 @@ public class WhiteSpaceInfo extends ElemTemplate
    * matches the match pattern should be stripped, otherwise
    * the space should be preserved.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return value of m_shouldStripSpace flag
    */
   public boolean getShouldStripSpace()
   {
@@ -85,8 +85,10 @@ public class WhiteSpaceInfo extends ElemTemplate
    * Constructor WhiteSpaceInfo
    *
    *
-   * NEEDSDOC @param matchPattern
-   * NEEDSDOC @param shouldStripSpace
+   * @param matchPattern Match pattern
+   * @param shouldStripSpace Flag indicating whether or not
+   * to strip whitespaces
+   * @param thisSheet The current stylesheet
    */
   public WhiteSpaceInfo(XPath matchPattern, boolean shouldStripSpace, Stylesheet thisSheet)
   {

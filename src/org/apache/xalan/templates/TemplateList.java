@@ -154,11 +154,11 @@ public class TemplateList implements java.io.Serializable
     }
   }
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag to indicate whether in DEBUG mode          */
   boolean DEBUG = false;
 
   /**
-   * NEEDSDOC Method dumpAssociationTables 
+   * Dump all patterns and elements that match those patterns
    *
    */
   void dumpAssociationTables()
@@ -574,9 +574,9 @@ public class TemplateList implements java.io.Serializable
   /**
    * Check for match conflicts, and warn the stylesheet author.
    *
-   * NEEDSDOC @param head
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param targetNode
+   * @param head Template pattern
+   * @param xctxt Current XPath context
+   * @param targetNode Node matching the pattern
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    */
   private void checkConflicts(TemplateSubPatternAssociation head,
@@ -632,16 +632,16 @@ public class TemplateList implements java.io.Serializable
    */
   private Hashtable m_patternTable = new Hashtable(89);
 
-  /** NEEDSDOC Field m_wildCardPatterns          */
+  /** Wildcard patterns          */
   private TemplateSubPatternAssociation m_wildCardPatterns = null;
 
-  /** NEEDSDOC Field m_textPatterns          */
+  /** Text Patterns          */
   private TemplateSubPatternAssociation m_textPatterns = null;
 
-  /** NEEDSDOC Field m_docPatterns          */
+  /** Root document Patterns          */
   private TemplateSubPatternAssociation m_docPatterns = null;
 
-  /** NEEDSDOC Field m_commentPatterns          */
+  /** Comment Patterns          */
   private TemplateSubPatternAssociation m_commentPatterns = null;
 
   /**

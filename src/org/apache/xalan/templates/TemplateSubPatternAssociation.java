@@ -74,22 +74,22 @@ import org.apache.xml.utils.QName;
 class TemplateSubPatternAssociation implements Serializable, Cloneable
 {
 
-  /** NEEDSDOC Field m_stepPattern          */
+  /** Step pattern           */
   StepPattern m_stepPattern;
 
-  /** NEEDSDOC Field m_pattern          */
+  /** Template pattern          */
   private String m_pattern;
 
-  /** NEEDSDOC Field m_template          */
+  /** The template element         */
   private ElemTemplate m_template;
 
-  /** NEEDSDOC Field m_next          */
+  /** Next pattern         */
   private TemplateSubPatternAssociation m_next = null;
 
-  /** NEEDSDOC Field m_wild          */
+  /** Flag indicating whether this is wild card pattern          */
   private boolean m_wild;
 
-  /** NEEDSDOC Field m_targetString          */
+  /** Target string for this match pattern           */
   private String m_targetString;
 
   /**
@@ -111,7 +111,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   /**
    * Clone this object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The cloned object.
    *
    * @throws CloneNotSupportedException
    */
@@ -138,10 +138,10 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   }
 
   /**
-   * NEEDSDOC Method setTargetString 
+   * Set Target String for this template pattern  
    *
    *
-   * NEEDSDOC @param key
+   * @param key Target string to set
    */
   public void setTargetString(String key)
   {
@@ -151,9 +151,9 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   /**
    * Tell if two modes match according to the rules of XSLT.
    *
-   * NEEDSDOC @param m1
+   * @param m1 mode to match
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given mode matches this template's mode
    */
   boolean matchMode(QName m1)
   {
@@ -163,10 +163,10 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   /**
    * Tell if two modes match according to the rules of XSLT.
    *
-   * NEEDSDOC @param m1
-   * NEEDSDOC @param m2
+   * @param m1 First mode to match
+   * @param m2 Second mode to match
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the two given modes match
    */
   private boolean matchModes(QName m1, QName m2)
   {
@@ -178,8 +178,8 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    * Return the mode associated with the template.
    *
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param targetNode
+   * @param xctxt XPath context to use with this template
+   * @param targetNode Target node
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    * @return The mode associated with the template.
    *
