@@ -487,8 +487,7 @@ public class FuncDocument extends Function2Args
   }
   
   /**
-   * Tell if the expression is a nodeset expression.  In other words, tell 
-   * if you can execute {@link asNode() asNode} without an exception.
+   * Tell if the expression is a nodeset expression.
    * @return true if the expression can be represented as a nodeset.
    */
   public boolean isNodesetExpr()

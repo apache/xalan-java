@@ -96,7 +96,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   {
     /**
      * @param node
-     * @return
+     *
      * @throws org.xml.sax.SAXException
      */
     public void characters( Node node )throws org.xml.sax.SAXException ;
@@ -177,7 +177,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * One of the common bugs in this code was to allocate an Object and
    * not incerment m_size, using this method will assure that function.
    * @param o
-   * @return
+   *
    */
   private int allocateNodeObject( Object o )
   {
@@ -192,7 +192,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param extendedType
    * @param parent
    * @param prevsib
-   * @return
+   *
    */
   protected int addElementWithData( Object o, int level, int extendedType, int parent, int prevsib )
   {
@@ -218,7 +218,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param extendedType
    * @param parent
    * @param prevsib
-   * @return
+   *
    */
   protected int addElement( int level, int extendedType, int parent, int prevsib )
   {
@@ -276,7 +276,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param o
    * @param extendedType
    * @param pnode
-   * @return
+   *
    */
   protected int addAttributeToNode( Object o, int extendedType, int pnode )
   {
@@ -330,7 +330,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * we should be able to fake it out.
    * @param toNode
    * @param fromNode
-   * @return
+   *
    */
   protected void cloneAttributeFromNode( int toNode, int fromNode )
   {
@@ -352,7 +352,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getFirstAttribute( int parm1 )
   {
@@ -368,7 +368,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
  /**
    * @param parm1
-   * @return
+   *
    */
   public String getNodeValue( int parm1 )
   {
@@ -473,7 +473,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getNextAttribute( int parm1 )
   {
@@ -485,7 +485,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
 
   /**
-   * @return
+   *
    */
   protected int getNumberOfNodes( )
   {
@@ -494,7 +494,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   protected boolean nextNode( )
   {
@@ -507,7 +507,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * The Expanded Name table holds all of our Node names. The Base class
    * will add the common element types, need to call this function from
    * the derived class.
-   * @return
+   *
    */
   protected void createExpandedNameTable( )
   {
@@ -520,7 +520,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
 
   /**
-   * @return
+   *
    */
   public void dumpDTM( )
   {
@@ -679,7 +679,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * contents of all Text or CDATASection nodes.
    * @param ch
    * @param depth
-   * @return
+   *
    * @throws org.xml.sax.SAXException
    */
   protected static void dispatchNodeData( Node node, ContentHandler ch, int depth )throws org.xml.sax.SAXException
@@ -738,7 +738,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * class.
    * @param property a <code>String</code> value
    * @param value an <code>Object</code> value
-   * @return
+   *
    */
   public void setProperty( String property, Object value )
   {
@@ -757,7 +757,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected int getNextNodeIdentity( int parm1 )
   {
@@ -769,7 +769,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param parm1
    * @param parm2
    * @param parm3
-   * @return
+   *
    */
   public int getAttributeNode( int parm1, String parm2, String parm3 )
   {
@@ -786,7 +786,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getLocalName( int parm1 )
   {
@@ -806,7 +806,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getNodeName( int parm1 )
   {
@@ -824,7 +824,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
    /**
    * @param parm1
-   * @return
+   *
    */
   public boolean isAttributeSpecified( int parm1 )
   {
@@ -834,7 +834,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getUnparsedEntityURI( String parm1 )
   {
@@ -843,7 +843,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public DTDHandler getDTDHandler( )
   {
@@ -853,7 +853,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getPrefix( int parm1 )
   {
@@ -862,7 +862,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public EntityResolver getEntityResolver( )
   {
@@ -871,7 +871,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public String getDocumentTypeDeclarationPublicIdentifier( )
   {
@@ -880,7 +880,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public LexicalHandler getLexicalHandler( )
   {
@@ -888,7 +888,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
     return null;
   }
   /**
-   * @return
+   *
    */
   public boolean needsTwoThreads( )
   {
@@ -897,7 +897,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public ContentHandler getContentHandler( )
   {
@@ -908,9 +908,9 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    * @throws org.xml.sax.SAXException
-   * @return
+   *
    * @throws org.xml.sax.SAXException
    */
   public void dispatchToEvents( int parm1, ContentHandler parm2 )throws org.xml.sax.SAXException
@@ -927,7 +927,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getNamespaceURI( int parm1 )
   {
@@ -939,9 +939,9 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param nodeHandle
    * @param ch
    * @param normalize
-   * @return
+   *
    * @throws org.xml.sax.SAXException
-   * @return
+   *
    * @throws org.xml.sax.SAXException
    */
   public void dispatchCharactersEvents( int nodeHandle, ContentHandler ch, boolean normalize )throws org.xml.sax.SAXException
@@ -970,7 +970,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * Event overriding for Debug
-   * @return
+   *
    */
   public boolean supportsPreStripping( )
   {
@@ -980,7 +980,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected int _exptype( int parm1 )
   {
@@ -990,7 +990,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected SuballocatedIntVector findNamespaceContext( int parm1 )
   {
@@ -1000,7 +1000,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected int _prevsib( int parm1 )
   {
@@ -1011,7 +1011,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected short _type( int parm1 )
   {
@@ -1021,7 +1021,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public Node getNode( int parm1 )
   {
@@ -1031,7 +1031,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getPreviousSibling( int parm1 )
   {
@@ -1041,7 +1041,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getDocumentStandalone( int parm1 )
   {
@@ -1051,7 +1051,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getNodeNameX( int parm1 )
   {
@@ -1064,7 +1064,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   public void setFeature( String parm1, boolean parm2 )
   {
@@ -1080,7 +1080,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected int _parent( int parm1 )
   {
@@ -1091,7 +1091,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   protected void indexNode( int parm1, int parm2 )
   {
@@ -1100,7 +1100,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   protected boolean getShouldStripWhitespace( )
   {
@@ -1109,7 +1109,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   protected void popShouldStripWhitespace( )
   {
@@ -1120,7 +1120,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   public boolean isNodeAfter( int parm1, int parm2 )
   {
@@ -1130,7 +1130,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getNamespaceType( int parm1 )
   {
@@ -1140,7 +1140,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected int _level( int parm1 )
   {
@@ -1151,7 +1151,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected void pushShouldStripWhitespace( boolean parm1 )
   {
@@ -1161,7 +1161,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getDocumentVersion( int parm1 )
   {
@@ -1172,7 +1172,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   public boolean isSupported( String parm1, String parm2 )
   {
@@ -1183,7 +1183,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected void setShouldStripWhitespace( boolean parm1 )
   {
@@ -1195,7 +1195,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   protected void ensureSizeOfIndex( int parm1, int parm2 )
   {
@@ -1205,7 +1205,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected void ensureSize( int parm1 )
   {
@@ -1218,7 +1218,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getDocumentEncoding( int parm1 )
   {
@@ -1230,7 +1230,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param parm1
    * @param parm2
    * @param parm3
-   * @return
+   *
    */
   public void appendChild( int parm1, boolean parm2, boolean parm3 )
   {
@@ -1247,7 +1247,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public short getLevel( int parm1 )
   {
@@ -1256,7 +1256,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public String getDocumentBaseURI( )
   {
@@ -1268,7 +1268,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param parm1
    * @param parm2
    * @param parm3
-   * @return
+   *
    */
   public int getNextNamespaceNode( int parm1, int parm2, boolean parm3 )
   {
@@ -1285,7 +1285,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public void appendTextChild( String parm1 )
   {
@@ -1298,7 +1298,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param parm2
    * @param parm3
    * @param parm4
-   * @return
+   *
    */
   protected int findGTE( int[] parm1, int parm2, int parm3, int parm4 )
   {
@@ -1316,7 +1316,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   public int getFirstNamespaceNode( int parm1, boolean parm2 )
   {
@@ -1326,7 +1326,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getStringValueChunkCount( int parm1 )
   {
@@ -1336,7 +1336,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getLastChild( int parm1 )
   {
@@ -1346,7 +1346,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public boolean hasChildNodes( int parm1 )
   {
@@ -1356,7 +1356,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public short getNodeType( int parm1 )
   {
@@ -1378,7 +1378,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public boolean isCharacterElementContentWhitespace( int parm1 )
   {
@@ -1388,7 +1388,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getFirstChild( int parm1 )
   {
@@ -1398,7 +1398,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getDocumentSystemIdentifier( int parm1 )
   {
@@ -1409,7 +1409,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   protected void declareNamespaceInContext( int parm1, int parm2 )
   {
@@ -1419,7 +1419,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getNamespaceFromExpandedNameID( int parm1 )
   {
@@ -1435,7 +1435,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public String getLocalNameFromExpandedNameID( int parm1 )
   {
@@ -1451,7 +1451,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getExpandedTypeID( int parm1 )
   {
@@ -1460,7 +1460,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public int getDocument( )
   {
@@ -1472,7 +1472,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   protected int findInSortedSuballocatedIntVector( SuballocatedIntVector parm1, int parm2 )
   {
@@ -1488,7 +1488,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public boolean isDocumentAllDeclarationsProcessed( int parm1 )
   {
@@ -1498,7 +1498,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected void error( String parm1 )
   {
@@ -1509,7 +1509,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected int _firstch( int parm1 )
   {
@@ -1519,7 +1519,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getOwnerDocument( int parm1 )
   {
@@ -1529,7 +1529,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   protected int _nextsib( int parm1 )
   {
@@ -1539,7 +1539,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getNextSibling( int parm1 )
   {
@@ -1549,7 +1549,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
 
   /**
-   * @return
+   *
    */
   public boolean getDocumentAllDeclarationsProcessed( )
   {
@@ -1559,7 +1559,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getParent( int parm1 )
   {
@@ -1571,7 +1571,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param parm1
    * @param parm2
    * @param parm3
-   * @return
+   *
    */
   public int getExpandedTypeID( String parm1, String parm2, int parm3 )
   {
@@ -1581,7 +1581,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public void setDocumentBaseURI( String parm1 )
   {
@@ -1593,7 +1593,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
    * @param parm1
    * @param parm2
    * @param parm3
-   * @return
+   *
    */
   public char[] getStringValueChunk( int parm1, int parm2, int[] parm3 )
   {
@@ -1608,7 +1608,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public DTMAxisTraverser getAxisTraverser( int parm1 )
   {
@@ -1619,7 +1619,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   /**
    * @param parm1
    * @param parm2
-   * @return
+   *
    */
   public DTMAxisIterator getTypedAxisIterator( int parm1, int parm2 )
   {
@@ -1629,7 +1629,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    * @param parm1
-   * @return
+   *
    */
   public DTMAxisIterator getAxisIterator( int parm1 )
   {
@@ -1638,7 +1638,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
   /**
    * @param parm1
-   * @return
+   *
    */
   public int getElementById( String parm1 )
   {
@@ -1647,7 +1647,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public DeclHandler getDeclHandler( )
   {
@@ -1656,7 +1656,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public ErrorHandler getErrorHandler( )
   {
@@ -1665,7 +1665,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
   }
 
   /**
-   * @return
+   *
    */
   public String getDocumentTypeDeclarationSystemIdentifier( )
   {

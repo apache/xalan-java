@@ -74,20 +74,20 @@ public interface ConnectionPool
   /**
    * Determine if a Connection Pool has been disabled. If a Connection pool
    * is disabled, then it will only manage connections that are in use.
-   * @return
+   *
    */
   public boolean isEnabled( );
 
   /**
    * The Driver and URL are the only required parmeters.
    * @param d
-   * @return
+   *
    */
   public void setDriver( String d );
 
   /**
    * @param url
-   * @return
+   *
    */
   public void setURL( String url );
 
@@ -95,7 +95,7 @@ public interface ConnectionPool
    * Start downsizeing the pool, this usally happens right after the
    * pool has been marked as Inactive and we are removing connections
    * that are not currently inuse.
-   * @return
+   *
    */
   public void freeUnused( );
 
@@ -103,7 +103,7 @@ public interface ConnectionPool
   /**
    * Provide an indicator to the PoolManager when the Pool can be removed
    * from the Pool Table.
-   * @return
+   *
    */
   public boolean hasActiveConnections( );
 
@@ -116,13 +116,13 @@ public interface ConnectionPool
    * pool has been established, the wrapper implementation should ignore
    * the change and throw an error.
    * @param p
-   * @return
+   *
    */
   public void setPassword( String p );
 
   /**
    * @param u
-   * @return
+   *
    */
   public void setUser( String u );
 
@@ -131,7 +131,7 @@ public interface ConnectionPool
    * Set tne minimum number of connections that are to be maintained in the
    * pool.
    * @param n
-   * @return
+   *
    */
   public void setMinConnections( int n );
 
@@ -139,13 +139,13 @@ public interface ConnectionPool
    * Test to see if the connection info is valid to make a real connection
    * to the database. This method may cause the pool to be crated and filled
    * with min connections.
-   * @return
+   *
    */
   public boolean testConnection( );
 
   /**
    * Retrive a database connection from the pool
-   * @return
+   *
    * @throws SQLException
    */
   public Connection getConnection( )throws SQLException;
@@ -154,7 +154,7 @@ public interface ConnectionPool
    * Return a connection to the pool, the connection may be closed if the
    * pool is inactive or has exceeded the max number of free connections
    * @param con
-   * @return
+   *
    * @throws SQLException
    */
   public void releaseConnection( Connection con )throws SQLException;
@@ -165,7 +165,7 @@ public interface ConnectionPool
    * a new one to replace it. Some JDBC impl's won't allow you to
    * reuse a connection after an error occurs.
    * @param con
-   * @return
+   *
    * @throws SQLException
    */
   public void releaseConnectionOnError( Connection con )throws SQLException;
@@ -179,7 +179,7 @@ public interface ConnectionPool
    * then Connections will actuall be held around. If disabled
    * then all unused connections will be instantly closed and as
    * connections are released they are closed and removed from the pool.
-   * @return
+   *
    */
   public void setPoolEnabled( final boolean flag );
 

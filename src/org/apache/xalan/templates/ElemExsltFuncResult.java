@@ -115,7 +115,7 @@ public class ElemExsltFuncResult extends ElemVariable
   /**
    * Return the node name, defined in the
    *     Constants class.
-   * @see org.apache.xalan.templates.Constants.
+   * @see org.apache.xalan.templates.Constants
    * @return The node name
    * 
    */

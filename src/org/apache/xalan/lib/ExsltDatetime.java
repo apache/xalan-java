@@ -980,7 +980,7 @@ public class ExsltDatetime
      * component that is missing from the date/time format used, then that token 
      * is replaced with an empty string ('') within the result.
      * 
-     * @author Helg Bredow (helg.bredow@kalido.com)
+     * The author is Helg Bredow (helg.bredow@kalido.com)
      */
     public static String formatDate(String dateTime, String pattern)
     {

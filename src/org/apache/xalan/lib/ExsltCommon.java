@@ -128,7 +128,7 @@ public class ExsltCommon
    * @param myProcesser is passed in by the Xalan extension processor
    * @param rtf The result tree fragment to be converted to a node-set.
    * 
-   * @returns node-set with the contents of the result tree fragment.
+   * @return node-set with the contents of the result tree fragment.
    * 
    * Note: Already implemented in the xalan namespace as nodeset.
    * 

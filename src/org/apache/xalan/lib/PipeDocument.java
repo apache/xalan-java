@@ -227,7 +227,7 @@ public class PipeDocument
   }
   /**
    * Uses a Vector of TransformerHandlers to pipe XML input document through
-   * a series of 1 or more transformations. Called by {@link #pipeDocument} and {@link #main}.
+   * a series of 1 or more transformations. Called by {@link #pipeDocument}.
    * 
    * @param vTHandler Vector of Transformation Handlers (1 per stylesheet).
    * @param source absolute URI to XML input

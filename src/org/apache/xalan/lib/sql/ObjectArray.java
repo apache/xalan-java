@@ -108,7 +108,7 @@ public class ObjectArray
 
   /**
    * @param size
-   * @return
+   *
    */
   private void init( int size )
   {
@@ -118,7 +118,7 @@ public class ObjectArray
 
   /**
    * @param idx Index of the Object in the Array
-   * @return
+   *
    */
   public Object getAt( final int idx )
   {
@@ -147,7 +147,7 @@ public class ObjectArray
   /**
    * @param idx Index of the Object in the Array
    * @param obj , The value to set in the Array
-   * @return
+   *
    */
   public void setAt( final int idx, final Object obj )
   {
@@ -177,7 +177,7 @@ public class ObjectArray
 
   /**
    * @param o Object to be appended to the Array
-   * @return
+   *
    */
   public int append( Object o )
   {
@@ -216,7 +216,7 @@ public class ObjectArray
 
   /**
    * @param args
-   * @return
+   *
    */
   public static void main( String[] args )
   {

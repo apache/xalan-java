@@ -295,7 +295,7 @@ public class XConnection
    * Create an XConnection using the name of an existing Connection Pool
    * @param exprContext
    * @param ConnPoolName
-   * @return
+   *
    */
   public XBooleanStatic connect( ExpressionContext exprContext, String ConnPoolName )
   {
@@ -322,7 +322,7 @@ public class XConnection
    * @param exprContext
    * @param driver JDBC driver of the form foo.bar.Driver.
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
-   * @return
+   *
    */
   public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL )
   {
@@ -346,7 +346,7 @@ public class XConnection
   /**
    * @param exprContext
    * @param protocolElem
-   * @return
+   *
    */
   public XBooleanStatic connect( ExpressionContext exprContext, Element protocolElem )
   {
@@ -370,7 +370,7 @@ public class XConnection
   /**
    * @param exprContext
    * @param list
-   * @return
+   *
    */
   public XBooleanStatic connect( ExpressionContext exprContext, NodeList list )
   {
@@ -398,7 +398,7 @@ public class XConnection
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @param user user ID.
    * @param password connection password.
-   * @return
+   *
    */
   public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL, String user, String password )
   {
@@ -432,7 +432,7 @@ public class XConnection
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @param protocolElem list of string tag/value connection arguments,
    * normally including at least "user" and "password".
-   * @return
+   *
    */
   public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
   {
@@ -488,7 +488,7 @@ public class XConnection
    * <protocol name="name of value">value</protocol>
    * </DBINFO-TAG>
    * @param e
-   * @return
+   *
    * @throws SQLException
    */
   private void initFromElement( Element e )throws SQLException
@@ -579,7 +579,7 @@ public class XConnection
    * @param driver
    * @param dbURL
    * @param prop
-   * @return
+   *
    * @throws SQLException
    */
   private void init( String driver, String dbURL, Properties prop )throws SQLException
@@ -850,7 +850,7 @@ public class XConnection
   /**
    * Add an untyped value to the parameter list.
    * @param value
-   * @return
+   *
    */
   public void addParameter( String value )
   {
@@ -861,7 +861,7 @@ public class XConnection
    * Add a typed parameter to the parameter list.
    * @param value
    * @param Type
-   * @return
+   *
    */
   public void addParameterWithType( String value, String Type )
   {
@@ -873,7 +873,7 @@ public class XConnection
    * Add a single parameter to the parameter list
    * formatted as an Element
    * @param e
-   * @return
+   *
    */
   public void addParameterFromElement( Element e )
   {
@@ -893,7 +893,7 @@ public class XConnection
    * Add a section of parameters to the Parameter List
    * Do each element from the list
    * @param nl
-   * @return
+   *
    */
   public void addParameterFromElement( NodeList nl )
   {
@@ -922,7 +922,7 @@ public class XConnection
 
   /**
    * @param elem
-   * @return
+   *
    */
   private void addParameters( Element elem )
   {
@@ -967,7 +967,7 @@ public class XConnection
   }
 
   /**
-   * @return
+   *
    */
   public void clearParameters( )
   {
@@ -983,7 +983,7 @@ public class XConnection
    * re-enabled pooling to take advantage of connection pools.
    * The connection pool can even be disabled which will close all
    * outstanding connections.
-   * @return
+   *
    * @deprecated Use setFeature("default-pool-enabled", "true");
    */
   public void enableDefaultConnectionPool( )
@@ -1003,7 +1003,7 @@ public class XConnection
 
   /**
    * See enableDefaultConnectionPool
-   * @return
+   *
    * @deprecated Use setFeature("default-pool-enabled", "false");
    */
   public void disableDefaultConnectionPool( )
@@ -1025,7 +1025,7 @@ public class XConnection
    * memory consumption is greatly reduces so you can have queries
    * of unlimited size but it will not let you traverse the data
    * more than once.
-   * @return
+   *
    * @deprecated Use setFeature("streaming", "true");
    */
   public void enableStreamingMode( )
@@ -1042,7 +1042,7 @@ public class XConnection
    * memory consumption is greatly reduces so you can have queries
    * of unlimited size but it will not let you traverse the data
    * more than once.
-   * @return
+   *
    * @deprecated Use setFeature("streaming", "false");
    */
   public void disableStreamingMode( )
@@ -1057,7 +1057,7 @@ public class XConnection
   /**
    * Provide access to the last error that occued. This error
    * may be over written when the next operation occurs.
-   * @return
+   *
    */
   public DTM getError( )
   {
@@ -1076,7 +1076,7 @@ public class XConnection
 
   /**
    * Close the connection to the data source.
-   * @return
+   *
    * @throws SQLException
    */
   public void close( )throws SQLException
@@ -1115,7 +1115,7 @@ public class XConnection
    * Close the connection to the data source. Only close the connections
    * for a single document.
    * @param sqldoc
-   * @return
+   *
    * @throws SQLException
    */
   public void close( SQLDocument sqldoc )throws SQLException
@@ -1140,7 +1140,7 @@ public class XConnection
   /**
    * @param exprContext
    * @param excp
-   * @return
+   *
    */
   private SQLErrorDocument buildErrorDocument()
   {
@@ -1208,7 +1208,7 @@ public class XConnection
    * Set an error and/or warning on this connection.
    * @param feature The name of the feature being set, currently supports (streaming, inline-variables, multiple-results, cache-statements, default-pool-enabled).
    * @param setting The new setting for the specified feature, currently "true" is true and anything else is false.
-   * @return
+   *
    */
   public void setError(Exception excp, SQLDocument doc, SQLWarning warn)
   {
@@ -1267,7 +1267,7 @@ public class XConnection
    * Set feature options for this XConnection.
    * @param feature The name of the feature being set, currently supports (streaming, inline-variables, multiple-results, cache-statements, default-pool-enabled).
    * @param setting The new setting for the specified feature, currently "true" is true and anything else is false.
-   * @return
+   *
    */
   public void setFeature(String feature, String setting)
   {
@@ -1334,7 +1334,7 @@ public class XConnection
 
 
   /**
-   * @return
+   *
    */
   protected void finalize( )
   {

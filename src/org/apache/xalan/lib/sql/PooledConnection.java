@@ -97,7 +97,7 @@ public class PooledConnection
    * Set the status of the PooledConnection.
    *
    * @param value
-   * @return
+   *
    */
   public void setInUse( boolean value )
   {
@@ -106,13 +106,13 @@ public class PooledConnection
 
   /**
    * Returns the current status of the PooledConnection.
-   * @return
+   *
    */
   public boolean inUse( ) { return inuse; }
 
   /**
    *  Close the real JDBC Connection
-   * @return
+   *
    */
   public void close( )
   {

@@ -80,7 +80,7 @@ import org.apache.xml.utils.QName;
  * is not found in the original property list.</p>
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#output">xsl:output in XSLT Specification</a>
- * @
+ *
  */
 public class OutputProperties extends ElemTemplateElement
         implements Cloneable

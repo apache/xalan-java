@@ -265,9 +265,10 @@ public class StylesheetHandler extends DefaultHandler
    * @return The stylesheet object that was created during
    * the SAX event process, or null if no stylesheet has
    * been created.
+   * 
+   * Author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
    *
-   * @version Alpha
-   * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
+   *
    */
   public Templates getTemplates()
   {

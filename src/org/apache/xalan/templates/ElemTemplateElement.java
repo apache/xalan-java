@@ -1571,7 +1571,7 @@ public class ElemTemplateElement extends UnImplNode
    * object is less than, equal to, or greater than the specified object.
    * 
    * @param o The object to be compared to this object
-   * @returns a negative integer, zero, or a positive integer as this object is
+   * @return  a negative integer, zero, or a positive integer as this object is
    *          less than, equal to, or greater than the specified object.
    * @throws ClassCastException if the specified object's
    *         type prevents it from being compared to this Object.

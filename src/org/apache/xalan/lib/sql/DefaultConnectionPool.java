@@ -126,7 +126,7 @@ public class DefaultConnectionPool implements ConnectionPool
 
   /**
    * Return our current Active state
-   * @return
+   *
    */
   public boolean isEnabled( )
   {
@@ -136,7 +136,7 @@ public class DefaultConnectionPool implements ConnectionPool
   /**
    * Set the driver call to be used to create connections
    * @param d
-   * @return
+   *
    */
   public void setDriver( String d )
   {
@@ -146,7 +146,7 @@ public class DefaultConnectionPool implements ConnectionPool
   /**
    * Set the url used to connect to the database
    * @param url
-   * @return
+   *
    */
   public void setURL( String url )
   {
@@ -156,7 +156,7 @@ public class DefaultConnectionPool implements ConnectionPool
   /**
    * Go through the connection pool and release any connections
    * that are not InUse;
-   * @return
+   *
    */
   public void freeUnused( )
   {
@@ -185,7 +185,7 @@ public class DefaultConnectionPool implements ConnectionPool
 
   /**
    * Is our ConnectionPool have any connections that are still in Use ??
-   * @return
+   *
    */
   public boolean hasActiveConnections( )
   {
@@ -196,7 +196,7 @@ public class DefaultConnectionPool implements ConnectionPool
   /**
    * Set the password in the property set.
    * @param p
-   * @return
+   *
    */
   public void setPassword( String p )
   {
@@ -206,7 +206,7 @@ public class DefaultConnectionPool implements ConnectionPool
   /**
    * Set the user name in the property set
    * @param u
-   * @return
+   *
    */
   public void setUser( String u )
   {
@@ -218,7 +218,7 @@ public class DefaultConnectionPool implements ConnectionPool
    * properties. A properties file is a general purpose container
    *
    * @param p
-   * @return
+   *
    */
   public void setProtocol( Properties p )
   {
@@ -236,7 +236,7 @@ public class DefaultConnectionPool implements ConnectionPool
    * setting will only have effect on a new pool or when a new connection
    * is requested and there is less connections that this setting.
    * @param n
-   * @return
+   *
    */
   public void setMinConnections( int n )
   {
@@ -247,7 +247,7 @@ public class DefaultConnectionPool implements ConnectionPool
    * Try to aquire a new connection, if it succeeds then return
    * true, else return false.
    * Note: This method will cause the connection pool to be built.
-   * @return
+   *
    */
   public boolean testConnection( )
   {
@@ -351,7 +351,7 @@ public class DefaultConnectionPool implements ConnectionPool
 
   /**
    * @param con
-   * @return
+   *
    * @throws SQLException
    */
   public synchronized void releaseConnection( Connection con )throws SQLException
@@ -397,7 +397,7 @@ public class DefaultConnectionPool implements ConnectionPool
 
   /**
    * @param con
-   * @return
+   *
    * @throws SQLException
    */
   public synchronized void releaseConnectionOnError( Connection con )throws SQLException
@@ -431,7 +431,7 @@ public class DefaultConnectionPool implements ConnectionPool
 
 
   /**
-   * @return
+   *
    * @throws SQLException
    */
   private Connection createConnection( )throws SQLException
@@ -447,7 +447,7 @@ public class DefaultConnectionPool implements ConnectionPool
 
   // Initialize the pool
   /**
-   * @return
+   *
    * @throws IllegalArgumentException
    * @throws SQLException
    */
@@ -527,7 +527,7 @@ public class DefaultConnectionPool implements ConnectionPool
   // Adds the PooledConnection to the pool
   /**
    * @param value
-   * @return
+   *
    */
   private void addConnection( PooledConnection value )
   {
@@ -537,7 +537,7 @@ public class DefaultConnectionPool implements ConnectionPool
 
 
   /**
-   * @return
+   *
    * @throws Throwable
    */
   protected void finalize( )throws Throwable
@@ -602,7 +602,7 @@ public class DefaultConnectionPool implements ConnectionPool
    * closed and as connections are released they are closed and removed
    * from the pool.
    *
-   * @return
+   *
    */
   public void setPoolEnabled( boolean flag )
   {

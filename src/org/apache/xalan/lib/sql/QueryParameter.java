@@ -103,7 +103,7 @@ public class QueryParameter
   }
 
   /**
-   * @return
+   *
    */
   public String getValue( ) {
     return m_value;
@@ -111,7 +111,7 @@ public class QueryParameter
 
   /**
    * @param newValue
-   * @return
+   *
    */
   public void setValue( String newValue ) {
     m_value = newValue;
@@ -119,7 +119,7 @@ public class QueryParameter
 
   /** Used to set the parameter type when the type information is provided in the query.
    * @param newType The parameter type.
-   * @return
+   *
    */
   public void setTypeName( String newType )
   {
@@ -128,7 +128,7 @@ public class QueryParameter
   }
 
   /**
-   * @return
+   *
    */
   public String getTypeName( )
   {
@@ -238,7 +238,7 @@ public class QueryParameter
    * @param pos
    * @param stmt
    * @param p
-   * @return
+   *
    * @throws SQLException
    */
   /*

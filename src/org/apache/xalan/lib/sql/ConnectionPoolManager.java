@@ -83,7 +83,7 @@ public class ConnectionPoolManager
 
   /**
    * Initialize the internal structures of the Pool Manager
-   * @return
+   *
    */
   public synchronized void init( )
   {
@@ -106,9 +106,9 @@ public class ConnectionPoolManager
    * exist.
    * @param name
    * @param pool
-   * @return
+   *
    * @link org.apache.xalan.lib.sql.ConnectionPool}
-   * @return
+   *
    * @throws <code>IllegalArgumentException</code>, throw this exception
    * if a pool with the same name currently exists.
    */
@@ -127,7 +127,7 @@ public class ConnectionPoolManager
    * active connections, then only mark this pool as inactive and
    * leave it around until all the existing connections are closed.
    * @param name
-   * @return
+   *
    */
   public synchronized void removePool( String name )
   {
@@ -155,8 +155,8 @@ public class ConnectionPoolManager
   /**
    * Return the connection pool referenced by the name
    * @param name
-   * @return
-   * @returns <code>ConnectionPool</code> a reference to the ConnectionPool
+   *
+   * @return <code>ConnectionPool</code> a reference to the ConnectionPool
    * object stored in the Pool Table. If the named pool does not exist, return
    * null
    */
