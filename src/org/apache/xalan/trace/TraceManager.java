@@ -94,6 +94,7 @@ public class TraceManager
   public void addTraceListener(TraceListener tl)
     throws TooManyListenersException
   {
+    TransformerImpl.S_DEBUG = true;
     if(null == m_traceListeners)
       m_traceListeners = new Vector();
     m_traceListeners.addElement(tl);
