@@ -146,7 +146,8 @@ public class ToXMLStream extends ToStream
                     writer.write('\"');
                     writer.write(standalone);
                     writer.write("?>");
-                    writer.write(m_lineSep, 0, m_lineSepLen);
+                    if (m_doIndent)
+                        writer.write(m_lineSep, 0, m_lineSepLen);
                 } 
                 catch(IOException e)
                 {
