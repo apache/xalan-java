@@ -337,15 +337,19 @@ public class ElemVariable extends ElemTemplateElement
 		// Bugzilla 7118: A variable set via an RTF may create local
 		// variables during that computation. To keep them from overwriting
 		// variables at this level, push a new variable stack.
+		////// PROBLEM: This is provoking a variable-used-before-set
+		////// problem in parameters. Needs more study.
 		try
 		{
-			xctxt.getVarStack().link(0);
+			//////////xctxt.getVarStack().link(0);
 			if(m_parentNode instanceof Stylesheet) // Global variable
 				df = transformer.transformToGlobalRTF(this);
 			else
 				df = transformer.transformToRTF(this);
     	}
-		finally{ xctxt.getVarStack().unlink(); }
+		finally{ 
+			//////////////xctxt.getVarStack().unlink(); 
+			}
 
         var = new XRTreeFrag(df, xctxt, this);
       }
