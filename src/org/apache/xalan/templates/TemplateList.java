@@ -85,7 +85,8 @@ public class TemplateList implements java.io.Serializable
 {
 
   /**
-   * Construct a TemplateList object.
+   * Construct a TemplateList object. Needs to be public so it can
+   * be invoked from the CompilingStylesheetHandler.
    */
   public TemplateList()
   {
