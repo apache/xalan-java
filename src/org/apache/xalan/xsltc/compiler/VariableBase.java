@@ -125,8 +125,12 @@ class VariableBase extends TopLevelElement {
      *
      */
     public void addDependency(VariableBase other) {
-	if (_dependencies == null) _dependencies = new Vector();
-	_dependencies.addElement(other);
+	if (_dependencies == null) {
+	    _dependencies = new Vector();
+	}
+	if (!_dependencies.contains(other)) {
+	    _dependencies.addElement(other);
+	}
     }
 
     /**
