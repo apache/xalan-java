@@ -370,8 +370,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
         
         transformer.pushPairCurrentMatched(template, child);
 
+        int currentFrameBottom;  // See comment with unlink, below
         if(template.m_frameSize > 0)
         {
+          xctxt.pushRTFContext();
+          currentFrameBottom = vars.getStackFrame();  // See comment with unlink, below
           vars.link(template.m_frameSize);
           // You can't do the check for nParams here, otherwise the 
           // xsl:params might not be nulled.
@@ -406,6 +409,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
             
           }
         }
+        else
+        	currentFrameBottom = 0;
 
         // if (check)
         //  guard.push(this, child);
@@ -426,10 +431,28 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
         
         if (TransformerImpl.S_DEBUG)
-	      transformer.getTraceManager().fireTraceEndEvent(this); 
+	      transformer.getTraceManager().fireTraceEndEvent(template); 
 	    
         if(template.m_frameSize > 0)
-          vars.unlink();
+        {
+          // See Frank Weiss bug around 03/19/2002 (no Bugzilla report yet).
+          // While unlink will restore to the proper place, the real position 
+          // may have been changed for xsl:with-param, so that variables 
+          // can be accessed.  
+          // of right now.
+          // More:
+          // When we entered this function, the current 
+          // frame buffer (cfb) index in the variable stack may 
+          // have been manually set.  If we just call 
+          // unlink(), however, it will restore the cfb to the 
+          // previous link index from the link stack, rather than 
+          // the manually set cfb.  So, 
+          // the only safe solution is to restore it back 
+          // to the same position it was on entry, since we're 
+          // really not working in a stack context here. (Bug4218)
+          vars.unlink(currentFrameBottom);
+          xctxt.popRTFContext();
+        }
           
         transformer.popCurrentMatched();
         
