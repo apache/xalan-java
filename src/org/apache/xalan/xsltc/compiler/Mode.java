@@ -148,15 +148,7 @@ final class Mode implements Constants {
 				    Hashtable keys) {
 
 	if (pattern instanceof IdKeyPattern) {
-	    /* TODO: Cannot handle this kind of pattern yet!!!
-
-	    IdKeyPattern idkey = (IdKeyPattern)pattern;
-	    StepPattern kernel = idkey.getKernelPattern();
-	    if (kernel == null) {
-		Key key = (Key)keys.get(idkey.getIndexName());
-		idkey.setKernelPattern(key.getKernelPattern());
-	    }
-	    */
+	    // TODO: Cannot handle this kind of core pattern yet!!!
 	}
 	else if (pattern instanceof AlternativePattern) {
 	    final AlternativePattern alt = (AlternativePattern)pattern;
@@ -639,7 +631,7 @@ final class Mode implements Constants {
 	
 	// Handle any pattern with match on text nodes - default: output text
 	targets[DOM.TEXT] = _code2TestSeq[DOM.TEXT] != null
-	    ? _code2TestSeq[DOM.TEXT].compile(classGen, methodGen, ihLoop)
+	    ? _code2TestSeq[DOM.TEXT].compile(classGen, methodGen, ihText)
 	    : ihText;
 
 	// This DOM-type is not in use - default: process next node
