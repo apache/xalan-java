@@ -41,7 +41,11 @@ import org.xml.sax.ext.LexicalHandler;
  */
 public class ToHTMLSAXHandler extends ToSAXHandler
 {
-
+	/**
+	 *  Handle document type declaration (for first element only)
+	 */
+	private boolean m_dtdHandled = false;
+	
     /**
      * Keeps track of whether output escaping is currently enabled
      */
@@ -518,7 +522,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         flushPending();
 
         // Handle document type declaration (for first element only)
-        if (m_lexHandler != null)
+        if (!m_dtdHandled)
         {
             String doctypeSystem = getDoctypeSystem();
             String doctypePublic = getDoctypePublic();
@@ -527,7 +531,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
                     elementName,
                     doctypePublic,
                     doctypeSystem);
-            m_lexHandler = null;
+			m_dtdHandled = true;
         }
         m_elemContext = m_elemContext.push(elementNamespaceURI, elementLocalName, elementName);
     }
