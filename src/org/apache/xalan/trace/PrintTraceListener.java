@@ -65,6 +65,7 @@ import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.Constants;
+import org.apache.xpath.axes.ContextNodeList;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -166,7 +167,7 @@ public class PrintTraceListener implements TraceListener
   }
 
   /**
-   * Method that is called just after the formatter listener is called.
+   * Method that is called just after a select attribute has been evaluated.
    *
    * @param ev the generate event.
    *
@@ -216,20 +217,36 @@ public class PrintTraceListener implements TraceListener
         m_pw.println();
 
         NodeIterator nl = ev.m_selection.nodeset();
-        Node pos = nl.nextNode();
-
-        if (null == pos)
+        if(nl instanceof ContextNodeList)
         {
-          m_pw.println("     [empty node list]");
+          try
+          {
+            nl = ((ContextNodeList)nl).cloneWithReset();
+          }
+          catch(CloneNotSupportedException cnse)
+          {
+            m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
+            return;
+          }
+          Node pos = nl.nextNode();
+
+          if (null == pos)
+          {
+            m_pw.println("     [empty node list]");
+          }
+          else
+          {
+            while (null != pos)
+            {
+              m_pw.println("     " + pos);
+
+              pos = nl.nextNode();
+            }
+          }
         }
         else
         {
-          while (null != pos)
-          {
-            m_pw.println("     " + pos);
-
-            pos = nl.nextNode();
-          }
+            m_pw.println("     [Can't trace nodelist because it isn't a ContextNodeList]");
         }
       }
       else
