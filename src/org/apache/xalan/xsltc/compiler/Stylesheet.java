@@ -208,8 +208,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public boolean checkForLoop(String systemId) {
 	// Return true if this stylesheet includes/imports itself
-	if (_systemId.equals(systemId))
+	if (_systemId != null && _systemId.equals(systemId)) {
 	    return true;
+	}
 	// Then check with any stylesheets that included/imported this one
 	if (_parentStylesheet != null) 
 	    return _parentStylesheet.checkForLoop(systemId);

@@ -435,6 +435,9 @@ public class TransformerFactoryImpl
 		xsltc.setXMLReader(dom2sax);  
 	        // try to get SAX InputSource from DOM Source.
 		input = SAXSource.sourceToInputSource(source);
+		if (input == null){
+			input = new InputSource(domsrc.getSystemId());
+		}
 	    }
 	    // Try to get InputStream or Reader from StreamSource
 	    else if (source instanceof StreamSource) {
@@ -480,7 +483,6 @@ public class TransformerFactoryImpl
      */
     public Templates newTemplates(Source source)
 	throws TransformerConfigurationException {
-
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
