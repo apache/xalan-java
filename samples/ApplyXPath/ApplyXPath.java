@@ -155,12 +155,15 @@ public class ApplyXPath
       }
 	    try
 	    {
+        // Get a Serializer
    	    Serializer ser = SerializerFactory.getSerializer(Method.XML);
-        DOMSerializer domser = ser.asDOMSerializer();
+        // Serialize to the screen.
+        ser.setOutputStream(System.out);
+        
 	      Node n = null;
         while ((n = nl.nextNode())!= null)
-		    {
-		      domser.serialize(n);
+		    { //System.out.println("Node is " + n.getNodeName());          
+          ser.asDOMSerializer().serialize(n);ser.reset();
 		    }
       }
 	    catch (Exception e3)
