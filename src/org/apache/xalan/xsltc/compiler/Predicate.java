@@ -330,8 +330,9 @@ final class Predicate extends Expression {
 	    try {
 		if ((tleft == Type.String) && (!(left instanceof Step)))
 		    _value = exp.getLeft();
-		if (left instanceof VariableRefBase)
+		if (left instanceof VariableRefBase) 
 		    _value = new CastExpr(left, Type.String);
+		if (_value != null) return _value;
 	    }
 	    catch (TypeCheckError e) { }
 
@@ -340,11 +341,12 @@ final class Predicate extends Expression {
 		    _value = exp.getRight();
 		if (right instanceof VariableRefBase)
 		    _value = new CastExpr(right, Type.String);
+		if (_value != null) return _value;
 	    }
 	    catch (TypeCheckError e) { }
 
 	}
-	return _value;
+	return null;
     }
 
     /**

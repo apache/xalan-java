@@ -364,11 +364,12 @@ final class Step extends RelativeLocationPath {
 		try {
 		    path.typeCheck(getParser().getSymbolTable());
 		}
-		catch (TypeCheckError e) {}
+		catch (TypeCheckError e) { }
 
 		il.append(methodGen.loadDOM());
 		path.translate(classGen, methodGen);
-		
+		predicate.translate(classGen, methodGen);
+
 		final String signature =
 		    "("+NODE_ITERATOR_SIG+STRING_SIG+"Z)"+NODE_ITERATOR_SIG;
 		final int iter = cpg.addMethodref(DOM_CLASS,

@@ -307,7 +307,8 @@ public final class XSLTC {
 		_stylesheet.translate();
 	    }
 	}
-	catch (CompilerException e) {
+	catch (Exception e) {
+	    if (_debug) e.printStackTrace();
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
 	}
 	finally {
@@ -337,14 +338,15 @@ public final class XSLTC {
 	    else
 		return false;
 	}
-
-	// Traverse all elements in the vector and compile
-	final Enumeration urls = stylesheets.elements();
-	while (urls.hasMoreElements()) {
-	    _className = null; // reset, so that new name will be computed 
-	    final Object url = urls.nextElement();
-	    if (url instanceof URL) {
-		if (!compile((URL)url)) return false;
+	else {
+	    // Traverse all elements in the vector and compile
+	    final Enumeration urls = stylesheets.elements();
+	    while (urls.hasMoreElements()) {
+		_className = null; // reset, so that new name will be computed 
+		final Object url = urls.nextElement();
+		if (url instanceof URL) {
+		    if (!compile((URL)url)) return false;
+		}
 	    }
 	}
 	return true;

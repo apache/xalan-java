@@ -613,7 +613,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	    // xsl:variable or xsl:param
 	    else if (element instanceof VariableBase) {
-		((Variable)element).translate(classGen,toplevel);
+		((VariableBase)element).translate(classGen,toplevel);
 	    }
 	}
 
