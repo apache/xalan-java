@@ -261,8 +261,11 @@ public class TreeWalker
         if (attrName.equals("xmlns") || attrName.startsWith("xmlns:"))
         {
           int index;
+          // Use "" instead of null, as Xerces likes "" for the 
+          // name of the default namespace.  Fix attributed 
+          // to "Steven Murray" <smurray@ebt.com>.
           String prefix = (index = attrName.indexOf(":")) < 0
-                          ? null : attrName.substring(index + 1);
+                          ? "" : attrName.substring(index + 1);
 
           this.m_contentHandler.startPrefixMapping(prefix,
                                                    attr.getNodeValue());
@@ -385,8 +388,11 @@ public class TreeWalker
         if (attrName.equals("xmlns") || attrName.startsWith("xmlns:"))
         {
           int index;
+          // Use "" instead of null, as Xerces likes "" for the 
+          // name of the default namespace.  Fix attributed 
+          // to "Steven Murray" <smurray@ebt.com>.
           String prefix = (index = attrName.indexOf(":")) < 0
-                          ? null : attrName.substring(index + 1);
+                          ? "" : attrName.substring(index + 1);
 
           this.m_contentHandler.endPrefixMapping(prefix);
         }
