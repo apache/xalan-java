@@ -21,7 +21,7 @@ if [ "$ANT_JAR" = "" ] ; then
     ANT_JAR=./bin/ant.jar
 fi
 if [ "$PARSER_JAR" = "" ] ; then
-    PARSER_JAR=./bin/xerces.jar
+    PARSER_JAR=./bin/xercesImpl.jar
 fi
 
 if [ "$XML-APIS_JAR" = "" ] ; then

@@ -5,7 +5,7 @@ rem     Setup:
 rem         - you should set JAVA_HOME
 rem         - you can set ANT_HOME if you use your own Ant install
 rem         - JAVA_OPTS is added to the java command line
-rem         - PARSER_JAR may be set to use alternate parser (default:bin\xerces.jar)
+rem         - PARSER_JAR may be set to use alternate parser (default:bin\xercesImpl.jar)
 echo.
 echo Xalan-J 2.x Build
 echo -------------
@@ -34,7 +34,7 @@ rem Set our local vars to all start with _underscore
 set _ANT_JAR=%ANT_JAR%
 if "%_ANT_JAR%" == "" set _ANT_JAR=bin\ant.jar
 set _PARSER_JAR=%PARSER_JAR%
-if "%_PARSER_JAR%" == "" set _PARSER_JAR=bin\xerces.jar
+if "%_PARSER_JAR%" == "" set _PARSER_JAR=bin\xercesImpl.jar
 set _XML-APIS_JAR=%XML-APIS_JAR%
 if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=bin\xml-apis.jar
 

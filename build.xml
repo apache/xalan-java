@@ -58,7 +58,7 @@ Copyright:
   -->
   <property name="xmlapis.jar.name" value="xml-apis.jar"/>
   <property name="xmlapis.jar" value="${bin.dir}/${xmlapis.jar.name}"/>
-  <property name="parser.jar.name" value="xerces.jar"/>
+  <property name="parser.jar.name" value="xercesImpl.jar"/>
   <property name="parser.jar" value="${bin.dir}/${parser.jar.name}"/>
   <property name="bsf.jar.name" value="bsf.jar"/>
   <property name="bsf.jar" value="${bin.dir}/${bsf.jar.name}"/>
@@ -114,7 +114,10 @@ Copyright:
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   
   <!-- Xalan-J1 compatability stuff.  -->
-  <!-- DEPRECATED: new 'skipcompat' flag allows you to optionally skip 1.x compat layer -->
+  <!-- TO BE REMOVED: 'skipcompat' flag allows you to optionally 
+       skip 1.x compat layer; default to true, so we can  
+       switch to Xerces 2.x which compat won't compile with -->
+  <property name="skipcompat" value="true"/>
   <property name="compat.jar" value="xalanj1compat.jar"/>
   <property name="compat.src.dir" value="./compat_src"/>
   <property name="build.compat.classes" value="${build.dir}/compat_classes"/>
@@ -195,12 +198,6 @@ Copyright:
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
     <delete file="${doc.generator.styletar}"/>
 
-    <!--removing todo.xml, which is completely out of date; placed developer list in readme.xml -->    
-    <!--echo message="Transform todo.xml and put the result in ${build.docs}"/>
-    <java fork="yes" classname="${xalan.cmdline.class}">
-      <classpath refid="docs.class.path" />
-      <arg line="-in todo.xml -xsl todo.xsl -out build/docs/todo.html"/>
-    </java--> 
     <!-- We use a Notes agent to periodically extract Xalan-Java 2 commits from our team database into commits.xml.  The following operation 
     transforms commits.xml (just including source code commits) and puts the result in xdocs/sources/xalan for inclusion in the 
     readme.xml -->      
@@ -704,7 +701,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,xsltc.jar,xsltc.docs,autodist,todo"
+  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,xsltc.jar,xsltc.docs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
@@ -761,11 +758,13 @@ Copyright:
     <copy file="${build.xsltc.jar}" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,xsltc_todo.xml,todo.xsl,commits.xml"/>
+      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,xsltc_todo.xml,todo.xsl,commits.xml"/>
     </copy>
           
     <!-- Build separate -src and -bin distros for both .zip and .tar.gz -->
-    <!-- Explicitly list xerces.jar in patternsets since we definitely want Xerces in distros -->
+    <!-- Explicitly list xercesImpl.jar in patternsets since we 
+         always want Xerces in distros, immaterial of parser 
+         used to compile (at least for official builds) -->
     <patternset id="bin-distro" >
       <include name="${dist.file}/readme.html"/>
       <include name="${dist.file}/License"/>
@@ -773,7 +772,7 @@ Copyright:
       <include name="${dist.file}/bin/${name}.jar"/>
       <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
       <include name="${dist.file}/bin/xsltc.jar"/>
-      <include name="${dist.file}/bin/xerces.jar"/>
+      <include name="${dist.file}/bin/xercesImpl.jar"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
       <include name="${dist.file}/bin/xalansamples.jar"/>
       <include name="${dist.file}/bin/xalanservlet.jar"/>
@@ -783,7 +782,7 @@ Copyright:
     <patternset id="src-distro" >
       <include name="${dist.file}/*"/>
       <include name="${dist.file}/bin/ant*"/>
-      <include name="${dist.file}/bin/xerces.jar"/>
+      <include name="${dist.file}/bin/xercesImpl.jar"/>
       <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
       <include name="${dist.file}/bin/${stylebook.jar.name}"/>
@@ -910,17 +909,6 @@ Copyright:
     <echo message=" [tests]   it is not included in binary distributions." />
     <echo message=" [tests] See http://xml.apache.org/xalan-j/test/ for more info." />
   </target>
-  
-  <!-- =================================================================== -->
-  <!-- Creates the todo list for the org.apache.xml website                -->
-  <!-- =================================================================== -->
-  <target name="todo">
-    <java fork="yes" 
-          classname="${xalan.cmdline.class}" 
-          classpathref="docs.class.path" >
-      <arg line="-in todo.xml -xsl todo.xsl -out todo.html"/>
-    </java>   
-  </target>  
 
   <!-- =================================================================== -->
   <!-- Creates the xalan design document                                   -->
