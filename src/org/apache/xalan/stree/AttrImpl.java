@@ -64,6 +64,8 @@ import org.xml.sax.Attributes;
 
 import org.w3c.dom.DOMException;
 
+import org.xml.sax.ContentHandler;
+
 /**
  * <meta name="usage" content="internal"/>
  * Class to hold information about an attribute node.
@@ -294,5 +296,19 @@ public class AttrImpl extends Child implements Attr
   {
     // return m_parent.m_first;
     return null;
+  }
+  
+  /**
+   * Handle a Characters event 
+   *
+   *
+   * @param ch Content handler to handle SAX events
+   *
+   * @throws SAXException if the content handler characters event throws a SAXException.
+   */
+  public void dispatchCharactersEvent(ContentHandler ch) 
+    throws org.xml.sax.SAXException
+  {
+    ch.characters(m_value.toCharArray(), 0, m_value.length());
   }
 }

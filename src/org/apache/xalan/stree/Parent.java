@@ -66,6 +66,8 @@ import org.apache.xalan.templates.WhiteSpaceInfo;
 
 import javax.xml.transform.TransformerException;
 
+import org.xml.sax.ContentHandler;
+
 /**
  * <meta name="usage" content="internal"/>
  * Class representing a parent node. A parent is also a child unless
@@ -435,4 +437,27 @@ public class Parent extends Child
 
     super.throwParseError(e);
   }
+  
+  /**
+   * Handle a Characters event 
+   *
+   *
+   * @param ch Content handler to handle SAX events
+   *
+   * @throws SAXException if the content handler characters event throws a SAXException.
+   */
+  public void dispatchCharactersEvent(ContentHandler ch) 
+    throws org.xml.sax.SAXException
+  {
+
+    for (Node child = getFirstChild(); child != null;
+                   child = child.getNextSibling())
+    {
+      int t = child.getNodeType();
+      if(Node.COMMENT_NODE != t && Node.PROCESSING_INSTRUCTION_NODE != t)
+        ((SaxEventDispatch)child).dispatchCharactersEvent(ch);
+    }
+
+  }
+
 }

@@ -61,7 +61,6 @@ import org.w3c.dom.CDATASection;
 
 import org.xml.sax.ContentHandler;
 import javax.xml.transform.TransformerException;
-import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xml.utils.FastStringBuffer;
 
@@ -132,26 +131,4 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
     return "#cdata-section";
   }
 
-  /**
-   * Handle a CDATASection SAX event
-   *
-   *
-   * @param ch Content Handler
-   *
-   * @throws org.xml.sax.SAXException
-   */
-  public void dispatchSaxEvent(ContentHandler ch) throws org.xml.sax.SAXException
-  {
-
-    LexicalHandler lh = ((LexicalHandler) ch);
-
-    lh.startCDATA();
-
-    if (-1 == m_start)
-      ch.characters(m_data.toCharArray(), 0, m_data.length());
-    else
-      ch.characters(m_doc.m_chars.m_map, m_start, m_length);
-
-    lh.endCDATA();
-  }
 }

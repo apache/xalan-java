@@ -133,20 +133,4 @@ public class CommentImpl extends TextImpl implements Comment
     return "#comment";
   }
 
-  /**
-   * Handle a Comment Sax Event 
-   *
-   *
-   * @param ch Character array with comment data
-   *
-   * @throws org.xml.sax.SAXException
-   */
-  public void dispatchSaxEvent(ContentHandler ch) throws org.xml.sax.SAXException
-  {
-
-    if (-1 == m_start)
-      ((LexicalHandler) ch).comment(m_data.toCharArray(), 0, m_data.length());
-    else
-      ((LexicalHandler) ch).comment(m_doc.m_chars.m_map, m_start, m_length);
-  }
 }

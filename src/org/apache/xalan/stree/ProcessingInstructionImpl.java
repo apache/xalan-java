@@ -59,6 +59,8 @@ package org.apache.xalan.stree;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 
+import org.xml.sax.ContentHandler;
+
 /**
  * <meta name="usage" content="internal"/>
  * Class to hold information about ProcessingInstruction node
@@ -167,4 +169,19 @@ public class ProcessingInstructionImpl extends Child
   {
     return m_data;
   }
+  
+  /**
+   * Handle a Characters event 
+   *
+   *
+   * @param ch Content handler to handle SAX events
+   *
+   * @throws SAXException if the content handler characters event throws a SAXException.
+   */
+  public void dispatchCharactersEvent(ContentHandler ch) 
+    throws org.xml.sax.SAXException
+  {
+    ch.characters(m_data.toCharArray(), 0, m_data.length());
+  }
+
 }

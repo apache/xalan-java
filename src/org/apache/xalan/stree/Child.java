@@ -64,15 +64,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 
-// Yuck.  Have to do it right not, for synch issues.  
-// There will be a better way...
+import org.xml.sax.ContentHandler;
+
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
  * <meta name="usage" content="internal"/>
  * Class representing a child node
  */
-public class Child extends UnImplNode implements DOMOrder
+public class Child extends UnImplNode implements DOMOrder, SaxEventDispatch
 {
 
   /** Document Object          */
@@ -366,7 +366,11 @@ public class Child extends UnImplNode implements DOMOrder
    */
   public boolean isSupported(String feature, String version)
   {
-    return false;
+    if (feature == SaxEventDispatch.SUPPORTSINTERFACE ||
+        feature == org.apache.xpath.patterns.NodeTest.SUPPORTS_PRE_STRIPPING)
+      return true;
+    else
+      return false;
   }
 
   /**
@@ -445,4 +449,18 @@ public class Child extends UnImplNode implements DOMOrder
   {
     return false;
   }
+  
+  /**
+   * Handle a Characters event 
+   *
+   *
+   * @param ch Content handler to handle SAX events
+   *
+   * @throws SAXException if the content handler characters event throws a SAXException.
+   */
+  public void dispatchCharactersEvent(ContentHandler ch) 
+    throws org.xml.sax.SAXException
+  {
+  }
+
 }

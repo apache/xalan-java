@@ -77,7 +77,7 @@ public abstract class DocImpl extends Parent
   /** This holds all the characters used, copied from the 
    * characters events.  This allows us to not have to allocate 
    * a million little arrays.  */
-  FastStringBuffer m_chars = new FastStringBuffer(1024 * 64);
+  FastStringBuffer m_chars = new FastStringBuffer(1024 * 8);
   
   /** Contains exception thrown from transformation thread, 
    * if one occured. */

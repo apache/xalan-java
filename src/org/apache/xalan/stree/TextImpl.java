@@ -68,7 +68,7 @@ import org.apache.xml.utils.FastStringBuffer;
  * <meta name="usage" content="internal"/>
  * Class to hold information about a Text node.
  */
-public class TextImpl extends Child implements Text, SaxEventDispatch
+public class TextImpl extends Child implements Text
 {
 
   /** Text from this Text node          */
@@ -128,10 +128,12 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
     // m_data = new String(ch, start, start+length);
     FastStringBuffer fsb = doc.m_chars;
 
-    m_start = fsb.m_firstFree;
-    m_length = length;
-
-    fsb.append(ch, start, length);
+    synchronized(fsb)
+    {
+      m_start = fsb.m_firstFree;
+      m_length = length;
+      fsb.append(ch, start, length);
+    }
   }
 
   /**
@@ -142,14 +144,19 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    *
    * @throws SAXException if the content handler characters event throws a SAXException.
    */
-  public void dispatchSaxEvent(ContentHandler ch) 
+  public void dispatchCharactersEvent(ContentHandler ch) 
     throws org.xml.sax.SAXException
   {
 
     if (-1 == m_start)
       ch.characters(m_data.toCharArray(), 0, m_data.length());
     else
-      ch.characters(m_doc.m_chars.m_map, m_start, m_length);
+    {
+      synchronized(m_doc.m_chars)
+      {   
+        ch.characters(m_doc.m_chars.m_map, m_start, m_length);
+      }
+    }
   }
 
   /**
@@ -201,7 +208,12 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
   {
 
     if (null == m_data)
-      m_data = new String(m_doc.m_chars.m_map, m_start, m_length);
+    {
+      synchronized(m_doc.m_chars)
+      {   
+        m_data = new String(m_doc.m_chars.m_map, m_start, m_length);
+      }
+    }
 
     return m_data;
   }
@@ -227,33 +239,14 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
   {
 
     if (null == m_data)
-      m_data = new String(m_doc.m_chars.m_map, m_start, m_length);
+    {
+      synchronized(m_doc.m_chars)
+      {   
+        m_data = new String(m_doc.m_chars.m_map, m_start, m_length);
+      }
+    }
 
     return m_data;
-  }
-
-  /**
-   * Find out if a given feature is supported 
-   *
-   *
-   * @param feature Feature to check
-   * @param version Version to check
-   *
-   * @return true if feature is SaxEventDispatch.SUPPORTSINTERFACE 
-   */
-  public boolean isSupported(String feature, String version)
-  {
-
-    if (feature == SaxEventDispatch.SUPPORTSINTERFACE ||
-        feature == org.apache.xpath.patterns.NodeTest.SUPPORTS_PRE_STRIPPING)
-      return true;
-    else
-      return false;
-
-    // else if(feature.equals(SaxEventDispatch.SUPPORTSINTERFACE))
-    //  return true;
-    // else
-    //  return super.isSupported(feature, version);
   }
   
   /**
@@ -269,8 +262,11 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
   {   
     if (null == m_data)
     {
-      FastStringBuffer fsb = m_doc.m_chars;   
-      fsb.append(ch, start, length);      
+      FastStringBuffer fsb = m_doc.m_chars;
+      synchronized(fsb)
+      {   
+        fsb.append(ch, start, length);
+      }      
     }
     else
       m_data.concat(ch.toString());

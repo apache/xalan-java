@@ -66,6 +66,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 
+import org.xml.sax.ContentHandler;
+
 /**
  * <meta name="usage" content="internal"/>
  * This class represents an element in an HTML or XML document.
@@ -948,4 +950,5 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
 
     return removeItem(index);
   }
+  
 }

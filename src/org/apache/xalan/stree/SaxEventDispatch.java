@@ -87,6 +87,6 @@ public interface SaxEventDispatch
    *
    * @throws org.xml.sax.SAXException
    */
-  public void dispatchSaxEvent(ContentHandler ch) 
+  public void dispatchCharactersEvent(ContentHandler ch) 
         throws org.xml.sax.SAXException;
 }
