@@ -126,7 +126,7 @@ final class XslAttribute extends Instruction {
 	// Get namespace from namespace attribute?
 	if ((namespace != null) && (namespace != Constants.EMPTYSTRING)) {
 	    // Prefix could be in symbol table
-	    //_prefix = stable.lookupPrefix(namespace);
+	    _prefix = lookupPrefix(namespace);
 	    _namespace = new AttributeValueTemplate(namespace, parser);
 	}
 	// Get namespace from prefix in name attribute?
@@ -169,7 +169,7 @@ final class XslAttribute extends Instruction {
 	}
 
 	if (parent instanceof LiteralElement) {
-	    ((LiteralElement)parent).addLocalAttribute(this);
+	    ((LiteralElement)parent).addAttribute(this);
 	}
 
 	_name = AttributeValue.create(this, name, parser);

@@ -58,12 +58,14 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
@@ -72,38 +74,75 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class UseAttributeSets extends Instruction {
-    private final Vector _qNames = new Vector(2); // QNames
-    
-    public UseAttributeSets(String useSets, Parser parser) {
+
+    // Only error that can occur:
+    private final static String ATTR_SET_NOT_FOUND =
+	"Attempting to use non-existing attribute set: ";
+
+    // Contains the names of all references attribute sets
+    private final HashSet _sets = new HashSet(3);
+
+    /**
+     * Constructur - define initial attribute sets to use
+     */
+    public UseAttributeSets(String setNames, Parser parser) {
 	setParser(parser);
-	final StringTokenizer tokens = new StringTokenizer(useSets);
-	while (tokens.hasMoreTokens()) {
-	    _qNames.addElement(parser.getQName(tokens.nextToken()));
+	addAttributeSets(setNames);
+    }
+
+    /**
+     * This method is made public to enable an AttributeSet object to merge
+     * itself with another AttributeSet (including any other AttributeSets
+     * the two may inherit from).
+     */
+    public void addAttributeSets(String setNames) {
+	if ((setNames != null) && (!setNames.equals(Constants.EMPTYSTRING))) {
+	    final StringTokenizer tokens = new StringTokenizer(setNames);
+	    while (tokens.hasMoreTokens()) {
+		final QName qname = getParser().getQName(tokens.nextToken());
+		_sets.add(qname);
+	    }
 	}
     }
-    
+
+    /**
+     * Do nada.
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	//!!! check if sets defined
 	return Type.Void;
     }
-    
+
+    /**
+     * Generate a call to the method compiled for this attribute set
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	final SymbolTable symbolTable = getParser().getSymbolTable();
-	final Enumeration calls = _qNames.elements();
-	while (calls.hasMoreElements()) {
-	    final QName name = (QName)calls.nextElement();
-	    final AttributeSet atts = symbolTable.lookupAttributeSet(name);
-	    if (atts != null) {
-		final String methodName = atts.getMethodName();
+
+	// Get the QNames of the attribut sets we want to use
+	final Iterator sets = _sets.iterator();
+	// Go through each attribute set and generate a method call
+	while (sets.hasNext()) {
+	    // Get the attribute set name
+	    final QName name = (QName)sets.next();
+	    // Get the AttributeSet reference from the symbol table
+	    final AttributeSet attrs = symbolTable.lookupAttributeSet(name);
+	    // Compile the call to the set's method if the set exists
+	    if (attrs != null) {
+		final String methodName = attrs.getMethodName();
 		il.append(classGen.loadTranslet());
 		il.append(methodGen.loadHandler());
-		final int method =
-		    cpg.addMethodref(classGen.getClassName(),
-				     methodName,
-				     "(" + TRANSLET_OUTPUT_SIG + ")V");
+		final int method = cpg.addMethodref(classGen.getClassName(),
+						    methodName, ATTR_SET_SIG);
 		il.append(new INVOKESPECIAL(method));
+	    }
+	    // Generate an error if the attribute set does not exist
+	    else {
+		final ErrorMsg msg =  new ErrorMsg(ATTR_SET_NOT_FOUND+name,
+						   getLineNumber());
+		getParser().reportError(Constants.ERROR, msg);
 	    }
 	}
     }

@@ -418,10 +418,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    Object element = elements.nextElement();
 	    // xsl:template
 	    if (element instanceof Template) {
-		_templates.addElement(element);
-		
 		// Separate templates by modes
 		final Template template = (Template)element;
+		_templates.addElement(template);
 		getMode(template.getModeName()).addTemplate(template);
 	    }
 	    // xsl:attribute-set
@@ -444,7 +443,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	compileConstructor(classGen, lastOutputElement);
 
-	getXSLTC().dumpClass(classGen.getJavaClass());
+	if (!getParser().errorsFound()) {
+	    getXSLTC().dumpClass(classGen.getJavaClass());
+	}
     }
 	
     private void compileConstructor(ClassGenerator classGen, Output output) {

@@ -188,9 +188,9 @@ final class LiteralElement extends Instruction {
     }
 
     /**
-     *
+     * Add an attribute to this element
      */
-    private void addAttribute(SyntaxTreeNode attribute) {
+    public void addAttribute(SyntaxTreeNode attribute) {
 	if (_attributeElements == null) {
 	    _attributeElements = new Vector(2);
 	}
@@ -198,9 +198,9 @@ final class LiteralElement extends Instruction {
     }
 
     /**
-     *
+     * Set the first attribute of this element
      */
-    public void addLocalAttribute(SyntaxTreeNode attribute) {
+    public void setFirstAttribute(SyntaxTreeNode attribute) {
 	if (_attributeElements == null) {
 	    _attributeElements = new Vector(2);
 	}
@@ -208,6 +208,10 @@ final class LiteralElement extends Instruction {
     }
 
 
+    /**
+     * Type-check the contents of this element. The element itself does not
+     * need any type checking as it leaves nothign on the JVM's stack.
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	// Type-check all attributes
 	if (_attributeElements != null) {
@@ -271,11 +275,13 @@ final class LiteralElement extends Instruction {
 	    final QName qname = parser.getQName(_attributes.getQName(i));
 	    final String val = _attributes.getValue(i);
 
-	    // Handle xsl:use-attribute-sets
+	    // Handle xsl:use-attribute-sets. Attribute sets are placed first
+	    // in the vector or attributes to make sure that later local
+	    // attributes can override an attributes in the set.
 	    if (qname == parser.getUseAttributeSets()) {
-		addAttribute(new UseAttributeSets(val, parser));
+		setFirstAttribute(new UseAttributeSets(val, parser));
 	    }
-	    // Ignore other attributes in XSL namespace
+	    // Ignore all other attributes in XSL namespace
 	    else if (qname.getNamespace().equals(XSLT_URI)) {
 
 	    }

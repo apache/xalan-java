@@ -197,33 +197,40 @@ public final class XSLTC {
 	    
 	    // Get the root node of the abstract syntax tree
 	    final SyntaxTreeNode element = _parser.parse(url);
-	    // Process any error and/or warning messages
+
+	    // Process any error and/or warning messages found so far...
 	    _parser.printWarnings();
-	    if (_parser.errorsFound()) {
+	    if ((_parser.errorsFound()) || (element == null)) {
 		_parser.printErrors();
 		return false;
 	    }
 
-	    if ((!_parser.errorsFound()) && (element != null)) {
-		_stylesheet = _parser.makeStylesheet(element);
-		_stylesheet.setURL(url);
-		// This is the top level stylesheet - it has no parent
-		_stylesheet.setParentStylesheet(null);
-		_parser.setCurrentStylesheet(_stylesheet);
-		_parser.createAST(_stylesheet);
-		if (_stylesheet != null && _parser.errorsFound() == false) {
-		    _stylesheet.setMultiDocument(_multiDocument);
-		    _stylesheet.translate();
-		}
-		else {
-		    _parser.printErrors();
-		}		
-	    }
-	    else {
-		_parser.printErrors();
-	    }
+	    // Create the abstract syntax tree and parse each node in it
+	    _stylesheet = _parser.makeStylesheet(element);
+	    _stylesheet.setURL(url);
+	    _stylesheet.setParentStylesheet(null);
+	    _parser.setCurrentStylesheet(_stylesheet);
+	    _parser.createAST(_stylesheet);
+
+	    // Process any error and/or warning messages found so far...
 	    _parser.printWarnings();
-	    return !_parser.errorsFound();
+	    if ((_parser.errorsFound()) || (_stylesheet == null)) {
+		_parser.printErrors();
+		return false;
+	    }
+
+	    // Compile the translet
+	    _stylesheet.setMultiDocument(_multiDocument);
+	    _stylesheet.translate();
+
+	    // Process any error and/or warning messages found so far...
+	    _parser.printWarnings();
+	    if ((_parser.errorsFound()) || (_stylesheet == null)) {
+		_parser.printErrors();
+		return false;
+	    }
+
+	    return true;
 	}
 	catch (CompilerException e) {
 	    e.printStackTrace();

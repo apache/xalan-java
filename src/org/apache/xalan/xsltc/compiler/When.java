@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -66,8 +67,13 @@ package org.apache.xalan.xsltc.compiler;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class When extends Instruction {
-    private Expression _test;
+
+    private static final String NO_CHOOSE_ERROR =
+	"Instruction 'when' must be used within a 'choose'.";
 	
+    private Expression _test;
+    private boolean _ignore = false;
+
     public void display(int indent) {
 	indent(indent);
 	Util.println("When");
@@ -81,37 +87,51 @@ final class When extends Instruction {
 	return _test;
     }
 
+    public boolean ignore() {
+	return(_ignore);
+    }
+
     public void parseContents(Parser parser) {
-	boolean ignore = false;
 	_test = parser.parseExpression(this, "test", null);
 	if (_test instanceof ElementAvailableCall) {
 	    ElementAvailableCall call = (ElementAvailableCall)_test;
-	    ignore = !call.getResult();
-	}
-
-	if (!ignore) {
-	    parseChildren(parser);
-	}
-
-	// make sure required attribute(s) have been set
-	if (_test.isDummy()) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "test");
+	    _ignore = !call.getResult();
 	    return;
 	}
+
+	parseChildren(parser);
+
+	// Make sure required attribute(s) have been set
+	if (_test.isDummy()) {
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "test");
+	}
     }
-	
+
+    /**
+     * Type-check this when element. The test should always be type checked,
+     * while we do not bother with the contents if we know the test fails.
+     * This is important in cases where the "test" expression tests for
+     * the support of a non-available element, and the <xsl:when> body contains
+     * this non-available element.
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	// Type-check the test expression
 	if (_test.typeCheck(stable) instanceof BooleanType == false) {
 	    _test = new CastExpr(_test, Type.Boolean);
 	}
-	typeCheckContents(stable);
+	// Type-check the contents (if necessary)
+	if (!_ignore) {
+	    typeCheckContents(stable);
+	}
 	return Type.Void;
     }
-	
+
+    /**
+     * This method should never be called. An Otherwise object will explicitly
+     * translate the "test" expression and and contents of this element.
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final ErrorMsg msg =
-	    new ErrorMsg("Instruction 'when' must be used within a 'choose'.", 
-			 getLineNumber());
+	final ErrorMsg msg = new ErrorMsg(NO_CHOOSE_ERROR, getLineNumber());
 	getParser().reportError(Constants.ERROR, msg);
     }
 }

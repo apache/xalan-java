@@ -333,6 +333,9 @@ public interface Constants extends InstructionConstants {
     public static final String RESET     	    
 	= "reset";
 
+    public static final String ATTR_SET_SIG
+	= "(" + TRANSLET_OUTPUT_SIG + ")V";
+
     public static final String GET_NODE_NAME_SIG   
 	= "(" + NODE_SIG + ")" + STRING_SIG;
     public static final String CHARACTERSW_SIG     
@@ -453,7 +456,7 @@ public interface Constants extends InstructionConstants {
     public static final String XSLT_URI 
 	= "http://www.w3.org/1999/XSL/Transform";
     public static final String TRANSLET_URI 
-	= "http://www.apache.org/xalan/xsltc";
+	= "http://xml.apache.org/xalan/xsltc";
     public static final String FALLBACK_CLASS
 	= "org.apache.xalan.xsltc.compiler.Fallback";
 }
