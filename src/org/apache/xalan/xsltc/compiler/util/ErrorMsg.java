@@ -178,7 +178,9 @@ public final class ErrorMsg {
     public static final int FATAL_ERR_MSG               = 86;
     public static final int ERROR_PLUS_WRAPPED_MSG      = 87;
     public static final int ERROR_MSG                   = 88;
-
+    public static final int TRANSFORM_WITH_TRANSLET_STR = 89;
+    public static final int TRANSFORM_WITH_JAR_STR      = 90;
+    
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.
     private static String[] _errorMessages;

@@ -856,7 +856,20 @@ public class ErrorMessages extends ResourceBundle {
          * of another message.  The substitution text is an error message.
 	 */
 	//ERROR_MSG
-	"ERROR:  ''{0}''"
+	"ERROR:  ''{0}''",
+	
+	/*
+	 * Note to translators:  The substitution text is the name of a class.
+	 */
+	//TRANSFORM_WITH_TRANSLET_STR
+	"Transform using translet ''{0}'' ",
+
+	/*
+	 * Note to translators:  The first substitution is the name of a class, while
+	 * the second substitution is the name of a jar file.
+	 */
+	//TRANSFORM_WITH_JAR_STR
+	"Transform using translet ''{0}'' from jar file ''{1}''"	
     };
 
     private static Vector _keys;
