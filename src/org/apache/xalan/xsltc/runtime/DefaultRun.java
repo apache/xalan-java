@@ -83,7 +83,7 @@ import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 
-final class DefaultRun {
+final public class DefaultRun {
 
     private TransletOutputHandler _handler;
 
@@ -186,7 +186,7 @@ final class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    System.exit(1);	    
+	    doSystemExit(1);	    
 	}
 	catch (RuntimeException e) {
 	    System.err.println("\nRuntime Error: " + e.getMessage());
@@ -194,41 +194,51 @@ final class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    System.exit(1);
+	    doSystemExit(1);
 	}
 	catch (FileNotFoundException e) {
 	    System.err.println("Error: File or URI '"+_fileName+"' not found.");
-	    System.exit(1);
+	    doSystemExit(1);
 	}
 	catch (MalformedURLException e) {
 	    System.err.println("Error: Invalid URI '"+_fileName+"'.");
-	    System.exit(1);
+	    doSystemExit(1);
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println("Error: Cannot find class '"+_className+"'.");
-	    System.exit(1);
+	    doSystemExit(1);
 	}
         catch (UnknownHostException e) {
 	    System.err.println("Error: Can't resolve URI specification '"+ 
 			       _fileName+"'.");
-	    System.exit(1);
+	    doSystemExit(1);
         }
 	catch (Exception e) {
 	    e.printStackTrace();
 	    System.err.println("Error: internal error.");
-	    System.exit(1);
+	    doSystemExit(1);
 	}
+    }
+
+    /** If we should call System.exit or not */
+    protected static boolean allowSystemExit = true;
+
+    /** Worker method to call System.exit or not */
+    protected static void doSystemExit(int retVal) {
+        if (allowSystemExit)
+            System.exit(retVal);
     }
 
     private final static String USAGE_STRING =
 	"Usage: \n" +
 	"     xslt [-j <jarfile>] {-u <document_url> | <document>} <class>\n"+
 	"          [<name1>=<value1> ...]\n\n" +
-	"     where <document> is the xml document to be transformed, or\n" +
+	"           <document> is the xml document to be transformed, or\n" +
 	"           <document_url> is a url for the xml document,\n" +
 	"           <class> is the translet class which is either in\n" +
 	"           user's CLASSPATH or in the <jarfile> specified \n" +
-	"           with the -j option.";	
+	"           with the -j option.\n" +
+	"          also: [-x] (debug), [-s] (don't allow System.exit)";	
 
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
@@ -247,6 +257,9 @@ final class DefaultRun {
 		for (i = 0; i < args.length && args[i].charAt(0) == '-'; i++) {
 		    if (args[i].equals("-u")) {
 			uri = true;
+		    }
+		    else if (args[i].equals("-s")){
+			allowSystemExit = false;
 		    }
 		    else if (args[i].equals("-x")) {
 			debug = true;
@@ -289,10 +302,11 @@ final class DefaultRun {
 		if (i == args.length) {
 		    handler.setParameters(params);
 		    handler.doTransform();
-		    System.exit(0);
+		    doSystemExit(0);
 		}
+	    }else{
+	       printUsage();
 	    }
-	    printUsage();
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
