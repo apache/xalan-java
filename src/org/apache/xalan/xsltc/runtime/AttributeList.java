@@ -63,6 +63,7 @@
 package org.apache.xalan.xsltc.runtime;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.Attributes;
 
 import java.util.Vector;
 import java.util.Enumeration;
@@ -89,6 +90,19 @@ public class AttributeList implements org.xml.sax.Attributes {
 	_qnames = new Vector();
 	_uris   = new Vector();
 	_length = 0;
+    }
+
+    /**
+     * Attributes clone constructor
+     */
+    public AttributeList(org.xml.sax.Attributes attributes) {
+	this();
+	if (attributes != null) {
+	    final int count = attributes.getLength();
+	    for (int i = 0; i < count; i++) {
+		add(attributes.getQName(i),attributes.getValue(i));
+	    }
+	}
     }
 
     /**
