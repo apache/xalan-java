@@ -554,7 +554,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
       int nsIndex = m_expandedNameTable.getNamespaceID(extendedTypeID);
       int lnIndex = m_expandedNameTable.getLocalNameID(extendedTypeID);
 
-      do
+      while(true)
       {
         int next = findElementFromIndex(nsIndex, lnIndex, nextPotential);
 
@@ -566,10 +566,11 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
           // System.out.println("Found node via index: "+first);
           return next;
         }
+        else if(axisHasBeenProcessed(axisRoot))
+          break;
 
         nextNode();
       }
-      while( !axisHasBeenProcessed(axisRoot) );
 
       return DTM.NULL;
     }
