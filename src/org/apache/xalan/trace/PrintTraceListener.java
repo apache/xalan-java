@@ -80,7 +80,7 @@ public class PrintTraceListener implements TraceListener
   /**
    * Construct a trace listener.
    *
-   * NEEDSDOC @param pw
+   * @param pw PrintWriter to use for tracing events
    */
   public PrintTraceListener(java.io.PrintWriter pw)
   {

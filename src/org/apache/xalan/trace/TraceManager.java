@@ -74,13 +74,13 @@ import org.apache.xpath.XPath;
 public class TraceManager
 {
 
-  /** NEEDSDOC Field m_transformer          */
+  /** A transformer instance          */
   private TransformerImpl m_transformer;
 
   /**
    * Constructor for the trace manager.
    *
-   * NEEDSDOC @param transformer
+   * @param transformer a non-null instance of a transformer
    */
   public TraceManager(TransformerImpl transformer)
   {
@@ -127,7 +127,7 @@ public class TraceManager
   /**
    * Fire a generate event.
    *
-   * NEEDSDOC @param te
+   * @param te Generate Event to fire
    */
   public void fireGenerateEvent(GenerateEvent te)
   {
@@ -148,7 +148,7 @@ public class TraceManager
   /**
    * Tell if trace listeners are present.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if there are trace listeners
    */
   public boolean hasTraceListeners()
   {
@@ -158,9 +158,9 @@ public class TraceManager
   /**
    * Fire a trace event.
    *
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
-   * NEEDSDOC @param styleNode
+   * @param sourceNode Current source node
+   * @param mode Template mode
+   * @param styleNode Stylesheet template node
    */
   public void fireTraceEvent(Node sourceNode, QName mode,
                              ElemTemplateElement styleNode)
@@ -176,7 +176,7 @@ public class TraceManager
   /**
    * Fire a trace event.
    *
-   * NEEDSDOC @param te
+   * @param te Trace event to fire
    */
   public void fireTraceEvent(TracerEvent te)
   {
@@ -197,11 +197,11 @@ public class TraceManager
   /**
    * Fire a selection event.
    *
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param styleNode
-   * NEEDSDOC @param attributeName
-   * NEEDSDOC @param xpath
-   * NEEDSDOC @param selection
+   * @param sourceNode Current source node
+   * @param styleNode node in the style tree reference for the event.
+   * @param attributeName The attribute name from which the selection is made. 
+   * @param xpath The XPath that executed the selection.
+   * @param selection The result of the selection.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -219,7 +219,7 @@ public class TraceManager
   /**
    * Fire a selection event.
    *
-   * NEEDSDOC @param se
+   * @param se Selection event to fire
    *
    * @throws javax.xml.transform.TransformerException
    */
