@@ -66,10 +66,12 @@ import java.io.IOException;
 import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.FileInputStream;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import java.util.Properties;
 
@@ -309,13 +311,13 @@ public class Examples
    */
   public static void exampleFromReader(String sourceID, String xslID)
     throws TransformerException, TransformerConfigurationException,
-           FileNotFoundException
+           FileNotFoundException, UnsupportedEncodingException
   {
     // Create a transform factory instance.
     TransformerFactory tfactory = TransformerFactory.newInstance();
 
     // Note that in this case the XML encoding can not be processed!
-    Reader xslReader = new BufferedReader(new FileReader(xslID));
+    Reader xslReader = new BufferedReader(new InputStreamReader(new FileInputStream(xslID), "UTF-8"));
     StreamSource xslSource = new StreamSource(xslReader);
     // Note that if we don't do this, relative URLs can not be resolved correctly!
     xslSource.setSystemId(xslID);
@@ -324,7 +326,7 @@ public class Examples
     Transformer transformer = tfactory.newTransformer(xslSource);
     
     // Note that in this case the XML encoding can not be processed!
-    Reader xmlReader = new BufferedReader(new FileReader(sourceID));
+    Reader xmlReader = new BufferedReader(new InputStreamReader(new FileInputStream(sourceID), "UTF-8"));
     StreamSource xmlSource = new StreamSource(xmlReader);
     // Note that if we don't do this, relative URLs can not be resolved correctly!
     xmlSource.setSystemId(sourceID);
