@@ -98,6 +98,7 @@ class ProcessorAttributeSet extends XSLTElementProcessor
     ElemAttributeSet eat = new ElemAttributeSet();
     eat.setLocaterInfo(handler.getLocator());
     eat.setPrefixes(handler.getNamespaceSupport());
+    eat.setDOMBackPointer(handler.getOriginatingNode());
     
     setPropertiesFromAttributes(handler, rawName, attributes, eat);
                                    

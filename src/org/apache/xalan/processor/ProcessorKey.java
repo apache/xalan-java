@@ -104,6 +104,7 @@ class ProcessorKey extends XSLTElementProcessor
     throws SAXException
   {
     KeyDeclaration kd = new KeyDeclaration();
+    kd.setDOMBackPointer(handler.getOriginatingNode());
     kd.setLocaterInfo(handler.getLocator());
     
     setPropertiesFromAttributes(handler, rawName, attributes, kd);

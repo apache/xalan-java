@@ -775,6 +775,27 @@ public class ElemTemplateElement extends UnImplNode
     }
     return lastChild;
   }
+  
+  private Node m_DOMBackPointer;
+  
+  /**
+   * If this stylesheet was created from a DOM, get the 
+   * DOM backpointer that this element originated from.
+   * For tooling use.
+   */
+  public Node getDOMBackPointer()
+  {
+    return m_DOMBackPointer;
+  }
 
+  /**
+   * If this stylesheet was created from a DOM, set the 
+   * DOM backpointer that this element originated from.
+   * For tooling use.
+   */
+  public void setDOMBackPointer(Node n)
+  {
+    m_DOMBackPointer = n;
+  }
   
 }

@@ -119,6 +119,7 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
         parent.setInclude(stylesheet);
       }
     }
+    stylesheet.setDOMBackPointer(handler.getOriginatingNode());
     stylesheet.setLocaterInfo(handler.getLocator());
     stylesheet.setPrefixes(handler.getNamespaceSupport());
 

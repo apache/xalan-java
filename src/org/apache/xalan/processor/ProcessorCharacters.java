@@ -85,6 +85,7 @@ public class ProcessorCharacters extends XSLTElementProcessor
        ((null != m_xslTextElement) || !isWhiteSpace(m_accumulator)))
     {
       ElemTextLiteral elem = new ElemTextLiteral();
+      elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());
       boolean doe = (null != m_xslTextElement) 

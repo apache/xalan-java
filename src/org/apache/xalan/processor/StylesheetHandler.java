@@ -62,6 +62,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.utils.NodeConsumer;
 import trax.ProcessorException;
 import trax.TemplatesBuilder;
 import trax.Templates;
@@ -84,6 +85,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.w3c.dom.Node;
 
 
 /**
@@ -95,7 +97,8 @@ import org.xml.sax.SAXParseException;
  */
 public class StylesheetHandler
   implements EntityResolver, DTDHandler, 
-  ContentHandler, ErrorHandler, TemplatesBuilder, PrefixResolver
+  ContentHandler, ErrorHandler, TemplatesBuilder, PrefixResolver,
+  NodeConsumer
 {
   static boolean m_xpathFunctionsInited = false;
   
@@ -1013,4 +1016,22 @@ public class StylesheetHandler
     return m_nsSupport;
   }
   
+  private Node m_originatingNode;
+  
+  /**
+   * Set the node that is originating the SAX event.
+   */
+  public void setOriginatingNode(Node n)
+  {
+    m_originatingNode = n;
+  }
+
+   /**
+   * Set the node that is originating the SAX event.
+   */
+  public Node getOriginatingNode()
+  {
+    return m_originatingNode;
+  }
+ 
 }

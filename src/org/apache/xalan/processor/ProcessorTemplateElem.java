@@ -94,6 +94,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
     try
     {
       elem = (ElemTemplateElement)classObject.newInstance();
+      elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());
     }

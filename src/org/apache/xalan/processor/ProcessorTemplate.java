@@ -76,6 +76,7 @@ class ProcessorTemplate extends ProcessorTemplateElem
     throws SAXException
   {
     super.appendAndPush(handler, elem);
+    elem.setDOMBackPointer(handler.getOriginatingNode());
     handler.getStylesheet().setTemplate((ElemTemplate)elem);
   }
 }

@@ -112,6 +112,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
       }
       else
         elem = (ElemLiteralResult)classObject.newInstance();
+      elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());
       elem.setNamespace(uri);

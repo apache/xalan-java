@@ -61,6 +61,7 @@ import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
 import org.apache.xpath.DOM2Helper;
 import org.apache.xpath.DOMHelper;
+import org.apache.xalan.utils.NodeConsumer;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -178,6 +179,10 @@ public class TreeWalker
   protected void startNode(Node node)
     throws SAXException 
   {
+    if(m_contentHandler instanceof NodeConsumer)
+    {
+      ((NodeConsumer)m_contentHandler).setOriginatingNode(node);
+    }
     switch(node.getNodeType())
     {
     case Node.COMMENT_NODE:

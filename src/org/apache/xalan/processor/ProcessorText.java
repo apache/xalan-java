@@ -82,6 +82,7 @@ public class ProcessorText extends ProcessorTemplateElem
     charProcessor.setXslTextElement((ElemText)elem);
     ElemTemplateElement parent = handler.getElemTemplateElement();
     parent.appendChild(elem);
+    elem.setDOMBackPointer(handler.getOriginatingNode());
   }
     
   /**
