@@ -219,10 +219,10 @@
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
   
-   <action context="code" category="feature" who="SB" completed="01/04/01">
+   <!-- action context="code" category="feature" who="SB" completed="01/04/01">
     Integrate John Gentilin &lt;johnglinux@eyecatching.com> code, 
     for SQL Extension Enhancements.
-   </action>
+   </action  (CHANGES BACKED OUT OF) -->
 
    <action context="code" category="bug" who="SB" completed="01/04/01">
     Implement xsl:strip-space for generic DOM processing.
