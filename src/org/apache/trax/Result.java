@@ -54,6 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 // Transformations for XML (TRaX)
 // Copyright ©2000 Lotus Development Corporation, Exoffice Technologies,
 // Oracle Corporation, Michael Kay of International Computers Limited, Apache
@@ -61,8 +62,10 @@
 package org.apache.trax;
 
 import java.lang.String;
+
 import java.io.OutputStream;
 import java.io.Writer;
+
 import org.w3c.dom.Node;
 
 /**
@@ -72,42 +75,38 @@ import org.w3c.dom.Node;
  * it also can specify a DOM node to which nodes will be appended.</p>
  *
  * <h3>Open issues:</h3>
- * <dl>
- *    <dt><h4>Should this be an interface?</h4></dt>
- *    <dd>Should this be an interface instead of a concrete class?  The justification 
- *        for it being a class is that it is just a bag of data, and contains no 
+ * <dl> *    <dt><h4>Should this be an interface?</h4></dt>
+ *    <dd>Should this be an interface instead of a concrete class?  The justification
+ *        for it being a class is that it is just a bag of data, and contains no
  *        behavior of its own.</dd>
- * </dl>
- * 
+ * </dl> 
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public class Result
 {
+
   /**
    * Zero-argument default constructor.
    */
-  public Result ()
-  {
-  }
+  public Result(){}
 
   /**
    * Create a new output target with a byte stream.
    *
    * @param byteStream The raw byte stream that will contain the document.
    */
-  public Result (OutputStream byteStream)
+  public Result(OutputStream byteStream)
   {
     setByteStream(byteStream);
   }
-
 
   /**
    * Create a new output target with a character stream.
    *
    * @param characterStream The character stream where the result will be written.
-   */ 
-  public Result (Writer characterStream)
+   */
+  public Result(Writer characterStream)
   {
     setCharacterStream(characterStream);
   }
@@ -117,17 +116,17 @@ public class Result
    *
    * @param n The DOM node that will contain the result tree.
    */
-  public Result (Node n)
+  public Result(Node n)
   {
     setNode(n);
   }
-  
+
   /**
    * Set the byte stream for this output target.
    *
    * @param byteStream A byte stream that will contain the result document.
    */
-  public void setByteStream (OutputStream byteStream)
+  public void setByteStream(OutputStream byteStream)
   {
     this.byteStream = byteStream;
   }
@@ -137,7 +136,7 @@ public class Result
    *
    * @return The byte stream, or null if none was supplied.
    */
-  public OutputStream getByteStream ()
+  public OutputStream getByteStream()
   {
     return byteStream;
   }
@@ -145,10 +144,10 @@ public class Result
   /**
    * Set the character stream for this output target.
    *
-   * @param characterStream The character stream that will contain 
+   * @param characterStream The character stream that will contain
    *                     the result document.
    */
-  public void setCharacterStream (Writer characterStream)
+  public void setCharacterStream(Writer characterStream)
   {
     this.characterStream = characterStream;
   }
@@ -158,32 +157,41 @@ public class Result
    *
    * @return The character stream, or null if none was supplied.
    */
-  public Writer getCharacterStream ()
+  public Writer getCharacterStream()
   {
     return characterStream;
   }
 
   /**
    * Set the node that will contain the result DOM tree.
+   *
+   * NEEDSDOC @param node
    */
-  public void setNode (Node node)
+  public void setNode(Node node)
   {
     this.node = node;
   }
 
   /**
    * Get the node that will contain the result tree.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public Node getNode ()
+  public Node getNode()
   {
     return node;
   }
-  
+
   //////////////////////////////////////////////////////////////////////
   // Internal state.
   //////////////////////////////////////////////////////////////////////
 
+  /** NEEDSDOC Field byteStream          */
   protected OutputStream byteStream;
+
+  /** NEEDSDOC Field characterStream          */
   protected Writer characterStream;
+
+  /** NEEDSDOC Field node          */
   protected Node node;
 }

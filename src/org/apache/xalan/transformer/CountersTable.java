@@ -58,7 +58,9 @@ package org.apache.xalan.transformer;
 
 import java.util.Hashtable;
 import java.util.Vector;
+
 import org.w3c.dom.Node;
+
 import org.xml.sax.SAXException;
 
 import org.apache.xpath.XPathContext;
@@ -68,90 +70,118 @@ import org.apache.xalan.templates.ElemNumber;
 
 /**
  * <meta name="usage" content="internal"/>
- * This is a table of counters, keyed by ElemNumber objects, each 
- * of which has a list of Counter objects.  This really isn't a true 
- * table, it is more like a list of lists (there must be a technical 
+ * This is a table of counters, keyed by ElemNumber objects, each
+ * of which has a list of Counter objects.  This really isn't a true
+ * table, it is more like a list of lists (there must be a technical
  * term for that...).
  */
 public class CountersTable extends Hashtable
-{  
+{
+
   /**
    * Construct a CountersTable.
    */
-  public CountersTable()
-  {
-  }
-  
+  public CountersTable(){}
+
   /**
-   * Get the list of counters that corresponds to 
+   * Get the list of counters that corresponds to
    * the given ElemNumber object.
+   *
+   * NEEDSDOC @param numberElem
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   Vector getCounters(ElemNumber numberElem)
   {
-    Vector counters = (Vector)this.get(numberElem);
+
+    Vector counters = (Vector) this.get(numberElem);
+
     return (null == counters) ? putElemNumber(numberElem) : counters;
   }
-  
+
   /**
-   * Put a counter into the table and create an empty 
+   * Put a counter into the table and create an empty
    * vector as it's value.
+   *
+   * NEEDSDOC @param numberElem
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   Vector putElemNumber(ElemNumber numberElem)
   {
+
     Vector counters = new Vector();
+
     this.put(numberElem, counters);
+
     return counters;
   }
-  
+
   /**
    * Place to collect new counters.
    */
   private NodeSet m_newFound = new NodeSet();
-  
+
   /**
-   * Add a list of counted nodes that were built in backwards document 
-   * order, or a list of counted nodes that are in forwards document 
+   * Add a list of counted nodes that were built in backwards document
+   * order, or a list of counted nodes that are in forwards document
    * order.
+   *
+   * NEEDSDOC @param flist
+   * NEEDSDOC @param blist
    */
   void appendBtoFList(NodeSet flist, NodeSet blist)
   {
+
     int n = blist.size();
-    for(int i = (n-1); i >= 0; i--)
+
+    for (int i = (n - 1); i >= 0; i--)
     {
       flist.addElement(blist.item(i));
     }
   }
-  
+
   // For diagnostics
+
+  /** NEEDSDOC Field m_countersMade          */
   int m_countersMade = 0;
-    
+
   /**
-   * Count forward until the given node is found, or until 
+   * Count forward until the given node is found, or until
    * we have looked to the given amount.
    * @node The node to count.
+   *
+   * NEEDSDOC @param support
+   * NEEDSDOC @param numberElem
+   * NEEDSDOC @param node
    * @return The node count, or 0 if not found.
+   *
+   * @throws SAXException
    */
   public int countNode(XPathContext support, ElemNumber numberElem, Node node)
-    throws SAXException
+          throws SAXException
   {
+
     int count = 0;
     Vector counters = getCounters(numberElem);
     int nCounters = counters.size();
+
     // XPath countMatchPattern = numberElem.getCountMatchPattern(support, node);
     // XPath fromMatchPattern = numberElem.m_fromMatchPattern;
-    
     Node target = numberElem.getTargetNode(support, node);
-    if(null != target)
+
+    if (null != target)
     {
-      for(int i = 0; i < nCounters; i++)
-      {    
-        Counter counter = (Counter)counters.elementAt(i);
-        
+      for (int i = 0; i < nCounters; i++)
+      {
+        Counter counter = (Counter) counters.elementAt(i);
+
         count = counter.getPreviouslyCounted(support, target);
-        if(count > 0)
+
+        if (count > 0)
           return count;
       }
-      
+
       // In the loop below, we collect the nodes in backwards doc order, so 
       // we don't have to do inserts, but then we store the nodes in forwards 
       // document order, so we don't have to insert nodes into that list, 
@@ -159,41 +189,53 @@ public class CountersTable extends Hashtable
       // of forward counting by one, this will mean a single node copy from 
       // the backwards list (m_newFound) to the forwards list (counter.m_countNodes).
       count = 0;
-      for(; null != target; target = numberElem.getPreviousNode(support, target))
-      {   
+
+      for (; null != target;
+              target = numberElem.getPreviousNode(support, target))
+      {
+
         // First time in, we should not have to check for previous counts, 
         // since the original target node was already checked in the 
         // block above.
-        if(0 != count)  
+        if (0 != count)
         {
-          for(int i = 0; i < nCounters; i++)
-          {    
-            Counter counter = (Counter)counters.elementAt(i);
+          for (int i = 0; i < nCounters; i++)
+          {
+            Counter counter = (Counter) counters.elementAt(i);
             int cacheLen = counter.m_countNodes.size();
-            if((cacheLen > 0) && counter.m_countNodes.elementAt(cacheLen-1).equals(target))
+
+            if ((cacheLen > 0)
+                    && counter.m_countNodes.elementAt(cacheLen
+                                                      - 1).equals(target))
             {
-              count += (cacheLen+counter.m_countNodesStartCount);
-              if(cacheLen > 0)
+              count += (cacheLen + counter.m_countNodesStartCount);
+
+              if (cacheLen > 0)
                 appendBtoFList(counter.m_countNodes, m_newFound);
+
               m_newFound.removeAllElements();
+
               return count;
             }
           }
         }
+
         m_newFound.addElement(target);
+
         count++;
       }
+
       // If we got to this point, then we didn't find a counter, so make 
       // one and add it to the list.
       Counter counter = new Counter(numberElem);
-      m_countersMade++; // for diagnostics
+
+      m_countersMade++;  // for diagnostics
+
       appendBtoFList(counter.m_countNodes, m_newFound);
       m_newFound.removeAllElements();
       counters.addElement(counter);
     }
-    
+
     return count;
   }
-  
-
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,8 +57,10 @@
 package org.apache.xalan.transformer;
 
 import java.util.Vector;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.PrefixResolver;
@@ -70,54 +72,75 @@ import org.apache.xpath.axes.LocPathIterator;
  */
 public class KeyManager
 {
+
   /**
    * Table of tables of element keys.
    * @see KeyTable.
    */
   private transient Vector m_key_tables = null;
-  
+
   /**
    * Given a valid element key, return the corresponding node list.
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param doc
+   * NEEDSDOC @param name
+   * NEEDSDOC @param ref
+   * NEEDSDOC @param nscontext
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public LocPathIterator getNodeSetByKey(XPathContext xctxt, 
-                                  Node doc, QName name,
-                                  String ref, PrefixResolver nscontext)
-    throws org.xml.sax.SAXException
+  public LocPathIterator getNodeSetByKey(
+          XPathContext xctxt, Node doc, QName name, String ref, PrefixResolver nscontext)
+            throws org.xml.sax.SAXException
   {
-    LocPathIterator nl = null;
-    ElemTemplateElement template = (ElemTemplateElement)nscontext; // yuck -sb
 
-    if((null != template) && null != template.getStylesheetComposed().getKeysComposed())
+    LocPathIterator nl = null;
+    ElemTemplateElement template = (ElemTemplateElement) nscontext;  // yuck -sb
+
+    if ((null != template)
+            && null != template.getStylesheetComposed().getKeysComposed())
     {
       boolean foundDoc = false;
-      if(null == m_key_tables)
+
+      if (null == m_key_tables)
       {
         m_key_tables = new Vector(4);
       }
       else
       {
         int nKeyTables = m_key_tables.size();
-        for(int i = 0; i < nKeyTables; i++)
+
+        for (int i = 0; i < nKeyTables; i++)
         {
-          KeyTable kt = (KeyTable)m_key_tables.elementAt(i);
-          if(kt.getKeyTableName().equals(name) &&  doc == kt.getDocKey())
+          KeyTable kt = (KeyTable) m_key_tables.elementAt(i);
+
+          if (kt.getKeyTableName().equals(name) && doc == kt.getDocKey())
           {
             nl = kt.getNodeSetByKey(name, ref);
+
             if (nl != null)
             {
               foundDoc = true;
+
               break;
             }
           }
         }
       }
-      if((null == nl) && !foundDoc /* && m_needToBuildKeysTable */ )
+
+      if ((null == nl) &&!foundDoc /* && m_needToBuildKeysTable */)
       {
-        KeyTable kt = new KeyTable(doc, nscontext, name, 
-                                   template.getStylesheetComposed().getKeysComposed(),
-                                   xctxt);
+        KeyTable kt =
+          new KeyTable(doc, nscontext, name,
+                       template.getStylesheetComposed().getKeysComposed(),
+                       xctxt);
+
         m_key_tables.addElement(kt);
-        if(doc == kt.getDocKey())
+
+        if (doc == kt.getDocKey())
         {
           foundDoc = true;
           nl = kt.getNodeSetByKey(name, ref);
@@ -127,5 +150,4 @@ public class KeyManager
 
     return nl;
   }
-
 }

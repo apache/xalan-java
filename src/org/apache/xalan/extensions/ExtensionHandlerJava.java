@@ -65,18 +65,19 @@ import java.util.Hashtable;
  * various java extension handlers.
  *
  */
-
-public abstract class ExtensionHandlerJava extends ExtensionHandler 
+public abstract class ExtensionHandlerJava extends ExtensionHandler
 {
 
+  /** NEEDSDOC Field m_className          */
   protected String m_className = "";
-  private Hashtable m_cachedMethods = new Hashtable();
 
+  /** NEEDSDOC Field m_cachedMethods          */
+  private Hashtable m_cachedMethods = new Hashtable();
 
   /**
    * Construct a new extension handler given all the information
-   * needed. 
-   * 
+   * needed.
+   *
    * @param namespaceUri the extension namespace URI that I'm implementing
    * @param funcNames    string containing list of functions of extension NS
    * @param lang         language of code implementing the extension
@@ -84,15 +85,17 @@ public abstract class ExtensionHandlerJava extends ExtensionHandler
    *                     or a classname depending on the value of lang. If
    *                     srcURL is not null, then scriptSrc is ignored.
    * @param scriptSrc    the actual script code (if any)
+   * NEEDSDOC @param scriptLang
+   * NEEDSDOC @param className
    */
-  protected ExtensionHandlerJava(String namespaceUri,
-                                 String scriptLang,
+  protected ExtensionHandlerJava(String namespaceUri, String scriptLang,
                                  String className)
   {
+
     super(namespaceUri, scriptLang);
+
     m_className = className;
   }
-
 
   /**
    * Look up the entry in the method cache.
@@ -101,18 +104,16 @@ public abstract class ExtensionHandlerJava extends ExtensionHandler
    * @param objType     A Class object or instance object representing the type
    * @param methodArgs  An array of the XObject arguments to be used for
    *                    function mangling.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-
-  public Object getFromCache(Object methodKey,
-                             Object objType,
+  public Object getFromCache(Object methodKey, Object objType,
                              Object[] methodArgs)
   {
 
     // Eventually, we want to insert code to mangle the methodKey with methodArgs
-
     return m_cachedMethods.get(methodKey);
   }
-
 
   /**
    * Add a new entry into the method cache.
@@ -121,16 +122,15 @@ public abstract class ExtensionHandlerJava extends ExtensionHandler
    * @param objType     A Class object or instance object representing the type
    * @param methodArgs  An array of the XObject arguments to be used for
    *                    function mangling.
+   * NEEDSDOC @param methodObj
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-
-  public Object putToCache(Object methodKey,
-                         Object objType,
-                         Object[] methodArgs,
-                         Object methodObj)
+  public Object putToCache(Object methodKey, Object objType,
+                           Object[] methodArgs, Object methodObj)
   {
 
     // Eventually, we want to insert code to mangle the methodKey with methodArgs
-
     return m_cachedMethods.put(methodKey, methodObj);
   }
 }

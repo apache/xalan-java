@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -55,52 +55,78 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.res;
+
 import java.util.*;
+
 //
 //  LangResources_en.properties
 //
-public class XSLTResources_el extends XSLTResourceBundle 
+
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class XSLTResources_el <needs-comment/>
+ */
+public class XSLTResources_el extends XSLTResourceBundle
 {
-public Object[][] getContents()
-{
-	return contents;
-}	
 
-static final Object[][] contents = {
+  /**
+   * NEEDSDOC Method getContents 
+   *
+   *
+   * NEEDSDOC (getContents) @return
+   */
+  public Object[][] getContents()
+  {
+    return contents;
+  }
 
-{"ui_language","el"},
-{"help_language", "el"},
-{"language", "el"},
+  /** NEEDSDOC Field contents          */
+  static final Object[][] contents =
+  {
+    { "ui_language", "el" }, { "help_language", "el" }, { "language", "el" },
+    { "alphabet",
+      new char[]{ 0x03b1, 0x03b2, 0x03b3, 0x03b4, 0x03b5, 0x03b6, 0x03b7,
+                  0x03b8, 0x03b9, 0x03ba, 0x03bb, 0x03bc, 0x03bd, 0x03be,
+                  0x03bf, 0x03c0, 0x03c1, 0x03c2, 0x03c3, 0x03c4, 0x03c5,
+                  0x03c6, 0x03c7, 0x03c8, 0x03c9 } },
+    { "tradAlphabet",
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
 
- 
-{"alphabet", new char[]{0x03b1,0x03b2,0x03b3,0x03b4,0x03b5,0x03b6,0x03b7,0x03b8,0x03b9,0x03ba,0x03bb,0x03bc,0x03bd,0x03be,0x03bf,0x03c0,0x03c1,0x03c2,0x03c3,0x03c4,0x03c5,0x03c6,0x03c7,0x03c8,0x03c9}},
-{"tradAlphabet", new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}},
+    //language orientation
+    { "orientation", "LeftToRight" },
 
-//language orientation
-{"orientation", "LeftToRight"},
+    //language numbering 
+    //{"numbering", "additive"},
+    { "numbering", "multiplicative-additive" },
+    { "multiplierOrder", "precedes" },
 
-//language numbering 
-//{"numbering", "additive"},
-{"numbering", "multiplicative-additive"},
-{"multiplierOrder", "precedes"},
+    // largest numerical value
+    //{"MaxNumericalValue", new Integer()},
+    //These would not be used for EN. Only used for traditional numbering   
+    { "numberGroups", new int[]{ 100, 10, 1 } },
 
-// largest numerical value
-//{"MaxNumericalValue", new Integer()},
+    //These only used for mutiplicative-additive numbering
+    { "multiplier", new int[]{ 1000 } },
+    { "multiplierChar", new char[]{ 0x03d9 } },
 
-//These would not be used for EN. Only used for traditional numbering   
-{"numberGroups", new int[]{100, 10, 1}},
-//These only used for mutiplicative-additive numbering
-{"multiplier", new int[]{1000}},
-{"multiplierChar", new char[]{0x03d9}},
-// chinese only??
-{"zero", new char[0]},
-//{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
-{"digits", new char[]{0x03b1,0x03b2,0x03b3,0x03b4,0x03b5,0x03db, 0x03b6,0x03b7,0x03b8}},
-{"tens", new char[]{0x03b9,0x03ba,0x03bb,0x03bc,0x03bd,0x03be,0x03bf,0x03c0,0x03df}},  
-{"hundreds", new char[]{0x03c1,0x03c2,0x03c4,0x03c5,0x03c6,0x03c7,0x03c8,0x03c9,0x03e1}},
-//{"thousands", new char[]{0x10D9,0x10DA,0x10DB,0x10DC,0x10DD,0x10DE,0x10DF,0x10E0,0x10E1}},  
+    // chinese only??
+    { "zero", new char[0] },
 
-//hundreds, etc...
-{"tables", new String[]{"hundreds", "tens", "digits"}}
-};    
-}  
+    //{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
+    { "digits",
+      new char[]{ 0x03b1, 0x03b2, 0x03b3, 0x03b4, 0x03b5, 0x03db, 0x03b6,
+                  0x03b7, 0x03b8 } },
+    { "tens",
+      new char[]{ 0x03b9, 0x03ba, 0x03bb, 0x03bc, 0x03bd, 0x03be, 0x03bf,
+                  0x03c0, 0x03df } },
+    { "hundreds",
+      new char[]{ 0x03c1, 0x03c2, 0x03c4, 0x03c5, 0x03c6, 0x03c7, 0x03c8,
+                  0x03c9, 0x03e1 } },
+
+    //{"thousands", new char[]{0x10D9,0x10DA,0x10DB,0x10DC,0x10DD,0x10DE,0x10DF,0x10E0,0x10E1}},  
+    //hundreds, etc...
+    { "tables", new String[]{ "hundreds", "tens", "digits" } }
+  };
+}

@@ -54,10 +54,12 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import org.w3c.dom.Node;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -69,35 +71,49 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncConcat extends FunctionMultiArgs
 {
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     StringBuffer sb = new StringBuffer();
+
     // Compiler says we must have at least two arguments.
     sb.append(m_arg0.execute(xctxt).str());
     sb.append(m_arg1.execute(xctxt).str());
-    if(null != m_arg2)
+
+    if (null != m_arg2)
       sb.append(m_arg2.execute(xctxt).str());
-    if(null != m_args)
+
+    if (null != m_args)
     {
-      for(int i = 0; i < m_args.length; i++)
+      for (int i = 0; i < m_args.length; i++)
+      {
         sb.append(m_args[i].execute(xctxt).str());
+      }
     }
-    
+
     return new XString(sb.toString());
   }
-  
-  public void checkNumberArgs(int argNum)
-    throws WrongNumberArgsException
+
+  /**
+   * NEEDSDOC Method checkNumberArgs 
+   *
+   *
+   * NEEDSDOC @param argNum
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if(argNum < 2)
+    if (argNum < 2)
       throw new WrongNumberArgsException(">1");
   }
-
 }

@@ -54,10 +54,12 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import org.w3c.dom.Node;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -69,18 +71,23 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncSubstringBefore extends Function2Args
 {
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     String s1 = m_arg0.execute(xctxt).str();
     String s2 = m_arg1.execute(xctxt).str();
     int index = s1.indexOf(s2);
-    return (-1 == index) ? XString.EMPTYSTRING : new XString(s1.substring(0,  index));
+
+    return (-1 == index)
+           ? XString.EMPTYSTRING : new XString(s1.substring(0, index));
   }
 }

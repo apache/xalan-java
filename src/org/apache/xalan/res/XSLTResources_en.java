@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -55,45 +55,61 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.res;
+
 import java.util.*;
+
 //
 //  LangResources_en.properties
 //
-public class XSLTResources_en extends XSLTResourceBundle 
+
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class XSLTResources_en <needs-comment/>
+ */
+public class XSLTResources_en extends XSLTResourceBundle
 {
-public Object[][] getContents()
-{
-	return contents;
-}	
 
-static final Object[][] contents = {
+  /**
+   * NEEDSDOC Method getContents 
+   *
+   *
+   * NEEDSDOC (getContents) @return
+   */
+  public Object[][] getContents()
+  {
+    return contents;
+  }
 
-{"ui_language","en"},
-{"help_language", "en"},
-{"language", "en"},
+  /** NEEDSDOC Field contents          */
+  static final Object[][] contents =
+  {
+    { "ui_language", "en" }, { "help_language", "en" }, { "language", "en" },
+    { "alphabet",
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
+    { "tradAlphabet",
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
 
- 
-{"alphabet", new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}},
-{"tradAlphabet", new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}},
+    //language orientation
+    { "orientation", "LeftToRight" },
 
-//language orientation
-{"orientation", "LeftToRight"},
+    //language numbering   
+    { "numbering", "additive" },
 
-//language numbering   
-{"numbering", "additive"},
-
-// largest numerical value
-//{"MaxNumericalValue", new Integer()},
-
-//These would not be used for EN. Only used for traditional numbering   
-//{"numberGroups", new int[]{10,1}},
-//These only used for mutiplicative-additive numbering
-//{"multiplier", "10"},
-//{"multiplierChar", "M"}, 
-//{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
-//{"digits", new char[]{0x10D0,0x10D1,0x10D2,0x10D3,0x10D4,0x10D5,0x10D6,0x10D7,0x10D8}},
-//{"tens", new char[]{0x10D9,0x10DA,0x10DB,0x10DC,0x10DD,0x10DE,0x10DF,0x10E0,0x10E1}},  
-//hundreds, etc...
-//{"tables", new String[]{"tens", "digits"}}
-};    
-}  
+    // largest numerical value
+    //{"MaxNumericalValue", new Integer()},
+    //These would not be used for EN. Only used for traditional numbering   
+    //{"numberGroups", new int[]{10,1}},
+    //These only used for mutiplicative-additive numbering
+    //{"multiplier", "10"},
+    //{"multiplierChar", "M"}, 
+    //{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
+    //{"digits", new char[]{0x10D0,0x10D1,0x10D2,0x10D3,0x10D4,0x10D5,0x10D6,0x10D7,0x10D8}},
+    //{"tens", new char[]{0x10D9,0x10DA,0x10DB,0x10DC,0x10DD,0x10DE,0x10DF,0x10E0,0x10E1}},  
+    //hundreds, etc...
+    //{"tables", new String[]{"tens", "digits"}}
+  };
+}

@@ -57,6 +57,7 @@
 package org.apache.xpath;
 
 import org.xml.sax.Locator;
+
 import org.apache.xalan.utils.PrefixResolver;
 
 /**
@@ -66,11 +67,17 @@ import org.apache.xalan.utils.PrefixResolver;
  */
 public interface XPathFactory
 {
+
   /**
    * Create an XPath.
+   *
+   * NEEDSDOC @param exprString
+   * NEEDSDOC @param locator
+   * NEEDSDOC @param prefixResolver
+   * NEEDSDOC @param type
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   XPath create(String exprString, Locator locator,
                PrefixResolver prefixResolver, int type);
-  
-  
 }

@@ -56,10 +56,8 @@
  */
 package org.apache.serialize.helpers;
 
-
 import org.apache.serialize.OutputFormat;
 import org.apache.serialize.Method;
-
 
 /**
  * Output format for text documents.
@@ -72,33 +70,47 @@ import org.apache.serialize.Method;
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
-public class TextOutputFormat
-    extends OutputFormat
+public class TextOutputFormat extends OutputFormat
 {
 
+  /**
+   * Constructor TextOutputFormat
+   *
+   */
+  public TextOutputFormat()
+  {
 
-    public TextOutputFormat()
-    {
-        setMethod( Method.Text );
-        setMediaType( "text/plain" );
-        setPreserveSpace( true );
-    }
+    setMethod(Method.Text);
+    setMediaType("text/plain");
+    setPreserveSpace(true);
+  }
 
+  /**
+   * Constructor TextOutputFormat
+   *
+   *
+   * NEEDSDOC @param encoding
+   */
+  public TextOutputFormat(String encoding)
+  {
 
-    public TextOutputFormat( String encoding )
-    {
-        this();
-        setEncoding( encoding );
-    }
+    this();
 
+    setEncoding(encoding);
+  }
 
-    public TextOutputFormat( boolean indenting )
-    {
-        this();
-        setIndent( indenting );
-        setPreserveSpace( false );
-    }
+  /**
+   * Constructor TextOutputFormat
+   *
+   *
+   * NEEDSDOC @param indenting
+   */
+  public TextOutputFormat(boolean indenting)
+  {
 
+    this();
 
+    setIndent(indenting);
+    setPreserveSpace(false);
+  }
 }
-

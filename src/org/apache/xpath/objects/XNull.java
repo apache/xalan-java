@@ -64,11 +64,12 @@ import org.apache.xpath.NodeSet;
 
 /**
  * <meta name="usage" content="general"/>
- * This class represents an XPath null object, and is capable of 
+ * This class represents an XPath null object, and is capable of
  * converting the null to other types, such as a string.
  */
 public class XNull extends XObject
 {
+
   /**
    * Create an XObject.
    */
@@ -79,6 +80,8 @@ public class XNull extends XObject
 
   /**
    * Tell what kind of class this is.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getType()
   {
@@ -86,17 +89,20 @@ public class XNull extends XObject
   }
 
   /**
-   * Given a request type, return the equivalent string. 
+   * Given a request type, return the equivalent string.
    * For diagnostic purposes.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getTypeString()
   {
     return "#CLASS_NULL";
   }
-  
+
   /**
    * Cast result object to a number.
    */
+
   public double num()
   {
     return 0.0;
@@ -104,6 +110,8 @@ public class XNull extends XObject
 
   /**
    * Cast result object to a boolean.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean bool()
   {
@@ -112,31 +120,46 @@ public class XNull extends XObject
 
   /**
    * Cast result object to a string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String str()
   {
     return "";
   }
-  
+
   /**
    * Cast result object to a result tree fragment.
+   *
+   * NEEDSDOC @param support
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public DocumentFragment rtree(XPathContext support)
   {
-    DocumentFragment result = support.getDOMHelper().getDOMFactory().createDocumentFragment();
+
+    DocumentFragment result =
+      support.getDOMHelper().getDOMFactory().createDocumentFragment();
+
     return result;
   }
 
   /**
    * Cast result object to a nodelist.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public NodeIterator nodeset()
   {
     return null;
-  }  
-   
+  }
+
   /**
    * Tell if two objects are functionally equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean equals(XObject obj2)
   {

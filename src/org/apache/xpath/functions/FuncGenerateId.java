@@ -54,11 +54,13 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -70,20 +72,23 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncGenerateId extends FunctionDef1Arg
 {
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     Node which = getArg0AsNode(xctxt);
-    
-    if(null != which)
+
+    if (null != which)
       return new XString(xctxt.getDOMHelper().getUniqueID(which));
     else
-     return XString.EMPTYSTRING; 
+      return XString.EMPTYSTRING;
   }
 }

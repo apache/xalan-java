@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -59,9 +59,12 @@ package org.apache.xalan.transformer;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.w3c.dom.Element;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
 import org.xml.sax.SAXException;
+
 import org.apache.xalan.templates.ElemTemplateElement;
 
 /**
@@ -69,127 +72,197 @@ import org.apache.xalan.templates.ElemTemplateElement;
  */
 public class StackGuard
 {
+
   /**
    * Used for infinite loop check. If the value is -1, do not
-   * check for infinite loops. Anyone who wants to enable that 
+   * check for infinite loops. Anyone who wants to enable that
    * check should change the value of this variable to be the
-   * level of recursion that they want to check. Be careful setting 
-   * this variable, if the number is too low, it may report an 
+   * level of recursion that they want to check. Be careful setting
+   * this variable, if the number is too low, it may report an
    * infinite loop situation, when there is none.
-   * Post version 1.0.0, we'll make this a runtime feature.   
+   * Post version 1.0.0, we'll make this a runtime feature.
    */
-  static int m_recursionLimit = -1;
-  
+  public static int m_recursionLimit = -1;
+
   /**
    * Get the recursion limit.
    * Used for infinite loop check. If the value is -1, do not
-   * check for infinite loops. Anyone who wants to enable that 
+   * check for infinite loops. Anyone who wants to enable that
    * check should change the value of this variable to be the
-   * level of recursion that they want to check. Be careful setting 
-   * this variable, if the number is too low, it may report an 
+   * level of recursion that they want to check. Be careful setting
+   * this variable, if the number is too low, it may report an
    * infinite loop situation, when there is none.
-   * Post version 1.0.0, we'll make this a runtime feature.   
+   * Post version 1.0.0, we'll make this a runtime feature.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getRecursionLimit()
   {
     return m_recursionLimit;
   }
-  
+
   /**
    * Get the recursion limit.
    * Used for infinite loop check. If the value is -1, do not
-   * check for infinite loops. Anyone who wants to enable that 
+   * check for infinite loops. Anyone who wants to enable that
    * check should change the value of this variable to be the
-   * level of recursion that they want to check. Be careful setting 
-   * this variable, if the number is too low, it may report an 
+   * level of recursion that they want to check. Be careful setting
+   * this variable, if the number is too low, it may report an
    * infinite loop situation, when there is none.
-   * Post version 1.0.0, we'll make this a runtime feature.   
+   * Post version 1.0.0, we'll make this a runtime feature.
+   *
+   * NEEDSDOC @param limit
    */
   public void setRecursionLimit(int limit)
   {
     m_recursionLimit = limit;
   }
 
+  /** NEEDSDOC Field m_xslRule          */
   Node m_xslRule;
+
+  /** NEEDSDOC Field m_sourceXML          */
   Node m_sourceXML;
 
+  /** NEEDSDOC Field stack          */
   java.util.Stack stack = new java.util.Stack();
 
-  public StackGuard()
-  {
-  }
+  /**
+   * Constructor StackGuard
+   *
+   */
+  public StackGuard(){}
 
+  /**
+   * Constructor StackGuard
+   *
+   *
+   * NEEDSDOC @param xslTemplate
+   * NEEDSDOC @param sourceXML
+   */
   public StackGuard(ElemTemplateElement xslTemplate, Node sourceXML)
   {
     m_xslRule = xslTemplate;
     m_sourceXML = sourceXML;
   }
 
+  /**
+   * NEEDSDOC Method equals 
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC (equals) @return
+   */
   public boolean equals(Object obj)
   {
-    if(((StackGuard)obj).m_xslRule.equals(m_xslRule) &&
-       ((StackGuard)obj).m_sourceXML.equals(m_sourceXML))
+
+    if (((StackGuard) obj).m_xslRule.equals(m_xslRule)
+            && ((StackGuard) obj).m_sourceXML.equals(m_sourceXML))
     {
       return true;
     }
+
     return false;
   }
 
+  /**
+   * NEEDSDOC Method print 
+   *
+   *
+   * NEEDSDOC @param pw
+   */
   public void print(PrintWriter pw)
   {
+
     // for the moment, these diagnostics are really bad...
-    if(m_sourceXML instanceof Text)
+    if (m_sourceXML instanceof Text)
     {
-      Text tx = (Text)m_sourceXML;
+      Text tx = (Text) m_sourceXML;
+
       pw.println(tx.getData());
     }
-    else if(m_sourceXML instanceof Element)
+    else if (m_sourceXML instanceof Element)
     {
-      Element elem = (Element)m_sourceXML;
+      Element elem = (Element) m_sourceXML;
+
       pw.println(elem.getNodeName());
     }
   }
 
-  public void checkForInfinateLoop(StackGuard guard)
-    throws SAXException
+  /**
+   * NEEDSDOC Method checkForInfinateLoop 
+   *
+   *
+   * NEEDSDOC @param guard
+   *
+   * @throws SAXException
+   */
+  public void checkForInfinateLoop(StackGuard guard) throws SAXException
   {
+
     int nRules = stack.size();
     int loopCount = 0;
-    for(int i = (nRules - 1); i >= 0; i--)
+
+    for (int i = (nRules - 1); i >= 0; i--)
     {
-      if(stack.elementAt(i).equals(guard))
+      if (stack.elementAt(i).equals(guard))
       {
         loopCount++;
       }
-      if(loopCount >= m_recursionLimit)
+
+      if (loopCount >= m_recursionLimit)
       {
+
         // Print out really bad diagnostics.
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
+
         pw.println("Infinite loop diagnosed!  Stack trace:");
+
         int k;
-        for(k = 0; k < nRules; k++)
+
+        for (k = 0; k < nRules; k++)
         {
-          pw.println("Source Elem #"+k+" ");
-          StackGuard guardOnStack = (StackGuard)stack.elementAt(i);
+          pw.println("Source Elem #" + k + " ");
+
+          StackGuard guardOnStack = (StackGuard) stack.elementAt(i);
+
           guardOnStack.print(pw);
         }
-        pw.println("Source Elem #"+k+" ");
+
+        pw.println("Source Elem #" + k + " ");
         guard.print(pw);
         pw.println("End of infinite loop diagnosis.");
+
         throw new SAXException(sw.getBuffer().toString());
       }
     }
   }
 
+  /**
+   * NEEDSDOC Method push 
+   *
+   *
+   * NEEDSDOC @param xslTemplate
+   * NEEDSDOC @param sourceXML
+   *
+   * @throws SAXException
+   */
   public void push(ElemTemplateElement xslTemplate, Node sourceXML)
-    throws SAXException
+          throws SAXException
   {
+
     StackGuard guard = new StackGuard(xslTemplate, sourceXML);
+
     checkForInfinateLoop(guard);
     stack.push(guard);
   }
 
+  /**
+   * NEEDSDOC Method pop 
+   *
+   */
   public void pop()
   {
     stack.pop();

@@ -56,14 +56,13 @@
  */
 package org.apache.serialize;
 
-
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
 import java.io.IOException;
 import java.io.InputStream;
-
 
 /**
  * Factory for creating default serializers. An implementation need
@@ -89,15 +88,14 @@ import java.io.InputStream;
  * ser = SerializerFactory.getSerializer( format );
  * </pre>
  * <p>
- * 
- * 
+ *
+ *
  *
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
 public abstract class SerializerFactory
 {
-
 
   /**
    * The name of the properties file listing all the supported
@@ -112,7 +110,6 @@ public abstract class SerializerFactory
    */
   public static final String PropertyMethods = "serialize.methods";
 
-
   /**
    * The prefix of a property supplying the class name for a
    * serializer implementing a specific method.
@@ -120,27 +117,22 @@ public abstract class SerializerFactory
    */
   public static final String PropertySerializerPrefix = "serialize.";
 
-
   /**
    * The prefix of a property supplying the class name for an
    * output format implementing a specific method.
    * (<tt>serialize.format.</tt>).
    */
-  public static final String PropertyFormatPrefix =
-                                                   "serialize.format.";
-
+  public static final String PropertyFormatPrefix = "serialize.format.";
 
   /**
    * Associates output methods to serializer classes.
    */
-  private static Hashtable  _serializers = new Hashtable();
-  
+  private static Hashtable _serializers = new Hashtable();
 
   /**
    * Associates output methods to default output formats.
    */
-  private static Hashtable  _formats = new Hashtable();
-
+  private static Hashtable _formats = new Hashtable();
 
   /**
    * Returns a serializer for the specified output method. Returns
@@ -151,22 +143,28 @@ public abstract class SerializerFactory
    * @param method The output method
    * @return A suitable serializer, or null
    */
-  public static Serializer getSerializer( String method )
+  public static Serializer getSerializer(String method)
   {
-    Serializer ser;
-    Class      cls;
 
-    cls = (Class) _serializers.get( method );
-    if ( cls == null )
+    Serializer ser;
+    Class cls;
+
+    cls = (Class) _serializers.get(method);
+
+    if (cls == null)
       return null;
-    try {
+
+    try
+    {
       ser = (Serializer) cls.newInstance();
-    } catch ( Exception except ) {
+    }
+    catch (Exception except)
+    {
       return null;
     }
+
     return ser;
   }
-
 
   /**
    * Returns a serializer for the specified output method. Returns
@@ -177,25 +175,34 @@ public abstract class SerializerFactory
    * @param format The output format
    * @return A suitable serializer, or null
    */
-  public static Serializer getSerializer( OutputFormat format )
+  public static Serializer getSerializer(OutputFormat format)
   {
-    Serializer ser;
-    Class      cls;
 
-    if ( format.getMethod() == null )
-      throw new IllegalArgumentException( "The output format has not method name" );
-    cls = (Class) _serializers.get( format.getMethod() );
-    if ( cls == null )
+    Serializer ser;
+    Class cls;
+
+    if (format.getMethod() == null)
+      throw new IllegalArgumentException(
+        "The output format has not method name");
+
+    cls = (Class) _serializers.get(format.getMethod());
+
+    if (cls == null)
       return null;
-    try {
+
+    try
+    {
       ser = (Serializer) cls.newInstance();
-    } catch ( Exception except ) {
+    }
+    catch (Exception except)
+    {
       return null;
     }
-    ser.setOutputFormat( format );
+
+    ser.setOutputFormat(format);
+
     return ser;
   }
-
 
   /**
    * Returns an output format for the specified output method.
@@ -205,23 +212,31 @@ public abstract class SerializerFactory
    * @param method The output method
    * @return A suitable output format
    */
-  public static OutputFormat getOutputFormat( String method )
+  public static OutputFormat getOutputFormat(String method)
   {
-    OutputFormat format;
-    Class        cls;
 
-    cls = (Class) _formats.get( method );
-    if ( cls != null ) {
-      try {
+    OutputFormat format;
+    Class cls;
+
+    cls = (Class) _formats.get(method);
+
+    if (cls != null)
+    {
+      try
+      {
         format = (OutputFormat) cls.newInstance();
+
         return format;
-      } catch ( Exception except ) { }
+      }
+      catch (Exception except){}
     }
+
     format = new OutputFormat();
-    format.setMethod( method );
+
+    format.setMethod(method);
+
     return format;
   }
-
 
   /**
    * Returns an enumeration of all the output methods supported by this
@@ -235,81 +250,101 @@ public abstract class SerializerFactory
     return _serializers.keys();
   }
 
-
   /**
    * Static constructor loads serializers and output formats
    * from properties file.
    */
-  static {
-    Properties      props;
+  static
+  {
+    Properties props;
     StringTokenizer token;
 
-    try {
+    try
+    {
       props = new Properties();
-      InputStream is = SerializerFactory.class.getResourceAsStream( PropertiesResource );
-      if(null == is)
-        System.err.println( "Can't get serializer property file: " + PropertiesResource );
-      props.load( is );
-      if ( props.getProperty ( PropertyMethods ) == null )
-        System.err.println( "Serializer property file has no " + PropertyMethods + " property" );
-      else {
-        token = new StringTokenizer( props.getProperty ( PropertyMethods ), ", " );
-        while ( token.hasMoreElements() ) 
+
+      InputStream is =
+        SerializerFactory.class.getResourceAsStream(PropertiesResource);
+
+      if (null == is)
+        System.err.println("Can't get serializer property file: "
+                           + PropertiesResource);
+
+      props.load(is);
+
+      if (props.getProperty(PropertyMethods) == null)
+        System.err.println("Serializer property file has no "
+                           + PropertyMethods + " property");
+      else
+      {
+        token = new StringTokenizer(props.getProperty(PropertyMethods), ", ");
+
+        while (token.hasMoreElements())
         {
           String method;
           String clsName;
-          Class  cls;
-          
+          Class cls;
+
           method = token.nextToken();
+
           // Get the serializer class that matches this output method
-          clsName = props.getProperty( PropertySerializerPrefix + method );
-          if ( clsName == null ) 
+          clsName = props.getProperty(PropertySerializerPrefix + method);
+
+          if (clsName == null)
           {
-            System.err.println( "Could not find property for serializer implementing output method " + method );
-          } 
-          else 
+            System.err.println(
+              "Could not find property for serializer implementing output method "
+              + method);
+          }
+          else
           {
-            try {
+            try
+            {
               cls = Class.forName(clsName);
+
               // Breaks in jview -sb
               // cls = SerializerFactory.class.getClassLoader().loadClass( clsName );
-              _serializers.put( method, cls );
-            } 
-            catch ( ClassNotFoundException except ) 
+              _serializers.put(method, cls);
+            }
+            catch (ClassNotFoundException except)
             {
-              System.err.println( "Could not locate serializer class " + clsName );
+              System.err.println("Could not locate serializer class "
+                                 + clsName);
             }
           }
+
           // Get the output format class that matches this output method
-          clsName = props.getProperty( PropertyFormatPrefix + method );
-          if ( clsName == null ) 
+          clsName = props.getProperty(PropertyFormatPrefix + method);
+
+          if (clsName == null)
           {
+
             // Don't complain in this case.  -sb
             // System.err.println( "Could not find property for output format implementing output method " + method );
-          } 
-          else 
+          }
+          else
           {
-            try {
+            try
+            {
               cls = Class.forName(clsName);
+
               // Breaks in jview -sb
               // cls = SerializerFactory.class.getClassLoader().loadClass( clsName );
-              _formats.put( method, cls );
-            } 
-            catch ( ClassNotFoundException except ) 
+              _formats.put(method, cls);
+            }
+            catch (ClassNotFoundException except)
             {
-              System.err.println( "Could not locate output format class " + clsName );
+              System.err.println("Could not locate output format class "
+                                 + clsName);
             }
           }
         }
       }
-    } catch ( IOException except ) {
-      System.err.println( "Error loading " + PropertiesResource + ": " +
-                          except.toString() );
+    }
+    catch (IOException except)
+    {
+      System.err.println("Error loading " + PropertiesResource + ": "
+                         + except.toString());
     }
   }
-
-
 }
-
-
-

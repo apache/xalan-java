@@ -54,12 +54,16 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.compiler; 
+package org.apache.xpath.compiler;
 
 import java.lang.Class;
+
 import org.apache.xpath.res.XPATHErrorResources;
+
 import org.w3c.dom.Node;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -71,53 +75,84 @@ import org.apache.xpath.functions.Function;
  */
 public class FuncLoader
 {
+
+  /** NEEDSDOC Field m_funcID          */
   private int m_funcID;
+
+  /** NEEDSDOC Field m_funcName, test          */
   private String m_funcName, test;
-  
+
+  /**
+   * NEEDSDOC Method getName 
+   *
+   *
+   * NEEDSDOC (getName) @return
+   */
   public String getName()
   {
     return m_funcName;
   }
-  
+
+  /**
+   * Constructor FuncLoader
+   *
+   *
+   * NEEDSDOC @param funcName
+   * NEEDSDOC @param funcID
+   */
   public FuncLoader(String funcName, int funcID)
   {
+
     super();
+
     m_funcID = funcID;
     m_funcName = funcName;
   }
-  
-  public Function getFunction() 
-    throws org.xml.sax.SAXException
+
+  /**
+   * NEEDSDOC Method getFunction 
+   *
+   *
+   * NEEDSDOC (getFunction) @return
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  public Function getFunction() throws org.xml.sax.SAXException
   {
+
     try
     {
       Class function;
+
       // first get package name if necessary
-      if ( m_funcName.indexOf(".") < 0 )
-      {  
+      if (m_funcName.indexOf(".") < 0)
+      {
+
         // String thisName = this.getClass().getName();
         // int lastdot = thisName.lastIndexOf(".");
         // String classname = thisName.substring(0,lastdot+1) + m_funcName; 
-        String classname = "org.apache.xpath.functions." + m_funcName; 
+        String classname = "org.apache.xpath.functions." + m_funcName;
+
         function = Class.forName(classname);
       }
       else
         function = Class.forName(m_funcName);
-      
-      Function func = (Function)function.newInstance();
+
+      Function func = (Function) function.newInstance();
+
       return func;
     }
-    catch(ClassNotFoundException e)
+    catch (ClassNotFoundException e)
     {
       throw new org.xml.sax.SAXException(e);
     }
-    catch(IllegalAccessException e)
+    catch (IllegalAccessException e)
     {
       throw new org.xml.sax.SAXException(e);
-    } 
-    catch(InstantiationException e)
+    }
+    catch (InstantiationException e)
     {
       throw new org.xml.sax.SAXException(e);
-    } 
+    }
   }
 }

@@ -60,17 +60,28 @@ import org.w3c.dom.Node;
 
 /**
  * <meta name="usage" content="internal"/>
- * This object represents a Source Tree, and any associated 
+ * This object represents a Source Tree, and any associated
  * information.
  */
 public class SourceTree
 {
+
+  /**
+   * Constructor SourceTree
+   *
+   *
+   * NEEDSDOC @param root
+   * NEEDSDOC @param url
+   */
   public SourceTree(Node root, String url)
   {
     m_root = root;
     m_url = url;
   }
-  
+
+  /** NEEDSDOC Field m_url          */
   public String m_url;
+
+  /** NEEDSDOC Field m_root          */
   public Node m_root;
 }

@@ -57,10 +57,13 @@
 package org.apache.xalan.transformer;
 
 import org.w3c.dom.Node;
+
 import org.apache.xalan.utils.NodeVector;
-import org.apache.xpath.NodeSet; // for isNodeAfter support
+import org.apache.xpath.NodeSet;  // for isNodeAfter support
 import org.apache.xpath.XPathContext;
+
 import org.xml.sax.SAXException;
+
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.ElemNumber;
@@ -68,55 +71,60 @@ import org.apache.xalan.templates.ElemNumber;
 /**
  * <meta name="usage" content="internal"/>
  * A class that does incremental counting for support of xsl:number.
- * This class stores a cache of counted nodes (m_countNodes). 
- * It tries to cache the counted nodes in document order... 
- * the node count is based on its position in the cache list 
+ * This class stores a cache of counted nodes (m_countNodes).
+ * It tries to cache the counted nodes in document order...
+ * the node count is based on its position in the cache list
  */
 class Counter
 {
+
   /**
-   * Set the maximum ammount the m_countNodes list can 
+   * Set the maximum ammount the m_countNodes list can
    * grow to.
    */
   static final int MAXCOUNTNODES = 500;
-  
+
   /**
-   * The start count from where m_countNodes counts 
-   * from.  In other words, the count of a given node 
-   * in the m_countNodes vector is node position + 
+   * The start count from where m_countNodes counts
+   * from.  In other words, the count of a given node
+   * in the m_countNodes vector is node position +
    * m_countNodesStartCount.
    */
   int m_countNodesStartCount = 0;
-  
+
   /**
    * A vector of all nodes counted so far.
    */
   NodeSet m_countNodes = new NodeSet();
-  
+
   /**
-   * The node from where the counting starts.  This is needed to 
+   * The node from where the counting starts.  This is needed to
    * find a counter if the node being counted is not immediatly
    * found in the m_countNodes vector.
    */
   Node m_fromNode = null;
-  
+
   /**
    * The owning xsl:number element.
    */
   ElemNumber m_numberElem;
-    
+
   /**
    * Value to store result of last getCount call, for benifit
-   * of returning val from CountersTable.getCounterByCounted, 
+   * of returning val from CountersTable.getCounterByCounted,
    * who calls getCount.
    */
   int m_countResult;
 
   /**
    * Construct a counter object.
+   *
+   * NEEDSDOC @param numberElem
+   * NEEDSDOC @param countNodes
+   *
+   * @throws SAXException
    */
-  Counter(ElemNumber numberElem, NodeSet countNodes)
-    throws SAXException
+  Counter(ElemNumber numberElem, NodeSet countNodes) throws SAXException
   {
     m_countNodes = countNodes;
     m_numberElem = numberElem;
@@ -124,48 +132,66 @@ class Counter
 
   /**
    * Construct a counter object.
+   *
+   * NEEDSDOC @param numberElem
+   *
+   * @throws SAXException
    */
-  Counter(ElemNumber numberElem)
-    throws SAXException
+  Counter(ElemNumber numberElem) throws SAXException
   {
     m_numberElem = numberElem;
   }
-    
+
   /**
-   * Try and find a node that was previously counted. If found, 
+   * Try and find a node that was previously counted. If found,
    * return a positive integer that corresponds to the count.
+   *
+   * NEEDSDOC @param support
    * @param node The node to be counted.
    * @returns The count of the node, or -1 if not found.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   int getPreviouslyCounted(XPathContext support, Node node)
   {
+
     int n = m_countNodes.size();
+
     m_countResult = 0;
-    for(int i = n-1;i >= 0; i--)
+
+    for (int i = n - 1; i >= 0; i--)
     {
-      Node countedNode = (Node)m_countNodes.elementAt(i);
-      if(node.equals( countedNode ))
+      Node countedNode = (Node) m_countNodes.elementAt(i);
+
+      if (node.equals(countedNode))
       {
+
         // Since the list is in backwards order, the count is 
         // how many are in the rest of the list.
-        m_countResult = i+1+m_countNodesStartCount;
+        m_countResult = i + 1 + m_countNodesStartCount;
+
         break;
       }
+
       // Try to see if the given node falls after the counted node...
       // if it does, don't keep searching backwards.
-      if(support.getDOMHelper().isNodeAfter(countedNode, node))
+      if (support.getDOMHelper().isNodeAfter(countedNode, node))
         break;
     }
+
     return m_countResult;
   }
-    
+
   /**
    * Get the last node in the list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   Node getLast()
   {
+
     int size = m_countNodes.size();
-    return (size > 0) ? m_countNodes.elementAt(size-1) : null;
+
+    return (size > 0) ? m_countNodes.elementAt(size - 1) : null;
   }
-  
 }

@@ -56,7 +56,6 @@
  */
 package org.apache.serialize;
 
-
 /**
  * Names of the four default output methods.
  * <p>
@@ -70,32 +69,24 @@ package org.apache.serialize;
  */
 public final class Method
 {
-    
-    
-    /**
-     * The output method for XML documents: <tt>xml</tt>.
-     */
-    public static final String XML = "xml";
-    
-    
-    /**
-     * The output method for HTML documents: <tt>html</tt>.
-     */
-    public static final String HTML = "html";
-    
-    
-    /**
-     * The output method for XHTML documents: <tt>xhtml</tt>.
-     */
-    public static final String XHTML = "xhtml";
-    
-    
-    /**
-     * The output method for text documents: <tt>text</tt>.
-     */
-    public static final String Text = "text";
-    
-    
+
+  /**
+   * The output method for XML documents: <tt>xml</tt>.
+   */
+  public static final String XML = "xml";
+
+  /**
+   * The output method for HTML documents: <tt>html</tt>.
+   */
+  public static final String HTML = "html";
+
+  /**
+   * The output method for XHTML documents: <tt>xhtml</tt>.
+   */
+  public static final String XHTML = "xhtml";
+
+  /**
+   * The output method for text documents: <tt>text</tt>.
+   */
+  public static final String Text = "text";
 }
-
-

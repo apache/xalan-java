@@ -58,39 +58,53 @@ package org.apache.xalan.utils;
 
 /**
  * <meta name="usage" content="internal"/>
- * A very simple table that stores a list of strings, optimized 
+ * A very simple table that stores a list of strings, optimized
  * for small lists.
  */
 public class StringVector
 {
+
+  /** NEEDSDOC Field m_blocksize          */
   protected int m_blocksize;
+
+  /** NEEDSDOC Field m_map[]          */
   protected String m_map[];
+
+  /** NEEDSDOC Field m_firstFree          */
   protected int m_firstFree = 0;
+
+  /** NEEDSDOC Field m_mapSize          */
   protected int m_mapSize;
 
   /**
-   * Default constructor.  Note that the default 
+   * Default constructor.  Note that the default
    * block size is very small, for small lists.
    */
   public StringVector()
   {
+
     m_blocksize = 8;
     m_mapSize = m_blocksize;
-    m_map = new String[m_blocksize]; 
+    m_map = new String[m_blocksize];
   }
 
   /**
    * Construct a StringVector, using the given block size.
+   *
+   * NEEDSDOC @param blocksize
    */
   public StringVector(int blocksize)
   {
+
     m_blocksize = blocksize;
     m_mapSize = blocksize;
-    m_map = new String[blocksize]; 
+    m_map = new String[blocksize];
   }
-  
+
   /**
    * Get the length of the list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getLength()
   {
@@ -99,6 +113,8 @@ public class StringVector
 
   /**
    * Get the length of the list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final int size()
   {
@@ -107,94 +123,135 @@ public class StringVector
 
   /**
    * Append a string onto the vector.
+   *
+   * NEEDSDOC @param value
    */
   public final void addElement(String value)
   {
-    if((m_firstFree+1) >= m_mapSize)
+
+    if ((m_firstFree + 1) >= m_mapSize)
     {
-      m_mapSize+=m_blocksize;
+      m_mapSize += m_blocksize;
+
       String newMap[] = new String[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
       m_map = newMap;
     }
+
     m_map[m_firstFree] = value;
+
     m_firstFree++;
   }
-  
+
   /**
    * Get the nth element.
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String elementAt(int i)
   {
     return m_map[i];
   }
-  
+
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean contains(String s)
   {
-    if(null == s)
+
+    if (null == s)
       return false;
-    for(int i = 0; i < m_firstFree; i++)
+
+    for (int i = 0; i < m_firstFree; i++)
     {
-      if(m_map[i].equals(s))
+      if (m_map[i].equals(s))
         return true;
     }
+
     return false;
   }
 
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean containsIgnoreCase(String s)
   {
-    if(null == s)
+
+    if (null == s)
       return false;
-    for(int i = 0; i < m_firstFree; i++)
+
+    for (int i = 0; i < m_firstFree; i++)
     {
-      if(m_map[i].equalsIgnoreCase(s))
+      if (m_map[i].equalsIgnoreCase(s))
         return true;
     }
+
     return false;
   }
 
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param s
    */
   public final void push(String s)
   {
-    if((m_firstFree+1) >= m_mapSize)
+
+    if ((m_firstFree + 1) >= m_mapSize)
     {
-      m_mapSize+=m_blocksize;
+      m_mapSize += m_blocksize;
+
       String newMap[] = new String[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
       m_map = newMap;
     }
+
     m_map[m_firstFree] = s;
+
     m_firstFree++;
   }
 
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String pop()
   {
-    if(m_firstFree <= 0)
+
+    if (m_firstFree <= 0)
       return null;
-    
+
     m_firstFree--;
+
     String s = m_map[m_firstFree];
+
     m_map[m_firstFree] = null;
+
     return s;
   }
 
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String peek()
   {
-    return (m_firstFree <= 0) ? null : m_map[m_firstFree-1];
+    return (m_firstFree <= 0) ? null : m_map[m_firstFree - 1];
   }
-
 }

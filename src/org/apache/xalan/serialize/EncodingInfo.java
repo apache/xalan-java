@@ -24,7 +24,7 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xerces" and "Apache Software Foundation" must
+ * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
  *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
@@ -49,50 +49,47 @@
  *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, International
- * Business Machines, Inc., http://www.apache.org.  For more
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
-
-package org.apache.xml.serialize.transition;
-
-import org.apache.serialize.OutputFormat;
+package org.apache.xalan.serialize;
 
 /**
- * @version $Revision$ $Date$
- * @author <a href="mailto:arkin@intalio..com">Assaf Arkin</a>
- * @see OutputFormat
+ * Holds information about a given encoding.
  */
-public final class LineSeparator
+public class EncodingInfo extends Object
 {
-    
-    
-    /**
-     * Line separator for Unix systems (<tt>\n</tt>).
-     */
-    public static final String Unix = "\n";
-    
-    
-    /**
-     * Line separator for Windows systems (<tt>\r\n</tt>).
-     */
-    public static final String Windows = "\r\n";
-    
-    
-    /**
-     * Line separator for Macintosh systems (<tt>\r</tt>).
-     */
-    public static final String Macintosh = "\r";
-    
-    
-    /**
-     * Line separator for the Web (<tt>\n</tt>).
-     */
-    public static final String Web = "\n";
-    
-    
+
+  /**
+   * The encoding name.
+   */
+  final String name;
+
+  /**
+   * The name used by the Java convertor.
+   */
+  final String javaName;
+
+  /**
+   * The last printable character.
+   */
+  final int lastPrintable;
+
+  /**
+   * Constructor EncodingInfo
+   *
+   *
+   * NEEDSDOC @param name
+   * NEEDSDOC @param javaName
+   * NEEDSDOC @param lastPrintable
+   */
+  public EncodingInfo(String name, String javaName, int lastPrintable)
+  {
+
+    this.name = name;
+    this.javaName = javaName;
+    this.lastPrintable = lastPrintable;
+  }
 }
-
-

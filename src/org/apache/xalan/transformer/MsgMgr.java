@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,49 +57,64 @@
 package org.apache.xalan.transformer;
 
 import org.apache.xalan.res.XSLMessages;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 import org.xml.sax.ErrorHandler;
+
 import org.w3c.dom.Node;
+
 import org.apache.trax.TransformException;
 
 /**
- * This class will manage error messages, warning messages, and other types of 
+ * This class will manage error messages, warning messages, and other types of
  * message events.
  */
 public class MsgMgr
-{  
+{
+
   /**
    * Create a message manager object.
+   *
+   * NEEDSDOC @param transformer
    */
   public MsgMgr(TransformerImpl transformer)
   {
     m_transformer = transformer;
   }
-  
+
+  /** NEEDSDOC Field m_transformer          */
   private TransformerImpl m_transformer;
+
+  /** NEEDSDOC Field m_XSLMessages          */
   private static XSLMessages m_XSLMessages = new XSLMessages();
 
   /**
    * Warn the user of an problem.
    * This is public for access by extensions.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param terminate
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void message(String msg, boolean terminate)
-    throws SAXException
+  public void message(String msg, boolean terminate) throws SAXException
   {
+
     ErrorHandler errHandler = m_transformer.getErrorHandler();
-    if(null != errHandler)
+
+    if (null != errHandler)
     {
-      if(terminate)
+      if (terminate)
         errHandler.fatalError(new TransformException(msg));
       else
         errHandler.warning(new TransformException(msg));
     }
     else
     {
-      if(terminate)
+      if (terminate)
         throw new TransformException(msg);
       else
         System.out.println(msg);
@@ -109,11 +124,14 @@ public class MsgMgr
   /**
    * <meta name="usage" content="internal"/>
    * Warn the user of an problem.
+   *
+   * NEEDSDOC @param msg
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void warn(int msg)
-    throws SAXException
+  public void warn(int msg) throws SAXException
   {
     warn(null, null, msg, null);
   }
@@ -121,11 +139,15 @@ public class MsgMgr
   /**
    * <meta name="usage" content="internal"/>
    * Warn the user of an problem.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void warn(int msg, Object[] args)
-    throws SAXException
+  public void warn(int msg, Object[] args) throws SAXException
   {
     warn(null, null, msg, args);
   }
@@ -133,11 +155,17 @@ public class MsgMgr
   /**
    * <meta name="usage" content="internal"/>
    * Warn the user of an problem.
+   *
+   * NEEDSDOC @param styleNode
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param msg
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
   public void warn(Node styleNode, Node sourceNode, int msg)
-    throws SAXException
+          throws SAXException
   {
     warn(styleNode, sourceNode, msg, null);
   }
@@ -145,16 +173,24 @@ public class MsgMgr
   /**
    * <meta name="usage" content="internal"/>
    * Warn the user of an problem.
+   *
+   * NEEDSDOC @param styleNode
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
   public void warn(Node styleNode, Node sourceNode, int msg, Object args[])
-    throws SAXException
+          throws SAXException
   {
+
     String formattedMsg = m_XSLMessages.createWarning(msg, args);
-    
     ErrorHandler errHandler = m_transformer.getErrorHandler();
-    if(null != errHandler)
+
+    if (null != errHandler)
       errHandler.warning(new TransformException(formattedMsg));
     else
       System.out.println(formattedMsg);
@@ -164,18 +200,23 @@ public class MsgMgr
    * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void error(String msg)
-    throws SAXException
+  public void error(String msg) throws SAXException
   {
+
     // Locator locator = m_stylesheetLocatorStack.isEmpty()
     //                  ? null :
     //                    ((Locator)m_stylesheetLocatorStack.peek());
-    Locator locator = null;
+    // Locator locator = null;
     ErrorHandler errHandler = m_transformer.getErrorHandler();
-    if(null != errHandler)
+
+    if (null != errHandler)
       errHandler.fatalError(new TransformException(msg));
     else
       throw new TransformException(msg);
@@ -185,11 +226,14 @@ public class MsgMgr
    * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void error(int msg)
-    throws SAXException
+  public void error(int msg) throws SAXException
   {
     error(null, null, msg, null);
   }
@@ -198,11 +242,15 @@ public class MsgMgr
    * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void error(int msg, Object[] args)
-    throws SAXException
+  public void error(int msg, Object[] args) throws SAXException
   {
     error(null, null, msg, args);
   }
@@ -211,11 +259,15 @@ public class MsgMgr
    * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param e
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void error(int msg, Exception e)
-    throws SAXException
+  public void error(int msg, Exception e) throws SAXException
   {
     error(msg, null, e);
   }
@@ -224,34 +276,48 @@ public class MsgMgr
    * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
+   * NEEDSDOC @param e
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
-  public void error(int msg, Object args[], Exception e)
-    throws SAXException
+  public void error(int msg, Object args[], Exception e) throws SAXException
   {
+
     //msg  = (null == msg) ? XSLTErrorResources.ER_PROCESSOR_ERROR : msg;
     String formattedMsg = m_XSLMessages.createMessage(msg, args);
+
     // Locator locator = m_stylesheetLocatorStack.isEmpty()
     //                   ? null :
     //                    ((Locator)m_stylesheetLocatorStack.peek());
-    Locator locator = null;
+    // Locator locator = null;
     ErrorHandler errHandler = m_transformer.getErrorHandler();
-    if(null != errHandler)
+
+    if (null != errHandler)
       errHandler.fatalError(new TransformException(formattedMsg));
     else
       throw new TransformException(formattedMsg);
   }
 
   /**
-    * <meta name="usage" content="internal"/>
-  * Tell the user of an error, and probably throw an
+   *  <meta name="usage" content="internal"/>
+   * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param styleNode
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param msg
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
   public void error(Node styleNode, Node sourceNode, int msg)
-    throws SAXException
+          throws SAXException
   {
     error(styleNode, sourceNode, msg, null);
   }
@@ -260,19 +326,29 @@ public class MsgMgr
    * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param styleNode
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
   public void error(Node styleNode, Node sourceNode, int msg, Object args[])
-    throws SAXException
+          throws SAXException
   {
+
     String formattedMsg = m_XSLMessages.createMessage(msg, args);
+
     // Locator locator = m_stylesheetLocatorStack.isEmpty()
     //                   ? null :
     //                    ((Locator)m_stylesheetLocatorStack.peek());
-    Locator locator = null;
+    // Locator locator = null;
     ErrorHandler errHandler = m_transformer.getErrorHandler();
-    if(null != errHandler)
+
+    if (null != errHandler)
       errHandler.warning(new TransformException(formattedMsg));
     else
       throw new TransformException(formattedMsg);

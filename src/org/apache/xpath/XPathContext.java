@@ -72,10 +72,8 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.axes.SubContextList;
-
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
-
 
 // DOM Imports
 import org.w3c.dom.traversal.NodeIterator;
@@ -104,12 +102,11 @@ import org.apache.xalan.extensions.ExtensionsTable;
  */
 public class XPathContext implements ExpressionContext
 {
+
   /**
    * Create an XPathContext instance.
    */
-  public XPathContext()
-  {
-  }
+  public XPathContext(){}
 
   /**
    * Create an XPathContext instance.
@@ -123,36 +120,49 @@ public class XPathContext implements ExpressionContext
 
   /**
    * Copy attributes from another liaison.
+   *
+   * NEEDSDOC @param from
+   *
+   * @throws SAXException
    */
-  public void copyFromOtherLiaison(XPathContext from)
-    throws SAXException
-  {
-  }
+  public void copyFromOtherLiaison(XPathContext from) throws SAXException{}
 
   /**
    * Reset for new run.
    */
-  public void reset()
-  {
-  }
-  
+  public void reset(){}
+
+  /** NEEDSDOC Field m_saxLocation          */
   Locator m_saxLocation;
-  
+
+  /**
+   * NEEDSDOC Method setSAXLocator 
+   *
+   *
+   * NEEDSDOC @param location
+   */
   public void setSAXLocator(Locator location)
   {
     m_saxLocation = location;
   }
-  
+
+  /**
+   * NEEDSDOC Method getSAXLocator 
+   *
+   *
+   * NEEDSDOC (getSAXLocator) @return
+   */
   public Locator getSAXLocator()
   {
     return m_saxLocation;
   }
-  
+
+  /** NEEDSDOC Field m_owner          */
   private Object m_owner;
-  
+
   /**
-   * Get the "owner" context of this context, which should be, 
-   * in the case of XSLT, the Transformer object.  This is needed 
+   * Get the "owner" context of this context, which should be,
+   * in the case of XSLT, the Transformer object.  This is needed
    * so that XSLT functions can get the Transformer.
    * @return The owner object passed into the constructor, or null.
    */
@@ -162,25 +172,33 @@ public class XPathContext implements ExpressionContext
   }
 
   // ================ extensionsTable ===================
-  
+
   /**
    * The table of Extension Handlers.
    */
   private ExtensionsTable m_extensionsTable = new ExtensionsTable();
-  
+
   /**
    * Get the extensions table object.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public ExtensionsTable getExtensionsTable()
   {
     return m_extensionsTable;
   }
-  
+
+  /**
+   * NEEDSDOC Method setExtensionsTable 
+   *
+   *
+   * NEEDSDOC @param table
+   */
   void setExtensionsTable(ExtensionsTable table)
   {
     m_extensionsTable = table;
   }
-  
+
   // ================ VarStack ===================
 
   /**
@@ -188,111 +206,150 @@ public class XPathContext implements ExpressionContext
    * pushed onto this stack for each template invocation.
    */
   private VariableStack m_variableStacks = new VariableStack();
-  
-  /**
-   * Get the variable stack, which is in charge of variables and
-   * parameters.
-   */
-  public VariableStack getVarStack() { return m_variableStacks; }
 
   /**
    * Get the variable stack, which is in charge of variables and
    * parameters.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public void setVarStack(VariableStack varStack) { m_variableStacks = varStack; }
+  public VariableStack getVarStack()
+  {
+    return m_variableStacks;
+  }
+
+  /**
+   * Get the variable stack, which is in charge of variables and
+   * parameters.
+   *
+   * NEEDSDOC @param varStack
+   */
+  public void setVarStack(VariableStack varStack)
+  {
+    m_variableStacks = varStack;
+  }
 
   /**
    * Given a name, locate a variable in the current context, and return
    * the Object.
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject getVariable(QName qname)
-    throws org.xml.sax.SAXException
+  public XObject getVariable(QName qname) throws org.xml.sax.SAXException
   {
+
     Object obj = getVarStack().getVariable(qname);
-    if((null != obj) && !(obj instanceof XObject))
+
+    if ((null != obj) &&!(obj instanceof XObject))
     {
       obj = new XObject(obj);
     }
-    return (XObject)obj;
+
+    return (XObject) obj;
   }
-  
-  
+
   // ================ DOMHelper ===================
 
+  /** NEEDSDOC Field m_domHelper          */
   private DOMHelper m_domHelper;
-  
+
   /**
    * Get the DOMHelper associated with this execution context.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final DOMHelper getDOMHelper()
   {
-    if(null == m_domHelper)
+
+    if (null == m_domHelper)
       m_domHelper = new DOM2Helper();
+
     return m_domHelper;
   }
-  
+
   /**
    * Set the DOMHelper associated with this execution context.
+   *
+   * NEEDSDOC @param helper
    */
   public void setDOMHelper(DOMHelper helper)
   {
     m_domHelper = helper;
   }
-                                                
+
   // ================ SourceTreeManager ===================
 
+  /** NEEDSDOC Field m_sourceTreeManager          */
   private SourceTreeManager m_sourceTreeManager = new SourceTreeManager();
-  
+
   /**
    * Get the DOMHelper associated with this execution context.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final SourceTreeManager getSourceTreeManager()
   {
     return m_sourceTreeManager;
   }
-  
+
   /**
    * Set the DOMHelper associated with this execution context.
+   *
+   * NEEDSDOC @param mgr
    */
   public void setSourceTreeManager(SourceTreeManager mgr)
   {
     m_sourceTreeManager = mgr;
   }
-  
+
   // =================================================
 
+  /** NEEDSDOC Field m_uriResolver          */
   private URIResolver m_uriResolver;
-  
+
   /**
    * Get the URIResolver associated with this execution context.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final URIResolver getURIResolver()
   {
     return m_uriResolver;
   }
-  
+
   /**
    * Set the URIResolver associated with this execution context.
+   *
+   * NEEDSDOC @param resolver
    */
   public void setURIResolver(URIResolver resolver)
   {
     m_uriResolver = resolver;
   }
-  
+
   // =================================================
-   
+
+  /** NEEDSDOC Field m_primaryReader          */
   public XMLReader m_primaryReader;
-  
+
   /**
    * Get primary XMLReader associated with this execution context.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final XMLReader getPrimaryReader()
   {
     return m_primaryReader;
   }
-  
+
   /**
    * Set primary XMLReader associated with this execution context.
+   *
+   * NEEDSDOC @param reader
    */
   public void setPrimaryReader(XMLReader reader)
   {
@@ -300,69 +357,98 @@ public class XPathContext implements ExpressionContext
   }
 
   // =================================================
-  
+
   /**
    * Take a user string (system ID) return the url.
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide 
+   *
+   * NEEDSDOC @param urlString
+   * NEEDSDOC @param base
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws SAXException
    */
   public final String getAbsoluteURI(String urlString, String base)
-    throws SAXException 
+          throws SAXException
   {
+
     InputSource inputSource;
+
     try
     {
-      inputSource = getSourceTreeManager().resolveURI(base, urlString, getSAXLocator());
+      inputSource = getSourceTreeManager().resolveURI(base, urlString,
+              getSAXLocator());
     }
-    catch(IOException ioe)
+    catch (IOException ioe)
     {
-      inputSource = null; // shutup compiler.
+      inputSource = null;  // shutup compiler.
+
       throw new SAXException(ioe);
     }
+
     // System.out.println("url: "+url.toString());
     return inputSource.getSystemId();
   }
-  
+
+  /** NEEDSDOC Field m_XSLMessages          */
   private static XSLMessages m_XSLMessages = new XSLMessages();
 
   /**
-   * Tell the user of an assertion error, and probably throw an 
+   * Tell the user of an assertion error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param b
+   * NEEDSDOC @param msg
+   *
+   * @throws org.xml.sax.SAXException
    */
-  private void assert(boolean b, String msg)
-    throws org.xml.sax.SAXException
+  private void assert(boolean b, String msg) throws org.xml.sax.SAXException
   {
+
     ErrorHandler errorHandler = getPrimaryReader().getErrorHandler();
-    if (errorHandler != null) {
-      errorHandler.fatalError(new TransformException(m_XSLMessages.createMessage(XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION, new Object[] {msg})));
+
+    if (errorHandler != null)
+    {
+      errorHandler.fatalError(
+        new TransformException(
+          m_XSLMessages.createMessage(
+            XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
+            new Object[]{ msg })));
     }
   }
-  
+
   //==========================================================
   // SECTION: Execution context state tracking
   //==========================================================
-           
+
   /**
    * The current context node list.
    */
   private Stack m_contextNodeLists = new Stack();
-        
+
   /**
    * Get the current context node list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final ContextNodeList getContextNodeList()
   {
-    if (m_contextNodeLists.size()>0)
-      return (ContextNodeList)m_contextNodeLists.peek();
-    else 
+
+    if (m_contextNodeLists.size() > 0)
+      return (ContextNodeList) m_contextNodeLists.peek();
+    else
       return null;
   }
- 
+
   /**
    * <meta name="usage" content="internal"/>
    * Set the current context node list.
-   * @param A nodelist that represents the current context 
+   * @param A nodelist that represents the current context
    * list as defined by XPath.
+   *
+   * NEEDSDOC @param nl
    */
   public final void pushContextNodeList(ContextNodeList nl)
   {
@@ -377,50 +463,58 @@ public class XPathContext implements ExpressionContext
   {
     m_contextNodeLists.pop();
   }
-  
+
   /**
    * The current prefixResolver for the execution context (not
    * the source tree context).
    * (Is this really needed?)
    */
-  private PrefixResolver m_currentPrefixResolver = null;
-  
+  PrefixResolver m_currentPrefixResolver = null;
+
+  /** NEEDSDOC Field m_currentNodes          */
   private NodeVector m_currentNodes = new NodeVector();
-  
+
   /**
    * Get the current context node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final Node getCurrentNode()
   {
     return m_currentNodes.peepOrNull();
   }
-  
+
   /**
    * Set the current context node.
+   *
+   * NEEDSDOC @param cn
+   * NEEDSDOC @param en
    */
   public final void pushCurrentNodeAndExpression(Node cn, Node en)
   {
     m_currentNodes.push(cn);
     m_currentExpressionNodes.push(en);
   }
-  
+
   /**
    * Set the current context node.
    */
   public final void popCurrentNodeAndExpression()
   {
-    m_currentNodes.pop();
-    m_currentExpressionNodes.pop();
+    m_currentNodes.popQuick();
+    m_currentExpressionNodes.popQuick();
   }
 
   /**
    * Set the current context node.
+   *
+   * NEEDSDOC @param n
    */
   public final void pushCurrentNode(Node n)
   {
     m_currentNodes.push(n);
   }
-  
+
   /**
    * Pop the current context node.
    */
@@ -428,43 +522,42 @@ public class XPathContext implements ExpressionContext
   {
     m_currentNodes.popQuick();
   }
-  
-  private Stack m_currentExpressionNodes = new Stack();
-  
+
+  /** NEEDSDOC Field m_currentExpressionNodes          */
+  private NodeVector m_currentExpressionNodes = new NodeVector();
+
   /**
    * Get the current node that is the expression's context (i.e. for current() support).
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final Node getCurrentExpressionNode()
   {
-    try
-    {
-      return (Node)m_currentExpressionNodes.peek();
-    }
-    catch(java.util.EmptyStackException ese)
-    {
-    }
-    return null;
+    return m_currentExpressionNodes.peepOrNull();
   }
 
   /**
    * Set the current node that is the expression's context (i.e. for current() support).
+   *
+   * NEEDSDOC @param n
    */
   public final void pushCurrentExpressionNode(Node n)
   {
     m_currentExpressionNodes.push(n);
   }
-  
+
   /**
    * Pop the current node that is the expression's context (i.e. for current() support).
    */
   public final void popCurrentExpressionNode()
   {
-    m_currentExpressionNodes.pop();
+    m_currentExpressionNodes.popQuick();
   }
 
-  
   /**
    * Get the current namespace context for the xpath.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final PrefixResolver getNamespaceContext()
   {
@@ -473,12 +566,14 @@ public class XPathContext implements ExpressionContext
 
   /**
    * Get the current namespace context for the xpath.
+   *
+   * NEEDSDOC @param pr
    */
   public final void setNamespaceContext(PrefixResolver pr)
   {
     m_currentPrefixResolver = pr;
-  } 
-  
+  }
+
   //==========================================================
   // SECTION: Current TreeWalker contexts (for internal use)
   //==========================================================
@@ -487,16 +582,18 @@ public class XPathContext implements ExpressionContext
    * Stack of AxesIterators.
    */
   private Stack m_axesIteratorStack = new Stack();
-  
+
   /**
    * <meta name="usage" content="internal"/>
    * Push a TreeWalker on the stack.
+   *
+   * NEEDSDOC @param iter
    */
   public final void pushSubContextList(SubContextList iter)
   {
     m_axesIteratorStack.push(iter);
   }
-  
+
   /**
    * <meta name="usage" content="internal"/>
    * Pop the last pushed axes iterator.
@@ -505,16 +602,17 @@ public class XPathContext implements ExpressionContext
   {
     m_axesIteratorStack.pop();
   }
-  
+
   /**
    * <meta name="usage" content="internal"/>
    * Get the current axes iterator, or return null if none.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public SubContextList getSubContextList()
   {
-    return m_axesIteratorStack.isEmpty() 
-           ? null : (SubContextList)m_axesIteratorStack.peek();
-                                           
+    return m_axesIteratorStack.isEmpty()
+           ? null : (SubContextList) m_axesIteratorStack.peek();
   }
 
   //==========================================================
@@ -529,25 +627,27 @@ public class XPathContext implements ExpressionContext
   {
     return this.getCurrentNode();
   }
-  
+
   /**
    * Get the current context node list.
-   * @return An iterator for the current context list, as 
+   * @return An iterator for the current context list, as
    * defined in XSLT.
    */
   public final NodeIterator getContextNodes()
   {
+
     try
     {
-    ContextNodeList cnl = getContextNodeList();
-    if(null != cnl)
-      return cnl.cloneWithReset();
-    else
-      return null; // for now... this might ought to be an empty iterator.
+      ContextNodeList cnl = getContextNodeList();
+
+      if (null != cnl)
+        return cnl.cloneWithReset();
+      else
+        return null;  // for now... this might ought to be an empty iterator.
     }
-    catch(CloneNotSupportedException cnse)
+    catch (CloneNotSupportedException cnse)
     {
-      return null; // error reporting?
+      return null;  // error reporting?
     }
   }
 
@@ -570,6 +670,4 @@ public class XPathContext implements ExpressionContext
   {
     return XNodeSet.getStringFromNode(n);
   }
-
-
 }

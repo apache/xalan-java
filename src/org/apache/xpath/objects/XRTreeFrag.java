@@ -59,25 +59,31 @@ package org.apache.xpath.objects;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.NodeFilter;
+
 import org.apache.xpath.DOMHelper;
 
 /**
  * <meta name="usage" content="general"/>
- * This class represents an XPath result tree fragment object, and is capable of 
+ * This class represents an XPath result tree fragment object, and is capable of
  * converting the RTF to other types, such as a string.
  */
 public class XRTreeFrag extends XObject
-{  
+{
+
   /**
    * Create an XObject.
+   *
+   * NEEDSDOC @param frag
    */
   public XRTreeFrag(DocumentFragment frag)
   {
     super(frag);
   }
-  
+
   /**
    * Tell what kind of class this is.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getType()
   {
@@ -85,32 +91,42 @@ public class XRTreeFrag extends XObject
   }
 
   /**
-   * Given a request type, return the equivalent string. 
+   * Given a request type, return the equivalent string.
    * For diagnostic purposes.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getTypeString()
   {
     return "#RTREEFRAG";
   }
-  
+
   /**
    * Cast result object to a number.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public double num()
   {
-    java.text.NumberFormat m_formatter = java.text.NumberFormat.getNumberInstance();
+
+    java.text.NumberFormat m_formatter =
+      java.text.NumberFormat.getNumberInstance();
     double result;
-    String s = DOMHelper.getNodeData((DocumentFragment)m_obj);
-    if(null != s)
+    String s = DOMHelper.getNodeData((DocumentFragment) m_obj);
+
+    if (null != s)
     {
       try
       {
+
         // result = Double.valueOf(s).doubleValue();
         Number n = m_formatter.parse(s.trim());
+
         result = n.doubleValue();
       }
+
       // catch(NumberFormatException nfe)
-      catch(java.text.ParseException nfe)
+      catch (java.text.ParseException nfe)
       {
         result = Double.NaN;
       }
@@ -126,6 +142,8 @@ public class XRTreeFrag extends XObject
   /**
    * Cast result object to a boolean.  This always returns true for a RTreeFrag
    * because it is treated like a node-set with a single root node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean bool()
   {
@@ -134,76 +152,96 @@ public class XRTreeFrag extends XObject
 
   /**
    * Cast result object to a string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String str()
   {
-    String str = DOMHelper.getNodeData((DocumentFragment)m_obj);
+
+    String str = DOMHelper.getNodeData((DocumentFragment) m_obj);
+
     return (null == str) ? "" : str;
   }
-  
+
   /**
    * Cast result object to a result tree fragment.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public DocumentFragment rtree()
   {
-    return (DocumentFragment)m_obj;
+    return (DocumentFragment) m_obj;
   }
-  
+
   /**
    * Cast result object to a nodelist.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public NodeIterator asNodeIterator()
   {
-    if(m_obj instanceof NodeIterator)
-      return (NodeIterator)m_obj;
-    else 
+
+    if (m_obj instanceof NodeIterator)
+      return (NodeIterator) m_obj;
+    else
       return new NodeIteratorWrapper(rtree());
   }
-  
+
   /**
    * Cast result object to a nodelist. (special function).
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public NodeList convertToNodeset()
   {
-    if(m_obj instanceof DocumentFragment)
-      return ((DocumentFragment)m_obj).getChildNodes();
-    else if(m_obj instanceof NodeList)
-      return (NodeList)m_obj;
+
+    if (m_obj instanceof DocumentFragment)
+      return ((DocumentFragment) m_obj).getChildNodes();
+    else if (m_obj instanceof NodeList)
+      return (NodeList) m_obj;
     else
       return null;
-  }  
-  
+  }
+
   /**
    * Tell if two objects are functionally equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
   {
-    if(XObject.CLASS_NODESET == obj2.getType())
+
+    if (XObject.CLASS_NODESET == obj2.getType())
     {
+
       // In order to handle the 'all' semantics of 
       // nodeset comparisons, we always call the 
       // nodeset function.
       return obj2.equals(this);
     }
-    else if(XObject.CLASS_BOOLEAN == obj2.getType())
+    else if (XObject.CLASS_BOOLEAN == obj2.getType())
     {
       return bool() == obj2.bool();
     }
-    else if(XObject.CLASS_NUMBER == obj2.getType())
+    else if (XObject.CLASS_NUMBER == obj2.getType())
     {
       return num() == obj2.num();
     }
-    else if(XObject.CLASS_NODESET == obj2.getType())
+    else if (XObject.CLASS_NODESET == obj2.getType())
     {
       return str().equals(obj2.str());
     }
-    else if(XObject.CLASS_STRING == obj2.getType())
+    else if (XObject.CLASS_STRING == obj2.getType())
     {
       return str().equals(obj2.str());
     }
-    else if(XObject.CLASS_RTREEFRAG == obj2.getType())
+    else if (XObject.CLASS_RTREEFRAG == obj2.getType())
     {
+
       // Probably not so good.  Think about this.
       return str().equals(obj2.str());
     }
@@ -212,19 +250,35 @@ public class XRTreeFrag extends XObject
       return super.equals(obj2);
     }
   }
-  
+
+  /**
+   * <meta name="usage" content="internal"/>
+   * NEEDSDOC Class NodeIteratorWrapper <needs-comment/>
+   */
   class NodeIteratorWrapper implements NodeIterator
   {
+
+    /** NEEDSDOC Field m_pos          */
     private int m_pos = -1;
+
+    /** NEEDSDOC Field m_docFrag          */
     private DocumentFragment m_docFrag;
-    
+
+    /**
+     * Constructor NodeIteratorWrapper
+     *
+     *
+     * NEEDSDOC @param df
+     */
     NodeIteratorWrapper(DocumentFragment df)
     {
       m_docFrag = df;
     }
-    
+
     /**
      *  The root node of the Iterator, as specified when it was created.
+     *
+     * NEEDSDOC ($objectName$) @return
      */
     public Node getRoot()
     {
@@ -232,9 +286,11 @@ public class XRTreeFrag extends XObject
     }
 
     /**
-     *  This attribute determines which node types are presented via the 
-     * iterator. The available set of constants is defined in the 
+     *  This attribute determines which node types are presented via the
+     * iterator. The available set of constants is defined in the
      * <code>NodeFilter</code> interface.
+     *
+     * NEEDSDOC ($objectName$) @return
      */
     public int getWhatToShow()
     {
@@ -243,6 +299,8 @@ public class XRTreeFrag extends XObject
 
     /**
      *  The filter used to screen nodes.
+     *
+     * NEEDSDOC ($objectName$) @return
      */
     public NodeFilter getFilter()
     {
@@ -250,16 +308,18 @@ public class XRTreeFrag extends XObject
     }
 
     /**
-     *  The value of this flag determines whether the children of entity 
-     * reference nodes are visible to the iterator. If false, they will be 
+     *  The value of this flag determines whether the children of entity
+     * reference nodes are visible to the iterator. If false, they will be
      * skipped over.
-     * <br> To produce a view of the document that has entity references 
-     * expanded and does not expose the entity reference node itself, use the 
-     * whatToShow flags to hide the entity reference node and set 
-     * expandEntityReferences to true when creating the iterator. To produce 
-     * a view of the document that has entity reference nodes but no entity 
-     * expansion, use the whatToShow flags to show the entity reference node 
+     * <br> To produce a view of the document that has entity references
+     * expanded and does not expose the entity reference node itself, use the
+     * whatToShow flags to hide the entity reference node and set
+     * expandEntityReferences to true when creating the iterator. To produce
+     * a view of the document that has entity reference nodes but no entity
+     * expansion, use the whatToShow flags to show the entity reference node
      * and set expandEntityReferences to false.
+     *
+     * NEEDSDOC ($objectName$) @return
      */
     public boolean getExpandEntityReferences()
     {
@@ -267,8 +327,8 @@ public class XRTreeFrag extends XObject
     }
 
     /**
-     *  Returns the next node in the set and advances the position of the 
-     * iterator in the set. After a NodeIterator is created, the first call 
+     *  Returns the next node in the set and advances the position of the
+     * iterator in the set. After a NodeIterator is created, the first call
      * to nextNode() returns the first node in the set.
      * @return  The next <code>Node</code> in the set being iterated over, or
      *   <code>null</code> if there are no more members in that set.
@@ -276,12 +336,13 @@ public class XRTreeFrag extends XObject
      *    INVALID_STATE_ERR: Raised if this method is called after the
      *   <code>detach</code> method was invoked.
      */
-    public Node nextNode()
-                         throws DOMException
+    public Node nextNode() throws DOMException
     {
+
       if (-1 == m_pos)
       {
         m_pos = 0;
+
         return m_docFrag;
       }
       else
@@ -289,20 +350,21 @@ public class XRTreeFrag extends XObject
     }
 
     /**
-     *  Returns the previous node in the set and moves the position of the 
+     *  Returns the previous node in the set and moves the position of the
      * iterator backwards in the set.
-     * @return  The previous <code>Node</code> in the set being iterated over, 
-     *   or<code>null</code> if there are no more members in that set. 
+     * @return  The previous <code>Node</code> in the set being iterated over,
+     *   or<code>null</code> if there are no more members in that set.
      * @exception DOMException
      *    INVALID_STATE_ERR: Raised if this method is called after the
      *   <code>detach</code> method was invoked.
      */
-    public Node previousNode()
-                             throws DOMException
+    public Node previousNode() throws DOMException
     {
+
       if (0 == m_pos)
       {
         m_pos = -1;
+
         return m_docFrag;
       }
       else
@@ -310,15 +372,12 @@ public class XRTreeFrag extends XObject
     }
 
     /**
-     *  Detaches the iterator from the set which it iterated over, releasing 
-     * any computational resources and placing the iterator in the INVALID 
-     * state. After<code>detach</code> has been invoked, calls to 
-     * <code>nextNode</code> or<code>previousNode</code> will raise the 
+     *  Detaches the iterator from the set which it iterated over, releasing
+     * any computational resources and placing the iterator in the INVALID
+     * state. After<code>detach</code> has been invoked, calls to
+     * <code>nextNode</code> or<code>previousNode</code> will raise the
      * exception INVALID_STATE_ERR.
      */
-    public void detach()
-    {
-    }
+    public void detach(){}
   }
-
 }

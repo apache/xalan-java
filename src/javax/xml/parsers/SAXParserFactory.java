@@ -131,7 +131,8 @@ public abstract class SAXParserFactory {
      *                because the application is not expected to handle or
      *                recover from such events.
      */
-    public static SAXParserFactory newInstance() {
+    public static SAXParserFactory newInstance() 
+    {
 
         // Retrieve the javax.xml.parsers.SAXParserFactory system property
         String n=factory;

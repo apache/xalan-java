@@ -57,10 +57,11 @@
 package org.apache.xalan.utils;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.DOM2Helper;
-
 
 /**
  * <meta name="usage" content="internal"/>
@@ -68,31 +69,59 @@ import org.apache.xpath.DOM2Helper;
  */
 public class AttList implements Attributes
 {
+
+  /** NEEDSDOC Field m_attrs          */
   NamedNodeMap m_attrs;
+
+  /** NEEDSDOC Field m_lastIndex          */
   int m_lastIndex;
+
   // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
   // DOM2Helper m_dh = new DOM2Helper();
+
+  /** NEEDSDOC Field m_dh          */
   DOMHelper m_dh;
-  
+
+  /**
+   * Constructor AttList
+   *
+   *
+   * NEEDSDOC @param attrs
+   */
   public AttList(NamedNodeMap attrs)
   {
+
     m_attrs = attrs;
     m_lastIndex = m_attrs.getLength() - 1;
     m_dh = new DOM2Helper();
   }
-  
+
+  /**
+   * Constructor AttList
+   *
+   *
+   * NEEDSDOC @param attrs
+   * NEEDSDOC @param dh
+   */
   public AttList(NamedNodeMap attrs, DOMHelper dh)
   {
+
     m_attrs = attrs;
     m_lastIndex = m_attrs.getLength() - 1;
     m_dh = dh;
   }
-  
-  public int getLength ()
+
+  /**
+   * NEEDSDOC Method getLength 
+   *
+   *
+   * NEEDSDOC (getLength) @return
+   */
+  public int getLength()
   {
     return m_attrs.getLength();
   }
-  
+
   /**
    * Look up an attribute's Namespace URI by index.
    *
@@ -101,9 +130,9 @@ public class AttList implements Attributes
    *         is available, or null if the index is out of
    *         range.
    */
-  public String getURI (int index)
+  public String getURI(int index)
   {
-	  return m_dh.getNamespaceOfNode(((Attr)m_attrs.item(index)));
+    return m_dh.getNamespaceOfNode(((Attr) m_attrs.item(index)));
   }
 
   /**
@@ -114,31 +143,63 @@ public class AttList implements Attributes
    *         processing is not being performed, or null
    *         if the index is out of range.
    */
-  public String getLocalName (int index)
+  public String getLocalName(int index)
   {
-	  return m_dh.getLocalNameOfNode(((Attr)m_attrs.item(index)));
+    return m_dh.getLocalNameOfNode(((Attr) m_attrs.item(index)));
   }
 
-  public String getQName (int i)
+  /**
+   * NEEDSDOC Method getQName 
+   *
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC (getQName) @return
+   */
+  public String getQName(int i)
   {
-    return ((Attr)m_attrs.item(i)).getName();
+    return ((Attr) m_attrs.item(i)).getName();
   }
-  
-  public String getType (int i)
+
+  /**
+   * NEEDSDOC Method getType 
+   *
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC (getType) @return
+   */
+  public String getType(int i)
   {
     return "CDATA";  // for the moment
   }
-  
-  public String getValue (int i)
+
+  /**
+   * NEEDSDOC Method getValue 
+   *
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC (getValue) @return
+   */
+  public String getValue(int i)
   {
-    return ((Attr)m_attrs.item(i)).getValue();
+    return ((Attr) m_attrs.item(i)).getValue();
   }
-  
-  public String getType (String name)
+
+  /**
+   * NEEDSDOC Method getType 
+   *
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC (getType) @return
+   */
+  public String getType(String name)
   {
     return "CDATA";  // for the moment
   }
-  
+
   /**
    * Look up an attribute's type by Namespace name.
    *
@@ -149,17 +210,24 @@ public class AttList implements Attributes
    *         attribute is not in the list or if Namespace
    *         processing is not being performed.
    */
-  public String getType (String uri, String localName)
+  public String getType(String uri, String localName)
   {
     return "CDATA";  // for the moment
   }
 
-  
-  public String getValue (String name)
+  /**
+   * NEEDSDOC Method getValue 
+   *
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC (getValue) @return
+   */
+  public String getValue(String name)
   {
-    return ((Attr)m_attrs.getNamedItem(name)).getValue();
+    return ((Attr) m_attrs.getNamedItem(name)).getValue();
   }
-  
+
   /**
    * Look up an attribute's value by Namespace name.
    *
@@ -169,25 +237,25 @@ public class AttList implements Attributes
    * @return The attribute value as a string, or null if the
    *         attribute is not in the list.
    */
-  public String getValue (String uri, String localName)
+  public String getValue(String uri, String localName)
   {
-    return ((Attr)m_attrs.getNamedItem(localName)).getValue();
+    return ((Attr) m_attrs.getNamedItem(localName)).getValue();
   }
-  
+
   /**
    * Look up the index of an attribute by Namespace name.
    *
    * @param uri The Namespace URI, or the empty string if
    *        the name has no Namespace URI.
    * @param localName The attribute's local name.
+   * NEEDSDOC @param localPart
    * @return The index of the attribute, or -1 if it does not
    *         appear in the list.
    */
-  public int getIndex (String uri, String localPart)
+  public int getIndex(String uri, String localPart)
   {
     return 0;
   }
-
 
   /**
    * Look up the index of an attribute by raw XML 1.0 name.
@@ -196,9 +264,8 @@ public class AttList implements Attributes
    * @return The index of the attribute, or -1 if it does not
    *         appear in the list.
    */
-  public int getIndex (String rawName)
+  public int getIndex(String rawName)
   {
     return 0;
   }
-  
 }

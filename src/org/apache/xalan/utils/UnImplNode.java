@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,6 +57,7 @@
 package org.apache.xalan.utils;
 
 import org.w3c.dom.*;
+
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
@@ -66,550 +67,1043 @@ import org.apache.xalan.res.XSLMessages;
  */
 public class UnImplNode implements Node, Element, NodeList, Document
 {
-  public UnImplNode()
-  {
-  }
+
+  /**
+   * Constructor UnImplNode
+   *
+   */
+  public UnImplNode(){}
 
   /**
    * Throw an error.
+   *
+   * NEEDSDOC @param msg
    */
   public void error(int msg)
   {
-    System.out.println("DOM ERROR! class: "+this.getClass().getName());
+
+    System.out.println("DOM ERROR! class: " + this.getClass().getName());
+
     throw new RuntimeException(XSLMessages.createMessage(msg, null));
   }
 
   /**
    * Throw an error.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
    */
-  public void error(int msg, Object[]args)
+  public void error(int msg, Object[] args)
   {
-    System.out.println("DOM ERROR! class: "+this.getClass().getName());
-    throw new RuntimeException(XSLMessages.createMessage(msg, args)); //"UnImplNode error: "+msg);
+
+    System.out.println("DOM ERROR! class: " + this.getClass().getName());
+
+    throw new RuntimeException(XSLMessages.createMessage(msg, args));  //"UnImplNode error: "+msg);
   }
 
-  /** Unimplemented. */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Node appendChild(Node newChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"appendChild not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"appendChild not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public boolean            hasChildNodes()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean hasChildNodes()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"hasChildNodes not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasChildNodes not supported!");
+
     return false;
   }
 
-  /** Unimplemented. */
-  public short              getNodeType()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public short getNodeType()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getNodeType not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeType not supported!");
+
     return 0;
   }
 
-  /** Unimplemented. */
-  public Node               getParentNode()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Node getParentNode()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getParentNode not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getParentNode not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public NodeList           getChildNodes()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public NodeList getChildNodes()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getChildNodes not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getChildNodes not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               getFirstChild()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Node getFirstChild()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getFirstChild not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getFirstChild not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               getLastChild()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Node getLastChild()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getLastChild not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLastChild not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               getNextSibling()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Node getNextSibling()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getNextSibling not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNextSibling not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public int getLength()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getLength not supported!");
-    return 0;
-  } // getLength():int
 
-  /** Unimplemented. */
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLength not supported!");
+
+    return 0;
+  }  // getLength():int
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param index
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public Node item(int index)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"item not supported!");
-    return null;
-  } // item(int):Node
 
-  /** Unimplemented. */
-  public Document           getOwnerDocument()
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"item not supported!");
+
+    return null;
+  }  // item(int):Node
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Document getOwnerDocument()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getOwnerDocument not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getOwnerDocument not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public String getTagName()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getTagName not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getTagName not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public String getNodeName()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getNodeName not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeName not supported!");
+
     return null;
   }
 
   /** Unimplemented. */
-  public void               normalize()
+  public void normalize()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"normalize not supported!");
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"normalize not supported!");
   }
 
-  /** Unimplemented. */
-  public NodeList           getElementsByTagName(String name)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public NodeList getElementsByTagName(String name)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getElementsByTagName not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getElementsByTagName not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Attr               removeAttributeNode(Attr oldAttr)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param oldAttr
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Attr removeAttributeNode(Attr oldAttr) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"removeAttributeNode not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttributeNode not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Attr               setAttributeNode(Attr newAttr)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param newAttr
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Attr setAttributeNode(Attr newAttr) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setAttributeNode not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNode not supported!");
+
     return null;
   }
-  
+
+  /**
+   * NEEDSDOC Method hasAttribute 
+   *
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC (hasAttribute) @return
+   */
   public boolean hasAttribute(String name)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"hasAttribute not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttribute not supported!");
+
     return false;
   }
 
+  /**
+   * NEEDSDOC Method hasAttributeNS 
+   *
+   *
+   * NEEDSDOC @param name
+   * NEEDSDOC @param x
+   *
+   * NEEDSDOC (hasAttributeNS) @return
+   */
   public boolean hasAttributeNS(String name, String x)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"hasAttributeNS not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttributeNS not supported!");
+
     return false;
   }
 
-  public Attr               getAttributeNode(String name)
+  /**
+   * NEEDSDOC Method getAttributeNode 
+   *
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC (getAttributeNode) @return
+   */
+  public Attr getAttributeNode(String name)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getAttributeNode not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNode not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public void               removeAttribute(String name)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param name
+   *
+   * @throws DOMException
+   */
+  public void removeAttribute(String name) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"removeAttribute not supported!");
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttribute not supported!");
   }
 
-  /** Unimplemented. */
-  public void               setAttribute(String name,
-                                         String value)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param name
+   * NEEDSDOC @param value
+   *
+   * @throws DOMException
+   */
+  public void setAttribute(String name, String value) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setAttribute not supported!");
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttribute not supported!");
   }
 
-  /** Unimplemented. */
-  public String             getAttribute(String name)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getAttribute(String name)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getAttribute not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttribute not supported!");
+
     return null;
   }
-  
+
   /**
    * Introduced in DOM Level 2.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public boolean hasAttributes() 
+  public boolean hasAttributes()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"hasAttributes not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttributes not supported!");
+
     return false;
   }
 
-  /** Unimplemented. */
-  public NodeList           getElementsByTagNameNS(String namespaceURI,
-                                                   String localName)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param localName
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public NodeList getElementsByTagNameNS(String namespaceURI,
+                                         String localName)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getElementsByTagNameNS not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getElementsByTagNameNS not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Attr               setAttributeNodeNS(Attr newAttr)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param newAttr
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Attr setAttributeNodeNS(Attr newAttr) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setAttributeNodeNS not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNodeNS not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Attr               getAttributeNodeNS(String namespaceURI,
-                                               String localName)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param localName
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Attr getAttributeNodeNS(String namespaceURI, String localName)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getAttributeNodeNS not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNodeNS not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public void               removeAttributeNS(String namespaceURI,
-                                              String localName)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param localName
+   *
+   * @throws DOMException
+   */
+  public void removeAttributeNS(String namespaceURI, String localName)
+          throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"removeAttributeNS not supported!");
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttributeNS not supported!");
   }
 
-  /** Unimplemented. */
-  public void               setAttributeNS(String namespaceURI,
-                                           String qualifiedName,
-                                           String value)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param qualifiedName
+   * NEEDSDOC @param value
+   *
+   * @throws DOMException
+   */
+  public void setAttributeNS(
+          String namespaceURI, String qualifiedName, String value)
+            throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setAttributeNS not supported!");
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNS not supported!");
   }
 
-  /** Unimplemented. */
-  public String             getAttributeNS(String namespaceURI,
-                                           String localName)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param localName
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getAttributeNS(String namespaceURI, String localName)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getAttributeNS not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNS not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               getPreviousSibling()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Node getPreviousSibling()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getPreviousSibling not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getPreviousSibling not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               cloneNode(boolean deep)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param deep
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Node cloneNode(boolean deep)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"cloneNode not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"cloneNode not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public String             getNodeValue()
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public String getNodeValue() throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getNodeValue not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeValue not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public void               setNodeValue(String nodeValue)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param nodeValue
+   *
+   * @throws DOMException
+   */
+  public void setNodeValue(String nodeValue) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setNodeValue not supported!");
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setNodeValue not supported!");
   }
-  
-  /** Unimplemented. */
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param value
+   *
+   * @throws DOMException
+   */
+
   // public String getValue ()
   // {      
   //  error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getValue not supported!");
   //  return null;
   // } 
-  
+
   /** Unimplemented. */
-  public void setValue (String value) throws DOMException
-  {      
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setValue not supported!");
+  public void setValue(String value) throws DOMException
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setValue not supported!");
   }
-  
+
   /**
-   *  Returns the name of this attribute. 
+   *  Returns the name of this attribute.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
+
   // public String getName()
   // {
   //  return this.getNodeName();
   // }
-  
   public Element getOwnerElement()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getOwnerElement not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getOwnerElement not supported!");
+
     return null;
   }
-  
-  /** Unimplemented. */
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public boolean getSpecified()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setValue not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setValue not supported!");
+
     return false;
   }
 
-  /** Unimplemented. */
-  public NamedNodeMap       getAttributes()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public NamedNodeMap getAttributes()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getAttributes not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributes not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               insertBefore(Node newChild,
-                                         Node refChild)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param newChild
+   * NEEDSDOC @param refChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Node insertBefore(Node newChild, Node refChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"insertBefore not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"insertBefore not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               replaceChild(Node newChild,
-                                         Node oldChild)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param newChild
+   * NEEDSDOC @param oldChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Node replaceChild(Node newChild, Node oldChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"replaceChild not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"replaceChild not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               removeChild(Node oldChild)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param oldChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Node removeChild(Node oldChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"replaceChild not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"replaceChild not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public boolean            supports(String feature,
-                                     String version)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param feature
+   * NEEDSDOC @param version
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean supports(String feature, String version)
   {
     return false;
   }
 
-  /** Unimplemented. */
-  public String             getNamespaceURI()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getNamespaceURI()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getNamespaceURI not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNamespaceURI not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public String             getPrefix()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getPrefix()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getPrefix not supported!");
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getPrefix not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public void               setPrefix(String prefix)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param prefix
+   *
+   * @throws DOMException
+   */
+  public void setPrefix(String prefix) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setPrefix not supported!");
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setPrefix not supported!");
   }
 
-  /** Unimplemented. */
-  public String       getLocalName()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getLocalName()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getLocalName not supported!");
-    return null;
-  }
-  
-  /** Unimplemented. */
-  public DocumentType       getDoctype()
-  {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-    return null;
-  }
 
-  /** Unimplemented. */
-  public DOMImplementation  getImplementation()
-  {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLocalName not supported!");
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Element            getDocumentElement()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public DocumentType getDoctype()
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Element            createElement(String tagName)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public DOMImplementation getImplementation()
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public DocumentFragment   createDocumentFragment()
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Element getDocumentElement()
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Text               createTextNode(String data)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param tagName
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Element createElement(String tagName) throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Comment            createComment(String data)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public DocumentFragment createDocumentFragment()
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public CDATASection       createCDATASection(String data)
-    throws DOMException
-
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param data
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Text createTextNode(String data)
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public ProcessingInstruction createProcessingInstruction(String target,
-                                                           String data)
-    throws DOMException
-
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param data
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Comment createComment(String data)
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Attr               createAttribute(String name)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param data
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public CDATASection createCDATASection(String data) throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public EntityReference    createEntityReference(String name)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param target
+   * NEEDSDOC @param data
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public ProcessingInstruction createProcessingInstruction(
+          String target, String data) throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Node               importNode(Node importedNode,
-                                       boolean deep)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Attr createAttribute(String name) throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Element            createElementNS(String namespaceURI,
-                                            String qualifiedName)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public EntityReference createEntityReference(String name)
+          throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Attr               createAttributeNS(String namespaceURI,
-                                              String qualifiedName)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param importedNode
+   * NEEDSDOC @param deep
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Node importNode(Node importedNode, boolean deep) throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
 
-  /** Unimplemented. */
-  public Element            getElementById(String elementId)
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param qualifiedName
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Element createElementNS(String namespaceURI, String qualifiedName)
+          throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
-  
-  public void         setData(String data)
-    throws DOMException
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param qualifiedName
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Attr createAttributeNS(String namespaceURI, String qualifiedName)
+          throws DOMException
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return null;
+  }
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param elementId
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Element getElementById(String elementId)
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return null;
+  }
+
+  /**
+   * NEEDSDOC Method setData 
+   *
+   *
+   * NEEDSDOC @param data
+   *
+   * @throws DOMException
+   */
+  public void setData(String data) throws DOMException
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
-  /** Unimplemented. */
-  public String       substringData(int offset, 
-                                    int count)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param offset
+   * NEEDSDOC @param count
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public String substringData(int offset, int count) throws DOMException
   {
+
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
     return null;
   }
-  
-  /** Unimplemented. */
-  public void         appendData(String arg)
-    throws DOMException
-  {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-  }
-  
-  /** Unimplemented. */
-  public void         insertData(int offset, 
-                                 String arg)
-    throws DOMException
-  {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-  }
-  
-  /** Unimplemented. */
-  public void         deleteData(int offset, 
-                                 int count)
-    throws DOMException
-  {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-  }
-  
-  /** Unimplemented. */
-  public void         replaceData(int offset, 
-                                  int count, 
-                                  String arg)
-    throws DOMException
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param arg
+   *
+   * @throws DOMException
+   */
+  public void appendData(String arg) throws DOMException
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
-  /** Unimplemented. */
-  public Text         splitText(int offset)
-    throws DOMException
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param offset
+   * NEEDSDOC @param arg
+   *
+   * @throws DOMException
+   */
+  public void insertData(int offset, String arg) throws DOMException
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-    return null;
   }
 
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param offset
+   * NEEDSDOC @param count
+   *
+   * @throws DOMException
+   */
+  public void deleteData(int offset, int count) throws DOMException
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+  }
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param offset
+   * NEEDSDOC @param count
+   * NEEDSDOC @param arg
+   *
+   * @throws DOMException
+   */
+  public void replaceData(int offset, int count, String arg)
+          throws DOMException
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+  }
+
+  /**
+   * Unimplemented. 
+   *
+   * NEEDSDOC @param offset
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Text splitText(int offset) throws DOMException
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return null;
+  }
 }

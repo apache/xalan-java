@@ -96,6 +96,12 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_ka.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_zh_CN.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_zh_TW.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)ElemDesc.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)Encodings.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)EncodingInfo.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)FormatterToHTML.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)FormatterToText.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)FormatterToXML.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)NameSpaceDecl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)AttrImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)AttrImplNS.java \
@@ -108,14 +114,6 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)DOMImplementationImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ElementImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ElementImplWithNS.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedDocImpl.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedElem.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedElemImpl.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedElemWithNS.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedLocPathIterator.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedUnionPathIterator.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)LevelIndexer.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)LevelIndexIterator.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)NotationImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)Parent.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ProcessingInstructionImpl.java \
@@ -325,21 +323,7 @@ SRCS = \
   org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)ParserFactory.java \
   org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLFilterImpl.java \
   org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLReaderAdapter.java \
-  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLReaderFactory.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)FastStringBuffer.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)BaseMarkupSerializer.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)ElementState.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Encodings.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)HTMLdtd.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)HTMLSerializer.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)IndentPrinter.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)LineSeparator.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Method.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Printer.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)SerializerFactoryImpl.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)TextSerializer.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)XHTMLSerializer.java \
-  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)XMLSerializer.java
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLReaderFactory.java
     
 OBJS = $($(subst /,\\,$(SRCS)):%.java=classes/%.class)
 

@@ -54,27 +54,27 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
 package org.apache.xalan.extensions;
 
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.Node;
 
 /**
- * An object that implements this interface can supply 
+ * An object that implements this interface can supply
  * information about the current XPath expression context.
  */
 public interface ExpressionContext
 {
+
   /**
    * Get the current context node.
    * @return The current context node.
    */
   public Node getContextNode();
-  
+
   /**
    * Get the current context node list.
-   * @return An iterator for the current context list, as 
+   * @return An iterator for the current context list, as
    * defined in XSLT.
    */
   public NodeIterator getContextNodes();
@@ -92,5 +92,4 @@ public interface ExpressionContext
    * @return value of n as a string, or an empty string if n is null.
    */
   public String toString(Node n);
-
 }

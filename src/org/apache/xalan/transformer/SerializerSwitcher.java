@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -58,9 +58,12 @@ package org.apache.xalan.transformer;
 
 import java.io.Writer;
 import java.io.OutputStream;
+
 import org.apache.xalan.templates.StylesheetRoot;
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+
 import org.apache.serialize.Serializer;
 import org.apache.serialize.SerializerFactory;
 import org.apache.serialize.Method;
@@ -68,60 +71,81 @@ import org.apache.serialize.OutputFormat;
 import org.apache.xalan.templates.OutputFormatExtended;
 
 /**
- * This is a helper class that decides if Xalan needs to switch 
+ * This is a helper class that decides if Xalan needs to switch
  * serializers, based on the first output element.
  */
 public class SerializerSwitcher
-{  
-  public static void switchSerializerIfHTML(TransformerImpl transformer,
-                                            String ns, String localName)
-    throws SAXException
+{
+
+  /**
+   * NEEDSDOC Method switchSerializerIfHTML 
+   *
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param ns
+   * NEEDSDOC @param localName
+   *
+   * @throws SAXException
+   */
+  public static void switchSerializerIfHTML(
+          TransformerImpl transformer, String ns, String localName)
+            throws SAXException
   {
-    if(null == transformer)
+
+    if (null == transformer)
       return;
-    
+
     StylesheetRoot stylesheet = transformer.getStylesheet();
-    
-    if(null != stylesheet && !stylesheet.isOutputMethodSet())
+
+    if (null != stylesheet &&!stylesheet.isOutputMethodSet())
     {
-      if(((null == ns) || (ns.length() == 0)) && localName.equalsIgnoreCase("html"))
+      if (((null == ns) || (ns.length() == 0))
+              && localName.equalsIgnoreCase("html"))
       {
         OutputFormat oformat = stylesheet.getOutputFormat();
-        if(oformat instanceof OutputFormatExtended)
+
+        if (oformat instanceof OutputFormatExtended)
         {
-          boolean methodHasBeeenSet 
-            = ((OutputFormatExtended)oformat).methodHasBeenSet();
-          if(methodHasBeeenSet)
+          boolean methodHasBeeenSet =
+            ((OutputFormatExtended) oformat).methodHasBeenSet();
+
+          if (methodHasBeeenSet)
             return;
         }
+
         oformat.setMethod(Method.HTML);
+
         try
         {
           Serializer oldSerializer = transformer.getSerializer();
-          if(null != oldSerializer)
+
+          if (null != oldSerializer)
           {
             Serializer serializer = SerializerFactory.getSerializer(oformat);
             Writer writer = oldSerializer.getWriter();
-            if(null != writer)
+
+            if (null != writer)
               serializer.setWriter(writer);
             else
             {
               OutputStream os = serializer.getOutputStream();
-              if(null != os)
+
+              if (null != os)
                 serializer.setOutputStream(os);
             }
+
             transformer.setSerializer(serializer);
+
             ContentHandler ch = serializer.asContentHandler();
 
             transformer.setContentHandler(ch);
           }
         }
-        catch(java.io.IOException e)
+        catch (java.io.IOException e)
         {
           throw new SAXException(e);
         }
       }
     }
   }
-
 }

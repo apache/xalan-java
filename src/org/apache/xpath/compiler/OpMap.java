@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,48 +57,60 @@
 package org.apache.xpath.compiler;
 
 import java.util.Vector;
+
 import org.apache.xalan.utils.QName;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
- * This class represents the data structure basics of the XPath 
+ * This class represents the data structure basics of the XPath
  * object.
  */
 public class OpMap
 {
+
   /**
    * The current pattern string, for diagnostics purposes
    */
   protected String m_currentPattern;
-  
+
+  /**
+   * NEEDSDOC Method toString 
+   *
+   *
+   * NEEDSDOC (toString) @return
+   */
   public String toString()
   {
     return m_currentPattern;
   }
-  
+
   /**
    * Get the pattern string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getPatternString()
   {
     return m_currentPattern;
   }
-  
+
   /**
    * The max size that the token queue can grow to.
    */
   static final int MAXTOKENQUEUESIZE = 500;
 
   /**
-   *  TokenStack is the queue of used tokens. The current token is the token at the 
+   *  TokenStack is the queue of used tokens. The current token is the token at the
    * end of the m_tokenQueue. The idea is that the queue can be marked and a sequence
    * of tokens can be reused.
    */
   public Object[] m_tokenQueue = new Object[MAXTOKENQUEUESIZE];
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * Get the XPath as a list of tokens.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Object[] getTokenQueue()
   {
@@ -108,6 +120,10 @@ public class OpMap
   /**
    * <meta name="usage" content="advanced"/>
    * Get the XPath as a list of tokens.
+   *
+   * NEEDSDOC @param pos
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Object getToken(int pos)
   {
@@ -122,6 +138,8 @@ public class OpMap
   /**
    * <meta name="usage" content="advanced"/>
    * Get size of the token queue.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getTokenQueueSize()
   {
@@ -129,68 +147,81 @@ public class OpMap
   }
 
   /**
-   * An operations map is used instead of a proper parse tree.  It contains 
+   * An operations map is used instead of a proper parse tree.  It contains
    * operations codes and indexes into the m_tokenQueue.
-   * I use an array instead of a full parse tree in order to cut down 
+   * I use an array instead of a full parse tree in order to cut down
    * on the number of objects created.
    */
   public int m_opMap[] = null;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
-   * Get the opcode list that describes the XPath operations.  It contains 
+   * Get the opcode list that describes the XPath operations.  It contains
    * operations codes and indexes into the m_tokenQueue.
-   * I use an array instead of a full parse tree in order to cut down 
+   * I use an array instead of a full parse tree in order to cut down
    * on the number of objects created.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int[] getOpMap()
   {
     return m_opMap;
   }
-  
+
   // Position indexes
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * The length is always the opcode position + 1.
-   * Length is always expressed as the opcode+length bytes, 
+   * Length is always expressed as the opcode+length bytes,
    * so it is always 2 or greater.
    */
   public static final int MAPINDEX_LENGTH = 1;
-  
+
   /**
-   * Replace the large arrays 
+   * Replace the large arrays
    * with a small array.
    */
   void shrink()
   {
+
     int map[] = m_opMap;
-    int n = m_opMap[MAPINDEX_LENGTH];;
-    m_opMap = new int[n+4];
+    int n = m_opMap[MAPINDEX_LENGTH];
+    ;
+
+    m_opMap = new int[n + 4];
+
     int i;
-    for(i = 0; i < n; i++)
+
+    for (i = 0; i < n; i++)
     {
       m_opMap[i] = map[i];
     }
+
     m_opMap[i] = 0;
-    m_opMap[i+1] = 0;
-    m_opMap[i+2] = 0;
-        
+    m_opMap[i + 1] = 0;
+    m_opMap[i + 2] = 0;
+
     Object[] tokens = m_tokenQueue;
+
     n = m_tokenQueueSize;
-    m_tokenQueue = new Object[n+4];
-    for(i = 0; i < n; i++)
+    m_tokenQueue = new Object[n + 4];
+
+    for (i = 0; i < n; i++)
     {
       m_tokenQueue[i] = tokens[i];
     }
+
     m_tokenQueue[i] = null;
-    m_tokenQueue[i+1] = null;
-    m_tokenQueue[i+2] = null;
+    m_tokenQueue[i + 1] = null;
+    m_tokenQueue[i + 2] = null;
   }
 
   /**
    * <meta name="usage" content="advanced"/>
    * Given an operation position, return the current op.
+   *
+   * NEEDSDOC @param opPos
    * @return position of next operation in m_opMap.
    */
   public int getOp(int opPos)
@@ -200,150 +231,197 @@ public class OpMap
 
   /**
    * <meta name="usage" content="advanced"/>
-   * Given an operation position, return the end position, i.e. the 
+   * Given an operation position, return the end position, i.e. the
    * beginning of the next operation.
+   *
+   * NEEDSDOC @param opPos
    * @return position of next operation in m_opMap.
    */
   public int getNextOpPos(int opPos)
   {
-    return opPos+m_opMap[opPos+1];
+    return opPos + m_opMap[opPos + 1];
   }
-  
+
   /**
    * <meta name="usage" content="advanced"/>
-   * Given an operation position, return the end position, i.e. the 
+   * Given an operation position, return the end position, i.e. the
    * beginning of the next operation.
+   *
+   * NEEDSDOC @param opPos
    * @return position of next operation in m_opMap.
    */
   public int getNextStepPos(int opPos)
   {
+
     int stepType = getOp(opPos);
-    if((stepType >= OpCodes.AXES_START_TYPES) && (stepType <= OpCodes.AXES_END_TYPES))
+
+    if ((stepType >= OpCodes.AXES_START_TYPES)
+            && (stepType <= OpCodes.AXES_END_TYPES))
     {
       return getNextOpPos(opPos);
     }
-    else if((stepType >= OpCodes.FIRST_NODESET_OP) && (stepType <= OpCodes.LAST_NODESET_OP))
+    else if ((stepType >= OpCodes.FIRST_NODESET_OP)
+             && (stepType <= OpCodes.LAST_NODESET_OP))
     {
       int newOpPos = getNextOpPos(opPos);
-      
-      while(OpCodes.OP_PREDICATE == getOp(newOpPos))
+
+      while (OpCodes.OP_PREDICATE == getOp(newOpPos))
+      {
         newOpPos = getNextOpPos(newOpPos);
+      }
 
       stepType = getOp(newOpPos);
-      if(!((stepType >= OpCodes.AXES_START_TYPES) && (stepType <= OpCodes.AXES_END_TYPES)))
+
+      if (!((stepType >= OpCodes.AXES_START_TYPES)
+            && (stepType <= OpCodes.AXES_END_TYPES)))
       {
         return OpCodes.ENDOP;
       }
+
       return newOpPos;
     }
     else
     {
-      throw new RuntimeException("Programmer's assertion in getNextStepPos: unknown stepType: "+stepType);
+      throw new RuntimeException(
+        "Programmer's assertion in getNextStepPos: unknown stepType: "
+        + stepType);
     }
   }
 
-  
   /**
    * <meta name="usage" content="advanced"/>
-   * Given an operation position, return the end position, i.e. the 
+   * Given an operation position, return the end position, i.e. the
    * beginning of the next operation.
+   *
+   * NEEDSDOC @param opMap
+   * NEEDSDOC @param opPos
    * @return position of next operation in m_opMap.
    */
   public static int getNextOpPos(int[] opMap, int opPos)
   {
-    return opPos+opMap[opPos+1];
+    return opPos + opMap[opPos + 1];
   }
-  
+
   /**
    * <meta name="usage" content="advanced"/>
-   * Given an FROM_stepType position, return the position of the 
-   * first predicate, if there is one, or else this will point 
+   * Given an FROM_stepType position, return the position of the
+   * first predicate, if there is one, or else this will point
    * to the end of the FROM_stepType.
    * Example:
    *  int posOfPredicate = xpath.getNextOpPos(stepPos);
-   *  boolean hasPredicates = 
+   *  boolean hasPredicates =
    *            OpCodes.OP_PREDICATE == xpath.getOp(posOfPredicate);
+   *
+   * NEEDSDOC @param opPos
    * @return position of predicate in FROM_stepType structure.
    */
   public int getFirstPredicateOpPos(int opPos)
   {
+
     int stepType = m_opMap[opPos];
-    if((stepType >= OpCodes.AXES_START_TYPES) && (stepType <= OpCodes.AXES_END_TYPES))
+
+    if ((stepType >= OpCodes.AXES_START_TYPES)
+            && (stepType <= OpCodes.AXES_END_TYPES))
     {
-      return opPos+m_opMap[opPos+2];
+      return opPos + m_opMap[opPos + 2];
     }
-    else if((stepType >= OpCodes.FIRST_NODESET_OP) && (stepType <= OpCodes.LAST_NODESET_OP))
+    else if ((stepType >= OpCodes.FIRST_NODESET_OP)
+             && (stepType <= OpCodes.LAST_NODESET_OP))
     {
-      return opPos+m_opMap[opPos+1];
+      return opPos + m_opMap[opPos + 1];
     }
     else
     {
-      throw new RuntimeException("Programmer's assertion in getNextStepPos: unknown stepType: "+stepType);
+      throw new RuntimeException(
+        "Programmer's assertion in getNextStepPos: unknown stepType: "
+        + stepType);
     }
   }
 
-  
   /**
    * <meta name="usage" content="advanced"/>
    * Go to the first child of a given operation.
+   *
+   * NEEDSDOC @param opPos
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public static int getFirstChildPos(int opPos)
   {
-    return opPos+2;
+    return opPos + 2;
   }
 
   /**
    * <meta name="usage" content="advanced"/>
    * Go to the first child of a given operation.
+   *
+   * NEEDSDOC @param opPos
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getArgLength(int opPos)
   {
-    return m_opMap[opPos+MAPINDEX_LENGTH];
+    return m_opMap[opPos + MAPINDEX_LENGTH];
   }
 
   /**
    * <meta name="usage" content="advanced"/>
    * Go to the first child of a given operation.
+   *
+   * NEEDSDOC @param opPos
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getArgLengthOfStep(int opPos)
   {
-    return m_opMap[opPos+MAPINDEX_LENGTH+1]-3;
+    return m_opMap[opPos + MAPINDEX_LENGTH + 1] - 3;
   }
 
   /**
    * <meta name="usage" content="advanced"/>
    * Go to the first child of a given operation.
+   *
+   * NEEDSDOC @param opPos
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public static int getFirstChildPosOfStep(int opPos)
   {
-    return opPos+3;
+    return opPos + 3;
   }
 
   /**
    * <meta name="usage" content="advanced"/>
    * Get the test type of the step, i.e. NODETYPE_XXX value.
-   * @param opPosOfStep The position of the FROM_XXX step. 
+   * @param opPosOfStep The position of the FROM_XXX step.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getStepTestType(int opPosOfStep)
   {
-    return m_opMap[opPosOfStep+3]; // skip past op, len, len without predicates
+    return m_opMap[opPosOfStep + 3];  // skip past op, len, len without predicates
   }
 
   /**
    * <meta name="usage" content="advanced"/>
    * Get the namespace of the step.
-   * @param opPosOfStep The position of the FROM_XXX step. 
+   * @param opPosOfStep The position of the FROM_XXX step.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getStepNS(int opPosOfStep)
   {
+
     int argLenOfStep = getArgLengthOfStep(opPosOfStep);
+
     // System.out.println("getStepNS.argLenOfStep: "+argLenOfStep);
-    if(argLenOfStep == 3)
+    if (argLenOfStep == 3)
     {
-      int index = m_opMap[opPosOfStep+4];
-      if(index >= 0)
-        return (String)m_tokenQueue[index];
-      else if(OpCodes.ELEMWILDCARD == index)
+      int index = m_opMap[opPosOfStep + 4];
+
+      if (index >= 0)
+        return (String) m_tokenQueue[index];
+      else if (OpCodes.ELEMWILDCARD == index)
         return NodeTest.WILD;
       else
         return null;
@@ -351,30 +429,46 @@ public class OpMap
     else
       return null;
   }
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * Get the local name of the step.
-   * @param opPosOfStep The position of the FROM_XXX step. 
+   * @param opPosOfStep The position of the FROM_XXX step.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getStepLocalName(int opPosOfStep)
   {
+
     int argLenOfStep = getArgLengthOfStep(opPosOfStep);
+
     // System.out.println("getStepLocalName.argLenOfStep: "+argLenOfStep);
     int index;
-    switch(argLenOfStep)
+
+    switch (argLenOfStep)
     {
-    case 0: index = OpCodes.EMPTY; break;
-    case 1: index = OpCodes.ELEMWILDCARD; break;
-    case 2: index = m_opMap[opPosOfStep+4]; break;
-    case 3: index = m_opMap[opPosOfStep+5]; break;
-    default: index = OpCodes.EMPTY; break; // Should assert error
+    case 0 :
+      index = OpCodes.EMPTY;
+      break;
+    case 1 :
+      index = OpCodes.ELEMWILDCARD;
+      break;
+    case 2 :
+      index = m_opMap[opPosOfStep + 4];
+      break;
+    case 3 :
+      index = m_opMap[opPosOfStep + 5];
+      break;
+    default :
+      index = OpCodes.EMPTY;
+      break;  // Should assert error
     }
+
     // int index = (argLenOfStep == 3) ? m_opMap[opPosOfStep+5] 
     //                                  : ((argLenOfStep == 1) ? -3 : -2);
-    if(index >= 0)
-      return (String)m_tokenQueue[index].toString();
-    else if(OpCodes.ELEMWILDCARD == index)
+    if (index >= 0)
+      return (String) m_tokenQueue[index].toString();
+    else if (OpCodes.ELEMWILDCARD == index)
       return NodeTest.WILD;
     else
       return null;
@@ -383,73 +477,86 @@ public class OpMap
   /**
    * <meta name="usage" content="advanced"/>
    * This method is for building indexes of match patterns for fast lookup.
-   * This allows a caller to get the QName, and quickly 
-   * find the likely candidates that may match.  Note that this will 
+   * This allows a caller to get the QName, and quickly
+   * find the likely candidates that may match.  Note that this will
    * produce QName objects that aren't strictly legal, like "*".
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Vector getTargetElementQNames()
   {
-    Vector targetQNames = new Vector();
 
+    Vector targetQNames = new Vector();
     int opPos = 2;
 
-    while(m_opMap[opPos] == OpCodes.OP_LOCATIONPATHPATTERN)
+    while (m_opMap[opPos] == OpCodes.OP_LOCATIONPATHPATTERN)
     {
       int nextOpPos = getNextOpPos(opPos);
+
       opPos = getFirstChildPos(opPos);
-      
-      while( m_opMap[opPos] != OpCodes.ENDOP )
+
+      while (m_opMap[opPos] != OpCodes.ENDOP)
       {
         int nextStepPos = getNextOpPos(opPos);
         int nextOp = m_opMap[nextStepPos];
-        if((nextOp == OpCodes.OP_PREDICATE) || (nextOp == OpCodes.ENDOP))
+
+        if ((nextOp == OpCodes.OP_PREDICATE) || (nextOp == OpCodes.ENDOP))
         {
           int stepType = m_opMap[opPos];
+
           opPos += 3;
-          switch(stepType)
+
+          switch (stepType)
           {
-          case OpCodes.OP_FUNCTION:
+          case OpCodes.OP_FUNCTION :
             targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_ANY));
             break;
-          case OpCodes.FROM_ROOT:
+          case OpCodes.FROM_ROOT :
             targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_ROOT));
             break;
-          case OpCodes.MATCH_ATTRIBUTE:
-          case OpCodes.MATCH_ANY_ANCESTOR:
-          case OpCodes.MATCH_IMMEDIATE_ANCESTOR:
+          case OpCodes.MATCH_ATTRIBUTE :
+          case OpCodes.MATCH_ANY_ANCESTOR :
+          case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
             int tok = m_opMap[opPos];
+
             opPos++;
-            switch(tok)
+
+            switch (tok)
             {
-            case OpCodes.NODETYPE_COMMENT:
-              targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_COMMENT));
+            case OpCodes.NODETYPE_COMMENT :
+              targetQNames.addElement(
+                new QName(PsuedoNames.PSEUDONAME_COMMENT));
               break;
-            case OpCodes.NODETYPE_TEXT:
+            case OpCodes.NODETYPE_TEXT :
               targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_TEXT));
               break;
-            case OpCodes.NODETYPE_NODE:
+            case OpCodes.NODETYPE_NODE :
               targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_ANY));
               break;
-            case OpCodes.NODETYPE_ROOT:
+            case OpCodes.NODETYPE_ROOT :
               targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_ROOT));
               break;
-            case OpCodes.NODETYPE_ANYELEMENT:
+            case OpCodes.NODETYPE_ANYELEMENT :
               targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_ANY));
               break;
-            case OpCodes.NODETYPE_PI:
+            case OpCodes.NODETYPE_PI :
               targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_ANY));
               break;
-            case OpCodes.NODENAME:
-              int tokenIndex = m_opMap[opPos+1];
-              String namespace = (tokenIndex >= 0) ? 
-                                 (String)m_tokenQueue[tokenIndex] : null;
-              tokenIndex = m_opMap[opPos+1];
-              if(tokenIndex >= 0)
+            case OpCodes.NODENAME :
+              int tokenIndex = m_opMap[opPos + 1];
+              String namespace = (tokenIndex >= 0)
+                                 ? (String) m_tokenQueue[tokenIndex] : null;
+
+              tokenIndex = m_opMap[opPos + 1];
+
+              if (tokenIndex >= 0)
               {
-                String targetName = (String)m_tokenQueue[tokenIndex];
-                if(targetName.equals("*"))
+                String targetName = (String) m_tokenQueue[tokenIndex];
+
+                if (targetName.equals("*"))
                 {
-                  targetQNames.addElement(new QName(namespace, PsuedoNames.PSEUDONAME_ANY));
+                  targetQNames.addElement(
+                    new QName(namespace, PsuedoNames.PSEUDONAME_ANY));
                 }
                 else
                 {
@@ -458,23 +565,26 @@ public class OpMap
               }
               else
               {
+
                 // ?? -sboag
-                targetQNames.addElement(new QName(namespace, PsuedoNames.PSEUDONAME_ANY));
+                targetQNames.addElement(
+                  new QName(namespace, PsuedoNames.PSEUDONAME_ANY));
               }
               break;
-            default:
+            default :
               targetQNames.addElement(new QName(PsuedoNames.PSEUDONAME_ANY));
               break;
             }
             break;
           }
         }
+
         opPos = nextStepPos;
       }
-      
+
       opPos = nextOpPos;
     }
+
     return targetQNames;
   }
-
 }

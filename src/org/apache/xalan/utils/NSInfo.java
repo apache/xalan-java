@@ -59,13 +59,22 @@ package org.apache.xalan.utils;
 /**
  * <meta name="usage" content="internal"/>
  * This class holds information about the namespace info
- * of a node.  It is used to optimize namespace lookup in 
+ * of a node.  It is used to optimize namespace lookup in
  * a generic DOM.
  */
 public class NSInfo
 {
+
+  /**
+   * Constructor NSInfo
+   *
+   *
+   * NEEDSDOC @param hasProcessedNS
+   * NEEDSDOC @param hasXMLNSAttrs
+   */
   public NSInfo(boolean hasProcessedNS, boolean hasXMLNSAttrs)
   {
+
     m_hasProcessedNS = hasProcessedNS;
     m_hasXMLNSAttrs = hasXMLNSAttrs;
     m_namespace = null;
@@ -73,28 +82,59 @@ public class NSInfo
   }
 
   // Unused at the moment
-  public NSInfo(boolean hasProcessedNS, boolean hasXMLNSAttrs, int ancestorHasXMLNSAttrs)
+
+  /**
+   * Constructor NSInfo
+   *
+   *
+   * NEEDSDOC @param hasProcessedNS
+   * NEEDSDOC @param hasXMLNSAttrs
+   * NEEDSDOC @param ancestorHasXMLNSAttrs
+   */
+  public NSInfo(boolean hasProcessedNS, boolean hasXMLNSAttrs,
+                int ancestorHasXMLNSAttrs)
   {
+
     m_hasProcessedNS = hasProcessedNS;
     m_hasXMLNSAttrs = hasXMLNSAttrs;
     m_ancestorHasXMLNSAttrs = ancestorHasXMLNSAttrs;
     m_namespace = null;
   }
 
+  /**
+   * Constructor NSInfo
+   *
+   *
+   * NEEDSDOC @param namespace
+   * NEEDSDOC @param hasXMLNSAttrs
+   */
   public NSInfo(String namespace, boolean hasXMLNSAttrs)
   {
+
     m_hasProcessedNS = true;
     m_hasXMLNSAttrs = hasXMLNSAttrs;
     m_namespace = namespace;
     m_ancestorHasXMLNSAttrs = ANCESTORXMLNSUNPROCESSED;
   }
 
+  /** NEEDSDOC Field m_namespace          */
   public String m_namespace;
+
+  /** NEEDSDOC Field m_hasXMLNSAttrs          */
   public boolean m_hasXMLNSAttrs;
+
+  /** NEEDSDOC Field m_hasProcessedNS          */
   public boolean m_hasProcessedNS;
+
+  /** NEEDSDOC Field m_ancestorHasXMLNSAttrs          */
   public int m_ancestorHasXMLNSAttrs;
-  
+
+  /** NEEDSDOC Field ANCESTORXMLNSUNPROCESSED          */
   public static final int ANCESTORXMLNSUNPROCESSED = 0;
+
+  /** NEEDSDOC Field ANCESTORHASXMLNS          */
   public static final int ANCESTORHASXMLNS = 1;
+
+  /** NEEDSDOC Field ANCESTORNOXMLNS          */
   public static final int ANCESTORNOXMLNS = 2;
 }

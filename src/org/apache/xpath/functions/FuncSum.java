@@ -54,11 +54,13 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPath;
@@ -72,24 +74,30 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncSum extends FunctionOneArg
 {
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     NodeIterator nodes = m_arg0.execute(xctxt).nodeset();
     double sum = 0.0;
     Node pos;
-    while(null != (pos = nodes.nextNode()))
+
+    while (null != (pos = nodes.nextNode()))
     {
       String s = DOMHelper.getNodeData(pos);
-      if(null != s) 
+
+      if (null != s)
         sum += XString.castToNum(s);
     }
+
     return new XNumber(sum);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * The Apache Software License, Version 1.1 
+ * The Apache Software License, Version 1.1
  *
  *
  * Copyright (c) 1999 The Apache Software Foundation.  All rights 
@@ -52,95 +52,152 @@
  * originally based on software copyright (c) 1999, Lotus
  * Development Corporation., http://www.lotus.com.  For more
  * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>. 
+ * <http://www.apache.org/>.
  */
 
-/** Test driver for org.apache.xalan.utils.synthetic.Class and org.apache.xalan.utils.synthetic.reflection.*
-    <p>
-    toSource should probably be factored out into a separate
-    java generator class, so we could generate other languages as well.
-*/
-
+/**
+ * Test driver for org.apache.xalan.utils.synthetic.Class and org.apache.xalan.utils.synthetic.reflection.
+ *   <p>
+ *   toSource should probably be factored out into a separate
+ *   java generator class, so we could generate other languages as well.
+ */
 package org.apache.xalan.utils.synthetic;
+
 import org.apache.xalan.utils.synthetic.Class;
 import org.apache.xalan.utils.synthetic.reflection.*;
 
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class TestDriver <needs-comment/>
+ */
 public class TestDriver
 {
-    public static int sampleField=32;
-    private boolean inTest=false;
-    
-    public static void main(String[] args)
-    {
-        // Proxy a class
-        try
-        {
-            System.out.println("Proxying java.awt.Frame...");
-            Class myC=Class.forName("java.awt.Frame");
-            myC.toSource(System.out,0);
-            System.out.println("\nProxying org.apache.xalan.utils.synthetic.TestDriver...");
-            myC=Class.forName("com.ibm.org.apache.xalan.utils.synthetic.TestDriver");
-            myC.toSource(System.out,0);
-        }
-        catch(ClassNotFoundException e)
-        {
-            System.out.println("Couldn't proxy: ");
-            e.printStackTrace();
-        }
 
-        
-        // Start getting serious
-        try
-        {
-            System.out.println("\nBuild a new beast...");
-            Class myC=Class.declareClass("com.ibm.org.apache.xalan.utils.synthetic.BuildMe");
-            Class inner=myC.declareInnerClass("island");
-            inner.addExtends(Class.forName("java.lang.String"));
-            Method m=inner.declareMethod("getValue");
-            m.setReturnType(Class.forName("java.lang.String"));
-            m.getBody().append("return toString();");
-            myC.toSource(System.out,0);
-        }
-        catch(ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch(SynthesisException e)
-        {
-            e.printStackTrace();
-        }
-        catch(IllegalStateException e)
-        {
-            System.out.println("Unwritten function: "+e);
-            e.printStackTrace();
-        }
+  /** NEEDSDOC Field sampleField          */
+  public static int sampleField = 32;
+
+  /** NEEDSDOC Field inTest          */
+  private boolean inTest = false;
+
+  /**
+   * NEEDSDOC Method main 
+   *
+   *
+   * NEEDSDOC @param args
+   */
+  public static void main(String[] args)
+  {
+
+    // Proxy a class
+    try
+    {
+      System.out.println("Proxying java.awt.Frame...");
+
+      Class myC = Class.forName("java.awt.Frame");
+
+      myC.toSource(System.out, 0);
+      System.out.println(
+        "\nProxying org.apache.xalan.utils.synthetic.TestDriver...");
+
+      myC =
+        Class.forName("com.ibm.org.apache.xalan.utils.synthetic.TestDriver");
+
+      myC.toSource(System.out, 0);
+    }
+    catch (ClassNotFoundException e)
+    {
+      System.out.println("Couldn't proxy: ");
+      e.printStackTrace();
     }
 
-    public static void dumpClass(Class C)
+    // Start getting serious
+    try
     {
-        System.out.println("toString(): "+C);
-        System.out.println("\tisPrimitive(): "+C.isPrimitive());
-        System.out.println("\tisInterface(): "+C.isInterface());
-        System.out.println("\tisInstance(\"foo\"): "+C.isInstance("foo"));
-        System.out.println("\tisArray(): "+C.isArray());
-        System.out.println("\tgetRealClass(): "+C.getRealClass());
+      System.out.println("\nBuild a new beast...");
+
+      Class myC = Class.declareClass(
+        "com.ibm.org.apache.xalan.utils.synthetic.BuildMe");
+      Class inner = myC.declareInnerClass("island");
+
+      inner.addExtends(Class.forName("java.lang.String"));
+
+      Method m = inner.declareMethod("getValue");
+
+      m.setReturnType(Class.forName("java.lang.String"));
+      m.getBody().append("return toString();");
+      myC.toSource(System.out, 0);
+    }
+    catch (ClassNotFoundException e)
+    {
+      e.printStackTrace();
+    }
+    catch (SynthesisException e)
+    {
+      e.printStackTrace();
+    }
+    catch (IllegalStateException e)
+    {
+      System.out.println("Unwritten function: " + e);
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * NEEDSDOC Method dumpClass 
+   *
+   *
+   * NEEDSDOC @param C
+   */
+  public static void dumpClass(Class C)
+  {
+
+    System.out.println("toString(): " + C);
+    System.out.println("\tisPrimitive(): " + C.isPrimitive());
+    System.out.println("\tisInterface(): " + C.isInterface());
+    System.out.println("\tisInstance(\"foo\"): " + C.isInstance("foo"));
+    System.out.println("\tisArray(): " + C.isArray());
+    System.out.println("\tgetRealClass(): " + C.getRealClass());
+  }
+
+  /**
+   * NEEDSDOC Method quickcheck 
+   *
+   */
+  public void quickcheck()
+  {
+
+    Inner a = new Inner();
+
+    a.setTest(!a.getTest());
+  }
+
+  /**
+   * <meta name="usage" content="internal"/>
+   * NEEDSDOC Class Inner <needs-comment/>
+   */
+  private class Inner
+  {
+
+    /**
+     * NEEDSDOC Method getTest 
+     *
+     *
+     * NEEDSDOC (getTest) @return
+     */
+    public boolean getTest()
+    {
+      return inTest;
     }
 
-    public void quickcheck()
+    /**
+     * NEEDSDOC Method setTest 
+     *
+     *
+     * NEEDSDOC @param test
+     */
+    public void setTest(boolean test)
     {
-        Inner a=new Inner();
-        a.setTest(!a.getTest());
+      inTest = test;
     }
-    private class Inner
-    {
-        public boolean getTest()
-        {
-            return inTest;
-        }
-        public void setTest(boolean test)
-        {
-            inTest=test;
-        }
-    }
-    
+  }
 }

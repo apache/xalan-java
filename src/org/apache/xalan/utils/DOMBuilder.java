@@ -56,10 +56,9 @@
  */
 package org.apache.xalan.utils;
 
-import java.util.Stack;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.utils.NodeVector;
 
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ContentHandler;
@@ -67,24 +66,38 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 
-import org.w3c.dom.*; // we pretty much use everything in the DOM here.
+import org.apache.serialize.SerializerHandler;
+
+import org.w3c.dom.*;  // we pretty much use everything in the DOM here.
 
 /**
  * <meta name="usage" content="general"/>
- * This class takes SAX events (in addition to some extra events 
- * that SAX doesn't handle yet) and adds the result to a document 
+ * This class takes SAX events (in addition to some extra events
+ * that SAX doesn't handle yet) and adds the result to a document
  * or document fragment.
  */
-public class DOMBuilder implements ContentHandler, LexicalHandler
+public class DOMBuilder
+        implements ContentHandler, LexicalHandler, SerializerHandler
 {
-  Document m_doc;
+
+  /** NEEDSDOC Field m_doc          */
+  public Document m_doc;
+
+  /** NEEDSDOC Field m_currentNode          */
   Node m_currentNode = null;
+
+  /** NEEDSDOC Field m_docFrag          */
   public DocumentFragment m_docFrag = null;
-  Stack m_elemStack = new Stack();
-    
+
+  /** NEEDSDOC Field m_elemStack          */
+  NodeVector m_elemStack = new NodeVector();
+
   /**
-   * DOMBuilder instance constructor... it will add the DOM nodes 
+   * DOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
+   *
+   * NEEDSDOC @param doc
+   * NEEDSDOC @param node
    */
   public DOMBuilder(Document doc, Node node)
   {
@@ -93,8 +106,11 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
   }
 
   /**
-   * DOMBuilder instance constructor... it will add the DOM nodes 
+   * DOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
+   *
+   * NEEDSDOC @param doc
+   * NEEDSDOC @param docFrag
    */
   public DOMBuilder(Document doc, DocumentFragment docFrag)
   {
@@ -103,33 +119,41 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
   }
 
   /**
-   * DOMBuilder instance constructor... it will add the DOM nodes 
+   * DOMBuilder instance constructor... it will add the DOM nodes
    * to the document.
+   *
+   * NEEDSDOC @param doc
    */
   public DOMBuilder(Document doc)
   {
     m_doc = doc;
   }
-  
+
   /**
-   * Get the root node of the DOM being created.  This 
+   * Get the root node of the DOM being created.  This
    * is either a Document or a DocumentFragment.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getRootNode()
   {
-    return (null != m_docFrag) ? (Node)m_docFrag : (Node)m_doc;
+    return (null != m_docFrag) ? (Node) m_docFrag : (Node) m_doc;
   }
-  
+
   /**
-   * Get the node currently being processed. 
+   * Get the node currently being processed.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getCurrentNode()
   {
     return m_currentNode;
   }
-  
+
   /**
    * Return null since there is no Writer for this class.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public java.io.Writer getWriter()
   {
@@ -138,44 +162,59 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
 
   /**
    * Append a node to the current container.
+   *
+   * NEEDSDOC @param newNode
+   *
+   * @throws SAXException
    */
-  private void append(Node newNode)
-    throws SAXException
+  protected void append(Node newNode) throws SAXException
   {
-    if(null != m_currentNode)
+
+    Node currentNode = m_currentNode;
+
+    if (null != currentNode)
     {
-      m_currentNode.appendChild(newNode);
+      currentNode.appendChild(newNode);
+
       // System.out.println(newNode.getNodeName());
     }
-    else if(null != m_docFrag)
+    else if (null != m_docFrag)
     {
       m_docFrag.appendChild(newNode);
     }
     else
     {
       boolean ok = true;
-      int type = newNode.getNodeType();
-      if(type == Node.TEXT_NODE)
+      short type = newNode.getNodeType();
+
+      if (type == Node.TEXT_NODE)
       {
         String data = newNode.getNodeValue();
-        if((null != data) && (data.trim().length() > 0))
+
+        if ((null != data) && (data.trim().length() > 0))
         {
-          throw new SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANT_OUTPUT_TEXT_BEFORE_DOC, null)); //"Warning: can't output text before document element!  Ignoring...");
+          throw new SAXException(
+            XSLMessages.createXPATHMessage(
+              XPATHErrorResources.ER_CANT_OUTPUT_TEXT_BEFORE_DOC, null));  //"Warning: can't output text before document element!  Ignoring...");
         }
+
         ok = false;
       }
-      else if(type == Node.ELEMENT_NODE)
+      else if (type == Node.ELEMENT_NODE)
       {
-        if(m_doc.getDocumentElement() != null)
+        if (m_doc.getDocumentElement() != null)
         {
-          throw new SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANT_HAVE_MORE_THAN_ONE_ROOT, null)); //"Can't have more than one root on a DOM!");
+          throw new SAXException(
+            XSLMessages.createXPATHMessage(
+              XPATHErrorResources.ER_CANT_HAVE_MORE_THAN_ONE_ROOT, null));  //"Can't have more than one root on a DOM!");
         }
       }
-      if(ok)
+
+      if (ok)
         m_doc.appendChild(newNode);
     }
   }
-  
+
   /**
    * Receive an object for locating the origin of SAX document events.
    *
@@ -201,8 +240,9 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    *                any SAX document event.
    * @see org.xml.sax.Locator
    */
-  public void setDocumentLocator (Locator locator)
+  public void setDocumentLocator(Locator locator)
   {
+
     // No action for the moment.
   }
 
@@ -215,13 +255,14 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    *
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
+   *
+   * @throws SAXException
    */
-  public void startDocument ()
-    throws SAXException
+  public void startDocument() throws SAXException
   {
+
     // No action for the moment.
   }
-
 
   /**
    * Receive notification of the end of a document.
@@ -234,13 +275,14 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    *
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
+   *
+   * @throws SAXException
    */
-  public void endDocument ()
-    throws SAXException
+  public void endDocument() throws SAXException
   {
+
     // No action for the moment.
   }
-
 
   /**
    * Receive notification of the beginning of an element.
@@ -257,47 +299,66 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * contain only attributes with explicit values (specified or
    * defaulted): #IMPLIED attributes will be omitted.</p>
    *
+   *
+   * NEEDSDOC @param ns
+   * NEEDSDOC @param localName
    * @param name The element type name.
    * @param atts The attributes attached to the element, if any.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #endElement
-   * @see org.xml.sax.Attributes 
+   * @see org.xml.sax.Attributes
+   *
+   * @throws SAXException
    */
-  public void startElement (String ns, String localName, 
-                            String name, Attributes atts)
-    throws SAXException
+  public void startElement(
+          String ns, String localName, String name, Attributes atts)
+            throws SAXException
   {
+
     Element elem;
-    if((null == ns) || (ns.length() == 0))
+
+    if ((null == ns) || (ns.length() == 0))
       elem = m_doc.createElement(name);
     else
       elem = m_doc.createElementNS(ns, name);
-    append(elem); 
-    int nAtts = atts.getLength();
-    for(int i = 0; i < nAtts; i++)
-    {
-      //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
-      // First handle a possible ID attribute
-      if (atts.getType(i).equalsIgnoreCase("ID"))
-        setIDAttribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i), elem);
-      
-      String attrNS = atts.getURI(i);
-      // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
-      //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
 
-      if((null == attrNS) || (attrNS.length() == 0))
-        elem.setAttribute(atts.getQName(i), atts.getValue(i));
-      else
+    append(elem);
+
+    int nAtts = atts.getLength();
+
+    if (0 != nAtts)
+    {
+      for (int i = 0; i < nAtts; i++)
       {
-        // elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
-        elem.setAttributeNS(atts.getURI(i), atts.getQName(i), atts.getValue(i));
+
+        //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
+        // First handle a possible ID attribute
+        if (atts.getType(i).equalsIgnoreCase("ID"))
+          setIDAttribute(atts.getURI(i), atts.getLocalName(i),
+                         atts.getValue(i), elem);
+
+        String attrNS = atts.getURI(i);
+
+        // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
+        //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
+        if ((null == attrNS) || (attrNS.length() == 0))
+          elem.setAttribute(atts.getQName(i), atts.getValue(i));
+        else
+        {
+
+          // elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+          elem.setAttributeNS(atts.getURI(i), atts.getQName(i),
+                              atts.getValue(i));
+        }
       }
     }
+
     m_elemStack.push(elem);
+
     m_currentNode = elem;
   }
-  
+
   /**
    * Receive notification of the end of an element.
    *
@@ -309,32 +370,85 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * <p>If the element name has a namespace prefix, the prefix will
    * still be attached to the name.</p>
    *
+   *
+   * NEEDSDOC @param ns
+   * NEEDSDOC @param localName
    * @param name The element type name
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
+   *
+   * @throws SAXException
    */
-  public void endElement (String ns, String localName,
-                          String name)
-    throws SAXException
+  public void endElement(String ns, String localName, String name)
+          throws SAXException
   {
-    m_elemStack.pop();
-    if(!m_elemStack.isEmpty())
-    {
-      m_currentNode = (Element)m_elemStack.peek();
-    }
-    else
-    {
-      m_currentNode = null;
-    }
+    m_currentNode = m_elemStack.popAndTop();
   }
-  
-  public void setIDAttribute(String namespaceURI,
-                             String qualifiedName,
-                             String value,
-                             Element elem)
+
+  /**
+   * NEEDSDOC Method setIDAttribute 
+   *
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param qualifiedName
+   * NEEDSDOC @param value
+   * NEEDSDOC @param elem
+   */
+  public void setIDAttribute(String namespaceURI, String qualifiedName,
+                             String value, Element elem)
   {
+
     // Do nothing. This method is meant to be overiden.
   }
+
+  /**
+   * Starts an un-escaping section. All characters printed within an
+   * un-escaping section are printed as is, without escaping special
+   * characters into entity references. Only XML and HTML serializers
+   * need to support this method.
+   * <p>
+   * The contents of the un-escaping section will be delivered through
+   * the regular <tt>characters</tt> event.
+   *
+   * @throws SAXException
+   */
+  public void startNonEscaping() throws SAXException
+  {
+    append(m_doc.createProcessingInstruction("xslt-next-is-raw",
+                                             "formatter-to-dom"));
+  }
+
+  /**
+   * Ends an un-escaping section.
+   *
+   * @see #startNonEscaping
+   *
+   * @throws SAXException
+   */
+  public void endNonEscaping() throws SAXException{}
+
+  /**
+   * Starts a whitespace preserving section. All characters printed
+   * within a preserving section are printed without indentation and
+   * without consolidating multiple spaces. This is equivalent to
+   * the <tt>xml:space=&quot;preserve&quot;</tt> attribute. Only XML
+   * and HTML serializers need to support this method.
+   * <p>
+   * The contents of the whitespace preserving section will be delivered
+   * through the regular <tt>characters</tt> event.
+   *
+   * @throws SAXException
+   */
+  public void startPreserving() throws SAXException{}
+
+  /**
+   * Ends a whitespace preserving section.
+   *
+   * @see #startPreserving
+   *
+   * @throws SAXException
+   */
+  public void endPreserving() throws SAXException{}
 
   /**
    * Receive notification of character data.
@@ -358,37 +472,50 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @param length The number of characters to read from the array.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see #ignorableWhitespace 
+   * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
+   *
+   * @throws SAXException
    */
-  public void characters (char ch[], int start, int length)
-    throws SAXException
+  public void characters(char ch[], int start, int length) throws SAXException
   {
-    if(m_inCData)
+
+    if (m_inCData)
     {
-      cdata (ch, start, length);
+      cdata(ch, start, length);
+
       return;
     }
 
     String s = new String(ch, start, length);
     Text text = m_doc.createTextNode(s);
+
     append(text);
   }
 
   /**
-   * If available, when the disable-output-escaping attribute is used, 
-   * output raw text without escaping.  A PI will be inserted in front 
+   * If available, when the disable-output-escaping attribute is used,
+   * output raw text without escaping.  A PI will be inserted in front
    * of the node with the name "lotusxsl-next-is-raw" and a value of
    * "formatter-to-dom".
+   *
+   * NEEDSDOC @param ch
+   * NEEDSDOC @param start
+   * NEEDSDOC @param length
+   *
+   * @throws SAXException
    */
-  public void charactersRaw (char ch[], int start, int length)
-    throws SAXException
+  public void charactersRaw(char ch[], int start, int length)
+          throws SAXException
   {
+
     String s = new String(ch, start, length);
-    append(m_doc.createProcessingInstruction("xslt-next-is-raw", "formatter-to-dom"));
+
+    append(m_doc.createProcessingInstruction("xslt-next-is-raw",
+                                             "formatter-to-dom"));
     append(m_doc.createTextNode(s));
   }
-  
+
   /**
    * Report the beginning of an entity.
    *
@@ -404,9 +531,9 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @see org.xml.sax.misc.DeclHandler#internalEntityDecl
    * @see org.xml.sax.misc.DeclHandler#externalEntityDecl
    */
-  public void startEntity (String name)
-    throws SAXException
+  public void startEntity(String name) throws SAXException
   {
+
     // Almost certainly the wrong behavior...
     // entityReference(name);
   }
@@ -418,16 +545,16 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @exception SAXException The application may raise an exception.
    * @see #startEntity
    */
-  public void endEntity (String name)
-    throws SAXException
-  {
-  }
+  public void endEntity(String name) throws SAXException{}
 
   /**
    * Receive notivication of a entityReference.
+   *
+   * NEEDSDOC @param name
+   *
+   * @throws SAXException
    */
-  public void entityReference(String name)
-    throws SAXException
+  public void entityReference(String name) throws SAXException
   {
     append(m_doc.createEntityReference(name));
   }
@@ -455,14 +582,17 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #characters
+   *
+   * @throws SAXException
    */
-  public void ignorableWhitespace (char ch[], int start, int length)
-    throws SAXException
+  public void ignorableWhitespace(char ch[], int start, int length)
+          throws SAXException
   {
+
     String s = new String(ch, start, length);
+
     append(m_doc.createTextNode(s));
   }
-
 
   /**
    * Receive notification of a processing instruction.
@@ -480,13 +610,15 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    *        none was supplied.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
+   *
+   * @throws SAXException
    */
-  public void processingInstruction (String target, String data)
-    throws SAXException
+  public void processingInstruction(String target, String data)
+          throws SAXException
   {
     append(m_doc.createProcessingInstruction(target, data));
- }
-  
+  }
+
   /**
    * Report an XML comment anywhere in the document.
    *
@@ -501,19 +633,19 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    */
   public void comment(char ch[], int start, int length) throws SAXException
   {
-    append( m_doc.createComment(new String(ch, start, length)) );
-  }  
-  
+    append(m_doc.createComment(new String(ch, start, length)));
+  }
+
+  /** NEEDSDOC Field m_inCData          */
   protected boolean m_inCData = false;
-  
+
   /**
    * Report the start of a CDATA section.
    *
    * @exception SAXException The application may raise an exception.
    * @see #endCDATA
    */
-  public void startCDATA ()
-    throws SAXException
+  public void startCDATA() throws SAXException
   {
     m_inCData = true;
   }
@@ -524,12 +656,11 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @exception SAXException The application may raise an exception.
    * @see #startCDATA
    */
-  public void endCDATA ()
-    throws SAXException
+  public void endCDATA() throws SAXException
   {
     m_inCData = false;
   }
-  
+
   /**
    * Receive notification of cdata.
    *
@@ -552,16 +683,19 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @param length The number of characters to read from the array.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see #ignorableWhitespace 
+   * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
+   *
+   * @throws SAXException
    */
-  public void cdata (char ch[], int start, int length)
-    throws SAXException
+  public void cdata(char ch[], int start, int length) throws SAXException
   {
+
     String s = new String(ch, start, length);
+
     append(m_doc.createCDATASection(s));
   }
-  
+
   /**
    * Report the start of DTD declarations, if any.
    *
@@ -578,10 +712,10 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @see #endDTD
    * @see #startEntity
    */
-  public void startDTD (String name, String publicId,
-                                 String systemId)
-    throws SAXException
+  public void startDTD(String name, String publicId, String systemId)
+          throws SAXException
   {
+
     // Do nothing for now.
   }
 
@@ -591,9 +725,9 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * @exception SAXException The application may raise an exception.
    * @see #startDTD
    */
-  public void endDTD ()
-    throws SAXException
+  public void endDTD() throws SAXException
   {
+
     // Do nothing for now.
   }
 
@@ -601,7 +735,7 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * Begin the scope of a prefix-URI Namespace mapping.
    *
    * <p>The information from this event is not necessary for
-   * normal Namespace processing: the SAX XML reader will 
+   * normal Namespace processing: the SAX XML reader will
    * automatically replace prefixes for element and attribute
    * names when the http://xml.org/sax/features/namespaces
    * feature is true (the default).</p>
@@ -626,14 +760,17 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    *            an exception during processing.
    * @see #endPrefixMapping
    * @see #startElement
+   *
+   * @throws SAXException
    */
-  public void startPrefixMapping (String prefix, String uri)
-	  throws SAXException
+  public void startPrefixMapping(String prefix, String uri)
+          throws SAXException
   {
+
     /*
     // Not sure if this is needed or wanted
     // Also, it fails in the stree.
-    if((null != m_currentNode) 
+    if((null != m_currentNode)
        && (m_currentNode.getNodeType() == Node.ELEMENT_NODE))
     {
       String qname;
@@ -642,17 +779,16 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
         qname = "xmlns";
       else
         qname = "xmlns:"+prefix;
-       
+
       Element elem = (Element)m_currentNode;
       String val = elem.getAttribute(qname);
       if(val == null)
       {
-        elem.setAttributeNS("http://www.w3.org/XML/1998/namespace", 
+        elem.setAttributeNS("http://www.w3.org/XML/1998/namespace",
                             qname, uri);
       }
     }
     */
-
   }
 
   /**
@@ -668,12 +804,11 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    *            an exception during processing.
    * @see #startPrefixMapping
    * @see #endElement
+   *
+   * @throws SAXException
    */
-  public void endPrefixMapping (String prefix)
-	  throws SAXException
-  {
-  }
-  
+  public void endPrefixMapping(String prefix) throws SAXException{}
+
   /**
    * Receive notification of a skipped entity.
    *
@@ -686,14 +821,12 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
    * http://xml.org/sax/features/external-parameter-entities
    * properties.</p>
    *
-   * @param name The name of the skipped entity.  If it is a 
+   * @param name The name of the skipped entity.  If it is a
    *        parameter entity, the name will begin with '%'.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
+   *
+   * @throws SAXException
    */
-  public void skippedEntity (String name)
-	  throws SAXException
-  {
-  }
-
+  public void skippedEntity(String name) throws SAXException{}
 }

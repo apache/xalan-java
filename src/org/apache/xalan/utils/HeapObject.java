@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2000 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,18 @@
  */
 package org.apache.xalan.utils;
 
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Interface HeapObject
+ */
 public interface HeapObject
 {
+
+  /**
+   * NEEDSDOC Method getHeapValue 
+   *
+   *
+   * NEEDSDOC (getHeapValue) @return
+   */
   int getHeapValue();
 }

@@ -60,52 +60,65 @@ import org.w3c.dom.*;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class represents an XPath boolean object, and is capable of 
+ * This class represents an XPath boolean object, and is capable of
  * converting the boolean to other types, such as a string.
  */
 public class XBoolean extends XObject
 {
+
   /**
    * <meta name="usage" content="internal"/>
    * A true boolean object so we don't have to keep creating them.
    */
   public static XBoolean S_TRUE = new XBooleanStatic(true);
-  
+
   /**
    * <meta name="usage" content="internal"/>
    * A true boolean object so we don't have to keep creating them.
    */
   public static XBoolean S_FALSE = new XBooleanStatic(false);
 
+  /** NEEDSDOC Field m_val          */
   boolean m_val;
+
   /**
    * Construct a XNodeSet object.
+   *
+   * NEEDSDOC @param b
    */
   public XBoolean(boolean b)
   {
+
     super();
+
     m_val = b;
   }
-  
+
   /**
    * Tell that this is a CLASS_BOOLEAN.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getType()
   {
     return CLASS_BOOLEAN;
   }
-  
+
   /**
-   * Given a request type, return the equivalent string. 
+   * Given a request type, return the equivalent string.
    * For diagnostic purposes.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getTypeString()
   {
     return "#BOOLEAN";
   }
-  
+
   /**
    * Cast result object to a number.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public double num()
   {
@@ -114,6 +127,8 @@ public class XBoolean extends XObject
 
   /**
    * Cast result object to a boolean.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean bool()
   {
@@ -122,15 +137,19 @@ public class XBoolean extends XObject
 
   /**
    * Cast result object to a string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String str()
   {
     return m_val ? "true" : "false";
   }
-  
+
   /**
-   * Return a java object that's closes to the represenation 
+   * Return a java object that's closes to the represenation
    * that should be handed to an extension.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Object object()
   {
@@ -139,18 +158,23 @@ public class XBoolean extends XObject
 
   /**
    * Tell if two objects are functionally equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.equals(this);
 
     return m_val == obj2.bool();
   }
 
 }
-

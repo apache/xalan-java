@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,72 +57,100 @@
 package org.apache.xalan.utils;
 
 import org.xml.sax.SAXException;
+
 import org.apache.xalan.utils.URI;
 import org.apache.xalan.utils.URI.MalformedURIException;
 
 import java.io.*;
+
 import java.lang.StringBuffer;
 
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class SystemIDResolver <needs-comment/>
+ */
 public class SystemIDResolver
-{  
-  
+{
+
+  /**
+   * NEEDSDOC Method getAbsoluteURIFromRelative 
+   *
+   *
+   * NEEDSDOC @param uri
+   *
+   * NEEDSDOC (getAbsoluteURIFromRelative) @return
+   */
   public static String getAbsoluteURIFromRelative(String uri)
   {
+
     String curdir = System.getProperty("user.dir");
-    if(null != curdir)
+
+    if (null != curdir)
     {
-      uri = "file:///"+curdir+System.getProperty("file.separator")+uri;
+      uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
     }
-    if(null != uri  && (uri.indexOf('\\') > -1))
+
+    if (null != uri && (uri.indexOf('\\') > -1))
       uri = uri.replace('\\', '/');
+
     return uri;
   }
-  
+
   /**
    * Take a SystemID string and try and turn it into a good absolute URL.
+   *
+   * NEEDSDOC @param urlString
+   * NEEDSDOC @param base
+   *
+   * NEEDSDOC ($objectName$) @return
    * @exception SAXException thrown if the string can't be turned into a URL.
    */
   public static String getAbsoluteURI(String urlString, String base)
-    throws SAXException 
+          throws SAXException
   {
-    if((urlString.indexOf(':') < 0) && (null != base) && 
-       (base.indexOf(':') < 0))
+
+    if ((urlString.indexOf(':') < 0) && (null != base)
+            && (base.indexOf(':') < 0))
     {
       base = getAbsoluteURIFromRelative(base);
     }
 
     // bit of a hack here.  Need to talk to URI person to see if this can be fixed.
-    if((null != base) && 
-       urlString.startsWith("file:") && (urlString.charAt(5) != '/'))
+    if ((null != base) && urlString.startsWith("file:")
+            && (urlString.charAt(5) != '/'))
     {
       urlString = urlString.substring(5);
     }
-    
+
     // This is probably a bad idea, we should at least check for quotes...
-    if(null != base  && (base.indexOf('\\') > -1))
+    if (null != base && (base.indexOf('\\') > -1))
       base = base.replace('\\', '/');
-    if(null != urlString  && (urlString.indexOf('\\') > -1))
+
+    if (null != urlString && (urlString.indexOf('\\') > -1))
       urlString = urlString.replace('\\', '/');
-    
+
     URI uri;
+
     try
     {
-      if((null == base) || (base.length() == 0))
+      if ((null == base) || (base.length() == 0))
       {
         uri = new URI(urlString);
       }
       else
       {
         URI baseURI = new URI(base);
+
         uri = new URI(baseURI, urlString);
       }
     }
-    catch(MalformedURIException mue)
+    catch (MalformedURIException mue)
     {
       throw new SAXException(mue);
     }
+
     String uriStr = uri.toString();
-    
+
     return uriStr;
   }
 }

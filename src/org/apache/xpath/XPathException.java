@@ -55,22 +55,26 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xpath;
+
 import org.w3c.dom.Node;
+
 import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="general"/>
- * This class implements an exception object that all 
+ * This class implements an exception object that all
  * XPath classes will throw in case of an error.  This class
- * extends SAXException, and may hold other exceptions. In the 
- * case of nested exceptions, printStackTrace will dump 
- * all the traces of the nested exceptions, not just the trace 
+ * extends SAXException, and may hold other exceptions. In the
+ * case of nested exceptions, printStackTrace will dump
+ * all the traces of the nested exceptions, not just the trace
  * of this object.
  */
 public class XPathException extends SAXException
 {
+
+  /** NEEDSDOC Field m_styleNode          */
   Object m_styleNode = null;
-  
+
   /**
    * Get the stylesheet node from where this error originated.
    * @return The stylesheet node from where this error originated, or null.
@@ -79,87 +83,101 @@ public class XPathException extends SAXException
   {
     return m_styleNode;
   }
-  
+
+  /** NEEDSDOC Field m_exception          */
   protected Exception m_exception;
-  
+
   /**
-   * Create an XPathException object that holds 
+   * Create an XPathException object that holds
    * an error message.
    * @param message The error message.
    */
-  public XPathException(String message) 
+  public XPathException(String message)
   {
     super(message);
   }
-  
+
   /**
-   * Create an XPathException object that holds 
+   * Create an XPathException object that holds
    * an error message and the stylesheet node that
    * the error originated from.
    * @param message The error message.
    * @param styleNode The stylesheet node that the error originated from.
    */
-  public XPathException(String message, Object styleNode) 
+  public XPathException(String message, Object styleNode)
   {
+
     super(message);
+
     m_styleNode = styleNode;
   }
 
   /**
-   * Create an XPathException object that holds 
+   * Create an XPathException object that holds
    * an error message, the stylesheet node that
-   * the error originated from, and another exception 
+   * the error originated from, and another exception
    * that caused this exception.
    * @param message The error message.
    * @param styleNode The stylesheet node that the error originated from.
    * @param e The exception that caused this exception.
    */
-  public XPathException (String message, Node styleNode, Exception e)
+  public XPathException(String message, Node styleNode, Exception e)
   {
+
     super(message);
+
     m_styleNode = styleNode;
     this.m_exception = e;
   }
 
   /**
-   * Create an XPathException object that holds 
-   * an error message, and another exception 
+   * Create an XPathException object that holds
+   * an error message, and another exception
    * that caused this exception.
    * @param message The error message.
    * @param e The exception that caused this exception.
    */
-  public XPathException (String message, Exception e)
+  public XPathException(String message, Exception e)
   {
+
     super(message);
+
     this.m_exception = e;
   }
-  
+
   /**
-   * Print the the trace of methods from where the error 
-   * originated.  This will trace all nested exception 
+   * Print the the trace of methods from where the error
+   * originated.  This will trace all nested exception
    * objects, as well as this object.
    * @param s The stream where the dump will be sent to.
    */
-  public void printStackTrace(java.io.PrintStream s) 
+  public void printStackTrace(java.io.PrintStream s)
   {
-    if(s == null)
+
+    if (s == null)
       s = System.err;
+
     try
     {
       super.printStackTrace(s);
     }
-    catch(Exception e){}
+    catch (Exception e){}
+
     Exception exception = m_exception;
-    for(int i = 0; (i < 10) && (null != exception); i++)
+
+    for (int i = 0; (i < 10) && (null != exception); i++)
     {
       s.println("---------");
       exception.printStackTrace(s);
-      if(exception instanceof SAXException)
+
+      if (exception instanceof SAXException)
       {
-        SAXException se = (SAXException)exception;
+        SAXException se = (SAXException) exception;
         Exception prev = exception;
+
         exception = se.getException();
-        if(prev == exception)
+
+        if (prev == exception)
           break;
       }
       else
@@ -168,26 +186,34 @@ public class XPathException extends SAXException
       }
     }
   }
-  
+
   /**
    * Find the most contained message.
    * @returns The error message of the originating exception.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public String getMessage() 
+  public String getMessage()
   {
+
     String lastMessage = super.getMessage();
     Exception exception = m_exception;
-    while(null != exception)
+
+    while (null != exception)
     {
       String nextMessage = exception.getMessage();
-      if(null != nextMessage)
+
+      if (null != nextMessage)
         lastMessage = nextMessage;
-      if(exception instanceof SAXException)
+
+      if (exception instanceof SAXException)
       {
-        SAXException se = (SAXException)exception;
+        SAXException se = (SAXException) exception;
         Exception prev = exception;
+
         exception = se.getException();
-        if(prev == exception)
+
+        if (prev == exception)
           break;
       }
       else
@@ -195,45 +221,54 @@ public class XPathException extends SAXException
         exception = null;
       }
     }
+
     return (null != lastMessage) ? lastMessage : "";
   }
 
   /**
-   * Print the the trace of methods from where the error 
-   * originated.  This will trace all nested exception 
+   * Print the the trace of methods from where the error
+   * originated.  This will trace all nested exception
    * objects, as well as this object.
    * @param s The writer where the dump will be sent to.
    */
-  public void printStackTrace(java.io.PrintWriter s) 
+  public void printStackTrace(java.io.PrintWriter s)
   {
-    if(s == null)
+
+    if (s == null)
       s = new java.io.PrintWriter(System.err);
+
     try
     {
       super.printStackTrace(s);
     }
-    catch(Exception e){}
+    catch (Exception e){}
+
     Exception exception = m_exception;
-    
-    for(int i = 0; (i < 10) && (null != exception); i++)
+
+    for (int i = 0; (i < 10) && (null != exception); i++)
     {
       s.println("---------");
+
       try
       {
         exception.printStackTrace(s);
       }
-      catch(Exception e)
+      catch (Exception e)
       {
         s.println("Could not print stack trace...");
       }
-      if(exception instanceof SAXException)
+
+      if (exception instanceof SAXException)
       {
-        SAXException se = (SAXException)exception;
+        SAXException se = (SAXException) exception;
         Exception prev = exception;
+
         exception = se.getException();
-        if(prev == exception)
+
+        if (prev == exception)
         {
           exception = null;
+
           break;
         }
       }
@@ -245,14 +280,13 @@ public class XPathException extends SAXException
   }
 
   /**
-    * Return the embedded exception, if any.
-    * Overrides org.xml.sax.SAXException.getException().
-    *
-    * @return The embedded exception, or null if there is none.
-    */
-  public Exception getException ()
+   *  Return the embedded exception, if any.
+   *  Overrides org.xml.sax.SAXException.getException().
+   * 
+   *  @return The embedded exception, or null if there is none.
+   */
+  public Exception getException()
   {
     return m_exception;
   }
-
 }

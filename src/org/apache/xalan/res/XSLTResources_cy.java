@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -55,51 +55,75 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.res;
+
 import java.util.*;
+
 //
 //  LangResources_en.properties
 //
-public class XSLTResources_cy extends XSLTResourceBundle 
+
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class XSLTResources_cy <needs-comment/>
+ */
+public class XSLTResources_cy extends XSLTResourceBundle
 {
-public Object[][] getContents()
-{
-	return contents;
-}	
 
-static final Object[][] contents = {
+  /**
+   * NEEDSDOC Method getContents 
+   *
+   *
+   * NEEDSDOC (getContents) @return
+   */
+  public Object[][] getContents()
+  {
+    return contents;
+  }
 
-{"ui_language","cy"},
-{"help_language", "cy"},
-{"language", "cy"},
+  /** NEEDSDOC Field contents          */
+  static final Object[][] contents =
+  {
+    { "ui_language", "cy" }, { "help_language", "cy" }, { "language", "cy" },
+    { "alphabet",
+      new char[]{ 0x0430, 0x0432, 0x0433, 0x0434, 0x0435, 0x0437, 0x0438,
+                  0x0439, 0x04A9, 0x0457, 0x043A, 0x043B, 0x043C, 0x043D,
+                  0x046F, 0x043E, 0x043F, 0x0447, 0x0440, 0x0441, 0x0442,
+                  0x0443, 0x0444, 0x0445, 0x0470, 0x0460, 0x0446 } },
+    { "tradAlphabet",
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
 
- 
-{"alphabet", new char[]{0x0430,0x0432,0x0433,0x0434,0x0435,0x0437,0x0438,0x0439,0x04A9,0x0457,0x043A,0x043B,0x043C,0x043D,0x046F,0x043E,0x043F,0x0447,0x0440,0x0441,0x0442,0x0443,0x0444,0x0445,0x0470,0x0460,0x0446}},
-{"tradAlphabet", new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}},
+    //language orientation
+    { "orientation", "LeftToRight" },
 
-//language orientation
-{"orientation", "LeftToRight"},
+    //language numbering 
+    //{"numbering", "additive"},
+    { "numbering", "multiplicative-additive" },
+    { "multiplierOrder", "precedes" },
 
-//language numbering 
-//{"numbering", "additive"},
-{"numbering", "multiplicative-additive"},
-{"multiplierOrder", "precedes"},
+    // largest numerical value
+    //{"MaxNumericalValue", new Integer(10000000000)},
+    //These would not be used for EN. Only used for traditional numbering   
+    { "numberGroups", new int[]{ 100, 10, 1 } },
 
-// largest numerical value
-//{"MaxNumericalValue", new Integer(10000000000)},
+    //These only used for mutiplicative-additive numbering
+    { "multiplier", new int[]{ 1000 } },
+    { "multiplierChar", new char[]{ 0x03D9 } },
 
-//These would not be used for EN. Only used for traditional numbering   
-{"numberGroups", new int[]{100, 10, 1}},
-//These only used for mutiplicative-additive numbering
-{"multiplier", new int[] {1000}},
-{"multiplierChar", new char[] {0x03D9}},
-// chinese only??
-{"zero", new char[0]},
-//{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
-{"digits", new char[]{0x0430,0x0432,0x0433,0x0434,0x0435,0x0437,0x0438,0x0439,0x04A9}},
-{"tens", new char[]{0x0457,0x043A,0x043B,0x043C,0x043D,0x046F,0x043E,0x043F,0x0447}},  
-{"hundreds", new char[]{0x0440,0x0441,0x0442,0x0443,0x0444,0x0445,0x0470,0x0460,0x0446}},
+    // chinese only??
+    { "zero", new char[0] },
 
-
-{"tables", new String[]{"hundreds", "tens", "digits"}}
-};    
-}  
+    //{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
+    { "digits",
+      new char[]{ 0x0430, 0x0432, 0x0433, 0x0434, 0x0435, 0x0437, 0x0438,
+                  0x0439, 0x04A9 } },
+    { "tens",
+      new char[]{ 0x0457, 0x043A, 0x043B, 0x043C, 0x043D, 0x046F, 0x043E,
+                  0x043F, 0x0447 } },
+    { "hundreds",
+      new char[]{ 0x0440, 0x0441, 0x0442, 0x0443, 0x0444, 0x0445, 0x0470,
+                  0x0460, 0x0446 } },
+    { "tables", new String[]{ "hundreds", "tens", "digits" } }
+  };
+}

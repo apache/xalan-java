@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -58,7 +58,9 @@ package org.apache.xalan.trace;
 
 import java.util.Vector;
 import java.util.TooManyListenersException;
+
 import org.w3c.dom.Node;
+
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -66,21 +68,25 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPath;
 
 /**
- * This class manages trace listeners, and acts as an 
+ * This class manages trace listeners, and acts as an
  * interface for the tracing functionality in Xalan.
  */
 public class TraceManager
 {
+
+  /** NEEDSDOC Field m_transformer          */
   private TransformerImpl m_transformer;
-  
+
   /**
    * Constructor for the trace manager.
+   *
+   * NEEDSDOC @param transformer
    */
   public TraceManager(TransformerImpl transformer)
   {
     m_transformer = transformer;
   }
-  
+
   /**
    * List of listeners who are interested in tracing what's
    * being generated.
@@ -90,13 +96,18 @@ public class TraceManager
   /**
    * Add a trace listener for the purposes of debugging and diagnosis.
    * @param tl Trace listener to be added.
+   *
+   * @throws TooManyListenersException
    */
   public void addTraceListener(TraceListener tl)
-    throws TooManyListenersException
+          throws TooManyListenersException
   {
+
     TransformerImpl.S_DEBUG = true;
-    if(null == m_traceListeners)
+
+    if (null == m_traceListeners)
       m_traceListeners = new Vector();
+
     m_traceListeners.addElement(tl);
   }
 
@@ -106,7 +117,8 @@ public class TraceManager
    */
   public void removeTraceListener(TraceListener tl)
   {
-    if(null != m_traceListeners)
+
+    if (null != m_traceListeners)
     {
       m_traceListeners.removeElement(tl);
     }
@@ -114,89 +126,117 @@ public class TraceManager
 
   /**
    * Fire a generate event.
+   *
+   * NEEDSDOC @param te
    */
   public void fireGenerateEvent(GenerateEvent te)
   {
-    if(null != m_traceListeners)
+
+    if (null != m_traceListeners)
     {
       int nListeners = m_traceListeners.size();
-      for(int i = 0; i < nListeners; i++)
+
+      for (int i = 0; i < nListeners; i++)
       {
-        TraceListener tl = (TraceListener)m_traceListeners.elementAt(i);
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+
         tl.generated(te);
       }
     }
   }
-  
+
   /**
    * Tell if trace listeners are present.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean hasTraceListeners()
   {
     return (null != m_traceListeners);
   }
-  
+
   /**
    * Fire a trace event.
+   *
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   * NEEDSDOC @param styleNode
    */
-  public void fireTraceEvent(Node sourceNode,
-                             QName mode,
+  public void fireTraceEvent(Node sourceNode, QName mode,
                              ElemTemplateElement styleNode)
   {
-    if(hasTraceListeners())
+
+    if (hasTraceListeners())
     {
-      fireTraceEvent(new TracerEvent(m_transformer,  
-                                     sourceNode, mode, styleNode));
+      fireTraceEvent(new TracerEvent(m_transformer, sourceNode, mode,
+                                     styleNode));
     }
   }
 
-  
   /**
    * Fire a trace event.
+   *
+   * NEEDSDOC @param te
    */
   public void fireTraceEvent(TracerEvent te)
   {
-    if(hasTraceListeners())
+
+    if (hasTraceListeners())
     {
       int nListeners = m_traceListeners.size();
-      for(int i = 0; i < nListeners; i++)
+
+      for (int i = 0; i < nListeners; i++)
       {
-        TraceListener tl = (TraceListener)m_traceListeners.elementAt(i);
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+
         tl.trace(te);
       }
     }
   }
-  
+
   /**
    * Fire a selection event.
+   *
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param styleNode
+   * NEEDSDOC @param attributeName
+   * NEEDSDOC @param xpath
+   * NEEDSDOC @param selection
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public void fireSelectedEvent(Node sourceNode,
-                                ElemTemplateElement styleNode,
-                                String attributeName,
-                                XPath xpath,
-                                XObject selection)
-    throws org.xml.sax.SAXException
+  public void fireSelectedEvent(
+          Node sourceNode, ElemTemplateElement styleNode, String attributeName, XPath xpath, XObject selection)
+            throws org.xml.sax.SAXException
   {
-    if(hasTraceListeners())
-      fireSelectedEvent(new SelectionEvent(m_transformer, sourceNode, styleNode, 
-                                           attributeName, xpath, selection));
+
+    if (hasTraceListeners())
+      fireSelectedEvent(new SelectionEvent(m_transformer, sourceNode,
+                                           styleNode, attributeName, xpath,
+                                           selection));
   }
 
   /**
    * Fire a selection event.
+   *
+   * NEEDSDOC @param se
+   *
+   * @throws org.xml.sax.SAXException
    */
   public void fireSelectedEvent(SelectionEvent se)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
-    if(hasTraceListeners())
+
+    if (hasTraceListeners())
     {
       int nListeners = m_traceListeners.size();
-      for(int i = 0; i < nListeners; i++)
+
+      for (int i = 0; i < nListeners; i++)
       {
-        TraceListener tl = (TraceListener)m_traceListeners.elementAt(i);
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+
         tl.selected(se);
       }
     }
   }
-
 }

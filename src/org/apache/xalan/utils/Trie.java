@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2000 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,10 +54,9 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
 package org.apache.xalan.utils;
 
-/** 
+/**
  * <meta name="usage" content="internal"/>
  * A digital search trie for 7-bit ASCII text
  * The API is a subset of java.util.Hashtable
@@ -66,85 +65,121 @@ package org.apache.xalan.utils;
  */
 public class Trie
 {
-	public static final int ALPHA_SIZE = 128;
 
-	Node m_Root;
+  /** NEEDSDOC Field ALPHA_SIZE          */
+  public static final int ALPHA_SIZE = 128;
 
-	public Trie()
-	{
-		m_Root = new Node();
-	}
+  /** NEEDSDOC Field m_Root          */
+  Node m_Root;
 
-	public Object put(String key, Object value)
-	{
-  		final int len = key.length();
+  /**
+   * Constructor Trie
+   *
+   */
+  public Trie()
+  {
+    m_Root = new Node();
+  }
 
-		Node node = m_Root;
+  /**
+   * NEEDSDOC Method put 
+   *
+   *
+   * NEEDSDOC @param key
+   * NEEDSDOC @param value
+   *
+   * NEEDSDOC (put) @return
+   */
+  public Object put(String key, Object value)
+  {
 
-		for (int i = 0; i< len; i++)
-		{
-			Node nextNode = node.m_nextChar[Character.toUpperCase(key.charAt(i))];
+    final int len = key.length();
+    Node node = m_Root;
 
-			if (nextNode != null)
-			{
-				node = nextNode;
-			}
-			else
-			{
-				for (;i<len; i++)
-				{
-					Node newNode = new Node();
-					node.m_nextChar[Character.toUpperCase(key.charAt(i))] = newNode;
-					node = newNode;
-				}
+    for (int i = 0; i < len; i++)
+    {
+      Node nextNode = node.m_nextChar[Character.toUpperCase(key.charAt(i))];
 
-				break;
-			}
-		}
+      if (nextNode != null)
+      {
+        node = nextNode;
+      }
+      else
+      {
+        for (; i < len; i++)
+        {
+          Node newNode = new Node();
 
-		Object ret = node.m_Value;
-		node.m_Value = value;
+          node.m_nextChar[Character.toUpperCase(key.charAt(i))] = newNode;
+          node = newNode;
+        }
 
-		return ret;
-	}
+        break;
+      }
+    }
 
-	public Object get(String key)
-	{
-		final int len = key.length();
+    Object ret = node.m_Value;
 
-		Node node = m_Root;
+    node.m_Value = value;
 
-		for (int i = 0; i< len; i++)
-		{
-			try
-			{
-				node = node.m_nextChar[Character.toUpperCase(key.charAt(i))];
-			}
+    return ret;
+  }
 
-			catch (ArrayIndexOutOfBoundsException e)
-			{
-				// the key is not 7-bit ASCII so we won't find it here
-				node = null;					
-			}
+  /**
+   * NEEDSDOC Method get 
+   *
+   *
+   * NEEDSDOC @param key
+   *
+   * NEEDSDOC (get) @return
+   */
+  public Object get(String key)
+  {
 
-			if (node == null)
-  				return null;
-  		}
+    final int len = key.length();
+    Node node = m_Root;
 
-		return node.m_Value;
-	}
+    for (int i = 0; i < len; i++)
+    {
+      try
+      {
+        node = node.m_nextChar[Character.toUpperCase(key.charAt(i))];
+      }
+      catch (ArrayIndexOutOfBoundsException e)
+      {
 
-  	class Node
-	{
-		Node()
-		{
-			m_nextChar = new Node[ALPHA_SIZE];
-			m_Value = null;
-		}
+        // the key is not 7-bit ASCII so we won't find it here
+        node = null;
+      }
 
-		Node m_nextChar[];
-		Object m_Value;
-	}
+      if (node == null)
+        return null;
+    }
+
+    return node.m_Value;
+  }
+
+  /**
+   * <meta name="usage" content="internal"/>
+   * NEEDSDOC Class Node <needs-comment/>
+   */
+  class Node
+  {
+
+    /**
+     * Constructor Node
+     *
+     */
+    Node()
+    {
+      m_nextChar = new Node[ALPHA_SIZE];
+      m_Value = null;
+    }
+
+    /** NEEDSDOC Field m_nextChar[]          */
+    Node m_nextChar[];
+
+    /** NEEDSDOC Field m_Value          */
+    Object m_Value;
+  }
 }
-
-

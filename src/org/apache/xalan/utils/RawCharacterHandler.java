@@ -58,14 +58,21 @@ package org.apache.xalan.utils;
 
 /**
  * <meta name="usage" content="advanced"/>
- * An interface that a Serializer/ContentHandler/ContentHandler must 
+ * An interface that a Serializer/ContentHandler/ContentHandler must
  * implement in order for disable-output-escaping to work.
  */
 public interface RawCharacterHandler
 {
+
   /**
    * Serialize the characters without escaping.
+   *
+   * NEEDSDOC @param ch
+   * NEEDSDOC @param start
+   * NEEDSDOC @param length
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public void charactersRaw (char ch[], int start, int length)
+  public void charactersRaw(char ch[], int start, int length)
     throws org.xml.sax.SAXException;
 }

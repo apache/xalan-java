@@ -58,39 +58,53 @@ package org.apache.xalan.utils;
 
 /**
  * <meta name="usage" content="internal"/>
- * A very simple lookup table that stores a list of strings, the even 
+ * A very simple lookup table that stores a list of strings, the even
  * number strings being keys, and the odd number strings being values.
  */
 public class StringToStringTable
 {
+
+  /** NEEDSDOC Field m_blocksize          */
   private int m_blocksize;
+
+  /** NEEDSDOC Field m_map[]          */
   private String m_map[];
+
+  /** NEEDSDOC Field m_firstFree          */
   private int m_firstFree = 0;
+
+  /** NEEDSDOC Field m_mapSize          */
   private int m_mapSize;
 
   /**
-   * Default constructor.  Note that the default 
+   * Default constructor.  Note that the default
    * block size is very small, for small lists.
    */
   public StringToStringTable()
   {
+
     m_blocksize = 16;
     m_mapSize = m_blocksize;
-    m_map = new String[m_blocksize]; 
+    m_map = new String[m_blocksize];
   }
 
   /**
    * Construct a StringToStringTable, using the given block size.
+   *
+   * NEEDSDOC @param blocksize
    */
   public StringToStringTable(int blocksize)
   {
+
     m_blocksize = blocksize;
     m_mapSize = blocksize;
-    m_map = new String[blocksize]; 
+    m_map = new String[blocksize];
   }
-  
+
   /**
    * Get the length of the list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final int getLength()
   {
@@ -99,117 +113,164 @@ public class StringToStringTable
 
   /**
    * Append a string onto the vector.
+   *
+   * NEEDSDOC @param key
+   * NEEDSDOC @param value
    */
   public final void put(String key, String value)
   {
-    if((m_firstFree+2) >= m_mapSize)
+
+    if ((m_firstFree + 2) >= m_mapSize)
     {
-      m_mapSize+=m_blocksize;
+      m_mapSize += m_blocksize;
+
       String newMap[] = new String[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
       m_map = newMap;
     }
+
     m_map[m_firstFree] = key;
+
     m_firstFree++;
+
     m_map[m_firstFree] = value;
+
     m_firstFree++;
   }
-  
+
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param key
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String get(String key)
   {
-    for(int i = 0; i < m_firstFree; i+=2)
+
+    for (int i = 0; i < m_firstFree; i += 2)
     {
-      if(m_map[i].equals(key))
-        return m_map[i+1];
+      if (m_map[i].equals(key))
+        return m_map[i + 1];
     }
+
     return null;
   }
-  
+
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param key
    */
   public final void remove(String key)
   {
-    for(int i = 0; i < m_firstFree; i+=2)
+
+    for (int i = 0; i < m_firstFree; i += 2)
     {
-      if(m_map[i].equals(key))
+      if (m_map[i].equals(key))
       {
-        if((i+2) < m_firstFree)
-          System.arraycopy(m_map, i+2, m_map, i, m_firstFree-(i+2));
+        if ((i + 2) < m_firstFree)
+          System.arraycopy(m_map, i + 2, m_map, i, m_firstFree - (i + 2));
+
         m_firstFree -= 2;
         m_map[m_firstFree] = null;
-        m_map[m_firstFree+1] = null;
+        m_map[m_firstFree + 1] = null;
+
         break;
       }
     }
   }
 
-
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param key
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String getIgnoreCase(String key)
   {
-    if(null == key)
+
+    if (null == key)
       return null;
-    
-    for(int i = 0; i < m_firstFree; i+=2)
+
+    for (int i = 0; i < m_firstFree; i += 2)
     {
-      if(m_map[i].equalsIgnoreCase(key))
-        return m_map[i+1];
+      if (m_map[i].equalsIgnoreCase(key))
+        return m_map[i + 1];
     }
+
     return null;
   }
 
   /**
    * Tell if the table contains the given string in the value.
+   *
+   * NEEDSDOC @param val
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String getByValue(String val)
   {
-    for(int i = 1; i < m_firstFree; i+=2)
+
+    for (int i = 1; i < m_firstFree; i += 2)
     {
-      if(m_map[i].equals(val))
-        return m_map[i-1];
+      if (m_map[i].equals(val))
+        return m_map[i - 1];
     }
+
     return null;
   }
 
-  
   /**
    * Get the nth element.
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String elementAt(int i)
   {
     return m_map[i];
   }
-  
+
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param key
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean contains(String key)
   {
-    for(int i = 0; i < m_firstFree; i+=2)
+
+    for (int i = 0; i < m_firstFree; i += 2)
     {
-      if(m_map[i].equals(key))
+      if (m_map[i].equals(key))
         return true;
     }
+
     return false;
   }
 
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param val
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean containsValue(String val)
   {
-    for(int i = 1; i < m_firstFree; i+=2)
+
+    for (int i = 1; i < m_firstFree; i += 2)
     {
-      if(m_map[i].equals(val))
+      if (m_map[i].equals(val))
         return true;
     }
+
     return false;
   }
-
 }

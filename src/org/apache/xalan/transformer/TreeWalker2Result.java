@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,6 +57,7 @@
 package org.apache.xalan.transformer;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
 
 import org.apache.xalan.utils.TreeWalker;
@@ -66,79 +67,107 @@ import org.apache.xpath.DOMHelper;
 
 /**
  * <meta name="usage" content="internal"/>
- * Handle a walk of a tree, but screen out attributes for 
+ * Handle a walk of a tree, but screen out attributes for
  * the result tree.
  */
 public class TreeWalker2Result extends TreeWalker
 {
+
+  /** NEEDSDOC Field m_transformer          */
   TransformerImpl m_transformer;
+
+  /** NEEDSDOC Field m_handler          */
   ResultTreeHandler m_handler;
+
+  /** NEEDSDOC Field m_startNode          */
   Node m_startNode;
-  
+
   /**
    * Constructor.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param handler
    */
-  public TreeWalker2Result(TransformerImpl transformer, 
-                           ResultTreeHandler handler) 
+  public TreeWalker2Result(TransformerImpl transformer,
+                           ResultTreeHandler handler)
   {
+
     super(handler);
+
     m_transformer = transformer;
     m_handler = handler;
   }
-  
-    
+
   /**
    * Perform a pre-order traversal non-recursive style.
+   *
+   * NEEDSDOC @param pos
+   *
+   * @throws SAXException
    */
-  public void traverse(Node pos) throws SAXException 
+  public void traverse(Node pos) throws SAXException
   {
+
     m_startNode = pos;
+
     super.traverse(pos);
   }
-  
-  protected void startNode(Node node)
-    throws SAXException 
+
+  /**
+   * NEEDSDOC Method startNode 
+   *
+   *
+   * NEEDSDOC @param node
+   *
+   * @throws SAXException
+   */
+  protected void startNode(Node node) throws SAXException
   {
-    if((Node.ELEMENT_NODE == node.getNodeType()) && (m_startNode == node))
+
+    if ((Node.ELEMENT_NODE == node.getNodeType()) && (m_startNode == node))
     {
       DOMHelper dhelper = m_transformer.getXPathContext().getDOMHelper();
       String elemName = node.getNodeName();
       String localName = dhelper.getLocalNameOfNode(node);
       String namespace = dhelper.getNamespaceOfNode(node);
-      m_handler.startElement (namespace, localName, elemName);
-        
-      for(Node parent = node; parent != null; parent = parent.getParentNode())
-      {
-        if(Node.ELEMENT_NODE != parent.getNodeType())
-          continue;
-      
-        NamedNodeMap atts = ((Element)parent).getAttributes();
 
+      m_handler.startElement(namespace, localName, elemName);
+
+      for (Node parent = node; parent != null;
+              parent = parent.getParentNode())
+      {
+        if (Node.ELEMENT_NODE != parent.getNodeType())
+          continue;
+
+        NamedNodeMap atts = ((Element) parent).getAttributes();
         int n = atts.getLength();
-        for(int i = 0; i < n; i++)
+
+        for (int i = 0; i < n; i++)
         {
           String nsDeclPrefix = null;
-          Attr attr = (Attr)atts.item(i);
+          Attr attr = (Attr) atts.item(i);
           String name = attr.getName();
           String value = attr.getValue();
-          
+
           if (name.startsWith("xmlns:"))
           {
+
             // get the namespace prefix 
             nsDeclPrefix = name.substring(name.indexOf(":") + 1);
           }
-          else if(name.equals("xmlns"))
+          else if (name.equals("xmlns"))
           {
-            nsDeclPrefix="";
+            nsDeclPrefix = "";
           }
-          
-          if((nsDeclPrefix == null) && (node != parent))
+
+          if ((nsDeclPrefix == null) && (node != parent))
             continue;
+
           /*
           else if(nsDeclPrefix != null)
           {
             String desturi = m_processor.getURI(nsDeclPrefix);
-            // Look for an alias for this URI. If one is found, use it as the result URI   
+            // Look for an alias for this URI. If one is found, use it as the result URI
             String aliasURI = m_elem.m_stylesheet.lookForAlias(value);
             if(aliasURI.equals(desturi)) // TODO: Check for extension namespaces
             {
@@ -147,20 +176,22 @@ public class TreeWalker2Result extends TreeWalker
           }
           */
           m_handler.addAttribute(dhelper.getNamespaceOfNode(attr),
-                                 dhelper.getLocalNameOfNode(attr),
-                                 name, "CDATA", value);
+                                 dhelper.getLocalNameOfNode(attr), name,
+                                 "CDATA", value);
+
           // Make sure namespace is not in the excluded list then
           // add to result tree
+
           /*
           if(!m_handler.getPendingAttributes().contains(name))
           {
             if(nsDeclPrefix == null)
-            {  
+            {
               m_handler.addAttribute(name, "CDATA", value);
             }
             else
             {
-              String desturi 
+              String desturi
                 = m_handler.getURI(nsDeclPrefix);
               if(null == desturi)
               {
@@ -174,15 +205,13 @@ public class TreeWalker2Result extends TreeWalker
           }
           */
         }
-
       }
+
       // m_handler.processResultNS(m_elem);           
-      
     }
     else
     {
       super.startNode(node);
     }
   }
-
 }

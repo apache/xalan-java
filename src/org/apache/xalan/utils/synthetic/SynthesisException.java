@@ -1,5 +1,5 @@
 /*
- * The Apache Software License, Version 1.1 
+ * The Apache Software License, Version 1.1
  *
  *
  * Copyright (c) 1999 The Apache Software Foundation.  All rights 
@@ -52,43 +52,82 @@
  * originally based on software copyright (c) 1999, Lotus
  * Development Corporation., http://www.lotus.com.  For more
  * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>. 
+ * <http://www.apache.org/>.
  */
 package org.apache.xalan.utils.synthetic;
 
-public class SynthesisException
-extends Exception
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class SynthesisException <needs-comment/>
+ */
+public class SynthesisException extends Exception
 {
-    int code;
-    
-    // Manefest constants
-    public static final int SYNTAX=0;
-    public static final int UNSUPPORTED=1;
-    public static final int REIFIED=2;
-    public static final int UNREIFIED=3;
-    public static final int WRONG_OWNER=4;
-    public static final String[] errToString = 
-    { 
-        "(Syntax error; specific message should be passed in)",
-        "Feature not yet supported",
-        "Can't change features of 'real' class",
-        "Can't yet instantiate/invoke without 'real' class",
-        "Can't add Member to an object other than its declarer",
-    };
-    
-    
-    public SynthesisException(int code)
-    {
-        super(errToString[code]);
-        this.code=code;
-    }
-    
-    public SynthesisException(int code, String msg)
-    {
-        super(msg);
-        this.code=code;
-    }
 
-    int getCode() {return code;}
-    
+  /** NEEDSDOC Field code          */
+  int code;
+
+  // Manefest constants
+
+  /** NEEDSDOC Field SYNTAX          */
+  public static final int SYNTAX = 0;
+
+  /** NEEDSDOC Field UNSUPPORTED          */
+  public static final int UNSUPPORTED = 1;
+
+  /** NEEDSDOC Field REIFIED          */
+  public static final int REIFIED = 2;
+
+  /** NEEDSDOC Field UNREIFIED          */
+  public static final int UNREIFIED = 3;
+
+  /** NEEDSDOC Field WRONG_OWNER          */
+  public static final int WRONG_OWNER = 4;
+
+  /** NEEDSDOC Field errToString          */
+  public static final String[] errToString = {
+    "(Syntax error; specific message should be passed in)",
+    "Feature not yet supported",
+    "Can't change features of 'real' class",
+    "Can't yet instantiate/invoke without 'real' class",
+    "Can't add Member to an object other than its declarer", };
+
+  /**
+   * Constructor SynthesisException
+   *
+   *
+   * NEEDSDOC @param code
+   */
+  public SynthesisException(int code)
+  {
+
+    super(errToString[code]);
+
+    this.code = code;
+  }
+
+  /**
+   * Constructor SynthesisException
+   *
+   *
+   * NEEDSDOC @param code
+   * NEEDSDOC @param msg
+   */
+  public SynthesisException(int code, String msg)
+  {
+
+    super(msg);
+
+    this.code = code;
+  }
+
+  /**
+   * NEEDSDOC Method getCode 
+   *
+   *
+   * NEEDSDOC (getCode) @return
+   */
+  int getCode()
+  {
+    return code;
+  }
 }

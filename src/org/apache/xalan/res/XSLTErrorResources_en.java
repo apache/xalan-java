@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -55,10 +55,17 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.res;
+
 import java.util.*;
+
 //
 //  LangResources_en.properties
 //
-public class XSLTErrorResources_en extends XSLTErrorResources 
+
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class XSLTErrorResources_en <needs-comment/>
+ */
+public class XSLTErrorResources_en extends XSLTErrorResources
 {
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -119,10 +119,14 @@ public class XSLTProcessorApplet extends Applet
    * The stylesheet processor
    */
   Processor m_processor = null;
-  String m_processorName="org.apache.xalan.processor.StylesheetProcessor";
-  
+
+  /** NEEDSDOC Field m_processorName          */
+  String m_processorName = "org.apache.xalan.processor.StylesheetProcessor";
+
+  /** NEEDSDOC Field m_reader          */
   XMLReader m_reader = null;
-  
+
+  /** NEEDSDOC Field m_templatesBuilder          */
   TemplatesBuilder m_templatesBuilder = null;
 
   /**
@@ -138,6 +142,7 @@ public class XSLTProcessorApplet extends Applet
   // Parameter names.  To change a name of a parameter, you need only make
   // a single change.  Simply modify the value of the parameter string below.
   //--------------------------------------------------------------------------
+
   /**
    * @serial
    */
@@ -147,7 +152,6 @@ public class XSLTProcessorApplet extends Applet
    * @serial
    */
   private final String PARAM_documentURL = "documentURL";
-
 
   /**
    * @serial
@@ -161,6 +165,7 @@ public class XSLTProcessorApplet extends Applet
 
   // We'll keep the DOM trees around, so tell which trees
   // are cached.
+
   /**
    * @serial
    */
@@ -176,8 +181,11 @@ public class XSLTProcessorApplet extends Applet
    * @serial
    */
   private URL m_codeBase = null;
+
+  /** NEEDSDOC Field m_documentBase          */
   private URL m_documentBase = null;
 
+  /** NEEDSDOC Field m_styleTree          */
   private Templates m_styleTree = null;
 
   /**
@@ -218,9 +226,7 @@ public class XSLTProcessorApplet extends Applet
   /**
    * The XSLTProcessorApplet constructor takes no arguments.
    */
-  public XSLTProcessorApplet()
-  {
-  }
+  public XSLTProcessorApplet(){}
 
   /**
    * Get basic information about the applet
@@ -228,8 +234,7 @@ public class XSLTProcessorApplet extends Applet
    */
   public String getAppletInfo()
   {
-    return "Name: XSLTProcessorApplet\r\n" +
-      "Author: Scott Boag";
+    return "Name: XSLTProcessorApplet\r\n" + "Author: Scott Boag";
   }
 
   /**
@@ -239,12 +244,14 @@ public class XSLTProcessorApplet extends Applet
    */
   public String[][] getParameterInfo()
   {
+
     String[][] info =
     {
       { PARAM_styleURL, "String", "URL to a XSL style sheet" },
       { PARAM_documentURL, "String", "URL to a XML document" },
       { PARAM_parser, "String", "Which parser to use: Xerces or ANY" },
     };
+
     return info;
   }
 
@@ -253,25 +260,31 @@ public class XSLTProcessorApplet extends Applet
    */
   public void init()
   {
+
     // PARAMETER SUPPORT
-    //		The following code retrieves the value of each parameter
+    //          The following code retrieves the value of each parameter
     // specified with the <PARAM> tag and stores it in a member
     // variable.
     //----------------------------------------------------------------------
     String param;
+
     param = getParameter(PARAM_parser);
     whichParser = (param != null) ? param : "ANY";
 
     // styleURL: Parameter description
     //----------------------------------------------------------------------
     param = getParameter(PARAM_styleURL);
+
     if (param != null)
       setStyleURL(param);
+
     // documentURL: Parameter description
     //----------------------------------------------------------------------
     param = getParameter(PARAM_documentURL);
+
     if (param != null)
       setDocumentURL(param);
+
     m_codeBase = this.getCodeBase();
     m_documentBase = this.getDocumentBase();
 
@@ -282,160 +295,196 @@ public class XSLTProcessorApplet extends Applet
     // CreateControls() does its own resizing.
     //----------------------------------------------------------------------
     resize(320, 240);
-
   }
 
   /**
    * Try to init the XML liaison object: currently not implemented.
    */
-   
-  protected void initLiaison()
-  {
-  }
-  
- /**
-   * Obtain a new instance of a Stysheet Processor object
-   * as specified by m_processorName.
-   * Workaround for Processor.newInstance() which an
-   * applet cannot use because it reads a system property.
-   * @return Concrete instance of an Processor object.
+  protected void initLiaison(){}
+
+  /**
+   *  Obtain a new instance of a Stysheet Processor object
+   *  as specified by m_processorName.
+   *  Workaround for Processor.newInstance() which an
+   *  applet cannot use because it reads a system property.
+   *  @return Concrete instance of an Processor object.
+   *
+   * @throws ProcessorFactoryException
    */
-   Processor newProcessorInstance()
-	  throws ProcessorFactoryException
-   {
-	 Processor m_processor = null;
-	 try
-	 {  
-	  Class factoryClass = Class.forName(m_processorName);
-      m_processor = (Processor)factoryClass.newInstance();
-     }
-     catch(java.lang.IllegalAccessException iae)
-     {
-      throw new ProcessorFactoryException("Transformation Processor can not be accessed!", iae);
-     }
-     catch(java.lang.InstantiationException ie)
-     {
-      throw new ProcessorFactoryException("Not able to create Transformation Processor!", ie);
-     }
-     catch(java.lang.ClassNotFoundException cnfe)
-     {
-      throw new ProcessorFactoryException("Transformation Processor not found!", cnfe);
-     }
-	 return m_processor;
-   }
-   
-    /**
+  Processor newProcessorInstance() throws ProcessorFactoryException
+  {
+
+    Processor m_processor = null;
+
+    try
+    {
+      Class factoryClass = Class.forName(m_processorName);
+
+      m_processor = (Processor) factoryClass.newInstance();
+    }
+    catch (java.lang.IllegalAccessException iae)
+    {
+      throw new ProcessorFactoryException(
+        "Transformation Processor can not be accessed!", iae);
+    }
+    catch (java.lang.InstantiationException ie)
+    {
+      throw new ProcessorFactoryException(
+        "Not able to create Transformation Processor!", ie);
+    }
+    catch (java.lang.ClassNotFoundException cnfe)
+    {
+      throw new ProcessorFactoryException(
+        "Transformation Processor not found!", cnfe);
+    }
+
+    return m_processor;
+  }
+
+  /**
    * Process the source tree to SAX parse events.
    * @param transformer Concrete Transformer
    * @param xmlSource  The input for the source tree.
    * Workaround for TransformerImpl.transform() which an
    * applet cannot use because it reads a system property.
+   *
+   * @throws IOException
+   * @throws SAXException
+   * @throws TransformException
    */
-   
-   void transform(TransformerImpl transformer, InputSource xmlSource)
-    throws SAXException, TransformException, IOException
+  void transform(TransformerImpl transformer, InputSource xmlSource)
+          throws SAXException, TransformException, IOException
   {
-      try
-      {
-        m_reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-      }
-      catch(SAXException se)
-      {
-        // What can we do?
-        // TODO: User diagnostics.
-      }
-      try
-	  {
-        // Get the input content handler, which will handle the 
-        // parse events and create the source tree.
-        ContentHandler inputHandler = new SourceTreeHandler(transformer);
-        m_reader.setContentHandler(inputHandler);
-        m_reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
-        
-        // Set the reader for cloning purposes.
-        transformer.getXPathContext().setPrimaryReader(m_reader);
-          
-        // Kick off the parse.  When the ContentHandler gets 
-        // the startDocument event, it will call transformNode( node ).
-        m_reader.parse( xmlSource );
-      }
-      catch(SAXException se)
-      {
-        se.printStackTrace();
-        throw new TransformException(se);
-      }
-      catch(IOException ioe)
-      {
+
+    try
+    {
+      m_reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
+                          true);
+    }
+    catch (SAXException se)
+    {
+
+      // What can we do?
+      // TODO: User diagnostics.
+    }
+
+    try
+    {
+
+      // Get the input content handler, which will handle the 
+      // parse events and create the source tree.
+      ContentHandler inputHandler = new SourceTreeHandler(transformer);
+
+      m_reader.setContentHandler(inputHandler);
+      m_reader.setProperty("http://xml.org/sax/properties/lexical-handler",
+                           inputHandler);
+
+      // Set the reader for cloning purposes.
+      transformer.getXPathContext().setPrimaryReader(m_reader);
+
+      // Kick off the parse.  When the ContentHandler gets 
+      // the startDocument event, it will call transformNode( node ).
+      m_reader.parse(xmlSource);
+    }
+    catch (SAXException se)
+    {
+      se.printStackTrace();
+
+      throw new TransformException(se);
+    }
+    catch (IOException ioe)
+    {
       throw new TransformException(ioe);
-      }
-    }	   
+    }
+  }
 
   /**
    * Cleanup; called when applet is terminated and unloaded.
    */
   public void destroy()
   {
-    if(null != m_trustedWorker)
+
+    if (null != m_trustedWorker)
     {
       m_trustedWorker.stop();
+
       // m_trustedWorker.destroy();
       m_trustedWorker = null;
     }
+
     m_styleURLOfCached = null;
     m_documentURLOfCached = null;
   }
 
   /**
    * Do not call; this applet contains no UI or visual components.
+   *
+   * NEEDSDOC @param g
    */
+  public void paint(Graphics g){}
 
-  public void paint(Graphics g)
-  {
-  }
- 
   /**
    *  Automatically called when the HTML client containing the applet loads.
    *  This method starts execution of the applet thread.
    */
   public void start()
   {
+
     m_trustedAgent = new TrustedAgent();
+
     Thread currentThread = Thread.currentThread();
-    m_trustedWorker = new Thread(currentThread.getThreadGroup(), m_trustedAgent);
+
+    m_trustedWorker = new Thread(currentThread.getThreadGroup(),
+                                 m_trustedAgent);
+
     m_trustedWorker.start();
+
     try
     {
       this.showStatus("Causing Xalan and Xerces to Load and JIT...");
+
       // Prime the pump so that subsequent transforms don't look so slow.
       StringReader xmlbuf = new StringReader("<?xml version='1.0'?><foo/>");
-      StringReader xslbuf = new StringReader("<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
+      StringReader xslbuf = new StringReader(
+        "<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
       PrintWriter pw = new PrintWriter(new StringWriter());
-	  
-      m_processor = newProcessorInstance();
-	  m_reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
-	  m_templatesBuilder = m_processor.getTemplatesBuilder();
-	  m_reader.setContentHandler(m_templatesBuilder);
 
-      synchronized(m_processor)
+      m_processor = newProcessorInstance();
+      m_reader = XMLReaderFactory.createXMLReader(
+        "org.apache.xerces.parsers.SAXParser");
+      m_templatesBuilder = m_processor.getTemplatesBuilder();
+
+      m_reader.setContentHandler(m_templatesBuilder);
+
+      synchronized (m_processor)
       {
         m_reader.parse(new InputSource(xslbuf));
-	    Templates templates = m_templatesBuilder.getTemplates();
-	    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
-		// Result result = new Result(pw);
-        org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
+
+        Templates templates = m_templatesBuilder.getTemplates();
+        TransformerImpl transformer =
+          (TransformerImpl) templates.newTransformer();
+
+        // Result result = new Result(pw);
+        Serializer serializer =
+          SerializerFactory.getSerializer(templates.getOutputFormat());
+
+        // org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
         // org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
-      serializer.setWriter(pw);
-      org.xml.sax.ContentHandler handler = serializer.asContentHandler();
-       // new org.apache.xml.org.apache.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
+        serializer.setWriter(pw);
+
+        org.xml.sax.ContentHandler handler = serializer.asContentHandler();
+
+        // new org.apache.xml.org.apache.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
         transformer.setContentHandler(handler);
-	    transformer.setParent(m_reader);
+        transformer.setParent(m_reader);
         transform(transformer, new InputSource(xmlbuf));
         this.showStatus("PRIMED the pump!");
       }
+
       System.out.println("Primed the pump!");
-      this.showStatus("Ready to click!"); 
+      this.showStatus("Ready to click!");
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       this.showStatus("Could not prime the pump!");
       System.out.println("Could not prime the pump!");
@@ -449,12 +498,15 @@ public class XSLTProcessorApplet extends Applet
    */
   public void stop()
   {
-    if(null != m_trustedWorker)
+
+    if (null != m_trustedWorker)
     {
       m_trustedWorker.stop();
+
       // m_trustedWorker.destroy();
       m_trustedWorker = null;
     }
+
     m_styleURLOfCached = null;
     m_documentURLOfCached = null;
   }
@@ -463,16 +515,20 @@ public class XSLTProcessorApplet extends Applet
    * Set the URL to the XSL stylesheet that will be used
    * to transform the input XML.  No processing is done yet.
    * @param valid URL string.
+   *
+   * NEEDSDOC @param urlString
    */
   public void setStyleURL(String urlString)
   {
-    m_styleURL =urlString;
+    m_styleURL = urlString;
   }
 
   /**
    * Set the URL to the XML document that will be transformed
    * with the XSL stylesheet.  No processing is done yet.
    * @param valid URL string.
+   *
+   * NEEDSDOC @param urlString
    */
   public void setDocumentURL(String urlString)
   {
@@ -499,21 +555,26 @@ public class XSLTProcessorApplet extends Applet
    * @param value The value to set the attribute to.
    */
   public void setStyleSheetAttribute(String nameOfIDAttrOfElemToModify,
-                                     String elemId,
-                                     String attrName,
+                                     String elemId, String attrName,
                                      String value)
   {
+
     m_nameOfIDAttrOfElemToModify = nameOfIDAttrOfElemToModify;
     m_elemIdToModify = elemId;
     m_attrNameToSet = attrName;
     m_attrValueToSet = value;
   }
 
+  /** NEEDSDOC Field m_key          */
   transient String m_key;
+
+  /** NEEDSDOC Field m_expression          */
   transient String m_expression;
 
   /**
    * Submit a stylesheet parameter.
+   *
+   * NEEDSDOC @param key
    * @param expr The parameter expression to be submitted.
    * @see org.apache.xalan.xslt.Processor#setStylesheetParam(String, String)
    */
@@ -526,15 +587,21 @@ public class XSLTProcessorApplet extends Applet
   /**
    * Given a String containing markup, escape the markup so it
    * can be displayed in the browser.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String escapeString(String s)
   {
+
     StringBuffer sb = new StringBuffer();
     int length = s.length();
 
-    for (int i = 0;  i < length;  i ++)
+    for (int i = 0; i < length; i++)
     {
       char ch = s.charAt(i);
+
       if ('<' == ch)
       {
         sb.append("&lt;");
@@ -549,21 +616,35 @@ public class XSLTProcessorApplet extends Applet
       }
       else if (0xd800 <= ch && ch < 0xdc00)
       {
+
         // UTF-16 surrogate
         int next;
-        if (i+1 >= length)
+
+        if (i + 1 >= length)
         {
-          throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_UTF16_SURROGATE, new Object[]{Integer.toHexString(ch)}));//"Invalid UTF-16 surrogate detected: "
-            //+Integer.toHexString(ch)+ " ?");
+          throw new RuntimeException(
+            XSLMessages.createMessage(
+              XSLTErrorResources.ER_INVALID_UTF16_SURROGATE,
+              new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
+
+          //+Integer.toHexString(ch)+ " ?");
         }
         else
         {
           next = s.charAt(++i);
+
           if (!(0xdc00 <= next && next < 0xe000))
-            throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_UTF16_SURROGATE, new Object[]{Integer.toHexString(ch)+" "+Integer.toHexString(next)}));//"Invalid UTF-16 surrogate detected: "
-              //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
-          next = ((ch-0xd800)<<10)+next-0xdc00+0x00010000;
+            throw new RuntimeException(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_INVALID_UTF16_SURROGATE,
+                new Object[]{
+                  Integer.toHexString(ch) + " "
+                  + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
+
+          //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
+          next = ((ch - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
         }
+
         sb.append("&#x");
         sb.append(Integer.toHexString(next));
         sb.append(";");
@@ -573,56 +654,71 @@ public class XSLTProcessorApplet extends Applet
         sb.append(ch);
       }
     }
+
     return sb.toString();
   }
-
 
   /**
    * Assuming the stylesheet URL and the input XML URL have been set,
    * perform the transformation and return the result as a String.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getHtmlText()
   {
+
     m_trustedAgent.m_getData = true;
     m_callThread = Thread.currentThread();
+
     try
     {
-      synchronized(m_callThread)
+      synchronized (m_callThread)
       {
         m_callThread.wait();
       }
     }
-    catch(InterruptedException ie)
+    catch (InterruptedException ie)
     {
       System.out.println(ie.getMessage());
     }
+
     return m_htmlText;
   }
 
   /**
    * Get a DOM tree as escaped text, suitable for display
    * in the browser.
+   *
+   * NEEDSDOC @param treeURL
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws IOException
    */
-  public String getTreeAsText(String treeURL)
-    throws IOException
+  public String getTreeAsText(String treeURL) throws IOException
   {
+
     String text = "";
     byte[] buffer = new byte[50000];
 
     try
-		{
+    {
       URL docURL = new URL(m_documentBase, treeURL);
       InputStream in = docURL.openStream();
+      int nun_chars;
 
-			int nun_chars;
-			while ( ( nun_chars = in.read( buffer, 0, buffer.length ) ) != -1 )
-			{
-				text = text + new String( buffer, 0, nun_chars );
-			}
-			in.close();
-		}
-		catch ( Exception any_error )
-    {any_error.printStackTrace();}
+      while ((nun_chars = in.read(buffer, 0, buffer.length)) != -1)
+      {
+        text = text + new String(buffer, 0, nun_chars);
+      }
+
+      in.close();
+    }
+    catch (Exception any_error)
+    {
+      any_error.printStackTrace();
+    }
+
     return text;
   }
 
@@ -630,10 +726,11 @@ public class XSLTProcessorApplet extends Applet
    * Get the XML source Tree as a text string suitable
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
+   *
+   * NEEDSDOC ($objectName$) @return
    * @exception Exception thrown if tree can not be converted.
    */
-  public String getSourceTreeAsText()
-    throws Exception
+  public String getSourceTreeAsText() throws Exception
   {
     return getTreeAsText(m_documentURL);
   }
@@ -642,10 +739,11 @@ public class XSLTProcessorApplet extends Applet
    * Get the XSL style Tree as a text string suitable
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
+   *
+   * NEEDSDOC ($objectName$) @return
    * @exception Exception thrown if tree can not be converted.
    */
-  public String getStyleTreeAsText()
-    throws Exception
+  public String getStyleTreeAsText() throws Exception
   {
     return getTreeAsText(m_styleURL);
   }
@@ -654,10 +752,11 @@ public class XSLTProcessorApplet extends Applet
    * Get the HTML result Tree as a text string suitable
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
+   *
+   * NEEDSDOC ($objectName$) @return
    * @exception Exception thrown if tree can not be converted.
    */
-  public String getResultTreeAsText()
-    throws Exception
+  public String getResultTreeAsText() throws Exception
   {
     return escapeString(getHtmlText());
   }
@@ -666,17 +765,25 @@ public class XSLTProcessorApplet extends Applet
    * Process a document and a stylesheet and return
    * the transformation result.  If one of these is null, the
    * existing value (of a previous transformation) is not affected.
+   *
+   * NEEDSDOC @param doc
+   * NEEDSDOC @param style
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String transformToHtml(String doc, String style)
   {
-    if(null != doc)
+
+    if (null != doc)
     {
       m_documentURL = doc;
     }
-    if(null != style)
+
+    if (null != style)
     {
       m_styleURL = style;
     }
+
     return getHtmlText();
   }
 
@@ -684,67 +791,92 @@ public class XSLTProcessorApplet extends Applet
    * Process a document and a stylesheet and return
    * the transformation result. Use the xsl:stylesheet PI to find the
    * document, if one exists.
+   *
+   * NEEDSDOC @param doc
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String transformToHtml(String doc)
   {
-    if(null != doc)
+
+    if (null != doc)
     {
       m_documentURL = doc;
     }
+
     m_styleURL = null;
+
     return getHtmlText();
   }
 
   /**
    * Do the real transformation after the right XML processor
    * liason has been found.
+   *
+   * NEEDSDOC @param processor
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
-  private String doTransformation(Processor processor)
-    throws SAXException
+  private String doTransformation(Processor processor) throws SAXException
   {
+
     URL documentURL = null;
     URL styleURL = null;
     StringWriter osw = new StringWriter();
     PrintWriter pw = new PrintWriter(osw, false);
 
     this.showStatus("Begin Transformation...");
+
     try
     {
-	  m_templatesBuilder = m_processor.getTemplatesBuilder();
-	  m_reader.setContentHandler(m_templatesBuilder);
-		
+      m_templatesBuilder = m_processor.getTemplatesBuilder();
+
+      m_reader.setContentHandler(m_templatesBuilder);
+
       documentURL = new URL(m_codeBase, m_documentURL);
+
       InputSource xmlSource = new InputSource(documentURL.toString());
 
       styleURL = new URL(m_codeBase, m_styleURL);
+
       InputSource xslSource = new InputSource(styleURL.toString());
-	  
-	  m_reader.parse(xslSource);
-	  Templates templates = m_templatesBuilder.getTemplates();
-	  TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
-      
-      if(null != m_key)
+
+      m_reader.parse(xslSource);
+
+      Templates templates = m_templatesBuilder.getTemplates();
+      TransformerImpl transformer =
+        (TransformerImpl) templates.newTransformer();
+
+      if (null != m_key)
         transformer.setParameter(m_key, null, m_expression);
+
       // Result result = new Result(pw);
-      org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
+      // org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
       //org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
+      Serializer serializer =
+        SerializerFactory.getSerializer(templates.getOutputFormat());
+
       serializer.setWriter(pw);
+
       org.xml.sax.ContentHandler handler = serializer.asContentHandler();
-	  
+
       transformer.setContentHandler(handler);
-	  transformer.setParent(m_reader);
-      transform(transformer, xmlSource );
-	}
-    catch(MalformedURLException e)
+      transformer.setParent(m_reader);
+      transform(transformer, xmlSource);
+    }
+    catch (MalformedURLException e)
     {
       e.printStackTrace();
       System.exit(-1);
     }
-    catch(IOException e)
+    catch (IOException e)
     {
       e.printStackTrace();
       System.exit(-1);
     }
+
     this.showStatus("Transformation Done!");
 
     String htmlData = osw.toString();
@@ -754,31 +886,41 @@ public class XSLTProcessorApplet extends Applet
 
   /**
    * Process the transformation.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
-  private String processTransformation()
-    throws SAXException
+  private String processTransformation() throws SAXException
   {
+
     String htmlData = null;
+
     try
     {
-      if(whichParser.trim().equals("Xerces") || whichParser.trim().equals("ANY"))
+      if (whichParser.trim().equals("Xerces")
+              || whichParser.trim().equals("ANY"))
       {
-        this.showStatus("Waiting for Xalan and Xerces to finish loading and JITing...");
-        synchronized(m_processor)
+        this.showStatus(
+          "Waiting for Xalan and Xerces to finish loading and JITing...");
+
+        synchronized (m_processor)
         {
+
           // TransformerImpl processor = new XSLProcessor(m_liaison);
           htmlData = doTransformation(m_processor);
         }
       }
       else
       {
-          System.out.println("Problem with XML parser!");
+        System.out.println("Problem with XML parser!");
       }
     }
-    catch(NoClassDefFoundError e)
+    catch (NoClassDefFoundError e)
     {
-      System.out.println("Can not find "+whichParser+" XML Processor!!");
+      System.out.println("Can not find " + whichParser + " XML Processor!!");
     }
+
     return htmlData;
   }
 
@@ -790,13 +932,22 @@ public class XSLTProcessorApplet extends Applet
    */
   class TrustedAgent implements Runnable
   {
+
+    /** NEEDSDOC Field m_getData          */
     public boolean m_getData = false;
+
+    /**
+     * NEEDSDOC Method run 
+     *
+     */
     public void run()
     {
-      while(true)
+
+      while (true)
       {
         m_trustedWorker.yield();
-        if(m_getData)
+
+        if (m_getData)
         {
           try
           {
@@ -804,17 +955,16 @@ public class XSLTProcessorApplet extends Applet
             m_htmlText = null;
             m_htmlText = processTransformation();
           }
-          catch(Exception e)
+          catch (Exception e)
           {
             e.printStackTrace();
           }
           finally
           {
-            synchronized(m_callThread)
+            synchronized (m_callThread)
             {
               m_callThread.notify();
             }
-
           }
         }
         else
@@ -832,4 +982,3 @@ public class XSLTProcessorApplet extends Applet
     }
   }
 }
-

@@ -64,96 +64,95 @@ import java.util.EmptyStackException;
  */
 public class IntStack extends IntVector
 {
+
   /**
-   * Default constructor.  Note that the default 
+   * Default constructor.  Note that the default
    * block size is very small, for small lists.
    */
   public IntStack()
   {
-    super(); 
+    super();
   }
 
   /**
    * Construct a IntVector, using the given block size.
+   *
+   * NEEDSDOC @param blocksize
    */
   public IntStack(int blocksize)
   {
-    super(blocksize); 
+    super(blocksize);
   }
-  
+
   /**
-   * Pushes an item onto the top of this stack. 
+   * Pushes an item onto the top of this stack.
    *
    * @param   i   the int to be pushed onto this stack.
    * @return  the <code>item</code> argument.
-   * @since   JDK1.0
    */
-  public int push(int i) 
+  public int push(int i)
   {
-    addElement(i);
+
+    if ((m_firstFree + 1) >= m_mapSize)
+    {
+      m_mapSize += m_blocksize;
+
+      int newMap[] = new int[m_mapSize];
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
+      m_map = newMap;
+    }
+
+    m_map[m_firstFree] = i;
+
+    m_firstFree++;
 
     return i;
   }
 
   /**
-   * Removes the object at the top of this stack and returns that 
-   * object as the value of this function. 
+   * Removes the object at the top of this stack and returns that
+   * object as the value of this function.
    *
    * @return     The object at the top of this stack.
-   * @exception  EmptyStackException  if this stack is empty.
-   * @since      JDK1.0
    */
-  public int pop() 
+  public int pop()
   {
-    int	i;
-    int	len = size();
-
-    i = peek();
-    removeElementAt(len - 1);
-
-    return i;
+    return m_map[--m_firstFree];
   }
-  
+
   /**
-   * Quickly pops a number of items from the stack. 
-   *
-   * @exception  EmptyStackException  if this stack is empty.
+   * Quickly pops a number of items from the stack.
    */
-  public void quickPop(int n) 
+
+  public void quickPop(int n)
   {
     m_firstFree -= n;
   }
 
-
   /**
-   * Looks at the object at the top of this stack without removing it 
-   * from the stack. 
+   * Looks at the object at the top of this stack without removing it
+   * from the stack.
    *
-   * @return     the object at the top of this stack. 
+   * @return     the object at the top of this stack.
    * @exception  EmptyStackException  if this stack is empty.
-   * @since      JDK1.0
    */
-  public int peek() 
+  public int peek()
   {
-    int	len = size();
-
-    if (len == 0)
-      throw new EmptyStackException();
-    return elementAt(len - 1);
+    return m_map[m_firstFree - 1];
   }
 
   /**
-   * Sets an object at a the top of the statck 
+   * Sets an object at a the top of the statck
    *
+   *
+   * NEEDSDOC @param val
    * @exception  EmptyStackException  if this stack is empty.
-   * @since      JDK1.0
    */
-  public void setTop(int val) 
+  public void setTop(int val)
   {
-    int	len = size();
-    if (len == 0)
-      throw new EmptyStackException();
-    setElementAt(val, len - 1);
+    m_map[m_firstFree - 1] = val;
   }
 
   /**
@@ -163,13 +162,13 @@ public class IntStack extends IntVector
    *          <code>false</code> otherwise.
    * @since   JDK1.0
    */
-  public boolean empty() 
+  public boolean empty()
   {
-    return size() == 0;
+    return m_firstFree == 0;
   }
 
   /**
-   * Returns where an object is on this stack. 
+   * Returns where an object is on this stack.
    *
    * @param   o   the desired object.
    * @return  the distance from the top of the stack where the object is]
@@ -177,15 +176,16 @@ public class IntStack extends IntVector
    *          object is not on the stack.
    * @since   JDK1.0
    */
-  public int search(int o) 
+  public int search(int o)
   {
+
     int i = lastIndexOf(o);
 
-    if (i >= 0) 
+    if (i >= 0)
     {
       return size() - i;
     }
+
     return -1;
   }
-
 }

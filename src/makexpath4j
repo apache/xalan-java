@@ -57,6 +57,7 @@ SRCS = \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)FollowingSiblingWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)FollowingWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)LocPathIterator.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)ChildIterator.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)NamespaceWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)ParentWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)PrecedingSiblingWalker.java \

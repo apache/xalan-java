@@ -54,11 +54,13 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -75,44 +77,56 @@ import org.apache.xpath.axes.SubContextList;
  */
 public class FuncLast extends Function
 {
+
   /**
    * Get the position in the current context node list.
+   *
+   * NEEDSDOC @param xctxt
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
   public int getCountOfContextNodeList(XPathContext xctxt)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
+
     //    assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
-    
     // If we're in a predicate, then this will return non-null.
     SubContextList iter = xctxt.getSubContextList();
-    
-    if(null != iter)
+
+    if (null != iter)
       return iter.getLastPos(xctxt);
-    
+
     ContextNodeList cnl = xctxt.getContextNodeList();
-    if(cnl.size() == 0)
+
+    if (cnl.size() == 0)
     {
       int currentPos = cnl.getCurrentPos();
+
       // System.out.println("getCountOfContextNodeList - currentPos: "+currentPos);
-      if(!cnl.isFresh())
+      if (!cnl.isFresh())
         cnl.reset();
+
       cnl.setShouldCacheNodes(true);
       cnl.runTo(-1);
       cnl.setCurrentPos(currentPos);
     }
+
     // System.out.println("cnl.size(): "+cnl.size());
     return cnl.size();
   }
-  
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
-    return new XNumber((double)getCountOfContextNodeList(xctxt));
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+    return new XNumber((double) getCountOfContextNodeList(xctxt));
   }
 }

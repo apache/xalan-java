@@ -62,10 +62,18 @@ import org.xml.sax.*;
  * <meta name="usage" content="general"/>
  * Implement SAX error handler for default reporting.
  */
-public class DefaultErrorHandler implements ErrorHandler 
+public class DefaultErrorHandler implements ErrorHandler
 {
+
+  /** NEEDSDOC Field m_xmlID          */
   String m_xmlID = null;
 
+  /**
+   * Constructor DefaultErrorHandler
+   *
+   *
+   * NEEDSDOC @param identifier
+   */
   public DefaultErrorHandler(String identifier)
   {
     m_xmlID = identifier;
@@ -86,14 +94,14 @@ public class DefaultErrorHandler implements ErrorHandler
    *                  SAX parse exception.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.SAXParseException 
+   * @see org.xml.sax.SAXParseException
+   *
+   * @throws SAXException
    */
-  public void warning (SAXParseException exception)
-    throws SAXException
+  public void warning(SAXParseException exception) throws SAXException
   {
-    System.out.println("Parser warning: "+exception.getMessage());
+    System.out.println("Parser warning: " + exception.getMessage());
   }
-
 
   /**
    * Receive notification of a recoverable error.
@@ -115,12 +123,13 @@ public class DefaultErrorHandler implements ErrorHandler
    *                  SAX parse exception.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.SAXParseException 
+   * @see org.xml.sax.SAXParseException
+   *
+   * @throws SAXException
    */
-  public void error (SAXParseException exception)
-    throws SAXException
+  public void error(SAXParseException exception) throws SAXException
   {
-    System.out.println("Parser error: "+exception.getMessage());
+    System.out.println("Parser error: " + exception.getMessage());
   }
 
   /**
@@ -138,21 +147,25 @@ public class DefaultErrorHandler implements ErrorHandler
    * other events once this method has been invoked.</p>
    *
    * @param exception The error information encapsulated in a
-   *                  SAX parse exception.  
+   *                  SAX parse exception.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.SAXParseException
+   *
+   * @throws SAXException
    */
-  public void fatalError (SAXParseException exception)
-    throws SAXException
+  public void fatalError(SAXParseException exception) throws SAXException
   {
+
     // System.out.println("Parser fatal error: "+exception.getMessage());
-    String id = (exception.getPublicId() != exception.getPublicId()) 
-                ? exception.getPublicId() : (null != exception.getSystemId()) 
-                                            ? exception.getSystemId() : m_xmlID;
-    System.out.println(id+"; Line "+exception.getLineNumber()
-                       +"; Column "+exception.getColumnNumber());
+    String id = (exception.getPublicId() != exception.getPublicId())
+                ? exception.getPublicId()
+                : (null != exception.getSystemId())
+                  ? exception.getSystemId() : m_xmlID;
+
+    System.out.println(id + "; Line " + exception.getLineNumber()
+                       + "; Column " + exception.getColumnNumber());
+
     throw exception;
   }
-
 }

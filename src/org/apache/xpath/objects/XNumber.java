@@ -60,41 +60,53 @@ import org.w3c.dom.*;
 
 /**
  * <meta name="usage" content="general"/>
- * This class represents an XPath number, and is capable of 
+ * This class represents an XPath number, and is capable of
  * converting the number to other types, such as a string.
  */
 public class XNumber extends XObject
 {
+
+  /** NEEDSDOC Field m_val          */
   double m_val;
-  
+
   /**
    * Construct a XNodeSet object.
+   *
+   * NEEDSDOC @param d
    */
   public XNumber(double d)
   {
+
     super();
+
     m_val = d;
   }
-  
+
   /**
    * Tell that this is a CLASS_NUMBER.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getType()
   {
     return CLASS_NUMBER;
   }
-  
+
   /**
-   * Given a request type, return the equivalent string. 
+   * Given a request type, return the equivalent string.
    * For diagnostic purposes.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getTypeString()
   {
     return "#NUMBER";
   }
-  
+
   /**
    * Cast result object to a number.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public double num()
   {
@@ -103,70 +115,106 @@ public class XNumber extends XObject
 
   /**
    * Cast result object to a boolean.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean bool()
   {
     return (Double.isNaN(m_val) || (m_val == 0.0)) ? false : true;
   }
-  
+
   /**
    * Cast result object to a string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String str()
   {
-    if(Double.isNaN(m_val))
+
+    if (Double.isNaN(m_val))
     {
       return "NaN";
     }
-    else if(Double.isInfinite(m_val))
+    else if (Double.isInfinite(m_val))
     {
-      if(m_val > 0)
+      if (m_val > 0)
         return "Infinity";
       else
         return "-Infinity";
-    }    
-    
+    }
+
     double num = m_val;
     String s = Double.toString(num);
     int len = s.length();
-    if (s.charAt(len - 2) == '.' && s.charAt(len - 1) == '0') 
+
+    if (s.charAt(len - 2) == '.' && s.charAt(len - 1) == '0')
     {
       s = s.substring(0, len - 2);
+
       if (s.equals("-0"))
         return "0";
+
       return s;
     }
+
     int e = s.indexOf('E');
+
     if (e < 0)
       return s;
+
     int exp = Integer.parseInt(s.substring(e + 1));
     String sign;
-    if (s.charAt(0) == '-') 
+
+    if (s.charAt(0) == '-')
     {
       sign = "-";
       s = s.substring(1);
+
       --e;
     }
     else
       sign = "";
+
     int nDigits = e - 2;
+
     if (exp >= nDigits)
-      return sign + s.substring(0, 1) + s.substring(2, e) + zeros(exp - nDigits);
+      return sign + s.substring(0, 1) + s.substring(2, e)
+             + zeros(exp - nDigits);
+
     if (exp > 0)
-      return sign + s.substring(0, 1) + s.substring(2, 2 + exp) + "." + s.substring(2 + exp, e);
-    return sign + "0." + zeros(-1 - exp) + s.substring(0, 1) + s.substring(2, e);
+      return sign + s.substring(0, 1) + s.substring(2, 2 + exp) + "."
+             + s.substring(2 + exp, e);
+
+    return sign + "0." + zeros(-1 - exp) + s.substring(0, 1)
+           + s.substring(2, e);
   }
-  
-  static private String zeros(int n) {
+
+  /**
+   * NEEDSDOC Method zeros 
+   *
+   *
+   * NEEDSDOC @param n
+   *
+   * NEEDSDOC (zeros) @return
+   */
+  static private String zeros(int n)
+  {
+
     char[] buf = new char[n];
+
     for (int i = 0; i < n; i++)
+    {
       buf[i] = '0';
+    }
+
     return new String(buf);
   }
-  
+
   /**
-   * Return a java object that's closes to the represenation 
+   * Return a java object that's closes to the represenation
    * that should be handed to an extension.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Object object()
   {
@@ -175,18 +223,22 @@ public class XNumber extends XObject
 
   /**
    * Tell if two objects are functionally equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.equals(this);
 
     return m_val == obj2.num();
   }
-
 }
-

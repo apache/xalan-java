@@ -62,20 +62,37 @@ package org.apache.xalan.transformer;
  * @see long2roman
  * @see m_romanConvertTable
  */
-public class DecimalToRoman 
-{      
-  public DecimalToRoman(
-                        long postValue, String postLetter, 
-                        long preValue, String preLetter)
+public class DecimalToRoman
+{
+
+  /**
+   * Constructor DecimalToRoman
+   *
+   *
+   * NEEDSDOC @param postValue
+   * NEEDSDOC @param postLetter
+   * NEEDSDOC @param preValue
+   * NEEDSDOC @param preLetter
+   */
+  public DecimalToRoman(long postValue, String postLetter, long preValue,
+                        String preLetter)
   {
+
     this.m_postValue = postValue;
     this.m_postLetter = postLetter;
     this.m_preValue = preValue;
     this.m_preLetter = preLetter;
   }
-  
-  public long  m_postValue;      
+
+  /** NEEDSDOC Field m_postValue          */
+  public long m_postValue;
+
+  /** NEEDSDOC Field m_postLetter          */
   public String m_postLetter;
-  public long  m_preValue;      
+
+  /** NEEDSDOC Field m_preValue          */
+  public long m_preValue;
+
+  /** NEEDSDOC Field m_preLetter          */
   public String m_preLetter;
 }

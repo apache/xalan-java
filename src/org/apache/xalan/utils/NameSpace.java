@@ -60,19 +60,28 @@ import java.io.Serializable;
 
 /**
  * <meta name="usage" content="advanced"/>
- * A representation of a namespace.  One of these will 
+ * A representation of a namespace.  One of these will
  * be pushed on the namespace stack for each
  * element.
  */
 public class NameSpace implements Serializable
 {
+
+  /** NEEDSDOC Field m_next          */
   public NameSpace m_next = null;
+
+  /** NEEDSDOC Field m_prefix          */
   public String m_prefix;
-  public String m_uri; // if null, then Element namespace is empty.
-  
+
+  /** NEEDSDOC Field m_uri          */
+  public String m_uri;  // if null, then Element namespace is empty.
+
   /**
-   * Construct a namespace for placement on the 
+   * Construct a namespace for placement on the
    * result tree namespace stack.
+   *
+   * NEEDSDOC @param prefix
+   * NEEDSDOC @param uri
    */
   public NameSpace(String prefix, String uri)
   {

@@ -54,15 +54,16 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
 package org.apache.xalan.extensions;
 
 import java.util.Hashtable;
 import java.util.Vector;
+
 import java.io.IOException;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
@@ -71,14 +72,11 @@ import org.xml.sax.SAXException;
 
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;
-
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathProcessorException;
-
 import org.apache.xalan.utils.StringVector;
 
 import java.lang.reflect.Method;
-
 
 /**
  * <meta name="usage" content="internal"/>
@@ -87,42 +85,71 @@ import java.lang.reflect.Method;
  *
  * @author Sanjiva Weerawarana (sanjiva@watson.ibm.com)
  */
-
 public class ExtensionHandlerGeneral extends ExtensionHandler
 {
-  private String m_scriptSrc;          // script source to run (if any)
-  private String m_scriptSrcURL;       // URL of source of script (if any)
-  private Hashtable m_functions = new Hashtable ();      // functions of namespace
-  private Hashtable m_elements = new Hashtable ();       // elements of namespace
+
+  /** NEEDSDOC Field m_scriptSrc          */
+  private String m_scriptSrc;  // script source to run (if any)
+
+  /** NEEDSDOC Field m_scriptSrcURL          */
+  private String m_scriptSrcURL;  // URL of source of script (if any)
+
+  /** NEEDSDOC Field m_functions          */
+  private Hashtable m_functions = new Hashtable();  // functions of namespace
+
+  /** NEEDSDOC Field m_elements          */
+  private Hashtable m_elements = new Hashtable();  // elements of namespace
 
   // BSF objects used to invoke BSF by reflection.  Do not import the BSF classes
   // since we don't want a compile dependency on BSF.
 
-  private Object m_mgr;                          // BSF manager used to run scripts
-  private Object m_engine;                       // BSF engine used to run scripts
+  /** NEEDSDOC Field m_mgr          */
+  private Object m_mgr;  // BSF manager used to run scripts
+
+  /** NEEDSDOC Field m_engine          */
+  private Object m_engine;  // BSF engine used to run scripts
 
   // static fields
 
+  /** NEEDSDOC Field BSF_MANAGER          */
   private static final String BSF_MANAGER = "com.ibm.bsf.BSFManager";
+
+  /** NEEDSDOC Field managerClass          */
   private static Class managerClass;
+
+  /** NEEDSDOC Field mgrLoadScriptingEngine          */
   private static Method mgrLoadScriptingEngine;
+
+  /** NEEDSDOC Field BSF_ENGINE          */
   private static final String BSF_ENGINE = "com.ibm.bsf.BSFEngine";
-  private static Method engineExec;             // Engine call to "compile" scripts
-  private static Method engineCall;             // Engine call to invoke scripts
+
+  /** NEEDSDOC Field engineExec          */
+  private static Method engineExec;  // Engine call to "compile" scripts
+
+  /** NEEDSDOC Field engineCall          */
+  private static Method engineCall;  // Engine call to invoke scripts
+
+  /** NEEDSDOC Field NEG1INT          */
   private static final Integer NEG1INT = new Integer(-1);
 
-  static {
+  static
+  {
     try
     {
       managerClass = Class.forName(BSF_MANAGER);
       mgrLoadScriptingEngine = managerClass.getMethod("loadScriptingEngine",
-                                                             new Class[] {String.class});
+              new Class[]{ String.class });
+
       Class engineClass = Class.forName(BSF_ENGINE);
-      engineExec = engineClass.getMethod("exec",
-                         new Class[] {String.class, Integer.TYPE, Integer.TYPE, Object.class});
-      engineCall = engineClass.getMethod("call",
-                         new Class[] {Object.class, String.class,
-                                                       Class.forName("[Ljava.lang.Object;")});
+
+      engineExec = engineClass.getMethod("exec", new Class[]{ String.class,
+                                                              Integer.TYPE,
+                                                              Integer.TYPE,
+                                                              Object.class });
+      engineCall = engineClass.getMethod("call", new Class[]{ Object.class,
+                                                              String.class,
+                                                              Class.forName(
+                                                                "[Ljava.lang.Object;") });
     }
     catch (Exception e)
     {
@@ -130,41 +157,45 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
       mgrLoadScriptingEngine = null;
       engineExec = null;
       engineCall = null;
+
       e.printStackTrace();
     }
   }
 
-
   /**
    * Construct a new extension namespace handler given all the information
-   * needed. 
-   * 
+   * needed.
+   *
    * @param namespaceUri the extension namespace URI that I'm implementing
+   * NEEDSDOC @param elemNames
    * @param funcNames    string containing list of functions of extension NS
    * @param lang         language of code implementing the extension
    * @param srcURL       value of src attribute (if any) - treated as a URL
    *                     or a classname depending on the value of lang. If
    *                     srcURL is not null, then scriptSrc is ignored.
+   * NEEDSDOC @param scriptLang
+   * NEEDSDOC @param scriptSrcURL
    * @param scriptSrc    the actual script code (if any)
+   *
+   * @throws SAXException
    */
-  public ExtensionHandlerGeneral(String namespaceUri,
-                                 StringVector elemNames,
-                                 StringVector funcNames, 
-                                 String scriptLang,
-                                 String scriptSrcURL,
-                                 String scriptSrc)
-    throws SAXException
+  public ExtensionHandlerGeneral(
+          String namespaceUri, StringVector elemNames, StringVector funcNames, String scriptLang, String scriptSrcURL, String scriptSrc)
+            throws SAXException
   {
+
     super(namespaceUri, scriptLang);
 
     if (elemNames != null)
     {
       Object junk = new Object();
       int n = elemNames.size();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
         String tok = elemNames.elementAt(i);
-        m_elements.put(tok, junk); // just stick it in there basically
+
+        m_elements.put(tok, junk);  // just stick it in there basically
       }
     }
 
@@ -172,10 +203,12 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     {
       Object junk = new Object();
       int n = funcNames.size();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
         String tok = funcNames.elementAt(i);
-        m_functions.put(tok, junk); // just stick it in there basically
+
+        m_functions.put(tok, junk);  // just stick it in there basically
       }
     }
 
@@ -184,7 +217,8 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
     if (m_scriptSrcURL != null)
     {
-      throw new SAXException("src attribute not yet supported for " + scriptLang);
+      throw new SAXException("src attribute not yet supported for "
+                             + scriptLang);
     }
 
     if (null == managerClass)
@@ -193,99 +227,106 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     try
     {
       m_mgr = managerClass.newInstance();
-      m_engine = mgrLoadScriptingEngine.invoke(m_mgr, new Object[] {scriptLang});
+      m_engine = mgrLoadScriptingEngine.invoke(m_mgr,
+                                               new Object[]{ scriptLang });
+
       // "Compile" the program
-      engineExec.invoke(m_engine, new Object[] {"XalanScript", NEG1INT, NEG1INT, m_scriptSrc});
+      engineExec.invoke(m_engine, new Object[]{ "XalanScript", NEG1INT,
+                                                NEG1INT, m_scriptSrc });
     }
     catch (Exception e)
     {
       e.printStackTrace();
+
       throw new SAXException("Could not compile extension", e);
     }
   }
-
 
   /**
    * Tests whether a certain function name is known within this namespace.
    * @param function name of the function being tested
    * @return true if its known, false if not.
    */
-
-  public boolean isFunctionAvailable (String function) 
+  public boolean isFunctionAvailable(String function)
   {
-    return(m_functions.get(function) != null);
+    return (m_functions.get(function) != null);
   }
 
-  
   /**
    * Tests whether a certain element name is known within this namespace.
    * @param function name of the function being tested
+   *
+   * NEEDSDOC @param element
    * @return true if its known, false if not.
    */
-
-  public boolean isElementAvailable (String element) 
+  public boolean isElementAvailable(String element)
   {
-    return(m_elements.get(element) != null);
+    return (m_elements.get(element) != null);
   }
-
 
   /**
    * Process a call to a function.
    *
    * @param funcName Function name.
    * @param args     The arguments of the function call.
+   * NEEDSDOC @param methodKey
+   * NEEDSDOC @param exprContext
    *
    * @return the return value of the function evaluation.
    *
-   * @exception XSLProcessorException thrown if something goes wrong 
+   * @exception XSLProcessorException thrown if something goes wrong
    *            while running the extension handler.
    * @exception MalformedURLException if loading trouble
    * @exception FileNotFoundException if loading trouble
    * @exception IOException           if loading trouble
    * @exception SAXException          if parsing trouble
    */
-
-  public Object callFunction (String funcName, 
-                              Vector args, 
-                              Object methodKey, 
-                              ExpressionContext exprContext)
-    throws SAXException 
+  public Object callFunction(
+          String funcName, Vector args, Object methodKey, ExpressionContext exprContext)
+            throws SAXException
   {
 
     Object[] argArray;
 
-    try 
+    try
     {
-       argArray = new Object[args.size()];
+      argArray = new Object[args.size()];
 
-       for (int i = 0; i < argArray.length; i++) 
-       {
-          Object o = args.elementAt(i);
-          argArray[i] = (o instanceof XObject) ? ((XObject)o).object() : o;
-       }
-       return engineCall.invoke(m_engine, new Object[] {null, funcName, argArray});
+      for (int i = 0; i < argArray.length; i++)
+      {
+        Object o = args.elementAt(i);
+
+        argArray[i] = (o instanceof XObject) ? ((XObject) o).object() : o;
+      }
+
+      return engineCall.invoke(m_engine, new Object[]{ null, funcName,
+                                                       argArray });
     }
-    catch (Exception e) 
+    catch (Exception e)
     {
       e.printStackTrace();
+
       String msg = e.getMessage();
-      if(null != msg)
+
+      if (null != msg)
       {
-        if(msg.startsWith("Stopping after fatal error:"))
+        if (msg.startsWith("Stopping after fatal error:"))
         {
           msg = msg.substring("Stopping after fatal error:".length());
         }
+
         // System.out.println("Call to extension function failed: "+msg);
-        throw new SAXException (e);
+        throw new SAXException(e);
       }
       else
       {
+
         // Should probably make a TRaX Extension Exception.
-        throw new SAXException ("Could not create extension: "+funcName+" because of: "+e);
+        throw new SAXException("Could not create extension: " + funcName
+                               + " because of: " + e);
       }
     }
   }
-
 
   /**
    * Process a call to this extension namespace via an element. As a side
@@ -299,6 +340,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @param sourceTree     The root of the source tree (but don't assume
    *                       it's a Document).
    * @param sourceNode     The current context node.
+   * NEEDSDOC @param methodKey
    *
    * @exception XSLProcessorException thrown if something goes wrong
    *            while running the extension handler.
@@ -307,45 +349,35 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @exception IOException           if loading trouble
    * @exception SAXException          if parsing trouble
    */
-
-  public void processElement(String localPart,
-                             Element element,
-                             TransformerImpl transformer,
-                             Stylesheet stylesheetTree,
-                             Node sourceTree,
-                             Node sourceNode,
-                             QName mode,
-                             Object methodKey)
-    throws SAXException, IOException
+  public void processElement(
+          String localPart, Element element, TransformerImpl transformer, Stylesheet stylesheetTree, Node sourceTree, Node sourceNode, QName mode, Object methodKey)
+            throws SAXException, IOException
   {
 
     Object result = null;
-    XSLProcessorContext xpc = new XSLProcessorContext (transformer, 
-                                                       stylesheetTree,
-                                                       sourceTree, 
-                                                       sourceNode, 
-                                                       mode);
+    XSLProcessorContext xpc = new XSLProcessorContext(transformer,
+                                stylesheetTree, sourceTree, sourceNode, mode);
+
     try
     {
       Vector argv = new Vector(2);
+
       argv.addElement(xpc);
       argv.addElement(element);
-      result = callFunction(localPart,
-                            argv,
-                            methodKey,
+
+      result = callFunction(localPart, argv, methodKey,
                             transformer.getXPathContext());
     }
     catch (XPathProcessorException e)
     {
+
       // e.printStackTrace ();
-      throw new SAXException (e.getMessage (), e);
+      throw new SAXException(e.getMessage(), e);
     }
 
     if (result != null)
     {
-      xpc.outputToResultTree (stylesheetTree, result);
+      xpc.outputToResultTree(stylesheetTree, result);
     }
- 
- }
-
+  }
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -69,6 +69,7 @@ import org.apache.xalan.utils.QName;
  */
 public class TracerEvent implements java.util.EventListener
 {
+
   /**
    * The node in the style tree where the event occurs.
    */
@@ -96,12 +97,12 @@ public class TracerEvent implements java.util.EventListener
    * @param mode The current mode.
    * @param m_styleNode node in the style tree reference for the event.
    * Should not be null.  That is not enforced.
+   * NEEDSDOC @param styleNode
    */
-  public TracerEvent(TransformerImpl processor,
-                     Node sourceNode,
-                     QName mode,
+  public TracerEvent(TransformerImpl processor, Node sourceNode, QName mode,
                      ElemTemplateElement styleNode)
   {
+
     this.m_processor = processor;
     this.m_sourceNode = sourceNode;
     this.m_mode = mode;
@@ -109,38 +110,43 @@ public class TracerEvent implements java.util.EventListener
   }
 
   /**
-   Returns a string representation of the node.
-   The string returned for elements will contain the element name
-   and any attributes enclosed in angle brackets.
-   The string returned for attributes will be of form, "name=value."
-
-   @param n any DOM node. Must not be null.
-
-   @return a string representation of the given node.
+   * Returns a string representation of the node.
+   * The string returned for elements will contain the element name
+   * and any attributes enclosed in angle brackets.
+   * The string returned for attributes will be of form, "name=value."
+   *
+   * @param n any DOM node. Must not be null.
+   *
+   * @return a string representation of the given node.
    */
   public static String printNode(Node n)
   {
+
     String r = n.hashCode() + " ";
 
     if (n instanceof Element)
     {
-      r += "<"+n.getNodeName();
+      r += "<" + n.getNodeName();
+
       Node c = n.getFirstChild();
+
       while (null != c)
       {
         if (c instanceof Attr)
         {
           r += printNode(c) + " ";
         }
+
         c = c.getNextSibling();
       }
+
       r += ">";
     }
     else
     {
       if (n instanceof Attr)
       {
-        r += n.getNodeName()+"="+n.getNodeValue();
+        r += n.getNodeName() + "=" + n.getNodeValue();
       }
       else
       {
@@ -152,38 +158,45 @@ public class TracerEvent implements java.util.EventListener
   }
 
   /**
-   Returns a string representation of the node list.
-   The string will contain the list of nodes inside square braces.
-   Elements will contain the element name
-   and any attributes enclosed in angle brackets.
-   Attributes will be of form, "name=value."
-
-   @param l any DOM node list. Must not be null.
-
-   @return a string representation of the given node list.
+   * Returns a string representation of the node list.
+   * The string will contain the list of nodes inside square braces.
+   * Elements will contain the element name
+   * and any attributes enclosed in angle brackets.
+   * Attributes will be of form, "name=value."
+   *
+   * @param l any DOM node list. Must not be null.
+   *
+   * @return a string representation of the given node list.
    */
   public static String printNodeList(NodeList l)
   {
+
     String r = l.hashCode() + "[";
     int len = l.getLength() - 1;
     int i = 0;
+
     while (i < len)
     {
       Node n = l.item(i);
+
       if (null != n)
       {
         r += printNode(n) + ", ";
       }
+
       ++i;
     }
+
     if (i == len)
     {
       Node n = l.item(len);
+
       if (null != n)
       {
         r += printNode(n);
       }
     }
+
     return r + "]";
   }
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -55,44 +55,71 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.res;
+
 import java.util.*;
+
 //
 //  LangResources_en.properties
 //
-public class XSLTResources_ka extends XSLTResourceBundle 
+
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class XSLTResources_ka <needs-comment/>
+ */
+public class XSLTResources_ka extends XSLTResourceBundle
 {
-public Object[][] getContents()
-{
-	return contents;
-}	
 
-static final Object[][] contents = {
+  /**
+   * NEEDSDOC Method getContents 
+   *
+   *
+   * NEEDSDOC (getContents) @return
+   */
+  public Object[][] getContents()
+  {
+    return contents;
+  }
 
-{"ui_language","ka"},
-{"help_language", "ka"},
-{"language", "ka"},
+  /** NEEDSDOC Field contents          */
+  static final Object[][] contents =
+  {
+    { "ui_language", "ka" }, { "help_language", "ka" }, { "language", "ka" },
+    { "alphabet",
+      new char[]{ 0x10D0, 0x10D1, 0x10D2, 0x10D3, 0x10D4, 0x10D5, 0x10D6,
+                  0x10f1, 0x10D7, 0x10D8, 0x10D9, 0x10DA, 0x10DB, 0x10DC,
+                  0x10f2, 0x10DD, 0x10DE, 0x10DF, 0x10E0, 0x10E1, 0x10E2,
+                  0x10E3, 0x10E4, 0x10E5, 0x10E6, 0x10E7, 0x10E8, 0x10E9,
+                  0x10EA, 0x10EB, 0x10EC, 0x10ED, 0x10EE, 0x10F4, 0x10EF,
+                  0x10F0 } },
+    { "tradAlphabet",
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
 
- 
-{"alphabet", new char[]{0x10D0,0x10D1,0x10D2,0x10D3,0x10D4,0x10D5,0x10D6,0x10f1,0x10D7,0x10D8,0x10D9,0x10DA,0x10DB,0x10DC,0x10f2,0x10DD,0x10DE,0x10DF,0x10E0,0x10E1,0x10E2,0x10E3,0x10E4,0x10E5,0x10E6,0x10E7,0x10E8,0x10E9,0x10EA,0x10EB,0x10EC,0x10ED,0x10EE,0x10F4,0x10EF,0x10F0}},
-{"tradAlphabet", new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}},
+    //language orientation
+    { "orientation", "LeftToRight" },
 
-//language orientation
-{"orientation", "LeftToRight"},
+    //language numbering   
+    { "numbering", "additive" },
 
-//language numbering   
-{"numbering", "additive"},
+    // largest numerical value
+    //{"MaxNumericalValue", new Integer(10000000000)},
+    //These would not be used for EN. Only used for traditional numbering   
+    { "numberGroups", new int[]{ 1000, 100, 10, 1 } },
 
-// largest numerical value
-//{"MaxNumericalValue", new Integer(10000000000)},
-
-//These would not be used for EN. Only used for traditional numbering   
-{"numberGroups", new int[]{1000,100,10,1}},
-//These used for additive numbering
-{"digits", new char[]{0x10D0,0x10D1,0x10D2,0x10D3,0x10D4,0x10D5,0x10D6,0x10f1,0x10D7}},
-{"tens", new char[]{0x10D8,0x10D9,0x10DA,0x10DB,0x10DC,0x10f2,0x10DD,0x10DE,0x10DF}},  
-{"hundreds", new char[]{0x10E0,0x10E1,0x10E2,0x10E3,0x10E4,0x10E5,0x10E6,0x10E7,0x10E8}},
-{"thousands", new char[]{0x10E9,0x10EA,0x10EB,0x10EC,0x10ED,0x10EE,0x10F4,0x10EF,0x10F0}},
-
-{"tables", new String[]{"thousands","hundreds","tens", "digits"}}
-};    
-}  
+    //These used for additive numbering
+    { "digits",
+      new char[]{ 0x10D0, 0x10D1, 0x10D2, 0x10D3, 0x10D4, 0x10D5, 0x10D6,
+                  0x10f1, 0x10D7 } },
+    { "tens",
+      new char[]{ 0x10D8, 0x10D9, 0x10DA, 0x10DB, 0x10DC, 0x10f2, 0x10DD,
+                  0x10DE, 0x10DF } },
+    { "hundreds",
+      new char[]{ 0x10E0, 0x10E1, 0x10E2, 0x10E3, 0x10E4, 0x10E5, 0x10E6,
+                  0x10E7, 0x10E8 } },
+    { "thousands",
+      new char[]{ 0x10E9, 0x10EA, 0x10EB, 0x10EC, 0x10ED, 0x10EE, 0x10F4,
+                  0x10EF, 0x10F0 } },
+    { "tables", new String[]{ "thousands", "hundreds", "tens", "digits" } }
+  };
+}

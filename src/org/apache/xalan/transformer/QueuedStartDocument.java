@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -66,6 +66,11 @@ import org.apache.xalan.trace.GenerateEvent;
  */
 public class QueuedStartDocument extends QueuedSAXEvent
 {
+
+  /**
+   * Constructor QueuedStartDocument
+   *
+   */
   public QueuedStartDocument()
   {
     super(DOC);
@@ -78,72 +83,79 @@ public class QueuedStartDocument extends QueuedSAXEvent
   {
     super.clearPending();
   }
-  
+
+  /**
+   * NEEDSDOC Method setPending 
+   *
+   *
+   * NEEDSDOC @param b
+   */
   void setPending(boolean b)
   {
     super.setPending(b);
-  } 
+  }
 
   /**
    * Flush the event.
+   *
+   * @throws SAXException
    */
-  void flush()
-    throws SAXException
+  void flush() throws SAXException
   {
-    if(isPending)
+
+    if (isPending)
     {
       m_contentHandler.startDocument();
-      
       fireGenerateEvent(GenerateEvent.EVENTTYPE_STARTDOCUMENT, null, null);
-      
+
       ContentHandler chandler = getContentHandler();
-      if((null != chandler) 
-         && (chandler instanceof TransformerClient))
+
+      if ((null != chandler) && (chandler instanceof TransformerClient))
       {
-        ((TransformerClient)chandler).setTransformState(m_transformer);
+        ((TransformerClient) chandler).setTransformState(m_transformer);
       }
 
       super.flush();
     }
   }
-  
-  /**
-   * Flush the end event.
-   */
-  void flushEnd()
-    throws SAXException
-  {
-    if(!this.isEnded)
-    {
-      m_contentHandler.endDocument();
-      
-      fireGenerateEvent(GenerateEvent.EVENTTYPE_ENDDOCUMENT, null, null);
 
-      super.flushEnd();
-    }
-  }
-
-  
   /**
    * Flag to indicate that we have some document content since the last
    * call to startDocument()
    */
   private boolean m_isTextEntity = false;
-    
+
+  /**
+   * NEEDSDOC Method setIsTextEntity 
+   *
+   *
+   * NEEDSDOC @param b
+   */
   void setIsTextEntity(boolean b)
   {
     m_isTextEntity = b;
   }
 
+  /**
+   * NEEDSDOC Method getIsTextEntity 
+   *
+   *
+   * NEEDSDOC (getIsTextEntity) @return
+   */
   boolean getIsTextEntity()
   {
     return m_isTextEntity;
   }
-  
+
+  /**
+   * NEEDSDOC Method reset 
+   *
+   */
   void reset()
   {
+
     super.reset();
+
     m_isTextEntity = false;
   }
-
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,8 +57,11 @@
 package org.apache.xalan.trace;
 
 import org.xml.sax.*;
+
 import java.util.*;
+
 import java.io.*;
+
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
@@ -71,10 +74,11 @@ import org.apache.xalan.transformer.TransformerImpl;
  * @see org.apache.xalan.utils.FormatterToHTML
  * @see org.apache.xalan.utils.FormatterToText
  * @see org.apache.xalan.utils.FormatterToXML
-
+ *
  */
-public class GenerateEvent  implements java.util.EventListener
+public class GenerateEvent implements java.util.EventListener
 {
+
   /**
    * The XSLT Processor, which either directly or indirectly contains most needed information.
    * Accessing the m_stylesheetRoot member variable will get you to the stylesheet information.
@@ -190,9 +194,10 @@ public class GenerateEvent  implements java.util.EventListener
    * @param name The name of the element.
    * @param atts The SAX attribute list.
    */
-  public GenerateEvent(TransformerImpl processor, int eventType,
-                         String name, Attributes atts)
+  public GenerateEvent(TransformerImpl processor, int eventType, String name,
+                       Attributes atts)
   {
+
     m_name = name;
     m_atts = atts;
     m_processor = processor;
@@ -208,9 +213,10 @@ public class GenerateEvent  implements java.util.EventListener
    * @param start The start offset to be used in the char array.
    * @param length The end offset to be used in the chara array.
    */
-  public GenerateEvent(TransformerImpl processor, int eventType,
-                         char ch[], int start, int length)
+  public GenerateEvent(TransformerImpl processor, int eventType, char ch[],
+                       int start, int length)
   {
+
     m_characters = ch;
     m_start = start;
     m_length = length;
@@ -226,9 +232,10 @@ public class GenerateEvent  implements java.util.EventListener
    * @param name The name of the processing instruction.
    * @param data The processing instruction data.
    */
-  public GenerateEvent(TransformerImpl processor, int eventType,
-                         String name, String data)
+  public GenerateEvent(TransformerImpl processor, int eventType, String name,
+                       String data)
   {
+
     m_name = name;
     m_data = data;
     m_processor = processor;
@@ -242,12 +249,11 @@ public class GenerateEvent  implements java.util.EventListener
    * @param eventType One of the EVENTTYPE_XXX constants.
    * @param data The comment or entity ref data.
    */
-  public GenerateEvent(TransformerImpl processor, int eventType,
-                         String data)
+  public GenerateEvent(TransformerImpl processor, int eventType, String data)
   {
+
     m_data = data;
     m_processor = processor;
     m_eventtype = eventType;
   }
-
 }

@@ -62,34 +62,48 @@ package org.apache.xalan.utils;
  */
 public class IntVector
 {
-  private int m_blocksize;
+
+  /** NEEDSDOC Field m_blocksize          */
+  protected int m_blocksize;
+
+  /** NEEDSDOC Field m_map[]          */
   public int m_map[];  // expose to package for direct access.
+
+  /** NEEDSDOC Field m_firstFree          */
   protected int m_firstFree = 0;
-  private int m_mapSize;
+
+  /** NEEDSDOC Field m_mapSize          */
+  protected int m_mapSize;
 
   /**
-   * Default constructor.  Note that the default 
+   * Default constructor.  Note that the default
    * block size is very small, for small lists.
    */
   public IntVector()
   {
+
     m_blocksize = 32;
     m_mapSize = m_blocksize;
-    m_map = new int[m_blocksize]; 
+    m_map = new int[m_blocksize];
   }
 
   /**
    * Construct a IntVector, using the given block size.
+   *
+   * NEEDSDOC @param blocksize
    */
   public IntVector(int blocksize)
   {
+
     m_blocksize = blocksize;
     m_mapSize = blocksize;
-    m_map = new int[blocksize]; 
+    m_map = new int[blocksize];
   }
-  
+
   /**
    * Get the length of the list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final int size()
   {
@@ -98,103 +112,138 @@ public class IntVector
 
   /**
    * Append a int onto the vector.
+   *
+   * NEEDSDOC @param value
    */
   public final void addElement(int value)
   {
-    if((m_firstFree+1) >= m_mapSize)
+
+    if ((m_firstFree + 1) >= m_mapSize)
     {
-      m_mapSize+=m_blocksize;
+      m_mapSize += m_blocksize;
+
       int newMap[] = new int[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
       m_map = newMap;
     }
+
     m_map[m_firstFree] = value;
+
     m_firstFree++;
   }
 
   /**
-   * Inserts the specified node in this vector at the specified index. 
-   * Each component in this vector with an index greater or equal to 
-   * the specified index is shifted upward to have an index one greater 
-   * than the value it had previously. 
+   * Inserts the specified node in this vector at the specified index.
+   * Each component in this vector with an index greater or equal to
+   * the specified index is shifted upward to have an index one greater
+   * than the value it had previously.
+   *
+   * NEEDSDOC @param value
+   * NEEDSDOC @param at
    */
   public final void insertElementAt(int value, int at)
   {
-    if((m_firstFree+1) >= m_mapSize)
+
+    if ((m_firstFree + 1) >= m_mapSize)
     {
-      m_mapSize+=m_blocksize;
+      m_mapSize += m_blocksize;
+
       int newMap[] = new int[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
       m_map = newMap;
     }
-    if(at <= (m_firstFree-1))
+
+    if (at <= (m_firstFree - 1))
     {
-      System.arraycopy(m_map, at, m_map, at+1, m_firstFree-at);
+      System.arraycopy(m_map, at, m_map, at + 1, m_firstFree - at);
     }
+
     m_map[at] = value;
+
     m_firstFree++;
   }
 
   /**
-   * Inserts the specified node in this vector at the specified index. 
-   * Each component in this vector with an index greater or equal to 
-   * the specified index is shifted upward to have an index one greater 
-   * than the value it had previously. 
+   * Inserts the specified node in this vector at the specified index.
+   * Each component in this vector with an index greater or equal to
+   * the specified index is shifted upward to have an index one greater
+   * than the value it had previously.
    */
   public final void removeAllElements()
   {
-    for(int i = 0; i < m_firstFree; i++)
+
+    for (int i = 0; i < m_firstFree; i++)
     {
       m_map[i] = java.lang.Integer.MIN_VALUE;
     }
+
     m_firstFree = 0;
   }
-  
+
   /**
-   * Removes the first occurrence of the argument from this vector. 
-   * If the object is found in this vector, each component in the vector 
-   * with an index greater or equal to the object's index is shifted 
-   * downward to have an index one smaller than the value it had 
-   * previously. 
+   * Removes the first occurrence of the argument from this vector.
+   * If the object is found in this vector, each component in the vector
+   * with an index greater or equal to the object's index is shifted
+   * downward to have an index one smaller than the value it had
+   * previously.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean removeElement(int s)
   {
-    for(int i = 0; i < m_firstFree; i++)
+
+    for (int i = 0; i < m_firstFree; i++)
     {
-      if(m_map[i] == s)
+      if (m_map[i] == s)
       {
-        if((i+1) < m_firstFree)
-          System.arraycopy(m_map, i+1, m_map, i-1, m_firstFree-i);
+        if ((i + 1) < m_firstFree)
+          System.arraycopy(m_map, i + 1, m_map, i - 1, m_firstFree - i);
         else
           m_map[i] = java.lang.Integer.MIN_VALUE;
+
         m_firstFree--;
+
         return true;
       }
     }
+
     return false;
   }
-  
+
   /**
-   * Deletes the component at the specified index. Each component in 
-   * this vector with an index greater or equal to the specified 
-   * index is shifted downward to have an index one smaller than 
-   * the value it had previously. 
+   * Deletes the component at the specified index. Each component in
+   * this vector with an index greater or equal to the specified
+   * index is shifted downward to have an index one smaller than
+   * the value it had previously.
+   *
+   * NEEDSDOC @param i
    */
   public final void removeElementAt(int i)
   {
-    if(i > m_firstFree)
-      System.arraycopy(m_map, i+1, m_map, i, m_firstFree);
+
+    if (i > m_firstFree)
+      System.arraycopy(m_map, i + 1, m_map, i, m_firstFree);
     else
       m_map[i] = java.lang.Integer.MIN_VALUE;
+
     m_firstFree--;
   }
-  
+
   /**
-   * Sets the component at the specified index of this vector to be the 
-   * specified object. The previous component at that position is discarded. 
-   * 
-   * The index must be a value greater than or equal to 0 and less 
-   * than the current size of the vector. 
+   * Sets the component at the specified index of this vector to be the
+   * specified object. The previous component at that position is discarded.
+   *
+   * The index must be a value greater than or equal to 0 and less
+   * than the current size of the vector.
+   *
+   * NEEDSDOC @param node
+   * NEEDSDOC @param index
    */
   public final void setElementAt(int node, int index)
   {
@@ -203,77 +252,99 @@ public class IntVector
 
   /**
    * Get the nth element.
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final int elementAt(int i)
   {
     return m_map[i];
   }
-  
+
   /**
    * Tell if the table contains the given node.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean contains(int s)
   {
-    for(int i = 0; i < m_firstFree; i++)
+
+    for (int i = 0; i < m_firstFree; i++)
     {
-      if(m_map[i] == s)
+      if (m_map[i] == s)
         return true;
     }
+
     return false;
   }
-  
+
   /**
-   * Searches for the first occurence of the given argument, 
-   * beginning the search at index, and testing for equality 
-   * using the equals method. 
-   * @return the index of the first occurrence of the object 
-   * argument in this vector at position index or later in the 
-   * vector; returns -1 if the object is not found. 
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
+   *
+   * NEEDSDOC @param elem
+   * NEEDSDOC @param index
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
    */
   public final int indexOf(int elem, int index)
   {
-    for(int i = index; i < m_firstFree; i++)
+
+    for (int i = index; i < m_firstFree; i++)
     {
-      if(m_map[i] == elem)
+      if (m_map[i] == elem)
         return i;
     }
+
     return java.lang.Integer.MIN_VALUE;
   }
 
   /**
-   * Searches for the first occurence of the given argument, 
-   * beginning the search at index, and testing for equality 
-   * using the equals method. 
-   * @return the index of the first occurrence of the object 
-   * argument in this vector at position index or later in the 
-   * vector; returns -1 if the object is not found. 
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
+   *
+   * NEEDSDOC @param elem
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
    */
   public final int indexOf(int elem)
   {
-    for(int i = 0; i < m_firstFree; i++)
+
+    for (int i = 0; i < m_firstFree; i++)
     {
-      if(m_map[i] == elem)
+      if (m_map[i] == elem)
         return i;
     }
+
     return java.lang.Integer.MIN_VALUE;
   }
 
   /**
-   * Searches for the first occurence of the given argument, 
-   * beginning the search at index, and testing for equality 
-   * using the equals method. 
-   * @return the index of the first occurrence of the object 
-   * argument in this vector at position index or later in the 
-   * vector; returns -1 if the object is not found. 
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
+   *
+   * NEEDSDOC @param elem
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
    */
   public final int lastIndexOf(int elem)
   {
-    for(int i = (m_firstFree - 1); i >= 0; i--)
+
+    for (int i = (m_firstFree - 1); i >= 0; i--)
     {
-      if(m_map[i] == elem)
+      if (m_map[i] == elem)
         return i;
     }
+
     return java.lang.Integer.MIN_VALUE;
   }
-
 }

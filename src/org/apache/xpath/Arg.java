@@ -61,73 +61,92 @@ import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="internal"/>
- * This class holds an instance of an argument on 
+ * This class holds an instance of an argument on
  * the stack.
  */
 public class Arg
 {
+
+  /** NEEDSDOC Field m_qname          */
   private QName m_qname;
-  
+
   /**
    * Get the qualified name for this argument.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getQName()
   {
-	  return m_qname;
+    return m_qname;
   }
 
   /**
    * Set the qualified name for this argument.
+   *
+   * NEEDSDOC @param name
    */
   public void setQName(QName name)
   {
-	  m_qname = name;
+    m_qname = name;
   }
-  
+
+  /** NEEDSDOC Field m_val          */
   private XObject m_val;
-  
+
   /**
    * Get the value for this argument.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XObject getVal()
   {
-	  return m_val;
+    return m_val;
   }
 
   /**
    * Set the value for this argument.
+   *
+   * NEEDSDOC @param val
    */
   public void setVal(XObject val)
   {
-	  m_val = val;
+    m_val = val;
   }
-  
+
+  /** NEEDSDOC Field m_expression          */
   private String m_expression;
-  
+
   /**
    * Get the value expression for this argument.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getExpression()
   {
-	  return m_expression;
+    return m_expression;
   }
 
   /**
    * Set the value expression for this argument.
+   *
+   * NEEDSDOC @param expr
    */
   public void setExpression(String expr)
   {
-	  m_expression = expr;
+    m_expression = expr;
   }
 
+  /** NEEDSDOC Field m_isParamVar          */
   private boolean m_isParamVar;
-  
+
   /**
    * Construct a dummy parameter argument.
    */
   public Arg()
   {
-    m_qname = new QName("");; // so that string compares can be done.
+
+    m_qname = new QName("");
+    ;  // so that string compares can be done.
     m_val = null;
     m_expression = null;
     m_isParamVar = false;
@@ -135,9 +154,14 @@ public class Arg
 
   /**
    * Construct a parameter argument.
+   *
+   * NEEDSDOC @param qname
+   * NEEDSDOC @param expression
+   * NEEDSDOC @param isParamVar
    */
   public Arg(QName qname, String expression, boolean isParamVar)
   {
+
     m_qname = qname;
     m_val = null;
     m_expression = expression;
@@ -146,21 +170,29 @@ public class Arg
 
   /**
    * Construct a parameter argument.
+   *
+   * NEEDSDOC @param qname
+   * NEEDSDOC @param val
    */
   public Arg(QName qname, XObject val)
   {
+
     m_qname = qname;
     m_val = val;
     m_isParamVar = false;
     m_expression = null;
   }
 
-
   /**
    * Construct a parameter argument.
+   *
+   * NEEDSDOC @param qname
+   * NEEDSDOC @param val
+   * NEEDSDOC @param isParamVar
    */
   public Arg(QName qname, XObject val, boolean isParamVar)
   {
+
     m_qname = qname;
     m_val = val;
     m_isParamVar = isParamVar;
@@ -168,45 +200,54 @@ public class Arg
   }
 
   /**
-   * Override equals and agree that we're equal if 
-   * the passed object is a string and it matches 
+   * Override equals and agree that we're equal if
+   * the passed object is a string and it matches
    * the name of the arg.
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean equals(Object obj)
   {
+
     try
     {
-      if(m_qname != null)
+      if (m_qname != null)
       {
-        QName qname = (QName)obj;
-        return m_qname.equals(qname.getLocalPart()) 
-               && ((null != m_qname.getNamespace()) && (null != qname.getNamespace())) 
+        QName qname = (QName) obj;
+
+        return m_qname.equals(qname.getLocalPart()) && ((null != m_qname.getNamespace()) && (null != qname.getNamespace()))
                ? m_qname.getNamespace().equals(qname.getNamespace())
-                 : ((null == m_qname.getNamespace()) && (null == qname.getNamespace()));
+               : ((null == m_qname.getNamespace()) && (null == qname.getNamespace()));
       }
     }
-    catch(ClassCastException cce)
-    {
-    }
-    
+    catch (ClassCastException cce){}
+
     return false;
   }
 
   /**
-   * Override equals and agree that we're equal if 
-   * the passed object is a QName and it matches 
+   * Override equals and agree that we're equal if
+   * the passed object is a QName and it matches
    * the name of the arg.
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean equals(QName qname)
   {
-    if(m_qname != null)
+
+    if (m_qname != null)
     {
-      return m_qname.getLocalPart().equals(qname.getLocalPart()) 
-             && (((null != m_qname.getNamespace()) && (null != qname.getNamespace())) 
+      return m_qname.getLocalPart().equals(qname.getLocalPart())
+             && (((null != m_qname.getNamespace()) && (null != qname.getNamespace()))
                  ? m_qname.getNamespace().equals(qname.getNamespace())
-                   : ((null == m_qname.getNamespace()) && (null == qname.getNamespace())));
+                 : ((null == m_qname.getNamespace())
+                    && (null == qname.getNamespace())));
     }
+
     return false;
   }
-
 }

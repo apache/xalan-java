@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -62,12 +62,12 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.utils.UnImplNode;
-
 import org.apache.xalan.stree.DocumentFragmentImpl;
 
 /**
@@ -76,34 +76,59 @@ import org.apache.xalan.stree.DocumentFragmentImpl;
  */
 public class ResultTreeFrag extends DocumentFragmentImpl implements NodeList
 {
+
+  /** NEEDSDOC Field m_docFactory          */
   Document m_docFactory;
+
+  /** NEEDSDOC Field m_xsupport          */
   XPathContext m_xsupport;
 
+  /**
+   * Constructor ResultTreeFrag
+   *
+   *
+   * NEEDSDOC @param docFactory
+   * NEEDSDOC @param support
+   */
   public ResultTreeFrag(Document docFactory, XPathContext support)
   {
     m_xsupport = support;
     m_docFactory = docFactory;
   }
 
+  /**
+   * Constructor ResultTreeFrag
+   *
+   *
+   * NEEDSDOC @param docFactory
+   * NEEDSDOC @param children
+   * NEEDSDOC @param support
+   */
   public ResultTreeFrag(Document docFactory, NodeSet children,
                         XPathContext support)
   {
     m_xsupport = support;
     m_docFactory = docFactory;
   }
-  
-  public NodeList           getChildNodes()
+
+  /**
+   * NEEDSDOC Method getChildNodes 
+   *
+   *
+   * NEEDSDOC (getChildNodes) @return
+   */
+  public NodeList getChildNodes()
   {
     return this;
   }
-  
+
   /**
-   *  Returns the <code>index</code> th item in the collection. If 
-   * <code>index</code> is greater than or equal to the number of nodes in 
+   *  Returns the <code>index</code> th item in the collection. If
+   * <code>index</code> is greater than or equal to the number of nodes in
    * the list, this returns <code>null</code> .
    * @param index  Index into the collection.
-   * @return  The node at the <code>index</code> th position in the 
-   *   <code>NodeList</code> , or <code>null</code> if that is not a valid 
+   * @return  The node at the <code>index</code> th position in the
+   *   <code>NodeList</code> , or <code>null</code> if that is not a valid
    *   index.
    */
   public Node item(int index)
@@ -112,25 +137,28 @@ public class ResultTreeFrag extends DocumentFragmentImpl implements NodeList
   }
 
   /**
-   *  The number of nodes in the list. The range of valid child node indices 
-   * is 0 to <code>length-1</code> inclusive. 
+   *  The number of nodes in the list. The range of valid child node indices
+   * is 0 to <code>length-1</code> inclusive.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getLength()
   {
     return getChildCount();
   }
-  
+
   /**
-   * The <code>Document</code> object associated with this node. This is 
-   * also the <code>Document</code> object used to create new nodes. When 
-   * this node is a <code>Document</code> or a <code>DocumentType</code> 
-   * which is not used with any <code>Document</code> yet, this is 
+   * The <code>Document</code> object associated with this node. This is
+   * also the <code>Document</code> object used to create new nodes. When
+   * this node is a <code>Document</code> or a <code>DocumentType</code>
+   * which is not used with any <code>Document</code> yet, this is
    * <code>null</code>.
    * @version DOM Level 2
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public Document     getOwnerDocument()
+  public Document getOwnerDocument()
   {
     return m_docFactory;
   }
-
 }

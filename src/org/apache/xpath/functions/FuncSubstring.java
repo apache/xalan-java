@@ -54,10 +54,12 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import org.w3c.dom.Node;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -69,49 +71,54 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncSubstring extends Function3Args
 {
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     String s1 = m_arg0.execute(xctxt).str();
     double start = m_arg1.execute(xctxt).num();
     int lenOfS1 = s1.length();
     String substr;
-    if(lenOfS1 <= 0)
+
+    if (lenOfS1 <= 0)
       return XString.EMPTYSTRING;
     else
     {
-      
       int startIndex;
-      if(Double.isNaN(start))
+
+      if (Double.isNaN(start))
       {
+
         // Double.MIN_VALUE doesn't work with math below 
         // so just use a big number and hope I never get caught.
-        start = -1000000;  
+        start = -1000000;
         startIndex = 0;
       }
       else
       {
         start = Math.round(start);
-        startIndex = (start > 0) ? (int)start-1 : 0;
+        startIndex = (start > 0) ? (int) start - 1 : 0;
       }
-      
-      if(null != m_arg2)
+
+      if (null != m_arg2)
       {
         double len = m_arg2.execute(xctxt).num();
-        int end = (int)(Math.round(len)+start)-1;
-        
+        int end = (int) (Math.round(len) + start) - 1;
+
         // Normalize end index.
-        if(end < 0)
+        if (end < 0)
           end = 0;
-        else if(end > lenOfS1)
+        else if (end > lenOfS1)
           end = lenOfS1;
-        
+
         substr = s1.substring(startIndex, end);
       }
       else
@@ -119,14 +126,21 @@ public class FuncSubstring extends Function3Args
         substr = s1.substring(startIndex);
       }
     }
+
     return new XString(substr);
   }
-  
-  public void checkNumberArgs(int argNum)
-    throws WrongNumberArgsException
+
+  /**
+   * NEEDSDOC Method checkNumberArgs 
+   *
+   *
+   * NEEDSDOC @param argNum
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if(argNum < 2)
+    if (argNum < 2)
       throw new WrongNumberArgsException("2 or 3");
   }
-
 }

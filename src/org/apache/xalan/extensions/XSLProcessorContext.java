@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -59,11 +59,14 @@ package org.apache.xalan.extensions;
 import org.w3c.dom.Node;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.traversal.NodeIterator;
+
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
+
 import org.xml.sax.SAXException;
+
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XBoolean;
@@ -80,67 +83,90 @@ import org.apache.xpath.XPathContext;
  *
  * @author Sanjiva Weerawarana (sanjiva@watson.ibm.com)
  */
-public class XSLProcessorContext {
-  
+public class XSLProcessorContext
+{
+
   /**
    * Create a processor context to be passed to an extension.
    * (Notice it is a package-only constructor).
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param stylesheetTree
+   * NEEDSDOC @param sourceTree
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
    */
-  public XSLProcessorContext (TransformerImpl transformer,
-                       Stylesheet stylesheetTree,
-                       Node sourceTree, Node sourceNode, QName mode) 
+  public XSLProcessorContext(TransformerImpl transformer,
+                             Stylesheet stylesheetTree, Node sourceTree,
+                             Node sourceNode, QName mode)
   {
+
     this.transformer = transformer;
     this.stylesheetTree = stylesheetTree;
     this.mode = mode;
     this.sourceTree = sourceTree;
     this.sourceNode = sourceNode;
   }
-  
+
+  /** NEEDSDOC Field transformer          */
   private TransformerImpl transformer;
-  
+
   /**
    * Get the transformer.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public TransformerImpl getTransformer()
   {
     return transformer;
   }
-  
+
+  /** NEEDSDOC Field stylesheetTree          */
   private Stylesheet stylesheetTree;
-  
+
   /**
    * Get the Stylesheet being executed.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Stylesheet getStylesheet()
   {
     return stylesheetTree;
   }
-  
+
+  /** NEEDSDOC Field sourceTree          */
   private Node sourceTree;
-  
+
   /**
    * Get the root of the source tree being executed.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getSourceTree()
   {
     return sourceTree;
   }
-  
+
+  /** NEEDSDOC Field sourceNode          */
   private Node sourceNode;
-  
+
   /**
    * Get the current context node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getContextNode()
   {
     return sourceNode;
   }
-  
+
+  /** NEEDSDOC Field mode          */
   private QName mode;
-  
+
   /**
    * Get the current mode being executed.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getMode()
   {
@@ -151,49 +177,55 @@ public class XSLProcessorContext {
    * Output an object to the result tree by doing the right conversions.
    * This is public for access by extensions.
    *
+   *
+   * NEEDSDOC @param stylesheetTree
    * @param obj the Java object to output. If its of an X<something> type
    *        then that conversion is done first and then sent out.
+   *
+   * @throws SAXException
+   * @throws java.io.FileNotFoundException
+   * @throws java.io.IOException
+   * @throws java.net.MalformedURLException
    */
-  public void outputToResultTree (Stylesheet stylesheetTree, Object obj)
-    throws SAXException,
-    java.net.MalformedURLException,
-    java.io.FileNotFoundException,
-    java.io.IOException
+  public void outputToResultTree(Stylesheet stylesheetTree, Object obj)
+          throws SAXException, java.net.MalformedURLException,
+                 java.io.FileNotFoundException, java.io.IOException
   {
+
     ResultTreeHandler rtreeHandler = transformer.getResultTreeHandler();
-    
     XObject value;
+
     // Make the return object into an XObject because it
     // will be easier below.  One of the reasons to do this
     // is to keep all the conversion functionality in the
     // XObject classes.
-    if(obj instanceof XObject)
+    if (obj instanceof XObject)
     {
-      value = (XObject)obj;
+      value = (XObject) obj;
     }
-    else if(obj instanceof String)
+    else if (obj instanceof String)
     {
-      value = new XString((String)obj);
+      value = new XString((String) obj);
     }
-    else if(obj instanceof Boolean)
+    else if (obj instanceof Boolean)
     {
-      value = new XBoolean(((Boolean)obj).booleanValue());
+      value = new XBoolean(((Boolean) obj).booleanValue());
     }
-    else if(obj instanceof Double)
+    else if (obj instanceof Double)
     {
-      value = new XNumber(((Double)obj).doubleValue());
+      value = new XNumber(((Double) obj).doubleValue());
     }
-    else if(obj instanceof DocumentFragment)
+    else if (obj instanceof DocumentFragment)
     {
-      value = new XRTreeFrag((DocumentFragment)obj);
+      value = new XRTreeFrag((DocumentFragment) obj);
     }
-    else if(obj instanceof Node)
+    else if (obj instanceof Node)
     {
-      value = new XNodeSet((Node)obj);
+      value = new XNodeSet((Node) obj);
     }
-    else if(obj instanceof NodeIterator)
+    else if (obj instanceof NodeIterator)
     {
-      value = new XNodeSet((NodeIterator)obj);
+      value = new XNodeSet((NodeIterator) obj);
     }
     else
     {
@@ -202,58 +234,71 @@ public class XSLProcessorContext {
 
     int type = value.getType();
     String s;
-    switch(type)
+
+    switch (type)
     {
-    case XObject.CLASS_BOOLEAN:        case XObject.CLASS_NUMBER:        case XObject.CLASS_STRING:
+    case XObject.CLASS_BOOLEAN :
+    case XObject.CLASS_NUMBER :
+    case XObject.CLASS_STRING :
       s = value.str();
+
       rtreeHandler.characters(s.toCharArray(), 0, s.length());
       break;
-    case XObject.CLASS_NODESET:          // System.out.println(value);
+    case XObject.CLASS_NODESET :  // System.out.println(value);
       NodeIterator nl = value.nodeset();
       Node pos;
-      while(null != (pos = nl.nextNode()))
+
+      while (null != (pos = nl.nextNode()))
       {
         Node top = pos;
-        while(null != pos)
+
+        while (null != pos)
         {
           rtreeHandler.flushPending();
           rtreeHandler.cloneToResultTree(pos, true);
+
           Node nextNode = pos.getFirstChild();
-          while(null == nextNode)
+
+          while (null == nextNode)
           {
-            if(Node.ELEMENT_NODE == pos.getNodeType())
+            if (Node.ELEMENT_NODE == pos.getNodeType())
             {
               rtreeHandler.endElement("", "", pos.getNodeName());
             }
-            if(top == pos)
+
+            if (top == pos)
               break;
+
             nextNode = pos.getNextSibling();
-            if(null == nextNode)
+
+            if (null == nextNode)
             {
               pos = pos.getParentNode();
-              if(top == pos)
+
+              if (top == pos)
               {
-                if(Node.ELEMENT_NODE == pos.getNodeType())
+                if (Node.ELEMENT_NODE == pos.getNodeType())
                 {
                   rtreeHandler.endElement("", "", pos.getNodeName());
                 }
+
                 nextNode = null;
+
                 break;
               }
             }
           }
+
           pos = nextNode;
         }
       }
       break;
-
-    case XObject.CLASS_RTREEFRAG:
-      rtreeHandler.outputResultTreeFragment(value, 
+    case XObject.CLASS_RTREEFRAG :
+      rtreeHandler.outputResultTreeFragment(value,
                                             transformer.getXPathContext());
       break;
     }
   }
-
 
   /**
    * I need a "Node transformNode (Node)" method somewhere that the

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -66,7 +66,7 @@ package org.apache.xpath.compiler;
  *       including the operations code and the length integer.)
  * {UPPER CASE} indicates the given production,
  * {description} is the description of a new production,
- *      (For instance, {boolean expression} means some expression 
+ *      (For instance, {boolean expression} means some expression
  *       that should be resolved to a boolean.)
  *  * means that it occurs zero or more times,
  *  + means that it occurs one or more times,
@@ -83,7 +83,7 @@ public class OpCodes
    * Some operators may like to have a terminator.
    */
   public static final int ENDOP = -1;
-  
+
   /**
    * [EMPTY]
    * Empty slot to indicate NULL.
@@ -93,7 +93,7 @@ public class OpCodes
   /**
    * <meta name="usage" content="advanced"/>
    * [ELEMWILDCARD]
-   * Means ELEMWILDCARD ("*"), used instead 
+   * Means ELEMWILDCARD ("*"), used instead
    * of string index in some places.
    */
   public static final int ELEMWILDCARD = -3;
@@ -103,8 +103,8 @@ public class OpCodes
    * [OP_XPATH]
    * [length]
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNodeSet
    *  XNumber
    *  XString
@@ -113,39 +113,39 @@ public class OpCodes
    *  XObject
    */
   public static final int OP_XPATH = 1;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_OR]
    * [length]
    *  {boolean expression}
    *  {boolean expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_OR = 2;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_AND]
    * [length]
    *  {boolean expression}
    *  {boolean expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_AND = 3;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_NOTEQUALS]
    * [length]
    *  {expression}
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_NOTEQUALS = 4;
@@ -156,8 +156,8 @@ public class OpCodes
    * [length]
    *  {expression}
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_EQUALS = 5;
@@ -168,8 +168,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_LTE = 6;
@@ -180,8 +180,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_LT = 7;
@@ -192,8 +192,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_GTE = 8;
@@ -204,8 +204,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_GT = 9;
@@ -216,8 +216,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNumber
    */
   public static final int OP_PLUS = 10;
@@ -228,8 +228,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNumber
    */
   public static final int OP_MINUS = 11;
@@ -240,8 +240,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNumber
    */
   public static final int OP_MULT = 12;
@@ -252,8 +252,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNumber
    */
   public static final int OP_DIV = 13;
@@ -264,8 +264,8 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNumber
    */
   public static final int OP_MOD = 14;
@@ -276,54 +276,52 @@ public class OpCodes
    * [length]
    *  {number expression}
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNumber
    */
   public static final int OP_QUO = 15;
-
 
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_NEG]
    * [length]
    *  {number expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNumber
    */
   public static final int OP_NEG = 16;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_STRING] (cast operation)
    * [length]
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XString
    */
   public static final int OP_STRING = 17;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_BOOL] (cast operation)
    * [length]
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_BOOL = 18;
-
 
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_NUMBER] (cast operation)
    * [length]
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int OP_NUMBER = 19;
@@ -333,43 +331,44 @@ public class OpCodes
    * [OP_UNION]
    * [length]
    *  {PathExpr}+
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNodeSet
    */
   public static final int OP_UNION = 20;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_LITERAL]
    * [3]
    * [index to token]
-   * 
-   * returns: 
+   *
+   * returns:
    *  XString
    */
   public static final int OP_LITERAL = 21;
-  
+
+  /** NEEDSDOC Field FIRST_NODESET_OP          */
   static final int FIRST_NODESET_OP = 22;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_VARIABLE]
    * [3]
    * [index to token]
-   * 
-   * returns: 
+   *
+   * returns:
    *  XString
    */
   public static final int OP_VARIABLE = 22;
-    
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_GROUP]
    * [length]
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNodeSet
    *  XNumber
    *  XString
@@ -385,9 +384,9 @@ public class OpCodes
    * [length]
    * [index to namespace token]
    * [index to function name token]
-   *  {OP_ARGUMENT}*
-   * 
-   * returns: 
+   *  {OP_ARGUMENT}
+   *
+   * returns:
    *  XNodeSet
    *  XNumber
    *  XString
@@ -396,16 +395,16 @@ public class OpCodes
    *  XObject
    */
   public static final int OP_EXTFUNCTION = 24;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_FUNCTION]
    * [length]
    * [FUNC_name]
-   *  {OP_ARGUMENT}*
+   *  {OP_ARGUMENT}
    * [ENDOP]
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNodeSet
    *  XNumber
    *  XString
@@ -414,7 +413,8 @@ public class OpCodes
    *  XObject
    */
   public static final int OP_FUNCTION = 25;
-  
+
+  /** NEEDSDOC Field LAST_NODESET_OP          */
   static final int LAST_NODESET_OP = 25;
 
   /**
@@ -422,8 +422,8 @@ public class OpCodes
    * [OP_ARGUMENT] (Function argument.)
    * [length]
    *  {expression}
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNodeSet
    *  XNumber
    *  XString
@@ -438,32 +438,32 @@ public class OpCodes
    * [OP_NUMBERLIT] (Number literal.)
    * [3]
    * [index to token]
-   * 
-   * returns: 
+   *
+   * returns:
    *  XString
    */
-  public static final int OP_NUMBERLIT = 27;  
-    
+  public static final int OP_NUMBERLIT = 27;
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_LOCATIONPATH]
    * [length]
    *   {FROM_stepType}
    * | {function}
-   * {predicate}*
+   * {predicate}
    * [ENDOP]
-   * 
-   * (Note that element and attribute namespaces and 
+   *
+   * (Note that element and attribute namespaces and
    * names can be wildcarded '*'.)
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNodeSet
    */
   public static final int OP_LOCATIONPATH = 28;
+
   // public static final int LOCATIONPATHEX_MASK = 0x0000FFFF;
   // public static final int LOCATIONPATHEX_ISSIMPLE = 0x00010000;
   // public static final int OP_LOCATIONPATH_EX = (28 | 0x00010000);
-    
 
   /**
    * <meta name="usage" content="advanced"/>
@@ -471,122 +471,120 @@ public class OpCodes
    * [length]
    *  {expression}
    * [ENDOP] (For safety)
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean or XNumber
    */
   public static final int OP_PREDICATE = 29;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_MATCHPATTERN]
    * [length]
    *  {PathExpr}+
-   * 
-   * returns: 
+   *
+   * returns:
    *  XNodeSet
    */
   public static final int OP_MATCHPATTERN = 30;
-  
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_LOCATIONPATHPATTERN]
    * [length]
    *   {FROM_stepType}
-   * | {function}{predicate}*
+   * | {function}{predicate}
    * [ENDOP]
-   * returns: 
+   * returns:
    *  XNodeSet
    */
   public static final int OP_LOCATIONPATHPATTERN = 31;
 
-  
   /**
    * <meta name="usage" content="advanced"/>
    * [NODETYPE_COMMENT]
    * No size or arguments.
    * Note: must not overlap function OP number!
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODETYPE_COMMENT = 1030;
-    
+
   /**
    * <meta name="usage" content="advanced"/>
    * [NODETYPE_TEXT]
    * No size or arguments.
    * Note: must not overlap function OP number!
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODETYPE_TEXT = 1031;
-    
+
   /**
    * <meta name="usage" content="advanced"/>
    * [NODETYPE_PI]
    * [index to token]
    * Note: must not overlap function OP number!
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODETYPE_PI = 1032;
-    
+
   /**
    * <meta name="usage" content="advanced"/>
    * [NODETYPE_NODE]
    * No size or arguments.
    * Note: must not overlap function OP number!
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODETYPE_NODE = 1033;
-    
+
   /**
    * <meta name="usage" content="advanced"/>
    * [NODENAME]
    * [index to ns token or EMPTY]
    * [index to name token]
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODENAME = 34;
-    
+
   /**
    * <meta name="usage" content="advanced"/>
    * [NODETYPE_ROOT]
    * No size or arguments.
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODETYPE_ROOT = 35;
-    
+
   /**
    * <meta name="usage" content="advanced"/>
    * [NODETYPE_ANY]
    * No size or arguments.
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODETYPE_ANYELEMENT = 36;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [NODETYPE_ANY]
    * No size or arguments.
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int NODETYPE_FUNCTEST = 1034;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * [FROM_stepType]
@@ -594,46 +592,75 @@ public class OpCodes
    * [length of just the step, without the predicates]
    * {node test}
    * {predicates}?
-   * 
-   * returns: 
+   *
+   * returns:
    *  XBoolean
    */
   public static final int AXES_START_TYPES = 37;
+
+  /** NEEDSDOC Field FROM_ANCESTORS          */
   public static final int FROM_ANCESTORS = 37;
+
+  /** NEEDSDOC Field FROM_ANCESTORS_OR_SELF          */
   public static final int FROM_ANCESTORS_OR_SELF = 38;
+
+  /** NEEDSDOC Field FROM_ATTRIBUTES          */
   public static final int FROM_ATTRIBUTES = 39;
+
+  /** NEEDSDOC Field FROM_CHILDREN          */
   public static final int FROM_CHILDREN = 40;
+
+  /** NEEDSDOC Field FROM_DESCENDANTS          */
   public static final int FROM_DESCENDANTS = 41;
+
+  /** NEEDSDOC Field FROM_DESCENDANTS_OR_SELF          */
   public static final int FROM_DESCENDANTS_OR_SELF = 42;
+
+  /** NEEDSDOC Field FROM_FOLLOWING          */
   public static final int FROM_FOLLOWING = 43;
-  public static final int FROM_FOLLOWING_SIBLINGS = 44; 
+
+  /** NEEDSDOC Field FROM_FOLLOWING_SIBLINGS          */
+  public static final int FROM_FOLLOWING_SIBLINGS = 44;
+
+  /** NEEDSDOC Field FROM_PARENT          */
   public static final int FROM_PARENT = 45;
+
+  /** NEEDSDOC Field FROM_PRECEDING          */
   public static final int FROM_PRECEDING = 46;
+
+  /** NEEDSDOC Field FROM_PRECEDING_SIBLINGS          */
   public static final int FROM_PRECEDING_SIBLINGS = 47;
+
+  /** NEEDSDOC Field FROM_SELF          */
   public static final int FROM_SELF = 48;
-  public static final int FROM_NAMESPACE = 49;  
-  public static final int FROM_ROOT = 50;  
-  
+
+  /** NEEDSDOC Field FROM_NAMESPACE          */
+  public static final int FROM_NAMESPACE = 49;
+
+  /** NEEDSDOC Field FROM_ROOT          */
+  public static final int FROM_ROOT = 50;
+
   /**
    * <meta name="usage" content="advanced"/>
    * For match patterns.
    */
-  public static final int MATCH_ATTRIBUTE = 51;  
-  
+  public static final int MATCH_ATTRIBUTE = 51;
+
   /**
    * <meta name="usage" content="advanced"/>
    * For match patterns.
    */
-  public static final int MATCH_ANY_ANCESTOR = 52;  
-  
+  public static final int MATCH_ANY_ANCESTOR = 52;
+
   /**
    * <meta name="usage" content="advanced"/>
    * For match patterns.
    */
-  public static final int MATCH_IMMEDIATE_ANCESTOR = 53; 
-  
+  public static final int MATCH_IMMEDIATE_ANCESTOR = 53;
+
+  /** NEEDSDOC Field AXES_END_TYPES          */
   public static final int AXES_END_TYPES = 53;
- 
-  private static final int NEXT_FREE_ID = 99;  
-  
+
+  /** NEEDSDOC Field NEXT_FREE_ID          */
+  private static final int NEXT_FREE_ID = 99;
 }

@@ -58,39 +58,53 @@ package org.apache.xalan.utils;
 
 /**
  * <meta name="usage" content="internal"/>
- * A very simple table that stores a list of StringToStringTables, optimized 
+ * A very simple table that stores a list of StringToStringTables, optimized
  * for small lists.
  */
 public class StringToStringTableVector
 {
+
+  /** NEEDSDOC Field m_blocksize          */
   private int m_blocksize;
+
+  /** NEEDSDOC Field m_map[]          */
   private StringToStringTable m_map[];
+
+  /** NEEDSDOC Field m_firstFree          */
   private int m_firstFree = 0;
+
+  /** NEEDSDOC Field m_mapSize          */
   private int m_mapSize;
 
   /**
-   * Default constructor.  Note that the default 
+   * Default constructor.  Note that the default
    * block size is very small, for small lists.
    */
   public StringToStringTableVector()
   {
+
     m_blocksize = 8;
     m_mapSize = m_blocksize;
-    m_map = new StringToStringTable[m_blocksize]; 
+    m_map = new StringToStringTable[m_blocksize];
   }
 
   /**
    * Construct a StringToStringTableVector, using the given block size.
+   *
+   * NEEDSDOC @param blocksize
    */
   public StringToStringTableVector(int blocksize)
   {
+
     m_blocksize = blocksize;
     m_mapSize = blocksize;
-    m_map = new StringToStringTable[blocksize]; 
+    m_map = new StringToStringTable[blocksize];
   }
-  
+
   /**
    * Get the length of the list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final int getLength()
   {
@@ -99,6 +113,8 @@ public class StringToStringTableVector
 
   /**
    * Get the length of the list.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final int size()
   {
@@ -107,46 +123,67 @@ public class StringToStringTableVector
 
   /**
    * Append a string onto the vector.
+   *
+   * NEEDSDOC @param value
    */
   public final void addElement(StringToStringTable value)
   {
-    if((m_firstFree+1) >= m_mapSize)
+
+    if ((m_firstFree + 1) >= m_mapSize)
     {
-      m_mapSize+=m_blocksize;
+      m_mapSize += m_blocksize;
+
       StringToStringTable newMap[] = new StringToStringTable[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
       m_map = newMap;
     }
+
     m_map[m_firstFree] = value;
+
     m_firstFree++;
   }
-  
+
   /**
    * Given a string, find the last added occurance value
    * that matches the key.
+   *
+   * NEEDSDOC @param key
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final String get(String key)
   {
-    for(int i=m_firstFree-1; i >= 0; --i)
+
+    for (int i = m_firstFree - 1; i >= 0; --i)
     {
       String nsuri = m_map[i].get(key);
+
       if (nsuri != null)
         return nsuri;
     }
+
     return null;
   }
 
   /**
    * Given a string, find the last added occurance value
    * that matches the key.
+   *
+   * NEEDSDOC @param key
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean containsKey(String key)
   {
-    for(int i=m_firstFree-1; i >= 0; --i)
+
+    for (int i = m_firstFree - 1; i >= 0; --i)
     {
       if (m_map[i].get(key) != null)
         return true;
     }
+
     return false;
   }
 
@@ -155,33 +192,43 @@ public class StringToStringTableVector
    */
   public final void removeLastElem()
   {
-    if(m_firstFree > 0)
+
+    if (m_firstFree > 0)
     {
       m_map[m_firstFree] = null;
+
       m_firstFree--;
     }
   }
-  
+
   /**
    * Get the nth element.
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final StringToStringTable elementAt(int i)
   {
     return m_map[i];
   }
-  
+
   /**
    * Tell if the table contains the given string.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final boolean contains(StringToStringTable s)
   {
-    for(int i = 0; i < m_firstFree; i++)
+
+    for (int i = 0; i < m_firstFree; i++)
     {
-      if(m_map[i].equals(s))
+      if (m_map[i].equals(s))
         return true;
     }
+
     return false;
   }
-
-
 }

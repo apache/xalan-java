@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -55,50 +55,68 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.res;
+
 import java.util.*;
+
 import org.apache.xalan.templates.Constants;
+
 //
 //  LotusXSLResourceBundle 
 //
-public class XSLTResourceBundle extends ListResourceBundle 
-{
-	
+
 /**
-   * Return a named ResourceBundle for a particular locale.  This method mimics the behavior
-   * of ResourceBundle.getBundle(). 
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class XSLTResourceBundle <needs-comment/>
+ */
+public class XSLTResourceBundle extends ListResourceBundle
+{
+
+  /**
+   *   Return a named ResourceBundle for a particular locale.  This method mimics the behavior
+   *   of ResourceBundle.getBundle().
+   *  
+   *   @param res the name of the resource to load.
    *
-   * @param res the name of the resource to load. 
-   * @param locale the locale to prefer when searching for the bundle
-   * @return the ResourceBundle
-   * @throws MissingResourceException  
+   * NEEDSDOC @param className
+   *   @param locale the locale to prefer when searching for the bundle
+   *   @return the ResourceBundle
+   *   @throws MissingResourceException
    */
-  public static final XSLTResourceBundle loadResourceBundle (String className, Locale locale) 
-	  throws MissingResourceException
+  public static final XSLTResourceBundle loadResourceBundle(
+          String className, Locale locale) throws MissingResourceException
   {
-	String suffix = getResourceSuffix(locale); 
-	//System.out.println("resource " + className + suffix);
+
+    String suffix = getResourceSuffix(locale);
+
+    //System.out.println("resource " + className + suffix);
     try
-    {		
-                                                           // first try with the given locale
-      return (XSLTResourceBundle)ResourceBundle.getBundle (className + suffix, locale);
+    {
+
+      // first try with the given locale
+      return (XSLTResourceBundle) ResourceBundle.getBundle(className
+              + suffix, locale);
     }
     catch (MissingResourceException e)
     {
-      try                                                  // try to fall back to en_US if we can't load
+      try  // try to fall back to en_US if we can't load
       {
-                                                           // Since we can't find the localized property file,
-                                                           // fall back to en_US.
-        return (XSLTResourceBundle)ResourceBundle.getBundle (Constants.XSLT_RESOURCE, new Locale ("en", "US"));
+
+        // Since we can't find the localized property file,
+        // fall back to en_US.
+        return (XSLTResourceBundle) ResourceBundle.getBundle(
+          Constants.XSLT_RESOURCE, new Locale("en", "US"));
       }
       catch (MissingResourceException e2)
       {
-                                                              // Now we are really in trouble.
-                                                              // very bad, definitely very bad...not going to get very far
-        throw new MissingResourceException ("Could not load any resource bundles.", className, "");
+
+        // Now we are really in trouble.
+        // very bad, definitely very bad...not going to get very far
+        throw new MissingResourceException(
+          "Could not load any resource bundles.", className, "");
       }
     }
   }
-  
+
   /**
    * Return the resource file suffic for the indicated locale
    * For most locales, this will be based the language code.  However
@@ -106,43 +124,52 @@ public class XSLTResourceBundle extends ListResourceBundle
    *
    * @param locale the locale
    * @return an String suffix which canbe appended to a resource name
-   */        
+   */
   private static final String getResourceSuffix(Locale locale)
   {
-        String lang = locale.getLanguage();        
-        String country = locale.getCountry();
-		String variant = locale.getVariant();
-        
-		String suffix = "_" + locale.getLanguage();
-        if (lang.equals("zh"))
-            suffix += "_" + country;
-		if (country.equals("JP"))
-            suffix += "_" + country + "_" + variant;
 
-        return suffix;
-  }		
-	
-public Object[][] getContents()
-{
-	return contents;
-}	
+    String lang = locale.getLanguage();
+    String country = locale.getCountry();
+    String variant = locale.getVariant();
+    String suffix = "_" + locale.getLanguage();
 
-static final Object[][] contents = {
+    if (lang.equals("zh"))
+      suffix += "_" + country;
 
-{"ui_language","en"},
-{"help_language", "en"},
-{"language", "en"},
-   
-{"alphabet", new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}},
-{"tradAlphabet", new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}},
+    if (country.equals("JP"))
+      suffix += "_" + country + "_" + variant;
 
-//language orientation
-{"orientation", "LeftToRight"},
+    return suffix;
+  }
 
-//language numbering   
-{"numbering", "additive"},
+  /**
+   * NEEDSDOC Method getContents 
+   *
+   *
+   * NEEDSDOC (getContents) @return
+   */
+  public Object[][] getContents()
+  {
+    return contents;
+  }
 
-};
+  /** NEEDSDOC Field contents          */
+  static final Object[][] contents =
+  {
+    { "ui_language", "en" }, { "help_language", "en" }, { "language", "en" },
+    { "alphabet",
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
+    { "tradAlphabet",
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
 
+    //language orientation
+    { "orientation", "LeftToRight" },
 
-}  
+    //language numbering   
+    { "numbering", "additive" },
+  };
+}

@@ -60,21 +60,27 @@ import java.util.ListResourceBundle;
 
 /**
  * <meta name="usage" content="internal"/>
- * This is an interface for error messages.  This class is misnamed, 
+ * This is an interface for error messages.  This class is misnamed,
  * and should be called XalanResourceBundle, or some such.
  */
 abstract public class XSLResourceBundle extends ListResourceBundle
-{  
-  /**
-   * Get the error string associated with the error code
-   */ 
-  abstract public String getMessageKey(int errorCode);
-  
-  
-  /**
-   * Get the error string associated with the error code
-   */ 
-  abstract public String getWarningKey(int errorCode);
-  
+{
 
+  /**
+   * Get the error string associated with the error code
+   *
+   * NEEDSDOC @param errorCode
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  abstract public String getMessageKey(int errorCode);
+
+  /**
+   * Get the error string associated with the error code
+   *
+   * NEEDSDOC @param errorCode
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  abstract public String getWarningKey(int errorCode);
 }

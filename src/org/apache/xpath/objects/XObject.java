@@ -60,7 +60,9 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Text;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
+
 import java.io.Serializable;
+
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
@@ -70,91 +72,121 @@ import org.apache.xpath.Expression;
 
 /**
  * <meta name="usage" content="general"/>
- * This class represents an XPath object, and is capable of 
+ * This class represents an XPath object, and is capable of
  * converting the object to various types, such as a string.
- * This class acts as the base class to other XPath type objects, 
+ * This class acts as the base class to other XPath type objects,
  * such as XString, and provides polymorphic casting capabilities.
  */
 public class XObject extends Expression implements Serializable
 {
-  protected Object m_obj; // This may be NULL!!!
-  
-  /**
-   * Create an XObject.
-   */
-  public XObject()
-  {
-  }
+
+  /** NEEDSDOC Field m_obj          */
+  protected Object m_obj;  // This may be NULL!!!
 
   /**
    * Create an XObject.
+   */
+  public XObject(){}
+
+  /**
+   * Create an XObject.
+   *
+   * NEEDSDOC @param obj
    */
   public XObject(Object obj)
   {
     m_obj = obj;
   }
-  
+
   /**
    * For support of literal objects in xpaths.
    * @returns This object.
+   *
+   * NEEDSDOC @param xctxt
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt)
-    throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
   {
     return this;
   }
-  
+
   /**
    * Create the right XObject based on the type of the object passed.
+   *
+   * NEEDSDOC @param val
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   static public XObject create(Object val)
   {
+
     XObject result;
-    if(val instanceof XObject)
+
+    if (val instanceof XObject)
     {
-      result = (XObject)val;
+      result = (XObject) val;
     }
-    else if(val instanceof String)
+    else if (val instanceof String)
     {
-      result = new XString((String)val);
+      result = new XString((String) val);
     }
-    else if(val instanceof Boolean)
+    else if (val instanceof Boolean)
     {
-      result = ((Boolean)val).booleanValue() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+      result = ((Boolean) val).booleanValue()
+               ? XBoolean.S_TRUE : XBoolean.S_FALSE;
     }
-    else if(val instanceof Double)
+    else if (val instanceof Double)
     {
-      result = new XNumber(((Double)val).doubleValue());
+      result = new XNumber(((Double) val).doubleValue());
     }
-    else if(val instanceof DocumentFragment)
+    else if (val instanceof DocumentFragment)
     {
-      result = new XRTreeFrag((DocumentFragment)val);
+      result = new XRTreeFrag((DocumentFragment) val);
     }
-    else if(val instanceof Node)
+    else if (val instanceof Node)
     {
-      result = new XNodeSet((Node)val);
+      result = new XNodeSet((Node) val);
     }
-    else if(val instanceof NodeIterator)
+    else if (val instanceof NodeIterator)
     {
-      result = new XNodeSet((NodeIterator)val);
+      result = new XNodeSet((NodeIterator) val);
     }
     else
     {
       result = new XObject(val);
     }
+
     return result;
   }
-  
+
+  /** NEEDSDOC Field CLASS_NULL          */
   public static final int CLASS_NULL = -1;
+
+  /** NEEDSDOC Field CLASS_UNKNOWN          */
   public static final int CLASS_UNKNOWN = 0;
+
+  /** NEEDSDOC Field CLASS_BOOLEAN          */
   public static final int CLASS_BOOLEAN = 1;
+
+  /** NEEDSDOC Field CLASS_NUMBER          */
   public static final int CLASS_NUMBER = 2;
+
+  /** NEEDSDOC Field CLASS_STRING          */
   public static final int CLASS_STRING = 3;
+
+  /** NEEDSDOC Field CLASS_NODESET          */
   public static final int CLASS_NODESET = 4;
+
+  /** NEEDSDOC Field CLASS_RTREEFRAG          */
   public static final int CLASS_RTREEFRAG = 5;
-  
+
   /**
    * Tell what kind of class this is.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getType()
   {
@@ -162,75 +194,110 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Given a request type, return the equivalent string. 
+   * Given a request type, return the equivalent string.
    * For diagnostic purposes.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getTypeString()
   {
     return "#UNKNOWN (" + object().getClass().getName() + ")";
   }
-  
+
   /**
    * Cast result object to a number.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public double num()
-    throws org.xml.sax.SAXException
+  public double num() throws org.xml.sax.SAXException
   {
-	  error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER, new Object[] {getTypeString()}); //"Can not convert "+getTypeString()+" to a number");
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER,
+          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a number");
 
     return 0.0;
   }
 
   /**
    * Cast result object to a boolean.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean bool()
-    throws org.xml.sax.SAXException
+  public boolean bool() throws org.xml.sax.SAXException
   {
-    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER, new Object[] {getTypeString()}); //"Can not convert "+getTypeString()+" to a number");
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER,
+          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a number");
 
     return false;
   }
 
   /**
    * Cast result object to a string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String str()
   {
     return m_obj.toString();
   }
-  
+
+  /**
+   * NEEDSDOC Method toString 
+   *
+   *
+   * NEEDSDOC (toString) @return
+   */
   public String toString()
   {
     return str();
   }
-  
+
   /**
    * Cast result object to a result tree fragment.
+   *
+   * NEEDSDOC @param support
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public DocumentFragment rtree(XPathContext support)
   {
+
     DocumentFragment result = rtree();
-    if(null == result)
+
+    if (null == result)
     {
-      result = support.getDOMHelper().getDOMFactory().createDocumentFragment();
-      Text textNode = support.getDOMHelper().getDOMFactory().createTextNode(str());
+      result =
+        support.getDOMHelper().getDOMFactory().createDocumentFragment();
+
+      Text textNode =
+        support.getDOMHelper().getDOMFactory().createTextNode(str());
+
       result.appendChild(textNode);
     }
+
     return result;
   }
-  
+
   /**
    * For functions to override.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public DocumentFragment rtree()
   {
     return null;
   }
-  
+
   /**
-   * Return a java object that's closes to the represenation 
+   * Return a java object that's closes to the represenation
    * that should be handed to an extension.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Object object()
   {
@@ -239,70 +306,101 @@ public class XObject extends Expression implements Serializable
 
   /**
    * Cast result object to a nodelist.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public NodeIterator nodeset()
-    throws org.xml.sax.SAXException
+  public NodeIterator nodeset() throws org.xml.sax.SAXException
   {
-    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST, new Object[] {getTypeString()}); //"Can not convert "+getTypeString()+" to a NodeList!");
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
+          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a NodeList!");
+
     return null;
-  }  
-  
+  }
+
   /**
    * Cast result object to a nodelist.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public NodeSet mutableNodeset()
-    throws org.xml.sax.SAXException
+  public NodeSet mutableNodeset() throws org.xml.sax.SAXException
   {
-    error(XPATHErrorResources.ER_CANT_CONVERT_TO_MUTABLENODELIST, new Object[] {getTypeString()}); //"Can not convert "+getTypeString()+" to a NodeSet!");
-    return (NodeSet)m_obj;
-  }  
- 
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_MUTABLENODELIST,
+          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a NodeSet!");
+
+    return (NodeSet) m_obj;
+  }
+
   /**
    * Cast object to type t.
+   *
+   * NEEDSDOC @param t
+   * NEEDSDOC @param support
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
   public Object castToType(int t, XPathContext support)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
+
     Object result;
-    switch(t)
+
+    switch (t)
     {
-    case CLASS_STRING:
+    case CLASS_STRING :
       result = str();
       break;
-    case CLASS_NUMBER:
+    case CLASS_NUMBER :
       result = new Double(num());
       break;
-    case CLASS_NODESET:
+    case CLASS_NODESET :
       result = nodeset();
       break;
-    case CLASS_BOOLEAN:
-      result = new Boolean( bool() );
+    case CLASS_BOOLEAN :
+      result = new Boolean(bool());
       break;
-    case CLASS_UNKNOWN:
+    case CLASS_UNKNOWN :
       result = m_obj;
       break;
-    case CLASS_RTREEFRAG:
+    case CLASS_RTREEFRAG :
       result = rtree(support);
       break;
-    default:
-      error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE, new Object[] {getTypeString(), Integer.toString(t)}); //"Can not convert "+getTypeString()+" to a type#"+t);
+    default :
+      error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+            new Object[]{ getTypeString(),
+                          Integer.toString(t) });  //"Can not convert "+getTypeString()+" to a type#"+t);
+
       result = null;
     }
+
     return result;
   }
 
   /**
    * Tell if one object is less than the other.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean lessThan(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean lessThan(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.  Because the arguments 
     // are backwards, we call the opposite comparison
     // function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.greaterThan(this);
 
     return this.num() < obj2.num();
@@ -310,33 +408,45 @@ public class XObject extends Expression implements Serializable
 
   /**
    * Tell if one object is less than or equal to the other.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean lessThanOrEqual(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean lessThanOrEqual(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.  Because the arguments 
     // are backwards, we call the opposite comparison
     // function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.greaterThanOrEqual(this);
-    
+
     return this.num() <= obj2.num();
   }
 
   /**
    * Tell if one object is less than the other.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean greaterThan(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean greaterThan(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.  Because the arguments 
     // are backwards, we call the opposite comparison
     // function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.lessThan(this);
 
     return this.num() > obj2.num();
@@ -344,16 +454,23 @@ public class XObject extends Expression implements Serializable
 
   /**
    * Tell if one object is less than the other.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
   public boolean greaterThanOrEqual(XObject obj2)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.  Because the arguments 
     // are backwards, we call the opposite comparison
     // function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.lessThanOrEqual(this);
 
     return this.num() >= obj2.num();
@@ -361,52 +478,73 @@ public class XObject extends Expression implements Serializable
 
   /**
    * Tell if two objects are functionally equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.equals(this);
 
     return m_obj.equals(obj2.m_obj);
   }
-  
+
   /**
    * Tell if two objects are functionally not equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean notEquals(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean notEquals(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.notEquals(this);
 
     return !equals(obj2);
   }
 
   /**
-   * Tell the user of an error, and probably throw an 
+   * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void error(int msg)
-    throws org.xml.sax.SAXException
+  protected void error(int msg) throws org.xml.sax.SAXException
   {
-	  error (msg, null);
-  }	   
+    error(msg, null);
+  }
 
   /**
-   * Tell the user of an error, and probably throw an 
+   * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void error(int msg, Object[] args)
-    throws org.xml.sax.SAXException
+  protected void error(int msg, Object[] args) throws org.xml.sax.SAXException
   {
-    String fmsg = XSLMessages.createXPATHMessage(msg, args);  
+
+    String fmsg = XSLMessages.createXPATHMessage(msg, args);
+
     // boolean shouldThrow = support.problem(m_support.XPATHPROCESSOR, 
     //                                      m_support.ERROR,
     //                                      null, 
@@ -416,5 +554,4 @@ public class XObject extends Expression implements Serializable
       throw new XPathException(fmsg);
     }
   }
-
 }

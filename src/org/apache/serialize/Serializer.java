@@ -56,13 +56,12 @@
  */
 package org.apache.serialize;
 
-
 import java.io.Writer;
 import java.io.OutputStream;
 import java.io.IOException;
+
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.ContentHandler;
-
 
 /**
  * A serializer is used for serializing a document with a given output
@@ -96,7 +95,7 @@ import org.xml.sax.ContentHandler;
  * ser = SerializerFactory.getSerializer( Method.XML );
  * emptyDoc( ser, System.out );
  * emptyDoc( ser, System.err );
- * . . . 
+ * . . .
  *
  * void emptyDoc( Serializer ser, OutputStream os )
  * {
@@ -116,109 +115,106 @@ import org.xml.sax.ContentHandler;
 public interface Serializer
 {
 
+  /**
+   * Specifies an output stream to which the document should be
+   * serialized. This method should not be called while the
+   * serializer is in the process of serializing a document.
+   * <p>
+   * The encoding specified in the {@link OutputFormat} is used, or
+   * if no encoding was specified, the default for the selected
+   * output method.
+   *
+   * @param output The output stream
+   */
+  public void setOutputStream(OutputStream output);
 
-    /**
-     * Specifies an output stream to which the document should be
-     * serialized. This method should not be called while the
-     * serializer is in the process of serializing a document.
-     * <p>
-     * The encoding specified in the {@link OutputFormat} is used, or
-     * if no encoding was specified, the default for the selected
-     * output method.
-     *
-     * @param output The output stream
-     */
-    public void setOutputStream( OutputStream output );
-    public OutputStream getOutputStream();
+  /**
+   * NEEDSDOC Method getOutputStream 
+   *
+   *
+   * NEEDSDOC (getOutputStream) @return
+   */
+  public OutputStream getOutputStream();
 
+  /**
+   * Specifies a writer to which the document should be serialized.
+   * This method should not be called while the serializer is in
+   * the process of serializing a document.
+   * <p>
+   * The encoding specified for the {@link OutputFormat} must be
+   * identical to the output format used with the writer.
+   *
+   * @param writer The output writer stream
+   */
+  public void setWriter(Writer writer);
 
-    /**
-     * Specifies a writer to which the document should be serialized.
-     * This method should not be called while the serializer is in
-     * the process of serializing a document.
-     * <p>
-     * The encoding specified for the {@link OutputFormat} must be
-     * identical to the output format used with the writer.
-     *
-     * @param writer The output writer stream
-     */
-    public void setWriter( Writer writer );
-    public Writer getWriter();
+  /**
+   * NEEDSDOC Method getWriter 
+   *
+   *
+   * NEEDSDOC (getWriter) @return
+   */
+  public Writer getWriter();
 
-    /**
-     * Specifies an output format for this serializer. It the
-     * serializer has already been associated with an output format,
-     * it will switch to the new format. This method should not be
-     * called while the serializer is in the process of serializing
-     * a document.
-     *
-     * @param format The output format to use
-     */
-    public void setOutputFormat( OutputFormat format );
+  /**
+   * Specifies an output format for this serializer. It the
+   * serializer has already been associated with an output format,
+   * it will switch to the new format. This method should not be
+   * called while the serializer is in the process of serializing
+   * a document.
+   *
+   * @param format The output format to use
+   */
+  public void setOutputFormat(OutputFormat format);
 
+  /**
+   * Returns the output format for this serializer.
+   *
+   * @return The output format in use
+   */
+  public OutputFormat getOutputFormat();
 
-    /**
-     * Returns the output format for this serializer.
-     *
-     * @return The output format in use
-     */
-    public OutputFormat getOutputFormat();
+  /**
+   * Return a {@link DocumentHandler} interface into this serializer.
+   * If the serializer does not support the {@link DocumentHandler}
+   * interface, it should return null.
+   *
+   * @return A {@link DocumentHandler} interface into this serializer,
+   *  or null if the serializer is not SAX 1 capable
+   * @throws IOException An I/O exception occured
+   */
+  public DocumentHandler asDocumentHandler() throws IOException;
 
+  /**
+   * Return a {@link ContentHandler} interface into this serializer.
+   * If the serializer does not support the {@link ContentHandler}
+   * interface, it should return null.
+   *
+   * @return A {@link ContentHandler} interface into this serializer,
+   *  or null if the serializer is not SAX 2 capable
+   * @throws IOException An I/O exception occured
+   */
+  public ContentHandler asContentHandler() throws IOException;
 
-    /**
-     * Return a {@link DocumentHandler} interface into this serializer.
-     * If the serializer does not support the {@link DocumentHandler}
-     * interface, it should return null.
-     *
-     * @return A {@link DocumentHandler} interface into this serializer,
-     *  or null if the serializer is not SAX 1 capable
-     * @throws IOException An I/O exception occured
-     */
-    public DocumentHandler asDocumentHandler()
-        throws IOException;
+  /**
+   * Return a {@link DOMSerializer} interface into this serializer.
+   * If the serializer does not support the {@link DOMSerializer}
+   * interface, it should return null.
+   *
+   * @return A {@link DOMSerializer} interface into this serializer,
+   *  or null if the serializer is not DOM capable
+   * @throws IOException An I/O exception occured
+   */
+  public DOMSerializer asDOMSerializer() throws IOException;
 
-
-    /**
-     * Return a {@link ContentHandler} interface into this serializer.
-     * If the serializer does not support the {@link ContentHandler}
-     * interface, it should return null.
-     *
-     * @return A {@link ContentHandler} interface into this serializer,
-     *  or null if the serializer is not SAX 2 capable
-     * @throws IOException An I/O exception occured
-     */
-    public ContentHandler asContentHandler()
-        throws IOException;
-
-
-    /**
-     * Return a {@link DOMSerializer} interface into this serializer.
-     * If the serializer does not support the {@link DOMSerializer}
-     * interface, it should return null.
-     *
-     * @return A {@link DOMSerializer} interface into this serializer,
-     *  or null if the serializer is not DOM capable
-     * @throws IOException An I/O exception occured
-     */
-    public DOMSerializer asDOMSerializer()
-        throws IOException;
-
-
-    /**
-     * Resets the serializer. If this method returns true, the
-     * serializer may be used for subsequent serialization of new
-     * documents. It is possible to change the output format and
-     * output stream prior to serializing, or to use the existing
-     * output format and output stream.
-     *
-     * @return True if serializer has been reset and can be reused
-     */
-    public boolean reset();
-
-
+  /**
+   * Resets the serializer. If this method returns true, the
+   * serializer may be used for subsequent serialization of new
+   * documents. It is possible to change the output format and
+   * output stream prior to serializing, or to use the existing
+   * output format and output stream.
+   *
+   * @return True if serializer has been reset and can be reused
+   */
+  public boolean reset();
 }
-
-
-
-
-

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,10 +57,12 @@
 package org.apache.xalan.transformer;
 
 import java.util.Locale;
-import org.apache.xpath.XPath;
-import java.text.Collator;
-import org.apache.xalan.res.XSLTErrorResources;
 
+import org.apache.xpath.XPath;
+
+import java.text.Collator;
+
+import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -68,34 +70,65 @@ import org.apache.xalan.res.XSLTErrorResources;
  */
 class NodeSortKey
 {
-  XPath m_selectPat;
-  boolean m_treatAsNumbers;
-  boolean m_descending;
-  boolean m_caseOrderUpper;
-  Collator m_col;
-  Locale m_locale;
-  org.apache.xalan.utils.PrefixResolver m_namespaceContext;
-  TransformerImpl m_processor; // needed for error reporting.
 
-  NodeSortKey(TransformerImpl transformer, XPath selectPat,
-                   boolean treatAsNumbers,
-                   boolean descending, String langValue,
-				           boolean caseOrderUpper,
-                   org.apache.xalan.utils.PrefixResolver namespaceContext)
-    throws org.xml.sax.SAXException
+  /** NEEDSDOC Field m_selectPat          */
+  XPath m_selectPat;
+
+  /** NEEDSDOC Field m_treatAsNumbers          */
+  boolean m_treatAsNumbers;
+
+  /** NEEDSDOC Field m_descending          */
+  boolean m_descending;
+
+  /** NEEDSDOC Field m_caseOrderUpper          */
+  boolean m_caseOrderUpper;
+
+  /** NEEDSDOC Field m_col          */
+  Collator m_col;
+
+  /** NEEDSDOC Field m_locale          */
+  Locale m_locale;
+
+  /** NEEDSDOC Field m_namespaceContext          */
+  org.apache.xalan.utils.PrefixResolver m_namespaceContext;
+
+  /** NEEDSDOC Field m_processor          */
+  TransformerImpl m_processor;  // needed for error reporting.
+
+  /**
+   * Constructor NodeSortKey
+   *
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param selectPat
+   * NEEDSDOC @param treatAsNumbers
+   * NEEDSDOC @param descending
+   * NEEDSDOC @param langValue
+   * NEEDSDOC @param caseOrderUpper
+   * NEEDSDOC @param namespaceContext
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  NodeSortKey(
+          TransformerImpl transformer, XPath selectPat, boolean treatAsNumbers, boolean descending, String langValue, boolean caseOrderUpper, org.apache.xalan.utils.PrefixResolver namespaceContext)
+            throws org.xml.sax.SAXException
   {
+
     m_processor = transformer;
     m_namespaceContext = namespaceContext;
     m_selectPat = selectPat;
     m_treatAsNumbers = treatAsNumbers;
     m_descending = descending;
-	  m_caseOrderUpper = caseOrderUpper;
-    if(null != langValue && m_treatAsNumbers == false)
+    m_caseOrderUpper = caseOrderUpper;
+
+    if (null != langValue && m_treatAsNumbers == false)
     {
       m_locale = new Locale(langValue.toUpperCase(),
                             Locale.getDefault().getDisplayCountry());
-      if(null == m_locale)
+
+      if (null == m_locale)
       {
+
         // m_processor.warn("Could not find locale for <sort xml:lang="+langValue);
         m_locale = Locale.getDefault();
       }
@@ -106,12 +139,13 @@ class NodeSortKey
     }
 
     m_col = Collator.getInstance(m_locale);
-    if(null == m_col)
+
+    if (null == m_col)
     {
-      m_processor.getMsgMgr().warn(
-        XSLTErrorResources.WG_CANNOT_FIND_COLLATOR, new Object[] {langValue}); //"Could not find Collator for <sort xml:lang="+langValue);
+      m_processor.getMsgMgr().warn(XSLTErrorResources.WG_CANNOT_FIND_COLLATOR,
+                                   new Object[]{ langValue });  //"Could not find Collator for <sort xml:lang="+langValue);
+
       m_col = Collator.getInstance();
     }
   }
 }
-

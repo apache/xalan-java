@@ -54,15 +54,19 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import java.util.Hashtable;
 import java.util.StringTokenizer;
+
 import org.apache.xpath.res.XPATHErrorResources;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.Document;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPath;
@@ -77,90 +81,111 @@ import org.apache.xalan.utils.StringVector;
  */
 public class FuncId extends FunctionOneArg
 {
-  private StringVector getNodesByID(XPathContext xctxt,
-                                    Document docContext,
-                                    String refval, StringVector usedrefs, 
+
+  /**
+   * NEEDSDOC Method getNodesByID 
+   *
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param docContext
+   * NEEDSDOC @param refval
+   * NEEDSDOC @param usedrefs
+   * NEEDSDOC @param nodeSet
+   * NEEDSDOC @param mayBeMore
+   *
+   * NEEDSDOC (getNodesByID) @return
+   */
+  private StringVector getNodesByID(XPathContext xctxt, Document docContext,
+                                    String refval, StringVector usedrefs,
                                     NodeSet nodeSet, boolean mayBeMore)
   {
-    if(null != refval)
+
+    if (null != refval)
     {
       String ref = null;
       DOMHelper dh = xctxt.getDOMHelper();
       StringTokenizer tokenizer = new StringTokenizer(refval);
       boolean hasMore = tokenizer.hasMoreTokens();
-      while(hasMore)
+
+      while (hasMore)
       {
         ref = tokenizer.nextToken();
         hasMore = tokenizer.hasMoreTokens();
-        
-        if((null != usedrefs) && usedrefs.contains(ref))
+
+        if ((null != usedrefs) && usedrefs.contains(ref))
         {
           ref = null;
+
           continue;
         }
 
         Node node = dh.getElementByID(ref, docContext);
 
-        if(null != node)
+        if (null != node)
           nodeSet.addNodeInDocOrder(node, xctxt);
-        
-        if((null != ref) && (hasMore || mayBeMore))
+
+        if ((null != ref) && (hasMore || mayBeMore))
         {
-          if(null == usedrefs)
+          if (null == usedrefs)
             usedrefs = new StringVector();
+
           usedrefs.addElement(ref);
         }
       }
     }
-    
+
     return usedrefs;
   }
-  
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     Node context = xctxt.getCurrentNode();
-    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType()) 
-                          ? (Document)context : context.getOwnerDocument();
-    
-    if(null == docContext)
+    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType())
+                          ? (Document) context : context.getOwnerDocument();
+
+    if (null == docContext)
       error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);
-    
+
     XObject arg = m_arg0.execute(xctxt);
-    
     int argType = arg.getType();
-         
     XNodeSet nodes = new XNodeSet();
     NodeSet nodeSet = nodes.mutableNodeset();
-        
-    if(XObject.CLASS_NODESET == argType)
-    {      
+
+    if (XObject.CLASS_NODESET == argType)
+    {
       NodeIterator ni = arg.nodeset();
       StringVector usedrefs = null;
       Node pos = ni.nextNode();
-      while(null != pos)
+
+      while (null != pos)
       {
         String refval = DOMHelper.getNodeData(pos);
+
         pos = ni.nextNode();
-        usedrefs = getNodesByID(xctxt, docContext, refval, 
-                                usedrefs, nodeSet, null != pos);
+        usedrefs = getNodesByID(xctxt, docContext, refval, usedrefs, nodeSet,
+                                null != pos);
       }
     }
-    else if(XObject.CLASS_NULL == argType)
+    else if (XObject.CLASS_NULL == argType)
     {
       return nodes;
     }
     else
     {
       String refval = arg.str();
+
       getNodesByID(xctxt, docContext, refval, null, nodeSet, false);
     }
+
     return nodes;
   }
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,6 +57,7 @@
 package org.apache.xpath;
 
 import java.io.IOException;
+
 import java.util.StringTokenizer;
 
 import org.apache.xpath.res.XPATHErrorResources;
@@ -77,52 +78,77 @@ import javax.xml.parsers.*;
 
 /**
  * <meta name="usage" content="general"/>
- * Provides XSLTProcessor an interface to the Xerces XML parser.  This 
- * liaison should be used if Xerces DOM nodes are being process as 
+ * Provides XSLTProcessor an interface to the Xerces XML parser.  This
+ * liaison should be used if Xerces DOM nodes are being process as
  * the source tree or as the result tree.
  * @see org.apache.xalan.xslt.XSLTProcessor
  * @see org.apache.xml.parsers
  */
 public class DOM2Helper extends DOMHelper
 {
+
   /**
    * Construct an instance.
    */
-  public DOM2Helper()
-  {
-  }
+  public DOM2Helper(){}
 
   /**
    * <meta name="usage" content="internal"/>
    * Check node to see if it matches this liaison.
+   *
+   * NEEDSDOC @param node
+   *
+   * @throws SAXException
    */
-  public void checkNode(Node node)
-    throws SAXException
+  public void checkNode(Node node) throws SAXException
   {
+
     // if(!(node instanceof org.apache.xerces.dom.NodeImpl))
     //  throw new SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XERCES_CANNOT_HANDLE_NODES, new Object[]{((Object)node).getClass()})); //"DOM2Helper can not handle nodes of type"
-        //+((Object)node).getClass());
+    //+((Object)node).getClass());
   }
 
   /**
    * Returns true that this implementation does support
    * the SAX ContentHandler interface.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean supportsSAX()
   {
     return true;
   }
-  
+
+  /** NEEDSDOC Field m_doc          */
   private Document m_doc;
-  
-  public void setDocument(Document doc) {m_doc = doc;}
-  public Document getDocument() {return m_doc;}
+
+  /**
+   * NEEDSDOC Method setDocument 
+   *
+   *
+   * NEEDSDOC @param doc
+   */
+  public void setDocument(Document doc)
+  {
+    m_doc = doc;
+  }
+
+  /**
+   * NEEDSDOC Method getDocument 
+   *
+   *
+   * NEEDSDOC (getDocument) @return
+   */
+  public Document getDocument()
+  {
+    return m_doc;
+  }
 
   /**
    * <meta name="usage" content="internal"/>
    * Parse an XML document.
-   * 
-   * <p>Right now the Xerces DOMParser class is used.  This needs 
+   *
+   * <p>Right now the Xerces DOMParser class is used.  This needs
    * fixing, either via jaxp, or via some other, standard method.</p>
    *
    * <p>The application can use this method to instruct the SAX parser
@@ -148,21 +174,26 @@ public class DOM2Helper extends DOMHelper
    * @see #setDTDHandler
    * @see #setContentHandler
    * @see #setErrorHandler
+   *
+   * @throws SAXException
    */
-  public void parse (InputSource source)
-    throws SAXException
+  public void parse(InputSource source) throws SAXException
   {
+
     try
     {
+
       // I guess I should use JAXP factory here... when it's legal.
       // org.apache.xerces.parsers.DOMParser parser 
       //  = new org.apache.xerces.parsers.DOMParser();
-      DocumentBuilderFactory builderFactory 
-        = DocumentBuilderFactory.newInstance();
+      DocumentBuilderFactory builderFactory =
+        DocumentBuilderFactory.newInstance();
+
       builderFactory.setNamespaceAware(true);
       builderFactory.setValidating(true);
+
       DocumentBuilder parser = builderFactory.newDocumentBuilder();
-      
+
       /*
       // domParser.setFeature("http://apache.org/xml/features/dom/create-entity-ref-nodes", getShouldExpandEntityRefs()? false : true);
       if(m_useDOM2getNamespaceURI)
@@ -174,96 +205,122 @@ public class DOM2Helper extends DOMHelper
       {
       parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
       }
-      
+
       parser.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
       */
       String ident = (null == source.getSystemId())
                      ? "Input XSL" : source.getSystemId();
-      parser.setErrorHandler(new org.apache.xalan.utils.DefaultErrorHandler(ident));
+
+      parser.setErrorHandler(
+        new org.apache.xalan.utils.DefaultErrorHandler(ident));
 
       // if(null != m_entityResolver)
       // {
       // System.out.println("Setting the entity resolver.");
       //  parser.setEntityResolver(m_entityResolver);
       // }
-
       setDocument(parser.parse(source));
     }
-    catch(ParserConfigurationException pce)
+    catch (ParserConfigurationException pce)
     {
       throw new SAXException(pce);
     }
-    catch(IOException ioe)
+    catch (IOException ioe)
     {
       throw new SAXException(ioe);
     }
+
     // setDocument(((org.apache.xerces.parsers.DOMParser)parser).getDocument());
   }
 
   /**
    * Given an ID, return the element.
+   *
+   * NEEDSDOC @param id
+   * NEEDSDOC @param doc
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Element getElementByID(String id, Document doc)
   {
     return doc.getElementById(id);
   }
-  
+
   /**
-   * Figure out if node2 should be placed after node1 when 
-   * placing nodes in a list that is to be sorted in 
+   * Figure out if node2 should be placed after node1 when
+   * placing nodes in a list that is to be sorted in
    * document order.
    * NOTE: Make sure this does the right thing with attribute nodes!!!
-   * @return true if node2 should be placed 
-   * after node1, and false if node2 should be placed 
+   *
+   * NEEDSDOC @param node1
+   * NEEDSDOC @param node2
+   * @return true if node2 should be placed
+   * after node1, and false if node2 should be placed
    * before node1.
    */
   public boolean isNodeAfter(Node node1, Node node2)
   {
+
     // Assume first that the nodes are DTM nodes, since discovering node 
     // order is massivly faster for the DTM.
     try
     {
-      int index1 = ((DOMOrder)node1).getUid();
-      int index2 = ((DOMOrder)node2).getUid();
+      int index1 = ((DOMOrder) node1).getUid();
+      int index2 = ((DOMOrder) node2).getUid();
+
       return index1 <= index2;
     }
-    catch(ClassCastException cce)
+    catch (ClassCastException cce)
     {
+
       // isNodeAfter will return true if node is after countedNode 
       // in document order. isDOMNodeAfter is sloooow (relativly).
       return super.isNodeAfter(node1, node2);
     }
-  }   
+  }
 
   /**
    * Get the parent of a node.
+   *
+   * NEEDSDOC @param node
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws RuntimeException
    */
-  public Node getParentOfNode(Node node)
-    throws RuntimeException
+  public Node getParentOfNode(Node node) throws RuntimeException
   {
     return (Node.ATTRIBUTE_NODE == node.getNodeType())
-           ? ((Attr)node).getOwnerElement() : node.getParentNode();
+           ? ((Attr) node).getOwnerElement() : node.getParentNode();
   }
-    
+
   /**
    * Returns the local name of the given node.
+   *
+   * NEEDSDOC @param n
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getLocalNameOfNode(Node n)
   {
+
     String name = n.getLocalName();
+
     return (null == name) ? super.getLocalNameOfNode(n) : name;
   }
 
   /**
    * Returns the namespace of the given node.
+   *
+   * NEEDSDOC @param n
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNamespaceOfNode(Node n)
   {
     return n.getNamespaceURI();
   }
 
+  /** NEEDSDOC Field m_useDOM2getNamespaceURI          */
   private boolean m_useDOM2getNamespaceURI = false;
-
 }
-
-

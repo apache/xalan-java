@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,25 +57,29 @@
 package org.apache.xalan.utils;
 
 import org.apache.xalan.utils.StringVector;
+
 import org.xml.sax.Attributes;
+
 import java.io.Serializable;
+
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * <meta name="usage" content="advanced"/>
  * Mutable version of AttributesImpl.
  */
-public class MutableAttrListImpl extends AttributesImpl 
-  implements Serializable
+public class MutableAttrListImpl extends AttributesImpl
+        implements Serializable
 {
-  /**
-   * Construct a new, empty AttributesImpl object.
-   */
-  public MutableAttrListImpl ()
+
+/**
+ * Construct a new, empty AttributesImpl object.
+ */
+
+public MutableAttrListImpl()
   {
     super();
   }
-
 
   /**
    * Copy an existing Attributes object.
@@ -85,11 +89,11 @@ public class MutableAttrListImpl extends AttributesImpl
    *
    * @param atts The existing Attributes object.
    */
-  public MutableAttrListImpl (Attributes atts)
+  public MutableAttrListImpl(Attributes atts)
   {
     super(atts);
   }
-  
+
   /**
    * Add an attribute to the end of the list.
    *
@@ -107,51 +111,62 @@ public class MutableAttrListImpl extends AttributesImpl
    * @param type The attribute type as a string.
    * @param value The attribute value.
    */
-  public void addAttribute (String uri, String localName, String qName,
-                            String type, String value)
+  public void addAttribute(String uri, String localName, String qName,
+                           String type, String value)
   {
-    if(null == uri)
+
+    if (null == uri)
       uri = "";
 
     int index = this.getIndex(uri, localName);
-    if(index >= 0)
+
+    if (index >= 0)
       this.setAttribute(index, uri, localName, qName, type, value);
     else
       super.addAttribute(uri, localName, qName, type, value);
   }
-  
+
   /**
    * Add the contents of the attribute list to this list.
+   *
+   * NEEDSDOC @param atts
    */
   public void addAttributes(Attributes atts)
-  {    
+  {
+
     int nAtts = atts.getLength();
-    for(int i = 0; i < nAtts; i++)
+
+    for (int i = 0; i < nAtts; i++)
     {
       String uri = atts.getURI(i);
-      if(null == uri)
+
+      if (null == uri)
         uri = "";
+
       String localName = atts.getLocalName(i);
       String qname = atts.getQName(i);
       int index = this.getIndex(uri, localName);
-      if(index >= 0)
-        this.setAttribute(index, uri, localName, qname, 
-                          atts.getType(i), atts.getValue(i));
+
+      if (index >= 0)
+        this.setAttribute(index, uri, localName, qname, atts.getType(i),
+                          atts.getValue(i));
       else
-        addAttribute(uri, localName, qname, 
-                     atts.getType(i),
+        addAttribute(uri, localName, qname, atts.getType(i),
                      atts.getValue(i));
     }
   }
-  
+
   /**
    * Return true if list contains the given (raw) attribute name.
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean contains(String name)
   {
-    return getValue (name) != null;
+    return getValue(name) != null;
   }
-
 }
 
 // end of MutableAttrListImpl.java

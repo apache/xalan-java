@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -61,46 +61,47 @@ import org.w3c.dom.NamedNodeMap;
 
 /**
  * <meta name="usage" content="general"/>
- * This class implements a generic PrefixResolver that 
- * can be used to perform prefix-to-namespace lookup 
+ * This class implements a generic PrefixResolver that
+ * can be used to perform prefix-to-namespace lookup
  * for the XPath object.
  */
 public class PrefixResolverDefault implements PrefixResolver
 {
+
   /**
-   * The context to resolve the prefix from, if the context 
+   * The context to resolve the prefix from, if the context
    * is not given.
    */
   Node m_context;
-  
+
   /**
    * The URI for the XML namespace.
    * (Duplicate of that found in org.apache.xpath.XPathContext).
    */
-  public static final String S_XMLNAMESPACEURI = "http://www.w3.org/XML/1998/namespace";
+  public static final String S_XMLNAMESPACEURI =
+    "http://www.w3.org/XML/1998/namespace";
 
-  
   /**
    * Construct a PrefixResolverDefault object.
-   * @param xpathExpressionContext The context from 
+   * @param xpathExpressionContext The context from
    * which XPath expression prefixes will be resolved.
-   * Warning: This will not work correctly if xpathExpressionContext 
+   * Warning: This will not work correctly if xpathExpressionContext
    * is an attribute node.
-   * @param xpathExpressionContext Node from which to start searching for a 
-   * xmlns attribute that binds a prefix to a namespace (when the namespace 
+   * @param xpathExpressionContext Node from which to start searching for a
+   * xmlns attribute that binds a prefix to a namespace (when the namespace
    * context is not specified in the getNamespaceForPrefix call).
    */
   public PrefixResolverDefault(Node xpathExpressionContext)
   {
     m_context = xpathExpressionContext;
   }
-  
+
   /**
-   * Given a namespace, get the corrisponding prefix.  This assumes that 
+   * Given a namespace, get the corrisponding prefix.  This assumes that
    * the PrevixResolver hold's it's own namespace context, or is a namespace
    * context itself.
    * @param prefix Prefix to resolve.
-   * @return Namespace that prefix resolves to, or null if prefix 
+   * @return Namespace that prefix resolves to, or null if prefix
    * is not bound.
    */
   public String getNamespaceForPrefix(String prefix)
@@ -110,60 +111,72 @@ public class PrefixResolverDefault implements PrefixResolver
 
   /**
    * Given a namespace, get the corrisponding prefix.
-   * Warning: This will not work correctly if namespaceContext 
+   * Warning: This will not work correctly if namespaceContext
    * is an attribute node.
    * @param prefix Prefix to resolve.
-   * @param namespaceContext Node from which to start searching for a 
+   * @param namespaceContext Node from which to start searching for a
    * xmlns attribute that binds a prefix to a namespace.
-   * @return Namespace that prefix resolves to, or null if prefix 
+   * @return Namespace that prefix resolves to, or null if prefix
    * is not bound.
    */
-  public String getNamespaceForPrefix(String prefix, org.w3c.dom.Node namespaceContext)
+  public String getNamespaceForPrefix(String prefix,
+                                      org.w3c.dom.Node namespaceContext)
   {
+
     Node parent = namespaceContext;
     String namespace = null;
-    if(prefix.equals("xml"))
+
+    if (prefix.equals("xml"))
     {
       namespace = S_XMLNAMESPACEURI;
     }
     else
     {
-     int type;
-     while ((null != parent) && (null == namespace)
+      int type;
+
+      while ((null != parent) && (null == namespace)
              && (((type = parent.getNodeType()) == Node.ELEMENT_NODE)
-                 || (type == Node.ENTITY_REFERENCE_NODE))) 
+                 || (type == Node.ENTITY_REFERENCE_NODE)))
       {
-        if (type == Node.ELEMENT_NODE) 
+        if (type == Node.ELEMENT_NODE)
         {
           NamedNodeMap nnm = parent.getAttributes();
-          for (int i = 0;  i < nnm.getLength();  i ++) 
+
+          for (int i = 0; i < nnm.getLength(); i++)
           {
             Node attr = nnm.item(i);
             String aname = attr.getNodeName();
             boolean isPrefix = aname.startsWith("xmlns:");
-            if (isPrefix || aname.equals("xmlns")) 
+
+            if (isPrefix || aname.equals("xmlns"))
             {
               int index = aname.indexOf(':');
-              String p = isPrefix ? aname.substring(index+1) : "";
-              if (p.equals(prefix)) 
+              String p = isPrefix ? aname.substring(index + 1) : "";
+
+              if (p.equals(prefix))
               {
                 namespace = attr.getNodeValue();
+
                 break;
               }
             }
           }
         }
+
         parent = parent.getParentNode();
       }
     }
+
     return namespace;
   }
-  
-  /** 
+
+  /**
    * Return the base identifier.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getBaseIdentifier()
   {
     return null;
-  }  
+  }
 }

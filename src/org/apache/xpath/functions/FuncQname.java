@@ -54,13 +54,16 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions; 
+package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.Attr;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -73,41 +76,47 @@ import org.apache.xalan.utils.QName;
  */
 public class FuncQname extends FunctionDef1Arg
 {
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     Node context = getArg0AsNode(xctxt);
     XObject val;
-    if(null != context)
+
+    if (null != context)
     {
-      int ntype = context.getNodeType();
-      if(ntype == Node.ATTRIBUTE_NODE)
+      short ntype = context.getNodeType();
+
+      if (ntype == Node.ATTRIBUTE_NODE)
       {
-        String qname = ((Attr)context).getName();
-        if(xctxt.getDOMHelper().isNamespaceNode(context))
+        String qname = ((Attr) context).getName();
+
+        if (xctxt.getDOMHelper().isNamespaceNode(context))
         {
-          if(qname.equals("xmlns"))
+          if (qname.equals("xmlns"))
             val = XString.EMPTYSTRING;
           else
           {
             qname = QName.getLocalPart(qname);
-            val = (null == qname) ? XString.EMPTYSTRING :
-                                    new XString(qname);
+            val = (null == qname) ? XString.EMPTYSTRING : new XString(qname);
           }
         }
         else
           val = new XString(qname);
       }
-      else if((ntype == Node.ELEMENT_NODE) 
-         || (ntype == Node.PROCESSING_INSTRUCTION_NODE))
+      else if ((ntype == Node.ELEMENT_NODE)
+               || (ntype == Node.PROCESSING_INSTRUCTION_NODE))
       {
         String qname = context.getNodeName();
+
         val = new XString(qname);
       }
       else
@@ -119,6 +128,7 @@ public class FuncQname extends FunctionDef1Arg
     {
       val = XString.EMPTYSTRING;
     }
+
     return val;
   }
 }

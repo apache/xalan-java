@@ -56,10 +56,8 @@
  */
 package org.apache.serialize.helpers;
 
-
 import org.apache.serialize.OutputFormat;
 import org.apache.serialize.Method;
-
 
 /**
  * Output format for XML documents.
@@ -72,33 +70,47 @@ import org.apache.serialize.Method;
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
-public class XMLOutputFormat
-    extends OutputFormat
+public class XMLOutputFormat extends OutputFormat
 {
 
+  /**
+   * Constructor XMLOutputFormat
+   *
+   */
+  public XMLOutputFormat()
+  {
 
-    public XMLOutputFormat()
-    {
-        setMethod( Method.XML );
-        setMediaType( "text/xml" );
-        setPreserveSpace( true );
-    }
+    setMethod(Method.XML);
+    setMediaType("text/xml");
+    setPreserveSpace(true);
+  }
 
+  /**
+   * Constructor XMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param encoding
+   */
+  public XMLOutputFormat(String encoding)
+  {
 
-    public XMLOutputFormat( String encoding )
-    {
-        this();
-        setEncoding( encoding );
-    }
+    this();
 
+    setEncoding(encoding);
+  }
 
-    public XMLOutputFormat( boolean indenting )
-    {
-        this();
-        setIndent( indenting );
-        setPreserveSpace( false );
-    }
+  /**
+   * Constructor XMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param indenting
+   */
+  public XMLOutputFormat(boolean indenting)
+  {
 
+    this();
 
+    setIndent(indenting);
+    setPreserveSpace(false);
+  }
 }
-

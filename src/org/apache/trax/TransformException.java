@@ -54,6 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 // Transformations for XML (TRaX)
 // Copyright ©2000 Lotus Development Corporation, Exoffice Technologies,
 // Oracle Corporation, Michael Kay of International Computers Limited, Apache
@@ -66,27 +67,26 @@ import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
 
 /**
- * This simply subclasses the TransformException for the purposes 
+ * This simply subclasses the TransformException for the purposes
  * of being able to be caught in a catch clause.
  *
  * <h3>Open issues:</h3>
- * <dl>
- *    <dt><h4>No open issues are known for this class</h4></dt>
+ * <dl> *    <dt><h4>No open issues are known for this class</h4></dt>
  *    <dd></dd>
- * </dl>
- * 
+ * </dl> 
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public class TransformException extends SAXParseException
 {
+
   /**
    * Create a new TransformException.
    *
    * @param message The error or warning message.
    * @see org.xml.sax.SAXException
    */
-  public TransformException (String message) 
+  public TransformException(String message)
   {
     super(message, new LocatorImpl());
   }
@@ -97,18 +97,19 @@ public class TransformException extends SAXParseException
    * @param e The exception to be wrapped in a SAXException.
    * @see org.xml.sax.SAXException
    */
-  public TransformException (Exception e)
+  public TransformException(Exception e)
   {
     super(e.getMessage(), new LocatorImpl(), e);
   }
-  
+
   /**
    * Create a new TransformException wrapping an existing exception.
    *
    * @param e The exception to be wrapped in a SAXException.
    * @see org.xml.sax.SAXException
+   * NEEDSDOC @param locator
    */
-  public TransformException (Exception e, Locator locator)
+  public TransformException(Exception e, Locator locator)
   {
     super(e.getMessage(), locator, e);
   }
@@ -116,7 +117,7 @@ public class TransformException extends SAXParseException
   /**
    * Wrap an existing exception in a TransformException.
    *
-   * <p>This is used for throwing processor exceptions before 
+   * <p>This is used for throwing processor exceptions before
    * the processing has started.</p>
    *
    * @param message The error or warning message, or null to
@@ -125,11 +126,11 @@ public class TransformException extends SAXParseException
    * @see org.xml.sax.Locator
    * @see org.xml.sax.Parser#setLocale
    */
-  public TransformException (String message, Exception e) 
+  public TransformException(String message, Exception e)
   {
-    super( message, new LocatorImpl(), e);
+    super(message, new LocatorImpl(), e);
   }
-  
+
   /**
    * Create a new TransformException from a message and a Locator.
    *
@@ -140,13 +141,13 @@ public class TransformException extends SAXParseException
    * @param message The error or warning message.
    * @param locator The locator object for the error or warning.
    * @see org.xml.sax.Locator
-   * @see org.xml.sax.Parser#setLocale 
+   * @see org.xml.sax.Parser#setLocale
    */
-  public TransformException (String message, Locator locator) 
+  public TransformException(String message, Locator locator)
   {
     super(message, locator);
   }
-  
+
   /**
    * Wrap an existing exception in a TransformException.
    *
@@ -162,12 +163,11 @@ public class TransformException extends SAXParseException
    * @see org.xml.sax.Locator
    * @see org.xml.sax.Parser#setLocale
    */
-  public TransformException (String message, Locator locator,
-                             Exception e) 
+  public TransformException(String message, Locator locator, Exception e)
   {
-    super( message, locator, e);
+    super(message, locator, e);
   }
-  
+
   /**
    * Create a new TransformException.
    *
@@ -187,14 +187,12 @@ public class TransformException extends SAXParseException
    *                     cause the error or warning.
    * @see org.xml.sax.Parser#setLocale
    */
-  public TransformException (String message, 
-                             String publicId, String systemId,
-                             int lineNumber, int columnNumber)
+  public TransformException(String message, String publicId, String systemId,
+                            int lineNumber, int columnNumber)
   {
     super(message, publicId, systemId, lineNumber, columnNumber);
   }
-  
-  
+
   /**
    * Create a new TransformException with an embedded exception.
    *
@@ -218,39 +216,45 @@ public class TransformException extends SAXParseException
    * @param e Another exception to embed in this one.
    * @see org.xml.sax.Parser#setLocale
    */
-  public TransformException (String message, String publicId, String systemId,
-                             int lineNumber, int columnNumber, Exception e)
+  public TransformException(String message, String publicId, String systemId,
+                            int lineNumber, int columnNumber, Exception e)
   {
     super(message, publicId, systemId, lineNumber, columnNumber, e);
   }
-  
-  
+
   /**
-   * Print the the trace of methods from where the error 
-   * originated.  This will trace all nested exception 
+   * Print the the trace of methods from where the error
+   * originated.  This will trace all nested exception
    * objects, as well as this object.
    * @param s The stream where the dump will be sent to.
    */
-  public void printStackTrace(java.io.PrintStream s) 
+  public void printStackTrace(java.io.PrintStream s)
   {
-    if(s == null)
+
+    if (s == null)
       s = System.err;
+
     try
     {
       super.printStackTrace(s);
     }
-    catch(Exception e){}
+    catch (Exception e){}
+
     Exception exception = getException();
-    for(int i = 0; (i < 10) && (null != exception); i++)
+
+    for (int i = 0; (i < 10) && (null != exception); i++)
     {
       s.println("---------");
       exception.printStackTrace(s);
-      if(exception instanceof SAXException)
+
+      if (exception instanceof SAXException)
       {
-        SAXException se = (SAXException)exception;
+        SAXException se = (SAXException) exception;
         Exception prev = exception;
+
         exception = se.getException();
-        if(prev == exception)
+
+        if (prev == exception)
           break;
       }
       else
@@ -259,182 +263,221 @@ public class TransformException extends SAXParseException
       }
     }
   }
-  
+
+  /**
+   * NEEDSDOC Method isSimilar 
+   *
+   *
+   * NEEDSDOC @param e1
+   * NEEDSDOC @param e2
+   *
+   * NEEDSDOC (isSimilar) @return
+   */
   private boolean isSimilar(Exception e1, Exception e2)
   {
+
     boolean isSimilar = false;
-    if((e1 instanceof SAXParseException) && 
-       (e2 instanceof SAXParseException))
+
+    if ((e1 instanceof SAXParseException)
+            && (e2 instanceof SAXParseException))
     {
+
       // If the file and line number are the same, then only 
       // report the top-level error.
-      SAXParseException spe1 = (SAXParseException)e1;
+      SAXParseException spe1 = (SAXParseException) e1;
       String oldSystemID = spe1.getSystemId();
       int oldLine = spe1.getLineNumber();
       int oldColumn = spe1.getColumnNumber();
-
-      SAXParseException spe2 = (SAXParseException)e2;
+      SAXParseException spe2 = (SAXParseException) e2;
       String newSystemID = spe2.getSystemId();
       int newLine = spe2.getLineNumber();
       int newColumn = spe2.getColumnNumber();
-      
-      if(oldSystemID == null)
+
+      if (oldSystemID == null)
         oldSystemID = "";
-      if(newSystemID == null)
+
+      if (newSystemID == null)
         newSystemID = "";
 
-      isSimilar = (oldSystemID.equals(newSystemID) 
-                   && (oldLine == newLine)
-                   && (oldColumn == newColumn));  
+      isSimilar = (oldSystemID.equals(newSystemID) && (oldLine == newLine)
+                   && (oldColumn == newColumn));
     }
+
     return isSimilar;
   }
-  
+
+  /**
+   * NEEDSDOC Method appendMessageAndInfo 
+   *
+   *
+   * NEEDSDOC @param sbuffer
+   */
   private void appendMessageAndInfo(StringBuffer sbuffer)
   {
+
     String message = super.getMessage();
     String systemID = getSystemId();
     int line = getLineNumber();
     int column = getColumnNumber();
-    
-    if(null != message)
+
+    if (null != message)
     {
       sbuffer.append(message);
     }
-    if(null != systemID)
+
+    if (null != systemID)
     {
       sbuffer.append("; SystemID: ");
       sbuffer.append(systemID);
     }
-    if(0 != line)
+
+    if (0 != line)
     {
       sbuffer.append("; Line#: ");
       sbuffer.append(line);
     }
-    if(0 != column)
+
+    if (0 != column)
     {
       sbuffer.append("; Column#: ");
       sbuffer.append(column);
     }
   }
-  
+
   /**
    * Find the most contained message.
    * @returns The error message of the originating exception.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public String getMessage() 
+  public String getMessage()
   {
-    StringBuffer sbuffer = new StringBuffer();
-    
-    appendMessageAndInfo(sbuffer);
-    
-    Exception prev = this;
 
+    StringBuffer sbuffer = new StringBuffer();
+
+    appendMessageAndInfo(sbuffer);
+
+    Exception prev = this;
     Exception exception = getException();
-    while(null != exception)
-    {      
-      if((!((exception instanceof TransformException) || 
-           (exception instanceof ProcessorException))) &&
-         (exception instanceof SAXException))
+
+    while (null != exception)
+    {
+      if ((!((exception instanceof TransformException) || (exception instanceof ProcessorException)))
+              && (exception instanceof SAXException))
       {
-        if(exception instanceof SAXParseException)
-        {          
-          if(!isSimilar(prev, exception))
+        if (exception instanceof SAXParseException)
+        {
+          if (!isSimilar(prev, exception))
           {
-            SAXParseException spe = (SAXParseException)exception;
+            SAXParseException spe = (SAXParseException) exception;
             String message = spe.getMessage();
-            if(null != message)
+
+            if (null != message)
             {
               sbuffer.append("\n (");
-              sbuffer.append( spe.getClass().getName());
-              sbuffer.append( "): ");
+              sbuffer.append(spe.getClass().getName());
+              sbuffer.append("): ");
               sbuffer.append(message);
             }
 
-            if(null != spe.getSystemId())
+            if (null != spe.getSystemId())
             {
               sbuffer.append("; SystemID: ");
               sbuffer.append(spe.getSystemId());
             }
-            if(0 != spe.getLineNumber())
+
+            if (0 != spe.getLineNumber())
             {
               sbuffer.append("; Line#: ");
               sbuffer.append(spe.getLineNumber());
             }
-            if(0 != spe.getColumnNumber())
+
+            if (0 != spe.getColumnNumber())
             {
               sbuffer.append("; Column#: ");
               sbuffer.append(spe.getColumnNumber());
             }
           }
         }
-        else if(!isSimilar(prev, exception))
+        else if (!isSimilar(prev, exception))
         {
           String message = exception.getMessage();
-          if(null != message)
+
+          if (null != message)
           {
             sbuffer.append("\n (");
-            sbuffer.append( exception.getClass().getName());
-            sbuffer.append( "): ");
+            sbuffer.append(exception.getClass().getName());
+            sbuffer.append("): ");
             sbuffer.append(message);
           }
         }
-        
+
         prev = exception;
-        exception = ((SAXException)exception).getException();
+        exception = ((SAXException) exception).getException();
       }
-      else if(!isSimilar(prev, exception))
+      else if (!isSimilar(prev, exception))
       {
         String message = exception.getMessage();
-        if(null != message)
+
+        if (null != message)
         {
           sbuffer.append("\n (");
-          sbuffer.append( exception.getClass().getName());
-          sbuffer.append( "): ");
+          sbuffer.append(exception.getClass().getName());
+          sbuffer.append("): ");
           sbuffer.append(message);
         }
+
         exception = null;
       }
     }
+
     return sbuffer.toString();
   }
 
   /**
-   * Print the the trace of methods from where the error 
-   * originated.  This will trace all nested exception 
+   * Print the the trace of methods from where the error
+   * originated.  This will trace all nested exception
    * objects, as well as this object.
    * @param s The writer where the dump will be sent to.
    */
-  public void printStackTrace(java.io.PrintWriter s) 
+  public void printStackTrace(java.io.PrintWriter s)
   {
-    if(s == null)
+
+    if (s == null)
       s = new java.io.PrintWriter(System.err);
+
     try
     {
       super.printStackTrace(s);
     }
-    catch(Exception e){}
+    catch (Exception e){}
+
     Exception exception = getException();
-    
-    for(int i = 0; (i < 10) && (null != exception); i++)
+
+    for (int i = 0; (i < 10) && (null != exception); i++)
     {
       s.println("---------");
+
       try
       {
         exception.printStackTrace(s);
       }
-      catch(Exception e)
+      catch (Exception e)
       {
         s.println("Could not print stack trace...");
       }
-      if(exception instanceof SAXException)
+
+      if (exception instanceof SAXException)
       {
-        SAXException se = (SAXException)exception;
+        SAXException se = (SAXException) exception;
         Exception prev = exception;
+
         exception = se.getException();
-        if(prev == exception)
+
+        if (prev == exception)
         {
           exception = null;
+
           break;
         }
       }
@@ -444,6 +487,4 @@ public class TransformException extends SAXParseException
       }
     }
   }
-
-
 }

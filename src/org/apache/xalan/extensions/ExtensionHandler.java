@@ -57,18 +57,19 @@
 package org.apache.xalan.extensions;
 
 import java.util.Vector;
+
 import java.io.IOException;
 
 import org.xml.sax.SAXException;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
 
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;
-
 
 /**
  * <meta name="usage" content="internal"/>
@@ -79,64 +80,59 @@ import org.apache.xalan.transformer.TransformerImpl;
  *
  * @author Sanjiva Weerawarana (sanjiva@watson.ibm.com)
  */
-
-public abstract class ExtensionHandler 
+public abstract class ExtensionHandler
 {
-  protected String m_namespaceUri;  // uri of the extension namespace
-  protected String m_scriptLang;    // scripting language of implementation
 
+  /** uri of the extension namespace          */
+  protected String m_namespaceUri; 
+
+  /** scripting language of implementation          */
+  protected String m_scriptLang;
 
   /**
    * Construct a new extension namespace handler given all the information
    * needed.
-   * 
+   *
    * @param namespaceUri the extension namespace URI that I'm implementing
    * @param scriptLang   language of code implementing the extension
    */
-
-  protected ExtensionHandler (String namespaceUri,
-                              String scriptLang)
+  protected ExtensionHandler(String namespaceUri, String scriptLang)
   {
     m_namespaceUri = namespaceUri;
-    m_scriptLang   = scriptLang;
+    m_scriptLang = scriptLang;
   }
-
 
   /**
    * Tests whether a certain function name is known within this namespace.
    * @param function name of the function being tested
    * @return true if its known, false if not.
    */
+  public abstract boolean isFunctionAvailable(String function);
 
-  public abstract boolean isFunctionAvailable (String function);
-
-  
   /**
    * Tests whether a certain element name is known within this namespace.
    * @param function name of the function being tested
+   *
+   * NEEDSDOC @param element
    * @return true if its known, false if not.
    */
-
-  public abstract boolean isElementAvailable (String element);
-
+  public abstract boolean isElementAvailable(String element);
 
   /**
    * Process a call to a function.
    *
    * @param funcName Function name.
    * @param args     The arguments of the function call.
+   * NEEDSDOC @param methodKey
+   * NEEDSDOC @param exprContext
    *
    * @return the return value of the function evaluation.
    *
    * @exception SAXException          if parsing trouble
    */
-
-  public abstract Object callFunction (String funcName, 
-                                       Vector args, 
-                                       Object methodKey, 
-                                       ExpressionContext exprContext)
-    throws SAXException;
-
+  public abstract Object callFunction(
+    String funcName, Vector args, Object methodKey,
+      ExpressionContext exprContext) throws SAXException;
 
   /**
    * Process a call to this extension namespace via an element. As a side
@@ -150,6 +146,7 @@ public abstract class ExtensionHandler
    * @param sourceTree     The root of the source tree (but don't assume
    *                       it's a Document).
    * @param sourceNode     The current context node.
+   * NEEDSDOC @param methodKey
    *
    * @exception XSLProcessorException thrown if something goes wrong
    *            while running the extension handler.
@@ -158,16 +155,8 @@ public abstract class ExtensionHandler
    * @exception IOException           if loading trouble
    * @exception SAXException          if parsing trouble
    */
-
-  public abstract void processElement(String localPart,
-                                      Element element,
-                                      TransformerImpl transformer,
-                                      Stylesheet stylesheetTree,
-                                      Node sourceTree,
-                                      Node sourceNode,
-                                      QName mode,
-                                      Object methodKey)
-    throws SAXException, IOException;
-
+  public abstract void processElement(
+    String localPart, Element element, TransformerImpl transformer,
+      Stylesheet stylesheetTree, Node sourceTree, Node sourceNode,
+        QName mode, Object methodKey) throws SAXException, IOException;
 }
-

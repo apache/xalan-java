@@ -54,6 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 // Transformations for XML (TRaX)
 // Copyright ©2000 Lotus Development Corporation, Exoffice Technologies,
 // Oracle Corporation, Michael Kay of International Computers Limited, Apache
@@ -66,24 +67,23 @@ import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
 
 /**
- * This exception serves as a root exception of TRaX exception, and 
- * is thrown in raw form when an exceptional condition occurs in the 
+ * This exception serves as a root exception of TRaX exception, and
+ * is thrown in raw form when an exceptional condition occurs in the
  * Processor object.
  *
  * <h3>Open issues:</h3>
- * <dl>
- *    <dt><h4>Abstract exception root?</h4></dt>
+ * <dl> *    <dt><h4>Abstract exception root?</h4></dt>
  *    <dd>Should the root TRaX exception be abstract?</dd>
  *    <dt><h4>Derive from SAXException?</h4></dt>
- *    <dd>Keith Visco writes: I don't think these exceptions should extend  
+ *    <dd>Keith Visco writes: I don't think these exceptions should extend
  *        SAXException, but could nest a SAXException if necessary.</dd>
- * </dl>
- * 
+ * </dl> 
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public class ProcessorException extends SAXParseException
 {
+
   //////////////////////////////////////////////////////////////////////
   // Constructors.
   //////////////////////////////////////////////////////////////////////
@@ -97,9 +97,9 @@ public class ProcessorException extends SAXParseException
    *
    * @param message The error or warning message.
    * @see org.xml.sax.Locator
-   * @see org.xml.sax.Parser#setLocale 
+   * @see org.xml.sax.Parser#setLocale
    */
-  public ProcessorException (String message) 
+  public ProcessorException(String message)
   {
     super(message, null);
   }
@@ -114,14 +114,13 @@ public class ProcessorException extends SAXParseException
    * @param message The error or warning message.
    * @param locator The locator object for the error or warning.
    * @see org.xml.sax.Locator
-   * @see org.xml.sax.Parser#setLocale 
+   * @see org.xml.sax.Parser#setLocale
    */
-  public ProcessorException (String message, Locator locator) 
+  public ProcessorException(String message, Locator locator)
   {
     super(message, locator);
   }
-  
-  
+
   /**
    * Wrap an existing exception in a ProcessorException.
    *
@@ -137,16 +136,15 @@ public class ProcessorException extends SAXParseException
    * @see org.xml.sax.Locator
    * @see org.xml.sax.Parser#setLocale
    */
-  public ProcessorException (String message, Locator locator,
-                             Exception e) 
+  public ProcessorException(String message, Locator locator, Exception e)
   {
-    super( message, locator, e);
+    super(message, locator, e);
   }
-  
+
   /**
    * Wrap an existing exception in a ProcessorException.
    *
-   * <p>This is used for throwing processor exceptions before 
+   * <p>This is used for throwing processor exceptions before
    * the processing has started.</p>
    *
    * @param message The error or warning message, or null to
@@ -155,11 +153,11 @@ public class ProcessorException extends SAXParseException
    * @see org.xml.sax.Locator
    * @see org.xml.sax.Parser#setLocale
    */
-  public ProcessorException (String message, Exception e) 
+  public ProcessorException(String message, Exception e)
   {
-    super( "TRaX Processor Exception", new LocatorImpl(), e);
+    super("TRaX Processor Exception", new LocatorImpl(), e);
   }
-  
+
   /**
    * Create a new ProcessorException.
    *
@@ -179,13 +177,12 @@ public class ProcessorException extends SAXParseException
    *                     cause the error or warning.
    * @see org.xml.sax.Parser#setLocale
    */
-  public ProcessorException (String message, String publicId, String systemId,
-                             int lineNumber, int columnNumber)
+  public ProcessorException(String message, String publicId, String systemId,
+                            int lineNumber, int columnNumber)
   {
     super(message, publicId, systemId, lineNumber, columnNumber);
   }
-  
-  
+
   /**
    * Create a new ProcessorException with an embedded exception.
    *
@@ -209,39 +206,45 @@ public class ProcessorException extends SAXParseException
    * @param e Another exception to embed in this one.
    * @see org.xml.sax.Parser#setLocale
    */
-  public ProcessorException (String message, String publicId, String systemId,
-                             int lineNumber, int columnNumber, Exception e)
+  public ProcessorException(String message, String publicId, String systemId,
+                            int lineNumber, int columnNumber, Exception e)
   {
     super(message, publicId, systemId, lineNumber, columnNumber, e);
   }
-  
-  
+
   /**
-   * Print the the trace of methods from where the error 
-   * originated.  This will trace all nested exception 
+   * Print the the trace of methods from where the error
+   * originated.  This will trace all nested exception
    * objects, as well as this object.
    * @param s The stream where the dump will be sent to.
    */
-  public void printStackTrace(java.io.PrintStream s) 
+  public void printStackTrace(java.io.PrintStream s)
   {
-    if(s == null)
+
+    if (s == null)
       s = System.err;
+
     try
     {
       super.printStackTrace(s);
     }
-    catch(Exception e){}
+    catch (Exception e){}
+
     Exception exception = getException();
-    for(int i = 0; (i < 10) && (null != exception); i++)
+
+    for (int i = 0; (i < 10) && (null != exception); i++)
     {
       s.println("---------");
       exception.printStackTrace(s);
-      if(exception instanceof SAXException)
+
+      if (exception instanceof SAXException)
       {
-        SAXException se = (SAXException)exception;
+        SAXException se = (SAXException) exception;
         Exception prev = exception;
+
         exception = se.getException();
-        if(prev == exception)
+
+        if (prev == exception)
           break;
       }
       else
@@ -250,70 +253,81 @@ public class ProcessorException extends SAXParseException
       }
     }
   }
-  
+
   /**
    * Find the most contained message.
    * @returns The error message of the originating exception.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public String getMessage() 
+  public String getMessage()
   {
+
     StringBuffer sbuffer = new StringBuffer();
-    
-    if(null != super.getMessage())
+
+    if (null != super.getMessage())
     {
       sbuffer.append(super.getMessage());
     }
-    if(null != getSystemId())
+
+    if (null != getSystemId())
     {
       sbuffer.append("; SystemID: ");
       sbuffer.append(getSystemId());
     }
-    if(0 != getLineNumber())
+
+    if (0 != getLineNumber())
     {
       sbuffer.append("; Line#: ");
       sbuffer.append(getLineNumber());
     }
-    if(0 != getColumnNumber())
+
+    if (0 != getColumnNumber())
     {
       sbuffer.append("; Column#: ");
       sbuffer.append(getColumnNumber());
     }
 
     Exception exception = getException();
-    while(null != exception)
+
+    while (null != exception)
     {
-      if(null != exception.getMessage())
+      if (null != exception.getMessage())
       {
         sbuffer.append("\n (");
-        sbuffer.append( exception.getClass().getName());
-        sbuffer.append( "): ");
+        sbuffer.append(exception.getClass().getName());
+        sbuffer.append("): ");
         sbuffer.append(exception.getMessage());
       }
-      
-      if((!((exception instanceof TransformException) || 
-           (exception instanceof ProcessorException))) &&
-         (exception instanceof SAXException))
+
+      if ((!((exception instanceof TransformException) || (exception instanceof ProcessorException)))
+              && (exception instanceof SAXException))
       {
-        if(exception instanceof SAXParseException)
+        if (exception instanceof SAXParseException)
         {
-          SAXParseException spe = (SAXParseException)exception;
-          if(null != spe.getSystemId())
+          SAXParseException spe = (SAXParseException) exception;
+
+          if (null != spe.getSystemId())
           {
             sbuffer.append("; SystemID: ");
             sbuffer.append(spe.getSystemId());
           }
-          if(0 != spe.getLineNumber())
+
+          if (0 != spe.getLineNumber())
           {
             sbuffer.append("; Line#: ");
             sbuffer.append(spe.getLineNumber());
           }
-          if(0 != spe.getColumnNumber())
+
+          if (0 != spe.getColumnNumber())
           {
             sbuffer.append("; Column#: ");
             sbuffer.append(spe.getColumnNumber());
           }
         }
-        SAXException se = (SAXException)exception;
+
+        SAXException se = (SAXException) exception;
+
         exception = se.getException();
       }
       else
@@ -321,45 +335,54 @@ public class ProcessorException extends SAXParseException
         exception = null;
       }
     }
+
     return sbuffer.toString();
   }
 
   /**
-   * Print the the trace of methods from where the error 
-   * originated.  This will trace all nested exception 
+   * Print the the trace of methods from where the error
+   * originated.  This will trace all nested exception
    * objects, as well as this object.
    * @param s The writer where the dump will be sent to.
    */
-  public void printStackTrace(java.io.PrintWriter s) 
+  public void printStackTrace(java.io.PrintWriter s)
   {
-    if(s == null)
+
+    if (s == null)
       s = new java.io.PrintWriter(System.err);
+
     try
     {
       super.printStackTrace(s);
     }
-    catch(Exception e){}
+    catch (Exception e){}
+
     Exception exception = getException();
-    
-    for(int i = 0; (i < 10) && (null != exception); i++)
+
+    for (int i = 0; (i < 10) && (null != exception); i++)
     {
       s.println("---------");
+
       try
       {
         exception.printStackTrace(s);
       }
-      catch(Exception e)
+      catch (Exception e)
       {
         s.println("Could not print stack trace...");
       }
-      if(exception instanceof SAXException)
+
+      if (exception instanceof SAXException)
       {
-        SAXException se = (SAXException)exception;
+        SAXException se = (SAXException) exception;
         Exception prev = exception;
+
         exception = se.getException();
-        if(prev == exception)
+
+        if (prev == exception)
         {
           exception = null;
+
           break;
         }
       }

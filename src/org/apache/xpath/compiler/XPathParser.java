@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -58,6 +58,7 @@ package org.apache.xpath.compiler;
 
 import java.util.Vector;
 import java.util.Hashtable;
+
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.compiler.Compiler;
@@ -65,18 +66,21 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.utils.StringKey;
+
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+
 import org.apache.trax.ProcessorException;
 
 /**
  * <meta name="usage" content="general"/>
- * Tokenizes and parses XPath expressions. This should really be named 
+ * Tokenizes and parses XPath expressions. This should really be named
  * XPathParserImpl, and may be renamed in the future.
  */
 public class XPathParser implements java.io.Serializable
 {
+
   /**
    * The XPath to be processed.
    */
@@ -102,110 +106,146 @@ public class XPathParser implements java.io.Serializable
   /**
    * The parser constructor.
    */
-  public XPathParser()
-  {
-  }
+  public XPathParser(){}
 
   /**
    * The prefix resolver to map prefixes to namespaces in the OpMap.
    */
   PrefixResolver m_namespaceContext;
-  
+
   /**
-   * Given an string, init an XPath object for selections, 
-   * in order that a parse doesn't 
+   * Given an string, init an XPath object for selections,
+   * in order that a parse doesn't
    * have to be done each time the expression is evaluated.
    * @param compiler The compiler object.
    * @param expresson A String representing the OpMap.
-   * @param namespaceContext An object that is able to resolve prefixes in 
+   * NEEDSDOC @param expression
+   * @param namespaceContext An object that is able to resolve prefixes in
    * the XPath to namespaces.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public void initXPath(Compiler compiler, String expression, PrefixResolver namespaceContext)
-    throws org.xml.sax.SAXException
+  public void initXPath(
+          Compiler compiler, String expression, PrefixResolver namespaceContext)
+            throws org.xml.sax.SAXException
   {
+
     m_ops = compiler;
     m_namespaceContext = namespaceContext;
+
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
-    lexer.tokenize( expression );
+
+    lexer.tokenize(expression);
+
     m_ops.m_opMap[0] = OpCodes.OP_XPATH;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = 2;
+
     nextToken();
     Expr();
-    if(null != m_token)
+
+    if (null != m_token)
     {
       String extraTokens = "";
-      while(null != m_token)
+
+      while (null != m_token)
       {
-        extraTokens += "'"+m_token+"'";
+        extraTokens += "'" + m_token + "'";
+
         nextToken();
-        if(null != m_token)
+
+        if (null != m_token)
           extraTokens += ", ";
       }
-      error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS, new Object[] {extraTokens}); //"Extra illegal tokens: "+extraTokens);
+
+      error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+            new Object[]{ extraTokens });  //"Extra illegal tokens: "+extraTokens);
     }
+
     compiler.shrink();
     doStaticAnalysis(compiler);
   }
 
   /**
    * Analyze the XPath object to give optimization information.
+   *
+   * NEEDSDOC @param compiler
    */
-  void doStaticAnalysis(Compiler compiler)
-  {
-  }
+  void doStaticAnalysis(Compiler compiler){}
 
   /**
-   * Given an string, init an XPath object for pattern matches, 
-   * in order that a parse doesn't 
+   * Given an string, init an XPath object for pattern matches,
+   * in order that a parse doesn't
    * have to be done each time the expression is evaluated.
    * @param compiler The XPath object to be initialized.
    * @param expresson A String representing the XPath.
-   * @param namespaceContext An object that is able to resolve prefixes in 
+   * NEEDSDOC @param expression
+   * @param namespaceContext An object that is able to resolve prefixes in
    * the XPath to namespaces.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public void initMatchPattern(Compiler compiler, String expression, PrefixResolver namespaceContext)
-    throws org.xml.sax.SAXException
+  public void initMatchPattern(
+          Compiler compiler, String expression, PrefixResolver namespaceContext)
+            throws org.xml.sax.SAXException
   {
+
     m_ops = compiler;
     m_namespaceContext = namespaceContext;
+
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
-    lexer.tokenize( expression );
+
+    lexer.tokenize(expression);
+
     m_ops.m_opMap[0] = OpCodes.OP_MATCHPATTERN;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = 2;
+
     nextToken();
     Pattern();
-    if(null != m_token)
+
+    if (null != m_token)
     {
       String extraTokens = "";
-      while(null != m_token)
+
+      while (null != m_token)
       {
-        extraTokens += "'"+m_token+"'";
+        extraTokens += "'" + m_token + "'";
+
         nextToken();
-        if(null != m_token)
+
+        if (null != m_token)
           extraTokens += ", ";
       }
-      error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS, new Object[] {extraTokens}); //"Extra illegal tokens: "+extraTokens);
+
+      error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+            new Object[]{ extraTokens });  //"Extra illegal tokens: "+extraTokens);
     }
+
     // Terminate for safety.
     m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
     m_ops.shrink();
   }
-  
+
+  /** NEEDSDOC Field m_errorHandler          */
   private ErrorHandler m_errorHandler;
 
   /**
    * Allow an application to register an error event handler.
+   *
+   * NEEDSDOC @param handler
    */
-  public void setErrorHandler (ErrorHandler handler)
+  public void setErrorHandler(ErrorHandler handler)
   {
     m_errorHandler = handler;
   }
 
   /**
    * Return the current error handler.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public ErrorHandler getErrorHandler ()
+  public ErrorHandler getErrorHandler()
   {
     return m_errorHandler;
   }
@@ -213,41 +253,58 @@ public class XPathParser implements java.io.Serializable
   /**
    * Check whether m_token==s. If m_token is null, returns false (or true if s is also null);
    * do not throw an exception.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  final boolean tokenIs( String s )
+  final boolean tokenIs(String s)
   {
-    return ( m_token!=null ) ? (m_token.equals(s)) : ( s==null );
+    return (m_token != null) ? (m_token.equals(s)) : (s == null);
   }
 
   /**
    * Check whether m_token==c. If m_token is null, returns false (or true if c is also null);
    * do not throw an exception.
+   *
+   * NEEDSDOC @param c
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  final boolean tokenIs( char c )
+  final boolean tokenIs(char c)
   {
-    return ( m_token!=null ) ? (m_tokenChar == c) : false;
+    return (m_token != null) ? (m_tokenChar == c) : false;
   }
 
   /**
    * Look ahead of the current token in order to
    * make a branching decision.
    * @param s the string to compare it to.
+   *
+   * NEEDSDOC @param c
    * @param n number of tokens to look ahead.  Must be
    * greater than 1.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  final boolean lookahead( char c, int n )
+  final boolean lookahead(char c, int n)
   {
-    int pos = (m_queueMark+n);
+
+    int pos = (m_queueMark + n);
     boolean b;
-    if((pos <= m_ops.m_tokenQueueSize) && (pos > 0) && (m_ops.m_tokenQueueSize != 0))
+
+    if ((pos <= m_ops.m_tokenQueueSize) && (pos > 0)
+            && (m_ops.m_tokenQueueSize != 0))
     {
-      String tok = ((String)m_ops.m_tokenQueue[pos-1]);
+      String tok = ((String) m_ops.m_tokenQueue[pos - 1]);
+
       b = (tok.length() == 1) ? (tok.charAt(0) == c) : false;
     }
     else
     {
       b = false;
     }
+
     return b;
   }
 
@@ -260,18 +317,24 @@ public class XPathParser implements java.io.Serializable
    * at either the beginning of the string or on a '|'
    * character.  Because of this, this method should only
    * be used for pattern matching.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  private final boolean lookbehind( char c, int n )
+  private final boolean lookbehind(char c, int n)
   {
+
     boolean isToken;
-    int lookBehindPos = m_queueMark-(n+1);
-    if( lookBehindPos >= 0 )
+    int lookBehindPos = m_queueMark - (n + 1);
+
+    if (lookBehindPos >= 0)
     {
-      String lookbehind = (String)m_ops.m_tokenQueue[lookBehindPos];
-      if(lookbehind.length() == 1)
+      String lookbehind = (String) m_ops.m_tokenQueue[lookBehindPos];
+
+      if (lookbehind.length() == 1)
       {
-        char c0 = ( lookbehind == null ) ? '|' : lookbehind.charAt(0);
-        isToken = ( c0 == '|' ) ? false : (c0 == c);
+        char c0 = (lookbehind == null) ? '|' : lookbehind.charAt(0);
+
+        isToken = (c0 == '|') ? false : (c0 == c);
       }
       else
       {
@@ -282,6 +345,7 @@ public class XPathParser implements java.io.Serializable
     {
       isToken = false;
     }
+
     return isToken;
   }
 
@@ -295,19 +359,23 @@ public class XPathParser implements java.io.Serializable
    * be used for pattern matching.
    * @return true if look behind has a token, false otherwise.
    */
-  private final boolean lookbehindHasToken( int n )
+  private final boolean lookbehindHasToken(int n)
   {
+
     boolean hasToken;
-    if( (m_queueMark-n) > 0 )
+
+    if ((m_queueMark - n) > 0)
     {
-      String lookbehind = (String)m_ops.m_tokenQueue[m_queueMark - (n-1)];
-      char c0 = ( lookbehind == null ) ? '|' : lookbehind.charAt(0);
-      hasToken = ( c0 == '|' ) ? false : true;
+      String lookbehind = (String) m_ops.m_tokenQueue[m_queueMark - (n - 1)];
+      char c0 = (lookbehind == null) ? '|' : lookbehind.charAt(0);
+
+      hasToken = (c0 == '|') ? false : true;
     }
     else
     {
       hasToken = false;
     }
+
     return hasToken;
   }
 
@@ -317,19 +385,25 @@ public class XPathParser implements java.io.Serializable
    * @param s the string to compare it to.
    * @param n number of tokens to lookahead.  Must be
    * greater than 1.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  private final boolean lookahead( String s, int n )
+  private final boolean lookahead(String s, int n)
   {
+
     boolean isToken;
-    if( (m_queueMark+n) <= m_ops.m_tokenQueueSize )
+
+    if ((m_queueMark + n) <= m_ops.m_tokenQueueSize)
     {
-      String lookahead = (String)m_ops.m_tokenQueue[m_queueMark + (n-1)];
-      isToken = ( lookahead!=null ) ? lookahead.equals(s) : ( s==null );
+      String lookahead = (String) m_ops.m_tokenQueue[m_queueMark + (n - 1)];
+
+      isToken = (lookahead != null) ? lookahead.equals(s) : (s == null);
     }
     else
     {
       isToken = (null == s);
     }
+
     return isToken;
   }
 
@@ -339,9 +413,10 @@ public class XPathParser implements java.io.Serializable
    */
   private final void nextToken()
   {
-    if( m_queueMark < m_ops.m_tokenQueueSize )
+
+    if (m_queueMark < m_ops.m_tokenQueueSize)
     {
-      m_token = (String)m_ops.m_tokenQueue[m_queueMark++];
+      m_token = (String) m_ops.m_tokenQueue[m_queueMark++];
       m_tokenChar = m_token.charAt(0);
     }
     else
@@ -354,19 +429,24 @@ public class XPathParser implements java.io.Serializable
   /**
    * Retrieve a token relative to the current token.
    * @param i Position relative to current token.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   private final String getTokenRelative(int i)
   {
+
     String tok;
-    int relative = m_queueMark+i;
-    if( (relative > 0) && (relative < m_ops.m_tokenQueueSize) )
+    int relative = m_queueMark + i;
+
+    if ((relative > 0) && (relative < m_ops.m_tokenQueueSize))
     {
-      tok = (String)m_ops.m_tokenQueue[relative];
+      tok = (String) m_ops.m_tokenQueue[relative];
     }
     else
     {
       tok = null;
     }
+
     return tok;
   }
 
@@ -376,10 +456,12 @@ public class XPathParser implements java.io.Serializable
    */
   private final void prevToken()
   {
-    if( m_queueMark > 0 )
+
+    if (m_queueMark > 0)
     {
       m_queueMark--;
-      m_token = (String)m_ops.m_tokenQueue[m_queueMark];
+
+      m_token = (String) m_ops.m_tokenQueue[m_queueMark];
       m_tokenChar = m_token.charAt(0);
     }
     else
@@ -392,52 +474,70 @@ public class XPathParser implements java.io.Serializable
   /**
    * Consume an expected token, throwing an exception if it
    * isn't there.
+   *
+   * NEEDSDOC @param expected
+   *
+   * @throws org.xml.sax.SAXException
    */
   private final void consumeExpected(String expected)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
-    if(tokenIs(expected))
+
+    if (tokenIs(expected))
     {
       nextToken();
     }
     else
     {
-		error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND, new Object[] {expected, m_token}); //"Expected "+expected+", but found: "+m_token);
+      error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND, new Object[]{ expected,
+                                                                     m_token });  //"Expected "+expected+", but found: "+m_token);
     }
   }
 
   /**
    * Consume an expected token, throwing an exception if it
    * isn't there.
+   *
+   * NEEDSDOC @param expected
+   *
+   * @throws org.xml.sax.SAXException
    */
   private final void consumeExpected(char expected)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
-    if(tokenIs(expected))
+
+    if (tokenIs(expected))
     {
       nextToken();
     }
     else
     {
-      error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND, new Object[] {String.valueOf(expected), m_token}); //"Expected "+expected+", but found: "+m_token);
+      error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND,
+            new Object[]{ String.valueOf(expected),
+                          m_token });  //"Expected "+expected+", but found: "+m_token);
     }
   }
 
   /**
    * Warn the user of a problem.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
+   *
+   * @throws SAXException
    */
-  void warn(int msg, Object[] args)
-    throws SAXException
+  void warn(int msg, Object[] args) throws SAXException
   {
-    String fmsg = XSLMessages.createXPATHWarning(msg, args); 
-    
+
+    String fmsg = XSLMessages.createXPATHWarning(msg, args);
     ErrorHandler ehandler = this.getErrorHandler();
 
-    if(null != ehandler)
+    if (null != ehandler)
     {
+
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.warning(new ProcessorException(fmsg, (Locator)null));
-    }  
+      ehandler.warning(new ProcessorException(fmsg, (Locator) null));
+    }
     else
     {
       System.out.println(fmsg);
@@ -447,12 +547,19 @@ public class XPathParser implements java.io.Serializable
   /**
    * Notify the user of an assertion error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param b
+   * NEEDSDOC @param msg
    */
   private void assert(boolean b, String msg)
   {
-    if(!b)
+
+    if (!b)
     {
-      String fMsg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION, new Object[] {msg}); 
+      String fMsg = XSLMessages.createXPATHMessage(
+        XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
+        new Object[]{ msg });
+
       throw new RuntimeException(fMsg);
     }
   }
@@ -460,18 +567,23 @@ public class XPathParser implements java.io.Serializable
   /**
    * Notify the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
+   *
+   * @throws SAXException
    */
-  void error(int msg, Object[] args)
-    throws SAXException
+  void error(int msg, Object[] args) throws SAXException
   {
-    String fmsg = XSLMessages.createXPATHMessage(msg, args); 
-    
+
+    String fmsg = XSLMessages.createXPATHMessage(msg, args);
     ErrorHandler ehandler = this.getErrorHandler();
 
-    if(null != ehandler)
+    if (null != ehandler)
     {
+
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.fatalError(new ProcessorException(fmsg, (Locator)null));
+      ehandler.fatalError(new ProcessorException(fmsg, (Locator) null));
     }
     else
     {
@@ -482,46 +594,61 @@ public class XPathParser implements java.io.Serializable
   /**
    * Dump the remaining token queue.
    * Thanks to Craig for this.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   protected String dumpRemainingTokenQueue()
   {
+
     int q = m_queueMark;
     String returnMsg;
-    if(q < m_ops.m_tokenQueueSize)
+
+    if (q < m_ops.m_tokenQueueSize)
     {
       String msg = "\n Remaining tokens: (";
-      while (q < m_ops.m_tokenQueueSize )
+
+      while (q < m_ops.m_tokenQueueSize)
       {
-        String t = (String)m_ops.m_tokenQueue[q++];
+        String t = (String) m_ops.m_tokenQueue[q++];
+
         msg += (" '" + t + "'");
       }
+
       returnMsg = msg + ")";
     }
     else
     {
       returnMsg = "";
     }
+
     return returnMsg;
   }
 
   /**
    * Given a string, return the corresponding function token.
+   *
+   * NEEDSDOC @param key
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   final int getFunctionToken(String key)
   {
+
     int tok;
+
     try
     {
-      tok = ((Integer)(Keywords.m_functions.get(key))).intValue();
+      tok = ((Integer) (Keywords.m_functions.get(key))).intValue();
     }
-    catch(NullPointerException npe)
+    catch (NullPointerException npe)
     {
       tok = -1;
     }
-    catch(ClassCastException cce)
+    catch (ClassCastException cce)
     {
       tok = -1;
     }
+
     return tok;
   }
 
@@ -529,14 +656,21 @@ public class XPathParser implements java.io.Serializable
    * Insert room for operation.  This will NOT set
    * the length value of the operation, but will update
    * the length value for the total expression.
+   *
+   * NEEDSDOC @param pos
+   * NEEDSDOC @param length
+   * NEEDSDOC @param op
    */
   void insertOp(int pos, int length, int op)
   {
+
     int totalLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    for(int i = totalLen - 1; i >= pos; i--)
+
+    for (int i = totalLen - 1; i >= pos; i--)
     {
-      m_ops.m_opMap[i+length] = m_ops.m_opMap[i];
+      m_ops.m_opMap[i + length] = m_ops.m_opMap[i];
     }
+
     m_ops.m_opMap[pos] = op;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = totalLen + length;
   }
@@ -545,25 +679,31 @@ public class XPathParser implements java.io.Serializable
    * Insert room for operation.  This WILL set
    * the length value of the operation, and will update
    * the length value for the total expression.
+   *
+   * NEEDSDOC @param length
+   * NEEDSDOC @param op
    */
   void appendOp(int length, int op)
   {
+
     int totalLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     m_ops.m_opMap[totalLen] = op;
-    m_ops.m_opMap[totalLen+OpMap.MAPINDEX_LENGTH] = length;
+    m_ops.m_opMap[totalLen + OpMap.MAPINDEX_LENGTH] = length;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = totalLen + length;
   }
 
   // ============= EXPRESSIONS FUNCTIONS =================
-  
+
   /**
    *
    *
    * Expr  ::=  OrExpr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Expr()
-    throws org.xml.sax.SAXException
+  protected void Expr() throws org.xml.sax.SAXException
   {
     OrExpr();
   }
@@ -574,19 +714,24 @@ public class XPathParser implements java.io.Serializable
    * OrExpr  ::=  AndExpr
    * | OrExpr 'or' AndExpr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void OrExpr()
-    throws org.xml.sax.SAXException
+  protected void OrExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     AndExpr();
-    if((null != m_token) && tokenIs("or"))
+
+    if ((null != m_token) && tokenIs("or"))
     {
       nextToken();
       insertOp(opPos, 2, OpCodes.OP_OR);
       OrExpr();
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH]
-        = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
   }
 
@@ -596,18 +741,24 @@ public class XPathParser implements java.io.Serializable
    * AndExpr  ::=  EqualityExpr
    * | AndExpr 'and' EqualityExpr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void AndExpr()
-    throws org.xml.sax.SAXException
+  protected void AndExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     EqualityExpr(-1);
-    if((null != m_token) && tokenIs("and"))
+
+    if ((null != m_token) && tokenIs("and"))
     {
       nextToken();
       insertOp(opPos, 2, OpCodes.OP_AND);
       AndExpr();
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
   }
 
@@ -619,38 +770,52 @@ public class XPathParser implements java.io.Serializable
    * EqualityExpr  ::=  RelationalExpr
    * | EqualityExpr '=' RelationalExpr
    *
+   *
+   * NEEDSDOC @param addPos
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected int EqualityExpr(int addPos)
-    throws org.xml.sax.SAXException
+  protected int EqualityExpr(int addPos) throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    if(-1 == addPos)
+
+    if (-1 == addPos)
       addPos = opPos;
+
     RelationalExpr(-1);
-    if(null != m_token)
+
+    if (null != m_token)
     {
-      if(tokenIs('!') && lookahead('=', 1))
+      if (tokenIs('!') && lookahead('=', 1))
       {
         nextToken();
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_NOTEQUALS);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = EqualityExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
-      else if(tokenIs('='))
+      else if (tokenIs('='))
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_EQUALS);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = EqualityExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
     }
+
     return addPos;
   }
 
@@ -665,20 +830,30 @@ public class XPathParser implements java.io.Serializable
    * | RelationalExpr '<=' AdditiveExpr
    * | RelationalExpr '>=' AdditiveExpr
    *
+   *
+   * NEEDSDOC @param addPos
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected int RelationalExpr(int addPos)
-    throws org.xml.sax.SAXException
+  protected int RelationalExpr(int addPos) throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    if(-1 == addPos)
+
+    if (-1 == addPos)
       addPos = opPos;
+
     AdditiveExpr(-1);
-    if(null != m_token)
+
+    if (null != m_token)
     {
-      if(tokenIs('<'))
+      if (tokenIs('<'))
       {
         nextToken();
-        if(tokenIs('='))
+
+        if (tokenIs('='))
         {
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_LTE);
@@ -687,16 +862,19 @@ public class XPathParser implements java.io.Serializable
         {
           insertOp(addPos, 2, OpCodes.OP_LT);
         }
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = RelationalExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
-      else if(tokenIs('>'))
+      else if (tokenIs('>'))
       {
         nextToken();
-        if(tokenIs('='))
+
+        if (tokenIs('='))
         {
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_GTE);
@@ -705,13 +883,16 @@ public class XPathParser implements java.io.Serializable
         {
           insertOp(addPos, 2, OpCodes.OP_GT);
         }
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = RelationalExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
     }
+
     return addPos;
   }
 
@@ -728,37 +909,49 @@ public class XPathParser implements java.io.Serializable
    * | AdditiveExpr '+' MultiplicativeExpr
    * | AdditiveExpr '-' MultiplicativeExpr
    *
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected int AdditiveExpr(int addPos)
-    throws org.xml.sax.SAXException
+  protected int AdditiveExpr(int addPos) throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    if(-1 == addPos)
+
+    if (-1 == addPos)
       addPos = opPos;
+
     MultiplicativeExpr(-1);
-    if(null != m_token)
+
+    if (null != m_token)
     {
-      if(tokenIs('+'))
+      if (tokenIs('+'))
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_PLUS);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = AdditiveExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
-      else if(tokenIs('-'))
+      else if (tokenIs('-'))
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_MINUS);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = AdditiveExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
     }
+
     return addPos;
   }
 
@@ -777,57 +970,73 @@ public class XPathParser implements java.io.Serializable
    * | MultiplicativeExpr 'mod' UnaryExpr
    * | MultiplicativeExpr 'quo' UnaryExpr
    *
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected int MultiplicativeExpr(int addPos)
-    throws org.xml.sax.SAXException
+  protected int MultiplicativeExpr(int addPos) throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    if(-1 == addPos)
+
+    if (-1 == addPos)
       addPos = opPos;
+
     UnaryExpr();
-    if(null != m_token)
+
+    if (null != m_token)
     {
-      if(tokenIs('*'))
+      if (tokenIs('*'))
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_MULT);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;        
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
-      else if(tokenIs("div"))
+      else if (tokenIs("div"))
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_DIV);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
-      else if(tokenIs("mod"))
+      else if (tokenIs("mod"))
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_MOD);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
-      else if(tokenIs("quo"))
+      else if (tokenIs("quo"))
       {
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_QUO);
+
         int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH]
-          = m_ops.m_opMap[addPos+opPlusLeftHandLen+1] + opPlusLeftHandLen;
-        addPos+=2;
+        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        addPos += 2;
       }
     }
+
     return addPos;
   }
 
@@ -839,35 +1048,47 @@ public class XPathParser implements java.io.Serializable
    * UnaryExpr  ::=  UnionExpr
    * | '-' UnaryExpr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void UnaryExpr()
-    throws org.xml.sax.SAXException
+  protected void UnaryExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
     boolean isNeg = false;
-    if(m_tokenChar == '-')
+
+    if (m_tokenChar == '-')
     {
       nextToken();
       appendOp(2, OpCodes.OP_NEG);
+
       isNeg = true;
     }
+
     UnionExpr();
-    if(isNeg)
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+    if (isNeg)
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
    *
    * StringExpr  ::=  Expr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void StringExpr()
-    throws org.xml.sax.SAXException
+  protected void StringExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     appendOp(2, OpCodes.OP_STRING);
     Expr();
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
@@ -875,18 +1096,24 @@ public class XPathParser implements java.io.Serializable
    *
    * StringExpr  ::=  Expr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void BooleanExpr()
-    throws org.xml.sax.SAXException
+  protected void BooleanExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     appendOp(2, OpCodes.OP_BOOL);
     Expr();
+
     int opLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
-    if(opLen == 2)
+
+    if (opLen == 2)
     {
-      error(XPATHErrorResources.ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL, null); //"boolean(...) argument is no longer optional with 19990709 XPath draft.");
+      error(XPATHErrorResources.ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL, null);  //"boolean(...) argument is no longer optional with 19990709 XPath draft.");
     }
+
     m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = opLen;
   }
 
@@ -895,14 +1122,19 @@ public class XPathParser implements java.io.Serializable
    *
    * NumberExpr  ::=  Expr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void NumberExpr()
-    throws org.xml.sax.SAXException
+  protected void NumberExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     appendOp(2, OpCodes.OP_NUMBER);
     Expr();
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
@@ -915,24 +1147,29 @@ public class XPathParser implements java.io.Serializable
    * UnionExpr    ::=    PathExpr
    * | UnionExpr '|' PathExpr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void UnionExpr()
-    throws org.xml.sax.SAXException
+  protected void UnionExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
     boolean continueOrLoop = true;
     boolean foundUnion = false;
+
     do
     {
       PathExpr();
 
-      if(tokenIs('|'))
+      if (tokenIs('|'))
       {
-        if(false == foundUnion)
+        if (false == foundUnion)
         {
           foundUnion = true;
+
           insertOp(opPos, 2, OpCodes.OP_UNION);
         }
+
         nextToken();
       }
       else
@@ -942,61 +1179,79 @@ public class XPathParser implements java.io.Serializable
 
       // this.m_testForDocOrder = true;
     }
-      while(continueOrLoop);
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    while (continueOrLoop);
+
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
    * Analyze a union pattern and tell if the axes are
    * all descendants.
    * (Move to XPath?)
+   *
+   * NEEDSDOC @param opmap
+   * NEEDSDOC @param opPos
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   private static boolean isLocationPathSimpleFollowing(OpMap opmap, int opPos)
   {
-    if(true)
-    {
-      // int posOfLastOp = OpMap.getNextOpPos(opPos)-1;
 
+    if (true)
+    {
+
+      // int posOfLastOp = OpMap.getNextOpPos(opPos)-1;
       opPos = OpMap.getFirstChildPos(opPos);
+
       // step
       int stepType = opmap.m_opMap[opPos];
 
       // make sure all step types are going forwards
-      switch(stepType)
+      switch (stepType)
       {
-      case OpCodes.FROM_SELF:
-      case OpCodes.FROM_ATTRIBUTES:
-      case OpCodes.FROM_CHILDREN:
-      case OpCodes.FROM_DESCENDANTS:
-      case OpCodes.FROM_DESCENDANTS_OR_SELF:
-      case OpCodes.FROM_FOLLOWING:
-      case OpCodes.FROM_FOLLOWING_SIBLINGS:
-        if(opmap.m_opMap[opmap.getNextOpPos(opPos)] == OpCodes.ENDOP)
+      case OpCodes.FROM_SELF :
+      case OpCodes.FROM_ATTRIBUTES :
+      case OpCodes.FROM_CHILDREN :
+      case OpCodes.FROM_DESCENDANTS :
+      case OpCodes.FROM_DESCENDANTS_OR_SELF :
+      case OpCodes.FROM_FOLLOWING :
+      case OpCodes.FROM_FOLLOWING_SIBLINGS :
+        if (opmap.m_opMap[opmap.getNextOpPos(opPos)] == OpCodes.ENDOP)
         {
+
           // Add the length of the step itself, plus the length of the op,
           // and two length arguments, to the op position.
-          opPos = (opmap.getArgLengthOfStep(opPos)+opmap.getFirstChildPosOfStep(opPos));
+          opPos = (opmap.getArgLengthOfStep(opPos)
+                   + opmap.getFirstChildPosOfStep(opPos));
+
           int nextStepType = opmap.m_opMap[opPos];
 
-          if(OpCodes.OP_PREDICATE == nextStepType)
+          if (OpCodes.OP_PREDICATE == nextStepType)
           {
-            int firstPredPos = opPos+2;
+            int firstPredPos = opPos + 2;
             int predicateType = opmap.m_opMap[firstPredPos];
-            if((OpCodes.OP_NUMBERLIT == predicateType) || (OpCodes.OP_NUMBER == predicateType)
-               || (FunctionTable.FUNC_NUMBER == predicateType))
+
+            if ((OpCodes.OP_NUMBERLIT == predicateType)
+                    || (OpCodes.OP_NUMBER == predicateType)
+                    || (FunctionTable.FUNC_NUMBER == predicateType))
             {
               return false;
             }
+
             opPos = opmap.getNextOpPos(opPos);
             nextStepType = opmap.m_opMap[opPos];
+
             // Multiple predicates?
-            if(OpCodes.OP_PREDICATE == nextStepType)
+            if (OpCodes.OP_PREDICATE == nextStepType)
               return false;
           }
+
           return true;
         }
         break;
       }
+
       return false;
     }
     else
@@ -1004,7 +1259,6 @@ public class XPathParser implements java.io.Serializable
       return false;
     }
   }
-
 
   /**
    * PathExpr  ::=  LocationPath
@@ -1014,27 +1268,30 @@ public class XPathParser implements java.io.Serializable
    *
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void PathExpr()
-    throws org.xml.sax.SAXException
+  protected void PathExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
     boolean foundLocationPath;
 
     FilterExpr();
 
-    if(tokenIs('/'))
-    { 
+    if (tokenIs('/'))
+    {
       nextToken();
-      int locationPathOpPos = opPos;
+
+      // int locationPathOpPos = opPos;
       insertOp(opPos, 2, OpCodes.OP_LOCATIONPATH);
       RelativeLocationPath();
 
       // Terminate for safety.
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
   }
 
@@ -1046,25 +1303,29 @@ public class XPathParser implements java.io.Serializable
    *
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void FilterExpr()
-    throws org.xml.sax.SAXException
+  protected void FilterExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     // boolean isFunc = lookahead('(', 1);
     PrimaryExpr();
 
-    if(tokenIs('['))
+    if (tokenIs('['))
     {
-      int locationPathOpPos = opPos;
+
+      // int locationPathOpPos = opPos;
       insertOp(opPos, 2, OpCodes.OP_LOCATIONPATH);
 
-      while(tokenIs('['))
+      while (tokenIs('['))
       {
         Predicate();
       }
 
-      if(tokenIs('/'))
+      if (tokenIs('/'))
       {
         nextToken();
         RelativeLocationPath();
@@ -1073,8 +1334,8 @@ public class XPathParser implements java.io.Serializable
       // Terminate for safety.
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
 
     /*
@@ -1094,43 +1355,51 @@ public class XPathParser implements java.io.Serializable
    * | Number
    * | FunctionCall
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void PrimaryExpr()
-    throws org.xml.sax.SAXException
+  protected void PrimaryExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    if((m_tokenChar == '\'') || (m_tokenChar == '"'))
+
+    if ((m_tokenChar == '\'') || (m_tokenChar == '"'))
     {
       appendOp(2, OpCodes.OP_LITERAL);
       Literal();
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
-    }
-    else if(m_tokenChar == '$')
-    {
-      nextToken(); // consume '$'
-      appendOp(2, OpCodes.OP_VARIABLE);
 
-      NCName();
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
-    else if(m_tokenChar == '(')
+    else if (m_tokenChar == '$')
+    {
+      nextToken();  // consume '$'
+      appendOp(2, OpCodes.OP_VARIABLE);
+      NCName();
+
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    }
+    else if (m_tokenChar == '(')
     {
       nextToken();
       appendOp(2, OpCodes.OP_GROUP);
       Expr();
       consumeExpected(')');
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
-    else if((null != m_token) &&
-            ((('.' == m_tokenChar) && (m_token.length() > 1) &&
-              Character.isDigit( m_token.charAt(1) ))
-             || Character.isDigit( m_tokenChar )))
+    else if ((null != m_token) && ((('.' == m_tokenChar) && (m_token.length() > 1) && Character.isDigit(
+            m_token.charAt(1))) || Character.isDigit(m_tokenChar)))
     {
       appendOp(2, OpCodes.OP_NUMBERLIT);
       Number();
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
-    else if(lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3)))
+    else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3)))
     {
       FunctionCall();
     }
@@ -1144,79 +1413,104 @@ public class XPathParser implements java.io.Serializable
    *
    * Argument    ::=    Expr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Argument()
-    throws org.xml.sax.SAXException
+  protected void Argument() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     appendOp(2, OpCodes.OP_ARGUMENT);
     Expr();
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
    *
    * FunctionCall    ::=    FunctionName '(' ( Argument ( ',' Argument)*)? ')'
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void FunctionCall()
-    throws org.xml.sax.SAXException
+  protected void FunctionCall() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    if(lookahead(':',1))
+
+    if (lookahead(':', 1))
     {
       appendOp(4, OpCodes.OP_EXTFUNCTION);
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = m_queueMark-1;
+
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = m_queueMark - 1;
+
       nextToken();
       consumeExpected(':');
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 2] = m_queueMark-1;
+
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 2] = m_queueMark - 1;
+
       nextToken();
     }
     else
     {
       int funcTok = getFunctionToken(m_token);
-      if(-1 == funcTok)
+
+      if (-1 == funcTok)
       {
-		  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION, new Object[] {m_token}); //"Could not find function: "+m_token+"()");
+        error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+              new Object[]{ m_token });  //"Could not find function: "+m_token+"()");
       }
-      switch(funcTok)
+
+      switch (funcTok)
       {
-      case OpCodes.NODETYPE_PI:
-      case OpCodes.NODETYPE_COMMENT:
-      case OpCodes.NODETYPE_TEXT:
-      case OpCodes.NODETYPE_NODE:
+      case OpCodes.NODETYPE_PI :
+      case OpCodes.NODETYPE_COMMENT :
+      case OpCodes.NODETYPE_TEXT :
+      case OpCodes.NODETYPE_NODE :
         LocationPath();
+
         return;
-      default:
+      default :
         appendOp(3, OpCodes.OP_FUNCTION);
+
         m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = funcTok;
       }
+
       nextToken();
     }
+
     consumeExpected('(');
-    while(!tokenIs(')') && m_token != null)
+
+    while (!tokenIs(')') && m_token != null)
     {
-      if(tokenIs(','))
+      if (tokenIs(','))
       {
-        error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG, null); //"Found ',' but no preceding argument!");
+        error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG, null);  //"Found ',' but no preceding argument!");
       }
+
       Argument();
-      if(!tokenIs(')'))
+
+      if (!tokenIs(')'))
       {
         consumeExpected(',');
-        if(tokenIs(')'))
+
+        if (tokenIs(')'))
         {
-          error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG, null); //"Found ',' but no following argument!");
+          error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG,
+                null);  //"Found ',' but no following argument!");
         }
       }
     }
+
     consumeExpected(')');
 
     // Terminate for safety.
     m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   // ============= GRAMMAR FUNCTIONS =================
@@ -1226,23 +1520,30 @@ public class XPathParser implements java.io.Serializable
    * LocationPath ::= RelativeLocationPath
    * | AbsoluteLocationPath
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void LocationPath()
-    throws org.xml.sax.SAXException
+  protected void LocationPath() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    int locationPathOpPos = opPos;
+
+    // int locationPathOpPos = opPos;
     appendOp(2, OpCodes.OP_LOCATIONPATH);
 
-    if(tokenIs('/'))
+    if (tokenIs('/'))
     {
       appendOp(4, OpCodes.FROM_ROOT);
+
       // Tell how long the step is without the predicate
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_ROOT;
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
+        OpCodes.NODETYPE_ROOT;
+
       nextToken();
     }
-    if(m_token != null)
+
+    if (m_token != null)
     {
       RelativeLocationPath();
     }
@@ -1250,8 +1551,8 @@ public class XPathParser implements java.io.Serializable
     // Terminate for safety.
     m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
@@ -1260,66 +1561,76 @@ public class XPathParser implements java.io.Serializable
    * | RelativeLocationPath '/' Step
    * | AbbreviatedRelativeLocationPath
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void RelativeLocationPath()
-    throws org.xml.sax.SAXException
+  protected void RelativeLocationPath() throws org.xml.sax.SAXException
   {
+
     Step();
-    while(tokenIs('/'))
+
+    while (tokenIs('/'))
     {
       nextToken();
       Step();
     }
   }
 
-
   /**
    *
-   * Step    ::=    Basis Predicate*
+   * Step    ::=    Basis Predicate
    * | AbbreviatedStep
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Step()
-    throws org.xml.sax.SAXException
+  protected void Step() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
 
-    if(tokenIs("."))
+    if (tokenIs("."))
     {
       nextToken();
-      if(tokenIs('['))
+
+      if (tokenIs('['))
       {
-        error(XPATHErrorResources.ER_PREDICATE_ILLEGAL_SYNTAX, null); //"'..[predicate]' or '.[predicate]' is illegal syntax.  Use 'self::node()[predicate]' instead.");
+        error(XPATHErrorResources.ER_PREDICATE_ILLEGAL_SYNTAX, null);  //"'..[predicate]' or '.[predicate]' is illegal syntax.  Use 'self::node()[predicate]' instead.");
       }
+
       appendOp(4, OpCodes.FROM_SELF);
+
       // Tell how long the step is without the predicate
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_NODE;
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
+        OpCodes.NODETYPE_NODE;
     }
-    else if(tokenIs(".."))
+    else if (tokenIs(".."))
     {
       nextToken();
       appendOp(4, OpCodes.FROM_PARENT);
+
       // Tell how long the step is without the predicate
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_NODE;
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
+        OpCodes.NODETYPE_NODE;
     }
+
     // There is probably a better way to test for this 
     // transition... but it gets real hairy if you try 
     // to do it in basis().
-    else if(tokenIs('*') ||
-            tokenIs('@') ||
-            tokenIs('/') ||
-            Character.isLetter(m_token.charAt(0)))
+    else if (tokenIs('*') || tokenIs('@') || tokenIs('/')
+             || Character.isLetter(m_token.charAt(0)))
     {
       Basis();
 
-      while(tokenIs('['))
+      while (tokenIs('['))
       {
         Predicate();
       }
 
       // Tell how long the entire step is.
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
   }
 
@@ -1327,29 +1638,34 @@ public class XPathParser implements java.io.Serializable
    *
    * Basis    ::=    AxisName '::' NodeTest
    * | AbbreviatedBasis
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Basis()
-    throws org.xml.sax.SAXException
+  protected void Basis() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
     int axesType;
 
     // The next blocks guarantee that a FROM_XXX will be added.
-    if(lookahead("::", 1))
+    if (lookahead("::", 1))
     {
       axesType = AxisName();
+
       nextToken();
       nextToken();
     }
-    else if(tokenIs('@'))
+    else if (tokenIs('@'))
     {
       axesType = OpCodes.FROM_ATTRIBUTES;
+
       appendOp(2, axesType);
       nextToken();
     }
-    else if(tokenIs('/'))
+    else if (tokenIs('/'))
     {
       axesType = OpCodes.FROM_DESCENDANTS_OR_SELF;
+
       appendOp(2, axesType);
 
       // Have to fix up for patterns such as '//@foo' or '//attribute::foo',
@@ -1358,17 +1674,20 @@ public class XPathParser implements java.io.Serializable
       // by a regular step pattern.
       // if(lookahead('@', 1) || lookahead("::", 2))
       {
+
         // Make room for telling how long the step is without the predicate
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.NODETYPE_NODE;
+        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
+          OpCodes.NODETYPE_NODE;
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
 
         // Tell how long the step is without the predicate
-        m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+        m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
+          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
 
-        return; // make a quick exit...
+        return;  // make a quick exit...
       }
+
       // else
       // {
       //  nextToken();
@@ -1377,6 +1696,7 @@ public class XPathParser implements java.io.Serializable
     else
     {
       axesType = OpCodes.FROM_CHILDREN;
+
       appendOp(2, axesType);
     }
 
@@ -1386,104 +1706,134 @@ public class XPathParser implements java.io.Serializable
     NodeTest(axesType);
 
     // Tell how long the step is without the predicate
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
    *
    * Basis    ::=    AxisName '::' NodeTest
    * | AbbreviatedBasis
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected int AxisName()
-    throws org.xml.sax.SAXException
+  protected int AxisName() throws org.xml.sax.SAXException
   {
+
     Object val = Keywords.m_axisnames.get(m_token);
-    if(null == val)
+
+    if (null == val)
     {
-      error(XPATHErrorResources.ER_ILLEGAL_AXIS_NAME, new Object[] {m_token}); //"illegal axis name: "+m_token);
+      error(XPATHErrorResources.ER_ILLEGAL_AXIS_NAME,
+            new Object[]{ m_token });  //"illegal axis name: "+m_token);
     }
-    int axesType = ((Integer)val).intValue();
+
+    int axesType = ((Integer) val).intValue();
+
     appendOp(2, axesType);
+
     return axesType;
   }
-
 
   /**
    *
    * NodeTest    ::=    WildcardName
    * | NodeType '(' ')'
    * | 'processing-instruction' '(' Literal ')'
+   *
+   * NEEDSDOC @param axesType
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void NodeTest(int axesType)
-    throws org.xml.sax.SAXException
+  protected void NodeTest(int axesType) throws org.xml.sax.SAXException
   {
-    if(lookahead('(', 1))
+
+    if (lookahead('(', 1))
     {
       Object nodeTestOp = Keywords.m_nodetypes.get(m_token);
-      if(null == nodeTestOp)
+
+      if (null == nodeTestOp)
       {
-        error(XPATHErrorResources.ER_UNKNOWN_NODETYPE, new Object[] {m_token}); //"Unknown nodetype: "+m_token);
+        error(XPATHErrorResources.ER_UNKNOWN_NODETYPE,
+              new Object[]{ m_token });  //"Unknown nodetype: "+m_token);
       }
       else
       {
         nextToken();
-        int nt = ((Integer)nodeTestOp).intValue();
+
+        int nt = ((Integer) nodeTestOp).intValue();
+
         m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = nt;
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
 
         consumeExpected('(');
-        if(OpCodes.NODETYPE_PI == nt)
+
+        if (OpCodes.NODETYPE_PI == nt)
         {
-          if(!tokenIs(')'))
+          if (!tokenIs(')'))
           {
             Literal();
           }
         }
+
         consumeExpected(')');
       }
     }
     else
     {
+
       // Assume name of attribute or element.
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.NODENAME;
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-        if(lookahead(':', 1))
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.NODENAME;
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
+      if (lookahead(':', 1))
+      {
+        if (tokenIs('*'))
         {
-          if(tokenIs('*'))
-          {
-            m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]]
-              = OpCodes.ELEMWILDCARD;
-          }
-          else
-          {
-            m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark-1;
-          }
-          nextToken();
-          consumeExpected(':');
+          m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
+            OpCodes.ELEMWILDCARD;
         }
         else
         {
-          m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.EMPTY;
-        }
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-        if(tokenIs('*'))
-        {
-          m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ELEMWILDCARD;
-        }
-        else
-        {
-          if(OpCodes.FROM_NAMESPACE == axesType)
-          {
-            String prefix = (String)this.m_ops.m_tokenQueue[m_queueMark-1];
-            String namespace = ((PrefixResolver)m_namespaceContext).getNamespaceForPrefix(prefix);
-            this.m_ops.m_tokenQueue[m_queueMark-1] = namespace;
-          }
-          m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark-1;
+          m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark
+                  - 1;
         }
 
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
         nextToken();
+        consumeExpected(':');
+      }
+      else
+      {
+        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.EMPTY;
+      }
+
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
+      if (tokenIs('*'))
+      {
+        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
+          OpCodes.ELEMWILDCARD;
+      }
+      else
+      {
+        if (OpCodes.FROM_NAMESPACE == axesType)
+        {
+          String prefix = (String) this.m_ops.m_tokenQueue[m_queueMark - 1];
+          String namespace =
+            ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(
+              prefix);
+
+          this.m_ops.m_tokenQueue[m_queueMark - 1] = namespace;
+        }
+
+        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
+      }
+
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
+      nextToken();
     }
   }
 
@@ -1491,11 +1841,13 @@ public class XPathParser implements java.io.Serializable
    *
    * Predicate ::= '[' PredicateExpr ']'
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Predicate()
-    throws org.xml.sax.SAXException
+  protected void Predicate() throws org.xml.sax.SAXException
   {
-    if(tokenIs('['))
+
+    if (tokenIs('['))
     {
       nextToken();
       PredicateExpr();
@@ -1507,46 +1859,56 @@ public class XPathParser implements java.io.Serializable
    *
    * PredicateExpr ::= Expr
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void PredicateExpr()
-    throws org.xml.sax.SAXException
+  protected void PredicateExpr() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     appendOp(2, OpCodes.OP_PREDICATE);
     Expr();
 
     // Terminate for safety.
     m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
    * QName ::=  (Prefix ':')? LocalPart
    * Prefix ::=  NCName
    * LocalPart ::=  NCName
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void QName()
-    throws org.xml.sax.SAXException
+  protected void QName() throws org.xml.sax.SAXException
   {
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark-1;
+
+    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
     nextToken();
     consumeExpected(':');
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark-1;
+
+    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
     nextToken();
   }
 
   /**
-   * NCName ::=  (Letter | '_') (NCNameChar)*
+   * NCName ::=  (Letter | '_') (NCNameChar)
    * NCNameChar ::=  Letter | Digit | '.' | '-' | '_' | CombiningChar | Extender
    */
   protected void NCName()
   {
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark-1;
+
+    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
     nextToken();
   }
 
@@ -1557,30 +1919,39 @@ public class XPathParser implements java.io.Serializable
    * Literal  ::=  '"' [^"]* '"'
    * | "'" [^']* "'"
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Literal()
-    throws org.xml.sax.SAXException
+  protected void Literal() throws org.xml.sax.SAXException
   {
-    int last = m_token.length()-1;
+
+    int last = m_token.length() - 1;
     char c0 = m_tokenChar;
     char cX = m_token.charAt(last);
-    if(((c0 == '\"') && (cX == '\"')) ||
-       ((c0 == '\'') && (cX == '\'')))
+
+    if (((c0 == '\"') && (cX == '\"')) || ((c0 == '\'') && (cX == '\'')))
     {
+
       // Mutate the token to remove the quotes and have the XString object
       // already made.
-      int tokenQueuePos = m_queueMark-1;
+      int tokenQueuePos = m_queueMark - 1;
+
       m_ops.m_tokenQueue[tokenQueuePos] = null;
+
       Object obj = new XString(m_token.substring(1, last));
+
       m_ops.m_tokenQueue[tokenQueuePos] = obj;
+
       // lit = m_token.substring(1, last);
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = tokenQueuePos;
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
       nextToken();
     }
     else
     {
-      error(XPATHErrorResources.ER_PATTERN_LITERAL_NEEDS_BE_QUOTED, new Object[] {m_token}); //"Pattern literal ("+m_token+") needs to be quoted!");
+      error(XPATHErrorResources.ER_PATTERN_LITERAL_NEEDS_BE_QUOTED,
+            new Object[]{ m_token });  //"Pattern literal ("+m_token+") needs to be quoted!");
     }
   }
 
@@ -1588,29 +1959,35 @@ public class XPathParser implements java.io.Serializable
    *
    * Number ::= [0-9]+('.'[0-9]+)? | '.'[0-9]+
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Number()
-    throws org.xml.sax.SAXException
+  protected void Number() throws org.xml.sax.SAXException
   {
-    if(null != m_token)
+
+    if (null != m_token)
     {
+
       // Mutate the token to remove the quotes and have the XNumber object
       // already made.
       double num;
+
       try
       {
         num = Double.valueOf(m_token).doubleValue();
       }
-      catch(NumberFormatException nfe)
+      catch (NumberFormatException nfe)
       {
-        num = 0.0; // to shut up compiler.
-        error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER, new Object[] {m_token}); //m_token+" could not be formatted to a number!");
-      }
-      m_ops.m_tokenQueue[m_queueMark-1]
-        = new XNumber(num);
+        num = 0.0;  // to shut up compiler.
 
+        error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER,
+              new Object[]{ m_token });  //m_token+" could not be formatted to a number!");
+      }
+
+      m_ops.m_tokenQueue[m_queueMark - 1] = new XNumber(num);
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
       nextToken();
     }
   }
@@ -1622,15 +1999,17 @@ public class XPathParser implements java.io.Serializable
    * Pattern  ::=  LocationPathPattern
    * | Pattern '|' LocationPathPattern
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void Pattern()
-    throws org.xml.sax.SAXException
+  protected void Pattern() throws org.xml.sax.SAXException
   {
-    while(true)
+
+    while (true)
     {
       LocationPathPattern();
 
-      if(tokenIs('|'))
+      if (tokenIs('|'))
       {
         nextToken();
       }
@@ -1648,31 +2027,38 @@ public class XPathParser implements java.io.Serializable
    * | IdKeyPattern (('/' | '//') RelativePathPattern)?
    * | '//'? RelativePathPattern
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void LocationPathPattern()
-    throws org.xml.sax.SAXException
+  protected void LocationPathPattern() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
     appendOp(2, OpCodes.OP_LOCATIONPATHPATTERN);
 
-    if(lookahead('(', 1) 
-       && (tokenIs(Keywords.FUNC_ID_STRING) || tokenIs(Keywords.FUNC_KEY_STRING)))
+    if (lookahead('(', 1)
+            && (tokenIs(Keywords.FUNC_ID_STRING)
+                || tokenIs(Keywords.FUNC_KEY_STRING)))
     {
       IdKeyPattern();
-      if(tokenIs('/') && lookahead('/', 1))
+
+      if (tokenIs('/') && lookahead('/', 1))
       {
         appendOp(4, OpCodes.MATCH_ANY_ANCESTOR);
-        
+
         // Tell how long the step is without the predicate
         m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_FUNCTEST;
+        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
+          OpCodes.NODETYPE_FUNCTEST;
+
         nextToken();
         nextToken();
       }
     }
-    else if(tokenIs('/'))
+    else if (tokenIs('/'))
     {
-      if(lookahead('/', 1))
+      if (lookahead('/', 1))
       {
         appendOp(4, OpCodes.MATCH_ANY_ANCESTOR);
       }
@@ -1680,13 +2066,16 @@ public class XPathParser implements java.io.Serializable
       {
         appendOp(4, OpCodes.FROM_ROOT);
       }
+
       // Tell how long the step is without the predicate
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_ROOT;
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
+        OpCodes.NODETYPE_ROOT;
+
       nextToken();
     }
 
-    if(!tokenIs('|') && (null != m_token))
+    if (!tokenIs('|') && (null != m_token))
     {
       RelativePathPattern();
     }
@@ -1694,8 +2083,8 @@ public class XPathParser implements java.io.Serializable
     // Terminate for safety.
     m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
 
   /**
@@ -1704,9 +2093,10 @@ public class XPathParser implements java.io.Serializable
    * | 'key' '(' Literal ',' Literal ')'
    * (Also handle doc())
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void IdKeyPattern()
-    throws org.xml.sax.SAXException
+  protected void IdKeyPattern() throws org.xml.sax.SAXException
   {
     FunctionCall();
   }
@@ -1717,12 +2107,15 @@ public class XPathParser implements java.io.Serializable
    * | RelativePathPattern '/' StepPattern
    * | RelativePathPattern '//' StepPattern
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void RelativePathPattern()
-    throws org.xml.sax.SAXException
+  protected void RelativePathPattern() throws org.xml.sax.SAXException
   {
+
     StepPattern();
-    while(tokenIs('/'))
+
+    while (tokenIs('/'))
     {
       nextToken();
       StepPattern();
@@ -1733,66 +2126,79 @@ public class XPathParser implements java.io.Serializable
    *
    * StepPattern  ::=  AbbreviatedNodeTestStep
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void StepPattern()
-    throws org.xml.sax.SAXException
+  protected void StepPattern() throws org.xml.sax.SAXException
   {
-    AbbreviatedNodeTestStep(  );
+    AbbreviatedNodeTestStep();
   }
 
   /**
    *
-   * AbbreviatedNodeTestStep    ::=    '@'? NodeTest Predicate*
+   * AbbreviatedNodeTestStep    ::=    '@'? NodeTest Predicate
    *
+   *
+   * @throws org.xml.sax.SAXException
    */
-  protected void AbbreviatedNodeTestStep()
-    throws org.xml.sax.SAXException
+  protected void AbbreviatedNodeTestStep() throws org.xml.sax.SAXException
   {
+
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
     int axesType;
 
     // The next blocks guarantee that a MATCH_XXX will be added.
     int matchTypePos = -1;
-    if(tokenIs('@'))
+
+    if (tokenIs('@'))
     {
       axesType = OpCodes.MATCH_ATTRIBUTE;
+
       appendOp(2, axesType);
       nextToken();
     }
-    else if(this.lookahead("::", 1))
+    else if (this.lookahead("::", 1))
     {
-      if(tokenIs("attribute"))
+      if (tokenIs("attribute"))
       {
         axesType = OpCodes.MATCH_ATTRIBUTE;
+
         appendOp(2, axesType);
       }
-      else if(tokenIs("child"))
+      else if (tokenIs("child"))
       {
         axesType = OpCodes.MATCH_IMMEDIATE_ANCESTOR;
+
         appendOp(2, axesType);
       }
       else
       {
         axesType = -1;
-        this.error(XPATHErrorResources.ER_AXES_NOT_ALLOWED, new Object[] {this.m_token});
+
+        this.error(XPATHErrorResources.ER_AXES_NOT_ALLOWED,
+                   new Object[]{ this.m_token });
       }
+
       nextToken();
       nextToken();
     }
-    else if(tokenIs('/'))
+    else if (tokenIs('/'))
     {
       axesType = OpCodes.MATCH_ANY_ANCESTOR;
+
       appendOp(2, axesType);
       nextToken();
     }
     else
     {
-      if(tokenIs('/'))
+      if (tokenIs('/'))
       {
         nextToken();
       }
+
       matchTypePos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
       axesType = OpCodes.MATCH_IMMEDIATE_ANCESTOR;
+
       appendOp(2, axesType);
     }
 
@@ -1802,20 +2208,23 @@ public class XPathParser implements java.io.Serializable
     NodeTest(axesType);
 
     // Tell how long the step is without the predicate
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
 
-    while(tokenIs('['))
+    while (tokenIs('['))
     {
       Predicate();
     }
-    if((matchTypePos > -1) && tokenIs('/') && lookahead('/', 1))
+
+    if ((matchTypePos > -1) && tokenIs('/') && lookahead('/', 1))
     {
       m_ops.m_opMap[matchTypePos] = OpCodes.MATCH_ANY_ANCESTOR;
+
       nextToken();
     }
 
     // Tell how long the entire step is.
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
   }
-
 }

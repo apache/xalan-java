@@ -58,29 +58,30 @@ package org.apache.xpath;
 
 /**
  * <meta name="usage" content="general"/>
- * Derived from XPathException in order that XPath processor 
+ * Derived from XPathException in order that XPath processor
  * exceptions may be specifically caught.
  */
 public class XPathProcessorException extends XPathException
 {
+
   /**
-   * Create an XPathProcessorException object that holds 
+   * Create an XPathProcessorException object that holds
    * an error message.
    * @param message The error message.
    */
-  public XPathProcessorException(String message) 
+  public XPathProcessorException(String message)
   {
     super(message);
   }
 
   /**
-   * Create an XPathProcessorException object that holds 
-   * an error message, and another exception 
+   * Create an XPathProcessorException object that holds
+   * an error message, and another exception
    * that caused this exception.
    * @param message The error message.
    * @param e The exception that caused this exception.
    */
-  public XPathProcessorException (String message, Exception e)
+  public XPathProcessorException(String message, Exception e)
   {
     super(message, e);
   }

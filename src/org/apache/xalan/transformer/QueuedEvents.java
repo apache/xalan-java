@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,129 +57,147 @@
 package org.apache.xalan.transformer;
 
 import java.util.Stack;
+
 import org.apache.xalan.utils.ObjectPool;
+
 import org.xml.sax.Attributes;
 
 /**
- * This class acts as a base for ResultTreeHandler, and keeps 
- * queud stack events.  In truth, we don't need a stack, 
+ * This class acts as a base for ResultTreeHandler, and keeps
+ * queud stack events.  In truth, we don't need a stack,
  * so I may change this down the line a bit.
  */
 abstract class QueuedEvents
 {
+
+  /** NEEDSDOC Field m_eventCount          */
+  int m_eventCount = 0;
+
+  /** NEEDSDOC Field m_startDoc          */
+  QueuedStartDocument m_startDoc = new QueuedStartDocument();
+
+  /** NEEDSDOC Field m_startElement          */
+  QueuedStartElement m_startElement = new QueuedStartElement();
+
   /**
    * Get the queued document event.
-   */
-  QueuedSAXEvent getQueuedSAXEvent()
-  {
-    return (QueuedSAXEvent)m_eventQueue.peek();
-  }
-  
-  /**
-   * Get the queued document event.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   QueuedStartDocument getQueuedDoc()
   {
-    QueuedSAXEvent event = (QueuedSAXEvent)m_eventQueue.peek();
-    return (event.getType() == QueuedSAXEvent.DOC) 
-           ? (QueuedStartDocument)event : null;
+    return (m_eventCount == 1) ? m_startDoc : null;
   }
-  
+
   /**
    * Get the queued document event.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   QueuedStartDocument getQueuedDocAtBottom()
   {
-    return (QueuedStartDocument)m_eventQueue.elementAt(0);
+    return m_startDoc;
   }
-
 
   /**
    * Get the queued element.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   QueuedStartElement getQueuedElem()
   {
-    QueuedSAXEvent event = (QueuedSAXEvent)m_eventQueue.peek();
-    return (event.getType() == QueuedSAXEvent.ELEM) 
-           ? (QueuedStartElement)event : null;
+    return (m_eventCount > 1) ? m_startElement : null;
   }
-  
+
   /**
    * This is for the derived class to init new events.
+   *
+   * NEEDSDOC @param qse
    */
   protected abstract void initQSE(QueuedSAXEvent qse);
-  
+
+  /**
+   * NEEDSDOC Method reInitEvents 
+   *
+   */
   protected void reInitEvents()
   {
-    int n = m_eventQueue.size();
-    for(int i = 0; i < n; i++)
-    {
-      QueuedSAXEvent qse = (QueuedSAXEvent)m_eventQueue.elementAt(i);
-      initQSE(qse);
-    }
+    initQSE(m_startDoc);
+    initQSE(m_startElement);
   }
-  
+
+  /**
+   * NEEDSDOC Method reset 
+   *
+   */
   public void reset()
   {
-    // if(null != m_serializer)
-    //  m_serializer.reset();
-    m_eventQueue.removeAllElements();
     pushDocumentEvent();
-    this.reInitEvents();
+    reInitEvents();
   }
-  
+
   /**
    * Push the document event.  This never gets popped.
    */
   void pushDocumentEvent()
   {
-    QueuedStartDocument qsd 
-      = new QueuedStartDocument();
-    qsd.setPending(true);
-    m_eventQueue.push(qsd);
-    initQSE(qsd);
+
+    m_startDoc.setPending(true);
+    initQSE(m_startDoc);
+
+    m_eventCount++;
   }
 
-  void pushElementEvent(String ns, String localName, String name, Attributes atts)
-  {
-    QueuedStartElement qse = (QueuedStartElement)m_queuedStartElementPool.getInstance();
-    m_eventQueue.push(qse);
-    qse.setPending(ns, localName, name, atts);
-    initQSE(qse);
-  }
-  
-  QueuedSAXEvent popEvent()
-  {
-    QueuedSAXEvent event = (QueuedSAXEvent)m_eventQueue.pop();
-    m_queuedStartElementPool.freeInstance(event);
-    event.reset();
-    return event;
-  }
-    
   /**
-   * Stack of QueuedSAXEvents.
+   * NEEDSDOC Method pushElementEvent 
+   *
+   *
+   * NEEDSDOC @param ns
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param name
+   * NEEDSDOC @param atts
    */
-  private Stack m_eventQueue = new Stack();
-  
+  void pushElementEvent(String ns, String localName, String name,
+                        Attributes atts)
+  {
+
+    m_startElement.setPending(ns, localName, name, atts);
+    initQSE(m_startElement);
+
+    m_eventCount++;
+  }
+
   /**
-   * Pool of QueuedStartElement objects.
+   * NEEDSDOC Method popEvent 
+   *
    */
-  private ObjectPool m_queuedStartElementPool = new ObjectPool(QueuedStartElement.class);
-  
+  void popEvent()
+  {
+
+    m_startElement.reset();
+
+    m_eventCount--;
+  }
+
+  /** NEEDSDOC Field m_serializer          */
   private org.apache.serialize.Serializer m_serializer;
-  
+
   /**
-   * This is only for use of object pooling, so the that 
+   * This is only for use of object pooling, so the that
    * it can be reset.
+   *
+   * NEEDSDOC @param s
    */
   void setSerializer(org.apache.serialize.Serializer s)
   {
     m_serializer = s;
   }
-  
+
   /**
-   * This is only for use of object pooling, so the that 
+   * This is only for use of object pooling, so the that
    * it can be reset.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   org.apache.serialize.Serializer getSerializer()
   {

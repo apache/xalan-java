@@ -1,5 +1,5 @@
 /*
- * The Apache Software License, Version 1.1 
+ * The Apache Software License, Version 1.1
  *
  *
  * Copyright (c) 1999 The Apache Software Foundation.  All rights 
@@ -52,647 +52,839 @@
  * originally based on software copyright (c) 1999, Lotus
  * Development Corporation., http://www.lotus.com.  For more
  * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>. 
+ * <http://www.apache.org/>.
  */
 package org.apache.xalan.utils.synthetic.reflection;
+
 import org.apache.xalan.utils.synthetic.Class;
 import org.apache.xalan.utils.synthetic.SynthesisException;
 
 /**
-  A Field provides information about, and dynamic access
-  to, a single field of a class or an interface. The reflected
-  field may be a class (static) field or an instance field. 
-  <p>
-  A Field permits widening conversions to occur during a
-  get or set access operation, but throws an
-  IllegalArgumentException if a narrowing conversion
-  would occur. 
-  
-  @see Member  
-  @see  Class  
-  @see  getFields  
-  @see  getField  
-  @see  getDeclaredFields  
-  @see  getDeclaredField 
-  **/
-public class Field 
-extends Object 
-implements Member 
+ * A Field provides information about, and dynamic access
+ * to, a single field of a class or an interface. The reflected
+ * field may be a class (static) field or an instance field.
+ * <p>
+ * A Field permits widening conversions to occur during a
+ * get or set access operation, but throws an
+ * IllegalArgumentException if a narrowing conversion
+ * would occur.
+ *
+ * @see Member
+ * @see  Class
+ * @see  getFields
+ * @see  getField
+ * @see  getDeclaredFields
+ * @see  getDeclaredField
+ */
+public class Field extends Object implements Member
 {
-  public String name, initializer=null;
+
+  /** NEEDSDOC Field name, initializer          */
+  public String name, initializer = null;
+
+  /** NEEDSDOC Field modifiers          */
   int modifiers;
-  java.lang.reflect.Field realfield=null;
-  Class declaringClass,type;
-  
-  /** Proxy constructor */
-  public Field(java.lang.reflect.Field realfield, org.apache.xalan.utils.synthetic.Class declaringClass)
-  { 
-    this(realfield.getName(),declaringClass);
-    this.realfield=realfield;
-    this.type=org.apache.xalan.utils.synthetic.Class.forClass(realfield.getType());
-  }
-  
-  /** Synthesis constructor */
-  public Field(String name,org.apache.xalan.utils.synthetic.Class declaringClass)
-  { 
-    this.name=name;
-    this.declaringClass=declaringClass;
-  }
-  
-  
+
+  /** NEEDSDOC Field realfield          */
+  java.lang.reflect.Field realfield = null;
+
+  /** NEEDSDOC Field declaringClass, type          */
+  Class declaringClass, type;
+
   /**
-    Compares this Field against the specified object.
-    Returns true if the objects are the same. Two
-    Fields are the same if they were declared by the
-    same class and have the same name and type. 
-    */
+   * Proxy constructor 
+   *
+   * NEEDSDOC @param realfield
+   * NEEDSDOC @param declaringClass
+   */
+  public Field(java.lang.reflect.Field realfield,
+               org.apache.xalan.utils.synthetic.Class declaringClass)
+  {
+
+    this(realfield.getName(), declaringClass);
+
+    this.realfield = realfield;
+    this.type =
+      org.apache.xalan.utils.synthetic.Class.forClass(realfield.getType());
+  }
+
+  /**
+   * Synthesis constructor 
+   *
+   * NEEDSDOC @param name
+   * NEEDSDOC @param declaringClass
+   */
+  public Field(String name,
+               org.apache.xalan.utils.synthetic.Class declaringClass)
+  {
+    this.name = name;
+    this.declaringClass = declaringClass;
+  }
+
+  /**
+   * Compares this Field against the specified object.
+   * Returns true if the objects are the same. Two
+   * Fields are the same if they were declared by the
+   * same class and have the same name and type.
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public boolean equals(Object obj)
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.equals(obj);
-    
-    else if(obj instanceof Field)
-      {
-        Field objf=(Field)obj;
-        return(declaringClass.equals(objf.declaringClass) &&
-	       name.equals(objf.name) && type.equals(objf.type) );
-      }
-    
-    else return false;
+    else if (obj instanceof Field)
+    {
+      Field objf = (Field) obj;
+
+      return (declaringClass.equals(objf.declaringClass)
+              && name.equals(objf.name) && type.equals(objf.type));
+    }
+    else
+      return false;
   }
+
   /**
-    Returns the value of the field represented by this
-    Field, on the specified object. The value is
-    automatically wrapped in an object if it has a
-    primitive type. 
-    <p>
-    The underlying field's value is obtained as follows:
-    <p>
-    If the underlying field is a static field, the object
-    argument is ignored; it may be null. 
-    <p>
-    Otherwise, the underlying field is an instance
-    field. If the specified object argument is null, the
-    method throws a NullPointerException. If the
-    specified object is not an instance of the class or
-    interface declaring the underlying field, the
-    method throws an IllegalArgumentException. 
-    <p>
-    If this Field object enforces Java language access
-    control, and the underlying field is inaccessible,
-    the method throws an IllegalAccessException. 
-    <p>
-    Otherwise, the value is retrieved from the
-    underlying instance or static field. If the field has a
-    primitive type, the value is wrapped in an object
-    before being returned, otherwise it is returned as
-    is. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field. 
-    @throws NullPointerException 
-    if the specified object is null. 
-    */
-  public Object get(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Returns the value of the field represented by this
+   * Field, on the specified object. The value is
+   * automatically wrapped in an object if it has a
+   * primitive type.
+   * <p>
+   * The underlying field's value is obtained as follows:
+   * <p>
+   * If the underlying field is a static field, the object
+   * argument is ignored; it may be null.
+   * <p>
+   * Otherwise, the underlying field is an instance
+   * field. If the specified object argument is null, the
+   * method throws a NullPointerException. If the
+   * specified object is not an instance of the class or
+   * interface declaring the underlying field, the
+   * method throws an IllegalArgumentException.
+   * <p>
+   * If this Field object enforces Java language access
+   * control, and the underlying field is inaccessible,
+   * the method throws an IllegalAccessException.
+   * <p>
+   * Otherwise, the value is retrieved from the
+   * underlying instance or static field. If the field has a
+   * primitive type, the value is wrapped in an object
+   * before being returned, otherwise it is returned as
+   * is.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field.
+   * @throws NullPointerException
+   * if the specified object is null.
+   */
+  public Object get(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.get(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Get the value of a field as a boolean on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public boolean getBoolean(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a boolean on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public boolean getBoolean(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getBoolean(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Get the value of a field as a byte on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public byte getByte(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a byte on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public byte getByte(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getByte(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Get the value of a field as a char on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public char getChar(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a char on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public char getChar(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getChar(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Returns the Class object representing the class or
-    interface that declares the field represented by this
-    Field object. 
-    */
+   * Returns the Class object representing the class or
+   * interface that declares the field represented by this
+   * Field object.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public org.apache.xalan.utils.synthetic.Class getDeclaringClass()
   {
-    if(realfield!=null)
-      return org.apache.xalan.utils.synthetic.Class.forClass(realfield.getDeclaringClass());
-    
+
+    if (realfield != null)
+      return org.apache.xalan.utils.synthetic.Class.forClass(
+        realfield.getDeclaringClass());
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Get the value of a field as a double on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public double getDouble(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a double on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public double getDouble(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getDouble(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Get the value of a field as a float on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public float getFloat(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a float on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public float getFloat(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getFloat(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Get the value of a field as a int on specified object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public int getInt(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a int on specified object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public int getInt(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getInt(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Get the value of a field as a long on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public long getLong(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a long on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public long getLong(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getLong(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Returns the Java language modifiers for the field
-    represented by this Field object, as an integer. The
-    Modifier class should be used to decode the
-    modifiers. 
-    
-    @see 
-    Modifier 
-    */
+   * Returns the Java language modifiers for the field
+   * represented by this Field object, as an integer. The
+   * Modifier class should be used to decode the
+   * modifiers.
+   *
+   * @see
+   * Modifier
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public int getModifiers()
   {
-    if(realfield!=null)
-      modifiers=realfield.getModifiers();
-    
+
+    if (realfield != null)
+      modifiers = realfield.getModifiers();
+
     return modifiers;
   }
 
+  /**
+   * NEEDSDOC Method getInitializer 
+   *
+   *
+   * NEEDSDOC (getInitializer) @return
+   */
   public String getInitializer()
   {
     return initializer;
   }
-  public void setInitializer(String i)
-  throws SynthesisException
+
+  /**
+   * NEEDSDOC Method setInitializer 
+   *
+   *
+   * NEEDSDOC @param i
+   *
+   * @throws SynthesisException
+   */
+  public void setInitializer(String i) throws SynthesisException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       throw new SynthesisException(SynthesisException.REIFIED);
-    
-    initializer=i;
+
+    initializer = i;
   }
- 
+
   /**
    * Insert the method's description here.
    * Creation date: (12-25-99 2:02:26 PM)
    * @return java.lang.String
    */
-  public java.lang.String getName() {
+  public java.lang.String getName()
+  {
     return name;
   }
+
   /**
-    Get the value of a field as a short on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the field value cannot be converted to the
-    return type by a widening conversion. 
-    @see 
-    get 
-    */
-  public short getShort(Object obj) throws IllegalArgumentException, IllegalAccessException
+   * Get the value of a field as a short on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the field value cannot be converted to the
+   * return type by a widening conversion.
+   * @see
+   * get
+   */
+  public short getShort(Object obj)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.getShort(obj);
-    
+
     throw new java.lang.IllegalStateException();
   }
+
   /**
-    Returns a Class object that identifies the declared
-    type for the field represented by this Field object. 
-    */
+   * Returns a Class object that identifies the declared
+   * type for the field represented by this Field object.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public Class getType()
   {
-    if(realfield!=null)
-      type=Class.forClass(realfield.getType());
-    
+
+    if (realfield != null)
+      type = Class.forClass(realfield.getType());
+
     return type;
   }
-  
-  public void setType(org.apache.xalan.utils.synthetic.Class type)
-  throws SynthesisException
-  {
-    if(realfield!=null)
-      throw new SynthesisException(SynthesisException.REIFIED);
-    
-    this.type=type;
-  }
-  
+
   /**
-    Returns a hashcode for this Field. This is
-    computed as the exclusive-or of the hashcodes for
-    the underlying field's declaring class name and its
-    name. 
-    */
+   * NEEDSDOC Method setType 
+   *
+   *
+   * NEEDSDOC @param type
+   *
+   * @throws SynthesisException
+   */
+  public void setType(org.apache.xalan.utils.synthetic.Class type)
+          throws SynthesisException
+  {
+
+    if (realfield != null)
+      throw new SynthesisException(SynthesisException.REIFIED);
+
+    this.type = type;
+  }
+
+  /**
+   * Returns a hashcode for this Field. This is
+   * computed as the exclusive-or of the hashcodes for
+   * the underlying field's declaring class name and its
+   * name.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public int hashCode()
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.hashCode();
     else
-      return declaringClass.getName().hashCode() ^ 
-	name.hashCode();
+      return declaringClass.getName().hashCode() ^ name.hashCode();
   }
+
   /**
-    Sets the field represented by this Field object on
-    the specified object argument to the specified new
-    value. The new value is automatically unwrapped
-    if the underlying field has a primitive type. 
-    
-    The operation proceeds as follows: 
-    
-    If the underlying field is static, the object
-    argument is ignored; it may be null. 
-    
-    Otherwise the underlying field is an instance field.
-    If the specified object argument is null, the
-    method throws a NullPointerException. If the
-    specified object argument is not an instance of the
-    class or interface declaring the underlying field,
-    the method throws an IllegalArgumentException. 
-    
-    If this Field object enforces Java language access
-    control, and the underlying field is inaccessible,
-    the method throws an IllegalAccessException. 
-    
-    If the underlying field is final, the method throws
-    an IllegalAccessException. 
-    
-    If the underlying field is of a primitive type, an
-    unwrapping conversion is attempted to convert the
-    new value to a value of a primitive type. If this
-    attempt fails, the method throws an
-    IllegalArgumentException. 
-    
-    If, after possible unwrapping, the new value
-    cannot be converted to the type of the underlying
-    field by an identity or widening conversion, the
-    method throws an IllegalArgumentException. 
-    
-    The field is set to the possibly unwrapped and
-    widened new value. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @throws NullPointerException 
-    if the specified object is null. 
-    */
-  public  void set(Object obj,Object value) throws IllegalArgumentException, IllegalAccessException
+   * Sets the field represented by this Field object on
+   * the specified object argument to the specified new
+   * value. The new value is automatically unwrapped
+   * if the underlying field has a primitive type.
+   *
+   * The operation proceeds as follows:
+   *
+   * If the underlying field is static, the object
+   * argument is ignored; it may be null.
+   *
+   * Otherwise the underlying field is an instance field.
+   * If the specified object argument is null, the
+   * method throws a NullPointerException. If the
+   * specified object argument is not an instance of the
+   * class or interface declaring the underlying field,
+   * the method throws an IllegalArgumentException.
+   *
+   * If this Field object enforces Java language access
+   * control, and the underlying field is inaccessible,
+   * the method throws an IllegalAccessException.
+   *
+   * If the underlying field is final, the method throws
+   * an IllegalAccessException.
+   *
+   * If the underlying field is of a primitive type, an
+   * unwrapping conversion is attempted to convert the
+   * new value to a value of a primitive type. If this
+   * attempt fails, the method throws an
+   * IllegalArgumentException.
+   *
+   * If, after possible unwrapping, the new value
+   * cannot be converted to the type of the underlying
+   * field by an identity or widening conversion, the
+   * method throws an IllegalArgumentException.
+   *
+   * The field is set to the possibly unwrapped and
+   * widened new value.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param value
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @throws NullPointerException
+   * if the specified object is null.
+   */
+  public void set(Object obj, Object value)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
-      realfield.set(obj,value);
-    
+
+    if (realfield != null)
+      realfield.set(obj, value);
+
     throw new java.lang.IllegalStateException();
-    
   }
+
   /**
-    Set the value of a field as a boolean on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setBoolean(Object obj,boolean z) throws IllegalArgumentException, IllegalAccessException
+   * Set the value of a field as a boolean on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param z
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setBoolean(Object obj, boolean z)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
-      realfield.setBoolean(obj,z);
-    
+
+    if (realfield != null)
+      realfield.setBoolean(obj, z);
+
     throw new java.lang.IllegalStateException();
-  }  
-  /**
-    Set the value of a field as a byte on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setByte(Object obj, byte b) throws IllegalArgumentException, IllegalAccessException
-  {
-    if(realfield!=null)
-      realfield.setByte(obj,b);
-    
-    throw new java.lang.IllegalStateException();
-  }  
-  /**
-    Set the value of a field as a char on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setChar(Object obj, char c) throws IllegalArgumentException, IllegalAccessException
-  {
-    if(realfield!=null)
-      realfield.setChar(obj,c);
-    
-    throw new java.lang.IllegalStateException();
-  }  
-  /**
-    Returns the Class object representing the class that
-    declares the constructor represented by this
-    Constructor object. 
-    */
-  public void setDeclaringClass(org.apache.xalan.utils.synthetic.Class declaringClass)
-  {
-    this.declaringClass=declaringClass;
   }
+
   /**
-    Set the value of a field as a double on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setDouble(Object obj, double d) throws IllegalArgumentException, IllegalAccessException
+   * Set the value of a field as a byte on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param b
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setByte(Object obj, byte b)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
-      realfield.setDouble(obj,d);
-    
-    
+
+    if (realfield != null)
+      realfield.setByte(obj, b);
+
     throw new java.lang.IllegalStateException();
-  }  
+  }
+
   /**
-    Set the value of a field as a float on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setFloat(Object obj, float f) throws IllegalArgumentException, IllegalAccessException
+   * Set the value of a field as a char on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param c
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setChar(Object obj, char c)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
-      realfield.setFloat(obj,f);
-    
+
+    if (realfield != null)
+      realfield.setChar(obj, c);
+
     throw new java.lang.IllegalStateException();
-  }  
+  }
+
   /**
-    Set the value of a field as an int on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setInt(Object obj, int i) throws IllegalArgumentException, IllegalAccessException
+   * Returns the Class object representing the class that
+   * declares the constructor represented by this
+   * Constructor object.
+   *
+   * NEEDSDOC @param declaringClass
+   */
+  public void setDeclaringClass(
+          org.apache.xalan.utils.synthetic.Class declaringClass)
   {
-    if(realfield!=null)
-      realfield.setInt(obj,i);
-    
-    throw new java.lang.IllegalStateException();
-  }  
+    this.declaringClass = declaringClass;
+  }
+
   /**
-    Set the value of a field as a long on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setLong(Object obj, long l) throws IllegalArgumentException, IllegalAccessException
+   * Set the value of a field as a double on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param d
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setDouble(Object obj, double d)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
-      realfield.setLong(obj,l);
-    
+
+    if (realfield != null)
+      realfield.setDouble(obj, d);
+
     throw new java.lang.IllegalStateException();
-  }  
+  }
+
+  /**
+   * Set the value of a field as a float on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param f
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setFloat(Object obj, float f)
+          throws IllegalArgumentException, IllegalAccessException
+  {
+
+    if (realfield != null)
+      realfield.setFloat(obj, f);
+
+    throw new java.lang.IllegalStateException();
+  }
+
+  /**
+   * Set the value of a field as an int on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param i
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setInt(Object obj, int i)
+          throws IllegalArgumentException, IllegalAccessException
+  {
+
+    if (realfield != null)
+      realfield.setInt(obj, i);
+
+    throw new java.lang.IllegalStateException();
+  }
+
+  /**
+   * Set the value of a field as a long on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param l
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setLong(Object obj, long l)
+          throws IllegalArgumentException, IllegalAccessException
+  {
+
+    if (realfield != null)
+      realfield.setLong(obj, l);
+
+    throw new java.lang.IllegalStateException();
+  }
+
   /**
    * Insert the method's description here.
    * Creation date: (12-25-99 1:28:28 PM)
    * @return int
    * @param modifiers int
+   *
+   * @throws SynthesisException
    */
-  public void setModifiers(int modifiers)
-  throws SynthesisException
+  public void setModifiers(int modifiers) throws SynthesisException
   {
-    if(realfield!=null)
-        throw new SynthesisException(SynthesisException.REIFIED);
-    
-    this.modifiers=modifiers;
+
+    if (realfield != null)
+      throw new SynthesisException(SynthesisException.REIFIED);
+
+    this.modifiers = modifiers;
   }
-  
+
   /**
-    Set the value of a field as a short on specified
-    object. 
-    
-    @throws IllegalAccessException 
-    if the underlying constructor is inaccessible. 
-    @throws IllegalArgumentException 
-    if the specified object is not an instance of
-    the class or interface declaring the
-    underlying field, or if an unwrapping
-    conversion fails. 
-    @see 
-    set 
-    */
-  public  void setShort(Object obj, short s) throws IllegalArgumentException, IllegalAccessException
+   * Set the value of a field as a short on specified
+   * object.
+   *
+   *
+   * NEEDSDOC @param obj
+   * NEEDSDOC @param s
+   * @throws IllegalAccessException
+   * if the underlying constructor is inaccessible.
+   * @throws IllegalArgumentException
+   * if the specified object is not an instance of
+   * the class or interface declaring the
+   * underlying field, or if an unwrapping
+   * conversion fails.
+   * @see
+   * set
+   */
+  public void setShort(Object obj, short s)
+          throws IllegalArgumentException, IllegalAccessException
   {
-    if(realfield!=null)
-      realfield.setShort(obj,s);
-    
+
+    if (realfield != null)
+      realfield.setShort(obj, s);
+
     throw new java.lang.IllegalStateException();
-  }  
+  }
+
   /**
-    Return a string describing this Field. The format is
-    the access modifiers for the field, if any, followed
-    by the field type, followed by a space, followed by
-    the fully-qualified name of the class declaring the
-    field, followed by a period, followed by the name
-    of the field. For example: 
-    <code>
-    public static final int java.lang.Thread.MIN_PRIORITY
-    private int java.io.FileDescriptor.fd
-    </code>
-    
-    The modifiers are placed in canonical order as
-    specified by "The Java Language Specification".
-    This is public, protected or private first,
-    and then other modifiers in the following order:
-    static, final, transient, volatile. 
-    */
+   * Return a string describing this Field. The format is
+   * the access modifiers for the field, if any, followed
+   * by the field type, followed by a space, followed by
+   * the fully-qualified name of the class declaring the
+   * field, followed by a period, followed by the name
+   * of the field. For example:
+   * <code>
+   * public static final int java.lang.Thread.MIN_PRIORITY
+   * private int java.io.FileDescriptor.fd
+   * </code>
+   *
+   * The modifiers are placed in canonical order as
+   * specified by "The Java Language Specification".
+   * This is public, protected or private first,
+   * and then other modifiers in the following order:
+   * static, final, transient, volatile.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
   public String toString()
   {
-    if(realfield!=null)
+
+    if (realfield != null)
       return realfield.toString();
-    
+
     throw new java.lang.IllegalStateException();
   }
-  
-  /** Output the Field as Java sourcecode
+
+  /**
+   * Output the Field as Java sourcecode
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String toSource()
   {
-    StringBuffer sb=
-        new StringBuffer(java.lang.reflect.Modifier.toString(getModifiers()) )
-        .append(' ')
-        .append(getType().getJavaName())
-        .append(' ')
-        .append(getName());
-    String i=getInitializer();
-    if(i!=null && i.length()>0)
-        sb.append('=').append(i);
+
+    StringBuffer sb = new StringBuffer(
+      java.lang.reflect.Modifier.toString(getModifiers())).append(' ').append(
+      getType().getJavaName()).append(' ').append(getName());
+    String i = getInitializer();
+
+    if (i != null && i.length() > 0)
+      sb.append('=').append(i);
+
     sb.append(';');
-      
+
     return sb.toString();
   }
-  
-  
 }

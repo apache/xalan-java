@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -68,50 +68,109 @@ import org.apache.xalan.trace.GenerateEvent;
  */
 public abstract class QueuedSAXEvent
 {
+
+  /**
+   * Constructor QueuedSAXEvent
+   *
+   *
+   * NEEDSDOC @param type
+   */
   public QueuedSAXEvent(int type)
   {
     m_type = type;
   }
-  
+
+  /** NEEDSDOC Field DOC          */
   static final int DOC = 1;
+
+  /** NEEDSDOC Field ELEM          */
   static final int ELEM = 2;
+
+  /** NEEDSDOC Field m_traceManager          */
   protected TraceManager m_traceManager;
+
+  /** NEEDSDOC Field m_transformer          */
   protected TransformerImpl m_transformer;
+
+  /** NEEDSDOC Field m_contentHandler          */
   protected ContentHandler m_contentHandler;
-  
+
+  /** NEEDSDOC Field isPending          */
   public boolean isPending = false;
+
+  /** NEEDSDOC Field isEnded          */
   public boolean isEnded = false;
-  
+
+  /** NEEDSDOC Field m_type          */
   private int m_type;
-  
+
+  /**
+   * NEEDSDOC Method getType 
+   *
+   *
+   * NEEDSDOC (getType) @return
+   */
   int getType()
   {
     return m_type;
   }
-  
+
+  /**
+   * NEEDSDOC Method setTraceManager 
+   *
+   *
+   * NEEDSDOC @param traceManager
+   */
   void setTraceManager(TraceManager traceManager)
   {
     m_traceManager = traceManager;
   }
-  
+
+  /**
+   * NEEDSDOC Method setTransformer 
+   *
+   *
+   * NEEDSDOC @param transformer
+   */
   void setTransformer(TransformerImpl transformer)
   {
     m_transformer = transformer;
   }
-  
+
+  /**
+   * NEEDSDOC Method fireGenerateEvent 
+   *
+   *
+   * NEEDSDOC @param type
+   * NEEDSDOC @param name
+   * NEEDSDOC @param attrs
+   */
   protected void fireGenerateEvent(int type, String name, Attributes attrs)
   {
-    GenerateEvent ge 
-      = new GenerateEvent(m_transformer, type, name, attrs);
-    if(null != m_traceManager)
+
+    GenerateEvent ge = new GenerateEvent(m_transformer, type, name, attrs);
+
+    if (null != m_traceManager)
       m_traceManager.fireGenerateEvent(ge);
   }
-        
+
+  /**
+   * NEEDSDOC Method getContentHandler 
+   *
+   *
+   * NEEDSDOC (getContentHandler) @return
+   */
   ContentHandler getContentHandler()
   {
     return m_contentHandler;
   }
 
+  /**
+   * NEEDSDOC Method setContentHandler 
+   *
+   *
+   * NEEDSDOC @param ch
+   */
   void setContentHandler(ContentHandler ch)
   {
     m_contentHandler = ch;
@@ -124,37 +183,35 @@ public abstract class QueuedSAXEvent
   {
     isPending = false;
   }
-  
+
+  /**
+   * NEEDSDOC Method setPending 
+   *
+   *
+   * NEEDSDOC @param b
+   */
   void setPending(boolean b)
   {
     isPending = b;
     this.isEnded = !isPending;
-  } 
-  
+  }
+
   /**
    * Flush the event.
+   *
+   * @throws SAXException
    */
-  void flush()
-    throws SAXException
+  void flush() throws SAXException
   {
     clearPending();
   }
-  
-  /**
-   * Flush the end event.
-   */
-  void flushEnd()
-    throws SAXException
-  {
-    reset();
-    this.isEnded = true;
-  }
 
-  
+  /**
+   * NEEDSDOC Method reset 
+   *
+   */
   void reset()
   {
     isPending = false;
   }
-
-  
 }

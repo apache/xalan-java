@@ -58,25 +58,37 @@ package org.apache.xalan.utils;
 
 /**
  * <meta name="usage" content="advanced"/>
- * The class that implements this interface can resolve prefixes 
+ * The class that implements this interface can resolve prefixes
  * to namespaces.
  */
 public interface PrefixResolver
 {
+
   /**
-   * Given a namespace, get the corrisponding prefix.  This assumes that 
+   * Given a namespace, get the corrisponding prefix.  This assumes that
    * the PrevixResolver hold's it's own namespace context, or is a namespace
    * context itself.
+   *
+   * NEEDSDOC @param prefix
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   String getNamespaceForPrefix(String prefix);
 
   /**
    * Given a namespace, get the corrisponding prefix.
+   *
+   * NEEDSDOC @param prefix
+   * NEEDSDOC @param context
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   String getNamespaceForPrefix(String prefix, org.w3c.dom.Node context);
-  
-  /** 
+
+  /**
    * Return the base identifier.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getBaseIdentifier();
 }

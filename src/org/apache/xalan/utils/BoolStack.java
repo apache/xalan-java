@@ -64,113 +64,149 @@ import java.util.EmptyStackException;
  */
 public final class BoolStack
 {
-	private boolean m_values[];
-	private int m_allocatedSize;
-	private int m_index;
 
-	/**
-	* Default constructor.  Note that the default 
-	* block size is very small, for small lists.
-	*/
-	public BoolStack()
-	{
-		this(32);
-	}
+  /** NEEDSDOC Field m_values[]          */
+  private boolean m_values[];
 
-	/**
-	* Construct a IntVector, using the given block size.
-	*/
-	public BoolStack(int size)
-	{
-		m_allocatedSize = size;
-		m_values = new boolean[size];
-		m_index = -1; 
-	}
+  /** NEEDSDOC Field m_allocatedSize          */
+  private int m_allocatedSize;
 
-	/**
-	* Get the length of the list.
-	*/
-	public int size()
-	{
-		return m_index+1;
-	}
+  /** NEEDSDOC Field m_index          */
+  private int m_index;
 
-	/**
-	* Pushes an item onto the top of this stack. 
-	*
-	* @param   i   the int to be pushed onto this stack.
-	* @return  the <code>item</code> argument.
-	*/
-	public boolean push(boolean val) 
-	{
-		if (m_index == m_allocatedSize-1)
-			grow();
+  /**
+   * Default constructor.  Note that the default
+   * block size is very small, for small lists.
+   */
+  public BoolStack()
+  {
+    this(32);
+  }
 
-		return (m_values[++m_index] = val);
-	}
+  /**
+   * Construct a IntVector, using the given block size.
+   *
+   * NEEDSDOC @param size
+   */
+  public BoolStack(int size)
+  {
 
-	/**
-	* Removes the object at the top of this stack and returns that 
-	* object as the value of this function. 
-	*
-	* @return     The object at the top of this stack.
-	* @exception  EmptyStackException  if this stack is empty.
-	*/
-	public boolean pop() 
-	{
-		try
-		{
-			return m_values[m_index--];
-		}
-		catch (ArrayIndexOutOfBoundsException  e)
-		{
-			throw new EmptyStackException();
-		}
-	}
+    m_allocatedSize = size;
+    m_values = new boolean[size];
+    m_index = -1;
+  }
 
-	/**
-	* Looks at the object at the top of this stack without removing it 
-	* from the stack. 
-	*
-	* @return     the object at the top of this stack. 
-	* @exception  EmptyStackException  if this stack is empty.
-	*/
-	public boolean peek() 
-	{
-		try
-		{
-			return m_values[m_index];
-		}
-		catch (ArrayIndexOutOfBoundsException  e)
-		{
-			throw new EmptyStackException();
-		}
-	}
+  /**
+   * Get the length of the list.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public final int size()
+  {
+    return m_index + 1;
+  }
 
-	/**
-	* Tests if this stack is empty.
-	*
-	* @return  <code>true</code> if this stack is empty;
-	*          <code>false</code> otherwise.
-	*/
-	public boolean isEmpty() 
-	{
-		return (m_index == -1);
-	}
+  /**
+   * Pushes an item onto the top of this stack.
+   *
+   * @param   i   the int to be pushed onto this stack.
+   *
+   * NEEDSDOC @param val
+   * @return  the <code>item</code> argument.
+   */
+  public final boolean push(boolean val)
+  {
 
-	/**
-	* Grows the size of the stack
-	*
-	*/
+    if (m_index == m_allocatedSize - 1)
+      grow();
 
-	private void grow()
-	{
-		m_allocatedSize*=2;
+    return (m_values[++m_index] = val);
+  }
 
-		boolean newVector [] = new boolean[m_allocatedSize];
-		System.arraycopy(m_values, 0 , newVector, 0, m_index+1);
+  /**
+   * Removes the object at the top of this stack and returns that
+   * object as the value of this function.
+   *
+   * @return     The object at the top of this stack.
+   * @exception  EmptyStackException  if this stack is empty.
+   */
+  public final boolean pop()
+  {
+    return m_values[m_index--];
+  }
 
-		m_values = newVector;
-	}
+  /**
+   * NEEDSDOC Method popAndTop 
+   *
+   *
+   * NEEDSDOC (popAndTop) @return
+   */
+  public final boolean popAndTop()
+  {
+
+    m_index--;
+
+    return (m_index >= 0) ? m_values[m_index] : false;
+  }
+
+  /**
+   * NEEDSDOC Method setTop 
+   *
+   *
+   * NEEDSDOC @param b
+   */
+  public final void setTop(boolean b)
+  {
+    m_values[m_index] = b;
+  }
+
+  /**
+   * Looks at the object at the top of this stack without removing it
+   * from the stack.
+   *
+   * @return     the object at the top of this stack.
+   * @exception  EmptyStackException  if this stack is empty.
+   */
+  public final boolean peek()
+  {
+    return m_values[m_index];
+  }
+
+  /**
+   * Looks at the object at the top of this stack without removing it
+   * from the stack.  If the stack is empty, it returns false.
+   *
+   * @return     the object at the top of this stack.
+   */
+  public final boolean peekOrFalse()
+  {
+    return (m_index > -1) ? m_values[m_index] : false;
+  }
+
+  /**
+   * Tests if this stack is empty.
+   *
+   * @return  <code>true</code> if this stack is empty;
+   *          <code>false</code> otherwise.
+   */
+  public boolean isEmpty()
+  {
+    return (m_index == -1);
+  }
+
+  /**
+   * Grows the size of the stack
+   *
+   */
+  private void grow()
+  {
+
+    m_allocatedSize *= 2;
+
+    boolean newVector[] = new boolean[m_allocatedSize];
+
+    System.arraycopy(m_values, 0, newVector, 0, m_index + 1);
+
+    m_values = newVector;
+  }
 }
-

@@ -56,10 +56,8 @@
  */
 package org.apache.serialize.helpers;
 
-
 import org.apache.serialize.OutputFormat;
 import org.apache.serialize.Method;
-
 
 /**
  * Output format for XHTML documents.
@@ -72,35 +70,50 @@ import org.apache.serialize.Method;
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
-public class XHTMLOutputFormat
-    extends OutputFormat
+public class XHTMLOutputFormat extends OutputFormat
 {
 
+  /**
+   * Constructor XHTMLOutputFormat
+   *
+   */
+  public XHTMLOutputFormat()
+  {
 
-    public XHTMLOutputFormat()
-    {
-        setMethod( Method.XHTML );
-        setMediaType( "text/html" );
-        setOmitXMLDeclaration( true );
-        setPreserveSpace( false );
-        setDoctypePublicId( "-//W3C//DTD XHTML 1.0 Strict//EN" );
-        setDoctypeSystemId( "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd" );
-    }
+    setMethod(Method.XHTML);
+    setMediaType("text/html");
+    setOmitXMLDeclaration(true);
+    setPreserveSpace(false);
+    setDoctypePublicId("-//W3C//DTD XHTML 1.0 Strict//EN");
+    setDoctypeSystemId(
+      "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd");
+  }
 
+  /**
+   * Constructor XHTMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param encoding
+   */
+  public XHTMLOutputFormat(String encoding)
+  {
 
-    public XHTMLOutputFormat( String encoding )
-    {
-        this();
-        setEncoding( encoding );
-    }
+    this();
 
+    setEncoding(encoding);
+  }
 
-    public XHTMLOutputFormat( boolean indenting )
-    {
-        this();
-        setIndent( indenting );
-    }
+  /**
+   * Constructor XHTMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param indenting
+   */
+  public XHTMLOutputFormat(boolean indenting)
+  {
 
+    this();
 
+    setIndent(indenting);
+  }
 }
-

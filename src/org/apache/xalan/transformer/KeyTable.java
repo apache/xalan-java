@@ -60,42 +60,50 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import java.util.Hashtable;
 import java.util.Vector;
+
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPathContext; 
-import org.apache.xpath.XPathContext; 
-import org.apache.xpath.DOMHelper; 
-import org.apache.xalan.utils.QName; 
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.DOMHelper;
+import org.apache.xalan.utils.QName;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.PrefixResolver;
-
-import org.apache.xpath.axes.LocPathIterator; 
+import org.apache.xpath.axes.LocPathIterator;
 
 // import org.apache.xalan.dtm.*;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Table of element keys, keyed by document node.  An instance of this 
- * class is keyed by a Document node that should be matched with the 
- * root of the current context.  It contains a table of name mappings 
+ * Table of element keys, keyed by document node.  An instance of this
+ * class is keyed by a Document node that should be matched with the
+ * root of the current context.  It contains a table of name mappings
  * to tables that contain mappings of identifier values to nodes.
  */
 public class KeyTable
 {
+
   /**
    * The document key.  This table should only be used with contexts
    * whose Document roots match this key.
    */
   private Node m_docKey;
-  
+
+  /**
+   * NEEDSDOC Method getDocKey 
+   *
+   *
+   * NEEDSDOC (getDocKey) @return
+   */
   public Node getDocKey()
   {
     return m_docKey;
   }
-  
+
   /**
    * Hashtable of keys.
    * The table is:
@@ -109,49 +117,59 @@ public class KeyTable
    * @param doc The owner document key (normally the same as startNode).
    * @param startNode The node to start itterating from to build the keys index.
    * @param nscontext The stylesheet's namespace context.
+   * NEEDSDOC @param name
    * @param keyDeclarations The stylesheet's xsl:key declarations.
    * @param xmlLiaison The parser liaison for support of getNodeData(useNode).
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public KeyTable(Node doc, PrefixResolver nscontext, 
-                  QName name, Vector keyDeclarations, XPathContext xmlLiaison)
-    throws org.xml.sax.SAXException
-  {    
+  public KeyTable(
+          Node doc, PrefixResolver nscontext, QName name, Vector keyDeclarations, XPathContext xmlLiaison)
+            throws org.xml.sax.SAXException
+  {
+
     m_docKey = doc;
-    
-    m_keyIter = new KeyIterator(doc, nscontext, 
-                                name, keyDeclarations, xmlLiaison);
-    
-  } // end buildKeysTable method
-  
-  
+    m_keyIter = new KeyIterator(doc, nscontext, name, keyDeclarations,
+                                xmlLiaison);
+  }  // end buildKeysTable method
+
   /**
-   * Given a valid element key, return the corresponding node list. 
+   * Given a valid element key, return the corresponding node list.
    * @param The name of the key, which must match the 'name' attribute on xsl:key.
+   *
+   * NEEDSDOC @param name
    * @param ref The value that must match the value found by the 'match' attribute on xsl:key.
-   * @return If the name was not declared with xsl:key, this will return null, 
-   * if the identifier is not found, it will return null, 
+   * @return If the name was not declared with xsl:key, this will return null,
+   * if the identifier is not found, it will return null,
    * otherwise it will return a LocPathIterator instance.
    */
   public KeyIterator getNodeSetByKey(QName name, String ref)
   {
+
     KeyIterator ki;
+
     try
     {
-      ki = (KeyIterator)m_keyIter.clone();
+      ki = (KeyIterator) m_keyIter.clone();
+
       ki.setLookupKey(ref);
     }
-    catch(CloneNotSupportedException cnse)
+    catch (CloneNotSupportedException cnse)
     {
       ki = null;
     }
-    
+
     return ki;
   }
-  
+
+  /**
+   * NEEDSDOC Method getKeyTableName 
+   *
+   *
+   * NEEDSDOC (getKeyTableName) @return
+   */
   public QName getKeyTableName()
   {
     return m_keyIter.getName();
-  }  
-
-  
+  }
 }

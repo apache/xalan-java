@@ -58,25 +58,49 @@ package org.apache.xalan.utils;
 
 /**
  * <meta name="usage" content="internal"/>
- * Simple class for fast lookup of string values, when used with 
+ * Simple class for fast lookup of string values, when used with
  * hashtables.  This class caches the hash value of the string.
  */
 public class StringKey extends Object
 {
+
+  /** NEEDSDOC Field m_str          */
   private String m_str;
+
+  /** NEEDSDOC Field m_hash          */
   int m_hash;
-    
+
+  /**
+   * Constructor StringKey
+   *
+   *
+   * NEEDSDOC @param key
+   */
   public StringKey(String key)
   {
     m_str = key;
     m_hash = key.hashCode();
   }
-  
+
+  /**
+   * NEEDSDOC Method hashCode 
+   *
+   *
+   * NEEDSDOC (hashCode) @return
+   */
   public int hashCode()
   {
     return m_hash;
   }
-  
+
+  /**
+   * NEEDSDOC Method equals 
+   *
+   *
+   * NEEDSDOC @param obj
+   *
+   * NEEDSDOC (equals) @return
+   */
   public final boolean equals(Object obj)
   {
     return obj.equals(m_str);

@@ -62,15 +62,19 @@ import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="general"/>
- * This class represents an XPath string object, and is capable of 
+ * This class represents an XPath string object, and is capable of
  * converting the string to other types, such as a number.
  */
 public class XString extends XObject
 {
+
+  /** NEEDSDOC Field EMPTYSTRING          */
   public static XString EMPTYSTRING = new XString("");
-  
+
   /**
    * Construct a XNodeSet object.
+   *
+   * NEEDSDOC @param val
    */
   public XString(String val)
   {
@@ -79,37 +83,49 @@ public class XString extends XObject
 
   /**
    * Tell that this is a CLASS_STRING.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getType()
   {
     return CLASS_STRING;
   }
-  
+
   /**
-   * Given a request type, return the equivalent string. 
+   * Given a request type, return the equivalent string.
    * For diagnostic purposes.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getTypeString()
   {
     return "#STRING";
   }
-  
+
   /**
    * Cast a string to a number.
+   *
+   * NEEDSDOC @param s
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public static double castToNum(String s)
   {
+
     double result;
-    if(null == s) 
+
+    if (null == s)
       result = 0.0;
     else
     {
-      try 
+      try
       {
+
         /**
-        * TODO: Adjust this for locale. Need to take into 
-        * account the lang parameter on the xsl:sort 
-        */
+         * TODO: Adjust this for locale. Need to take into
+         * account the lang parameter on the xsl:sort
+         */
+
         // It seems we can not use this as it just parses the 
         // start of the string until it finds a non-number char, 
         // which is not what we want according to the XSLT spec.  
@@ -118,7 +134,6 @@ public class XString extends XObject
         // XSLT spec (see below).
         // NumberFormat formatter = NumberFormat.getNumberInstance();
         // result = formatter.parse(s.trim()).doubleValue();
-        
         // The dumb XSLT spec says: "The number function should 
         // not be used for conversion of numeric data occurring 
         // in an element in an XML document unless the element 
@@ -134,25 +149,31 @@ public class XString extends XObject
         // parse?  Or does it use the ieee parse?
         result = Double.valueOf(s.trim()).doubleValue();
       }
+
       // catch (ParseException e) 
       catch (NumberFormatException nfe)
       {
         result = Double.NaN;
       }
     }
+
     return result;
   }
-  
+
   /**
    * Cast result object to a number.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public double num()
   {
-    return castToNum((String)m_obj);
+    return castToNum((String) m_obj);
   }
 
   /**
    * Cast result object to a boolean.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean bool()
   {
@@ -161,36 +182,52 @@ public class XString extends XObject
 
   /**
    * Cast result object to a string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String str()
   {
-    return (null != m_obj) ? ((String)m_obj) : "";
+    return (null != m_obj) ? ((String) m_obj) : "";
   }
-  
+
   /**
    * Cast result object to a result tree fragment.
+   *
+   * NEEDSDOC @param support
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public DocumentFragment rtree(XPathContext support)
   {
-    DocumentFragment df = support.getDOMHelper().getDOMFactory().createDocumentFragment();
-    Text textNode = support.getDOMHelper().getDOMFactory().createTextNode(str());
+
+    DocumentFragment df =
+      support.getDOMHelper().getDOMFactory().createDocumentFragment();
+    Text textNode =
+      support.getDOMHelper().getDOMFactory().createTextNode(str());
+
     df.appendChild(textNode);
+
     return df;
   }
-  
+
   /**
    * Tell if two objects are functionally equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
   {
+
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if(obj2.getType() == XObject.CLASS_NODESET)
+    if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.equals(this);
 
     return str().equals(obj2.str());
   }
-
 }

@@ -57,7 +57,9 @@
 package org.apache.xpath.functions;
 
 import org.w3c.dom.Node;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -65,41 +67,60 @@ import org.apache.xpath.Expression;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This is a superclass of all XPath functions.  This allows two 
- * ways for the class to be called. One method is that the 
- * super class processes the arguments and hands the results to 
- * the derived class, the other method is that the derived 
- * class may process it's own arguments, which is faster since 
- * the arguments don't have to be added to an array, but causes 
+ * This is a superclass of all XPath functions.  This allows two
+ * ways for the class to be called. One method is that the
+ * super class processes the arguments and hands the results to
+ * the derived class, the other method is that the derived
+ * class may process it's own arguments, which is faster since
+ * the arguments don't have to be added to an array, but causes
  * a larger code footprint.
  */
 public class Function extends Expression
-{  
-  public void setArg(Expression arg, int argNum)
-    throws WrongNumberArgsException
-  {
-      throw new WrongNumberArgsException("0");
-  }
-  
-  public void checkNumberArgs(int argNum)
-    throws WrongNumberArgsException
-  {
-    if(argNum != 0)
-      throw new WrongNumberArgsException("0");
-  }
-  
+{
+
   /**
-   * Execute an XPath function object.  The function must return 
+   * NEEDSDOC Method setArg 
+   *
+   *
+   * NEEDSDOC @param arg
+   * NEEDSDOC @param argNum
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void setArg(Expression arg, int argNum)
+          throws WrongNumberArgsException
+  {
+    throw new WrongNumberArgsException("0");
+  }
+
+  /**
+   * NEEDSDOC Method checkNumberArgs 
+   *
+   *
+   * NEEDSDOC @param argNum
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+  {
+    if (argNum != 0)
+      throw new WrongNumberArgsException("0");
+  }
+
+  /**
+   * Execute an XPath function object.  The function must return
    * a valid object.
    * @param xctxt The execution current context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt)
-    throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
   {
+
     // Programmer's assert.  (And, no, I don't want the method to be abstract).
     System.out.println("Error! Function.execute should not be called!");
+
     return null;
   }
-      
 }

@@ -69,54 +69,49 @@ import org.xml.sax.SAXException;
  */
 public interface SerializerHandler
 {
-    /**
-     * Starts an un-escaping section. All characters printed within an
-     * un-escaping section are printed as is, without escaping special
-     * characters into entity references. Only XML and HTML serializers
-     * need to support this method.
-     * <p>
-     * The contents of the un-escaping section will be delivered through
-     * the regular <tt>characters</tt> event.
-     */
-    public void startNonEscaping()    
-      throws SAXException;
 
+  /**
+   * Starts an un-escaping section. All characters printed within an
+   * un-escaping section are printed as is, without escaping special
+   * characters into entity references. Only XML and HTML serializers
+   * need to support this method.
+   * <p>
+   * The contents of the un-escaping section will be delivered through
+   * the regular <tt>characters</tt> event.
+   *
+   * @throws SAXException
+   */
+  public void startNonEscaping() throws SAXException;
 
-    /**
-     * Ends an un-escaping section.
-     *
-     * @see #startNonEscaping
-     */
-    public void endNonEscaping()    
-      throws SAXException;
+  /**
+   * Ends an un-escaping section.
+   *
+   * @see #startNonEscaping
+   *
+   * @throws SAXException
+   */
+  public void endNonEscaping() throws SAXException;
 
+  /**
+   * Starts a whitespace preserving section. All characters printed
+   * within a preserving section are printed without indentation and
+   * without consolidating multiple spaces. This is equivalent to
+   * the <tt>xml:space=&quot;preserve&quot;</tt> attribute. Only XML
+   * and HTML serializers need to support this method.
+   * <p>
+   * The contents of the whitespace preserving section will be delivered
+   * through the regular <tt>characters</tt> event.
+   *
+   * @throws SAXException
+   */
+  public void startPreserving() throws SAXException;
 
-    /**
-     * Starts a whitespace preserving section. All characters printed
-     * within a preserving section are printed without indentation and
-     * without consolidating multiple spaces. This is equivalent to
-     * the <tt>xml:space=&quot;preserve&quot;</tt> attribute. Only XML
-     * and HTML serializers need to support this method.
-     * <p>
-     * The contents of the whitespace preserving section will be delivered
-     * through the regular <tt>characters</tt> event.
-     */
-    public void startPreserving()    
-      throws SAXException;
-
-
-    /**
-     * Ends a whitespace preserving section.
-     *
-     * @see #startPreserving
-     */
-    public void endPreserving()    
-      throws SAXException;
-
-
+  /**
+   * Ends a whitespace preserving section.
+   *
+   * @see #startPreserving
+   *
+   * @throws SAXException
+   */
+  public void endPreserving() throws SAXException;
 }
-
-
-
-
-

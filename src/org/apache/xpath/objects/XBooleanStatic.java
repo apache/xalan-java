@@ -57,35 +57,45 @@
 package org.apache.xpath.objects;
 
 import org.w3c.dom.*;
+
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
 /**
  * <meta name="usage" content="internal"/>
- * This class doesn't have any XPathContext, so override 
+ * This class doesn't have any XPathContext, so override
  * whatever to ensure it works OK.
  */
 public class XBooleanStatic extends XBoolean
 {
+
+  /** NEEDSDOC Field m_val          */
   boolean m_val;
-  
+
   /**
    * Construct a XNodeSet object.
+   *
+   * NEEDSDOC @param b
    */
   public XBooleanStatic(boolean b)
   {
+
     super(b);
+
     m_val = b;
   }
-  
+
   /**
    * Tell if two objects are functionally equal.
+   *
+   * NEEDSDOC @param obj2
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
   {
     return m_val == obj2.bool();
   }
-
 }
-

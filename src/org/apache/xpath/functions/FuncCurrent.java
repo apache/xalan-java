@@ -57,9 +57,12 @@
 package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
+
 import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
@@ -74,45 +77,55 @@ import org.apache.xpath.axes.ContextNodeList;
  */
 public class FuncCurrent extends Function
 {
+
   /**
    * Diagnostics.
+   *
+   * NEEDSDOC @param n
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   protected String nodeToString(Node n)
   {
-    return (null != n) 
-           ? n.getNodeName()+"{"+ ((org.apache.xalan.stree.Child)n).getUid() + "}"
-             : "null";
+
+    return (null != n)
+           ? n.getNodeName() + "{" + ((org.apache.xalan.stree.Child) n).getUid() + "}"
+           : "null";
   }
 
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     // If we're in a predicate, then this will return non-null.
-    AxesWalker iter = (AxesWalker)xctxt.getSubContextList();
-    
+    AxesWalker iter = (AxesWalker) xctxt.getSubContextList();
     Node currentNode;
-    if(null != iter)
+
+    if (null != iter)
     {
       LocPathIterator lpi = iter.getLocPathIterator();
+
       currentNode = lpi.getCurrentContextNode();
     }
     else
     {
       ContextNodeList cnl = xctxt.getContextNodeList();
-      if(null != cnl)
+
+      if (null != cnl)
       {
         currentNode = cnl.getCurrentNode();
       }
       else
         currentNode = null;
     }
-    
+
     return new XNodeSet(currentNode);
   }
 }

@@ -1,3 +1,59 @@
+/*
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
 package org.apache.xpath.compiler;
 
 import org.apache.xpath.Expression;
@@ -8,54 +64,125 @@ import org.apache.xpath.functions.Function;
  */
 public class FunctionTable
 {
+
+  /** NEEDSDOC Field FUNC_CURRENT          */
   public static final int FUNC_CURRENT = 0;
+
+  /** NEEDSDOC Field FUNC_LAST          */
   public static final int FUNC_LAST = 1;
+
+  /** NEEDSDOC Field FUNC_POSITION          */
   public static final int FUNC_POSITION = 2;
+
+  /** NEEDSDOC Field FUNC_COUNT          */
   public static final int FUNC_COUNT = 3;
+
+  /** NEEDSDOC Field FUNC_ID          */
   public static final int FUNC_ID = 4;
+
+  /** NEEDSDOC Field FUNC_KEY          */
   public static final int FUNC_KEY = 5;
+
   // public static final int FUNC_DOC = 6;
+
+  /** NEEDSDOC Field FUNC_LOCAL_PART          */
   public static final int FUNC_LOCAL_PART = 7;
+
+  /** NEEDSDOC Field FUNC_NAMESPACE          */
   public static final int FUNC_NAMESPACE = 8;
+
+  /** NEEDSDOC Field FUNC_QNAME          */
   public static final int FUNC_QNAME = 9;
+
+  /** NEEDSDOC Field FUNC_GENERATE_ID          */
   public static final int FUNC_GENERATE_ID = 10;
+
+  /** NEEDSDOC Field FUNC_NOT          */
   public static final int FUNC_NOT = 11;
+
+  /** NEEDSDOC Field FUNC_TRUE          */
   public static final int FUNC_TRUE = 12;
+
+  /** NEEDSDOC Field FUNC_FALSE          */
   public static final int FUNC_FALSE = 13;
+
+  /** NEEDSDOC Field FUNC_BOOLEAN          */
   public static final int FUNC_BOOLEAN = 14;
+
+  /** NEEDSDOC Field FUNC_NUMBER          */
   public static final int FUNC_NUMBER = 15;
+
+  /** NEEDSDOC Field FUNC_FLOOR          */
   public static final int FUNC_FLOOR = 16;
+
+  /** NEEDSDOC Field FUNC_CEILING          */
   public static final int FUNC_CEILING = 17;
+
+  /** NEEDSDOC Field FUNC_ROUND          */
   public static final int FUNC_ROUND = 18;
+
+  /** NEEDSDOC Field FUNC_SUM          */
   public static final int FUNC_SUM = 19;
+
+  /** NEEDSDOC Field FUNC_STRING          */
   public static final int FUNC_STRING = 20;
+
+  /** NEEDSDOC Field FUNC_STARTS_WITH          */
   public static final int FUNC_STARTS_WITH = 21;
+
+  /** NEEDSDOC Field FUNC_CONTAINS          */
   public static final int FUNC_CONTAINS = 22;
+
+  /** NEEDSDOC Field FUNC_SUBSTRING_BEFORE          */
   public static final int FUNC_SUBSTRING_BEFORE = 23;
+
+  /** NEEDSDOC Field FUNC_SUBSTRING_AFTER          */
   public static final int FUNC_SUBSTRING_AFTER = 24;
+
+  /** NEEDSDOC Field FUNC_NORMALIZE_SPACE          */
   public static final int FUNC_NORMALIZE_SPACE = 25;
+
+  /** NEEDSDOC Field FUNC_TRANSLATE          */
   public static final int FUNC_TRANSLATE = 26;
+
+  /** NEEDSDOC Field FUNC_CONCAT          */
   public static final int FUNC_CONCAT = 27;
- // public static final int FUNC_FORMAT_NUMBER = 28;
+
+  // public static final int FUNC_FORMAT_NUMBER = 28;
+
+  /** NEEDSDOC Field FUNC_SUBSTRING          */
   public static final int FUNC_SUBSTRING = 29;
+
+  /** NEEDSDOC Field FUNC_STRING_LENGTH          */
   public static final int FUNC_STRING_LENGTH = 30;
+
+  /** NEEDSDOC Field FUNC_SYSTEM_PROPERTY          */
   public static final int FUNC_SYSTEM_PROPERTY = 31;
+
+  /** NEEDSDOC Field FUNC_LANG          */
   public static final int FUNC_LANG = 32;
+
+  /** NEEDSDOC Field FUNC_EXT_FUNCTION_AVAILABLE          */
   public static final int FUNC_EXT_FUNCTION_AVAILABLE = 33;
+
+  /** NEEDSDOC Field FUNC_EXT_ELEM_AVAILABLE          */
   public static final int FUNC_EXT_ELEM_AVAILABLE = 34;
-    
+
   // Proprietary
+
+  /** NEEDSDOC Field FUNC_DOCLOCATION          */
   public static final int FUNC_DOCLOCATION = 35;
 
+  /** NEEDSDOC Field FUNC_UNPARSED_ENTITY_URI          */
   public static final int FUNC_UNPARSED_ENTITY_URI = 36;
 
   /**
    * The function table.
    */
   public static FuncLoader m_functions[];
-    
+
   /**
-   * Number of built in functions.  Be sure to update this as 
+   * Number of built in functions.  Be sure to update this as
    * built-in functions are added.
    */
   private static final int NUM_BUILT_IN_FUNCS = 37;
@@ -64,26 +191,32 @@ public class FunctionTable
    * Number of built-in functions that may be added.
    */
   private static final int NUM_ALLOWABLE_ADDINS = 30;
-  
+
   /**
    * The index to the next free function index.
    */
   static int m_funcNextFreeIndex = NUM_BUILT_IN_FUNCS;
-  
+
   static
   {
-    m_functions = new FuncLoader[NUM_BUILT_IN_FUNCS+NUM_ALLOWABLE_ADDINS];
+    m_functions = new FuncLoader[NUM_BUILT_IN_FUNCS + NUM_ALLOWABLE_ADDINS];
     m_functions[FUNC_CURRENT] = new FuncLoader("FuncCurrent", FUNC_CURRENT);
     m_functions[FUNC_LAST] = new FuncLoader("FuncLast", FUNC_LAST);
-    m_functions[FUNC_POSITION] = new FuncLoader("FuncPosition", FUNC_POSITION);
+    m_functions[FUNC_POSITION] = new FuncLoader("FuncPosition",
+                                                FUNC_POSITION);
     m_functions[FUNC_COUNT] = new FuncLoader("FuncCount", FUNC_COUNT);
     m_functions[FUNC_ID] = new FuncLoader("FuncId", FUNC_ID);
-    m_functions[FUNC_KEY] = new FuncLoader("org.apache.xalan.templates.FuncKey", FUNC_KEY);
+    m_functions[FUNC_KEY] =
+      new FuncLoader("org.apache.xalan.templates.FuncKey", FUNC_KEY);
+
     // m_functions[FUNC_DOC] = new FuncDoc();
-    m_functions[FUNC_LOCAL_PART] = new FuncLoader("FuncLocalPart", FUNC_LOCAL_PART);
-    m_functions[FUNC_NAMESPACE] = new FuncLoader("FuncNamespace", FUNC_NAMESPACE);
+    m_functions[FUNC_LOCAL_PART] = new FuncLoader("FuncLocalPart",
+            FUNC_LOCAL_PART);
+    m_functions[FUNC_NAMESPACE] = new FuncLoader("FuncNamespace",
+            FUNC_NAMESPACE);
     m_functions[FUNC_QNAME] = new FuncLoader("FuncQname", FUNC_QNAME);
-    m_functions[FUNC_GENERATE_ID] = new FuncLoader("FuncGenerateId", FUNC_GENERATE_ID);
+    m_functions[FUNC_GENERATE_ID] = new FuncLoader("FuncGenerateId",
+            FUNC_GENERATE_ID);
     m_functions[FUNC_NOT] = new FuncLoader("FuncNot", FUNC_NOT);
     m_functions[FUNC_TRUE] = new FuncLoader("FuncTrue", FUNC_TRUE);
     m_functions[FUNC_FALSE] = new FuncLoader("FuncFalse", FUNC_FALSE);
@@ -95,25 +228,49 @@ public class FunctionTable
     m_functions[FUNC_ROUND] = new FuncLoader("FuncRound", FUNC_ROUND);
     m_functions[FUNC_SUM] = new FuncLoader("FuncSum", FUNC_SUM);
     m_functions[FUNC_STRING] = new FuncLoader("FuncString", FUNC_STRING);
-    m_functions[FUNC_STARTS_WITH] = new FuncLoader("FuncStartsWith", FUNC_STARTS_WITH);
-    m_functions[FUNC_CONTAINS] = new FuncLoader("FuncContains", FUNC_CONTAINS);
-    m_functions[FUNC_SUBSTRING_BEFORE] = new FuncLoader("FuncSubstringBefore", FUNC_SUBSTRING_BEFORE);
-    m_functions[FUNC_SUBSTRING_AFTER] = new FuncLoader("FuncSubstringAfter", FUNC_SUBSTRING_AFTER);
-    m_functions[FUNC_NORMALIZE_SPACE] = new FuncLoader("FuncNormalizeSpace", FUNC_NORMALIZE_SPACE);
-    m_functions[FUNC_TRANSLATE] = new FuncLoader("FuncTranslate", FUNC_TRANSLATE);
+    m_functions[FUNC_STARTS_WITH] = new FuncLoader("FuncStartsWith",
+            FUNC_STARTS_WITH);
+    m_functions[FUNC_CONTAINS] = new FuncLoader("FuncContains",
+                                                FUNC_CONTAINS);
+    m_functions[FUNC_SUBSTRING_BEFORE] = new FuncLoader("FuncSubstringBefore",
+            FUNC_SUBSTRING_BEFORE);
+    m_functions[FUNC_SUBSTRING_AFTER] = new FuncLoader("FuncSubstringAfter",
+            FUNC_SUBSTRING_AFTER);
+    m_functions[FUNC_NORMALIZE_SPACE] = new FuncLoader("FuncNormalizeSpace",
+            FUNC_NORMALIZE_SPACE);
+    m_functions[FUNC_TRANSLATE] = new FuncLoader("FuncTranslate",
+            FUNC_TRANSLATE);
     m_functions[FUNC_CONCAT] = new FuncLoader("FuncConcat", FUNC_CONCAT);
+
     //m_functions[FUNC_FORMAT_NUMBER] = new FuncFormatNumber();
-    m_functions[FUNC_SYSTEM_PROPERTY] = new FuncLoader("FuncSystemProperty", FUNC_SYSTEM_PROPERTY);
-    m_functions[FUNC_EXT_FUNCTION_AVAILABLE] = new FuncLoader("FuncExtFunctionAvailable", FUNC_EXT_FUNCTION_AVAILABLE);
-    m_functions[FUNC_EXT_ELEM_AVAILABLE] = new FuncLoader("FuncExtElementAvailable", FUNC_EXT_ELEM_AVAILABLE);
-    m_functions[FUNC_SUBSTRING] = new FuncLoader("FuncSubstring", FUNC_SUBSTRING);
-    m_functions[FUNC_STRING_LENGTH] = new FuncLoader("FuncStringLength", FUNC_STRING_LENGTH);
-    m_functions[FUNC_DOCLOCATION] = new FuncLoader("FuncDoclocation", FUNC_DOCLOCATION);
-    m_functions[FUNC_UNPARSED_ENTITY_URI] = new FuncLoader("FuncUnparsedEntityURI", FUNC_UNPARSED_ENTITY_URI);
+    m_functions[FUNC_SYSTEM_PROPERTY] = new FuncLoader("FuncSystemProperty",
+            FUNC_SYSTEM_PROPERTY);
+    m_functions[FUNC_EXT_FUNCTION_AVAILABLE] =
+      new FuncLoader("FuncExtFunctionAvailable", FUNC_EXT_FUNCTION_AVAILABLE);
+    m_functions[FUNC_EXT_ELEM_AVAILABLE] =
+      new FuncLoader("FuncExtElementAvailable", FUNC_EXT_ELEM_AVAILABLE);
+    m_functions[FUNC_SUBSTRING] = new FuncLoader("FuncSubstring",
+            FUNC_SUBSTRING);
+    m_functions[FUNC_STRING_LENGTH] = new FuncLoader("FuncStringLength",
+            FUNC_STRING_LENGTH);
+    m_functions[FUNC_DOCLOCATION] = new FuncLoader("FuncDoclocation",
+            FUNC_DOCLOCATION);
+    m_functions[FUNC_UNPARSED_ENTITY_URI] =
+      new FuncLoader("FuncUnparsedEntityURI", FUNC_UNPARSED_ENTITY_URI);
   }
-  
-  public static Function getFunction(int which) 
-    throws org.xml.sax.SAXException
+
+  /**
+   * NEEDSDOC Method getFunction 
+   *
+   *
+   * NEEDSDOC @param which
+   *
+   * NEEDSDOC (getFunction) @return
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  public static Function getFunction(int which)
+          throws org.xml.sax.SAXException
   {
     return m_functions[which].getFunction();
   }
@@ -125,36 +282,42 @@ public class FunctionTable
    * @return the position of the function in the internal index.
    */
   public static int installFunction(String name, Expression func)
-  {   
+  {
+
     int funcIndex;
     Object funcIndexObj = Keywords.m_functions.get(name);
-    if(null != funcIndexObj)
+
+    if (null != funcIndexObj)
     {
-      funcIndex = ((Integer)funcIndexObj).intValue();
+      funcIndex = ((Integer) funcIndexObj).intValue();
     }
     else
     {
       funcIndex = m_funcNextFreeIndex;
+
       m_funcNextFreeIndex++;
+
       Keywords.m_functions.put(name, new Integer(funcIndex));
     }
-    FuncLoader loader 
-      = new FuncLoader(func.getClass().getName(), funcIndex);
+
+    FuncLoader loader = new FuncLoader(func.getClass().getName(), funcIndex);
 
     m_functions[funcIndex] = loader;
+
     return funcIndex;
   }
-  
+
   /**
    * Install a built-in function at a specific index.
    * @param name The unqualified name of the function.
    * @param func A Implementation of an XPath Function object.
+   * NEEDSDOC @param funcIndex
    * @return the position of the function in the internal index.
    */
   public static void installFunction(Expression func, int funcIndex)
   {
-    FuncLoader loader 
-      = new FuncLoader(func.getClass().getName(), funcIndex);
+
+    FuncLoader loader = new FuncLoader(func.getClass().getName(), funcIndex);
 
     m_functions[funcIndex] = loader;
   }

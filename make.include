@@ -60,6 +60,7 @@ JAVADOC12  = javadoc
 # You can override these on the make command line as well
 #    Call us like 'make -f Makefile JAVADEBUG=-g:none ...'
 JAVADEBUG   = -g
+# JAVADEBUG   = -g:none -O
 JAVADESTDIR = -d $(CLASS_DIR)
 JAVACFLAGS  = $(JAVADEBUG) $(JAVADESTDIR)
 JARFLAGS    = cf0
