@@ -106,9 +106,11 @@ final class RelationalExpr extends Expression implements Operators {
 
 	//bug fix # 2838, cast to reals if both are result tree fragments
 	if (tleft instanceof ResultTreeType &&
-	    tright instanceof ResultTreeType ) {
+	    tright instanceof ResultTreeType ) 
+  	{
 	    _right = new CastExpr(_right, Type.Real);
 	    _left = new CastExpr(_left, Type.Real);
+	    return _type = Type.Boolean; 
 	}
 
 	// If one is of reference type, then convert the other too
@@ -119,6 +121,10 @@ final class RelationalExpr extends Expression implements Operators {
 	    if (tright instanceof ReferenceType) {
 		_left = new CastExpr(_left, Type.Reference);
 	    }
+	    // bug fix # 2838 
+	    _right = new CastExpr(_right, Type.Real);
+            _left = new CastExpr(_left, Type.Real);
+
 	    return _type = Type.Boolean;
 	}
 
