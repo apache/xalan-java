@@ -4,124 +4,124 @@ package org.apache.xpath.parser;
 public interface XPathConstants {
 
   int EOF = 0;
-  int ExprComment = 1;
-  int skip_ = 3;
-  int S = 4;
-  int AxisChild = 5;
-  int AxisDescendant = 6;
-  int AxisParent = 7;
-  int AxisAttribute = 8;
-  int AxisSelf = 9;
-  int AxisDescendantOrSelf = 10;
-  int AxisAncestor = 11;
-  int AxisFollowingSibling = 12;
-  int AxisPrecedingSibling = 13;
-  int AxisFollowing = 14;
-  int AxisPreceding = 15;
-  int AxisNamespace = 16;
-  int AxisAncestorOrSelf = 17;
-  int Or = 18;
-  int And = 19;
-  int Div = 20;
-  int Idiv = 21;
-  int Mod = 22;
-  int Multiply = 23;
-  int In = 24;
-  int Satisfies = 25;
-  int Return = 26;
-  int Then = 27;
-  int Else = 28;
-  int To = 29;
-  int Intersect = 30;
-  int Union = 31;
-  int Except = 32;
-  int Precedes = 33;
-  int Follows = 34;
-  int Instanceof = 35;
-  int Item = 36;
-  int ElementType = 37;
-  int AttributeType = 38;
-  int ElementQNameLbrace = 39;
-  int AttributeQNameLbrace = 40;
-  int ElementLbrace = 41;
-  int AttributeLbrace = 42;
-  int DefaultElement = 43;
-  int DefaultFunction = 44;
-  int OfType = 45;
-  int AtomicValue = 46;
-  int Type = 47;
-  int Node = 48;
-  int Empty = 49;
-  int Nmstart = 50;
-  int Nmchar = 51;
-  int Star = 52;
-  int NCNameColonStar = 53;
-  int StarColonNCName = 54;
-  int Root = 55;
-  int RootDescendants = 56;
-  int Slash = 57;
-  int SlashSlash = 58;
-  int Equals = 59;
-  int Is = 60;
-  int NotEquals = 61;
-  int IsNot = 62;
-  int LtEquals = 63;
-  int LtLt = 64;
-  int GtEquals = 65;
-  int GtGt = 66;
-  int FortranEq = 67;
-  int FortranNe = 68;
-  int FortranGt = 69;
-  int FortranGe = 70;
-  int FortranLt = 71;
-  int FortranLe = 72;
-  int Lt = 73;
-  int Gt = 74;
-  int Minus = 75;
-  int Plus = 76;
-  int QMark = 77;
-  int Vbar = 78;
-  int Lpar = 79;
-  int At = 80;
-  int Lbrack = 81;
-  int Rbrack = 82;
-  int Rpar = 83;
-  int Some = 84;
-  int Every = 85;
-  int ForVariable = 86;
-  int CastAs = 87;
-  int TreatAs = 88;
-  int Validate = 89;
-  int Digits = 90;
-  int IntegerLiteral = 91;
-  int DecimalLiteral = 92;
-  int DoubleLiteral = 93;
-  int Comment = 94;
-  int Document = 95;
-  int DocumentLbrace = 96;
-  int Text = 97;
-  int Untyped = 98;
-  int ProcessingInstruction = 99;
-  int NodeLpar = 100;
-  int CommentLpar = 101;
-  int TextLpar = 102;
-  int ProcessingInstructionLpar = 103;
-  int IfLpar = 104;
-  int Comma = 105;
-  int StringLiteral = 106;
-  int NamespaceURLLiteral = 107;
-  int Dot = 108;
-  int DotDot = 109;
-  int NCName = 110;
-  int Prefix = 111;
-  int LocalPart = 112;
-  int VariableIndicator = 113;
-  int VarName = 114;
-  int QName = 115;
-  int FuncName = 116;
-  int FuncPListOpen = 117;
-  int QNameLpar = 118;
-  int Lbrace = 119;
+  int IntegerLiteral = 1;
+  int DecimalLiteral = 2;
+  int DoubleLiteral = 3;
+  int StringLiteral = 4;
+  int ExprComment = 5;
+  int skip_ = 7;
+  int S = 8;
+  int AxisChild = 9;
+  int AxisDescendant = 10;
+  int AxisParent = 11;
+  int AxisAttribute = 12;
+  int AxisSelf = 13;
+  int AxisDescendantOrSelf = 14;
+  int AxisAncestor = 15;
+  int AxisFollowingSibling = 16;
+  int AxisPrecedingSibling = 17;
+  int AxisFollowing = 18;
+  int AxisPreceding = 19;
+  int AxisNamespace = 20;
+  int AxisAncestorOrSelf = 21;
+  int Or = 22;
+  int And = 23;
+  int Div = 24;
+  int Idiv = 25;
+  int Mod = 26;
+  int Multiply = 27;
+  int In = 28;
+  int InContext = 29;
+  int Satisfies = 30;
+  int Return = 31;
+  int Then = 32;
+  int Else = 33;
+  int To = 34;
+  int Intersect = 35;
+  int Union = 36;
+  int Except = 37;
+  int Instanceof = 38;
+  int Castable = 39;
+  int Item = 40;
+  int ElementType = 41;
+  int AttributeType = 42;
+  int ElementQNameLbrace = 43;
+  int AttributeQNameLbrace = 44;
+  int ElementLbrace = 45;
+  int AttributeLbrace = 46;
+  int DefaultCollationEquals = 47;
+  int DefaultElement = 48;
+  int DefaultFunction = 49;
+  int OfType = 50;
+  int AtomicValue = 51;
+  int TypeQName = 52;
+  int Node = 53;
+  int Empty = 54;
+  int Nmstart = 55;
+  int Nmchar = 56;
+  int Star = 57;
+  int NCNameColonStar = 58;
+  int StarColonNCName = 59;
+  int Root = 60;
+  int RootDescendants = 61;
+  int Slash = 62;
+  int SlashSlash = 63;
+  int Equals = 64;
+  int Is = 65;
+  int NotEquals = 66;
+  int IsNot = 67;
+  int LtEquals = 68;
+  int LtLt = 69;
+  int GtEquals = 70;
+  int GtGt = 71;
+  int FortranEq = 72;
+  int FortranNe = 73;
+  int FortranGt = 74;
+  int FortranGe = 75;
+  int FortranLt = 76;
+  int FortranLe = 77;
+  int Lt = 78;
+  int Gt = 79;
+  int Minus = 80;
+  int Plus = 81;
+  int QMark = 82;
+  int Vbar = 83;
+  int Lpar = 84;
+  int At = 85;
+  int Lbrack = 86;
+  int Rbrack = 87;
+  int Rpar = 88;
+  int Some = 89;
+  int Every = 90;
+  int ForVariable = 91;
+  int CastAs = 92;
+  int TreatAs = 93;
+  int ValidateLbrace = 94;
+  int ValidateContext = 95;
+  int Digits = 96;
+  int Comment = 97;
+  int Document = 98;
+  int DocumentLbrace = 99;
+  int Text = 100;
+  int Untyped = 101;
+  int ProcessingInstruction = 102;
+  int NodeLpar = 103;
+  int CommentLpar = 104;
+  int TextLpar = 105;
+  int ProcessingInstructionLpar = 106;
+  int IfLpar = 107;
+  int Comma = 108;
+  int Dot = 109;
+  int DotDot = 110;
+  int NCName = 111;
+  int Prefix = 112;
+  int LocalPart = 113;
+  int VariableIndicator = 114;
+  int VarName = 115;
+  int QName = 116;
+  int QNameLpar = 117;
+  int Lbrace = 118;
+  int LbraceExprEnclosure = 119;
   int Rbrace = 120;
   int Char = 121;
   int WhitespaceChar = 122;
@@ -133,28 +133,31 @@ public interface XPathConstants {
   int Extender = 128;
 
   int DEFAULT = 0;
-  int ELEMENT_CONTENT = 1;
-  int OPERATOR = 2;
+  int OPERATOR = 1;
+  int NAMESPACEKEYWORD = 2;
   int QNAME = 3;
   int NAMESPACEDECL = 4;
   int XMLSPACE_DECL = 5;
   int ITEMTYPE = 6;
-  int FUNCDEF = 7;
-  int NAMESPACEKEYWORD = 8;
+  int VARNAME = 7;
+  int ELEMENT_CONTENT = 8;
   int START_TAG = 9;
   int END_TAG = 10;
-  int VARNAME = 11;
-  int QUOT_ATTRIBUTE_CONTENT = 12;
-  int APOS_ATTRIBUTE_CONTENT = 13;
-  int CDATA_SECTION = 14;
-  int PROCESSING_INSTRUCTION = 15;
-  int XML_COMMENT = 16;
-  int XQUERY_COMMENT = 17;
+  int QUOT_ATTRIBUTE_CONTENT = 11;
+  int APOS_ATTRIBUTE_CONTENT = 12;
+  int CDATA_SECTION = 13;
+  int PROCESSING_INSTRUCTION_CONTENT = 14;
+  int XML_COMMENT = 15;
+  int XQUERY_COMMENT = 16;
 
   String[] tokenImage = {
     "<EOF>",
+    "<IntegerLiteral>",
+    "<DecimalLiteral>",
+    "<DoubleLiteral>",
+    "<StringLiteral>",
     "<ExprComment>",
-    "<token of kind 2>",
+    "<token of kind 6>",
     "<skip_>",
     "<S>",
     "<AxisChild>",
@@ -177,6 +180,7 @@ public interface XPathConstants {
     "\"mod\"",
     "\"*\"",
     "\"in\"",
+    "\"context\"",
     "\"satisfies\"",
     "\"return\"",
     "\"then\"",
@@ -185,9 +189,8 @@ public interface XPathConstants {
     "\"intersect\"",
     "\"union\"",
     "\"except\"",
-    "\"precedes\"",
-    "\"follows\"",
     "<Instanceof>",
+    "<Castable>",
     "\"item\"",
     "\"element\"",
     "\"attribute\"",
@@ -195,11 +198,12 @@ public interface XPathConstants {
     "<AttributeQNameLbrace>",
     "<ElementLbrace>",
     "<AttributeLbrace>",
+    "<DefaultCollationEquals>",
     "<DefaultElement>",
     "<DefaultFunction>",
     "<OfType>",
     "<AtomicValue>",
-    "\"type\"",
+    "<TypeQName>",
     "\"node\"",
     "\"empty\"",
     "<Nmstart>",
@@ -241,11 +245,9 @@ public interface XPathConstants {
     "<ForVariable>",
     "<CastAs>",
     "<TreatAs>",
-    "\"validate\"",
+    "<ValidateLbrace>",
+    "<ValidateContext>",
     "<Digits>",
-    "<IntegerLiteral>",
-    "<DecimalLiteral>",
-    "<DoubleLiteral>",
     "\"comment\"",
     "\"document\"",
     "<DocumentLbrace>",
@@ -258,8 +260,6 @@ public interface XPathConstants {
     "<ProcessingInstructionLpar>",
     "<IfLpar>",
     "\",\"",
-    "<StringLiteral>",
-    "<NamespaceURLLiteral>",
     "\".\"",
     "\"..\"",
     "<NCName>",
@@ -268,9 +268,8 @@ public interface XPathConstants {
     "\"$\"",
     "<VarName>",
     "<QName>",
-    "<FuncName>",
-    "\"(\"",
     "<QNameLpar>",
+    "\"{\"",
     "\"{\"",
     "\"}\"",
     "<Char>",

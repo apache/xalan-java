@@ -134,7 +134,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      Expr();
+      XPath();
       jj_consume_token(0);
                     jjtree.closeNodeScope(jjtn000, true);
                     jjtc000 = false;
@@ -194,6 +194,83 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     throw new Error("Missing return statement in function");
   }
 
+  final public void XPath() throws ParseException {
+ /*@bgen(jjtree) XPath */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTXPATH);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IntegerLiteral:
+      case DecimalLiteral:
+      case DoubleLiteral:
+      case StringLiteral:
+      case AxisChild:
+      case AxisDescendant:
+      case AxisParent:
+      case AxisAttribute:
+      case AxisSelf:
+      case AxisDescendantOrSelf:
+      case AxisAncestor:
+      case AxisFollowingSibling:
+      case AxisPrecedingSibling:
+      case AxisFollowing:
+      case AxisPreceding:
+      case AxisNamespace:
+      case AxisAncestorOrSelf:
+      case Star:
+      case NCNameColonStar:
+      case StarColonNCName:
+      case Root:
+      case RootDescendants:
+      case Minus:
+      case Plus:
+      case Lpar:
+      case At:
+      case Some:
+      case Every:
+      case ForVariable:
+      case CastAs:
+      case TreatAs:
+      case ValidateLbrace:
+      case ValidateContext:
+      case NodeLpar:
+      case CommentLpar:
+      case TextLpar:
+      case ProcessingInstructionLpar:
+      case IfLpar:
+      case Dot:
+      case DotDot:
+      case VariableIndicator:
+      case QName:
+      case QNameLpar:
+        ExprSequence();
+        break;
+      default:
+        jj_la1[0] = jj_gen;
+        ;
+      }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+    }
+  }
+
   final public void ExprSequence() throws ParseException {
  /*@bgen(jjtree) ExprSequence */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTEXPRSEQUENCE);
@@ -208,7 +285,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           ;
           break;
         default:
-          jj_la1[0] = jj_gen;
+          jj_la1[1] = jj_gen;
           break label_1;
         }
         jj_consume_token(Comma);
@@ -253,14 +330,14 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           jj_consume_token(Vbar);
           break;
         default:
-          jj_la1[1] = jj_gen;
+          jj_la1[2] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         Pattern();
         break;
       default:
-        jj_la1[2] = jj_gen;
+        jj_la1[3] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -320,7 +397,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           RelativePathPattern();
           break;
         default:
-          jj_la1[3] = jj_gen;
+          jj_la1[4] = jj_gen;
           ;
         }
         break;
@@ -377,14 +454,14 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
             }
             break;
           default:
-            jj_la1[4] = jj_gen;
+            jj_la1[5] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
           RelativePathPattern();
           break;
         default:
-          jj_la1[5] = jj_gen;
+          jj_la1[6] = jj_gen;
           ;
         }
         break;
@@ -402,7 +479,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         RelativePathPattern();
         break;
       default:
-        jj_la1[6] = jj_gen;
+        jj_la1[7] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -464,14 +541,14 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         }
         break;
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[8] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       RelativePathPattern();
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[9] = jj_gen;
       ;
     }
   }
@@ -489,7 +566,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         PatternAxis();
         break;
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[10] = jj_gen;
         ;
       }
       NodeTest();
@@ -563,7 +640,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       }
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -595,7 +672,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         IdKeyValue();
         break;
       default:
-        jj_la1[11] = jj_gen;
+        jj_la1[12] = jj_gen;
         ;
       }
       jj_consume_token(Rpar);
@@ -622,16 +699,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
 
   final public void IdKeyValue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IntegerLiteral:
-    case DecimalLiteral:
-    case DoubleLiteral:
     case StringLiteral:
-      Literal();
-      break;
-    case VariableIndicator:
-      jj_consume_token(VariableIndicator);
-      jj_consume_token(VarName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+      jj_consume_token(StringLiteral);
+                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTRINGLITERAL);
                 boolean jjtc001 = true;
                 jjtree.openNodeScope(jjtn001);
       try {
@@ -644,8 +714,24 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
       }
       break;
+    case VariableIndicator:
+      jj_consume_token(VariableIndicator);
+      jj_consume_token(VarName);
+                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+                boolean jjtc002 = true;
+                jjtree.openNodeScope(jjtn002);
+      try {
+                jjtree.closeNodeScope(jjtn002,  true);
+                jjtc002 = false;
+               jjtn002.processToken(token);
+      } finally {
+                if (jjtc002) {
+                  jjtree.closeNodeScope(jjtn002,  true);
+                }
+      }
+      break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -664,7 +750,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         ;
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[14] = jj_gen;
         break label_2;
       }
       jj_consume_token(Or);
@@ -703,7 +789,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[15] = jj_gen;
         break label_3;
       }
       jj_consume_token(And);
@@ -746,10 +832,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           ;
           break;
         default:
-          jj_la1[15] = jj_gen;
+          jj_la1[16] = jj_gen;
           break label_4;
         }
-        ForClause();
+        SimpleForClause();
         jj_consume_token(Return);
                 SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRETURN);
                 boolean jjtc001 = true;
@@ -800,7 +886,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           ;
           break;
         default:
-          jj_la1[16] = jj_gen;
+          jj_la1[17] = jj_gen;
           break label_5;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -835,7 +921,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           }
           break;
         default:
-          jj_la1[17] = jj_gen;
+          jj_la1[18] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -873,7 +959,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
             ;
             break;
           default:
-            jj_la1[18] = jj_gen;
+            jj_la1[19] = jj_gen;
             break label_6;
           }
           jj_consume_token(Comma);
@@ -955,7 +1041,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           ;
           break;
         default:
-          jj_la1[19] = jj_gen;
+          jj_la1[20] = jj_gen;
           break label_7;
         }
         jj_consume_token(IfLpar);
@@ -1029,17 +1115,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      ComparisonExpr();
-      label_8:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case Instanceof:
-          ;
-          break;
-        default:
-          jj_la1[20] = jj_gen;
-          break label_8;
-        }
+      CastableExpr();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case Instanceof:
         jj_consume_token(Instanceof);
                 SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINSTANCEOF);
                 boolean jjtc001 = true;
@@ -1054,6 +1132,59 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
         }
         SequenceType();
+        break;
+      default:
+        jj_la1[21] = jj_gen;
+        ;
+      }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+    }
+  }
+
+  final public void CastableExpr() throws ParseException {
+ /*@bgen(jjtree) CastableExpr */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTABLEEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      ComparisonExpr();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case Castable:
+        jj_consume_token(Castable);
+                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTABLE);
+                boolean jjtc001 = true;
+                jjtree.openNodeScope(jjtn001);
+        try {
+                jjtree.closeNodeScope(jjtn001,  true);
+                jjtc001 = false;
+               jjtn001.processToken(token);
+        } finally {
+                if (jjtc001) {
+                  jjtree.closeNodeScope(jjtn001,  true);
+                }
+        }
+        SingleType();
+        break;
+      default:
+        jj_la1[22] = jj_gen;
+        ;
       }
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -1078,11 +1209,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
 
   final public void ComparisonExpr() throws ParseException {
     RangeExpr();
-    label_9:
+    label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Precedes:
-      case Follows:
       case Equals:
       case Is:
       case NotEquals:
@@ -1102,8 +1231,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         ;
         break;
       default:
-        jj_la1[21] = jj_gen;
-        break label_9;
+        jj_la1[23] = jj_gen;
+        break label_8;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FortranEq:
@@ -1126,14 +1255,12 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       case IsNot:
         NodeComp();
         break;
-      case Precedes:
-      case Follows:
       case LtLt:
       case GtGt:
         OrderComp();
         break;
       default:
-        jj_la1[22] = jj_gen;
+        jj_la1[24] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1164,16 +1291,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
 
   final public void RangeExpr() throws ParseException {
     AdditiveExpr();
-    label_10:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case To:
-        ;
-        break;
-      default:
-        jj_la1[23] = jj_gen;
-        break label_10;
-      }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case To:
       jj_consume_token(To);
           binaryTokenStack.push(token);
       AdditiveExpr();
@@ -1198,12 +1317,16 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
       }
+      break;
+    default:
+      jj_la1[25] = jj_gen;
+      ;
     }
   }
 
   final public void AdditiveExpr() throws ParseException {
     MultiplicativeExpr();
-    label_11:
+    label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Minus:
@@ -1211,8 +1334,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         ;
         break;
       default:
-        jj_la1[24] = jj_gen;
-        break label_11;
+        jj_la1[26] = jj_gen;
+        break label_9;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Plus:
@@ -1224,7 +1347,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           binaryTokenStack.push(token);
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[27] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1254,8 +1377,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   }
 
   final public void MultiplicativeExpr() throws ParseException {
-    UnionExpr();
-    label_12:
+    UnaryExpr();
+    label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Div:
@@ -1265,8 +1388,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         ;
         break;
       default:
-        jj_la1[26] = jj_gen;
-        break label_12;
+        jj_la1[28] = jj_gen;
+        break label_10;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Multiply:
@@ -1286,121 +1409,12 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           binaryTokenStack.push(token);
         break;
       default:
-        jj_la1[27] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      UnionExpr();
-                  SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLICATIVEEXPR);
-                  boolean jjtc001 = true;
-                  jjtree.openNodeScope(jjtn001);
-      try {
-                  jjtree.closeNodeScope(jjtn001,  2);
-                  jjtc001 = false;
-         try
-         {
-                       jjtn001.processToken((Token)binaryTokenStack.pop());
-         }
-         catch(java.util.EmptyStackException e)
-         {
-           token_source.printLinePos();
-           e.printStackTrace();
-           {if (true) throw e;}
-         }
-      } finally {
-                  if (jjtc001) {
-                    jjtree.closeNodeScope(jjtn001,  2);
-                  }
-      }
-    }
-  }
-
-  final public void UnionExpr() throws ParseException {
-    IntersectExceptExpr();
-    label_13:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Union:
-      case Vbar:
-        ;
-        break;
-      default:
-        jj_la1[28] = jj_gen;
-        break label_13;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Union:
-        jj_consume_token(Union);
-          binaryTokenStack.push(token);
-        break;
-      case Vbar:
-        jj_consume_token(Vbar);
-          binaryTokenStack.push(token);
-        break;
-      default:
         jj_la1[29] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      IntersectExceptExpr();
-                  SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNIONEXPR);
-                  boolean jjtc001 = true;
-                  jjtree.openNodeScope(jjtn001);
-      try {
-                  jjtree.closeNodeScope(jjtn001,  2);
-                  jjtc001 = false;
-         try
-         {
-                       jjtn001.processToken((Token)binaryTokenStack.pop());
-         }
-         catch(java.util.EmptyStackException e)
-         {
-           token_source.printLinePos();
-           e.printStackTrace();
-           {if (true) throw e;}
-         }
-      } finally {
-                  if (jjtc001) {
-                    jjtree.closeNodeScope(jjtn001,  2);
-                  }
-      }
-    }
-  }
-
-  final public void IntersectExceptExpr() throws ParseException {
-    UnaryExpr();
-    label_14:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Intersect:
-      case Except:
-        ;
-        break;
-      default:
-        jj_la1[30] = jj_gen;
-        break label_14;
-      }
-      SimpleNode jjtn001;
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Intersect:
-        jj_consume_token(Intersect);
-          binaryTokenStack.push(token);
-        UnaryExpr();
-        jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXPR);
-        break;
-      case Except:
-        jj_consume_token(Except);
-          binaryTokenStack.push(token);
-        UnaryExpr();
-        jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTEXCEPTEXPR);
-        break;
-      default:
-        jj_la1[31] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      //UnaryExpr();
-                  //SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXCEPTEXPR);
+      UnaryExpr();
+                  SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLICATIVEEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
       try {
@@ -1430,7 +1444,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      label_15:
+      label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Minus:
@@ -1438,8 +1452,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           ;
           break;
         default:
-          jj_la1[32] = jj_gen;
-          break label_15;
+          jj_la1[30] = jj_gen;
+          break label_11;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Minus:
@@ -1473,12 +1487,12 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           }
           break;
         default:
-          jj_la1[33] = jj_gen;
+          jj_la1[31] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
       }
-      ValueExpr();
+      UnionExpr();
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -1500,15 +1514,126 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     }
   }
 
+  final public void UnionExpr() throws ParseException {
+    IntersectExceptExpr();
+    label_12:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case Union:
+      case Vbar:
+        ;
+        break;
+      default:
+        jj_la1[32] = jj_gen;
+        break label_12;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case Union:
+        jj_consume_token(Union);
+          binaryTokenStack.push(token);
+        break;
+      case Vbar:
+        jj_consume_token(Vbar);
+          binaryTokenStack.push(token);
+        break;
+      default:
+        jj_la1[33] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      IntersectExceptExpr();
+                  SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNIONEXPR);
+                  boolean jjtc001 = true;
+                  jjtree.openNodeScope(jjtn001);
+      try {
+                  jjtree.closeNodeScope(jjtn001,  2);
+                  jjtc001 = false;
+         try
+         {
+                       jjtn001.processToken((Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           {if (true) throw e;}
+         }
+      } finally {
+                  if (jjtc001) {
+                    jjtree.closeNodeScope(jjtn001,  2);
+                  }
+      }
+    }
+  }
+
+  final public void IntersectExceptExpr() throws ParseException {
+    ValueExpr();
+    label_13:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case Intersect:
+      case Except:
+        ;
+        break;
+      default:
+        jj_la1[34] = jj_gen;
+        break label_13;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case Intersect:
+        jj_consume_token(Intersect);
+          binaryTokenStack.push(token);
+        break;
+      case Except:
+        jj_consume_token(Except);
+          binaryTokenStack.push(token);
+        break;
+      default:
+        jj_la1[35] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      ValueExpr();
+                  SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXCEPTEXPR);
+                  boolean jjtc001 = true;
+                  jjtree.openNodeScope(jjtn001);
+      try {
+                  jjtree.closeNodeScope(jjtn001,  2);
+                  jjtc001 = false;
+         try
+         {
+                       jjtn001.processToken((Token)binaryTokenStack.pop());
+         }
+         catch(java.util.EmptyStackException e)
+         {
+           token_source.printLinePos();
+           e.printStackTrace();
+           {if (true) throw e;}
+         }
+      } finally {
+                  if (jjtc001) {
+                    jjtree.closeNodeScope(jjtn001,  2);
+                  }
+      }
+    }
+  }
+
   final public void ValueExpr() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Validate:
+    case ValidateLbrace:
+    case ValidateContext:
       ValidateExpr();
       break;
     case CastAs:
-    case TreatAs:
       CastExpr();
       break;
+    case TreatAs:
+      TreatExpr();
+      break;
+    case IntegerLiteral:
+    case DecimalLiteral:
+    case DoubleLiteral:
+    case StringLiteral:
     case AxisChild:
     case AxisDescendant:
     case AxisParent:
@@ -1529,14 +1654,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     case RootDescendants:
     case Lpar:
     case At:
-    case IntegerLiteral:
-    case DecimalLiteral:
-    case DoubleLiteral:
     case NodeLpar:
     case CommentLpar:
     case TextLpar:
     case ProcessingInstructionLpar:
-    case StringLiteral:
     case Dot:
     case DotDot:
     case VariableIndicator:
@@ -1545,7 +1666,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       PathExpr();
       break;
     default:
-      jj_la1[34] = jj_gen;
+      jj_la1[36] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1573,6 +1694,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IntegerLiteral:
+        case DecimalLiteral:
+        case DoubleLiteral:
+        case StringLiteral:
         case AxisChild:
         case AxisDescendant:
         case AxisParent:
@@ -1591,14 +1716,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         case StarColonNCName:
         case Lpar:
         case At:
-        case IntegerLiteral:
-        case DecimalLiteral:
-        case DoubleLiteral:
         case NodeLpar:
         case CommentLpar:
         case TextLpar:
         case ProcessingInstructionLpar:
-        case StringLiteral:
         case Dot:
         case DotDot:
         case VariableIndicator:
@@ -1607,7 +1728,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           RelativePathExpr();
           break;
         default:
-          jj_la1[35] = jj_gen;
+          jj_la1[37] = jj_gen;
           ;
         }
         break;
@@ -1627,6 +1748,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         }
         RelativePathExpr();
         break;
+      case IntegerLiteral:
+      case DecimalLiteral:
+      case DoubleLiteral:
+      case StringLiteral:
       case AxisChild:
       case AxisDescendant:
       case AxisParent:
@@ -1645,14 +1770,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       case StarColonNCName:
       case Lpar:
       case At:
-      case IntegerLiteral:
-      case DecimalLiteral:
-      case DoubleLiteral:
       case NodeLpar:
       case CommentLpar:
       case TextLpar:
       case ProcessingInstructionLpar:
-      case StringLiteral:
       case Dot:
       case DotDot:
       case VariableIndicator:
@@ -1661,7 +1782,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         RelativePathExpr();
         break;
       default:
-        jj_la1[36] = jj_gen;
+        jj_la1[38] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1688,7 +1809,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
 
   final public void RelativePathExpr() throws ParseException {
     StepExpr();
-    label_16:
+    label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Slash:
@@ -1696,8 +1817,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         ;
         break;
       default:
-        jj_la1[37] = jj_gen;
-        break label_16;
+        jj_la1[39] = jj_gen;
+        break label_14;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Slash:
@@ -1731,7 +1852,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         }
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[40] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1774,17 +1895,17 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       case DotDot:
         ReverseStep();
         break;
-      case Lpar:
       case IntegerLiteral:
       case DecimalLiteral:
       case DoubleLiteral:
       case StringLiteral:
+      case Lpar:
       case VariableIndicator:
       case QNameLpar:
         PrimaryExpr();
         break;
       default:
-        jj_la1[39] = jj_gen;
+        jj_la1[41] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1810,9 +1931,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     }
   }
 
-  final public void ForClause() throws ParseException {
- /*@bgen(jjtree) ForClause */
-  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTFORCLAUSE);
+  final public void SimpleForClause() throws ParseException {
+ /*@bgen(jjtree) SimpleForClause */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSIMPLEFORCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1844,15 +1965,15 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
       }
       Expr();
-      label_17:
+      label_15:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Comma:
           ;
           break;
         default:
-          jj_la1[40] = jj_gen;
-          break label_17;
+          jj_la1[42] = jj_gen;
+          break label_15;
         }
         jj_consume_token(Comma);
         jj_consume_token(VariableIndicator);
@@ -1911,52 +2032,93 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(Validate);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVALIDATE);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ValidateLbrace:
+        jj_consume_token(ValidateLbrace);
+                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVALIDATELBRACE);
                 boolean jjtc001 = true;
                 jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                 jjtree.closeNodeScope(jjtn001,  true);
                 jjtc001 = false;
                jjtn001.processToken(token);
-      } finally {
+        } finally {
                 if (jjtc001) {
                   jjtree.closeNodeScope(jjtn001,  true);
                 }
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case In:
-        SchemaContext();
+        }
         break;
-      default:
-        jj_la1[41] = jj_gen;
-        ;
-      }
-      jj_consume_token(Lbrace);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTLBRACE);
+      case ValidateContext:
+        jj_consume_token(ValidateContext);
+                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVALIDATECONTEXT);
                 boolean jjtc002 = true;
                 jjtree.openNodeScope(jjtn002);
-      try {
+        try {
                 jjtree.closeNodeScope(jjtn002,  true);
                 jjtc002 = false;
                jjtn002.processToken(token);
-      } finally {
+        } finally {
                 if (jjtc002) {
                   jjtree.closeNodeScope(jjtn002,  true);
                 }
-      }
-      Expr();
-      jj_consume_token(Rbrace);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRBRACE);
+        }
+        SchemaGlobalContext();
+        label_16:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case Slash:
+            ;
+            break;
+          default:
+            jj_la1[43] = jj_gen;
+            break label_16;
+          }
+          jj_consume_token(Slash);
+                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
                 boolean jjtc003 = true;
                 jjtree.openNodeScope(jjtn003);
-      try {
+          try {
                 jjtree.closeNodeScope(jjtn003,  true);
                 jjtc003 = false;
                jjtn003.processToken(token);
-      } finally {
+          } finally {
                 if (jjtc003) {
                   jjtree.closeNodeScope(jjtn003,  true);
+                }
+          }
+          SchemaContextStep();
+        }
+        jj_consume_token(LbraceExprEnclosure);
+                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTLBRACEEXPRENCLOSURE);
+                boolean jjtc004 = true;
+                jjtree.openNodeScope(jjtn004);
+        try {
+                jjtree.closeNodeScope(jjtn004,  true);
+                jjtc004 = false;
+               jjtn004.processToken(token);
+        } finally {
+                if (jjtc004) {
+                  jjtree.closeNodeScope(jjtn004,  true);
+                }
+        }
+        break;
+      default:
+        jj_la1[44] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      Expr();
+      jj_consume_token(Rbrace);
+                SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRBRACE);
+                boolean jjtc005 = true;
+                jjtree.openNodeScope(jjtn005);
+      try {
+                jjtree.closeNodeScope(jjtn005,  true);
+                jjtc005 = false;
+               jjtn005.processToken(token);
+      } finally {
+                if (jjtc005) {
+                  jjtree.closeNodeScope(jjtn005,  true);
                 }
       }
     } catch (Throwable jjte000) {
@@ -1986,41 +2148,60 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CastAs:
-        jj_consume_token(CastAs);
+      jj_consume_token(CastAs);
                 SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTAS);
                 boolean jjtc001 = true;
                 jjtree.openNodeScope(jjtn001);
-        try {
+      try {
                 jjtree.closeNodeScope(jjtn001,  true);
                 jjtc001 = false;
                jjtn001.processToken(token);
-        } finally {
+      } finally {
                 if (jjtc001) {
                   jjtree.closeNodeScope(jjtn001,  true);
                 }
-        }
-        break;
-      case TreatAs:
-        jj_consume_token(TreatAs);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTREATAS);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
-        try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
-        } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
+      }
+      SingleType();
+      ParenthesizedExpr();
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+    }
+  }
+
+  final public void TreatExpr() throws ParseException {
+ /*@bgen(jjtree) TreatExpr */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTREATEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      jj_consume_token(TreatAs);
+                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTREATAS);
+                boolean jjtc001 = true;
+                jjtree.openNodeScope(jjtn001);
+      try {
+                jjtree.closeNodeScope(jjtn001,  true);
+                jjtc001 = false;
+               jjtn001.processToken(token);
+      } finally {
+                if (jjtc001) {
+                  jjtree.closeNodeScope(jjtn001,  true);
                 }
-        }
-        break;
-      default:
-        jj_la1[42] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
       }
       SequenceType();
       ParenthesizedExpr();
@@ -2072,7 +2253,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           binaryTokenStack.push(token);
       break;
     default:
-      jj_la1[43] = jj_gen;
+      jj_la1[45] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2105,7 +2286,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           binaryTokenStack.push(token);
       break;
     default:
-      jj_la1[44] = jj_gen;
+      jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2122,7 +2303,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           binaryTokenStack.push(token);
       break;
     default:
-      jj_la1[45] = jj_gen;
+      jj_la1[47] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2138,16 +2319,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       jj_consume_token(GtGt);
           binaryTokenStack.push(token);
       break;
-    case Precedes:
-      jj_consume_token(Precedes);
-          binaryTokenStack.push(token);
-      break;
-    case Follows:
-      jj_consume_token(Follows);
-          binaryTokenStack.push(token);
-      break;
     default:
-      jj_la1[46] = jj_gen;
+      jj_la1[48] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2184,7 +2357,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       ParenthesizedExpr();
       break;
     default:
-      jj_la1[47] = jj_gen;
+      jj_la1[49] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2313,7 +2486,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       }
       break;
     default:
-      jj_la1[48] = jj_gen;
+      jj_la1[50] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2397,7 +2570,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       }
       break;
     default:
-      jj_la1[49] = jj_gen;
+      jj_la1[51] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2423,7 +2596,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         NameTest();
         break;
       default:
-        jj_la1[50] = jj_gen;
+        jj_la1[52] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2476,7 +2649,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         Wildcard();
         break;
       default:
-        jj_la1[51] = jj_gen;
+        jj_la1[53] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2549,7 +2722,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       }
       break;
     default:
-      jj_la1[52] = jj_gen;
+      jj_la1[54] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2575,7 +2748,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         AnyKindTest();
         break;
       default:
-        jj_la1[53] = jj_gen;
+        jj_la1[55] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2624,7 +2797,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         }
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[56] = jj_gen;
         ;
       }
       jj_consume_token(Rpar);
@@ -2706,7 +2879,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       AbbreviatedForwardStep();
       break;
     default:
-      jj_la1[55] = jj_gen;
+      jj_la1[57] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2726,7 +2899,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       AbbreviatedReverseStep();
       break;
     default:
-      jj_la1[56] = jj_gen;
+      jj_la1[58] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2781,7 +2954,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         NodeTest();
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[59] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2828,15 +3001,15 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      label_18:
+      label_17:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Lbrack:
           ;
           break;
         default:
-          jj_la1[58] = jj_gen;
-          break label_18;
+          jj_la1[60] = jj_gen;
+          break label_17;
         }
         jj_consume_token(Lbrack);
                 SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTLBRACK);
@@ -2935,7 +3108,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       }
       break;
     default:
-      jj_la1[59] = jj_gen;
+      jj_la1[61] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2964,7 +3137,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       }
       break;
     default:
-      jj_la1[60] = jj_gen;
+      jj_la1[62] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2973,6 +3146,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   final public void ParenthesizedExpr() throws ParseException {
     jj_consume_token(Lpar);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case IntegerLiteral:
+    case DecimalLiteral:
+    case DoubleLiteral:
+    case StringLiteral:
     case AxisChild:
     case AxisDescendant:
     case AxisParent:
@@ -3000,16 +3177,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     case ForVariable:
     case CastAs:
     case TreatAs:
-    case Validate:
-    case IntegerLiteral:
-    case DecimalLiteral:
-    case DoubleLiteral:
+    case ValidateLbrace:
+    case ValidateContext:
     case NodeLpar:
     case CommentLpar:
     case TextLpar:
     case ProcessingInstructionLpar:
     case IfLpar:
-    case StringLiteral:
     case Dot:
     case DotDot:
     case VariableIndicator:
@@ -3018,7 +3192,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       ExprSequence();
       break;
     default:
-      jj_la1[61] = jj_gen;
+      jj_la1[63] = jj_gen;
       ;
     }
     jj_consume_token(Rpar);
@@ -3044,6 +3218,10 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IntegerLiteral:
+      case DecimalLiteral:
+      case DoubleLiteral:
+      case StringLiteral:
       case AxisChild:
       case AxisDescendant:
       case AxisParent:
@@ -3071,38 +3249,35 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       case ForVariable:
       case CastAs:
       case TreatAs:
-      case Validate:
-      case IntegerLiteral:
-      case DecimalLiteral:
-      case DoubleLiteral:
+      case ValidateLbrace:
+      case ValidateContext:
       case NodeLpar:
       case CommentLpar:
       case TextLpar:
       case ProcessingInstructionLpar:
       case IfLpar:
-      case StringLiteral:
       case Dot:
       case DotDot:
       case VariableIndicator:
       case QName:
       case QNameLpar:
         Expr();
-        label_19:
+        label_18:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case Comma:
             ;
             break;
           default:
-            jj_la1[62] = jj_gen;
-            break label_19;
+            jj_la1[64] = jj_gen;
+            break label_18;
           }
           jj_consume_token(Comma);
           Expr();
         }
         break;
       default:
-        jj_la1[63] = jj_gen;
+        jj_la1[65] = jj_gen;
         ;
       }
       jj_consume_token(Rpar);
@@ -3133,8 +3308,8 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      jj_consume_token(In);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
+      jj_consume_token(InContext);
+                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINCONTEXT);
                 boolean jjtc001 = true;
                 jjtree.openNodeScope(jjtn001);
       try {
@@ -3147,15 +3322,15 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
       }
       SchemaGlobalContext();
-      label_20:
+      label_19:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Slash:
           ;
           break;
         default:
-          jj_la1[64] = jj_gen;
-          break label_20;
+          jj_la1[66] = jj_gen;
+          break label_19;
         }
         jj_consume_token(Slash);
                 SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
@@ -3215,9 +3390,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
         }
         break;
-      case Type:
-        jj_consume_token(Type);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTYPE);
+      case TypeQName:
+        jj_consume_token(TypeQName);
+                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTYPEQNAME);
                 boolean jjtc002 = true;
                 jjtree.openNodeScope(jjtn002);
         try {
@@ -3229,22 +3404,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                   jjtree.closeNodeScope(jjtn002,  true);
                 }
         }
-        jj_consume_token(QName);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
-        try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
-        } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
-        }
         break;
       default:
-        jj_la1[65] = jj_gen;
+        jj_la1[67] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3274,6 +3436,54 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                   jjtree.closeNodeScope(jjtn001,  true);
                 }
       }
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+    }
+  }
+
+  final public void SingleType() throws ParseException {
+ /*@bgen(jjtree) SingleType */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSINGLETYPE);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
+      AtomicType();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case QMark:
+        jj_consume_token(QMark);
+                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQMARK);
+                boolean jjtc001 = true;
+                jjtree.openNodeScope(jjtn001);
+        try {
+                jjtree.closeNodeScope(jjtn001,  true);
+                jjtc001 = false;
+               jjtn001.processToken(token);
+        } finally {
+                if (jjtc001) {
+                  jjtree.closeNodeScope(jjtn001,  true);
+                }
+        }
+        break;
+      default:
+        jj_la1[68] = jj_gen;
+        ;
+      }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3318,7 +3528,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         }
         break;
       default:
-        jj_la1[66] = jj_gen;
+        jj_la1[69] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3384,7 +3594,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           }
           break;
         default:
-          jj_la1[67] = jj_gen;
+          jj_la1[70] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -3394,7 +3604,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           ElemOrAttrType();
           break;
         default:
-          jj_la1[68] = jj_gen;
+          jj_la1[71] = jj_gen;
           ;
         }
         break;
@@ -3522,7 +3732,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         }
         break;
       default:
-        jj_la1[69] = jj_gen;
+        jj_la1[72] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3573,13 +3783,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           SchemaType();
           break;
         default:
-          jj_la1[71] = jj_gen;
+          jj_la1[74] = jj_gen;
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case In:
+          case InContext:
             SchemaContext();
             break;
           default:
-            jj_la1[70] = jj_gen;
+            jj_la1[73] = jj_gen;
             ;
           }
         }
@@ -3588,7 +3798,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
         SchemaType();
         break;
       default:
-        jj_la1[72] = jj_gen;
+        jj_la1[75] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3686,12 +3896,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Multiply:
+      case Star:
       case Plus:
       case QMark:
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case Multiply:
-          jj_consume_token(Multiply);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLY);
+        case Star:
+          jj_consume_token(Star);
+                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTAR);
                 boolean jjtc001 = true;
                 jjtree.openNodeScope(jjtn001);
           try {
@@ -3704,9 +3915,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
           }
           break;
-        case Plus:
-          jj_consume_token(Plus);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPLUS);
+        case Multiply:
+          jj_consume_token(Multiply);
+                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLY);
                 boolean jjtc002 = true;
                 jjtree.openNodeScope(jjtn002);
           try {
@@ -3719,9 +3930,9 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
           }
           break;
-        case QMark:
-          jj_consume_token(QMark);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQMARK);
+        case Plus:
+          jj_consume_token(Plus);
+                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPLUS);
                 boolean jjtc003 = true;
                 jjtree.openNodeScope(jjtn003);
           try {
@@ -3734,14 +3945,29 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
                 }
           }
           break;
+        case QMark:
+          jj_consume_token(QMark);
+                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQMARK);
+                boolean jjtc004 = true;
+                jjtree.openNodeScope(jjtn004);
+          try {
+                jjtree.closeNodeScope(jjtn004,  true);
+                jjtc004 = false;
+               jjtn004.processToken(token);
+          } finally {
+                if (jjtc004) {
+                  jjtree.closeNodeScope(jjtn004,  true);
+                }
+          }
+          break;
         default:
-          jj_la1[73] = jj_gen;
+          jj_la1[76] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[74] = jj_gen;
+        jj_la1[77] = jj_gen;
         ;
       }
     } finally {
@@ -3756,12 +3982,12 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[75];
-  final private int[] jj_la1_0 = {0x0,0x80000000,0x80000000,0x120,0x0,0x0,0x120,0x0,0x0,0x120,0x120,0x0,0x0,0x40000,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000000,0x0,0x0,0xf00000,0xf00000,0x80000000,0x80000000,0x40000000,0x40000000,0x0,0x0,0x3ffe0,0x3ffe0,0x3ffe0,0x0,0x0,0x3ffe0,0x0,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x15760,0x2a880,0x0,0x0,0x0,0x0,0x0,0x15760,0x2a880,0x0,0x0,0x0,0x0,0x3ffe0,0x0,0x3ffe0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x800000,0x800000,};
-  final private int[] jj_la1_1 = {0x0,0x0,0x0,0x700000,0x6000000,0x6000000,0x1f00000,0x6000000,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0xf8000006,0xf8000006,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x1f00000,0x700000,0x1f00000,0x6000000,0x6000000,0x700000,0x0,0x0,0x0,0xa8000000,0x0,0x50000000,0x6,0x0,0x0,0x0,0x700000,0x700000,0x700000,0x0,0x0,0x700000,0x0,0x700000,0x0,0x0,0x0,0x1f00000,0x0,0x1f00000,0x2000000,0x8000,0x34070,0x60,0x2000,0x14070,0x0,0x2000,0x2000,0x0,0x0,};
-  final private int[] jj_la1_2 = {0x0,0x4000,0x4000,0x10000,0x0,0x0,0x10000,0x0,0x0,0x10000,0x10000,0x0,0x38000000,0x0,0x0,0x400000,0x300000,0x300000,0x0,0x0,0x0,0x7ff,0x7ff,0x0,0x1800,0x1800,0x0,0x0,0x4000,0x4000,0x0,0x0,0x1800,0x1800,0x3b818000,0x38018000,0x38018000,0x0,0x0,0x38018000,0x0,0x0,0x1800000,0x602,0x1f8,0x0,0x5,0x38008000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x10000,0x20000,0x38000000,0x38000000,0x3bf19800,0x0,0x3bf19800,0x0,0x0,0xc0000000,0x0,0x0,0xc0000000,0x0,0x0,0x0,0x3000,0x3000,};
-  final private int[] jj_la1_3 = {0x200,0x0,0x0,0x800f0,0x0,0x0,0x4800f0,0x0,0x0,0x0,0x0,0x200,0x20400,0x0,0x0,0x0,0x0,0x0,0x200,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4a34f0,0x4a34f0,0x4a34f0,0x0,0x0,0x4a34f0,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x420400,0x0,0x0,0x800f0,0x80000,0x0,0xf0,0x400,0x810f0,0x2000,0x810f0,0x0,0x0,0x400,0x4a35f0,0x200,0x4a35f0,0x0,0x80000,0x8000e,0x0,0x80000,0x8000e,0x0,0x0,0x80000,0x0,0x0,};
-  final private int[] jj_la1_4 = {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+  final private int[] jj_la1 = new int[78];
+  final private int[] jj_la1_0 = {0x3ffe1e,0x0,0x0,0x0,0x1200,0x0,0x0,0x1200,0x0,0x0,0x1200,0x1200,0x0,0x10,0x400000,0x800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf000000,0xf000000,0x0,0x0,0x0,0x0,0x0,0x0,0x3ffe1e,0x3ffe1e,0x3ffe1e,0x0,0x0,0x3ffe1e,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1e,0x157600,0x2a8800,0x0,0x0,0x0,0x0,0x10,0x157600,0x2a8800,0x0,0x0,0xe,0x1e,0x3ffe1e,0x0,0x3ffe1e,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000000,0x0,0x0,0x8000000,0x8000000,};
+  final private int[] jj_la1_1 = {0x3e000000,0x0,0x10,0x10,0xe000000,0xc0000000,0xc0000000,0x3e000000,0xc0000000,0xc0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x80,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x10,0x28,0x28,0x3e000000,0xe000000,0x3e000000,0xc0000000,0xc0000000,0xe000000,0x0,0x40000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe000000,0xe000000,0xe000000,0x0,0x0,0xe000000,0x0,0xe000000,0x0,0x0,0x0,0x3e000000,0x0,0x3e000000,0x40000000,0x100000,0x0,0x680700,0x600,0x40000,0x280700,0x0,0x40000,0x40000,0x2000000,0x2000000,};
+  final private int[] jj_la1_2 = {0xfe330000,0x0,0x80000,0x80000,0x200000,0x0,0x0,0x200000,0x0,0x0,0x200000,0x200000,0x0,0x0,0x0,0x0,0x8000000,0x6000000,0x6000000,0x0,0x0,0x0,0x0,0xffff,0xffff,0x0,0x30000,0x30000,0x0,0x0,0x30000,0x30000,0x80000,0x80000,0x0,0x0,0xf0300000,0x300000,0x300000,0x0,0x0,0x300000,0x0,0x0,0xc0000000,0xc055,0x3f00,0xa,0xa0,0x100000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200000,0x0,0x200000,0x400000,0x0,0x0,0xfe330000,0x0,0xfe330000,0x0,0x0,0x40000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60000,0x60000,};
+  final private int[] jj_la1_3 = {0x346f80,0x1000,0x0,0x0,0x100780,0x0,0x0,0x300780,0x0,0x0,0x0,0x0,0x1000,0x40000,0x0,0x0,0x0,0x0,0x0,0x1000,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x346780,0x346780,0x346780,0x0,0x0,0x346780,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x240000,0x0,0x0,0x100780,0x100000,0x0,0x780,0x0,0x102780,0x4000,0x102780,0x0,0x0,0x0,0x346f80,0x1000,0x346f80,0x0,0x100000,0x0,0x100076,0x0,0x100000,0x100076,0x0,0x0,0x100000,0x0,0x0,};
+  final private int[] jj_la1_4 = {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
 
   public XPath(java.io.InputStream stream) {
     jj_input_stream = new ASCII_CharStream(stream, 1, 1);
@@ -3769,7 +3995,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -3779,7 +4005,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public XPath(java.io.Reader stream) {
@@ -3788,7 +4014,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -3798,7 +4024,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public XPath(XPathTokenManager tm) {
@@ -3806,7 +4032,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(XPathTokenManager tm) {
@@ -3815,7 +4041,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -3870,7 +4096,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 75; i++) {
+    for (int i = 0; i < 78; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

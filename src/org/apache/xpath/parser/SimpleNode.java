@@ -8,9 +8,9 @@ import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
-import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.ExceptPathIterator;
 import org.apache.xpath.axes.IntersectPathIterator;
+import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.functions.*;
 import org.apache.xpath.objects.XDecimal;
@@ -21,6 +21,7 @@ import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.seqctor.ExprSequence;
 import org.apache.xpath.seqctor.FLWRExpr;
+import org.apache.xpath.types.CastableExpr;
 import org.apache.xpath.types.InstanceofExpr;
 
 /**
@@ -454,6 +455,11 @@ m_builtInFunctions.put(
         newNode = new RootOfRoot(p);
         break;
 
+      case XPathTreeConstants.JJTXPATH :
+        // I'm not so sure this one should be canceled out...
+        newNode = new RootOfRoot(p);
+        break;
+
         // === MATCH EXPRESSIONS ===	
       case XPathTreeConstants.JJTMATCHPATTERN :
         // See comment above.
@@ -679,25 +685,22 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTUNIONEXPR :
         newNode = new UnionPathIterator();
         break;
-      case XPathTreeConstants.JJTINTERSECTEXPR :
-        //newNode = new NonExecutableExpression(p, "JJTUNIONEXPR");
-        newNode = new IntersectPathIterator();
+      case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR :
+        {
+          Token operator = (Token) p.binaryTokenStack.peek();
+          switch (operator.kind)
+          {
+            case XPathConstants.Intersect :
+              newNode = new IntersectPathIterator();
+              break;
+            case XPathConstants.Except :
+              newNode = new ExceptPathIterator();
+              break;
+            default :
+              System.err.println("Assertion: should never happen!");
+          }
+        }
         break;
-        case XPathTreeConstants.JJTEXCEPTEXPR :
-        //newNode = new NonExecutableExpression(p, "JJTUNIONEXPR");
-        newNode = new ExceptPathIterator();
-        break;
-        //			case XPathTreeConstants.JJTUNION:
-        //				newNode = new SimpleNode();
-        //				break;
-        //			case XPathTreeConstants.JJTVBAR:
-        //				newNode = new SimpleNode();
-        //				break;
-        //			case XPathTreeConstants.JJTRELATIVEPATHPATTERN:
-        //				newNode = new SimpleNode();
-        //				break;
-
-        // === FUNCTIONS ===	
       case XPathTreeConstants.JJTIDKEYPATTERN :
         {
           FunctionPattern fpat = new FunctionPattern();
@@ -827,12 +830,13 @@ m_builtInFunctions.put(
             case XPathConstants.GtGt :
               newNode = new org.apache.xpath.operations.GtGt();
               break;
-            case XPathConstants.Precedes :
-              newNode = new org.apache.xpath.operations.Precedes();
-              break;
-            case XPathConstants.Follows :
-              newNode = new org.apache.xpath.operations.Follows();
-              break;
+              // I think these went away.  -sb
+//            case XPathConstants.Precedes :
+//              newNode = new org.apache.xpath.operations.Precedes();
+//              break;
+//            case XPathConstants.Follows :
+//              newNode = new org.apache.xpath.operations.Follows();
+//              break;
           }
         }
         break;
@@ -960,7 +964,7 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTFLWREXPR :
         newNode = new FLWRExpr();
         break;
-      case XPathTreeConstants.JJTFORCLAUSE :
+      case XPathTreeConstants.JJTSIMPLEFORCLAUSE :
         newNode = new org.apache.xpath.parser.ForClause(p);
         break;
       case XPathTreeConstants.JJTRETURN :
@@ -974,15 +978,21 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTINSTANCEOF :
         newNode = new Instanceof(p);
         break;
-      case XPathTreeConstants.JJTVALIDATEEXPR :
-        newNode = new NonExecutableExpression(p, "JJTVALIDATEEXPR");
+      case XPathTreeConstants.JJTCASTABLEEXPR :
+        newNode = new CastableExpr();
         break;
-      case XPathTreeConstants.JJTVALIDATE :
+      case XPathTreeConstants.JJTCASTABLE :
+        newNode = new Castable(p);
+        break;
+//      case XPathTreeConstants.JJTVALIDATE :
+//        newNode = new NonExecutableExpression(p, "JJTVALIDATEEXPR");
+//        break;
+      case XPathTreeConstants.JJTVALIDATEEXPR :
         newNode = new NonExecutableExpression(p, "JJTVALIDATE");
         break;
-      case XPathTreeConstants.JJTLBRACE :
-        newNode = new NonExecutableExpression(p, "JJTLBRACE");
-        break;
+//      case XPathTreeConstants.JJTLBRACE :
+//        newNode = new NonExecutableExpression(p, "JJTLBRACE");
+//        break;
       case XPathTreeConstants.JJTRBRACE :
         newNode = new NonExecutableExpression(p, "JJTRBRACE");
         break;
@@ -1001,9 +1011,9 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTSCHEMAGLOBALCONTEXT :
         newNode = new SchemaGlobalContext(p, "JJTSCHEMAGLOBALCONTEXT");
         break;
-      case XPathTreeConstants.JJTTYPE :
-        newNode = new NonExecutableExpression(p, "JJTTYPE");
-        break;
+//      case XPathTreeConstants.JJTTYPE :
+//        newNode = new NonExecutableExpression(p, "JJTTYPE");
+//        break;
       case XPathTreeConstants.JJTSCHEMACONTEXTSTEP :
         newNode = new SchemaContextStep(p);
         break;

@@ -19,7 +19,7 @@ import org.apache.xpath.objects.XObject;
 public class NonExecutableExpression extends Expression
 {
   protected XPath m_parser; // I'm going to leave this for right now only.
-
+  
   public NonExecutableExpression(XPath parser, String value)
   {
   	m_parser = parser;
@@ -71,7 +71,7 @@ public class NonExecutableExpression extends Expression
   
   public String toString() 
   { 
-  	return this.getClass().getName()+ ((null == m_value) ? "" : (" "+m_value)); 
+  	return this.getClass().getName()+((null == m_value) ? "" : (" "+m_value)); 
   }
 
 

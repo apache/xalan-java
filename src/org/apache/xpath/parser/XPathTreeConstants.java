@@ -6,118 +6,125 @@ public interface XPathTreeConstants
 {
   public int JJTXPATH2 = 0;
   public int JJTMATCHPATTERN = 1;
-  public int JJTEXPRSEQUENCE = 2;
-  public int JJTPATTERN = 3;
-  public int JJTPATHPATTERN = 4;
-  public int JJTROOT = 5;
-  public int JJTROOTDESCENDANTS = 6;
-  public int JJTSLASH = 7;
-  public int JJTSLASHSLASH = 8;
-  public int JJTVOID = 9;
-  public int JJTPATTERNSTEP = 10;
-  public int JJTAXISCHILD = 11;
-  public int JJTAXISATTRIBUTE = 12;
-  public int JJTAT = 13;
-  public int JJTIDKEYPATTERN = 14;
-  public int JJTQNAMELPAR = 15;
-  public int JJTVARNAME = 16;
-  public int JJTOREXPR = 17;
-  public int JJTANDEXPR = 18;
-  public int JJTFLWREXPR = 19;
-  public int JJTRETURN = 20;
-  public int JJTQUANTIFIEDEXPR = 21;
-  public int JJTSOME = 22;
-  public int JJTEVERY = 23;
-  public int JJTIN = 24;
-  public int JJTSATISFIES = 25;
-  public int JJTIFEXPR = 26;
-  public int JJTIFLPAR = 27;
-  public int JJTTHEN = 28;
-  public int JJTELSE = 29;
-  public int JJTINSTANCEOFEXPR = 30;
-  public int JJTINSTANCEOF = 31;
-  public int JJTCOMPARISONEXPR = 32;
-  public int JJTRANGEEXPR = 33;
-  public int JJTADDITIVEEXPR = 34;
-  public int JJTMULTIPLICATIVEEXPR = 35;
-  public int JJTUNIONEXPR = 36;
-  public int JJTINTERSECTEXPR = 37;
-  public int JJTUNARYEXPR = 38;
-  public int JJTMINUS = 39;
-  public int JJTPLUS = 40;
-  public int JJTPATHEXPR = 41;
-  public int JJTSTEPEXPR = 42;
-  public int JJTFORCLAUSE = 43;
-  public int JJTVALIDATEEXPR = 44;
-  public int JJTVALIDATE = 45;
-  public int JJTLBRACE = 46;
-  public int JJTRBRACE = 47;
-  public int JJTCASTEXPR = 48;
-  public int JJTCASTAS = 49;
-  public int JJTTREATAS = 50;
-  public int JJTAXISDESCENDANT = 51;
-  public int JJTAXISSELF = 52;
-  public int JJTAXISDESCENDANTORSELF = 53;
-  public int JJTAXISFOLLOWINGSIBLING = 54;
-  public int JJTAXISFOLLOWING = 55;
-  public int JJTAXISNAMESPACE = 56;
-  public int JJTAXISPARENT = 57;
-  public int JJTAXISANCESTOR = 58;
-  public int JJTAXISPRECEDINGSIBLING = 59;
-  public int JJTAXISPRECEDING = 60;
-  public int JJTAXISANCESTORORSELF = 61;
-  public int JJTNODETEST = 62;
-  public int JJTNAMETEST = 63;
-  public int JJTQNAME = 64;
-  public int JJTSTAR = 65;
-  public int JJTNCNAMECOLONSTAR = 66;
-  public int JJTSTARCOLONNCNAME = 67;
-  public int JJTKINDTEST = 68;
-  public int JJTPROCESSINGINSTRUCTIONTEST = 69;
-  public int JJTSTRINGLITERAL = 70;
-  public int JJTCOMMENTTEST = 71;
-  public int JJTTEXTTEST = 72;
-  public int JJTANYKINDTEST = 73;
-  public int JJTABBREVIATEDFORWARDSTEP = 74;
-  public int JJTDOT = 75;
-  public int JJTDOTDOT = 76;
-  public int JJTPREDICATES = 77;
-  public int JJTLBRACK = 78;
-  public int JJTRBRACK = 79;
-  public int JJTINTEGERLITERAL = 80;
-  public int JJTDECIMALLITERAL = 81;
-  public int JJTDOUBLELITERAL = 82;
-  public int JJTFUNCTIONCALL = 83;
-  public int JJTSCHEMACONTEXT = 84;
-  public int JJTSCHEMAGLOBALCONTEXT = 85;
-  public int JJTTYPE = 86;
-  public int JJTSCHEMACONTEXTSTEP = 87;
-  public int JJTSEQUENCETYPE = 88;
-  public int JJTEMPTY = 89;
-  public int JJTITEMTYPE = 90;
-  public int JJTELEMENTTYPE = 91;
-  public int JJTATTRIBUTETYPE = 92;
-  public int JJTNODE = 93;
-  public int JJTPROCESSINGINSTRUCTION = 94;
-  public int JJTCOMMENT = 95;
-  public int JJTTEXT = 96;
-  public int JJTDOCUMENT = 97;
-  public int JJTITEM = 98;
-  public int JJTUNTYPED = 99;
-  public int JJTATOMICVALUE = 100;
-  public int JJTELEMORATTRTYPE = 101;
-  public int JJTSCHEMATYPE = 102;
-  public int JJTOFTYPE = 103;
-  public int JJTATOMICTYPE = 104;
-  public int JJTOCCURRENCEINDICATOR = 105;
-  public int JJTMULTIPLY = 106;
-  public int JJTQMARK = 107;
-  public int JJTEXCEPTEXPR = 108;
+  public int JJTXPATH = 2;
+  public int JJTEXPRSEQUENCE = 3;
+  public int JJTPATTERN = 4;
+  public int JJTPATHPATTERN = 5;
+  public int JJTROOT = 6;
+  public int JJTROOTDESCENDANTS = 7;
+  public int JJTSLASH = 8;
+  public int JJTSLASHSLASH = 9;
+  public int JJTVOID = 10;
+  public int JJTPATTERNSTEP = 11;
+  public int JJTAXISCHILD = 12;
+  public int JJTAXISATTRIBUTE = 13;
+  public int JJTAT = 14;
+  public int JJTIDKEYPATTERN = 15;
+  public int JJTQNAMELPAR = 16;
+  public int JJTSTRINGLITERAL = 17;
+  public int JJTVARNAME = 18;
+  public int JJTOREXPR = 19;
+  public int JJTANDEXPR = 20;
+  public int JJTFLWREXPR = 21;
+  public int JJTRETURN = 22;
+  public int JJTQUANTIFIEDEXPR = 23;
+  public int JJTSOME = 24;
+  public int JJTEVERY = 25;
+  public int JJTIN = 26;
+  public int JJTSATISFIES = 27;
+  public int JJTIFEXPR = 28;
+  public int JJTIFLPAR = 29;
+  public int JJTTHEN = 30;
+  public int JJTELSE = 31;
+  public int JJTINSTANCEOFEXPR = 32;
+  public int JJTINSTANCEOF = 33;
+  public int JJTCASTABLEEXPR = 34;
+  public int JJTCASTABLE = 35;
+  public int JJTCOMPARISONEXPR = 36;
+  public int JJTRANGEEXPR = 37;
+  public int JJTADDITIVEEXPR = 38;
+  public int JJTMULTIPLICATIVEEXPR = 39;
+  public int JJTUNARYEXPR = 40;
+  public int JJTMINUS = 41;
+  public int JJTPLUS = 42;
+  public int JJTUNIONEXPR = 43;
+  public int JJTINTERSECTEXCEPTEXPR = 44;
+  public int JJTPATHEXPR = 45;
+  public int JJTSTEPEXPR = 46;
+  public int JJTSIMPLEFORCLAUSE = 47;
+  public int JJTVALIDATEEXPR = 48;
+  public int JJTVALIDATELBRACE = 49;
+  public int JJTVALIDATECONTEXT = 50;
+  public int JJTLBRACEEXPRENCLOSURE = 51;
+  public int JJTRBRACE = 52;
+  public int JJTCASTEXPR = 53;
+  public int JJTCASTAS = 54;
+  public int JJTTREATEXPR = 55;
+  public int JJTTREATAS = 56;
+  public int JJTAXISDESCENDANT = 57;
+  public int JJTAXISSELF = 58;
+  public int JJTAXISDESCENDANTORSELF = 59;
+  public int JJTAXISFOLLOWINGSIBLING = 60;
+  public int JJTAXISFOLLOWING = 61;
+  public int JJTAXISNAMESPACE = 62;
+  public int JJTAXISPARENT = 63;
+  public int JJTAXISANCESTOR = 64;
+  public int JJTAXISPRECEDINGSIBLING = 65;
+  public int JJTAXISPRECEDING = 66;
+  public int JJTAXISANCESTORORSELF = 67;
+  public int JJTNODETEST = 68;
+  public int JJTNAMETEST = 69;
+  public int JJTQNAME = 70;
+  public int JJTSTAR = 71;
+  public int JJTNCNAMECOLONSTAR = 72;
+  public int JJTSTARCOLONNCNAME = 73;
+  public int JJTKINDTEST = 74;
+  public int JJTPROCESSINGINSTRUCTIONTEST = 75;
+  public int JJTCOMMENTTEST = 76;
+  public int JJTTEXTTEST = 77;
+  public int JJTANYKINDTEST = 78;
+  public int JJTABBREVIATEDFORWARDSTEP = 79;
+  public int JJTDOT = 80;
+  public int JJTDOTDOT = 81;
+  public int JJTPREDICATES = 82;
+  public int JJTLBRACK = 83;
+  public int JJTRBRACK = 84;
+  public int JJTINTEGERLITERAL = 85;
+  public int JJTDECIMALLITERAL = 86;
+  public int JJTDOUBLELITERAL = 87;
+  public int JJTFUNCTIONCALL = 88;
+  public int JJTSCHEMACONTEXT = 89;
+  public int JJTINCONTEXT = 90;
+  public int JJTSCHEMAGLOBALCONTEXT = 91;
+  public int JJTTYPEQNAME = 92;
+  public int JJTSCHEMACONTEXTSTEP = 93;
+  public int JJTSINGLETYPE = 94;
+  public int JJTQMARK = 95;
+  public int JJTSEQUENCETYPE = 96;
+  public int JJTEMPTY = 97;
+  public int JJTITEMTYPE = 98;
+  public int JJTELEMENTTYPE = 99;
+  public int JJTATTRIBUTETYPE = 100;
+  public int JJTNODE = 101;
+  public int JJTPROCESSINGINSTRUCTION = 102;
+  public int JJTCOMMENT = 103;
+  public int JJTTEXT = 104;
+  public int JJTDOCUMENT = 105;
+  public int JJTITEM = 106;
+  public int JJTUNTYPED = 107;
+  public int JJTATOMICVALUE = 108;
+  public int JJTELEMORATTRTYPE = 109;
+  public int JJTSCHEMATYPE = 110;
+  public int JJTOFTYPE = 111;
+  public int JJTATOMICTYPE = 112;
+  public int JJTOCCURRENCEINDICATOR = 113;
+  public int JJTMULTIPLY = 114;
 
 
   public String[] jjtNodeName = {
     "XPath2",
     "MatchPattern",
+    "XPath",
     "ExprSequence",
     "Pattern",
     "PathPattern",
@@ -132,6 +139,7 @@ public interface XPathTreeConstants
     "At",
     "IdKeyPattern",
     "QNameLpar",
+    "StringLiteral",
     "VarName",
     "OrExpr",
     "AndExpr",
@@ -148,24 +156,28 @@ public interface XPathTreeConstants
     "Else",
     "InstanceofExpr",
     "Instanceof",
+    "CastableExpr",
+    "Castable",
     "ComparisonExpr",
     "RangeExpr",
     "AdditiveExpr",
     "MultiplicativeExpr",
-    "UnionExpr",
-    "IntersectExceptExpr",
     "UnaryExpr",
     "Minus",
     "Plus",
+    "UnionExpr",
+    "IntersectExceptExpr",
     "PathExpr",
     "StepExpr",
-    "ForClause",
+    "SimpleForClause",
     "ValidateExpr",
-    "Validate",
-    "Lbrace",
+    "ValidateLbrace",
+    "ValidateContext",
+    "LbraceExprEnclosure",
     "Rbrace",
     "CastExpr",
     "CastAs",
+    "TreatExpr",
     "TreatAs",
     "AxisDescendant",
     "AxisSelf",
@@ -186,7 +198,6 @@ public interface XPathTreeConstants
     "StarColonNCName",
     "KindTest",
     "ProcessingInstructionTest",
-    "StringLiteral",
     "CommentTest",
     "TextTest",
     "AnyKindTest",
@@ -201,9 +212,12 @@ public interface XPathTreeConstants
     "DoubleLiteral",
     "FunctionCall",
     "SchemaContext",
+    "InContext",
     "SchemaGlobalContext",
-    "Type",
+    "TypeQName",
     "SchemaContextStep",
+    "SingleType",
+    "QMark",
     "SequenceType",
     "Empty",
     "ItemType",
@@ -223,6 +237,5 @@ public interface XPathTreeConstants
     "AtomicType",
     "OccurrenceIndicator",
     "Multiply",
-    "QMark",
   };
 }

@@ -79,7 +79,7 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
 import org.apache.xml.dtm.ref.xni2dtm.XNISource;
 // EXPERIMENTAL 9/18/02
-import org.apache.xml.dtm.dom2dtm2.DOM2DTM2;
+// import org.apache.xml.dtm.dom2dtm2.DOM2DTM2;
 /**************************************************************/
 
 // W3C DOM
@@ -297,11 +297,11 @@ public class DTMManagerDefault extends DTMManager
       if(ATTEMPT_DOM2DTM2)
       {
 		DTM dtm;      	
-      	try
-      	{
-	      dtm = new DOM2DTM2(this, source, documentID,
-                                whiteSpaceFilter, xstringFactory, doIndexing);
-      	} catch(ClassCastException e)
+//      	try
+//      	{
+//	      dtm = new DOM2DTM2(this, source, documentID,
+//                                whiteSpaceFilter, xstringFactory, doIndexing);
+//      	} catch(ClassCastException e)
       	{
 	      dtm = new DOM2DTM(this, (DOMSource) source, documentID,
                                 whiteSpaceFilter, xstringFactory, doIndexing);

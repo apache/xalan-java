@@ -54,13 +54,20 @@
   <xsl:template name="extra-parser-code"/>
 	
 	<xsl:template name="parser">
-		PARSER_BEGIN(XPath)
+    <xsl:variable name="parser-class">
+      <xsl:choose>
+			<xsl:when test="$spec='xpath'">XPath</xsl:when>
+			<xsl:when test="$spec='pathx1'">XPath</xsl:when>
+      <xsl:otherwise>XPath</xsl:otherwise>
+    </xsl:choose>
+    </xsl:variable>
+    PARSER_BEGIN(<xsl:value-of select="$parser-class"/>)
 
 <xsl:call-template name="set-parser-package"/>
 		
 import java.util.Stack;
 
-public class XPath {
+public class <xsl:value-of select="$parser-class"/> {
       <xsl:call-template name="extra-parser-code"/>
 
       boolean m_isMatchPattern = false;
@@ -163,7 +170,8 @@ public class XPath {
 		  }
 		}
 
-		PARSER_END(XPath)
+    PARSER_END(<xsl:value-of select="$parser-class"/>)
+
 	</xsl:template>
 	
 	<xsl:template name="action-production">

@@ -25,7 +25,8 @@ apply.
     display-name="XML Processing Formal Semantics Core Language 1.0"/>
   <language id="match" display-name="XSLT 2.0 Match Patterns"/>
 	
-  <start name="Expr" state="DEFAULT" if="xpath pathx1"/>
+  <start name="Expr" state="DEFAULT" if="pathx1"/>
+  <start name="XPath" state="DEFAULT" if="xpath"/>
   <start name="QueryList" state="DEFAULT" if="core"/>
   <start name="QueryList" state="DEFAULT" if="xquery"/>
   <start name="Pattern" state="DEFAULT" if="match"/>
@@ -37,8 +38,145 @@ apply.
   <token name="XmlCommentEnd" if="xquery core">
     <string>--></string>
   </token>
+
+  <token name="IntegerLiteral" inline="false" value-type="number" type="literal">
+    <ref name="Digits"/>
+  </token>
 	
-  <token name="ExprComment" if="xquery core xpath" special="yes">
+  <token name="DecimalLiteral" inline="false" value-type="number" type="literal">
+    <choice>
+      <sequence>
+        <string>.</string>
+        <ref name="Digits"/>
+      </sequence>
+      <sequence>
+        <ref name="Digits"/>
+        <string>.</string>
+				<zeroOrMore>
+					<charClass>
+						<charRange minChar="0" maxChar="9"/>
+					</charClass>
+				</zeroOrMore>
+      </sequence>
+    </choice>
+  </token>
+	
+  <token name="DoubleLiteral" inline="false" value-type="number" type="literal">
+    <choice>
+      <sequence>
+        <string>.</string>
+        <ref name="Digits"/>
+      </sequence>
+      <sequence>
+        <ref name="Digits"/>
+        <optional>
+          <string>.</string>
+          <zeroOrMore>
+            <charClass>
+              <charRange minChar="0" maxChar="9"/>
+            </charClass>
+          </zeroOrMore>
+        </optional>
+      </sequence>
+    </choice>
+    <charClass>
+			<char>e</char>
+			<char>E</char>
+    </charClass>
+    <optional>
+			<charClass>
+				<char>+</char>
+				<char>-</char>
+			</charClass>
+    </optional>
+    <ref name="Digits"/>
+  </token>
+
+  <token name="StringLiteral" inline="false" value-type="string" type="literal" whitespace-spec="significant">
+    <choice>
+			<sequence>
+        <string>&quot;</string>
+        <zeroOrMore>
+          <choice>
+            <sequence>
+              <char>&quot;</char>
+              <char>&quot;</char>
+            </sequence>
+					<complement>
+						<charClass>
+							<char>&quot;</char>
+						</charClass>
+					</complement>
+		    </choice>
+	    </zeroOrMore>
+		<string>&quot;</string>
+	</sequence>
+		<sequence>
+			<string>&apos;</string>
+			<zeroOrMore>
+				<choice>
+					<sequence>
+						<char>&apos;</char>
+						<char>&apos;</char>
+					</sequence>
+				<complement>
+					<charClass>
+						<char>&apos;</char>
+					</charClass>
+				</complement>
+			</choice>
+			</zeroOrMore>
+			<string>&apos;</string>
+		</sequence>
+	</choice>
+  </token>
+
+  <token name="AtStringLiteral" if="xquery core">
+    <string>at</string>
+    <optionalSkip/>
+    <ref name="StringLiteral"/>
+  </token>
+	
+  <token name="URLLiteral" inline="false" value-type="string" if="xquery core" type="literal" whitespace-spec="significant">
+		<choice>
+      <sequence>
+        <string>&quot;</string>
+        <zeroOrMore>
+          <choice>
+            <sequence>
+              <char>&quot;</char>
+              <char>&quot;</char>
+            </sequence>
+					  <complement>
+					    <charClass>
+			   		    <char>&quot;</char>
+				      </charClass>
+					  </complement>
+		      </choice>
+	      </zeroOrMore>
+		    <string>&quot;</string>
+      </sequence>
+		  <sequence>
+			  <string>&apos;</string>
+			  <zeroOrMore>
+				  <choice>
+					  <sequence>
+						  <char>&apos;</char>
+						  <char>&apos;</char>
+					  </sequence>
+				    <complement>
+					    <charClass>
+						    <char>&apos;</char>
+					    </charClass>
+				    </complement>
+			    </choice>
+			  </zeroOrMore>
+			  <string>&apos;</string>
+		  </sequence>
+	  </choice>
+  </token>
+	
+  <token name="ExprComment" if="xquery core xpath" special="yes" inline="false">
     <string>{--</string>
 		<zeroOrMore>
 			<complement>
@@ -50,13 +188,16 @@ apply.
     <string>--}</string>
   </token>
 	
-  <skip recognize="DEFAULT OPERATOR QNAME NAMESPACEDECL XMLSPACE_DECL ITEMTYPE FUNCDEF NAMESPACEKEYWORD" if="xquery core xpath">
+  <skip recognize="DEFAULT OPERATOR QNAME NAMESPACEDECL XMLSPACE_DECL ITEMTYPE NAMESPACEKEYWORD VARNAME" if="xquery core xpath">
 		<oneOrMore>
-      <ref name="WhitespaceChar"/>
+      <choice>
+        <ref name="WhitespaceChar"/>
+        <ref name="ExprComment"/>
+      </choice>
 		</oneOrMore>
   </skip>
 	
-  <skip recognize="DEFAULT OPERATOR" if="pathx1">
+  <skip recognize="DEFAULT OPERATOR QNAME" if="pathx1">
 		<oneOrMore>
 			<ref name="WhitespaceChar"/>
 		</oneOrMore>
@@ -209,6 +350,10 @@ apply.
   <token name="In" if="xpath xquery core">
     <string >in</string>
   </token>
+
+  <token name="InContext" if="xpath xquery core">
+    <string >context</string>
+  </token>
 	
   <token name="Satisfies" value-type="id">
     <string >satisfies</string>
@@ -218,7 +363,7 @@ apply.
     <string >return</string>
   </token>
 	
-  <token name="Then">
+   <token name="Then">
     <string >then</string>
   </token>
 	
@@ -232,7 +377,7 @@ apply.
 
   <token name="DeclareXMLSpace" if="xquery core">
     <string >declare</string>
-    <optionalSkip/>
+    <requiredSkip show="no"/>
     <string>xmlspace</string>
   </token>
 
@@ -250,8 +395,14 @@ apply.
 	
   <token name="DeclareNamespace" if="xquery core">
     <string >declare</string>
-    <optionalSkip/>
+    <requiredSkip show="no"/>
     <string>namespace</string>
+  </token>
+
+  <token name="DeclareResult" if="xquery core">
+    <string >declare</string>
+    <requiredSkip show="no"/>
+    <string>result</string>
   </token>
 	
   <token name="To">
@@ -260,6 +411,10 @@ apply.
 	
   <token name="Where" if="xquery core">
     <string >where</string>
+  </token>
+
+  <token name="Collation" if="xquery core">
+    <string >collation</string>
   </token>
 	
   <token name="Intersect">
@@ -282,16 +437,12 @@ apply.
 	<string >after</string>
   </token -->
 	
-  <token name="Precedes">
-    <string >precedes</string>
-  </token>
-  
-  <token name="Follows">
-    <string >follows</string>
-  </token>
-	
   <token name="As" if="xquery core">
     <string >as</string>
+  </token>
+
+  <token name="AtWord" if="xquery core">
+    <string >at</string>
   </token>
 	
   <token name="Case" if="xquery core">
@@ -303,6 +454,11 @@ apply.
     <requiredSkip show="no"/>
     <string >of</string>
   </token>
+
+  <token name="Castable">
+    <string>castable</string>
+    <requiredSkip show="no"/>
+    <string >as</string>  </token>
 	
   <!-- see http://lists.w3.org/Archives/Member/w3c-xsl-query/2002Mar/0154.html -->
   <!-- token name="Only" value-type="id">
@@ -313,10 +469,10 @@ apply.
 	<string >returns</string>
   </token -->
 	
-  <token name="RparReturns" if="xquery core">
+  <token name="RparAs" if="xquery core">
     <string >)</string>
     <optionalSkip/>
-    <string >returns</string>
+    <string >as</string>
   </token>
 	
   <!-- token name="Function" value-type="id" if="xquery core">
@@ -338,12 +494,12 @@ apply.
   <!-- token name="Element" value-type="id">
 	<string >element</string>
   </token -->
-	
+
   <token name="ElementQNameLbrace" value-type="id">
     <string >element</string>
     <requiredSkip show="no"/>
     <ref name="QName"/>
-    <requiredSkip show="no"/>
+    <optionalSkip/>
     <string>{</string>
   </token>
 	
@@ -351,25 +507,39 @@ apply.
     <string >attribute</string>
     <requiredSkip show="no"/>
     <ref name="QName"/>
-    <requiredSkip show="no"/>
+    <optionalSkip/>
     <string>{</string>
   </token>
 	
   <token name="ElementLbrace" value-type="id">
     <string >element</string>
-    <requiredSkip show="no"/>
+    <optionalSkip/>
     <string>{</string>
   </token>
 	
   <token name="AttributeLbrace" value-type="id">
     <string >attribute</string>
-    <requiredSkip show="no"/>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+
+  <token name="TextLbrace" value-type="id" if="xquery core">
+    <string >text</string>
+    <optionalSkip/>
     <string>{</string>
   </token>
 	
   <!-- token name="Attribute" value-type="id">
 	<string >attribute</string>
   </token -->
+
+  <token name="DefaultCollationEquals" if="xpath xquery core">
+    <string >default</string>
+    <requiredSkip show="no"/>
+    <string >collation</string>
+    <requiredSkip show="no"/>
+    <string >=</string>
+  </token>
 	
   <token name="DefaultElement" if="xpath xquery core">
     <string >default</string>
@@ -395,8 +565,14 @@ apply.
     <string >value</string>
   </token>
 
-  <token name="Type" if="xpath xquery core" value-type="id">
+  <token name="Type" if="core" value-type="id">
     <string >type</string>
+  </token>
+
+  <token name="TypeQName" if="xpath xquery core">
+    <string >type</string>
+    <requiredSkip show="no"/>
+    <ref name="QName"/>
   </token>
 
   <token name="Node" if="xquery core xpath" value-type="id">
@@ -426,7 +602,7 @@ apply.
 
   <token name="ImportSchemaToken" if="xquery core">
     <string >import</string>
-    <optionalSkip/>
+    <requiredSkip show="no"/>
     <string>schema</string>
   </token>
 
@@ -613,28 +789,28 @@ apply.
 	
   <token name="Some" value-type="id">
     <string >some</string>
-    <optionalSkip if="xpath"/>
-    <ref name="VariableIndicator" if="xpath"/>
+    <optionalSkip/>
+    <ref name="VariableIndicator"/>
   </token>
 	
   <token name="Every" value-type="id">
     <string >every</string>
-	  <optionalSkip if="xpath"/>
-    <ref name="VariableIndicator" if="xpath"/>
+	  <optionalSkip/>
+    <ref name="VariableIndicator"/>
   </token>
 	
   <!-- Added for XPath with no reserved words. -sb -->
   <token name="ForVariable" override="true" 
               if="xpath pathx1 xquery core" node-type="void">
     <string >for</string>
-    <optionalSkip if="xpath"/>
-    <ref name="VariableIndicator" if="xpath"/>
+    <optionalSkip/>
+    <ref name="VariableIndicator"/>
   </token>
 	
   <token name="LetVariable" if="xquery core">
     <string >let</string>
-    <optionalSkip if="xpath"/>
-    <ref name="VariableIndicator" if="xpath"/>
+    <optionalSkip/>
+    <ref name="VariableIndicator"/>
   </token>
 	
   <token name="CastAs">
@@ -655,8 +831,16 @@ apply.
     <string >as</string>
   </token>
 	
-  <token name="Validate" if="xpath xquery core">
+  <token name="ValidateLbrace" if="xpath xquery core">
     <string >validate</string>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+
+  <token name="ValidateContext" if="xpath xquery core">
+    <string >validate</string>
+    <requiredSkip show="no"/>
+    <string>context</string>
   </token>
 	
   <token name="Digits" inline="false">
@@ -666,60 +850,7 @@ apply.
       </charClass>
     </oneOrMore>
   </token>
-	
-  <token name="IntegerLiteral" inline="false" value-type="number">
-    <ref name="Digits"/>
-  </token>
-	
-  <token name="DecimalLiteral" inline="false" value-type="number">
-    <choice>
-      <sequence>
-        <string>.</string>
-        <ref name="Digits"/>
-      </sequence>
-      <sequence>
-        <ref name="Digits"/>
-        <string>.</string>
-				<zeroOrMore>
-					<charClass>
-						<charRange minChar="0" maxChar="9"/>
-					</charClass>
-				</zeroOrMore>
-      </sequence>
-    </choice>
-  </token>
-	
-  <token name="DoubleLiteral" inline="false" value-type="number">
-    <choice>
-      <sequence>
-        <string>.</string>
-        <ref name="Digits"/>
-      </sequence>
-      <sequence>
-        <ref name="Digits"/>
-        <optional>
-          <string>.</string>
-          <zeroOrMore>
-            <charClass>
-              <charRange minChar="0" maxChar="9"/>
-            </charClass>
-          </zeroOrMore>
-        </optional>
-      </sequence>
-    </choice>
-    <charClass>
-			<char>e</char>
-			<char>E</char>
-    </charClass>
-    <optional>
-			<charClass>
-				<char>+</char>
-				<char>-</char>
-			</charClass>
-    </optional>
-    <ref name="Digits"/>
-  </token>
-	
+		
   <token name="Comment" override="true" if="xquery core xpath" value-type="id">
     <string >comment</string>
   </token>
@@ -734,8 +865,6 @@ apply.
     <string>{</string>
   </token>
 	
-	
-	
   <token name="Text" override="true" if="xquery core xpath" value-type="id">
     <string >text</string >
   </token>
@@ -744,9 +873,9 @@ apply.
     <string>untyped</string>
   </token>
 
-  <token name="Unordered" if="xquery core" value-type="id">
+  <!-- token name="Unordered" if="xquery core" value-type="id">
     <string>unordered</string>
-  </token>
+  </token -->
 	
 	
   <token name="ProcessingInstruction" override="true" if="xquery core xpath" value-type="id">
@@ -823,90 +952,6 @@ apply.
     <string>&quot;</string>
   </token>
 	
-  <token name="StringLiteral" inline="false" value-type="string">
-    <choice>
-			<sequence>
-        <string>&quot;</string>
-        <zeroOrMore>
-          <choice>
-            <sequence>
-              <char>&quot;</char>
-              <char>&quot;</char>
-            </sequence>
-					<complement>
-						<charClass>
-							<char>&quot;</char>
-						</charClass>
-					</complement>
-		    </choice>
-	    </zeroOrMore>
-		<string>&quot;</string>
-	</sequence>
-		<sequence>
-			<string>&apos;</string>
-			<zeroOrMore>
-				<choice>
-					<sequence>
-						<char>&apos;</char>
-						<char>&apos;</char>
-					</sequence>
-				<complement>
-					<charClass>
-						<char>&apos;</char>
-					</charClass>
-				</complement>
-			</choice>
-			</zeroOrMore>
-			<string>&apos;</string>
-		</sequence>
-	</choice>
-  </token>
-	
-  <token name="AtStringLiteral" if="xquery core">
-    <string>at</string>
-    <optionalSkip/>
-    <ref name="StringLiteral"/>
-  </token>
-	
-  <token name="NamespaceURLLiteral" inline="false" value-type="string">
-		<choice>
-      <sequence>
-        <string>&quot;</string>
-        <zeroOrMore>
-          <choice>
-            <sequence>
-              <char>&quot;</char>
-              <char>&quot;</char>
-            </sequence>
-					  <complement>
-					    <charClass>
-			   		    <char>&quot;</char>
-				      </charClass>
-					  </complement>
-		      </choice>
-	      </zeroOrMore>
-		    <string>&quot;</string>
-      </sequence>
-		  <sequence>
-			  <string>&apos;</string>
-			  <zeroOrMore>
-				  <choice>
-					  <sequence>
-						  <char>&apos;</char>
-						  <char>&apos;</char>
-					  </sequence>
-				    <complement>
-					    <charClass>
-						    <char>&apos;</char>
-					    </charClass>
-				    </complement>
-			    </choice>
-			  </zeroOrMore>
-			  <string>&apos;</string>
-		  </sequence>
-	  </choice>
-  </token>
-
   <token name="Dot" value-type="id">
     <string>.</string>
   </token>
@@ -915,16 +960,26 @@ apply.
     <string>..</string>
   </token>
 	
-  <token name="SortbyLpar" if="xquery core">
+  <!-- token name="SortbyLpar" if="xquery core">
     <string >sort</string>
-    <optionalSkip/>
+    <requiredSkip show="no"/>
     <string >by</string>
     <optionalSkip/>
     <string>(</string>
+  </token -->
+
+  <token name="OrderBy" if="xquery core">
+    <string >order</string>
+    <requiredSkip show="no"/>
+    <string >by</string>
   </token>
-	
-  <token name="Stable" if="xquery core">
+
+  <token name="OrderByStable" if="xquery core">
     <string >stable</string>
+    <requiredSkip show="no"/>
+    <string >order</string>
+    <requiredSkip show="no"/>
+    <string >by</string>
   </token>
 	
   <token name="Ascending" if="xquery core" value-type="id">
@@ -957,18 +1012,18 @@ apply.
     <ref name="NCName"/>
   </token>
 	
-  <token name="NCName" inline="false" value-type="string">
+  <token name="NCName" inline="false" value-type="string" is-xml="yes">
     <ref name="Nmstart"/>
     <zeroOrMore>
       <ref name="Nmchar"/>
     </zeroOrMore>
   </token>
 	
-  <token name="Prefix" value-type="string" visible="false">
+  <token name="Prefix" value-type="string" visible="false" is-xml="yes">
     <ref name="NCName"/>
   </token>
 	
-  <token name="LocalPart" value-type="string" visible="false">
+  <token name="LocalPart" value-type="string" visible="false" is-xml="yes">
     <ref name="NCName"/>
   </token>
 	
@@ -985,26 +1040,14 @@ apply.
 	<ref name="VarName"/>
   </token -->
 
-  <token name="QName" inline="false" value-type="string">
+  <token name="QName" inline="false" value-type="string" is-xml="yes">
     <optional>
       <ref name="Prefix"/>
       <string>:</string>
     </optional>
 	  <ref name="LocalPart"/>
   </token>
-	
-  <token name="FuncName" inline="false" value-type="string">
-    <optional>
-      <ref name="Prefix"/>
-      <string>:</string>
-    </optional>
-	  <ref name="LocalPart"/>
-  </token>
-	
-  <token name="FuncPListOpen">
-    <string>(</string>
-  </token>
-	
+			
   <token name="QNameLpar" value-type="string">
 		<ref name="QName"/>
 		<optionalSkip/>
@@ -1029,138 +1072,148 @@ apply.
 			<ref name="Nmchar"/>
 		</zeroOrMore>
   </token>
-	
-  <lexical-state-transitions if="pathx1">
 		
-		<transition-default recognize="DEFAULT OPERATOR" nextState="OPERATOR"/>
-		<transition refs="WhitespaceChar Nmstart Nmchar Digits NCName 
-			Letter BaseChar Ideographic CombiningChar 
-			Digit Extender"/>
-		<transition refs="S" recognize="DEFAULT OPERATOR QNAME START_TAG NAMESPACEDECL ITEMTYPE FUNCDEF 
-                                    NAMESPACEKEYWORD START_TAG END_TAG"/>
-		<transition refs="Star" recognize="DEFAULT" nextState="OPERATOR"/>
-		<transition refs="At QNameLpar IDLpar KeyLpar NodeLpar 
-			CommentLpar TextLpar 
-			ProcessingInstructionLpar" 
-			recognize="DEFAULT" nextState="DEFAULT"/>
-		<transition refs="Plus Minus" recognize="OPERATOR DEFAULT" 
-			nextState="DEFAULT"/>
-		<transition refs="Div Mod And Or Multiply Vbar 
-			Equals NotEquals LtEquals GtEquals 
-			Lt Gt" recognize="OPERATOR" 
-			nextState="DEFAULT"/>
-		<transition refs="Root RootDescendants" recognize="DEFAULT" 
-			nextState="DEFAULT"/>
-		<transition refs="Slash SlashSlash Comma" recognize="OPERATOR" 
-			nextState="DEFAULT"/>
-		<transition refs="Lpar Lbrack" 
-			recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
-  </lexical-state-transitions>
-	
-  <state-list if="xquery core xpath">
+  <state-list if="xquery core xpath pathx1">
     <state name="#ANY">This state is for patterns that can be recognized in any state.</state>
     <state name="DEFAULT">This state is for patterns that occur at the beginning of an expression.</state>
     <state name="OPERATOR">This state is for patterns that are defined for operators.</state>
     <state name="QNAME">When a qualified name is expected, and it is required to remove ambiguity from patterns that look like keywords, this state is used.</state>
-    <state name="NAMESPACEDECL">This state occurs inside of a namespace declaration, and is needed to recognize a NCName that is to be used as the prefix, as opposed to allowing a QName to occur.  (Otherwise, the difference between NCName and QName are ambiguous.)</state>
-    <state name="NAMESPACEKEYWORD">This state occurs at places where the keyword "namespace" is expected, which would otherwise be ambiguous compared to a QName.  QNames can not occur in this state.</state>
-    <state name="XMLSPACE_DECL">This state occurs at places where the keywords "preserve" and "strip" is expected to support "declare xmlspace".  QNames can not occur in this state.</state>
+    <state name="NAMESPACEDECL" if="xquery core">This state occurs inside of a namespace declaration, and is needed to recognize a NCName that is to be used as the prefix, as opposed to allowing a QName to occur.  (Otherwise, the difference between NCName and QName are ambiguous.)</state>
+    <state name="NAMESPACEKEYWORD" if="xquery core">This state occurs at places where the keyword "namespace" is expected, which would otherwise be ambiguous compared to a QName.  QNames can not occur in this state.</state>
+    <state name="XMLSPACE_DECL" if="xquery core">This state occurs at places where the keywords "preserve" and "strip" is expected to support "declare xmlspace".  QNames can not occur in this state.</state>
     <state name="ITEMTYPE">This state distinguishes tokens that can occur only inside the ItemType production.</state>
-    <state name="FUNCDEF">This state is defined to recognise a FuncName, which then transitions to an ITEMTYPE state after the opening left bracket, in order to recognize SequenceType productions.</state>
+    <!-- state name="FUNCDEF" if="xquery core">This state is defined to recognise a FuncName, which then transitions to an ITEMTYPE state after the opening left bracket, in order to recognize SequenceType productions.</state -->
     <state name="VARNAME">This state differentiates variable names from qualified names.  This allows only the pattern of a QName to be recognized when otherwise ambiguities could occur.</state>
-    <state name="START_TAG">This state allows attributes in the native XML syntax, and marks the beginning of an element construction. Element constructors also push the current state, popping it at the conclusion of an end tag. In the START_TAG state, the string ">" is recognized as a token which is associated with the transition to the original state.</state>
-    <state name="ELEMENT_CONTENT">This state allows XML-like content, without these characters being misinterpreted as expressions. The character "{" marks a transition to the DEFAULT state, i.e. the start of an embedded expression, and the "}" character pops back to the ELEMENT_CONTENT state.  To allow curly braces to be used as character content, a double left or right curly brace is interpreted as a single curly brace character.  The string "&lt;/" is interpreted as the beginning of an end tag, which is associated with a transition to the END_TAG state.</state>
-    <state name="END_TAG">When the end tag is terminated, the state is popped to the state that was pushed at the start of the corresponding start tag.</state>
-    <state name="XML_COMMENT">The "&lt;--" token marks the beginning of an XML Comment, and the "-->" token marks the end.  This allows no special interpretation of other characters in this state.</state>
-    <state name="PROCESSING_INSTRUCTION">In this state, only lexemes that are legal in a processing instruction are recognized.</state>
-    <state name="CDATA_SECTION">In this state, only lexemes that are legal in a CDATA section are recognized.</state>
-    <state name="QUOT_ATTRIBUTE_CONTENT">This state allows content legal for attributes. The character "{" marks a transition to the DEFAULT state, i.e. the start of an embedded expression, and the "}" character pops back to the original state.  To allow curly braces to be used as character content, a double left or right curly brace is interpreted as a single curly brace character.  This state is the same as QUOT_ATTRIBUTE_CONTENT, except that apostrophes are allowed without escaping, and an unescaped quote marks the end of the state.</state>
-    <state name="APOS_ATTRIBUTE_CONTENT">This state is the same as QUOT_ATTRIBUTE_CONTENT, except that quotes are allowed, and an unescaped apostrophe marks the end of the state.</state>
+    <state name="START_TAG" if="xquery core">This state allows attributes in the native XML syntax, and marks the beginning of an element construction. Element constructors also push the current state, popping it at the conclusion of an end tag. In the START_TAG state, the string ">" is recognized as a token which is associated with the transition to the original state.</state>
+    <state name="ELEMENT_CONTENT" if="xquery core">This state allows XML-like content, without these characters being misinterpreted as expressions. The character "{" marks a transition to the DEFAULT state, i.e. the start of an embedded expression, and the "}" character pops back to the ELEMENT_CONTENT state.  To allow curly braces to be used as character content, a double left or right curly brace is interpreted as a single curly brace character.  The string "&lt;/" is interpreted as the beginning of an end tag, which is associated with a transition to the END_TAG state.</state>
+    <state name="END_TAG" if="xquery core">When the end tag is terminated, the state is popped to the state that was pushed at the start of the corresponding start tag.</state>
+    <state name="XML_COMMENT" if="xquery core">The "&lt;--" token marks the beginning of an XML Comment, and the "-->" token marks the end.  This allows no special interpretation of other characters in this state.</state>
+    <state name="PROCESSING_INSTRUCTION" if="xquery core">In this state, only lexemes that are legal in a processing instruction name are recognized.</state>
+    <state name="PROCESSING_INSTRUCTION_CONTENT" if="xquery core">In this state, only characters are that are legal in processing instruction content are recognized.</state>
+    <state name="CDATA_SECTION" if="xquery core">In this state, only lexemes that are legal in a CDATA section are recognized.</state>
+    <state name="QUOT_ATTRIBUTE_CONTENT" if="xquery core">This state allows content legal for attributes. The character "{" marks a transition to the DEFAULT state, i.e. the start of an embedded expression, and the "}" character pops back to the original state.  To allow curly braces to be used as character content, a double left or right curly brace is interpreted as a single curly brace character.  This state is the same as QUOT_ATTRIBUTE_CONTENT, except that apostrophes are allowed without escaping, and an unescaped quote marks the end of the state.</state>
+    <state name="APOS_ATTRIBUTE_CONTENT" if="xquery core">This state is the same as QUOT_ATTRIBUTE_CONTENT, except that quotes are allowed, and an unescaped apostrophe marks the end of the state.</state>
   </state-list>
 
-  <lexical-state-transitions if="xquery core xpath">
+  <lexical-state-transitions if="xquery core xpath pathx1">
 		<transition refs="WhitespaceChar Nmstart NCName  Nmchar Prefix LocalPart 
 			Digits Letter BaseChar Ideographic CombiningChar 
 			Digit  Extender HexDigits"/>
-		<transition refs="S" recognize="DEFAULT OPERATOR QNAME START_TAG NAMESPACEDECL ITEMTYPE FUNCDEF 
+
+    <transition-default recognize="DEFAULT OPERATOR" nextState="OPERATOR"/>
+    <transition refs="Rbrack IntegerLiteral DecimalLiteral DoubleLiteral TypeswitchLpar OrderByStable" recognize="DEFAULT OPERATOR" nextState="OPERATOR"/>
+
+		<transition refs="S" recognize="DEFAULT OPERATOR QNAME START_TAG NAMESPACEDECL ITEMTYPE 
                                     NAMESPACEKEYWORD END_TAG"/>
 	  <!-- ==== NEXT=>DEFAULT ==== -->
-	  <transition refs="NamespaceURLLiteral" recognize="NAMESPACEDECL" nextState="DEFAULT"/>
+	  <transition refs="URLLiteral" recognize="NAMESPACEDECL" nextState="DEFAULT"/>
 	  <transition refs="Slash SlashSlash Div Idiv Mod And Or 
-		Multiply In Return Then Else To 
+		Multiply Return Then Else To 
 		Union Intersect Except 
 		Equals Is NotEquals 
 		IsNot LtEquals GtEquals 
 		Lt Gt Vbar
-		Precedes Follows LtLt GtGt 
+		LtLt GtGt 
 		FortranEq FortranNe FortranGt
 		FortranGe FortranLt FortranLe 
-		Type
-		Where SortbyLpar Satisfies As QMark ColonEquals" 
+		Type In InContext
+		Where OrderBy Satisfies AtWord ColonEquals" 
 		recognize="OPERATOR" nextState="DEFAULT"/>
-    <transition refs="Comma" recognize="OPERATOR DEFAULT" nextState="DEFAULT"/>
+
+    <transition refs="TypeQName" recognize="DEFAULT" nextState="OPERATOR"/>
+
+    <transition refs="Collation" recognize="OPERATOR" nextState="OPERATOR"/>
+
+    <transition refs="QMark" 
+		recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
+
+    <!-- nextState="DEFAULT" -->
+    <transition refs="Comma" recognize="OPERATOR DEFAULT QNAME" 
+       action="resetParenStateOrSwitch(DEFAULT)"/>
 
     <transition refs="AttributeType ElementType Node Document Comment Text 
-		ProcessingInstruction Item Untyped AtomicValue" 
+		ProcessingInstruction Item Untyped AtomicValue AtomicType Empty" 
 		recognize="ITEMTYPE" nextState="DEFAULT"/>
 
     <transition refs="Lbrack Plus Minus" 
 		recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
 
     <transition refs="Lpar" 
-		recognize="DEFAULT OPERATOR QNAME" nextState="DEFAULT"/>
+		  recognize="DEFAULT OPERATOR QNAME"  nextState="DEFAULT"/>
     <transition refs="TextLpar CommentLpar NodeLpar ProcessingInstructionLpar" 
-		recognize="QNAME DEFAULT" nextState="DEFAULT"/>
+		recognize="QNAME DEFAULT"  nextState="DEFAULT"/>
+    <transition refs="DefaultCollationEquals" recognize="DEFAULT OPERATOR" 
+         nextState="NAMESPACEDECL"/>
     <!-- Not sure that this is right for SemiColon, but SemiColon is a 
          strange character anyhow.  -sb -->
     <transition refs="SemiColon" 
 		recognize="QNAME DEFAULT OPERATOR" nextState="DEFAULT"/>
     <!-- transition refs="Returns" recognize="OPERATOR" nextState="DEFAULT"/ -->
-    <transition refs="Type Empty Stable QNameLpar IfLpar" recognize="DEFAULT" nextState="DEFAULT"/>
+    <transition refs="Type" 
+       recognize="DEFAULT" nextState="DEFAULT"/>
+
+    <transition refs="IfLpar" 
+       recognize="DEFAULT" nextState="DEFAULT"/>
+
+    <transition refs="QNameLpar" 
+       recognize="DEFAULT" nextState="DEFAULT"/>
+
     <transition refs="AtStringLiteral" 
 		recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
     <transition refs="Item Node Document Comment Text"
 		recognize="OPERATOR" nextState="DEFAULT"/>
-    <transition refs="LbraceExprEnclosure" recognize="DEFAULT OPERATOR" 
+    <transition refs="LbraceExprEnclosure ValidateLbrace" recognize="DEFAULT OPERATOR ITEMTYPE" 
 		nextState="DEFAULT" action="pushState(DEFAULT)"/>
-    <transition refs="AttributeQNameLbrace ElementQNameLbrace ElementLbrace AttributeLbrace" recognize="DEFAULT" 
+    <transition refs="AttributeQNameLbrace ElementQNameLbrace ElementLbrace DocumentLbrace AttributeLbrace TextLbrace" recognize="DEFAULT" 
 		nextState="DEFAULT" action="pushState(DEFAULT)"/>
+    <transition refs="ValidateContext" 
+                recognize="DEFAULT" nextState="DEFAULT"/>
+
     <transition refs="Lbrace" recognize="START_TAG END_TAG ELEMENT_CONTENT 
 		QUOT_ATTRIBUTE_CONTENT 
 		APOS_ATTRIBUTE_CONTENT" 
 		nextState="DEFAULT" action="pushState"/>
     <!-- ==== NEXT=>OPERATOR ==== -->
-    <transition-default recognize="DEFAULT OPERATOR" nextState="OPERATOR"/>
     <transition refs="VarName" recognize="VARNAME" nextState="OPERATOR"/>
     <transition refs="Star" recognize="DEFAULT QNAME" nextState="OPERATOR"/>
     <transition refs="QName NCNameColonStar StarColonNCName Dot DotDot" 
-		recognize="ITEMTYPE QNAME DEFAULT OPERATOR" nextState="OPERATOR"/>
-    <transition refs="Rpar" recognize="DEFAULT OPERATOR ITEMTYPE QNAME" nextState="OPERATOR"/>
+		               recognize="ITEMTYPE QNAME DEFAULT OPERATOR"  
+                   nextState="OPERATOR"/>
+
+    <transition refs="Rpar" recognize="DEFAULT OPERATOR ITEMTYPE QNAME" 
+       nextState="OPERATOR"/>
+
     <transition refs="Ascending Descending EmptyGreatest EmptyLeast" 
 		recognize="OPERATOR" nextState="OPERATOR"/>
     <transition refs="StringLiteral" recognize="DEFAULT OPERATOR NAMESPACEKEYWORD" nextState="OPERATOR"/>
     <transition refs="Default" recognize="OPERATOR" nextState="OPERATOR"/>
     <!-- ==== NEXT=>VARNAME ==== -->
     <transition refs="VariableIndicator" recognize="DEFAULT OPERATOR ITEMTYPE QNAME" nextState="VARNAME"/>
-    <transition refs="Unordered" recognize="DEFAULT OPERATOR" if="xquery core"/>
+    <!-- transition refs="Unordered" recognize="DEFAULT OPERATOR" if="xquery core"/ -->
+    <!-- transition refs="ForVariable LetVariable Some Every" 
+		  recognize="DEFAULT OPERATOR" nextState="ITEMTYPE" if="xquery core"/ -->
     <transition refs="ForVariable LetVariable Some Every" 
-		  recognize="DEFAULT OPERATOR" nextState="ITEMTYPE" if="xquery core"/>
-    <transition refs="ForVariable LetVariable Some Every" 
-		  recognize="DEFAULT OPERATOR" nextState="VARNAME" if="xpath"/>
+		  recognize="DEFAULT OPERATOR" nextState="VARNAME"/>
     <!-- ==== NEXT=>NAMESPACEKEYWORD ==== -->
-    <transition refs="DefaultElement DefaultFunction ImportSchemaToken" recognize="DEFAULT" nextState="NAMESPACEKEYWORD"/>
+    <transition refs="DefaultElement DefaultFunction ImportSchemaToken" recognize="DEFAULT OPERATOR" nextState="NAMESPACEKEYWORD"/>
     <!-- ==== NEXT=>NAMESPACEDECL ==== -->
     <transition refs="Namespace" recognize="NAMESPACEKEYWORD" nextState="NAMESPACEDECL"/>
     <transition refs="DeclareNamespace" recognize="DEFAULT OPERATOR" nextState="NAMESPACEDECL"/>
     <transition refs="AssignEquals NCNameForPrefix" recognize="NAMESPACEDECL" nextState="NAMESPACEDECL"/>
     <!-- ==== NEXT=>ITEMTYPE ==== -->
-    <transition refs="Instanceof Case" recognize="OPERATOR" nextState="ITEMTYPE"/>
+    <transition refs="Instanceof Castable Case As" recognize="OPERATOR" nextState="ITEMTYPE"/>
     <transition refs="CastAs TreatAs" recognize="DEFAULT" nextState="ITEMTYPE"/>
-    <transition refs="FuncName" recognize="FUNCDEF"/>
-    <transition refs="FuncPListOpen" recognize="FUNCDEF" nextState="ITEMTYPE"/>
-    <transition refs="RparReturns" recognize="DEFAULT OPERATOR" nextState="ITEMTYPE"/>
+    <transition refs="DeclareResult" recognize="DEFAULT OPERATOR" nextState="ITEMTYPE"/>
+    <!-- transition refs="FuncName" recognize="FUNCDEF"/ -->
+    <!-- transition refs="FuncPListOpen" recognize="FUNCDEF" 
+                           action="pushParenState(DEFAULT, ITEMTYPE)"/ -->
+    
+    <!-- Both nextState and action here on purpose -->
+    <transition refs="RparAs" recognize="DEFAULT OPERATOR ITEMTYPE QNAME" 
+       nextState="ITEMTYPE"/>
+
     <!-- ==== NEXT=>FUNCDEF ==== -->
-    <transition refs="DefineFunction" recognize="DEFAULT OPERATOR" nextState="FUNCDEF"/>
+    <transition refs="DefineFunction" recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
     <!-- ==== NEXT=>QNAME ==== -->
     <transition refs="OfType" recognize="DEFAULT OPERATOR" nextState="QNAME"/>
     <transition refs="Root RootDescendants 
@@ -1178,10 +1231,10 @@ apply.
     <transition refs="ProcessingInstructionStart" 
 		recognize="DEFAULT ELEMENT_CONTENT" nextState="PROCESSING_INSTRUCTION" action="pushState"/>
     <!-- ==== NEXT=>CDATA_SECTION ==== -->
-    <transition refs="CdataSectionStart" recognize="ELEMENT_CONTENT" nextState="CDATA_SECTION"/>
+    <transition refs="CdataSectionStart" recognize="ELEMENT_CONTENT DEFAULT" nextState="CDATA_SECTION" action="pushState"/>
     <!-- ==== NEXT=>ELEMENT_CONTENT ==== -->
     <transition refs="CdataSectionEnd" 
-		recognize="ELEMENT_CONTENT CDATA_SECTION" nextState="ELEMENT_CONTENT"/>
+		recognize="ELEMENT_CONTENT CDATA_SECTION" action="popState"/>
     <transition refs="StartTagClose" recognize="START_TAG" 
 		nextState="ELEMENT_CONTENT"/>
     <!-- ==== NEXT=>START_TAG ==== -->
@@ -1213,8 +1266,9 @@ apply.
       recognize="XMLSPACE_DECL" 
 			nextState="DEFAULT"/>
     <!-- ==== NEXT=>(SAME) ==== -->
-    <transition refs="ExprComment" recognize="DEFAULT ELEMENT_CONTENT"/>
-    <transition refs="PITarget" recognize="PROCESSING_INSTRUCTION"/>
+    <transition refs="ExprComment" recognize="DEFAULT OPERATOR QNAME NAMESPACEDECL XMLSPACE_DECL 
+                                              ITEMTYPE NAMESPACEKEYWORD VARNAME ELEMENT_CONTENT"/>
+    <transition refs="PITarget" recognize="PROCESSING_INSTRUCTION" nextState="PROCESSING_INSTRUCTION_CONTENT"/>
     <transition refs="PredefinedEntityRef CharRef" 
 		recognize="ELEMENT_CONTENT QUOT_ATTRIBUTE_CONTENT APOS_ATTRIBUTE_CONTENT"/>
     <transition refs="TagQName" recognize="START_TAG END_TAG"/>
@@ -1224,18 +1278,18 @@ apply.
     <transition refs="Char" recognize="ELEMENT_CONTENT CDATA_SECTION 
 		QUOT_ATTRIBUTE_CONTENT 
 		APOS_ATTRIBUTE_CONTENT 
-		PROCESSING_INSTRUCTION XML_COMMENT 
+		PROCESSING_INSTRUCTION_CONTENT XML_COMMENT 
 		XQUERY_COMMENT"/>
     <!-- ==== NEXT=>pop ==== -->
 
     <transition refs="XmlCommentEnd" recognize="XML_COMMENT" 
 		action="popState"/>
     <transition refs="ProcessingInstructionEnd" 
-		recognize="PROCESSING_INSTRUCTION" action="popState"/>
+		recognize="PROCESSING_INSTRUCTION_CONTENT" action="popState"/>
     <transition refs="EmptyTagClose" recognize="START_TAG" 
 		action="popState"/>
     <transition refs="EndTagClose" recognize="END_TAG" action="popState"/>
-    <transition refs="Rbrace" recognize="OPERATOR DEFAULT" action="popState"/>
+    <transition refs="Rbrace" recognize="QUOT_ATTRIBUTE_CONTENT OPERATOR DEFAULT" action="popState"/>
 
   </lexical-state-transitions>
   <!-- ====================== End Lexical States ==================== -sb -->
@@ -1255,9 +1309,7 @@ apply.
   <!-- ### Use the name="" names instead of Expr_1() for generated .jj code -->
   <production name="Query" if="xquery core">
     <ref name="QueryProlog"/>
-    <optional>
-		  <ref name="ExprSequence"/>
-    </optional>
+    <ref name="QueryBody"/>
   </production>
 
   <production name="QueryProlog" if="xquery core">
@@ -1266,6 +1318,7 @@ apply.
         <ref name="NamespaceDecl"/>
 				<ref name="XMLSpaceDecl"/>
         <ref name="DefaultNamespaceDecl"/>
+        <ref name="DefaultCollationDecl"/>
         <ref name="SchemaImport"/>
       </choice>
     </zeroOrMore>
@@ -1273,6 +1326,19 @@ apply.
 		  <ref name="FunctionDefn"/>
     </zeroOrMore>
   </production>
+
+  <production name="XPath" if="xpath">
+    <optional>
+      <ref name="ExprSequence"/>
+    </optional>
+  </production>
+
+  <production name="QueryBody" if="xquery core">
+    <optional>
+      <ref name="ExprSequence"/>
+    </optional>
+  </production>
+
 
   <production name="ExprSequence">
     <ref name="Expr"/>
@@ -1282,7 +1348,7 @@ apply.
     </zeroOrMore>
   </production>
 
-  <production name="Pattern" if="xpath">
+  <production name="Pattern" if="xpath pathx1" sub-spec="xslt-patterns">
 		<ref name="PathPattern"/>
 		<optional>
 			<choice>
@@ -1293,7 +1359,7 @@ apply.
 	  </optional>
   </production>
 
-  <production name="PathPattern" if="xpath">
+  <production name="PathPattern" if="xpath pathx1" sub-spec="xslt-patterns">
 		<choice break="true">
 			<sequence>
 				<ref name="Root"/>
@@ -1319,7 +1385,8 @@ apply.
 		</choice>		
   </production>
 
-  <production name="RelativePathPattern" if="xpath" node-type="void">
+  <production name="RelativePathPattern" if="xpath pathx1" node-type="void"
+		sub-spec="xslt-patterns">
 		<ref name="PatternStep"/>
 		<optional>
 			<choice>
@@ -1330,7 +1397,8 @@ apply.
 		</optional>
   </production>
 
-  <production name="PatternStep" if="xpath">
+  <production name="PatternStep" if="xpath pathx1"
+		sub-spec="xslt-patterns">
 		<optional>
 			<ref name="PatternAxis"/>
 		</optional>
@@ -1338,7 +1406,8 @@ apply.
 		<ref name="Predicates"/>
   </production>
 
-  <production name="PatternAxis" if="xpath" node-type="void">
+  <production name="PatternAxis" if="xpath pathx1" node-type="void"
+		sub-spec="xslt-patterns">
     <choice break="true">
       <ref name="AxisChild"/>
       <ref name="AxisAttribute"/>
@@ -1346,7 +1415,8 @@ apply.
     </choice>
   </production>
 
-  <production name="IdKeyPattern" if="xpath">
+  <production name="IdKeyPattern" if="xpath pathx1"
+		sub-spec="xslt-patterns">
 		<ref name="QNameLpar"/>
 		<ref name="IdKeyValue"/>
 		<optional>
@@ -1357,7 +1427,8 @@ apply.
   </production>
 
 
-  <production name="IdKeyPattern" if="match">
+  <production name="IdKeyPattern" if="match"
+		sub-spec="xslt-patterns">
 		<choice>
 			<sequence>
 				<ref name="IDLpar"/>
@@ -1367,15 +1438,17 @@ apply.
 			<sequence>
 				<ref name="KeyLpar"/>
 				<ref name="StringLiteral"/>
+        <ref name="Comma"/>
 				<ref name="IdKeyValue"/>
 				<ref name="Rpar"/>
 			</sequence>
 		</choice>
   </production>
 
-  <production name="IdKeyValue" if="xpath" node-type="void">
+  <production name="IdKeyValue" if="xpath pathx1" node-type="void"
+		sub-spec="xslt-patterns">
 		<choice>
-			<ref name="Literal"/>
+			<ref name="StringLiteral"/>
 			<sequence>
 				<ref name="VariableIndicator"/>
 				<ref name="VarName"/>
@@ -1384,18 +1457,6 @@ apply.
   </production>
 
   <exprProduction name="Expr" node-type="void">
-		<level>  
-			<postfix name="SortExpr" if="xquery core">
-				<sequence>
-					<optional>
-						<ref name="Stable"/>
-					</optional>
-					<ref name="SortbyLpar"/>
-					<ref name="SortSpecList"/>
-					<ref name="Rpar"/>
-				</sequence>
-			</postfix>
-		</level>
 		<level>	
 			<binary name="OrExpr" if="xpath xquery pathx1">
 				<ref name="Or"/>
@@ -1406,15 +1467,15 @@ apply.
 				<ref name="And"/>
 			</binary>
 		</level>
-    <level>
+    <!-- level if="xquery core">
       <prefix name="UnorderedExpr" if="xquery core" prefix-seq-type="?">
 				<choice>
 					<ref name="Unordered" if="xquery core"/>
 				</choice>
       </prefix>
-    </level>
+    </level -->
 		<level>
-			<prefix name="FLWRExpr" if="xquery core">
+			<prefix name="FLWRExpr" if="xquery core" prefix-seq-type="*">
 				<sequence>
 					<oneOrMore if="xquery">
 						<choice>
@@ -1429,13 +1490,16 @@ apply.
 					<optional if="xquery">
 						<ref name="WhereClause"/>
 					</optional>
+					<optional if="xquery core">
+						<ref name="OrderByClause" if="xquery core"/>
+					</optional>
 					<ref name="Return"/>
 				</sequence>
 			</prefix>
 			
 			<prefix name="ForExpr" if="xpath">
 				<sequence>
-					<ref name="ForClause"/>
+					<ref name="SimpleForClause"/>
 					<ref name="Return"/>
 				</sequence>
 			</prefix>
@@ -1447,16 +1511,21 @@ apply.
 						<ref name="Some"/>
 						<ref name="Every"/>
 					</choice>
-					<ref name="Binding" if="xquery core"/>
+					<!-- ref name="VariableIndicator" if="xquery core"/ -->
 					<ref name="VarName"/>
+          <optional if="xquery core">
+					  <ref name="TypeDeclaration" if="xquery core"/>
+          </optional>
 					<ref name="In"/>
 					<ref name="Expr"/>
 					<zeroOrMore>
 						<ref name="Comma"/>
 						<sequence>
-							<ref name="VariableIndicator" if="xpath"/>
-							<ref name="Binding" if="xquery"/>
+							<ref name="VariableIndicator"/>
 							<ref name="VarName"/>
+              <optional if="xquery core">
+					      <ref name="TypeDeclaration" if="xquery core"/>
+              </optional>
 						</sequence>
 						<ref name="In"/>
 						<ref name="Expr"/>
@@ -1489,6 +1558,7 @@ apply.
 					<ref name="IfLpar"/>
 					<ref name="Expr"/>
 					<ref name="Rpar"/>
+          <!-- XPath TF decision to remove, Oct 16, 2002 -->
 					<ref name="Then"/>
 					<ref name="Expr"/>
 					<ref name="Else"/>
@@ -1496,15 +1566,23 @@ apply.
 			</prefix>  
 		</level>
 		<level>
-      <postfix name="InstanceofExpr" if="xquery xpath">
-				<sequence>
-					<ref name="Instanceof"/>
-					<ref name="SequenceType"/>
-				</sequence>
+      <postfix name="InstanceofExpr" if="xquery xpath" prefix-seq-type="?">
+				  <sequence>
+					  <ref name="Instanceof"/>
+					  <ref name="SequenceType"/>
+				  </sequence>
+      </postfix>       
+    </level>
+		<level>
+      <postfix name="CastableExpr" if="xquery xpath" prefix-seq-type="?">
+          <sequence>
+            <ref name="Castable"/>
+            <ref name="SingleType"/>
+          </sequence>
       </postfix>       
     </level>
     <level>
-      <binary name="ComparisonExpr">
+      <binary name="ComparisonExpr" prefix-seq-type="*" if="xpath xquery core">
         <choice break="true">
           <ref name="ValueComp"/>
           <ref name="GeneralComp"/>
@@ -1512,9 +1590,12 @@ apply.
           <ref name="OrderComp"/>
         </choice>
       </binary>
+      <binary name="ComparisonExpr" if="pathx1">
+        <ref name="GeneralComp"/>
+      </binary>
     </level>
     <level>
-      <binary name="RangeExpr" if="xquery xpath">
+      <binary name="RangeExpr" if="xquery xpath" prefix-seq-type="?">
         <ref name="To"/>
       </binary>
     </level>
@@ -1536,6 +1617,14 @@ apply.
         </choice>
       </binary>
     </level>
+    <level node-type="UnaryExpr">
+      <prefix name="UnaryExpr" if="xquery xpath pathx1">
+        <choice>
+          <ref name="Minus"/>
+          <ref name="Plus" if="xquery xpath core"/>
+        </choice>
+      </prefix>
+    </level>
     <level>
       <binary name="UnionExpr" if="xquery xpath pathx1">
         <choice>
@@ -1552,19 +1641,12 @@ apply.
         </choice>
       </binary>
     </level>
-    <level node-type="UnaryExpr">
-      <prefix name="UnaryExpr" if="xquery xpath pathx1">
-        <choice>
-          <ref name="Minus"/>
-          <ref name="Plus" if="xquery xpath core"/>
-        </choice>
-      </prefix>
-    </level>
     <level>
 			<primary name="ValueExpr">
 				<choice>
-					<ref name="ValidateExpr"/>
-					<ref name="CastExpr"/>
+					<ref name="ValidateExpr" if="xquery core xpath"/>
+					<ref name="CastExpr" if="xquery core xpath"/>
+					<ref name="TreatExpr" if="xquery core xpath"/>
 					<ref name="Constructor" if="xquery core"/>
 					<ref name="PathExpr"/>
 			  </choice>
@@ -1584,7 +1666,17 @@ apply.
 				<ref name="RootDescendants"/>
 				<ref name="RelativePathExpr"/>
 			</sequence>
-			<ref name="RelativePathExpr"/>
+			<sequence if="pathx1">
+        <ref name="RHSPrimaryExpr" if="pathx1"/>
+        <optional if="pathx1">
+			    <choice if="pathx1">
+			      <ref name="Slash" if="pathx1"/>
+		        <ref name="SlashSlash" if="pathx1"/>
+	        </choice>
+          <ref name="RelativePathExpr" if="pathx1"/>
+        </optional>
+			</sequence>
+			<ref name="RelativePathExpr" if="xquery xpath core"/>
 		</choice>
 	</production>
 	
@@ -1603,23 +1695,51 @@ apply.
 		<choice>
 			<ref name="ForwardStep"/>
 			<ref name="ReverseStep"/>
-			<ref name="PrimaryExpr"/>	
+			<ref name="PrimaryExpr" if="xpath xquery core"/>	
 		</choice>
 		<ref name="Predicates"/>
 	</production>
 	
   <!-- ForClause is slightly different now for XQuery vs. XPath.  -sb -->
-  <production name="ForClause" if="xquery xpath core">
+  <production name="ForClause" if="xquery core">
     <ref name="ForVariable"/>
-		<ref name="Binding" if="xquery core"/>
+		<!-- ref name="VariableIndicator" if="xquery core"/ -->
+    <ref name="VarName"/>
+    <optional if="xquery core">
+			<ref name="TypeDeclaration" if="xquery core"/>
+    </optional>
+    <optional if="xquery core">
+      <ref name="PositionalVar" if="xquery core"/>
+    </optional>
+    <ref name="In"/>
+    <ref name="Expr"/>
+    <zeroOrMore if="xquery">
+		  <ref name="Comma"/>
+      <sequence>
+				<ref name="VariableIndicator"/>
+        <ref name="VarName"/>
+        <optional if="xquery core">
+					<ref name="TypeDeclaration" if="xquery core"/>
+        </optional>
+        <optional if="xquery core">
+          <ref name="PositionalVar" if="xquery core"/>
+        </optional>
+      </sequence>
+      <ref name="In"/>
+      <ref name="Expr"/>
+    </zeroOrMore>
+  </production>
+
+  <!-- SimpleForClause is slightly different now for XQuery vs. XPath.  -sb -->
+  <production name="SimpleForClause" if="xpath">
+    <ref name="ForVariable"/>
     <ref name="VarName"/>
     <ref name="In"/>
     <ref name="Expr"/>
-    <zeroOrMore if="xpath xquery">
+    <zeroOrMore>
 		  <ref name="Comma"/>
       <sequence>
-		    <ref name="VariableIndicator" if="xpath"/>
-				<ref name="Binding" if="xquery core"/>
+				<ref name="VariableIndicator"/>
         <ref name="VarName"/>
       </sequence>
       <ref name="In"/>
@@ -1629,16 +1749,21 @@ apply.
 
   <production name="LetClause" if="xquery core">
     <ref name="LetVariable"/>
-		<ref name="Binding" if="xquery core"/>
+		<!-- ref name="VariableIndicator" if="xquery core"/ -->
     <ref name="VarName"/>
+    <optional if="xquery core">
+		  <ref name="TypeDeclaration" if="xquery core"/>
+    </optional>
     <ref name="ColonEquals"/>
     <ref name="Expr"/>
     <zeroOrMore if="xquery">
 		  <ref name="Comma"/>
       <sequence>
-				<ref name="VariableIndicator" if="xpath"/>
-				<ref name="Binding" if="xquery core"/>
+				<ref name="VariableIndicator"/>
 				<ref name="VarName"/>
+        <optional if="xquery core">
+					<ref name="TypeDeclaration" if="xquery core"/>
+        </optional>
 			</sequence>
       <ref name="ColonEquals"/>
       <ref name="Expr"/>
@@ -1650,27 +1775,54 @@ apply.
     <ref name="Expr"/>
   </production>
 
+  <production name="PositionalVar" if="core xquery">
+    <ref name="AtWord"/>
+		<ref name="VariableIndicator"/>
+		<ref name="VarName"/>    
+  </production>
+
 	<production name="ValidateExpr" if="xpath core xquery">
-		<!-- I think "validate" will be a problem for XPath -->
-		<ref name="Validate"/>
-		<optional>
-			<ref name="SchemaContext"/>
-		</optional>
-		<ref name="Lbrace"/>
+    <choice>
+      <ref name="ValidateLbrace"/>
+      <sequence>
+        <ref name="ValidateContext"/>
+        <ref name="SchemaGlobalContext"/>
+        <zeroOrMore>
+          <ref name="Slash"/>
+          <ref name="SchemaContextStep"/>
+        </zeroOrMore>
+        <ref name="LbraceExprEnclosure"/>
+      </sequence>
+    </choice>
 		<ref name="Expr"/>
 		<ref name="Rbrace"/>
 	</production>
 	
 	<production name="CastExpr" if="xpath core xquery">
-		<choice if="xquery xpath core">
-			<ref name="CastAs"/>
-			<ref name="TreatAs" if="xpath xquery"/>
-			<!-- ref name="AssertAs"/ -->
-		</choice>
-		<ref name="SequenceType"/>
-		<ref name="ParenthesizedExpr"/>
+	      <sequence>
+		  <ref name="CastAs"/>
+       	  <ref name="SingleType"/>
+      	</sequence>
+   		<ref name="ParenthesizedExpr"/>
+
+    <!-- ref name="Lpar"/>
+    <ref name="Expr"/>
+    <optional>
+      <ref name="Comma"/>
+      <ref name="Expr"/>
+    </optional>
+    <ref name="Rpar"/ -->
+
 	</production>
 	
+	<production name="TreatExpr" if="xpath core xquery">
+  		<sequence>
+        		<ref name="TreatAs" if="xpath xquery"/>
+        		<ref name="SequenceType"/>
+      	</sequence>
+      	<ref name="ParenthesizedExpr"/>    
+	</production>
+
 	<production name="Constructor" if="xquery core">
 		<choice break="true">
 			<ref name="ElementConstructor" if="xquery"/>
@@ -1680,6 +1832,7 @@ apply.
 			<ref name="ComputedDocumentConstructor" if="xquery core"/>
 			<ref name="ComputedElementConstructor" if="xquery core"/>
 			<ref name="ComputedAttributeConstructor" if="xquery core"/>
+			<ref name="ComputedTextConstructor" if="xquery core"/>
 		</choice>
 	</production>
 	
@@ -1716,21 +1869,31 @@ apply.
 		<choice break="false">
 			<ref name="LtLt"/>
 			<ref name="GtGt"/>
-			<ref name="Precedes"/>
-			<ref name="Follows"/>
 		</choice>
 	</production>
+
+	<production name="OrderByClause" if="xquery core">
+		<choice break="false">
+			<ref name="OrderBy"/>
+			<ref name="OrderByStable"/>
+		</choice>
+    <ref name="OrderSpecList"/>
+	</production>
 	
-  <production name="SortSpecList" if="xquery core">
-    <ref name="Expr"/>
-    <ref name="SortModifier"/>
-    <optional>
+  <production name="OrderSpecList" if="xquery core">
+    <ref name="OrderSpec"/>
+    <zeroOrMore>
       <ref name="Comma"/>
-      <ref name="SortSpecList"/>
-    </optional>
+      <ref name="OrderSpec"/>
+    </zeroOrMore>
+  </production>
+
+  <production name="OrderSpec" if="xquery core">
+    <ref name="Expr"/>
+    <ref name="OrderModifier"/>
   </production>
 	
-  <production name="SortModifier" if="xquery core">
+  <production name="OrderModifier" if="xquery core">
     <optional>
       <choice>
         <ref name="Ascending"/>
@@ -1743,15 +1906,20 @@ apply.
        <ref name="EmptyLeast"/>
       </choice>
     </optional>
+    <optional>
+      <ref name="Collation"/>
+      <ref name="StringLiteral"/>
+    </optional>
   </production>
 
   <production name="CaseClause" if="xquery core">
     <ref name="Case"/>
-    <ref name="SequenceType"/>
 		<optional>
 			<ref name="VariableIndicator"/>
 			<ref name="VarName"/>
+      <ref name="As"/>
 		</optional>
+    <ref name="SequenceType"/>
     <ref name="Return"/>
     <ref name="Expr"/>
   </production>
@@ -1963,6 +2131,7 @@ apply.
     <optional if="xquery core xpath">
       <ref name="ExprSequence"/>
     </optional>
+    <ref name="Expr" if="pathx1"/>
     <ref name="Rpar"/>
   </production>
 
@@ -1983,15 +2152,15 @@ apply.
   </production>
 
   <production name="Param" if="xquery core">
-		<optional>
-			<ref name="SequenceType"/>
-		</optional>
 		<ref name="VariableIndicator"/>
 		<ref name="VarName"/>
+		<optional>
+			<ref name="TypeDeclaration"/>
+		</optional>
   </production>
 
   <production name="SchemaContext" if="xpath xquery core">
-    <ref name="In"/>
+    <ref name="InContext"/>
     <ref name="SchemaGlobalContext"/>
     <zeroOrMore>
       <ref name="Slash"/>
@@ -2002,15 +2171,24 @@ apply.
   <production name="SchemaGlobalContext" if="xpath xquery core">
     <choice>
       <ref name="QName"/>
-      <sequence>
-        <ref name="Type"/>
-        <ref name="QName"/>
-      </sequence>
+      <ref name="TypeQName"/>
     </choice>
   </production>
 
   <production name="SchemaContextStep" if="xpath xquery core">
     <ref name="QName"/>
+  </production>
+
+  <production name="TypeDeclaration" if="xquery core">
+    <ref name="As"/>
+    <ref name="SequenceType"/>
+  </production>
+
+  <production name="SingleType" if="xquery core xpath">
+    <ref name="AtomicType"/>
+    <optional>
+      <ref name="QMark"/>
+    </optional>
   </production>
 
   <production name="SequenceType" if="xquery core xpath">
@@ -2021,13 +2199,6 @@ apply.
       </sequence>
       <ref name="Empty"/>
 		</choice>
-  </production>
-
-  <production name="Binding" if="xquery core">
-		<optional>
-			<ref name="SequenceType"/>
-		</optional>
-		<ref name="VariableIndicator"/>
   </production>
 	
   <production name="ItemType" if="xquery core xpath">
@@ -2093,7 +2264,7 @@ apply.
   <production name="OccurrenceIndicator" if="xquery core xpath">
     <optional>
       <choice>
-        <!-- ref name="Star" if="xpath xquery core"/ -->
+        <ref name="Star" if="xpath xquery core" show="no"/>
         <ref name="Multiply" if="xpath xquery core"/>
         <ref name="Plus"/>
         <ref name="QMark"/>
@@ -2189,7 +2360,7 @@ apply.
     <string>{</string>
   </token>
 
-  <token name="LbraceExprEnclosure" if="xquery core" override="true">
+  <token name="LbraceExprEnclosure" if="xquery core xpath" override="true">
     <string>{</string>
   </token>
 
@@ -2243,7 +2414,7 @@ apply.
     </oneOrMore>
   </token -->
 
-  <production name="ElementConstructor" if="xquery">
+  <production name="ElementConstructor" if="xquery" whitespace-spec="explicit">
     <choice name="TagOpenStart">
       <ref name="StartTagOpenRoot" show="no"/>
       <ref name="StartTagOpen"/>
@@ -2280,7 +2451,7 @@ apply.
         <ref name="ElementQNameLbrace"/>
         <sequence>
           <ref name="ElementLbrace"/>
-          <ref name="ExprSequence"/>
+          <ref name="Expr"/>
           <ref name="Rbrace"/>
           <ref name="LbraceExprEnclosure"/>
         </sequence>
@@ -2296,7 +2467,7 @@ apply.
         <ref name="AttributeQNameLbrace"/>
         <sequence>
           <ref name="AttributeLbrace"/>
-          <ref name="ExprSequence"/>
+          <ref name="Expr"/>
           <ref name="Rbrace"/>
           <ref name="LbraceExprEnclosure"/>
         </sequence>
@@ -2307,7 +2478,15 @@ apply.
     <ref name="Rbrace"/>
   </production>
 
-  <production name="CdataSection" if="xquery core">
+  <production name="ComputedTextConstructor" if="xquery core">
+    <ref name="TextLbrace"/>
+    <optional>
+      <ref name="ExprSequence"/>
+    </optional>
+    <ref name="Rbrace"/>
+  </production>
+
+  <production name="CdataSection" if="xquery core" whitespace-spec="significant">
     <ref name="CdataSectionStart"/>
     <zeroOrMore>
       <ref name="Char"/>
@@ -2315,7 +2494,7 @@ apply.
     <ref name="CdataSectionEnd"/>
   </production>
 
-  <production name="XmlProcessingInstruction" if="xquery core">
+  <production name="XmlProcessingInstruction" if="xquery core" whitespace-spec="significant">
     <ref name="ProcessingInstructionStart"/>
     <ref name="PITarget"/>
     <zeroOrMore>
@@ -2324,7 +2503,7 @@ apply.
     <ref name="ProcessingInstructionEnd"/>
   </production>
 
-  <production name="XmlComment" if="xquery core">
+  <production name="XmlComment" if="xquery core" whitespace-spec="significant">
     <ref name="XmlCommentStart"/>
     <zeroOrMore>
       <ref name="Char"/>
@@ -2332,7 +2511,7 @@ apply.
     <ref name="XmlCommentEnd"/>
   </production>
 
-  <production name="ElementContent" if="xquery">
+  <production name="ElementContent" if="xquery" whitespace-spec="significant">
     <choice break="true">
       <ref name="Char"/>
       <ref name="LCurlyBraceEscape"/>
@@ -2347,7 +2526,7 @@ apply.
     </choice>
   </production>
 
-  <production name="AttributeList" if="xquery">
+  <production name="AttributeList" if="xquery" whitespace-spec="explicit">
 	  <zeroOrMore name="optionalAttribute">
 			<ref name="S"/>
 			<optional>
@@ -2364,7 +2543,7 @@ apply.
     </zeroOrMore>
   </production>
 
-  <production name="AttributeValue" if="xquery">
+  <production name="AttributeValue" if="xquery" whitespace-spec="significant">
     <choice break="true">
       <sequence>
         <ref name="OpenQuot"/>
@@ -2389,7 +2568,7 @@ apply.
     </choice>
   </production>
 
-  <production name="AttributeValueContent" if="xquery">
+  <production name="AttributeValueContent" if="xquery" whitespace-spec="significant">
     <choice break="true">
       <ref name="Char"/>
       <ref name="CharRef"/>
@@ -2403,7 +2582,7 @@ apply.
 
   <production name="EnclosedExpr" if="xquery core">
     <choice>
-      <ref name="Lbrace"/>
+      <ref name="Lbrace" show="no"/>
       <ref name="LbraceExprEnclosure"/>
     </choice>
     <ref name="ExprSequence"/>
@@ -2419,18 +2598,24 @@ apply.
 		</choice>
   </production>
 
+  <production name="DefaultCollationDecl" if="xquery core">
+    <ref name="DefaultCollationEquals"/>
+    <!-- ref name="StringLiteral"/ -->
+    <ref name="URLLiteral"/>
+  </production>
+
   <production name="NamespaceDecl" if="xquery core">
     <ref name="DeclareNamespace"/>
     <ref name="NCNameForPrefix"/>
     <ref name="AssignEquals"/>
-    <ref name="NamespaceURLLiteral"/>
+    <ref name="URLLiteral"/>
   </production>
 
   <production name="SubNamespaceDecl" if="xquery core">
     <ref name="Namespace"/>
     <ref name="NCNameForPrefix"/>
     <ref name="AssignEquals"/>
-    <ref name="NamespaceURLLiteral"/>
+    <ref name="URLLiteral"/>
   </production>
 
   <production name="DefaultNamespaceDecl" if="xquery core">
@@ -2440,7 +2625,7 @@ apply.
     </choice>
     <ref name="Namespace"/>
     <ref name="AssignEquals"/>
-    <ref name="NamespaceURLLiteral"/>
+    <ref name="URLLiteral"/>
   </production>
 
   <!-- production name="ContextDecl" if="xquery core">
@@ -2453,15 +2638,15 @@ apply.
 
   <production name="FunctionDefn" if="xquery core">
     <ref name="DefineFunction"/>
-    <ref name="FuncName"/>
-	  <ref name="FuncPListOpen"/>
+    <ref name="QNameLpar"/>
+	  <!-- ref name="FuncPListOpen"/ -->
     <optional>
       <ref name="ParamList"/>
     </optional>
     <choice>
       <ref name="Rpar"/>
       <sequence if="xquery core">
-        <ref name="RparReturns"/>
+        <ref name="RparAs"/>
         <!-- Was Datatype -->
         <ref name="SequenceType"/>
       </sequence>
@@ -2486,8 +2671,6 @@ apply.
       <ref name="DefaultNamespaceDecl"/>
     </choice>
     <optional>
-      <!-- ref name="AtKeyword"/>
-      <ref name="StringLiteral"/ -->
       <ref name="AtStringLiteral"/>
     </optional>
   </production>
@@ -2598,19 +2781,19 @@ apply.
 	</production -->
 
   <!-- ==================== XPath 1.0 =========================-->
-  <production name="RHSStepExpr" if="pathx1">
+  <!-- production name="RHSStepExpr" if="pathx1">
     <choice>
       <ref name="AxisStep"/>
       <ref name="RHSGeneralStepExpr"/>
     </choice>
-  </production>
+  </production -->
 
-  <production name="RHSGeneralStepExpr" if="pathx1">
+  <!-- production name="RHSGeneralStepExpr" if="pathx1">
     <ref name="RHSPrimaryExpr"/>
     <ref name="RHSStepQualifiers"/>
-  </production>
+  </production -->
 
-  <production name="RHSStepQualifiers" if="pathx1">
+  <!-- production name="RHSStepQualifiers" if="pathx1">
     <zeroOrMore>
       <choice>
         <sequence>
@@ -2620,19 +2803,15 @@ apply.
         </sequence>
       </choice>
     </zeroOrMore>
-  </production>
+  </production -->
 
   <production name="RHSPrimaryExpr" if="pathx1">
     <choice break="true">
-      <ref name="Dot"/>
-      <ref name="DotDot"/>
-      <ref name="Wildcard"/>
-      <ref name="KindTest"/>
-      <ref name="ElementName"/>
-
-      <!-- ref name="Variable"/>
-      <ref name="Literal"/>
-      <ref name="ParenthesizedExpr"/ -->
+      <ref name="StepExpr" if="pathx1"/>
+      <sequence>
+        <ref name="PrimaryExpr" if="pathx1"/>
+        <ref name="Predicates"/>
+      </sequence>
     </choice>
   </production>
 
@@ -2648,14 +2827,14 @@ apply.
     </charClass>
   </token>
 
-  <token name="Letter" inline="false" is-macro="yes">
+  <token name="Letter" inline="false" is-macro="yes" is-xml="yes">
     <choice>
       <ref name="BaseChar"/>
       <ref name="Ideographic"/>
     </choice>
   </token>
 
-  <token name="BaseChar" inline="false" is-macro="yes">
+  <token name="BaseChar" inline="false" is-macro="yes" is-xml="yes">
     <charClass>
       <charCodeRange minValue="0041" maxValue="005a"/>
       <charCodeRange minValue="0061" maxValue="007a"/>
@@ -2862,7 +3041,7 @@ apply.
     </charClass>
   </token>
 
-  <token name="Ideographic" inline="false" is-macro="yes">
+  <token name="Ideographic" inline="false" is-macro="yes" is-xml="yes">
     <charClass>
       <charCodeRange minValue="4e00" maxValue="9fa5"/>
       <charCode value="3007"/>
@@ -2870,7 +3049,7 @@ apply.
     </charClass>
   </token>
 
-  <token name="CombiningChar" inline="false" is-macro="yes">
+  <token name="CombiningChar" inline="false" is-macro="yes" is-xml="yes">
     <charClass>
       <charCodeRange minValue="0300" maxValue="0345"/>
       <charCodeRange minValue="0360" maxValue="0361"/>
@@ -2970,7 +3149,7 @@ apply.
     </charClass>
   </token>
 
-  <token name="Digit" inline="false" is-macro="yes">
+  <token name="Digit" inline="false" is-macro="yes" is-xml="yes">
     <charClass>
       <charCodeRange minValue="0030" maxValue="0039"/>
       <charCodeRange minValue="0660" maxValue="0669"/>
@@ -2990,7 +3169,7 @@ apply.
     </charClass>
   </token>
 
-  <token name="Extender" inline="false" is-macro="yes">
+  <token name="Extender" inline="false" is-macro="yes" is-xml="yes">
     <charClass>
       <charCode value="00b7"/>
       <charCode value="02d0"/>

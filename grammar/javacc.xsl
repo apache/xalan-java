@@ -19,11 +19,42 @@
      
  <!-- ==============  CHANGE LOG: ==============
   $Log$
-  Revision 1.1.2.1  2002/08/14 18:47:41  pauldick
-  Xalan3 specific additions.
+  Revision 1.1.2.1.2.1  2002/11/13 05:27:33  sboag
+  Integrated new grammar from Nov. 15th draft, with a small tweak to allow multiple
+  comparison expressions (to allow success of xpath1 parsing).
 
-  Revision 1.1  2002/07/14 05:47:11  sboag
-  new grammar definition set for XPath2.
+  Revision 1.14  2002/11/06 07:42:25  sboag
+  1) I did some work on BNF production numbering.  At least it is consecutive
+  now in regards to the defined tokens.
+
+  2) (XQuery only) I added URL Literal to the main list of literals, and added a
+  short note that it is defined equivalently to string literal.  URL Literal has to
+  exist right now for relatively esoteric purposes for transitioning the lexical
+  state (to DEFAULT rather than OPERATOR as StringLiteral does).  It is
+  used in DefaultCollationDecl, NamespaceDecl, SubNamespaceDecl, and
+  DefaultNamespaceDecl.  To be clear, URL Literal was already in the August
+  draft, I just added it to the list of literals in the main doc.
+
+  Revision 1.13  2002/10/22 16:51:08  sboag
+  New Grammar Issues List.  New productions:
+  OrderBy, ComputedTextConstructor, PositionVar, Castable, As (TypeDecl).
+  Removed:
+  unordered, SortExpr
+  Fixed reserved word bugs with:
+  empty, stable
+  Other minor "fixes":
+  Change precedence of UnaryExpr to be looser binding than UnionExpr
+  Change RangeExpr to only allow one "to".
+
+  Revision 1.12  2002/07/28 19:54:13  sboag
+  Fixed problems with import, '*', '?', and ',', reported by Jonathan and Dana.
+
+  Revision 1.11  2002/07/18 01:17:39  sboag
+  Fixed some bugs.
+
+  Revision 1.10  2002/07/15 07:25:47  sboag
+  Bug fixes, added match patterns, and responses to
+  Don's email http://lists.w3.org/Archives/Member/w3c-xml-query-wg/2002Jul/0156.html.
 
   Revision 1.9  2002/06/28 09:02:07  sboag
   Merged Don's latest work with new grammar proposal.  Changes too numerous
@@ -165,28 +196,136 @@
 // jwr: why doesn't this use java.util.Stack() instead of java.util.Vector()?
 
 TOKEN_MGR_DECLS : {
-  private java.util.Vector stateStack = new java.util.Vector();
-  private void pushState() {
+  private Stack stateStack = new Stack();
+  static final int PARENMARKER = 2000;
+  
+  /**
+   * Push the current state onto the state stack.
+   */
+  private void pushState()
+  {
     stateStack.addElement(new Integer(curLexState));
   }
-  private void pushState(int state) {
-    stateStack.addElement(new Integer(state));
+  
+  /**
+   * Push the given state onto the state stack.
+   * @param state Must be a valid state.
+   */
+  private void pushState(int state)
+  {
+    stateStack.push(new Integer(state));
   }
-  private void popState() {
-    if(stateStack.size() == 0)
+  
+  /**
+   * Pop the state on the state stack, and switch to that state.
+   */
+  private void popState()
+  {
+    if (stateStack.size() == 0)
     {
       printLinePos();
     }
 
-    int nextState = ((Integer)stateStack.lastElement()).intValue();
-
-    stateStack.setSize(stateStack.size() - 1);
+    int nextState = ((Integer) stateStack.pop()).intValue();
+    if(nextState == PARENMARKER)
+      printLinePos();
     SwitchTo(nextState);
   }
 
+  /**
+   * Push a parenthesis state.  This pushes, in addition to the 
+   * lexical state value, a special marker that lets 
+   * resetParenStateOrSwitch(int state)
+   * know if it should pop and switch.  Used for the comma operator.
+   */
+  private void pushParenState(int commaState, int rparState)
+  {
+    stateStack.push(new Integer(rparState));
+    stateStack.push(new Integer(commaState));
+    stateStack.push(new Integer(PARENMARKER));
+    SwitchTo(commaState);
+  }
+
+
+//  /**
+//   * Push a parenthesis state.  This pushes, in addition to the 
+//   * lexical state value, a special marker that lets 
+//   * resetParenStateOrSwitch(int state)
+//   * know if it should pop and switch.  Used for the comma operator.
+//   */
+//  private void pushParenState()
+//  {
+//    stateStack.push(new Integer(curLexState));
+//    stateStack.push(new Integer(PARENMARKER));
+//  }
+
+  /**
+   * If a PARENMARKER is on the stack, switch the state to 
+   * the state underneath the marker.  Leave the stack in 
+   * the same state.  If the stack is zero, do nothing.
+   * @param state The state to switch to if the PARENMARKER is not found.
+   */
+  private void resetParenStateOrSwitch(int state)
+  {
+    if (stateStack.size() == 0)
+    {
+      SwitchTo(state);
+      return;
+    }
+
+    int nextState = ((Integer) stateStack.peek()).intValue();
+    if (PARENMARKER == nextState)
+    {
+      // Wait for right paren to do the pop!
+      Integer intObj = (Integer) stateStack.elementAt(stateStack.size() - 2);
+      nextState = intObj.intValue();
+      SwitchTo(nextState);
+    }
+    else
+      SwitchTo(state);
+  }
+  
+//   /**
+//    * Pop the lexical state stack two elements.
+//    */
+// private void popParenState()
+//   {
+//     if (stateStack.size() == 0)
+//       return;
+// 
+//     int nextState = ((Integer) stateStack.peek()).intValue();
+//     if (PARENMARKER == nextState)
+//     {
+//       stateStack.pop();
+//       stateStack.pop();
+//     }
+//   }
+
+  /**
+   * Pop the lexical state stack two elements.
+   */
+  private void popParenState()
+  {
+    if (stateStack.size() == 0)
+      return;
+
+    int nextState = ((Integer) stateStack.peek()).intValue();
+    if (PARENMARKER == nextState)
+    {
+      stateStack.pop();
+      stateStack.pop();
+      int rparState = ((Integer) stateStack.peek()).intValue();
+      SwitchTo(rparState);
+      stateStack.pop();
+    }
+  }
+
+  /**
+   * Print the current line position.
+   */
   public void printLinePos()
   {
-    System.err.println("Line: "+input_stream.getEndLine());
+    System.err.println("Line: " + input_stream.getEndLine());
   }
 }
 
@@ -208,6 +347,12 @@ TOKEN_MGR_DECLS : {
               or contains(concat(@refs, ' '), concat(' ',current()/@name, ' '))]"/>
     <xsl:variable name="defaultLexState" 
       select="$lexStateTransitions/g:transition-default[not(@if) or contains(@if,$spec)][not($lexState)]"/>
+
+    <xsl:if test="$defaultLexState">
+      <xsl:message>
+        <xsl:text>Default transition: </xsl:text><xsl:value-of select="@name"/>
+      </xsl:message>
+    </xsl:if>
     
     <xsl:variable name="recognizeLexState" select="$lexState/@recognize | $defaultLexState/@recognize"/>
     
@@ -235,7 +380,7 @@ TOKEN_MGR_DECLS : {
     <xsl:value-of select="@name"/> : <xsl:call-template name="space"/>
     <xsl:text> &gt;</xsl:text>
     <xsl:choose>
-      <xsl:when test="contains($lexState/@action, 'pushState(')">
+      <xsl:when test="contains($lexState/@action, '(')">
         <xsl:text> { </xsl:text>
         <xsl:value-of select="$lexState/@action"/>
         <xsl:text>; }</xsl:text>
@@ -531,7 +676,16 @@ we use ]]> as a single token. -->
       <xsl:text>)</xsl:text>
       -->
       
-      <xsl:text>)*</xsl:text>
+      <xsl:text>)</xsl:text>
+      <xsl:choose>
+        <xsl:when test="g:binary[not(@if) or contains(@if,$spec)]/@prefix-seq-type">
+          <xsl:value-of select="g:binary/@prefix-seq-type"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>*</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+
     </xsl:when>
     <xsl:when test="g:postfix">
       <xsl:if test="following-sibling::g:level">
@@ -542,7 +696,15 @@ we use ]]> as a single token. -->
         <xsl:with-param name="choices"
                         select="g:postfix[not(@if) or contains(@if,$spec)]"/>
       </xsl:call-template>
-      <xsl:text>*</xsl:text>
+      <xsl:choose>
+        <xsl:when test="g:postfix/@prefix-seq-type">
+          <xsl:value-of select="g:postfix/@prefix-seq-type"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>*</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      
     </xsl:when>
     <xsl:when test="g:prefix">
       <xsl:choose>

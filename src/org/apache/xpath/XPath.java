@@ -75,6 +75,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XNodeSequenceSingleton;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.parser.ParseException;
+import org.apache.xpath.parser.RootOfRoot;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.Node;
 

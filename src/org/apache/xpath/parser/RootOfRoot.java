@@ -21,6 +21,11 @@ public class RootOfRoot extends NonExecutableExpression
   {
   	// We don't want this node to any longer be the child's parent!
   	Node n = jjtGetChild(0);
+    if(n instanceof RootOfRoot)
+    {
+      n = n.jjtGetChild(0);
+      this.jjtAddChild(n, 0);
+    }
    	n.jjtSetParent(null);
   	super.jjtClose();
   }
