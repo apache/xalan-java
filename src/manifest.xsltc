@@ -53,13 +53,13 @@ Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
 Implementation-URL: http://jakarta.apache.org/bcel
 
-Name: org/apache/regex
+Name: org/apache/regexp
 Comment: Java Regular Expression package 
 Specification-Title: Java Regular Expression package 
 Specification-Vendor: Apache Software Foundation 
 Specification-Version: 1.2
-Implementation-Title: org.apache.regex
+Implementation-Title: org.apache.regexp
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
-Implementation-URL: http://jakarta.apache.org/regex
+Implementation-URL: http://jakarta.apache.org/regexp
 
