@@ -2011,6 +2011,12 @@ public class XPathParser
       if (lookahead('/', 1))
       {
         appendOp(4, OpCodes.MATCH_ANY_ANCESTOR);
+        
+        // Added this to fix bug reported by Myriam for match="//x/a"
+        // patterns.  If you don't do this, the 'x' step will think it's part
+        // of a '//' pattern, and so will cause 'a' to be matched when it has
+        // any ancestor that is 'x'.
+        nextToken();
       }
       else
       {
