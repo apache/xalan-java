@@ -80,7 +80,7 @@
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.0.1">
      &xsltcdone;
-     <p>This release also includes a number of bug fixes to the &xslt4j; and TrAX core and Xalan-Java 1 compability API. 
+     <p>This release also includes a number of bug fixes to &xslt4j; and TrAX. 
      We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple
      client transformation requests involving the same stylesheet.</p>
      &done-j;
@@ -124,7 +124,7 @@
      issues, we sincerely want (and need!) your active participation in the ongoing development of Xalan.</p>
      <p>Xerces bug in &xml4j-used;:</p>
      <ul>
-       <li>&xml4j; 1.2.3 does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16
+       <li>&xml4j-used; does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16
         documents. Xerces will post a fix shortly.<br/><br/></li>
      </ul>
      </s3>     
