@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2004 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,6 +79,7 @@ import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.Stylesheet;
 
 import org.xml.sax.Attributes;
@@ -216,7 +217,8 @@ public class ProcessorExsltFunction extends ProcessorTemplateElem
       ElemTemplateElement parent = child.getParentElem();
       if (parent instanceof ElemExsltFuncResult 
           || parent instanceof ElemVariable
-          || parent instanceof ElemParam)
+          || parent instanceof ElemParam
+          || parent instanceof ElemMessage)
         return true;
       child = parent;      
     }
