@@ -151,15 +151,25 @@ final class Predicate extends Expression {
      * reference type are always converted to booleans.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
 	Type texp = _exp.typeCheck(stable);
 
+	// We need explicit type information for reference types
 	if (texp instanceof ReferenceType) {
-	    // TODO: print a warning indicating that no expansion is
-	    // possible in this case due to lack of type info
 	    throw new TypeCheckError(this);
 	}
 
+	// Result tree fragments need to be type-casted to a numerical type
+	// in cases where they are used in position filters.
+	if (texp instanceof ResultTreeType) {
+	    _exp = new CastExpr(_exp, Type.String); // Costly!!!!
+	    _exp = new CastExpr(_exp, Type.Real);
+	    texp = _exp.typeCheck(stable);
+	}
+
+	// Numerical types will be converted to a position filter
 	if (texp instanceof NumberType) {
+
 	    if (texp instanceof IntType == false) {
 		_exp = new CastExpr(_exp, Type.Int);
 	    }
