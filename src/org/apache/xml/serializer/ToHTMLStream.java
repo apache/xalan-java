@@ -632,29 +632,30 @@ public class ToHTMLStream extends ToStream
             String doctypePublic = getDoctypePublic();
             if ((null != doctypeSystem) || (null != doctypePublic))
             {
+                final java.io.Writer writer = m_writer;
                 try
                 {
-                m_writer.write("<!DOCTYPE HTML");
+                writer.write("<!DOCTYPE HTML");
 
                 if (null != doctypePublic)
                 {
-                    m_writer.write(" PUBLIC \"");
-                    m_writer.write(doctypePublic);
-                    m_writer.write('"');
+                    writer.write(" PUBLIC \"");
+                    writer.write(doctypePublic);
+                    writer.write('"');
                 }
 
                 if (null != doctypeSystem)
                 {
                     if (null == doctypePublic)
-                        m_writer.write(" SYSTEM \"");
+                        writer.write(" SYSTEM \"");
                     else
-                        m_writer.write('"');
+                        writer.write('"');
 
-                    m_writer.write(doctypeSystem);
-                    m_writer.write('"');
+                    writer.write(doctypeSystem);
+                    writer.write('"');
                 }
 
-                m_writer.write('>');
+                writer.write('>');
                 outputLineSep();
                 }
                 catch(IOException e)
@@ -776,8 +777,9 @@ public class ToHTMLStream extends ToStream
             m_startTagOpen = true;
             m_elementDesc = elemDesc;
             m_isprevtext = false;
-            m_writer.write('<');
-            m_writer.write(name);
+            final java.io.Writer writer = m_writer;
+            writer.write('<');
+            writer.write(name);
             
             
             // OPTIMIZE-EMPTY 
@@ -816,12 +818,12 @@ public class ToHTMLStream extends ToStream
                 {
                     if (m_doIndent)
                         indent();
-                    m_writer.write(
+                    writer.write(
                         "<META http-equiv=\"Content-Type\" content=\"text/html; charset=");
                     String encoding = getEncoding();
                     String encode = Encodings.getMimeEncoding(encoding);
-                    m_writer.write(encode);
-                    m_writer.write("\">");
+                    writer.write(encode);
+                    writer.write("\">");
                 }
             }
         }
@@ -886,11 +888,12 @@ public class ToHTMLStream extends ToStream
                 m_inBlockElem = !isBlockElement;
             }
 
+            final java.io.Writer writer = m_writer;
             if (!m_startTagOpen)
             {
-                m_writer.write("</");
-                m_writer.write(name);
-                m_writer.write('>');
+                writer.write("</");
+                writer.write(name);
+                writer.write('>');
             }
             else
             {
@@ -908,16 +911,16 @@ public class ToHTMLStream extends ToStream
                 {
                     // As per Dave/Paul recommendation 12/06/2000
                     // if (shouldIndent)
-                    // m_writer.write('>');
+                    // writer.write('>');
                     //  indent(m_currentIndent);
 
-                    m_writer.write("></");
-                    m_writer.write(name);
-                    m_writer.write('>');
+                    writer.write("></");
+                    writer.write(name);
+                    writer.write('>');
                 }
                 else
                 {
-                    m_writer.write('>');
+                    writer.write('>');
                 }
 
                 /* no need to call m_cdataSectionStates.pop();
@@ -989,27 +992,28 @@ public class ToHTMLStream extends ToStream
         throws IOException
     {
 
-        m_writer.write(' ');
+        final java.io.Writer writer = m_writer;
+        writer.write(' ');
 
         if (   ((value.length() == 0) || value.equalsIgnoreCase(name))
             && elemDesc != null 
             && elemDesc.isAttrFlagSet(name, ElemDesc.ATTREMPTY))
         {
-            m_writer.write(name);
+            writer.write(name);
         }
         else
         {
             // %REVIEW% %OPT%
             // Two calls to single-char write may NOT
             // be more efficient than one to string-write...
-            m_writer.write(name);
-            m_writer.write("=\"");
+            writer.write(name);
+            writer.write("=\"");
             if (   elemDesc != null
                 && elemDesc.isAttrFlagSet(name, ElemDesc.ATTRURL))
-                writeAttrURI(value, m_specialEscapeURLs);
+                writeAttrURI(writer, value, m_specialEscapeURLs);
             else
-                writeAttrString(value, this.getEncoding());
-            m_writer.write('"');
+                writeAttrString(writer, value, this.getEncoding());
+            writer.write('"');
 
         }
     }
@@ -1071,7 +1075,8 @@ public class ToHTMLStream extends ToStream
      *
      * @throws org.xml.sax.SAXException if a bad surrogate pair is detected.
      */
-    public void writeAttrURI(String string, boolean doURLEscaping)
+    public void writeAttrURI(
+        final java.io.Writer writer, String string, boolean doURLEscaping)
         throws IOException
     {
         // http://www.ietf.org/rfc/rfc2396.txt says:
@@ -1104,7 +1109,7 @@ public class ToHTMLStream extends ToStream
             {
                 if (cleanLength > 0)
                 {
-                    m_writer.write(chars, cleanStart, cleanLength);
+                    writer.write(chars, cleanStart, cleanLength);
                     cleanLength = 0;
                 }
                 if (doURLEscaping)
@@ -1116,13 +1121,13 @@ public class ToHTMLStream extends ToStream
                     // Note that Kay doesn't escape 0x20...
                     //  if(ch == 0x20) // Not sure about this... -sb
                     //  {
-                    //    m_writer.write(ch);
+                    //    writer.write(ch);
                     //  }
                     //  else 
                     if (ch <= 0x7F)
                     {
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(ch));
+                        writer.write('%');
+                        writer.write(makeHHString(ch));
                     }
                     else if (ch <= 0x7FF)
                     {
@@ -1131,10 +1136,10 @@ public class ToHTMLStream extends ToStream
                         int high = (ch >> 6) | 0xC0;
                         int low = (ch & 0x3F) | 0x80;
                         // First 6 bits, + high bit
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(high));
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(low));
+                        writer.write('%');
+                        writer.write(makeHHString(high));
+                        writer.write('%');
+                        writer.write(makeHHString(low));
                     }
                     else if (isUTF16Surrogate(ch)) // high surrogate
                     {
@@ -1179,14 +1184,14 @@ public class ToHTMLStream extends ToStream
                         int byte3 = 0x80 | yyyyyy;
                         int byte4 = 0x80 | xxxxxx;
 
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(byte1));
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(byte2));
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(byte3));
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(byte4));
+                        writer.write('%');
+                        writer.write(makeHHString(byte1));
+                        writer.write('%');
+                        writer.write(makeHHString(byte2));
+                        writer.write('%');
+                        writer.write(makeHHString(byte3));
+                        writer.write('%');
+                        writer.write(makeHHString(byte4));
                     }
                     else
                     {
@@ -1195,24 +1200,24 @@ public class ToHTMLStream extends ToStream
                         // middle 6 bits
                         int low = (ch & 0x3F) | 0x80;
                         // First 6 bits, + high bit
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(high));
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(middle));
-                        m_writer.write('%');
-                        m_writer.write(makeHHString(low));
+                        writer.write('%');
+                        writer.write(makeHHString(high));
+                        writer.write('%');
+                        writer.write(makeHHString(middle));
+                        writer.write('%');
+                        writer.write(makeHHString(low));
                     }
 
                 }
                 else if (escapingNotNeeded(ch))
                 {
-                    m_writer.write(ch);
+                    writer.write(ch);
                 }
                 else
                 {
-                    m_writer.write("&#");
-                    m_writer.write(Integer.toString(ch));
-                    m_writer.write(';');
+                    writer.write("&#");
+                    writer.write(Integer.toString(ch));
+                    writer.write(';');
                 }
                 // In this character range we have first written out any previously accumulated 
                 // "clean" characters, then processed the current more complicated character,
@@ -1237,16 +1242,16 @@ public class ToHTMLStream extends ToStream
 
                 if (cleanLength > 0)
                 {
-                    m_writer.write(chars, cleanStart, cleanLength);
+                    writer.write(chars, cleanStart, cleanLength);
                     cleanLength = 0;
                 }   
                 
                 
                 // Mike Kay encodes this as &#34;, so he may know something I don't?
                 if (doURLEscaping)
-                    m_writer.write("%22");
+                    writer.write("%22");
                 else
-                    m_writer.write("&quot;"); // we have to escape this, I guess.
+                    writer.write("&quot;"); // we have to escape this, I guess.
 
                 // We have written out any clean characters, then the escaped '%' and now we
                 // We now we reset the next possible clean character.
@@ -1268,15 +1273,15 @@ public class ToHTMLStream extends ToStream
             // otherwise write out the clean chars at the end of the
             // array
             if (cleanStart == 0)
-                m_writer.write(string);
+                writer.write(string);
             else
-                m_writer.write(chars, cleanStart, cleanLength);
+                writer.write(chars, cleanStart, cleanLength);
         }
         else if (cleanLength == 1)
         {
             // a little optimization for 1 clean character
             // (we could have let the previous if(...) handle them all)
-            m_writer.write(ch);
+            writer.write(ch);
         }
     }
 
@@ -1289,10 +1294,11 @@ public class ToHTMLStream extends ToStream
      *
      * @throws org.xml.sax.SAXException
      */
-    public void writeAttrString(String string, String encoding)
+    public void writeAttrString(
+        final java.io.Writer writer, String string, String encoding)
         throws IOException
     {
-
+        
         final char chars[] = string.toCharArray();
         final int end = chars.length;
 
@@ -1325,10 +1331,10 @@ public class ToHTMLStream extends ToStream
             {
                 if (cleanLength > 0)
                 {
-                    m_writer.write(chars,cleanStart,cleanLength);
+                    writer.write(chars,cleanStart,cleanLength);
                     cleanLength = 0;
                 }
-                int pos = accumDefaultEntity(m_writer, ch, i, chars, end, false);
+                int pos = accumDefaultEntity(writer, ch, i, chars, end, false);
 
                 if (i != pos)
                 {
@@ -1350,27 +1356,26 @@ public class ToHTMLStream extends ToStream
                     else if ((ch < m_maxCharacter) && (m_maxCharacter == 0xFFFF)
                     && (ch != 160))
                     {
-                    m_writer.write(ch);  // no escaping in this case
+                    writer.write(ch);  // no escaping in this case
                     }
                     else
                     */
                     String entityName = m_charInfo.getEntityNameForChar(ch);
-
                     if (null != entityName)
                     {
-                        m_writer.write('&');
-                        m_writer.write(entityName);
-                        m_writer.write(';');
+                        writer.write('&');
+                        writer.write(entityName);
+                        writer.write(';');
                     }
                     else if (escapingNotNeeded(ch))
                     {
-                        m_writer.write(ch); // no escaping in this case
+                        writer.write(ch); // no escaping in this case
                     }
                     else
                     {
-                        m_writer.write("&#");
-                        m_writer.write(Integer.toString(ch));
-                        m_writer.write(';');
+                        writer.write("&#");
+                        writer.write(Integer.toString(ch));
+                        writer.write(';');
                     }
                 }
                 cleanStart = i + 1;
@@ -1385,15 +1390,15 @@ public class ToHTMLStream extends ToStream
             // otherwise write out the clean chars at the end of the
             // array
             if (cleanStart == 0)
-                m_writer.write(string);
+                writer.write(string);
             else
-                m_writer.write(chars, cleanStart, cleanLength);
+                writer.write(chars, cleanStart, cleanLength);
         }
         else if (cleanLength == 1)
         {
             // a little optimization for 1 clean character
             // (we could have let the previous if(...) handle them all)
-            m_writer.write(ch);
+            writer.write(ch);
         }
     }
 
@@ -1446,11 +1451,11 @@ public class ToHTMLStream extends ToStream
 //              if (shouldIndent())
 //                  indent();
 
-                // m_writer.write("<![CDATA[");
-                // m_writer.write(chars, start, length);
+                // writer.write("<![CDATA[");
+                // writer.write(chars, start, length);
                 writeNormalizedChars(chars, start, length, false);
 
-                // m_writer.write("]]>");
+                // writer.write("]]>");
                 
                 // time to generate characters event
                 if (m_tracer != null)
@@ -1522,7 +1527,7 @@ public class ToHTMLStream extends ToStream
                 if (shouldIndent())
                     indent();
 
-                // m_writer.write(ch, start, length);
+                // writer.write(ch, start, length);
                 writeNormalizedChars(ch, start, length, true);
             }
             catch (IOException ioe)
@@ -1584,16 +1589,17 @@ public class ToHTMLStream extends ToStream
             if (shouldIndent())
                 indent();
 
-            //m_writer.write("<?" + target);
-            m_writer.write("<?");
-            m_writer.write(target);
+            final java.io.Writer writer = m_writer;
+            //writer.write("<?" + target);
+            writer.write("<?");
+            writer.write(target);
 
             if (data.length() > 0 && !Character.isSpaceChar(data.charAt(0)))
-                m_writer.write(' '); 
+                writer.write(' '); 
 
-            //m_writer.write(data + ">"); // different from XML
-            m_writer.write(data); // different from XML
-            m_writer.write('>'); // different from XML
+            //writer.write(data + ">"); // different from XML
+            writer.write(data); // different from XML
+            writer.write('>'); // different from XML
 
             // Always output a newline char if not inside of an 
             // element. The whitespace is not significant in that
@@ -1627,9 +1633,10 @@ public class ToHTMLStream extends ToStream
         try
         {
 
-        m_writer.write('&');
-        m_writer.write(name);
-        m_writer.write(';');
+        final java.io.Writer writer = m_writer;
+        writer.write('&');
+        writer.write(name);
+        writer.write(';');
         
         } catch(IOException e)
         {

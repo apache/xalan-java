@@ -278,34 +278,34 @@ abstract public class ToStream extends SerializerBase
      */
     protected final void flushWriter() throws org.xml.sax.SAXException
     {
-
-        if (null != m_writer)
+        final java.io.Writer writer = m_writer;
+        if (null != writer)
         {
             try
             {
-                if (m_writer instanceof WriterToUTF8Buffered)
+                if (writer instanceof WriterToUTF8Buffered)
                 {
                     if (m_shouldFlush)
-                         ((WriterToUTF8Buffered) m_writer).flush();
+                         ((WriterToUTF8Buffered) writer).flush();
                     else
-                         ((WriterToUTF8Buffered) m_writer).flushBuffer();
+                         ((WriterToUTF8Buffered) writer).flushBuffer();
                 }
-                if (m_writer instanceof WriterToUTF8)
+                if (writer instanceof WriterToUTF8)
                 {
                     if (m_shouldFlush)
-                        m_writer.flush();
+                        writer.flush();
                 }
-                else if (m_writer instanceof WriterToASCI)
+                else if (writer instanceof WriterToASCI)
                 {
                     if (m_shouldFlush)
-                        m_writer.flush();
+                        writer.flush();
                 }
                 else
                 {
                     // Flush always. 
                     // Not a great thing if the writer was created 
                     // by this class, but don't have a choice.
-                    m_writer.flush();
+                    writer.flush();
                 }
             }
             catch (IOException ioe)
@@ -356,21 +356,21 @@ abstract public class ToStream extends SerializerBase
             return;
         try
         {
-
+            final java.io.Writer writer = m_writer;
             if (m_inDoctype)
             {
-                m_writer.write(" [");
-                m_writer.write(m_lineSep, 0, m_lineSepLen);
+                writer.write(" [");
+                writer.write(m_lineSep, 0, m_lineSepLen);
 
                 m_inDoctype = false;
             }
 
-            m_writer.write("<!ELEMENT ");
-            m_writer.write(name);
-            m_writer.write(' ');
-            m_writer.write(model);
-            m_writer.write('>');
-            m_writer.write(m_lineSep, 0, m_lineSepLen);
+            writer.write("<!ELEMENT ");
+            writer.write(name);
+            writer.write(' ');
+            writer.write(model);
+            writer.write('>');
+            writer.write(m_lineSep, 0, m_lineSepLen);
         }
         catch (IOException e)
         {
@@ -402,8 +402,9 @@ abstract public class ToStream extends SerializerBase
         {
             if (m_inDoctype)
             {
-                m_writer.write(" [");
-                m_writer.write(m_lineSep, 0, m_lineSepLen);
+                final java.io.Writer writer = m_writer;
+                writer.write(" [");
+                writer.write(m_lineSep, 0, m_lineSepLen);
 
                 m_inDoctype = false;
             }
@@ -427,13 +428,13 @@ abstract public class ToStream extends SerializerBase
      */
     void outputEntityDecl(String name, String value) throws IOException
     {
-
-        m_writer.write("<!ENTITY ");
-        m_writer.write(name);
-        m_writer.write(" \"");
-        m_writer.write(value);
-        m_writer.write("\">");
-        m_writer.write(m_lineSep, 0, m_lineSepLen);
+        final java.io.Writer writer = m_writer;
+        writer.write("<!ENTITY ");
+        writer.write(name);
+        writer.write(" \"");
+        writer.write(value);
+        writer.write("\">");
+        writer.write(m_lineSep, 0, m_lineSepLen);
     }
 
     /**
@@ -773,10 +774,10 @@ abstract public class ToStream extends SerializerBase
      */
     private void printSpace(int n) throws IOException
     {
-
+        final java.io.Writer writer = m_writer;
         for (int i = 0; i < n; i++)
         {
-            m_writer.write(' ');
+            writer.write(' ');
         }
 
     }
@@ -813,31 +814,32 @@ abstract public class ToStream extends SerializerBase
             return;
         try
         {
+            final java.io.Writer writer = m_writer;
             if (m_inDoctype)
             {
-                m_writer.write(" [");
-                m_writer.write(m_lineSep, 0, m_lineSepLen);
+                writer.write(" [");
+                writer.write(m_lineSep, 0, m_lineSepLen);
 
                 m_inDoctype = false;
             }
 
-            m_writer.write("<!ATTLIST ");
-            m_writer.write(eName);
-            m_writer.write(' ');
+            writer.write("<!ATTLIST ");
+            writer.write(eName);
+            writer.write(' ');
 
-            m_writer.write(aName);
-            m_writer.write(' ');
-            m_writer.write(type);
+            writer.write(aName);
+            writer.write(' ');
+            writer.write(type);
             if (valueDefault != null)
             {
-                m_writer.write(' ');
-                m_writer.write(valueDefault);
+                writer.write(' ');
+                writer.write(valueDefault);
             }
 
-            //m_writer.write(" ");
-            //m_writer.write(value);
-            m_writer.write('>');
-            m_writer.write(m_lineSep, 0, m_lineSepLen);
+            //writer.write(" ");
+            //writer.write(value);
+            writer.write('>');
+            writer.write(m_lineSep, 0, m_lineSepLen);
         }
         catch (IOException e)
         {
@@ -973,12 +975,13 @@ abstract public class ToStream extends SerializerBase
 
         i++;
 
-        m_writer.write('&');
-        m_writer.write('#');
+        final java.io.Writer writer = m_writer;
+        writer.write('&');
+        writer.write('#');
 
-        // m_writer.write('x');
-        m_writer.write(Integer.toString(surrogateValue));
-        m_writer.write(';');
+        // writer.write('x');
+        writer.write(Integer.toString(surrogateValue));
+        writer.write(';');
 
         return i;
     }
@@ -1099,7 +1102,7 @@ abstract public class ToStream extends SerializerBase
         boolean isCData)
         throws IOException, org.xml.sax.SAXException
     {
-
+        final java.io.Writer writer = m_writer;
         int end = start + length;
 
         for (int i = start; i < end; i++)
@@ -1108,7 +1111,7 @@ abstract public class ToStream extends SerializerBase
 
             if (CharInfo.S_LINEFEED == c)
             {
-                m_writer.write(m_lineSep, 0, m_lineSepLen);
+                writer.write(m_lineSep, 0, m_lineSepLen);
             }
             else if (isCData && (!escapingNotNeeded(c)))
             {
@@ -1123,18 +1126,18 @@ abstract public class ToStream extends SerializerBase
                 }
                 else
                 {
-                    m_writer.write("&#");
+                    writer.write("&#");
 
                     String intStr = Integer.toString((int) c);
 
-                    m_writer.write(intStr);
-                    m_writer.write(';');
+                    writer.write(intStr);
+                    writer.write(';');
                 }
 
                 //                if ((i != 0) && (i < (end - 1)))
                 //                if (!m_cdataTagOpen && (i < (end - 1)))
                 //                {
-                //                    m_writer.write(CDATA_DELIMITER_OPEN);
+                //                    writer.write(CDATA_DELIMITER_OPEN);
                 //                    m_cdataTagOpen = true;
                 //                }
             }
@@ -1145,7 +1148,7 @@ abstract public class ToStream extends SerializerBase
                         && (']' == ch[i + 1])
                         && ('>' == ch[i + 2])))
             {
-                m_writer.write(CDATA_CONTINUE);
+                writer.write(CDATA_CONTINUE);
 
                 i += 2;
             }
@@ -1155,10 +1158,10 @@ abstract public class ToStream extends SerializerBase
                 {
                     if (isCData && !m_cdataTagOpen)
                     {
-                        m_writer.write(CDATA_DELIMITER_OPEN);
+                        writer.write(CDATA_DELIMITER_OPEN);
                         m_cdataTagOpen = true;
                     }
-                    m_writer.write(c);
+                    writer.write(c);
                 }
 
                 // This needs to go into a function... 
@@ -1172,12 +1175,12 @@ abstract public class ToStream extends SerializerBase
                 {
                     if (m_cdataTagOpen)
                         closeCDATA();
-                    m_writer.write("&#");
+                    writer.write("&#");
 
                     String intStr = Integer.toString((int) c);
 
-                    m_writer.write(intStr);
-                    m_writer.write(';');
+                    writer.write(intStr);
+                    writer.write(';');
                 }
             }
         }
@@ -1268,7 +1271,7 @@ abstract public class ToStream extends SerializerBase
                 m_cdataTagOpen = true;
             }
 
-            // m_writer.write(ch, start, length);
+            // writer.write(ch, start, length);
             if (isEscapingDisabled())
             {
                 charactersRaw(ch, start, length);
@@ -1586,7 +1589,7 @@ abstract public class ToStream extends SerializerBase
     }
 
     /**
-     * Escape and m_writer.write a character.
+     * Escape and writer.write a character.
      *
      * @param ch character to be escaped.
      * @param i index into character array.
@@ -1751,8 +1754,9 @@ abstract public class ToStream extends SerializerBase
 
             m_startNewLine = true;
 
-            m_writer.write('<');
-            m_writer.write(name);
+            final java.io.Writer writer = m_writer;
+            writer.write('<');
+            writer.write(name);
         }
         catch (IOException e)
         {
@@ -1821,35 +1825,36 @@ abstract public class ToStream extends SerializerBase
             closeCDATA();
         try
         {
-            m_writer.write("<!DOCTYPE ");
-            m_writer.write(name);
+            final java.io.Writer writer = m_writer;
+            writer.write("<!DOCTYPE ");
+            writer.write(name);
 
             String doctypePublic = getDoctypePublic();
             if (null != doctypePublic)
             {
-                m_writer.write(" PUBLIC \"");
-                m_writer.write(doctypePublic);
-                m_writer.write('\"');
+                writer.write(" PUBLIC \"");
+                writer.write(doctypePublic);
+                writer.write('\"');
             }
 
             String doctypeSystem = getDoctypeSystem();
             if (null != doctypeSystem)
             {
                 if (null == doctypePublic)
-                    m_writer.write(" SYSTEM \"");
+                    writer.write(" SYSTEM \"");
                 else
-                    m_writer.write(" \"");
+                    writer.write(" \"");
 
-                m_writer.write(doctypeSystem);
+                writer.write(doctypeSystem);
 
                 if (closeDecl)
                 {
-                    m_writer.write("\">");
-                    m_writer.write(m_lineSep, 0, m_lineSepLen);
+                    writer.write("\">");
+                    writer.write(m_lineSep, 0, m_lineSepLen);
                     closeDecl = false; // done closing
                 }
                 else
-                    m_writer.write('\"');
+                    writer.write('\"');
             }
             boolean dothis = false;
             if (dothis)
@@ -1858,8 +1863,8 @@ abstract public class ToStream extends SerializerBase
                 // but not anymore - bjm
                 if (closeDecl)
                 {
-                    m_writer.write('>');
-                    m_writer.write(m_lineSep, 0, m_lineSepLen);
+                    writer.write('>');
+                    writer.write(m_lineSep, 0, m_lineSepLen);
                 }
             }
         }
@@ -1886,16 +1891,17 @@ abstract public class ToStream extends SerializerBase
              */
 
             String encoding = getEncoding();
+            final java.io.Writer writer = m_writer;
             for (int i = 0; i < nAttrs; i++)
             {
                 // elementAt is JDK 1.1.8
                 final String name = m_attributes.getQName(i);
                 final String value = m_attributes.getValue(i);
-                m_writer.write(' ');
-                m_writer.write(name);
-                m_writer.write("=\"");
+                writer.write(' ');
+                writer.write(name);
+                writer.write("=\"");
                 writeAttrString(m_writer, value, encoding);
-                m_writer.write('\"');
+                writer.write('\"');
             }
 
             /* The attributes are now processed so clear them out
@@ -1977,6 +1983,7 @@ abstract public class ToStream extends SerializerBase
 
         try
         {
+            final java.io.Writer writer = m_writer;
             if (m_startTagOpen)
             {
                 if (m_tracer != null)
@@ -1985,9 +1992,9 @@ abstract public class ToStream extends SerializerBase
                 if (nAttrs > 0)
                     processAttributes(nAttrs);
                 if (m_spaceBeforeClose)
-                    m_writer.write(" />");
+                    writer.write(" />");
                 else
-                    m_writer.write("/>");
+                    writer.write("/>");
                 /* don't need to pop cdataSectionState because
                  * this element ended so quickly that we didn't get
                  * to push the state.
@@ -2001,10 +2008,10 @@ abstract public class ToStream extends SerializerBase
 
                 if (shouldIndent())
                     indent();
-                m_writer.write('<');
-                m_writer.write('/');
-                m_writer.write(name);
-                m_writer.write('>');
+                writer.write('<');
+                writer.write('/');
+                writer.write(name);
+                writer.write('>');
                 if (m_cdataSectionElements != null)
                     m_cdataSectionStates.pop();
             }
@@ -2181,14 +2188,15 @@ abstract public class ToStream extends SerializerBase
             boolean wasDash = false;
             if (m_cdataTagOpen)
                 closeCDATA();
-            m_writer.write(COMMENT_BEGIN);
+            final java.io.Writer writer = m_writer;    
+            writer.write(COMMENT_BEGIN);
             // Detect occurrences of two consecutive dashes, handle as necessary.
             for (int i = start; i < limit; i++)
             {
                 if (wasDash && ch[i] == '-')
                 {
-                    m_writer.write(ch, start, i - start);
-                    m_writer.write(" -");
+                    writer.write(ch, start, i - start);
+                    writer.write(" -");
                     start = i + 1;
                 }
                 wasDash = (ch[i] == '-');
@@ -2200,12 +2208,12 @@ abstract public class ToStream extends SerializerBase
                 // Output the remaining characters (if any)
                 final int remainingChars = (limit - start);
                 if (remainingChars > 0)
-                    m_writer.write(ch, start, remainingChars);
+                    writer.write(ch, start, remainingChars);
                 // Protect comment end from a single trailing dash
                 if (ch[limit - 1] == '-')
-                    m_writer.write(' ');
+                    writer.write(' ');
             }
-            m_writer.write(COMMENT_END);
+            writer.write(COMMENT_END);
         }
         catch (IOException e)
         {
@@ -2245,14 +2253,15 @@ abstract public class ToStream extends SerializerBase
                 outputDocTypeDecl(m_elementName, false);
                 m_needToOutputDocTypeDecl = false;
             }
+            final java.io.Writer writer = m_writer;
             if (!m_inDoctype)
-                m_writer.write("]>");
+                writer.write("]>");
             else
             {
-                m_writer.write('>');
+                writer.write('>');
             }
 
-            m_writer.write(m_lineSep, 0, m_lineSepLen);
+            writer.write(m_lineSep, 0, m_lineSepLen);
         }
         catch (IOException e)
         {

@@ -181,14 +181,15 @@ public class ToXMLStream extends ToStream
 
                 try
                 {
-                    m_writer.write("<?xml version=\"");
-                    m_writer.write(version);
-                    m_writer.write("\" encoding=\"");
-                    m_writer.write(encoding);
-                    m_writer.write('\"');
-                    m_writer.write(standalone);
-                    m_writer.write("?>");
-                    m_writer.write(m_lineSep, 0, m_lineSepLen);
+                    final java.io.Writer writer = m_writer;
+                    writer.write("<?xml version=\"");
+                    writer.write(version);
+                    writer.write("\" encoding=\"");
+                    writer.write(encoding);
+                    writer.write('\"');
+                    writer.write(standalone);
+                    writer.write("?>");
+                    writer.write(m_lineSep, 0, m_lineSepLen);
                 } 
                 catch(IOException e)
                 {
@@ -303,12 +304,13 @@ public class ToXMLStream extends ToStream
                 if (shouldIndent())
                     indent();
 
-                m_writer.write("<?");
-                m_writer.write(target);
+                final java.io.Writer writer = m_writer;
+                writer.write("<?");
+                writer.write(target);
 
                 if (data.length() > 0
                     && !Character.isSpaceChar(data.charAt(0)))
-                    m_writer.write(' ');
+                    writer.write(' ');
 
                 int indexOfQLT = data.indexOf("?>");
 
@@ -318,29 +320,29 @@ public class ToXMLStream extends ToStream
                     // See XSLT spec on error recovery of "?>" in PIs.
                     if (indexOfQLT > 0)
                     {
-                        m_writer.write(data.substring(0, indexOfQLT));
+                        writer.write(data.substring(0, indexOfQLT));
                     }
 
-                    m_writer.write("? >"); // add space between.
+                    writer.write("? >"); // add space between.
 
                     if ((indexOfQLT + 2) < data.length())
                     {
-                        m_writer.write(data.substring(indexOfQLT + 2));
+                        writer.write(data.substring(indexOfQLT + 2));
                     }
                 }
                 else
                 {
-                    m_writer.write(data);
+                    writer.write(data);
                 }
 
-                m_writer.write('?');
-                m_writer.write('>');
+                writer.write('?');
+                writer.write('>');
 
                 // Always output a newline char if not inside of an
                 // element. The whitespace is not significant in that
                 // case.
                 if (m_currentElemDepth <= 0)
-                    m_writer.write(m_lineSep, 0, m_lineSepLen);
+                    writer.write(m_lineSep, 0, m_lineSepLen);
 
                 m_startNewLine = true;
             }
@@ -374,9 +376,10 @@ public class ToXMLStream extends ToStream
             if (shouldIndent())
                 indent();
 
-            m_writer.write('&');
-            m_writer.write(name);
-            m_writer.write(';');
+            final java.io.Writer writer = m_writer;
+            writer.write('&');
+            writer.write(name);
+            writer.write(';');
         }
         catch(IOException e)
         {
