@@ -220,6 +220,10 @@ public class Compiler extends OpMap
       expr = matchPattern(opPos + 2); break;
     case OpCodes.OP_LOCATIONPATHPATTERN :
       expr = locationPathPattern(opPos); break;
+    case OpCodes.OP_QUO:
+      error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
+            new Object[]{ "quo" });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
+      break;
     default :
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
             new Object[]{ Integer.toString(m_opMap[opPos]) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
