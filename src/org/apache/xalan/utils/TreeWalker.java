@@ -63,7 +63,7 @@ import org.apache.xpath.DOM2Helper;
 import org.apache.xpath.DOMHelper;
 import org.apache.xalan.utils.NodeConsumer;
 
-import serialize.SerializerHandler;
+import org.apache.serialize.SerializerHandler;
 
 /**
  * <meta name="usage" content="advanced"/>

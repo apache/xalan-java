@@ -76,7 +76,7 @@ import org.xml.sax.ErrorHandler;
 
 import org.w3c.dom.Node;
 
-import trax.TransformException;
+import org.apache.trax.TransformException;
 
 
 /**

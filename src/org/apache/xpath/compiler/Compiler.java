@@ -33,7 +33,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.PrefixResolver;
 
-import trax.ProcessorException;
+import org.apache.trax.ProcessorException;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;

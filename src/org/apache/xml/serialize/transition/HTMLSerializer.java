@@ -81,7 +81,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.AttributeList;
 import org.xml.sax.Attributes;
 
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 
 /**
  * Implements an HTML/XHTML serializer supporting both DOM and SAX

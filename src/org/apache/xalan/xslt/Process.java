@@ -97,11 +97,11 @@ import org.apache.xalan.trace.TraceListener;
 import org.apache.xalan.trace.TraceManager;
 
 // Needed TRaX classes
-import trax.Result;
-import trax.Processor;
-import trax.ProcessorFactoryException;
-import trax.Transformer;
-import trax.Templates;
+import org.apache.trax.Result;
+import org.apache.trax.Processor;
+import org.apache.trax.ProcessorFactoryException;
+import org.apache.trax.Transformer;
+import org.apache.trax.Templates;
 
 // Needed SAX classes
 import org.xml.sax.InputSource;
@@ -117,9 +117,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
 // Needed Serializer classes
-import serialize.OutputFormat;
-import serialize.Serializer;
-import serialize.SerializerFactory;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.SerializerFactory;
 
 
 /**
@@ -194,8 +194,7 @@ public class Process
       }
       catch(ProcessorFactoryException pfe)
       {
-        if(doStackDumpOnError)
-          pfe.printStackTrace(dumpWriter);
+        pfe.printStackTrace(dumpWriter);
         diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
         processor = null; // shut up compiler
         System.exit(-1);

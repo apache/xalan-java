@@ -79,7 +79,7 @@ public class StylesheetHandler extends org.apache.xalan.processor.StylesheetHand
    * Instance constructor... 
    */
   public StylesheetHandler(XSLTEngineImpl processor, Stylesheet stylesheetTree)
-    throws trax.ProcessorException
+    throws org.apache.trax.ProcessorException
   {
     super(processor.getProcessor());
   }

@@ -73,12 +73,12 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import org.xml.sax.ext.*;
 
-import trax.Transformer;
-import trax.Processor;
-import trax.TransformException;
-import trax.ProcessorException;
-import trax.ProcessorFactoryException;
-import trax.Templates;
+import org.apache.trax.Transformer;
+import org.apache.trax.Processor;
+import org.apache.trax.TransformException;
+import org.apache.trax.ProcessorException;
+import org.apache.trax.ProcessorFactoryException;
+import org.apache.trax.Templates;
 
 import java.util.*;
 import java.net.*;

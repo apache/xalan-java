@@ -65,8 +65,8 @@ import java.util.Vector;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
-import trax.URIResolver;
-import trax.TransformException;
+import org.apache.trax.URIResolver;
+import org.apache.trax.TransformException;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

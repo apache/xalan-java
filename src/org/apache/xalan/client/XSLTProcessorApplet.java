@@ -76,13 +76,13 @@ import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 
 // Needed TRaX classes
-import trax.Result;
-import trax.Processor;
-import trax.ProcessorFactoryException;
-import trax.Transformer;
-import trax.TransformException;
-import trax.Templates;
-import trax.TemplatesBuilder;
+import org.apache.trax.Result;
+import org.apache.trax.Processor;
+import org.apache.trax.ProcessorFactoryException;
+import org.apache.trax.Transformer;
+import org.apache.trax.TransformException;
+import org.apache.trax.Templates;
+import org.apache.trax.TemplatesBuilder;
 
 // Needed SAX classes
 import org.xml.sax.InputSource;
@@ -97,9 +97,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
 // Needed Serializer classes
-import serialize.OutputFormat;
-import serialize.Serializer;
-import serialize.SerializerFactory;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.SerializerFactory;
 
 /**
  * <meta name="usage" content="general"/>
@@ -422,11 +422,11 @@ public class XSLTProcessorApplet extends Applet
 	    Templates templates = m_templatesBuilder.getTemplates();
 	    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
 		// Result result = new Result(pw);
-        serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
-        // serialize.Serializer serializer = serialize.SerializerFactory.getSerializer( "HTML" );
+        org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
+        // org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
       serializer.setWriter(pw);
       org.xml.sax.ContentHandler handler = serializer.asContentHandler();
-       // new org.apache.xml.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
+       // new org.apache.xml.org.apache.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
         transformer.setContentHandler(handler);
 	    transformer.setParent(m_reader);
         transform(transformer, new InputSource(xmlbuf));
@@ -726,8 +726,8 @@ public class XSLTProcessorApplet extends Applet
       if(null != m_key)
         transformer.setParameter(m_key, null, m_expression);
       // Result result = new Result(pw);
-      serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
-      //serialize.Serializer serializer = serialize.SerializerFactory.getSerializer( "HTML" );
+      org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
+      //org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
       serializer.setWriter(pw);
       org.xml.sax.ContentHandler handler = serializer.asContentHandler();
 	  

@@ -78,11 +78,11 @@ import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xpath.VariableStack;
 
 // TRaX imports
-import trax.Templates;
+import org.apache.trax.Templates;
 
 // Serializer imports
-import serialize.OutputFormat;
-import serialize.Serializer;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.Serializer;
 
 // DOM Imports
 import org.w3c.dom.Node;

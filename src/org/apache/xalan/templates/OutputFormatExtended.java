@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 import java.util.Vector;
 import org.w3c.dom.Document;
 
@@ -227,7 +227,7 @@ public class OutputFormatExtended extends OutputFormat
     if(m_shouldRecordHasBeenSet)
       m_cdataElementsHasBeenSet = true;
     int n = elements.size();
-    serialize.QName[] qnames = new QName[n];
+    org.apache.serialize.QName[] qnames = new QName[n];
     for(int i = 0; i < n; i++)
     {
       qnames[i] = (QName)elements.elementAt(i);
@@ -238,7 +238,7 @@ public class OutputFormatExtended extends OutputFormat
   /**
    * The cdata-section-elements attribute.
    */
-  public void setCdataSectionElements(serialize.QName[] elements)
+  public void setCdataSectionElements(org.apache.serialize.QName[] elements)
   {
     if(m_shouldRecordHasBeenSet)
       m_cdataElementsHasBeenSet = true;
@@ -399,7 +399,7 @@ public class OutputFormatExtended extends OutputFormat
    *
    * @param nonEscapingElements List of unescaped element tag names
    */
-  public void setNonEscapingElements( serialize.QName[] nonEscapingElements )
+  public void setNonEscapingElements( org.apache.serialize.QName[] nonEscapingElements )
   {
     // TODO: Need to work on this.
     if(m_shouldRecordHasBeenSet)

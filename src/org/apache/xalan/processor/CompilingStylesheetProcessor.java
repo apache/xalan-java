@@ -64,10 +64,10 @@ import org.xml.sax.SAXException;
 
 import org.w3c.dom.Node;
 
-import trax.Processor;
-import trax.ProcessorException;
-import trax.Templates;
-import trax.TemplatesBuilder;
+import org.apache.trax.Processor;
+import org.apache.trax.ProcessorException;
+import org.apache.trax.Templates;
+import org.apache.trax.TemplatesBuilder;
 
 /**
  * The StylesheetProcessor, which implements the TRaX Processor 

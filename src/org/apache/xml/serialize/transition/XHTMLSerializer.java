@@ -63,7 +63,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.io.UnsupportedEncodingException;
 
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 
 /**
  * Implements an XHTML serializer supporting both DOM and SAX

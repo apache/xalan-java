@@ -107,10 +107,10 @@ import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.DOM2Helper;
 
 // Serializer Imports
-import serialize.OutputFormat;
-import serialize.Serializer;
-import serialize.SerializerFactory;
-import serialize.Method;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.SerializerFactory;
+import org.apache.serialize.Method;
 
 // DOM Imports
 import org.w3c.dom.Attr;
@@ -133,10 +133,10 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 // TRaX Imports
-import trax.Result;
-import trax.Transformer;
-import trax.TransformException;
-import trax.URIResolver;
+import org.apache.trax.Result;
+import org.apache.trax.Transformer;
+import org.apache.trax.TransformException;
+import org.apache.trax.URIResolver;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -329,13 +329,13 @@ public class TransformerImpl extends XMLFilterImpl
       Exception e = getExceptionThrown();
       if(null != e)
       {
-        if(e instanceof trax.TransformException)
-          throw (trax.TransformException)e;
+        if(e instanceof org.apache.trax.TransformException)
+          throw (org.apache.trax.TransformException)e;
         else if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
-          throw new trax.TransformException(
+          throw new org.apache.trax.TransformException(
             ((org.apache.xalan.utils.WrappedRuntimeException)e).getException());
         else
-          throw new trax.TransformException(e);
+          throw new org.apache.trax.TransformException(e);
       }
       else if(null != m_resultTreeHandler)
       {
@@ -671,8 +671,8 @@ public class TransformerImpl extends XMLFilterImpl
     }
     catch(SAXException se)
     {
-      if(se instanceof trax.TransformException)
-        throw (trax.TransformException)se;
+      if(se instanceof org.apache.trax.TransformException)
+        throw (org.apache.trax.TransformException)se;
       else
         throw new TransformException(se);
     }
@@ -735,7 +735,7 @@ public class TransformerImpl extends XMLFilterImpl
    * properties will override properties set in the templates 
    * with xsl:output.
    * 
-   * @see org.xml.serialize.OutputFormat
+   * @see org.xml.org.apache.serialize.OutputFormat
    */
   public void setOutputFormat(OutputFormat oformat)
   {
@@ -745,7 +745,7 @@ public class TransformerImpl extends XMLFilterImpl
   /**
    * Get the output properties used for the transformation.
    * 
-   * @see org.xml.serialize.OutputFormat
+   * @see org.xml.org.apache.serialize.OutputFormat
    */
   public OutputFormat getOutputFormat()
   {

@@ -32,7 +32,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 import org.w3c.dom.*;
-import trax.*;
+import org.apache.trax.*;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xpath.objects.XObject;

@@ -64,7 +64,7 @@ import java.io.OutputStreamWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.xml.sax.DocumentHandler;
-import trax.Result;
+import org.apache.trax.Result;
 
 /**
  * <meta name="usage" content="general"/>

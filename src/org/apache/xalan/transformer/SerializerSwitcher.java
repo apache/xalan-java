@@ -61,10 +61,10 @@ import java.io.OutputStream;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import serialize.Serializer;
-import serialize.SerializerFactory;
-import serialize.Method;
-import serialize.OutputFormat;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.SerializerFactory;
+import org.apache.serialize.Method;
+import org.apache.serialize.OutputFormat;
 import org.apache.xalan.templates.OutputFormatExtended;
 
 /**

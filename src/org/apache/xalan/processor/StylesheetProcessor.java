@@ -68,10 +68,10 @@ import org.w3c.dom.Node;
 import org.apache.xalan.utils.TreeWalker;
 import org.apache.xalan.utils.SystemIDResolver;
 
-import trax.Processor;
-import trax.ProcessorException;
-import trax.Templates;
-import trax.TemplatesBuilder;
+import org.apache.trax.Processor;
+import org.apache.trax.ProcessorException;
+import org.apache.trax.Templates;
+import org.apache.trax.TemplatesBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;

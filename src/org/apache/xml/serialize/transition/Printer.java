@@ -63,7 +63,7 @@ import java.io.Writer;
 import java.io.StringWriter;
 import java.io.IOException;
 
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 
 /**
  * The printer is responsible for sending text to the output stream

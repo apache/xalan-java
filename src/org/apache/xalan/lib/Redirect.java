@@ -61,7 +61,7 @@ import java.io.*;
 import java.net.URL;
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -362,7 +362,7 @@ public class Redirect
     FileOutputStream ostream = new FileOutputStream(file);
     
     ContentHandler flistener 
-      = transformer.createResultContentHandler(new trax.Result(ostream), format);
+      = transformer.createResultContentHandler(new org.apache.trax.Result(ostream), format);
 
     flistener.startDocument();
     if(shouldPutInTable)

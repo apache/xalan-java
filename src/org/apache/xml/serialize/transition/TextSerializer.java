@@ -70,7 +70,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.AttributeList;
 import org.xml.sax.Attributes;
 
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 
 /**
  * Implements a text serializer supporting both DOM and SAX
@@ -363,7 +363,7 @@ public final class TextSerializer
             
             // By definition this will happen if the node is a document,
             // document fragment, etc. Just serialize its contents. It will
-            // work well for other nodes that we do not know how to serialize.
+            // work well for other nodes that we do not know how to org.apache.serialize.
             child = node.getFirstChild();
             while ( child != null ) {
                 serializeNode( child );

@@ -24,7 +24,6 @@ LIBDIR = $(PROJDIR)$(PATHSEP)lib
 TRACEDIR = $(PROJDIR)$(PATHSEP)trace
 RESDIR = $(PROJDIR)$(PATHSEP)res
 STREEDIR = $(PROJDIR)$(PATHSEP)stree
-TRAXDIR = trax
 SUBDIRS = 
 
 SRCS = \
@@ -237,34 +236,34 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)XMLCharacterRecognizer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)StylesheetSpec.java \
-  trax$(PATHSEP)Examples.java \
-  trax$(PATHSEP)Processor.java \
-  trax$(PATHSEP)ProcessorException.java \
-  trax$(PATHSEP)ProcessorFactoryException.java \
-  trax$(PATHSEP)Result.java \
-  trax$(PATHSEP)Templates.java \
-  trax$(PATHSEP)TemplatesBuilder.java \
-  trax$(PATHSEP)Transformer.java \
-  trax$(PATHSEP)TransformException.java \
-  trax$(PATHSEP)URIResolver.java \
-  serialize$(PATHSEP)DOMSerializer.java \
-  serialize$(PATHSEP)Method.java \
-  serialize$(PATHSEP)OutputFormat.java \
-  serialize$(PATHSEP)QName.java \
-  serialize$(PATHSEP)Serializer.java \
-  serialize$(PATHSEP)SerializerFactory.java \
-  serialize$(PATHSEP)SerializerHandler.java \
-  serialize$(PATHSEP)helpers$(PATHSEP)HTMLOutputFormat.java \
-  serialize$(PATHSEP)helpers$(PATHSEP)TextOutputFormat.java \
-  serialize$(PATHSEP)helpers$(PATHSEP)XHTMLOutputFormat.java \
-  serialize$(PATHSEP)helpers$(PATHSEP)XMLOutputFormat.java \
-  synthetic$(PATHSEP)Class.java \
-  synthetic$(PATHSEP)SynthesisException.java \
-  synthetic$(PATHSEP)reflection$(PATHSEP)Constructor.java \
-  synthetic$(PATHSEP)reflection$(PATHSEP)EntryPoint.java \
-  synthetic$(PATHSEP)reflection$(PATHSEP)Field.java \
-  synthetic$(PATHSEP)reflection$(PATHSEP)Member.java \
-  synthetic$(PATHSEP)reflection$(PATHSEP)Method.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Examples.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Processor.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)ProcessorException.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)ProcessorFactoryException.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Result.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Templates.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)TemplatesBuilder.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Transformer.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)TransformException.java \
+  org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)URIResolver.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)DOMSerializer.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)Method.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)OutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)QName.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)Serializer.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)SerializerFactory.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)SerializerHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)HTMLOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)TextOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)XHTMLOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)XMLOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)Class.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)SynthesisException.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Constructor.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)EntryPoint.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Field.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Member.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Method.java \
   org$(PATHSEP)w3c$(PATHSEP)xslt$(PATHSEP)ExpressionContext.java \
   org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Attr.java \
   org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)CDATASection.java \

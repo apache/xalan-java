@@ -75,7 +75,7 @@ public class XSLProcessorContext extends org.apache.xalan.extensions.XSLProcesso
   public XSLProcessorContext (XSLTEngineImpl processor,
 			      Stylesheet stylesheetTree,
 			      Node sourceTree, Node sourceNode, QName mode) 
-    throws trax.TransformException, trax.ProcessorException
+    throws org.apache.trax.TransformException, org.apache.trax.ProcessorException
   {
     super((TransformerImpl)(processor.getProcessor().getTemplatesBuilder().getTemplates().newTransformer()),
           stylesheetTree, 

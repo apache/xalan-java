@@ -70,10 +70,10 @@ import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.XMLNSDecl;
-import trax.ProcessorException;
-import trax.TemplatesBuilder;
-import trax.Templates;
-import trax.TransformException;
+import org.apache.trax.ProcessorException;
+import org.apache.trax.TemplatesBuilder;
+import org.apache.trax.Templates;
+import org.apache.trax.TransformException;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.compiler.XPathParser;
@@ -96,7 +96,7 @@ import org.xml.sax.SAXParseException;
 
 // Java Compiler support. *****
 // TODO: Merge the Microsoft VJ++ workarounds in this file into that one.
-import synthetic.JavaUtils;
+import org.apache.xalan.utils.synthetic.JavaUtils;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -219,7 +219,7 @@ public class CompilingStylesheetHandler
     
     Other nodes simply have their .evaluate() invoked
     TODO: Their children really should be walked for further compilation opportunities.
-    TODO: ***** OPTIMIZATION: We should preload/cache the synthetic.Class
+    TODO: ***** OPTIMIZATION: We should preload/cache the org.apache.xalan.utils.synthetic.Class
      objects rather than doing forName/forClass lookups every time.
     */
   ElemTemplate compileTemplate(ElemTemplate source)
@@ -232,8 +232,8 @@ public class CompilingStylesheetHandler
     {
         // public class ACompiledTemplate000... 
 		// extends CompiledTemplate (partly abstract superclass)
-        synthetic.Class tClass=
-            synthetic.Class.declareClass(className);
+        org.apache.xalan.utils.synthetic.Class tClass=
+            org.apache.xalan.utils.synthetic.Class.declareClass(className);
         tClass.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         tClass.setSuperClass(tClass.forName("org.apache.xalan.processor.CompiledTemplate"));
 
@@ -243,7 +243,7 @@ public class CompilingStylesheetHandler
         // Set at construction. ElemTemplateElements and AVTs...
         // Synthesis needs a more elegant way to declare array classes
         // given a base class... 
-        synthetic.reflection.Field m_interpretArray=
+        org.apache.xalan.utils.synthetic.reflection.Field m_interpretArray=
             tClass.declareField("m_interpretArray");
         // org.apache.xalan.templates.ElemTemplateElement
         m_interpretArray.setType(tClass.forName("java.lang.Object[]"));
@@ -254,12 +254,12 @@ public class CompilingStylesheetHandler
 		// be set in execute() but testable in getNamespaceForPrefix --
 		// and the latter, most unfortunately, is not passed the xctxt so
 		// making that threadsafe is a bit ugly. 
-        synthetic.reflection.Field m_nsThreadContexts=
+        org.apache.xalan.utils.synthetic.reflection.Field m_nsThreadContexts=
             tClass.declareField("m_nsThreadContexts");
         m_nsThreadContexts.setType(tClass.forClass(java.util.Hashtable.class));
         m_nsThreadContexts.setInitializer("new java.util.Hashtable()");
         // And accessor, to let kids query current state
-        synthetic.reflection.Method getNSURI =
+        org.apache.xalan.utils.synthetic.reflection.Method getNSURI =
             tClass.declareMethod("getNamespaceForPrefix");
         getNSURI.addParameter(tClass.forClass(java.lang.String.class),"nsprefix");
         getNSURI.setReturnType(tClass.forClass(java.lang.String.class));
@@ -278,7 +278,7 @@ public class CompilingStylesheetHandler
         // public constructor: Copy values from original
         // template object, pick up "uncompiled children"
         // array from compilation/instantiation process.
-        synthetic.reflection.Constructor ctor=
+        org.apache.xalan.utils.synthetic.reflection.Constructor ctor=
             tClass.declareConstructor();
         ctor.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         ctor.addParameter(tClass.forClass(ElemTemplate.class),"original");
@@ -304,7 +304,7 @@ public class CompilingStylesheetHandler
         
         //   public void execute(TransformerImpl transformer, 
         //      Node sourceNode, QName mode)
-        synthetic.reflection.Method exec=
+        org.apache.xalan.utils.synthetic.reflection.Method exec=
             tClass.declareMethod("execute");
         exec.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         exec.addParameter(
@@ -383,12 +383,12 @@ public class CompilingStylesheetHandler
         interpretVector.copyInto(eteParms);
         // Instantiate -- note that this will be a singleton,
         // as each template is probably unique
-        synthetic.reflection.Constructor c=
+        org.apache.xalan.utils.synthetic.reflection.Constructor c=
             tClass.getConstructor(ctor.getParameterTypes());    
         Object[] parms={source,eteParms};
         instance=(ElemTemplate)c.newInstance(parms);
     }
-    catch(synthetic.SynthesisException e)
+    catch(org.apache.xalan.utils.synthetic.SynthesisException e)
     {
         System.out.println("CompilingStylesheetHandler class synthesis error");
         e.printStackTrace();
@@ -690,11 +690,11 @@ public class CompilingStylesheetHandler
                 +"java.io.StringWriter "+sw+";\n"
                 
                 +"try\n{\n"
-                +"org.apache.xml.serialize.SerializerFactory "+sfactory+"=org.apache.xml.serialize.SerializerFactory.getSerializerFactory(\"text\");\n"
+                +"org.apache.xml.org.apache.serialize.SerializerFactory "+sfactory+"=org.apache.xml.org.apache.serialize.SerializerFactory.getSerializerFactory(\"text\");\n"
                 +sw+"=new java.io.StringWriter();\n"
-                +"org.apache.xml.serialize.OutputFormat "+format+"=new org.apache.xml.serialize.OutputFormat();\n"
+                +"org.apache.xml.org.apache.serialize.OutputFormat "+format+"=new org.apache.xml.org.apache.serialize.OutputFormat();\n"
                 +format+".setPreserveSpace(true);\n"
-                +"org.apache.xml.serialize.Serializer "+serializer+"="+sfactory+".makeSerializer("+sw+","+format+");\n"
+                +"org.apache.xml.org.apache.serialize.Serializer "+serializer+"="+sfactory+".makeSerializer("+sw+","+format+");\n"
                 +shandler+"="+serializer+".asContentHandler();\n"
                 +"}\ncatch (java.io.IOException "+ioe+")\n{\n"
                 +"throw new org.xml.sax.SAXException("+ioe+");\n}\n"
@@ -897,8 +897,8 @@ public class CompilingStylesheetHandler
   // name and output is written to the directory that file
   // would be found in (possibly relative). However, "."
   // is treated as being found in itself rather than in "..".
-  // TODO: ***** A more elegant version of this should be moved into synthetic.Class?
-  Class compileSyntheticClass(synthetic.Class tClass, String classLocation)
+  // TODO: ***** A more elegant version of this should be moved into org.apache.xalan.utils.synthetic.Class?
+  Class compileSyntheticClass(org.apache.xalan.utils.synthetic.Class tClass, String classLocation)
   {
     Class resolved=null;
     // Write class relative to specified starting location
@@ -1031,7 +1031,7 @@ public class CompilingStylesheetHandler
                 tClass.getName());
             e.printStackTrace();
         }
-        catch(synthetic.SynthesisException e)
+        catch(org.apache.xalan.utils.synthetic.SynthesisException e)
         {
             System.err.println("ERR: Synthetic class realization failed for "+
                 tClass.getName());

@@ -69,7 +69,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.EntityResolver;
 import java.net.URL;
 import java.io.IOException;
-import trax.URIResolver;
+import org.apache.trax.URIResolver;
 import org.w3c.dom.Node;
 
 /**

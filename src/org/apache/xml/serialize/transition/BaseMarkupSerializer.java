@@ -94,10 +94,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ext.DeclHandler;
 
-import serialize.OutputFormat;
-import serialize.Serializer;
-import serialize.DOMSerializer;
-import serialize.SerializerHandler;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.Serializer;
+import org.apache.serialize.DOMSerializer;
+import org.apache.serialize.SerializerHandler;
 
 /**
  * Base class for a serializer supporting both DOM and SAX pretty
@@ -1080,7 +1080,7 @@ public abstract class BaseMarkupSerializer
 
             // By definition this will happen if the node is a document,
             // document fragment, etc. Just serialize its contents. It will
-            // work well for other nodes that we do not know how to serialize.
+            // work well for other nodes that we do not know how to org.apache.serialize.
             child = node.getFirstChild();
             while ( child != null ) {
                 serializeNode( child );

@@ -63,7 +63,7 @@ import java.io.Writer;
 import java.io.StringWriter;
 import java.io.IOException;
 
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 
 /**
  * Extends {@link Printer} and adds support for indentation and line

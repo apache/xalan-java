@@ -91,8 +91,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.Locator;
 
 // TRaX imports
-import trax.URIResolver;
-import trax.TransformException;
+import org.apache.trax.URIResolver;
+import org.apache.trax.TransformException;
 
 // Temporary!!!
 import org.apache.xalan.extensions.ExtensionsTable;

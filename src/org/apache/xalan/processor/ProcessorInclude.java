@@ -68,7 +68,7 @@ import org.xml.sax.EntityResolver;
 import java.net.URL;
 import java.io.IOException;
 import org.xml.sax.helpers.XMLReaderFactory;
-import trax.URIResolver;
+import org.apache.trax.URIResolver;
 import org.w3c.dom.Node;
 import org.apache.xalan.utils.SystemIDResolver;
 

@@ -58,9 +58,9 @@ package org.apache.xalan.xslt;
 
 import org.apache.xalan.xpath.xml.XMLParserLiaison;
 import org.apache.xpath.XPathFactory;
-import trax.Processor;
-import trax.ProcessorFactoryException;
-import trax.Templates;
+import org.apache.trax.Processor;
+import org.apache.trax.ProcessorFactoryException;
+import org.apache.trax.Templates;
 import org.apache.xalan.utils.TreeWalker;
 
 /**

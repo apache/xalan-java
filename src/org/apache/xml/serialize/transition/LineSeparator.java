@@ -58,7 +58,7 @@
 
 package org.apache.xml.serialize.transition;
 
-import serialize.OutputFormat;
+import org.apache.serialize.OutputFormat;
 
 /**
  * @version $Revision$ $Date$

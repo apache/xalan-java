@@ -55,13 +55,13 @@
  * <http://www.apache.org/>.
  */
 // Imported TraX classes
-import trax.Processor; 
-import trax.Templates;
-import trax.Transformer; 
-import trax.Result;
-import trax.ProcessorException; 
-import trax.ProcessorFactoryException;
-import trax.TransformException; 
+import org.apache.trax.Processor; 
+import org.apache.trax.Templates;
+import org.apache.trax.Transformer; 
+import org.apache.trax.Result;
+import org.apache.trax.ProcessorException; 
+import org.apache.trax.ProcessorFactoryException;
+import org.apache.trax.TransformException; 
 
 
 // Imported SAX classes
@@ -82,8 +82,8 @@ public class SimpleTransform
     throws ProcessorException, ProcessorFactoryException, 
            TransformException, SAXException, IOException
   {  
-    // Instantiate a stylesheet processor. The trax.Processor newInstance()
-	// method with "xslt" as the argument reads the trax.processor.xslt 
+    // Instantiate a stylesheet processor. The org.apache.trax.Processor newInstance()
+	// method with "xslt" as the argument reads the org.apache.trax.processor.xslt 
 	// system property to determine the actual class to instantiate:
 	// org.apache.xalan.processor.StylesheetProcessor.
 	Processor processor = Processor.newInstance("xslt");
@@ -91,7 +91,7 @@ public class SimpleTransform
 	// Use the stylesheet processor to process the stylesheet (foo.xsl) and
 	// return a Templates object. As implemented by StylesheetProcessor,
 	// the process() method uses the Xerces SAX processor to parse the stylesheet
-	// and returns a StylesheetRoot (an implementation of the trax.Templates interface)
+	// and returns a StylesheetRoot (an implementation of the org.apache.trax.Templates interface)
 	// from the ContentHandler for the SAX processor. The Templates (StylesheetRoot)
 	// object contains an XSLT schema and the stylesheet data.
     Templates templates = processor.process(new InputSource("foo.xsl"));
@@ -99,7 +99,7 @@ public class SimpleTransform
 	// Use the Templates object to generate a Transformer object. As implemented by
 	// StylesheetRoot, newTransformer() returns an instance of 
 	// org.apache.xalan.transformer.Transformer, an implementation of the 
-	// trax.Transformer interface.
+	// org.apache.trax.Transformer interface.
 	Transformer transformer = templates.newTransformer();
 
 	// Use the transformer to apply the Templates (StylesheetRoot) object to an XML document

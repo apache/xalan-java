@@ -6,7 +6,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.xml.sax.ErrorHandler;
-import trax.ProcessorException;
+import org.apache.trax.ProcessorException;
 
 public abstract class Expression
 {

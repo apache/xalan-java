@@ -63,9 +63,9 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.io.UnsupportedEncodingException;
 
-import serialize.OutputFormat;
-import serialize.SerializerFactory;
-import serialize.Serializer;
+import org.apache.serialize.OutputFormat;
+import org.apache.serialize.SerializerFactory;
+import org.apache.serialize.Serializer;
 
 /**
  * Default serializer factory can construct serializers for the three

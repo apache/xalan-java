@@ -52,11 +52,11 @@ compat: makecompat compatjars
 PROPPATH = org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res
 $(JARNAME)::
 	$(CP) src/$(PROPPATH)/*.properties src/$(CLASS_DIR)/$(PROPPATH)/.; \
-	$(CP) src/serialize/*.properties src/$(CLASS_DIR)/serialize/.; \
+	$(CP) src/org/apache/serialize/*.properties src/$(CLASS_DIR)/org/apache/serialize/.; \
 	$(CP) src/org/apache/xml/serialize/transition/*.res src/$(CLASS_DIR)/org/apache/xml/serialize/transition/.; \
-	$(CP) src/trax/*.properties src/$(CLASS_DIR)/trax/.; \
+	$(CP) src/org/apache/trax/*.properties src/$(CLASS_DIR)/org/apache/trax/.; \
 	echo -n "Jarring ../bin/$@ .. "; \
-	cd src/$(CLASS_DIR); $(JAR) $(JARFLAGS) ../../bin/$@ org trax serialize synthetic; \
+	cd src/$(CLASS_DIR); $(JAR) $(JARFLAGS) ../../bin/$@ org; \
 	echo "done"
 
 compatjars:

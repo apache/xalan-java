@@ -61,7 +61,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 import org.xml.sax.ErrorHandler;
 import org.w3c.dom.Node;
-import trax.TransformException;
+import org.apache.trax.TransformException;
 
 /**
  * This class will manage error messages, warning messages, and other types of 

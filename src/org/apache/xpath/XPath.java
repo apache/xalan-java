@@ -80,7 +80,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.objects.*;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
-import trax.TransformException;
+import org.apache.trax.TransformException;
 import org.apache.xpath.patterns.NodeTest;
 
 /** 
@@ -198,13 +198,13 @@ public class XPath
     }
     catch(Exception e)
     {
-      if(e instanceof trax.TransformException)
-        throw (trax.TransformException)e;
+      if(e instanceof org.apache.trax.TransformException)
+        throw (org.apache.trax.TransformException)e;
       else
       {
         while(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
           e = ((org.apache.xalan.utils.WrappedRuntimeException)e).getException();
-        throw new trax.TransformException("Error in XPath", m_locator, e);
+        throw new org.apache.trax.TransformException("Error in XPath", m_locator, e);
       }
     }
     finally

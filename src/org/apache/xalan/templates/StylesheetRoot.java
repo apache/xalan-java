@@ -63,7 +63,7 @@ import java.io.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
-import serialize.*;
+import org.apache.serialize.*;
 
 import org.apache.xalan.utils.*;
 import org.apache.xpath.*;
@@ -72,9 +72,9 @@ import org.apache.xalan.trace.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.transformer.TransformerImpl;
-import trax.Transformer;
-import trax.ProcessorException;
-import trax.Templates;
+import org.apache.trax.Transformer;
+import org.apache.trax.ProcessorException;
+import org.apache.trax.Templates;
 
 /**
  * <meta name="usage" content="general"/>
@@ -145,7 +145,7 @@ public class StylesheetRoot
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    * @return A OutputProperties object that may be mutated.
    * 
-   * @see org.xml.serialize.OutputFormat
+   * @see org.xml.org.apache.serialize.OutputFormat
    */
   public OutputFormat getOutputFormat()
   {

@@ -215,7 +215,7 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     protected void setSystemProperties()
 	{
 	  Properties props = new Properties();
-	  props.put("trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
+	  props.put("org.apache.trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
 	  props.put("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
 	  props.put("serialize.methods", "xml,html,Text");
 	  props.put("serialize.xml", "org.apache.xml.serialize.XMLSerializer");	 

@@ -17,7 +17,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
-import trax.Transformer;
+import org.apache.trax.Transformer;
 
 /**
  * This class handles SAX2 parse events to create a source 

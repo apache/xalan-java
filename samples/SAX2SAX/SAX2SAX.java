@@ -61,14 +61,14 @@
  *  stylesheet, the XML input, and the transformation.
  */
 
-import trax.Processor;
-import trax.TemplatesBuilder;
-import trax.Templates;
-import trax.Transformer;
-import trax.Result;
-import trax.ProcessorException; 
-import trax.ProcessorFactoryException;
-import trax.TransformException; 
+import org.apache.trax.Processor;
+import org.apache.trax.TemplatesBuilder;
+import org.apache.trax.Templates;
+import org.apache.trax.Transformer;
+import org.apache.trax.Result;
+import org.apache.trax.ProcessorException; 
+import org.apache.trax.ProcessorFactoryException;
+import org.apache.trax.TransformException; 
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;

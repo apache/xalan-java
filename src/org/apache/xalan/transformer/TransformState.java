@@ -4,7 +4,7 @@ import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
-import trax.Transformer;
+import org.apache.trax.Transformer;
 
 /**
  * This interface is meant to be used by a consumer of 

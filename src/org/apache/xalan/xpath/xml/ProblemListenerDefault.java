@@ -59,7 +59,7 @@ package org.apache.xalan.xpath.xml;
 import org.w3c.dom.*;
 import org.xml.sax.ErrorHandler;
 
-import trax.ProcessorException;
+import org.apache.trax.ProcessorException;
 
 /**
  * <meta name="usage" content="general"/>
@@ -125,7 +125,7 @@ public class ProblemListenerDefault implements ProblemListener
                        String msg, String id, int lineNo, int charOffset)
   throws org.xml.sax.SAXException   
   {
-    m_errorHandler.error(new trax.ProcessorException(msg));
+    m_errorHandler.error(new org.apache.trax.ProcessorException(msg));
     return false;   
   }  
   

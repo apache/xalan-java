@@ -60,8 +60,8 @@ Copyright:
   <property name="src.dir" value="./src"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
-  <property name="trax.reldir" value="trax"/>
-  <property name="serialize.reldir" value="serialize"/>
+  <property name="trax.reldir" value="org/apache/trax"/>
+  <property name="serialize.reldir" value="org/apache/serialize"/>
   <property name="serializer.reldir" value="org/apache/xml/serialize/transition"/>
   <property name="jaxp.reldir" value="javax/xml/parsers"/>
   <property name="sax.reldir" value="org/xml/sax"/>
@@ -267,9 +267,9 @@ Copyright:
     
     <!-- generate patterns.html, a TRaX "patterns design" document -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/${xalan.jar}"
-       args="-in ${src.dir}/trax/patterns.xml 
+       args="-in ${src.dir}/org/apache/trax/patterns.xml 
              -xsl ${xdocs.style}/stylesheets/patterns.xsl 
-             -out ${build.apidocs}/trax/patterns.html"/>  <!-- patterns.html TRaX desing document -->    
+             -out ${build.apidocs}/org/apache/trax/patterns.html"/>  <!-- patterns.html TRaX desing document -->    
     <copyfile src="./xdocs/sources/xalan/trax.gif" dest="${build.apidocs}/trax/trax.gif"/>
       
     <javadoc
@@ -277,8 +277,8 @@ Copyright:
          doclet="xalanjdoc.Standard"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
-         packagenames="org.apache.xalan.client,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.lib.sql,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,org.w3c.xslt,serialize,serialize.helpers,org.apache.xml.serialize.transition,trax,org.xml.sax,org.xml.sax.helpers,org.w3c.dom,org.w3c.dom.range,org.w3c.dom.traversal,javax.xml.parsers"
-         group="TrAX trax,Xalan_Core org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer,XPath org.apache.xpath*:org.w3c.xslt,Xalan_Other org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils,Xalan_Extensions org.apache.xalan.lib*,Serializers serialize*:org.apache.xml.serialize.transition,SAX_2 org.xml.sax*,DOM_2 org.w3c.dom*,XML_PARSING javax.xml.parsers"
+         packagenames="org.apache.xalan.client,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.lib.sql,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,org.w3c.xslt,org.apache.serialize,org.apache.serialize.helpers,org.apache.xml.serialize.transition,org.apache.trax,org.xml.sax,org.xml.sax.helpers,org.w3c.dom,org.w3c.dom.range,org.w3c.dom.traversal,javax.xml.parsers"
+         group="TrAX org.apache.trax,Xalan_Core org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer,XPath org.apache.xpath*:org.w3c.xslt,Xalan_Other org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils,Xalan_Extensions org.apache.xalan.lib*,Serializers org.apache.serialize*:org.apache.xml.serialize.transition,SAX_2 org.xml.sax*,DOM_2 org.w3c.dom*,XML_PARSING javax.xml.parsers"
          destdir="${build.apidocs}"
          author="true"
          version="true"

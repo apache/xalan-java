@@ -68,7 +68,7 @@ import org.apache.xalan.utils.StringKey;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
-import trax.ProcessorException;
+import org.apache.trax.ProcessorException;
 
 /**
  * <meta name="usage" content="general"/>

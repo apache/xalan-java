@@ -75,7 +75,7 @@ import org.apache.xalan.res.XSLMessages;
  * is used as the name of the object. The default namespace is not used for 
  * unprefixed names."
  */
-public class QName extends serialize.QName implements java.io.Serializable
+public class QName extends org.apache.serialize.QName implements java.io.Serializable
 {
   /**
    * The XML namespace.

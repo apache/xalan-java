@@ -88,7 +88,7 @@ import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-import serialize.SerializerHandler;
+import org.apache.serialize.SerializerHandler;
 
 /**
  * This class is a layer between the direct calls to the result 
