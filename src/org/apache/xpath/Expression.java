@@ -64,6 +64,7 @@ import org.apache.xalan.res.XSLMessages;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 
 import javax.xml.transform.TransformerConfigurationException;
 import org.apache.xalan.utils.SAXSourceLocator;
@@ -107,13 +108,22 @@ public abstract class Expression
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHWarning(msg, args);
-    ErrorHandler eh = xctxt.getPrimaryReader().getErrorHandler();
-
-    if (null != eh)
+    XMLReader reader = xctxt.getPrimaryReader();
+    
+    if (null != reader && null != reader.getErrorHandler())
     {
+      ErrorHandler eh = reader.getErrorHandler();
 
       // TO DO: Need to get stylesheet Locator from here.
       eh.warning(new SAXParseException(fmsg, (SAXSourceLocator)xctxt.getSAXLocator()));
+    }
+    else
+    {
+      // Where to send diagnostics in this case?
+      SourceLocator slocator = m_xpath.getLocator();
+      System.out.println(fmsg + "; file " + slocator.getSystemId()
+                         + "; line " + slocator.getLineNumber() + "; column "
+                         + slocator.getColumnNumber());    
     }
   }
 
@@ -155,12 +165,13 @@ public abstract class Expression
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    ErrorHandler eh = xctxt.getPrimaryReader().getErrorHandler();
-
-    if (null != eh)
+    XMLReader reader = xctxt.getPrimaryReader();
+    if((null != reader) && (null != reader.getErrorHandler()))
     {
+      ErrorHandler eh = reader.getErrorHandler();
+
       SAXParseException te = new SAXParseException(fmsg,
-                      (SAXSourceLocator)m_xpath.getLocator());
+                                                   (SAXSourceLocator)m_xpath.getLocator());
       eh.fatalError(te);
     }
     else
@@ -170,5 +181,6 @@ public abstract class Expression
                          + "; line " + slocator.getLineNumber() + "; column "
                          + slocator.getColumnNumber());
     }
+    
   }
 }
