@@ -212,15 +212,16 @@ public class TransformerFactoryImpl
     private boolean _generateTranslet = false;
     
     /**
-     * If this is set to <code>true</code>, we attempt to use translet classes for 
-     * transformation if possible without compiling the stylesheet. The translet class
-     * is only used if its timestamp is newer than the timestamp of the stylesheet.
+     * If this is set to <code>true</code>, we attempt to use translet classes
+     * for transformation if possible without compiling the stylesheet. The
+     * translet class is only used if its timestamp is newer than the timestamp
+     * of the stylesheet.
      */
     private boolean _autoTranslet = false;
     
     /**
-     * If this is set to <code>true</code>, we attempt to load the translet from the
-     * CLASSPATH.
+     * If this is set to <code>true</code>, we attempt to load the translet
+     * from the CLASSPATH.
      */
     private boolean _useClasspath = false;
 
@@ -416,7 +417,9 @@ public class TransformerFactoryImpl
 	    SAXSource.FEATURE,
 	    SAXResult.FEATURE,
 	    StreamSource.FEATURE,
-	    StreamResult.FEATURE
+	    StreamResult.FEATURE,
+	    SAXTransformerFactory.FEATURE,
+	    SAXTransformerFactory.FEATURE_XMLFILTER
 	};
 
 	// Inefficient, but array is small
