@@ -242,7 +242,14 @@ public class XConnection
       We could also turn autocommit off by putting
       ;autocommit=false on the URL.
       */
-      m_connection.setAutoCommit(false);
+      try
+      {
+        m_connection.setAutoCommit(false);
+      }
+      catch(java.sql.SQLException se)
+      {
+        // Some drivers do not support transactions
+      }
 
       DatabaseMetaData dma = m_connection.getMetaData();
 
