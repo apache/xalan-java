@@ -239,7 +239,11 @@ class XSLTElementDef
       // elements, so just assign the def, and continue to  
       // see if anything else matches.
       if(def.m_name.equals("*"))
-        lreDef = def.m_elementProcessor;
+      {
+        // Don't allow xsl elements
+        if(!equalsMayBeNullOrZeroLen(uri, Constants.S_XSLNAMESPACEURL))      
+          lreDef = def.m_elementProcessor;
+      }  
       else if(def.QNameEquals(uri, localName))
         return def.m_elementProcessor;
     }
