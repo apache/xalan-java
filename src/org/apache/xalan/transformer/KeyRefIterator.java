@@ -133,7 +133,7 @@ public class KeyRefIterator extends LocPathIterator
   public Node nextNode() throws DOMException
   {
 
-    if (m_foundLast)
+   if (m_foundLast)
       return null;
     
     // If the cache is on, and the node has already been found, then 
@@ -150,6 +150,7 @@ public class KeyRefIterator extends LocPathIterator
       Node next = m_cachedNodes.elementAt(m_next); 
       this.setCurrentPos(++m_next); 
       m_lastFetched = next;
+      
       return next;
     }    
 
@@ -185,29 +186,35 @@ public class KeyRefIterator extends LocPathIterator
   {
     KeyRefIterator clone = (KeyRefIterator)super.clone();
     // clone.m_ki = (KeyIterator)m_ki.clone();
+
     return clone;
   }
   
+//  /**
+//   * Get a cloned Iterator that is reset to the beginning 
+//   * of the query.
+//   *
+//   * @return A cloned NodeIterator set of the start of the query.
+//   *
+//   * @throws CloneNotSupportedException
+//   */
+//  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+//  {
+//    KeyRefIterator clone = (KeyRefIterator)super.cloneWithReset();
+//
+//    return clone;
+//  }
+  
   /**
-   * Get a cloned Iterator that is reset to the beginning 
-   * of the query.
-   *
-   * @return A cloned NodeIterator set of the start of the query.
-   *
-   * @throws CloneNotSupportedException
+   * Reset the iterator.
    */
-  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  public void reset()
   {
-
-    KeyRefIterator clone = (KeyRefIterator)super.cloneWithReset();
-
-    clone.m_foundLast = false;
-    clone.m_lastFetched = null;
-    clone.m_next = 0; 
-    clone.setCurrentPos(0);
-
-    return clone;
+    super.reset();
+    
+    setCurrentPos(0);
   }
+
   
   /**
    * Add a node matching this ref to the cached nodes for this iterator 
