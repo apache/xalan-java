@@ -79,9 +79,11 @@
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.3.2">
      <note>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailoing list archive index</jump>.</note>
+     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.</note>
      <ul>
-     <li>[add here]</li>
+     <li>Bug fixes, including variable-handling bugs.</li>
+     <li>&xslt4j; now uses a list of supported encodings in a properties file 
+     (org.apache.xalan.serialize.Encodings.properties). Fixes Bugzilla 6356. Patch from Sergey Ushakov. </li>     
      <li>Support for the <jump href="http://www.exslt.org/">EXSLT</jump> function and result elements, and EXSLT 
      date-and-time functions.</li>
      <li>Improvements to the extensions mechanism to more efficiently handle the detection and analysis of extensions 

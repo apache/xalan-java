@@ -17,6 +17,8 @@ and new support for the TrAX API.</p>
 </ul>
 <anchor name="xsltcnew"/>
 <s2 title="Global changes since &xslt4j; 2.2.D14">
+<note>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.</note>
 <p><em>Fix to &xslt4j; 2.3.0.</em> Beginning with release 2.3.0, regexp.jar is required to compile translets and use the XSLTC API (see <link idref="xsltc_usage" anchor="classpath">Setting the system classpath for XSLTC</link>). For release 2.3.0, we posted regexp.jar to the Apache CVS repository, but we failed to update the Ant build process to include regexp.jar in the distribution files. As soon as a user alerted us to this error, we fixed build.xml to include regexp.jar in the distribution files. Accordingly, regexp.jar is in the 2.3.x binary and source distribution files.</p>
 
 </s2>
