@@ -979,22 +979,25 @@ public class Stylesheet  extends ElemTemplateElement
    */
   public void setLocaterInfo(Locator locator)
   {
-    m_publicId = locator.getPublicId();
-    m_systemId = locator.getSystemId();
-    
-    if(null != m_systemId)
+    if(null != locator)
     {
-      try
+      m_publicId = locator.getPublicId();
+      m_systemId = locator.getSystemId();
+      
+      if(null != m_systemId)
       {
-        m_href = SystemIDResolver.getAbsoluteURI(m_systemId, null);
+        try
+        {
+          m_href = SystemIDResolver.getAbsoluteURI(m_systemId, null);
+        }
+        catch(SAXException se)
+        {
+          // Ignore this for right now
+        }
       }
-      catch(SAXException se)
-      {
-        // Ignore this for right now
-      }
+      
+      super.setLocaterInfo(locator);
     }
-    
-    super.setLocaterInfo(locator);
   }
 
 
