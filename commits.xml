@@ -551,4 +551,18 @@ slightly
 <Log>bug fix 6189, ArrayIndexOutOfBoundsException, contrib
  by Mirko Seifert</Log>
 </Commit>
+<Commit category="core">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>02/14/2002</DateCommitted>
+<Added>java/src/org/apache/xalan/xsltc
+ javax.xml.transform.TransformerFactory</Added>
+<Log>added a service provide source file to be copied into
+ xsltc.jar (bundled jar)</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>02/14/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt EnvironmentCheck.java</Modified>
+<Log>Update various .jar sizes for recent builds and 2.3.0</Log>
+</Commit>
 </Commits>

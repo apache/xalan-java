@@ -17,6 +17,10 @@ and new support for the TrAX API.</p>
 </ul>
 <anchor name="xsltcnew"/>
 <s2 title="Changes since &xslt4j; 2.2.D14">
+ <p>Primary change since &xslt4j; 2.3.0:</p>
+   <ul>
+   <li>Fixed build.xml to include regexp.jar in the distribution files.</li>
+   </ul>
 &xsltcdone;
 </s2>
 <anchor name="xsltcconf"/>
