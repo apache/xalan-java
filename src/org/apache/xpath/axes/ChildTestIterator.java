@@ -126,7 +126,6 @@ public class ChildTestIterator extends LocPathIterator
    * @throws javax.xml.transform.TransformerException
    */
   ChildTestIterator(DTMAxisTraverser traverser)
-          throws javax.xml.transform.TransformerException
   {
 
     super(null);

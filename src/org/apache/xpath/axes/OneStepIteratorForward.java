@@ -45,6 +45,23 @@ public class OneStepIteratorForward extends ChildTestIterator
     
   }
   
+  /**
+   * Create a OneStepIterator object that will just traverse the self axes.
+   * 
+   * @param axis One of the org.apache.xml.dtm.Axis integers.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public OneStepIteratorForward(int axis)
+  {
+    super(null);
+    
+    m_axis = axis;
+    int whatToShow = DTMFilter.SHOW_ALL;
+    initNodeTest(whatToShow);
+  }
+
+  
 
   
   /**
@@ -58,6 +75,7 @@ public class OneStepIteratorForward extends ChildTestIterator
   {
     super.setRoot(context, environment);
     m_traverser = m_cdtm.getAxisTraverser(m_axis);
+    
   }
   
 //  /**

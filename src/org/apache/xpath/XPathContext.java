@@ -103,6 +103,7 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.dtm.Axis;
 
 // Utility imports.
 import org.apache.xml.utils.SAXSourceLocator;
@@ -294,7 +295,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public DTMIterator createDTMIterator(int node)
   {
-    DescendantIterator iter = new DescendantIterator();
+    // DescendantIterator iter = new DescendantIterator();
+    DTMIterator iter = new org.apache.xpath.axes.OneStepIteratorForward(Axis.SELF);
     iter.setRoot(node, this);
     return iter;
     // return m_dtmManager.createDTMIterator(node);
