@@ -122,7 +122,7 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 	_currFactory = _xsltcFactory;
     }
 
-    public void createXalanTransformerFactory() {
+    private void createXalanTransformerFactory() {
  	final String xalanMessage =
 	    "org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl "+
 	    "could not create an "+
