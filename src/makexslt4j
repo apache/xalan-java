@@ -29,12 +29,14 @@ SUBDIRS =
 
 SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)client$(PATHSEP)XSLTProcessorApplet.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionFunctionHandler.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionNSHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionHandlerGeneral.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionHandlerJava.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionHandlerJavaClass.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionHandlerJavaPackage.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionsTable.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)MethodResolver.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLProcessorContext.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLTJavaClassEngine.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)Redirect.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)XConnection.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)XStatement.java \
