@@ -18,6 +18,7 @@
  */
 package org.apache.xalan.processor;
 
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.NamespaceAlias;
 import org.xml.sax.Attributes;
 
@@ -59,7 +60,7 @@ class ProcessorNamespaceAlias extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-
+    final String resultNS;
     NamespaceAlias na = new NamespaceAlias(handler.nextUid());
 
     setPropertiesFromAttributes(handler, rawName, attributes, na);
@@ -76,8 +77,17 @@ class ProcessorNamespaceAlias extends XSLTElementProcessor
     {
       prefix = "";
       na.setResultPrefix(prefix);
+      resultNS = handler.getNamespaceForPrefix(prefix);
+      if(null == resultNS)
+        handler.error(XSLTErrorResources.ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX_FOR_DEFAULT, null, null);
     }
-    String resultNS = handler.getNamespaceForPrefix(prefix);
+    else
+    {
+        resultNS = handler.getNamespaceForPrefix(prefix);
+        if(null == resultNS)
+         handler.error(XSLTErrorResources.ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX, new Object[] {prefix}, null);
+    }
+   
     na.setResultNamespace(resultNS);
     handler.getStylesheet().setNamespaceAlias(na);
     handler.getStylesheet().appendChild(na);

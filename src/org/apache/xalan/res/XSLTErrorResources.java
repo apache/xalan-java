@@ -90,6 +90,12 @@ public class XSLTErrorResources extends ListResourceBundle
   /* 
    * Static variables
    */
+  public static final String ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX = 
+	"ER_INVALID_SET_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX"; 
+	
+  public static final String ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX_FOR_DEFAULT =
+	"ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX_FOR_DEFAULT";
+   
   public static final String ER_NO_CURLYBRACE = "ER_NO_CURLYBRACE";
   public static final String ER_FUNCTION_NOT_SUPPORTED = "ER_FUNCTION_NOT_SUPPORTED";
   public static final String ER_ILLEGAL_ATTRIBUTE = "ER_ILLEGAL_ATTRIBUTE";
@@ -2122,11 +2128,19 @@ public class XSLTErrorResources extends ListResourceBundle
     // Note to translators:  This message indicates that the value argument
     // of setParameter must be a valid Java Object.
 //  ER_INVALID_SET_PARAM_VALUE
-//  public static final int ER_INVALID_SET_PARAM_VALUE = 256;
+//  public static final int ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX = 256;
     { ER_INVALID_SET_PARAM_VALUE,
      "The value of param {0} must be a valid Java Object"},
 
+//	ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX_FOR_DEFAULT
+//	ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX_FOR_DEFAULT = 257;
+    { ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX_FOR_DEFAULT,
+      "The result-prefix attribute of an xsl:namespace-alias element has the value '#default', but there is no declaration of the default namespace in scope for the element"},
 
+//	ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX
+//	public static final int ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX = 258;
+    { ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX,
+      "The result-prefix attribute of an xsl:namespace-alias element has the value ''{0}'', but there is no namespace declaration for the prefix ''{0}'' in scope for the element."},
 
   // Warnings...
 
