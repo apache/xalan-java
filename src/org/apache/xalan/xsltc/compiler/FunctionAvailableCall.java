@@ -231,7 +231,8 @@ final class FunctionAvailableCall extends FunctionCall {
 	    _namespaceOfFunct.equals(TRANSLET_URI))
         {
             final Parser parser = getParser();
-            _isFunctionAvailable = parser.functionSupported(_nameOfFunct);
+            _isFunctionAvailable = 
+		parser.functionSupported(Util.getLocalName(_nameOfFunct));
         }
  	return _isFunctionAvailable;
     }
