@@ -91,6 +91,8 @@ public class BitArray implements Externalizable {
 	0x00000080, 0x00000040, 0x00000020, 0x00000010,
 	0x00000008, 0x00000004, 0x00000002, 0x00000001 };
 
+    private final static boolean DEBUG_ASSERTIONS = false;
+    
     /**
      * Constructor. Defines the initial size of the bit array (in bits).
      */
@@ -98,11 +100,11 @@ public class BitArray implements Externalizable {
 	this(32);
     }
 
-    public BitArray(int size) {
-	if (size < 32) size = 32;
-	_bitSize = size;
-	_intSize = (_bitSize >>> 5) + 1;
-	_bits = new int[_intSize + 1];
+    public BitArray(int size) {        
+        if (size < 32) size = 32;
+        _bitSize = size;
+        _intSize = (_bitSize >>> 5) + 1;
+        _bits = new int[_intSize + 1];
     }
 
     public BitArray(int size, int[] bits) {
@@ -138,25 +140,32 @@ public class BitArray implements Externalizable {
      * Returns true if the given bit is set
      */
     public final boolean getBit(int bit) {
-	return((_bits[bit>>>5] & _masks[bit%32]) != 0);
+        if (DEBUG_ASSERTIONS) {
+            if (bit >= _bitSize) {
+                throw new Error(
+                             "Programmer's assertion in  BitArray.getBit");
+            }
+        }
+
+        return((_bits[bit>>>5] & _masks[bit%32]) != 0);
     }
 
     /**
      * Returns the next set bit from a given position
      */
     public final int getNextBit(int startBit) {
-	for (int i = (startBit >>> 5) ; i<=_intSize; i++) {
-	    int bits = _bits[i];
-	    if (bits != 0) {
-		for (int b = (startBit % 32); b<32; b++) {
-		    if ((bits & _masks[b]) != 0) {
-			return((i << 5) + b);
-		    }
-		}
-	    }
-	    startBit = 0;
-	}
-	return(DTMAxisIterator.END);
+        for (int i = (startBit >>> 5) ; i<=_intSize; i++) {
+            int bits = _bits[i];
+            if (bits != 0) {
+                for (int b = (startBit % 32); b<32; b++) {
+                    if ((bits & _masks[b]) != 0) {
+                        return((i << 5) + b);
+                    }
+                }
+            }
+            startBit = 0;
+        }
+        return(DTMAxisIterator.END);
     }
 
     /**
@@ -213,11 +222,18 @@ public class BitArray implements Externalizable {
      * Sets a given bit
      */
     public final void setBit(int bit) {
-	if (bit >= _bitSize) return;
-	final int i = (bit >>> 5);
-	if (i < _first) _first = i;
-	if (i > _last) _last = i;
-	_bits[i] |= _masks[bit % 32];
+        if (DEBUG_ASSERTIONS) {
+            if (bit >= _bitSize) {
+                throw new Error(
+                             "Programmer's assertion in  BitArray.getBit");
+            }
+        }
+
+        if (bit >= _bitSize) return;
+        final int i = (bit >>> 5);
+        if (i < _first) _first = i;
+        if (i > _last) _last = i;
+        _bits[i] |= _masks[bit % 32];
     }
 
     /**
@@ -287,6 +303,3 @@ public class BitArray implements Externalizable {
     }
 
 }
-
-
-    
