@@ -55,150 +55,271 @@
  */
 package org.apache.xpath.expression;
 
-
 /**
- * This interface represents an XPath Expression.
+ * Represents a XPath expression.
+ * <p>Use {@link #getExprType()} to query the expression type. 
+ * More information about expression are obtained by casting it
+ * to its corresponding java type. Here the XPath expression type to Java type mapping table:
+ * </p>
+ * <table cellpadding="2" cellspacing="2" border="1">
+ * <thead>
+ *    <tr>
+ * 	    <td>Expression type</td>
+ * 	    <td>Java type</td>
+ *    </tr>
+ * </thead>
+ * <tbody>
+ * 	  <tr>
+ *      <td>{@link #PATH_EXPR}</td>
+ *      <td>{@link PathExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #LOGICAL_EXPR}</td>
+ *       <td>{@link OperatorExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #CONDITIONAL_EXPR}</td>
+ *      <td>{@link ConditionalExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #ITERATION_EXPR}</td>
+ *      <td>{@link ForAndQuantifiedExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #EVERY_EXPR}</td>
+ *      <td>{@link ForAndQuantifiedExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #SOME_EXPR}</td>
+ *      <td>{@link ForAndQuantifiedExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #COMPARISON_EXPR}</td>
+ *      <td>{@link OperatorExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #ARITHMETIC_EXPR}</td>
+ *      <td>{@link OperatorExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #SEQUENCE_EXPR}</td>
+ *      <td>{@link OperatorExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #COMBINE_EXPR}</td>
+ *      <td>{@link OperatorExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #LITERAL_EXPR}</td>
+ *      <td>{@link Literal}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #FUNCTION_CALL_EXPR}</td>
+ *      <td>{@link FunctionCall}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #VARIABLE_REF_EXPR}</td>
+ *      <td>{@link Variable}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #RANGE_EXPR}</td>
+ *      <td>{@link OperatorExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #STEP}</td>
+ *      <td>{@link StepExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #INSTANCE_OF_EXPR}</td>
+ *      <td>{@link InstanceOfExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #UNARY_EXPR}</td>
+ *      <td>{@link OperatorExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #CAST_AS_EXPR}</td>
+ *      <td>{@link CastOrTreatAsExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #TREAT_AS_EXPR}</td>
+ *      <td>{@link CastOrTreatAsExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #CASTABLE_EXPR}</td>
+ *      <td>{@link CastableAsExpr}</td>
+ *    </tr>
+ *    <tr>
+ *      <td>{@link #VALIDATE_EXPR}</td>
+ *      <td>{@link ?}</td>
+ *    </tr>
+ *  </tbody>
+ * </table> 
+ * <p>For example the following code snippet may be used to get the items of 
+ * the expression e = (1, call(),(toto[/user], $author)):</p>
  * <pre>
- * [1]   XPath   ::=   ExprSequence? 
- * [3]   Expr    ::=   OrExpr
- * [7]   QuantifiedExpr   ::=   ((<"some" "$"> |  <"every" "$">) VarName "in" Expr ("," "$" VarName "in" Expr)* "satisfies")* IfExpr
- * [10]  ComparisonExpr   ::=   RangeExpr ( (ValueComp | GeneralComp |  NodeComp | OrderComp)  RangeExpr )?
- * [18]  PathExpr   ::=   ("/" RelativePathExpr?) |  ("//" RelativePathExpr) |  RelativePathExpr
- * </pre>
+ * void printItem(Expr e)
+ * {
+ * 		if (e.getExprType() ==  Expr.SEQUENCE_EXPR)
+ * 		{
+ * 			OperatorExpr expr = (OperatorExpr) e;
+ * 			for (int i = 0; i %lt; expr.getOperandCount(); i ++ )
+ * 			{
+ * 				printItem(expr.getOperand(i));
+ * 			}
+ * 		} else 
+ * 		{
+ * 		  System.out.println(e.getString(true) + " ");
+ * 		}
+ * }
+ * </pre> 
+ * <p>Should produced the following result:</p>
+ * <pre>
+ * 1 call() toto[/user] $author
+ * </pre> 
+ * <p>XPath expressions are always fully expanded. For example, the expression
+ * /a//b is expanded to fn:root(self::node())/descendant-or-self::node()/b.
+ * The number of steps is 3 (and not 2). 
+ * </p> 
+ * <p>
+ * An {@link Expr} object may be not a valid XPath expression but a only a fragment.
+ * For example a {@link StepExpr} expression is a fragment but can't be executed by
+ * itself. To be valid, the top level expression must be an expression sequence.
+ * </p>
  * @see <a href="http://www.w3.org/TR/2002/WD-xpath20-20020816/#id-expressions">XPath 2.0 Specification</a>
- */ 
-public interface Expr extends Visitable {
+ * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
+ * @version $Id$
+ */
+public interface Expr extends Visitable
+{
 
-    /**
-     * The expression is a path expression
-     */
-    static final short PATH_EXPR = 0;
-    
-    /**
-     * The expression is a logical expression. 
-     * Represents 'or' and 'and' expressions.
-     */
+	/**
+	 * The expression is a path expression
+	 */
+	static final short PATH_EXPR = 0;
+
+	/**
+	 * The expression is a logical expression. 
+	 * Represents 'or' and 'and' expressions.
+	 */
 	static final short LOGICAL_EXPR = 1;
-    
-    /**
-     * The expression is a conditionnal expression (if) 
-     */
+
+	/**
+	 * The expression is a conditionnal expression (if) 
+	 */
 	static final short CONDITIONAL_EXPR = 2;
-    
-    /**
-     * The expression is an iteration expression (for)   
-     */
+
+	/**
+	 * The expression is an iteration expression (for)   
+	 */
 	static final short ITERATION_EXPR = 3;
-    
-    /**
-     * The expression is a quantified expression of type every     
-     */
+
+	/**
+	 * The expression is a quantified expression of type every     
+	 */
 	static final short EVERY_EXPR = 4;
-    
+
 	/**
 	 * The expression is a quantified expression of type some     
 	 */
 	static final short SOME_EXPR = 22;
-    
-    /**
-     * The expression is a comparison expression type. 
-     * Includes value comparisons, general comparisons, node comparisons
-     * and order comparisons.
-     */
-	static final  short COMPARISON_EXPR = 5;
-    
-    /**
-     * The expression is an arithmetic expression.
-     * Includes arithmetic operators for addition, subtraction, multiplication, division and modulus
-     */
+
+	/**
+	 * The expression is a comparison expression type. 
+	 * Includes value comparisons, general comparisons, node comparisons
+	 * and order comparisons.
+	 */
+	static final short COMPARISON_EXPR = 5;
+
+	/**
+	 * The expression is an arithmetic expression.
+	 * Includes arithmetic operators for addition, subtraction, multiplication, division and modulus
+	 */
 	static final short ARITHMETIC_EXPR = 6;
-    
-    /**
-     * The expression is a sequence.
-     */
+
+	/**
+	 * The expression is a sequence.
+	 */
 	static final short SEQUENCE_EXPR = 7;
-    
-    /**
-     * The expression is a combine expression (union and intersection)
-     */
+
+	/**
+	 * The expression is a combine expression (union and intersection)
+	 */
 	static final short COMBINE_EXPR = 8;
-   
-    /**
-     * The expression is a validate expression 
-     */
+
+	/**
+	 * The expression is a validate expression 
+	 */
 	static final short VALIDATE_EXPR = 10;
-       
-    /**
-     * The expression is a literal expression
-     */
+
+	/**
+	 * The expression is a literal expression
+	 */
 	static final short LITERAL_EXPR = 13;
 
-    /**
-     * The expression is a function call
-     */
+	/**
+	 * The expression is a function call
+	 */
 	static final short FUNCTION_CALL_EXPR = 14;
 
-    /**
-     * The expression is a variable reference
-     */
+	/**
+	 * The expression is a variable reference
+	 */
 	static final short VARIABLE_REF_EXPR = 15;
 
-    /**
-     * The expression is a range expression
-     */
-	static final short RANGE_EXPR = 16;
-    
-    /**
-     * Step
-     * %review% to remove since a step can't exist outside of path
-     */
-	static final short STEP = 17;
-    
-    /**
-     * The expression is an instance of expression
-     */
-	static final short INSTANCE_OF_EXPR = 18;    
-     
-    /**
-     * The expression is an unary expression
-     */
-	static final short UNARY_EXPR = 19;
-    
-    /**
-     * The expression is a cast as expression
-     */
-	static final short CAST_AS_EXPR = 20;
-    
-    /**
-     * The expression is a castable expression
-     */
-	static final short CASTABLE_EXPR = 21;
-	
 	/**
-	  * The expression is a treat as expression
-	  */
-	 static final short TREAT_AS_EXPR = 22;
+	 * The expression is a range expression
+	 */
+	static final short RANGE_EXPR = 16;
 
-    /**
-     * Gets the global expression type. 
-     * @return The type of this expression: one of the constants defined in this
-     * interface
-     */
-    short getExprType();
+	/**
+	 * The expression is a step
+	 */
+	static final short STEP = 17;
 
-    /**
-     * Clone the expression
-     * @return A clone of this expression
-     */
-    Expr cloneExpression();  
-    
-    /**
-     * Gets the expression as a string (external form)
-     * @param abbreviate Gets the string as an abbreviate form or not
-     * @return The external form of this expression
-     */
-    String getString(boolean abbreviate);  
-    
+	/**
+	 * The expression is an instance of expression
+	 */
+	static final short INSTANCE_OF_EXPR = 18;
+
+	/**
+	 * The expression is an unary expression
+	 */
+	static final short UNARY_EXPR = 19;
+
+	/**
+	 * The expression is a cast as expression
+	 */
+	static final short CAST_AS_EXPR = 20;
+
+	/**
+	 * The expression is a castable expression
+	 */
+	static final short CASTABLE_EXPR = 21;
+
+	/**
+	 * The expression is a treat as expression
+	 */
+	static final short TREAT_AS_EXPR = 22;
+
+	/**
+	 * Gets the expression type. 
+	 * @return The type of this expression: one of the constants defined in this
+	 * interface
+	 */
+	short getExprType();
+
+	/**
+	 * Clone expression
+	 * @return A clone of this expression
+	 */
+	Expr cloneExpression();
+
+	/**
+	 * Gets the expression as a string (external form)
+	 * @param abbreviate Gets the string as an abbreviate form or not
+	 * @return The external form of this expression
+	 */
+	String getString(boolean abbreviate);
+
 }
-
-

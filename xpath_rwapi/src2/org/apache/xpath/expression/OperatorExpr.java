@@ -69,24 +69,6 @@ import org.apache.xpath.XPathException;
  *  <li>path expressions (see <code>PathExpr</code>)</li>
  *  <li>Parenthesized expression</li>
  * </ul>
- * <pre>
- * [14]   UnionExpr   ::=   IntersectExceptExpr ( ("union" |  "|")  IntersectExceptExpr )*
- * [15]   IntersectExceptExpr   ::=   UnaryExpr ( ("intersect" |  "except")  UnaryExpr )*
- * [12]   AdditiveExpr   ::=   MultiplicativeExpr ( ("+" |  "-")  MultiplicativeExpr )*
- * [13]   MultiplicativeExpr   ::=   UnionExpr ( ("*" |  "div" |  "idiv" |  "mod")  UnionExpr )*
- * [10]   ComparisonExpr   ::=   RangeExpr ( (ValueComp|  GeneralComp|  NodeComp|  OrderComp)  RangeExpr )?
- * [25]   ValueComp   ::=   "eq" |  "ne" |  "lt" |  "le" |  "gt" |  "ge"
- * [24]   GeneralComp   ::=   "=" |  "!=" |  "<" |  "<=" |  ">" |  ">="
- * [26]   NodeComp   ::=   "is" |  "isnot"
- * [27]   OrderComp   ::=   "<<" |  ">>"
- * [4]    OrExpr   ::=   AndExpr ( "or"  AndExpr )*
- * [5]    AndExpr   ::=   ForExpr ( "and"  ForExpr )*
- * [11]   RangeExpr   ::=   AdditiveExpr ( "to"  AdditiveExpr )*
- * [18]   PathExpr   ::=   ("/" RelativePathExpr?) |  ("//" RelativePathExpr) |  RelativePathExpr
- * [19]   RelativePathExpr   ::=   StepExpr (("/" |  "//") StepExpr)*
- * [46]   ParenthesizedExpr   ::=   "(" ExprSequence? ")"
- * [25]   ExprSequence   ::=   Expr ("," Expr)*
- * </pre>
  * @see <a href="http://www.w3.org/TR/xpath20">XPath 2.0 Specification</href>
  */
 public interface OperatorExpr extends Expr

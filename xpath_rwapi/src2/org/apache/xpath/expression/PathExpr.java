@@ -56,17 +56,24 @@
 package org.apache.xpath.expression;
 
 /**
- * Represent Path expression.
- * [31]    PathExpr    ::=    ("/" RelativePathExpr?) 
- *         |  ("//" RelativePathExpr) |  RelativePathExpr 
- * [32]    RelativePathExpr    ::=    StepExpr (("/" |  "//") StepExpr)* 
+ * Represents <em>path</em> expression. <quote>It can be used to locate nodes within a tree.</quote>
+ * <p>A path expression consists of a series of {@link StepExpr}. 
+ * It's a {@link OperatorExpr operator-based} expression
+ * with {@link OperatorExpr#SLASH_STEP} as the operator separator 
+ * and {@link Expr#PATH_EXPR} as the operator type. 
+ * </p> 
+ * <p>"//" is always expanded as /descendant-or-self::node()/.</p>
+ * <p>In the same manner, the initial / is expanded as fn:root(self::node()).
+ * The convenient {@link #isAbsolute()} method may be used to test whether
+ * or not the path expression is absolute.</p>
  * @see <a href="http://www.w3.org/TR/xpath20/#id-path-expression">
  * XPath 2.0 specification</a>
  */
 public interface PathExpr extends OperatorExpr {
 
     /**
-     * 
+     * Test whether the path is absolute or not
+     * @return boolean true whether absolute
      */
     boolean isAbsolute();
 }

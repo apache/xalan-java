@@ -69,8 +69,6 @@ import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 /**
  * Default implementation of step. 
- * %review% step is not an expression by itself: it's always ebbeded in path expression. 
- * So make it inherit of SimpleNode?
  */
 public class StepExprImpl extends ExprImpl implements StepExpr
 {
@@ -276,14 +274,6 @@ public class StepExprImpl extends ExprImpl implements StepExpr
         }
 
         return (Expr) m_children[0];
-    }
-
-    /**
-     * @see org.apache.xpath.expression.StepExpr#cloneStep()
-     */
-    public StepExpr cloneStep()
-    {
-        return new StepExprImpl(this);
     }
 
     /**

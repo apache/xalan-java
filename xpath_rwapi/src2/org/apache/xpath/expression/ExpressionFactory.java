@@ -65,8 +65,9 @@ import java.math.BigInteger;
 
 
 /**
- * Allows the creation of XPath expression either from string representation or
- * by composing expressions.
+ * Constructors for XPath expressions.
+ * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
+ * @version $Id$
  */
 public interface ExpressionFactory
 {

@@ -66,8 +66,6 @@ import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathConstants;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
-import java.security.InvalidParameterException;
-
 
 /**
  *
@@ -176,7 +174,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
             default:
 
                 // Invalid parameter
-                throw new InvalidParameterException(
+                throw new IllegalArgumentException(
                     "The parameter value does not correspond to an operator identifier"); // I16
         }
     }

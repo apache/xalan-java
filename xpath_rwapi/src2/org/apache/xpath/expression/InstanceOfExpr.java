@@ -59,8 +59,7 @@ import org.apache.xpath.datamodel.SequenceType;
 
 /**
  * Represents "instance of" expression.  
- * @see <a href="http://www.w3.org/TR/xpath20/#id-instance-of">XPath 2.0
- *      specification</a>
+ * @see <a href="http://www.w3.org/TR/xpath20/#id-instance-of">XPath 2.0 Specification</a>
  */
 public interface InstanceOfExpr extends Expr {
     

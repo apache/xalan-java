@@ -59,13 +59,9 @@ import org.apache.xpath.XPathException;
 
 
 /**
- * Represents step.
- * <pre>
- * [20]   StepExpr   ::=   (ForwardStep |  ReverseStep |  Literal) Predicates
- * [39]   ForwardStep   ::=   (ForwardAxis NodeTest) |  AbbreviatedForwardStep
- * [40]   ReverseStep   ::=   (ReverseAxis NodeTest) |  AbbreviatedReverseStep
- * </pre>
- *
+ * Represents a step. 
+ * <quote>A step generates a sequence of items and then filters the sequence 
+ * by zero or more predicates.</quote>
  * @see <a href="http://www.w3.org/TR/xpath20/#id-axis-steps">XPath 2.0
  *      specification</a>
  */
@@ -152,22 +148,19 @@ public interface StepExpr extends Expr
     static final short AXIS_ANCESTOR_OR_SELF = 13;
 
     /**
-     * Returns true when the step is a forward test
-     *
+     * Tells whether or not this step is a foward axis step
      * @return boolean
      */
     boolean isForwardStep();
 
     /**
-     * Returns true when the step is a reverse test
-     *
+     * Tells whether or not this step is a reversed axis step
      * @return boolean
      */
     boolean isReversedStep();
 
     /**
-     * Tell whether this step is a primary expression.
-     *
+     * Tells whether or not this step is a filter step.
      * @return boolean
      */
     boolean isPrimaryExpr();
@@ -249,10 +242,4 @@ public interface StepExpr extends Expr
      * Remove the specified predicate
      */
     void removePredicate(Expr predicate);
-
-    /**
-     * Clone this step
-     * @return A clone of this step
-     */
-    StepExpr cloneStep();
 }
