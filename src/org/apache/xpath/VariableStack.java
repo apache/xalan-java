@@ -59,6 +59,7 @@ package org.apache.xpath;
 import java.util.Stack;
 import java.util.Vector;
 import org.apache.xalan.utils.QName;
+import org.apache.xalan.utils.IntStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -95,7 +96,6 @@ public class VariableStack extends Stack
   }
 
   private static final Integer contextMarker = new Integer(0);
-  private static final Arg m_elemFrameBoundry = new Arg();
   private int m_globalStackFrameIndex = -1;
 
   /**
@@ -104,6 +104,11 @@ public class VariableStack extends Stack
    * be the real stack top.
    */
   private int m_currentStackFrameIndex = 0;
+  
+  /**
+   * Hold the position of the start of the current element frame.
+   */
+  private IntStack m_elemFramePos = new IntStack();
 
   /**
    * Mark the top of the global stack frame.
@@ -170,7 +175,7 @@ public class VariableStack extends Stack
     boolean b = (m_currentStackFrameIndex == this.size());
     setSize(sz);
     if(b)
-      m_currentStackFrameIndex = this.size();
+      m_currentStackFrameIndex = sz;
   }
 
   /**
@@ -262,7 +267,7 @@ public class VariableStack extends Stack
     
     return null;
   }
-    
+      
   /**
    * Push an argument onto the stack.  Don't forget
    * to call startContext before pushing a series of
@@ -270,7 +275,7 @@ public class VariableStack extends Stack
    */
   public void pushElemFrame()
   {
-    push(m_elemFrameBoundry);
+    m_elemFramePos.push(this.size());
   }
   
   /**
@@ -278,23 +283,11 @@ public class VariableStack extends Stack
    */
   public void popElemFrame()
   {
-    int nElems = size();
-    // Sub 1 extra for the context marker.
-    for(int i = (nElems - 1); i >= 0; i--)
-    {
-      Object obj = this.elementAt(i);
-      if(obj == contextMarker)
-      {
-        break;
-      }
-      else if(obj == m_elemFrameBoundry)
-      {
-        this.setStackSize(i);
-        break;
-      }
-    }
+    int newSize = m_elemFramePos.pop();
+    boolean b = (m_currentStackFrameIndex == this.size());
+    setSize(newSize);
+    if(b)
+      m_currentStackFrameIndex = newSize;
   }
-
-
   
 } // end XSLArgStack
