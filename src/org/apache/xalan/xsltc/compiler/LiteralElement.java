@@ -77,10 +77,11 @@ import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class LiteralElement extends Instruction {
+
     private String _name;
-    private Hashtable _accessedPrefixes = null;
     private LiteralElement _parent;
     private Vector _attributeElements = null;
+    private Hashtable _accessedPrefixes = null;
 
     private final static String XMLNS_STRING = "xmlns";
 
@@ -344,7 +345,9 @@ final class LiteralElement extends Instruction {
     /**
      * Compiles code that emits the literal element to the output handler,
      * first the start tag, then namespace declaration, then attributes,
-     * then the element contents, and then the element end tag.
+     * then the element contents, and then the element end tag. Since the
+     * value of an attribute may depend on a variable, variables must be
+     * compiled first.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 
@@ -354,8 +357,17 @@ final class LiteralElement extends Instruction {
 	// Compile code to emit element start tag
 	il.append(methodGen.loadHandler());
 	il.append(new PUSH(cpg, _name));
-	il.append(DUP2); // duplicate these 2 args for endElement
+	il.append(DUP2); 		// duplicate these 2 args for endElement
 	il.append(methodGen.startElement());
+
+	// The value of an attribute may depend on a (sibling) variable
+	for (int i = 0; i < elementCount(); i++) {
+	    final SyntaxTreeNode item = (SyntaxTreeNode) elementAt(i);
+	    if (item instanceof Variable) {
+		item.translate(classGen, methodGen);
+		removeElement(item);	// avoid translating it twice
+	    }
+	}
 
 	// Compile code to emit namespace attributes
 	if (_accessedPrefixes != null) {
