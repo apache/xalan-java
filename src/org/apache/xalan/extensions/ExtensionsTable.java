@@ -107,6 +107,20 @@ public class ExtensionsTable
                                        "org.apache.xalan.lib.Extensions");
 
     addExtensionNamespace(uri, fh);
+    
+    //Add EXSLT namespaces and map to org.apache.xalan.lib.ExsltXxx.
+    uri = "http://exslt.org/common";
+    fh = new ExtensionHandlerJavaClass(uri, "javaclass",
+                                       "org.apache.xalan.lib.ExsltCommon");
+    addExtensionNamespace(uri, fh);
+    uri = "http://exslt.org/math";
+    fh = new ExtensionHandlerJavaClass(uri, "javaclass",
+                                       "org.apache.xalan.lib.ExsltMath");
+    addExtensionNamespace(uri, fh);
+    uri = "http://exslt.org/sets";
+    fh = new ExtensionHandlerJavaClass(uri, "javaclass",
+                                       "org.apache.xalan.lib.ExsltSets");
+    addExtensionNamespace(uri, fh);    
   }
 
   /**
