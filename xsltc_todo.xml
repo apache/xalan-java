@@ -5,7 +5,7 @@
      ]
 >
 
-<todo title="Things To Do" project="XCLTC" major-version="1">
+<todo title="Things To Do" project="XSLTC" major-version="1">
 
 
 
@@ -24,7 +24,7 @@
   <actions>
 
    <target-release-description>
-    <date>00/00/00</date>
+    <date>05/18/01</date>
     <level>beta</level>
     <goal type="conformance">XSLT 1.0 compliant 100%.</goal>
     <goal type="performance">Maintain current level.</goal>
@@ -33,15 +33,6 @@
     <goal type="documentation">Documentation functionally complete.</goal>
    </target-release-description>
    
-   <action context="code, packages: org.apache.xalan.xsltc" 
-           category="feature" 
-           who="MJ, TM"
-           priority="high">           
-     Replace all Project X components and APIs with 
-     JAXP equivalents (this includes updating compiler's parser 
-     to use SAX2/DOM2).
-   </action>
-
   <action context="doc"
           category="documentation"
           who="MJ"
@@ -202,6 +193,14 @@
   </actions>
 
   <completed>
+     <action context="code, packages: org.apache.xalan.xsltc" 
+           category="feature" 
+           who="MJ, TM"
+           priority="high">           
+     Replace all Project X components and APIs with 
+     JAXP equivalents (this includes updating compiler's parser 
+     to use SAX2/DOM2).
+   </action>
   </completed>
 
 </todo>
