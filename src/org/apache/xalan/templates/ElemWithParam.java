@@ -255,7 +255,7 @@ public class ElemWithParam extends ElemTemplateElement
         // Use result tree fragment
         int df = transformer.transformToRTF(this);
 
-        var = new XRTreeFrag(df, xctxt);
+        var = new XRTreeFrag(df, xctxt, this);
       }
     }
     finally

@@ -338,7 +338,7 @@ public class ElemVariable extends ElemTemplateElement
 	    else        
 	        df = transformer.transformToRTF(this);
 
-        var = new XRTreeFrag(df, xctxt);
+        var = new XRTreeFrag(df, xctxt, this);
       }
     }
     finally
