@@ -425,17 +425,26 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @return An XMLFilter object, or null if this feature is not supported.
    */
   public XMLFilter newXMLFilter(Source src)
+    throws TransformerConfigurationException
   {
-    try
-    {
-      Templates templates = newTemplates(src);
-      return new TrAXFilter(templates);
-    }
-    catch(TransformerConfigurationException tfe)
-    {
-      return null;
-    }
+    Templates templates = newTemplates(src);
+    return newXMLFilter(templates);
   }
+  
+  /**
+   * Create an XMLFilter that uses the given source as the
+   * transformation instructions.
+   *
+   * @param src The source of the transformation instructions.
+   *
+   * @return An XMLFilter object, or null if this feature is not supported.
+   */
+  public XMLFilter newXMLFilter(Templates templates)
+    throws TransformerConfigurationException
+  {
+    return new TrAXFilter(templates);
+  }
+
   
   /**
    * Get a TransformerHandler object that can process SAX

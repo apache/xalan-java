@@ -79,6 +79,10 @@ import org.xml.sax.XMLFilter;
  */
 public abstract class SAXTransformerFactory extends TransformerFactory
 {
+  /**
+   * Default constructor is protected on purpose.
+   */
+  protected SAXTransformerFactory(){}
 
   /**
    * Get a TransformerHandler object that can process SAX
@@ -143,6 +147,23 @@ public abstract class SAXTransformerFactory extends TransformerFactory
    * @param src The source of the transformation instructions.
    *
    * @return An XMLFilter object, or null if this feature is not supported.
+   * 
+   * @throws TransformerConfigurationException If for some reason the 
+   * TemplatesHandler can not be created.
    */
-  public abstract XMLFilter newXMLFilter(Source src);
+  public abstract XMLFilter newXMLFilter(Source src)
+    throws TransformerConfigurationException;
+  
+  /**
+   * Create an XMLFilter, based on the Templates argument..
+   *
+   * @param templates The source of the transformation instructions.
+   *
+   * @return An XMLFilter object, or null if this feature is not supported.
+   * 
+   * @throws TransformerConfigurationException If for some reason the 
+   * TemplatesHandler can not be created.
+   */
+  public abstract XMLFilter newXMLFilter(Templates templates)
+    throws TransformerConfigurationException;
 }
