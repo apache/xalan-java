@@ -116,6 +116,11 @@ public class NodeTest extends Expression
       m_score = SCORE_QNAME;
   }
   
+  public double getDefaultScore()
+  {
+    return m_score.num();
+  }  
+  
   public static void debugWhatToShow(int whatToShow)
   {
     java.util.Vector v = new java.util.Vector();

@@ -65,8 +65,12 @@ import java.io.Serializable;
 import org.apache.xalan.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.compiler.PsuedoNames;
+import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.Expression;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.patterns.StepPattern;
+import org.apache.xpath.patterns.UnionPattern;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -121,52 +125,95 @@ public class TemplateList implements java.io.Serializable
         template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE, new Object[]{template.getName()});
     }
 
-    if(null != template.getMatch())
+    XPath matchXPath = template.getMatch();
+    if(null != matchXPath)
     {
-      Vector strings = template.getMatch().getTargetElementStrings();
-      if(null != strings)
+      Expression matchExpr = matchXPath.getExpression();
+      if(matchExpr instanceof StepPattern)
       {
-        int nTargets = strings.size();
-        for(int stringIndex = 0; stringIndex < nTargets; stringIndex++)
+        insertPatternInTable((StepPattern)matchExpr, template, pos);
+      }
+      if(matchExpr instanceof UnionPattern)
+      {
+        UnionPattern upat = (UnionPattern)matchExpr;
+        StepPattern[] pats = upat.getPatterns();
+        int n = pats.length;
+        for(int i = 0; i < n; i++)
         {
-          String target = (String)strings.elementAt(stringIndex);
-
-          Object newMatchPat = new MatchPattern2(template.getMatch().getPatternString(),
-                                                 template.getMatch(),
-                                                 template, pos,
-                                                 target, m_stylesheet);
-
-          // See if there's already one there
-          Object val = m_patternTable.get(target);
-          if(null == val)
-          {
-            // System.out.println("putting: "+target);
-            m_patternTable.put(target, newMatchPat);
-          }
-          else
-          {
-            // find the tail of the list
-            MatchPattern2 matchPat = (MatchPattern2)val;
-            //((MatchPattern2)newMatchPat).setNext(matchPat);
-            //m_patternTable.put(target, newMatchPat);
-            //*
-            // Sort by priority first, then by document order.
-            double priority = ((MatchPattern2)newMatchPat).getTemplate().getPriority();
-            MatchPattern2 next;
-            while( ((next = matchPat.getNext()) != null) &&
-                   (matchPat.getTemplate().getPriority() >= priority) )
-                  
-            {
-            matchPat = next;
-            }
-            // System.out.println("appending: "+target+" to "+matchPat.getPattern());
-            matchPat.setNext((MatchPattern2)newMatchPat);
-            //*/
-          }
+          insertPatternInTable(pats[i], template, pos);
         }
       }
+      else
+      {
+        // TODO: assert error
+      }                                  
     }
   }
+  
+  /**
+   * Add a template to the template list.
+   */
+  public void insertPatternInTable(StepPattern pattern, ElemTemplate template, int pos)
+  {
+    String target = pattern.getTargetString();
+    if(null != target)
+    {       
+      Object newMatchPat = new MatchPattern2(template.getMatch().getPatternString(),
+                                             template.getMatch(),
+                                             template, pos,
+                                             target, m_stylesheet, pattern);
+
+      // See if there's already one there
+      Object val = m_patternTable.get(target);
+      if(null == val)
+      {
+        // System.out.println("putting: "+target);
+        m_patternTable.put(target, newMatchPat);
+      }
+      else
+      {            
+        MatchPattern2 matchPat = (MatchPattern2)val;
+        //((MatchPattern2)newMatchPat).setNext(matchPat);
+        //m_patternTable.put(target, newMatchPat);
+        //*
+        // Sort by priority first, then by document order.
+        double priority = getPriorityOrScore((MatchPattern2)newMatchPat);
+        MatchPattern2 next;
+        while( ((next = matchPat.getNext()) != null) &&
+               (getPriorityOrScore(next) > priority) )
+          
+        {
+          matchPat = next;
+        }
+        // System.out.println("appending: "+target+" to "+matchPat.getPattern());
+        
+        // This check is just to catch the first template in the list
+        // It's priority was not checked against the new template  
+        if ( (getPriorityOrScore(matchPat) <= priority))
+        { 
+          ((MatchPattern2)newMatchPat).setNext(matchPat); 
+          m_patternTable.put(target, newMatchPat);
+        }  
+        else
+        {  
+          ((MatchPattern2)newMatchPat).setNext(next);
+          matchPat.setNext((MatchPattern2)newMatchPat);            
+        }            
+      }
+    }
+  }  
+  
+  private double getPriorityOrScore(MatchPattern2 matchPat)
+  {
+    double priority = matchPat.getTemplate().getPriority();
+    if(priority == XPath.MATCH_SCORE_NONE)         
+    {  
+      Expression ex = matchPat.getStepPattern();
+      if (ex instanceof NodeTest)
+        return ((NodeTest)ex).getDefaultScore();
+    }
+    return priority;
+  }  
   
   /**
    * Locate a macro via the "name" attribute.
@@ -350,6 +397,12 @@ public class TemplateList implements java.io.Serializable
                 bestMatchedRule = rule;
                 bestMatchedPattern = matchPat;
               }
+              // We have found a match. If not issueing conflict warnings,
+              // stop right here. This should be the best match because
+              // the template list was set up with the highest priority
+              // (including document order priority) template at the top.              
+              if (quietConflictWarnings)
+                break;
             }
             // Date date2 = new Date();
             // m_totalTimePatternMatching+=(date2.getTime() - date1.getTime());
@@ -625,7 +678,7 @@ public class TemplateList implements java.io.Serializable
      * patterns (for compatibility with old syntax).
      */
     MatchPattern2(String pat, XPath exp, ElemTemplate template, int posInStylesheet,
-                  String targetString, Stylesheet stylesheet)
+                  String targetString, Stylesheet stylesheet, StepPattern pattern )
     {
       m_pattern = pat;
       m_template = template;
@@ -633,6 +686,7 @@ public class TemplateList implements java.io.Serializable
       m_targetString = targetString;
       m_stylesheet = stylesheet;
       m_expression = exp;
+      m_stepPattern = pattern;
     }
 
     Stylesheet m_stylesheet;
@@ -641,6 +695,9 @@ public class TemplateList implements java.io.Serializable
 
     XPath m_expression;
     public XPath getExpression() { return m_expression; }
+    
+    StepPattern m_stepPattern;
+    public StepPattern getStepPattern() { return m_stepPattern; }
 
     int m_posInStylesheet;
 

@@ -5,6 +5,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xpath.axes.SubContextList;
+import org.apache.xpath.compiler.PsuedoNames;
 
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.Node;
@@ -20,6 +21,42 @@ public class StepPattern extends NodeTest implements SubContextList
   public StepPattern(int whatToShow)
   {
     super(whatToShow);
+  }
+  
+  String m_targetString; // only calculate on head
+  
+  public void calcTargetString()
+  {
+    int whatToShow = getWhatToShow();
+    switch(whatToShow)
+    {
+    case NodeFilter.SHOW_COMMENT:
+      m_targetString = PsuedoNames.PSEUDONAME_COMMENT;
+      break;
+    case NodeFilter.SHOW_TEXT:
+      m_targetString = PsuedoNames.PSEUDONAME_TEXT;
+      break;
+    case NodeFilter.SHOW_ALL:
+      m_targetString = PsuedoNames.PSEUDONAME_ANY;
+      break;
+    case NodeFilter.SHOW_DOCUMENT:
+      m_targetString = PsuedoNames.PSEUDONAME_ROOT;
+      break;
+    case NodeFilter.SHOW_ELEMENT:
+      if(this.WILD == m_name)
+        m_targetString = PsuedoNames.PSEUDONAME_ANY;
+      else
+        m_targetString = m_name;
+      break;
+    default:
+      m_targetString = PsuedoNames.PSEUDONAME_ANY;
+      break;
+    }
+  }
+  
+  public String getTargetString()
+  {
+    return m_targetString;
   }
   
   /**
@@ -56,10 +93,11 @@ public class StepPattern extends NodeTest implements SubContextList
    */
   protected final void calcScore()
   {
-    if(getPredicateCount() > 0)
+    if((getPredicateCount() > 0) || (null != m_relativePathPattern))
       m_score = SCORE_OTHER;
     else
       super.calcScore();
+    calcTargetString();
   }
 
   

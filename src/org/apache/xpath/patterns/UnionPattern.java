@@ -13,6 +13,11 @@ public class UnionPattern extends Expression
     m_patterns = patterns;
   }
   
+  public StepPattern[] getPatterns()
+  {
+    return m_patterns;
+  }
+  
   /**
    * Test a node to see if it matches the given node test.
    * @param xpath The xpath that is executing.

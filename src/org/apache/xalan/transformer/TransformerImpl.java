@@ -1663,7 +1663,7 @@ public class TransformerImpl extends XMLFilterImpl
    * If this is set to true, do not warn about pattern
    * match conflicts.
    */
-  private boolean m_quietConflictWarnings = false;
+  private boolean m_quietConflictWarnings = true;
   
   /**
    * Get quietConflictWarnings property.
