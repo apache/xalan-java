@@ -236,6 +236,8 @@ public class ResultTreeHandler extends QueuedEvents
       m_nsSupport.pushContext();
       m_nsContextPushed = true;
     }
+    if(null == prefix)
+      prefix = ""; // bit-o-hack, that that's OK
     
     String existingURI = m_nsSupport.getURI(prefix);
     if((null == existingURI) || !existingURI.equals(uri))
