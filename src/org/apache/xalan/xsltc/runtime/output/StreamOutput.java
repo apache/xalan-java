@@ -79,7 +79,8 @@ abstract class StreamOutput extends OutputBase {
     protected static final String LT       = "&lt;";
     protected static final String GT       = "&gt;";
     protected static final String CRLF     = "&#xA;";
-    protected static final String QUOTE    = "&quot;";
+    protected static final String APOS     = "&apos;";
+    protected static final String QUOT     = "&quot;";
     protected static final String NBSP     = "&nbsp;";
 
     protected static final String CHAR_ESC_START  = "&#";
@@ -242,55 +243,11 @@ abstract class StreamOutput extends OutputBase {
 		: MAX_INDENT);
     }
 
+    /**
+     * This method escapes special characters used in text nodes. It
+     * is overriden for XML and HTML output.
+     */
     protected void escapeCharacters(char[] ch, int off, int len) {
-	int limit = off + len;
-	int offset = off;
-
-	if (limit > ch.length) {
-	    limit = ch.length;
-	}
-
-	// Step through characters and escape all special characters
-	for (int i = off; i < limit; i++) {
-	    final char current = ch[i];
-
-	    switch (current) {
-	    case '&':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(AMP);
-		offset = i + 1;
-		break;
-	    case '<':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(LT);
-		offset = i + 1;
-		break;
-	    case '>':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(GT);
-		offset = i + 1;
-		break;
-	    case '\u00a0':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(NBSP);
-		offset = i + 1;
-		break;
-	    default:
-		if ((current >= '\u007F' && current < '\u00A0') ||
-		    (_is8859Encoded && current > '\u00FF'))
-		{
-		    _buffer.append(ch, offset, i - offset);
-		    _buffer.append(CHAR_ESC_START);
-		    _buffer.append(Integer.toString((int)ch[i]));
-		    _buffer.append(';');
-		    offset = i + 1;
-		}
-	    }
-	}
-	// Output remaining characters (that do not need escaping).
-	if (offset < limit) {
-	    _buffer.append(ch, offset, limit - offset);
-	}
     }
 
     protected void appendAttributes() {
