@@ -86,6 +86,7 @@ import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.utils.ObjectPool;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.axes.AxesWalker;
+import org.apache.xpath.VariableStack;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -219,6 +220,12 @@ public class LocPathIterator extends Expression
 
     return null;
   }
+  
+  /** NEEDSDOC Method initContext **/
+  private int m_varStackPos;
+
+  /** NEEDSDOC Method initContext **/
+  private int m_varStackContext;
 
   /**
    * NEEDSDOC Method initContext 
@@ -234,6 +241,9 @@ public class LocPathIterator extends Expression
     this.m_execContext = execContext;
     this.m_prefixResolver = execContext.getNamespaceContext();
     this.m_dhelper = execContext.getDOMHelper();
+    VariableStack vars = execContext.getVarStack();
+    this.m_varStackPos = vars.getSearchStart();
+    this.m_varStackContext = vars.getContextPos();
   }
 
   /**
@@ -579,6 +589,11 @@ public class LocPathIterator extends Expression
       return next;
     }
 
+    VariableStack vars = m_execContext.getVarStack();
+    int savedStart = vars.getSearchStart();
+    vars.setSearchStart(m_varStackPos);
+    vars.pushContextPosition(m_varStackContext);
+    
     if (null == m_firstWalker.getRoot())
     {
       this.setNextPosition(0);
@@ -586,8 +601,13 @@ public class LocPathIterator extends Expression
 
       m_lastUsedWalker = m_firstWalker;
     }
+    
+    Node n = returnNextNode(m_firstWalker.nextNode());
+    
+    vars.setSearchStart(savedStart);
+    vars.popContextPosition();
 
-    return returnNextNode(m_firstWalker.nextNode());
+    return n;
   }
 
   /**
