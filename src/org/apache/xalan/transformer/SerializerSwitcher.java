@@ -86,7 +86,7 @@ public class SerializerSwitcher
    *
    * @param transformer Non-null transformer instance
    * @param ns Namespace URI of the element
-   * @param localName Local part of name of element 
+   * @param localName Local part of name of element
    *
    * @throws TransformerException
    */
@@ -98,55 +98,58 @@ public class SerializerSwitcher
     if (null == transformer)
       return;
 
-    StylesheetRoot stylesheet = transformer.getStylesheet();
-
-    if (null != stylesheet &&!stylesheet.isOutputMethodSet())
+    if (((null == ns) || (ns.length() == 0))
+            && localName.equalsIgnoreCase("html"))
     {
-      if (((null == ns) || (ns.length() == 0))
-              && localName.equalsIgnoreCase("html"))
+      // System.out.println("transformer.getOutputPropertyNoDefault(OutputKeys.METHOD): "+
+      //              transformer.getOutputPropertyNoDefault(OutputKeys.METHOD));     
+      // Access at level of hashtable to see if the method has been set.
+      if (null != transformer.getOutputPropertyNoDefault(OutputKeys.METHOD))
+        return;
+
+      // Getting the output properties this way won't cause a clone of 
+      // the properties.
+      Properties prevProperties = transformer.getOutputFormat().getProperties();
+      
+      // We have to make sure we get an output properties with the proper 
+      // defaults for the HTML method.  The easiest way to do this is to 
+      // have the OutputProperties class do it.
+      OutputProperties htmlOutputProperties = new OutputProperties(Method.HTML);
+
+      htmlOutputProperties.copyFrom(prevProperties, true);
+      Properties htmlProperties = htmlOutputProperties.getProperties();
+
+      try
       {
-        OutputProperties oformat = stylesheet.getOutputComposed();
+        Serializer oldSerializer = transformer.getSerializer();
 
-        // Access at level of hashtable to see if the method has been set.
-        if (null != oformat.getProperties().get(OutputKeys.METHOD))
-          return;
-
-        OutputProperties htmlFormat;
-
-        htmlFormat = (OutputProperties)oformat.clone();
-        htmlFormat.setProperty(OutputKeys.METHOD, Method.HTML);
-
-        try
+        if (null != oldSerializer)
         {
-          Serializer oldSerializer = transformer.getSerializer();
+          Serializer serializer =
+            SerializerFactory.getSerializer(htmlProperties);
 
-          if (null != oldSerializer)
+          Writer writer = oldSerializer.getWriter();
+
+          if (null != writer)
+            serializer.setWriter(writer);
+          else
           {
-            Serializer serializer =
-              SerializerFactory.getSerializer(htmlFormat.getProperties());
-            Writer writer = oldSerializer.getWriter();
+            OutputStream os = serializer.getOutputStream();
 
-            if (null != writer)
-              serializer.setWriter(writer);
-            else
-            {
-              OutputStream os = serializer.getOutputStream();
-
-              if (null != os)
-                serializer.setOutputStream(os);
-            }
-
-            transformer.setSerializer(serializer);
-
-            ContentHandler ch = serializer.asContentHandler();
-
-            transformer.setContentHandler(ch);
+            if (null != os)
+              serializer.setOutputStream(os);
           }
+
+          transformer.setSerializer(serializer);
+
+          ContentHandler ch = serializer.asContentHandler();
+
+          transformer.setContentHandler(ch);
         }
-        catch (java.io.IOException e)
-        {
-          throw new TransformerException(e);
-        }
+      }
+      catch (java.io.IOException e)
+      {
+        throw new TransformerException(e);
       }
     }
   }
