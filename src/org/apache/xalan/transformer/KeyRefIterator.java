@@ -65,6 +65,7 @@ import org.apache.xpath.NodeSet;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -183,10 +184,28 @@ public class KeyRefIterator extends LocPathIterator
   public Object clone() throws CloneNotSupportedException
   {
     KeyRefIterator clone = (KeyRefIterator)super.clone();
+    // clone.m_ki = (KeyIterator)m_ki.clone();
+    return clone;
+  }
+  
+  /**
+   * Get a cloned Iterator that is reset to the beginning 
+   * of the query.
+   *
+   * @return A cloned NodeIterator set of the start of the query.
+   *
+   * @throws CloneNotSupportedException
+   */
+  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  {
+
+    KeyRefIterator clone = (KeyRefIterator)super.cloneWithReset();
+
     clone.m_foundLast = false;
     clone.m_lastFetched = null;
     clone.m_next = 0; 
     clone.setCurrentPos(0);
+
     return clone;
   }
   
