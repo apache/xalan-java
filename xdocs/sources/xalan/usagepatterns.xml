@@ -308,7 +308,7 @@ if (tFactory.getFeature(javax.xml.transform.sax.SAXSource.FEATURE) &amp;&amp;
     reader.parse("foo.xml");</source>
     <note>If you want to perform multiple transformations with the same Templates object and a TransformerHandler, you must create a new
     TransformerHandler for each transformation. The &xslt4j; implementation of TransformerHandler 
-    (<jump href="src/org/apache/xalan/transformer/TransformerHandlerImpl.html">TransformerHandlerImpl</jump> fails to respond 
+    (<jump href="apidocs/org/apache/xalan/transformer/TransformerHandlerImpl.html">TransformerHandlerImpl</jump> fails to respond 
     to events after the first endDocument event occurs.</note>
 </s2><anchor name="outasin"/>
 <s2 title="Using transformation output as input for another transformation">
