@@ -78,7 +78,8 @@ Copyright:
   <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
   <property name="regexp.jar.name" value="regexp.jar"/>
   <property name="regexp.jar" value="${bin.dir}/${regexp.jar.name}"/>
-
+  <property name="xsltc.deps.license" value="BCEL.LICENSE.txt,BCEL.README.txt,JLex.LICENSE.txt,JLex.README.txt,java_cup.LICENSE.txt,java_cup.README.txt,runtime.LICENSE.txt,runtime.README.txt,regexp.LICENSE.txt,regexp.README.txt"/>
+  
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
   <property name="version.RELEASE" value="5"/>
@@ -107,6 +108,8 @@ Copyright:
   <!-- Build and distribution output areas -->
   <property name="build.dir" value="./build"/><!-- GUMP: root of all normal builds output -->
   <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/><!-- GUMP: actual path/name of jar target output -->
+  <property name="build.xalan-unbundled.jar" value="${build.dir}/${name}-unbundled.jar"/>
+  <property name="build.xalan-interpretive.jar" value="${build.dir}/${name}-interpretive.jar"/>
   <property name="build.xsltc.jar" value="${build.dir}/xsltc.jar"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
@@ -126,6 +129,11 @@ Copyright:
   <property name="samples.dir" value="./samples"/>
   <property name="build.samples.jar" value="${build.dir}/xalansamples.jar"/>
   <property name="build.servlet.war" value="${build.dir}/xalanservlet.war"/>
+  <property name="build.xsltc.applet.jar" value="${build.dir}/xsltcapplet.jar"/>
+  <property name="build.xsltc.brazil.jar" value="${build.dir}/xsltcbrazil.jar"/>
+  <property name="build.xsltc.ejb.jar" value="${build.dir}/xsltcejb.jar"/>
+  <property name="build.xsltc.servlet.jar"
+            value="${build.dir}/xsltcservlet.jar"/>
   <property name="xdocs.dir" value="./xdocs"/>
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
@@ -221,28 +229,42 @@ Copyright:
   </target>
 
   <!-- =================================================================== -->
-  <!-- Compile entire source tree                                          -->
+  <!-- Compile the DTM implementation and xml utilities                    -->
   <!-- =================================================================== -->
-  <target name="compile" depends="prepare"
-    description="Compile Xalan-J 2.x (skips XSLTC)" >
-    <echo message="compile entire source tree and copy .properties and .res files to build tree."/>
-    <javac srcdir="${src.dir}" 
+  <target name="xml.compile" depends="prepare">
+    <echo message="Compiling DTM implementation and utilities" />
+    <javac srcdir="${src.dir}"
            destdir="${build.classes}"
            debug="${build.debug}"
            target="1.1" >
       <include name="${apachexml.reldir}/**/*.java" />
       <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
-      <exclude name="${apachexml.reldir}/utils/synthetic/**/*.java" />
-      <include name="${xpath.reldir}/**/*.java" />
-      <include name="${xalan.reldir}/**/*.java" />
-      <exclude name="${xsltc.reldir}/**/*.java" />
-      <include name="${domxpath.reldir}/**/*.java" />
-      <exclude name="**/CoroutineSAXFilterTest.java" 
-        unless="xerces.present"	 />
-      <exclude name="**/CoroutineSAXParser_Xerces.java" 
-        unless="xerces.present"	 />
+      <exclude name="${apachexml.reldir}/utils/synthetic/**/*.java" />      
       <exclude name="**/IncrementalSAXSource_Xerces.java" 
         unless="xerces.present"	 />
+      <classpath refid="compile.class.path" />
+      <bootclasspath refid="xslt.boot.class.path" />
+    </javac>
+    <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
+    <copy todir="${build.classes}">
+      <fileset dir="${src.dir}" includes="${apachexml.reldir}/**/*.properties,${apachexml.reldir}/**/*.res"/>
+    </copy>  
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Compile the Xalan interpreter source tree                           -->
+  <!-- =================================================================== -->
+  <target name="xalan-interpretive.compile" depends="xml.compile"
+    description="Compile the Xalan interpretive classes (skips XSLTC)" >
+    <echo message="Compiling Xalan interpretive classes" />
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           debug="${build.debug}" 
+           target="1.1" >
+      <include name="${xpath.reldir}/**/*.java" />
+      <include name="${domxpath.reldir}/**/*.java" />
+      <include name="${xalan.reldir}/**/*.java" />
+      <exclude name="${xsltc.reldir}/**/*.java" />
       <classpath refid="compile.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
       <sourcepath refid="compile.source.path" />
@@ -254,9 +276,14 @@ Copyright:
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.classes}/org/apache/xalan/res" file="${XSLTInfo.props}" filtering="true"/>
   </target>
+  
+  <!-- Compile all java sources (Xalan interpretive and XSLTC) -->
+  <target name="compile" depends="xalan-interpretive.compile,xsltc.compile"
+    description="Compile all java source files (Xalan interpretive + XSLTC)" >
+  </target>
 
   <!-- =================================================================== -->
-  <!-- Compile just the XSLTC compiler portion (to be integrated soon!) -->
+  <!-- Compile just the XSLTC compiler portion                             -->
   <!-- =================================================================== -->
   <path id="xsltc.class.path">
     <pathelement location="${xmlapis.jar}" />
@@ -286,19 +313,24 @@ Copyright:
          actually need to generate the java_cup and jlex files 
          in the two sub-targets below
     -->
-    <!-- NOTE: The two uptodate tasks below do not yet work! 28-Nov-01 -sc -->
-    <uptodate property="xsltc.java_cup.needed"  >
-      <srcfiles dir= "${src.dir}/${xsltc.reldir}/compiler" includes="xpath.cup"/>
-      <mapper type="merge" to="${generated.xpathparser}"/>
+    <uptodate property="xsltc.java_cup.not_needed" targetfile="${generated.xpathparser}" >
+      <srcfiles dir="${src.dir}/${xsltc.reldir}/compiler" includes="xpath.cup" />
     </uptodate>
-    <uptodate property="xsltc.jlex.needed"  >
-      <srcfiles dir= "${src.dir}/${xsltc.reldir}/compiler" includes="xpath.lex"/>
-      <mapper type="merge" to="${generated.xpathlexer}"/>
-    </uptodate>
+
+    <uptodate property="xsltc.jlex.not_needed" targetfile="${generated.xpathlexer}" >
+      <srcfiles dir="${src.dir}/${xsltc.reldir}/compiler" includes="xpath.lex" />
+    </uptodate> 
+    
+    <!-- Determine whether the support jars are already expanded -->
+    <available file="${build.classes}/org/apache/bcel" type="dir" property="xsltc.bcel_jar.not_needed" />
+    <available file="${build.classes}/JLex" type="dir" property="xsltc.jlex_jar.not_needed" />
+    <available file="${build.classes}/java_cup/Main.class" type="file" property="xsltc.java_cup_jar.not_needed" />
+    <available file="${build.classes}/java_cup/runtime" type="dir" property="xsltc.runtime_jar.not_needed" />
+    <available file="${build.classes}/org/apache/regexp" type="dir" property="xsltc.regexp_jar.not_needed" />
   </target>
 
-  <!-- Generate code sources for xsltc if needed -->
-  <target name="xsltc.java_cup" depends="xsltc.prepare" > <!-- if="xsltc.java_cup.needed" -->
+  <!-- Generate the XPath parser sources for xsltc if needed -->
+  <target name="xsltc.java_cup" depends="xsltc.prepare" unless="xsltc.java_cup.not_needed">
     <!-- The second step generates sym.java and XPathParser.java. -->
     <echo message="java_cup preparsing"/>
     <java fork="yes" failonerror="true" 
@@ -311,9 +343,10 @@ Copyright:
     <echo message="java_cup move output files"/>
     <move file="XPathParser.java" tofile="${generated.xpathparser}"/>
     <move file="sym.java" tofile="${generated.xpathsym}"/>
-
   </target>
-  <target name="xsltc.jlex" depends="xsltc.java_cup" ><!--if="xsltc.jlex.needed" -->
+  
+  <!-- Generate the XPath lexer sources for xsltc if needed -->
+  <target name="xsltc.jlex" depends="xsltc.java_cup" unless="xsltc.jlex.not_needed">
     <!-- The third step generates XPathLexer.java. The lexiographical analyser
     has to be generated after sym.java, so order is important. -->
     <echo message="JLex preparsing"/>
@@ -325,11 +358,8 @@ Copyright:
     <move file="${src.dir}/${xsltc.reldir}/compiler/xpath.lex.java" tofile="${generated.xpathlexer}"/>
   </target>
 
-  <!-- The xsltc.compile target should be rewritten to properly 
-       do dependencies on the generated sources: right now, it 
-       will always regenerate the sources, even if it's not needed
-       (which forces all later steps to re-run as well) -->
-  <target name="xsltc.compile" depends="xsltc.java_cup,xsltc.jlex"
+  <!-- Compile the main XSLTC classes -->
+  <target name="xsltc.compile" depends="xsltc.java_cup,xsltc.jlex,xml.compile"
     description="Compile just the XSLTC classes" >
     <echo message="Compiling remaining XSLTC classes"/>
     <javac srcdir="${src.dir}" 
@@ -341,7 +371,8 @@ Copyright:
     </javac>
   </target>
 
-  <target name="xsltc.fcompile" 
+  <!-- Compile just the XSLTC classes w/o JLex, JCup recompilation -->
+  <target name="xsltc.fcompile" depends="xml.compile"
     description="Compile just the XSLTC classes w/o JLex, JCup recompilation" >
     <echo message="Compiling remaining XSLTC classes"/>
     <javac srcdir="${src.dir}" 
@@ -353,6 +384,7 @@ Copyright:
     </javac>
   </target>
 
+  <!-- Jar up the XSLTC classes w/o the support jars -->
   <target name="xsltc.unbundledjar" depends="xsltc.compile"
     description="Jar just the xsltc.jar file" >
     <!-- Copy over the manifest, with filtering (for version number) -->
@@ -360,85 +392,68 @@ Copyright:
     <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
     <jar jarfile="${build.xsltc.jar}" manifest="${build.dir}/manifest.xsltc" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
+        <include name="org/apache/xml/**" />
         <include name="${xsltc.reldir}/**/*" />
       </patternset>
     </jar>
   </target>
 
+  <!-- Copy license and readme files for XSLTC support jars -->
+  <target name="xsltc.copy-licenses" depends="xsltc.prepare">
+    <echo message="Copying license files for XSLTC support jars"/>
+    <copy todir="${build.classes}">
+      <fileset dir="${bin.dir}" casesensitive="no" includes="${xsltc.deps.license}"/>
+    </copy>
+  </target>
 
-  <target name="xsltc.jar" depends="xsltc.compile"
-     description="Jar xsltc, BCEL,JLex,java_cup,runtime and jakarta regexp">
-    <!-- make a tmp directory to work in -->
-    <delete dir="${build.dir}/xsltctmp" includeEmptyDirs="true" quiet="true"/>
-    <mkdir  dir="${build.dir}/xsltctmp" />
+  <!-- A parametrized target which is used to copy and expand a XSLTC support jar -->
+  <target name="xsltc.copy-deps-jar" unless="${param_unless}">
+    <!-- copy the jar file to the build/classes directory -->
+    <copy todir="${build.classes}" file="${bin.dir}/${param_jar_name}"/>
+    
+    <!-- unjar the jar file -->
+    <unjar src="${build.classes}/${param_jar_name}" dest="${build.classes}" />
+    
+    <!-- remove the jar file -->
+    <delete file="${build.classes}/${param_jar_name}" />
+  </target>
+  
+  <!-- Copy and expand the XSLTC support jars if needed -->
+  <target name="xsltc.copy-deps-jars" depends="xsltc.copy-licenses">
+    <echo message="Copying XSLTC support jars" />
+    <!-- copy the 3rd party support jar files -->
+    <antcall target="xsltc.copy-deps-jar">
+      <param name="param_unless" value="xsltc.bcel_jar.not_needed" />
+      <param name="param_jar_name" value="${bcel.jar.name}" />
+    </antcall>
 
-    <!-- create jar of xsltc classes in the tmp directory -->
-    <jar jarfile="${build.dir}/xsltctmp/xsltc.jar"
-        basedir="${build.dir}/classes"
-        includes="org/apache/xalan/xsltc/**" />
+    <antcall target="xsltc.copy-deps-jar">
+      <param name="param_unless" value="xsltc.jlex_jar.not_needed" />
+      <param name="param_jar_name" value="${jlex.jar.name}" />
+    </antcall>
 
-    <!-- copy the xsltc 3rd party support jar files and licenses 
-         to tmp dist dir 
-    -->
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/BCEL.jar"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/BCEL.LICENSE.txt"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/BCEL.README.txt"/>
+    <antcall target="xsltc.copy-deps-jar">
+      <param name="param_unless" value="xsltc.java_cup_jar.not_needed" />
+      <param name="param_jar_name" value="${java_cup.jar.name}" />
+    </antcall>
 
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/JLex.jar"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/JLex.LICENSE.txt"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/JLex.README.txt"/>
+    <antcall target="xsltc.copy-deps-jar">
+      <param name="param_unless" value="xsltc.runtime_jar.not_needed" />
+      <param name="param_jar_name" value="${runtime.jar.name}" />
+    </antcall>
 
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/java_cup.jar"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/java_cup.LICENSE.txt"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/java_cup.README.txt"/>
+    <antcall target="xsltc.copy-deps-jar">
+      <param name="param_unless" value="xsltc.regexp_jar.not_needed" />
+      <param name="param_jar_name" value="${regexp.jar.name}" />
+    </antcall>
+    
+    <!-- remove the old META-INF/MANIFEST.MF file -->
+    <delete file="${build.classes}/META-INF/MANIFEST.MF" quiet="true"/>  
+  </target>
 
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/runtime.jar"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/runtime.LICENSE.txt"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/runtime.README.txt"/>
-
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/regexp.jar"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/regexp.LICENSE.txt"/>
-    <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/regexp.README.txt"/>
-
-    <!-- unjar all jars -->
-    <unjar src="${build.dir}/xsltctmp/xsltc.jar"
-           dest="${build.dir}/xsltctmp" />
-    <unjar src="${build.dir}/xsltctmp/BCEL.jar"
-           dest="${build.dir}/xsltctmp" />
-    <unjar src="${build.dir}/xsltctmp/JLex.jar"
-           dest="${build.dir}/xsltctmp" />
-    <unjar src="${build.dir}/xsltctmp/java_cup.jar"
-           dest="${build.dir}/xsltctmp" />
-    <unjar src="${build.dir}/xsltctmp/runtime.jar"
-           dest="${build.dir}/xsltctmp" />
-    <unjar src="${build.dir}/xsltctmp/regexp.jar"
-           dest="${build.dir}/xsltctmp" />
-
-    <!-- remove jar files -->
-    <delete file="${build.dir}/xsltctmp/xsltc.jar" />
-    <delete file="${build.dir}/xsltctmp/BCEL.jar" />
-    <delete file="${build.dir}/xsltctmp/JLex.jar" />
-    <delete file="${build.dir}/xsltctmp/java_cup.jar" />
-    <delete file="${build.dir}/xsltctmp/runtime.jar" />
-
-    <!-- remove old META-INF dir -->
-    <delete dir="${build.dir}/xsltctmp/META-INF"
-        includeEmptyDirs="true" quiet="true"/>
+  <!-- Jar up all XSLTC classes including the support jars -->
+  <target name="xsltc.jar" depends="xsltc.compile,xsltc.copy-deps-jars"
+     description="Jar xsltc,xml,BCEL,JLex,java_cup,runtime and jakarta regexp">
 
     <!-- create new META-INF dir w/ transformer factory default -->
     <!-- GTM: comment this out so that bundled xsltc.jar does not have
@@ -455,26 +470,68 @@ Copyright:
     <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
     
     <!-- make bundled jar named xsltc.jar -->
-    <jar jarfile="${build.dir}/xsltc.jar" manifest="${build.dir}/manifest.xsltc"
-         basedir="${build.dir}/xsltctmp" />
+    <jar jarfile="${build.dir}/xsltc.jar" manifest="${build.dir}/manifest.xsltc" >
+      <fileset dir="${build.classes}" includes="org/apache/xalan/xsltc/**" />
+      <fileset dir="${build.classes}" includes="org/apache/xml/**" />
+      <fileset dir="${build.classes}" includes="org/apache/bcel/**" />
+      <fileset dir="${build.classes}" includes="JLex/**" />
+      <fileset dir="${build.classes}" includes="java_cup/**" />
+      <fileset dir="${build.classes}" includes="org/apache/regexp/**" />
+      <fileset dir="${build.classes}" includes="${xsltc.deps.license}" />
+    </jar>
 
-    <!-- clean up tmp directory -->
-    <delete dir="${build.dir}/xsltctmp" includeEmptyDirs="true" quiet="true"/>
   </target>
   
   <!-- =================================================================== -->
-  <!-- Creates the xalan JAR                                               -->
+  <!-- Creates the xalan interpretive jar                                   -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile"
-    description="Jar up xalan.jar, plus the ${xmlapis.jar.name}" >
+  <target name="xalan-interpretive.jar" depends="xalan-interpretive.compile"
+    description="Jar up everything in Xalan interpretive (without XSLTC)" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
-    <jar jarfile="${build.xalan.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
+    <jar jarfile="${build.xalan-interpretive.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
+        <include name="${apachexml.reldir}/**/*" />
+        <include name="${xpath.reldir}/**/*" />
+        <include name="${xalan.reldir}/**/*" />
+        <include name="META-INF/services/*" />
         <exclude name="${xsltc.reldir}/**/*" />
       </patternset>
     </jar>
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Creates the xalan unbundled jar (Xalan interpretive + XSLTC)         -->
+  <!-- =================================================================== -->
+  <target name="unbundledjar" depends="xalan-interpretive.compile,xsltc.compile"
+    description="Jar up Xalan and XSLTC, without the XSLTC dependencies" >
+    <filter token="impl.version" value="${impl.version}"/>
+    <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
+    <jar jarfile="${build.xalan-unbundled.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
+      <patternset>
+        <include name="${apachexml.reldir}/**/*" />
+        <include name="${xpath.reldir}/**/*" />
+        <include name="${xalan.reldir}/**/*" />
+        <include name="META-INF/services/*" />
+      </patternset>    
+    </jar>
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Creates one big xalan jar (Xalan interpretive + XSLTC + support jars) -->
+  <!-- =================================================================== -->
+  <target name="jar" depends="xalan-interpretive.compile,xsltc.compile,xsltc.copy-deps-jars"
+    description="Jar up everything (Xalan, XSLTC and XSLTC dependencies)" >
+    
+    <!-- Copy over the manifest, with filtering (for version number) -->
+    <filter token="impl.version" value="${impl.version}"/>
+    <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
+    
+    <!-- make bundled jar named xalan.jar -->
+    <jar jarfile="${build.xalan.jar}" manifest="${build.dir}/MANIFEST.MF"
+         basedir="${build.classes}" />
+  
   </target>
   
   <!-- =================================================================== -->
@@ -487,7 +544,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
-  <target name="samples" depends="jar"
+  <target name="samples" depends="jar,xsltc.samples"
     description="Compile and jar the samples (except servlet)" >
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
@@ -558,13 +615,20 @@ Copyright:
       <classpath refid="samples.class.path" />
     </javac>           
     <jar jarfile="${build.samples.jar}" basedir="${build.samples}"
-         includes="*.class"/>                   
+         includes="*.class"/>
   </target>
-   
+
   <!-- =================================================================== -->
-  <!-- Compiles the sample servlet and jars the class files.                -->  
-  <!-- The javax.servlet and javax.servlet.http packages                    -->
-  <!-- must be on the classpath                                             -->
+  <!-- Compiles all samples that require extra components in order to      -->
+  <!-- compile.                                                            -->
+  <!-- =================================================================== -->
+  <target name="extra.samples"
+          depends="servlet,xsltc.applet,xsltc.brazil,xsltc.ejb,xsltc.servlet"/>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the sample servlet and jars the class files.               --> 
+  <!-- The javax.servlet and javax.servlet.http packages                   -->
+  <!-- must be on the classpath                                            -->
   <!-- =================================================================== -->
  <target name="servlet" depends="jar"
     description="Compile and jar the servlet samples in xalanservlet.war" >
@@ -599,19 +663,76 @@ Copyright:
  </target>
  
   <!-- =================================================================== -->
-  <!-- Compiles (does not jar) the translet samples in translets.          -->
+  <!-- Compiles (does not jar) the translet samples.                       -->
   <!-- For time being, classes are generated in place.                     -->
   <!-- To run these samples, add xsltc.jar, runtime.jar, bcel.jar,         -->
   <!-- and java_cup.jar (all in the bin directory) to the classpath        --> 
   <!--                                                                     -->
   <!-- When we have straightened out classpath issues,                     -->
-  <!-- add samples in CompiledApplet, CompiledBrazil, and CompiledServlet  -->
+  <!-- add samples in CompiledApplet, CompiledBrazil, CompiledEJB and      -->
+  <!-- CompiledServlet.                                                    -->
   <!-- =================================================================== -->
-  <target name="xsltc.samples" depends="jar,xsltc.jar">
-    <javac srcdir="${samples.dir}/translets" classpath="${java.class.path}:${build.xsltc.jar}" 
-           destdir="${samples.dir}/translets" excludes="${exclude}" 
-           debug="${build.debug}"
-           bootclasspathref="xslt.boot.class.path" />
+  <target name="xsltc.samples" depends="jar">
+    <mkdir dir="${build.samples}"/>
+    <javac srcdir="${samples.dir}/translets"
+           classpath="${java.class.path}:${build.xalan.jar}" 
+           destdir="${build.samples}" excludes="${exclude}" 
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <javac srcdir="${samples.dir}/CompiledJAXP"
+           destdir="${build.samples}" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC applet example and jars the class files.         --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.applet" depends="jar">
+    <mkdir dir="${build.samples}/CompiledApplet"/>
+    <javac srcdir="${samples.dir}/CompiledApplet"
+           destdir="${build.samples}/CompiledApplet" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.applet.jar}"
+         basedir="${build.samples}/CompiledApplet"
+         includes="*.class"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC brazil example and jars the class files.         --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.brazil" depends="jar">
+    <mkdir dir="${build.samples}/CompiledBrazil"/>
+    <javac srcdir="${samples.dir}/CompiledBrazil"
+           destdir="${build.samples}/CompiledBrazil" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.brazil.jar}"
+         basedir="${build.samples}/CompiledBrazil"
+         includes="*.class"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC EJB example and jars the class files.            --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.ejb" depends="jar">
+    <mkdir dir="${build.samples}/CompiledEJB"/>
+    <javac srcdir="${samples.dir}/CompiledEJB"
+           destdir="${build.samples}/CompiledEJB" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.ejb.jar}"
+         basedir="${build.samples}/CompiledEJB"
+         includes="*.class"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC servlet example and jars the class files.        --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.servlet" depends="jar">
+    <mkdir dir="${build.samples}/CompiledServlet"/>
+    <javac srcdir="${samples.dir}/CompiledServlet"
+           destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.servlet.jar}"
+         basedir="${build.samples}/CompiledServlet"
+         includes="*.class"/>
   </target>
  
  
@@ -681,6 +802,16 @@ Copyright:
                  packages="org.apache.xalan.xsltc*"/>
     </javadoc>
     
+    <!-- remove the xml-commons sources -->
+    <delete dir="${src.dir}/javax" />
+    <delete includeEmptyDirs="true" quiet="true">
+      <fileset dir="${src.dir}/org/w3c">
+        <exclude name="dom/xpath/**"/>
+      </fileset>
+    </delete>    
+    <delete dir="${src.dir}/org/xml" />
+    <delete dir="${src.dir}/org/apache/xmlcommons" />
+    <delete file="${src.dir}/manifest.commons" />
   </target>
 
   <!-- =================================================================== -->
@@ -730,7 +861,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="jar,docs,javadocs,samples,servlet,xsltc.jar,xsltc.docs,autodist"
+  <target name="dist" depends="jar,docs,javadocs,samples,extra.samples,xsltc.docs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
@@ -767,6 +898,10 @@ Copyright:
     </copy>   
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xalanservlet.war" todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcapplet.jar"  todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcejb.jar"     todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcservlet.jar" todir="${dist.dir}/bin"/>
 
     <!-- Copy various built product .jars into the bin directory 
          of the distro, note that changes to what .jars we ship 
@@ -775,7 +910,6 @@ Copyright:
          *-bin.zip/tar.gz and *-src.zip/tar.gz files.
     -->
     <copy file="${build.xalan.jar}" todir="${dist.dir}/bin" />
-    <copy file="${build.xsltc.jar}" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,xsltc_todo.xml,todo.xsl,commits.xml"/>
@@ -791,11 +925,14 @@ Copyright:
       <include name="${dist.file}/KEYS"/>
       <include name="${dist.file}/bin/${name}.jar"/>
       <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
-      <include name="${dist.file}/bin/xsltc.jar"/>
-      <include name="${dist.file}/bin/xercesImpl.jar"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
+      <include name="${dist.file}/bin/xercesImpl.jar"/>
       <include name="${dist.file}/bin/xalansamples.jar"/>
       <include name="${dist.file}/bin/xalanservlet.war"/>
+      <include name="${dist.file}/bin/xsltcapplet.jar"/>
+      <include name="${dist.file}/bin/xsltcbrazil.jar"/>
+      <include name="${dist.file}/bin/xsltcejb.jar"/>
+      <include name="${dist.file}/bin/xsltcservlet.jar"/>
       <include name="${dist.file}/samples/"/>
       <include name="${dist.file}/docs/"/>
     </patternset>
