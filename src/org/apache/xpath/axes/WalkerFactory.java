@@ -248,8 +248,6 @@ public class WalkerFactory
     {
       stepCount++;
 
-      int whatToShow = compiler.getWhatToShow(stepOpCodePos);
-
       // String namespace = compiler.getStepNS(stepOpCodePos);
       // boolean isNSWild = (null != namespace) 
       //                   ? namespace.equals(NodeTest.WILD) : false;
@@ -284,6 +282,7 @@ public class WalkerFactory
       case OpCodes.FROM_CHILDREN :
         if (1 == stepCount)
         {
+          int whatToShow = compiler.getWhatToShow(stepOpCodePos);
           if (whatToShow == NodeFilter.SHOW_ALL)
           {
 
@@ -405,7 +404,6 @@ public class WalkerFactory
   {
 
     AxesWalker ai;
-    int whatToShow = compiler.getWhatToShow(opPos);
     int stepType = compiler.getOp(opPos);
     boolean debug = false;
 
@@ -430,7 +428,6 @@ public class WalkerFactory
       break;
     case OpCodes.FROM_ROOT :
       ai = new RootWalker(lpi);
-      simpleInit = true;
       break;
     case OpCodes.FROM_ANCESTORS :
       ai = new AncestorWalker(lpi);
@@ -519,23 +516,34 @@ public class WalkerFactory
                                  + stepType);
     }
 
-    /*
-    System.out.print("construct: ");
-    NodeTest.debugWhatToShow(whatToShow);
-    System.out.println("or stuff: "+(whatToShow & (NodeFilter.SHOW_ATTRIBUTE
-                           | NodeFilter.SHOW_ELEMENT
-                           | NodeFilter.SHOW_PROCESSING_INSTRUCTION)));
-    */
-    if ((0 == (whatToShow
-               & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
-                  | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
-      ai.initNodeTest(whatToShow);
+    if (simpleInit)
+    {
+      ai.initNodeTest(NodeFilter.SHOW_ALL);
+    }
     else
     {
-      ai.initNodeTest(whatToShow, compiler.getStepNS(opPos),
-                      compiler.getStepLocalName(opPos));
-    }
 
+      int whatToShow = compiler.getWhatToShow(opPos);
+
+      /*
+      System.out.print("construct: ");
+      NodeTest.debugWhatToShow(whatToShow);
+      System.out.println("or stuff: "+(whatToShow & (NodeFilter.SHOW_ATTRIBUTE
+                             | NodeFilter.SHOW_ELEMENT
+                             | NodeFilter.SHOW_PROCESSING_INSTRUCTION)));
+      */
+
+      if ((0 == (whatToShow
+                 & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
+                    | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
+        ai.initNodeTest(whatToShow);
+      else
+      {
+        ai.initNodeTest(whatToShow, compiler.getStepNS(opPos),
+                        compiler.getStepLocalName(opPos));
+      }
+    }
+  
     return ai;
   }
 }
