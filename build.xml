@@ -177,7 +177,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Note: Still too many cross-dependencies to do this separately -->
   <target name="compile.xalan" depends="compile.xpath">
-    <javac srcdir="${src.dir}/${xalan.reldir}" 
+    <javac srcdir="${src.dir}/${xalan.reldir}" excludes="org/apache/xalan/xsltc/**/*.java" 
            destdir="${build.classes}" 
            debug="${debug}"/>
   </target>
@@ -205,7 +205,7 @@ Copyright:
            destdir="${build.classes}"
            includes="org/apache/xml/**/*.java,org/apache/xpath/**/*.java"
            debug="${debug}"/>
-    <javac srcdir="${src.dir}" 
+    <javac srcdir="${src.dir}" excludes="org/apache/xalan/xsltc/**/*.java"
            destdir="${build.classes}"
            includes="org/apache/xalan/**/*.java"
            debug="${debug}"/>
