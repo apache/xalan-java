@@ -491,7 +491,7 @@ public abstract class DTMDefaultBase implements DTM
     {
       boolean isMore = nextNode();
 
-      if (!isMore)
+      if (identity >= m_size && !isMore)
         return NULL;
       else if (identity < m_size)
         return m_exptype.elementAt(identity);
@@ -518,7 +518,7 @@ public abstract class DTMDefaultBase implements DTM
     {
       boolean isMore = nextNode();
 
-      if (!isMore)
+      if (identity >= m_size && !isMore)
         return NULL;
       else if (identity < m_size)
         return m_level.elementAt(identity);
@@ -611,7 +611,7 @@ public abstract class DTMDefaultBase implements DTM
     {
       boolean isMore = nextNode();
 
-      if (!isMore)
+      if (identity >= m_size && !isMore)
         return NULL;
       else if (identity < m_size)
         return m_prevsib.elementAt(identity);
@@ -638,7 +638,7 @@ public abstract class DTMDefaultBase implements DTM
     {
       boolean isMore = nextNode();
 
-      if (!isMore)
+      if (identity >= m_size && !isMore)
         return NULL;
       else if (identity < m_size)
         return m_parent.elementAt(identity);
