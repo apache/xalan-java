@@ -144,11 +144,11 @@ public class ApplyXPath
       try
       {
         // Use the simple XPath API to select a nodeIterator.
-        nl = XPathAPI.selectNodeList(doc, xpath);
+        nl = XPathAPI.selectNodeIterator(doc, xpath);
 	  }
       catch (Exception e2)
       {
-        System.err.println("selectNodeList threw: " + e2.toString() + " perhaps your xpath didn't select any nodes");
+        System.err.println("selectNodeIterator threw: " + e2.toString() + " perhaps your xpath didn't select any nodes");
         e2.printStackTrace();
         return;
       }		 
