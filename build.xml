@@ -841,7 +841,6 @@ Copyright:
     description="Build documentation for posting to the website" >
  
     <mkdir dir="${site.dir}/apidocs"/>
-    <mkdir dir="${site.dir}/compat_apidocs"/>
     <mkdir dir="${site.dir}/design"/>
     <java fork="yes" 
           classname="${doc.generator}" 
@@ -861,11 +860,7 @@ Copyright:
     <!-- put in the javadoc -->
     <copy todir="${site.dir}/apidocs">
       <fileset dir="${build.apidocs}"/>
-    </copy>
-    <copy todir="${site.dir}/compat_apidocs">
-      <fileset dir="${build.compat.apidocs}"/>
-    </copy>  
-      
+    </copy>      
   </target>
    
   <!-- =================================================================== -->
