@@ -79,7 +79,7 @@ Copyright:
   <property name="xml.jar" value="${bin.dir}/${xml.jar.name}"/>
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
-  <property name="version" value="2_2_D10"/><!-- GUMP: version # of dist file -->
+  <property name="version" value="2_2_D11"/><!-- GUMP: version # of dist file -->
   <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
   <property name="year" value="2001"/>
   <property name="build.compiler" value="classic"/>
@@ -814,9 +814,9 @@ Copyright:
  
    <!-- pack all doc for transfer to website -->
  <target name="pack.docs">
-    <tar tarfile="./build/xalan-j-docs.tar" basedir="./xml-site/target/xalan-j" includes="**"/>
-    <gzip src="./build/xalan-j-docs.tar" zipfile="./build/xalan-j-docs.tar.gz"/>
-    <!--zip zipfile="./build/xalan-j-docs.zip" basedir="./xml-site/target/xalan-j" includes="**"/-->
+    <!--tar tarfile="./build/xalan-j-docs.tar" basedir="./xml-site/target/xalan-j" includes="**"/>
+    <gzip src="./build/xalan-j-docs.tar" zipfile="./build/xalan-j-docs.tar.gz"/-->
+    <zip zipfile="./build/xalan-j-docs.zip" basedir="./xml-site/target/xalan-j" includes="**"/>
   </target>
 
  
