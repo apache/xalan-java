@@ -139,7 +139,14 @@ final class FunctionAvailableCall extends FunctionCall {
 	String methodName = null;
 	int colonIndex = _nameOfFunct.indexOf(":");
 	if (colonIndex > 0) {
-	  methodName = _nameOfFunct.substring(colonIndex+1);
+	  String functionName = _nameOfFunct.substring(colonIndex+1);
+	  int lastDotIndex = functionName.lastIndexOf('.');
+	  if (lastDotIndex > 0) {
+	    methodName = functionName.substring(lastDotIndex+1);
+	    className = className + "." + functionName.substring(0, lastDotIndex);
+	  }
+	  else
+	    methodName = functionName;
 	}
 	else
 	  methodName = _nameOfFunct;
