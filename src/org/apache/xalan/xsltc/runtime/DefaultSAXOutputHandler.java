@@ -345,7 +345,18 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
                 }
                 _writer.write(endTag);
             }
-            _indentNextEndTag = true;
+	    /* Will not add this code for performance reasons.
+	       The purpose of the code is to avoid line feeds and whitespaces
+	       after <img> elements inside <a>...</a> elements in HTML.
+	    if (elementName.toLowerCase().equals("img")) {
+		_linefeedNextEndTag = false;
+		_indentNextEndTag = false;
+	    }
+	    else {
+		_indentNextEndTag = true;
+	    }
+	    */
+	    _indentNextEndTag = true;
         } catch (IOException e) {
             throw new SAXException(e);
         }
