@@ -283,8 +283,7 @@ public class ElemExtensionCall extends ElemLiteralResult
     if((null != avt) && avt.getRawName().equals(rawName))
     {
       XPathContext xctxt = transformer.getXPathContext();
-      return avt.evaluate(xctxt, sourceNode, this,
-                          new StringBuffer());        
+      return avt.evaluate(xctxt, sourceNode, this);        
     }
     return null;  
   }

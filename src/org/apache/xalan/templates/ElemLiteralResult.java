@@ -425,8 +425,7 @@ public class ElemLiteralResult extends ElemUse
       {
         AVT avt = (AVT)m_avts.elementAt(i);
         XPathContext xctxt = transformer.getXPathContext();
-        String stringedValue = avt.evaluate(xctxt, sourceNode, this,
-                                            new StringBuffer());
+        String stringedValue = avt.evaluate(xctxt, sourceNode, this);
         
         if(null != stringedValue)
         {

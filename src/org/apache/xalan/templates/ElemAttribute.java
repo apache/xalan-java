@@ -156,8 +156,7 @@ public class ElemAttribute extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
     
     // The attribute name has to be evaluated as an AVT.
-    String attrName = m_name_avt.evaluate(xctxt, sourceNode, this,
-                                          new StringBuffer());
+    String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
     String origAttrName = attrName;      // save original attribute name
     
     // Get the children of the xsl:attribute element as the string value.
@@ -181,8 +180,7 @@ public class ElemAttribute extends ElemTemplateElement
     if(null != m_namespace_avt)
     {
       // The namespace attribute is an AVT also.
-      attrNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this,
-                                               new StringBuffer());
+      attrNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
       if(null != attrNameSpace && attrNameSpace.length()>0)
       {
         // Get the prefix for that attribute in the result namespace.

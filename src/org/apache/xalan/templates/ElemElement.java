@@ -179,8 +179,7 @@ public class ElemElement extends ElemUse
     ResultTreeHandler rhandler = transformer.getResultTreeHandler();
     XPathContext xctxt = transformer.getXPathContext();
     
-    String elemName = m_name_avt.evaluate(xctxt, sourceNode, this,
-                                          new StringBuffer());
+    String elemName = m_name_avt.evaluate(xctxt, sourceNode, this);
 	// make sure that if a prefix is specified on the attribute name, it is valid
     int indexOfNSSep = elemName.indexOf(':');
     String ns ="" ;
@@ -220,8 +219,7 @@ public class ElemElement extends ElemUse
     {
       if(null != m_namespace_avt)
       {
-        elemNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this,
-                                                 new StringBuffer());
+        elemNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
 
         if(null != elemNameSpace && elemNameSpace.length()>0)
         {

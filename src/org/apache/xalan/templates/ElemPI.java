@@ -134,8 +134,7 @@ public class ElemPI extends ElemTemplateElement
     if(TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-    String piName = m_name_atv.evaluate(transformer.getXPathContext(), sourceNode, this, 
-                                        new StringBuffer());
+    String piName = m_name_atv.evaluate(transformer.getXPathContext(), sourceNode, this);
     if(piName.equalsIgnoreCase("xml"))
     {
       error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML); //"processing-instruction name can not be 'xml'");
