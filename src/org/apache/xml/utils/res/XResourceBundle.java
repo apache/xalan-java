@@ -71,7 +71,7 @@ public class XResourceBundle extends ListResourceBundle
   public static final String ERROR_RESOURCES =
     "org.apache.xalan.res.XSLTErrorResources", XSLT_RESOURCE =
     "org.apache.xml.utils.res.XResourceBundle", LANG_BUNDLE_NAME =
-    "org.apache.xalan.res.XSLTResources", MULT_ORDER =
+    "org.apache.xml.utils.res.XResources", MULT_ORDER =
     "multiplierOrder", MULT_PRECEDES = "precedes", MULT_FOLLOWS =
     "follows", LANG_ORIENTATION = "orientation", LANG_RIGHTTOLEFT =
     "rightToLeft", LANG_LEFTTORIGHT = "leftToRight", LANG_NUMBERING =
@@ -97,10 +97,10 @@ public class XResourceBundle extends ListResourceBundle
     //System.out.println("resource " + className + suffix);
     try
     {
-
+      
       // first try with the given locale
-      return (XResourceBundle) ResourceBundle.getBundle(className
-              + suffix, locale);
+      String resourceName = className + suffix;
+      return (XResourceBundle) ResourceBundle.getBundle(resourceName, locale);
     }
     catch (MissingResourceException e)
     {
