@@ -136,11 +136,13 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   {
     try
     {
-      managerClass = Class.forName(BSF_MANAGER);
+      //managerClass = Class.forName(BSF_MANAGER);
+      managerClass = ExtensionHandler.getClassForName(BSF_MANAGER);
       mgrLoadScriptingEngine = managerClass.getMethod("loadScriptingEngine",
               new Class[]{ String.class });
 
-      Class engineClass = Class.forName(BSF_ENGINE);
+      //Class engineClass = Class.forName(BSF_ENGINE);
+      Class engineClass = ExtensionHandler.getClassForName(BSF_ENGINE);
 
       engineExec = engineClass.getMethod("exec", new Class[]{ String.class,
                                                               Integer.TYPE,
