@@ -61,7 +61,6 @@
  *
  */
 
-
 package org.apache.xalan.xsltc.trax;
 
 import java.io.File;
@@ -107,12 +106,24 @@ public class TransformerFactoryImpl
     // This URIResolver is passed to all created Templates and Transformers
     private URIResolver _uriResolver = null;
 
+    // As Gregor Samsa awoke one morning from uneasy dreams he found himself
+    // transformed in his bed into a gigantic insect. He was lying on his hard,
+    // as it were armour plated, back, and if he lifted his head a little he
+    // could see his big, brown belly divided into stiff, arched segments, on
+    // top of which the bed quilt could hardly keep in position and was about
+    // to slide off completely. His numerous legs, which were pitifully thin
+    // compared to the rest of his bulk, waved helplessly before his eyes.
+    // "What has happened to me?", he thought. It was no dream....
+    protected static String _defaultTransletName = "GregorSamsa";
+
     // Cache for the newTransformer() method - see method for details
-    private String      _defaultTransletName = "GregorSamsa";
     private Transformer _copyTransformer = null;
+    // XSL document for the default transformer
     private static final String COPY_TRANSLET_CODE =
 	"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"+
-	"<xsl:template match=\"/\"><xsl:copy-of select=\".\"/></xsl:template>"+
+	"<xsl:template match=\"/\">"+
+	"  <xsl:copy-of select=\".\"/>"+
+	"</xsl:template>"+
 	"</xsl:stylesheet>";
 
     // This Hashtable is used to store parameters for locating

@@ -212,6 +212,9 @@ public final class LoadDocument {
 		catch (java.io.FileNotFoundException e) {
 		    return document((String)arg, xslURI, translet, dom);
 		}
+		catch (org.xml.sax.SAXParseException e) {
+		    return document((String)arg, xslURI, translet, dom);
+		}
 	    }
 	    // Otherwise we must create a union iterator, add the nodes from
 	    // all the DOMs to this iterator, and return the union in the end.
@@ -245,6 +248,7 @@ public final class LoadDocument {
 	    }
 	}
 	catch (Exception e) {
+	    e.printStackTrace();
 	    throw new TransletException(e);
 	}
     }

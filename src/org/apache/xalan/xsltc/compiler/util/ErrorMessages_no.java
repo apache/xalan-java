@@ -68,7 +68,8 @@ import java.util.ResourceBundle;
 
 public final class ErrorMessages_no extends ErrorMessages {
     
-    // These message should be read from a locale-specific resource bundle
+    // Disse feilmeldingene maa korrespondere med konstantene som er definert
+    // i kildekoden til ErrorMsg.
     private static final String errorMessages[] = { 
 	// MULTIPLE_STYLESHEET_ERR
 	"En fil kan bare innehold ett stilark.",
@@ -246,30 +247,16 @@ public final class ErrorMessages_no extends ErrorMessages {
 	"         -s blokkerer alle kall til System.exit()."
     };
 
-    private static Vector _keys;
-
-    static {
-	_keys = new Vector();
-	_keys.addElement(ErrorMsg.ERROR_MESSAGES_KEY);
-	_keys.addElement(ErrorMsg.COMPILER_ERROR_KEY);
-	_keys.addElement(ErrorMsg.COMPILER_WARNING_KEY);
-	_keys.addElement(ErrorMsg.RUNTIME_ERROR_KEY);
-    }
-
-    public Enumeration getKeys() {
-	return _keys.elements();
-    }
-
     public Object handleGetObject(String key) {
 	if (key == null) return null;
 	if (key.equals(ErrorMsg.ERROR_MESSAGES_KEY))
 	    return errorMessages;
  	else if (key.equals(ErrorMsg.COMPILER_ERROR_KEY))
-	    return "Compiler error(s): ";
+	    return "Kompilator-feil: ";
 	else if (key.equals(ErrorMsg.COMPILER_WARNING_KEY))
-	    return "Compiler warning(s): ";	    
+	    return "Advarsel : ";	    
  	else if (key.equals(ErrorMsg.RUNTIME_ERROR_KEY))
-	    return "Translet error(s): ";
+	    return "Kj\u00f8refeil: ";
 	return(null);
     }
 

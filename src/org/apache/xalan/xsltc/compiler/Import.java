@@ -138,8 +138,14 @@ final class Import extends TopLevelElement {
 	    while (elements.hasMoreElements()) {
 		final Object element = elements.nextElement();
 		if (element instanceof TopLevelElement) {
-		    topStylesheet.addElement((TopLevelElement)element);
+		    if (element instanceof Variable)
+			topStylesheet.addVariable((Variable)element);
+		    else if (element instanceof Param)
+			topStylesheet.addParam((Param)element);
+		    else
+			topStylesheet.addElement((TopLevelElement)element);
 		}
+		
 	    }
 	}
 	catch (Exception e) {

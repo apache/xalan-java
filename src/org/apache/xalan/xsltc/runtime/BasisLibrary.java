@@ -943,7 +943,7 @@ public final class BasisLibrary implements Operators {
 	    runTimeError(RUN_TIME_COPY_ERR);
 	}
     }
-
+    
     public static final int RUN_TIME_INTERNAL_ERR   = 0;
     public static final int RUN_TIME_COPY_ERR       = 1;
     public static final int DATA_CONVERSION_ERR     = 2;
@@ -963,10 +963,11 @@ public final class BasisLibrary implements Operators {
     // This array and the following 4 strings are read from that bundle.
     private static String[] _errorMessages;
     
-    public final static String ERROR_MESSAGES_KEY   = "error-messages";
+    public final static String ERROR_MESSAGES_KEY = "error-messages";
 
     static {
-	ResourceBundle bundle = ResourceBundle.getBundle("org.apache.xalan.xsltc.runtime.ErrorMessages", Locale.getDefault());
+	String resource = "org.apache.xalan.xsltc.runtime.ErrorMessages";
+	ResourceBundle bundle = ResourceBundle.getBundle(resource);
 	_errorMessages  = bundle.getStringArray(ERROR_MESSAGES_KEY);
     }
 

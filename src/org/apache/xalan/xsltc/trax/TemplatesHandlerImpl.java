@@ -75,7 +75,6 @@ import org.apache.xalan.xsltc.compiler.util.Util;
  */
 public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 
-    private String _defaultTransletName = "GregorSamsa";
     private String _systemId;
 
     /**
@@ -135,7 +134,7 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 	    final XSLTC xsltc = getXSLTC();
 
 	    // Set the translet class name if not already set
-	    String transletName = _defaultTransletName;
+	    String transletName = TransformerFactoryImpl._defaultTransletName;
 	    if (_systemId != null) transletName = Util.baseName(_systemId);
 	    xsltc.setClassName(transletName);
 
