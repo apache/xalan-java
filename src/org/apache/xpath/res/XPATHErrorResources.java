@@ -491,6 +491,30 @@ public class XPATHErrorResources extends PropertyResourceBundle
   
   // Programmer's assertion in getNextStepPos: unknown stepType: {0}
   public static final int ER_UNKNOWN_STEP = 94;
+  
+  /** Problem with RelativeLocationPath */
+  public static final int ER_EXPECTED_REL_LOC_PATH = 95;
+
+
+   /** Problem with LocationPath */
+  public static final int ER_EXPECTED_LOC_PATH = 96;
+
+
+   /** Problem with Step */
+  public static final int ER_EXPECTED_LOC_STEP = 97;
+
+
+   /** Problem with NodeTest */
+  public static final int ER_EXPECTED_NODE_TEST = 98;
+
+
+   /** Expected step pattern */
+  public static final int ER_EXPECTED_STEP_PATTERN = 99;
+
+  
+   /** Expected relative path pattern */
+  public static final int ER_EXPECTED_REL_PATH_PATTERN = 100;
+ 
 
 
 
