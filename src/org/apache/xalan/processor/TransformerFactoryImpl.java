@@ -729,6 +729,17 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         //  and not accessible: just leave baseID as null (-sb & -sc)
       }
     }
+    else
+    {
+      try
+      {
+        baseID = SystemIDResolver.getAbsoluteURI(baseID);
+      }
+      catch(TransformerException te)
+      {
+        throw new TransformerConfigurationException(te);
+      }
+    }
 
     builder.setSystemId(baseID);
 
@@ -765,7 +776,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
           factory.setNamespaceAware(true);
 
 
-		  javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
+                  javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
           reader = jaxpParser.getXMLReader();
         }

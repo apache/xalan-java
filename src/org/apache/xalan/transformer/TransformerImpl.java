@@ -493,7 +493,10 @@ public class TransformerImpl extends Transformer
     }
     
     if (null != xmlSource.getSystemId())
-      m_urlOfSource = xmlSource.getSystemId();
+    {     
+      m_urlOfSource = org.apache.xml.utils.SystemIDResolver.getAbsoluteURI(xmlSource.getSystemId());
+      xmlSource.setSystemId(m_urlOfSource);
+    }
 
     try
     {
