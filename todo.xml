@@ -284,6 +284,11 @@
   <action context="code" who="SB" packages="xpath.axes" category="performance" priority="high" completed="12/14/00">
     implement fast iterator for "//foo" pattern.
   </action>
+  
+   <action context="code" category="code-cleanup" who="DL" packages="xalanservlet" priority="medium" completed="12/15/00">
+     Rewrite the sample servlet to use the TrAX interfaces and eliminate setting system properties
+     within the servlet.
+  </action>  
 
   <action context="code" who="SB" packages="org.apache.xalan.serialize" category="samples" priority="high" completed="12/16/00">
     Fix the serializer so it can serialize arbitrary XPath expression results (other than Document nodes).
@@ -294,6 +299,12 @@
   <action context="code" category="documentation" priority="high" completed="12/17/00">
     Fill in all NEEDSDOC sections.
   </action>
+
+  <action context="code" category="code-cleanup" who="DL" packages="xalan.client" priority="medium" completed="12/17/00">
+    Rewrite the client applet to use the TrAX interfaces, and move fetching of source
+    documents and stylesheets to the trusted worker thread to get around IE security restrictions.
+  </action>
+
 
  </completed>
 
