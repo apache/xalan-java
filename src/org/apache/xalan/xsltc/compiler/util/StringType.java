@@ -67,6 +67,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public class StringType extends Type {
     protected StringType() {}
@@ -110,7 +111,9 @@ public class StringType extends Type {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -185,7 +188,9 @@ public class StringType extends Type {
 	    methodGen.getInstructionList().append(NOP);
 	}
 	else {
-	    classGen.getParser().internalError();
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
     

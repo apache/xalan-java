@@ -137,29 +137,30 @@ public final class ErrorMsg {
     public static final int ATTRIBSET_UNDEF_ERR     = 51;
     public static final int ATTR_VAL_TEMPLATE_ERR   = 52;
     public static final int UNKNOWN_SIG_TYPE_ERR    = 53;
+    public static final int DATA_CONVERSION_ERR     = 54;
 
     // JAXP/TrAX error messages
-    public static final int NO_TRANSLET_CLASS_ERR   = 54;
-    public static final int NO_MAIN_TRANSLET_ERR    = 55;
-    public static final int TRANSLET_CLASS_ERR      = 56;
-    public static final int TRANSLET_OBJECT_ERR     = 57;
-    public static final int ERROR_LISTENER_NULL_ERR = 58;
-    public static final int JAXP_UNKNOWN_SOURCE_ERR = 59;
-    public static final int JAXP_NO_SOURCE_ERR      = 60;
-    public static final int JAXP_COMPILE_ERR        = 61;
-    public static final int JAXP_INVALID_ATTR_ERR   = 62;
-    public static final int JAXP_SET_RESULT_ERR     = 63;
-    public static final int JAXP_NO_TRANSLET_ERR    = 64;
-    public static final int JAXP_NO_HANDLER_ERR     = 65;
-    public static final int JAXP_NO_RESULT_ERR      = 66;
-    public static final int JAXP_UNKNOWN_PROP_ERR   = 67;
-    public static final int SAX2DOM_ADAPTER_ERR     = 68;
-    public static final int XSLTC_SOURCE_ERR        = 69;
+    public static final int NO_TRANSLET_CLASS_ERR   = 55;
+    public static final int NO_MAIN_TRANSLET_ERR    = 56;
+    public static final int TRANSLET_CLASS_ERR      = 57;
+    public static final int TRANSLET_OBJECT_ERR     = 58;
+    public static final int ERROR_LISTENER_NULL_ERR = 59;
+    public static final int JAXP_UNKNOWN_SOURCE_ERR = 60;
+    public static final int JAXP_NO_SOURCE_ERR      = 61;
+    public static final int JAXP_COMPILE_ERR        = 62;
+    public static final int JAXP_INVALID_ATTR_ERR   = 63;
+    public static final int JAXP_SET_RESULT_ERR     = 64;
+    public static final int JAXP_NO_TRANSLET_ERR    = 65;
+    public static final int JAXP_NO_HANDLER_ERR     = 66;
+    public static final int JAXP_NO_RESULT_ERR      = 67;
+    public static final int JAXP_UNKNOWN_PROP_ERR   = 68;
+    public static final int SAX2DOM_ADAPTER_ERR     = 69;
+    public static final int XSLTC_SOURCE_ERR        = 70;
 
     // Command-line error messages
-    public static final int COMPILE_STDIN_ERR       = 70;
-    public static final int COMPILE_USAGE_STR       = 71;
-    public static final int TRANSFORM_USAGE_STR     = 72;
+    public static final int COMPILE_STDIN_ERR       = 71;
+    public static final int COMPILE_USAGE_STR       = 72;
+    public static final int TRANSFORM_USAGE_STR     = 73;
 
 
     // All error messages are localized and are stored in resource bundles.

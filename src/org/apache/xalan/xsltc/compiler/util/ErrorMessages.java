@@ -180,6 +180,8 @@ public class ErrorMessages extends ResourceBundle {
 	"Cannot parse attribute value template ''{0}''.",
 	// UNKNOWN_SIG_TYPE_ERR
 	"Unknown data-type in signature for class ''{0}''.",
+	// DATA_CONVERSION_ERR
+	"Cannot convert data-type ''{0}'' to ''{1}''.",
 
 	// NO_TRANSLET_CLASS_ERR
 	"This Templates does not contain a valid translet class definition.",

@@ -144,9 +144,9 @@ public abstract class Type implements Constants {
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Type type) {
-	classGen
-	    .getParser()
-	    .notYetImplemented(toString() + " -> " + type.toString());
+	ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+				    toString(), type.toString());
+	classGen.getParser().reportError(Constants.FATAL, err);
     }
 
     /**
@@ -177,9 +177,9 @@ public abstract class Type implements Constants {
     public FlowList translateToDesynthesized(ClassGenerator classGen, 
 					     MethodGenerator methodGen, 
 					     BooleanType type) {
-	classGen
-	    .getParser()
-	    .notYetImplemented(toString() + " -> " + type.toString());
+	ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+				    toString(), type.toString());
+	classGen.getParser().reportError(Constants.FATAL, err);
 	return null;
     }
 
@@ -190,8 +190,9 @@ public abstract class Type implements Constants {
      */ 
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Class clazz) {
-	classGen.getParser().notYetImplemented(toString() + " -> " +
-					       clazz.getClass().toString());
+	ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+				    toString(), clazz.getClass().toString());
+	classGen.getParser().reportError(Constants.FATAL, err);
     }
 
     /**
@@ -199,12 +200,11 @@ public abstract class Type implements Constants {
      * an object of this type. This method is used to translate return values 
      * when external functions are called.
      */ 
-    public void translateFrom(ClassGenerator classGen, MethodGenerator methodGen, 
+    public void translateFrom(ClassGenerator classGen, MethodGenerator methodGen,
 			      Class clazz) {
-	classGen
-	    .getParser()
-	    .notYetImplemented(clazz.getClass().toString() + " -> "
-			       + toString());
+	ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+				    clazz.getClass().toString(), toString());
+	classGen.getParser().reportError(Constants.FATAL, err);
     }
 
     /**
@@ -212,9 +212,9 @@ public abstract class Type implements Constants {
      */ 
     public void translateBox(ClassGenerator classGen,
 			     MethodGenerator methodGen) {
-	classGen
-	    .getParser()
-	    .notYetImplemented(toString() + " -> boxed " + toString());
+	ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+				    toString(), "["+toString()+"]");
+	classGen.getParser().reportError(Constants.FATAL, err);
     }
 
     /**
@@ -222,9 +222,9 @@ public abstract class Type implements Constants {
      */ 
     public void translateUnBox(ClassGenerator classGen,
 			       MethodGenerator methodGen) {
-	classGen
-	    .getParser()
-	    .notYetImplemented(toString() + " -> unboxed " + toString());
+	ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+				    "["+toString()+"]", toString());
+	classGen.getParser().reportError(Constants.FATAL, err);
     }
 
     /**

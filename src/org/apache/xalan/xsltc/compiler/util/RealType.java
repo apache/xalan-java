@@ -67,6 +67,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class RealType extends NumberType {
     protected RealType() {}
@@ -123,7 +124,9 @@ public final class RealType extends NumberType {
 	    translateTo(classGen, methodGen, (IntType) type);
 	}
 	else {
-	    classGen.getParser().internalError();		// undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -258,7 +261,9 @@ public final class RealType extends NumberType {
 	    il.append(NOP);
 	}
 	else {
-	    classGen.getParser().internalError();
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -284,7 +289,9 @@ public final class RealType extends NumberType {
 	    il.append(NOP);
 	}
 	else {
-	    classGen.getParser().internalError();
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 

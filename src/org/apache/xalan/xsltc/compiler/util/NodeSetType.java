@@ -67,6 +67,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class NodeSetType extends Type {
     protected NodeSetType() {}
@@ -113,7 +114,9 @@ public final class NodeSetType extends Type {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -246,7 +249,9 @@ public final class NodeSetType extends Type {
 	    il.append(new INVOKESTATIC(str));
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), className);
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
     

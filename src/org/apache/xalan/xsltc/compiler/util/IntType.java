@@ -67,6 +67,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class IntType extends NumberType {
     protected IntType() {}
@@ -121,7 +122,9 @@ public final class IntType extends NumberType {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -229,7 +232,9 @@ public final class IntType extends NumberType {
 	    il.append(I2D);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 

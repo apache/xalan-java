@@ -180,6 +180,8 @@ public final class ErrorMessages_no extends ErrorMessages {
 	"Kan ikke tolke attributt ''{0}''.",
 	// UNKNOWN_SIG_TYPE_ERR
 	"Ukjent data-type i signatur for klassen ''{0}''.",
+	// DATA_CONVERSION_ERR
+	"Kan ikke oversette mellom data-type ''{0}'' og ''{1}''.",
 
 	// NO_TRANSLET_CLASS_ERR
 	"Dette Templates objected inneholder ingen translet klasse definisjon.",

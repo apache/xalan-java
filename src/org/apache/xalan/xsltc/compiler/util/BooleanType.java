@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.compiler.util;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class BooleanType extends Type {
     protected BooleanType() {}
@@ -109,7 +110,9 @@ public final class BooleanType extends Type {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -170,7 +173,9 @@ public final class BooleanType extends Type {
 	    methodGen.getInstructionList().append(NOP);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 

@@ -70,6 +70,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class ResultTreeType extends Type {
     private final String _methodName;
@@ -134,7 +135,9 @@ public final class ResultTreeType extends Type {
 	    translateTo(classGen, methodGen, (ReferenceType)type);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -403,7 +406,9 @@ public final class ResultTreeType extends Type {
 	    Type.NodeSet.translateTo(classGen, methodGen, clazz);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), className);
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 

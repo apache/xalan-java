@@ -68,6 +68,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class ReferenceType extends Type {
     protected ReferenceType() {}
@@ -113,7 +114,8 @@ public final class ReferenceType extends Type {
 	    translateTo(classGen, methodGen, (NodeType) type);
 	}
 	else {
-	    classGen.getParser().internalError();		// undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 

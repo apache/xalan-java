@@ -68,6 +68,7 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.NodeTest;
 import org.apache.xalan.xsltc.compiler.FlowList;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class NodeType extends Type {
     private final int _type;
@@ -129,7 +130,9 @@ public final class NodeType extends Type {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
 	else {
-	    classGen.getParser().internalError(); // undefined
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
@@ -167,7 +170,9 @@ public final class NodeType extends Type {
 	    break;
 	    
 	default:
-	    classGen.getParser().internalError();
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), type.toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	    break;
 	}
     }
@@ -281,7 +286,9 @@ public final class NodeType extends Type {
 	    il.append(new INVOKEINTERFACE(index, 2));
 	}
 	else {
-	    classGen.getParser().internalError();
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), className);
+	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
 
