@@ -76,8 +76,6 @@ Copyright:
   <property name="jlex.jar" value="${bin.dir}/${jlex.jar.name}"/>
   <property name="runtime.jar.name" value="runtime.jar"/>
   <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
-  <property name="xml.jar.name" value="xml.jar"/>
-  <property name="xml.jar" value="${bin.dir}/${xml.jar.name}"/>
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
@@ -92,12 +90,16 @@ Copyright:
 
   <!-- Relative locations of source directories -->
   <property name="manifest.mf" value="./src/MANIFEST.MF"/>
+  <property name="manifest.xsltc.mf" value="./src/manifest.xsltc"/>
   <property name="src.dir" value="./src"/>
   <property name="apachexml.reldir" value="org/apache/xml"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
   <property name="xsltc.reldir" value="${xalan.reldir}/xsltc"/>
-
+  <property name="generated.xpathparser" value="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java"/>
+  <property name="generated.xpathlexer" value="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
+  <property name="generated.xpathsym" value="${src.dir}/${xsltc.reldir}/compiler/sym.java"/>
+  
   <!-- Build and distribution output areas -->
   <property name="build.dir" value="./build"/><!-- GUMP: root of all normal builds output -->
   <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/><!-- GUMP: actual path/name of jar target output -->
@@ -124,6 +126,8 @@ Copyright:
     <include name="org/xml/sax/"/>
     <!-- Should be JAXP 1.1.x -->
     <include name="javax/xml/"/>
+    <!-- XmlCommons specific external version file -->
+    <include name="org/apache/xmlcommons/"/>
   </patternset>
 
   <!-- Xalan-J1 compatability stuff.  -->
@@ -154,6 +158,7 @@ Copyright:
   <property name="xdocs.DONE.file" value="${xdocs.dir}/sources/xalan/DONE"/>
     <property name="xdocs.XSLTCDONE.file" value="${xdocs.dir}/sources/xalan/XSLTCDONE"/>
   <path id="docs.class.path">
+    <pathelement location="${parser.jar}" />
     <pathelement location="${bsf.jar}" />
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
@@ -162,8 +167,15 @@ Copyright:
     <pathelement path="${java.class.path}" />
   </path>
   <path id="samples.class.path">
+    <pathelement location="${parser.jar}" />
     <pathelement location="${build.xalan.jar}" />
     <pathelement location="${build.xml-apis.jar}" />
+    <pathelement path="${java.class.path}" />
+  </path>
+  <path id="compile.class.path">
+    <!-- Ensure the selected parser.jar file is used to compile against -->
+    <pathelement location="${build.classes}" />
+    <pathelement location="${parser.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
   <path id="xslt.boot.class.path">
@@ -260,6 +272,7 @@ Copyright:
         unless="xerces.present"	 />
       <exclude name="**/IncrementalSAXSource_Xerces.java" 
         unless="xerces.present"	 />
+      <classpath refid="compile.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
     </javac>
     <!-- Compile Xalan main engine (but not xsltc package yet) -->
@@ -267,14 +280,18 @@ Copyright:
            destdir="${build.classes}"
            includes="${xalan.reldir}/**/*.java"
            excludes="${xsltc.reldir}/**/*.java,${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${build.debug}"
-           bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" >
+      <classpath refid="compile.class.path" />
+      <bootclasspath refid="xslt.boot.class.path" />
+    </javac>
     <!-- Compile various Xalan-specific extensions and command line class -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${build.debug}"
-           bootclasspathref="xslt.boot.class.path" />
+           debug="${build.debug}" >
+      <classpath refid="compile.class.path" />
+      <bootclasspath refid="xslt.boot.class.path" />
+    </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
       <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,META-INF/services/javax.xml.transform.*"/>
@@ -289,22 +306,17 @@ Copyright:
     <pathelement location="${jlex.jar}" />
     <pathelement location="${java_cup.jar}" />
     <pathelement location="${runtime.jar}" />
-    <pathelement location="${xml.jar}" />
     <pathelement location="${crimson.jar}" />
     <!-- build.classes needed for 
          org.apache.xalan.xsltc.util.JavaCupRedirect -->
     <pathelement location="${build.classes}" />
     <pathelement path="${java.class.path}" />
   </path>
-  <!-- The xsltc.compile target should be rewritten to properly 
-       do dependencies on the generated sources: right now, it 
-       will always regenerate the sources, even if it's not needed
-       (which forces all later steps to re-run as well) -->
-  <target name="xsltc.compile" depends="prepare"
-    description="Compile just the XSLTC classes" >
 
-    <!-- The first step compiles the utils directpry, which includes 
-         a special wrapper for the java_cup step next. -->
+  <!-- Attempt to determine dependency info for generated sources -->
+  <target name="xsltc.prepare" depends="prepare" >
+    <!-- The first step compiles the utils directory, which includes 
+         a special wrapper for the xsltc.codegen / java_cup step next. -->
     <echo message="Compiling XSLTC utilities"/>
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
@@ -313,9 +325,24 @@ Copyright:
       <classpath refid="xsltc.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
     </javac>
-    <!-- The second step generates sym.java and XPathParser.java, and the
-    last one generates XPathLexer.java. The lexiographical analyser
-    has to be generated after sym.java, so order is important. -->
+    <!-- These tricky uptodate statements hopefully determine if we 
+         actually need to generate the java_cup and jlex files 
+         in the two sub-targets below
+    -->
+    <!-- NOTE: The two uptodate tasks below do not yet work! 28-Nov-01 -sc -->
+    <uptodate property="xsltc.java_cup.needed"  >
+      <srcfiles dir= "${src.dir}/${xsltc.reldir}/compiler" includes="xpath.cup"/>
+      <mapper type="merge" to="${generated.xpathparser}"/>
+    </uptodate>
+    <uptodate property="xsltc.jlex.needed"  >
+      <srcfiles dir= "${src.dir}/${xsltc.reldir}/compiler" includes="xpath.lex"/>
+      <mapper type="merge" to="${generated.xpathlexer}"/>
+    </uptodate>
+  </target>
+
+  <!-- Generate code sources for xsltc if needed -->
+  <target name="xsltc.java_cup" depends="xsltc.prepare" > <!-- if="xsltc.java_cup.needed" -->
+    <!-- The second step generates sym.java and XPathParser.java. -->
     <echo message="java_cup preparsing"/>
     <java fork="no" failonerror="true" classname="org.apache.xalan.xsltc.util.JavaCupRedirect" >
       <classpath refid="xsltc.class.path" />
@@ -323,17 +350,28 @@ Copyright:
       <arg line="-parser XPathParser -expect 0 -stdin ${src.dir}/${xsltc.reldir}/compiler/xpath.cup"/>
     </java>
     <echo message="java_cup move output files"/>
-    <move file="XPathParser.java" tofile="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java"/>
-    <move file="sym.java" tofile="${src.dir}/${xsltc.reldir}/compiler/sym.java"/>
+    <move file="XPathParser.java" tofile="${generated.xpathparser}"/>
+    <move file="sym.java" tofile="${generated.xpathsym}"/>
 
+  </target>
+  <target name="xsltc.jlex" depends="xsltc.java_cup" ><!--if="xsltc.jlex.needed" -->
+    <!-- The third step generates XPathLexer.java. The lexiographical analyser
+    has to be generated after sym.java, so order is important. -->
     <echo message="JLex preparsing"/>
     <java fork="no" failonerror="true" classname="JLex.Main" >
       <classpath refid="xsltc.class.path" />
       <arg line="-static ${src.dir}/${xsltc.reldir}/compiler/xpath.lex"/>
     </java>
     <echo message="JLex move output file"/>
-    <move file="${src.dir}/${xsltc.reldir}/compiler/xpath.lex.java" tofile="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
+    <move file="${src.dir}/${xsltc.reldir}/compiler/xpath.lex.java" tofile="${generated.xpathlexer}"/>
+  </target>
 
+  <!-- The xsltc.compile target should be rewritten to properly 
+       do dependencies on the generated sources: right now, it 
+       will always regenerate the sources, even if it's not needed
+       (which forces all later steps to re-run as well) -->
+  <target name="xsltc.compile" depends="xsltc.java_cup,xsltc.jlex"
+    description="Compile just the XSLTC classes" >
     <echo message="Compiling remaining XSLTC classes"/>
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
@@ -343,9 +381,13 @@ Copyright:
       <bootclasspath refid="xslt.boot.class.path" />
     </javac>
   </target>
+
   <target name="xsltc.jar" depends="xsltc.compile"
     description="Jar just the xsltc.jar file" >
-    <jar jarfile="${build.xsltc.jar}" basedir="${build.classes}" >
+    <!-- Copy over the manifest, with filtering (for version number) -->
+    <filter token="impl.version" value="${impl.version}"/>
+    <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
+    <jar jarfile="${build.xsltc.jar}" manifest="${build.dir}/manifest.xsltc" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
         <include name="${xsltc.reldir}/**/*" />
       </patternset>
@@ -370,7 +412,7 @@ Copyright:
         <exclude name="${xsltc.reldir}/**/*" />
       </patternset>
     </jar>
-    <jar jarfile="${build.xml-apis.jar}" basedir="${build.classes}" >
+    <jar jarfile="${build.xml-apis.jar}" manifest="${src.dir}/manifest.commons" basedir="${build.classes}" >
       <patternset refid="api-patternset"/>
     </jar>
   </target>
@@ -616,19 +658,21 @@ Copyright:
       <fileset dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/>
     </delete>
     <delete file="${xdocs.DONE.file}"/>
+    <delete file="${xdocs.XSLTCDONE.file}"/>
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
     <delete includeEmptyDirs="true" >
       <fileset dir="${src.dir}" >
         <patternset refid="api-patternset"/>
       </fileset>
     </delete>
+    <delete file="${src.dir}/manifest.commons"/>
   </target>
  
   <target name="xsltc.clean"
     description="Clean miscellaneous generated sources from xsltc.compile" >
-    <delete file="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java" />
-    <delete file="${src.dir}/${xsltc.reldir}/compiler/sym.java" />
-    <delete file="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java" />
+    <delete file="${generated.xpathparser}" />
+    <delete file="${generated.xpathsym}" />
+    <delete file="${generated.xpathlexer}" />
   </target>
 
   <!-- =================================================================== -->
@@ -737,7 +781,6 @@ Copyright:
       <include name="${dist.file}/bin/${java_cup.jar.name}"/>
       <include name="${dist.file}/bin/${jlex.jar.name}"/>
       <include name="${dist.file}/bin/${runtime.jar.name}"/>
-      <include name="${dist.file}/bin/${xml.jar.name}"/>
     </patternset>
 
     <tar tarfile="${build.dir}/${dist.file}-bin.tar" >
