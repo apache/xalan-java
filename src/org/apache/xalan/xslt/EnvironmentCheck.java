@@ -558,13 +558,23 @@ public class EnvironmentCheck
     jarVersions.put(new Long(426249), "xalan.jar from xalan-j_1_2_2");
     jarVersions.put(new Long(702536), "xalan.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(720930), "xalan.jar from xalan-j_2_0_1");
+    jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
-    jarVersions.put(new Long(1498679), "xerces.jar from xalan-j_1_2");
-    jarVersions.put(new Long(1484896), "xerces.jar from xalan-j_1_2_1");
-    jarVersions.put(new Long(804460), "xerces.jar from xalan-j_1_2_2");
-    jarVersions.put(new Long(1499244), "xerces.jar from xalan-j_2_0_0");
-    jarVersions.put(new Long(1605266), "xerces.jar from xalan-j_2_0_1");
-    jarVersions.put(new Long(1489400), "xerces.jar from lotusxsl-j_2_0_0");
+    jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
+
+    jarVersions.put(new Long(1498679), "xerces.jar from xalan-j_1_2 from xerces-1_2_0.bin");
+    jarVersions.put(new Long(1484896), "xerces.jar from xalan-j_1_2_1 from xerces-1_2_1.bin");
+    jarVersions.put(new Long(804460),  "xerces.jar from xalan-j_1_2_2 from xerces-1_2_2.bin");
+    jarVersions.put(new Long(1499244), "xerces.jar from xalan-j_2_0_0 from xerces-1_2_3.bin");
+    jarVersions.put(new Long(1605266), "xerces.jar from xalan-j_2_0_1 from xerces-1_3_0.bin");
+    jarVersions.put(new Long(1190776), "xerces.jar from lotusxsl_1_0_1 apparently-from xerces-1_0_3.bin");
+    jarVersions.put(new Long(1489400), "xerces.jar from lotusxsl-j_2_0_0 from XML4J-3_1_1");
+
+    jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
+    jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
+
+    jarVersions.put(new Long(18779), "xalanservlet.jar from xalan-j_2_0_0");
+    jarVersions.put(new Long(21453), "xalanservlet.jar from xalan-j_2_0_1");
 
     // For those who've downloaded JAXP from sun
     jarVersions.put(new Long(5618), "jaxp.jar from jaxp1.0.1");
