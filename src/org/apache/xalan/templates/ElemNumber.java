@@ -450,7 +450,7 @@ public class ElemNumber extends ElemTemplateElement
     throws SAXException
   {
     if(TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);    
 
     String countString = getCountString(transformer, sourceNode);
 
@@ -1023,16 +1023,28 @@ public class ElemNumber extends ElemTemplateElement
                                                                                 contextNode, this,
                                                                                 new StringBuffer()) : null;
     switch(numberType)
-    {
+    {     
     case 'A':
+      if (m_alphaCountTable == null)
+      {  
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode) );       
+        char[] alphabet;
+        alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
+        m_alphaCountTable = alphabet;
+      }    
       int2alphaCount(listElement, m_alphaCountTable, formattedNumber);
       break;
-    case 'a':
-      {
-        StringBuffer stringBuf = new StringBuffer();
-        int2alphaCount(listElement, m_alphaCountTable, stringBuf);
-        formattedNumber.append(stringBuf.toString().toLowerCase(getLocale(transformer, contextNode)));
+    case 'a':      
+      if (m_alphaCountTable == null)
+      {  
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode) );       
+        char[] alphabet;
+        alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
+        m_alphaCountTable = alphabet;
       }
+      StringBuffer stringBuf = new StringBuffer();
+      int2alphaCount(listElement, m_alphaCountTable, stringBuf);
+      formattedNumber.append(stringBuf.toString().toLowerCase(getLocale(transformer, contextNode)));      
       break;
     case 'I':
       formattedNumber.append( long2roman(listElement, true));
