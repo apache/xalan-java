@@ -204,6 +204,24 @@ public class Arg
     m_isParamVar = false;
     m_expression = null;
   }
+  
+  /**
+   * Equality function specialized for the variable name.  If the argument 
+   * is not a qname, it will deligate to the super class.
+   * 
+   * @param   obj   the reference object with which to compare.
+   * @return  <code>true</code> if this object is the same as the obj
+   *          argument; <code>false</code> otherwise.
+   */
+  public boolean equals(Object obj) 
+  {
+    if(obj instanceof QName)
+    {
+      return m_qname.equals(obj);
+    }
+    else
+      return super.equals(obj);
+  }
 
   /**
    * Construct a parameter argument.

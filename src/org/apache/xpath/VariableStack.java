@@ -355,7 +355,7 @@ public class VariableStack extends Stack
     {
       Arg arg = (Arg) elementAt(i);
 
-      if (arg.equals(name))
+      if (arg.getQName().equals(name))
       {
         XObject val = arg.getVal();
         if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
