@@ -233,7 +233,7 @@ public class Child extends UnImplNode implements DOMOrder
    */
   public Document     getOwnerDocument()
   {
-    return getDocumentImpl();
+    return m_doc;
   }
   
   /**
