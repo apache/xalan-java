@@ -711,7 +711,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void error(int msg)
+  protected void error(String msg)
           throws javax.xml.transform.TransformerException
   {
     error(msg, null);
@@ -726,7 +726,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void error(int msg, Object[] args)
+  protected void error(String msg, Object[] args)
           throws javax.xml.transform.TransformerException
   {
 

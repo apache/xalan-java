@@ -136,7 +136,7 @@ class ProcessorInclude extends XSLTElementProcessor
    *
    * @return the appropriate error number
    */
-  protected int getStylesheetInclErr()
+  protected String getStylesheetInclErr()
   {
     return XSLTErrorResources.ER_STYLESHEET_INCLUDES_ITSELF;
   }
