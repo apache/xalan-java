@@ -178,5 +178,17 @@
     (java.io.OutputStreamWriter). Once the Writer exists, you cannot change its encoding.</p>
     </a>
     </faq>
-
+    <faq title="Servlet unable to find classes for extension functions/elements">
+    <q>My servlet cannot find classes that implement extension functions or elements. What can I do?</q>
+    <a>
+    <p>If you install xalan.jar in the servlet engine's lib directory (e.g., tomcat/lib), as opposed to the servlet's 
+    lib directory, then the Xalan classes are loaded by a classloader that does not see the classes in the servlet's
+    classloader (i.e., the extension classes, if you placed them there). The Xalan classes try to load the extension 
+    classes using their own classloader, and that attempt fails.</p>
+    <p>Workaround: place xalan.jar in the servlet's lib directory and NOT in the servlet engine's lib directory. 
+    Another workaround is to place the extension classes also in the servlet engine's lib directory, but you
+    generally want to avoid cluttering that directory.</p>
+    <p>Thanks to Gunnlauger Thor Briem (gthb@dimon.is) for providing this information. </p>
+    </a>
+  </faq>
 </faqs>
