@@ -169,7 +169,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
     super(mgr, null, ident,
       null, mgr.getXMLStringFactory(), true);
 
-    m_attribute = new SuballocatedIntVector(m_initialblocksize);
+    m_attribute = new SuballocatedIntVector(DEFAULT_BLOCKSIZE);
   }
 
   /**

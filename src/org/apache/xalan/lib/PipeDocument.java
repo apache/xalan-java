@@ -73,8 +73,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.extensions.XSLProcessorContext;
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.ElemExtensionCall;
 import org.apache.xalan.templates.ElemLiteralResult;
@@ -90,6 +88,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+// Imported Serializer classes
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
 
 /**
  * PipeDocument is a Xalan extension element to set stylesheet params and pipes an XML 
@@ -185,7 +186,7 @@ public class PipeDocument
         for (int i = 0; i < ssNodes.getLength(); i++)
         {
           ssNode = ssNodes.item(i);
-          if (ssNode.getNodeType() == ssNode.ELEMENT_NODE
+          if (ssNode.getNodeType() == Node.ELEMENT_NODE
               && ((Element)ssNode).getTagName().equals("stylesheet")
               && ssNode instanceof ElemLiteralResult)
           {
@@ -203,7 +204,7 @@ public class PipeDocument
             for (int j = 0; j < paramNodes.getLength(); j++)
             {
               paramNode = paramNodes.item(j);
-              if (paramNode.getNodeType() == paramNode.ELEMENT_NODE 
+              if (paramNode.getNodeType() == Node.ELEMENT_NODE 
                   && ((Element)paramNode).getTagName().equals("param")
                   && paramNode instanceof ElemLiteralResult)
               {

@@ -66,7 +66,6 @@ import java.util.Date;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 
 /**
  * <meta name="usage" content="general"/>
@@ -93,6 +92,7 @@ public class ExsltDatetime
     static final String gm = "--MM--";
     static final String gd = "---dd";
     static final String t = "HH:mm:ss";
+    static final String EMPTY_STR = "";
 
     /**
      * The date:date-time function returns the current date and time as a date/time string. 
@@ -107,7 +107,7 @@ public class ExsltDatetime
      * Universal Time or a + or - followed by the difference between the difference from UTC 
      * represented as hh:mm. 
      */
-    public static XString dateTime()
+    public static String dateTime()
     {
       Calendar cal = Calendar.getInstance();
       Date datetime = cal.getTime();
@@ -131,7 +131,7 @@ public class ExsltDatetime
         char posneg = hrs < 0? '-': '+';
         buff.append(posneg + formatDigits(hrs) + ':' + formatDigits(min));
       }
-      return new XString(buff.toString());
+      return buff.toString();
     }
     
     /**
@@ -166,7 +166,7 @@ public class ExsltDatetime
      * is specified and it does not specify a time zone, then the date string format must not include 
      * a time zone. 
      */
-    public static XString date(String datetimeIn)
+    public static String date(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
@@ -174,32 +174,32 @@ public class ExsltDatetime
       String datetime = edz[1];
       String zone = edz[2];
       if (datetime == null || zone == null) 
-        return new XString("");
+        return EMPTY_STR;
                     
       String[] formatsIn = {dt, d};
       String formatOut = d;
       Date date = testFormats(datetime, formatsIn);
-      if (date == null) return new XString("");
+      if (date == null) return EMPTY_STR;
       
       SimpleDateFormat dateFormat = new SimpleDateFormat(formatOut);
       dateFormat.setLenient(false);
       String dateOut = dateFormat.format(date);      
       if (dateOut.length() == 0)
-          return new XString("");
+          return EMPTY_STR;
       else        
-        return new XString(leader + dateOut + zone);
+        return (leader + dateOut + zone);
     }
     
     
     /**
      * See above.
      */
-    public static XString date()
+    public static String date()
     {
       String datetime = dateTime().toString();
       String date = datetime.substring(0, datetime.indexOf("T"));
       String zone = datetime.substring(getZoneStart(datetime));
-      return new XString(date + zone);
+      return (date + zone);
     }
     
     /**
@@ -224,33 +224,33 @@ public class ExsltDatetime
      * is specified and it does not specify a time zone, then the time string format must not include 
      * a time zone. 
      */
-    public static XString time(String timeIn)
+    public static String time(String timeIn)
       throws ParseException      
     {
       String[] edz = getEraDatetimeZone(timeIn);
       String time = edz[1];
       String zone = edz[2];
       if (time == null || zone == null) 
-        return new XString("");
+        return EMPTY_STR;
                     
       String[] formatsIn = {dt, d};
       String formatOut =  t;
       Date date = testFormats(time, formatsIn);
-      if (date == null) return new XString("");
+      if (date == null) return EMPTY_STR;
       SimpleDateFormat dateFormat = new SimpleDateFormat(formatOut);
       String out = dateFormat.format(date);
-      return new XString(out + zone);
+      return (out + zone);
     }
 
     /**
      * See above.
      */
-    public static XString time()
+    public static String time()
     {
       String datetime = dateTime().toString();
       String time = datetime.substring(datetime.indexOf("T")+1);
       String zone = datetime.substring(getZoneStart(datetime));      
-      return new XString(time + zone);
+      return (time + zone);
     } 
        
     /**
@@ -268,30 +268,30 @@ public class ExsltDatetime
      *   xs:gYear (CCYY) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber year(String datetimeIn)
+    public static double year(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       boolean ad = edz[0].length() == 0; // AD (Common Era -- empty leader)
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);
+        return Double.NaN;
       
       String[] formats = {dt, d, gym, gy};
       double yr = getNumber(datetime, formats, Calendar.YEAR);
       if (ad || yr == Double.NaN)
-        return new XNumber(yr);
+        return yr;
       else
-        return new XNumber(-yr);
+        return -yr;
     }
      
     /**
      * See above.
      */
-    public static XNumber year()
+    public static double year()
     {
       Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.YEAR));
+      return cal.get(Calendar.YEAR);
     }
     
     /**
@@ -310,25 +310,25 @@ public class ExsltDatetime
      *    xs:gMonthDay (--MM-DD)
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber monthInYear(String datetimeIn)
+    public static double monthInYear(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null)
-        return new XNumber(Double.NaN);      
+        return Double.NaN;      
       
       String[] formats = {dt, d, gym, gm, gmd};
-      return new XNumber(getNumber(datetime, formats, Calendar.MONTH));
+      return getNumber(datetime, formats, Calendar.MONTH);
     }
     
     /**
      * See above.
      */
-    public static XNumber monthInYear()
+    public static double monthInYear()
     {      
       Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.MONTH));
+      return cal.get(Calendar.MONTH);
    }
     
     /**
@@ -344,25 +344,25 @@ public class ExsltDatetime
      *    xs:date (CCYY-MM-DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber weekInYear(String datetimeIn)
+    public static double weekInYear(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);      
+        return Double.NaN;      
       
       String[] formats = {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.WEEK_OF_YEAR));
+      return getNumber(datetime, formats, Calendar.WEEK_OF_YEAR);
     }
         
     /**
      * See above.
      */
-    public static XNumber weekInYear()
+    public static double weekInYear()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.WEEK_OF_YEAR));
+      return cal.get(Calendar.WEEK_OF_YEAR);
    }
 
     /**
@@ -378,25 +378,25 @@ public class ExsltDatetime
      *     xs:date (CCYY-MM-DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber dayInYear(String datetimeIn)
+    public static double dayInYear(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return Double.NaN;            
       
       String[] formats = {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.DAY_OF_YEAR));
+      return getNumber(datetime, formats, Calendar.DAY_OF_YEAR);
     }
     
     /**
      * See above.
      */
-    public static XNumber dayInYear()
+    public static double dayInYear()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_YEAR));
+      return cal.get(Calendar.DAY_OF_YEAR);
    }
     
 
@@ -415,23 +415,23 @@ public class ExsltDatetime
      *      xs:gDay (---DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber dayInMonth(String datetimeIn)
+    public static double dayInMonth(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       String[] formats = {dt, d, gmd, gd};
       double day = getNumber(datetime, formats, Calendar.DAY_OF_MONTH);
-      return new XNumber(day);
+      return day;
     }
     
     /**
      * See above.
      */
-    public static XNumber dayInMonth()
+    public static double dayInMonth()
     {
       Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_MONTH));
+      return cal.get(Calendar.DAY_OF_MONTH);
    }
     
     /**
@@ -448,25 +448,25 @@ public class ExsltDatetime
      *      xs:date (CCYY-MM-DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber dayOfWeekInMonth(String datetimeIn)
+    public static double dayOfWeekInMonth(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return Double.NaN;            
 
       String[] formats =  {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.DAY_OF_WEEK_IN_MONTH));
+      return getNumber(datetime, formats, Calendar.DAY_OF_WEEK_IN_MONTH);
     }
     
     /**
      * See above.
      */
-    public static XNumber dayOfWeekInMonth()
+    public static double dayOfWeekInMonth()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+      return cal.get(Calendar.DAY_OF_WEEK_IN_MONTH);
    }
       
     
@@ -484,25 +484,25 @@ public class ExsltDatetime
      * If the date/time string is not in one of these formats, then NaN is returned. 
                             The numbering of days of the week starts at 1 for Sunday, 2 for Monday and so on up to 7 for Saturday.  
      */
-    public static XNumber dayInWeek(String datetimeIn)
+    public static double dayInWeek(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return Double.NaN;            
 
       String[] formats = {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.DAY_OF_WEEK));
+      return getNumber(datetime, formats, Calendar.DAY_OF_WEEK);
     }
     
     /**
      * See above.
      */
-    public static XNumber dayInWeek()
+    public static double dayInWeek()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_WEEK));
+      return cal.get(Calendar.DAY_OF_WEEK);
    }        
 
     /**
@@ -518,25 +518,25 @@ public class ExsltDatetime
      *     xs:time (hh:mm:ss) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber hourInDay(String datetimeIn)
+    public static double hourInDay(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return Double.NaN;            
       
       String[] formats = {dt, t};
-      return new XNumber(getNumber(datetime, formats, Calendar.HOUR_OF_DAY));
+      return getNumber(datetime, formats, Calendar.HOUR_OF_DAY);
     }
     
     /**
      * See above.
      */
-    public static XNumber hourInDay()
+    public static double hourInDay()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.HOUR_OF_DAY));
+      return cal.get(Calendar.HOUR_OF_DAY);
    }
     
     /**
@@ -552,25 +552,25 @@ public class ExsltDatetime
      *      xs:time (hh:mm:ss) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber minuteInHour(String datetimeIn)
+    public static double minuteInHour(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return Double.NaN;            
       
       String[] formats = {dt,t};
-      return new XNumber(getNumber(datetime, formats, Calendar.MINUTE));
+      return getNumber(datetime, formats, Calendar.MINUTE);
     }    
     
     /**
      * See above.
      */
-   public static XNumber minuteInHour()
+   public static double minuteInHour()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.MINUTE));
+      return cal.get(Calendar.MINUTE);
    }    
 
     /**
@@ -586,25 +586,25 @@ public class ExsltDatetime
      *      xs:time (hh:mm:ss) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber secondInMinute(String datetimeIn)
+    public static double secondInMinute(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return Double.NaN;            
       
       String[] formats = {dt, t};
-      return new XNumber(getNumber(datetime, formats, Calendar.SECOND));
+      return getNumber(datetime, formats, Calendar.SECOND);
     }
 
     /**
      * See above.
      */
-    public static XNumber secondInMinute()
+    public static double secondInMinute()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.SECOND));
+      return cal.get(Calendar.SECOND);
     }
        
     /**
@@ -641,11 +641,11 @@ public class ExsltDatetime
     /**
      * See above.
      */
-    public static XBoolean leapYear()
+    public static boolean leapYear()
     {
       Calendar cal = Calendar.getInstance();
       int yr = (int)cal.get(Calendar.YEAR);
-      return new XBoolean(yr % 400 == 0 || (yr % 100 != 0 && yr % 4 == 0));      
+      return (yr % 400 == 0 || (yr % 100 != 0 && yr % 4 == 0));      
     }    
        
     /**
@@ -667,27 +667,27 @@ public class ExsltDatetime
      * 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November' 
      * or 'December'. 
      */
-    public static XString monthName(String datetimeIn)
+    public static String monthName(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XString("");
+        return EMPTY_STR;
       
       String[] formatsIn = {dt, d, gym, gm};
       String formatOut = "MMMM";
-      return new XString (getNameOrAbbrev(datetimeIn, formatsIn, formatOut));    
+      return getNameOrAbbrev(datetimeIn, formatsIn, formatOut);    
     }
     
     /**
      * See above.
      */
-    public static XString monthName()
+    public static String monthName()
     {
       Calendar cal = Calendar.getInstance();
       String format = "MMMM";
-      return new XString(getNameOrAbbrev(format));  
+      return getNameOrAbbrev(format);  
     }
         
     /**
@@ -710,26 +710,26 @@ public class ExsltDatetime
      * An implementation of this extension function in the EXSLT date namespace must conform 
      * to the behaviour described in this document. 
      */
-    public static XString monthAbbreviation(String datetimeIn)
+    public static String monthAbbreviation(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XString("");
+        return EMPTY_STR;
       
       String[] formatsIn = {dt, d, gym, gm};
       String formatOut = "MMM";
-      return new XString (getNameOrAbbrev(datetimeIn, formatsIn, formatOut));
+      return getNameOrAbbrev(datetimeIn, formatsIn, formatOut);
     }
     
     /**
      * See above.
      */
-    public static XString monthAbbreviation()
+    public static String monthAbbreviation()
     {
       String format = "MMM";
-      return new XString(getNameOrAbbrev(format));  
+      return getNameOrAbbrev(format);  
     }
         
     /**
@@ -750,26 +750,26 @@ public class ExsltDatetime
      * An implementation of this extension function in the EXSLT date namespace must conform 
      * to the behaviour described in this document. 
      */
-    public static XString dayName(String datetimeIn)
+    public static String dayName(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XString("");
+        return EMPTY_STR;
             
       String[] formatsIn = {dt, d};
       String formatOut = "EEEE";
-      return new XString (getNameOrAbbrev(datetimeIn, formatsIn, formatOut));    
+      return getNameOrAbbrev(datetimeIn, formatsIn, formatOut);    
     }
     
     /**
      * See above.
      */
-    public static XString dayName()
+    public static String dayName()
     {
       String format = "EEEE";
-      return new XString(getNameOrAbbrev(format));        
+      return getNameOrAbbrev(format);        
     }    
     
     /**
@@ -790,26 +790,26 @@ public class ExsltDatetime
      * An implementation of this extension function in the EXSLT date namespace must conform 
      * to the behaviour described in this document. 
      */
-    public static XString dayAbbreviation(String datetimeIn)
+    public static String dayAbbreviation(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XString("");            
+        return EMPTY_STR;            
       
       String[] formatsIn = {dt, d};
       String formatOut = "EEE";
-      return new XString (getNameOrAbbrev(datetimeIn, formatsIn, formatOut));
+      return getNameOrAbbrev(datetimeIn, formatsIn, formatOut);
     }
     
     /**
      * See above.
      */
-    public static XString dayAbbreviation()
+    public static String dayAbbreviation()
     {
       String format = "EEE";
-      return new XString(getNameOrAbbrev(format));              
+      return getNameOrAbbrev(format);              
     }
     
     /**
