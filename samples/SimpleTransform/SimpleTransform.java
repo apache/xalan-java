@@ -69,7 +69,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 // Imported java classes
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -104,7 +104,7 @@ public class SimpleTransform
 
 	// Use the transformer to apply the Templates (StylesheetRoot) object to an XML document
 	// (foo.xml) and write the output to a file (foo.out).
-	transformer.transform(new InputSource("foo.xml"), new Result(new FileWriter("foo.out")));
+	transformer.transform(new InputSource("foo.xml"), new Result(new FileOutputStream("foo.out")));
 	
 	System.out.println("************* The result is in foo.out *************");
   }
