@@ -355,14 +355,13 @@ public class DTMNodeProxy
    */
   public final NodeList getChildNodes()
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-		
-		// Annoyingly, AxisIterators do not currently implement DTMIterator, so
-		// the following simple solution is not avaiable.
-		//
-		//DTMAxisIterator it=dtm.getAxisIterator(Axis.CHILD);
-		//it.setStartNode(node);
-		//return new DTMNodeList(it);
+                
+    // Annoyingly, AxisIterators do not currently implement DTMIterator, so
+    // we can't just wap DTMNodeList around an Axis.CHILD iterator.
+    // Instead, we've created a special-case operating mode for that object.
+    return new DTMNodeList(dtm,node);
+
+    // throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
 
   /**
