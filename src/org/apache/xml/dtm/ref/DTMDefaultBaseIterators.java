@@ -464,20 +464,11 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     public int next()
     {
 
-      for (int node = (_startNode == DTM.NULL) ? DTM.NULL :(NOTPROCESSED == _currentNode)
-                      ? getFirstChild(_startNode)
-                      : getNextSibling(_currentNode); node
-                        != END; node = getNextSibling(node))
-      {
-        if (getExpandedTypeID(node) == _nodeType || getNodeType(node) == _nodeType)
-        {
-          _currentNode = node;
-
-          return returnNode(node);
-        }
-      }
-
-      return END;
+      int node = (_startNode == DTM.NULL) ? DTM.NULL :(NOTPROCESSED == _currentNode)
+                      ? getTypedFirstChild(_startNode, _nodeType)
+                      : getTypedNextSibling(_currentNode, _nodeType); 
+      return (node == NULL ? NULL : returnNode(_currentNode = node));        
+      
     }
   }  // end of TypedChildrenIterator
 
@@ -886,10 +877,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     public int next()
     {
 
-      while ((_currentNode = getNextSibling(_currentNode)) != NULL
-             && (getExpandedTypeID(_currentNode) != _nodeType && getNodeType(_currentNode) != _nodeType)){}
-
-      return (_currentNode == NULL ? NULL : returnNode(_currentNode));
+      return returnNode(_currentNode = getTypedNextSibling(_currentNode, _nodeType));
     }
   }  // end of TypedFollowingSiblingIterator
 
@@ -1441,10 +1429,10 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       _currentNode = m_traverser.next(_startNode, _currentNode);
 
       } 
-      while (node != NULL
+      while (node != DTM.NULL
              && (getExpandedTypeID(node) != _nodeType && getNodeType(node) != _nodeType));
 
-      return (node == NULL ? NULL :returnNode(node));
+      return (node == DTM.NULL ? DTM.NULL :returnNode(node));
     }
   }  // end of TypedFollowingIterator
 

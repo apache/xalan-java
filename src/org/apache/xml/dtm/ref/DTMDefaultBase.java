@@ -974,6 +974,27 @@ public abstract class DTMDefaultBase implements DTM
 
     return makeNodeHandle(firstChild);
   }
+  
+  /**
+   * Given a node handle, get the handle of the node's first child.
+   * If not yet resolved, waits for more nodes to be added to the document and
+   * tries again.
+   *
+   * @param nodeHandle int Handle of the node.
+   * @return int DTM node-number of first child, or DTM.NULL to indicate none exists.
+   */
+  public int getTypedFirstChild(int nodeHandle, int nodeType)
+  {
+
+    int firstChild, eType;
+    for(firstChild = _firstch(makeNodeIdentity(nodeHandle));firstChild != DTM.NULL; firstChild = _nextsib(firstChild))
+    {
+    	if ((eType =_exptype(firstChild)) == nodeType || m_expandedNameTable.getType(eType) == nodeType)
+    	//_type(firstChild) == nodeType)
+          return makeNodeHandle(firstChild);
+    }
+    return DTM.NULL;
+  }
 
   /**
    * Given a node handle, advance to its last child.
@@ -1065,6 +1086,28 @@ public abstract class DTMDefaultBase implements DTM
   	if (nodeHandle == DTM.NULL)
   	return DTM.NULL;
     return makeNodeHandle(_nextsib(makeNodeIdentity(nodeHandle)));
+  }
+  
+  /**
+   * Given a node handle, advance to its next sibling.
+   * If not yet resolved, waits for more nodes to be added to the document and
+   * tries again.
+   * @param nodeHandle int Handle of the node.
+   * @return int Node-number of next sibling,
+   * or DTM.NULL to indicate none exists.
+   */
+  public int getTypedNextSibling(int nodeHandle, int nodeType)
+  {
+  	if (nodeHandle == DTM.NULL)
+  	return DTM.NULL;
+  	int node = makeNodeIdentity(nodeHandle);
+  	int eType;
+  	while ((node = _nextsib(node)) != DTM.NULL && 
+  	((eType = _exptype(node)) != nodeType && 
+  	m_expandedNameTable.getType(eType)!= nodeType)); 
+  	//_type(node) != nodeType));
+        
+    return (node == DTM.NULL ? DTM.NULL : makeNodeHandle(node));
   }
 
   /**
