@@ -67,6 +67,7 @@
 <li><link anchor="distinct">distinct</link></li>
 <li><link anchor="hassamenodes">hasSameNodes</link></li>
 <li><link anchor="sql">SQL library</link></li>
+<li><link anchor="pipedocument">PipeDocument</link></li>
 <li><link anchor="evaluate">evaluate</link></li>
 <li><link anchor="tokenize">tokenize</link></li>
 <li><link anchor="groupitem">group and item</link> <ref>(to be done)</ref></li>
@@ -367,6 +368,89 @@ pm.registerPool("extpool", cp);</source>
 </source>
 </s3>
   
+  </s2><anchor name="pipedocument"/>
+  <s2 title="pipeDocument">
+  <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/PipeDocument.html">org.apache.xalan.lib.PipeDocument</jump>,<br/>
+  the pipeDocument extension element pipes an XML document through a series of one or more transformations. The output of
+  each transformation is piped to the next transformation. The final transofrmation creates a target file.</p>
+  
+  <p>Suppose, for example,you have a stylesheet that is processing a "book" document with elements designating the 
+  documents to be transformed. This primary stylesheet generates a table of contents for the book. For each source 
+  document it uses a pipeDocument extension element to pipe the document through a series of one or more transformations.</p>
+  <s3 title="Sample: generating a table of contents and an HTML &quot;book&quot;">
+    <p>An XML "book" document contains a number of doc elements like the following:<br/>
+    <code>&lt;doc source="sources/intro.xml" id="intro" label="Introduction"&gt;</code></p>
+    <p>The source attribute identifies the document to be transformed, the id is the output file name, 
+    and the primary stylesheet places the label in the table-of-contents link.</p>
+    <p>The stylesheet declares the pipeDocument namespace, designates the namespace prefix as an extension element prefix,
+    and contains a parameter designating where the output files are to be placed:</p>
+  <source>&lt;xsl:stylesheet version="1.0"
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+   xmlns:pipe="xalan://PipeDocument"
+   extension-element-prefixes="pipe"&gt;
+   
+&lt;xsl:param  name="destdir" value="html/output"&gt;
+...</source>
+<p>This stylesheet contains a template where each doc element is processed. For each doc element, the stylesheet adds an 
+entry to the table-of-contents document. The extension element pipes the specified document through a series of two 
+transformations, with an stylesheet input parameter for the first transformation. The pipeDocument target attribute 
+designates the output from the second transformation.</p>
+
+<source>&lt;xsl:template match="doc"&gt;
+  &lt;p&gt;
+    &lt;a href={$destdir}&gt;&lt;xsl:value-of select="@label"/&gt;&lt;a&gt;
+  &lt;/p&gt;
+
+  &lt;pipe:pipeDocument   source="{@source}" target="{$destdir/@id}"&gt;
+    &lt;stylesheet href="ss1.xsl"&gt;
+      &lt;param name="doc-id" value="@id"/&gt;
+    &lt;/stylesheet&gt;
+    &lt;stylesheet href="ss2.xsl"/&gt;   
+  &lt;/pipe:pipeDocument&gt;
+  
+&lt;/xsl:template&gt;</source>
+ 
+   <p>Notes:</p>
+   <ul>
+   <li>The base URI for the source attribute is the XML "book" document.</li>
+   <li>The target attribute is taken as is (the base is the current user directory from which this transformation is being run).</li>
+   <li>The stylsheet containg the extension element is the base URI for the stylesheet hrefs.</li>
+   </ul>
+</s3>
+<s3 title="Variation: using pipeDocument in an empty stylesheet">
+<p>Suppose you want to pipe a document through a series of transformations. You can use the pipeDocument extension element
+to perform this operation by placing the extension element in an otherwise empty stylesheet.</p>
+<p>The following stylesheet is used to merge the Xalan documents into a book (the first transformation), and transform the book
+into a tree of formatting objects, which can then be used to generate a PDF file. This transformation is invoked as follows:</p>
+<p><code>java org.apache.xalan.xslt.Process -in printbook.xml</code><br/>
+<code> -param source printbook.xml</code><br/>
+<code> -param target xalanbook.fo</code></p>
+<p>There is no XML input document or output document for the primary transformation, which does no more than invoke
+the extension element.</p>
+<source>&lt;?xml version='1.0'?&gt;
+
+&lt;xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:pipe="xalan://org.apache.xalan.lib.PipeDocument"
+                extension-element-prefixes="pipe"&gt;
+
+&lt;xsl:param name="source"/&gt;
+&lt;xsl:param name="target"/&gt;
+
+&lt;xsl:template match="/"&gt;
+
+  &lt;pipe:pipeDocument 
+        source="{$source}"
+        target="{$target}"&gt;
+    &lt;stylesheet href="printbook_assemble.xsl"/&gt;
+    &lt;stylesheet href="bkbook8x11_xalan.xsl"/&gt;
+  &lt;/pipe:pipeDocument&gt;
+  
+&lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;</source>
+
+</s3>  
   </s2><anchor name="evaluate"/>
   <s2 title= "evaluate">
   <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
