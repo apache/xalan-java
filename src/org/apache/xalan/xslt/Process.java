@@ -526,15 +526,7 @@ public class Process
               XSLTErrorResources.ER_INVALID_OPTION, new Object[]{ argv[i] }));  //"Invalid argument:);
       }
 
-      // Must have an XML document to continue
-      if (null == inFileName)
-      {
-        System.out.println("ERROR: must supply argument -IN inputXMLURL");
-        printArgOptions(resbundle);
-        System.exit(-1); // This should be settable as to whether we call 
-                         // exit or not, for the occasional user who calls 
-                         // us programmatically
-      }
+      // Note that there are usage cases for calling us without a -IN arg
       // The main XSL transformation occurs here!
       try
       {
