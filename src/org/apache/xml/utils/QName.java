@@ -437,16 +437,24 @@ public class QName implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public boolean equals(QName qname)
+  public boolean equals(Object object)
   {
 
-    String thisnamespace = getNamespaceURI();
-    String thatnamespace = qname.getNamespaceURI();
+    if (object == this)
+      return true;
 
-    return getLocalName().equals(qname.getLocalName())
-           && (((null != thisnamespace) && (null != thatnamespace))
-               ? thisnamespace.equals(thatnamespace)
-               : ((null == thisnamespace) && (null == thatnamespace)));
+    if (object instanceof QName) {
+      QName qname = (QName) object;
+      String thisnamespace = getNamespaceURI();
+      String thatnamespace = qname.getNamespaceURI();
+
+      return getLocalName().equals(qname.getLocalName())
+             && (((null != thisnamespace) && (null != thatnamespace))
+                 ? thisnamespace.equals(thatnamespace)
+                 : ((null == thisnamespace) && (null == thatnamespace)));
+    }
+    else
+      return false;
   }
 
   /**
