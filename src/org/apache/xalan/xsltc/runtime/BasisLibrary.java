@@ -1125,8 +1125,12 @@ public final class BasisLibrary implements Operators {
                        org.w3c.dom.NamedNodeMap attributes = curr.getAttributes();
                        for (int k = 0; k < attributes.getLength(); k++) {
                          org.w3c.dom.Node attr = attributes.item(k);
-                         element.setAttribute(attr.getNodeName(), 
-			    attr.getNodeValue());
+                         String attrURI = attr.getNamespaceURI();
+                         if (null != attr && attrURI != Constants.XMLNS_URI)
+                                 element.setAttributeNS(attrURI, 
+                                     attr.getNodeName(), attr.getNodeValue());
+                         else element.setAttribute(attr.getNodeName(),  
+                                 attr.getNodeValue());
                        }
                      }
                      copyNodes(curr.getChildNodes(), doc, element);
