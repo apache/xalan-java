@@ -328,6 +328,13 @@ public class ElemForEach extends ElemTemplateElement
     vars.pushElemFrame();
     return -1;
   }
+  
+  /**
+   * Re-mark the params as params.
+   */
+  void reMarkParams(XPathContext xctxt)
+  {
+  }
 
   /**
    * Pop Default parameters from the stack 
@@ -508,6 +515,7 @@ public class ElemForEach extends ElemTemplateElement
                 t.execute(transformer, child, mode);
               }
             }
+            reMarkParams(xctxt);
           }
           finally
           {

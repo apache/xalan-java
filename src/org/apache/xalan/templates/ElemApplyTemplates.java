@@ -247,6 +247,16 @@ public class ElemApplyTemplates extends ElemCallTemplate
      
     return savedSearchStart;
   }
+  
+  /**
+   * Re-mark the params as params.
+   */
+  void reMarkParams(XPathContext xctxt)
+  {
+    VariableStack vars = xctxt.getVarStack();
+    vars.remarkParams();
+  }
+
 
   /**
    * Pop the stack of default arguments after we're done with them 
