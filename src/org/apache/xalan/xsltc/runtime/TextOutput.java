@@ -89,6 +89,7 @@ public final class TextOutput implements TransletOutputHandler {
     private boolean   _escapeChars = false;
     private boolean   _startTagOpen = false;
     private boolean   _headTagOpen = false;
+    private boolean   _cdataTagOpen = false;
 
     // Contains all elements that should be output as CDATA sections
     private Hashtable _cdata = null;
@@ -169,6 +170,7 @@ public final class TextOutput implements TransletOutputHandler {
 	// Reset all internal variables and tables
 	_escapeChars  = false;
 	_startTagOpen = false;
+	_cdataTagOpen = false;
 	_qnameStack = new Stack();
 	_cdataStack = new Stack();
 	_cdataStack.push(new Integer(-1)); // push dummy value
@@ -290,9 +292,8 @@ public final class TextOutput implements TransletOutputHandler {
             if (_outputType == UNKNOWN) setTypeInternal(XML);
 
 	    // Close any open start tag
-	    if (_startTagOpen) {
-		closeStartTag();
-	    }
+	    if (_startTagOpen) closeStartTag();
+	    if (_cdataTagOpen) closeCDATA();
 
 	    // Close output document
             _saxHandler.endDocument();
@@ -363,7 +364,7 @@ public final class TextOutput implements TransletOutputHandler {
     /**
      * Utility method - pass a whole charactes as CDATA to SAX handler
      */
-    private void cdata(char[] ch, int off, int len) throws SAXException {
+    private void startCDATA(char[] ch, int off, int len) throws SAXException {
 	
 	final int limit = off + len;
 	int offset = off;
@@ -384,8 +385,13 @@ public final class TextOutput implements TransletOutputHandler {
 	// Output the remaining characters
 	if (offset < limit) _saxHandler.characters(ch, offset, limit - offset);
 
+	_cdataTagOpen = true;
+    }
+
+    private void closeCDATA() throws SAXException {
 	// Output closing bracket - "]]>"
 	characters(ENDCDATA);
+	_cdataTagOpen = false;
     }
 
     /**
@@ -407,7 +413,10 @@ public final class TextOutput implements TransletOutputHandler {
 	    // special characters/sequences are _NOT_ escaped within CDATA.
 	    Integer I = (Integer)_cdataStack.peek();
 	    if (I.intValue() == _depth) {
-		cdata(ch, off, len);
+		if (_cdataTagOpen)
+		    _saxHandler.characters(ch, off, len);
+		else
+		    startCDATA(ch, off, len);
 	    }
 	    // Output escaped characters if required. Non-ASCII characters
             // within HTML attributes should _NOT_ be escaped.
@@ -431,35 +440,41 @@ public final class TextOutput implements TransletOutputHandler {
     public void startElement(String elementName)
 	throws TransletException {
 
-	// Do not output element tags if output mode is 'text'
-	if (_outputType == TEXT) return; 
+	try {
+	    // Do not output element tags if output mode is 'text'
+	    if (_outputType == TEXT) return; 
 
-	// Close any open start tag
-	if (_startTagOpen) closeStartTag();
+	    // Close any open start tag
+	    if (_startTagOpen) closeStartTag();
+	    if (_cdataTagOpen) closeCDATA();
 
-	// If we don't know the output type yet we need to examine
-	// the very first element to see if it is "html".
-	if (_outputType == UNKNOWN) {
-	    if (elementName.toLowerCase().equals("html"))
-		setTypeInternal(HTML);
-	    else
-		setTypeInternal(XML);
+	    // If we don't know the output type yet we need to examine
+	    // the very first element to see if it is "html".
+	    if (_outputType == UNKNOWN) {
+		if (elementName.toLowerCase().equals("html"))
+		    setTypeInternal(HTML);
+		else
+		    setTypeInternal(XML);
+	    }
+
+	    _depth++;
+	    _elementName = elementName;
+	    _attributes.clear();
+	    _startTagOpen = true;
+
+	    _qnameStack.push(elementName);
+
+	    if ((_cdata != null) && (_cdata.get(elementName) != null))
+		_cdataStack.push(new Integer(_depth));
+
+	    // Insert <META> tag directly after <HEAD> element in HTML doc
+	    if (_outputType == HTML)
+		if (elementName.toLowerCase().equals("head"))
+		    _headTagOpen = true;
 	}
-
-	_depth++;
-	_elementName = elementName;
-	_attributes.clear();
-	_startTagOpen = true;
-
-	_qnameStack.push(elementName);
-
-	if ((_cdata != null) && (_cdata.get(elementName) != null))
-	    _cdataStack.push(new Integer(_depth));
-
-	// Insert <META> tag directly after <HEAD> element in HTML doc
-	if (_outputType == HTML)
-	    if (elementName.toLowerCase().equals("head"))
-		_headTagOpen = true;
+	catch (SAXException e) {
+            throw new TransletException(e);
+        }
     }
 
     /**
@@ -552,6 +567,8 @@ public final class TextOutput implements TransletOutputHandler {
 
 	    // Close any open element
 	    if (_startTagOpen) closeStartTag();
+	    if (_cdataTagOpen) closeCDATA();
+
 	    final String qname = (String)(_qnameStack.pop());
             if (closeElement) _saxHandler.endElement(null, null, qname);
 
@@ -574,6 +591,7 @@ public final class TextOutput implements TransletOutputHandler {
 	try {
 	    // Close any open element before emitting comment
             if (_startTagOpen) closeStartTag();
+	    if (_cdataTagOpen) closeCDATA();
 
             // Set output type to XML (the default) if still unknown.
             if (_outputType == UNKNOWN) setTypeInternal(XML);
@@ -596,6 +614,8 @@ public final class TextOutput implements TransletOutputHandler {
         try {
 	    // Close any open element
 	    if (_startTagOpen) closeStartTag();
+	    if (_cdataTagOpen) closeCDATA();
+
 	    // Pass the processing instruction to the SAX handler
             _saxHandler.processingInstruction(target, data);
         } catch (SAXException e) {
