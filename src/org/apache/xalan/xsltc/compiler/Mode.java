@@ -314,9 +314,7 @@ final class Mode implements Constants {
 				      ClassGenerator classGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
-	String methodName = template.getName().toString();
-	methodName = methodName.replace('.', '$');
-	methodName = methodName.replace('-', '$');
+	String methodName = Util.escape(template.getName().toString());
 
 	final NamedMethodGenerator methodGen =
 	    new NamedMethodGenerator(ACC_PUBLIC,
