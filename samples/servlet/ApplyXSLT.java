@@ -246,7 +246,7 @@ public class ApplyXSLT extends HttpServlet
       time = System.currentTimeMillis();
 
     // Listener to be used for all reporting
-    ApplyXSLTListener listener = new ApplyXSLTListener();
+    ApplyXSLTListener listener = new ApplyXSLTListener("ApplyXSLT");
 	listener.out.println("debug is " + debug);
 
     InputSource xmlSource = null;

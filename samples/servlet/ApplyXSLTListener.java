@@ -10,7 +10,7 @@ package servlet;
 
 import java.io.*;
 import org.xml.sax.*;
-import org.apache.xalan.xpath.xml.ProblemListenerDefault.*;
+import org.apache.xalan.utils.DefaultErrorHandler;
 
 /*****************************************************************************************************
  * ApplyXSLTListener provides a buffered listener essential for capturing, and then subsequently
@@ -23,7 +23,7 @@ import org.apache.xalan.xpath.xml.ProblemListenerDefault.*;
  *
  *****************************************************************************************************/
 
-public class ApplyXSLTListener extends org.apache.xalan.xpath.xml.ProblemListenerDefault implements ErrorHandler
+public class ApplyXSLTListener extends DefaultErrorHandler implements ErrorHandler
 {
 
     /**
@@ -39,9 +39,10 @@ public class ApplyXSLTListener extends org.apache.xalan.xpath.xml.ProblemListene
     /**
       * Constructor.
       */
-    public ApplyXSLTListener()
+    public ApplyXSLTListener(String identifier)
     {
-	out = new PrintWriter(new BufferedOutputStream(outStream), true);
+	super(identifier);
+    out = new PrintWriter(new BufferedOutputStream(outStream), true);
     }
 
     /**

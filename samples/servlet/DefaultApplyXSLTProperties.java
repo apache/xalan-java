@@ -11,6 +11,8 @@ package servlet;
 import java.net.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /*****************************************************************************************************
  * 
@@ -210,20 +212,32 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
    * Sets required system properties until we figure out why servlet 
    * sometimes fails to read properties from properties files.
    */	
-  protected void setSystemProperties()
-  {
-	 System.setProperty("trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
-	 System.setProperty("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
-	 System.setProperty("serialize.methods", "xml,html,Text");
-	 System.setProperty("serialize.xml", "org.apache.xml.serialize.XMLSerializer");	 
-	 System.setProperty("serialize.html", "org.apache.xml.serialize.HTMLSerializer");	 
-	 System.setProperty("serialize.text", "org.apache.xml.serialize.TextSerializer");	 
-	 System.setProperty("serialize.xhtml", "org.apache.xml.serialize.XHTMLSerializer");	 
-	 System.setProperty("serialize.wml", "org.apache.xml.serialize.WMLSerializer");	
-	 System.setProperty("serialize.format.xml", "serialize.format.XMLOutputFormat");	 
-	 System.setProperty("serialize.format.html", "serialize.format.XMLOutputFormat");	 
-	 System.setProperty("serialize.format.text", "serialize.format.XMLOutputFormat");	 
-	 System.setProperty("serialize.format.xhtml", "serialize.format.XHTMLOutputFormat");	 
-	 System.setProperty("serialize.format.text", "serialize.format.TextOutputFormat");	 
-  }
+    protected void setSystemProperties()
+	{
+	  Properties props = new Properties();
+	  props.put("trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
+	  props.put("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
+	  props.put("serialize.methods", "xml,html,Text");
+	  props.put("serialize.xml", "org.apache.xml.serialize.XMLSerializer");	 
+	  props.put("serialize.html", "org.apache.xml.serialize.HTMLSerializer");	 
+	  props.put("serialize.text", "org.apache.xml.serialize.TextSerializer");	 
+	  props.put("serialize.xhtml", "org.apache.xml.serialize.XHTMLSerializer");	 
+	  props.put("serialize.wml", "org.apache.xml.serialize.WMLSerializer");	
+	  props.put("serialize.format.xml", "serialize.format.XMLOutputFormat");	 
+	  props.put("serialize.format.html", "serialize.format.XMLOutputFormat");	 
+	  props.put("serialize.format.text", "serialize.format.XMLOutputFormat");	 
+	  props.put("serialize.format.xhtml", "serialize.format.XHTMLOutputFormat");	 
+	  props.put("serialize.format.text", "serialize.format.TextOutputFormat");	 
+	  
+      Properties systemProps = System.getProperties();
+      Enumeration propEnum = props.propertyNames();
+      while(propEnum.hasMoreElements())
+      {
+        String prop = (String)propEnum.nextElement();
+        if(!systemProps.containsKey(prop))
+          systemProps.put(prop, props.getProperty(prop));
+      }
+      System.setProperties(systemProps);
+	}
+
 }
