@@ -76,7 +76,7 @@ import java.io.UnsupportedEncodingException;
  */
 class Encodings
 {
-
+    public static boolean m_shouldNormalizeLinebreaks = false;
 
     /**
      * The last printable character for unknown encodings.
@@ -97,21 +97,21 @@ class Encodings
     static Writer getWriter( OutputStream output, String encoding )
         throws UnsupportedEncodingException
     {
-        for ( int i = 0 ; i < _encodings.length ; ++i ) 
+      for ( int i = 0 ; i < _encodings.length ; ++i ) 
+      {
+        if ( _encodings[ i ].name.equals( encoding ) )
         {
-          if ( _encodings[ i ].name.equals( encoding ) )
+          try
           {
-            try
-            {
-              return new OutputStreamWriter( output, _encodings[ i ].javaName );
-            }
-            catch(UnsupportedEncodingException usee)
-            {
-              // keep trying
-            }
+            return new OutputStreamWriter( output, _encodings[ i ].javaName );
+          }
+          catch(UnsupportedEncodingException usee)
+          {
+            // keep trying
           }
         }
-        return new OutputStreamWriter( output, encoding );
+      }
+      return new OutputStreamWriter( output, encoding );
     }
 
 
