@@ -93,8 +93,6 @@ final class PositionCall extends FunctionCall {
 	// type of node we want to be looking for
 	if ((parent instanceof Expression) && (granny instanceof Predicate)) {
 	    _type = ((Predicate)granny).getPosType();
-	    if ((_type == DOM.ELEMENT) || (_type == DOM.ATTRIBUTE))
-		_type = -1;
 	}
 	else {
 	    while ((granny != null) && !(granny instanceof StepPattern)) {
@@ -102,7 +100,7 @@ final class PositionCall extends FunctionCall {
 		granny = granny.getParent();
 	    }
 	    if ((parent instanceof Predicate) &&
-		(granny instanceof StepPattern)){ 
+		(granny instanceof StepPattern)){
 		_type = ((StepPattern)granny).getNodeType();
 	    }
 	}
@@ -123,7 +121,7 @@ final class PositionCall extends FunctionCall {
 	}
 	else {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
-	    // public int getTypedPosition(NodeIterator iterator, int type) {
+	    // public int getTypedPosition(int type, int node)
 	    final int pos = cpg.addInterfaceMethodref(DOM_INTF,
 						      "getTypedPosition",
 						      "(II)I");

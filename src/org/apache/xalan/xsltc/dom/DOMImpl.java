@@ -172,10 +172,17 @@ public final class DOMImpl implements DOM, Externalizable {
     /**
      * Returns 'true' if a specific node is an element (of any type)
      */
-    private boolean isElement(final int node) {
+    public boolean isElement(final int node) {
 	final int type = _type[node];
-	if ((node < _firstAttributeNode) && (type >= NTYPES)) return true;
-	return false;
+	return ((node < _firstAttributeNode) && (type >= NTYPES));
+    }
+
+    /**
+     * Returns 'true' if a specific node is an element (of any type)
+     */
+    public boolean isAttribute(final int node) {
+	final int type = _type[node];
+	return ((node >= _firstAttributeNode) && (type >= NTYPES));
     }
 
     /**
@@ -1803,12 +1810,50 @@ public final class DOMImpl implements DOM, Externalizable {
 	return _parent[node];
     }
 
+    public int getElementPosition(int node) {
+	// Initialize with the first sbiling of the current node
+	int match = 0;
+	int curr  = _offsetOrChild[_parent[node]];
+	if (isElement(curr)) match++;
+
+	// Then traverse all other siblings up until the current node
+	while (curr != node) {
+	    curr = _nextSibling[curr];
+	    if (isElement(curr)) match++;
+	}
+
+	// And finally return number of matches
+	return match;         
+    }
+
+    public int getAttributePosition(int attr) {
+	// Initialize with the first sbiling of the current node
+	int match = 1;
+	int curr  = _lengthOrAttr[_parent[attr]];
+
+	// Then traverse all other siblings up until the current node
+	while (curr != attr) {
+	    curr = _nextSibling[curr];
+	    match++;
+	}
+
+	// And finally return number of matches
+	return match;         
+    }
+
     /**
      * Returns a node's position amongst other nodes of the same type
      */
     public int getTypedPosition(int type, int node) {
 	// Just return the basic position if no type is specified
-	if (type == -1) type = _type[node];
+	switch(type) {
+	case ELEMENT:
+	    return getElementPosition(node);
+	case ATTRIBUTE:
+	    return getAttributePosition(node);
+	case -1:
+	    type = _type[node];
+	}
 
 	// Initialize with the first sbiling of the current node
 	int match = 0;

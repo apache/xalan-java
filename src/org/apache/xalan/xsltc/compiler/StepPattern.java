@@ -208,13 +208,29 @@ final class StepPattern extends RelativePathPattern {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	
-	if ((_nodeType == DOM.ELEMENT) && (hasPredicates())) {
-	    // TODO: insert check to see if current node is element
-	    il.append(POP);
+	if (_nodeType == DOM.ELEMENT) {
+	    final int check = cpg.addInterfaceMethodref(DOM_INTF,
+							"isElement", "(I)Z");
+	    il.append(methodGen.loadDOM());
+	    il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(check, 2));
+	
+	    // Need to allow for long jumps here
+	    final BranchHandle icmp = il.append(new IFNE(null));
+	    _falseList.add(il.append(new GOTO_W(null)));
+	    icmp.setTarget(il.append(NOP));
 	}
-	else if ((_nodeType == DOM.ATTRIBUTE) && (hasPredicates())) {
-	    // TODO: insert check to see if current node is attribute
-	    il.append(POP);
+	else if (_nodeType == DOM.ATTRIBUTE) {
+	    final int check = cpg.addInterfaceMethodref(DOM_INTF,
+							"isAttribute", "(I)Z");
+	    il.append(methodGen.loadDOM());
+	    il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(check, 2));
+	
+	    // Need to allow for long jumps here
+	    final BranchHandle icmp = il.append(new IFNE(null));
+	    _falseList.add(il.append(new GOTO_W(null)));
+	    icmp.setTarget(il.append(NOP));
 	}
 	else {
 	    // context node is on the stack

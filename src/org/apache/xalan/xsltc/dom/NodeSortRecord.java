@@ -82,8 +82,8 @@ public abstract class NodeSortRecord {
     public static int COMPARE_DESCENDING = 1;
 
     protected static Collator _collator = Collator.getInstance();
-    protected static int _levels = 1;
 
+    protected static int _levels = 1;
     protected int[] _compareType;
     protected int[] _sortOrder;
 

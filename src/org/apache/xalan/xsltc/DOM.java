@@ -129,4 +129,6 @@ public interface DOM {
     public int getTypedLast(int type, int node);
     public void setFilter(StripFilter filter);
     public void setupMapping(String[] names, String[] namespaces);
+    public boolean isElement(final int node);
+    public boolean isAttribute(final int node);
 }

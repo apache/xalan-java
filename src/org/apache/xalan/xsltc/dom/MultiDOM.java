@@ -433,4 +433,13 @@ public final class MultiDOM implements DOM {
     public String getDocumentURI(int node) {
 	return _adapters[node>>>24].getDocumentURI(0);
     }
+
+    public boolean isElement(final int node) {
+	return(_adapters[node>>>24].isElement(node & CLR));
+    }
+
+    public boolean isAttribute(final int node) {
+	return(_adapters[node>>>24].isAttribute(node & CLR));
+    }
+
 }

@@ -266,4 +266,12 @@ public final class DOMAdapter implements DOM {
 	return(_domImpl.getDocumentURI());
     }
 
+    public boolean isElement(final int node) {
+	return(_domImpl.isElement(node));
+    }
+
+    public boolean isAttribute(final int node) {
+	return(_domImpl.isAttribute(node));
+    }
+
 }
