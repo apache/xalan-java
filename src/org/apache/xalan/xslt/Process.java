@@ -624,6 +624,11 @@ public class Process
         if (null != outFileName)
         {
           strResult = new StreamResult(new FileOutputStream(outFileName));
+          // One possible improvement might be to ensure this is 
+          //  a valid URI before setting the systemId, but that 
+          //  might have subtle changes that pre-existing users 
+          //  might notice; we can think about that later -sc r1.46
+          strResult.setSystemId(outFileName);
         }
         else
         {
