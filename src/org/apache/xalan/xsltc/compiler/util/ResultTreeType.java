@@ -267,12 +267,12 @@ public final class ResultTreeType extends Type {
 	    }
 	    il.append(methodGen.loadDOM());
 
-	    // Create new instance of DOM class (with 64 nodes)
+	    // Create new instance of DOM class 
 	    int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
 	    il.append(new NEW(cpg.addClass(DOM_IMPL)));
 	    il.append(DUP);
 	    il.append(DUP);
-	    il.append(new PUSH(cpg, 64));
+	    il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
 	    il.append(new INVOKESPECIAL(index));
 	    
 	    // Store new DOM into a local variable

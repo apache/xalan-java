@@ -2225,24 +2225,30 @@ public final class DOMImpl implements DOM, Externalizable {
 	_types         = setupMapping(_namesArray);
     }
 
-    /**
-     * Constructor - defaults to 32K nodes
+    /*
+     * These init sizes have been tuned for the average case. Do not
+     * change these values unless you know exactly what you're doing.
      */
+    static private final int SMALL_TEXT_SIZE   = 1024; 
+    static private final int DEFAULT_INIT_SIZE = 1024;
+    static private final int DEFAULT_TEXT_FACTOR = 10;
+
     public DOMImpl() {
-	//this(32*1024);
-	this(8*1024);
+	this(DEFAULT_INIT_SIZE);
+    }
+
+    public DOMImpl(int size) {
+	initialize(size, size < 128 ? SMALL_TEXT_SIZE : 
+	    size * DEFAULT_TEXT_FACTOR);
     }
          
-    /**
-     * Constructor - defines initial size
-     */
-    public DOMImpl(int size) {
+    private void initialize(int size, int textsize) {
 	_type          = new short[size];
 	_parent        = new int[size];
 	_nextSibling   = new int[size];
 	_offsetOrChild = new int[size];
 	_lengthOrAttr  = new int[size];
-	_text          = new char[size * 10];
+	_text          = new char[textsize];
 	_whitespace    = new BitArray(size);
 	_prefix        = new short[size];
 	// _namesArray[] and _uriArray[] are allocated in endDocument

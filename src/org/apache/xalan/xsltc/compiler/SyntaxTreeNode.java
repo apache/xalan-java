@@ -547,12 +547,12 @@ public abstract class SyntaxTreeNode implements Constants {
 
 	final String DOM_CLASS = classGen.getDOMClass();
 
-	// Create new instance of DOM class (with 64 nodes)
+	// Create new instance of DOM class
 	int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
 	il.append(new NEW(cpg.addClass(DOM_IMPL)));
 	il.append(DUP);
 	il.append(DUP);
-	il.append(new PUSH(cpg, 64));
+	il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
 	il.append(new INVOKESPECIAL(index));
 
 	// Overwrite old handler with DOM handler

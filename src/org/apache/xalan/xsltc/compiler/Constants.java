@@ -478,4 +478,6 @@ public interface Constants extends InstructionConstants {
 	= "http://xml.apache.org/xalan/xsltc";
     public static final String FALLBACK_CLASS
 	= "org.apache.xalan.xsltc.compiler.Fallback";
+
+    public static final int RTF_INITIAL_SIZE = 64;
 }
