@@ -53,11 +53,6 @@ import org.apache.xml.utils.XMLChar;
 /**
  * Standard XSLT functions. All standard functions expect the current node 
  * and the DOM as their last two arguments.
- * @author Jacek Ambroziak
- * @author Santiago Pericas-Geertsen
- * @author Morten Jorgensen
- * @author Erwin Bolwidt <ejb@klomp.org>
- * @author John Howard <johnh@schemasoft.com>
  */
 public final class BasisLibrary implements Operators {
 
@@ -68,6 +63,17 @@ public final class BasisLibrary implements Operators {
      */
     public static int countF(DTMAxisIterator iterator) {
 	return(iterator.getLast());
+    }
+
+    /**
+     * Standard function position()
+     * @deprecated This method exists only for backwards compatibility with old
+     *             translets.  New code should not reference it.
+     */
+    public static int positionF(DTMAxisIterator iterator) {
+        return iterator.isReverse()
+                     ? iterator.getLast() - iterator.getPosition() + 1
+                     : iterator.getPosition();
     }
 
     /**
