@@ -119,6 +119,8 @@ public final class Stylesheet extends SyntaxTreeNode {
     // All named key elements (needed by Key/IdPattern)
     private Hashtable _keys = new Hashtable();
 
+    private boolean _numberFormattingUsed = false;
+
     private boolean _simplified = false;
 
     public boolean isSimplified() {
@@ -145,6 +147,10 @@ public final class Stylesheet extends SyntaxTreeNode {
     public boolean isIncluded() {
 	final SyntaxTreeNode parent = getParent();
 	return ((parent != null) && (parent instanceof Include));
+    }
+
+    public void numberFormattingUsed() {
+	_numberFormattingUsed = true;
     }
 
     public void setImportPrecedence(final int precedence) {
@@ -552,7 +558,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	
 	// Compile default decimal formatting symbols.
 	// This is an implicit, nameless xsl:decimal-format top-level element.
-	DecimalFormatting.translateDefaultDFS(classGen, constructor);
+	if (_numberFormattingUsed)
+	    DecimalFormatting.translateDefaultDFS(classGen, constructor);
 
 	il.append(RETURN);
 
@@ -922,8 +929,12 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public String getNamespace(String prefix) {
+	/* WRONG - WRONG - WRONG - namespace delcarations are not passed
+	   as attributes.
 	final Node attr = _stylesheetAttributes.getNamedItem("xmlns:" + prefix);
 	return attr != null ? attr.getNodeValue() : null;
+	*/
+	return getParser().getSymbolTable().lookupNamespace(prefix);
     }
 
     public String getClassName() {

@@ -83,6 +83,11 @@ final class FormatNumberCall extends FunctionCall {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	// The stylesheet element only adds code to instanciate the
+	// default DecimalFormat object if at least one format-number()
+	// call exists in the stylesheet. We must signal this call...
+	getStylesheet().numberFormattingUsed();
+
 	final Type tvalue = _value.typeCheck(stable);
 	if (tvalue instanceof RealType == false) {
 	    _value = new CastExpr(_value, Type.Real);
