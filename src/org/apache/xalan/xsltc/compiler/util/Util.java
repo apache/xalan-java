@@ -155,36 +155,35 @@ public final class Util {
     /**
      * Replace a certain character in a string with a new substring.
      */
-    public static String replace(String base, char c, String str) {
-	final int len = base.length() - 1;
-	int pos;
-	while ((pos = base.indexOf(c)) > -1) {
-	    if (pos == 0) {
-		final String after = base.substring(1);
-		base = str + after;
-	    }
-	    else if (pos == len) {
-		final String before = base.substring(0, pos);
-		base = before + str;
+    public static String replace(String base, char ch, String str) {
+	return (base.indexOf(ch) < 0) ? base : 
+	    replace(base, String.valueOf(ch), new String[] { str });
+    }
+
+    public static String replace(String base, String delim, String[] str) {
+	final int len = base.length();
+	final StringBuffer result = new StringBuffer();
+
+	for (int i = 0; i < len; i++) {
+	    final char ch = base.charAt(i);
+	    final int k = delim.indexOf(ch);
+
+	    if (k >= 0) {
+		result.append(str[k]);
 	    }
 	    else {
-		final String before = base.substring(0, pos);
-		final String after = base.substring(pos+1);
-		base = before + str + after;
+		result.append(ch);
 	    }
 	}
-	return base;
+	return result.toString();
     }
 
     /**
      * Replace occurances of '.', '-', '/' and ':'
      */
     public static String escape(String input) {
-	input = replace(input, '.', "$dot$");
-	input = replace(input, '-', "$dash$");
-	input = replace(input, '/', "$slash$");
-	input = replace(input, ':', "$colon$");
-	return input;
+	return replace(input, ".-/:", 
+	    new String[] { "$dot$", "$dash$", "$slash$", "$colon$" });
     }
 
 }
