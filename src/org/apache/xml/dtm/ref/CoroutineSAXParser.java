@@ -116,7 +116,7 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
   private LexicalHandler clientLexicalHandler=null; // %REVIEW% support multiple?
   private ErrorHandler clientErrorHandler=null; // %REVIEW% support multiple?
   private int eventcounter;
-  private int frequency=10;
+  private int frequency=5;
 
   // Horrendous kluge to run filter to completion. See co_yield()'s
   // internal comments for details. "Is this any way to run a railroad?"
@@ -346,7 +346,8 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
   {
     if(--eventcounter<=0)
       {
-        co_yield(true);
+        // This can cause a hang.  -sb
+        // co_yield(true);
         eventcounter=frequency;
       }
     if(clientContentHandler!=null)
@@ -721,6 +722,7 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
           // Since I'm not sure what good it does to throw a shutdown 
           // exception here, I'm simply commenting it out for the time 
           // being.
+          System.err.println(">>> ARG IS NULL!!! <<<");
           // throw shutdownException;
         }
 
