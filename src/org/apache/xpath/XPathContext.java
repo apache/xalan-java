@@ -470,25 +470,6 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   {
     m_variableStacks = varStack;
   }
-  
-  /**
-   * Get a variable based on it's qualified name.
-   * This is for external use only.
-   *
-   * @param xctxt The XPath context, which must be passed in order to
-   * lazy evaluate variables.
-   * 
-   * @param qname The qualified name of the variable.
-   *
-   * @return The evaluated value of the variable.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public final XObject getVariable(org.apache.xml.utils.QName qname)
-            throws javax.xml.transform.TransformerException
-  {
-     return m_variableStacks.getVariable(this, qname);
-  }
 
   // ================ SourceTreeManager ===================
 
@@ -1118,7 +1099,22 @@ public class XPathContext extends DTMManager // implements ExpressionContext
       return strVal.toString();
     }
 
-    
+    /**
+     * Get a variable based on it's qualified name.
+     *
+     * @param qname The qualified name of the variable.
+     *
+     * @return The evaluated value of the variable.
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
+
+    public final XObject getVariableOrParam(org.apache.xml.utils.QName qname)
+              throws javax.xml.transform.TransformerException
+    {
+      return m_variableStacks.getVariableOrParam(XPathContext.this, qname);
+    }
+
   }
 
 }

@@ -750,7 +750,10 @@ public class StylesheetRoot extends StylesheetComposed
   {
     // Don't overide higher priority variable        
     if (getVariableOrParamComposed(elemVar.getName()) == null)
+    {
+      elemVar.setIsTopLevel(true);        // Mark as a top-level variable or param
       m_variables.addElement(elemVar);
+    }
   }
 
   /**

@@ -415,7 +415,7 @@ public final class VariableStack implements Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public final XObject getVariable(
+  public final XObject getVariableOrParam(
           XPathContext xctxt, org.apache.xml.utils.QName qname)
             throws javax.xml.transform.TransformerException
   {

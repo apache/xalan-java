@@ -58,6 +58,7 @@ package org.apache.xalan.extensions;
 
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.Node;
+import org.apache.xpath.objects.XObject;
 
 /**
  * An object that implements this interface can supply
@@ -92,4 +93,18 @@ public interface ExpressionContext
    * @return value of n as a string, or an empty string if n is null.
    */
   public String toString(Node n);
+
+  /**
+   * Get a variable based on it's qualified name.
+   *
+   * @param qname The qualified name of the variable.
+   *
+   * @return The evaluated value of the variable.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+
+  public XObject getVariableOrParam(org.apache.xml.utils.QName qname)
+            throws javax.xml.transform.TransformerException;
+
 }
