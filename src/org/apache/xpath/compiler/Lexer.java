@@ -593,11 +593,14 @@ class Lexer
    * @param posOfNSSep The position of the namespace seperator (':').
    * @param posOfScan The end of the name index.
    *
+   * @throws javax.xml.transform.TransformerException
+   *
    * @return -1 always.
    */
   private int mapNSTokens(String pat, int startSubstring, int posOfNSSep,
                           int posOfScan)
-  {
+           throws javax.xml.transform.TransformerException
+ {
 
     String prefix = pat.substring(startSubstring, posOfNSSep);
     String uName;
@@ -659,6 +662,11 @@ class Lexer
     {
 
       // error("Could not locate namespace for prefix: "+prefix);
+      m_processor.error(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
+                 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
+
+
+      /***  Old code commented out 10-Jan-2001
       addToTokenQueue(prefix);
       addToTokenQueue(":");
 
@@ -666,6 +674,7 @@ class Lexer
 
       if (s.length() > 0)
         addToTokenQueue(s);
+      ***/
     }
 
     return -1;
