@@ -276,7 +276,7 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
     </tr>
     <tr>
        <td>Boolean</td>
-       <td>boolean, [java.lang.Boolean, java.lang.Object,] java.lang.String</td>
+       <td>boolean, java.lang.Boolean, java.lang.Object, java.lang.String</td>
     </tr>
     <tr>
        <td>Number</td>
@@ -284,7 +284,7 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
     </tr>
     <tr>
        <td>Result Tree Fragment</td>
-       <td>org.w3c.dom.traversal.NodeIterator, org.w3c.dom.DocumentFragment, org.w3c.dom.Node or its other subclasses, java.lang.string, java.lang.Object, char, [double, float, long, int, short, byte,] boolean</td>
+       <td>org.w3c.dom.traversal.NodeIterator, org.w3c.dom.NodeList, org.w3c.dom.Node or its subclasses, java.lang.String, java.lang.Object, char, [double, float, long, int, short, byte,] boolean</td>
     </tr>
     <tr>
        <td>Non-XSLT Type</td>

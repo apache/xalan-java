@@ -473,8 +473,8 @@ public class MethodResolver
   static ConversionInfo[] m_booleanConversions = {
     new ConversionInfo(Boolean.TYPE, 0),
     new ConversionInfo(java.lang.Boolean.class, 1),
-    new ConversionInfo(java.lang.Object.class, 1),
-    new ConversionInfo(java.lang.String.class, 2)
+    new ConversionInfo(java.lang.Object.class, 2),
+    new ConversionInfo(java.lang.String.class, 3)
   };
 
   /**
@@ -518,19 +518,18 @@ public class MethodResolver
    */
   static ConversionInfo[] m_rtfConversions = {
     new ConversionInfo(org.w3c.dom.traversal.NodeIterator.class, 0),
-    new ConversionInfo(org.w3c.dom.DocumentFragment.class, 1),
+    new ConversionInfo(org.w3c.dom.NodeList.class, 1),
     new ConversionInfo(org.w3c.dom.Node.class, 2),
-    new ConversionInfo(java.lang.String.class, 2+1),
-    new ConversionInfo(Boolean.TYPE, 3+1),
-    new ConversionInfo(java.lang.Object.class, 4+1),
-    new ConversionInfo(Character.TYPE, 5+1),
-    new ConversionInfo(Double.TYPE, 6+1),
-    new ConversionInfo(Float.TYPE, 6+1),
-    new ConversionInfo(Long.TYPE, 6+1),
-    new ConversionInfo(Integer.TYPE, 6+1),
-    new ConversionInfo(Short.TYPE, 6+1),
-    new ConversionInfo(Byte.TYPE, 6+1),
-    new ConversionInfo(Boolean.TYPE, 7+1)
+    new ConversionInfo(java.lang.String.class, 3),
+    new ConversionInfo(java.lang.Object.class, 5),
+    new ConversionInfo(Character.TYPE, 6),
+    new ConversionInfo(Double.TYPE, 7),
+    new ConversionInfo(Float.TYPE, 7),
+    new ConversionInfo(Long.TYPE, 7),
+    new ConversionInfo(Integer.TYPE, 7),
+    new ConversionInfo(Short.TYPE, 7),
+    new ConversionInfo(Byte.TYPE, 7),
+    new ConversionInfo(Boolean.TYPE, 8)
   };
   
   /**
@@ -542,7 +541,6 @@ public class MethodResolver
     new ConversionInfo(org.w3c.dom.NodeList.class, 1),
     new ConversionInfo(org.w3c.dom.Node.class, 2),
     new ConversionInfo(java.lang.String.class, 3),
-    new ConversionInfo(Boolean.TYPE, 4),
     new ConversionInfo(java.lang.Object.class, 5),
     new ConversionInfo(Character.TYPE, 6),
     new ConversionInfo(Double.TYPE, 7),
