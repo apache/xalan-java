@@ -297,15 +297,34 @@ public class TransformerImpl extends XMLFilterImpl
         ContentHandler inputHandler = getInputContentHandler();
         reader.setContentHandler( inputHandler );
         reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
-        
-        ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setInputSource(xmlSource);
-        
+                
         // Set the reader for cloning purposes.
         getXPathContext().setPrimaryReader(reader);
         
+        if(inputHandler instanceof org.apache.xalan.stree.SourceTreeHandler)
+        {
+          ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setInputSource(xmlSource);
+          Node doc 
+            = ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).getRoot();
+          if(null != doc)
+          {
+            getXPathContext().getSourceTreeManager().putDocumentInCache(doc, xmlSource);
+            m_xmlSource = xmlSource;
+            Thread t = new Thread(this);
+            t.start();
+            transformNode(doc);
+          }
+          
+        }
+        else
+        {
+          // ??
+          reader.parse( xmlSource );
+        }
+        
         // Kick off the parse.  When the ContentHandler gets 
         // the startDocument event, it will call transformNode( node ).
-        reader.parse( xmlSource );
+        // reader.parse( xmlSource );
         
         // This has to be done to catch exceptions thrown from 
         // the transform thread spawned by the STree handler.
@@ -1729,6 +1748,8 @@ public class TransformerImpl extends XMLFilterImpl
     return m_exceptionThrown;
   }
   
+  private InputSource m_xmlSource;
+  
   /**
    * Run the transform thread.
    */
@@ -1736,8 +1757,9 @@ public class TransformerImpl extends XMLFilterImpl
   {
     try
     {
-      Node n = ((SourceTreeHandler)getInputContentHandler()).getRoot();
-      transformNode(n);
+      // Node n = ((SourceTreeHandler)getInputContentHandler()).getRoot();
+      // transformNode(n);
+      getXPathContext().getPrimaryReader().parse(m_xmlSource);
     }
     catch(Exception e)
     {

@@ -32,6 +32,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     m_transformer = transformer;
     XPathContext xctxt = ((TransformerImpl)transformer).getXPathContext();
     xctxt.setDOMHelper(new StreeDOMHelper());
+    if (indexedLookup)
+      m_root = new IndexedDocImpl();
+    else
+      m_root = new DocumentImpl();      
   }
 
   /**
@@ -111,10 +115,12 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     
     if(m_useMultiThreading && (null != m_transformer))
     {
+      /*
       if(null != m_inputSource)
         m_transformer.getXPathContext().getSourceTreeManager().putDocumentInCache(m_root, m_inputSource);
       Thread t = new Thread(m_transformer);
       t.start();
+      */
       //m_transformer.transformNode(m_root);
     }
 
