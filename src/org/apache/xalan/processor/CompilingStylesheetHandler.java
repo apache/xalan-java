@@ -70,6 +70,7 @@ import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.extensions.ExtensionHandler;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerException;
@@ -1007,7 +1008,8 @@ public class CompilingStylesheetHandler
            
         // Now try to load it!
         try {
-            resolved=Class.forName(tClass.getName());
+	    // resolved=Class.forName(tClass.getName());
+            resolved=ExtensionHandler.getClassForName(tClass.getName());
             tClass.setRealClass(resolved);
         }
         catch(ClassNotFoundException e)

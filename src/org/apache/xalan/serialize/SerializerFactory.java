@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.xalan.templates.OutputProperties;
+import org.apache.xalan.extensions.ExtensionHandler;
 import org.apache.xml.utils.WrappedRuntimeException;
 
 /**
@@ -124,7 +125,9 @@ public abstract class SerializerFactory
             + OutputProperties.S_KEY_CONTENT_HANDLER + "' property!");
         }
 
-        cls = Class.forName(className);
+        //cls = Class.forName(className);
+	// XXX move to a "xalan/util" class
+	cls= ExtensionHandler.getClassForName( className );
 
         // _serializers.put(method, cls);
       }
