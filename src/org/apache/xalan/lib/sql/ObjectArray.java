@@ -53,6 +53,7 @@ public class ObjectArray
     m_minArraySize = size;
     m_currentArray = new _ObjectArray(m_minArraySize);
   }
+
   /**
    * @param idx Index of the Object in the Array
    * @return
@@ -80,6 +81,37 @@ public class ObjectArray
       return m_currentArray.objects[arrayOffset];
     }
   }
+
+  /**
+   * @param idx Index of the Object in the Array
+   * @param obj, The value to set in the Array
+   * @return
+   */
+  public void setAt( final int idx, final Object obj )
+  {
+    int arrayIndx = idx / m_minArraySize;
+    int arrayOffset = idx - (arrayIndx * m_minArraySize);
+
+    //
+    // If the array has been off loaded to the Vector Storage them
+    // grab it from there.
+    if (arrayIndx < m_Arrays.size())
+    {
+      _ObjectArray a = (_ObjectArray)m_Arrays.elementAt(arrayIndx);
+      a.objects[arrayOffset] = obj;
+    }
+    else
+    {
+      // We must be in the current array, so pull it from there
+
+      // %REVIEW% We may want to check to see if arrayIndx is only
+      // one freater that the m_Arrays.size(); This code is safe but
+      // will repete if the index is greater than the array size.
+      m_currentArray.objects[arrayOffset] = obj;
+    }
+  }
+
+
 
   /**
    * @param o Object to be appended to the Array
