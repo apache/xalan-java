@@ -278,6 +278,9 @@ public abstract class XObject extends Expression implements Serializable, Clonea
   /** Constant for GYEARMONTH object type */
   public static final int CLASS_GYEARMONTH = XType.GYEARMONTH;
 
+  /** Constant for Expanded QName object type */
+  public static final int CLASS_QNAME = XType.QNAME;
+
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
 

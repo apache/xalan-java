@@ -54,78 +54,130 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.objects;
 
 import org.apache.xpath.res.XPATHErrorResources;
-
-//import org.w3c.dom.Node;
-//import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-
-import java.util.Vector;
-
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XSequence;
-import org.apache.xpath.objects.XExpandedQName;
+import org.apache.xml.dtm.DTMIterator;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xpath.NodeSetDTM;
 
-/**
- * <meta name="usage" content="advanced"/>
- * Execute the xf:node-name function, returning a QName.
+/** XObject which represents an Expanded Qualified Name.
+ * 
+ * Note that at this writing, Expanded QNames have no lexical
+ * representation; they may be compared for equality, or they may
+ * have their values retreived via xf:get-*-from-QName(), but
+ * no other XPath/XSLT 2.0 operations are valid.
+ * 
+ * @author keshlam
+ * @since Aug 26, 2002
  */
-public class FuncNodeName extends FunctionDef1Arg
+public class XExpandedQName extends XObject
 {
+	QName m_qname;
+	
+	public XExpandedQName(QName qname)
+	{
+		m_qname=qname;
+	}
+	
+	public XExpandedQName(String namespace,String localname)
+	{
+		m_qname=new QName(namespace,localname);
+	}
+	
   /**
-   * Execute the xf:node-name function.  The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return An expanded QName containing the node's namespace URI and
-   * localname, or 
-   * XObject.EMPTY if the input wasn't a node that can have such
-   * a name.
-   * %BUG% We don't yet know what the behavior of an expanded QName
-   * should be, so we don't yet have a "proper" XObject for it.
+   * Tell what kind of class this is.
+   *
+   * @return CLASS_UNKNOWN
+   */
+  public int getType()
+  {
+    return CLASS_QNAME;
+  }
+  
+  /**
+   * Given a request type, return the equivalent string.
+   * For diagnostic purposes.
+   *
+   * @return type string "#EXPANDED_QNAME"
+   */
+  public String getTypeString()
+  {
+    return "#EXPANDED_QNAME";
+  }
+
+	public String getNamespace()
+	{
+		return m_qname.getNamespace();
+	}
+	
+	public String getLocalName()
+	{
+		return m_qname.getLocalName();
+	}
+
+	/**
+	 * @see org.apache.xpath.objects.XObject#object()
+	 */
+	public Object object()
+	{
+		return m_qname;
+	}
+
+  /**
+   * Cast result object to an XString. Always issues an error.
+   *
+   * @return null
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  public XMLString xstr()
   {
-    int context = getArg0AsNode(xctxt);
-    XExpandedQName qn=null;
-    
-    if(DTM.NULL != context)
-    {
-	    DTM dtm = xctxt.getDTM(context);
-    	switch (dtm.getNodeType(context))
-	    {
-    		case DTM.ATTRIBUTE_NODE:
-    		case DTM.ELEMENT_NODE:
-    			qn=new XExpandedQName(dtm.getNamespaceURI(context),
-    				dtm.getLocalName(context));
-    			break;
-    		default:
-    			// leave it unknown? SHOULD NOT ARISE!
-    			break;
-	    }
-    }
+  	try
+  	{
+	    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+    	      new Object[]{ getTypeString(), "XMLString" });
+  	}
+  	catch(Exception e)
+  	{
+  		// Necessary because XObject.xstr isn't normally expected
+  		// to throw exceptions.
+  		throw new org.apache.xml.utils.WrappedRuntimeException(e); 
+  	}
 
-	// %BUG% %REVIEW% THIS IS WRONG. We probably want a real XQName
-	// XObject to solve this properly. Problem is, "expanded QName"
-	// is underspecified in the spec; not knowing its intended lexical
-	// representation or behavior when manipulated keeps me from
-	// implementing it. (For example: If inserted as text, is it
-	// supposed to turn back into a Qualified Name? If so, using whose
-	// definition of the prefix?)
-	//
-	// For now, this compiles and passes the primitive smoketest...
-	// but it is *NOT* correct.
-
-	if(qn==null)
-		return XSequence.EMPTY;
-	else
-		return qn;
+    return null;
   }
+  /**
+   * Cast result object to a String. Always issues an error.
+   *
+   * @return null
+   */
+  public String str() 
+  {
+  	try
+  	{
+	    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+    	      new Object[]{ getTypeString(), "java.lang.String" });
+  	}
+  	catch(Exception e)
+  	{
+  		// Necessary because XObject.str isn't normally expected
+  		// to throw exceptions.
+  		throw new org.apache.xml.utils.WrappedRuntimeException(e); 
+  	}
+
+    return "";
+  }
+
+	/** For debugging purposes, NOT for expression evaluation)
+	 * */
+  public String toString()
+  {
+  	return m_qname.toString();
+  }	
 }
