@@ -280,6 +280,7 @@ public class ElemVariable extends ElemTemplateElement
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
+  
     XObject var = getValue(transformer, sourceNode);
 
     // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
@@ -307,7 +308,7 @@ public class ElemVariable extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
 
     xctxt.pushCurrentNode(sourceNode);
-
+ 
     try
     {
       if (null != m_selectPattern)
@@ -333,16 +334,24 @@ public class ElemVariable extends ElemTemplateElement
         // so they aren't popped off the stack on return from a template.
         int df;
 
-	    if(m_parentNode instanceof Stylesheet) // Global variable
-	        df = transformer.transformToGlobalRTF(this);
-	    else        
-	        df = transformer.transformToRTF(this);
+		// Bugzilla 7118: A variable set via an RTF may create local
+		// variables during that computation. To keep them from overwriting
+		// variables at this level, push a new variable stack.
+		try
+		{
+			xctxt.getVarStack().link(0);
+			if(m_parentNode instanceof Stylesheet) // Global variable
+				df = transformer.transformToGlobalRTF(this);
+			else
+				df = transformer.transformToRTF(this);
+    	}
+		finally{ xctxt.getVarStack().unlink(); }
 
         var = new XRTreeFrag(df, xctxt, this);
       }
     }
     finally
-    {
+    {      
       xctxt.popCurrentNode();
     }
 
