@@ -575,17 +575,13 @@ public abstract class AbstractTranslet implements Translet {
 		if (_version != null) {
 		    handler.setVersion(_version);
 		}
-		if (_indent) {
-		    handler.setIndent(_indent);
-		}
+		handler.setIndent(_indent);
 		if (_doctypeSystem != null) {
 		    handler.setDoctype(_doctypeSystem, _doctypePublic);
 		}
 	    }
 	    else if (_method.equals("html")) {
-		if (!_indent) {
-		    handler.setIndent(_indent);
-		}
+		handler.setIndent(_indent);
 		handler.setDoctype(_doctypeSystem, _doctypePublic);
 		if (_mediaType != null) {
 		    handler.setMediaType(_mediaType);
