@@ -40,7 +40,7 @@ Authors:
   Don Leslie <donald_leslie@lotus.com>
 
 Copyright:
-  Copyright (c) 1999-2001 The Apache Software Foundation.
+  Copyright (c) 1999-2003 The Apache Software Foundation.
    $Id$
 ==================================================================== -->
 
@@ -119,17 +119,6 @@ Copyright:
   <property name="dist.file" value="${name}-j_${version}"/><!-- GUMP: actual path/name of dist target .tar.gz/.zip-->
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   
-  <!-- Xalan-J1 compatability stuff.  -->
-  <!-- TO BE REMOVED: 'skipcompat' flag allows you to optionally 
-       skip 1.x compat layer; default to true, so we can  
-       switch to Xerces 2.x which compat won't compile with -->
-  <property name="skipcompat" value="true"/>
-  <property name="compat.jar" value="xalanj1compat.jar"/>
-  <property name="compat.src.dir" value="./compat_src"/>
-  <property name="build.compat.classes" value="${build.dir}/compat_classes"/>
-  <property name="build.compat.jar" value="${build.dir}/${compat.jar}"/>
-  <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>        
-
    <!-- xml-commons sources (for Javadoc) -->                                                                        
    <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-src.tar.gz"/>                                                                         
    <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-src.tar"/>
@@ -257,7 +246,7 @@ Copyright:
   <!-- Compile the Xalan interpreter source tree                           -->
   <!-- =================================================================== -->
   <target name="xalan-interpretive.compile" depends="xml.compile"
-    description="Compile the Xalan interpretive classes (skips 1.x compat and XSLTC)" >
+    description="Compile the Xalan interpretive classes (skips XSLTC)" >
     <echo message="Compiling Xalan interpretive classes" />
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
@@ -543,51 +532,6 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
-  <!-- Creates the Xalan-J1 compatability JAR: being removed               -->
-  <!-- =================================================================== -->
-  <target name="compat.jar" depends="jar"
-    description="UNSUPPORTED:Compile and jar Xalan-J 1.x backwards compat classes" 
-    unless="skipcompat" >
-    <echo message="UNSUPPORTED:Compile and jar just the Xalan-J 1 compability API"/>
-    <mkdir dir="${build.compat.classes}"/>
-    <javac srcdir="${compat.src.dir}" 
-           destdir="${build.compat.classes}"
-           includes="**/*.java"
-           debug="${build.debug}"
-           bootclasspathref="xslt.boot.class.path" >
-      <classpath refid="docs.class.path" />
-    </javac>           
-    <copy todir="${build.compat.classes}">
-          <fileset dir="${compat.src.dir}" includes="**/*.properties,**/*.res"/>
-    </copy>  
-    <jar jarfile="${build.compat.jar}" manifest="${manifest.mf}" basedir="${build.compat.classes}"/>
-  </target>
-  
-  <!-- =================================================================== -->
-  <!-- Creates the Xalan-J1 compatability javadoc: being removed           -->
-  <!-- =================================================================== -->
-  <target name="compat.javadocs" depends="jar"
-    description="UNSUPPORTED:Build javadocs for Xalan-J 1.x backwards compat classes" 
-    unless="skipcompat" >
-    <mkdir dir="${build.compat.apidocs}"/>
-    <javadoc
-         public="true"
-         sourcepath="${compat.src.dir}"
-         overview="${compat.src.dir}/compatOverview.html"         
-         packagenames="org.apache.xalan.xslt,org.apache.xalan.xpath,org.apache.xalan.xpath.xml"
-         author="true"
-         version="true"
-         use="true"
-         destdir="${build.compat.apidocs}"
-         windowtitle="${Name-in-docs} 1 Compatability" 
-         doctitle="${Name-in-docs} 1 Compatability"
-         bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
-      <classpath refid="docs.class.path" />
-    </javadoc>
-  </target>
-    
-
-  <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
   <target name="samples" depends="jar"
@@ -772,9 +716,13 @@ Copyright:
     </javadoc>
     
     <!-- remove the xml-commons sources -->
-    <delete dir="${src.dir}/javax/xml" />
-    <delete dir="${src.dir}/org/w3c/dom" />
-    <delete dir="${src.dir}/org/xml/sax" />
+    <delete dir="${src.dir}/javax" />
+    <delete includeEmptyDirs="true" quiet="true">
+      <fileset dir="${src.dir}/org/w3c">
+        <exclude name="dom/xpath/**"/>
+      </fileset>
+    </delete>    
+    <delete dir="${src.dir}/org/xml" />
     <delete dir="${src.dir}/org/apache/xmlcommons" />
     <delete file="${src.dir}/manifest.commons" />
   </target>
