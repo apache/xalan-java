@@ -208,19 +208,19 @@ if(runSerializer)
     Java code. That code is then compiled and instantiated
     to produce a new "equivalent" object, which can be used
     to replace the original Template.
-    
+    <p>
     Note that the compiled Template may have to reference
     children that we don't yet know how to compile. This
     is done by copying references to those kids into a vector,
     and having the generated code invoke them via offsets
     in that vector.
-    
+    <p>
     At this time, the compiler's rather simpleminded. No
     common subexpression extraction is performed, and no
     attempt is made to optimize across stylesheets. We're
     just flattening some of the code and reorganizing it
     into direct SAX invocations.
-    
+    <p>
     Literal result elements become SAX begin/endElement
     Context-insensitive attributes become literal assignment
         to the attribute trees.
@@ -869,6 +869,7 @@ if(runSerializer)
   // would be found in (possibly relative). However, "."
   // is treated as being found in itself rather than in "..".
   // TODO: ***** A more elegant version of this should be moved into org.apache.xalan.utils.synthetic.Class?
+  // TODO: Should we use a classloader rather than std. classpath?
   Class compileSyntheticClass(org.apache.xalan.utils.synthetic.Class tClass, String classLocation)
   {
     Class resolved=null;
@@ -914,76 +915,20 @@ if(runSerializer)
         return null;
     }
 
-    // Compile
+	// Try to pick up the same classpath we're executing under. That
+	// ought to include everything in Xalan and the parser...
     String classpath=System.getProperty ("java.class.path");
-    boolean debug=true;// *****
-    boolean generateDebug=true;// *****
-    //com.ibm.cs.util.JavaUtils.setDebug(generateDebug);
-
-    boolean compileOK=false;
-    boolean internalCompile=true;
 	
-    String javac=System.getProperty("xalan.javac","javac");
-    if("msvj_workaround".equals(javac))
-		internalCompile=false;
-	
-    if(internalCompile)
-    {
-        // ***** Part of the BSF package.
-        // This is actually supposed to go through the whole routine of trying
-        // to call the JDK directly (via the 1.2 options, then via undocumented
-        // 1.1 calls), then fall back on command line if necessary.
-        // But I'm having some odd problems with it right now under
-        // both VisualCafe and VisualJ++.
-        compileOK = JavaUtils.JDKcompile(filename,classpath);
-    }
-    else
-    {
-        try 
-        {
-            // ***** LAUNCH PROBLEMS
-            // Microsoft Visual J++ has a number of problems, from
-            // insisting on running the .exec() via a shell that has
-            // only the NT "system" environment, to truncating the
-            // parameters passed to their JView tool, to having trouble
-            // launghing the compiler directly. Hence the following
-            // ugliness with propertie and workarounds
-            String extraClassPath="";
-            if("msvj_workaround".equals(javac))
-            {
-                javac="cmd /c D:\\LOCAL\\APPS\\SUN\\JDK1.2.2\\BIN\\JAVAC.EXE";
-                extraClassPath=".;d:\\user\\apache\\xml-xalan\\xerces.jar;";
-            }
-            else
-            {
-                extraClassPath=System.getProperty("xalan.classpathprefix","");
-            }
-            String cmd=""
-                +" "+javac
-                +" -g" 
-                // +" -verbose"
-                +" -classpath "+extraClassPath+";"+classpath
-                +" "+filename
-                ;
-            Process p;
-            // Used this when trying to figure out why javac wouldn't run
-            if(false)
-            {
-                System.out.println(cmd);
-                p=Runtime.getRuntime().exec("cmd /c start /wait set path");
-                compileOK=(waitHardFor(p)==0);
-            }
-            p=Runtime.getRuntime().exec(cmd);
-            compileOK=(waitHardFor(p)==0);
-        }
-        catch(java.io.IOException e)
-        {
-            System.err.println("ERR: javac failed for "+
-                tClass.getName());
-            e.printStackTrace();
-        }
-    }
+	// TODO: These should probably be exposed as params or properties.
+    boolean debug=true;
+    boolean generateDebug=true;
 
+	// Run the compilation. Encapsulates the fallbacks and
+	// workarounds needed to achieve this in various environments.
+	JavaUtils.setDebug(generateDebug);
+    boolean compileOK=
+		JavaUtils.JDKcompile(filename,classpath);
+	
     if (compileOK)
     {
         if(debug)
@@ -1094,25 +1039,4 @@ if(runSerializer)
     return className;
   }
 
-  /** Subroutine: Like p.waitFor, but discards the InterruptedException
-   * and goes right back into a wait.
-   * @param Process p to be waited for
-   * @return the exitValue() of the process.
-   */
-  int waitHardFor(Process p)
-  {
-    boolean done=false;
-    while(!done)
-        try
-        {
-            p.waitFor();
-            done=true;
-        }
-        catch(InterruptedException e)
-        {
-            System.out.println("(Process wait interrupted, resuming)");
-        }
-     int ev=p.exitValue();  // Pause for debugging...
-     return ev;
-  }
 }

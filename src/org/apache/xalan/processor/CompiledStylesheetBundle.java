@@ -191,20 +191,26 @@ public class CompiledStylesheetBundle
 				int start=fullname.lastIndexOf(".");
 				String packagename=fullname.substring(0,start);
 				String shortname=fullname.substring(start+1);
-				// Where to copy the classfile from.
-				// TODO: Can we get the bytes direct from the Class object???
-				String source=
-					packageNameToDirectory(packagename,outdir,File.separator)
-					+shortname+".class";
 				// Where to write the class within the jar/zipfile's
 				// directory structure
 				String sink=
 					packageNameToDirectory(packagename,"","/")
 					+shortname+".class";
-			
  				ze=new java.util.zip.ZipEntry(sink);
 				zf.putNextEntry(ze);
+				
+				// Where to copy the classfile from.
+				// TODO: I'd really like a solution that reads the bytecodes
+				// from the existing Class, rather than going back to the
+				// .class file, to save disk activity and simplify this code.
+				// Haven't yet found a portable solution. Can't use getResource
+				// since it explicitly disallows classes; can't access the
+				// classloader since some environments return it as null..
+				String source=
+					packageNameToDirectory(packagename,outdir,File.separator)
+					+shortname+".class";
 				java.io.FileInputStream fis=new java.io.FileInputStream(source);
+
 				// Need to count how many bytes are transferred; the ZipEntry
 				// does _NOT_ set itself automatically.
 				int count=0;
@@ -287,7 +293,8 @@ public class CompiledStylesheetBundle
 		try
 		{
 			// Create the custom classloader which will consult the bundle
-			java.lang.ClassLoader cl=new ZipfileClassLoader(filename);
+			// TODO: Ponder whether to cache ZipfileClassLoader
+			java.lang.ClassLoader cl=new ZipfileClassLoader(filename,false);
 			// Read the .ser file from the bundle, via that classloader		
 			is=cl.getResourceAsStream("Stylesheet.ser");
 			// Read objects from the .ser, loading from bundle if necessary
@@ -356,18 +363,28 @@ public class CompiledStylesheetBundle
 	class ZipfileClassLoader extends ClassLoader 
 	{
 		java.util.zip.ZipFile zip=null;
+		java.util.Hashtable cache;
 	
 		/** Constructor.
 		 * TODO: Should we be able to load from stream as well as string?
 		 * That would require a preload solution or a random-access stream...
 		 * OK for our simple case where we know we're going to use everything
 		 * eventually, not so hot for others.
+		 * <p>
+		 * There's an open question here re caching. Fact is, the custom
+		 * classes in a compiled stylesheet are currently used once per 
+		 * load of that stylesheet, so the cache wouldn't buy us much. 
+		 * And if we cache, we also have to think about when to _release_ 
+		 * the cached objects. So I'm making this optional...
 		 * 
 		 * @param String filename Name of the zipfile to be read
+		 * @param boolean cached True iff you want classes cached for reuse
 		 */	
-		public ZipfileClassLoader(String filename) throws java.io.IOException
+		public ZipfileClassLoader(String filename, boolean cached) throws java.io.IOException
 		{
 			zip=new java.util.zip.ZipFile(filename); 
+			if(cached==true)
+				cache=new java.util.Hashtable();
 		}
 
 		/** Find a class within the Zipfile. Note that this does not _resolve_
@@ -404,7 +421,7 @@ public class CompiledStylesheetBundle
 		 * @return byte[] with full contents of "file".
 		 */
 		private byte[] loadClassData(String name) 
-		{
+		{		
 			int start=name.lastIndexOf(".");
 			String packagename=name.substring(0,start);
 			String shortname=name.substring(start+1);
@@ -449,9 +466,15 @@ public class CompiledStylesheetBundle
 		public synchronized Class loadClass(String name, boolean resolve) 
 		throws ClassNotFoundException
 		{
-			Class c=findClass(name);
-			if(c!=null && resolve==true)
-				resolveClass(c);
+			Class c=(cache==null)? null : (Class)cache.get(name);
+			if(c==null)
+			{
+				c=findClass(name);
+				if(c!=null && resolve==true)
+					resolveClass(c);
+				if(cache!=null)
+					cache.put(name,c);
+			}
 			return c;
 		}
 			
