@@ -311,9 +311,7 @@ final public class Transform {
 		boolean uri = false, debug = false;
 		boolean isJarFileSpecified = false;
 		String  jarFile = null;
-		boolean doDiag = false;
-		long start=0;
-		long stop=0;
+
 		// Parse options starting with '-'
 		for (i = 0; i < args.length && args[i].charAt(0) == '-'; i++) {
 		    if (args[i].equals("-u")) {
@@ -339,9 +337,6 @@ final public class Transform {
 			catch (NumberFormatException e) {
 			    // ignore
 			}
-		    }
-		    else if ("-DIAG".equalsIgnoreCase(args[i])){
-          		doDiag = true;
 		    }
 		    else {
 			printUsage();
@@ -372,21 +367,7 @@ final public class Transform {
 
 		if (i == args.length) {
 		    handler.setParameters(params);
-		    if (doDiag) {
-			start = System.currentTimeMillis();
-		    }
 		    handler.doTransform();
-		    if (doDiag) {
-			stop = System.currentTimeMillis();
-			long millisecondsDuration = stop - start;
-			String msg = "--------- Transform of "
-                                   + handler.getFileName() + " via "
-                                   + handler.getClassName() + " took "
-                                   + millisecondsDuration + " ms"; 
-			java.io.PrintWriter diagnosticsWriter =
-                                              new PrintWriter(System.err, true);
-			diagnosticsWriter.println(msg);
-   		    }
 		    if (_allowExit) System.exit(0);
 		}
 	    } else {
