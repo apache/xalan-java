@@ -288,7 +288,7 @@ public final class XSLTC {
 	    if (_className == null) {
 		if (name != null)
 		    setClassName(name);
-		else if (systemId != null)
+		else if ((systemId != null) && (!systemId.equals("")))
 		    setClassName(Util.baseName(systemId));
 		else
 		    setClassName("GregorSamsa"); // default translet name
