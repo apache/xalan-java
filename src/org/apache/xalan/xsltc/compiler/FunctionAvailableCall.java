@@ -194,7 +194,7 @@ final class FunctionAvailableCall extends FunctionCall {
 	}
 	final String className = getClassName(externalFunctName);
 
-        if (_namespaceOfFunct.startsWith(JAVA_EXT_PREFIX) ||
+        if (_namespaceOfFunct.startsWith(JAVA_EXT_XSLTC) ||
             _namespaceOfFunct.startsWith(JAVA_EXT_XALAN)) {
             try {
                 TransletLoader loader = new TransletLoader();
