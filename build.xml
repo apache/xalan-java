@@ -372,7 +372,7 @@ Copyright:
 
 
   <target name="xsltc.bundledjar" depends="xsltc.compile"
-     description="Jar xsltc, BCEL.jar, JLex.jar, java_cup.jar, runtime.jar">
+     description="Jar xsltc, BCEL,JLex,java_cup,runtime and jakarta regexp">
     <!-- make a tmp directory to work in -->
     <delete dir="${build.dir}/xsltctmp" includeEmptyDirs="true" quiet="true"/>
     <mkdir  dir="${build.dir}/xsltctmp" />
@@ -382,15 +382,43 @@ Copyright:
         basedir="${build.dir}/classes"
         includes="org/apache/xalan/xsltc/**" />
 
-    <!-- copy the xsltc 3rd party support jar files to tmp dist dir -->
+    <!-- copy the xsltc 3rd party support jar files and licenses 
+         to tmp dist dir 
+    -->
     <copy todir="${build.dir}/xsltctmp"
       file="${bin.dir}/BCEL.jar"/>
     <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/BCEL.LICENSE.txt"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/BCEL.README.txt"/>
+
+    <copy todir="${build.dir}/xsltctmp"
       file="${bin.dir}/JLex.jar"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/JLex.LICENSE.txt"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/JLex.README.txt"/>
+
     <copy todir="${build.dir}/xsltctmp"
       file="${bin.dir}/java_cup.jar"/>
     <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/java_cup.LICENSE.txt"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/java_cup.README.txt"/>
+
+    <copy todir="${build.dir}/xsltctmp"
       file="${bin.dir}/runtime.jar"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/runtime.LICENSE.txt"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/runtime.README.txt"/>
+
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/jakarta-regexp-1.2.jar"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/jakarta-regexp-1.2.LICENSE.txt"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/jakarta-regexp-1.2.README.txt"/>
 
     <!-- unjar all jars -->
     <unjar src="${build.dir}/xsltctmp/xsltc.jar"
@@ -402,6 +430,8 @@ Copyright:
     <unjar src="${build.dir}/xsltctmp/java_cup.jar"
            dest="${build.dir}/xsltctmp" />
     <unjar src="${build.dir}/xsltctmp/runtime.jar"
+           dest="${build.dir}/xsltctmp" />
+    <unjar src="${build.dir}/xsltctmp/jakarta-regexp-1.2.jar"
            dest="${build.dir}/xsltctmp" />
 
     <!-- remove jar files -->
