@@ -134,8 +134,7 @@ public class TraceManager
     if (hasTraceListeners())
     {
       int sourceNode = m_transformer.getXPathContext().getCurrentNode();
-      Node source = m_transformer.getXPathContext().getDTM(
-        sourceNode).getNode(sourceNode);
+      Node source = getDOMNodeFromDTM(sourceNode);
 
       fireTraceEvent(new TracerEvent(m_transformer, source, 
                      m_transformer.getMode(),  /*sourceNode, mode,*/
@@ -157,8 +156,7 @@ public class TraceManager
     if (hasTraceListeners())
     {
       int sourceNode = m_transformer.getXPathContext().getCurrentNode();
-      Node source = m_transformer.getXPathContext().getDTM(
-        sourceNode).getNode(sourceNode);
+      Node source = getDOMNodeFromDTM(sourceNode);
 
       fireTraceEndEvent(new TracerEvent(m_transformer, source,
                      m_transformer.getMode(),  /*sourceNode, mode,*/
@@ -231,8 +229,7 @@ public class TraceManager
 
     if (hasTraceListeners())
     {
-      Node source = m_transformer.getXPathContext().getDTM(
-        sourceNode).getNode(sourceNode);
+      Node source = getDOMNodeFromDTM(sourceNode);
         
       fireSelectedEvent(new SelectionEvent(m_transformer, source, styleNode,
                                            attributeName, xpath, selection));
@@ -258,8 +255,7 @@ public class TraceManager
 
     if (hasTraceListeners())
     {
-      Node source = m_transformer.getXPathContext().getDTM(
-        sourceNode).getNode(sourceNode);
+      Node source = getDOMNodeFromDTM(sourceNode);
         
       fireSelectedEndEvent(new EndSelectionEvent(m_transformer, source, styleNode,
                                            attributeName, xpath, selection));
@@ -419,5 +415,15 @@ public class TraceManager
         }
       }
     }
+  }
+  
+  /**
+   * Get the DOM Node of the current XPath context, which is possibly null.
+   * @param sourceNode the handle on the node used by a DTM.
+   */
+  private Node getDOMNodeFromDTM(int sourceNode) {
+    org.apache.xml.dtm.DTM dtm = m_transformer.getXPathContext().getDTM(sourceNode);
+    final Node source = (dtm == null) ? null : dtm.getNode(sourceNode);
+    return source;
   }
 }
