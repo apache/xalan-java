@@ -106,11 +106,11 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   // static fields
 
   private static final String BSF_MANAGER = "com.ibm.bsf.BSFManager";
-  private static final Class managerClass;
-  private static final Method mgrLoadScriptingEngine;
+  private static Class managerClass;
+  private static Method mgrLoadScriptingEngine;
   private static final String BSF_ENGINE = "com.ibm.bsf.BSFEngine";
-  private static final Method engineExec;             // Engine call to "compile" scripts
-  private static final Method engineCall;             // Engine call to invoke scripts
+  private static Method engineExec;             // Engine call to "compile" scripts
+  private static Method engineCall;             // Engine call to invoke scripts
   private static final Integer NEG1INT = new Integer(-1);
 
   static {
