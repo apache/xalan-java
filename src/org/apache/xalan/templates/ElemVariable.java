@@ -293,4 +293,15 @@ public class ElemVariable extends ElemTemplateElement
 
     return var;
   }
+
+  /**
+   * This function is called during recomposition to
+   * control how this element is composed.
+   * @param root The root stylesheet for this transformation.
+   */
+  public void recompose(StylesheetRoot root)
+  {
+    root.recomposeVariables(this);
+  }
+
 }

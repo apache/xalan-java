@@ -101,7 +101,7 @@ public class KeyManager
     ElemTemplateElement template = (ElemTemplateElement) nscontext;  // yuck -sb
 
     if ((null != template)
-            && null != template.getStylesheetComposed().getKeysComposed())
+            && null != template.getStylesheetRoot().getKeysComposed())
     {
       boolean foundDoc = false;
 
@@ -135,7 +135,7 @@ public class KeyManager
       {
         KeyTable kt =
           new KeyTable(doc, nscontext, name,
-                       template.getStylesheetComposed().getKeysComposed(),
+                       template.getStylesheetRoot().getKeysComposed(),
                        xctxt);
 
         m_key_tables.addElement(kt);

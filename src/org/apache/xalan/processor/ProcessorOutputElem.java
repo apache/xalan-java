@@ -96,7 +96,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
-    OutputFormatExtended ofe = new OutputFormatExtended();
+    OutputFormatExtended ofe = new OutputFormatExtended(handler.nextUid());
 
     setPropertiesFromAttributes(handler, rawName, attributes, ofe);
     handler.getStylesheet().setOutput(ofe);

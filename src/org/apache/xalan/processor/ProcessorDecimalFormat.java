@@ -99,7 +99,7 @@ class ProcessorDecimalFormat extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
-    DecimalFormatProperties dfp = new DecimalFormatProperties();
+    DecimalFormatProperties dfp = new DecimalFormatProperties(handler.nextUid());
 
     setPropertiesFromAttributes(handler, rawName, attributes, dfp);
     handler.getStylesheet().setDecimalFormat(dfp);

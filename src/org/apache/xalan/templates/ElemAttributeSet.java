@@ -202,4 +202,15 @@ public class ElemAttributeSet extends ElemUse
 
     return super.appendChild(newChild);
   }
+
+  /**
+   * This function is called during recomposition to
+   * control how this element is composed.
+   * @param root The root stylesheet for this transformation.
+   */
+  public void recompose(StylesheetRoot root)
+  {
+    root.recomposeAttributeSets(this);
+  }
+
 }

@@ -99,7 +99,7 @@ class ProcessorNamespaceAlias extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
-    NamespaceAlias na = new NamespaceAlias();
+    NamespaceAlias na = new NamespaceAlias(handler.nextUid());
 
     setPropertiesFromAttributes(handler, rawName, attributes, na);
     handler.getStylesheet().setNamespaceAlias(na);

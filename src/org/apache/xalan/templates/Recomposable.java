@@ -56,49 +56,37 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xml.utils.QName;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-
-import javax.xml.transform.TransformerException;
-
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class WhitespaceList <needs-comment/>
+ * This interface defines a recomposable stylesheet element.  The interface requires
+ * the compareTo() method.
+ * When we migrate to Java2, ththe compareTo method should be removed this interface
+ * should also extend java.lang.Comparable.
  */
-public class WhitespaceList extends TemplateList
+
+interface Recomposable extends RecomposableBase
 {
 
   /**
-   * Construct a TemplateList object.
-   *
-   * NEEDSDOC @param stylesheet
-   */
-  WhitespaceList(Stylesheet stylesheet)
-  {
-    super(stylesheet);
-  }
+   *  Returns the composed stylesheet to which this recomposable element belongs.
+   */ 
+  public StylesheetComposed getStylesheetComposed();
 
   /**
-   * For derived classes to override which method gets accesed to
-   * get the imported template.
-   *
-   * NEEDSDOC @param imported
-   * NEEDSDOC @param support
-   * NEEDSDOC @param targetNode
-   * NEEDSDOC @param mode
-   * NEEDSDOC @param quietConflictWarnings
-   *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws TransformerException
+   *  Returns the relative document order for this recomposable element.
+   */ 
+  public int getUid();
+
+  /**
+   * Compares this object with the specified object for precedence order.
+   * The order is determined by the getImportCountComposed() of the containing
+   * composed stylesheet and the getUid() of this element.
+   * Returns a negative integer, zero, or a positive integer as this
+   * object is less than, equal to, or greater than the specified object.
+   * @param o The object to be compared to this object
+   * @returns a negative integer, zero, or a positive integer as this object is
+   *          less than, equal to, or greater than the specified object.
+   * @throws ClassCastException if the specified object's
+   *         type prevents it from being compared to this Object.
    */
-  protected ElemTemplate getTemplate(
-          StylesheetComposed imported, XPathContext support, Node targetNode, QName mode, boolean quietConflictWarnings)
-            throws TransformerException
-  {
-    return imported.getWhiteSpaceInfo(support, (Element) targetNode);
-  }
+  public int compareTo(Object o) throws ClassCastException;
 }

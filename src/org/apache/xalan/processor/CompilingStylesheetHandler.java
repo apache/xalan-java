@@ -156,7 +156,7 @@ public class CompilingStylesheetHandler
           int nIncludes = sheet.getIncludeCountComposed();
           for(int k = nIncludes-1; k >= -1; k--)
           {
-            Stylesheet included = (-1 == k) ? sheet : sheet.getIncludeComposed(k);
+            Stylesheet included = sheet.getIncludeComposed(k);
             int n = included.getTemplateCount();
             for(int i = 0; i < n; i++)
             {
@@ -545,7 +545,7 @@ public class CompilingStylesheetHandler
     org.apache.xml.utils.QName[] attributeSetsNames=((org.apache.xalan.templates.ElemUse)ete).getUseAttributeSets();
     if(null != attributeSetsNames)
     {
-        org.apache.xalan.templates.StylesheetComposed stylesheet=ete.getStylesheetComposed();
+        org.apache.xalan.templates.StylesheetRoot stylesheet=ete.getStylesheetRoot();
         int nNames = attributeSetsNames.length;
         for(int i = 0; i < nNames; i++)
         {

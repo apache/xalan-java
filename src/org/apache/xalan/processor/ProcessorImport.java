@@ -86,53 +86,23 @@ class ProcessorImport extends ProcessorInclude
 {
 
   /**
-   * Receive notification of the start of an xsl:import element.
+   * Get the stylesheet type associated with an imported stylesheet
    *
-   * @param handler The calling StylesheetHandler/TemplatesBuilder.
-   * @param uri The Namespace URI, or the empty string if the
-   *        element has no Namespace URI or if Namespace
-   *        processing is not being performed.
-   * @param localName The local name (without prefix), or the
-   *        empty string if Namespace processing is not being
-   *        performed.
-   * @param rawName The raw XML 1.0 name (with prefix), or the
-   *        empty string if raw names are not available.
-   * @param attributes The attributes attached to the element.  If
-   *        there are no attributes, it shall be an empty
-   *        Attributes object.
+   * @return the type of the stylesheet
    */
-  public void startElement(
-          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws org.xml.sax.SAXException
+  protected int getStylesheetType()
   {
-
-    setPropertiesFromAttributes(handler, rawName, attributes, this);
-
-    String hrefUrl = getHref();
-
-    if (handler.importStackContains(hrefUrl))
-    {
-      throw new org.xml.sax.SAXException(
-        XSLMessages.createMessage(
-          XSLTErrorResources.ER_IMPORTING_ITSELF, new Object[]{ hrefUrl }));  //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
-    }
-
-    handler.pushImportURL(hrefUrl);
-
-    int savedStylesheetType = handler.getStylesheetType();
-
-    handler.setStylesheetType(StylesheetHandler.STYPE_IMPORT);
-    handler.pushNewNamespaceSupport();
-
-    try
-    {
-      parse(handler, uri, localName, rawName, attributes);
-    }
-    finally
-    {
-      handler.setStylesheetType(savedStylesheetType);
-      handler.popImportURL();
-      handler.popNamespaceSupport();
-    }
+    return StylesheetHandler.STYPE_IMPORT;
   }
+
+  /**
+   * Get the error number associated with this type of stylesheet importing itself
+   *
+   * @return the appropriate error number
+   */
+  protected int getStylesheetInclErr()
+  {
+    return XSLTErrorResources.ER_IMPORTING_ITSELF;
+  }
+
 }

@@ -72,7 +72,7 @@ import org.apache.xml.utils.QName;
  * stylesheet.
  */
 public class OutputFormatExtended extends OutputFormat
-	implements java.io.Serializable
+	implements java.io.Serializable, RecomposableBase
 {
 
   // Flag to tell us when to record that an attribute 
@@ -238,7 +238,7 @@ public class OutputFormatExtended extends OutputFormat
   /**
    * Constructs a new output format with the default values.
    */
-  public OutputFormatExtended()
+  public OutputFormatExtended(int docOrderNumber)
   {
 
     super();
@@ -246,6 +246,23 @@ public class OutputFormatExtended extends OutputFormat
     m_shouldRecordHasBeenSet = true;
 
     setPreserveSpace(true);
+
+    m_docOrderNumber = docOrderNumber;
+  }
+
+  /**
+   *  The document order number, analogous to the same field in an ElemTemplateElement.
+   */
+  protected int m_docOrderNumber;
+
+  /**
+   * Get the UID (document order index).
+   *
+   * @return Index of this child
+   */
+  public int getUid()
+  {
+    return m_docOrderNumber;
   }
 
   /**
@@ -625,4 +642,13 @@ public class OutputFormatExtended extends OutputFormat
 
     super.setNonEscapingElements(nonEscapingElements);
   }
+
+  /**
+   * This function is called to recompose all of the output format extended elements.
+   */
+  public void recompose(StylesheetRoot root)
+  {
+    root.recomposeOutput(this);
+  }
+
 }

@@ -62,6 +62,9 @@ import java.util.*;
 
 import java.net.MalformedURLException;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 import java.io.*;
 
 import org.xml.sax.*;
@@ -228,7 +231,7 @@ public class StylesheetRoot extends StylesheetComposed
   public OutputFormat getOutputFormat()
   {
 
-    OutputFormatExtended cloned = new OutputFormatExtended();
+    OutputFormatExtended cloned = new OutputFormatExtended(0);
 
     if (m_outputFormatComposed instanceof OutputFormatExtended)
     {
@@ -247,53 +250,88 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Recompose the values of all "composed" properties, meaning
    * properties that need to be combined or calculated from
-   * the combination of imported and included stylesheets.
+   * the combination of imported and included stylesheets.  This
+   * method determines the proper import precedence of all imported
+   * stylesheets.  It then iterates through all of the elements and 
+   * properties in the proper order and triggers the individual recompose
+   * methods.
    *
    * @throws TransformerException
    */
   public void recompose() throws TransformerException
   {
 
-    recomposeImports();
-    recomposeOutput();
+    // First, we build the global import tree.
+
+    if (null == m_globalImportList)
+    {
+
+      Vector importList = new Vector();
+
+      addImports(this, true, importList);
+
+      // Now we create an array and reverse the order of the importList vector.
+      // We built the importList vector backwards so that we could use addElement
+      // to append to the end of the vector instead of constantly pushing new
+      // stylesheets onto the front of the vector and having to shift the rest
+      // of the vector each time.
+
+      m_globalImportList = new StylesheetComposed[importList.size()];
+
+      for (int i = importList.size() - 1, j= 0; i >= 0; i--)
+        m_globalImportList[j++] = (StylesheetComposed) importList.elementAt(i);
+    }
+
+    // Now we make a Vector that is going to hold all of the recomposable elements
+
+    Vector recomposableElements = new Vector();
+
+    // Next, we walk the import tree and add all of the recomposable elements to the vector.
 
     int n = getGlobalImportCount();
 
     for (int i = 0; i < n; i++)
     {
-      StylesheetComposed sheet = getGlobalImport(i);
-
-      if (sheet != this)  // already done
-      {
-        sheet.recomposeImports();
-        sheet.recomposeIncludes(sheet);
-        sheet.recomposeAttributeSets();
-        sheet.recomposeDecimalFormats();
-        sheet.recomposeKeys();
-        sheet.recomposeNamespaceAliases();
-        sheet.recomposeTemplates();
-        sheet.recomposeVariables();
-        sheet.recomposeWhiteSpaceInfo();
-      }
+      StylesheetComposed imported = getGlobalImport(i);
+      imported.recompose(recomposableElements);
     }
 
-    recomposeIncludes(this);
-    recomposeAttributeSets();
-    recomposeDecimalFormats();
-    recomposeKeys();
-    recomposeNamespaceAliases();
-    recomposeTemplates();
-    recomposeVariables();
-    recomposeWhiteSpaceInfo();
+    // We sort the elements into ascending order.
 
-    // Now call the compose() method on every element.
+    QuickSort2(recomposableElements, 0, recomposableElements.size() - 1);
+
+    // We set up the global variables that will hold the recomposed information.
+
+    m_outputFormatComposed = new OutputFormatExtended(0);
+    m_attrSets = new Hashtable();
+    m_decimalFormatSymbols = new Hashtable();
+    m_keyDecls = new Vector();
+    m_namespaceAliasComposed = new Hashtable();
+    m_templateList = new TemplateList();
+    m_variables = new Vector();
+
+    // Now we sequence through the sorted elements, 
+    // calling the recompose() function on each one.  This will call back into the
+    // appropriate routine here to actually do the recomposition.
+    // Note that we're going backwards, encountering the highest precedence items first.
+
+    for (int i = recomposableElements.size() - 1; i >= 0; i--)
+      ((Recomposable) recomposableElements.elementAt(i)).recompose(this);
+
+    // Need final composition of TemplateList.  This adds the wild cards onto the chains.
+
+    m_templateList.compose();
+
+    // Now call the compose() method on every element to give it a chance to adjust
+    // based on composed values.
+
+    n = getGlobalImportCount();
 
     for (int i = 0; i < n; i++)
     {
       StylesheetComposed imported = this.getGlobalImport(i);
-      composeTemplates(imported);
       int includedCount = imported.getIncludeCountComposed();
-      for (int j = 0; j < includedCount; j++)
+      for (int j = -1; j < includedCount; j++)
       {
         Stylesheet included = imported.getIncludeComposed(j);
         composeTemplates(included);
@@ -319,164 +357,63 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
-   * This will be set up with the default values, and then the values
-   * will be set as stylesheets are encountered.
+   * The combined list of imports.  The stylesheet with the highest
+   * import precedence will be at element 0.  The one with the lowest
+   * import precedence will be at element length - 1.
    */
-  private OutputFormat m_outputFormatComposed;
+  private transient StylesheetComposed[] m_globalImportList;
 
   /**
-   * Get the combined "xsl:output" property with the properties
-   * combined from the included stylesheets.  If a xsl:output
-   * is not declared in this stylesheet or an included stylesheet,
-   * look in the imports.
-   * Please note that this returns a reference to the OutputFormat
-   * object, not a cloned object, like getOutputFormat does.
-   * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public OutputFormat getOutputComposed()
-  {
-
-    // System.out.println("getOutputComposed.getIndent: "+m_outputFormatComposed.getIndent());
-    // System.out.println("getOutputComposed.getIndenting: "+m_outputFormatComposed.getIndenting());
-    return m_outputFormatComposed;
-  }
-
-  /**
-   * Recompose the output format object from the included elements.
-   */
-  public void recomposeOutput()
-  {
-
-    // System.out.println("Recomposing output...");
-    m_outputFormatComposed = new OutputFormatExtended();
-
-    m_outputFormatComposed.setPreserveSpace(true);
-    recomposeOutput(this);
-  }
-
-  /**
-   * Recompose the output format object from the included elements.
-   *
-   * NEEDSDOC @param stylesheet
-   */
-  private void recomposeOutput(Stylesheet stylesheet)
-  {
-
-    // Get the direct imports of this sheet.
-    int n = stylesheet.getImportCount();
-
-    if (n > 0)
-    {
-      for (int i = 0; i < n; i++)
-      {
-        Stylesheet imported = stylesheet.getImport(i);
-
-        recomposeOutput(imported);
-      }
-    }
-
-    n = stylesheet.getIncludeCount();
-
-    if (n > 0)
-    {
-      for (int i = 0; i < n; i++)
-      {
-        Stylesheet included = stylesheet.getInclude(i);
-
-        recomposeOutput(included);
-      }
-    }
-
-    OutputFormatExtended of = stylesheet.getOutput();
-
-    if (null != of)
-    {
-      ((OutputFormatExtended) m_outputFormatComposed).copyFrom(of);
-    }
-  }
-
-  /** NEEDSDOC Field m_outputMethodSet          */
-  private boolean m_outputMethodSet = false;
-
-  /**
-   * <meta name="usage" content="internal"/>
-   * Find out if an output method has been set by the user.
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public boolean isOutputMethodSet()
-  {
-    return m_outputMethodSet;
-  }
-
-  /**
-   * The combined list of imports.
-   */
-  private transient Vector m_globalImportList;
-
-  /**
-   * Add the imports in the given sheet to the m_globalImportList
-   * list.  The will be added from highest import precedence to
-   * least import precidence.
-   *
-   * @param stylesheet Stylesheet to examine for imports.
-   */
-  protected void addImports(Stylesheet stylesheet, boolean addToList)
-  {
-
-    // Get the direct imports of this sheet.
-    int n = stylesheet.getImportCount();
-
-    if (n > 0)
-    {
-      for (int i = 0; i < n; i++)
-      {
-        Stylesheet imported = stylesheet.getImport(i);
-
-        addImports(imported, true);
-      }
-    }
-
-    n = stylesheet.getIncludeCount();
-
-    if (n > 0)
-    {
-      for (int i = 0; i < n; i++)
-      {
-        Stylesheet included = stylesheet.getInclude(i);
-
-        addImports(included, false);
-      }
-    }
-
-    if (addToList)
-      m_globalImportList.insertElementAt(stylesheet, 0);
-
-  }
-
-  /**
-   * Recompose the value of the composed import list. This
-   * means any stylesheets of lesser import precidence.
+   * Add the imports in the given sheet to the working importList vector.
+   * The will be added from highest import precedence to
+   * least import precedence.  This is a post-order traversal of the
+   * import tree as described in <a href="http://www.w3.org/TR/xslt.html#import">the
+   * XSLT Recommendation</a>.
    * <p>For example, suppose</p>
    * <p>stylesheet A imports stylesheets B and C in that order;</p>
    * <p>stylesheet B imports stylesheet D;</p>
    * <p>stylesheet C imports stylesheet E.</p>
    * <p>Then the order of import precedence (highest first) is
    * A, C, E, B, D.</p>
+   *
+   * @param stylesheet Stylesheet to examine for imports.
+   * @param addToList  <code>true</code> if this template should be added to the import list
+   * @param importList The working import list.  Templates are added here in the reverse
+   *        order of priority.  When we're all done, we'll reverse this to the correct
+   *        priority in an array.
    */
-  protected void recomposeImports()
+  protected void addImports(Stylesheet stylesheet, boolean addToList, Vector importList)
   {
 
-    if (null == m_globalImportList)
-    {
-      m_globalImportList = new Vector();
+    // Get the direct imports of this sheet.
 
-      addImports(this, true);
+    int n = stylesheet.getImportCount();
+
+    if (n > 0)
+    {
+      for (int i = 0; i < n; i++)
+      {
+        Stylesheet imported = stylesheet.getImport(i);
+
+        addImports(imported, true, importList);
+      }
     }
 
-    super.recomposeImports();
+    n = stylesheet.getIncludeCount();
+
+    if (n > 0)
+    {
+      for (int i = 0; i < n; i++)
+      {
+        Stylesheet included = stylesheet.getInclude(i);
+
+        addImports(included, false, importList);
+      }
+    }
+
+    if (addToList)
+      importList.addElement(stylesheet);
+
   }
 
   /**
@@ -489,9 +426,7 @@ public class StylesheetRoot extends StylesheetComposed
    */
   public StylesheetComposed getGlobalImport(int i)
   {
-    return (i==0)
-		? this
-		  : (StylesheetComposed) m_globalImportList.elementAt(i);
+    return m_globalImportList[i];
   }
 
   /**
@@ -504,7 +439,7 @@ public class StylesheetRoot extends StylesheetComposed
   public int getGlobalImportCount()
   {
 	  return (m_globalImportList!=null)
-			? m_globalImportList.size() 
+			? m_globalImportList.length 
 			  : 1;
   }
 
@@ -531,6 +466,383 @@ public class StylesheetRoot extends StylesheetComposed
     }
 
     return -1;
+  }
+
+  /**
+   * This will be set up with the default values, and then the values
+   * will be set as stylesheets are encountered.
+   */
+  private OutputFormatExtended m_outputFormatComposed;
+
+  /**
+   * Recompose the output format object from the included elements.
+   *
+   * NEEDSDOC @param stylesheet
+   */
+  void recomposeOutput(OutputFormatExtended of)
+  {
+    m_outputFormatComposed.copyFrom(of);
+  }
+
+  /**
+   * Get the combined "xsl:output" property with the properties
+   * combined from the included stylesheets.  If a xsl:output
+   * is not declared in this stylesheet or an included stylesheet,
+   * look in the imports.
+   * Please note that this returns a reference to the OutputFormat
+   * object, not a cloned object, like getOutputFormat does.
+   * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public OutputFormat getOutputComposed()
+  {
+
+    // System.out.println("getOutputComposed.getIndent: "+m_outputFormatComposed.getIndent());
+    // System.out.println("getOutputComposed.getIndenting: "+m_outputFormatComposed.getIndenting());
+    return m_outputFormatComposed;
+  }
+
+  /** NEEDSDOC Field m_outputMethodSet          */
+  private boolean m_outputMethodSet = false;
+
+  /**
+   * <meta name="usage" content="internal"/>
+   * Find out if an output method has been set by the user.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean isOutputMethodSet()
+  {
+    return m_outputMethodSet;
+  }
+
+  /**
+   * Composed set of all included and imported attribute set properties.
+   * Each entry is a vector of ElemAttributeSet objects.
+   */
+  private transient Hashtable m_attrSets;
+
+  /**
+   * Recompose the attribute-set declarations.
+   *
+   * @param attrSet An attribute-set to add to the hashtable of attribute sets.
+   */
+  void recomposeAttributeSets(ElemAttributeSet attrSet)
+  {
+    Vector attrSetList = (Vector) m_attrSets.get(attrSet.getName());
+
+    if (null == attrSetList)
+    {
+      attrSetList = new Vector();
+
+      m_attrSets.put(attrSet.getName(), attrSetList);
+    }
+
+    attrSetList.addElement(attrSet);
+  }
+
+  /**
+   * Get a list "xsl:attribute-set" properties that match the qname.
+   * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
+   */
+  public Vector getAttributeSetComposed(QName name)
+          throws ArrayIndexOutOfBoundsException
+  {
+    return (Vector) m_attrSets.get(name);
+  }
+
+  /**
+   * Table of DecimalFormatSymbols, keyed by QName.
+   */
+  private transient Hashtable m_decimalFormatSymbols;
+
+  /**
+   * Recompose the decimal-format declarations.
+   *
+   * @param dfp A DecimalFormatProperties to add to the hashtable of decimal formats.
+   */
+  void recomposeDecimalFormats(DecimalFormatProperties dfp)
+  {
+    DecimalFormatSymbols oldDfs =
+                  (DecimalFormatSymbols) m_decimalFormatSymbols.get(dfp.getName());
+    if (null == oldDfs)
+    {
+      m_decimalFormatSymbols.put(dfp.getName(), dfp.getDecimalFormatSymbols());
+    }
+    else if (!dfp.getDecimalFormatSymbols().equals(oldDfs))
+    {
+      String themsg;
+      if (dfp.getName().equals(new QName("")))
+      {
+        // "Only one default xsl:decimal-format declaration is allowed."
+        themsg = XSLMessages.createWarning(
+                          XSLTErrorResources.WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED,
+                          new Object[0]);
+      }
+      else
+      {
+        // "xsl:decimal-format names must be unique. Name {0} has been duplicated."
+        themsg = XSLMessages.createWarning(
+                          XSLTErrorResources.WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE,
+                          new Object[] {dfp.getName()});
+      }
+
+      throw new RuntimeException(themsg);   // Should we throw TransformerException instead?
+    }
+
+  }
+
+  /**
+   * Given a valid element decimal-format name, return the
+   * decimalFormatSymbols with that name.
+   * <p>It is an error to declare either the default decimal-format or
+   * a decimal-format with a given name more than once (even with
+   * different import precedence), unless it is declared every
+   * time with the same value for all attributes (taking into
+   * account any default values).</p>
+   * <p>Which means, as far as I can tell, the decimal-format
+   * properties are not additive.</p>
+   *
+   * NEEDSDOC @param name
+   * @return null if name is not found.
+   */
+  public DecimalFormatSymbols getDecimalFormatComposed(QName name)
+  {
+    return (DecimalFormatSymbols) m_decimalFormatSymbols.get(name);
+  }
+
+  /**
+   * A list of all key declarations visible from this stylesheet and all
+   * lesser stylesheets.
+   */
+  private transient Vector m_keyDecls;
+
+  /**
+   * Recompose the key declarations.
+   *
+   * @param keyDecl A KeyDeclaration to be added to the vector of key declarations.
+   */
+  void recomposeKeys(KeyDeclaration keyDecl)
+  {
+    m_keyDecls.addElement(keyDecl);
+  }
+
+  /**
+   * Get the composed "xsl:key" properties.
+   * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Vector getKeysComposed()
+  {
+    return m_keyDecls;
+  }
+
+  /**
+   * Composed set of all namespace aliases.
+   */
+  private transient Hashtable m_namespaceAliasComposed;
+
+  /**
+   * Recompose the namespace-alias declarations.
+   *
+   * @param nsAlias A NamespaceAlias object to add to the hashtable of namespace aliases.
+   */
+  void recomposeNamespaceAliases(NamespaceAlias nsAlias)
+  {
+    m_namespaceAliasComposed.put(nsAlias.getStylesheetPrefix(),
+                                 nsAlias.getResultPrefix());
+  }
+
+  /**
+   * Get the "xsl:namespace-alias" property.
+   * Return the alias namespace uri for a given namespace uri if one is found.
+   * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param uri
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getNamespaceAliasComposed(String uri)
+  {
+    return (String) m_namespaceAliasComposed.get(uri);
+  }
+
+  /**
+   * The "xsl:template" properties.
+   */
+  private transient TemplateList m_templateList;
+
+  /**
+   * Recompose the template declarations.
+   *
+   * @param template An ElemTemplate object to add to the template list.
+   */
+  void recomposeTemplates(ElemTemplate template)
+  {
+    m_templateList.setTemplate(template);
+  }
+
+  /**
+   * NEEDSDOC Method getTemplateListComposed 
+   *
+   *
+   * NEEDSDOC (getTemplateListComposed) @return
+   */
+  public final TemplateList getTemplateListComposed()
+  {
+    return m_templateList;
+  }
+
+  /**
+   * Get an "xsl:template" property by node match. This looks in the imports as
+   * well as this stylesheet.
+   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   *
+   * NEEDSDOC @param support
+   * NEEDSDOC @param targetNode
+   * NEEDSDOC @param mode
+   * NEEDSDOC @param quietConflictWarnings
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws TransformerException
+   */
+  public ElemTemplate getTemplateComposed(XPathContext support,
+                                          Node targetNode,
+                                          QName mode,
+                                          int maxImportLevel,
+                                          boolean quietConflictWarnings)
+            throws TransformerException
+  {
+    return m_templateList.getTemplate(support, targetNode, mode, maxImportLevel,
+                                                                quietConflictWarnings);
+  }
+
+  /**
+   * Get an "xsl:template" property. This looks in the imports as
+   * well as this stylesheet.
+   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public ElemTemplate getTemplateComposed(QName qname)
+  {
+    return m_templateList.getTemplate(qname);
+  }
+  
+  /**
+   * Composed set of all variables and params.
+   */
+  private transient Vector m_variables;
+
+  /**
+   * Recompose the top level variable and parameter declarations.
+   *
+   * @param elemVar A top level variable or parameter to be added to the Vector.
+   */
+  void recomposeVariables(ElemVariable elemVar)
+  {
+    // Don't overide higher priority variable        
+    if (getVariableOrParamComposed(elemVar.getName()) == null)
+      m_variables.addElement(elemVar);
+  }
+
+  /**
+   * Get an "xsl:variable" property.
+   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public ElemVariable getVariableOrParamComposed(QName qname)
+  {
+    if (null != m_variables)
+    {
+      int n = m_variables.size();
+
+      for (int i = 0; i < n; i++)
+      {
+        ElemVariable var = (ElemVariable)m_variables.elementAt(i);
+        if(var.getName().equals(qname))
+          return var;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Get all global "xsl:variable" properties in scope for this stylesheet.
+   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Vector getVariablesAndParamsComposed()
+  {
+    return m_variables;
+  }
+
+  /**
+   * A list of properties that specify how to do space
+   * stripping. This uses the same exact mechanism as Templates.
+   */
+  private TemplateList m_whiteSpaceInfoList;
+
+  /**
+   * Recompose the strip-space and preserve-space declarations.
+   *
+   * @param wsi A WhiteSpaceInfo element to add to the list of WhiteSpaceInfo elements.
+   */
+  void recomposeWhiteSpaceInfo(WhiteSpaceInfo wsi)
+  {
+    if (null == m_whiteSpaceInfoList)
+      m_whiteSpaceInfoList = new TemplateList();
+
+    m_whiteSpaceInfoList.setTemplate(wsi);
+  }
+
+  /**
+   * Check to see if the caller should bother with check for
+   * whitespace nodes.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean shouldCheckWhitespace()
+  {
+    return null != m_whiteSpaceInfoList;
+  }
+
+  /**
+   * Get information about whether or not an element should strip whitespace.
+   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC @param support
+   * NEEDSDOC @param targetElement
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws TransformerException
+   */
+  public WhiteSpaceInfo getWhiteSpaceInfo(
+          XPathContext support, Element targetElement) throws TransformerException
+  {
+
+    if (null != m_whiteSpaceInfoList)
+      return (WhiteSpaceInfo) m_whiteSpaceInfoList.getTemplate(support,
+              targetElement, null, -1, false);
+    else
+      return null;
   }
 
   /**
@@ -653,4 +965,81 @@ public class StylesheetRoot extends StylesheetComposed
     childrenElement.setIsDefaultTemplate(true);
     m_defaultRootRule.appendChild(childrenElement);
   }
+
+  /**
+   * This is a generic version of C.A.R Hoare's Quick Sort
+   * algorithm.  This will handle arrays that are already
+   * sorted, and arrays with duplicate keys.  It was lifted from
+   * the NodeSorter class but should probably be eliminated and replaced
+   * with a call to Collections.sort when we migrate to Java2.<BR>
+   *
+   * If you think of a one dimensional array as going from
+   * the lowest index on the left to the highest index on the right
+   * then the parameters to this function are lowest index or
+   * left and highest index or right.  The first time you call
+   * this function it will be with the parameters 0, a.length - 1.
+   *
+   * @param a       an integer array
+   * @param lo0     left boundary of array partition
+   * @param hi0     right boundary of array partition
+   *
+   * NEEDSDOC @param v
+   * NEEDSDOC @param i
+   * NEEDSDOC @param j
+   */
+
+  private void QuickSort2(Vector v, int lo0, int hi0)
+    {
+      int lo = lo0;
+      int hi = hi0;
+
+      if ( hi0 > lo0)
+      {
+        // Arbitrarily establishing partition element as the midpoint of
+        // the array.
+        Recomposable midNode = (Recomposable) v.elementAt( ( lo0 + hi0 ) / 2 );
+
+        // loop through the array until indices cross
+        while( lo <= hi )
+        {
+          // find the first element that is greater than or equal to
+          // the partition element starting from the left Index.
+          while( (lo < hi0) && (((Recomposable) v.elementAt(lo)).compareTo(midNode) < 0) )
+          {
+            ++lo;
+          } // end while
+
+          // find an element that is smaller than or equal to
+          // the partition element starting from the right Index.
+          while( (hi > lo0) && (((Recomposable) v.elementAt(hi)).compareTo(midNode) > 0) )          {
+            --hi;
+          }
+
+          // if the indexes have not crossed, swap
+          if( lo <= hi )
+          {
+            Recomposable node = (Recomposable) v.elementAt(lo);
+            v.setElementAt(v.elementAt(hi), lo);
+            v.setElementAt(node, hi);
+
+            ++lo;
+            --hi;
+          }
+        }
+
+        // If the right index has not reached the left side of array
+        // must now sort the left partition.
+        if( lo0 < hi )
+        {
+          QuickSort2( v, lo0, hi );
+        }
+
+        // If the left index has not reached the right side of array
+        // must now sort the right partition.
+        if( lo < hi0 )
+        {
+          QuickSort2( v, lo, hi0 );
+        }
+      }
+    } // end QuickSort2  */
 }

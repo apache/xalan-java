@@ -62,8 +62,18 @@ package org.apache.xalan.templates;
  * that one namespace URI is an alias for another namespace URI.
  * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
  */
-public class NamespaceAlias
+public class NamespaceAlias implements RecomposableBase
 {
+  
+  /**
+   * Constructor NamespaceAlias
+   *
+   */
+  public NamespaceAlias(int docOrderNumber)
+  {
+    super();
+    m_docOrderNumber = docOrderNumber;
+  }
 
   /**
    * The "stylesheet-prefix" attribute
@@ -114,4 +124,28 @@ public class NamespaceAlias
   {
     return m_ResultPrefix;
   }
+
+  /**
+   *  The document order number, analogous to the same field in an ElemTemplateElement.
+   */
+  protected int m_docOrderNumber;
+
+  /**
+   * Get the UID (document order index).
+   *
+   * @return Index of this child
+   */
+  public int getUid()
+  {
+    return m_docOrderNumber;
+  }
+
+  /**
+   * This function is called to recompose() all of the namespace alias properties elements.
+   */
+  public void recompose(StylesheetRoot root)
+  {
+    root.recomposeNamespaceAliases(this);
+  }
+
 }

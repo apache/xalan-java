@@ -749,9 +749,9 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * The "xsl:output" property.
+   * The "xsl:output" properties.  This is a vector of OutputFormatExtended objects.
    */
-  private OutputFormatExtended m_output;
+  private Vector m_output;
 
   /**
    * Set the "xsl:output" property.
@@ -761,18 +761,43 @@ public class Stylesheet extends ElemTemplateElement
    */
   public void setOutput(OutputFormatExtended v)
   {
-    m_output = v;
+    if (null == m_output)
+    {
+      m_output = new Vector();
+    }
+
+    m_output.addElement(v);
   }
 
   /**
-   * Get the "xsl:output" property.
+   * Get an "xsl:output" property.
+   * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
+   */
+  public OutputFormatExtended getOutput(int i) throws ArrayIndexOutOfBoundsException
+  {
+
+    if (null == m_output)
+      throw new ArrayIndexOutOfBoundsException();
+
+    return (OutputFormatExtended) m_output.elementAt(i);
+  }
+
+  /**
+   * Get the number of "xsl:output" properties.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public OutputFormatExtended getOutput()
+  public int getOutputCount()
   {
-    return m_output;
+    return (null != m_output)
+           ? m_output.size() : 0;
   }
 
   /**
@@ -844,9 +869,7 @@ public class Stylesheet extends ElemTemplateElement
       m_attributeSets = new Vector();
     }
 
-    // Insert elements by order of importance so that
-    // during recompose, they get properly overiden. 
-    m_attributeSets.insertElementAt(attrSet, 0);
+    m_attributeSets.addElement(attrSet);
   }
 
   /**
@@ -897,9 +920,7 @@ public class Stylesheet extends ElemTemplateElement
     if (null == m_topLevelVariables)
       m_topLevelVariables = new Vector();
 
-    // Always insert variables by order of importance so that 
-    // during recompose, they get properly overiden. 
-    m_topLevelVariables.insertElementAt(v, 0);
+    m_topLevelVariables.addElement(v);
   }
   
   /**
@@ -1093,9 +1114,7 @@ public class Stylesheet extends ElemTemplateElement
     if (m_prefix_aliases == null)
       m_prefix_aliases = new Vector();
 
-    // Always insert elements by order of importance so that 
-    // during recompose, they get properly overiden.
-    m_prefix_aliases.insertElementAt(na, 0);
+    m_prefix_aliases.addElement(na);
   }
 
   /**

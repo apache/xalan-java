@@ -408,7 +408,7 @@ public class ElemForEach extends ElemTemplateElement
         {
           if (needToFindTemplate)
           {
-            template = tl.getTemplate(xctxt, child, mode, quiet);
+            template = tl.getTemplate(xctxt, child, mode, -1, quiet);
 
             // If that didn't locate a node, fall back to a default template rule.
             // See http://www.w3.org/TR/xslt#built-in-rule.

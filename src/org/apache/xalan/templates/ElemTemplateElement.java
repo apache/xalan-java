@@ -109,7 +109,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * @see Stylesheet
  */
 public class ElemTemplateElement extends UnImplNode
-        implements PrefixResolver, Serializable, SourceLocator
+        implements PrefixResolver, Serializable, SourceLocator, Recomposable
 {
 
   /**
@@ -221,6 +221,12 @@ public class ElemTemplateElement extends UnImplNode
   {
     return m_parentNode.getStylesheetRoot();
   }
+
+  /**
+   * This function is called during recomposition to
+   * control how this element is composed.
+   */
+  public void recompose(StylesheetRoot root){}
 
   /**
    * This function is called after everything else has been
@@ -1114,4 +1120,31 @@ public class ElemTemplateElement extends UnImplNode
   {
     m_DOMBackPointer = n;
   }
+
+  /**
+   * Compares this object with the specified object for precedence order.
+   * The order is determined by the getImportCountComposed() of the containing
+   * composed stylesheet and the getUid() of this element.
+   * Returns a negative integer, zero, or a positive integer as this
+   * object is less than, equal to, or greater than the specified object.
+   * @param o The object to be compared to this object
+   * @returns a negative integer, zero, or a positive integer as this object is
+   *          less than, equal to, or greater than the specified object.
+   * @throws ClassCastException if the specified object's
+   *         type prevents it from being compared to this Object.
+   */
+  public int compareTo(Object o) throws ClassCastException {
+    
+    Recomposable ro = (Recomposable) o;
+    int roPrecedence = ro.getStylesheetComposed().getImportCountComposed();
+    int myPrecedence = this.getStylesheetComposed().getImportCountComposed();
+
+    if (myPrecedence < roPrecedence)
+      return -1;
+    else if (myPrecedence > roPrecedence)
+      return 1;
+    else
+      return this.getUid() - ro.getUid();
+  }
+
 }

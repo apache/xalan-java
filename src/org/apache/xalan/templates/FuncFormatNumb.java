@@ -97,7 +97,7 @@ public class FuncFormatNumb extends Function3Args
     // A bit of an ugly hack to get our context.
     ElemTemplateElement templElem =
       (ElemTemplateElement) xctxt.getNamespaceContext();
-    StylesheetComposed ss = templElem.getStylesheetComposed();
+    StylesheetRoot ss = templElem.getStylesheetRoot();
     java.text.DecimalFormat formatter = null;
     java.text.DecimalFormatSymbols dfs = null;
     double num = getArg0().execute(xctxt).num();

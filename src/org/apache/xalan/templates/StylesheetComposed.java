@@ -117,22 +117,121 @@ public class StylesheetComposed extends Stylesheet
     return true;
   }
 
+  /**
+   * Adds all recomposable values for this precedence level into the recomposableElements Vector
+   * that was passed in as the first parameter.  All elements added to the
+   * recomposableElements vector should implement the Recomposable interface.  That is,
+   * we must be able to determine the precedence level and document order sequence.  Also,
+   * they must have a compareTo method so that we can sort the Vector members according
+   * to precedence and document order.  If the value to be added does not implement
+   * Recomposable, then it must at least implement RecomposableBase.  In that case,
+   * we wrap it in a RecomposableImpl object that adds the precedence and document order
+   * features.
+   * @param recomposableElements a Vector of Recomposable objects that we will add all of
+   *        our recomposable objects to.
+   */
+  public void recompose(Vector recomposableElements) throws TransformerException
+  {
+
+    recomposeImports();         // Calculate the number of this import.
+    recomposeIncludes(this);    // Build the global include list for this stylesheet.
+
+    // Now add in all of the recomposable elements at this precedence level
+
+    int n = getIncludeCountComposed();
+
+    for (int i = -1; i < n; i++)
+    {
+      Stylesheet included = getIncludeComposed(i);
+
+      // Add in the output elements
+
+      int s = included.getOutputCount();
+      for (int j = 0; j < s; j++)
+      {
+        OutputFormatExtended ofe = included.getOutput(j);
+        recomposableElements.addElement(new RecomposableImpl(this, ofe.getUid(), ofe));
+      }
+
+      // Next, add in the attribute-set elements
+
+      s = included.getAttributeSetCount();
+      for (int j = 0; j < s; j++)
+      {
+        recomposableElements.addElement(included.getAttributeSet(j));
+      }
+
+      // Now the decimal-formats
+
+      s = included.getDecimalFormatCount();
+      for (int j = 0; j < s; j++)
+      {
+        DecimalFormatProperties dfp = included.getDecimalFormat(j);
+        recomposableElements.addElement(new RecomposableImpl(this, dfp.getUid(), dfp));
+      }
+
+      // Now the keys
+
+      s = included.getKeyCount();
+      for (int j = 0; j < s; j++)
+      {
+        recomposableElements.addElement(included.getKey(j));
+      }
+
+      // And the namespace aliases
+
+      s = included.getNamespaceAliasCount();
+      for (int j = 0; j < s; j++)
+      {
+        NamespaceAlias nsa = included.getNamespaceAlias(j);
+        recomposableElements.addElement(new RecomposableImpl(this, nsa.getUid(), nsa));
+      }
+
+      // Next comes the templates
+
+      s = included.getTemplateCount();
+      for (int j = 0; j < s; j++)
+      {
+        recomposableElements.addElement(included.getTemplate(j));
+      }
+
+      // Then, the variables
+
+      s = included.getVariableOrParamCount();
+      for (int j = 0; j < s; j++)
+      {
+        recomposableElements.addElement(included.getVariableOrParam(j));
+      }
+
+      // And lastly the whitespace preserving and stripping elements
+
+      s = included.getStripSpaceCount();
+      for (int j = 0; j < s; j++)
+      {
+        recomposableElements.addElement(included.getStripSpace(j));
+      }
+
+      s = included.getPreserveSpaceCount();
+      for (int j = 0; j < s; j++)
+      {
+        recomposableElements.addElement(included.getPreserveSpace(j));
+      }
+    }
+  }
+
   /** NEEDSDOC Field m_importNumber          */
   private int m_importNumber = -1;
 
-  /** NEEDSDOC Field m_importCountComposed          */
+  /** The precedence of this stylesheet in the global import list.
+   *  The lowest precedence stylesheet is 0.  A higher
+   *  number has a higher precedence.
+   */
   private int m_importCountComposed;
 
   /**
-   * Recalculate the number of this stylesheet in the global
-   * import list.
-   * <p>For example, suppose</p>
-   * <p>stylesheet A imports stylesheets B and C in that order;</p>
-   * <p>stylesheet B imports stylesheet D;</p>
-   * <p>stylesheet C imports stylesheet E.</p>
-   * <p>Then the order of import precedence (lowest first) is D, B, E, C, A.</p>
-   * <p>If this were stylesheet C, then the importsComposed list
-   * would be E, B, D (highest first).</p>
+   * Recalculate the precedence of this stylesheet in the global
+   * import list.  The lowest precedence stylesheet is 0.  A higher
+   * number has a higher precedence.
    */
   void recomposeImports()
   {
@@ -169,7 +268,8 @@ public class StylesheetComposed extends Stylesheet
   }
 
   /**
-   * Get the number of imported stylesheets.
+   * Get the precedence of this stylesheet in the global import list.
+   * The lowest precedence is 0.  A higher number has a higher precedence.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
    * NEEDSDOC ($objectName$) @return
@@ -185,9 +285,10 @@ public class StylesheetComposed extends Stylesheet
   private transient Vector m_includesComposed;
 
   /**
-   * Recompose the value of the composed include list.
+   * Recompose the value of the composed include list.  Builds a composite
+   * list of all stylesheets included by this stylesheet to any depth.
    *
-   * NEEDSDOC @param including
+   * @param including
    */
   void recomposeIncludes(Stylesheet including)
   {
@@ -202,7 +303,6 @@ public class StylesheetComposed extends Stylesheet
       for (int i = 0; i < n; i++)
       {
         Stylesheet included = including.getInclude(i);
-
         m_includesComposed.addElement(included);
         recomposeIncludes(included);
       }
@@ -223,6 +323,9 @@ public class StylesheetComposed extends Stylesheet
           throws ArrayIndexOutOfBoundsException
   {
 
+    if (-1 == i)
+      return this;
+
     if (null == m_includesComposed)
       throw new ArrayIndexOutOfBoundsException();
 
@@ -241,464 +344,14 @@ public class StylesheetComposed extends Stylesheet
   }
 
   /**
-   * Table of DecimalFormatSymbols, keyed by QName.
-   */
-  private transient Hashtable m_decimalFormatSymbols;
-
-  /**
-   * Given a valid element decimal-format name, return the
-   * decimalFormatSymbols with that name.
-   * <p>It is an error to declare either the default decimal-format or
-   * a decimal-format with a given name more than once (even with
-   * different import precedence), unless it is declared every
-   * time with the same value for all attributes (taking into
-   * account any default values).</p>
-   * <p>Which means, as far as I can tell, the decimal-format
-   * properties are not additive.</p>
-   * @return null if name is not found.
-   */
-  void recomposeDecimalFormats()
-  {
-
-    m_decimalFormatSymbols = new Hashtable();
-
-    // Loop for this stylesheet and all stylesheets included or of lower 
-    // import precidence.
-    int nImports = getImportCountComposed();
-
-    for (int i = -1; i < nImports; i++)
-    {
-      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
-
-      // Does this stylesheet contain it?
-      int nDFPs = stylesheet.getDecimalFormatCount();
-
-      for (int dfpIndex = 0; dfpIndex < nDFPs; dfpIndex++)
-      {
-        DecimalFormatProperties dfp = stylesheet.getDecimalFormat(dfpIndex);
-
-        m_decimalFormatSymbols.put(dfp.getName(),
-                                   dfp.getDecimalFormatSymbols());
-      }
-
-      // Do the included stylesheets contain it?
-      int nIncludes = stylesheet.getIncludeCountComposed();
-
-      for (int k = 0; k < nIncludes; k++)
-      {
-        Stylesheet included = stylesheet.getIncludeComposed(k);
-
-        nDFPs = included.getDecimalFormatCount();
-
-        for (int dfpIndex = 0; dfpIndex < nDFPs; dfpIndex++)
-        {
-          DecimalFormatProperties dfp = included.getDecimalFormat(dfpIndex);
-
-          m_decimalFormatSymbols.put(dfp.getName(),
-                                     dfp.getDecimalFormatSymbols());
-        }
-      }
-    }
-  }
-
-  /**
-   * Given a valid element decimal-format name, return the
-   * decimalFormatSymbols with that name.
-   * <p>It is an error to declare either the default decimal-format or
-   * a decimal-format with a given name more than once (even with
-   * different import precedence), unless it is declared every
-   * time with the same value for all attributes (taking into
-   * account any default values).</p>
-   * <p>Which means, as far as I can tell, the decimal-format
-   * properties are not additive.</p>
-   *
-   * NEEDSDOC @param name
-   * @return null if name is not found.
-   */
-  public DecimalFormatSymbols getDecimalFormatComposed(QName name)
-  {
-    return (DecimalFormatSymbols) m_decimalFormatSymbols.get(name);
-  }
-
-  /**
-   * A list of properties that specify how to do space
-   * stripping. This uses the same exact mechanism as Templates.
-   */
-  private WhitespaceList m_whiteSpaceInfoList;
-
-  /**
-   * Compile a lookup table for WhiteSpaceInfo elements, which are built
-   * from xsl:strip-space and xsl:preserve space information.
-   * @return null if node is not matched.
-   *
-   * @throws TransformerException
-   */
-  void recomposeWhiteSpaceInfo() throws TransformerException
-  {
-
-    int nIncludes = getIncludeCountComposed();
-
-    for (int k = -1; k < nIncludes; k++)
-    {
-      Stylesheet included = (-1 == k) ? this : getIncludeComposed(k);
-      int n = included.getStripSpaceCount();
-
-      for (int i = 0; i < n; i++)
-      {
-        if (null == m_whiteSpaceInfoList)
-          m_whiteSpaceInfoList = new WhitespaceList(this);
-
-        m_whiteSpaceInfoList.setTemplate(included.getStripSpace(i));
-      }
-
-      n = included.getPreserveSpaceCount();
-
-      for (int i = 0; i < n; i++)
-      {
-        if (null == m_whiteSpaceInfoList)
-          m_whiteSpaceInfoList = new WhitespaceList(this);
-
-        m_whiteSpaceInfoList.setTemplate(included.getPreserveSpace(i));
-      }
-    }
-  }
-
-  /**
-   * Check to see if the caller should bother with check for
-   * whitespace nodes.
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public boolean shouldCheckWhitespace()
-  {
-
-    if (null != m_whiteSpaceInfoList)
-      return true;
-
-    int n = getImportCountComposed();
-
-    for (int i = 0; i < n; i++)
-    {
-      StylesheetComposed imported = getImportComposed(i);
-
-      if (null != imported.m_whiteSpaceInfoList)
-        return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Get information about whether or not an element should strip whitespace.
-   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
-   *
-   * NEEDSDOC @param support
-   * NEEDSDOC @param targetElement
-   *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws TransformerException
-   */
-  public WhiteSpaceInfo getWhiteSpaceInfo(
-          XPathContext support, Element targetElement) throws TransformerException
-  {
-
-    if (null != m_whiteSpaceInfoList)
-      return (WhiteSpaceInfo) m_whiteSpaceInfoList.getTemplate(support,
-              targetElement, null, false);
-    else
-      return null;
-  }
-
-  /**
-   * A list of all key declarations visible from this stylesheet and all
-   * lesser stylesheets.
-   */
-  private transient Vector m_keyDecls;
-
-  /**
-   * Recompose the key decls from this stylesheet and
-   * all stylesheets within lesser import precedence.
-   */
-  void recomposeKeys()
-  {
-
-    m_keyDecls = new Vector();
-
-    // Loop for this stylesheet and all stylesheets included or of lower 
-    // import precidence.
-    int nImports = getImportCountComposed();
-
-    for (int i = -1; i < nImports; i++)
-    {
-      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
-
-      // Does this stylesheet contain it?
-      int nKeys = stylesheet.getKeyCount();
-
-      for (int keyIndex = 0; keyIndex < nKeys; keyIndex++)
-      {
-        KeyDeclaration keyDecl = stylesheet.getKey(keyIndex);
-
-        m_keyDecls.addElement(keyDecl);
-      }
-
-      // Do the included stylesheets contain it?
-      int nIncludes = stylesheet.getIncludeCountComposed();
-
-      for (int k = 0; k < nIncludes; k++)
-      {
-        Stylesheet included = stylesheet.getIncludeComposed(k);
-
-        nKeys = included.getKeyCount();
-
-        for (int keyIndex = 0; keyIndex < nKeys; keyIndex++)
-        {
-          KeyDeclaration keyDecl = included.getKey(keyIndex);
-
-          m_keyDecls.addElement(keyDecl);
-        }
-      }
-    }
-  }
-
-  /**
-   * Get the composed "xsl:key" properties.
-   * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public Vector getKeysComposed()
-  {
-    return m_keyDecls;
-  }
-
-  /**
-   * Composed set of all included and imported attribute set properties.
-   * Each entry is a vector of ElemAttributeSet objects.
-   * <p>Note: Should this go on the StylesheetRoot class instead?</p>
-   */
-  private transient Hashtable m_attrSets;
-
-  /**
-   * Recompose the attribute-set decls from this stylesheet and
-   * all stylesheets within import precedence.
-   */
-  void recomposeAttributeSets()
-  {
-
-    m_attrSets = new Hashtable();
-
-    // Loop for this stylesheet and all stylesheets included or of lower 
-    // import precidence.
-    int nImports = getImportCountComposed();
-
-    for (int i = -1; i < nImports; i++)
-    {
-      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
-
-      // Does this stylesheet contain it?
-      int nAS = stylesheet.getAttributeSetCount();
-
-      for (int asIndex = 0; asIndex < nAS; asIndex++)
-      {
-        ElemAttributeSet attrSet = stylesheet.getAttributeSet(asIndex);
-        Vector attrSetList = (Vector) m_attrSets.get(attrSet.getName());
-
-        if (null == attrSetList)
-        {
-          attrSetList = new Vector();
-
-          m_attrSets.put(attrSet.getName(), attrSetList);
-        }
-
-        attrSetList.addElement(attrSet);
-      }
-
-      // Do the included stylesheets contain it?
-      int nIncludes = stylesheet.getIncludeCountComposed();
-
-      for (int k = 0; k < nIncludes; k++)
-      {
-        Stylesheet included = stylesheet.getIncludeComposed(k);
-
-        nAS = included.getAttributeSetCount();
-
-        for (int asIndex = 0; asIndex < nAS; asIndex++)
-        {
-          ElemAttributeSet attrSet = included.getAttributeSet(asIndex);
-          Vector attrSetList = (Vector) m_attrSets.get(attrSet.getName());
-
-          if (null == attrSetList)
-          {
-            attrSetList = new Vector();
-
-            m_attrSets.put(attrSet.getName(), attrSetList);
-          }
-
-          attrSetList.addElement(attrSet);
-        }
-      }
-    }
-  }
-
-  /**
-   * Get a list "xsl:attribute-set" properties that match the qname.
-   * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
-   *
-   * NEEDSDOC @param name
-   *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws ArrayIndexOutOfBoundsException
-   */
-  public Vector getAttributeSetComposed(QName name)
-          throws ArrayIndexOutOfBoundsException
-  {
-    return (Vector) m_attrSets.get(name);
-  }
-  
-  /**
-   * Composed set of all variables and params.
-   * <p>Note: Should this go on the StylesheetRoot class instead?</p>
-   */
-  private transient Vector m_variables;
-
-  /**
-   * Recompose the attribute-set decls from this stylesheet and
-   * all stylesheets within import precedence.
-   */
-  void recomposeVariables()
-  {
-
-    m_variables = new Vector();
-
-    // Loop for this stylesheet and all stylesheets included or of lower 
-    // import precidence.
-    int nImports = getImportCountComposed();
-
-    for (int i = -1; i < nImports; i++)
-    {
-      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
-
-      // Does this stylesheet contain it?
-      int nVariables = stylesheet.getVariableOrParamCount();
-
-      for (int vIndex = 0; vIndex < nVariables; vIndex++)
-      {
-        ElemVariable elemVar = stylesheet.getVariableOrParam(vIndex);
-
-        // Don't overide higher priority variable        
-        if (getVariableOrParamComposed(elemVar.getName()) == null)
-          m_variables.addElement(elemVar);
-      }
-
-      // Do the included stylesheets contain it?
-      int nIncludes = stylesheet.getIncludeCountComposed();
-
-      for (int k = 0; k < nIncludes; k++)
-      {
-        Stylesheet included = stylesheet.getIncludeComposed(k);
-
-        nVariables = included.getVariableOrParamCount();
-
-        for (int vIndex = 0; vIndex < nVariables; vIndex++)
-        {
-          ElemVariable elemVar = included.getVariableOrParam(vIndex);
-
-          // Don't overide higher priority variable
-          if (getVariableOrParamComposed(elemVar.getName()) == null)
-            m_variables.addElement(elemVar);
-        }
-      }
-    }
-  }
-
-  /**
-   * Get an "xsl:variable" property.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
-   *
-   * NEEDSDOC @param qname
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public ElemVariable getVariableOrParamComposed(QName qname)
-  {
-    if (null != m_variables)
-    {
-      int n = m_variables.size();
-
-      for (int i = 0; i < n; i++)
-      {
-        ElemVariable var = (ElemVariable)m_variables.elementAt(i);
-        if(var.getName().equals(qname))
-          return var;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Get all global "xsl:variable" properties in scope for this stylesheet.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public Vector getVariablesAndParamsComposed()
-  {
-    return m_variables;
-  }
-
-  /**
-   * The "xsl:template" properties.
-   */
-  private transient TemplateList m_templateList = new TemplateList(this);
-
-  /**
-   * NEEDSDOC Method getTemplateListComposed 
-   *
-   *
-   * NEEDSDOC (getTemplateListComposed) @return
-   */
-  public final TemplateList getTemplateListComposed()
-  {
-    return m_templateList;
-  }
-
-  /**
-   * Aggregate the list of templates and included templates into a single list.
-   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
-   *
-   * @throws TransformerException
-   */
-  public void recomposeTemplates() throws TransformerException
-  {
-
-    int nIncludes = getIncludeCountComposed();
-
-    for (int k = nIncludes - 1; k >= -1; k--)
-    {
-      Stylesheet included = (-1 == k) ? this : getIncludeComposed(k);
-      int n = included.getTemplateCount();
-
-      for (int i = 0; i < n; i++)
-      {
-        ElemTemplate template = included.getTemplate(i);
-        m_templateList.setTemplate(template);
-      }
-    }
-
-    m_templateList.compose();
-  }
-
-  /**
    * For compilation support, we need the option of overwriting
    * (rather than appending to) previous composition.
    * We could phase out the old API in favor of this one, but I'm
    * holding off until we've made up our minds about compilation.
    * ADDED 9/5/2000 to support compilation experiment
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   * NOTE: GLP 29-Nov-00 I've left this method in so that CompilingStylesheetHandler will compile.  However,
+   *                     I'm not sure why it's needed or what it does and I've commented out the body.
    *
    * NEEDSDOC @param flushFirst
    *
@@ -706,114 +359,11 @@ public class StylesheetComposed extends Stylesheet
    */
   public void recomposeTemplates(boolean flushFirst) throws TransformerException
   {
-
+/***************************************  KEEP METHOD IN FOR COMPILATION
     if (flushFirst)
       m_templateList = new TemplateList(this);
 
     recomposeTemplates();
-  }
-
-  /**
-   * Get an "xsl:template" property by node match. This looks in the imports as
-   * well as this stylesheet.
-   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
-   *
-   * NEEDSDOC @param support
-   * NEEDSDOC @param targetNode
-   * NEEDSDOC @param mode
-   * NEEDSDOC @param quietConflictWarnings
-   *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws TransformerException
-   */
-  public ElemTemplate getTemplateComposed(
-          XPathContext support, Node targetNode, QName mode, boolean quietConflictWarnings)
-            throws TransformerException
-  {
-    return m_templateList.getTemplate(support, targetNode, mode,
-                                      quietConflictWarnings);
-  }
-
-  /**
-   * Get an "xsl:template" property. This looks in the imports as
-   * well as this stylesheet.
-   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
-   *
-   * NEEDSDOC @param qname
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public ElemTemplate getTemplateComposed(QName qname)
-  {
-    return m_templateList.getTemplate(qname);
-  }
-
-  /**
-   * Composed set of all params.
-   * <p>Note: Should this go on the StylesheetRoot class instead?</p>
-   */
-  private transient Hashtable m_namespaceAliasComposed;
-
-  /**
-   * Recompose the attribute-set decls from this stylesheet and
-   * all stylesheets within import precedence.
-   */
-  void recomposeNamespaceAliases()
-  {
-
-    m_namespaceAliasComposed = new Hashtable();
-
-    // Loop for this stylesheet and all stylesheets included or of lower 
-    // import precidence.
-    int nImports = getImportCountComposed();
-
-    for (int i = -1; i < nImports; i++)
-    {
-      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
-
-      // Does this stylesheet contain it?
-      int nNSA = stylesheet.getNamespaceAliasCount();
-
-      for (int nsaIndex = 0; nsaIndex < nNSA; nsaIndex++)
-      {
-        NamespaceAlias nsAlias = stylesheet.getNamespaceAlias(nsaIndex);
-
-        m_namespaceAliasComposed.put(nsAlias.getStylesheetPrefix(),
-                                     nsAlias.getResultPrefix());
-      }
-
-      // Do the included stylesheets contain it?
-      int nIncludes = stylesheet.getIncludeCountComposed();
-
-      for (int k = 0; k < nIncludes; k++)
-      {
-        Stylesheet included = stylesheet.getIncludeComposed(k);
-
-        nNSA = included.getNamespaceAliasCount();
-
-        for (int nsaIndex = 0; nsaIndex < nNSA; nsaIndex++)
-        {
-          NamespaceAlias nsAlias = included.getNamespaceAlias(nsaIndex);
-
-          m_namespaceAliasComposed.put(nsAlias.getStylesheetPrefix(),
-                                       nsAlias.getResultPrefix());
-        }
-      }
-    }
-  }
-
-  /**
-   * Get the "xsl:namespace-alias" property.
-   * Return the alias namespace uri for a given namespace uri if one is found.
-   * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
-   *
-   * NEEDSDOC @param uri
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public String getNamespaceAliasComposed(String uri)
-  {
-    return (String) m_namespaceAliasComposed.get(uri);
+*****************************************/
   }
 }

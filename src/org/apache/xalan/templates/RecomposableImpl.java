@@ -54,56 +54,86 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 package org.apache.xalan.templates;
 
-import org.apache.xpath.XPath;
-
 /**
- * This is used as a special "fake" template that can be
- * handled by the TemplateList to do pattern matching
- * on nodes.
+ * This class creates a recomposable object when the underlying object does
+ * not implement Recomposable itself.
  */
-public class WhiteSpaceInfo extends ElemTemplate
+class RecomposableImpl implements Recomposable
 {
 
-  /** NEEDSDOC Field m_shouldStripSpace          */
-  private boolean m_shouldStripSpace;
+  /**
+   * The precedence level stylesheet with which this object is associated.
+   */
+  private StylesheetComposed m_owningStylesheet;
 
   /**
-   * Return true if this element specifies that the node that
-   * matches the match pattern should be stripped, otherwise
-   * the space should be preserved.
-   *
-   * NEEDSDOC ($objectName$) @return
+   * The document order in which which object was encountered.
    */
-  public boolean getShouldStripSpace()
+  private int m_docOrderNumber;
+
+  /**
+   * The underlying object for the recomposition.
+   */
+  private RecomposableBase m_obj;
+
+  RecomposableImpl(StylesheetComposed owningStylesheet, int uid, RecomposableBase o)
   {
-    return m_shouldStripSpace;
+    m_owningStylesheet = owningStylesheet;
+    m_docOrderNumber = uid;
+    m_obj = o;
   }
 
   /**
-   * Constructor WhiteSpaceInfo
-   *
-   *
-   * NEEDSDOC @param matchPattern
-   * NEEDSDOC @param shouldStripSpace
-   */
-  public WhiteSpaceInfo(XPath matchPattern, boolean shouldStripSpace, Stylesheet thisSheet)
+   *  Returns the composed stylesheet to which this recomposable element belongs.
+   */ 
+  public StylesheetComposed getStylesheetComposed()
   {
-
-    m_shouldStripSpace = shouldStripSpace;
-
-    setMatch(matchPattern);
-
-    setStylesheet(thisSheet);
+    return m_owningStylesheet;
   }
 
   /**
-   * This function is called to recompose() all of the WhiteSpaceInfo elements.
+   *  Returns the relative document order for this recomposable element.
+   */ 
+  public int getUid()
+  {
+    return m_docOrderNumber;
+  }
+
+  /**
+   * Compares this object with the specified object for precedence order.
+   * The order is determined by the getImportCountComposed() of the containing
+   * composed stylesheet and the getUid() of this element.
+   * Returns a negative integer, zero, or a positive integer as this
+   * object is less than, equal to, or greater than the specified object.
+   * @param o The object to be compared to this object
+   * @returns a negative integer, zero, or a positive integer as this object is
+   *          less than, equal to, or greater than the specified object.
+   * @throws ClassCastException if the specified object's
+   *         type prevents it from being compared to this Object.
+   */
+  public int compareTo(Object o) throws ClassCastException {
+    
+    Recomposable ro = (Recomposable) o;
+    int roPrecedence = ro.getStylesheetComposed().getImportCountComposed();
+    int myPrecedence = m_owningStylesheet.getImportCountComposed();
+
+    if (myPrecedence < roPrecedence)
+      return -1;
+    else if (myPrecedence > roPrecedence)
+      return 1;
+    else
+      return m_docOrderNumber - ro.getUid();
+  }
+
+  /**
+   * Recomposes this object with others of its type.
    */
   public void recompose(StylesheetRoot root)
   {
-    root.recomposeWhiteSpaceInfo(this);
+    m_obj.recompose(root);
   }
 
 }

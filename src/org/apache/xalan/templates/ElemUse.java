@@ -159,7 +159,7 @@ public class ElemUse extends ElemTemplateElement
    * @throws TransformerException
    */
   private void applyAttrSets(
-          TransformerImpl transformer, StylesheetComposed stylesheet, QName attributeSetsNames[], Node sourceNode, QName mode)
+          TransformerImpl transformer, StylesheetRoot stylesheet, QName attributeSetsNames[], Node sourceNode, QName mode)
             throws TransformerException
   {
 
@@ -215,7 +215,7 @@ public class ElemUse extends ElemTemplateElement
 
     if (null != m_attributeSetsNames)
     {
-      applyAttrSets(transformer, getStylesheetRoot().getStylesheetComposed(),
+      applyAttrSets(transformer, getStylesheetRoot(),
                     m_attributeSetsNames, sourceNode, mode);
     }
   }

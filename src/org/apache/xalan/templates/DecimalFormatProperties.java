@@ -93,7 +93,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
  */
-public class DecimalFormatProperties
+public class DecimalFormatProperties implements RecomposableBase
 {
 
   /** NEEDSDOC Field m_dfs          */
@@ -103,7 +103,7 @@ public class DecimalFormatProperties
    * Constructor DecimalFormatProperties
    *
    */
-  public DecimalFormatProperties()
+  public DecimalFormatProperties(int docOrderNumber)
   {
 
     m_dfs = new java.text.DecimalFormatSymbols();
@@ -111,6 +111,8 @@ public class DecimalFormatProperties
     // Set default values, they can be overiden if necessary.  
     m_dfs.setInfinity(Constants.ATTRVAL_INFINITY);
     m_dfs.setNaN(Constants.ATTRVAL_NAN);
+
+    m_docOrderNumber = docOrderNumber;
   }
 
   /**
@@ -412,4 +414,28 @@ public class DecimalFormatProperties
   {
     return m_dfs.getPatternSeparator();
   }
+
+  /**
+   *  The document order number, analogous to the same field in an ElemTemplateElement.
+   */
+  protected int m_docOrderNumber;
+
+  /**
+   * Get the UID (document order index).
+   *
+   * @return Index of this child
+   */
+  public int getUid()
+  {
+    return m_docOrderNumber;
+  }
+
+  /**
+   * This function is called to recompose() all of the decimal format properties elements.
+   */
+  public void recompose(StylesheetRoot root)
+  {
+    root.recomposeDecimalFormats(this);
+  }
+
 }

@@ -1244,7 +1244,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED + MAX_CODE][1] =
-      "Only one default xsl:decimal-format declaration is allowed. The last one will be used.";
+      "Only one default xsl:decimal-format declaration is allowed.";
   }
 
   /** WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE          */
@@ -1253,7 +1253,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE + MAX_CODE][1] =
-      "xsl:decimal-format names must be unique. The last one will be used.";
+      "xsl:decimal-format names must be unique. Name \"{0}\" has been duplicated.";
   }
 
   /** WG_ILLEGAL_ATTRIBUTE          */

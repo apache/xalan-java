@@ -1209,17 +1209,9 @@ public class TransformerImpl extends Transformer
       {
         StylesheetComposed imported = stylesheet.getGlobalImport(i);
 
-        imported.runtimeInit(this);
-
-        for (ElemTemplateElement child = imported.getFirstChildElem();
-                child != null; child = child.getNextSiblingElem())
-        {
-          child.runtimeInit(this);
-        }
-
         int includedCount = imported.getIncludeCountComposed();
 
-        for (int j = 0; j < includedCount; j++)
+        for (int j = -1; j < includedCount; j++)
         {
           Stylesheet included = imported.getIncludeComposed(j);
 
@@ -1901,10 +1893,8 @@ public class TransformerImpl extends Transformer
    * Given an element and mode, find the corresponding
    * template and process the contents.
    *
-   * @param stylesheetTree The current Stylesheet object.
    * @param xslInstruction The calling element.
    * @param template The template to use if xsl:for-each, or null.
-   * @param selectContext The selection context.
    * @param child The source context node.
    * @param mode The current mode, may be null.
    * @exception TransformerException
@@ -1917,52 +1907,34 @@ public class TransformerImpl extends Transformer
   {
 
     short nodeType = child.getNodeType();
-    boolean isApplyImports = ((xslInstruction == null)
-                              ? false
-                              : xslInstruction.getXSLToken()
-                                == Constants.ELEMNAME_APPLY_IMPORTS);
-
-    // To find templates, use the the root of the import tree if 
-    // this element is not an xsl:apply-imports or starting from the root, 
-    // otherwise use the root of the stylesheet tree.
-    // TODO: Not sure apply-import handling is correct right now.  -sb
-    StylesheetComposed stylesheetTree;
-
-    if (isApplyImports)
-    {
-      StylesheetComposed stylesheet = xslInstruction.getStylesheetComposed();
-      StylesheetRoot sroot = stylesheet.getStylesheetRoot();
-      int importNumber = sroot.getImportNumber(stylesheet);
-      int nImports = sroot.getGlobalImportCount();
-
-      if (importNumber < (nImports - 1))
-        stylesheetTree = sroot.getGlobalImport(importNumber + 1);
-      else
-        return false;
-    }
-    else
-    {
-      stylesheetTree = (null == template)
-                       ? getStylesheet() : template.getStylesheetComposed();
-    }
-
-    XPathContext xctxt = getXPathContext();
     boolean isDefaultTextRule = false;
 
     if (null == template)
     {
+      int maxImportLevel;
+      boolean isApplyImports = ((xslInstruction == null)
+                                ? false
+                                : xslInstruction.getXSLToken()
+                                  == Constants.ELEMNAME_APPLY_IMPORTS);
+
+      if (isApplyImports)
+      {
+        maxImportLevel = xslInstruction.getStylesheetComposed().getImportCountComposed() - 1;
+      }
+      else
+      {
+        maxImportLevel = -1;
+      }
 
       // Find the XSL template that is the best match for the 
       // element.        
+      XPathContext xctxt = getXPathContext();
       PrefixResolver savedPrefixResolver = xctxt.getNamespaceContext();
 
       try
       {
         xctxt.setNamespaceContext(xslInstruction);
-
-        TemplateList tl = stylesheetTree.getTemplateListComposed();
-
-        template = tl.getTemplate(xctxt, child, mode,
+        template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode, maxImportLevel,
                                   m_quietConflictWarnings);
       }
       finally
@@ -2024,6 +1996,12 @@ public class TransformerImpl extends Transformer
       else
       {
 
+        // Fire a trace event for the template.
+
+        if (TransformerImpl.S_DEBUG)
+          getTraceManager().fireTraceEvent(child, mode, template);
+
+        // And execute the child templates.
         // 9/11/00: If template has been compiled, hand off to it
         // since much (most? all?) of the processing has been inlined.
         // (It would be nice if there was a single entry point that
@@ -2032,11 +2010,7 @@ public class TransformerImpl extends Transformer
         // compiled obviously has to run its own code. It's
         // also unclear that "execute" is really the right name for
         // that entry point.)
-        // Fire a trace event for the template.
-        if (TransformerImpl.S_DEBUG)
-          getTraceManager().fireTraceEvent(child, mode, template);
 
-        // And execute the child templates.
         if (template.isCompiledTemplate())
           template.execute(this, child, mode);
         else

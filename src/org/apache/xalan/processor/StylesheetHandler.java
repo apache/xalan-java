@@ -1231,8 +1231,18 @@ public class StylesheetHandler extends DefaultHandler
     }
   }
 
-  /** NEEDSDOC Field m_docOrderCount */
+  /** An increasing number that is used to indicate the order in which this element
+   *  was encountered during the parse of the XSLT tree.
+   */
   private int m_docOrderCount = 0;
+
+  /**
+   * Returns the next m_docOrderCount number and increments the number for future use.
+   */
+  int nextUid()
+  {
+    return m_docOrderCount++;
+  }
 
   /**
    * Push the current XSLTElementProcessor to the top of the stack.  As a
@@ -1246,7 +1256,7 @@ public class StylesheetHandler extends DefaultHandler
   {
 
     if (elem.getUid() == -1)
-      elem.setUid(m_docOrderCount++);
+      elem.setUid(nextUid());
 
     m_elems.push(elem);
   }

@@ -135,11 +135,7 @@ class ProcessorPreserveSpace extends XSLTElementProcessor
     for (int i = 0; i < xpaths.size(); i++)
     {
       WhiteSpaceInfo wsi = new WhiteSpaceInfo((XPath) xpaths.elementAt(i), false, thisSheet);
-
-      // We do the push and pop here to force StylesheetHandler to assign us a Uid.
-
-      handler.pushElemTemplateElement(wsi);
-      wsi = (WhiteSpaceInfo) handler.popElemTemplateElement();
+      wsi.setUid(handler.nextUid());
 
       thisSheet.setPreserveSpaces(wsi);
     }

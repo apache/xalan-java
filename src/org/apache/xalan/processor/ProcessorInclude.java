@@ -122,6 +122,26 @@ class ProcessorInclude extends XSLTElementProcessor
   }
 
   /**
+   * Get the stylesheet type associated with an included stylesheet
+   *
+   * @return the type of the stylesheet
+   */
+  protected int getStylesheetType()
+  {
+    return StylesheetHandler.STYPE_INCLUDE;
+  }
+
+  /**
+   * Get the error number associated with this type of stylesheet including itself
+   *
+   * @return the appropriate error number
+   */
+  protected int getStylesheetInclErr()
+  {
+    return XSLTErrorResources.ER_STYLESHEET_INCLUDES_ITSELF;
+  }
+
+  /**
    * Receive notification of the start of an xsl:include element.
    *
    * @param handler The calling StylesheetHandler/TemplatesBuilder.
@@ -145,11 +165,23 @@ class ProcessorInclude extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
+
     setPropertiesFromAttributes(handler, rawName, attributes, this);
+
+    String hrefUrl = getHref();
+
+    if (handler.importStackContains(hrefUrl))
+    {
+      throw new org.xml.sax.SAXException(
+        XSLMessages.createMessage(
+          getStylesheetInclErr(), new Object[]{ hrefUrl }));  //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
+    }
+
+    handler.pushImportURL(hrefUrl);
 
     int savedStylesheetType = handler.getStylesheetType();
 
-    handler.setStylesheetType(StylesheetHandler.STYPE_INCLUDE);
+    handler.setStylesheetType(this.getStylesheetType());
     handler.pushNewNamespaceSupport();
 
     try
@@ -159,9 +191,8 @@ class ProcessorInclude extends XSLTElementProcessor
     finally
     {
       handler.setStylesheetType(savedStylesheetType);
+      handler.popImportURL();
       handler.popNamespaceSupport();
-
-      // handler.popStylesheet();
     }
   }
 

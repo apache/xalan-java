@@ -85,17 +85,15 @@ public class TemplateList implements java.io.Serializable
 
   /**
    * Construct a TemplateList object.
-   *
-   * @param stylesheet -- The stylesheet owner, must be valid (non-null).
    */
-  TemplateList(Stylesheet stylesheet)
+  TemplateList()
   {
-    m_stylesheet = stylesheet;
-    m_stylesheetComposed = m_stylesheet.getStylesheetComposed();
+    super();
   }
 
   /**
-   * Add a template to the template list.
+   * Add a template to the table of named templates.  This routine should
+   * be called in decreasing order of precedence but it checks nonetheless.
    *
    * @param template
    */
@@ -103,13 +101,23 @@ public class TemplateList implements java.io.Serializable
   {
     if (null != template.getName())
     {
-      if (m_namedTemplates.get(template.getName()) == null)
+      ElemTemplate existingTemplate = (ElemTemplate) m_namedTemplates.get(template.getName());
+      if (null == existingTemplate)
       {
         m_namedTemplates.put(template.getName(), template);
       }
       else
       {
-        template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE,
+        int existingPrecedence =
+                        existingTemplate.getStylesheetComposed().getImportCountComposed();
+        int newPrecedence = template.getStylesheetComposed().getImportCountComposed();
+        if (newPrecedence > existingPrecedence)
+        {
+          // This should never happen
+          m_namedTemplates.put(template.getName(), template);
+        }
+        else if (newPrecedence == existingPrecedence)
+          template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE,
                        new Object[]{ template.getName() });
       }
     }
@@ -232,7 +240,7 @@ public class TemplateList implements java.io.Serializable
 
   /**
    * Insert the given TemplateSubPatternAssociation into the the linked
-   * list.  Sort by priority first, then by document order.
+   * list.  Sort by import precedence, then priority, then by document order.
    *
    * @param head The first TemplateSubPatternAssociation in the linked list.
    * @param item The item that we want to insert into the proper place.
@@ -246,8 +254,8 @@ public class TemplateList implements java.io.Serializable
                                          boolean isWildCardInsert)
   {
 
-    // Sort first by decreasing priority (highest priority is at front),
-    // then by import level (higher level is at front),
+    // Sort first by import level (higher level is at front),
+    // then by priority (highest priority is at front),
     // then by document order (later in document is at front).
 
     double priority = getPriorityOrScore(item);
@@ -262,7 +270,7 @@ public class TemplateList implements java.io.Serializable
 
     // Spin down so that insertPoint points to:
     // (a) the template immediately _before_ the first template on the chain with
-    // a priority that is either (i) less than ours or (ii) the same as ours but
+    // a precedence that is either (i) less than ours or (ii) the same as ours but
     // the template document position is less than ours
     // -or-
     // (b) the last template on the chain if no such template described in (a) exists.
@@ -278,13 +286,13 @@ public class TemplateList implements java.io.Serializable
       else
       {
         workPriority = getPriorityOrScore(next);
-        if (priority > workPriority)
-          break;
-        else if (priority < workPriority)
-          insertPoint = next;
-        else if (importLevel > next.getImportLevel())   // priorities are equal
+        if (importLevel > next.getImportLevel())
           break;
         else if (importLevel < next.getImportLevel())
+          insertPoint = next;
+        else if (priority > workPriority)               // import precedence is equal
+          break;
+        else if (priority < workPriority)
           insertPoint = next;
         else if (docOrder >= next.getDocOrderPos())     // priorities, import are equal
           break;
@@ -296,13 +304,13 @@ public class TemplateList implements java.io.Serializable
     if ( (null == next) || (insertPoint == head) )      // insert point is first or last
     {
       workPriority = getPriorityOrScore(insertPoint);
-      if (priority > workPriority)
-        insertBefore = true;
-      else if (priority < workPriority)
-        insertBefore = false;
-      else if (importLevel > insertPoint.getImportLevel())
+      if (importLevel > insertPoint.getImportLevel())
         insertBefore = true;
       else if (importLevel < insertPoint.getImportLevel())
+        insertBefore = false;
+      else if (priority > workPriority)
+        insertBefore = true;
+      else if (priority < workPriority)
         insertBefore = false;
       else if (docOrder >= insertPoint.getDocOrderPos())
         insertBefore = true;
@@ -430,28 +438,7 @@ public class TemplateList implements java.io.Serializable
    */
   public ElemTemplate getTemplate(QName qname)
   {
-
-    ElemTemplate namedTemplate = (ElemTemplate) m_namedTemplates.get(qname);
-
-    if (null == namedTemplate)
-    {
-      StylesheetComposed stylesheet = m_stylesheetComposed;
-      int n = stylesheet.getImportCountComposed();
-
-      for (int i = 0; i < n; i++)
-      {
-        StylesheetComposed imported = stylesheet.getImportComposed(i);
-
-        namedTemplate = imported.getTemplateComposed(qname);
-
-        if (null != namedTemplate)
-        {
-          break;
-        }
-      }
-    }
-
-    return namedTemplate;
+    return (ElemTemplate) m_namedTemplates.get(qname);
   }
 
   /**
@@ -508,13 +495,13 @@ public class TemplateList implements java.io.Serializable
    * Given a target element, find the template that best
    * matches in the given XSL document, according
    * to the rules specified in the xsl draft.
-   * @param stylesheetTree Where the XSL rules are to be found.
-   * @param targetElem The element that needs a rule.
    *
    * @param xctxt
    * @param targetNode
    * @param mode A string indicating the display mode.
-   * @param useImports means that this is an xsl:apply-imports commend.
+   * @param maxImportLevel The maximum importCountComposed that we should consider or -1
+   *        if we should consider all import levels.  This is used by apply-imports to
+   *        access templates that have been overridden.
    * @param quietConflictWarnings
    * @return Rule that best matches targetElem.
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
@@ -522,8 +509,11 @@ public class TemplateList implements java.io.Serializable
    *
    * @throws TransformerException
    */
-  public ElemTemplate getTemplate(
-          XPathContext xctxt, Node targetNode, QName mode, boolean quietConflictWarnings)
+  public ElemTemplate getTemplate(XPathContext xctxt,
+                                Node targetNode,
+                                QName mode,
+                                int maxImportLevel,
+                                boolean quietConflictWarnings)
             throws TransformerException
   {
 
@@ -537,6 +527,11 @@ public class TemplateList implements java.io.Serializable
 
         do
         {
+          if ( (maxImportLevel > -1) && (head.getImportLevel() > maxImportLevel) )
+          {
+            continue;
+          }
+
           if ((head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE)
                   && head.matchMode(mode))
           {
@@ -551,22 +546,6 @@ public class TemplateList implements java.io.Serializable
       finally
       {
         xctxt.popCurrentNodeAndExpression();
-      }
-    }
-
-    int n = m_stylesheetComposed.getImportCountComposed();
-
-    if (0 != n)
-    {
-      for (int i = 0; i < n; i++)
-      {
-        StylesheetComposed imported =
-          m_stylesheetComposed.getImportComposed(i);
-        ElemTemplate t = getTemplate(imported, xctxt, targetNode, mode,
-                                     quietConflictWarnings);
-
-        if (null != t)
-          return t;
       }
     }
 
@@ -586,28 +565,6 @@ public class TemplateList implements java.io.Serializable
   {
 
     // TODO: Check for conflicts.
-  }
-
-  /**
-   * For derived classes to override which method gets accesed to
-   * get the imported template.
-   *
-   * @param imported
-   * @param support
-   * @param targetNode
-   * @param mode
-   * @param quietConflictWarnings
-   *
-   * @return
-   *
-   * @throws TransformerException
-   */
-  protected ElemTemplate getTemplate(
-          StylesheetComposed imported, XPathContext support, Node targetNode, QName mode, boolean quietConflictWarnings)
-            throws TransformerException
-  {
-    return imported.getTemplateComposed(support, targetNode, mode,
-                                        quietConflictWarnings);
   }
 
   /**
@@ -636,40 +593,6 @@ public class TemplateList implements java.io.Serializable
     {
       v.addElement(obj);
     }
-  }
-
-  /**
-   * The stylesheet owner of the list.
-   */
-  private Stylesheet m_stylesheet;
-
-  /** NEEDSDOC Field m_stylesheetComposed          */
-  private StylesheetComposed m_stylesheetComposed;
-
-  /**
-   * Get the stylesheet owner of the list.
-   *
-   * @return
-   */
-  private Stylesheet getStylesheet()
-  {
-    return m_stylesheet;
-  }
-
-  /**
-   * The first template of the template children.
-   * @serial
-   */
-  private ElemTemplateElement m_firstTemplate = null;
-
-  /**
-   * Get the first template of the template children.
-   *
-   * @return
-   */
-  private ElemTemplateElement getFirstTemplate()
-  {
-    return m_firstTemplate;
   }
 
   /**

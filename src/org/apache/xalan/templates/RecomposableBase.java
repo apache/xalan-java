@@ -56,54 +56,15 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xpath.XPath;
-
 /**
- * This is used as a special "fake" template that can be
- * handled by the TemplateList to do pattern matching
- * on nodes.
+ * This interface defines a recomposable stylesheet element that does not
+ * necessarily implement the compareTo() method.
  */
-public class WhiteSpaceInfo extends ElemTemplate
+interface RecomposableBase
 {
 
-  /** NEEDSDOC Field m_shouldStripSpace          */
-  private boolean m_shouldStripSpace;
-
   /**
-   * Return true if this element specifies that the node that
-   * matches the match pattern should be stripped, otherwise
-   * the space should be preserved.
-   *
-   * NEEDSDOC ($objectName$) @return
+   * Recomposes this object with others of its type.
    */
-  public boolean getShouldStripSpace()
-  {
-    return m_shouldStripSpace;
-  }
-
-  /**
-   * Constructor WhiteSpaceInfo
-   *
-   *
-   * NEEDSDOC @param matchPattern
-   * NEEDSDOC @param shouldStripSpace
-   */
-  public WhiteSpaceInfo(XPath matchPattern, boolean shouldStripSpace, Stylesheet thisSheet)
-  {
-
-    m_shouldStripSpace = shouldStripSpace;
-
-    setMatch(matchPattern);
-
-    setStylesheet(thisSheet);
-  }
-
-  /**
-   * This function is called to recompose() all of the WhiteSpaceInfo elements.
-   */
-  public void recompose(StylesheetRoot root)
-  {
-    root.recomposeWhiteSpaceInfo(this);
-  }
-
+  public void recompose(StylesheetRoot root);
 }

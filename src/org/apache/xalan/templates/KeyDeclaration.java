@@ -72,6 +72,18 @@ public class KeyDeclaration extends ElemTemplateElement
 {
 
   /**
+   * Constructs a new element representing the xsl:key.  The parameters
+   * are needed to prioritize this key element as part of the recomposing
+   * process.  For this element, they are not automatically created
+   * because the element is never added on to the stylesheet parent.
+   */
+  public KeyDeclaration(Stylesheet parentNode, int docOrderNumber)
+  {
+    m_parentNode = parentNode;
+    setUid(docOrderNumber);
+  }
+
+  /**
    * The "name" property.
    */
   private QName m_name;
@@ -195,4 +207,15 @@ public class KeyDeclaration extends ElemTemplateElement
   {
     return m_buildState;
   }
+
+  /**
+   * This function is called during recomposition to
+   * control how this element is composed.
+   * @param root The root stylesheet for this transformation.
+   */
+  public void recompose(StylesheetRoot root)
+  {
+    root.recomposeKeys(this);
+  }
+
 }
