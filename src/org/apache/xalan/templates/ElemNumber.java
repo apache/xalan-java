@@ -795,10 +795,17 @@ public class ElemNumber extends ElemTemplateElement
     if (null != m_valueExpr)
     {
       XObject countObj = m_valueExpr.execute(xctxt, sourceNode, this);
-      long count = (long)java.lang.Math.floor(countObj.num()+ 0.5);
-
-      list = new long[1];
-      list[0] = count;
+      //According to Errata E24
+      double d_count = java.lang.Math.floor(countObj.num()+ 0.5);
+      if (Double.isNaN(d_count)) return "NaN";
+      else if (d_count < 0 && Double.isInfinite(d_count)) return "-Infinity";
+      else if (Double.isInfinite(d_count)) return "Infinity";
+      else if (d_count == 0) return "0";
+      else{
+              long count = (long)d_count;
+              list = new long[1];
+              list[0] = count;              
+      }
     }
     else
     {
