@@ -89,8 +89,8 @@ final class Include extends TopLevelElement {
 
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
+	String docToLoad = getAttribute("href");
 	try {
-	    String docToLoad = getAttribute("href");
 	    if (context.checkForLoop(docToLoad)) {
 		final int errno = ErrorMsg.CIRCULAR_INCLUDE_ERR;
 		final ErrorMsg msg = new ErrorMsg(errno, docToLoad, this);
@@ -163,6 +163,22 @@ final class Include extends TopLevelElement {
 			topStylesheet.addElement((TopLevelElement)element);
 		}
 	    }
+	}
+	catch (FileNotFoundException e) {
+	    // Update systemId in parent stylesheet for error reporting
+	    context.setSystemId(getAttribute("href"));
+
+	    final ErrorMsg msg = 
+		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
+	    parser.reportError(Constants.FATAL, msg);
+	}
+	catch (MalformedURLException e) {
+	    // Update systemId in parent stylesheet for error reporting
+	    context.setSystemId(getAttribute("href"));
+
+	    final ErrorMsg msg = 
+		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
+	    parser.reportError(Constants.FATAL, msg);
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
