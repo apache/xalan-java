@@ -214,13 +214,13 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <target name="docs" depends="prepare.docs,autodocs"> <!-- old xalan.jar 1.x used by doc.generator -->
+  <target name="docs" depends="prepare.docs,autodocs">
     <echo message="docs is human-usable target with dependencies"/>  
   </target>
   
   <target name="autodocs">
     <echo message="autodocs is for automated build process, without dependencies"/>   
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalan.jar}" 
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
   </target>
   
@@ -247,13 +247,13 @@ Copyright:
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
          packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.lib.sql,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xpath,org.apache.xalan.xpath.xml,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,org.w3c.xslt,serialize,serialize.helpers,trax"
-         group="TrAX trax,Xalan_Core org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer,XPath org.apache.xpath*:org.w3c.xslt,Xalan_Other org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.lib*:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils, Serializers serialize*, Xalan_1_Compatability org.apache.xalan.xslt:org.apache.xalan.xpath*"
+         group="TrAX trax,Xalan_Core org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer,XPath org.apache.xpath*:org.w3c.xslt,Xalan_Other org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils,Xalan_Extensions org.apache.xalan.lib*,Serializers serialize*,Xalan-Java_1_Interface org.apache.xalan.xslt:org.apache.xalan.xpath*"
          destdir="${build.apidocs}"
          author="true"
          version="true"
          use="true"
-         windowtitle="${Name}" 
-         doctitle="${Name}"
+         windowtitle="${Name} 2" 
+         doctitle="${Name} 2"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved."
     />
   </target>
