@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 Created-By: 1.2.2 (Sun Microsystems Inc.)
-Class-Path: runtime.jar BCEL.jar regexp.jar JLex.jar java_cup.jar xercesImpl.jar xml-apis.jar
 
 Name: org/apache/xalan/xsltc
 Comment: Main XSLTC engine implementing TrAX/JAXP
