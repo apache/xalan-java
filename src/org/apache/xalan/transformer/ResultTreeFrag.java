@@ -66,12 +66,13 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.utils.UnImplNode;
 
 /**
  * <meta name="usage" content="internal"/>
  * Container of a result tree fragment.
  */
-public class ResultTreeFrag implements DocumentFragment
+public class ResultTreeFrag extends UnImplNode implements DocumentFragment
 {
   Document m_docFactory;
   NodeSet m_children;
@@ -95,10 +96,10 @@ public class ResultTreeFrag implements DocumentFragment
   /**
    * Throw an error.
    */
-  void error(int msg)
-  {
-		   throw new RuntimeException(XSLMessages.createMessage(msg, null));
-  }
+  // void error(int msg)
+  // {
+	//	   throw new RuntimeException(XSLMessages.createMessage(msg, null));
+  // }
 
   /**
    * The name of this node, depending on its type; see the table above.
