@@ -357,6 +357,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
           catch(TransformerException te)
           {}
         }
+        m_needToEval = false;
       }
       if(null != stylesheetSource)
       {
