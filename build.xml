@@ -9,13 +9,12 @@ Setup instructions:
      - set the JAVA_HOME environment variable to the JDK root directory
      - To build 'servlet' sample: Include Servlet SDK in your classpath
      - To build docs/javadocs/xsltc: use JDK 1.2.x or higher
-     - (if shipping a public distribution) have checked out xml-commons
-       as a sister directory to xml-xalan
    
 Build Instructions:   
   To build, run
     build.bat (win32) or build.sh (unix) [antoptions] [targets]
-  in the directory where this file is located.
+  in the directory where this file is located; you should also be 
+  able to use an installation of Ant v1.4.1 or later.
    
   build -projecthelp  will show a list of supported targets.
    
@@ -67,14 +66,14 @@ Copyright:
   <property name="doclet.jar" value="${bin.dir}/${doclet.jar.name}"/>
 
   <!-- GUMP: Currently 18-Apr-01 used only for xsltc.compile -->
-  <property name="BCEL.jar.name" value="BCEL.jar"/>
-  <property name="BCEL.jar" value="${bin.dir}/${BCEL.jar.name}"/>
+  <property name="bcel.jar.name" value="BCEL.jar"/>
+  <property name="bcel.jar" value="${bin.dir}/${bcel.jar.name}"/>
   <property name="crimson.jar.name" value="crimson.jar"/><!-- Why is this here? 10-Sep-01 -sc -->
   <property name="crimson.jar" value="${bin.dir}/${crimson.jar.name}"/>
   <property name="java_cup.jar.name" value="java_cup.jar"/>
   <property name="java_cup.jar" value="${bin.dir}/${java_cup.jar.name}"/>
-  <property name="JLex.jar.name" value="JLex.jar"/>
-  <property name="JLex.jar" value="${bin.dir}/${JLex.jar.name}"/>
+  <property name="jlex.jar.name" value="JLex.jar"/>
+  <property name="jlex.jar" value="${bin.dir}/${jlex.jar.name}"/>
   <property name="runtime.jar.name" value="runtime.jar"/>
   <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
   <property name="xml.jar.name" value="xml.jar"/>
@@ -84,7 +83,7 @@ Copyright:
   <property name="version.VERSION" value="2"/>
   <property name="version.RELEASE" value="2"/>
   <property name="version.DEVELOPER" value="D"/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR" value="13"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.MINOR" value="14"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version" value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
@@ -286,8 +285,8 @@ Copyright:
   <!-- Compile just the XSLTC compiler portion (to be integrated soon!) -->
   <!-- =================================================================== -->
   <path id="xsltc.class.path">
-    <pathelement location="${BCEL.jar}" />
-    <pathelement location="${JLex.jar}" />
+    <pathelement location="${bcel.jar}" />
+    <pathelement location="${jlex.jar}" />
     <pathelement location="${java_cup.jar}" />
     <pathelement location="${runtime.jar}" />
     <pathelement location="${xml.jar}" />
@@ -362,19 +361,17 @@ Copyright:
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     <jar jarfile="${build.xalan.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
-      <patternset><!-- relative to jar/@basedir -->
+      <patternset>
         <exclude name="org/w3c/dom/"/>
         <exclude name="org/xml/sax/"/>
         <exclude name="javax/xml/"/>
+      </patternset>
+      <patternset><!-- relative to jar/@basedir -->
         <exclude name="${xsltc.reldir}/**/*" />
       </patternset>
     </jar>
     <jar jarfile="${build.xml-apis.jar}" basedir="${build.classes}" >
-      <patternset><!-- relative to jar/@basedir -->
-        <include name="org/w3c/dom/"/>
-        <include name="org/xml/sax/"/>
-        <include name="javax/xml/"/>
-      </patternset>
+      <patternset refid="api-patternset"/>
     </jar>
   </target>
   
@@ -527,7 +524,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Compiles (does not jar) the translet samples in translets.          -->
   <!-- For time being, classes are generated in place.                     -->
-  <!-- To run these samples, add xsltc.jar, runtime.jar, BCEL.jar,         -->
+  <!-- To run these samples, add xsltc.jar, runtime.jar, bcel.jar,         -->
   <!-- and java_cup.jar (all in the bin directory) to the classpath        --> 
   <!--                                                                     -->
   <!-- When we have straightened out classpath issues,                     -->
@@ -619,6 +616,12 @@ Copyright:
       <fileset dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/>
     </delete>
     <delete file="${xdocs.DONE.file}"/>
+    <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
+    <delete includeEmptyDirs="true" >
+      <fileset dir="${src.dir}" >
+        <patternset refid="api-patternset"/>
+      </fileset>
+    </delete>
   </target>
  
   <target name="xsltc.clean"
