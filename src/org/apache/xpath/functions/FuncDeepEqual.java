@@ -140,7 +140,11 @@ public class FuncDeepEqual extends Function3Args
           DTM dtm1 = xnss1.getDTM();
           DTM dtm2 = xnss2.getDTM();
           int node1 = xnss1.getNodeHandle();
-          int node2 = xnss2.getNodeHandle();
+         int node2 = xnss2.getNodeHandle();
+          
+          // Make sure we start at the first (and only node)
+          xnss1.reset();
+          xnss2.reset(); 
           
           if (xnss1.deepEquals(xnss2))
           {
@@ -158,11 +162,11 @@ public class FuncDeepEqual extends Function3Args
   
   private boolean deepEqual(int node1, int node2, DTM dtm1, DTM dtm2, java.text.Collator collator)
   {
-    int type1 = dtm1.getNodeType(node1);
-    if (type1 == dtm2.getNodeType(node2)
+    int type = dtm1.getNodeType(node1);
+    if (type == dtm2.getNodeType(node2)
         && dtm1.getNodeName(node1).equals(dtm2.getNodeName(node2)))
     {
-      switch (type1)
+      switch (type)
       {
       case DTM.COMMENT_NODE:
       case DTM.TEXT_NODE:
@@ -185,7 +189,6 @@ public class FuncDeepEqual extends Function3Args
       }
       }
       
-      {
         int attrNode1 = dtm1.getFirstAttribute(node1);
         int attrNode2 = dtm2.getFirstAttribute(node2);
         
@@ -225,21 +228,58 @@ public class FuncDeepEqual extends Function3Args
         {
           int child1 = dtm1.getFirstChild(node1);
           int child2 = dtm2.getFirstChild(node2);
-          while (deepEqual(child1, child2, dtm1, dtm2, collator))
-          {
-            child1 = dtm1.getNextSibling(child1);
-            child2 = dtm2.getNextSibling(child2);
-            if (child1 == DTM.NULL || child2 == DTM.NULL)
-              break;
-          }
-          if (child1 != DTM.NULL && child2 != DTM.NULL)
-            return false;
+          while (true)
+          {          
+           short type1 = dtm1.getNodeType(child1);
+           short type2 = dtm2.getNodeType(child2); 
+           if((type1 == DTM.COMMENT_NODE) || 
+                  (type1 == DTM.PROCESSING_INSTRUCTION_NODE))
+             {
+               child1 =  getNonCommentOrPI(dtm1,dtm1.getNextSibling(child1));
+             }
+           else if((type2  == DTM.COMMENT_NODE) || 
+                  (type2 == DTM.PROCESSING_INSTRUCTION_NODE))
+             {
+               child2 = getNonCommentOrPI(dtm2,dtm2.getNextSibling(child2));
+             }    
+           else
+           {
+            if (deepEqual(child1, child2, dtm1, dtm2, collator))
+            {
+              child1 = getNonCommentOrPI(dtm1,dtm1.getNextSibling(child1));
+              child2 = getNonCommentOrPI(dtm2,dtm2.getNextSibling(child2));
+            }
+            else
+              return false;
+           }
+           if (child1 == DTM.NULL && DTM.NULL == child2)
+             return true;
+            
+           if (child1 == DTM.NULL || child2 == DTM.NULL)
+             return false;
         }
-        
-        return true;
       }
+      return true;
     }
-    return false;
+    else
+      return false;
+  }
+  
+  private int getNonCommentOrPI(DTM dtm, int child)
+  {
+    if (DTM.NULL == child)
+      return child;
+    short type = dtm.getNodeType(child); 
+    while((type == DTM.COMMENT_NODE) || 
+                  (type == DTM.PROCESSING_INSTRUCTION_NODE))
+     {
+        child =  dtm.getNextSibling(child);
+       if ( child != DTM.NULL)
+          type = dtm.getNodeType(child);
+       else 
+         break;
+     }
+    return child;
   }
   
   /**
