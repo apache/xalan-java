@@ -125,7 +125,7 @@ public final class ObjectType extends Type {
     }
 
     public String toString() {
-	return "object";
+	return _javaClassName;
     }
 
     public boolean identicalTo(Type other) {

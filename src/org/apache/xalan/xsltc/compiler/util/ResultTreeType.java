@@ -276,13 +276,15 @@ public final class ResultTreeType extends Type {
 	    }
 	    il.append(methodGen.loadDOM());
 
-	    // Create new instance of DOM class 
-	    int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	    il.append(new NEW(cpg.addClass(DOM_IMPL)));
-	    il.append(DUP);
-	    il.append(DUP);
+	    // Create new instance of DOM class (with RTF_INITIAL_SIZE nodes)
+	    il.append(methodGen.loadDOM());
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+				 "getResultTreeFrag",
+				 "(IZ)" + DOM_INTF_SIG);
 	    il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
-	    il.append(new INVOKESPECIAL(index));
+	    il.append(new PUSH(cpg, false));
+	    il.append(new INVOKEINTERFACE(index,3));
+	    il.append(DUP);
 	    
 	    // Store new DOM into a local variable
 	    newDom = methodGen.addLocalVariable("rt_to_reference_dom", 
@@ -292,10 +294,15 @@ public final class ResultTreeType extends Type {
 	    il.append(new ASTORE(newDom.getIndex()));
 
 	    // Overwrite old handler with DOM handler
-	    index = cpg.addMethodref(DOM_IMPL,
-				     "getOutputDomBuilder", 
-				     "()" + TRANSLET_OUTPUT_SIG);
-	    il.append(new INVOKEVIRTUAL(index));
+	    index = cpg.addInterfaceMethodref(DOM_INTF,
+				 "getOutputDomBuilder",
+				 "()" + TRANSLET_OUTPUT_SIG);
+
+	    il.append(new INVOKEINTERFACE(index,1));
+	    //index = cpg.addMethodref(DOM_IMPL,
+		//		     "getOutputDomBuilder", 
+		//		     "()" + TRANSLET_OUTPUT_SIG);
+	    //il.append(new INVOKEVIRTUAL(index));
 	    il.append(DUP);
 	    il.append(DUP);
 

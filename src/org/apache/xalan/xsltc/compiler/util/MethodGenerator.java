@@ -111,6 +111,7 @@ public class MethodGenerator extends MethodGen
     private final Instruction _setStartNode;
     private final Instruction _reset;
     private final Instruction _nextNode;
+    private final Instruction _nextNodeId;
 
     private SlotAllocator _slotAllocator;
     private boolean _allocatorInit = false;
@@ -143,7 +144,7 @@ public class MethodGenerator extends MethodGen
 
 	final int attribute =
 	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-				      "attribute", 
+				      "addAttribute", 
 				      "("
 				      + STRING_SIG
 				      + STRING_SIG
@@ -152,7 +153,7 @@ public class MethodGenerator extends MethodGen
 
 	final int namespace =
 	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-				      "namespace", 
+				      "namespaceAfterStartElement", 
 				      "("
 				      + STRING_SIG
 				      + STRING_SIG
@@ -181,6 +182,9 @@ public class MethodGenerator extends MethodGen
 	
 	index = cpg.addInterfaceMethodref(NODE_ITERATOR, NEXT, NEXT_SIG);
 	_nextNode = new INVOKEINTERFACE(index, 1);
+	
+	index = cpg.addInterfaceMethodref("org.apache.xalan.xsltc.dom.SAXImpl$SingletonNodeIDIterator", NEXTID, NEXT_SIG);
+	_nextNodeId = new INVOKEINTERFACE(index, 1);
 	
 	_slotAllocator = new SlotAllocator();
 	_slotAllocator.initialize(getLocalVariables());
@@ -248,6 +252,10 @@ public class MethodGenerator extends MethodGen
     
     public final Instruction nextNode() {
 	return _nextNode;
+    }
+    
+    public final Instruction nextNodeId() {
+	return _nextNodeId;
     }
     
     public final Instruction startElement() {

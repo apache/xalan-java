@@ -93,6 +93,10 @@ public class TypeCheckError extends Exception {
         return _error;
     }
 
+    public String getMessage() {
+        return toString();
+    }
+
     public String toString() {
 	String result;
 

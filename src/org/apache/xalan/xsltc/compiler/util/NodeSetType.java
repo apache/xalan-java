@@ -68,7 +68,7 @@ import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GOTO;
-import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.IFLT;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.Instruction;
@@ -208,7 +208,7 @@ public final class NodeSetType extends Type {
 	final InstructionList il = methodGen.getInstructionList();
 	getFirstNode(classGen, methodGen);
 	il.append(DUP);
-	final BranchHandle falsec = il.append(new IFEQ(null));
+	final BranchHandle falsec = il.append(new IFLT(null));
 	Type.Node.translateTo(classGen, methodGen, type);
 	final BranchHandle truec = il.append(new GOTO(null));
 	falsec.setTarget(il.append(POP));
@@ -260,7 +260,7 @@ public final class NodeSetType extends Type {
 					     BooleanType type) {
 	final InstructionList il = methodGen.getInstructionList();
 	getFirstNode(classGen, methodGen);
-	return new FlowList(il.append(new IFEQ(null)));
+	return new FlowList(il.append(new IFLT(null)));
     }
 
     /**
