@@ -1248,12 +1248,11 @@ public class NodeSet
 
       if ((null != node) && node.equals(s))
       {
-        if (i > m_firstFree)
-          System.arraycopy(m_map, i + 1, m_map, i - 1, m_firstFree - i);
-        else
-          m_map[i] = null;
+        if (i < m_firstFree - 1)
+          System.arraycopy(m_map, i + 1, m_map, i, m_firstFree - i - 1);
 
         m_firstFree--;
+        m_map[m_firstFree] = null;
 
         return true;
       }
@@ -1275,11 +1274,17 @@ public class NodeSet
 
     if (null == m_map)
       return;
+      
+    if (i >= m_firstFree)
+      throw new ArrayIndexOutOfBoundsException(i + " >= " + m_firstFree);
+    else if (i < 0)
+      throw new ArrayIndexOutOfBoundsException(i);
 
-    if (i > m_firstFree)
-      System.arraycopy(m_map, i + 1, m_map, i - 1, m_firstFree - i);
-    else
-      m_map[i] = null;
+    if (i < m_firstFree - 1)
+      System.arraycopy(m_map, i + 1, m_map, i, m_firstFree - i - 1);
+
+    m_firstFree--;
+    m_map[m_firstFree] = null;
   }
 
   /**
