@@ -123,7 +123,7 @@ public class XPATHErrorResources extends ListResourceBundle
  */
 
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 116;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 108;  // this is needed to keep track of the number of messages
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -229,12 +229,12 @@ public class XPATHErrorResources extends ListResourceBundle
 	 "ER_SETDOMFACTORY_NOT_SUPPORTED";
   public static final String ER_PREFIX_MUST_RESOLVE = "ER_PREFIX_MUST_RESOLVE";
   public static final String ER_PARSE_NOT_SUPPORTED = "ER_PARSE_NOT_SUPPORTED";
-  public static final String ER_CREATEDOCUMENT_NOT_SUPPORTED = 
-	 "ER_CREATEDOCUMENT_NOT_SUPPORTED";
-  public static final String ER_CHILD_HAS_NO_OWNER_DOCUMENT = 
-	 "ER_CHILD_HAS_NO_OWNER_DOCUMENT";
-  public static final String ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 
-	 "ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT";
+  //public static final String ER_CREATEDOCUMENT_NOT_SUPPORTED = 
+//	 "ER_CREATEDOCUMENT_NOT_SUPPORTED";
+  //public static final String ER_CHILD_HAS_NO_OWNER_DOCUMENT = 
+//	 "ER_CHILD_HAS_NO_OWNER_DOCUMENT";
+  //public static final String ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 
+//	 "ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT";
   public static final String ER_SAX_API_NOT_HANDLED = "ER_SAX_API_NOT_HANDLED";
 public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED = 
 	 "ER_IGNORABLE_WHITESPACE_NOT_HANDLED";
@@ -245,10 +245,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_XERCES_PARSE_ERROR_DETAILS = 
 	 "ER_XERCES_PARSE_ERROR_DETAILS";
   public static final String ER_XERCES_PARSE_ERROR = "ER_XERCES_PARSE_ERROR";
-  public static final String ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 
-	 "ER_CANT_OUTPUT_TEXT_BEFORE_DOC";
-  public static final String ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 
-	 "ER_CANT_HAVE_MORE_THAN_ONE_ROOT";
+  //public static final String ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 
+//	 "ER_CANT_OUTPUT_TEXT_BEFORE_DOC";
+  //public static final String ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 
+//	 "ER_CANT_HAVE_MORE_THAN_ONE_ROOT";
   public static final String ER_INVALID_UTF16_SURROGATE = 
 	 "ER_INVALID_UTF16_SURROGATE";
   public static final String ER_OIERROR = "ER_OIERROR";
@@ -256,7 +256,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_XPATH_READOBJECT = "ER_XPATH_READOBJECT";
  public static final String ER_FUNCTION_TOKEN_NOT_FOUND = 
 	 "ER_FUNCTION_TOKEN_NOT_FOUND";
- public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
+ //public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_CANNOT_DEAL_XPATH_TYPE = 
 	 "ER_CANNOT_DEAL_XPATH_TYPE";
   public static final String ER_NODESET_NOT_MUTABLE = "ER_NODESET_NOT_MUTABLE";
@@ -333,10 +333,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_EXPECTED_REL_PATH_PATTERN = 
 	 "ER_EXPECTED_REL_PATH_PATTERN";
   /** localname in QNAME should be a valid NCName */
-  public static final String ER_ARG_LOCALNAME_INVALID = 
-	 "ER_ARG_LOCALNAME_INVALID";
+  //public static final String ER_ARG_LOCALNAME_INVALID = 
+//	 "ER_ARG_LOCALNAME_INVALID";
   /** prefix in QNAME should be a valid NCName */
-  public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
+  //public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
   /** Field ER_CANT_CONVERT_TO_BOOLEAN          */
   public static final String ER_CANT_CONVERT_TO_BOOLEAN = 
 	 "ER_CANT_CONVERT_TO_BOOLEAN";
@@ -717,20 +717,20 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
 //  public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
 
-  { ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "createDocument() not supported in XPathContext!"},
+  //{ ER_CREATEDOCUMENT_NOT_SUPPORTED,
+  //    "createDocument() not supported in XPathContext!"},
 
   /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
 //  public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
 
-  { ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "Attribute child does not have an owner document!"},
+  //{ ER_CHILD_HAS_NO_OWNER_DOCUMENT,
+  //    "Attribute child does not have an owner document!"},
 
   /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
 //  public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
 
-  { ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "Attribute child does not have an owner document element!"},
+  //{ ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
+  //    "Attribute child does not have an owner document element!"},
 
   /** Field ER_SAX_API_NOT_HANDLED          */
 //  public static final int ER_SAX_API_NOT_HANDLED = 57;
@@ -771,14 +771,14 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
 //  public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
 
-  { ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "Warning: can't output text before document element!  Ignoring..."},
+  //{ ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
+   //   "Warning: can't output text before document element!  Ignoring..."},
 
   /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
 //  public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
 
-  { ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "Can't have more than one root on a DOM!"},
+  //{ ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
+   //   "Can't have more than one root on a DOM!"},
 
   /** Field ER_INVALID_UTF16_SURROGATE          */
 //  public static final int ER_INVALID_UTF16_SURROGATE = 65;
@@ -804,7 +804,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   { ER_XPATH_READOBJECT,
      "In XPath.readObject: {0}"},
   
-  /** Field ER_XPATH_READOBJECT         */
+  /** Field ER_FUNCTION_TOKEN_NOT_FOUND         */
 // public static final int ER_FUNCTION_TOKEN_NOT_FOUND = 69;
 
   { ER_FUNCTION_TOKEN_NOT_FOUND,
@@ -813,8 +813,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
    /**  Argument 'localName' is null  */
 // public static final int ER_ARG_LOCALNAME_NULL = 70;
 
-  { ER_FUNCTION_TOKEN_NOT_FOUND,
-       "Argument 'localName' is null"},
+  //{ ER_ARG_LOCALNAME_NULL,
+  //     "Argument 'localName' is null"},
   
    /**  Can not deal with XPath type:   */
 //  public static final int ER_CANNOT_DEAL_XPATH_TYPE = 71;
@@ -1030,8 +1030,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /** localname in QNAME should be a valid NCName */
 //  public static final int ER_ARG_LOCALNAME_INVALID = 101;
 
-  { ER_ARG_LOCALNAME_INVALID,
-       "Localname in QNAME should be a valid NCName"},
+  //{ ER_ARG_LOCALNAME_INVALID,
+  //     "Localname in QNAME should be a valid NCName"},
   
   // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
   // The prefix is the portion before the optional colon; the message indicates
@@ -1040,8 +1040,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /** prefix in QNAME should be a valid NCName */
  // public static final int ER_ARG_PREFIX_INVALID = 102;
 
-  { ER_ARG_PREFIX_INVALID,
-       "Prefix in QNAME should be a valid NCName"},
+  //{ ER_ARG_PREFIX_INVALID,
+   //    "Prefix in QNAME should be a valid NCName"},
 
   // Note to translators:  The substitution text is the name of a data type.  The
   // message indicates that a value of a particular type could not be converted

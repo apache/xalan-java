@@ -80,7 +80,7 @@ public class XPATHErrorResources_zh_TW extends XPATHErrorResources
 
   
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 116;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 108;  // this is needed to keep track of the number of messages          
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -568,33 +568,6 @@ public class XPATHErrorResources_zh_TW extends XPATHErrorResources
       "\u5728 XPathContext \u4e2d\u4e0d\u652f\u63f4\u5256\u6790\uff08InputSource \u4f86\u6e90\uff09\uff01\u7121\u6cd5\u958b\u555f {0}"},
 
 
-  /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
-  //public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
-
-
-  {
-    ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "createDocument() \u5728 XPathContext \u4e2d\u4e0d\u53d7\u652f\u63f4\uff01"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "\u5c6c\u6027\u5b50\u9805\u6c92\u6709\u64c1\u6709\u8005\u6587\u4ef6\uff01"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "\u5c6c\u6027\u5b50\u9805\u6c92\u6709\u64c1\u6709\u8005\u6587\u4ef6\u5143\u7d20\uff01"},
-
-
   /** Field ER_SAX_API_NOT_HANDLED          */
   //public static final int ER_SAX_API_NOT_HANDLED = 57;
 
@@ -648,24 +621,6 @@ public class XPATHErrorResources_zh_TW extends XPATHErrorResources
     ER_XERCES_PARSE_ERROR, "DOM2Helper.parse \u932f\u8aa4"},
 
 
-  /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
-  //public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
-
-
-  {
-    ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "\u8b66\u544a\uff1a\u7121\u6cd5\u8f38\u51fa\u6587\u4ef6\u5143\u7d20\u4e4b\u524d\u7684\u6587\u5b57\uff01\u5ffd\u7565..."},
-
-
-  /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
-  //public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
-
-
-  {
-    ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "\u4e00\u500b DOM \u53ea\u80fd\u6709\u4e00\u500b\u6839\uff01"},
-
-
   /** Field ER_INVALID_UTF16_SURROGATE          */
   //public static final int ER_INVALID_UTF16_SURROGATE = 65;
 
@@ -706,15 +661,6 @@ public class XPATHErrorResources_zh_TW extends XPATHErrorResources
   {
     ER_FUNCTION_TOKEN_NOT_FOUND,
       "\u627e\u4e0d\u5230\u51fd\u5f0f\u8a18\u865f\u3002"},
-
-  
-   /**  Argument 'localName' is null  */
-  //public static final int ER_ARG_LOCALNAME_NULL = 70;
-
-
-  {
-    ER_ARG_LOCALNAME_NULL,
-       "\u5f15\u6578 'localName' \u70ba\u7a7a\u503c"},
 
   
    /**  Can not deal with XPath type:   */
@@ -1010,32 +956,6 @@ public class XPATHErrorResources_zh_TW extends XPATHErrorResources
   {
     ER_EXPECTED_REL_PATH_PATTERN,
        "\u61c9\u70ba\u76f8\u5c0d\u8def\u5f91\u578b\u6a23\u3002"},
-
-
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The localname is the portion after the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** localname in QNAME should be a valid NCName */
-  //public static final int ER_ARG_LOCALNAME_INVALID = 101;
- 
-
-  {
-    ER_ARG_LOCALNAME_INVALID,
-       "QNAME \u4e2d\u7684 Localname \u61c9\u70ba\u6709\u6548\u7684 NCName"},
-
-  
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The prefix is the portion before the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
- 
-  /** prefix in QNAME should be a valid NCName */
-  //public static final int ER_ARG_PREFIX_INVALID = 102;
- 
-
-  {
-    ER_ARG_PREFIX_INVALID,
-       "QNAME \u4e2d\u7684\u524d\u7f6e\u61c9\u70ba\u6709\u6548\u7684 NCName"},
 
   
    // Note to translators:  The substitution text is the name of a data type.  The

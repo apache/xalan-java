@@ -80,7 +80,7 @@ public class XPATHErrorResources_sv extends XPATHErrorResources
 
 
   /** Field MAX_CODE          */
-public static final int MAX_CODE = 116;  // this is needed to keep track of the number of messages
+public static final int MAX_CODE = 108;  // this is needed to keep track of the number of messages
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -568,33 +568,6 @@ public static final int MAX_CODE = 116;  // this is needed to keep track of the 
       "parse (InputSource source) underst\u00f6ds inte av XPathContext! Kan inte \u00f6ppna {0}"},
 
 
-  /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
-  //public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
-
-
-  {
-    ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "createDocument() underst\u00f6ds inte av XPathContext!"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "Attributbarn saknar \u00e4gardokument!"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "Attributbarn saknar \u00e4gardokumentelement!"},
-
-
   /** Field ER_SAX_API_NOT_HANDLED          */
   //public static final int ER_SAX_API_NOT_HANDLED = 57;
 
@@ -648,24 +621,6 @@ public static final int MAX_CODE = 116;  // this is needed to keep track of the 
     ER_XERCES_PARSE_ERROR, "DOM2Helper.parse-fel"},
 
 
-  /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
-  //public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
-
-
-  {
-    ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "Varning: kan inte skriva ut text innan dokumentelement!  Ignorerar..."},
-
-
-  /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
-  //public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
-
-
-  {
-    ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "Kan inte ha mer \u00e4n en rot p\u00e5 en DOM!"},
-
-
   /** Field ER_INVALID_UTF16_SURROGATE          */
   //public static final int ER_INVALID_UTF16_SURROGATE = 65;
 
@@ -706,15 +661,6 @@ public static final int MAX_CODE = 116;  // this is needed to keep track of the 
   {
     ER_FUNCTION_TOKEN_NOT_FOUND,
       "funktionstecken saknas."},
-
-  
-   /**  Argument 'localName' is null  */
-  //public static final int ER_ARG_LOCALNAME_NULL = 70;
-
-
-  {
-    ER_ARG_LOCALNAME_NULL,
-       "Argument 'localName' \u00e4r null"},
 
   
    /**  Can not deal with XPath type:   */
@@ -1011,32 +957,6 @@ public static final int MAX_CODE = 116;  // this is needed to keep track of the 
   {
     ER_EXPECTED_REL_PATH_PATTERN,
        "Ett m\u00f6nster f\u00f6r relativ s\u00f6kv\u00e4g f\u00f6rv\u00e4ntades."},
-
-
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The localname is the portion after the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** localname in QNAME should be a valid NCName */
-  //public static final int ER_ARG_LOCALNAME_INVALID = 101;
-
-
-  {
-    ER_ARG_LOCALNAME_INVALID,
-       "Localname i QNAME b\u00f6r vara ett giltigt NCName"},
-
-  
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The prefix is the portion before the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** prefix in QNAME should be a valid NCName */
-  //public static final int ER_ARG_PREFIX_INVALID = 102;
-
-
-  {
-    ER_ARG_PREFIX_INVALID,
-       "Prefixet i QNAME b\u00f6r vara ett giltigt NCName"},
 
 
   // Note to translators:  The substitution text is the name of a data type.  The

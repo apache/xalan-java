@@ -79,7 +79,7 @@ public class XPATHErrorResources_fr extends XPATHErrorResources
 {
 
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 116;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 108;  // this is needed to keep track of the number of messages          
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -567,33 +567,6 @@ public class XPATHErrorResources_fr extends XPATHErrorResources
       "parse (source InputSource) non pris en charge dans XpathContext ! Impossible d\u2019ouvrir {0}"},
 
 
-  /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
-  //public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
-
-
-  {
-    ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "createDocument() non pris en charge dans XpathContext !"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "L\u2019attribut child n\u2019a pas de document propri\u00e9taire !"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "L\u2019attribute child n\u2019a pas d\u2019\u00e9l\u00e9ment de document propri\u00e9taire !"},
-
-
   /** Field ER_SAX_API_NOT_HANDLED          */
   //public static final int ER_SAX_API_NOT_HANDLED = 57;
 
@@ -647,24 +620,6 @@ public class XPATHErrorResources_fr extends XPATHErrorResources
     ER_XERCES_PARSE_ERROR, "Erreur DOM2Helper.parse"},
 
 
-  /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
-  //public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
-
-
-  {
-    ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "Attention : impossible de sortir le texte avant l\u2019\u00e9l\u00e9ment document !  Op\u00e9ration ignor\u00e9e ..."},
-
-
-  /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
-  //public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
-
-
-  {
-    ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "Impossible d\u2019avoir plus d\u2019une racine sur un DOM !"},
-
-
   /** Field ER_INVALID_UTF16_SURROGATE          */
   //public static final int ER_INVALID_UTF16_SURROGATE = 65;
 
@@ -705,15 +660,6 @@ public class XPATHErrorResources_fr extends XPATHErrorResources
   {
     ER_FUNCTION_TOKEN_NOT_FOUND,
       "Unit\u00e9 lexicale function introuvable."},
-
-  
-   /**  Argument 'localName' is null  */
-  //public static final int ER_ARG_LOCALNAME_NULL = 70;
-
-
-  {
-    ER_ARG_LOCALNAME_NULL,
-       "L\u2019argument 'localName' est \u00e9gal \u00e0 null"},
 
   
    /**  Can not deal with XPath type:   */
@@ -1010,32 +956,6 @@ public class XPATHErrorResources_fr extends XPATHErrorResources
   {
     ER_EXPECTED_REL_PATH_PATTERN,
        "Une forme de chemin d'acc\u00e8s relatif \u00e9tait attendue."},
-
-
-// Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The localname is the portion after the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** localname in QNAME should be a valid NCName */
-  //public static final int ER_ARG_LOCALNAME_INVALID = 101;
-
-
-  {
-    ER_ARG_LOCALNAME_INVALID,
-       "Le nom local de QNAME doit \u00eatre un NCName admis"},
-
-  
-// Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The prefix is the portion before the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** prefix in QNAME should be a valid NCName */
-  //public static final int ER_ARG_PREFIX_INVALID = 102;
-
-
-  {
-    ER_ARG_PREFIX_INVALID,
-       "Le pr\u00e9fixe de QNAME doit \u00eatre un NCName admis"},
 
 
 // Note to translators:  The substitution text is the name of a data type.  The
