@@ -94,15 +94,6 @@
   <td>required</td>
   <td>required</td>  
 </tr>
-<!-- TWA - xml.jar has old project x stuff; was able to compile and run without it -->
-<!--
-<tr>
-  <td>xml.jar</td>
-  <td>required</td>
-  <td>required</td>
-  <td>required</td>  
-</tr>
--->
 <tr>
   <td>runtime.jar</td>
   <td>required</td>
@@ -124,6 +115,12 @@
 <tr>
   <td>java_cup.jar</td>
   <td></td>
+  <td></td>
+  <td>required</td>  
+</tr>
+<tr>
+  <td>regexp.jar</td>
+  <td>required</td>
   <td></td>
   <td>required</td>  
 </tr>
@@ -154,7 +151,7 @@
     <anchor name="comp-synopsis"/>
 <s3 title="Synopsis">
 <p>
-<code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+<code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;[-o &lt;output&gt;] [-d &lt;directory&gt;] [-j &lt;jarfile&gt;]</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;[-p &lt;package name&gt;] [-u] &lt;stylesheet&gt;...</code></p> 
 
@@ -195,29 +192,29 @@
     files (see <link anchor="classpath">setting the system classpath</link>).</p>
 
 	<p><em>Example 1:</em>  Creating a translet from the hamlet.xsl stylesheet.</p>
-	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet.xsl</code></p>    
     <p>Example 1 produces a set of class files such as hamlet.class, hamlet$0.class, hamlet$1.class.</p>	
 
 	<p><em>Example 2:</em>  Outputting to a JAR file.</p>
-    <p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+    <p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; -j hamlet.jar hamlet.xsl</code></p>
     <p>Example 2 produces hamlet.jar, which contains the translet class files.</p>	
 
 	<p><em>Example 3:</em> Specifying the translet class name. </p> 
-	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; -o newhamlet hamlet.xsl</code></p>
     <p>Example 3 producs a set of class files such as newhamlet.class, newhamlet$0.class, etc., rather than hamlet.class,
     hamles$0.class, etc.</p>
 
 
 	<p><em>Example 4:</em> Compiling multiple stylesheets.</p>
-	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet1.xsl hamlet2.xsl hamlet3.xsl</code></p>
     <p>Example 4 produces three translets and set of class files derived from the three stylesheets.</p>
 
 	<p><em>Example 5:</em> Package Specification.</p>
-	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; -p com.mycompany.translets hamlet.xsl</code></p>
     <p>Example 5 produces a set of class files such as com/mycompany/translets/hamlet.class,
 	com/mycompany/translets/hamlet$0.class', etc.</p>
@@ -282,16 +279,16 @@ Arguments wirhout flags:
     
     <p><em>Example 1:</em> Processing an XML document.</p>
 
-	<p><code>java org.apache.xalan.xsltc.runtime.DefaultRun</code><br/>
+	<p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp;  hamlet.xml hamlet</code></p> 
 
 	<p>Example 1 uses the specified translet (hamlet) to transform the specified XML input document (hamlet.xml). 
     The XML input document is in the current working directory. The translet was created by using
-    org.apache.xalan.xslt.compiler.XSLTC to compile an XSL stylesheet (hamlet.xsl). </p>
+    org.apache.xalan.xslt.cmdline.Compile to compile an XSL stylesheet (hamlet.xsl). </p>
 
 	<p><em>Example 2:</em> Passing stylesheet parameters to the translet.</p>
 
-	<p><code>java org.apache.xalan.xsltc.runtime.DefaultRun</code><br/>
+	<p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet.xml hamlet</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp; speaker=HAMLET 'scene=SCENE IV'</code></p>
 
@@ -301,7 +298,7 @@ Arguments wirhout flags:
     
     <p><em>Example 3:</em> Processing an XML input document specified with a URI.</p>
 
-	<p><code>java org.apache.xalan.xsltc.runtime.DefaultRun</code><br/>
+	<p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp;  -u http://zarya.east/test.xml hamlet</code></p>
 
 	<p>Example 3 applies the translet (hamlet) to the XML input document (http://zarya.east/test.xml hamlet). Inclusion of
@@ -309,7 +306,7 @@ Arguments wirhout flags:
 </s3>
 </s2><anchor name="api"/>
 <s2 title="Calling XSLTC with the TrAX/JAXP API">
-<p>G. Todd Miller has begun integrating the translet with the TrAX/JAXP 1.1 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
+<p>XSLTC translets are integrated with the TrAX/JAXP 1.1 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
 
 
 <p>When you use the JAXP 1.1 API to run &xslt4j;, the <code>javax.xml.transform.TransformerFactory</code> system property is set to <code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently stands, this Xalan implementation of TransformerFactory always uses the Xalan Transformer to perform transformations. To use translets to perform transformations, set this system property to <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code>. For information on setting this and related system properties designating XML parsere and XSL transformer, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
@@ -463,7 +460,7 @@ a successful (zero) value.</p>
 
 <source>import java.io.File;
 import java.net.MalformedURLException; 
-import org.apache.xalan.xsltc.compiler.XSLTC;
+import org.apache.xalan.xsltc.cmdline.Compile;
 ...
   private Translet compileStylesheet(String stylesheetName) {
     Translet retval = null;
@@ -505,7 +502,7 @@ import org.apache.xalan.xsltc.compiler.XSLTC;
 series of .class files. Their base name is derived from the name of the 
 stylesheet. </p>
 
-<p>The XSLT compiler object (org.apache.xalan.xsltc.compiler.XSLTC), is created,
+<p>The XSLT compiler object (org.apache.xalan.xsltc.cmdline.Compile), is created,
 initialized and then its compile() method is called passing in a URL
 to the stylesheet itself. Once the .class files have been written,
 the translet is instantiated using Java reflection to create the Class
