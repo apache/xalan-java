@@ -415,7 +415,8 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 <p>You can set up a servlet to use &xslt4j; to respond to requests for XML documents by transforming those documents into HTML and serving them to web browsers. To respond to HTTP GET requests, all you need to do is overwrite the HttpServlet doGet() method with a procedure that instantiates a Transformer and uses it to perform a transformation. As the following example shows, you can generate a ResultStream that a PrintWriter writes to the HttpResponse OutputStream, returning the transformation output to the web browser.</p>
 <source>
 public class SampleXSLTServlet extends javax.servlet.http.HttpServlet {
-  
+
+  public final static String FS = System.getProperty("file.separator"); 
   // Respond to HTTP GET requests from browsers.
   public void doGet (javax.servlet.http.HttpServletRequest request,
                      javax.servlet.http.HttpServletResponse response)
@@ -429,14 +430,16 @@ public class SampleXSLTServlet extends javax.servlet.http.HttpServlet {
     {	
       javax.xml.transform.TransformerFactory tFactory = 
                 javax.xml.transform.TransformerFactory.newInstance();
+      //get the real path for xml and xsl files.
+      String ctx = getServletContext().getRealPath("") + FS;        
       // Get the XML input document and the stylesheet, both in the servlet
       // engine document directory.
       javax.xml.transform.Source xmlSource = 
                 new javax.xml.transform.stream.StreamSource
-                             (new java.net.URL("file:foo.xml").openStream());
+                             (new java.net.URL("file", "", ctx+"foo.xml").openStream());
       javax.xml.transform.Source xslSource = 
                 new javax.xml.transform.stream.StreamSource
-                             (new java.net.URL("file:foo.xsl").openStream());
+                             (new java.net.URL("file", "", ctx+"foo.xsl").openStream());
       // Generate the transformer.
       javax.xml.transform.Transformer transformer = 
                              tFactory.newTransformer(xslSource);

@@ -335,7 +335,7 @@
        <tr><td>compile</td><td>compiles &xslt4j; in build/classes.</td></tr>
        <tr><td>jar (the default)</td><td>creates xalan.jar in the build directory</td></tr>
        <tr><td>samples</td><td>compiles and jars the sample apps in build/xalansamples.jar</td></tr>
-       <tr><td>servlet</td><td>compiles and jars the sample servlet in build/xalanservlet.jar</td></tr>       
+       <tr><td>servlet</td><td>compiles and jars the sample servlet in build/xalanservlet.war</td></tr>       
        <tr><td>docs</td><td>creates the HTML User's Guide in build/docs</td></tr>
        <tr><td>javadocs</td><td>generates the API documentation in ./build/docs/apidocs</td></tr>
        <tr><td>dist</td><td>generates a complete distribution tree with zip and tar.gz distribution files in build</td></tr>
