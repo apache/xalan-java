@@ -220,13 +220,12 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 <li><link idref="samples" anchor="sql">SQL library sample applications</link></li>
 </ul>
 <p><em>**Experimental**</em> Provides extension functions for connecting to a JDBC data source, executing a query,
-and working incrementally through "streamable" result set.</p>
-<note>Many features of the SQL library, including support for connection pools, parameterized queries, caching streamable 
-result sets, and added support for extracting connection information and query parameters from XML source documents exist
+and optionally working incrementally through a "streamable" result set. <ref>Due to a bug, caching, not streaming, is currently 
+the default mode of operation.</ref> </p>
+<note>Many features of the SQL library, including support for connection pools, parameterized queries, caching,  
+and added support for extracting connection information and query parameters from XML source documents exist
 thanks to John Gentilin (johnglinux@eyecatching.com), who has also added a number of SQL library samples.</note>
-<p><em>The SQL extension use of a single row-set node to incrementally return a query result set is experimental. Keep in mind that you
-can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for
-example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>
+<p><em>The SQL extension use in streaming mode of a single row-set node to incrementally return a query result set is experimental. If you use streaming mode, you can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>
 <p><jump href="apidocs/org/apache/xalan/lib/sql/XConnection.html">org.apache.xalan.lib.sql.XConnection</jump> provides a number 
 of extension functions that you can use in your stylesheet.</p>
     <ol>
@@ -239,8 +238,7 @@ of extension functions that you can use in your stylesheet.</p>
        begin "transforming" the row-set before the entire result set has been returned.<br/><br/></li>
        <li>pquery(), addParameter(), addParameterFromElement(), clearParameters() -- Use the XConnection pquery() method in 
        conjunction with these other methods to set up and execute parameterized queries.<br/><br/></li>
-       <li>enableCacheNodes(), disableCacheNodes() -- Use these XConnection methods to manage the caching of the streamable 
-       nodes returned by queries.<br/><br/></li>
+       <li>Use disableCacheNodes() to use streaming node, and enableCacheNodes() to cache the query result set. <br/><br/></li>
       <li>close() -- Use the XConnection object close() method to terminate the connection.</li>      
     </ol>
     <p>The query() and pquery() extension functions return a Document node that contains (as needed) an array of column-header elements, 
