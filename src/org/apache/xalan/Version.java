@@ -83,7 +83,7 @@ public class Version
   {
     return getProduct()+" "+getImplementationLanguage()+" "
            +getMajorVersionNum()+"."+getReleaseVersionNum()+"."
-           +(getDevelopmentVersionNum() > 0 ? 
+           +( (getDevelopmentVersionNum() > 0) ? 
                ("D"+getDevelopmentVersionNum()) : (getMaintenanceVersionNum()));
   }
 
