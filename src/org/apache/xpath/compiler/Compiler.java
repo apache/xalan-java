@@ -79,7 +79,7 @@ public class Compiler extends OpMap
    * @param locator The location object where the expression lives, which 
    *                may be null, but which, if not null, must be valid over 
    *                the long haul, in other words, it will not be cloned.
-   * @param functionTable The FunctionTable object where the xpath build-in 
+   * @param fTable  The FunctionTable object where the xpath build-in 
    *                functions are stored.
    */
   public Compiler(ErrorListener errorHandler, SourceLocator locator, 

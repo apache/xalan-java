@@ -44,7 +44,6 @@ public class XRTreeFrag extends XObject implements Cloneable
   /**
    * Create an XRTreeFrag Object.
    *
-   * @param frag Document fragment this will wrap
    */
   public XRTreeFrag(int root, XPathContext xctxt, ExpressionNode parent)
   {
@@ -56,7 +55,6 @@ public class XRTreeFrag extends XObject implements Cloneable
   /**
    * Create an XRTreeFrag Object.
    *
-   * @param frag Document fragment this will wrap
    */
   public XRTreeFrag(int root, XPathContext xctxt)
   {
@@ -89,7 +87,6 @@ public class XRTreeFrag extends XObject implements Cloneable
   /**
    * Create an XRTreeFrag Object.
    *
-   * @param frag Document fragment this will wrap
    */
   public XRTreeFrag(Expression expr)
   {

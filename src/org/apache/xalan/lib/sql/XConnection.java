@@ -1096,7 +1096,6 @@ public class XConnection
   /**
    * Close the connection to the data source. Only close the connections
    * for a single document.
-   * @param sqldoc
    *
    * @throws SQLException
    */

@@ -392,7 +392,7 @@ public final class ResultTreeType extends Type {
      *
      * @param classGen A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An reference to the Class to translate to
+     * @param clazz An reference to the Class to translate to
      * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 

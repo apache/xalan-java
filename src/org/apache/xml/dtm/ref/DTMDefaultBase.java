@@ -1404,8 +1404,6 @@ public abstract class DTMDefaultBase implements DTM
      *
      * %REVIEW% Inlne this into findNamespaceContext? Create SortedSuballocatedIntVector type?
      *
-     * @param elementNodeIndex Index of a node to look up.
-     *
      * @return If positive or zero, the index of the found item.
      * If negative, index of the point at which it would have appeared,
      * encoded as -1-index and hence reconvertable by subtracting

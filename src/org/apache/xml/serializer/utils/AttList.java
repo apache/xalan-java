@@ -125,7 +125,7 @@ public final class AttList implements Attributes
    * Look up an attribute's qualified name by index.
    *
    *
-   * @param index The attribute index (zero-based).
+   * @param i The attribute index (zero-based).
    *
    * @return The attribute's qualified name
    */
@@ -138,7 +138,7 @@ public final class AttList implements Attributes
    * Get the attribute's node type by index
    *
    *
-   * @param index The attribute index (zero-based)
+   * @param i The attribute index (zero-based)
    *
    * @return the attribute's node type
    */
@@ -151,7 +151,7 @@ public final class AttList implements Attributes
    * Get the attribute's node value by index
    *
    *
-   * @param index The attribute index (zero-based)
+   * @param i The attribute index (zero-based)
    *
    * @return the attribute's node value
    */

@@ -1112,21 +1112,21 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * If {@link org.apache.xalan.processor.StylesheetHandler#getStylesheetType} returns this value, the current stylesheet
+   * If getStylesheetType returns this value, the current stylesheet
    *  is a root stylesheet.
    * @xsl.usage internal
    */
   public static final int STYPE_ROOT = 1;
 
   /**
-   * If {@link org.apache.xalan.processor.StylesheetHandler#getStylesheetType} returns this value, the current stylesheet
+   * If getStylesheetType returns this value, the current stylesheet
    *  is an included stylesheet.
    * @xsl.usage internal
    */
   public static final int STYPE_INCLUDE = 2;
 
   /**
-   * If {@link org.apache.xalan.processor.StylesheetHandler#getStylesheetType} returns this value, the current stylesheet
+   * If getStylesheetType returns this value, the current stylesheet
    *  is an imported stylesheet.
    * @xsl.usage internal
    */

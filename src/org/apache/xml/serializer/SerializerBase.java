@@ -497,7 +497,7 @@ public abstract class SerializerBase
 
    /**
      * Sets the character encoding coming from the xsl:output encoding stylesheet attribute.
-     * @param encoding the character encoding
+     * @param m_encoding the character encoding
      */
     public void setEncoding(String m_encoding)
     {
@@ -1224,7 +1224,7 @@ public abstract class SerializerBase
      * Used only by TransformerSnapshotImpl to restore the serialization 
      * to a previous state. 
      * 
-     * @param NamespaceMappings
+     * @param mappings NamespaceMappings
      */
     public void setNamespaceMappings(NamespaceMappings mappings) {
         m_prefixMap = mappings;

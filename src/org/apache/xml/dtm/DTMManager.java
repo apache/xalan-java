@@ -336,7 +336,7 @@ public abstract class DTMManager
    * This flag should have the same value as the FEATURE_SOURCE_LOCATION feature
    * which is set by the TransformerFactory.setAttribut() method before a
    * DTMManager is created
-   * @param source location boolean to use to set m_source_location
+   * @param sourceLocation boolean to use to set m_source_location
    */
   public void setSource_location(boolean sourceLocation){
     m_source_location = sourceLocation;

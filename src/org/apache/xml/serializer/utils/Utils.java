@@ -26,7 +26,7 @@ import java.util.Hashtable;
  * This class is not a public API, it is only public because it is
  * used by org.apache.xml.serializer.
  * 
- * @xsl internal
+ * @xsl.usage internal
  */
 public final class Utils
 {

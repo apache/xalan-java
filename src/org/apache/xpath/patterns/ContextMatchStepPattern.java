@@ -35,7 +35,6 @@ public class ContextMatchStepPattern extends StepPattern
   /**
    * Construct a ContextMatchStepPattern.
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public ContextMatchStepPattern(int axis, int paxis)
   {

@@ -121,8 +121,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    *               by some other means.
    * @param unique true if the returned DTM must be unique, probably because it
    * is going to be mutated.
-   * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may 
-   *                         be null.
+   * @param wsfilter Enables filtering of whitespace nodes, and may be null.
    * @param incremental true if the construction should try and be incremental.
    * @param doIndexing true if the caller considers it worth it to use 
    *                   indexing schemes.
@@ -374,7 +373,6 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * Push a slot on the locations stack so that setSAXLocator can be 
    * repeatedly called.
    *
-   * @param location The location within the stylesheet.
    */
   public void pushSAXLocatorNull()
   {

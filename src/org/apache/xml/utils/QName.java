@@ -597,8 +597,6 @@ public class QName implements java.io.Serializable
    * the passed object is a QName and it matches
    * the name of the arg.
    *
-   * @param qname Qualified name to compare to 
-   *
    * @return True if the qualified names are equal
    */
   public boolean equals(Object object)

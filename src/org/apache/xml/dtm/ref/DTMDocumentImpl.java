@@ -1361,10 +1361,10 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
         }
 
         /**
-                * Given a node handle, find the owning document node.
-                *
-                * @return int Node handle of document, which should always be valid.
-                */
+         * Given a node handle, find the owning document node.
+         *
+         * @return int Node handle of document, which should always be valid.
+         */
         public int getDocument() {
                 return m_docHandle;
         }
@@ -1984,7 +1984,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          *        specified in the start-tag of its element, or was defaulted from the
          *        DTD.
          *
-         * @param the attribute handle
+         * @param attributeHandle the attribute handle
          * @return <code>true</code> if the attribute was specified;
          *         <code>false</code> if it was defaulted.
          */

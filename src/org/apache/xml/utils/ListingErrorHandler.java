@@ -352,7 +352,6 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
      * Print out the specific source line that caused the exception, 
      * if possible to load it.  
      *
-     * @author shane_curcuru@us.ibm.com
      * @param pw PrintWriter to send output to
      * @param locator Xalan wrapper for either a JAXP or a SAX 
      * source location object

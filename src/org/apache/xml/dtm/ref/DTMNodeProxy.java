@@ -451,8 +451,8 @@ public class DTMNodeProxy
    * Method hasAttributeNS
    *
    *
-   * @param name
-   * @param x
+   * @param namespaceURI
+   * @param localName
    *
    *
    */

@@ -73,7 +73,7 @@ public interface SerializationHandler
      * never, even if this option is set to 'true', be escaped within
      * CDATA sections in output XML documents.
      * 
-     * @param true if escaping is to be set on.
+     * @param escape true if escaping is to be set on.
      */
     public boolean setEscaping(boolean escape) throws SAXException;
 
@@ -99,7 +99,7 @@ public interface SerializationHandler
      * Used only by TransformerSnapshotImpl to restore the serialization 
      * to a previous state. 
      * 
-     * @param NamespaceMappings
+     * @param mappings NamespaceMappings
      */
     public void setNamespaceMappings(NamespaceMappings mappings);
 

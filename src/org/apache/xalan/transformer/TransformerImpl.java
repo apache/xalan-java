@@ -830,9 +830,6 @@ public class TransformerImpl extends Transformer
    * that was set with setOutputProperty, or it may be a
    * property specified in the stylesheet.
    *
-   * @param name A non-null String that specifies an output
-   * property name, which may be namespace qualified.
-   *
    * NEEDSDOC @param qnameString
    *
    * @return The string value of the output property, or null
@@ -865,8 +862,6 @@ public class TransformerImpl extends Transformer
    * Get the value of a property, without using the default properties.  This
    * can be used to test if a property has been explicitly set by the stylesheet
    * or user.
-   *
-   * @param name The property name, which is a fully-qualified URI.
    *
    * NEEDSDOC @param qnameString
    *

@@ -41,7 +41,7 @@ public abstract class SerializerFactory
      * Returns a serializer for the specified output method. Returns
      * null if no implementation exists that supports the specified
      * output method. For a list of the default output methods see
-     * {@link Method}.
+     * {@link org.apache.xml.serializer.Method}.
      *
      * @param format The output format
      * @return A suitable serializer, or null
