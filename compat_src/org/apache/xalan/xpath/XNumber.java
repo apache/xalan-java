@@ -124,7 +124,7 @@ public class XNumber extends XObject
    */
   public Object object()
   {
-    return m_xnumber.object();;
+    return m_xnumber.object();
   }
 
   /**
