@@ -33,7 +33,15 @@
   message "Stylesheet directed termination".<br/><br/></li>
   <li>In TransformerException, check that the cause != null when checking for a contained exception.<br/><br/></li>
   <li>Fixed a problem validating non-namespaced attributes and a problem allowing non-namespaced attributes to be children of the
-   stylesheet element.</li>
+   stylesheet element.<br/><br/></li>
+   <li>Fixed checking of number of arguments in FuncDocument.<br/><br/></li>
+   <li>Fixed problem with mutation of templates at run time. Templates resolution now takes place during the compose() method.<br/><br/></li>
+   <li>Fixed some minor threading issues in org.apache.xalan.stree (Child, Parent, ElementImpl, SourceTreeHandler).<br/><br/></li>
+   <li>Synchronized TrAX API functions subject to mutation to prevent mutation during a transformation.<br/><br/></li>
+   <li>Fixed bug reported by Jano Elivirta: FuncSubString was returning an error if the start index is larger than the string.<br/><br/></li>   
+   <li>Set StringKey.toString() to return the underlying String (m_str), thus avoiding a potential symmetry problem with the equals() method
+   reported by Ito Kazumitsu.<br/><br/></li>
+   <li>In response to note from Ito Kazumitsu, changed Java encoding name "EUCJIS" in FormatterToXML to "EUC_JP".</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
