@@ -58,32 +58,32 @@ package org.apache.xml.utils.synthetic;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class SynthesisException <needs-comment/>
+ * Class SynthesisException <needs-comment/>
  */
 public class SynthesisException extends Exception
 {
 
-  /** NEEDSDOC Field code          */
+  /** Field code          */
   int code;
 
   // Manefest constants
 
-  /** NEEDSDOC Field SYNTAX          */
+  /** Field SYNTAX          */
   public static final int SYNTAX = 0;
 
-  /** NEEDSDOC Field UNSUPPORTED          */
+  /** Field UNSUPPORTED          */
   public static final int UNSUPPORTED = 1;
 
-  /** NEEDSDOC Field REIFIED          */
+  /** Field REIFIED          */
   public static final int REIFIED = 2;
 
-  /** NEEDSDOC Field UNREIFIED          */
+  /** Field UNREIFIED          */
   public static final int UNREIFIED = 3;
 
-  /** NEEDSDOC Field WRONG_OWNER          */
+  /** Field WRONG_OWNER          */
   public static final int WRONG_OWNER = 4;
 
-  /** NEEDSDOC Field errToString          */
+  /** Field errToString          */
   public static final String[] errToString = {
     "(Syntax error; specific message should be passed in)",
     "Feature not yet supported",
@@ -95,7 +95,7 @@ public class SynthesisException extends Exception
    * Constructor SynthesisException
    *
    *
-   * NEEDSDOC @param code
+   * @param code
    */
   public SynthesisException(int code)
   {
@@ -109,8 +109,8 @@ public class SynthesisException extends Exception
    * Constructor SynthesisException
    *
    *
-   * NEEDSDOC @param code
-   * NEEDSDOC @param msg
+   * @param code
+   * @param msg
    */
   public SynthesisException(int code, String msg)
   {
@@ -121,10 +121,10 @@ public class SynthesisException extends Exception
   }
 
   /**
-   * NEEDSDOC Method getCode 
+   * Method getCode 
    *
    *
-   * NEEDSDOC (getCode) @return
+   * @return
    */
   int getCode()
   {

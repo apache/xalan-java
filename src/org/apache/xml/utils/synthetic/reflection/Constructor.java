@@ -89,19 +89,19 @@ public class Constructor extends EntryPoint implements Member
    */
   private org.apache.xml.utils.synthetic.Class declaringclass = null;
 
-  /** NEEDSDOC Field realconstructor          */
+  /** Field realconstructor          */
   private java.lang.reflect.Constructor realconstructor = null;
 
-  /** NEEDSDOC Field parametertypes          */
+  /** Field parametertypes          */
   private org.apache.xml.utils.synthetic.Class[] parametertypes;
 
-  /** NEEDSDOC Field parameternames          */
+  /** Field parameternames          */
   private String[] parameternames;
 
-  /** NEEDSDOC Field exceptiontypes          */
+  /** Field exceptiontypes          */
   private org.apache.xml.utils.synthetic.Class[] exceptiontypes;
 
-  /** NEEDSDOC Field modifiers          */
+  /** Field modifiers          */
   private int modifiers;
 
   /**
@@ -110,7 +110,7 @@ public class Constructor extends EntryPoint implements Member
    * Creation date: (12-27-99 2:31:39 PM)
    * @param realConstructor java.lang.reflect.Constructor
    *
-   * NEEDSDOC @param declaringclass
+   * @param declaringclass
    */
   public Constructor(org.apache.xml.utils.synthetic.Class declaringclass)
   {
@@ -123,8 +123,8 @@ public class Constructor extends EntryPoint implements Member
    * Creation date: (12-27-99 2:31:39 PM)
    * @param realConstructor java.lang.reflect.Constructor
    *
-   * NEEDSDOC @param ctor
-   * NEEDSDOC @param declaringclass
+   * @param ctor
+   * @param declaringclass
    */
   public Constructor(java.lang.reflect.Constructor ctor,
                      org.apache.xml.utils.synthetic.Class declaringclass)
@@ -138,7 +138,7 @@ public class Constructor extends EntryPoint implements Member
    * Creation date: (12-27-99 2:31:39 PM)
    * @param realConstructor java.lang.reflect.Constructor
    *
-   * NEEDSDOC @param realconstructor
+   * @param realconstructor
    */
   public Constructor(java.lang.reflect.Constructor realconstructor)
   {
@@ -150,7 +150,7 @@ public class Constructor extends EntryPoint implements Member
    * hashcode is the same as the hashcode for the
    * underlying constructor's declaring class name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * ($objectName$) @return
    */
   public int hashCode()
   {
@@ -216,9 +216,9 @@ public class Constructor extends EntryPoint implements Member
    * newly created and initialized instance.
    *
    *
-   * NEEDSDOC @param initargs
+   * @param initargs initialization arguments.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The new instance.
    * @throws  IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws  IllegalArgumentException

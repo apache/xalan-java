@@ -81,7 +81,7 @@ public interface Member
    * interface that declares the member or constructor
    * represented by this Member.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public abstract org.apache.xml.utils.synthetic.Class getDeclaringClass();
 
@@ -93,7 +93,7 @@ public interface Member
    *
    * @see Modifier
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public abstract int getModifiers();
 
@@ -102,7 +102,7 @@ public interface Member
    * interface that declares the member or constructor
    * represented by this Member.
    *
-   * NEEDSDOC @param declaringClass
+   * @param declaringClass
    *
    * @throws SynthesisException
    */
@@ -118,7 +118,7 @@ public interface Member
    *
    * @see Modifier
    *
-   * NEEDSDOC @param modifiers
+   * @param modifiers
    *
    * @throws SynthesisException
    */

@@ -68,22 +68,22 @@ import org.apache.xml.utils.synthetic.reflection.*;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class TestDriver <needs-comment/>
+ * Class TestDriver <needs-comment/>
  */
 public class TestDriver
 {
 
-  /** NEEDSDOC Field sampleField          */
+  /** Field sampleField          */
   public static int sampleField = 32;
 
-  /** NEEDSDOC Field inTest          */
+  /** Field inTest          */
   private boolean inTest = false;
 
   /**
-   * NEEDSDOC Method main 
+   * Method main 
    *
    *
-   * NEEDSDOC @param args
+   * @param args
    */
   public static void main(String[] args)
   {
@@ -143,10 +143,10 @@ public class TestDriver
   }
 
   /**
-   * NEEDSDOC Method dumpClass 
+   * Method dumpClass 
    *
    *
-   * NEEDSDOC @param C
+   * @param C
    */
   public static void dumpClass(Class C)
   {
@@ -160,7 +160,7 @@ public class TestDriver
   }
 
   /**
-   * NEEDSDOC Method quickcheck 
+   * Method quickcheck 
    *
    */
   public void quickcheck()
@@ -173,16 +173,16 @@ public class TestDriver
 
   /**
    * <meta name="usage" content="internal"/>
-   * NEEDSDOC Class Inner <needs-comment/>
+   * Class Inner <needs-comment/>
    */
   private class Inner
   {
 
     /**
-     * NEEDSDOC Method getTest 
+     * Method getTest 
      *
      *
-     * NEEDSDOC (getTest) @return
+     * @return
      */
     public boolean getTest()
     {
@@ -190,10 +190,10 @@ public class TestDriver
     }
 
     /**
-     * NEEDSDOC Method setTest 
+     * Method setTest 
      *
      *
-     * NEEDSDOC @param test
+     * @param test
      */
     public void setTest(boolean test)
     {

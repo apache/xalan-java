@@ -79,23 +79,23 @@ import org.apache.xml.utils.synthetic.SynthesisException;
 public class Field extends Object implements Member
 {
 
-  /** NEEDSDOC Field name, initializer          */
+  /** Field name, initializer          */
   public String name, initializer = null;
 
-  /** NEEDSDOC Field modifiers          */
+  /** Field modifiers          */
   int modifiers;
 
-  /** NEEDSDOC Field realfield          */
+  /** Field realfield          */
   java.lang.reflect.Field realfield = null;
 
-  /** NEEDSDOC Field declaringClass, type          */
+  /** Field declaringClass, type          */
   Class declaringClass, type;
 
   /**
    * Proxy constructor 
    *
-   * NEEDSDOC @param realfield
-   * NEEDSDOC @param declaringClass
+   * @param realfield
+   * @param declaringClass
    */
   public Field(java.lang.reflect.Field realfield,
                org.apache.xml.utils.synthetic.Class declaringClass)
@@ -111,8 +111,8 @@ public class Field extends Object implements Member
   /**
    * Synthesis constructor 
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param declaringClass
+   * @param name
+   * @param declaringClass
    */
   public Field(String name,
                org.apache.xml.utils.synthetic.Class declaringClass)
@@ -127,9 +127,9 @@ public class Field extends Object implements Member
    * Fields are the same if they were declared by the
    * same class and have the same name and type.
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public boolean equals(Object obj)
   {
@@ -176,9 +176,9 @@ public class Field extends Object implements Member
    * is.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -203,9 +203,9 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -229,9 +229,9 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -255,9 +255,9 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -281,7 +281,7 @@ public class Field extends Object implements Member
    * interface that declares the field represented by this
    * Field object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public org.apache.xml.utils.synthetic.Class getDeclaringClass()
   {
@@ -298,9 +298,9 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -324,9 +324,9 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -349,9 +349,9 @@ public class Field extends Object implements Member
    * Get the value of a field as a int on specified object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -375,9 +375,9 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -405,7 +405,7 @@ public class Field extends Object implements Member
    * @see
    * Modifier
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public int getModifiers()
   {
@@ -417,10 +417,10 @@ public class Field extends Object implements Member
   }
 
   /**
-   * NEEDSDOC Method getInitializer 
+   * Method getInitializer 
    *
    *
-   * NEEDSDOC (getInitializer) @return
+   * (getInitializer) @return
    */
   public String getInitializer()
   {
@@ -428,10 +428,10 @@ public class Field extends Object implements Member
   }
 
   /**
-   * NEEDSDOC Method setInitializer 
+   * Method setInitializer 
    *
    *
-   * NEEDSDOC @param i
+   * @param i
    *
    * @throws SynthesisException
    */
@@ -459,9 +459,9 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -484,7 +484,7 @@ public class Field extends Object implements Member
    * Returns a Class object that identifies the declared
    * type for the field represented by this Field object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public Class getType()
   {
@@ -496,10 +496,10 @@ public class Field extends Object implements Member
   }
 
   /**
-   * NEEDSDOC Method setType 
+   * Method setType 
    *
    *
-   * NEEDSDOC @param type
+   * @param type
    *
    * @throws SynthesisException
    */
@@ -519,7 +519,7 @@ public class Field extends Object implements Member
    * the underlying field's declaring class name and its
    * name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public int hashCode()
   {
@@ -570,8 +570,8 @@ public class Field extends Object implements Member
    * widened new value.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param value
+   * @param obj
+   * @param value
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -597,8 +597,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param z
+   * @param obj
+   * @param z
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -624,8 +624,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param b
+   * @param obj
+   * @param b
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -651,8 +651,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param c
+   * @param obj
+   * @param c
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -678,7 +678,7 @@ public class Field extends Object implements Member
    * declares the constructor represented by this
    * Constructor object.
    *
-   * NEEDSDOC @param declaringClass
+   * @param declaringClass
    */
   public void setDeclaringClass(
           org.apache.xml.utils.synthetic.Class declaringClass)
@@ -691,8 +691,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param d
+   * @param obj
+   * @param d
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -718,8 +718,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param f
+   * @param obj
+   * @param f
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -745,8 +745,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param i
+   * @param obj
+   * @param i
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -772,8 +772,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param l
+   * @param obj
+   * @param l
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -816,8 +816,8 @@ public class Field extends Object implements Member
    * object.
    *
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param s
+   * @param obj
+   * @param s
    * @throws IllegalAccessException
    * if the underlying constructor is inaccessible.
    * @throws IllegalArgumentException
@@ -856,7 +856,7 @@ public class Field extends Object implements Member
    * and then other modifiers in the following order:
    * static, final, transient, volatile.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public String toString()
   {
@@ -870,7 +870,7 @@ public class Field extends Object implements Member
   /**
    * Output the Field as Java sourcecode
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public String toSource()
   {

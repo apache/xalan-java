@@ -207,19 +207,19 @@ public class Class extends Object implements java.io.Serializable
    *  */
   private Constructor[] declaredconstructors = new Constructor[0];
 
-  /** NEEDSDOC Field allmethods          */
+  /** Field allmethods          */
   private Method[] allmethods = new Method[0];
 
-  /** NEEDSDOC Field declaredmethods          */
+  /** Field declaredmethods          */
   private Method[] declaredmethods = new Method[0];
 
-  /** NEEDSDOC Field allfields          */
+  /** Field allfields          */
   private Field[] allfields = new Field[0];
 
-  /** NEEDSDOC Field declaredfields          */
+  /** Field declaredfields          */
   private Field[] declaredfields = new Field[0];
 
-  /** NEEDSDOC Field innerclasses          */
+  /** Field innerclasses          */
   private Class[] innerclasses = new Class[0];
 
   /**
@@ -255,7 +255,7 @@ public class Class extends Object implements java.io.Serializable
    * Creation date: (12-25-99 12:15:23 PM)
    * @param name java.lang.String
    *
-   * NEEDSDOC @param fullname
+   * @param fullname
    */
   Class(String fullname)
   {
@@ -307,9 +307,9 @@ public class Class extends Object implements java.io.Serializable
    * inner clases. As with forName, if this can not be resolved
    * we throw an exception.
    *
-   * NEEDSDOC @param classname
+   * @param classname
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    *
    * @throws ClassNotFoundException
    */
@@ -538,7 +538,7 @@ public class Class extends Object implements java.io.Serializable
    * marginally useful, which is no doubt one of the reasons folks
    * have declined to implement it.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public Class[] getClasses()
   {
@@ -584,7 +584,7 @@ public class Class extends Object implements java.io.Serializable
    *
    * @see  Array
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public Class getComponentType()
   {
@@ -605,9 +605,9 @@ public class Class extends Object implements java.io.Serializable
    * exactly the same formal parameter types.
    *
    *
-   * NEEDSDOC @param parameterTypes
+   * @param parameterTypes
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
@@ -642,7 +642,7 @@ public class Class extends Object implements java.io.Serializable
    * constructors.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SecurityException
    * if access to the information is denied.
    * @see
@@ -680,7 +680,7 @@ public class Class extends Object implements java.io.Serializable
    * this Class object represents a primitive type.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SecurityException
    * if access to the information is denied.
    */
@@ -711,7 +711,7 @@ public class Class extends Object implements java.io.Serializable
    * interface represented by this Class object
    *
    *
-   * NEEDSDOC @param newclass
+   * @param newclass
    * @throws SynthesisException
    * if the class has been reified.
    * @see
@@ -740,9 +740,9 @@ public class Class extends Object implements java.io.Serializable
    * parameter types, in declared order.
    *
    *
-   * NEEDSDOC @param parameterTypes
+   * @param parameterTypes
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
@@ -761,7 +761,7 @@ public class Class extends Object implements java.io.Serializable
    * interface represented by this Class object
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SynthesisException
    * if the class has been reified.
    * @see
@@ -798,7 +798,7 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param newifce org.apache.xml.utils.synthetic.Class representing the interface we want to add.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @exception org.apache.xml.utils.synthetic.SynthesisException if the Class isn't an interface
    * @see setSuperClass
    * @see declareConstructor
@@ -845,7 +845,7 @@ public class Class extends Object implements java.io.Serializable
    * See The Java Language Specification, section 8.2.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SecurityException
    * if access to the information is denied.
    * @see
@@ -878,9 +878,9 @@ public class Class extends Object implements java.io.Serializable
    * field.
    *
    *
-   * NEEDSDOC @param name
+   * @param name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NoSuchFieldException
    * if a field with the specified name is not found.
    * @throws SecurityException
@@ -899,9 +899,9 @@ public class Class extends Object implements java.io.Serializable
    * interface represented by this Class object
    *
    *
-   * NEEDSDOC @param name
+   * @param name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SynthesisException
    * if the class has been reified.
    * @see
@@ -942,7 +942,7 @@ public class Class extends Object implements java.io.Serializable
    * Specification, sections 8.2 and 8.3.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SecurityException
    * if access to the information is denied.
    * @see
@@ -977,10 +977,10 @@ public class Class extends Object implements java.io.Serializable
    * types, in declared order.
    *
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param parameterTypes
+   * @param name
+   * @param parameterTypes
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
@@ -999,9 +999,9 @@ public class Class extends Object implements java.io.Serializable
    * interface represented by this Class object
    *
    *
-   * NEEDSDOC @param name
+   * @param name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SynthesisException
    * if the class has been reified.
    * @see
@@ -1043,7 +1043,7 @@ public class Class extends Object implements java.io.Serializable
    * See The Java Language Specification, section 8.2.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SecurityException
    * if access to the information is denied.
    * @see
@@ -1077,7 +1077,7 @@ public class Class extends Object implements java.io.Serializable
    * class or interface is not a member of any other
    * class.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public Class getDeclaringClass()
   {
@@ -1098,7 +1098,7 @@ public class Class extends Object implements java.io.Serializable
   /**
    * Declare that this class is an inner class of another.
    *
-   * NEEDSDOC @param newclass
+   * @param newclass
    *
    * @throws SynthesisException
    */
@@ -1196,9 +1196,9 @@ public class Class extends Object implements java.io.Serializable
    * and 8.3.
    *
    *
-   * NEEDSDOC @param name
+   * @param name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NoSuchFieldException
    * if a field with the specified name is not
    * found.
@@ -1237,7 +1237,7 @@ public class Class extends Object implements java.io.Serializable
    * and 8.3.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SecurityException
    * if access to the information is denied.
    * @see Field
@@ -1310,7 +1310,7 @@ public class Class extends Object implements java.io.Serializable
    * interface represented by this Class object
    *
    *
-   * NEEDSDOC @param newclass
+   * @param newclass
    * @throws SynthesisException
    * if the class has been reified.
    * @see
@@ -1350,10 +1350,10 @@ public class Class extends Object implements java.io.Serializable
    * and 8.4.
    *
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param parameterTypes
+   * @param name
+   * @param parameterTypes
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NoSuchMethodException
    * if a matching method is not found.
    * @throws SecurityException
@@ -1380,7 +1380,7 @@ public class Class extends Object implements java.io.Serializable
    * and 8.4.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws SecurityException
    * if access to the information is denied.
    * @see Method
@@ -1417,7 +1417,7 @@ public class Class extends Object implements java.io.Serializable
    * See Also:
    * java.lang.reflect.Modifier
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public int getModifiers()
   {
@@ -1438,7 +1438,7 @@ public class Class extends Object implements java.io.Serializable
    *   See Also:
    *   java.lang.reflect.Modifier
    *
-   * NEEDSDOC @param modifiers
+   * @param modifiers
    *
    * @throws SynthesisException
    */
@@ -1615,7 +1615,7 @@ public class Class extends Object implements java.io.Serializable
    * Creation date: (12-25-99 12:26:01 PM)
    * @param java.lang.class realclass nonsynthetic Class object to proxy
    *
-   * NEEDSDOC @param realclass
+   * @param realclass
    *
    * @throws SynthesisException
    */
@@ -1649,7 +1649,7 @@ public class Class extends Object implements java.io.Serializable
    * Object is equivalent to Null.
    * Creation date: (12-25-99 12:26:01 PM)
    *
-   * NEEDSDOC @param superclass
+   * @param superclass
    * @return org.apache.xml.utils.synthetic.Class
    *
    * @throws SynthesisException
@@ -1667,7 +1667,7 @@ public class Class extends Object implements java.io.Serializable
    * Set the superclass for this synthetic class.
    * Creation date: (12-25-99 12:26:01 PM)
    *
-   * NEEDSDOC @param superclass
+   * @param superclass
    * @return org.apache.xml.utils.synthetic.Class
    *
    * @throws ClassNotFoundException
@@ -1741,7 +1741,7 @@ public class Class extends Object implements java.io.Serializable
   /**
    * Get the signers of this class.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public Object[] getSigners()
   {
@@ -1781,7 +1781,7 @@ public class Class extends Object implements java.io.Serializable
    * If this Class object represents an array type, returns
    * true, otherwise returns false.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public boolean isArray()
   {
@@ -1806,9 +1806,9 @@ public class Class extends Object implements java.io.Serializable
    * Specification, sections 5.1.1 and 5.1.4 , for details.
    *
    *
-   * NEEDSDOC @param cls
+   * @param cls
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NullPointerException if the specified Class parameter is null.
    */
   public boolean isAssignableFrom(Class cls)
@@ -1838,9 +1838,9 @@ public class Class extends Object implements java.io.Serializable
    * Specification, sections 5.1.1 and 5.1.4 , for details.
    *
    *
-   * NEEDSDOC @param cls
+   * @param cls
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    * @throws NullPointerException if the specified Class parameter is null.
    */
   public boolean isAssignableFrom(java.lang.Class cls)
@@ -1876,7 +1876,7 @@ public class Class extends Object implements java.io.Serializable
    *
    * @param obj The object to check
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public boolean isInstance(Object obj)
   {
@@ -1910,7 +1910,7 @@ public class Class extends Object implements java.io.Serializable
    * true if this object represents an interface;
    * false otherwise.
    *
-   * NEEDSDOC @param isInterface
+   * @param isInterface
    *
    * @throws SynthesisException
    */
@@ -1939,7 +1939,7 @@ public class Class extends Object implements java.io.Serializable
    * only Class objects for which this method returns
    * true.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public boolean isPrimitive()
   {
@@ -1995,8 +1995,8 @@ public class Class extends Object implements java.io.Serializable
   /**
    * Convenience for writing to, eg, System.out 
    *
-   * NEEDSDOC @param out
-   * NEEDSDOC @param depth
+   * @param out
+   * @param depth
    */
   public void toSource(java.io.OutputStream out, int depth)
   {
@@ -2013,8 +2013,8 @@ public class Class extends Object implements java.io.Serializable
    * object represents a primitive type, returns the
    * name of the primitive type.
    *
-   * NEEDSDOC @param out
-   * NEEDSDOC @param depth
+   * @param out
+   * @param depth
    */
   public void toSource(java.io.PrintWriter out, int depth)
   {
@@ -2151,12 +2151,12 @@ public class Class extends Object implements java.io.Serializable
   }
 
   /**
-   * NEEDSDOC Method tabset 
+   * Method tabset 
    *
    *
-   * NEEDSDOC @param depth
+   * @param depth
    *
-   * NEEDSDOC (tabset) @return
+   * (tabset) @return
    */
   private String tabset(int depth)
   {
@@ -2173,7 +2173,7 @@ public class Class extends Object implements java.io.Serializable
 
   // Ignores any keywords we don't recognize
 
-  /** NEEDSDOC Field val          */
+  /** Field val          */
   static final int[] val = { Modifier.ABSTRACT, Modifier.FINAL,
                              Modifier.INTERFACE, Modifier.NATIVE,
                              Modifier.PRIVATE, Modifier.PROTECTED,
@@ -2181,18 +2181,18 @@ public class Class extends Object implements java.io.Serializable
                              Modifier.SYNCHRONIZED, Modifier.TRANSIENT,
                              Modifier.VOLATILE };
 
-  /** NEEDSDOC Field kwd          */
+  /** Field kwd          */
   static final String[] kwd = { "abstract", "final", "interface", "native",
                                 "private", "protected", "public", "static",
                                 "synchronized", "transient", "volatile" };
 
   /**
-   * NEEDSDOC Method modifierFromString 
+   * Method modifierFromString 
    *
    *
-   * NEEDSDOC @param t
+   * @param t
    *
-   * NEEDSDOC (modifierFromString) @return
+   * (modifierFromString) @return
    */
   static public int modifierFromString(String t)
   {
@@ -2207,12 +2207,12 @@ public class Class extends Object implements java.io.Serializable
   }
 
   /**
-   * NEEDSDOC Method modifiersFromString 
+   * Method modifiersFromString 
    *
    *
-   * NEEDSDOC @param s
+   * @param s
    *
-   * NEEDSDOC (modifiersFromString) @return
+   * (modifiersFromString) @return
    */
   static public int modifiersFromString(String s)
   {

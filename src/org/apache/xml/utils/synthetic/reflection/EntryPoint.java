@@ -75,44 +75,44 @@ import org.apache.xml.utils.synthetic.SynthesisException;
 abstract public class EntryPoint implements Member
 {
 
-  /** NEEDSDOC Field realep          */
+  /** Field realep          */
   protected Object realep;
 
-  /** NEEDSDOC Field declaringclass          */
+  /** Field declaringclass          */
   private org.apache.xml.utils.synthetic.Class declaringclass = null;
 
-  /** NEEDSDOC Field returntype          */
+  /** Field returntype          */
   protected org.apache.xml.utils.synthetic.Class returntype = null;
 
-  /** NEEDSDOC Field parameternames          */
+  /** Field parameternames          */
   private String[] parameternames = new String[0];
 
-  /** NEEDSDOC Field parametertypes          */
+  /** Field parametertypes          */
   private org.apache.xml.utils.synthetic.Class[] parametertypes =
     new org.apache.xml.utils.synthetic.Class[0];
 
-  /** NEEDSDOC Field exceptiontypes          */
+  /** Field exceptiontypes          */
   private org.apache.xml.utils.synthetic.Class[] exceptiontypes =
     new org.apache.xml.utils.synthetic.Class[0];
   ;
 
-  /** NEEDSDOC Field modifiers          */
+  /** Field modifiers          */
   private int modifiers;
 
-  /** NEEDSDOC Field name          */
+  /** Field name          */
   protected String name = null;  // for Methods
 
   // For synthesis:
 
-  /** NEEDSDOC Field body          */
+  /** Field body          */
   private StringBuffer body = null;
 
-  /** NEEDSDOC Field language          */
+  /** Field language          */
   private String language = null;
 
   // For reifying:
 
-  /** NEEDSDOC Field realE, realP          */
+  /** Field realE, realP          */
   Class[] realE, realP;
 
   /**
@@ -121,7 +121,7 @@ abstract public class EntryPoint implements Member
    * Creation date: (12-27-99 2:31:39 PM)
    * @param realConstructor java.lang.reflect.Constructor
    *
-   * NEEDSDOC @param declaringclass
+   * @param declaringclass
    */
   public EntryPoint(org.apache.xml.utils.synthetic.Class declaringclass)
   {
@@ -131,8 +131,8 @@ abstract public class EntryPoint implements Member
   /**
    * Nonpublic constructor. Wrap this to appropriate "real" type 
    *
-   * NEEDSDOC @param ep
-   * NEEDSDOC @param declaringclass
+   * @param ep
+   * @param declaringclass
    *
    * @throws IllegalArgumentException
    */
@@ -184,7 +184,7 @@ abstract public class EntryPoint implements Member
   /**
    * Nonpublic constructor. Wrap this to appropriate "real" type 
    *
-   * NEEDSDOC @param ep
+   * @param ep
    *
    * @throws IllegalArgumentException
    */
@@ -201,9 +201,9 @@ abstract public class EntryPoint implements Member
    * (or are both ctors) and have the same
    * formal parameter types.
    *
-   * NEEDSDOC @param obj
+   * @param obj
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public boolean equals(Object obj)
   {
@@ -227,7 +227,7 @@ abstract public class EntryPoint implements Member
    * declares the constructor represented by this
    * Constructor object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public org.apache.xml.utils.synthetic.Class getDeclaringClass()
   {
@@ -239,7 +239,7 @@ abstract public class EntryPoint implements Member
    * will be returned by this EntryPoint. Needed by the Method
    * API, but made meaningful for Constructors as well.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public org.apache.xml.utils.synthetic.Class getReturnType()
   {
@@ -253,7 +253,7 @@ abstract public class EntryPoint implements Member
    * Constructor object. Returns an array of length 0 if
    * the constructor throws no checked exceptions.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public org.apache.xml.utils.synthetic.Class[] getExceptionTypes()
   {
@@ -276,10 +276,10 @@ abstract public class EntryPoint implements Member
   }
 
   /**
-   * NEEDSDOC Method addExceptionType 
+   * Method addExceptionType 
    *
    *
-   * NEEDSDOC @param exception
+   * @param exception
    *
    * @throws SynthesisException
    */
@@ -309,7 +309,7 @@ abstract public class EntryPoint implements Member
    * @see
    * Modifier
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public int getModifiers()
   {
@@ -336,7 +336,7 @@ abstract public class EntryPoint implements Member
    * Methods have a "real" name.
    * Creation date: (12-25-99 1:32:06 PM)
    *
-   * NEEDSDOC @param name
+   * @param name
    * @return java.lang.String
    *
    * @throws SynthesisException
@@ -357,7 +357,7 @@ abstract public class EntryPoint implements Member
    * Returns an array of length 0 if the underlying
    * constructor takes no parameters.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public org.apache.xml.utils.synthetic.Class[] getParameterTypes()
   {
@@ -380,10 +380,10 @@ abstract public class EntryPoint implements Member
   }
 
   /**
-   * NEEDSDOC Method getParameterNames 
+   * Method getParameterNames 
    *
    *
-   * NEEDSDOC (getParameterNames) @return
+   * (getParameterNames) @return
    */
   public String[] getParameterNames()
   {
@@ -391,11 +391,11 @@ abstract public class EntryPoint implements Member
   }
 
   /**
-   * NEEDSDOC Method addParameter 
+   * Method addParameter 
    *
    *
-   * NEEDSDOC @param type
-   * NEEDSDOC @param name
+   * @param type
+   * @param name
    *
    * @throws SynthesisException
    */
@@ -430,7 +430,7 @@ abstract public class EntryPoint implements Member
    * xor'ed (for Methods) with the method name.
    * (Implemented in the subclasses rather than here.)
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   abstract public int hashCode();
 
@@ -439,7 +439,7 @@ abstract public class EntryPoint implements Member
    * declares the constructor represented by this
    * Constructor object.
    *
-   * NEEDSDOC @param declaringClass
+   * @param declaringClass
    *
    * @throws SynthesisException
    */
@@ -489,7 +489,7 @@ abstract public class EntryPoint implements Member
    * <p>
    * Methods will also display their checked exceptions.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public String toString()
   {
@@ -541,8 +541,8 @@ abstract public class EntryPoint implements Member
    * Extension: For synthesis, we need a place to hang a
    * method body.
    *
-   * NEEDSDOC @param language
-   * NEEDSDOC @param body
+   * @param language
+   * @param body
    *
    * @throws SynthesisException
    */
@@ -562,7 +562,7 @@ abstract public class EntryPoint implements Member
    * method body. Note that this returns a mutable object,
    * for editing etc. Slightly sloppy first cut.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public StringBuffer getBody()
   {
@@ -577,7 +577,7 @@ abstract public class EntryPoint implements Member
    * Extension: For synthesis, we need a place to hang a
    * method body.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public String getLanguage()
   {
@@ -587,9 +587,9 @@ abstract public class EntryPoint implements Member
   /**
    * Generate Java code
    *
-   * NEEDSDOC @param basetab
+   * @param basetab
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
   public String toSource(String basetab)
   {

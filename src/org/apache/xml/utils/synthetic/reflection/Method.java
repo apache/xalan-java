@@ -92,8 +92,8 @@ public class Method extends EntryPoint implements Member
    * Creation date: (12-27-99 2:31:39 PM)
    * @param realConstructor java.lang.reflect.Constructor
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param declaringclass
+   * @param name
+   * @param declaringclass
    */
   public Method(String name,
                 org.apache.xml.utils.synthetic.Class declaringclass)
@@ -110,8 +110,8 @@ public class Method extends EntryPoint implements Member
    * Creation date: (12-27-99 2:31:39 PM)
    * @param realConstructor java.lang.reflect.Constructor
    *
-   * NEEDSDOC @param ctor
-   * NEEDSDOC @param declaringclass
+   * @param ctor
+   * @param declaringclass
    */
   public Method(java.lang.reflect.Method ctor,
                 org.apache.xml.utils.synthetic.Class declaringclass)
@@ -125,7 +125,7 @@ public class Method extends EntryPoint implements Member
    * Creation date: (12-27-99 2:31:39 PM)
    * @param realConstructor java.lang.reflect.Constructor
    *
-   * NEEDSDOC @param realmethod
+   * @param realmethod
    */
   public Method(java.lang.reflect.Method realmethod)
   {
@@ -138,7 +138,7 @@ public class Method extends EntryPoint implements Member
    * for the underlying method's declaring class name
    * and the method's name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    */
 
   /**
@@ -235,10 +235,10 @@ public class Method extends EntryPoint implements Member
    * Throws: NullPointerException
    * if the specified object is null.
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param args
+   * @param obj
+   * @param args
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return
    *
    * @throws IllegalAccessException
    * @throws IllegalArgumentException
@@ -257,10 +257,10 @@ public class Method extends EntryPoint implements Member
   }
 
   /**
-   * NEEDSDOC Method setReturnType 
+   * Method setReturnType 
    *
    *
-   * NEEDSDOC @param returntype
+   * @param returntype
    *
    * @throws SynthesisException
    */
