@@ -1008,7 +1008,7 @@ public class XStringForFSB extends XString
 
       if(XMLCharacterRecognizer.isWhiteSpace(c))
       {
-	trailngSpace=true;
+				trailingSpace=true;
         break;                  // Trailing whitespace is ignored
       }
       else if(trailingSpace)
