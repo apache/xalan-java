@@ -75,12 +75,19 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 class FunctionCall extends Expression {
 
-    private final static Vector _emptyArgs = new Vector(0);
-    private final static String _javaExtPrefix = TRANSLET_URI + "/java";
-    
+    // Name of this function call
     private QName  _fname;
+    // Arguments to this function call (might not be any)
     private final Vector _arguments;
-    
+    // Empty argument list, used for certain functions
+    private final static Vector EMPTY_ARG_LIST = new Vector(0);
+
+    // Valid namespaces for Java function-call extension
+    private final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
+    private final static String JAVA_EXT_XALAN =
+	"http://xml.apache.org/xslt/java";
+
+    // External Java function's class/method/signature
     private String     _className;
     private Method     _chosenMethod;
     private MethodType _chosenMethodType;
@@ -154,7 +161,6 @@ class FunctionCall extends Expression {
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println(e);
-	    //System.exit(1);
 	}
     }
 		
@@ -164,7 +170,7 @@ class FunctionCall extends Expression {
     }
 
     public FunctionCall(QName fname) {
-	this(fname, _emptyArgs);
+	this(fname, EMPTY_ARG_LIST);
     }
 
     public String getName() {
@@ -198,14 +204,15 @@ class FunctionCall extends Expression {
 	}
 	// Handle extension functions (they all have a namespace)
 	else {
-	    final int len = _javaExtPrefix.length();
-	    if (namespace.equals(_javaExtPrefix)) {
+	    final int len = JAVA_EXT_PREFIX.length();
+	    if (namespace.equals(JAVA_EXT_PREFIX) ||
+		namespace.equals(JAVA_EXT_XALAN)) {
 		final int pos = local.indexOf('.');
 		_className = local.substring(0, pos);
 		_fname = new QName(namespace, null, local.substring(pos+1));
 	    }
 	    else if (namespace.length() >= len &&
-		namespace.substring(0, len).equals(_javaExtPrefix)) {
+		namespace.substring(0, len).equals(JAVA_EXT_PREFIX)) {
 		_className = namespace.substring(len + 1);
 	    }
 	    else {
@@ -479,7 +486,8 @@ class FunctionCall extends Expression {
 	Vector result = null;
 	final String namespace = _fname.getNamespace();
 
-	if (namespace.startsWith(_javaExtPrefix)) {
+	if (namespace.startsWith(JAVA_EXT_PREFIX) ||
+	    namespace.startsWith(JAVA_EXT_XALAN)) {
 	    final int nArgs = _arguments.size();
 	    try {
 		final Class clazz = Class.forName(_className);
