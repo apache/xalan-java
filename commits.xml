@@ -1,3 +1,4718 @@
-<?xml version="1.0"?>
-<!-- not used for this release -->
-<Commits/>
+<?xml version="1.0" encoding="UTF-8"?>
+<Commits>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/serialize SerializerToText.java</Modified>
+<Log>
+Bugzilla 8358 -- bad method signature. I've created a new method
+with the correct signature. The old one may or may not be entirely
+superfluous, but I don't want to muck with it right now.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources entities.ent xalan-jsite.xml</Modified>
+<Log>
+Updated Xalan version to 2.3.2 and Xerces to 2.0.1.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan xsltc_usage.xml</Modified>
+<Log>
+Added classpath information pertaining to xercesImpl.jar and xml-apis.jar.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources entities.ent</Modified>
+<Log>
+Added pointer to xml-apis.jar MANIFEST for version information.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan history.xml readme.xml xsltc_history.xml</Modified>
+<Log>
+Updates for next version (release notes to history)
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java commits.xml</Modified>
+<Log>
+Pieriodic update.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified/>
+<Log>
+Added info on Xalan implementation of EXSLT common, math,
+and set extensions, and ongoing work on the function and result
+elements and datetime extensions.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan index.xml</Modified>
+<Log>
+Added support for EXSLT extensions.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath XPathContext.java</Modified>
+<Log>
+Fix for Bugzilla entries
+	6833
+	7023
+	7123
+	7410
+
+Basic summary of logic error: It is possible for multiple RTF DTMs
+to be pushed onto the stack between the start of a template and
+return from it. I hadn't anticipated that, so my pop logic was
+inadequate.
+
+I'm still not 110% sure I understand the case where this situation
+arises... I have a general intuition that it makes sense, but also a
+suspicion that there might be a way to avoid creating one of these
+DTMs. We should review that someday.
+
+Meanwhile, this fixes a whole batch of related bugs.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref ExpandedNameTable.java</Modified>
+<Log>
+Performance improvement. Instead of looping through the ExtendedType objects, use a hashtable and go directly to the correct object.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/09</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/serialize Encodings.java Encodings.properties</Modified>
+<Log>
+Bugzilla 6356: Add support for "windows-1251" and use a properties file to store all the supported encodings. Patch from Sergey Ushakov.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java</Modified>
+<Log>
+added new method 'setDocumentLocator()' to TemplatesHandlerImpl so that SAX parser can inform handler of doc location- thanks to Scott Boag and Shane Curcuru for the insight into this
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/10</DateCommitted>
+<Modified/>
+<Log>
+Assigned type to _type.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/10</DateCommitted>
+<Modified/>
+<Log>
+Fixed problem with default namespace in XPath expressions and XSLT's
+named objects (e.g. templates, keys, variables, etc.).
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler xpath.cup</Modified>
+<Log>
+Fixed StepPattern production to include named PIs.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref ExpandedNameTable.java</Modified>
+<Log>
+Add basic DOM nodetypes to our hashtable of extended type IDs
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Text.java</Modified>
+<Log>
+Optimized calls to setEscaping().
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Simple code optimizations.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/05/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/xslt Process.java xml-xalan/java/src/org/apache/xml/utils/res XResourceBundle.java XResourceBundleBase.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResourceBundle.java XPATHErrorResources_en.java XPATHErrorResources.java XPATHErrorResources.properties</Modified>
+<Log>
+Use PropertyResourceBundle instead of ListResourceBundle, and put error
+messages into property files, for easier localization.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/05/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/axes WalkerFactory.java</Modified>
+<Log>
+In mightBeProximate, there was a bug that assumed a variable would not be
+be a numeric result.  It is now fixed to assume a number may be a number, which
+may cause a small performance penalty.  In the future, it should be possible to
+chase this down a bit more to rule out more variables as non-numbers.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/05/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath XPath.java</Modified>
+<Log>
+Bugzilla 7157. Updated Javadoc comment to note that the XPath.installFunction() method currently does not
+use the name parameter.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/compiler Compiler.java xml-xalan/java/src/org/apache/xpath/functions FuncLast.java FuncPosition.java Function.java</Modified>
+<Log>
+Bugzilla6284: New function added to position() and last() that will help us determine whether we are executing a top-level expression and therefore, not inside a predicate
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.java xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java</Modified>
+<Log>
+Add a null constructor for resource files and fix XSLMessages to use the correct error resource file
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/13</DateCommitted>
+<Modified> xml-xalan/java/src/META-INF/services org.apache.xml.dtm.DTMManager xml-xalan/java/src/org/apache/xml/dtm DTMManager.java</Modified>
+<Log>
+Add meta file for DTMManager factory and make sure it is read as UTF-8
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/13</DateCommitted>
+<Modified> xml-xalan/java build.xml</Modified>
+<Log>
+Pick up all meta files
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java</Modified>
+<Log>
+Back out this change!
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XNodeSetForDOM.java</Modified>
+<Log>
+m_last was not being set correctly. See comments.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java</Modified>
+<Log>
+Replaced Vector by ArrayList (synchronization is not needed here).
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Step.java</Modified>
+<Log>
+Fixed looping problem reported by Girish.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc TransletOutputHandler.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Text.java</Modified>
+<Log>
+Added characters(String) to TextOutputHandler.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime DefaultSAXOutputHandler.java</Modified>
+<Log>
+avoid printing standalone attr if it is set to 'no'
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemVariable.java</Modified>
+<Log>
+Bugzilla 7118: Variable set via RTF may have
+local variables within it; need to push a new
+context.
+
+(This anonymous-pseudotemplate thing has
+caused us more confusion....)
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Step.java xml-xalan/java/src/org/apache/xalan/xsltc/dom NodeIteratorBase.java</Modified>
+<Log>
+Fix for conf test axes113.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils DefaultErrorHandler.java</Modified>
+<Log>
+Obvious typo.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java</Modified>
+<Log>
+Missing safety net, mostly needed during stylesheet construction.
+
+We really should change TransformerImpl to set parent _before_
+starting to setPropertiesFromAttributes, so the error conditions
+which might cause this test to be needed don't arise. Among other
+things, that would produce more useful diagnostic messages.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseTraversers.java</Modified>
+<Log>
+Bugzilla 8894: DescendantForRoot traversers needed to implement their own version of first(int, int) so that their context would be from the root.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime DefaultSAXOutputHandler.java</Modified>
+<Log>
+fixed a regression in output66 test
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified/>
+<Log>
+Fix for attribset49.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler xpath.cup</Modified>
+<Log>
+Fix for axes127.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/axes NodeSequence.java</Modified>
+<Log>
+Fix for NullPointerException in SQL extension stuff. Just check for a NULL iterator...
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseIterators.java</Modified>
+<Log>
+Bugzilla 8324. This should have been checked into the main branch.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java</Modified>
+<Log>
+Dumb of me -- fixed one edge case and created another, because
+I forgot about subclassing Sigh. This version protects against both.
+
+(And whitens your laundry, and keeps your car from rusting, and
+kills crabgrass... It's a furnature wax! It's a dessert topping! ... Sorry.)
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+Do not add the standalone attribute to the XML header unless requested.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java DTMDefaultBaseIterators.java</Modified>
+<Log>
+Fix for new tests Variable71 and Variable72.
+
+When we went to the shared RTF DTMs, we forgot to update
+PreceedingIterator to reflect the fact that the root of a DTM tree
+may no longer have 0 as its internal Node Identifier. This change
+corrects that situation, and does so without imposing a lot of
+computational overhead since we need to scan the ancestors
+anyway.
+
+There appear to be similar hazards in some of the Traversers,
+still to be dealt with. Coming up with testcases which will provoke
+those bugs (and confirm that we've fixed them) is likely to be
+harder than writing the fix itself...
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output DOMOutput.java OutputBase.java SAXHTMLOutput.java SAXOutput.java SAXXMLOutput.java StreamOutput.java</Modified>
+<Log>
+New output handlers.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Fix bug in Attr iterator.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>amiro@apache.org</Who>
+<DateCommitted>2002/05/17</DateCommitted>
+<Modified/>
+<Log>
+section on problems was way out of date. Also incorporated material from JAXP 1.2 release notes
+</Log>
+</Commit>
+<Commit category="core">
+<Who>amiro@apache.org</Who>
+<DateCommitted>2002/05/17</DateCommitted>
+<Modified/>
+<Log>
+updated command option usuage. Some options have been added.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/17</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan xsltc_usage.xml</Modified>
+<Log>
+Updated first three sections.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemVariable.java</Modified>
+<Log>
+Bugzilla 7118 REVERT -- This fix was provoking bug 9195, which
+is more severe.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/20</DateCommitted>
+<Modified/>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/20</DateCommitted>
+<Modified/>
+<Log>
+updated new code, on-going development
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXHTMLOutput.java SAXOutput.java SAXXMLOutput.java</Modified>
+<Log>
+added new methods, on-going
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc TransletOutputHandler.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java SAXAdapter.java TransletOutputBase.java</Modified>
+<Log>
+New methods added to the translet output handler.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output HtmlOutput.java StreamHTMLOutput.java</Modified>
+<Log>
+Renamed module.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified/>
+<Log>
+Obvious mistake, apparently in a corner our regression tests missed.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2RTFDTM.java</Modified>
+<Log>
+Root node is not always 0 in an RTFDTM
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified/>
+<Log>
+temporarily moved out of the way
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified/>
+<Log>
+updated namespace support
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified/>
+<Log>
+fixed uninitialized stack
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamOutput.java StreamXMLOutput.java</Modified>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/22</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java</Modified>
+<Log>
+Experimental output system.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/22</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamXMLOutput.java</Modified>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/05/22</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/xslt Process.java xml-xalan/java/src/org/apache/xpath/functions FuncPosition.java</Modified>
+<Log>
+Fixed hard coded string for timing diagnostics.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/22</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
+<Log>
+Experimental output system.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ErrorMessages.java</Modified>
+<Log>
+Added "-n" option to Transform.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/23</DateCommitted>
+<Modified/>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/23</DateCommitted>
+<Modified/>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/23</DateCommitted>
+<Modified/>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/23</DateCommitted>
+<Modified/>
+<Log>
+Insert XML header at the beginning.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/28</DateCommitted>
+<Modified/>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/28</DateCommitted>
+<Modified/>
+<Log>
+added sax case support
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/28</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
+<Log>
+updated
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/28</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java xml-xalan/java/src/org/apache/xalan/xsltc/trax SAX2DOM.java TemplatesHandlerImpl.java TemplatesImpl.java TransformerFactoryImpl.java TransformerImpl.java</Modified>
+<Log>
+Added 'experimental-output' attribute to transformer factory.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/28</DateCommitted>
+<Modified/>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/05/29</DateCommitted>
+<Modified/>
+<Log>
+added processing instruction support
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/29</DateCommitted>
+<Modified/>
+<Log>
+Bug fixes after testing.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/29</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamOutput.java</Modified>
+<Log>
+Added DOCTYPE.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/30</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler LiteralElement.java Parser.java</Modified>
+<Log>
+Fixed problem with 'xmlns' reported as attribute.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/30</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamXMLOutput.java</Modified>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="core">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/serialize SerializerToXML.java</Modified>
+<Log>
+Prevent an external DTD from being inlined when using the built-in
+identity transform.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamXMLOutput.java</Modified>
+<Log>
+Fixed problem with offset in characters().
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified/>
+<Log>
+Starting branch for Xalan3
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils CharacterBlockEnumeration</Modified>
+<Log>
+file CharacterBlockEnumeration was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XRTreeFrag.java</Modified>
+<Log>
+Just comment
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified/>
+<Log>
+file DTM2XNI.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified/>
+<Log>
+file FuncValidate.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm XNISource.java</Modified>
+<Log>
+file XNISource.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/05/31</DateCommitted>
+<Modified/>
+<Log>
+file CharacterBlockEnumeration.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/06/03</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
+<Log>
+Put back main-branch version. Not sure how it got overlaid with the
+XALAN3-branch copy.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/03</DateCommitted>
+<Modified/>
+<Log>
+Moved common methods to base classes.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified/>
+<Log>
+updating work in progress
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java SAXXMLOutput.java StreamXMLOutput.java</Modified>
+<Log>
+Updated.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerHandlerImpl.java</Modified>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output OutputBase.java SAXXMLOutput.java</Modified>
+<Log>
+Updated.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor ProcessorFuncResult.java ProcessorFunction.java ProcessorOutputElem.java ProcessorResultDocument.java XSLTSchema.java</Modified>
+<Log>
+XSLT 2.0: stylesheet function, result-document, and
+principal-result-document.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/bin xercesImpl.jar</Modified>
+<Log>
+Xalan3 branch: Check in temporary version of Xerces. This predates
+the most recent changes to Xerces, and supports the older "light
+weight" PSVI APIs. Current Xerces has replaced those with a heavier
+version, but in the process lost the derivedFrom() method which
+we need; when they restore that functionality, we'll cut over.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified/>
+<Log>
+Mistake! These files belong on the Xalan3 branch.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor ProcessorResultDocument.java</Modified>
+<Log>
+Mistake! This file belongs on the Xalan3 branch.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified/>
+<Log>
+file ElemFuncResult.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified/>
+<Log>
+file ElemFunction.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified/>
+<Log>
+file ElemPrincipalResultDocument.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemResultDocument.java</Modified>
+<Log>
+file ElemResultDocument.java was initially added on branch Xalan3.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerHandlerImpl.java TransformerImpl.java</Modified>
+<Log>
+Fixed problems with id/key.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified/>
+<Log>
+Updated.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/04</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamOutput.java StreamUnknownOutput.java StreamXMLOutput.java</Modified>
+<Log>
+Updated.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+reset output flag
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor XSLTSchema.java</Modified>
+<Log>
+Restored pre-Xalan3 source file!
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified/>
+<Log>
+file ExpressionVisitor.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified/>
+<Log>
+file ExtensionHandlerExsltFunction.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified/>
+<Log>
+file ExtensionNamespacesManager.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespaceSupport.java</Modified>
+<Log>
+file ExtensionNamespaceSupport.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified/>
+<Log>
+file ElemExsltFuncResult.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemExsltFunction.java</Modified>
+<Log>
+file ElemExsltFunction.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath ExtensionsProvider.java</Modified>
+<Log>
+file ExtensionsProvider.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified/>
+<Log>
+file ProcessorExsltFuncResult.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFunction.java</Modified>
+<Log>
+file ProcessorExsltFunction.java was initially added on branch ExtensionEnhancements.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/lib ExsltDatetime.java</Modified>
+<Log>
+Core EXSLT dates-and-times functions.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified/>
+<Log>
+updated xsl:vendor string
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified/>
+<Log>
+updated xsl:vendor string
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/05</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>
+bug fix 9179, leading zero in localized formatting
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/06</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor ProcessorOutputElem.java</Modified>
+<Log>
+Restored correct version for Xalan 2.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/06</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Include attributes in xsl:message template body.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/06</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemVariable.java XUnresolvedVariable.java</Modified>
+<Log>
+Fix bug 7118.  In XUnresolvedVariable, treat the RTF variable much more like
+a template that has to count it's variables at compose-time, and link and unlink
+when the lazy variable is resolved.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/07</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/lib/sql DefaultConnectionPool.java xml-xalan/java/src/org/apache/xalan/processor TransformerFactoryImpl.java xml-xalan/java/src/org/apache/xalan/res XSLMessages.java XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates RedundentExprEliminator.java xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseTraversers.java xml-xalan/java/src/org/apache/xml/utils ListingErrorHandler.java xml-xalan/java/src/org/apache/xml/utils/synthetic JavaUtils.java xml-xalan/java/src/org/apache/xpath VariableStack.java xml-xalan/java/src/org/apache/xpath/functions FuncConcat.java Function.java Function2Args.java Function3Args.java FunctionOneArg.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties</Modified>
+<Log>
+Integrated some removal of hard-coded error messages.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/07</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamOutput.java</Modified>
+<Log>
+Set a new buffer size.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/08</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java BasisLibrary.java</Modified>
+<Log>
+Fixed memory leak in AbstractTranslet and moved replace() method
+to BasisLibrary.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/08</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath XPathContext.java</Modified>
+<Log>
+Add resets for m_contextNodeLists, etc.  It might be possible that these are
+redundent with the same thing being done somewhere else, but given
+http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6021 I suspect
+that this really does need to be done here.  It would explain any problems
+that might have been reported after an exception has been thrown, and
+the Transformer is being reused.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/08</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemApplyTemplates.java ElemTemplate.java xml-xalan/java/src/org/apache/xalan/transformer StackGuard.java TransformerImpl.java xml-xalan/java/src/org/apache/xml/utils URI.java</Modified>
+<Log>
+Add back a certain amount of StackGuard functionality.  Instead of checking
+counts where both the node and the xsl:template are the same... (we would
+really need also to check that parameters are the same), just check for recursion
+of templates.  We can make it fancier over time to also check for same params,
+but checking of the current node may be harder.  I was only able to set the
+recursion limit to about 475 before I would get stack overflow errors anyway.
+I also did some stuff where the error messages should be more consistent by
+making sure some of the arrays are reset in XPathContex, which may address
+some of the inconsistency problems that Christina reported.
+may address part of the problem that Christina was having.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/08</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/transformer StackGuard.java</Modified>
+<Log>
+Moved hard coded strings for StackGuard error message to properties file.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties</Modified>
+<Log>
+Fix bug for optionV.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java SAXTextOutput.java TransletOutputHandlerFactory.java</Modified>
+<Log>
+New class.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax SAX2DOM.java</Modified>
+<Log>
+fixed processing instruction call
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExpressionContext.java ExpressionVisitor.java ExtensionHandlerExsltFunction.java ExtensionNamespacesManager.java ExtensionNamespaceSupport.java ExtensionsTable.java xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFuncResult.java ProcessorExsltFunction.java StylesheetHandler.java XSLTSchema.java xml-xalan/java/src/org/apache/xalan/templates Constants.java ElemExsltFuncResult.java ElemExsltFunction.java ElemExtensionCall.java ElemExtensionDecl.java StylesheetRoot.java xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java xml-xalan/java/src/org/apache/xpath ExtensionsProvider.java XPathContext.java xml-xalan/java/src/org/apache/xpath/functions FuncExtElementAvailable.java FuncExtFunction.java FuncExtFunctionAvailable.java</Modified>
+<Log>
+Updates to Xalan extensions: (1) EXLST function and (2) architectural modifications.
+This is a merge of the ExtensionEnhancements branch into Main.
+
+1. EXSLT function
+We are well underway in our progress towards providing support for EXSLT extension functionss and elements. The EXSLT function and result elements (see http://www.exslt.org/func/func.html) require some fairly substantial additions.
+XSLTSchema includes new XSLTElementDefs for a top-level exslt:function element, which, along with other items, may contain an exslt:result element. These definitions specify a new element class and processor for both of these elements, and a new extension handler. I have tested the implementation with the 6 test cases that EXSLT provides (including recursive calls), and it passes these tests.
+Note: These additions/updates also provide the infrastructure for the XSLT 2.0 stylesheet function.
+2. Architectural changes
+During styesheet composition, Stylesheet Root assembles a vector of ExtensionNamespaceSupport objects. This object contains the information required during a transform to instantiate the required ExtensionHandler. If the stylesheet includes no extensions, this vector is null.  I.e.,  it does not include handlers for the default extension namespaces (of which there are currently 7, and which the Xalan currently loads for each transformation).
+The presence of an extension is detected as follows:
+Compilation of an expression that contains a FuncExtFunction. StylesheetHandler.createXPath()  uses an XPathVisitor to locate any FuncExtFunctions embedded in the expression.
+Final composition of a component element  -- ElemExtensionDecl.compose().
+Final composition of an extension component for which no component exsits -- ElemExtensionCall.compose().
+Final composition of an exslt:function element -- ElemFunction.compose().
+During StylesheetRoot.recompose(), any extension namespaces that are not predefined and for which no component or function element exists, are defined as java class (if a java class is found) or java package. In the current implementation, this last stab is made during the transformation, repeatedly if the element or function cannot be processed and is called more than once.
+At the beginning of each transformation -- transformNode() --  if any extensions exist, TransformerImpl instantiates an ExtensionsTable with a hashtable containing an ExtensionHandler for each of the ExtensionNamespaceSupport objects defined during stylesheet assembly. XPathContext  no longer creates or has any direct knowledge of the ExtensionsTable. The ExtensionsTable does not contain handlers for predefined namespaces that are not being used.
+TransformerImpl implements the org.apache.xpath.ExtensionsProvider interface. The relevant XPath functions (FuncExtFunction, FuncExtElememntAvailable, and FuncExtFunctionAvailable) call this interface, via XPathContext.getOwnerObject(). The implementation contains 3 methods that call through to the ExtensionsTable, which passes the call on to the appropriate ExtensionHandler..
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/serialize Encodings.java</Modified>
+<Log>
+Use ContextClassLoader - Use full Encoding file package name - Merge new patch from Sergey Ushakov
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
+<Log>
+added text case for SAX
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates FuncDocument.java FuncFormatNumb.java xml-xalan/java/src/org/apache/xpath/functions FuncConcat.java FuncExtFunction.java FuncSubstring.java Function.java Function2Args.java Function3Args.java FunctionDef1Arg.java FunctionMultiArgs.java FunctionOneArg.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.properties</Modified>
+<Log>
+Patch submitted by Henry_Zongaro@us.ibm.com:
+
+To summarize what I did, the Function class and its subclasses have two
+methods that check the number of arguments:  setArg and
+checkNumberArgs.  The former checks whether too many arguments are
+specified, and the latter checks for too few (or too many, redundantly).
+
+In the case where there are optional arguments (as in substring), the class
+for the function (FuncSubstring, in this case) derives from a class that has a
+fixed number of arguments (Func3Arguments, in this case).  If too few
+arguments are specified, the FuncSubstring.checkNumberArgs method
+reports that the function only allows 2 or 3 arguments; if too many arguments
+are specified, the Function3Arguments.setArg method reports that the
+function only allows 3 arguments.
+
+To fix the problem, I added reportWrongNumberArgs() methods to the
+Function class and to its subclasses, as appropriate, and I added code to
+call that from checkNumberArgs and setArg - that way, the correct number
+of arguments is always reported in the error messages.
+
+Alternatively, I could have changed the setArg method in all the classes that
+have optional arguments to report correctly the number of arguments, but I
+didn't like the idea of having it redundantly perform the same check that the
+setArg method of its base class was going to perform just to get a better
+message out.  A third possibility would be to have setArg call the
+checkNumberArgs method when it detects too many arguments are
+specified; that would guarantee that setArg would report the same message,
+and avoid introducing a new method, as long as checkNumberArgs always
+checks for both too few and for too many arguments.  A fourth possibility
+would be to report two different errors:  the minimum number of arguments
+required in checkNumberArgs and the maximum permitted in setArg.
+
+I also noticed that the message produced for FuncSubstring when too few
+arguments are specified actually indicates that 0 or 1 arguments are required,
+ so I fixed the XPATHErrorResources.properties file.
+
+I don't see the NPE that Dave Marston mentions in Bugzilla, so I assume
+that's been fixed.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
+<Log>
+Typo.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor StylesheetHandler.java xml-xalan/java/src/org/apache/xalan/templates ElemNumber.java ElemTemplateElement.java xml-xalan/java/src/org/apache/xml/utils PrefixResolver.java PrefixResolverDefault.java xml-xalan/java/src/org/apache/xpath/compiler Lexer.java</Modified>
+<Log>
+Patch submitted by Ilene_Seelemann@us.ibm.com for Bug 6798:
+
+Added a method (handlesNullPrefixes) to the PrefixResolver interface so
+that the resolver can indicate whether it supports null prefixes.  Then, in the
+tokenizer, if the prefix is null, and the resolver supports that, it continues
+processing as if the prefix had a value.  In Lexer.java, methods that have
+changed are: tokenize, mapNSTokens.
+
+In ElemNumber#getCountMatchPattern, pass MyPrefixResolver instance to default
+psuedo match patterns.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXHTMLOutput.java</Modified>
+<Log>
+Do not insert &lt;META&gt;.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+Fixed problem in the implementation of setOutputProperties().
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java commits.xml</Modified>
+<Log>
+Purged for upcoming developer releases.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan history.xml readme.xml xsltc_constraints.xml xsltc_history.xml</Modified>
+<Log>
+Moved 2.3.2 core and xsltc updates into the history files.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/bin xercesImpl.jar</Modified>
+<Log>
+xercesImpl.jar from Xerces-J-bin.2.0.1.zip (for upcoming Xalan-J 2.4.D1)
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src MANIFEST.MF</Modified>
+<Log>
+Update xerces.jar to be xercesImpl.jar; this should have been
+done quite a while ago.  Note the Class-Path: entry needs review
+in general at some point.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan builds.xml</Modified>
+<Log>
+Brief documentation about developer standards and official build processes
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources xalan-jlocal.xml</Modified>
+<Log>
+Add builds.xml; perhaps should also be added to xalan-jsite.xml as well
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax DOM2SAX.java</Modified>
+<Log>
+Added comment() support.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
+<Log>
+added support for comment handling in DOM
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java</Modified>
+<Log>
+Fixed getTemplates() to return null when compilation fails.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemNumber.java xml-xalan/java/src/org/apache/xpath/compiler Lexer.java</Modified>
+<Log>
+From Ilene Seelemann:
+Added the following in blue to line 395 of Lexer.java
+
+     if ((-1 != posOfNSSep) ||
+         ((m_namespaceContext != null) &amp;&amp; (m_namespaceContext.handlesNullPrefixes())))
+
+I'm also including ElemNumber.java which really doesn't need to
+explicitly state that it implements PrefixResolver.
+Without these updates everything does run fine.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespaceSupport.java</Modified>
+<Log>
+Commented out a debug print line.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime DefaultRun.java</Modified>
+<Log>
+No longer in use.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/11</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java Output.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java TextOutput.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java StreamHTMLOutput.java StreamUnknownOutput.java StreamXMLOutput.java</Modified>
+<Log>
+New output system installed.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax DOM2SAX.java</Modified>
+<Log>
+bug fix for copy32.xsl unit test; cdata handling
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java</Modified>
+<Log>
+Fixed file creation for xsltc:output extension.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom BitArray.java</Modified>
+<Log>
+Added default constructor.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java</Modified>
+<Log>
+Fixed insertion of META when HEAD is empty.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified/>
+<Log>
+Replaced eager by lazy computation of last.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified/>
+<Log>
+Very minor optimization.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Simple hand optimizations.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan readme.xml xsltc_constraints.xml</Modified>
+<Log>
+updates for developer's release.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources entities.ent xalan-jsite.xml xml-xalan/java/xdocs/sources/xalan history.xml index.xml readme.xml resources.xml xml-xalan/java KEYS</Modified>
+<Log>
+Patches for developer's release from Sarah McNamara.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>
+Updated version # for developer's release.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xslt EnvironmentCheck.java</Modified>
+<Log>
+Update .jar file sizes for 2.4.D1 release
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan resources.xml</Modified>
+<Log>
+Remove extraneous slash char on path
+Submitted by: mcnamara@ca.ibm.com
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xslt EnvironmentCheck.java</Modified>
+<Log>
+Fix Bugzilla #9137; don't toLowerCase() the filename (not really needed anymore);
+remove line for xalan.jar for 2_4_D1 because .jar build size is not determinate
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/13</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan extensionslib.xml</Modified>
+<Log>
+Add pointers to info on new EXSLT extensions.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Output.java Parser.java Stylesheet.java XSLTC.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java TemplatesImpl.java TransformerFactoryImpl.java TransformerImpl.java</Modified>
+<Log>
+Fixed layering of output properties in Trax.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespacesManager.java</Modified>
+<Log>
+Changed Vector.get(int) to Vector.elementAt(int) to maintain
+compability with Java 1.1.8.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+Replaced getProperty() by get() in setOutputProperties().
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/lib ExsltDatetime.java</Modified>
+<Log>
+Modified leap-year functions to use arithmetic logic rather than relying
+on a Calendar method that doesn't exist in Java 1.1.8.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified/>
+<Log>
+catching file not found exception fixed
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified/>
+<Log>
+added ability to detect/flag superfluous attributes
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Parser.java</Modified>
+<Log>
+removed commented out code
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerFactoryImpl.java</Modified>
+<Log>
+fixed bug that passes warnings to listener
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Parser.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamUnknownOutput.java</Modified>
+<Log>
+Added support for XHTML in output system (c.f. embed04).
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/axes RTFIterator.java xml-xalan/java/src/org/apache/xpath/objects XRTreeFrag.java</Modified>
+<Log>
+Added RTFIterator (extends OneStepIteratorForward);
+created fromRTFFragment so EXSLT object-type function
+can identify an RTF with certainty.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>
+fixed bug with number formatting, richmark test
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java</Modified>
+<Log>
+fixed escaping of quote in href attribute
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+Fixed problem in creation of output handler.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/lib ExsltCommon.java</Modified>
+<Log>
+Removed duplicate implementation of several EXSLT "Set"
+functions.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Output.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output OutputBase.java SAXOutput.java SAXXMLOutput.java StreamHTMLOutput.java StreamOutput.java StreamXMLOutput.java</Modified>
+<Log>
+Fixed problem with cdata-section-elements in xsl:output and namespaces.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>
+fixed nit for Tom
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamXMLOutput.java</Modified>
+<Log>
+fixed unescaped quote in attribute, namespace110 unit test
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+Ignore default properties in setOutputProperties().
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXHTMLOutput.java StreamHTMLOutput.java StreamOutput.java StreamUnknownOutput.java</Modified>
+<Log>
+Fix to set output properties correctly in the new output system.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Output.java</Modified>
+<Log>
+Fixed indentation when output method is HTML.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamUnknownOutput.java</Modified>
+<Log>
+Fixed indentation when output method is HTML.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/20</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java</Modified>
+<Log>
+Rollback to revision 1.39
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/20</DateCommitted>
+<Modified/>
+<Log>
+whitespace13.xsl fix for trax.dom case
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/20</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+Fixed regression.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/20</DateCommitted>
+<Modified/>
+<Log>
+_type renamed to _paramType to avoid shadowing of protected vars.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/20</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionCall.java</Modified>
+<Log>
+Replaced _type by getType().
+</Log>
+</Commit>
+<Commit category="core">
+<Who>amiro@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/bin jtidy.LICENSE.txt jtidy.README.txt Tidy.jar</Modified>
+<Log>
+adding Jtidy for use with test harness to parse html
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMAdapter.java MultiDOM.java</Modified>
+<Log>
+Fixed evaluation of "parent::*" with multiple DOMs.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils Hashtree2Node.java</Modified>
+<Log>
+Simplistic static utility to convert a Hashtable of items (either
+Hashtables or anything else cast to (String)) into an Element tree
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/lib Extensions.java</Modified>
+<Log>
+Update checkEnvironment to attempt to call org.apache.env.Which first
+by using reflection; Which provides better output data than
+EnvironmentCheck.  If reflection doesn't work, then we
+fallback to EnvironmentCheck as before.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan faq.xml</Modified>
+<Log>
+Add doc about calling checkEnvironment as a stylesheet extension
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom MultiDOM.java</Modified>
+<Log>
+Fix for Bugzilla 9068.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/serialize SerializerToXML.java</Modified>
+<Log>
+bug fix for bugzilla 9572, fix by Pavani.Mukthipudi@sun.com
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom MultiDOM.java</Modified>
+<Log>
+Better fix for Bugzilla 9068.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/24</DateCommitted>
+<Modified/>
+<Log>
+Fix for Bugzilla 8551.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/24</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Predicate.java</Modified>
+<Log>
+Fix for Bugzillas 3238 and 10137.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/24</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamOutput.java StreamXMLOutput.java</Modified>
+<Log>
+Fix for Bugzilla 6925.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>amiro@apache.org</Who>
+<DateCommitted>2002/06/25</DateCommitted>
+<Modified/>
+<Log>
+fix check for extension functions
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/25</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionAvailableCall.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util Util.java</Modified>
+<Log>
+Fix for function-available() needed to handle XSLTC's extension functions.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/25</DateCommitted>
+<Modified/>
+<Log>
+Fix for axes122.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/25</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Step.java</Modified>
+<Log>
+Fixed regression.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>2002/06/26</DateCommitted>
+<Modified> xml-xalan/java build.xml</Modified>
+<Log>
+Update docs.class.path to include XSLTC-dependent jars
+Submitted by:	Henri Gomez hgomez@slib.fr
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/06/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties</Modified>
+<Log>
+Add error resources pulled out from code
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/06/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties</Modified>
+<Log>
+Add error resources pulled out from code
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/util IntegerArray.java</Modified>
+<Log>
+Fixed bug in clone().
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler ElementAvailableCall.java Expression.java FunctionAvailableCall.java If.java LogicalExpr.java When.java</Modified>
+<Log>
+Added support for function-available()/element-available() in logical
+expressions (note that these functions are resolved at compile time
+in XSLTC).
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamOutput.java StreamUnknownOutput.java TransletOutputHandlerFactory.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java TemplatesImpl.java TransformerFactoryImpl.java TransformerImpl.java</Modified>
+<Log>
+Added 'indent-number' attribute to the transformer factory. The value
+of this attribute is the number of spaces that will be used by the
+output system when indentation is turned on.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/06/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/compiler Compiler.java OpMap.java</Modified>
+<Log>
+Pull out hard coded messages
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/06/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath NodeSet.java NodeSetDTM.java xml-xalan/java/src/org/apache/xpath/objects XStringForFSB.java xml-xalan/java/src/org/apache/xpath/axes AxesWalker.java LocPathIterator.java</Modified>
+<Log>
+Pull out hard coded messages
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Step.java xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Fix for node21 and some position tests.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/06/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/compiler XPathParser.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties</Modified>
+<Log>
+Bugzilla 5016: Patch from Henry Zongaro... Fix XPATHParser.java to prevent matching empty RelativeLocationPath and Step expressions, prevent a LocationPath from preceding a Predicate in a FilterExpr, check for valid NameTest in NodeTest()
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Fix problem in copyElement().
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/27</DateCommitted>
+<Modified/>
+<Log>
+Use doubles instead of longs for big ints.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/28</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler LongExpr.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util LongType.java</Modified>
+<Log>
+removed unused class, compiler will now use doubles
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/06/28</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.properties</Modified>
+<Log>
+Fix typo.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/06/28</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler CastExpr.java Constants.java Parser.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util Type.java</Modified>
+<Log>
+removed references to the LongExpr classes that were removed
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/28</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Copy namespace nodes of an element in xsl:copy.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/28</DateCommitted>
+<Modified/>
+<Log>
+Better error reporting when argument is not a literal.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/06/28</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler XSLTC.java</Modified>
+<Log>
+Use a BufferedOutputStream to write classes.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>amiro@apache.org</Who>
+<DateCommitted>2002/06/29</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml</Modified>
+<Log>
+fix typo in SmartTransormerFactoryImpl pointed out by Tobias McNulty
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/07/01</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemNumber.java</Modified>
+<Log>
+Bug6268. Patch from Ilene Seelemann. Fix Grouping separator. If no grouping separator is specified but a gouping size is, number is not formatted. If grouping separator is "", warning is issued and number is not formatted. If grouping separator is more than one character, warning is issued and number is not formatted.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/07/08</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+fixed conf tests copy21, copy22, expression02, idkey04, numbering91 with introduction of setSystemId on InputSource
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/07/08</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor StylesheetHandler.java XSLTAttributeDef.java xml-xalan/java/src/org/apache/xml/utils DefaultErrorHandler.java</Modified>
+<Log>
+resource error messages
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/09</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Compile.java</Modified>
+<Log>
+Updated XSLTC's version number from 1.0 to 1.1
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/09</DateCommitted>
+<Modified/>
+<Log>
+Fix for Bugzilla 4603 (thanks to Henri Zongaro)
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/09</DateCommitted>
+<Modified/>
+<Log>
+Print warning message for superfluous attributes that have a null URI only.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/07/09</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java Sort.java</Modified>
+<Log>
+bug 5941 fixed, &lt;clinit&gt; access chged to ACC_STATIC from ACC_FINAL
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/07/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor XSLTAttributeDef.java XSLTElementProcessor.java XSLTSchema.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates AVT.java Constants.java ElemAttribute.java ElemElement.java ElemNumber.java ElemPI.java xml-xalan/java/src/org/apache/xml/utils QName.java StringToIntTable.java xml-xalan/java/src/org/apache/xpath/res XPATHErrorResources.java XPATHErrorResources.properties</Modified>
+<Log>
+Bugzilla 5013: Validation of QName attribute values. The patch will also fix the missing validation described in bugs 792 and 793
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/07/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils XMLChar.java</Modified>
+<Log>
+Bugzilla 5013: Validation of QName attribute values. The patch will also fix the missing validation described in bugs 792 and 793
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/07/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseIterators.java</Modified>
+<Log>
+bugzilla 9575: Fix AncestorIterator counting root node twice. Patch from Henry Zongaro.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/07/10</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils DOMBuilder.java</Modified>
+<Log>
+&lt;Blush&gt;
+
+This was still trying to switch between setAttribute() and
+setAttributeNS(). Correct usage of DOM Level 2 would be to
+always use setAttributeNS(), and simply set a null URI when the
+node is not namespaced. (Basically, the L1 versions of
+createElement, createAttribute, setAttribute and setAttributeNode
+should be considered deprecated with the sole exception of
+manipulating a DOM intended to be viewed *only* as Level 1.)
+
+I could swear we fixed this a VERY long time ago...
+Good catch, thanks for calling it to our attention.
+
+&lt;/Blush&gt;
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionCall.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util TypeCheckError.java</Modified>
+<Log>
+Enhanced error reporting in calls to external Java functions.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/07/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>
+bug 10832 fix, relational expressions with RTFs
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Mode.java</Modified>
+<Log>
+Fix for Bugzilla 9174.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java</Modified>
+<Log>
+Fixed error message in defineTransletClasses() method.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/17</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Import.java Include.java Stylesheet.java</Modified>
+<Log>
+Fix for Bugzilla 9171.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>2002/07/17</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan dtm.xml</Modified>
+<Log>
+testing commit
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/18</DateCommitted>
+<Modified/>
+<Log>
+Fixed problem in error reporting code.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/18</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Predicate.java</Modified>
+<Log>
+Ignore default NS when expanding calls to position().
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/transformer ResultTreeHandler.java</Modified>
+<Log>
+Morris Kwan's patch for bugzilla#10306
+
+The problem is that the namespace declaration is not added to the attributes if there are other leading attributes. There is a check for whether the namespace
+ has already been added. That check is commented out because multiple namespace declarations can exist in one element.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/20</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerFactoryImpl.java</Modified>
+<Log>
+Accept null as a possible return value from URIResolver.resolve()
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/20</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Import.java Include.java</Modified>
+<Log>
+Report a decent error when the URI cannot be resolved.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/21</DateCommitted>
+<Modified/>
+<Log>
+Added a few getters to this class.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/22</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java</Modified>
+<Log>
+Use the superclass to determine the main class of a translet.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/22</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates RedundentExprEliminator.java</Modified>
+<Log>
+Applied patch from Morris Kwan for bugzilla #9753.
+
+The bug addresses the problem that there is a build error with Xalan under JDK 1.4, because one of the classes uses assert() as method name.
+ And assert is a keyword in JDK 1.4. The patch just changes the word "assert" to "assertion".
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/22</DateCommitted>
+<Modified/>
+<Log>
+Fix for Bugzilla 10715.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamXMLOutput.java</Modified>
+<Log>
+Fixed a regression.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/23</DateCommitted>
+<Modified/>
+<Log>
+Fixed for Bugzilla 10625. URIResolvers were being dropped in several places.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax Util.java</Modified>
+<Log>
+Util class for the TrAX package.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler XSLTC.java</Modified>
+<Log>
+Synchronize calls to Stylesheet.translate() using class' lock.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/23</DateCommitted>
+<Modified/>
+<Log>
+Ensure synchronization for Templates objects.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/24</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+Added safety net to getDOM().
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/24</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor XSLTSchema.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates ElemPI.java xml-xalan/java/src/org/apache/xml/utils QName.java</Modified>
+<Log>
+Remaining updates for Bugzilla#5013.  
+
+Some attributes that should have been handled as errors were getting
+handled as warnings.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/24</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemApplyTemplates.java ElemForEach.java</Modified>
+<Log>
+Check that recursionLimit is not negative before calling checkForInfinateLoop.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/24</DateCommitted>
+<Modified> xml-xalan/java KEYS</Modified>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/07/25</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ObjectType.java</Modified>
+<Log>
+added new type for support of ext java functions
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/07/25</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc Translet.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler CastExpr.java FunctionCall.java Parser.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ErrorMessages.java ErrorMsg.java NodeSetType.java NodeType.java ReferenceType.java StringType.java Type.java xml-xalan/java/src/org/apache/xalan/xsltc/dom AbsoluteIterator.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java BasisLibrary.java xml-xalan/java/src/org/apache/xalan/xsltc/trax DOM2SAX.java</Modified>
+<Log>
+bug fix 10837, support of ext java functions
+</Log>
+</Commit>
+<Commit category="core">
+<Who>amiro@apache.org</Who>
+<DateCommitted>2002/07/25</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml</Modified>
+<Log>
+fix typo, java for Java in doc on xsltc and external java functions
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/25</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/serialize Encodings.java</Modified>
+<Log>
+Applying patch for bug#10839.
+
+Try/catch block needed around System.getProperty call.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor XSLTAttributeDef.java XSLTSchema.java</Modified>
+<Log>
+Applying Paul Brown's patch for bug#6972.
+
+xsl:output cdata-section-elements attribute was not handled correctly.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>zongaro@apache.org</Who>
+<DateCommitted>2002/07/29</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/axes SingletonIterator.java</Modified>
+<Log>
+file SingletonIterator.java was initially added on branch XSLTC_DTM.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/29</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/lib ExsltCommon.java ExsltMath.java ExsltSets.java Extensions.java</Modified>
+<Log>
+Committed patch for bugzilla#10323 (incorrect Javadoc 
+in the extension code.)
+Submitted by Morris Kwan (mkwan@ca.ibm.com)
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/29</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerJavaClass.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.properties</Modified>
+<Log>
+Committed patch for bugzilla#10914
+( Need better error message for redirect select errors)
+Submitted by Morris Kwan (mkwan@ca.ibm.com)
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/29</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Expression.java FlowList.java Mode.java StepPattern.java TestSeq.java</Modified>
+<Log>
+Fix for Bugzilla 11166.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/07/29</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils TreeWalker.java</Modified>
+<Log>
+Patch for bugzilla #9146
+
+NullPointerException when attempting to build a stylesheet from 
+a DOM Element instead of a Document node.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/30</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Mode.java</Modified>
+<Log>
+Fixed loop exit condition in prepareTestSequences().
+</Log>
+</Commit>
+<Commit category="core">
+<Who>zongaro@apache.org</Who>
+<DateCommitted>2002/07/30</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils SystemIDResolver.java</Modified>
+<Log>
+Applying patches for Morris Kwan for bug 10519.  Changed condition in absoluteURI method to handle the case where the URI is the root of a file system - e.g., / or c:\
+</Log>
+</Commit>
+<Commit category="core">
+<Who>zongaro@apache.org</Who>
+<DateCommitted>2002/07/30</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor ProcessorInclude.java</Modified>
+<Log>
+Applying patches for Morris Kwan for bug 10519.  In parse method, if SystemId of the returned DOMSource object is null, systemID is resolved using href.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/07/30</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionCall.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ReferenceType.java ResultTreeType.java</Modified>
+<Log>
+Added type promotion from result-tree to object (used in call to nodeset()).
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/07/30</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler CastExpr.java FunctionCall.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util MultiHashtable.java</Modified>
+<Log>
+improved selection algorithm for overloaded methods and constructors in ext java funct calls
+</Log>
+</Commit>
+<Commit category="core">
+<Who>amiro@apache.org</Who>
+<DateCommitted>2002/08/02</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml</Modified>
+<Log>
+changed verbage to agree with new support of constructors and nonstatic external java functions
+</Log>
+</Commit>
+<Commit category="core">
+<Who>zongaro@apache.org</Who>
+<DateCommitted>2002/08/07</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XRTreeFrag.java</Modified>
+<Log>
+Applying patch for Bug 9683 for Morris Kwan.  If XRTreeFrag is constructed
+without respect to an XPathContext, the object() method should defer to the
+parent class's object() method to convert the fragment to the appropriate
+representation.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/09</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemValueOf.java</Modified>
+<Log>
+Patch for bugzilla #6071.  Specifically, this patch allows line numbers to 
+be reported when errors are discovered at runtime in a value-of attribute.
+(See idkeyerr10.)
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionAvailableCall.java</Modified>
+<Log>
+Fixed regression of test function-available('xalan:nodeset').
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>
+Use factory class methods to instantiate default decimal formatter.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXHTMLOutput.java</Modified>
+<Log>
+1. Report attributes with non-empty local names.
+2. Ignore attributes reported as content.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java</Modified>
+<Log>
+Use unmodified URI when retrieving the document via the DOM cache.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/12</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc TransletOutputHandler.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime SAXAdapter.java TextOutput.java TransletOutputBase.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output OutputBase.java SAXXMLOutput.java StreamHTMLOutput.java StreamOutput.java StreamXMLOutput.java xml-xalan/java/src/org/apache/xalan/xsltc/trax DOM2SAX.java DOM2TO.java SAX2TO.java TemplatesHandlerImpl.java TemplatesImpl.java TransformerFactoryImpl.java TransformerHandlerImpl.java TransformerImpl.java</Modified>
+<Log>
+New implementation of identity transform. Fix for Bugzilla 11345.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/08/13</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Expression.java ParameterRef.java VariableRef.java</Modified>
+<Log>
+bug fix for bugzilla 11221, MK053
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mkwan@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src MANIFEST.MF</Modified>
+<Log>
+For Bug#6547. Remove reference to old jar files.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file debugconf.bat was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java parse.bat</Modified>
+<Log>
+file parse.bat was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file xpath-grammar.xml was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file xpath-manifest.txt was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file xquery-manifest.txt was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file core-manifest.txt was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file etree.xsl was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file grammar.dtd was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file javacc.xsl was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file jjtree.xsl was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file pathx1-manifest.txt was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SimpleNode.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Test.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/grammar utils.xsl</Modified>
+<Log>
+file utils.xsl was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file JavaCC.zip was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/bin optional.jar</Modified>
+<Log>
+file optional.jar was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerStylesheetFunction.java</Modified>
+<Log>
+file ExtensionHandlerStylesheetFunction.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ElemForEachGroup.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ElemNamespace.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates FuncCurrentGroup.java</Modified>
+<Log>
+file FuncCurrentGroup.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file GroupingIterator.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file GroupSorter.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ItemSorter.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/transformer SortKey.java</Modified>
+<Log>
+file SortKey.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file DTMSequence.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file DTMSequenceEmpty.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm XTypeConverter.java</Modified>
+<Log>
+file XTypeConverter.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file AbstractSchema.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file DOMValidationConfigurationSwipedFromXerces.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ElemImportSchema.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncData.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncInstanceOf.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncTreatAs.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file NamespaceSupportAtDTMNode.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm XPath2Type.java</Modified>
+<Log>
+file XPath2Type.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file DateTimeObj.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Duration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/utils SparseVector.java</Modified>
+<Log>
+file SparseVector.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath VariableComposeState.java</Modified>
+<Log>
+file VariableComposeState.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/conditional Else.java</Modified>
+<Log>
+file Else.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddDays.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddDayTimeDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddDTDurationToDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddDTDurationToDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddDTDurationToTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddYearMonthDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddYMDurationToDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncAddYMDurationToDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncCurrentDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncCurrentDateTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncData.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDateTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDateTimeEq.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDateTimeGT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDateTimeLT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDivDayTimeDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDivYearMonthDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDTDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDTDurationEqual.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDTDurationFromSecs.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDTDurationGT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDTDurationLT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncDurationEqual.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGDay.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetDFromDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetDFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetDFromDTDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetDTDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetHFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetHFromDTDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetHFromTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetMFromDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetMFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetMFromYMDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetMnFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetMnFromDTDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetMnFromTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetSFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetSFromDTDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetSFromTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetTZFromDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetTZFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetTZFromTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetYFromDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetYFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetYFromYMDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetYMDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGMonth.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGMonthDay.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncGYear.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGYearMonth.java</Modified>
+<Log>
+file FuncGYearMonth.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file If.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/conditional Then.java</Modified>
+<Log>
+file Then.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncMultDayTimeDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncMultYearMonthDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncSubDayTimeDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncSubtractDTDurationFromDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncSubtractDTDurationFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncSubtractDTDurationFromTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncSubtractYMDurationFromDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncSubtractYMDurationFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncSubYearMonthDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncYMDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncYMDurationEqual.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncYMDurationFromDT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncYMDurationFromMonths.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FuncYMDurationGT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncYMDurationLT.java</Modified>
+<Log>
+file FuncYMDurationLT.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file NodeSequence.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file TypeOperations.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XDate.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XDateTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XDecimal.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XDouble.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XDTDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XDTMSequence.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XFloat.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XGDay.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XGMonth.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XGMonthDay.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XGYearMonth.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XGYearObj.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XInteger.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XJavaObject.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XNodeSequenceSingleton.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XSequence.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XSequenceCachedBase.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XSequenceEmpty.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XSequenceImpl.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XSequenceMutable.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XSequenceSingleton.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XTime.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XYMDuration.java</Modified>
+<Log>
+file XYMDuration.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Add.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Follows.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FortranEq.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FortranGe.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FortranGt.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FortranLe.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FortranLt.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FortranNe.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file GenericOpFunc.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file GtGt.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Idiv.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Is.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file IsNot.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file LtLt.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file OperationNormalized.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file OperationSimple.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file OpFuncLookupTable.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Pos.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Precedes.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations Subtract.java</Modified>
+<Log>
+file Subtract.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file AnyKindTest.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ASCII_CharStream.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file AtomicType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file CommentTest.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ElemOrAttrType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Empty.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ForClause.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file IfExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file In.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Instanceof.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ItemType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file JJTXPathState.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file KindTest.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file LbrackOrRbrack.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file NameTest.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file NCNameColonStar.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Node.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file NodeTest.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file NodeTestType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file NonExecutableExpression.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file OccurrenceIndicator.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file OfType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ParseException.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file PathExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Pattern.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file PatternAxis.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Predicates.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ProcessingInstructionTest.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file QName.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file QuantifiedExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Return.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file RootOfRoot.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file RootOfRootPattern.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SchemaContext.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SchemaContextStep.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SchemaGlobalContext.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SchemaType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SequenceType.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SimpleNode.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file SlashOrSlashSlash.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Star.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file StarColonNCName.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file StepExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file TempFunctionHolder.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file TextTest.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Token.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file TokenMgrError.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file UnaryExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XPath.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XPathConstants.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XPathTokenManager.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file XPathTreeConstants.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser XPathVisitor.java</Modified>
+<Log>
+file XPathVisitor.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Every.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file In.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Satisfies.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/quantified Some.java</Modified>
+<Log>
+file Some.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/types Atomizer.java</Modified>
+<Log>
+file Atomizer.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file Binding.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ExprSequence.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file ExprSequenceIter.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file FLWRExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/seqctor FLWRIter.java</Modified>
+<Log>
+file FLWRIter.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file InstanceofExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/types Promoter.java</Modified>
+<Log>
+file Promoter.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified/>
+<Log>
+file RangeExpr.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>pauldick@apache.org</Who>
+<DateCommitted>2002/08/14</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/seqctor RangeIter.java</Modified>
+<Log>
+file RangeIter.java was initially added on branch xalan3.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/08/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java</Modified>
+<Log>
+bug 11704, fixed ErrorMsg to include name information
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates FuncKey.java xml-xalan/java/src/org/apache/xalan/transformer KeyTable.java</Modified>
+<Log>
+Patch for bug: "The key() function throws an exception when called in the context of a 
+local variable." reported on xalan-dev.
+
+Modified FuncKey.execute to use getDocumentRoot instead of getDocument.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/15</DateCommitted>
+<Modified/>
+<Log>
+file FuncNodeKind.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/15</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncBaseURI.java</Modified>
+<Log>
+file FuncBaseURI.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mkwan@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/axes BasicTestIterator.java</Modified>
+<Log>
+For Bug#11123. Fix infinite loop in union expression.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mkwan@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerJavaClass.java</Modified>
+<Log>
+For bug#7776. Fix argument passing problem for Java extension.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mkwan@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/trace PrintTraceListener.java</Modified>
+<Log>
+See bug#10945. Test if a node is a DTMNodeProxy before casting.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file ElemAnalyzeString.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file ElemMatchingSubstring.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemNonMatchingSubstring.java</Modified>
+<Log>
+file ElemNonMatchingSubstring.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncMatches.java</Modified>
+<Log>
+file FuncMatches.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates FuncRegexGroup.java</Modified>
+<Log>
+file FuncRegexGroup.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncReplace.java</Modified>
+<Log>
+file FuncReplace.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp BMPattern.java</Modified>
+<Log>
+file BMPattern.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncTokenize.java</Modified>
+<Log>
+file FuncTokenize.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file Match.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file Op.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file ParseException.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file ParserForXMLSchema.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file RangeToken.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file RegexParser.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file RegularExpression.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified/>
+<Log>
+file REUtil.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>2002/08/16</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp Token.java</Modified>
+<Log>
+file Token.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/19</DateCommitted>
+<Modified/>
+<Log>
+file FuncUniqueID.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncNodeName.java</Modified>
+<Log>
+file FuncNodeName.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/19</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseTraversers.java</Modified>
+<Log>
+Patch for bugzilla#11834.  Replaced calls to DTM.getDocument with get 
+DTM.getDocumentRoot.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/20</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncCompare.java</Modified>
+<Log>
+file FuncCompare.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/transformer ClonerToResultTree.java</Modified>
+<Log>
+James Riordan's bug -- Attributes on elements returned from
+extensions were not being processed successfully. Turns out
+our copying logic had a minor sequencing error.
+
+I don't see anything similar listed in Bugzilla.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/08/21</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>
+fixed bug that was calling an inappropriate compare method when the right side of the comparison was a DOM
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/08/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax DOM2TO.java</Modified>
+<Log>
+fixes conf tests lre02, lre03, lre11, namespace125, namespace126
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler RelationalExpr.java</Modified>
+<Log>
+Fix for bugzilla 11987. Missing case in typeCheck() method.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/23</DateCommitted>
+<Modified/>
+<Log>
+Very minor optimization.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/08/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>
+conf test string134 fix
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/23</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler XslElement.java</Modified>
+<Log>
+Fix for namespace102 (this test worked with Crimson but failed with
+Xerces).
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ResultTreeType.java</Modified>
+<Log>
+Removed debugging message.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Compile.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Closure.java Constants.java Number.java ParameterRef.java Predicate.java Sort.java SyntaxTreeNode.java Template.java Variable.java VariableRef.java VariableRefBase.java XSLTC.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util NodeSortRecordFactGenerator.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java</Modified>
+<Log>
+Fix for Bugzilla 11828. A new closure conversion algorithm has been
+designed and implemented. The old algorithm did not work in some edge
+cases (c.f. description of Bugzilla 11828). Closure variables in an
+inner class are now accessed locally instead of via the AbstractTranslet
+class. Also, we have set the new version to be "XSLTC 1.2".
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/26</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XExpandedQName.java</Modified>
+<Log>
+file XExpandedQName.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified/>
+<Log>
+Allow the default namespace to be redefined as "".
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+*** empty log message ***
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>
+bug fix for output13 conf test
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>santiagopg@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>
+Fix for Bugzilla 12075.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/bin xml-apis.jar</Modified>
+<Log>
+Replacing xml-apis.jar with the version from the RIVERCOURT1 branch 
+of xml-commons.   The xml-commons-1.0.b2 version does not pass
+the TCK 1.1 or the TCK 1.2.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan builds.xml</Modified>
+<Log>
+Small updates to the build documentation.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties xml-xalan/java build.xml xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>
+Updating version numbers to 2.4.0 for new release.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified/>
+<Log>
+file FuncExpandedQName.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified/>
+<Log>
+file FuncGetLocalNameFromQName.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetNamespaceFromQName.java</Modified>
+<Log>
+file FuncGetNamespaceFromQName.java was initially added on branch xslt20.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties xml-xalan/java build.xml xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>
+Updating version numbers to 2.4.0 for new release.
+</Log>
+</Commit>
+</Commits>
