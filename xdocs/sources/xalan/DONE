@@ -2,7 +2,7 @@
 
 <p>&xslt4j; 2.0.D07 incorporates a Xalan-Java 1 compatibility jar, some performance enhancements, and a number of bug fixes for bugs found in version 2.0.D06.</p>
 <p><em>Compatibility jar: xalanj1compat.jar</em></p>
-<p>This release includes a new JAR in the bin directory --xalanj1compat.jar, that lets you rebuild your Xalan-Java 1.x applications to run with Xalan-Java 2. As a point of reference, this JAR includes the API required to recompile the Xalan-Java 1.x core sample applications and run them with Xalan-Java 2. To use this compatibility layer with an existing Xalan-Java 1.x application, do the following:</p>
+<p>This release includes a new JAR in the bin directory --xalanj1compat.jar, that lets you rebuild your Xalan-Java 1.x applications to run with Xalan-Java 2. As a point of reference, this JAR includes the API required to recompile the Xalan-Java 1.x sample applications (excluding the sample extensions and sample servlet) and run them with Xalan-Java 2. To use this compatibility layer with an existing Xalan-Java 1.x application, do the following:</p>
 <ol>
 <li>Place xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar (both are in the bin directory).<br/><br/></li>
 <li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatibility layer does not support. <br/><br/></li>
