@@ -45,26 +45,46 @@ public class EmptySerializer implements SerializationHandler
     /**
      * @see org.apache.xml.serializer.SerializationHandler#asContentHandler()
      */
-
-    private static void throwUnimplementedException()
+    
+    protected void couldThrowIOException() throws IOException
     {
-        /* TODO: throw this exception for real.
-         * Some users of this class do not over-ride all methods that 
-         * they use, which is a violation of the intended use of this
-         * class. Those tests used to end in error, but fail when this
-         * exception is enabled.  Perhaps that is an indication of what
-         * the true problem is.  Such tests include copy56,58,59,60 for 
-         * both Xalan-J interpretive and for XSLTC. - bjm
-         */
+        return; // don't do anything.
+    }
+    
+    protected void couldThrowSAXException() throws SAXException
+    {
+        return; // don't do anything.
+    }
+    
+    protected void couldThrowSAXException(char[] chars, int off, int len) throws SAXException
+    {
+        return; // don't do anything.
+    }
+    
+    protected void couldThrowSAXException(String elemQName) throws SAXException
+    {
+        return; // don't do anything.
+    }
+    
+    protected void couldThrowException() throws Exception
+    {
+        return; // don't do anything.
+    }
+
+    void aMethodIsCalled()
+    {
+
         // throw new RuntimeException(err);
         return;
     }
+  
+    
     /**
      * @see org.apache.xml.serializer.SerializationHandler#asContentHandler()
      */
     public ContentHandler asContentHandler() throws IOException
     {
-        throwUnimplementedException();
+        couldThrowIOException();
         return null;
     }
     /**
@@ -72,21 +92,21 @@ public class EmptySerializer implements SerializationHandler
      */
     public void setContentHandler(ContentHandler ch)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#close()
      */
     public void close()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#getOutputFormat()
      */
     public Properties getOutputFormat()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -94,7 +114,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public OutputStream getOutputStream()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -102,7 +122,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public Writer getWriter()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -110,7 +130,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public boolean reset()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return false;
     }
     /**
@@ -118,21 +138,21 @@ public class EmptySerializer implements SerializationHandler
      */
     public void serialize(Node node) throws IOException
     {
-        throwUnimplementedException();
+        couldThrowIOException();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setCdataSectionElements(java.util.Vector)
      */
     public void setCdataSectionElements(Vector URI_and_localNames)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setEscaping(boolean)
      */
     public boolean setEscaping(boolean escape) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
         return false;
     }
     /**
@@ -140,56 +160,56 @@ public class EmptySerializer implements SerializationHandler
      */
     public void setIndent(boolean indent)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setIndentAmount(int)
      */
     public void setIndentAmount(int spaces)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setOutputFormat(java.util.Properties)
      */
     public void setOutputFormat(Properties format)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setOutputStream(java.io.OutputStream)
      */
     public void setOutputStream(OutputStream output)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setVersion(java.lang.String)
      */
     public void setVersion(String version)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setWriter(java.io.Writer)
      */
     public void setWriter(Writer writer)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#setTransformer(javax.xml.transform.Transformer)
      */
     public void setTransformer(Transformer transformer)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.SerializationHandler#getTransformer()
      */
     public Transformer getTransformer()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -197,7 +217,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public void flushPending() throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
@@ -210,21 +230,21 @@ public class EmptySerializer implements SerializationHandler
         String value)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#addAttributes(org.xml.sax.Attributes)
      */
     public void addAttributes(Attributes atts) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(java.lang.String, java.lang.String)
      */
     public void addAttribute(String name, String value)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
 
     /**
@@ -232,21 +252,21 @@ public class EmptySerializer implements SerializationHandler
      */
     public void characters(String chars) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(java.lang.String)
      */
     public void endElement(String elemName) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#startDocument()
      */
     public void startDocument() throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String)
@@ -254,14 +274,14 @@ public class EmptySerializer implements SerializationHandler
     public void startElement(String uri, String localName, String qName)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException(qName);
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(java.lang.String)
      */
     public void startElement(String qName) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException(qName);
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#namespaceAfterStartElement(java.lang.String, java.lang.String)
@@ -269,7 +289,7 @@ public class EmptySerializer implements SerializationHandler
     public void namespaceAfterStartElement(String uri, String prefix)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#startPrefixMapping(java.lang.String, java.lang.String, boolean)
@@ -280,7 +300,7 @@ public class EmptySerializer implements SerializationHandler
         boolean shouldFlush)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
         return false;
     }
     /**
@@ -288,14 +308,14 @@ public class EmptySerializer implements SerializationHandler
      */
     public void entityReference(String entityName) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#getNamespaceMappings()
      */
     public NamespaceMappings getNamespaceMappings()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -303,7 +323,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getPrefix(String uri)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -311,7 +331,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getNamespaceURI(String name, boolean isElement)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -319,7 +339,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getNamespaceURIFromPrefix(String prefix)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -327,14 +347,14 @@ public class EmptySerializer implements SerializationHandler
      */
     public void setDocumentLocator(Locator arg0)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.xml.sax.ContentHandler#endDocument()
      */
     public void endDocument() throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ContentHandler#startPrefixMapping(java.lang.String, java.lang.String)
@@ -342,14 +362,14 @@ public class EmptySerializer implements SerializationHandler
     public void startPrefixMapping(String arg0, String arg1)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ContentHandler#endPrefixMapping(java.lang.String)
      */
     public void endPrefixMapping(String arg0) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
@@ -361,7 +381,7 @@ public class EmptySerializer implements SerializationHandler
         Attributes arg3)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
@@ -369,14 +389,14 @@ public class EmptySerializer implements SerializationHandler
     public void endElement(String arg0, String arg1, String arg2)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
     public void characters(char[] arg0, int arg1, int arg2) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException(arg0, arg1, arg2);
     }
     /**
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
@@ -384,7 +404,7 @@ public class EmptySerializer implements SerializationHandler
     public void ignorableWhitespace(char[] arg0, int arg1, int arg2)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ContentHandler#processingInstruction(java.lang.String, java.lang.String)
@@ -392,21 +412,21 @@ public class EmptySerializer implements SerializationHandler
     public void processingInstruction(String arg0, String arg1)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ContentHandler#skippedEntity(java.lang.String)
      */
     public void skippedEntity(String arg0) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.ExtendedLexicalHandler#comment(java.lang.String)
      */
     public void comment(String comment) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
@@ -414,56 +434,56 @@ public class EmptySerializer implements SerializationHandler
     public void startDTD(String arg0, String arg1, String arg2)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.LexicalHandler#endDTD()
      */
     public void endDTD() throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
      */
     public void startEntity(String arg0) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
      */
     public void endEntity(String arg0) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.LexicalHandler#startCDATA()
      */
     public void startCDATA() throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.LexicalHandler#endCDATA()
      */
     public void endCDATA() throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
      */
     public void comment(char[] arg0, int arg1, int arg2) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#getDoctypePublic()
      */
     public String getDoctypePublic()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -471,7 +491,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getDoctypeSystem()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -479,7 +499,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getEncoding()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -487,7 +507,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public boolean getIndent()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return false;
     }
     /**
@@ -495,7 +515,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public int getIndentAmount()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return 0;
     }
     /**
@@ -503,7 +523,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getMediaType()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -511,7 +531,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public boolean getOmitXMLDeclaration()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return false;
     }
     /**
@@ -519,7 +539,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getStandalone()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -527,7 +547,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public String getVersion()
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
         return null;
     }
     /**
@@ -535,63 +555,63 @@ public class EmptySerializer implements SerializationHandler
      */
     public void setCdataSectionElements(Hashtable h) throws Exception
     {
-        throwUnimplementedException();
+        couldThrowException();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#setDoctype(java.lang.String, java.lang.String)
      */
     public void setDoctype(String system, String pub)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#setDoctypePublic(java.lang.String)
      */
     public void setDoctypePublic(String doctype)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#setDoctypeSystem(java.lang.String)
      */
     public void setDoctypeSystem(String doctype)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#setEncoding(java.lang.String)
      */
     public void setEncoding(String encoding)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#setMediaType(java.lang.String)
      */
     public void setMediaType(String mediatype)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#setOmitXMLDeclaration(boolean)
      */
     public void setOmitXMLDeclaration(boolean b)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.apache.xml.serializer.XSLOutputAttributes#setStandalone(java.lang.String)
      */
     public void setStandalone(String standalone)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     /**
      * @see org.xml.sax.ext.DeclHandler#elementDecl(java.lang.String, java.lang.String)
      */
     public void elementDecl(String arg0, String arg1) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.DeclHandler#attributeDecl(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
@@ -604,7 +624,7 @@ public class EmptySerializer implements SerializationHandler
         String arg4)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.DeclHandler#internalEntityDecl(java.lang.String, java.lang.String)
@@ -612,7 +632,7 @@ public class EmptySerializer implements SerializationHandler
     public void internalEntityDecl(String arg0, String arg1)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ext.DeclHandler#externalEntityDecl(java.lang.String, java.lang.String, java.lang.String)
@@ -620,35 +640,35 @@ public class EmptySerializer implements SerializationHandler
     public void externalEntityDecl(String arg0, String arg1, String arg2)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
     public void warning(SAXParseException arg0) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
     public void error(SAXParseException arg0) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
     public void fatalError(SAXParseException arg0) throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
     /**
      * @see org.apache.xml.serializer.Serializer#asDOMSerializer()
      */
     public DOMSerializer asDOMSerializer() throws IOException
     {
-        throwUnimplementedException();
+        couldThrowIOException();
         return null;
     }
 
@@ -656,7 +676,7 @@ public class EmptySerializer implements SerializationHandler
      * @see org.apache.xml.serializer.SerializationHandler#setNamespaceMappings(NamespaceMappings)
      */
     public void setNamespaceMappings(NamespaceMappings mappings) {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
     
     /**
@@ -664,7 +684,7 @@ public class EmptySerializer implements SerializationHandler
      */
     public void setSourceLocator(SourceLocator locator)
     {
-        throwUnimplementedException();
+        aMethodIsCalled();
     }
 
     /**
@@ -673,6 +693,6 @@ public class EmptySerializer implements SerializationHandler
     public void addUniqueAttribute(String name, String value, int flags)
         throws SAXException
     {
-        throwUnimplementedException();
+        couldThrowSAXException();
     }
 }
