@@ -79,6 +79,18 @@ public class AttributesImplSerializer extends AttributesImpl
     private Hashtable m_indexFromQName = new Hashtable();
     
     /**
+     * This is the number of attributes before switching to the hash table,
+     * and can be tuned, but 12 seems good for now - bjm
+     */
+    public static final int MAX = 12;
+    
+    /**
+     * One less than the number of attributes before switching to
+     * the Hashtable.
+     */
+    private static final int MAXMinus1 = MAX - 1;
+
+    /**
      * This method gets the index of an attribute given its qName.
      * @param qname the qualified name of the attribute, e.g. "prefix1:locName1"
      * @return the integer index of the attribute.
@@ -87,8 +99,18 @@ public class AttributesImplSerializer extends AttributesImpl
     public int getIndex(String qname)
     {
         int index;
-        Integer i = (Integer) m_indexFromQName.get(qname);
-        if (i==null)
+
+        if (super.getLength() < MAX)
+        {
+            // if we haven't got too many attributes let the
+            // super class look it up
+            index = super.getIndex(qname);
+            return index;
+        }
+        // we have too many attributes and the super class is slow
+        // so find it quickly using our Hashtable.
+        Integer i = (Integer)m_indexFromQName.get(qname);
+        if (i == null)
             index = -1;
         else
             index = i.intValue();
@@ -107,16 +129,51 @@ public class AttributesImplSerializer extends AttributesImpl
      * @see getIndex(String)
      */
     public void addAttribute(
-    String uri, String local, String qname, String type, String val)
+        String uri,
+        String local,
+        String qname,
+        String type,
+        String val)
     {
         int index = super.getLength();
-        super.addAttribute(uri,local,qname,type,val);
-        
-        /* we have just added the attibute, its index is the old length */
-        Integer i = new Integer(index);
-        m_indexFromQName.put(qname, i);
+        super.addAttribute(uri, local, qname, type, val);
+        // (index + 1) is now the number of attributes
+        // so either compare (index+1) to MAX, or compare index to (MAX-1)
+
+        if (index < MAXMinus1)
+        {
+            return;
+        }
+        else if (index == MAXMinus1)
+        {
+            switchOverToHash(MAX);
+        }
+        else
+        {
+            /* we have just added the attibute, its index is the old length */
+            Integer i = new Integer(index);
+            m_indexFromQName.put(qname, i);
+        }
+        return;
     }
-    
+
+    /**
+     * We are switching over to having a hash table for quick look
+     * up of attributes, but up until now we haven't kept any
+     * information in the Hashtable, so we now update the Hashtable.
+     * Future additional attributes will update the Hashtable as
+     * they are added.
+     * @param numAtts
+     */
+    private void switchOverToHash(int numAtts)
+    {
+        for (int index = 0; index < numAtts; index++)
+        {
+            String qName = super.getQName(index);
+            Integer i = new Integer(index);
+            m_indexFromQName.put(qName, i);
+        }
+    }
 
     /**
      * This method clears the accumulated attributes.
@@ -125,10 +182,18 @@ public class AttributesImplSerializer extends AttributesImpl
      */
     public void clear()
     {
-        m_indexFromQName.clear();
+
+        int len = super.getLength();
         super.clear();
-    }    
-    
+        if (MAX <= len)
+        {
+            // if we have had enough attributes and are
+            // using the Hashtable, then clear the Hashtable too.
+            m_indexFromQName.clear();
+        }
+
+    }
+
     /**
      * This method sets the attributes, previous attributes are cleared,
      * it also keeps the hashtable up to date for quick lookup via
@@ -139,19 +204,15 @@ public class AttributesImplSerializer extends AttributesImpl
      */
     public void setAttributes(Attributes atts)
     {
+
         super.setAttributes(atts);
-        
+
         // we've let the super class add the attributes, but
         // we need to keep the hash table up to date ourselves for the
         // potentially new qName/index pairs for quick lookup. 
         int numAtts = atts.getLength();
-        for (int i=0; i < numAtts; i++)
-        {
-            String qName = atts.getQName(i);
-            int index = super.getIndex(qName);
-            Integer io = new Integer(index);
-            m_indexFromQName.put(qName, io);            
-            
-        }
+        if (MAX <= numAtts)
+            switchOverToHash(numAtts);
+
     }
 }
