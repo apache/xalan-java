@@ -37,8 +37,8 @@
  <actions>
 
    <target-release-description>
-    <date>01/05/01</date>
-    <level>beta2</level>
+    <date>01/09/01</date>
+    <level>beta3</level>
     <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 98% conformance test passage.</goal>
     <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
     <goal type="stability">Stable, reasonable.</goal>
@@ -47,21 +47,27 @@
    </target-release-description>
 
   <!-- Move to completed section when done. -->
+            
+   <action context="code" category="release">
+      No known actions pending for 2.0.0 release.
+   </action>
   
-   <action context="code" category="bug" who="SB">
-    Fix 1.8 problems: extend01 (exception), numberformat 06, numberformat16, output77 (exception).
-    JDK 1.1.8, using xml-xalan\test\ConformanceTest.bat, runharness.bat, and testthreads.bat as-is.
-   </action>
+ </actions>
 
-   <action context="code" category="error-handling" who="SB">
-    Simplify some of the exception nesting, maybe, and make sure error listeners 
-    are being called for all cases.
-   </action>
-   
-   <action context="doc" category="documentation" who="SB">
-    Update and add to architecture documentation, including package headers.
-   </action>
-       
+ <actions>
+
+   <target-release-description>
+    <date>01/15/01</date>
+    <level>production</level>
+    <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 99% conformance test passage.</goal>
+    <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
+    <goal type="stability">Robust.</goal>
+    <goal type="api">API Complete.</goal>
+    <goal type="documentation">Documentation complete.</goal>
+   </target-release-description>
+
+  <!-- Move to completed section when done. -->
+  
    <action context="code" category="conformance" who="GP">
       Verify that the recomposing procedure for each of the recomposable
       elements matches the standard (including errata).
@@ -83,23 +89,7 @@
       Add compatibility with XalanJ1 NodeSet extension, so that stylehsheets 
       can work with both processors.
    </action>
-  
- </actions>
 
- <actions>
-
-   <target-release-description>
-    <date>01/15/01</date>
-    <level>production</level>
-    <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 99% conformance test passage.</goal>
-    <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
-    <goal type="stability">Robust.</goal>
-    <goal type="api">API Complete.</goal>
-    <goal type="documentation">Documentation complete.</goal>
-   </target-release-description>
-
-  <!-- Move to completed section when done. -->
-  
    <action context="code" category="bug" who="SB">
     Handle qName paramterer to the ContentHandler methods being an empty string.
     See note from mikael@ingen.reklam.staldal.nu (Mikael Ståldal), 01/01/2001 09:42 AM.
@@ -219,6 +209,24 @@
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
   
+   <action context="doc" category="documentation" who="SB" completed="01/12/01">
+    Update and add to architecture documentation, including package headers.
+   </action>
+
+   <action context="code" category="error-handling" who="SB" completed="01/06/01">
+    Simplify some of the exception nesting, maybe, and make sure error listeners 
+    are being called for all cases.
+    <note>Fixed bug with XPaths in this area.  Most of the nesting is being caused 
+    by TranformerHandler to SAXException nesting, which can be unnested.</note>
+   </action>
+  
+   <action context="code" category="bug" who="SB" completed="01/06/01">
+    Fix 1.8 problems: extend01 (exception), numberformat 06, numberformat16, output77 (exception).
+    JDK 1.1.8, using xml-xalan\test\ConformanceTest.bat, runharness.bat, and testthreads.bat as-is.
+    <note>The number format stuff is a bug in JDK 1.8 and can't easily be fixed 
+    or hacked.</note>
+   </action>
+
    <!-- action context="code" category="feature" who="SB" completed="01/04/01">
     Integrate John Gentilin &lt;johnglinux@eyecatching.com> code, 
     for SQL Extension Enhancements.
