@@ -276,6 +276,7 @@ Copyright:
   <!-- Compile just the XSLTC compiler portion (to be integrated soon!) -->
   <!-- =================================================================== -->
   <path id="xsltc.class.path">
+    <pathelement location="${xmlapis.jar}" />
     <pathelement location="${bcel.jar}" />
     <pathelement location="${jlex.jar}" />
     <pathelement location="${java_cup.jar}" />
