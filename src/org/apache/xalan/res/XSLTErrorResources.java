@@ -82,7 +82,7 @@ public static final String ERROR_SUFFIX = "ER";
 public static final String WARNING_SUFFIX = "WR";
 
 public static final int MAX_CODE = 104;                  // this is needed to keep track of the number of messages          
-public static final int MAX_WARNING = 25;             // this is needed to keep track of the number of warnings
+public static final int MAX_WARNING = 26;             // this is needed to keep track of the number of warnings
 public static final int MAX_OTHERS = 41;
 public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING +1;
 
@@ -767,6 +767,11 @@ static {contents[WG_ILLEGAL_ATTRIBUTE_NAME + MAX_CODE][1]
 public static final int WG_ILLEGAL_ATTRIBUTE_VALUE = 25;
 static {contents[WG_ILLEGAL_ATTRIBUTE_VALUE + MAX_CODE][1] 
           = "Illegal value used for attribute {0}: {1}";
+}
+
+public static final int WG_EMPTY_SECOND_ARG = 26;
+static {contents[WG_EMPTY_SECOND_ARG + MAX_CODE][1] 
+          = "Resulting nodeset from second argument of document function is empty. The first agument will be used.";
 }
 
 
