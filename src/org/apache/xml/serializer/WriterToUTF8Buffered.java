@@ -63,18 +63,26 @@ import java.io.Writer;
 
 
 /**
- * This class writes ASCII to a byte stream as quickly as possible.  For the
- * moment it does not do buffering, though I reserve the right to do some
- * buffering down the line if I can prove that it will be faster even if the
- * output stream is buffered.
+ * This class writes unicode characters to a byte stream (java.io.OutputStream)
+ * as quickly as possible. It buffers the output in an internal
+ * buffer which must be flushed to the OutputStream when done. This flushing
+ * is done via the close() flush() or flushBuffer() method. 
  */
 public final class WriterToUTF8Buffered extends Writer
 {
     
-  /** number of characters that the buffer can hold.
+  /** number of bytes that the byte buffer can hold.
    * This is a fixed constant is used rather than m_outputBytes.lenght for performance.
    */
-  private static final int buf_length=16*1024;
+  private static final int BYTES_MAX=16*1024;
+  
+  /** number of characters that the character buffer can hold.
+   * This is 1/3 of the number of bytes because UTF-8 encoding
+   * can expand one unicode character by up to 3 bytes.
+   */
+  private static final int CHARS_MAX=(BYTES_MAX/3);
+  
+ // private static final int 
   
   /** The byte stream to write to. (sc & sb remove final to compile in JDK 1.1.8) */
   private final OutputStream m_os;
@@ -109,11 +117,11 @@ public final class WriterToUTF8Buffered extends Writer
       m_os = out;
       // get 3 extra bytes to make buffer overflow checking simpler and faster
       // we won't have to keep checking for a few extra characters
-      m_outputBytes = new byte[buf_length + 3];
+      m_outputBytes = new byte[BYTES_MAX + 3];
       
       // Big enough to hold the input chars that will be transformed
       // into output bytes in m_ouputBytes.
-      m_inputChars = new char[(buf_length/3) + 1];
+      m_inputChars = new char[CHARS_MAX + 1];
       count = 0;
       
 //      the old body of this constructor, before the buffersize was changed to a constant      
@@ -159,9 +167,9 @@ public final class WriterToUTF8Buffered extends Writer
   {
     
     /* If we are close to the end of the buffer then flush it.
-     * Remember the buffer can hold a few more characters than buf_length
+     * Remember the buffer can hold a few more bytes than BYTES_MAX
      */ 
-    if (count >= buf_length)
+    if (count >= BYTES_MAX)
         flushBuffer();
 
     if (c < 0x80)
@@ -181,77 +189,6 @@ public final class WriterToUTF8Buffered extends Writer
     }
   }
 
-  /**
-   * Write a portion of an array of characters.
-   *
-   * @param  chars  Array of characters
-   * @param  start   Offset from which to start writing characters
-   * @param  length   Number of characters to write
-   *
-   * @exception  IOException  If an I/O error occurs
-   *
-   * @throws java.io.IOException
-   */
-  private final void writeWithoutBuffering(
-          final char chars[], final int start, final int length)
-            throws java.io.IOException
-  {
-
-    final OutputStream os = m_os;
-
-    final int n = length+start;
-    for (int i = start; i < n; i++)
-    {
-      final char c = chars[i];
-
-      if (c < 0x80)
-        os.write(c);
-      else if (c < 0x800)
-      {
-        os.write(0xc0 + (c >> 6));
-        os.write(0x80 + (c & 0x3f));
-      }
-      else
-      {
-        os.write(0xe0 + (c >> 12));
-        os.write(0x80 + ((c >> 6) & 0x3f));
-        os.write(0x80 + (c & 0x3f));
-      }
-    }
-  }
-
-  /**
-   * Write a string.
-   *
-   * @param  s  String to be written
-   *
-   * @exception  IOException  If an I/O error occurs
-   */
-  private final void writeWithoutBuffering(final String s) throws IOException
-  {
-
-    final int n = s.length();
-    final OutputStream os = m_os;
-
-    for (int i = 0; i < n; i++)
-    {
-      final char c = s.charAt(i);
-
-      if (c < 0x80)
-        os.write(c);
-      else if (c < 0x800)
-      {
-        os.write(0xc0 + (c >> 6));
-        os.write(0x80 + (c & 0x3f));
-      }
-      else
-      {
-        os.write(0xe0 + (c >> 12));
-        os.write(0x80 + ((c >> 6) & 0x3f));
-        os.write(0x80 + (c & 0x3f));
-      }
-    }
-  }
 
   /**
    * Write a portion of an array of characters.
@@ -272,22 +209,29 @@ public final class WriterToUTF8Buffered extends Writer
     // of the characters that we can put into the buffer.  It is possible
     // for each Unicode character to expand to three bytes.
 
-    int lengthx3 = (length << 1) + length;
+    int lengthx3 = 3*length;
 
-    if (lengthx3 >= buf_length - count)
+    if (lengthx3 >= BYTES_MAX - count)
     {
       // The requested length is greater than the unused part of the buffer
       flushBuffer();
 
-      if (lengthx3 >= buf_length)
+      if (lengthx3 >= BYTES_MAX)
       {
         /*
-         * The requested length exceeds the size of the buffer,
-         * so don't bother to buffer this one, just write it out
-         * directly. The buffer is already flushed so this is a 
-         * safe thing to do.
+         * The requested length exceeds the size of the buffer.
+         * Cut the buffer up into chunks, each of which will
+         * not cause an overflow to the output buffer m_outputBytes,
+         * and make multiple recursive calls.
          */
-        writeWithoutBuffering(chars, start, length);
+        final int chunks = 1 + length/CHARS_MAX;
+        for (int chunk =0 ; chunk < chunks; chunk++)
+        {
+            int start_chunk = start + ((length*chunk)/chunks);
+            int end_chunk   = start + ((length*(chunk+1))/chunks);
+            int len_chunk = (end_chunk - start_chunk);
+            this.write(chars,start_chunk, len_chunk);
+        }
         return;
       }
     }
@@ -331,6 +275,53 @@ public final class WriterToUTF8Buffered extends Writer
     count = count_loc;
 
   }
+  
+  /**
+   * Writes out the character array 
+   * @param chars a character array with only ASCII characters, so
+   * the UTF-8 encoding is optimized.
+   * @param start the first character in the input array
+   * @param length the number of characters in the input array
+   */
+  private void directWrite(final char chars[], final int start, final int length)
+          throws java.io.IOException
+  {
+
+
+
+    if (length >= BYTES_MAX - count)
+    {
+      // The requested length is greater than the unused part of the buffer
+      flushBuffer();
+
+      if (length >= BYTES_MAX)
+      {
+        /*
+         * The requested length exceeds the size of the buffer.
+         * Cut the buffer up into chunks, each of which will
+         * not cause an overflow to the output buffer m_outputBytes,
+         * and make multiple recursive calls.
+         */          
+        int chunks = 1 + length/CHARS_MAX;
+        for (int chunk =0 ; chunk < chunks; chunk++)
+        {
+            int start_chunk = start + ((length*chunk)/chunks);
+            int end_chunk   = start + ((length*(chunk+1))/chunks);
+            int len_chunk = (end_chunk - start_chunk);
+            this.directWrite(chars,start_chunk, len_chunk);
+        }
+        return;
+      }
+    }
+
+    final int n = length+start;
+    final byte[] buf_loc = m_outputBytes; // local reference for faster access
+    int count_loc = count;      // local integer for faster access
+    for(int i=start; i < n ; i++ )
+        buf_loc[count_loc++] = (byte) buf_loc[i];
+    // Store the local integer back into the instance variable
+    count = count_loc;
+  }
 
   /**
    * Write a string.
@@ -346,23 +337,30 @@ public final class WriterToUTF8Buffered extends Writer
     // of the characters that we can put into the buffer.  It is possible
     // for each Unicode character to expand to three bytes.
     final int length = s.length();
-    int lengthx3 = (length << 1) + length;
+    int lengthx3 = 3*length;
 
-    if (lengthx3 >= buf_length - count)
+    if (lengthx3 >= BYTES_MAX - count)
     {
       // The requested length is greater than the unused part of the buffer
       flushBuffer();
 
-      if (lengthx3 >= buf_length)
+      if (lengthx3 >= BYTES_MAX)
       {
         /*
          * The requested length exceeds the size of the buffer,
-         * so don't bother to buffer this one, just write it out
-         * directly. The buffer is already flushed so this is a 
-         * safe thing to do.
+         * so break it up in chunks that don't exceed the buffer size.
          */
-        writeWithoutBuffering(s);
-        return;
+         final int start = 0;
+         int chunks = 1 + length/CHARS_MAX;
+         for (int chunk =0 ; chunk < chunks; chunk++)
+         {
+             int start_chunk = start + ((length*chunk)/chunks);
+             int end_chunk   = start + ((length*(chunk+1))/chunks);
+             int len_chunk = (end_chunk - start_chunk);
+             s.getChars(start_chunk,end_chunk, m_inputChars,0);
+             this.write(m_inputChars,0, len_chunk);
+         }
+         return;
       }
     }
 
@@ -474,18 +472,14 @@ public final class WriterToUTF8Buffered extends Writer
   public void directWrite(final String s) throws IOException
   {
 
-    // We multiply the length by three since this is the maximum length
-    // of the characters that we can put into the buffer.  It is possible
-    // for each Unicode character to expand to three bytes.
     final int length = s.length();
-    int lengthx3 = (length << 1) + length;
-
-    if (lengthx3 >= buf_length - count)
+    
+    if (length >= BYTES_MAX - count)
     {
       // The requested length is greater than the unused part of the buffer
       flushBuffer();
 
-      if (lengthx3 >= buf_length)
+      if (length >= BYTES_MAX)
       {
         /*
          * The requested length exceeds the size of the buffer,
@@ -493,7 +487,16 @@ public final class WriterToUTF8Buffered extends Writer
          * directly. The buffer is already flushed so this is a 
          * safe thing to do.
          */
-        writeWithoutBuffering(s);
+         final int start = 0;
+         int chunks = 1 + length/CHARS_MAX;
+         for (int chunk =0 ; chunk < chunks; chunk++)
+         {
+             int start_chunk = start + ((length*chunk)/chunks);
+             int end_chunk   = start + ((length*(chunk+1))/chunks);
+             int len_chunk = (end_chunk - start_chunk);
+             s.getChars(start_chunk,end_chunk, m_inputChars,0);
+             this.directWrite(m_inputChars,0, len_chunk);
+         }
         return;
       }
     }
