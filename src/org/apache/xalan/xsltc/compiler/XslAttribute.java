@@ -138,8 +138,9 @@ final class XslAttribute extends Instruction {
 	    if (item instanceof Choose) continue;
  	    if (item instanceof CopyOf) continue;
  	    if (item instanceof VariableBase) continue;
+
+	    // Report warning but do not ignore attribute
 	    reportWarning(this, parser, ErrorMsg.STRAY_ATTRIBUTE_ERR, name);
-	    _ignore = true;
 	}
 
 	// Get namespace from namespace attribute?
