@@ -81,6 +81,9 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 public final class LoadDocument {
 
+    private static final String NAMESPACE_FEATURE =
+	"http://xml.org/sax/features/namespaces";
+
     /**
      * Returns an iterator containing a set of nodes from an XML document
      * loaded by the document() function.
@@ -130,6 +133,12 @@ public final class LoadDocument {
 	    // Parse the input document and construct DOM object
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    try {
+		factory.setFeature(NAMESPACE_FEATURE,true);
+	    }
+	    catch (Exception e) {
+		factory.setNamespaceAware(true);
+	    }
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
