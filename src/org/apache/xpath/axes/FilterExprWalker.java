@@ -161,7 +161,6 @@ public class FilterExprWalker extends AxesWalker
       else
         m_nodeSet = m_expr.asIterator(xctxt, root);
             
-      m_peek = DTM.NULL;
     }
     catch (javax.xml.transform.TransformerException se)
     {
@@ -237,28 +236,23 @@ public class FilterExprWalker extends AxesWalker
   public int getNextNode()
   {
 
-    int next;
-
-    if (DTM.NULL != m_peek)
-    {
-      next = m_peek;
-      m_peek = DTM.NULL;
-    }
+    if (null != m_nodeSet)
+       return m_nodeSet.nextNode();
     else
-    {
-      if (null != m_nodeSet)
-      {
-        int current = this.getCurrentNode();
-
-        next = m_nodeSet.nextNode();
-      }
-      else
-        next = DTM.NULL;
-    }
-
-    // int current = setCurrentIfNotNull(next);
-    // System.out.println("Returning: "+this);
-    return next;
+      return DTM.NULL;
+  }
+  
+  /**
+   * Get the index of the last node that can be itterated to.
+   *
+   *
+   * @param xctxt XPath runtime context.
+   *
+   * @return the index of the last node that can be itterated to.
+   */
+  public int getLastPos(XPathContext xctxt)
+  {
+    return m_nodeSet.getLength();
   }
   
   /** The contained expression. Should be non-null.
@@ -268,25 +262,6 @@ public class FilterExprWalker extends AxesWalker
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
   transient private DTMIterator m_nodeSet;
 
-  /** I think this is always null right now.    */
-  transient private int m_peek = DTM.NULL;
-
-  /**
-   * Tell what's the maximum level this axes can descend to (which is actually
-   * impossible to predict with this walker?).
-   *
-   * @return always a level of 1 right now.
-   */
-  protected int getLevelMax()
-  {
-
-    // TODO: Oh, this is going to be a hell of a lot of fun...
-    // return Short.MAX_VALUE;
-    return 1;  // bogus, will probably screw things up.
-
-    // return m_lpi.getDOMHelper().getLevel(this.m_currentNode)+1;
-  }
-  
   /**
    * This function is used to fixup variables from QNames to stack frame 
    * indexes at stylesheet build time.

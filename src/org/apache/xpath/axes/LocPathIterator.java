@@ -338,7 +338,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
     m_cdtm = xctxt.getDTM(context);
     m_currentContextNode = context;
     m_prefixResolver = xctxt.getNamespaceContext();
-    
+        
 //    m_lastFetched = DTM.NULL;
 //    m_currentContextNode = DTM.NULL;
 //    m_foundLast = false;
@@ -347,7 +347,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
 
     if (m_isTopLevel)
       this.m_stackFrame = xctxt.getVarStack().getStackFrame();
-
+      
     reset();
   }
 
@@ -396,7 +396,9 @@ public abstract class LocPathIterator extends PredicatedNodeTest
     if (b)
     {
       if(null == m_cachedNodes)
+      {
         m_cachedNodes = new NodeSetDTM();
+      }
     }
     else
       m_cachedNodes = null;
@@ -893,7 +895,15 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    */
   public int getLastPos(XPathContext xctxt)
   {
-    int pos = getProximityPosition();
+    int savedPos;
+    if(null != m_cachedNodes)
+      savedPos = m_cachedNodes.getCurrentPos();
+    else 
+      savedPos = -1;
+      
+    int pos = (m_predicateIndex >= 0) ? getProximityPosition() : 
+              ((null != m_cachedNodes) ? m_cachedNodes.getCurrentPos() : m_next);
+              
     LocPathIterator clone;
 
     try
@@ -918,8 +928,10 @@ public abstract class LocPathIterator extends PredicatedNodeTest
     {
       pos++;
     }
+    
+    if(-1 != savedPos)
+      m_cachedNodes.setCurrentPos(savedPos);
 
-    // System.out.println("pos: "+pos);
     return pos;
   }
   

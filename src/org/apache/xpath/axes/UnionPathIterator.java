@@ -432,15 +432,6 @@ public class UnionPathIterator extends Expression
 
     UnionPathIterator clone = (UnionPathIterator) clone();
     
-    // %OPT%
-    // We have to make sure this is a deep clone.  (yet another perf issue...)
-    int n = m_iterators.length;
-
-    for (int i = 0; i < n; i++)
-    {
-      clone.m_iterators[i] = (DTMIterator)m_iterators[i].clone();
-    }
-
     clone.reset();
 
     return clone;
@@ -464,7 +455,7 @@ public class UnionPathIterator extends Expression
 
     for (int i = 0; i < n; i++)
     {
-      clone.m_iterators[i] = m_iterators[i];
+      clone.m_iterators[i] = (LocPathIterator)m_iterators[i].clone();
     }
 
     return clone;
@@ -740,10 +731,64 @@ public class UnionPathIterator extends Expression
   public int getLength()
   {
 
-    // %REVIEW% ??
-//    resetToCachedList();
+    // resetToCachedList();
+    if(m_last > 0)
+      return m_last;
+    else if(null == m_cachedNodes || !m_foundLast)
+    {
+      m_last = getLastPos(m_execContext);
+    }
+    else
+    {
+      m_last = m_cachedNodes.getLength();
+    }
+    return m_last;
+  }
+  
+  /**
+   * Get the index of the last node that can be itterated to.
+   * This probably will need to be overridded by derived classes.
+   *
+   * @param xctxt XPath runtime context.
+   *
+   * @return the index of the last node that can be itterated to.
+   */
+  public int getLastPos(XPathContext xctxt)
+  {
+    int pos = m_next;
+    UnionPathIterator clone;
 
-    return m_cachedNodes.getLength();
+    int savedPos;
+    if(null != m_cachedNodes)
+      savedPos = m_cachedNodes.getCurrentPos();
+    else 
+      savedPos = -1;
+
+    try
+    {
+      // %REVIEW% %OPT%
+      if(0 == pos && m_currentContextNode != DTM.NULL)
+        clone = (UnionPathIterator) cloneWithReset();
+      else
+        clone = (UnionPathIterator) clone();
+    }
+    catch (CloneNotSupportedException cnse)
+    {
+      return -1;
+    }
+
+    int next;
+    pos = clone.getCurrentPos();
+
+    while (DTM.NULL != (next = clone.nextNode()))
+    {
+      pos++;
+    }
+    
+    if(-1 != savedPos)
+      m_cachedNodes.setCurrentPos(savedPos);
+    
+    return pos;
   }
 
   /**

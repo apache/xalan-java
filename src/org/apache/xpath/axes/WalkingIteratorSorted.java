@@ -53,6 +53,13 @@ public class WalkingIteratorSorted extends WalkingIterator
     super.setRoot(context, environment);
     
     this.setShouldCacheNodes(true);
+    
+    // This should really be done in the super's setRoot, but if I do that 
+    // it becomes unhappy in the minitest... possibly something to do with 
+    // the keyref iterator.  -sb
+    m_cachedNodes.setLast(0);
+    m_cachedNodes.reset();
+    m_cachedNodes.RemoveAllNoClear();
 
     setNextPosition(0);
     m_firstWalker.setRoot(context);
