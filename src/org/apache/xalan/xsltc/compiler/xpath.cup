@@ -485,8 +485,9 @@ AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
 	if (rlp instanceof ParentLocationPath) {
 	    // GTM, bug fix 3312  
             Step nodeStep1 = new Step(Axis.DESCENDANTORSELF, -1, null);
-	    absLocPath = new AbsoluteLocationPath(
-                   new ParentLocationPath(nodeStep1, rlp));
+	    ParentLocationPath parLocPath = new ParentLocationPath(nodeStep1,
+		rlp);
+	    absLocPath = new AbsoluteLocationPath(parLocPath);
 	}
 	else {
 	    int nodeType = NodeTest.ELEMENT;
@@ -507,6 +508,8 @@ AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
 
 	RESULT = new FilteredAbsoluteLocationPath(absLocPath);	
 	:};
+
+
 
 Step ::= NodeTest:ntest
         {: RESULT = new Step(Axis.CHILD,
