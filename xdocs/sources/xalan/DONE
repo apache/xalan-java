@@ -42,7 +42,8 @@
    <li>Set StringKey.toString() to return the underlying String (m_str), thus avoiding a potential symmetry problem with the equals() method
    reported by Ito Kazumitsu.<br/><br/></li>
    <li>In response to note from Ito Kazumitsu, changed Java encoding name "EUCJIS" in FormatterToXML to "EUC_JP".<br/><br/></li>
-   <li>When Xalan creates a FileOutputStream, it now closes the stream before exiting.</li>
+   <li>When Xalan creates a FileOutputStream, it now closes the stream before exiting.<br/><br/></li>
+   <li>Fixed handling of an exception that can be thrown while building a DOM.</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
