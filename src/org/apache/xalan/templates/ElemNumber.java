@@ -75,6 +75,7 @@ import java.text.DecimalFormat;
 
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequenceImpl;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
@@ -893,10 +894,25 @@ public class ElemNumber extends ElemTemplateElement
     if (null != m_valueExpr)
     {
       XObject countObj = m_valueExpr.execute(xctxt, sourceNode, this);
-      long count = (long)java.lang.Math.floor(countObj.num()+ 0.5);
+      if (countObj instanceof XSequenceImpl)
+      {
+        XSequenceImpl seq = (XSequenceImpl)countObj;
+        list = new long[seq.getLength()];
+        XObject item;
+        int i = 0; 
+        while ((item = seq.next()) != null)
+        {
+          long count = (long)java.lang.Math.floor(item.num()+ 0.5);
+          list [i++] = count;
+        }
+      }
+      else
+      { 
+       long count = (long)java.lang.Math.floor(countObj.num()+ 0.5);
 
-      list = new long[1];
-      list[0] = count;
+        list = new long[1];
+        list[0] = count;
+      }
     }
     else
     {
@@ -1212,6 +1228,8 @@ public class ElemNumber extends ElemTemplateElement
         formatter.setGroupingUsed(false);
       }
     }
+    else
+      formatter.setGroupingUsed(false);
 
     return formatter;
   }

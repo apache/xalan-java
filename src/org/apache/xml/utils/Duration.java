@@ -155,7 +155,7 @@ public class Duration
     public Duration(int[] xercesduration)
     {
  		// I'm not sure how they're representing negative durations!?
-        m_year = xercesduration[0];
+        m_year = Math.abs(xercesduration[0]);
         m_month = xercesduration[1];
         m_day = xercesduration[2];
         m_hour = xercesduration[3];
@@ -167,7 +167,7 @@ public class Duration
     public Duration(int year, int month, int day, int hour, int minute, double second)
     {
     // I'm not sure how they're representing negative durations!?
-        m_year = year;
+        m_year = Math.abs(year);
         m_month = month;
         m_day = day;
         m_hour = hour;

@@ -68,6 +68,7 @@ import org.apache.xpath.objects.XNodeSequenceSingleton;
 import org.apache.xpath.objects.XBoolean;
 import java.util.Comparator;
 import org.apache.xml.dtm.XType;
+import org.apache.xml.dtm.DTM;
 import org.apache.xpath.parser.regexp.*;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -96,6 +97,9 @@ public class FuncSequenceNodeEqual extends Function2Args
   	XSequence seq1 = m_arg0.execute(xctxt).xseq();
   	XSequence seq2 = m_arg1.execute(xctxt).xseq();
   	
+  	if (seq1.getLength() == 0 || seq2.getLength() == 0)
+  	return XSequence.EMPTY;
+  	
   	if (seq1.getLength() != seq2.getLength())
   	  return new XBoolean(false);	
   	
@@ -112,11 +116,23 @@ public class FuncSequenceNodeEqual extends Function2Args
 	    {
 	      if(item1 instanceof XNodeSequenceSingleton)
 	      {
-	        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item1;
+	        XNodeSequenceSingleton xnss1 = (XNodeSequenceSingleton)item1;
+	        XNodeSequenceSingleton xnss2 = (XNodeSequenceSingleton)item2;
 	        
 	        if (type == item2.getType())
 	        {
-	          if (!xnss.deepEquals((XNodeSequenceSingleton)item2)) 
+	          DTM dtm1 = xnss1.getDTM();
+              DTM dtm2 = xnss2.getDTM();
+            int node1 = xnss1.getNodeHandle();
+            int node2 = xnss2.getNodeHandle();
+            
+            String uri1 = null;
+	        if(!dtm1.getLocalName(node1).equals(dtm2.getLocalName(node2))
+	           || !((uri1 = dtm1.getNamespaceURI(node1)) == null ?
+	    dtm2.getNamespaceURI(node2) == null :
+	    uri1.equals(dtm2.getNamespaceURI(node2))) 
+	        //(!dtm1.getNodeName(node1).equals(dtm2.getNodeName(node2))
+	          || (!xnss1.deepEquals(xnss2))) 
 	            return new XBoolean(false);
 	        }
 	      }

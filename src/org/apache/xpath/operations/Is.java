@@ -60,6 +60,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xml.dtm.XType;
 
 /**
  * The '=' operation expression executer.
@@ -81,7 +83,14 @@ public class Is extends OperationSimple
           throws javax.xml.transform.TransformerException
   {
   	// Might need to be more sophisticated!
-    return (left == right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+    if (left.xseq().getLength() == 0 || right.xseq().getLength() == 0)
+  	  return XSequence.EMPTY;
+  	   
+  	if (left.getType() == XType.NODE && right.getType() == XType.NODE)
+  	  return (left.iter().nextNode() == right.iter().nextNode())? XBoolean.S_TRUE : XBoolean.S_FALSE;  	  
+    //return (left.notEquals(right)) ? XBoolean.S_FALSE : XBoolean.S_TRUE;
+    else
+      return XBoolean.S_FALSE;
   }
   
   /**
@@ -100,9 +109,13 @@ public class Is extends OperationSimple
   {
     XObject left = m_left.execute(xctxt, true);
     XObject right = m_right.execute(xctxt, true);
-
-  	// Might need to be more sophisticated!
-    boolean result = (left == right) ? true : false;
+    
+    // Might need to be more sophisticated!
+  	boolean result;
+  	if (left.getType() == XType.NODE && right.getType() == XType.NODE)
+  	  result = (left.iter().nextNode() == right.iter().nextNode())? true : false;  	  
+    else
+      result = false;
 	left.detach();
 	right.detach();
     return result;

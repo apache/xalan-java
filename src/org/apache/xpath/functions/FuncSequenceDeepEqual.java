@@ -68,6 +68,7 @@ import org.apache.xpath.objects.XNodeSequenceSingleton;
 import org.apache.xpath.objects.XBoolean;
 import java.util.Comparator;
 import org.apache.xml.dtm.XType;
+import org.apache.xml.dtm.DTM;
 import org.apache.xpath.parser.regexp.*;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -135,12 +136,19 @@ public class FuncSequenceDeepEqual extends Function3Args
 	    {
 	      if(item1 instanceof XNodeSequenceSingleton)
 	      {
-	        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item1;
+	        XNodeSequenceSingleton xnss1 = (XNodeSequenceSingleton)item1;
 	        
 	        if (type == item2.getType())
 	        {
-	          if (!xnss.deepEquals((XNodeSequenceSingleton)item2)) 
-	            return new XBoolean(false);
+	          XNodeSequenceSingleton xnss2 = (XNodeSequenceSingleton)item2;
+	         if (!xnss1.deepEquals(xnss2))
+	          {
+	            DTM dtm1 = xnss1.getDTM();
+                DTM dtm2 = xnss2.getDTM();
+              int node1 = xnss1.getNodeHandle();
+              int node2 = xnss2.getNodeHandle();
+	            return new XBoolean(FuncDeepEqual.deepEqual(node1, node2, dtm1, dtm2, collator));
+	          }
 	        }
 	      }
 	    }
@@ -148,12 +156,12 @@ public class FuncSequenceDeepEqual extends Function3Args
 	    {
 	      if (collator == null)
 	      {
-	        if (!item1.equals(item2))
+	        if (type != item2.getType() || !item1.equals(item2))
               return new XBoolean(false);
 	      }
 	      else
 	      {
-	        if (collator.equals(item1.str(), item2.str()))
+	        if (type != item2.getType() || !collator.equals(item1.str(), item2.str()))
   	          return new XBoolean(false);
   	      }    	      
   	    }

@@ -160,11 +160,16 @@ public class FuncDeepEqual extends Function3Args
     
   }
   
-  private boolean deepEqual(int node1, int node2, DTM dtm1, DTM dtm2, java.text.Collator collator)
+  static boolean deepEqual(int node1, int node2, DTM dtm1, DTM dtm2, java.text.Collator collator)
   {
     int type = dtm1.getNodeType(node1);
+    String uri1 = null;
     if (type == dtm2.getNodeType(node2)
-        && dtm1.getNodeName(node1).equals(dtm2.getNodeName(node2)))
+        && dtm1.getLocalName(node1).equals(dtm2.getLocalName(node2))
+	    && ((uri1 = dtm1.getNamespaceURI(node1)) == null ?
+	    dtm2.getNamespaceURI(node2) == null :
+	    uri1.equals(dtm2.getNamespaceURI(node2))))  
+        //dtm1.getNodeName(node1).equals(dtm2.getNodeName(node2)))
     {
       switch (type)
       {
@@ -259,13 +264,16 @@ public class FuncDeepEqual extends Function3Args
              return false;
         }
       }
-      return true;
+      else if (!dtm1.hasChildNodes(node1) && !dtm2.hasChildNodes(node2))
+        return true;
+      else
+        return false;
     }
     else
       return false;
   }
   
-  private int getNonCommentOrPI(DTM dtm, int child)
+  static private int getNonCommentOrPI(DTM dtm, int child)
   {
     if (DTM.NULL == child)
       return child;

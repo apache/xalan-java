@@ -58,6 +58,8 @@ package org.apache.xpath.operations;
 
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xml.dtm.XType;
 
 /**
  * The '!=' operation expression executer.
@@ -79,6 +81,13 @@ public class IsNot extends OperationSimple
           throws javax.xml.transform.TransformerException
   {
   	// Might have to be more sophisticated!
-    return (left != right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+  	if (left.xseq().getLength() == 0 || right.xseq().getLength() == 0)
+  	  return XSequence.EMPTY;
+  	   
+  	if (left.getType() == XType.NODE && right.getType() == XType.NODE)
+  	  return (left.iter().nextNode() == right.iter().nextNode())? XBoolean.S_FALSE : XBoolean.S_TRUE;  	  
+    //return (left.notEquals(right)) ? XBoolean.S_FALSE : XBoolean.S_TRUE;
+    else
+      return XBoolean.S_FALSE; 
   }
 }
