@@ -192,6 +192,20 @@ public class FuncDocument extends Function2Args
     {
       XMLString ref = (null != iterator)
                    ? xctxt.getDTM(pos).getStringValue(pos) : arg.xstr();
+      
+      // The first and only argument was a nodeset, the base in that
+      // case is the base URI of the node from the first argument nodeset. 
+      // Remember, when the document function has exactly one argument and
+      // the argument is a node-set, then the result is the union, for each
+      // node in the argument node-set, of the result of calling the document
+      // function with the first argument being the string-value of the node,
+      // and the second argument being a node-set with the node as its only 
+      // member.
+      if (null == arg1Expr && DTM.NULL != pos)
+      {
+        DTM baseDTM = xctxt.getDTM(pos);
+        base = baseDTM.getDocumentBaseURI();
+      }
 
       if (null == ref)
         continue;
