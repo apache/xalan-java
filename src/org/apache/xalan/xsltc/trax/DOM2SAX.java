@@ -197,13 +197,20 @@ class DOM2SAX implements XMLReader, Locator {
 
         switch (node.getNodeType()) {
 	case Node.ATTRIBUTE_NODE:         // handled by ELEMENT_NODE
-	case Node.CDATA_SECTION_NODE:
 	case Node.DOCUMENT_FRAGMENT_NODE:
 	case Node.DOCUMENT_TYPE_NODE :
 	case Node.ENTITY_NODE :
 	case Node.ENTITY_REFERENCE_NODE:
 	case Node.NOTATION_NODE :
 	    // These node types are ignored!!!
+	    break;
+	case Node.CDATA_SECTION_NODE:
+	    if (_lex != null) {
+		final String data = node.getNodeValue();
+		_lex.startCDATA();
+		_sax.characters(data.toCharArray(), 0, data.length());
+		_lex.endCDATA();
+	    }
 	    break;
 
 	case Node.COMMENT_NODE:           // should be handled!!!
