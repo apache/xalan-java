@@ -160,10 +160,12 @@ public class ElemCallTemplate extends ElemTemplateElement
       {        
         xctxt.setSAXLocator(m_template);
         // template.executeChildTemplates(transformer, sourceNode, mode);
+        transformer.pushElemTemplateElement(m_template, sourceNode);
         m_template.execute(transformer, sourceNode, mode);
       }
       finally
       {
+        transformer.popElemTemplateElement();
         xctxt.setSAXLocator(savedLocator);
         vars.popCurrentContext();
         vars.setCurrentStackFrameIndex(selectStackFrameIndex);

@@ -167,7 +167,15 @@ public class ElemExtensionCall extends ElemLiteralResult
       {
         if(child.getXSLToken() == Constants.ELEMNAME_FALLBACK)
         {
-          child.execute(transformer, sourceNode, mode);
+          try
+          {
+            transformer.pushElemTemplateElement(child, sourceNode);
+            child.execute(transformer, sourceNode, mode);
+          }
+          finally
+          {
+            transformer.popElemTemplateElement();
+          }
         }
       }
     }
