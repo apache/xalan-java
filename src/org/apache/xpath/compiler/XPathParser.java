@@ -80,12 +80,11 @@ import javax.xml.transform.ErrorListener;
  * Tokenizes and parses XPath expressions. This should really be named
  * XPathParserImpl, and may be renamed in the future.
  */
-public class XPathParser implements java.io.Serializable
+public class XPathParser
 {
 
   /**
    * The XPath to be processed.
-   * @serial
    */
   private OpMap m_ops;
 
@@ -103,7 +102,6 @@ public class XPathParser implements java.io.Serializable
 
   /**
    * The position in the token queue is tracked by m_queueMark.
-   * @serial
    */
   int m_queueMark = 0;
 
@@ -118,7 +116,6 @@ public class XPathParser implements java.io.Serializable
 
   /**
    * The prefix resolver to map prefixes to namespaces in the OpMap.
-   * @serial
    */
   PrefixResolver m_namespaceContext;
 
@@ -228,7 +225,7 @@ public class XPathParser implements java.io.Serializable
   }
 
   /** The error listener where syntax errors are to be sent.
-   *  @serial  */
+   */
   private ErrorListener m_errorListener;
   
   /** The source location of the XPath. */
