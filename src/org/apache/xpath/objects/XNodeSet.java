@@ -198,21 +198,32 @@ public class XNodeSet extends XObject
    */
   public NodeIterator nodeset()
   {
+    // System.out.println("In XNodeSet.nodeset()");
     NodeIterator ns = (NodeIterator)m_obj;
-    if(((ContextNodeList)ns).isFresh()) // bit of a hack...
+    // System.out.println("Got NodeIterator");
+    if(ns instanceof ContextNodeList)
     {
-      return ns;
+     // System.out.println("Is a ContextNodeList: "+ns);
+     if(((ContextNodeList)ns).isFresh()) // bit of a hack...
+      {
+        return ns;
+      }
+      else
+      {
+        try
+        {
+          return ((ContextNodeList)ns).cloneWithReset();
+        }
+        catch(CloneNotSupportedException cnse)
+        {
+          throw new RuntimeException(cnse.getMessage());
+        }
+      }
     }
     else
     {
-      try
-      {
-        return ((ContextNodeList)ns).cloneWithReset();
-      }
-      catch(CloneNotSupportedException cnse)
-      {
-        throw new RuntimeException(cnse.getMessage());
-      }
+      // System.out.println("Returning node iterator");
+      return ns;
     }
   }  
 
