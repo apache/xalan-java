@@ -167,7 +167,7 @@
     <s2 title="AppletXMLtoHTML">
     <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
      stylesheet, and the HTML output.</p>
-    <p>How to run it: Open AppletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
+    <p>How to run it: Open appletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
     <note>This and the following sample applet do not work in the Netscape Communicator 4.7. We have some work to do to get
     our basic strategy of using system properties to identify the Transformer and XML Parser to work in the Netscape applet
     sandbox.<br/><br/>
