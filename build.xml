@@ -108,7 +108,7 @@ Copyright:
     <gunzip src="${doc.generator.styletargz}"/>
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
 	<delete file="${doc.generator.styletar}"/>
-    <mkdir dir="${build.docs}"/>
+    <mkdir dir="${build.docs}"/> <!-- transform todo.xml and put the result in build/docs -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
     </java>   
@@ -398,7 +398,7 @@ Copyright:
     <copy file="${build.dir}/xalan.jar" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,todo.html"/>
+      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl"/>
     </copy>
 	  
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
@@ -409,13 +409,13 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the documentation tree for the org.apache.xml website       -->
   <!-- =================================================================== -->
-  <target name="site">
+  <target name="site" depends="prepare.docs">
  
     <mkdir dir="${site.dir}/apidocs"/>
     
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/$xalan.jar"> 
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
-	</java>	 
+	</java>	<!-- put todo.html in the site directory --> 
     <copy file="${build.docs}/todo.html" todir="${site.dir}"/>
     <copy todir="${site.dir}/apidocs">
 	  <fileset dir="${build.apidocs}"/>
