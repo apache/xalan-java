@@ -1050,12 +1050,13 @@ public class XStringForFSB extends XString
 	// We have a potential overflow issue that we need
 	// to guard against. See Bugzilla 5346.
 	//
-	// %REVIEW% MUST BE RECONSIDERED  since this may not be
-	// fully compliant with the IEEE floating-point spec. (On the
-	// other hand, it's wicked fast compared to the usual solution,
-	// and works fine for all but a very few edge cases.)
+	// %REVIEW% MUST BE RECONSIDERED. I _think_ the truncation of
+	// the 64-bit long before it overflows is well within the acceptable
+	// error range of the double's 53-bit mantissa...
 	if(longResult>MAX_NO_OVERFLOW_RISK)
-	  ++overflow;
+	{
+	  if(digitType==0) ++overflow;
+	}
 	else
 	{
 	  longResult=longResult*10 + (c - '0');
