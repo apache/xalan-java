@@ -272,7 +272,12 @@ public class OutputProperties extends ElemTemplateElement
             if (null == m_text_properties)  // double check
             {
               m_text_properties = loadPropertiesFile("output_text.properties", 
-                                                     m_xml_properties);
+                                                     null);
+              if(null == m_text_properties.getProperty(OutputKeys.ENCODING))
+              {
+                String mimeEncoding = org.apache.xalan.serialize.Encodings.getMimeEncoding(null);
+                m_text_properties.put(OutputKeys.ENCODING, mimeEncoding);
+              }
             }
           }
         }
