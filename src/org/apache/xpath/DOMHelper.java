@@ -6,6 +6,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import org.apache.xalan.utils.NSInfo;
 import org.apache.xalan.utils.QName;
+import org.apache.xalan.utils.StringBufferPool;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -756,9 +757,18 @@ public class DOMHelper
    */
   public static String getNodeData(Node node)
   {
-    StringBuffer buf = new StringBuffer();
-    getNodeData(node, buf);
-    return (buf.length() > 0) ? buf.toString() : "";
+    StringBuffer buf = StringBufferPool.get();
+    String s;
+    try
+    {
+      getNodeData(node, buf);
+      s = (buf.length() > 0) ? buf.toString() : "";
+    }
+    finally
+    {
+      StringBufferPool.free(buf);
+    }
+    return s;
   }
   
   /**
@@ -791,7 +801,7 @@ public class DOMHelper
       break;
     case Node.TEXT_NODE:
     case Node.CDATA_SECTION_NODE:
-      buf.append( ((Text)node).getData() );
+      buf.append( node.getNodeValue() );
       break;
     case Node.ATTRIBUTE_NODE:
       buf.append( node.getNodeValue() );
