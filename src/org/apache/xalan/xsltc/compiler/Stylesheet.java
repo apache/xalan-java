@@ -273,6 +273,17 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
+     * Adds a single prefix mapping to this syntax tree node.
+     * @param prefix Namespace prefix.
+     * @param uri Namespace URI.
+     */
+    protected void addPrefixMapping(String prefix, String uri) {
+	if (prefix.equals(EMPTYSTRING) && uri.equals(XHTML_URI)) return;
+	super.addPrefixMapping(prefix, uri);
+    }
+
+
+    /**
      * Store extension URIs
      */
     private void extensionURI(String prefixes, SymbolTable stable) {
