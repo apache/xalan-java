@@ -59,6 +59,7 @@ package org.apache.xalan.extensions;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Constructor;
 import java.io.IOException;
 
@@ -75,28 +76,37 @@ import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="internal"/>
- * Class handling the java extension namespaces for XPath that
- * represent packages.  The package namespace should begin with
- * xalan:// but this is not currently enforced.
- * Provides functions to test a function's existence and call a function
+ * Represents an extension namespace for XPath that handles java packages
+ * that may be fully or partially specified.
+ * It is recommended that the class URI be of one of the following forms:
+ * <pre>
+ *   xalan://partial.class.name
+ *   xalan://
+ *   http://xml.apache.org/xslt/java (which is the same as xalan://)
+ * </pre>
+ * However, we do not enforce this.  If the class name contains a
+ * a /, we only use the part to the right of the rightmost slash.
+ * In addition, we ignore any "class:" prefix.
+ * Provides functions to test a function's existence and call a function.
+ * Also provides functions to test an element's existence and call an
+ * element.
+ *
+ * @author <a href="mailto:garyp@firstech.com">Gary L Peskin</a>
  *
  */
 
+
 public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 {
-
 
   /**
    * Construct a new extension namespace handler given all the information
    * needed. 
    * 
    * @param namespaceUri the extension namespace URI that I'm implementing
-   * @param funcNames    string containing list of functions of extension NS
-   * @param lang         language of code implementing the extension
-   * @param srcURL       value of src attribute (if any) - treated as a URL
-   *                     or a classname depending on the value of lang. If
-   *                     srcURL is not null, then scriptSrc is ignored.
-   * @param scriptSrc    the actual script code (if any)
+   * @param scriptLang   language of code implementing the extension
+   * @param className    the beginning of the class name of the class.  This
+   *                     should be followed by a dot (.)
    */
   public ExtensionHandlerJavaPackage(String namespaceUri,
                                      String scriptLang,
@@ -108,37 +118,80 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 
   /**
    * Tests whether a certain function name is known within this namespace.
-   * Since this is for a package , we simply try to find a
-   * method or constructor for the fully qualified class name passed in the
-   * argument.  There is no guarantee, of course, that this will actually
-   * work at runtime since we may have problems converting the arguments.
-   *
+   * Since this is for a package, we concatenate the package name used when
+   * this handler was created and the function name specified in the argument.
+   * There is
+   * no information regarding the arguments to the function call or
+   * whether the method implementing the function is a static method or
+   * an instance method.
    * @param function name of the function being tested
-   *
    * @return true if its known, false if not.
    */
+
   public boolean isFunctionAvailable(String function) 
   {
-    // TODO:  This function needs to be implemented.
-    return true;
+    try
+    {
+      String fullName = m_className + function;
+      int lastDot = fullName.lastIndexOf(".");
+      if (lastDot >= 0)
+      {
+        Class myClass = Class.forName(fullName.substring(0, lastDot));
+        Method[] methods = myClass.getMethods();
+        int nMethods = methods.length;
+        function = fullName.substring(lastDot + 1);
+        for (int i = 0; i < nMethods; i++)
+        {
+          if (methods[i].getName().equals(function))
+            return true;
+        }
+      }
+    }
+    catch (ClassNotFoundException cnfe) {}
+
+    return false;
   }
 
 
   /**
    * Tests whether a certain element name is known within this namespace.
-   * Since this is for a package , we simply try to find a
-   * method or constructor for the fully qualified class name passed in the
-   * argument.  There is no guarantee, of course, that this will actually
-   * work at runtime since we may have problems converting the arguments.
-   *
+   * Looks for a method with the appropriate name and signature.
+   * This method examines both static and instance methods.
    * @param function name of the function being tested
-   *
    * @return true if its known, false if not.
    */
+
   public boolean isElementAvailable(String element) 
   {
-    // TODO:  This function needs to be implemented.
-    return true;
+    try
+    {
+      String fullName = m_className + element;
+      int lastDot = fullName.lastIndexOf(".");
+      if (lastDot >= 0)
+      {
+        Class myClass = Class.forName(fullName.substring(0, lastDot));
+        Method[] methods = myClass.getMethods();
+        int nMethods = methods.length;
+        element = fullName.substring(lastDot + 1);
+        for (int i = 0; i < nMethods; i++)
+        {
+          if (methods[i].getName().equals(element))
+          {
+            Class[] paramTypes = methods[i].getParameterTypes();
+            if ( (paramTypes.length == 2)
+              && paramTypes[0].isAssignableFrom(
+                                     org.apache.xalan.extensions.XSLProcessorContext.class)
+              && paramTypes[1].isAssignableFrom(org.w3c.dom.Element.class) )
+            {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    catch (ClassNotFoundException cnfe) {}
+
+    return false;
   }
 
 
@@ -338,7 +391,8 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
   /**
    * Process a call to this extension namespace via an element. As a side
    * effect, the results are sent to the TransformerImpl's result tree.
-   *
+   * For this namespace, only static element methods are currently supported.
+   * If instance methods are needed, please let us know your requirements.
    * @param localPart      Element name's local part.
    * @param element        The extension element being processed.
    * @param transformer      Handle to TransformerImpl.
@@ -347,11 +401,8 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    * @param sourceTree     The root of the source tree (but don't assume
    *                       it's a Document).
    * @param sourceNode     The current context node.
-   *
-   * @exception XSLProcessorException thrown if something goes wrong
-   *            while running the extension handler.
-   * @exception MalformedURLException if loading trouble
-   * @exception FileNotFoundException if loading trouble
+   * @param mode           The current mode.
+   * @param methodKey      A key that uniquely identifies this element call.
    * @exception IOException           if loading trouble
    * @exception SAXException          if parsing trouble
    */
@@ -366,8 +417,60 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                               Object methodKey)
     throws SAXException, IOException
   {
-    throw new SAXException("Extension elements are not yet implemented for "
-                                                 + "non-class namespaces: " + localPart);
+    Object result = null;
+    Class classObj;
+
+    Method m = (Method) getFromCache(methodKey, null, null);
+    if (null == m)
+    {
+      try
+      {
+        String fullName = m_className + localPart;
+        int lastDot = fullName.lastIndexOf(".");
+        if (lastDot < 0)
+          throw new SAXException("Invalid element name specified " + fullName);
+        try
+        {
+          classObj = Class.forName(fullName.substring(0, lastDot));
+        }
+        catch (ClassNotFoundException e) 
+        {
+          throw new SAXException(e);
+        }
+        localPart = fullName.substring(lastDot + 1);
+        m = MethodResolver.getElementMethod(classObj, localPart);
+        if (!Modifier.isStatic(m.getModifiers()))
+          throw new SAXException("Element name method must be static " + fullName);
+      }
+      catch (Exception e)
+      {
+        // e.printStackTrace ();
+        throw new SAXException (e.getMessage (), e);
+      }
+      putToCache(methodKey, null, null, m);
+    }
+
+    XSLProcessorContext xpc = new XSLProcessorContext(transformer, 
+                                                      stylesheetTree,
+                                                      sourceTree, 
+                                                      sourceNode, 
+                                                      mode);
+
+    try
+    {
+      result = m.invoke(null, new Object[] {xpc, element});
+    }
+    catch (Exception e)
+    {
+      // e.printStackTrace ();
+      throw new SAXException (e.getMessage (), e);
+    }
+
+    if (result != null)
+    {
+      xpc.outputToResultTree (stylesheetTree, result);
+    }
+ 
   }
 
 }
