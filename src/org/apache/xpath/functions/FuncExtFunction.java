@@ -164,17 +164,9 @@ public class FuncExtFunction extends Function
         result = ((Boolean) val).booleanValue()
                  ? XBoolean.S_TRUE : XBoolean.S_FALSE;
       }
-      else if (val instanceof Double)
+      else if (val instanceof Number)
       {
-        result = new XNumber(((Double) val).doubleValue());
-      }
-      else if (val instanceof Long)
-      {
-        result = new XNumber(((Long)val).doubleValue());
-      }
-      else if (val instanceof Integer)
-      {
-        result = new XNumber(((Integer)val).doubleValue());
+        result = new XNumber(((Number) val).doubleValue());
       }
       else if (val instanceof DocumentFragment)
       {
