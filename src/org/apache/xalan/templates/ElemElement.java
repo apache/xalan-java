@@ -279,7 +279,10 @@ public class ElemElement extends ElemUse
             throws TransformerException
   {
 
-    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(this);
+      
+ 	ResultTreeHandler rhandler = transformer.getResultTreeHandler();
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
     String nodeName = m_name_avt.evaluate(xctxt, sourceNode, this);
@@ -359,6 +362,9 @@ public class ElemElement extends ElemUse
     }
 
     constructNode(nodeName, prefix, nodeNamespace, transformer);
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEndEvent(this);
   }
   
   /**
