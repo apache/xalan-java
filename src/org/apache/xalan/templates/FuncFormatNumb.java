@@ -137,8 +137,7 @@ public class FuncFormatNumb extends Function3Args
       {
 
         // look for a possible default decimal-format
-        if (ss.getDecimalFormatCount() > 0)
-          dfs = ss.getDecimalFormatComposed(new QName(""));
+        dfs = ss.getDecimalFormatComposed(new QName(""));
 
         if (dfs != null)
         {
