@@ -137,7 +137,10 @@ public class DecimalFormatProperties
    */
   public QName getName()
   {
-    return m_qname;
+    if (m_qname== null)
+      return new QName("");
+    else
+      return m_qname;
   }
   
   /**

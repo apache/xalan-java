@@ -133,7 +133,16 @@ public class FuncFormatNumb extends Function3Args
       //else
       if (null == formatter)
       {
-        if (null != patternStr)
+        // look for a possible default decimal-format
+        if (ss.getDecimalFormatCount() >0)
+          dfs = ss.getDecimalFormatComposed(new QName(""));
+        if (dfs != null)
+        {
+          formatter = new java.text.DecimalFormat();
+          formatter.setDecimalFormatSymbols(dfs);
+          formatter.applyLocalizedPattern(patternStr);
+        }  
+        else if (null != patternStr)
         {
           formatter = new java.text.DecimalFormat(patternStr);
           formatter.applyLocalizedPattern(patternStr); // fix bug??
