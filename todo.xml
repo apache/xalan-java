@@ -252,7 +252,44 @@
     Move org.apache.xalan.utils package to org.apache.xml.utils.
     remove resource dependencies on xalan and/or xpath package.
   </action>
-
+  
+  <action context="code" category="code-cleanup, performance" packages="templates"
+   priority="medium" who="GP" completed="11/30/00">
+    Refactored the recompose logic to operate more cleanly and quickly. Fixed TemplateList
+    to properly order templates.
+  </action>
+  
+  <action context="code" category="code-cleanup" packages="extensions"
+   priority="medium" who="GP" completed="10/29/00">
+    Improved error reporting for java extension method errors.
+  </action>
+  
+  <action context="code" category="documentation" priority="medium" who="GP" completed="11/23/00">
+    Updated documentation for Extension Handling to conform to the new extension mechanism.
+  </action>
+  
+  <action context="code" category="feature" priority="medium" who="GP" completed="12/03/00">
+    Changed extension mechanism to load extensions using the thread's ContextClassLoader,
+    if available.
+  </action>
+  
+  <action context="code" category="feature" packages="extensions" 
+   priority="medium" who="GP" completed="11/28/00">
+    Implement tokenize extension.  Implement element-available and function-available for
+    built-in elements and functions.
+  </action>
+  
+  <action context="code" category="code-cleanup" packages="extensions" 
+   priority="medium" who="GP" completed="11/07/00">
+     Fix handling of xsl:fallback elements within extension elements that process their own
+     code (like redirect).
+  </action>
+  
+  <action context="code" category="code-cleanup" packages="compiler" 
+   priority="medium" who="GP" completed="11/09/00">
+     Cleaned up compiler handling of getWhatToShow() to result in cleaner code and provide
+     a more accurate filter.
+  </action>
 
  </completed>
 
