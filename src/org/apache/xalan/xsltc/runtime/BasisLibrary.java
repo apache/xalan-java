@@ -470,13 +470,13 @@ public final class BasisLibrary implements Operators {
     public static boolean compare(NodeIterator left, NodeIterator right,
 				  int op, int node, DOM dom) {
 	int lnode;
-	//left.reset();
+	left.reset();
 	
 	while ((lnode = left.next()) != NodeIterator.END) {
 	    final String lvalue = dom.getNodeValue(lnode);
 	    
 	    int rnode;
-	    //right.reset();
+	    right.reset();
 	    while ((rnode = right.next()) != NodeIterator.END) {
 		if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
 		    return true;
