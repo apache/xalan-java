@@ -183,19 +183,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
   }
 
-  /**
-   * Process the stylesheet from a DOM tree, if the
-   * processor supports the "http://xml.org/trax/features/dom/input"
-   * feature.
-   *
-   * @param node A DOM tree which must contain
-   * valid transform instructions that this processor understands.
-   *
-   * @return A Templates object capable of being used for transformation purposes.
-   *
-   * @throws TransformerConfigurationException
-   */
-  public javax.xml.transform.Templates processFromNode(Node node)
+public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
   {
 
@@ -210,19 +198,59 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
     catch (org.xml.sax.SAXException se)
     {
-      if( m_errorListener != null ) {
-        try {
-          m_errorListener.fatalError( new TransformerException( se ) );
-        } catch( TransformerException ex ) {
-          throw new TransformerConfigurationException( ex );
+      if (m_errorListener != null)
+      {
+        try
+        {
+          m_errorListener.fatalError(new TransformerException(se));
         }
+        catch (TransformerException ex)
+        {
+          throw new TransformerConfigurationException(ex);
+        }
+
         return null;
-      } else
+      }
+      else
+
         // Should remove this later... but right now diagnostics from 
         // TransformerConfigurationException are not good.
         // se.printStackTrace();
         throw new TransformerConfigurationException("processFromNode failed",
                                                     se);
+    }
+    catch (TransformerConfigurationException tce)
+    {
+      // Assume it's already been reported to the error listener.
+      throw tce;
+    }
+    catch (TransformerException tce)
+    {
+      // Assume it's already been reported to the error listener.
+      throw new TransformerConfigurationException(tce.getMessage(), tce);
+    }
+    catch (Exception e)
+    {
+      if (m_errorListener != null)
+      {
+        try
+        {
+          m_errorListener.fatalError(new TransformerException(e));
+        }
+        catch (TransformerException ex)
+        {
+          throw new TransformerConfigurationException(ex);
+        }
+
+        return null;
+      }
+      else
+
+        // Should remove this later... but right now diagnostics from 
+        // TransformerConfigurationException are not good.
+        // se.printStackTrace();
+        throw new TransformerConfigurationException("processFromNode failed",
+                                                    e);
     }
   }
 
@@ -721,10 +749,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         String currentDir = System.getProperty("user.dir");
 
         baseID = "file:///" + currentDir + java.io.File.separatorChar
-                 + source.getClass().getName();        
+                 + source.getClass().getName();
       }
       catch (SecurityException se)
       {
+
         // For untrusted applet case, user.dir is outside the sandbox 
         //  and not accessible: just leave baseID as null (-sb & -sc)
       }
@@ -735,7 +764,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       {
         baseID = SystemIDResolver.getAbsoluteURI(baseID);
       }
-      catch(TransformerException te)
+      catch (TransformerException te)
       {
         throw new TransformerConfigurationException(te);
       }
@@ -752,9 +781,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         return processFromNode(node, baseID);
       else
       {
-        String messageStr = XSLMessages.createMessage(XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
+        String messageStr = XSLMessages.createMessage(
+          XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
+
         throw new IllegalArgumentException(messageStr);
-      }        
+      }
     }
 
     try
@@ -766,17 +797,17 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         reader = ((SAXSource) source).getXMLReader();
 
       if (null == reader)
-      {  
+      {
+
         // Use JAXP1.1 ( if possible )
         try
         {
           javax.xml.parsers.SAXParserFactory factory =
-                                                      javax.xml.parsers.SAXParserFactory.newInstance();
+            javax.xml.parsers.SAXParserFactory.newInstance();
 
           factory.setNamespaceAware(true);
 
-
-                  javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
+          javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
           reader = jaxpParser.getXMLReader();
         }
@@ -791,7 +822,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         catch (NoSuchMethodError ex2){}
         catch (AbstractMethodError ame){}
       }
-      
+
       if (null == reader)
         reader = XMLReaderFactory.createXMLReader();
 
@@ -812,28 +843,39 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       reader.setContentHandler(builder);
       reader.parse(isource);
     }
-    catch (IOException ioe)
-    {
-      if( m_errorListener != null ) {
-        try {
-          m_errorListener.fatalError( new TransformerException(ioe) );
-          return null;
-        } catch( TransformerException ex1 ) {
-          throw new TransformerConfigurationException( ex1 );
-        }
-      } else 
-        throw new TransformerConfigurationException(ioe.getMessage(), ioe);
-    }
     catch (org.xml.sax.SAXException se)
     {
-      if( m_errorListener != null ) {
-        try {
-          m_errorListener.fatalError( new TransformerException(se) );
-        } catch( TransformerException ex1 ) {
-          throw new TransformerConfigurationException( ex1 );
+      if (m_errorListener != null)
+      {
+        try
+        {
+          m_errorListener.fatalError(new TransformerException(se));
         }
-      } else 
+        catch (TransformerException ex1)
+        {
+          throw new TransformerConfigurationException(ex1);
+        }
+      }
+      else
         throw new TransformerConfigurationException(se.getMessage(), se);
+    }
+    catch (Exception e)
+    {
+      if (m_errorListener != null)
+      {
+        try
+        {
+          m_errorListener.fatalError(new TransformerException(e));
+
+          return null;
+        }
+        catch (TransformerException ex1)
+        {
+          throw new TransformerConfigurationException(ex1);
+        }
+      }
+      else
+        throw new TransformerConfigurationException(e.getMessage(), e);
     }
 
     return builder.getTemplates();
