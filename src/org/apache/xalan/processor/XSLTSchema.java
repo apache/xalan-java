@@ -345,7 +345,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslExcludeResultPrefixesAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
                            "exclude-result-prefixes",
-                           XSLTAttributeDef.T_STRINGLIST, false, false,XSLTAttributeDef.ERROR);
+                           XSLTAttributeDef.T_PREFIXLIST, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef xslExtensionElementPrefixesAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
                            "extension-element-prefixes",
@@ -885,7 +885,7 @@ public class XSLTSchema extends XSLTElementDef
     
     XSLTAttributeDef excludeResultPrefixesAttr =
       new XSLTAttributeDef(null, "exclude-result-prefixes",
-                           XSLTAttributeDef.T_STRINGLIST, false,false,XSLTAttributeDef.WARNING);
+                           XSLTAttributeDef.T_PREFIXLIST, false,false,XSLTAttributeDef.WARNING);
     XSLTAttributeDef extensionElementPrefixesAttr =
       new XSLTAttributeDef(null, "extension-element-prefixes",
                            XSLTAttributeDef.T_PREFIX_URLLIST, false,false,XSLTAttributeDef.WARNING);

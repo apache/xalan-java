@@ -284,6 +284,8 @@ public class XSLTAttributeDef
   T_STRINGLIST = 14,
 
   // Used for a list of white-space delimited strings.
+  // Prefixes are checked to make sure they refer to 
+  // valid namespaces, and are resolved when processed
   T_PREFIX_URLLIST = 15,
   
   // Used for enumerated values, one of which could be a qname-but-not-ncname
@@ -297,8 +299,12 @@ public class XSLTAttributeDef
   
   // Used for a list of QNames where non-prefixed items are to be resolved
   // using the default namespace (This is only true for cdata-section-elements)
-  T_QNAMES_RESOLVE_NULL = 19;
+  T_QNAMES_RESOLVE_NULL = 19,
   
+  // Used for a list of white-space delimited strings.
+  // strings are checked to make sure they are valid 
+  // prefixes, and are not expanded when processed. 
+  T_PREFIXLIST = 20;
 
   /** Representation for an attribute in a foreign namespace. */
   static XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
@@ -1281,6 +1287,47 @@ public class XSLTAttributeDef
   }
 
   /**
+    * Process an attribute string of type T_PREFIXLIST into
+    * a vector of prefixes that may be resolved to URLs.
+    *
+    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+    * @param uri The Namespace URI, or an empty string.
+    * @param name The local name (without prefix), or empty string if not namespace processing.
+    * @param rawName The qualified name (with prefix).
+    * @param value A list of whitespace delimited prefixes.
+    *
+    * @return A vector of strings that may be resolved to URLs.
+    *
+    * @throws org.xml.sax.SAXException if one of the prefixes can not be resolved.
+    */
+   StringVector processPREFIX_LIST(
+           StylesheetHandler handler, String uri, String name, 
+           String rawName, String value) throws org.xml.sax.SAXException
+   {
+    
+     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
+     int nStrings = tokenizer.countTokens();
+     StringVector strings = new StringVector(nStrings);
+
+     for (int i = 0; i < nStrings; i++)
+     {
+       String prefix = tokenizer.nextToken();
+       String url = handler.getNamespaceForPrefix(prefix);
+       if (prefix.equals(Constants.ATTRVAL_DEFAULT_PREFIX) || url != null)
+         strings.addElement(prefix);
+       else
+         throw new org.xml.sax.SAXException(
+              XSLMessages.createMessage(
+                   XSLTErrorResources.ER_CANT_RESOLVE_NSPREFIX, 
+                   new Object[] {prefix}));
+    
+     }
+
+     return strings;
+   }
+
+
+  /**
    * Process an attribute string of type T_URL into
    * a URL value.
    *
@@ -1438,6 +1485,11 @@ public class XSLTAttributeDef
     case T_AVT_QNAME :
         processedValue = processAVT_QNAME(handler, uri, name, rawName, value, owner);
         break;
+    case T_PREFIXLIST :
+      processedValue = processPREFIX_LIST(handler, uri, name, rawName,
+                                             value);
+      break;
+
     default :
     }
 
