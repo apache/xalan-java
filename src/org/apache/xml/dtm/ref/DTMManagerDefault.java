@@ -682,55 +682,66 @@ public class DTMManagerDefault extends DTMManager
     {
       // Find the DOM2DTMs wrapped around this Document (if any)
       // and check whether they contain the Node in question.
+      // This has been generalized slightly, since it's possible that
+      // there may be multiple DOM-aware DTMs (DOM2DTM and DOM2DTM2,
+      // currently); I've added getDTMHandleFromNode() to the DTM API
+      // and most DTMs will immediately return DTM.NULL don't know).
       //
       // NOTE that since a DOM2DTM may represent a subtree rather
       // than a full document, we have to be prepared to check more
       // than one -- and there is no guarantee that we will find
       // one that contains ancestors or siblings of the node we're
-      // seeking.
+      // seeking. (That checking should probably be done in the
+      // individual DTMs.)
       //
       // %REVIEW% We could search for the one which contains this
       // node at the deepest level, and thus covers the widest
       // subtree, but that's going to entail additional work
       // checking more DTMs... and getHandleOfNode is not a
       // cheap operation in most implementations.
-			//
-			// TODO: %REVIEW% If overflow addressing, we may recheck a DTM
-			// already examined. Ouch. But with the increased number of DTMs,
-			// scanning back to check this is painful. 
-			// POSSIBLE SOLUTIONS: 
-			//   Generate a list of _unique_ DTM objects?
-			//   Have each DTM cache last DOM node search?
-			int max = m_dtms.length;
+	  //
+	  // %OPT% %REVIEW% Due to overflow addressing, we may recheck a large DTM
+	  // which was previously examined. Ouch. But with the increased number of
+	  // DTMs (another outcome of overflow addressing), scanning back to check
+	  // this is painful. 
+	  // POSSIBLE SOLUTIONS: 
+	  //   Generate a list of _unique_ DTM objects?
+	  //   Have each DTM cache last DOM node search?
+	  //   Or just make the lookup much faster, as in DOM2DTM2.
+	  int max = m_dtms.length;
       for(int i = 0; i < max; i++)
         {
           DTM thisDTM=m_dtms[i];
-          if((null != thisDTM) && thisDTM instanceof DOM2DTM)
+
+          if(null != thisDTM)
           {
-            int handle=((DOM2DTM)thisDTM).getHandleOfNode(node);
+            int handle=thisDTM.getDTMHandleFromNode(node);
             if(handle!=DTM.NULL) return handle;
           }
-         }
+        }
 
-			// Not found; generate a new DTM.
-			//
-			// %REVIEW% Is this really desirable, or should we return null
-			// and make folks explicitly instantiate from a DOMSource? The
-			// latter is more work but gives the caller the opportunity to
-			// explicitly add the DTM to a DTMManager... and thus to know when
-			// it can be discarded again, which is something we need to pay much
-			// more attention to. (Especially since only DTMs which are assigned
-			// to a manager can use the overflow addressing scheme.)
-			//
-			// %BUG% If the source node was a DOM2DTM$defaultNamespaceDeclarationNode
-			// and the DTM wasn't registered with this DTMManager, we will create
-			// a new DTM and _still_ not be able to find the node (since it will
-			// be resynthesized). Another reason to push hard on making all DTMs
-			// be managed DTMs.
+	  // Not found; generate a new DTM.
+	  //
+	  // %REVIEW% Is this really desirable, or should we return null
+	  // and make folks explicitly instantiate from a DOMSource? The
+	  // latter is more work but gives the caller the opportunity to
+	  // explicitly add the DTM to a DTMManager... and thus to know when
+	  // it can be discarded again, which is something we need to pay much
+	  // more attention to. (Especially since only DTMs which are assigned
+	  // to a manager can use the overflow addressing scheme.)
+	  //
+	  // %BUG% If the source node was a DOM2DTM$defaultNamespaceDeclarationNode
+	  // and the DTM wasn't registered with this DTMManager, we will create
+	  // a new DTM and _still_ not be able to find the node (since it will
+	  // be resynthesized). Another reason to push hard on making all DTMs
+	  // be managed DTMs.
 
-			// Since the real root of our tree may be a DocumentFragment, we need to
+	  // Since the real root of our tree may be a DocumentFragment, we need to
       // use getParent to find the root, instead of getOwnerDocument.  Otherwise
       // DOM2DTM#getHandleOfNode will be very unhappy.
+      
+      // %OPT% %REVIEW% Shouldn't this also switch to DOM2DTM2 when we're
+      // testing that code?
       Node root = node;
       Node p = (root.getNodeType() == Node.ATTRIBUTE_NODE) ? ((org.w3c.dom.Attr)root).getOwnerElement() : root.getParentNode();
       for (; p != null; p = p.getParentNode())
@@ -738,8 +749,8 @@ public class DTMManagerDefault extends DTMManager
         root = p;
       }
 
-      DOM2DTM dtm = (DOM2DTM) getDTM(new javax.xml.transform.dom.DOMSource(root),
-																		 false, null, true, true);
+      DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(root),
+				       false, null, true, true);
 
       int handle;
       
@@ -748,11 +759,11 @@ public class DTMManagerDefault extends DTMManager
 				// Can't return the same node since it's unique to a specific DTM, 
 				// but can return the equivalent node -- find the corresponding 
 				// Document Element, then ask it for the xml: namespace decl.
-				handle=dtm.getHandleOfNode(((org.w3c.dom.Attr)node).getOwnerElement());
+				handle=dtm.getDTMHandleFromNode(((org.w3c.dom.Attr)node).getOwnerElement());
 				handle=dtm.getAttributeNode(handle,node.getNamespaceURI(),node.getLocalName());
       }
       else
-				handle = ((DOM2DTM)dtm).getHandleOfNode(node);
+				handle = dtm.getDTMHandleFromNode(node);
 
       if(DTM.NULL == handle)
         throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_RESOLVE_NODE, null)); //"Could not resolve the node to a handle!");

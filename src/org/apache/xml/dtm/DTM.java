@@ -911,6 +911,19 @@ public interface DTM
    */
   public org.w3c.dom.Node getNode(int nodeHandle);
 
+  /**
+   * Given a W3C DOM node, ask whether this DTM knows of a Node Handle
+   * associated with it. Generally, returns a valid handle only if the
+   * Node is actually mapped by this DTM (eg, because it's a DOM2DTM
+   * which contains that Node).
+   *
+   * @param node Non-null reference to a DOM node.
+   *
+   * @return a DTM node handle, or DTM.NULL if this DTM doesn't
+   * recognize the provided DOM node.
+   */
+  public int getDTMHandleFromNode(org.w3c.dom.Node node);
+  
   // ==== Construction methods (may not be supported by some implementations!) =====
   // %REVIEW% What response occurs if not supported?
 

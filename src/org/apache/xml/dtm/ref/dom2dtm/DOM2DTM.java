@@ -734,13 +734,22 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    * @param node A node, which may be null.
    *
    * @return The node handle or <code>DTM.NULL</code>.  */
-  public int getHandleOfNode(Node node)
+  public int getDTMHandleFromNode(Node node)
   {
+  	// If it's a DTM simulated node, it may know its handle.
+  	// %OPT% Make these share a common interface so we can test-and-call just once!
+  	if(node instanceof DTMNodeProxy)
+  		return ((DTMNodeProxy)node).getDTMNodeNumber();
+  	else if(node instanceof DOM2DTMdefaultNamespaceDeclarationNode)
+  		return ((DOM2DTMdefaultNamespaceDeclarationNode)node).getHandleOfNode();
+  	
+  	// Otherwise, see if it's one this DTM covers.
     if (null != node)
     {
       // Is Node actually within the same document? If not, don't search!
       // This would be easier if m_root was always the Document node, but
       // we decided to allow wrapping a DTM around a subtree.
+	  // %REVIEW% Is this test adequate? What about disjoint subtrees?
       if((m_root==node) ||
          (m_root.getNodeType()==DOCUMENT_NODE &&
           m_root==node.getOwnerDocument()) ||

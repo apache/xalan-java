@@ -77,6 +77,7 @@ import org.apache.xml.dtm.DTMSequence;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xml.dtm.ref.ExpandedNameTable;
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.StringBufferPool;
@@ -2721,6 +2722,68 @@ public abstract class DOM2DTM2Base implements DTM
     int identity = makeNodeIdentity(nodeHandle);
     return m_resolver.findNode(identity);
   }
+  
+  /**
+   * Given a W3C DOM node, ask whether this DTM knows of a Node Handle
+   * associated with it. Generally, returns a valid handle only if the
+   * Node is actually mapped by this DTM (eg, because it's a DOM2DTM
+   * which contains that Node).
+   *
+   * @param node Non-null reference to a DOM node.
+   *
+   * @return a DTM node handle, or DTM.NULL if this DTM doesn't
+   * recognize the provided DOM node.
+   */
+  public int getDTMHandleFromNode(org.w3c.dom.Node node)
+  {
+  	// If it's a DTM simulated node, it may know its handle.
+  	// %OPT% Make these share a common interface so we can test-and-call just once!
+  	if(node instanceof DTMNodeProxy)
+  		return ((DTMNodeProxy)node).getDTMNodeNumber();
+  	else if(node instanceof DOM2DTMdefaultNamespaceDeclarationNode)
+  		return ((DOM2DTMdefaultNamespaceDeclarationNode)node).getHandleOfNode();
+  	
+  	// Otherwise, see if it's one this DTM covers.
+	// This would be easier if m_root was always the Document node, but
+	// we decided to allow wrapping a DTM around a subtree.
+  	// %REVIEW% Is this test adequate? What about disjoint subtrees?
+    if((m_root==node) ||
+       (m_root.getNodeType()==DOCUMENT_NODE &&
+        m_root==node.getOwnerDocument()) ||
+       (m_root.getNodeType()!=DOCUMENT_NODE &&
+        m_root.getOwnerDocument()==node.getOwnerDocument())
+       )
+    {
+		int identity=m_resolver.findID(node);
+		return makeNodeHandle(identity);
+    }
+    
+    return DTM.NULL; // Not ours.        
+  }
+  
+  /**
+   * Return a DTM handle for the given DOM node, if that can be determined
+   * by this DTM. If we don't know, we will return NULL.
+   * 
+   * Note that in some cases this will be a very slow operation. Also note
+   * that it may require testing Node identity -- which wasn't standardized
+   * before DOM Level 3 introduced isSameNode().
+   *
+   * @param node The Node reference.
+   *
+   * @return the DTM node handle covering this DOM node, or DTM.NULL if
+   * this DTM instance can not determine that value for this node.
+   */
+  public int getDTMHandleFromNode_lightweight(org.w3c.dom.Node node)
+  {
+  	if(node instanceof DTMNodeProxy)
+  		return ((DTMNodeProxy)node).getDTMNodeNumber();
+  	else if(node instanceof DOM2DTMdefaultNamespaceDeclarationNode)
+  		return ((DOM2DTMdefaultNamespaceDeclarationNode)node).getHandleOfNode();
+  	else
+  	  return makeNodeHandle(m_resolver.findID(node));
+  }
+  
 
   // ==== Construction methods (may not be supported by some implementations!) =====
 
