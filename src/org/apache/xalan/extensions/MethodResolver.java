@@ -575,7 +575,7 @@ public class MethodResolver
                             : XObject.CLASS_UNKNOWN;
       Class javaClass = javaParamTypes[javaParamTypesIndex];
       
-      // System.out.println("Checking xslt: "+xsltObj.getClass().getName()+
+      // System.out.println("["+i+"] Checking xslt: "+xsltObj.getClass().getName()+
       //                   " against java: "+javaClass.getName());
       
       if(xsltClassType == XObject.CLASS_NULL)
@@ -609,15 +609,58 @@ public class MethodResolver
       {
         // If we get here, we haven't made a match on this parameter using 
         // the ConversionInfo array.  We now try to handle the object -> object
-        // mapping which we can't handle through the array mechanism.
+        // mapping which we can't handle through the array mechanism.  To do this,
+        // we must determine the class of the argument passed from the stylesheet.
+
+        // If we were passed a subclass of XObject, representing one of the actual
+        // XSLT types, and we are here, we reject this extension method as a candidate
+        // because a match should have been made using the ConversionInfo array.  If we 
+        // were passed an XObject that encapsulates a non-XSLT type or we
+        // were passed a non-XSLT type directly, we continue.
+
+        // The current implementation (contributed by Kelly Campbell <camk@channelpoint.com>)
+        // checks to see if we were passed an XObject from the XSLT stylesheet.  If not,
+        // we use the class of the object that was passed and make sure that it will
+        // map to the class type of the parameter in the extension function.
+        // If we were passed an XObject, we attempt to get the class of the actual
+        // object encapsulated inside the XObject.  If the encapsulated object is null,
+        // we judge this method as a match but give it a low score.  
+        // If the encapsulated object is not null, we use its type to determine
+        // whether this java method is a valid match for this extension function call.
+        // This approach eliminates the NullPointerException in the earlier implementation
+        // that resulted from passing an XObject encapsulating the null java object.
+
         // TODO:  This needs to be improved to assign relative scores to subclasses,
-        // etc.  I plan to do this very soon.  Gary Peskin 29-Oct-2000.
+        // etc.
 
         if (XObject.CLASS_UNKNOWN == xsltClassType)
         {
-          Class realClass = (xsltObj instanceof XObject)
-                              ? ((XObject) xsltObj).object().getClass()
-                              : xsltObj.getClass();
+          // System.out.println("["+i+"] CLASS_UNKNOWN: " + xsltObj.getClass() +
+          //        ((xsltObj instanceof XObject) ? 
+          //          " object() = " + ((XObject) xsltObj).object()
+          //        : ""));
+
+          Class realClass = null;
+
+          if (xsltObj instanceof XObject)
+          {
+            Object realObj = ((XObject) xsltObj).object();
+            if (null != realObj)
+            {
+              realClass = realObj.getClass();
+            }
+            else
+            {
+              // do the same as if we were passed XObject.CLASS_NULL
+              score += 10;
+              continue;
+            }
+          }
+          else
+          {
+            realClass = xsltObj.getClass();
+          }
+
           if (javaClass.isAssignableFrom(realClass))
           {
             score += 0;         // TODO: To be assigned based on subclass "distance"
@@ -801,25 +844,33 @@ public class MethodResolver
       
     } // end if if(xsltObj instanceof XObject)
     
-    // At this point, we have a raw java object.
-    if(javaClass == java.lang.String.class)
+    // At this point, we have a raw java object, not an XObject.
+    if (null != xsltObj)
     {
-      return xsltObj.toString();
-    }
-    else if(javaClass.isPrimitive())
-    {
-      // Assume a number conversion
-      XString xstr = new XString(xsltObj.toString());
-      double num = xstr.num();
-      return convertDoubleToNumber(num, javaClass);
-    }
-    else if(javaClass == java.lang.Class.class)
-    {
-      return xsltObj.getClass();
+      if(javaClass == java.lang.String.class)
+      {
+        return xsltObj.toString();
+      }
+      else if(javaClass.isPrimitive())
+      {
+        // Assume a number conversion
+        XString xstr = new XString(xsltObj.toString());
+        double num = xstr.num();
+        return convertDoubleToNumber(num, javaClass);
+      }
+      else if(javaClass == java.lang.Class.class)
+      {
+        return xsltObj.getClass();
+      }
+      else
+      {
+        // Just pass the object directly, and hope for the best.
+        return xsltObj;
+      }
     }
     else
     {
-      // Just pass the object directly, and hope for the best.
+      // Just pass the null object directly, and hope for the best.
       return xsltObj;
     }
   }
