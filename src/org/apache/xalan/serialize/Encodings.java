@@ -121,6 +121,53 @@ public class Encodings extends Object
       throw new UnsupportedEncodingException(encoding);
     }
   }
+  
+  /**
+   * Returns an opaque CharToByte converter for the specified encoding.
+   *
+   * @param encoding The encoding
+   * @return An object which should be a sun.io.CharToByteConverter, or null.
+   */
+  public static Object getCharToByteConverter(String encoding)
+  {
+
+    Class charToByteConverterClass = null;
+    java.lang.reflect.Method getConverterMethod = null;
+    
+    try
+    {
+      charToByteConverterClass = Class.forName("sun.io.CharToByteConverter");
+      Class argTypes[] = new Class[1];
+      argTypes[0] = String.class;
+      getConverterMethod 
+        = charToByteConverterClass.getMethod("getConverter", argTypes);
+    }
+    catch(Exception e)
+    {
+      System.err.println("Warning: Could not get charToByteConverterClass!");
+      return null;
+    }
+    Object args[] = new Object[1];
+    for (int i = 0; i < _encodings.length; ++i)
+    {
+      if (_encodings[i].name.equalsIgnoreCase(encoding))
+      {
+        try
+        {
+          args[0] = _encodings[i].javaName;
+          Object converter = getConverterMethod.invoke(null, args);
+          if(null != converter)
+            return converter;
+        }
+        catch( Exception iae)
+        {
+          // keep trying
+        }
+      }
+    }
+
+    return null;
+  }
 
   /**
    * Returns the last printable character for the specified
@@ -197,9 +244,10 @@ public class Encodings extends Object
           */
           String jencoding =
             (encoding.equalsIgnoreCase("Cp1252") || encoding.equalsIgnoreCase(
-            "ISO8859_1") || encoding.equalsIgnoreCase("8859_1") || encoding.equalsIgnoreCase("UTF8")) ? DEFAULT_MIME_ENCODING
-                                                                                                      : convertJava2MimeEncoding(
-                                                                                                        encoding);
+            "ISO8859_1") || encoding.equalsIgnoreCase("8859_1") 
+            || encoding.equalsIgnoreCase("UTF8")) ? DEFAULT_MIME_ENCODING
+              : convertJava2MimeEncoding(
+              encoding);
 
           encoding = (null != jencoding) ? jencoding : DEFAULT_MIME_ENCODING;
         }

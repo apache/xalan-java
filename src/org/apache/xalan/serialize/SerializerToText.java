@@ -385,7 +385,6 @@ public class SerializerToText extends SerializerToXML
           m_writer.write(c);
         }
 
-        // This needs to go into a function... 
         else if (isUTF16Surrogate(c))
         {
           i = writeUTF16Surrogate(c, ch, i, end);

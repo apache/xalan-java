@@ -981,7 +981,7 @@ public class SerializerToHTML extends SerializerToXML
           }
 
         }
-        else if (ch < m_maxCharacter)
+        else if (canConvert(ch))
         {
           accum(ch);
         }
@@ -1060,7 +1060,7 @@ public class SerializerToHTML extends SerializerToXML
       // System.out.println("ch: "+(int)ch);
       // System.out.println("m_maxCharacter: "+(int)m_maxCharacter);
       // System.out.println("m_attrCharsMap[ch]: "+(int)m_attrCharsMap[ch]);
-      if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
+      if (canConvert(ch) && (!m_charInfo.isSpecial(ch)))
       {
         accum(ch);
       }
@@ -1113,22 +1113,15 @@ public class SerializerToHTML extends SerializerToXML
             accum(entityName);
             accum(';');
           }
-          else if (ch < m_maxCharacter)
+          else if (canConvert(ch))
           {
             accum(ch);  // no escaping in this case
           }
           else
           {
-            if (ch < m_maxCharacter)
-            {
-              accum(ch);  // no escaping in this case
-            }
-            else
-            {
-              accum("&#");
-              accum(Integer.toString(ch));
-              accum(';');
-            }
+            accum("&#");
+            accum(Integer.toString(ch));
+            accum(';');
           }
         }
       }

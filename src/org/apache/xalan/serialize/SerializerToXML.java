@@ -304,7 +304,7 @@ public class SerializerToXML
   /**
    * Flag to quickly tell if the encoding is UTF8.
    */
-  boolean m_isUTF8;
+  boolean m_isUTF8 = false;
 
   /**
    * The maximum character size before we have to resort
@@ -510,6 +510,7 @@ public class SerializerToXML
 
     if (m_encoding.equalsIgnoreCase("UTF-8"))
     {
+      m_isUTF8 = true;
       if(output instanceof java.io.BufferedOutputStream)
       {
         init(new WriterToUTF8(output), format, true);
@@ -1340,8 +1341,7 @@ public class SerializerToXML
       if (shouldIndent())
         indent(m_currentIndent);
 
-      boolean writeCDataBrackets = (((length >= 1)
-                                     && (ch[start] <= m_maxCharacter)));
+      boolean writeCDataBrackets = (((length >= 1) && canConvert(ch[start])));
 
       if (writeCDataBrackets)
       {
@@ -1564,7 +1564,7 @@ public class SerializerToXML
           checkWhite = false;
         }
   
-        if (((ch < maxCharacter) && (!specialsMap.get(ch))) || ('"' == ch))
+        if ((canConvert(ch) && (!specialsMap.get(ch))) || ('"' == ch))
         {
           lengthClean++;
         }
@@ -1750,7 +1750,7 @@ public class SerializerToXML
       {
         m_writer.write(m_lineSep, 0, m_lineSepLen);
       }
-      else if (isCData && (c > m_maxCharacter))
+      else if (isCData && (!canConvert(c)))
       {
         if (i != 0)
           m_writer.write("]]>");
@@ -1783,7 +1783,7 @@ public class SerializerToXML
       }
       else
       {
-        if (c <= m_maxCharacter)
+        if (canConvert(c))
         {
           m_writer.write(c);
         }
@@ -2193,7 +2193,7 @@ public class SerializerToXML
         }
         else
         {
-          if (ch > m_maxCharacter || (m_charInfo.isSpecial(ch)))
+          if (!canConvert(ch) || (m_charInfo.isSpecial(ch)))
           {
             m_writer.write("&#");
             m_writer.write(Integer.toString(ch));
@@ -2213,6 +2213,82 @@ public class SerializerToXML
 
     return pos;
   }
+  
+  /**
+   * Opaque reference to the sun.io.CharToByteConverter for this 
+   * encoding.
+   */
+  Object m_charToByteConverter = null;
+  
+  /**
+   * Method reference to the sun.io.CharToByteConverter#canConvert method 
+   * for this encoding.  Invalid if m_charToByteConverter is null.
+   */
+  java.lang.reflect.Method m_canConvertMeth;
+  
+  /**
+   * Boolean that tells if we already tried to get the converter.
+   */
+  boolean m_triedToGetConverter = false;
+  
+  /**
+   * Tell if this character can be written without escaping.
+   */
+  public boolean canConvert(char ch)
+  {
+    if(ch < 128)
+    {
+      if(ch >= 0x20 || (0x0A == ch || 0x0D == ch || 0x09 == ch) )
+        return true;
+      else
+        return false;
+    }
+    
+    if(null == m_charToByteConverter && false == m_triedToGetConverter)
+    {
+      m_triedToGetConverter = true;
+      try
+      {
+        m_charToByteConverter = Encodings.getCharToByteConverter(m_encoding);
+        if(null != m_charToByteConverter)
+        {
+          Class argsTypes[] = new Class[1];
+          argsTypes[0] = Character.TYPE;
+          Class convClass = m_charToByteConverter.getClass();
+          m_canConvertMeth = convClass.getMethod("canConvert", argsTypes);
+        }
+      }
+      catch(Exception e)
+      {
+       // This is just an assert: no action at the moment.
+        System.err.println("Warning: "+e.getMessage());
+      }
+    }
+    if(null != m_charToByteConverter)
+    {
+      try
+      {
+        Object args[] = new Object[1];
+        args[0] = new Character( ch );
+        Boolean bool 
+          = (Boolean)m_canConvertMeth.invoke(m_charToByteConverter, args);
+        return bool.booleanValue();
+      }
+      catch(java.lang.reflect.InvocationTargetException ite)
+      {
+        // This is just an assert: no action at the moment.
+        System.err.println("Warning: InvocationTargetException in canConvert!");
+      }
+      catch(java.lang.IllegalAccessException iae)
+      {
+        // This is just an assert: no action at the moment.
+        System.err.println("Warning: IllegalAccessException in canConvert!");
+      }
+    }
+    // fallback!
+    return ( ch <= m_maxCharacter );
+  }
+
 
   /**
    * Returns the specified <var>string</var> after substituting <VAR>specials</VAR>,
@@ -2237,7 +2313,7 @@ public class SerializerToXML
       {
         char ch = stringChars[i];
   
-        if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
+        if (canConvert(ch) && (!m_charInfo.isSpecial(ch)))
         {
           writer.write(ch);
         }
