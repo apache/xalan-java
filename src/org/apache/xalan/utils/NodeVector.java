@@ -136,6 +136,136 @@ public class NodeVector implements Serializable, Cloneable
     m_map[m_firstFree] = value;
     m_firstFree++;
   }
+  
+  /**
+   * Append a Node onto the vector.
+   */
+  public final void push(Node value)
+  {
+    if(null == m_map)
+    {
+      m_map = new Node[m_blocksize];
+      m_mapSize = m_blocksize;
+    }
+    else 
+    {  
+      if((m_firstFree+1) >= m_mapSize)
+      {
+        m_mapSize+=m_blocksize;
+        Node newMap[] = new Node[m_mapSize];
+        System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+        m_map = newMap;
+      }
+    }  
+    m_map[m_firstFree] = value;
+    m_firstFree++;
+  }
+  
+  /**
+   * Pop a node from the tail of the vector and return the result.
+   */
+  public final Node pop()
+  {
+    m_firstFree--;
+    Node n = m_map[m_firstFree];
+    m_map[m_firstFree] = null;
+    return n;
+  }
+  
+  /**
+   * Pop a node from the tail of the vector.
+   */
+  public final void popQuick()
+  {
+    m_firstFree--;
+    m_map[m_firstFree] = null;
+  }
+  
+  /**
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final Node peepOrNull()
+  {
+    return ((null != m_map) && (m_firstFree > 0)) 
+           ? m_map[m_firstFree-1] 
+             : null;
+  }  
+
+  
+  /**
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final void pushPair(Node v1, Node v2)
+  {
+    if(null == m_map)
+    {
+      m_map = new Node[m_blocksize];
+      m_mapSize = m_blocksize;
+    }
+    else 
+    {  
+      if((m_firstFree+2) >= m_mapSize)
+      {
+        m_mapSize+=m_blocksize;
+        Node newMap[] = new Node[m_mapSize];
+        System.arraycopy(m_map, 0, newMap, 0, m_firstFree);
+        m_map = newMap;
+      }
+    }  
+    m_map[m_firstFree] = v1;
+    m_map[m_firstFree+1] = v2;
+    m_firstFree+=2;
+  }
+  
+  /**
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final void popPair()
+  {
+    m_firstFree-=2;
+    m_map[m_firstFree] = null;
+    m_map[m_firstFree+1] = null;
+  } 
+  
+  /**
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final void setTail(Node n)
+  {
+    m_map[m_firstFree-1] = n;
+  } 
+  
+  /**
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final void setTailSub1(Node n)
+  {
+    m_map[m_firstFree-2] = n;
+  }  
+
+  /**
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final Node peepTail()
+  {
+    return m_map[m_firstFree-1];
+  }  
+
+  /**
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final Node peepTailSub1()
+  {
+    return m_map[m_firstFree-2];
+  }  
+
 
   /**
    * Inserts the specified node in this vector at the specified index. 
