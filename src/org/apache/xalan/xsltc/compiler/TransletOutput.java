@@ -71,9 +71,6 @@ final class TransletOutput extends Instruction {
     private Expression _filename;
     private boolean _append;
 
-    private final static String MISSING_FILE_ATTR =
-	"The <xsltc:output> element requires a 'file' attribute.";
-
     /**
      * Displays the contents of this <xsltc:output> element.
      */

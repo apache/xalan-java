@@ -76,6 +76,16 @@ public class FunctionMultiArgs extends Function3Args
   /** Argument expressions that are at index 3 or greater.
    *  @serial */
   Expression[] m_args;
+  
+  /**
+   * Return an expression array containing arguments at index 3 or greater.
+   *
+   * @return An array that contains the arguments at index 3 or greater.
+   */
+  public Expression[] getArgs()
+  {
+    return m_args;
+  }
 
   /**
    * Set an argument expression for a function.  This method is called by the

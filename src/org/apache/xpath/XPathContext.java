@@ -1146,6 +1146,15 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     {
       return new org.apache.xml.dtm.ref.DTMNodeIterator(getContextNodeList());
     }
+
+    /**
+     * Get the error listener.
+     * @return The registered error listener.
+     */
+    public ErrorListener getErrorListener()
+    {
+      return XPathContext.this.getErrorListener();
+    }
   
     /**
      * Get the value of a node as a number.

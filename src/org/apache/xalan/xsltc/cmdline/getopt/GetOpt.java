@@ -68,6 +68,7 @@ import java.util.List;
 
 import org.apache.xalan.xsltc.cmdline.getopt.IllegalArgumentException;
 import org.apache.xalan.xsltc.cmdline.getopt.MissingOptArgException;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 
 /**
@@ -189,13 +190,15 @@ public class GetOpt{
 	    char c = theCurrentOption.getArgLetter();
 	    boolean shouldHaveArg = theOptionMatcher.hasArg(c);
 	    String arg = theCurrentOption.getArgument();
-	    if(!theOptionMatcher.match(c)){
-		throw (new IllegalArgumentException("Option " +
-			c + " is not valid."));
+	    if(!theOptionMatcher.match(c)) {
+                ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_CMDLINE_OPTION_ERR,
+                                            new Character(c));
+		throw (new IllegalArgumentException(msg.toString()));
 	    }
-	    else if(shouldHaveArg && (arg == null)){
-		throw (new MissingOptArgException("Option " + 
-			c + " is missing its argument."));
+	    else if(shouldHaveArg && (arg == null)) {
+                ErrorMsg msg = new ErrorMsg(ErrorMsg.CMDLINE_OPT_MISSING_ARG_ERR,
+                                            new Character(c));
+		throw (new MissingOptArgException(msg.toString()));
 	    }
 	    retval = c;
 	}

@@ -86,6 +86,7 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 import org.apache.xml.dtm.DTMManager;
 import javax.xml.transform.stream.StreamSource;
@@ -214,7 +215,7 @@ public final class DocumentCache implements DOMCache {
 	    _reader = _parser.getXMLReader();
 	}
 	catch (ParserConfigurationException e) {
-	    System.err.println("Your SAX parser is not configured correctly.");
+	    BasisLibrary.runTimeError(BasisLibrary.NAMESPACES_SUPPORT_ERR);
 	    System.exit(-1);
 	}
     }

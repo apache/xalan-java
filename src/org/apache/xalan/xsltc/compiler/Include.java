@@ -125,8 +125,11 @@ final class Include extends TopLevelElement {
 			docToLoad = "file:" + file.getCanonicalPath();
 		    }
 		    else {
-			throw new FileNotFoundException(
-			  "Could not load file " + docToLoad);
+			final ErrorMsg msg =
+                                       new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR,
+                                                    docToLoad);
+                        parser.reportError(Constants.FATAL, msg);
+                        return;
 		    }
 		    input = new InputSource(docToLoad);
 		}

@@ -1199,6 +1199,8 @@ public final class BasisLibrary implements Operators {
     public static final int STRAY_NAMESPACE_ERR     = 11;
     public static final int NAMESPACE_PREFIX_ERR    = 12;
     public static final int DOM_ADAPTER_INIT_ERR    = 13;
+    public static final int PARSER_DTD_SUPPORT_ERR  = 14;
+    public static final int NAMESPACES_SUPPORT_ERR  = 15;
 
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.

@@ -330,9 +330,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	    }
 	}
 
-	// TODO: Internationalization?
-	throw new TransletException("Namespace prefix '" + prefix +
-                                 "' is undeclared.");
+        BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR, prefix);
+        return null;
     }
 
     /**

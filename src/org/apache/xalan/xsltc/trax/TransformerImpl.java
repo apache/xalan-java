@@ -1087,8 +1087,16 @@ public final class TransformerImpl extends Transformer
     public void error(TransformerException e)
 	throws TransformerException 
     {
-	System.err.println("ERROR: " + e.getMessageAndLocation());
-	throw(e); 	
+        Throwable wrapped = e.getException();
+        if (wrapped != null) {
+            System.err.println(new ErrorMsg(ErrorMsg.ERROR_PLUS_WRAPPED_MSG,
+                                            e.getMessageAndLocation(),
+                                            wrapped.getMessage()));
+        } else {
+            System.err.println(new ErrorMsg(ErrorMsg.ERROR_MSG,
+                                            e.getMessageAndLocation()));
+        }
+        throw e;
     }
 
     /**
@@ -1107,12 +1115,16 @@ public final class TransformerImpl extends Transformer
     public void fatalError(TransformerException e)
 	throws TransformerException 
     {
-	System.err.println("FATAL: " + e.getMessageAndLocation());
-	Throwable wrapped = e.getException();
-	if (wrapped != null) {
-	    System.err.println("     : "+wrapped.getMessage());
-	}
-	throw(e);
+        Throwable wrapped = e.getException();
+        if (wrapped != null) {
+            System.err.println(new ErrorMsg(ErrorMsg.FATAL_ERR_PLUS_WRAPPED_MSG,
+                                            e.getMessageAndLocation(),
+                                            wrapped.getMessage()));
+        } else {
+            System.err.println(new ErrorMsg(ErrorMsg.FATAL_ERR_MSG,
+                                            e.getMessageAndLocation()));
+        }
+        throw e;
     }
 
     /**
@@ -1131,11 +1143,15 @@ public final class TransformerImpl extends Transformer
     public void warning(TransformerException e)
 	throws TransformerException 
     {
-	System.err.println("WARNING: " + e.getMessageAndLocation());
-	Throwable wrapped = e.getException();
-	if (wrapped != null) {
-	    System.err.println("       : "+wrapped.getMessage());
-	}
+        Throwable wrapped = e.getException();
+        if (wrapped != null) {
+            System.err.println(new ErrorMsg(ErrorMsg.WARNING_PLUS_WRAPPED_MSG,
+                                            e.getMessageAndLocation(),
+                                            wrapped.getMessage()));
+        } else {
+            System.err.println(new ErrorMsg(ErrorMsg.WARNING_MSG,
+                                            e.getMessageAndLocation()));
+        }
     }
 
 }

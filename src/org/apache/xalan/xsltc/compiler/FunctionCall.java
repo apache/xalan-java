@@ -267,6 +267,7 @@ class FunctionCall extends Expression {
 	    
 	    // Initialize the extension namespace table
 	    _extensionNamespaceTable.put(EXT_XALAN, "org.apache.xalan.lib.Extensions");
+	    _extensionNamespaceTable.put(EXSLT_COMMON, "org.apache.xalan.lib.ExsltCommon");
 	    _extensionNamespaceTable.put(EXSLT_MATH, "org.apache.xalan.lib.ExsltMath");
 	    _extensionNamespaceTable.put(EXSLT_SETS, "org.apache.xalan.lib.ExsltSets");
 	    _extensionNamespaceTable.put(EXSLT_DATETIME, "org.apache.xalan.lib.ExsltDatetime");
@@ -309,7 +310,6 @@ class FunctionCall extends Expression {
     }
 
     public String getClassNameFromUri(String uri) 
-	throws TypeCheckError
     {
     
         String className = (String)_extensionNamespaceTable.get(uri);
@@ -1060,7 +1060,7 @@ class FunctionCall extends Expression {
      * e.g., convert abc-xyz to abcXyz.
      * Note: dashes only appear in middle of an EXSLT function or element name.
      */
-    private static String replaceDash(String name)
+    protected static String replaceDash(String name)
     {
       char dash = '-';
       StringBuffer buff = new StringBuffer("");
