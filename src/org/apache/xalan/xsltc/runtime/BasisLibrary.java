@@ -889,19 +889,22 @@ public final class BasisLibrary implements Operators {
 	}
     }
 
-    private static double lowerBounds = 0.001;
-    private static double upperBounds = 10000000;
+    private static final int DOUBLE_FRACTION_DIGITS = 340;
+    private static final double lowerBounds = 0.001;
+    private static final double upperBounds = 10000000;
     private static DecimalFormat defaultFormatter;
     private static String defaultPattern = "";
 
     static {
 	NumberFormat f = NumberFormat.getInstance(Locale.getDefault());
-	// set max fraction digits so that truncation does not occur,
-	// see conf test string134
-	f.setMaximumFractionDigits(Integer.MAX_VALUE);
 	defaultFormatter = (f instanceof DecimalFormat) ?
 	    (DecimalFormat) f : new DecimalFormat();
-	defaultFormatter.setGroupingUsed(false);
+	// Set max fraction digits so that truncation does not occur. Setting 
+        // the max to Integer.MAX_VALUE may cause problems with some JDK's.
+	defaultFormatter.setMaximumFractionDigits(DOUBLE_FRACTION_DIGITS);
+        defaultFormatter.setMinimumFractionDigits(0);
+        defaultFormatter.setMinimumIntegerDigits(1);
+        defaultFormatter.setGroupingUsed(false);
     }
 
     /**
@@ -936,7 +939,7 @@ public final class BasisLibrary implements Operators {
 
     /**
      * Utility function: used to format/adjust  a double to a string. The 
-     * DecimalFormat object comes from the 'format_symbols' hashtable in 
+     * DecimalFormat object comes from the 'formatSymbols' hashtable in 
      * AbstractTranslet.
      */
     private static FieldPosition _fieldPosition = new FieldPosition(0);
@@ -952,33 +955,8 @@ public final class BasisLibrary implements Operators {
 	    if (pattern != defaultPattern) {
 		formatter.applyLocalizedPattern(pattern);
 	    }
-
-	    //------------------------------------------------------
- 	    // bug fix # 9179 - make sure localized pattern contains
-	    //   a leading zero before decimal, handle cases where  
-	    //   decimal is in position zero, and >= to 1. 
-	    //   localized pattern is ###.### convert to ##0.###
-	    //   localized pattern is .###    convert to 0.###
-	    //------------------------------------------------------
-	    String localizedPattern = formatter.toPattern();
-	    int index = localizedPattern.indexOf('.');
-	    if ( index >= 1  && localizedPattern.charAt(index-1) == '#' ) {
-		//insert a zero before the decimal point in the pattern
-		StringBuffer newpattern = new StringBuffer();
-		newpattern.append(localizedPattern.substring(0, index-1));
-                newpattern.append("0");
-                newpattern.append(localizedPattern.substring(index));
-		formatter.applyLocalizedPattern(newpattern.toString());
-	    } else if (index == 0) {
-                // insert a zero before decimal point in pattern
-                StringBuffer newpattern = new StringBuffer();
-                newpattern.append("0");
-                newpattern.append(localizedPattern);
-		formatter.applyLocalizedPattern(newpattern.toString());
-            }
-
-	    formatter.format(number, result, _fieldPosition);
-	    return(result.toString());
+            formatter.format(number, result, _fieldPosition);
+	    return result.toString();
 	}
 	catch (IllegalArgumentException e) {
 	    runTimeError(FORMAT_NUMBER_ERR, Double.toString(number), pattern);
