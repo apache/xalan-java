@@ -97,7 +97,7 @@
 
    <action context="code" category="bug" who="SB">
     Handle qName paramterer to the ContentHandler methods being an empty string.
-    See note from mikael@ingen.reklam.staldal.nu (Mikael Ståldal), 01/01/2001 09:42 AM.
+    See note from mikael@ingen.reklam.staldal.nu (Mikael St&#229;dal), 01/01/2001 09:42 AM.
    </action>
 
    <action context="code" category="performance" who="SB">
