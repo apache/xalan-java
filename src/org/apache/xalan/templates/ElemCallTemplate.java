@@ -258,7 +258,11 @@ public class ElemCallTemplate extends ElemForEach
             ElemWithParam ewp = m_paramElems[i];
             if(ewp.m_index >= 0)
             {
+              if (TransformerImpl.S_DEBUG)
+                transformer.getTraceManager().fireTraceEvent(ewp);
               XObject obj = ewp.getValue(transformer, currentNode);
+              if (TransformerImpl.S_DEBUG)
+                transformer.getTraceManager().fireTraceEndEvent(ewp);
               
               // Note here that the index for ElemWithParam must have been 
               // statically made relative to the xsl:template being called, 
