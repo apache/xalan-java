@@ -230,8 +230,9 @@ SRCS = \
   trax$(PATHSEP)TemplatesBuilder.java \
   trax$(PATHSEP)Transformer.java \
   trax$(PATHSEP)TransformException.java \
-  trax$(PATHSEP)URIResolver.java
-    
+  trax$(PATHSEP)URIResolver.java \
+  org$(PATHSEP)w3c$(PATHSEP)xslt$(PATHSEP)ExpressionContext.java
+   
 OBJS = $($(subst /,\\,$(SRCS)):%.java=classes/%.class)
 
 all: sincelast makesubdirs
