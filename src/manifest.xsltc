@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Created-By: 1.2.2 (Sun Microsystems Inc.)
-Main-Class: org.apache.xalan.xsltc.compiler.XSLTC
-Class-Path: runtime.jar BCEL.jar Jlex.jar java_cup.jar xerces.jar xml-apis.jar
+Main-Class: org.apache.xalan.xsltc.cmdline.Compile, org.apache.xalan.xsltc.cmdline.Transform
+Class-Path: runtime.jar BCEL.jar regrexp.jar Jlex.jar java_cup.jar xercesImpl.jar xml-apis.jar
 
 
 Name: org/apache/xalan/xsltc
