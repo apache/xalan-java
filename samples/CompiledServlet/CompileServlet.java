@@ -60,8 +60,6 @@
  *
  */
 
-package org.apache.xalan.xsltc.demo.servlet;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 
