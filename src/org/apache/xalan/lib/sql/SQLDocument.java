@@ -108,7 +108,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
 
   private boolean DEBUG = false;
 
-  private static final String S_NAMESPACE = "";
+  private static final String S_NAMESPACE = "http://xml.apache.org/xalan/SQLExtension";
 
   private static final String S_ATTRIB_NOT_SUPPORTED="Not Supported";
   private static final String S_ISTRUE="true";
@@ -121,7 +121,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
   private static final String S_COLUMN_HEADER = "column-header";
   private static final String S_ROW_SET = "row-set";
   private static final String S_ROW = "row";
-  private static final String S_COL = "column";
+  private static final String S_COL = "col";
 
   private static final String S_CATALOGUE_NAME = "catalogue-name";
   private static final String S_DISPLAY_SIZE = "column-display-size";
@@ -257,7 +257,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
     extractSQLMetaData(m_ResultSet.getMetaData());
 
     // Let's see what we have
-    dumpDTM();
+    // dumpDTM();
   }
 
 
@@ -324,7 +324,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
           S_ATTRIB_NOT_SUPPORTED,
           m_ColAttrib_COLUMN_LABEL_TypeID, lastColHeaderIdx);
       }
-/*
+
       try
       {
         addAttributeToNode(
@@ -504,7 +504,6 @@ public class SQLDocument extends DTMDefaultBaseIterators
           S_ATTRIB_NOT_SUPPORTED,
           m_ColAttrib_ISSEARCHABLE_TypeID, lastColHeaderIdx);
       }
-*/
     }
 
   }

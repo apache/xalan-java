@@ -14,7 +14,7 @@ public class ObjectArray
   /**
    * The container of all the sub arrays
    */
-  private Vector m_Arrays = new Vector(10);
+  private Vector m_Arrays = new Vector(200);
 
   /**
    * An index that porvides the Vector entry for the current Array that is
