@@ -82,8 +82,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.serialize.OutputFormat;
 import org.apache.serialize.Serializer;
 import org.apache.serialize.SerializerFactory;
-import org.apache.xml.org.apache.serialize.transition.XMLSerializer;
-import org.apache.xml.org.apache.serialize.transition.TextSerializer;
+import org.apache.xml.serialize.transition.XMLSerializer;
+import org.apache.xml.serialize.transition.TextSerializer;
 
 /**
  *  Very basic utility for applying an XPath epxression to an xml file and printing information
