@@ -6,7 +6,10 @@
 <anchor name="outputprops"/><p><em>Output properties</em></p>
 <p>The handling of xsl:output properties has changed: org.apache.xalan.serialize.OutputFormat and apache.xalan.templates.OutputFormatExtended were removed and replaced with org.apache.xalan.templates.OutputProperties. The SerializerFactory getSerializer() method now takes Properties rather than a String indicating the output method. You can replace <code>getSerializer("xml")</code>, for example, with <code>getSerializer(OutputProperties.getDefaultMethodProperties("xml"))</code>.</p>
 <p>HTML, XML, and text xsl:output properties are specified in property files in org.apache.xalan.templates: output_html.properties, output_xml.properties, and output_text.properties.</p>
-<p>You can start using the output properties defined in these files in your stylesheets. For example, you can turn URL escaping off in HTML output, by setting use-url-escaping=no, and you can set indent-amount to control indenting.</p>
+<p>You can start using the output properties defined in these files in your stylesheets. For example, you can turn URL escaping off in HTML output with<br/><code>{http\u003a//xml.apache.org/xslt}use-url-escaping=no</code><br/>
+and you can control indenting with<br/>
+<code>{http\u003a//xml.apache.org/xslt}indent-amount=<ref>n</ref></code></p>
+<note>The colon after the "http" protocol must be escaped.</note>
 <p>Character-to-entity mapping is specified in org.apache.xalan.serialize: HTMLEntities.res and XMLEntities.res. You can override entity ref 
 mapping from a stylesheet. For example:</p>
 <source>&lt;?xml version="1.0"?&gt;
