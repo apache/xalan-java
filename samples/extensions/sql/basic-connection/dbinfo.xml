@@ -15,4 +15,12 @@
    <password/>
  </DBINFO>
 -->
+ <!-- an example setting for using mySQL, sample is the database name
+  <DBINFO>
+   <dbdriver>com.mysql.jdbc.Driver</dbdriver>
+   <dburl>jdbc:mySQL://localhost/sample</dburl>
+   <user />
+   <password/>
+ </DBINFO>
+-->
 </dbtest>

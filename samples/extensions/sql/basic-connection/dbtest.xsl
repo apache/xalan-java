@@ -12,13 +12,19 @@
 
 <xsl:output method="html" indent="yes"/>
 
+<!-- parameter setting to connect to DB2
+<xsl:param name="driver" select="'COM.ibm.db2.jdbc.app.DB2Driver'"/>
 
+<xsl:param name="datasource" select="'jdbc:db2:sample'"/>
+-->
 
-<xsl:param name="driver" select="'com.lutris.instantdb.jdbc.idbDriver'"/>
+<!-- parameter setting to connect to MySQL -->
 
-<xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/>
+<xsl:param name="driver" select="'com.mysql.jdbc.Driver'"/>
 
-<xsl:param name="query" select="'SELECT * FROM import1'"/>
+<xsl:param name="datasource" select="'jdbc:mySQL://localhost/sample'"/>
+
+<xsl:param name="query" select="'SELECT * FROM sample'"/>
 
 <xsl:param name="username" select="'***'"/>
 
