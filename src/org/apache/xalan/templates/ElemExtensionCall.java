@@ -247,22 +247,24 @@ public class ElemExtensionCall extends ElemLiteralResult
             throws SAXException
   {
 
+    transformer.getResultTreeHandler().flushPending();
+
+    XPathContext liaison = ((XPathContext) transformer.getXPathContext());
+    ExtensionsTable etable = liaison.getExtensionsTable();
+    ExtensionHandler nsh = etable.get(m_extns);
+
+    // We're seeing this extension namespace used for the first time.  Try to
+    // autodeclare it as a java namespace.
+
+    if (null == nsh)
+    {
+      nsh = etable.makeJavaNamespace(m_extns);
+
+      etable.addExtensionNamespace(m_extns, nsh);
+    }
+
     try
     {
-      transformer.getResultTreeHandler().flushPending();
-
-      XPathContext liaison = ((XPathContext) transformer.getXPathContext());
-      ExtensionsTable etable = liaison.getExtensionsTable();
-      ExtensionHandler nsh = etable.get(m_extns);
-
-      // We're seeing this extension namespace used for the first time.  Try to
-      // autodeclare it as a java namespace.
-      if (null == nsh)
-      {
-        nsh = etable.makeJavaNamespace(m_extns);
-
-        etable.addExtensionNamespace(m_extns, nsh);
-      }
 
       nsh.processElement(this.getLocalName(), this, transformer,
                          getStylesheet(), sourceNode.getOwnerDocument(),
