@@ -366,7 +366,20 @@ public class Extensions
                                  String toTokenize, String delims)
   {
 
-    Document lDoc = myContext.getContextNode().getOwnerDocument();
+    Document lDoc;
+
+    // Document lDoc = myContext.getContextNode().getOwnerDocument();
+    try
+    {
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      lDoc = db.newDocument();
+    }
+    catch(ParserConfigurationException pce)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(pce);
+    }
+
     StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
     NodeSet resultSet = new NodeSet();
 
