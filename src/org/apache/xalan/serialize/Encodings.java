@@ -385,22 +385,22 @@ public class Encodings extends Object
       EncodingInfo[] ret = new EncodingInfo[totalEntries];
       Enumeration keys = props.keys();
       for (int i = 0; i < totalEntries; ++i) {
-        String mimeName = (String) keys.nextElement();
-        String val = props.getProperty(mimeName);
+        String javaName = (String) keys.nextElement();
+        String val = props.getProperty(javaName);
         int pos = val.indexOf(' ');
-        String javaName;
+        String mimeName;
         int lastPrintable;
         if (pos < 0)
         {
           // Maybe report/log this problem?
           //  "Last printable character not defined for encoding " +
           //  mimeName + " (" + val + ")" ...
-          javaName = val;
+          mimeName = val;
           lastPrintable = 0x00FF;
         }
         else
         {
-          javaName = val.substring(0, pos);
+          mimeName = val.substring(0, pos);
           lastPrintable =
                          Integer.decode(val.substring(pos).trim()).intValue();
         }
