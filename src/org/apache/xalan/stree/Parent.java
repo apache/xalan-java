@@ -108,14 +108,14 @@ public class Parent extends Child
       {
         try
         {
-          System.out.println("Waiting... getChild " + i + " " + getNodeName());
+          // System.out.println("Waiting... getChild " + i + " " + getNodeName());
           wait();
         }
         catch (InterruptedException e)
         {
           // That's OK, it's as good a time as any to check again
         }
-        System.out.println("... gotChild " + i);
+        // System.out.println("... gotChild " + i);
         child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
            m_children[i] : null;
         }
