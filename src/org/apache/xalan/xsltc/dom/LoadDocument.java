@@ -105,7 +105,9 @@ public final class LoadDocument {
             //System.err.println("arg2FirstNode name: "
             //                   + dom.getNodeName(arg2FirstNode )+"["
             //                   +Integer.toHexString(arg2FirstNode )+"]");
-            baseURI = getBaseFromURI(dom.getDocumentURI(arg2FirstNode)); 
+            baseURI = dom.getDocumentURI(arg2FirstNode);
+            if (!SystemIDResolver.isAbsoluteURI(baseURI))
+               baseURI = SystemIDResolver.getAbsoluteURIFromRelative(baseURI);
         }
       
         try {
@@ -318,11 +320,4 @@ public final class LoadDocument {
         return new SingletonIterator(newdom.getDocument(), true);
     }
  
-    private static String getBaseFromURI( String uri){
-        final int backwardSep = uri.lastIndexOf('\\') + 1;
-        final int forwardSep = uri.lastIndexOf('/') + 1;
-
-        return uri.substring(0, Math.max(backwardSep, forwardSep));
-    }
-
 }
