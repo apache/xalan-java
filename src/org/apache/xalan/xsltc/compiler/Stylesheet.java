@@ -448,6 +448,11 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Type check all the children of this node.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	final int count = _globals.size();
+	for (int i = 0; i < count; i++) {
+	    final VariableBase var = (VariableBase)_globals.elementAt(i);
+	    var.typeCheck(stable);
+	}
 	return typeCheckContents(stable);
     }
 
