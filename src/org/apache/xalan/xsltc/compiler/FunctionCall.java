@@ -170,6 +170,7 @@ class FunctionCall extends Expression {
     public FunctionCall(QName fname, Vector arguments) {
 	_fname = fname;
 	_arguments = arguments;
+	_type = null;
     }
 
     public FunctionCall(QName fname) {
@@ -209,7 +210,10 @@ class FunctionCall extends Expression {
      * Type check a function call. Since different type conversions apply,
      * type checking is different for standard and external (Java) functions.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(SymbolTable stable) 
+	throws TypeCheckError 
+    {
+	if (_type != null) return _type;
 
 	final String namespace = _fname.getNamespace();
 	final String local = _fname.getLocalPart();
