@@ -66,6 +66,7 @@ import java.io.PrintWriter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLConnection;
 import java.net.MalformedURLException;
 import java.util.Hashtable;
@@ -228,6 +229,13 @@ public final class DocumentCache implements DOMCache {
 	    URL url = new URL(uri);
 	    URLConnection connection = url.openConnection();
 	    long timestamp = connection.getLastModified();
+	    // Check for a "file:" URI (courtesy of Brian Ewins)
+	    if (timestamp == 0){ // get 0 for local URI
+	        if ("file".equals(url.getProtocol())){
+	            File localfile = new File(URLDecoder.decode(url.getFile()));
+	            timestamp = localfile.lastModified();
+	        }
+	    }
 	    return(timestamp);
 	}
 	catch (MalformedURLException e) {
