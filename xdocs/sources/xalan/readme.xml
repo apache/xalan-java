@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="no"?> 
 <!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
 <!ENTITY done-j SYSTEM "DONE">
+<!ENTITY xsltcdone SYSTEM "XSLTCDONE">
 <!ENTITY xsltcreleasenotes SYSTEM "xsltc_constraints.xml">
 
 <!ENTITY history-j SYSTEM "history.xml">]>
