@@ -174,6 +174,8 @@ public class ProcessorLRE extends ProcessorTemplateElem
         handler.pushElemTemplateElement(stylesheet);
 
         ElemTemplate template = new ElemTemplate();
+        if (slocator != null)
+            template.setLocaterInfo(slocator);
 
         appendAndPush(handler, template);
 
