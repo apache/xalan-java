@@ -996,7 +996,8 @@ public class XStringForFSB extends XString
     boolean trailingSpace=false;
     int[] digitsFound={0,0}; // intpart,fracpart
     int digitType=0;    // Index to which kind of digit we're accumulating
-    double doubleResult=0;
+    double doubleResult;
+    int overflow=0;
     
     // Scan past leading whitespace characters
     while(start< end &&
@@ -1048,15 +1049,14 @@ public class XStringForFSB extends XString
 	// %REVIEW% Is it possible that we should be accepting _some_
 	// of the bits of the new digit, but not all of them?
 	long newResult = longResult * 10 + (c - '0');
-	if(newResult>0)
+	if(newResult>=0)
 	{
 	  longResult=newResult;
 	  ++digitsFound[digitType]; // Remember scaling
 	}
 	else
-	{
-	  --digitsFound[1]; // Just scale up by 10, later
-	}
+		++overflow;
+    			
 	break;
 
       default:
@@ -1075,18 +1075,35 @@ public class XStringForFSB extends XString
                 
     long scale=1;               // AFAIK, java doesn't have an easier 10^n operation
     
-    if(digitsFound[1]>0)		// Normal fractional-part processing
+    doubleResult=(double)longResult;
+    if(digitsFound[1]==0)		// Integer overflow scaling
     {
-	    for(int i=digitsFound[1];i>0;--i) 
- 	     scale*=10;
-	    doubleResult=((double)longResult)/scale;
+	    for(int i=overflow;i>0;--i) 
+ 		     scale*=10;
+	 	doubleResult*=scale;
     }
-    else 						// Case where int-part overflow exceeds frac-part length
+    else 						// Fractional-part scaling
     {
-	    for(int i=digitsFound[1];i<0;++i) 
- 	     scale*=10;
-	    doubleResult=((double)longResult)*scale;
+    	// Complication: In values <0, the fractional part may want to be divided
+    	// by a power of 10 too large to fit in a long! In that case, resort to 
+    	// successive divisions. 
+    	//
+    	// %REVIEW% This can't be a good solution. Need a better algorithm.
+ 	     
+ 	    int i=digitsFound[1];
+ 	    while(i>0)
+ 	    {
+ 	    	int j=(i<18) ? i : 18;
+ 	    	i-=j;
+ 	    	
+		    for(scale=1;j>0;--j) 
+		    	scale*=10;
+ 	     
+		    doubleResult/=scale;
+ 	    }
     }
+    
+    /***/System.out.println("GONK "+doubleResult);
                 
     if(isNegative)
       doubleResult *= -1;
