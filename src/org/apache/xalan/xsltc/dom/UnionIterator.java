@@ -120,12 +120,12 @@ public final class UnionIterator extends NodeIteratorBase {
     }
 
     public NodeIterator cloneIterator() {
-	_isRestartable = false;
 	final LookAheadIterator[] heapCopy = 
 	    new LookAheadIterator[_heap.length];
 	try {
 	    final UnionIterator clone = (UnionIterator)super.clone();
 	    System.arraycopy(_heap, 0, heapCopy, 0, _heap.length);
+	    clone._isRestartable = false;
 	    clone._heap = heapCopy;
 	    return clone.reset();
 	} 

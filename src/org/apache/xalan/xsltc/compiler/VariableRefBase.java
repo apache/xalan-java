@@ -101,8 +101,11 @@ class VariableRefBase extends Expression {
      */
     public VariableBase findParentVariable() {
 	SyntaxTreeNode node = this;
-	while ((node != null) && (!(node instanceof VariableBase)))
+	while ((node != null) && (!(node instanceof VariableBase))) {
+	    if (node instanceof Predicate)
+		((Predicate)node).dontOptimize();
 	    node = node.getParent();
+	}
 	return (VariableBase)node;
     }
 

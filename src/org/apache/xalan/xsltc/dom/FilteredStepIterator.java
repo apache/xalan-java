@@ -79,13 +79,13 @@ public final class FilteredStepIterator extends StepIterator {
     }
 
     public NodeIterator cloneIterator() {
-	setNotRestartable();
 	try {
 	    final FilteredStepIterator clone =
 		(FilteredStepIterator)super.clone();
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
 	    clone._filter = _filter;
+	    clone.setNotRestartable();
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

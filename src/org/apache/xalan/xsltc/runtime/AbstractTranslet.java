@@ -320,11 +320,9 @@ public abstract class AbstractTranslet implements Translet {
 	    // The name cannot be null - use empty string instead
 	    if (name == null) name = EMPTYSTRING;
 
-	    final DecimalFormat df = (DecimalFormat)_formatSymbols.get(name);
-	    if (df != null)
-		return df;
-	    else
-		return((DecimalFormat)_formatSymbols.get(EMPTYSTRING));
+	    DecimalFormat df = (DecimalFormat)_formatSymbols.get(name);
+	    if (df == null) df = (DecimalFormat)_formatSymbols.get(EMPTYSTRING);
+	    return df;
 	}
 	return(null);
     }

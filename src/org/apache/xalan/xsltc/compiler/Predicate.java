@@ -198,12 +198,20 @@ final class Predicate extends Expression {
 		if (_exp.typeCheck(stable) != Type.Boolean) {
 		    _exp = new CastExpr(_exp, Type.Boolean);
 		}
-		if ((parent instanceof Pattern) ||
-		    (parent instanceof VariableBase))
-		    _nthPositionFilter = true;
-		else
-		    _nthPositionFilter = false;
-		_nthPositionFilter = true;
+
+		if (parent instanceof Pattern) {
+ 		    _nthPositionFilter = true;
+		}
+		else if (parent instanceof FilterExpr) {
+		    FilterExpr filter = (FilterExpr)parent;
+
+		    if (filter.getExpr() instanceof KeyCall)
+			_canOptimize = false;
+		    else if (_exp.hasPositionCall())
+			_canOptimize = false;
+		    if (_canOptimize)
+			_nthPositionFilter = true;
+		}
 		return _type = Type.Boolean;
 	    }
 	    // Use NthPositionIterator to handle [position()] or [a]

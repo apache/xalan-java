@@ -79,27 +79,23 @@ public class StepIterator extends NodeIteratorBase {
     }
 
     protected void setNotRestartable() {
+	_isRestartable = false;
 	if (_source instanceof StepIterator) {
-	    _isRestartable = true;
-	    if (_iterator instanceof NodeIteratorBase)
-		((NodeIteratorBase)_iterator)._isRestartable = true;
 	    ((StepIterator)_source).setNotRestartable();
 	}
-	else {
-	    _isRestartable = false;
-	    if (_source instanceof NodeIteratorBase)
-		((NodeIteratorBase)_source)._isRestartable = false;
-	    if (_iterator instanceof NodeIteratorBase)
-		((NodeIteratorBase)_iterator)._isRestartable = true;
+	else if (_source instanceof NodeIteratorBase) {
+	    ((NodeIteratorBase)_source)._isRestartable = false;
 	}
+	if (_iterator instanceof NodeIteratorBase)
+	    ((NodeIteratorBase)_iterator)._isRestartable = true;
     }
 
     public NodeIterator cloneIterator() {
-	setNotRestartable();
 	try {
 	    final StepIterator clone = (StepIterator)super.clone();
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
+	    clone.setNotRestartable();
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

@@ -65,10 +65,11 @@ package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public final class NthIterator extends NodeIteratorBase {
     // ...[N]
-    private final NodeIterator _source;
+    private NodeIterator _source;
     private final int _position;
     private boolean _ready;
 
@@ -123,11 +124,12 @@ public final class NthIterator extends NodeIteratorBase {
     public void gotoMark() {
 	_source.gotoMark();
     }
-    
-    public NodeIterator cloneIterator() {
-	//!! not clear when cloning is performed
-	// and what's the desired state of the new clone
-	return new NthIterator(_source.cloneIterator(), _position);
-    }
 
+    public NodeIterator cloneIterator() {
+	NodeIterator clone = _source.cloneIterator();
+	((NodeIteratorBase)clone)._isRestartable = true;
+	NthIterator other = new NthIterator(clone, _position);
+	other._isRestartable = false;
+	return other.reset();
+    }
 }

@@ -112,8 +112,8 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	try {
 	    final CurrentNodeListIterator clone =
 		(CurrentNodeListIterator)super.clone();
-	    clone._isRestartable = false;
 	    clone._nodes = (IntegerArray)_nodes.clone();
+	    clone._isRestartable = false;
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

@@ -720,7 +720,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * for efficiency (both speed and size of translet).
      */
     private final class TypedChildrenIterator extends NodeIteratorBase {
-	private final int _nodeType;
+	private int _nodeType;
 	// node to consider next
 	private int _currentChild;
          
@@ -736,6 +736,21 @@ public final class DOMImpl implements DOM, Externalizable {
 		return resetPosition();
 	    }
 	    return this;
+	}
+
+	public NodeIterator cloneIterator() {
+	    try {
+		final TypedChildrenIterator clone =
+		    (TypedChildrenIterator)super.clone();
+		clone._nodeType = _nodeType;
+		clone._isRestartable = false;
+		return clone.reset();
+	    }
+	    catch (CloneNotSupportedException e) {
+		BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+					  e.toString());
+		return null;
+	    }
 	}
 
 	public NodeIterator reset() {
@@ -977,6 +992,15 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return this;
 	}
+
+	public NodeIterator reset() {
+	    int node = _startNode;
+	    for (node = _lengthOrAttr[node];
+		 node != NULL && _type[node] != _nodeType;
+		 node = _nextSibling[node]);
+	    _attribute = node;
+	    return resetPosition();
+	}
                   
 	public int next() {
 	    final int node = _attribute;
@@ -1175,9 +1199,9 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator cloneIterator() {
 	    try {
-		_isRestartable = false;
 		final PrecedingIterator clone = 
 		    (PrecedingIterator)super.clone();
+		clone._isRestartable = false;
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1335,9 +1359,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
          
 	public NodeIterator cloneIterator() {
-	    _isRestartable = false;         // must set to false for any clone
 	    try {
 		final AncestorIterator clone = (AncestorIterator)super.clone();
+		clone._isRestartable = false; // must set to false for any clone
 		clone._startNode = _startNode;
 		return clone.reset();
 	    }

@@ -81,6 +81,13 @@ class FilterExpr extends Expression {
 	primary.setParent(this);
     }
 
+    protected Expression getExpr() {
+	if (_primary instanceof CastExpr)
+	    return ((CastExpr)_primary).getExpr();
+	else
+	    return _primary;
+    }
+
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	_primary.setParser(parser);

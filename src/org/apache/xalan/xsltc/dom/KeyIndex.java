@@ -70,6 +70,7 @@ import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public class KeyIndex implements NodeIterator {
+
     private Hashtable _index = new Hashtable();
     private BitArray  _nodes = null;
     private int       _pos = 0;

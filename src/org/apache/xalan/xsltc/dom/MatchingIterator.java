@@ -79,8 +79,8 @@ public final class MatchingIterator extends NodeIteratorBase {
     public NodeIterator cloneIterator() {
 	try {
 	    final MatchingIterator clone = (MatchingIterator)super.clone();
-	    clone._isRestartable = false;
 	    clone._source = _source.cloneIterator();
+	    clone._isRestartable = false;
 	    return clone;
 	}
 	catch (CloneNotSupportedException e) {

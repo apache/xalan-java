@@ -190,10 +190,10 @@ public final class MultiDOM implements DOM {
 	public NodeIterator cloneIterator() {
 	    try {
 		NodeValueIterator clone = (NodeValueIterator)super.clone();
-		clone._isRestartable = false;
 		clone._source = _source.cloneIterator();
 		clone._value = _value;
 		clone._op = _op;
+		_isRestartable = false;
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
