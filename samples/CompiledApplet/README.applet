@@ -75,7 +75,7 @@ HOW TO SET UP THE DEMO ON YOUR SITE
 ----------------------------------------------------------------------
 KNOWN PROBLEMS
 ----------------------------------------------------------------------
-The following problems are specific to the Netscape 4.x browser.
+. The following problems are specific to the Netscape 4.x browser.
 
 Class Already Loaded - If you start up the Netscape client browser on 
 a Unix system where you have been running XSLTC, and consequently 
@@ -101,5 +101,11 @@ If you see the following message:
     has characters after markup.
 
 try removing the reference to an external DTD in your XML source.
+
+. The following problems are specific to the Sun JRE 1.4.* plugin for browsers.
+
+java.lang.IllegalAccessError - Sun JRE 1.4.* has bundled with it an old version
+of Xalan-J Interpretive (2.2.D11).
+Copy a new verison of xalan.jar to the %Java_JRE%/lib/endorsed/ directory.
 ----------------------------------------------------------------------
 END OF README

@@ -91,7 +91,8 @@ import javax.xml.transform.stream.StreamSource;
  * and that that should be used in preference to recompiling the stylesheet.
  */
 public final class TransformApplet extends Applet {
-
+    TransformerFactory tf;
+    TransformDelegate transformThread;
     /**
      * This class implements a dialog box used for XSL messages/comments
      */
@@ -153,7 +154,7 @@ public final class TransformApplet extends Applet {
         }
 
         public void warning(TransformerException e) {
-            displayMessage(e);
+                    displayMessage(e);
         }
     }
 
@@ -161,67 +162,138 @@ public final class TransformApplet extends Applet {
      * This method is the main body of the applet. The method is called
      * by some JavaScript code in an HTML document.
      */
-    public String transform(Object arg1, Object arg2) {
-        // Convert the two arguments to strings.
+    public synchronized String transform(Object arg1, Object arg2) {
         final String stylesheetURL = (String)arg1;
         final String documentURL = (String)arg2;
 
-        // Initialise the output stream
-        final StringWriter sout = new StringWriter();
-        final PrintWriter out = new PrintWriter(sout);
-
-        try {
-            // Check that the parameters are valid
-            if (stylesheetURL == null || documentURL == null) {
-                out.println("<h1>Transformation error</h1>");
-                out.println("The parameters <b><tt>stylesheetURL</tt></b> "+
-                            "and <b><tt>source</tt></b> must be specified");
-            }
-            else {
-                TransformerFactory tf = null;
-                tf = TransformerFactory.newInstance();
-
-                try {
-                    tf.setAttribute("use-classpath", Boolean.TRUE);
-                } catch (IllegalArgumentException iae) {
-                    System.err.println(
-                           "Could not set XSLTC-specific TransformerFactory "
-                         + "attributes.  Transformation failed.");
-                }
-                Transformer t =
-                         tf.newTransformer(new StreamSource(stylesheetURL));
-                t.setErrorListener(new AppletErrorListener());
-
-                final long start = System.currentTimeMillis();
-
-                t.transform(new StreamSource(documentURL),
-                            new StreamResult(out));
-
-                final long done = System.currentTimeMillis() - start;
-                out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
-            }
-            // Now close up the sink, and return the HTML output in the
-            // StringWrite object as a string.
-            out.close();
-            System.err.println("Transformation complete!");
-            System.err.println(sout.toString());
-            return sout.toString();
-        }
-        catch (RuntimeException e) {
-            out.println("<h1>RTE</h1>");
-            out.close();
-            return sout.toString();
-        }
-        catch (Exception e) {
-            out.println("<h1>exception</h1>");
-            out.println(e.toString());
-            out.close();
-            return sout.toString();
-        }
+        transformThread.setStylesheetURL(stylesheetURL);
+        transformThread.setDocumentURL(documentURL);
+        transformThread.setWaiting(false);
+        transformThread.wakeUp();
+        try{
+            wait();
+        } catch (InterruptedException e){}
+        return transformThread.getOutput();
     }
 
     public void start() {
-        String result = transform(getParameter("stylesheet-name"),
-                                  getParameter("input-document"));
+        transform(getParameter("stylesheet-name"),
+                  getParameter("input-document"));
+    }
+    public void destroy() {
+        transformThread.destroy();
+    }
+    public void init() {
+        tf = TransformerFactory.newInstance();
+        try {
+            tf.setAttribute("use-classpath", Boolean.TRUE);
+        } catch (IllegalArgumentException iae) {
+            System.err.println("Could not set XSLTC-specific TransformerFactory"
+                               + " attributes.  Transformation failed.");
+        }
+        // Another thread is created to keep the context class loader
+        // information.  When use JDK 1.4 plugin for browser, to get around the
+        // problem with the bundled old version of xalan and endorsed class
+        // loading mechanism
+        transformThread = new TransformDelegate(true);
+        Thread t = new Thread(transformThread);
+        t.setName("transformThread");
+        t.start();
+    }
+    public String getOutput(){
+        return transformThread.getOutput();
+    }
+    public synchronized void wakeUp() {
+        notifyAll();
+    }
+    class TransformDelegate implements Runnable {
+        private boolean isRunning, isWaiting;
+        private String stylesheetURL, documentURL;
+        private String outPut;
+        public TransformDelegate(boolean arg) {
+            isRunning = arg;
+            isWaiting = true;
+        }
+        public synchronized void run() {
+            while(isRunning){
+                while(isWaiting){
+                    try {
+                        wait();
+                    } catch (InterruptedException e){}
+                }
+                transform();
+                isWaiting = true;
+                TransformApplet.this.wakeUp();
+            }
+        }
+
+        public void setStylesheetURL(String arg){
+            stylesheetURL = arg;
+        }
+        public void setDocumentURL(String arg) {
+            documentURL = arg;
+        }
+        public String getStylesheetURL(){
+            return stylesheetURL;
+        }
+        public String getDocumentURL() {
+            return documentURL;
+        }
+        public void setWaiting(boolean arg) {
+            isWaiting = arg;
+        }
+        public void destroy() {
+            isRunning = false;
+        }
+        public synchronized void wakeUp() {
+            notifyAll();
+        }
+        public String getOutput(){
+            return outPut;
+        }
+
+        public void transform(){
+            String xslURL = getStylesheetURL();
+            String docURL = getDocumentURL();
+            // Initialise the output stream
+            StringWriter sout = new StringWriter();
+            PrintWriter out = new PrintWriter(sout);
+            // Check that the parameters are valid
+            try {
+                if (xslURL == null || docURL == null) {
+                    out.println("<h1>Transformation error</h1>");
+                    out.println("The parameters <b><tt>stylesheetURL</tt></b> "+
+                                "and <b><tt>source</tt></b> must be specified");
+                } else {
+                    Transformer t = tf.newTransformer(new StreamSource(xslURL));
+                    t.setErrorListener(new AppletErrorListener());
+
+                    final long start = System.currentTimeMillis();
+
+                    t.transform(new StreamSource(docURL),
+                                new StreamResult(out));
+
+                    final long done = System.currentTimeMillis() - start;
+                    out.println("<!-- transformed by XSLTC in " + done
+                                + "msecs -->");
+                }
+                // Now close up the sink, and return the HTML output in the
+                // StringWrite object as a string.
+                out.close();
+                System.err.println("Transformation complete!");
+                System.err.println(sout.toString());
+                outPut = sout.toString();
+                sout.close();
+            } catch (RuntimeException e) {
+                out.println("<h1>RTE</h1>");
+                out.close();
+                outPut = sout.toString();
+            } catch (Exception e) {
+                out.println("<h1>exception</h1>");
+                out.println(e.toString());
+                out.close();
+                outPut = sout.toString();
+            }
+        }
     }
 }
