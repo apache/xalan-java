@@ -99,6 +99,7 @@ import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
+import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.dom.DOMWSFilter;
@@ -1012,13 +1013,7 @@ public final class TransformerImpl extends Transformer
      */
     private Properties createOutputProperties(Properties outputProperties) {
 	final Properties defaults = new Properties();
-	defaults.setProperty(OutputKeys.ENCODING, "UTF-8");
-	defaults.setProperty(OutputKeys.METHOD, XML_STRING);
-	defaults.setProperty(OutputKeys.INDENT, NO_STRING);
-	defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
-	defaults.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
-	defaults.setProperty(OutputKeys.STANDALONE, NO_STRING);
-	defaults.setProperty(OutputKeys.VERSION, "1.0");
+	setDefaults(defaults, "xml");
 
 	// Copy propeties set in stylesheet to base
 	final Properties base = new Properties(defaults);
@@ -1039,18 +1034,35 @@ public final class TransformerImpl extends Transformer
 	final String method = base.getProperty(OutputKeys.METHOD);
 	if (method != null) {
 	    if (method.equals("html")) {
-		defaults.setProperty(OutputKeys.INDENT, "yes");
-		defaults.setProperty(OutputKeys.VERSION, "4.0");
-		defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/html");
+	        setDefaults(defaults,"html");
 	    }
 	    else if (method.equals("text")) {
-		defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/plain");
+	        setDefaults(defaults,"text");
 	    }
 	}
 
 	return base; 
     }
 
+	/**
+	 * Internal method to get the default properties from the
+	 * serializer factory and set them on the property object.
+	 * @param props a java.util.Property object on which the properties are set.
+	 * @param method The output method type, one of "xml", "text", "html" ...
+	 */
+	private void setDefaults(Properties props, String method)
+	{
+		final Properties method_props =
+			OutputPropertiesFactory.getDefaultMethodProperties(method);
+		{
+			final Enumeration names = method_props.propertyNames();
+			while (names.hasMoreElements())
+			{
+				final String name = (String)names.nextElement();
+				props.setProperty(name, method_props.getProperty(name));
+			}
+		}
+	}
     /**
      * Verifies if a given output property name is a property defined in
      * the JAXP 1.1 / TrAX spec
