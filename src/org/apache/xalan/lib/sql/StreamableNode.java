@@ -23,6 +23,12 @@ public class StreamableNode extends UnImplNode
     return m_statement;
   }
   
+  public boolean  supports(String feature,
+                           String version)
+  {
+    return feature.equals("NodeTestFilter");
+  }
+  
   private NodeTest m_nodetest;
   
   public NodeTest getNodeTest()
