@@ -157,20 +157,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     // TransformerFactory
     //
     public ErrorListener getErrorListener() { 
-	/*TBD*/ 
-        /* return null;  */
 	return _errorListener;
     }
+
     public void setErrorListener(ErrorListener listener) 
 	throws IllegalArgumentException
     {
+	if (listener == null) {
+            throw new IllegalArgumentException(
+               "Error: setErrorListener() call where ErrorListener is null");
+	}
 	_errorListener = listener;
-	/*TBD*/   
-        /*throw new IllegalArgumentException(
-            "TransformerFactoryImpl:setErrorListener(ErrorListener) " +
-            "not implemented yet.");
-	*/
     }
+
     public Object getAttribute(String name) 
 	throws IllegalArgumentException
     { 
