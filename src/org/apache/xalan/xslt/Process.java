@@ -916,10 +916,13 @@ public class Process
         long millisecondsDuration = stop - start;
 
         if (doDiag)
-          diagnosticsWriter.println("\n\n========\nTransform of "
-                                    + inFileName + " via " + xslFileName
-                                    + " took " + millisecondsDuration
-                                    + " ms");
+        {
+        	Object[] msgArgs = new Object[]{ inFileName, xslFileName, new Long(millisecondsDuration) };
+        	String msg = XSLMessages.createMessage("diagTiming", msgArgs);
+        	diagnosticsWriter.println('\n');
+          	diagnosticsWriter.println(msg);
+        }
+          
       }
       catch (Throwable throwable)
       {

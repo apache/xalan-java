@@ -107,7 +107,7 @@ public class FuncPosition extends Function
     if (null != iter)
     {
       int prox = iter.getProximityPosition(xctxt);
-
+ 
       // System.out.println("FuncPosition- prox: "+prox);
       return prox;
     }

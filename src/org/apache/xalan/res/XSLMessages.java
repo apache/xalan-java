@@ -265,6 +265,33 @@ public class XSLMessages
     else
       return "Could not load any resource bundles.";
   }
+  
+  /**
+   * Creates a message from the specified key and replacement
+   * arguments, localized to the given locale.
+   *
+   * @param errorCode The key for the message text.
+   * @param args      The arguments to be used as replacement text
+   *                  in the message created.
+   *
+   * @return The formatted message string.
+   */
+  public static final String createMessage(String msgKey, Object args[])  //throws Exception 
+  {
+
+    if (XSLTBundle == null)
+      XSLTBundle =
+        loadResourceBundle(XSLT_ERROR_RESOURCES);
+
+    ResourceBundle fResourceBundle = XSLTBundle;
+
+    if (fResourceBundle != null)
+    {
+      return createMsg(fResourceBundle, msgKey, args);
+    }
+    else
+      return "Could not load any resource bundles.";
+  }
 
   /**
    * Creates a message from the specified key and replacement
@@ -294,6 +321,7 @@ public class XSLMessages
     else
       return "Could not load any resource bundles.";
   }
+  
 
   /**
    * Creates a message from the specified key and replacement
