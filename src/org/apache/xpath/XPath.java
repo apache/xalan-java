@@ -140,17 +140,19 @@ public class XPath
                PrefixResolver prefixResolver, int type)
     throws org.xml.sax.SAXException
   {
-    m_locator = locator;
+    // TODO: would like not to clone the locator...
+    m_locator = new org.xml.sax.helpers.LocatorImpl(locator); 
     m_patternString = exprString;
     XPathParser parser = new XPathParser();
     
-    Compiler compiler = new Compiler();
+    Compiler compiler = new Compiler(null, locator);
     if(SELECT == type)
       parser.initXPath(compiler, exprString, prefixResolver);
     else if(MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
     else
       throw new RuntimeException("Can not deal with XPath type: "+type);
+    // System.out.println("----------------");
     Expression expr = compiler.compile(0);
     // System.out.println("expr: "+expr);
     this.setExpression(expr);
@@ -192,6 +194,17 @@ public class XPath
     try
     {
       xobj = m_mainExp.execute(xctxt);
+    }
+    catch(Exception e)
+    {
+      if(e instanceof trax.TransformException)
+        throw (trax.TransformException)e;
+      else
+      {
+        // System.out.println("m_locator.getSystemId(): "+m_locator.getSystemId());
+        // System.out.println("m_locator.getLineNumber(): "+m_locator.getLineNumber());
+        throw new trax.TransformException("Error in XPath", m_locator, e);
+      }
     }
     finally
     {
