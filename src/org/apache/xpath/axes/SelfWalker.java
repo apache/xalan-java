@@ -66,6 +66,7 @@ import org.w3c.dom.Node;
  * @see <a href="http://www.w3.org/TR/xpath#axes">XPath axes descriptions</a>
  */
 public class SelfWalker extends AxesWalker
+	implements java.io.Serializable
 {
   /**
    * Construct a SelfWalker using a LocPathIterator.

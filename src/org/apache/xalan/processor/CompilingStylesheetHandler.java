@@ -90,7 +90,6 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -111,7 +110,7 @@ import org.apache.xalan.utils.synthetic.JavaUtils;
 public class CompilingStylesheetHandler
   extends StylesheetHandler
 {
-      /**
+  /**
    * Create a StylesheetHandler object, creating a root stylesheet 
    * as the target.
    * @exception May throw ProcessorException if a StylesheetRoot 
@@ -122,6 +121,12 @@ public class CompilingStylesheetHandler
   {
     super(processor);
   }
+  
+  // TODO: Should we override startElement to redirect ProcessorStylesheet?
+  // That would let us create a version that had a specialized serializer
+  // ... if that'd be the best way to handle the "bundling" of the
+  // generated classes into a .jar/.zip.
+
   
   /**
    * Receive notification of the end of the document.
@@ -136,13 +141,15 @@ public class CompilingStylesheetHandler
     throws SAXException
   {
     super.endDocument();
-    
+	
+	Vector compiledTemplates=new Vector();
+	 
     Stylesheet current=getStylesheet();
     if(current==getStylesheetRoot())
     {    
-        // Begin compiling. Loop modeled on StylesheetRoot.recompose()
+		// Begin compiling. Loop modeled on StylesheetRoot.recompose()
         // calling recomposeTemplates().
-        StylesheetRoot root=getStylesheetRoot();
+        StylesheetRoot root=(StylesheetRoot)current;
         
         // loop from recompose()
         int nImports = root.getGlobalImportCount();
@@ -166,16 +173,16 @@ public class CompilingStylesheetHandler
 					{
 	                    ElemTemplate newT=compileTemplate(t);
 		                if(newT!=t)
+						{
 			                included.replaceTemplate(newT,i);
+							compiledTemplates.addElement(newT);
+						}
 				    }
 				}
             }
 			// Need to rebuild each sheet's cache.
 			sheet.recomposeTemplates(true); 
         }
-		
-		// TODO: ***** Do we need to reconsider the StylesheetRoot?
-		// (The old Recompose option does so. I don't _think_ it's needed here.)
     
         // After compiling I think we have to reconstruct the cached
         // "composed templates" set. 
@@ -185,6 +192,13 @@ public class CompilingStylesheetHandler
         // entry point... Or flush might be made the new default
         // behavior; I don't know whether that would be appropriate.
         root.recomposeTemplates(true); 
+		
+		// TODO: Should bundling occur elsewhere?
+boolean runSerializer=true; // TODO: DEBUG HOOK, CLEAN UP EVENTUALLY
+if(runSerializer)
+{	
+		CompiledStylesheetBundle.createBundle(root,compiledTemplates);
+}
     }
   }
   
@@ -226,7 +240,7 @@ public class CompilingStylesheetHandler
   {
     ElemTemplate instance=source;
 
-    String className=generateUniqueClassName();    
+    String className=generateUniqueClassName("org.apache.xalan.processor.ACompiledTemplate");    
     
     try
     {
@@ -237,44 +251,6 @@ public class CompilingStylesheetHandler
         tClass.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         tClass.setSuperClass(tClass.forName("org.apache.xalan.processor.CompiledTemplate"));
 
-/*****
-        // Object[] m_interpretArray is used to
-        // bind to nodes we don't yet know how to compile.
-        // Set at construction. ElemTemplateElements and AVTs...
-        // Synthesis needs a more elegant way to declare array classes
-        // given a base class... 
-        org.apache.xalan.utils.synthetic.reflection.Field m_interpretArray=
-            tClass.declareField("m_interpretArray");
-        // org.apache.xalan.templates.ElemTemplateElement
-        m_interpretArray.setType(tClass.forName("java.lang.Object[]"));
-
-        // Namespace context tracking. Note that this is dynamic state
-        // during execution, _NOT_ the static state tied to a single 
-        // ElemTemplateElement during parsing. Also note that it needs to
-		// be set in execute() but testable in getNamespaceForPrefix --
-		// and the latter, most unfortunately, is not passed the xctxt so
-		// making that threadsafe is a bit ugly. 
-        org.apache.xalan.utils.synthetic.reflection.Field m_nsThreadContexts=
-            tClass.declareField("m_nsThreadContexts");
-        m_nsThreadContexts.setType(tClass.forClass(java.util.Hashtable.class));
-        m_nsThreadContexts.setInitializer("new java.util.Hashtable()");
-        // And accessor, to let kids query current state
-        org.apache.xalan.utils.synthetic.reflection.Method getNSURI =
-            tClass.declareMethod("getNamespaceForPrefix");
-        getNSURI.addParameter(tClass.forClass(java.lang.String.class),"nsprefix");
-        getNSURI.setReturnType(tClass.forClass(java.lang.String.class));
-        getNSURI.setModifiers(java.lang.reflect.Modifier.PUBLIC);
-        getNSURI.getBody().append(
-			"String nsuri=\"\";\n"								  
-			+"org.xml.sax.helpers.NamespaceSupport nsSupport=(org.xml.sax.helpers.NamespaceSupport)m_nsThreadContexts.get(Thread.currentThread());\n"
-			+"if(null!=nsSupport)\n"
-			+"\tnsuri=nsSupport.getURI(nsprefix);\n"
-			+"if(null==nsuri || nsuri.length()==0)\n"
-			+"nsuri=m_parentNode.getNamespaceForPrefix(nsprefix);\n"
-			+"return nsuri;\n"
-			);
-*****/		
-
         // public constructor: Copy values from original
         // template object, pick up "uncompiled children"
         // array from compilation/instantiation process.
@@ -283,10 +259,6 @@ public class CompilingStylesheetHandler
         ctor.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         ctor.addParameter(tClass.forClass(ElemTemplate.class),"original");
         ctor.addParameter(tClass.forName("java.lang.Object[]"),"interpretArray");
-		
-		// It'd be easiest to let the c'tor copy values direct from the
-		// "original" template during instantiation. However, I want to make
-		// some into literals, for the sake of debugability.
         ctor.getBody().append(
 			"super(original,\n"
 			+'\t'+source.getLineNumber()+','+source.getColumnNumber()+",\n"
@@ -295,7 +267,7 @@ public class CompilingStylesheetHandler
 			+"\tinterpretArray);\n"
 		  );
 
-        // m_interpretArray's vector built during compilation
+        // vector built during compilation, winds up in m_interpretArray
         Vector interpretVector=new Vector();
 
         // Now for the big guns: the execute() method is where all the
@@ -356,7 +328,6 @@ public class CompilingStylesheetHandler
 			  +"org.xml.sax.helpers.NamespaceSupport savedNsSupport=(org.xml.sax.helpers.NamespaceSupport)m_nsThreadContexts.get(Thread.currentThread());\n"
 			  +"m_nsThreadContexts.put(Thread.currentThread(),nsSupport);\n"
 			  );
-
           
           compileChildTemplates(source,body,interpretVector);
           
@@ -372,9 +343,9 @@ public class CompilingStylesheetHandler
 
         }
         
-        // Compile the new class
-        // TODO: ***** ISSUE: Where write out the class? Needs to
-        // be somewhere on the classpath.
+        // Compile the new java class
+        // TODO: ***** ISSUE: Where write out the class? Parameterize.
+        // Needs to be somewhere on the classpath.
         // TODO: ***** ISSUE: What if file already exists?
         // I think the answer in this case is "overwrite it.".
         Class realclass=compileSyntheticClass(tClass,".");
@@ -1057,9 +1028,9 @@ public class CompilingStylesheetHandler
       already existing, so I'm not going to spend a great
       deal of time or effort on it in the prototype.
       */
-  String generateUniqueClassName()
+  String generateUniqueClassName(String basename)
   {
-      //TODO: ***** ISSUE: CLASS NAMING. This is kluged
+    //TODO: ***** ISSUE: CLASS NAMING. This is kluged
     //as a temporary measure; we need to think about a
     //more formal solution. Each compilation of each
     //stylesheet winds up with its own set of classes, 
@@ -1072,7 +1043,7 @@ public class CompilingStylesheetHandler
     //multitasking causing two stylesheets to start within
     //the same clock tick.
     
-      // TODO: ***** Subissue: Package name components will correspond
+    // TODO: ***** Subissue: Package name components will correspond
     // to directories when we compile. We shouldn't spawn more
     // directories than we must. That may mean we'd rather
     // flatten the source address.
@@ -1111,7 +1082,8 @@ public class CompilingStylesheetHandler
     // Could move more of the fields into directory names if
     // that helps.
     String className=
-        "org.apache.xalan.processor.ACompiledTemplateOn"
+        basename
+		+"On"
         +intAddr
         +"at"
         +new java.util.Date().getTime() // msec since 1970 epoch
@@ -1138,5 +1110,4 @@ public class CompilingStylesheetHandler
      int ev=p.exitValue();  // Pause for debugging...
      return ev;
   }
-  
 }

@@ -88,8 +88,9 @@ public class QName
 
     /**
      * Constructs an empty QName.
+     * 20001019: Try making this public, to support Serializable? -- JKESS
      */
-    protected QName()
+    public QName()
     {
     }
 

@@ -154,6 +154,7 @@ public class QName extends org.apache.serialize.QName implements java.io.Seriali
   
   /**
    * Construct a QName from a namespace and a local name.
+   * TODO: Discards the ns. Is that really intended???
    */
   public QName(String ns, String localName)
   {
@@ -332,4 +333,13 @@ public class QName extends org.apache.serialize.QName implements java.io.Seriali
              : this._localName;
   }
 
+  /** Serializable objects seem to require a public no-args constructor.
+   * Nobody else will be using it, and the object will be promptly 
+   * overwritten. Should this be putting the object in a recognizable
+   * "You shouldn't have done that" state?
+   */
+  public QName()
+  { super();
+	/* Deserializer will run after this to fill in the fields */ 
+  }
 }

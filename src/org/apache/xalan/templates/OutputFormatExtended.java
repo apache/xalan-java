@@ -70,6 +70,7 @@ import org.apache.xalan.utils.QName;
  * stylesheet.
  */
 public class OutputFormatExtended extends OutputFormat
+	implements java.io.Serializable
 {
   // Flag to tell us when to record that an attribute 
   // has been set.

@@ -118,7 +118,9 @@ public class XPath
   
   public void setLocator(Locator l)
   {
-    m_locator = l;
+	// Note potential hazards -- l may not be serializable, or may be changed
+	  // after being assigned here.
+	m_locator = l;
   }
   
   String m_patternString;
@@ -140,8 +142,10 @@ public class XPath
     throws org.xml.sax.SAXException
   {
     // TODO: would like not to clone the locator...
+	  // but it may not be serializable, and it may be changed after being
+	  // passed in.
     if(null != locator)
-      m_locator = new org.xml.sax.helpers.LocatorImpl(locator); 
+      m_locator = new org.apache.xalan.utils.SerializableLocatorImpl(locator); 
       
     m_patternString = exprString;
     XPathParser parser = new XPathParser();

@@ -4,6 +4,7 @@ package org.apache.xalan.templates;
  * Represents an xmlns declaration
  */
 public class XMLNSDecl
+	implements java.io.Serializable // 20001009 jkess
 {
   
   public XMLNSDecl(String prefix, String uri, boolean isExcluded)

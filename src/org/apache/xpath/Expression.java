@@ -9,6 +9,7 @@ import org.xml.sax.ErrorHandler;
 import org.apache.trax.ProcessorException;
 
 public abstract class Expression
+	implements java.io.Serializable
 {
   protected XPath m_xpath;
   

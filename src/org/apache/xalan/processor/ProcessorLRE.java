@@ -100,6 +100,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
       Stylesheet stylesheet = new StylesheetRoot();
       
       // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
+	  // ***** Note that we're assigning an empty locator. Is this necessary?
       stylesheet.setLocaterInfo(new org.xml.sax.helpers.LocatorImpl());
       stylesheet.setPrefixes(handler.getNamespaceSupport());
 

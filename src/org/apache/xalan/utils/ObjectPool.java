@@ -2,7 +2,7 @@ package org.apache.xalan.utils;
 
 import java.util.*;
 
-public class ObjectPool
+public class ObjectPool implements java.io.Serializable
 {
   private final Class objectType;
   private final Vector freeStack;

@@ -57,7 +57,6 @@
 package org.apache.xalan.processor;
 
 import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.DTDHandler;
