@@ -306,5 +306,15 @@ public class FuncDocument extends Function2Args
                          +"; column "+te.getColumnNumber());
     }
   }
+  
+  /*
+   * Overide the superclass method to allow one or two arguments.
+   */
+  public void checkNumberArgs(int argNum)
+    throws WrongNumberArgsException
+  {
+    if(argNum < 1 && argNum > 2)
+      throw new WrongNumberArgsException("2");
+  }
 
 }
