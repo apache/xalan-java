@@ -1333,12 +1333,10 @@ public class ToHTMLStream extends ToStream
                     }
                     else
                     */
-                    String entityName = m_charInfo.getEntityNameForChar(ch);
+                    String entityName = m_charInfo.getOutputStringForChar(ch);
                     if (null != entityName)
                     {
-                        writer.write('&');
                         writer.write(entityName);
-                        writer.write(';');
                     }
                     else if (escapingNotNeeded(ch))
                     {

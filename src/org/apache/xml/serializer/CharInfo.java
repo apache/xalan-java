@@ -48,8 +48,8 @@ import org.apache.xml.utils.WrappedRuntimeException;
  */
 class CharInfo
 {
-    /** Lookup table for characters to entity references. */
-    private Hashtable m_charToEntityRef = new Hashtable();
+    /** Given a character, lookup a String to output (e.g. a decorated entity reference). */
+    private Hashtable m_charToString = new Hashtable();
 
     /**
      * The name of the HTML entities file.
@@ -353,16 +353,23 @@ class CharInfo
      */
     private void defineEntity(String name, char value)
     {
-        CharKey character = new CharKey(value);
-
-        m_charToEntityRef.put(character, name);
-        set(value);
+        StringBuffer sb = new StringBuffer("&");
+        sb.append(name);
+        sb.append(';');
+        String entityString = sb.toString();
+        
+        defineChar2StringMapping(entityString, value);
     }
 
     private CharKey m_charKey = new CharKey();
 
     /**
-     * Resolve a character to an entity reference name.
+     * Map a character to a String. For example given
+     * the character '>' this method would return the fully decorated
+     * entity name "&lt;".
+     * Strings for entity references are loaded from a properties file,
+     * but additional mappings defined through calls to defineChar2String()
+     * are possible. Such entity reference mappings could be over-ridden.
      *
      * This is reusing a stored key object, in an effort to avoid
      * heap activity. Unfortunately, that introduces a threading risk.
@@ -372,16 +379,17 @@ class CharInfo
      * keyed directly from the character's integer value; see DTM's
      * string pool for a related solution.
      *
-     * @param value character value that should be resolved to a name.
+     * @param value The character that should be resolved to
+     * a String, e.g. resolve '>' to  "&lt;".
      *
-     * @return name of character entity, or null if not found.
+     * @return The String that the character is mapped to, or null if not found.
      * @xsl.usage internal
      */
-    synchronized public String getEntityNameForChar(char value)
+    synchronized public String getOutputStringForChar(char value)
     {
         // CharKey m_charKey = new CharKey(); //Alternative to synchronized
         m_charKey.setChar(value);
-        return (String) m_charToEntityRef.get(m_charKey);
+        return (String) m_charToString.get(m_charKey);
     }
     
     /**
@@ -439,7 +447,10 @@ class CharInfo
      */
     public final boolean isTextASCIIClean(int value)
     {
-        return isCleanTextASCII[value];
+        boolean ret = isCleanTextASCII[value];
+        if (ret == false)
+        System.out.flush();
+        return ret;
     }
     
 //  In the future one might want to use the array directly and avoid
@@ -547,7 +558,9 @@ class CharInfo
      * 0, 1, 2 ... up to the maximum that was specified at
      * the creation of the set.
      */
-    private final void set(int i) {        
+    private final void set(int i) {   
+        setASCIIdirty(i);
+             
         int j = (i >> SHIFT_PER_WORD); // this word is used
         int k = j + 1;       
         
@@ -606,4 +619,44 @@ class CharInfo
         }
         return extra;
     }    
+    
+    /**
+     * If the character is a printable ASCII character then
+     * mark it as not clean and needing replacement with
+     * a String on output.
+     * @param ch
+     */
+    private void setASCIIdirty(int j) 
+    {
+        if (0 <= j && j < ASCII_MAX) 
+        {
+            isCleanTextASCII[j] = false;
+            isSpecialTextASCII[j] = true;
+        } 
+    }
+
+    /**
+     * If the character is a printable ASCII character then
+     * mark it as and not needing replacement with
+     * a String on output.
+     * @param ch
+     */    
+    private void setASCIIclean(int j)
+    {
+        if (0 <= j && j < ASCII_MAX) 
+        {        
+            isCleanTextASCII[j] = true;
+            isSpecialTextASCII[j] = false;
+        }
+    }
+    
+    void defineChar2StringMapping(String outputString, char inputChar) 
+    {
+        CharKey character = new CharKey(inputChar);
+        m_charToString.put(character, outputString);
+        set(inputChar);        
+    }
+
+   
+
 }

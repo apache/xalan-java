@@ -1054,13 +1054,11 @@ abstract public class ToStream extends SerializerBase
             // or if this is a character from attribute value and a special one of those
             if ((fromTextNode && m_charInfo.isSpecialTextChar(ch)) || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch)))
             {
-                String entityRef = m_charInfo.getEntityNameForChar(ch);
+                String entityRef = m_charInfo.getOutputStringForChar(ch);
 
                 if (null != entityRef)
                 {
-                    writer.write('&');
                     writer.write(entityRef);
-                    writer.write(';');
                 }
                 else
                     return i;
@@ -1656,9 +1654,10 @@ abstract public class ToStream extends SerializerBase
             }
             else
             {
-                if (!escapingNotNeeded(ch) || 
+                if ((!escapingNotNeeded(ch) || 
                     (  (fromTextNode && m_charInfo.isSpecialTextChar(ch))
-                     || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch))))
+                     || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch)))) 
+                && m_elemContext.m_currentElemDepth > 0)
                 {
                     writer.write("&#");
                     writer.write(Integer.toString(ch));
