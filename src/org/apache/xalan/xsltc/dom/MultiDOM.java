@@ -112,11 +112,11 @@ public final class MultiDOM implements DOM {
 	}
 
 	public NodeIterator setStartNode(final int node) {
-	    _mask = node & SET;
-	    int dom = node >>> 24;
+	    final int dom = node >>> 24;
+	    final int mask = node & SET;
 
-	    // Get a new source for the first time only
-	    if (_source == null) {
+	    // Get a new source first time and when mask changes
+	    if (_source == null || _mask != mask) {
 		if (_type == NO_TYPE) {
 		    _source = _adapters[dom].getAxisIterator(_axis);
 		}
@@ -128,6 +128,7 @@ public final class MultiDOM implements DOM {
 		}
 	    }
 
+	    _mask = mask;
 	    _source.setStartNode(node & CLR);
 	    return this;
 	}
