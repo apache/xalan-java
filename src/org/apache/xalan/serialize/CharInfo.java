@@ -266,7 +266,6 @@ public class CharInfo
    */
   protected void defineEntity(String name, char value)
   {
-
     CharKey character = new CharKey(value);
 
     m_charToEntityRef.put(character, name);
@@ -278,12 +277,22 @@ public class CharInfo
   /**
    * Resolve a character to an entity reference name.
    *
+   * This is reusing a stored key object, in an effort to avoid
+   * heap activity. Unfortunately, that introduces a threading risk.
+   * Simplest fix for now is to make it a synchronized method, or to give
+   * up the reuse; I see very little performance difference between them.
+   * Long-term solution would be to replace the hashtable with a sparse array
+   * keyed directly from the character's integer value; see DTM's
+   * string pool for a related solution.
+   *
    * @param value character value that should be resolved to a name.
    *
    * @return name of character entity, or null if not found.
    */
+  synchronized 
   public String getEntityNameForChar(char value)
   {
+    // CharKey m_charKey = new CharKey(); //Alternative to synchronized
     m_charKey.setChar(value);
     return (String) m_charToEntityRef.get(m_charKey);
   }
