@@ -179,10 +179,12 @@ public class XSLTInputSource //extends SAXSource
     *        XML document or XSL stylesheet.
     * @see #XSLTInputSource(Node)
     * @see java.io.Reader
-    *
+    */
   public void setNode (Node node)
   {
-    this.node = node;
+    if (domSource == null)
+      domSource = new DOMSource();
+    domSource.setNode(node);
   }
 
   /**
@@ -190,13 +192,16 @@ public class XSLTInputSource //extends SAXSource
     *
     * @return The DOM node containing the document, or null if none was supplied.
     * @see #XSLTInputSource(Node)
-    *
+    */
   public Node getNode ()
   {
-    return node;
+    if (domSource != null)
+      return domSource.getNode();
+    else
+      return null;
   }
 
-  private Node node = null;
+  
   
    /** 
      * Set the character encoding, if known.
@@ -241,10 +246,12 @@ public class XSLTInputSource //extends SAXSource
      * @param characterStream The character stream containing the
      *        XML document or other entity.
      * @see java.io.Reader
-     *
+     */
     public void setCharacterStream (Reader characterStream)
     {
-	this.characterStream = characterStream;
+      if (streamSource == null)
+	      streamSource = new StreamSource();
+      streamSource.setReader(characterStream);
     }
     
     
@@ -252,13 +259,16 @@ public class XSLTInputSource //extends SAXSource
      * Get the character stream for this input source.
      *
      * @return The character stream, or null if none was supplied.
-     *
+     */
     public Reader getCharacterStream ()
     {
-	return characterStream;
+      if (streamSource != null)
+        return streamSource.getReader();
+      else
+        return null;
     }
     
-    private Reader characterStream = null;
+    
     
     /**
      * Set the base ID (URL or system ID) from where URLs
@@ -266,8 +276,16 @@ public class XSLTInputSource //extends SAXSource
      *
      * @param baseID Base URL for this.
      */
-    public void setSystemId(String baseID) {
-        this.baseID = baseID;
+    public void setSystemId(String baseID) 
+    {
+      this.baseID = baseID;
+      
+      if (saxSource != null)
+        saxSource.setSystemId(baseID);
+      else if (domSource != null)
+        domSource.setSystemId(baseID);
+      else if (streamSource != null)
+        streamSource.setSystemId(baseID);      
     }
 
     /**
@@ -294,9 +312,12 @@ public class XSLTInputSource //extends SAXSource
      * can be resolved.</p>
      *
      * @param inputStream A valid InputStream reference to an XML stream.
-     *
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
+     */
+    public void setInputStream(InputStream inputStream) 
+    {
+      if (streamSource == null)
+        streamSource = new StreamSource();
+      streamSource.setInputStream(inputStream);
     }
 
     /**
@@ -304,13 +325,15 @@ public class XSLTInputSource //extends SAXSource
      *
      * @return The byte stream that was set with setByteStream, or null
      * if setByteStream or the ByteStream constructor was not called.
-     *
+     */
     public InputStream getInputStream() {
-        return inputStream;
+      if (streamSource != null)
+        return streamSource.getInputStream();
+      else
+        return null;
     }
     
-    private InputStream inputStream = null;
-    */
+    
      /**
      * Get the Result object associated with this XSLTResultTarget object .
      *

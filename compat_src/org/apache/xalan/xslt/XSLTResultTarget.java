@@ -84,7 +84,7 @@ public class XSLTResultTarget //implements Result //extends StreamResult
 {
   
   private StreamResult sr = null;
-  private DOMResult saxResult = null;
+  private SAXResult saxResult = null;
   private DOMResult dr = null;
   
   
@@ -181,9 +181,7 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    */
   public XSLTResultTarget(DocumentHandler handler)
   { 
-    SAXResult saxResult = new SAXResult();
-    if (handler instanceof ParserAdapter)
-      saxResult.setHandler(((ParserAdapter)handler).getContentHandler());
+    SAXResult saxResult = new SAXResult();    
     setDocumentHandler(handler);
   }
     
@@ -194,10 +192,12 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    * @param fileName The system identifier as a string.
    *
    * @see #XSLTResultTarget(String)
-   *
+   */
   public void setFileName (String fileName) // File?
   {
-    this.fileName = fileName;
+    if (sr == null)
+      sr = new StreamResult();
+    sr.setSystemId(fileName);
   }
 
 
@@ -255,6 +255,12 @@ public class XSLTResultTarget //implements Result //extends StreamResult
   public void setDocumentHandler (DocumentHandler handler)
   {
     this.formatterListener = handler;
+    if (handler instanceof ParserAdapter)
+    {
+      if (saxResult == null)
+        saxResult = new SAXResult();
+      saxResult.setHandler(((ParserAdapter)handler).getContentHandler());
+    }  
   }
 
   /**
@@ -315,9 +321,11 @@ public class XSLTResultTarget //implements Result //extends StreamResult
      *
      * @param node The node to which the transformation
      * will be appended.
-     *
+     */
     public void setByteStream(OutputStream byteStrm) {
-        this.byteStream = byteStrm;
+        if (sr == null)
+          sr = new StreamResult();
+        sr.setOutputStream(byteStrm);
     }
 
     /**
@@ -344,10 +352,15 @@ public class XSLTResultTarget //implements Result //extends StreamResult
      * and warnings, or to resolve relative output identifiers.</p>
      *
      * @param systemId The system identifier as a URI string.
-     *
+     */
     public void setSystemId(String systemID)
     {
-      systemId = systemID;
+      if (sr != null)
+        sr.setSystemId(systemID);
+      else if (dr != null)
+        dr.setSystemId(systemID);
+      else if (saxResult != null)
+        saxResult.setSystemId(systemID);
     }
 
     /**
@@ -355,10 +368,17 @@ public class XSLTResultTarget //implements Result //extends StreamResult
      *
      * @return The system identifier that was set with setSystemId,
      * or null if setSystemId was not called.
-     *
+     */
     public String getSystemId()
     {
-      return systemId;
+      if (sr != null)
+        return sr.getSystemId();
+      else if (dr != null)
+        dr.getSystemId();
+      else if (saxResult != null)
+        saxResult.getSystemId();
+      
+      return null;
     }
     
      /**
@@ -370,9 +390,11 @@ public class XSLTResultTarget //implements Result //extends StreamResult
      * such as when using a StringWriter.
      *
      * @param writer  A valid Writer reference.
-     *
-    public void setWriter(Writer writer) {      
-        this.characterStream = writer;
+     */
+    public void setCharacterStream(Writer writer) {      
+      if (sr == null)
+        sr = new StreamResult();
+      sr.setWriter(writer);
     }
 
     /**
@@ -387,18 +409,7 @@ public class XSLTResultTarget //implements Result //extends StreamResult
       else
         return null;
     }
-  //////////////////////////////////////////////////////////////////////
-  // Internal state.
-  //////////////////////////////////////////////////////////////////////
-/*
-  private String fileName;
-  private OutputStream byteStream;
   
-  private Writer characterStream;
-  private Node node;
-  
-  private String systemId;
-*/
   
     /**
      * Get the Result object associated with this XSLTResultTarget object .
