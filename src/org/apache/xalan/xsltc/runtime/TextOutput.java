@@ -415,13 +415,13 @@ public final class TextOutput implements TransletOutputHandler {
 	int offset = off;
 
 	// Output start bracket - "<![CDATA["
-	characters(BEGCDATA);
+	_saxHandler.characters(BEGCDATA, 0, BEGCDATA.length);
 
 	// Detect any occurence of "]]>" in the character array
 	for (int i = offset; i < limit-2; i++) {
 	    if (ch[i] == ']' && ch[i+1] == ']' && ch[i+2] == '>') {
 		_saxHandler.characters(ch, offset, i - offset);
-		characters(CNTCDATA);
+		_saxHandler.characters(CNTCDATA, 0, CNTCDATA.length);
 		offset = i+3;
 		i=i+2; // Skip next chars ']' and '>'.
 	    }
@@ -435,7 +435,7 @@ public final class TextOutput implements TransletOutputHandler {
 
     private void closeCDATA() throws SAXException {
 	// Output closing bracket - "]]>"
-	characters(ENDCDATA);
+	_saxHandler.characters(ENDCDATA, 0, ENDCDATA.length);
 	_cdataTagOpen = false;
     }
 
