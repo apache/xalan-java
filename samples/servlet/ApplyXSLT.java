@@ -235,7 +235,7 @@ public class ApplyXSLT extends HttpServlet
       time = System.currentTimeMillis();
 
     // Listener to be used for all reporting
-    ApplyXSLTListener listener = new ApplyXSLTListener("ApplyXSLT");
+    ApplyXSLTListener listener = new ApplyXSLTListener();
 	listener.out.println("debug is " + debug);
 
     StreamSource xmlSource = null;
@@ -291,20 +291,20 @@ public class ApplyXSLT extends HttpServlet
           try
           {
             String contentType = null;
-			contentType = getContentType(templates);
+			      contentType = getContentType(templates);
             if (contentType != null);
               response.setContentType(contentType);
 
-			if (transformer instanceof TransformerImpl)
-			{
-			  TransformerImpl transformerImpl = (TransformerImpl)transformer;
+			      if (transformer instanceof TransformerImpl)
+			      {
+			        TransformerImpl transformerImpl = (TransformerImpl)transformer;
               transformerImpl.setQuietConflictWarnings(ourDefaultParameters.isNoCW(request));
-			}
+			      }
 			
-			setStylesheetParams(transformer, request);			
-	        transformer.transform(xmlSource, new StreamResult(response.getOutputStream()));
+			      setStylesheetParams(transformer, request);			
+	          transformer.transform(xmlSource, new StreamResult(response.getOutputStream()));
 			
-			if (debug)              
+			      if (debug)              
               writeLog(listener.getMessage(), response.SC_OK);
           }
           catch (Exception exc)
@@ -313,8 +313,8 @@ public class ApplyXSLT extends HttpServlet
 				                     ("Exception occurred during Transformation:"
                                           + EOL + listener.getMessage() + EOL
                                           + exc.getMessage(), 
-									  exc,
-                                      response.SC_INTERNAL_SERVER_ERROR);
+									              exc,
+                                response.SC_INTERNAL_SERVER_ERROR);
             if (debug) writeLog(axe);
             displayException(response, axe, debug);
           }
@@ -330,7 +330,7 @@ public class ApplyXSLT extends HttpServlet
 			                     ("Exception occurred during ctor/Transformation:"
                                              + EOL + listener.getMessage() + EOL
                                              + saxExc.getMessage(), 
-								  saxExc,
+			                					  saxExc,
                                   response.SC_INTERNAL_SERVER_ERROR);
         if (debug) writeLog(axe);
         displayException(response, axe, debug);
@@ -477,6 +477,8 @@ public class ApplyXSLT extends HttpServlet
   {
 	StylesheetRoot xslSourceRoot = (StylesheetRoot)templates;
 	OutputFormatExtended of = xslSourceRoot.getOutput();
+  if (null==of)
+    of = new OutputFormatExtended();
 	String encoding = of.getEncoding();
 	String media = of.getMediaType();
 	if (media != null)

@@ -39,10 +39,9 @@ public class ApplyXSLTListener extends DefaultErrorHandler implements ErrorHandl
     /**
       * Constructor.
       */
-    public ApplyXSLTListener(String identifier)
+    public ApplyXSLTListener()
     {
-	super(identifier);
-    out = new PrintWriter(new BufferedOutputStream(outStream), true);
+      out = new PrintWriter(new BufferedOutputStream(outStream), true);
     }
 
     /**
