@@ -137,7 +137,7 @@ public class ChildWalkerMultiStep extends AxesWalker
   {
 
     AxesWalker walker = m_lpi.getLastUsedWalker();
-    boolean fast = walker.isFastWalker();
+    boolean fast = (null != walker) ? walker.isFastWalker() : false;
 
     while (null != walker)
     {
