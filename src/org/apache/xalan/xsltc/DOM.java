@@ -92,6 +92,7 @@ public interface DOM {
     /** returns singleton iterator containg the document root */
     public NodeIterator getIterator();
     public String getStringValue();
+    public String getTreeString(); // this one includes PIs and comments...
 	
     public NodeIterator getChildren(final int node);
     public NodeIterator getTypedChildren(final int type);

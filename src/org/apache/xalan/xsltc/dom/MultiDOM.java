@@ -290,6 +290,10 @@ public final class MultiDOM implements DOM {
     public String getStringValue() {
 	return _adapters[0].getStringValue();
     }
+
+    public String getTreeString() {
+	return _adapters[0].getTreeString();
+    }
     
     public NodeIterator getChildren(final int node) {
 	return (node & SET) == 0

@@ -106,6 +106,10 @@ public final class DOMAdapter implements DOM {
     public String getStringValue() {
 	return _domImpl.getStringValue();
     }
+
+    public String getTreeString() {
+	return _domImpl.getTreeString();
+    }
     
     public NodeIterator getChildren(final int node) {
 	NodeIterator iterator = _domImpl.getChildren(node);

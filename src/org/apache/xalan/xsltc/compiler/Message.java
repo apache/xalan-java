@@ -98,7 +98,7 @@ final class Message extends Instruction {
 	compileResultTree(classGen, methodGen);
 	// Convert the 
 	final int toStr = cpg.addInterfaceMethodref(DOM_INTF,
-						    "getStringValue",
+						    "getTreeString",
 						    "()"+STRING_SIG);
 	il.append(new INVOKEINTERFACE(toStr, 1));
 

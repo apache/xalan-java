@@ -2746,7 +2746,56 @@ public final class DOMImpl implements DOM, Externalizable {
 	     child != NULL;
 	     child = _nextSibling[child]) {
 	    switch (_type[child]) {
+	    case TEXT:
+		buffer.append(_text,
+			      _offsetOrChild[child],
+			      _lengthOrAttr[child]);
+		break;
+	    case PROCESSING_INSTRUCTION:
 	    case COMMENT:
+		// This method should not return anything for PIs and comments
+		break;
+	    default:
+		stringValueAux(buffer, child);
+	    }
+	}
+	return buffer;
+    }
+
+    public String getTreeString() {
+	StringBuffer buf = new StringBuffer();
+	buf = getElementString(buf, ROOTNODE);
+	return buf.toString();
+    }
+
+    /**
+     * Helper to getTreeString() above
+     */
+    private StringBuffer getElementString(StringBuffer buffer, int element) {
+	String name = null;
+
+	if (isElement(element)) {
+	    if ((name = getNodeName(element)) != null) {
+		buffer.append('<');
+		buffer.append(name);
+		if (_offsetOrChild[element] == NULL) {
+		    buffer.append("/>");
+		    return buffer;
+		}
+		buffer.append('>');
+	    }
+	}
+
+	for (int child = _offsetOrChild[element];
+	     child != NULL;
+	     child = _nextSibling[child]) {
+	    switch (_type[child]) {
+	    case COMMENT:
+		buffer.append("<!--");
+		buffer.append(_text,
+			      _offsetOrChild[child],
+			      _lengthOrAttr[child]);
+		buffer.append("-->");
 		break;
 	    case TEXT:
 		buffer.append(_text,
@@ -2754,16 +2803,23 @@ public final class DOMImpl implements DOM, Externalizable {
 			      _lengthOrAttr[child]);
 		break;
 	    case PROCESSING_INSTRUCTION:
-		/* This method should not return anything for PIs
+		buffer.append("<?");
 		buffer.append(_text,
 			      _offsetOrChild[child],
 			      _lengthOrAttr[child]);
-		*/
+		buffer.append("?>");
 		break;
 	    default:
-		stringValueAux(buffer, child);
+		getElementString(buffer, child);
 	    }
 	}
+
+	if (isElement(element) && name != null) {
+	    buffer.append("</");
+	    buffer.append(name);
+	    buffer.append(">");
+	}
+
 	return buffer;
     }
 
@@ -3319,7 +3375,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	/**
 	 * SAX2: Receive notification of the end of an element.
 	 */
-	public void endElement(String namespaceURI, String localName,
+	public void endElement(String uri, String localName,
 			       String qname) {
 	    makeTextNode(false);
 
