@@ -99,7 +99,7 @@ public class XBoolean extends XObject
    * Given a request type, return the equivalent string. 
    * For diagnostic purposes.
    */
-  private String getTypeString()
+  protected String getTypeString()
   {
     return "#BOOLEAN";
   }
