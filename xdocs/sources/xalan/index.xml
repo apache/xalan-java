@@ -72,10 +72,9 @@
      <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
   </s2>
   <s2 title="How about this release?">
-  <p>&xslt4j-current; works with &xml4j; version 2, and the distribution includes xercesImpl.jar from &xml4j-used;. For the time being, &xslt4j; 
-  maintains backwards compatiblity with &xml4j; version 1.</p>
-  <p>Support for the &xslt4j; release 1 API, which predates the design of the <resource-ref idref="jaxp11"/>JAXP 1.1/<link idref="trax">TrAX
-  </link> interfaces, has been dropped.</p>
+  <p>&xslt4j-current; works with &xml4j; version 2, and the distribution includes xercesImpl.jar from &xml4j-used;. &xslt4j-current; is also
+  compatible with &xml4j; version 1.</p>
+  <p>Support for the &xslt4j; release 1 API, which predates the design of the JAXP 1.1/TrAX interfaces, has been dropped.</p>
   <p>The &xslt4j; implementation is in xalan.jar. The SAX, DOM, and JAVAX interfaces are in xml-apis.jar. These interfaces are shared by a 
   number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a separate JAR simplifies coordination and reduces risk of duplication. 
   <em>Be sure to put both JAR files (and xercesImpl.jar or another JAXP 1.1-compliant XML parser) on your classpath!</em></p>
