@@ -362,7 +362,51 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 
 </s2><anchor name="servlet"/>
 <s2 title="Using &xslt4j; in a servlet">
-<p>You can set up a servlet to use &xslt4j; to respond to requests for XML documents by transforming those documents into HTML and serving them to clients. For a sample of how this can be done, see <link idref="samples" anchor="servlet">sample servlet</link>.</p>
+<p>You can set up a servlet to use &xslt4j; to respond to requests for XML documents by transforming those documents into HTML and serving them to web browsers. To respond to HTTP GET requests, all you need to do is overwrite the HttpServlet doGet() method with a procedure that instantiates a Transformer and uses it to perform a transformation. As the following example shows, you can generate a ResultStream that a PrintWriter writes to the HttpResponse OutputStream, returning the transformation output to the web browser.</p>
+<source>
+public class SampleXSLServlet extends javax.servlet.http.HttpServlet {
+  
+  // Respond to HTTP GET requests from browsers.
+  public void doGet (javax.servlet.http.HttpServletRequest request,
+                     javax.servlet.http.HttpServletResponse response)
+    throws javax.servlet.ServletException, java.io.IOException
+  {
+    // Output goes in the response stream.
+    java.io.PrintWriter out = 
+                         new java.io.PrintWriter(response.getOutputStream());
+    // Set content type for HTML.
+    response.setContentType("text/html");    
+    try
+    {	
+      javax.xml.transform.TransformerFactory tFactory = 
+                javax.xml.transform.TransformerFactory.newInstance();
+      // Get the XML input document and the stylesheet, both in the servlet
+      // engine document directory.
+      javax.xml.transform.Source xmlSource = 
+                new javax.xml.transform.stream.StreamSource
+                             (new java.net.URL("file:foo.xml").openStream());
+      javax.xml.transform.Source xslSource = 
+                new javax.xml.transform.stream.StreamSource
+                             (new java.net.URL("file:foo.xsl").openStream());
+      // Generate the transformer.
+      javax.xml.transform.Transformer transformer = 
+                             tFactory.newTransformer(xslSource);
+      // Perform the transformation, sending the output to the response.
+      transformer.transform(xmlSource, 
+                           new javax.xml.transform.stream.StreamResult(out));
+    }
+    // If an Exception occurs, return the error to the client.
+    catch (Exception e)
+    {
+      out.write(e.getMessage());
+      e.printStackTrace(out);    
+    }
+    // Close the PrintWriter.
+    out.close();
+  }  
+}</source>
+<p>For a working sample, see <link idref="samples" anchor="simplexsltservlet">SimpleXSLTServlet</link>.</p>
+<p>In the preceding example, the URLs for the XML document and XSL stylesheet are hardcoded in the servlet. You can also create a servlet that parses the request URL for input parameters specifying the XML document, XSL stylesheet, and any relevant stylesheet parameters. For a sample, see <link idref="samples" anchor="xsltservletwithparams">XSLTServletWithParams</link>. For a more robust and complex sample that also employs a properties file to determine which stylesheet to use depending on the client browser/device, see <link idref="samples" anchor="applyxslt">ApplyXSLT</link>.</p>
 </s2><anchor name="extensions"/>
 <s2 title="Creating and using extensions">
 <p>For those cases where you want to be able to call procedural code from within a stylesheet, the &xslt4j; Extensions facility supports the creation of extension elements and extension functions. See <link idref="extensions">Extensions</link> and <link idref="samples" anchor="extensions">Extensions samples</link>.</p>
