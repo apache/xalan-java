@@ -68,6 +68,7 @@ public class StepPattern extends NodeTest implements SubContextList
   public void setRelativePathPattern(StepPattern expr)
   {
     m_relativePathPattern = expr;
+    calcScore();
   }
   
   Expression[] m_predicates;
@@ -91,13 +92,14 @@ public class StepPattern extends NodeTest implements SubContextList
   /**
    * Static calc of match score.
    */
-  protected final void calcScore()
+  protected void calcScore()
   {
-    if((getPredicateCount() > 0) || (null != m_relativePathPattern))
+    if((getPredicateCount() > 0)  || (null != m_relativePathPattern))
       m_score = SCORE_OTHER;
     else
       super.calcScore();
-    calcTargetString();
+    if(null == m_targetString)
+      calcTargetString();
   }
 
   
@@ -105,12 +107,17 @@ public class StepPattern extends NodeTest implements SubContextList
     throws org.xml.sax.SAXException
   {
     XObject score;
-    Node context = xctxt.getCurrentNode();
-    int nodeType = context.getNodeType();
-    int whatToShow = getWhatToShow();
+    int nodeType = xctxt.getCurrentNode().getNodeType();
     if(nodeType == Node.ATTRIBUTE_NODE &&
-       whatToShow != NodeFilter.SHOW_ATTRIBUTE)
+         m_whatToShow != NodeFilter.SHOW_ATTRIBUTE)
+    {
       score = NodeTest.SCORE_NONE;
+    }
+    else if(nodeType == Node.DOCUMENT_NODE &&
+         m_whatToShow != NodeFilter.SHOW_DOCUMENT)
+    {
+      score = NodeTest.SCORE_NONE;
+    }
     else
       score = super.execute(xctxt);
     
@@ -122,10 +129,7 @@ public class StepPattern extends NodeTest implements SubContextList
     
     int n = getPredicateCount();
     if(n == 0)
-    {
-      // System.out.println("executeStep: "+this.m_name+" = "+score);
       return score;
-    }
 
     // xctxt.getVarStack().setCurrentStackFrameIndex(m_lpi.getStackFrameIndex());
     // xctxt.setNamespaceContext(m_lpi.getPrefixResolver());
@@ -285,6 +289,34 @@ public class StepPattern extends NodeTest implements SubContextList
     }
     return score;
   }
+  
+  private static final boolean DEBUG_MATCHES = false;
+  
+  /**
+   * Get the match score of the given node.
+   * @param context The current source tree context node.
+   * @returns score, one of MATCH_SCORE_NODETEST, 
+   * MATCH_SCORE_NONE, MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
+   */
+  public double getMatchScore(XPathContext xctxt, Node context) 
+    throws org.xml.sax.SAXException
+  {
+    xctxt.pushCurrentNode(context);
+    xctxt.pushCurrentExpressionNode(context);
+    try
+    {
+      XObject score = execute(xctxt);
+
+      return score.num();
+    }
+    finally
+    {
+      xctxt.popCurrentNode();
+      xctxt.popCurrentExpressionNode();
+    }
+    // return XPath.MATCH_SCORE_NONE;
+  }
+
   
 
 }
