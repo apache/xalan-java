@@ -54,8 +54,8 @@
 <p>You can start by using your own XML source files and XSL stylesheets with the sample applications, which illustrate a number of the <link idref="usagepatterns">basic usage patterns</link>.</p>
 <p>Here is the basic TRaX procedure to keep in mind when you set up a transformation:</p>
 <ol>
-<li>Use the TransformerFactory static newInstance() method to instantiate a <jump href="apidocs/javax/xml/transform/TransformerFactory.html"></jump>.<br/><br/></li>
-<li>Use the TransformerFactory newTransformer(Source stylesheet) method to process the transformation instructions in an XSLT stylesheet (producing under the covers a <jump href="apidocs/javax/xml/transform/Templates.html"></jump>Templates object) and generate a <jump href="apidocs/javax/xml/transform/Transformer.html">Transformer</jump>.<br/><br/></li>
+<li>Use the <jump href="apidocs/javax/xml/transform/TransformerFactory.html">TransformerFactory</jump> static newInstance() method to instantiate a TransformerFactory.<br/><br/></li>
+<li>Use the TransformerFactory newTransformer(Source stylesheet) method to process the transformation instructions in an XSLT stylesheet Source (producing under the covers a <jump href="apidocs/javax/xml/transform/Templates.html"></jump>Templates object) and generate a <jump href="apidocs/javax/xml/transform/Transformer.html">Transformer</jump>.<br/><br/></li>
 <li>Use the Transformer transform(Source xmlSource, Result transformResult) method to apply the transformation instructions (the Template object) to the XML Source and produce the transformation Result.<br/><br/></li>
 </ol>
 <p>A couple of alternatives:</p>
