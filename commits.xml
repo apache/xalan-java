@@ -981,4 +981,63 @@ handling fix...)</Log>
 ongoing process and is just meant to fix a few pending bugs. More changes are 
 expected in this area.</Log>
 </Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>08/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>Change version for xalan2.2.D9 build</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>08/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemElement.java
+ java/src/org/apache/xalan/transformer ResultTreeHandler.java
+ java/src/org/apache/xml/utils DefaultErrorHandler.java</Modified>
+<Log>ResultTreeHandler was pushing a new namespace context but failing to note 
+that result in more pushes than pops. Cleaned up the execute() method of 
+ElemElement to make it more understandable (to me) and added a few comments. 
+The DefaultErrorHandler was not flushing Writers that it created. Since the 
+Writers are never closed (and cannot be as there is no close method), error 
+messages were failing to appear.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>08/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm DTMManager.java</Modified>
+<Log>Increasing the number of bits used to identify DTM nodes, at the expense of 
+decreasing the number of DTMs that a DTMManager can track simultaneously. Some 
+other code has been updated to track this change (and to better track posible 
+future changes), as have the IDKEY testcases.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>08/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDocumentImpl.java DTMManagerDefault.java</Modified>
+<Log>Increasing the number of bits used to identify DTM nodes, at the expense of 
+decreasing the number of DTMs that a DTMManager can track simultaneously. Some 
+other code has been updated to track this change (and to better track posible 
+future changes), as have the IDKEY testcases.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>08/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/functions FuncGenerateId.java</Modified>
+<Log>Increasing the number of bits used to identify DTM nodes, at the expense of 
+decreasing the number of DTMs that a DTMManager can track simultaneously. Some 
+other code has been updated to track this change (and to better track posible 
+future changes), as have the IDKEY testcases.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>08/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath NodeSetDTM.java</Modified>
+<Log>Try to support getRoot. Fixes problem with TransformStateTest.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>08/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes WalkerFactory.java</Modified>
+<Log>Fix problem with duplicate nodes produced from a walking iterator</Log>
+</Commit>
 </Commits>
