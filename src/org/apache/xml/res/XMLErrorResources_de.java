@@ -57,6 +57,11 @@
 package org.apache.xml.res;
 
 
+import java.util.ListResourceBundle;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 /**
  * Set up error messages.
  * We build a two dimensional array of message keys and
@@ -67,8 +72,46 @@ package org.apache.xml.res;
  * and MAX_WARNING for warnings ( Needed for only information
  * purpose )
  */
-public class XMLErrorResources_de extends XMLErrorResources
+public class XMLErrorResources_de extends ListResourceBundle
 {
+
+/*
+ * This file contains error and warning messages related to Xalan Error
+ * Handling.
+ *
+ *  General notes to translators:
+ *
+ *  1) Xalan (or more properly, Xalan-interpretive) and XSLTC are names of
+ *     components.
+ *     XSLT is an acronym for "XML Stylesheet Language: Transformations".
+ *     XSLTC is an acronym for XSLT Compiler.
+ *
+ *  2) A stylesheet is a description of how to transform an input XML document
+ *     into a resultant XML document (or HTML document or text).  The
+ *     stylesheet itself is described in the form of an XML document.
+ *
+ *  3) A template is a component of a stylesheet that is used to match a
+ *     particular portion of an input document and specifies the form of the
+ *     corresponding portion of the output document.
+ *
+ *  4) An element is a mark-up tag in an XML document; an attribute is a
+ *     modifier on the tag.  For example, in <elem attr='val' attr2='val2'>
+ *     "elem" is an element name, "attr" and "attr2" are attribute names with
+ *     the values "val" and "val2", respectively.
+ *
+ *  5) A namespace declaration is a special attribute that is used to associate
+ *     a prefix with a URI (the namespace).  The meanings of element names and
+ *     attribute names that use that prefix are defined with respect to that
+ *     namespace.
+ *
+ *  6) "Translet" is an invented term that describes the class file that
+ *     results from compiling an XML stylesheet into a Java class.
+ *
+ *  7) XPath is a specification that describes a notation for identifying
+ *     nodes in a tree-structured representation of an XML document.  An
+ *     instance of that notation is referred to as an XPath expression.
+ *
+ */
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
   public static final int MAX_CODE = 61;
@@ -83,6 +126,91 @@ public class XMLErrorResources_de extends XMLErrorResources
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
 
 
+  /*
+   * Message keys
+   */
+  public static final String ER_FUNCTION_NOT_SUPPORTED = "ER_FUNCTION_NOT_SUPPORTED";
+  public static final String ER_CANNOT_OVERWRITE_CAUSE = "ER_CANNOT_OVERWRITE_CAUSE";
+  public static final String ER_NO_DEFAULT_IMPL = "ER_NO_DEFAULT_IMPL";
+  public static final String ER_CHUNKEDINTARRAY_NOT_SUPPORTED = "ER_CHUNKEDINTARRAY_NOT_SUPPORTED";
+  public static final String ER_OFFSET_BIGGER_THAN_SLOT = "ER_OFFSET_BIGGER_THAN_SLOT";
+  public static final String ER_COROUTINE_NOT_AVAIL = "ER_COROUTINE_NOT_AVAIL";
+  public static final String ER_COROUTINE_CO_EXIT = "ER_COROUTINE_CO_EXIT";
+  public static final String ER_COJOINROUTINESET_FAILED = "ER_COJOINROUTINESET_FAILED";
+  public static final String ER_COROUTINE_PARAM = "ER_COROUTINE_PARAM";
+  public static final String ER_PARSER_DOTERMINATE_ANSWERS = "ER_PARSER_DOTERMINATE_ANSWERS";
+  public static final String ER_NO_PARSE_CALL_WHILE_PARSING = "ER_NO_PARSE_CALL_WHILE_PARSING";
+  public static final String ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = "ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED";
+  public static final String ER_ITERATOR_AXIS_NOT_IMPLEMENTED = "ER_ITERATOR_AXIS_NOT_IMPLEMENTED";
+  public static final String ER_ITERATOR_CLONE_NOT_SUPPORTED = "ER_ITERATOR_CLONE_NOT_SUPPORTED";
+  public static final String ER_UNKNOWN_AXIS_TYPE = "ER_UNKNOWN_AXIS_TYPE";
+  public static final String ER_AXIS_NOT_SUPPORTED = "ER_AXIS_NOT_SUPPORTED";
+  public static final String ER_NO_DTMIDS_AVAIL = "ER_NO_DTMIDS_AVAIL";
+  public static final String ER_NOT_SUPPORTED = "ER_NOT_SUPPORTED";
+  public static final String ER_NODE_NON_NULL = "ER_NODE_NON_NULL";
+  public static final String ER_COULD_NOT_RESOLVE_NODE = "ER_COULD_NOT_RESOLVE_NODE";
+  public static final String ER_STARTPARSE_WHILE_PARSING = "ER_STARTPARSE_WHILE_PARSING";
+  public static final String ER_STARTPARSE_NEEDS_SAXPARSER = "ER_STARTPARSE_NEEDS_SAXPARSER";
+  public static final String ER_COULD_NOT_INIT_PARSER = "ER_COULD_NOT_INIT_PARSER";
+  public static final String ER_EXCEPTION_CREATING_POOL = "ER_EXCEPTION_CREATING_POOL";
+  public static final String ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = "ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE";
+  public static final String ER_SCHEME_REQUIRED = "ER_SCHEME_REQUIRED";
+  public static final String ER_NO_SCHEME_IN_URI = "ER_NO_SCHEME_IN_URI";
+  public static final String ER_NO_SCHEME_INURI = "ER_NO_SCHEME_INURI";
+  public static final String ER_PATH_INVALID_CHAR = "ER_PATH_INVALID_CHAR";
+  public static final String ER_SCHEME_FROM_NULL_STRING = "ER_SCHEME_FROM_NULL_STRING";
+  public static final String ER_SCHEME_NOT_CONFORMANT = "ER_SCHEME_NOT_CONFORMANT";
+  public static final String ER_HOST_ADDRESS_NOT_WELLFORMED = "ER_HOST_ADDRESS_NOT_WELLFORMED";
+  public static final String ER_PORT_WHEN_HOST_NULL = "ER_PORT_WHEN_HOST_NULL";
+  public static final String ER_INVALID_PORT = "ER_INVALID_PORT";
+  public static final String ER_FRAG_FOR_GENERIC_URI ="ER_FRAG_FOR_GENERIC_URI";
+  public static final String ER_FRAG_WHEN_PATH_NULL = "ER_FRAG_WHEN_PATH_NULL";
+  public static final String ER_FRAG_INVALID_CHAR = "ER_FRAG_INVALID_CHAR";
+  public static final String ER_PARSER_IN_USE = "ER_PARSER_IN_USE";
+  public static final String ER_CANNOT_CHANGE_WHILE_PARSING = "ER_CANNOT_CHANGE_WHILE_PARSING";
+  public static final String ER_SELF_CAUSATION_NOT_PERMITTED = "ER_SELF_CAUSATION_NOT_PERMITTED";
+  public static final String ER_NO_USERINFO_IF_NO_HOST = "ER_NO_USERINFO_IF_NO_HOST";
+  public static final String ER_NO_PORT_IF_NO_HOST = "ER_NO_PORT_IF_NO_HOST";
+  public static final String ER_NO_QUERY_STRING_IN_PATH = "ER_NO_QUERY_STRING_IN_PATH";
+  public static final String ER_NO_FRAGMENT_STRING_IN_PATH = "ER_NO_FRAGMENT_STRING_IN_PATH";
+  public static final String ER_CANNOT_INIT_URI_EMPTY_PARMS = "ER_CANNOT_INIT_URI_EMPTY_PARMS";
+  public static final String ER_METHOD_NOT_SUPPORTED ="ER_METHOD_NOT_SUPPORTED";
+  public static final String ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = "ER_INCRSAXSRCFILTER_NOT_RESTARTABLE";
+  public static final String ER_XMLRDR_NOT_BEFORE_STARTPARSE = "ER_XMLRDR_NOT_BEFORE_STARTPARSE";
+  public static final String ER_AXIS_TRAVERSER_NOT_SUPPORTED = "ER_AXIS_TRAVERSER_NOT_SUPPORTED";
+  public static final String ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = "ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER";
+  public static final String ER_SYSTEMID_UNKNOWN = "ER_SYSTEMID_UNKNOWN";
+  public static final String ER_LOCATION_UNKNOWN = "ER_LOCATION_UNKNOWN";
+  public static final String ER_PREFIX_MUST_RESOLVE = "ER_PREFIX_MUST_RESOLVE";
+  public static final String ER_CREATEDOCUMENT_NOT_SUPPORTED = "ER_CREATEDOCUMENT_NOT_SUPPORTED";
+  public static final String ER_CHILD_HAS_NO_OWNER_DOCUMENT = "ER_CHILD_HAS_NO_OWNER_DOCUMENT";
+  public static final String ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = "ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT";
+  public static final String ER_CANT_OUTPUT_TEXT_BEFORE_DOC = "ER_CANT_OUTPUT_TEXT_BEFORE_DOC";
+  public static final String ER_CANT_HAVE_MORE_THAN_ONE_ROOT = "ER_CANT_HAVE_MORE_THAN_ONE_ROOT";
+  public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
+  public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
+  public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
+
+  // Message keys used by the serializer
+  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
+  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
+  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
+  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
+  public static final String ER_OIERROR = "ER_OIERROR";
+  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
+  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
+  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
+  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
+  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
+  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
+  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+
+  /*
+   * Now fill in the message text.
+   * Then fill in the message text for that message code in the
+   * array. Use the new error code as the index into the array.
+   */
+
   // Error messages...
 
   /** The lookup table for error messages.   */
@@ -91,455 +219,254 @@ public class XMLErrorResources_de extends XMLErrorResources
   /** Error message ID that has a null message, but takes in a single object.    */
     {"ER0000" , "{0}" },
 
-  /** ER_FUNCTION_NOT_SUPPORTED          */
-//  public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
+    { ER_FUNCTION_NOT_SUPPORTED,
+      "Funktion nicht unterst\u00fctzt!"},
 
-  {
-    ER_FUNCTION_NOT_SUPPORTED, "Funktion nicht unterst\u00fctzt!"},
- 
-  /** Can't overwrite cause         */
- // public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
+    { ER_CANNOT_OVERWRITE_CAUSE,
+      "cause kann nicht \u00fcberschrieben werden."},
 
-  {
-    ER_CANNOT_OVERWRITE_CAUSE,
-			"Ursache f\u00fcr nicht m\u00f6gliches \u00dcberschreiben"},
-  
-   /**  No default implementation found */
-  //public static final int ER_NO_DEFAULT_IMPL = 156;
+    { ER_NO_DEFAULT_IMPL,
+      "Keine Standardimplementierung gefunden. "},
 
-  {
-    ER_NO_DEFAULT_IMPL,
-         "Keine Standardimplementierung gefunden"},
-  
-   /**  ChunkedIntArray({0}) not currently supported */
-  //public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
+    { ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
+      "ChunkedIntArray({0}) momentan nicht unterst\u00fctzt."},
 
-  {
-    ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-       "ChunkedIntArray({0}) zurzeit nicht unterst\u00fctzt"},
-  
-   /**  Offset bigger than slot */
-  //public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
+    { ER_OFFSET_BIGGER_THAN_SLOT,
+      "Offset ist gr\u00f6\u00dfer als Bereich."},
 
-  {
-    ER_OFFSET_BIGGER_THAN_SLOT,
-       "Offset gr\u00f6\u00dfer als Slot"},
-  
-   /**  Coroutine not available, id= */
-  //public static final int ER_COROUTINE_NOT_AVAIL = 159;
+    { ER_COROUTINE_NOT_AVAIL,
+      "Koroutine nicht verf\u00fcgbar, ID: {0}."},
 
-  {
-    ER_COROUTINE_NOT_AVAIL,
-       "Coroutine nicht verf\u00fcgbar, ID={0}"},
-  
-   /**  CoroutineManager recieved co_exit() request */
-  //public static final int ER_COROUTINE_CO_EXIT = 160;
+    { ER_COROUTINE_CO_EXIT,
+      "CoroutineManager hat Anforderung co_exit() empfangen."},
 
-  {
-    ER_COROUTINE_CO_EXIT,
-       "CoroutineManager empfing Anforderung co_exit()"},
-  
-   /**  co_joinCoroutineSet() failed */
-  //public static final int ER_COJOINROUTINESET_FAILED = 161;
+    { ER_COJOINROUTINESET_FAILED,
+      "co_joinCoroutineSet() ist fehlgeschlagen."},
 
-  {
-    ER_COJOINROUTINESET_FAILED,
-       "co_joinCoroutineSet() fehlgeschlagen"},
-  
-   /**  Coroutine parameter error () */
-  //public static final int ER_COROUTINE_PARAM = 162;
+    { ER_COROUTINE_PARAM,
+      "Parameterfehler der Koroutine ({0})"},
 
-  {
-    ER_COROUTINE_PARAM,
-       "Parameterfehler in Coroutine ({0})"},
-  
-   /**  UNEXPECTED: Parser doTerminate answers  */
-  //public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
+    { ER_PARSER_DOTERMINATE_ANSWERS,
+      "\nUNERWARTET: Parser doTerminate antwortet {0}"},
 
-  {
-    ER_PARSER_DOTERMINATE_ANSWERS,
-       "\nUNEXPECTED: Parser doTerminate antwortet {0}"},
-  
-   /**  parse may not be called while parsing */
-  //public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
+    { ER_NO_PARSE_CALL_WHILE_PARSING,
+      "parse darf w\u00e4hrend der Syntaxanalyse nicht aufgerufen werden."},
 
-  {
-    ER_NO_PARSE_CALL_WHILE_PARSING,
-       "parse darf w\u00e4hrend des Parsens nicht aufgerufen werden"},
-  
-   /**  Error: typed iterator for axis  {0} not implemented  */
-  //public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
+    { ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
+      "Fehler: Iterator mit Typangabe f\u00fcr Achse {0} ist nicht implementiert."},
 
-  {
-    ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Fehler: Typisierter Iterator f\u00fcr Achse {0} nicht implementiert"},
-  
-   /**  Error: iterator for axis {0} not implemented  */
-  //public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
+    { ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
+      "Fehler: Iterator f\u00fcr Achse {0} ist nicht implementiert. "},
 
-  {
-    ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Fehler: Iterator f\u00fcr Achse {0} nicht implementiert"},
-  
-   /**  Iterator clone not supported  */
-  //public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
+    { ER_ITERATOR_CLONE_NOT_SUPPORTED,
+      "Iterator 'clone' ist nicht unterst\u00fctzt."},
 
-  {
-    ER_ITERATOR_CLONE_NOT_SUPPORTED,
-       "Iterator-Klone nicht unterst\u00fctzt"},
-  
-   /**  Unknown axis traversal type  */
-  //public static final int ER_UNKNOWN_AXIS_TYPE = 168;
+    { ER_UNKNOWN_AXIS_TYPE,
+      "Unbekannter Achsentraversiertyp: {0}"},
 
-  {
-    ER_UNKNOWN_AXIS_TYPE,
-       "Unbekannter Achsen-Traversaltyp: {0}"},
-  
-   /**  Axis traverser not supported  */
-  //public static final int ER_AXIS_NOT_SUPPORTED = 169;
+    { ER_AXIS_NOT_SUPPORTED,
+      "Achsentraversierer nicht unterst\u00fctzt: {0}"},
 
-  {
-    ER_AXIS_NOT_SUPPORTED,
-       "Achsen-Traverser nicht unterst\u00fctzt: {0}"},
-  
-   /**  No more DTM IDs are available  */
-  //public static final int ER_NO_DTMIDS_AVAIL = 170;
+    { ER_NO_DTMIDS_AVAIL,
+      "Keine weiteren Dokumenttypmodell-IDs verf\u00fcgbar"},
 
-  {
-    ER_NO_DTMIDS_AVAIL,
-       "Keine weiteren DTM-IDs verf\u00fcgbar"},
-  
-   /**  Not supported  */
-  //public static final int ER_NOT_SUPPORTED = 171;
+    { ER_NOT_SUPPORTED,
+      "Nicht unterst\u00fctzt: {0}"},
 
-  {
-    ER_NOT_SUPPORTED,
-       "Nicht unterst\u00fctzt: {0}"},
-  
-   /**  node must be non-null for getDTMHandleFromNode  */
-  //public static final int ER_NODE_NON_NULL = 172;
+    { ER_NODE_NON_NULL,
+      "Knoten muss ungleich Null sein f\u00fcr getDTMHandleFromNode."},
 
-  {
-    ER_NODE_NON_NULL,
-       "Knoten darf f\u00fcr getDTMHandleFromNode nicht Null sein"},
-  
-   /**  Could not resolve the node to a handle  */
-  //public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
+    { ER_COULD_NOT_RESOLVE_NODE,
+      "Der Knoten konnte nicht in eine Kennung aufgel\u00f6st werden."},
 
-  {
-    ER_COULD_NOT_RESOLVE_NODE,
-       "Der Knoten zu einem Handle konnte nicht aufgel\u00f6st werden"},
-  
-   /**  startParse may not be called while parsing */
-  //public static final int ER_STARTPARSE_WHILE_PARSING = 174;
+    { ER_STARTPARSE_WHILE_PARSING,
+       "startParse kann w\u00e4hrend der Syntaxanalyse nicht aufgerufen werden."},
 
-  {
-    ER_STARTPARSE_WHILE_PARSING,
-       "startParse darf beim Parsen nicht aufgerufen werden"},
-  
-   /**  startParse needs a non-null SAXParser  */
-  //public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
+    { ER_STARTPARSE_NEEDS_SAXPARSER,
+       "startParse erfordert SAXParser ungleich Null."},
 
-  {
-    ER_STARTPARSE_NEEDS_SAXPARSER,
-       "startParse ben\u00f6tigt einen SAXParser, der nicht Null ist"},
-  
-   /**  could not initialize parser with */
-  //public static final int ER_COULD_NOT_INIT_PARSER = 176;
+    { ER_COULD_NOT_INIT_PARSER,
+       "Konnte Parser nicht initialisieren mit"},
 
-  {
-    ER_COULD_NOT_INIT_PARSER,
-       "Parser konnte nicht initialisiert werden"},
+    { ER_EXCEPTION_CREATING_POOL,
+       "Ausnahmebedingung beim Erstellen eines neuen Exemplars f\u00fcr Pool."},
 
-   /**  exception creating new instance for pool  */
-  //public static final int ER_EXCEPTION_CREATING_POOL = 178;
+    { ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
+       "Der Pfad enth\u00e4lt eine ung\u00fcltige Escapezeichenfolge."},
 
-  {
-    ER_EXCEPTION_CREATING_POOL,
-       "Ausnahme, die neue Instanz f\u00fcr Pool erstellt"},
-  
-   /**  Path contains invalid escape sequence  */
-  //public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
-
-  {
-    ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-       "Pfad enth\u00e4lt ung\u00fcltige Escape-Sequenz"},
-  
-   /**  Scheme is required!  */
-  //public static final int ER_SCHEME_REQUIRED = 180;
-
-  {
-    ER_SCHEME_REQUIRED,
+    { ER_SCHEME_REQUIRED,
        "Schema ist erforderlich!"},
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_IN_URI = 181;
 
-  {
-    ER_NO_SCHEME_IN_URI,
-       "Kein Schema gefunden in URI: {0}"},
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_INURI = 182;
+    { ER_NO_SCHEME_IN_URI,
+       "Kein Schema gefunden in URI: {0}."},
 
-  {
-    ER_NO_SCHEME_INURI,
+    { ER_NO_SCHEME_INURI,
        "Kein Schema gefunden in URI"},
-  
-   /**  Path contains invalid character:   */
-  //public static final int ER_PATH_INVALID_CHAR = 183;
 
-  {
-    ER_PATH_INVALID_CHAR,
-       "Pfad enth\u00e4lt ung\u00fcltiges Zeichen: {0}"},
-  
-   /**  Cannot set scheme from null string  */
-  //public static final int ER_SCHEME_FROM_NULL_STRING = 184;
+    { ER_PATH_INVALID_CHAR,
+       "Pfad enth\u00e4lt ung\u00fcltiges Zeichen: {0}."},
 
-  {
-    ER_SCHEME_FROM_NULL_STRING,
-       "Schema kann ausgehend von Null-Zeichenkette nicht gesetzt werden"},
-  
-   /**  The scheme is not conformant. */
-  //public static final int ER_SCHEME_NOT_CONFORMANT = 185;
+    { ER_SCHEME_FROM_NULL_STRING,
+       "Schema kann nicht von Nullzeichenfolge festgelegt werden."},
 
-  {
-    ER_SCHEME_NOT_CONFORMANT,
-       "Schema ist nicht konform."},
-  
-   /**  Host is not a well formed address  */
-  //public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
+    { ER_SCHEME_NOT_CONFORMANT,
+       "Das Schema ist nicht angepasst."},
 
-  {
-    ER_HOST_ADDRESS_NOT_WELLFORMED,
-       "Hostadresse nicht korrekt gebildet"},
-  
-   /**  Port cannot be set when host is null  */
-  //public static final int ER_PORT_WHEN_HOST_NULL = 187;
+    { ER_HOST_ADDRESS_NOT_WELLFORMED,
+       "Der Host ist keine syntaktisch korrekte Adresse."},
 
-  {
-    ER_PORT_WHEN_HOST_NULL,
-       "Port kann nicht gesetzt werden, wenn Host Null ist"},
-  
-   /**  Invalid port number  */
-  //public static final int ER_INVALID_PORT = 188;
+    { ER_PORT_WHEN_HOST_NULL,
+       "Der Port kann nicht festgelegt werden, wenn der Host gleich Null ist."},
 
-  {
-    ER_INVALID_PORT,
-       "Ung\u00fcltige Port-Nummer"},
-  
-   /**  Fragment can only be set for a generic URI  */
-  //public static final int ER_FRAG_FOR_GENERIC_URI = 189;
+    { ER_INVALID_PORT,
+       "Ung\u00fcltige Portnummer"},
 
-  {
-    ER_FRAG_FOR_GENERIC_URI,
-       "Fragment kann nur f\u00fcr einen generischen URI gesetzt werden"},
-  
-   /**  Fragment cannot be set when path is null  */
-  //public static final int ER_FRAG_WHEN_PATH_NULL = 190;
+    { ER_FRAG_FOR_GENERIC_URI,
+       "Fragment kann nur f\u00fcr eine generische URI (Uniform Resource Identifier) festgelegt werden."},
 
-  {
-    ER_FRAG_WHEN_PATH_NULL,
-       "Fragment kann nicht gesetzt werden, wenn der Pfad Null ist"},
-  
-   /**  Fragment contains invalid character  */
-  //public static final int ER_FRAG_INVALID_CHAR = 191;
+    { ER_FRAG_WHEN_PATH_NULL,
+       "Fragment kann nicht festgelegt werden, wenn der Pfad gleich Null ist."},
 
-  {
-    ER_FRAG_INVALID_CHAR,
-       "Fragment enth\u00e4lt ung\u00fcltiges Zeichen"},
-  
- 
-  
-   /** Parser is already in use  */
-  //public static final int ER_PARSER_IN_USE = 192;
+    { ER_FRAG_INVALID_CHAR,
+       "Fragment enth\u00e4lt ein ung\u00fcltiges Zeichen."},
 
-  {
-    ER_PARSER_IN_USE,
-        "Parser wird bereits verwendet"},
-  
-   /** Parser is already in use  */
-  //public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
+    { ER_PARSER_IN_USE,
+      "Der Parser wird bereits verwendet."},
 
-  {
-    ER_CANNOT_CHANGE_WHILE_PARSING,
-        "{0} {1} kann beim Parsen nicht ge\u00e4ndert werden"},
-  
-   /** Self-causation not permitted  */
-  //public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
+    { ER_CANNOT_CHANGE_WHILE_PARSING,
+      "{0} {1} kann w\u00e4hrend der Syntaxanalyse nicht ge\u00e4ndert werden."},
 
-  {
-    ER_SELF_CAUSATION_NOT_PERMITTED,
-        "Selbst-Kausalit\u00e4t nicht erlaubt"},
-  
-   /** Userinfo may not be specified if host is not specified   */
-  //public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
+    { ER_SELF_CAUSATION_NOT_PERMITTED,
+      "Selbstverursachung ist nicht zul\u00e4ssig."},
 
-  {
-    ER_NO_USERINFO_IF_NO_HOST,
-        "Userinfo kann nicht angegeben werden, wenn Host nicht angegeben ist"},
-  
-   /** Port may not be specified if host is not specified   */
-  //public static final int ER_NO_PORT_IF_NO_HOST = 199;
+    { ER_NO_USERINFO_IF_NO_HOST,
+      "Benutzerinformationen k\u00f6nnen nicht angegeben werden, wenn der Host nicht angegeben wurde."},
 
-  {
-    ER_NO_PORT_IF_NO_HOST,
-        "Port kann nicht angegeben werden, wenn Host nicht angegeben ist"},
-  
-   /** Query string cannot be specified in path and query string   */
-  //public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
+    { ER_NO_PORT_IF_NO_HOST,
+      "Der Port kann nicht angegeben werden, wenn der Host nicht angegeben wurde."},
 
-  {
-    ER_NO_QUERY_STRING_IN_PATH,
-        "Abfragezeichenkette kann nicht sowohl im Pfad als auch in der Abfragezeichenkette angegeben werden"},
-  
-   /** Fragment cannot be specified in both the path and fragment   */
-  //public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
+    { ER_NO_QUERY_STRING_IN_PATH,
+      "Abfragezeichenfolge kann nicht im Pfad und in der Abfragezeichenfolge angegeben werden."},
 
-  {
-    ER_NO_FRAGMENT_STRING_IN_PATH,
-        "Fragment kann nicht sowohl im Pfad als auch im Fragment angegeben werden"},
-  
-   /** Cannot initialize URI with empty parameters   */
-  //public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
+    { ER_NO_FRAGMENT_STRING_IN_PATH,
+      "Fragment kann nicht im Pfad und im Fragment angegeben werden."},
 
-  {
-    ER_CANNOT_INIT_URI_EMPTY_PARMS,
-        "URI kann nicht mit leeren Parametern initialisiert werden"},
+    { ER_CANNOT_INIT_URI_EMPTY_PARMS,
+      "URI (Uniform Resource Identifier) kann nicht mit leeren Parametern initialisiert werden."},
 
-  /**  Method not yet supported    */
-  //public static final int ER_METHOD_NOT_SUPPORTED = 210;
+    { ER_METHOD_NOT_SUPPORTED,
+      "Die Methode wird noch nicht unterst\u00fctzt. "},
 
-  {
-    ER_METHOD_NOT_SUPPORTED,
-        "Methode noch nicht unterst\u00fctzt "},
- 
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 214;
+    { ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
+      "IncrementalSAXSource_Filter ist momentan nicht wieder anlauff\u00e4hig."},
 
-  {
-    ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
-     "IncrementalSAXSource_Filter kann zurzeit nicht neu gestartet werden"},
-  
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
+    { ER_XMLRDR_NOT_BEFORE_STARTPARSE,
+      "XMLReader nicht vor Anforderung startParse"},
 
-  {
-    ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-     "XMLReader nicht vor startParse-Anforderung"},
-  
-  // Axis traverser not supported: {0}
-  //public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
-  {
-    ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-     "Achsen-Traverser nicht unterst\u00fctzt: {0}"},
+    { ER_AXIS_TRAVERSER_NOT_SUPPORTED,
+      "Achsentraversierer nicht unterst\u00fctzt: {0}"},
 
-  // ListingErrorHandler created with null PrintWriter!
-  //public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
-  {
-    ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
-     "ListingErrorHandler wurde mit Null-PrintWriter erstellt!"},
+    { ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
+      "ListingErrorHandler erstellt ohne Druckausgabeprogramm!"},
 
-  //public static final int ER_SYSTEMID_UNKNOWN = 240;
-  {
-    ER_SYSTEMID_UNKNOWN,
-     "Unbekannte SystemId"},
+    { ER_SYSTEMID_UNKNOWN,
+      "System-ID unbekannt"},
 
-  // Location of error unknown
-  //public static final int ER_LOCATION_UNKNOWN = 241;
-  {
-    ER_LOCATION_UNKNOWN,
-     "Fehler befindet sich an unbekannter Stelle"},
+    { ER_LOCATION_UNKNOWN,
+      "Position des Fehlers unbekannt"},
 
-  /** Field ER_PREFIX_MUST_RESOLVE          */
-  //public static final int ER_PREFIX_MUST_RESOLVE = 52;
+    { ER_PREFIX_MUST_RESOLVE,
+      "Das Pr\u00e4fix muss in einen Namensbereich aufgel\u00f6st werden: {0}"},
+
+    { ER_CREATEDOCUMENT_NOT_SUPPORTED,
+      "createDocument() wird nicht in XPathContext unterst\u00fctzt!"},
+
+    { ER_CHILD_HAS_NO_OWNER_DOCUMENT,
+      "Das Attribut child weist kein Eignerdokument auf!"},
+
+    { ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
+      "Das Attribut child weist kein Eignerdokumentelement auf!"},
+
+    { ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
+      "Warnung: Vor dem Dokumentelement kann kein Text ausgegeben werden!  Wird ignoriert..."},
+
+    { ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
+      "Mehr als ein Root f\u00fcr ein Dokumentobjektmodell ist nicht m\u00f6glich!"},
+
+    { ER_ARG_LOCALNAME_NULL,
+       "Das Argument 'localName' ist Null."},
+
+    // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
+    // The localname is the portion after the optional colon; the message indicates
+    // that there is a problem with that part of the QNAME.
+    { ER_ARG_LOCALNAME_INVALID,
+       "Der lokale Name (Localname) in QNAME muss ein g\u00fcltiger NCName sein."},
+
+    // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
+    // The prefix is the portion before the optional colon; the message indicates
+    // that there is a problem with that part of the QNAME.
+    { ER_ARG_PREFIX_INVALID,
+       "Das Pr\u00e4fix in QNAME muss ein g\u00fcltiger NCName sein."},
+
+    { "BAD_CODE", "Der Parameter f\u00fcr createMessage lag au\u00dferhalb des g\u00fcltigen Bereichs"},
+    { "FORMAT_FAILED", "W\u00e4hrend des Aufrufs von messageFormat wurde eine Ausnahmebedingung ausgel\u00f6st"},
+    { "line", "Zeilennummer"},
+    { "column","Spaltennummer"},
+
+    {ER_SERIALIZER_NOT_CONTENTHANDLER,
+      "Die Parallel-Seriell-Umsetzerklasse ''{0}'' implementiert org.xml.sax.ContentHandler nicht."},
+
+    {ER_RESOURCE_COULD_NOT_FIND,
+      "Die Ressource [ {0} ] konnte nicht gefunden werden.\n {1}" },
+
+    {ER_RESOURCE_COULD_NOT_LOAD,
+      "Die Ressource [ {0} ] konnte nicht geladen werden: {1} \n {2} \t {3}" },
+
+    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
+      "Puffergr\u00f6\u00dfe <=0" },
+
+    {ER_INVALID_UTF16_SURROGATE,
+      "Ung\u00fcltige UTF-16-Ersetzung festgestellt: {0} ?" },
+
+    {ER_OIERROR,
+      "E/A-Fehler" },
+
+    {ER_ILLEGAL_ATTRIBUTE_POSITION,
+      "Attribut {0} kann nicht nach Kindknoten oder vor dem Erstellen eines Elements hinzugef\u00fcgt werden.  Das Attribut wird ignoriert."},
+
+      /*
+       * Note to translators:  The stylesheet contained a reference to a
+       * namespace prefix that was undefined.  The value of the substitution
+       * text is the name of the prefix.
+       */
+    {ER_NAMESPACE_PREFIX,
+      "Der Namensbereich f\u00fcr Pr\u00e4fix ''{0}'' wurde nicht deklariert." },
+      /*
+       * Note to translators:  This message is reported if the stylesheet
+       * being processed attempted to construct an XML document with an
+       * attribute in a place other than on an element.  The substitution text
+       * specifies the name of the attribute.
+       */
+    {ER_STRAY_ATTRIBUTE,
+      "Attribut ''{0}'' befindet sich nicht in einem Element." },
+
+      /*
+       * Note to translators:  As with the preceding message, a namespace
+       * declaration has the form of an attribute and is only permitted to
+       * appear on an element.  The substitution text {0} is the namespace
+       * prefix and {1} is the URI that was being used in the erroneous
+       * namespace declaration.
+       */
+    {ER_STRAY_NAMESPACE,
+      "Namensbereichsdeklaration ''{0}''=''{1}'' befindet sich nicht in einem Element." },
+
+    {ER_COULD_NOT_LOAD_RESOURCE,
+      "''{0}'' konnte nicht geladen werden (CLASSPATH pr\u00fcfen); es werden die Standardwerte verwendet"},
+
+    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
+      "Merkmaldatei ''{0}'' konnte f\u00fcr Ausgabemethode ''{1}'' nicht geladen werden (CLASSPATH pr\u00fcfen)" }
 
 
-  {
-    ER_PREFIX_MUST_RESOLVE,
-      "Pr\u00e4fix muss sich in Namensraum aufl\u00f6sen lassen: {0}"},
-
-  /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
-  //public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
-
-  {
-    ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "createDocument() in XpathContext nicht unterst\u00fctzt!"},
-   
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "Attribut-Tochterknoten hat kein Eigent\u00fcmer-Dokument!"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "Attribut-Tochterknoten hat kein Element Eigent\u00fcmer-Dokument!"},
-
-
-  /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
-  //public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
-
-
-  {
-    ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "Warnung: Vor einem Dokumentelement kann kein Text ausgegeben werden! Wird ignoriert..."},
-
-
-  /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
-  //public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
-
-
-  {
-    ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "Ein DOM kann nur einen Stamm haben!"},
-
-  
-   /**  Argument 'localName' is null  */
-  //public static final int ER_ARG_LOCALNAME_NULL = 70;
-
-
-  {
-    ER_ARG_LOCALNAME_NULL,
-       "Argument 'localName' ist Null"},
-
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The localname is the portion after the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** localname in QNAME should be a valid NCName */
-  //public static final int ER_ARG_LOCALNAME_INVALID = 101;
-
-
-  {
-    ER_ARG_LOCALNAME_INVALID,
-       "Der lokale Name in QNAME muss einem g\u00fcltigen 'NCName' entsprechen."},
-
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The prefix is the portion before the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** prefix in QNAME should be a valid NCName */
-  //public static final int ER_ARG_PREFIX_INVALID = 102;
-
-
-  {
-    ER_ARG_PREFIX_INVALID,
-       "Das Pr\u00e4fix in QNAME muss einem g\u00fcltigen 'NCName' entsprechen."},
-       
-  { "BAD_CODE", "Parameter f\u00fcr createMessage au\u00dferhalb der Grenzwerte"},
-  { "FORMAT_FAILED", "Ausnahme bei messageFormat-Aufruf"},
-  { "line", "Zeile #"},
-  { "column", "Spalte #"}
-  
   };
 
   /**
@@ -551,5 +478,68 @@ public class XMLErrorResources_de extends XMLErrorResources
   {
     return contents;
   }
-      
+
+  /**
+   *   Return a named ResourceBundle for a particular locale.  This method mimics the behavior
+   *   of ResourceBundle.getBundle().
+   *
+   *   @param className the name of the class that implements the resource bundle.
+   *   @return the ResourceBundle
+   *   @throws MissingResourceException
+   */
+  public static final XMLErrorResources loadResourceBundle(String className)
+          throws MissingResourceException
+  {
+
+    Locale locale = Locale.getDefault();
+    String suffix = getResourceSuffix(locale);
+
+    try
+    {
+
+      // first try with the given locale
+      return (XMLErrorResources) ResourceBundle.getBundle(className
+              + suffix, locale);
+    }
+    catch (MissingResourceException e)
+    {
+      try  // try to fall back to en_US if we can't load
+      {
+
+        // Since we can't find the localized property file,
+        // fall back to en_US.
+        return (XMLErrorResources) ResourceBundle.getBundle(className,
+                new Locale("en", "US"));
+      }
+      catch (MissingResourceException e2)
+      {
+
+        // Now we are really in trouble.
+        // very bad, definitely very bad...not going to get very far
+        throw new MissingResourceException(
+          "Could not load any resource bundles.", className, "");
+      }
+    }
+  }
+
+  /**
+   * Return the resource file suffic for the indicated locale
+   * For most locales, this will be based the language code.  However
+   * for Chinese, we do distinguish between Taiwan and PRC
+   *
+   * @param locale the locale
+   * @return an String suffix which canbe appended to a resource name
+   */
+  private static final String getResourceSuffix(Locale locale)
+  {
+
+    String suffix = "_" + locale.getLanguage();
+    String country = locale.getCountry();
+
+    if (country.equals("TW"))
+      suffix += "_" + country;
+
+    return suffix;
+  }
+
 }

@@ -1089,8 +1089,8 @@ public class Process
         else
         {
           DefaultErrorHandler.printLocation(diagnosticsWriter, throwable);
-          diagnosticsWriter.println(
-            XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
+          diagnosticsWriter.println(" "
+            + XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
             + " (" + throwable.getClass().getName() + "): "
             + throwable.getMessage());
         }
