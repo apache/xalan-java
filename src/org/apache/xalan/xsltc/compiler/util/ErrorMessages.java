@@ -261,7 +261,9 @@ public class ErrorMessages extends ResourceBundle {
 	// STRAY_SORT_ERR
 	"<xsl:sort> can only be used within <xsl:for-each> or <xsl:apply-templates>.",
 	// UNSUPPORTED_ENCODING
-	"Output encoding ''{0}'' is not supported on this JVM."
+	"Output encoding ''{0}'' is not supported on this JVM.",
+	// SYNTAX_ERR
+	"Syntax error in ''{0}''."
     };
 
     private static Vector _keys;

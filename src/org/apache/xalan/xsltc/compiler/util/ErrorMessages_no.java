@@ -249,7 +249,9 @@ public final class ErrorMessages_no extends ErrorMessages {
 	// STRAY_SORT_ERR
 	"<xsl:sort> kan bare brukes under <xsl:for-each> eller <xsl:apply-templates>.",
 	// UNSUPPORTED_ENCODING
-	"Karaktersett ''{0}'' er ikke st\u00f8ttet av denne JVM."
+	"Karaktersett ''{0}'' er ikke st\u00f8ttet av denne JVM.",
+	// SYNTAX_ERR
+	"Syntax error in ''{0}''."  // TODO: How do you say "syntax error" in norwegian?
     };
 
     public Object handleGetObject(String key) {

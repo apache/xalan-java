@@ -952,7 +952,7 @@ public class Parser implements Constants, ContentHandler {
 
 	try {
 	    _xpathParser.setScanner(new XPathLexer(new StringReader(text)));
-	    Symbol result = _xpathParser.parse(line);
+	    Symbol result = _xpathParser.parse(expression, line);
 	    if (result != null) {
 		final SyntaxTreeNode node = (SyntaxTreeNode)result.value;
 		if (node != null) {

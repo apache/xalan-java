@@ -92,6 +92,11 @@ parser code {:
     private XSLTC  _xsltc;
 
     /**
+     * String representation of the expression being parsed.
+     */
+    private String _expression;
+
+    /**
      * Line number where this expression/pattern was declared.
      */
     private int _lineNumber = 0;
@@ -178,8 +183,9 @@ parser code {:
      *                   compiled in a separate module.
      * 
      */
-    public Symbol parse(int lineNumber) throws Exception {
+    public Symbol parse(String expression, int lineNumber) throws Exception {
         try {
+	    _expression = expression;
 	    _lineNumber = lineNumber;
 	    return super.parse();
         }
@@ -210,7 +216,9 @@ parser code {:
     } 
            
     public void report_error(String message, Object info) {
-        // empty
+	final ErrorMsg err = new ErrorMsg(ErrorMsg.SYNTAX_ERR, _lineNumber, 
+	    _expression);
+	_parser.reportError(Constants.FATAL, err);
     }
 
     public void report_fatal_error(String message, Object info) {
