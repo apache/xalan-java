@@ -431,6 +431,15 @@ public class UnionPathIterator extends Expression
   {
 
     UnionPathIterator clone = (UnionPathIterator) clone();
+    
+    // %OPT%
+    // We have to make sure this is a deep clone.  (yet another perf issue...)
+    int n = m_iterators.length;
+
+    for (int i = 0; i < n; i++)
+    {
+      m_iterators[i] = (DTMIterator)clone.m_iterators[i].clone();
+    }
 
     clone.reset();
 
