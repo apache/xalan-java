@@ -78,8 +78,8 @@ public class SystemIDResolver
       }
       else
       {
-        URI baseURI = new URI(urlString);
-        uri = new URI(baseURI, base);
+        URI baseURI = new URI(base);
+        uri = new URI(baseURI, urlString);
       }
     }
     catch(MalformedURIException mue)
