@@ -129,10 +129,14 @@ public class FuncDocument extends Function2Args
       if(XObject.CLASS_NODESET == arg2.getType())
       {
         Node baseNode = arg2.nodeset().nextNode();
-        Document baseDoc = (Node.DOCUMENT_NODE == baseNode.getNodeType()) ? 
-                           (Document)baseNode : baseNode.getOwnerDocument();
         
-        if(baseDoc instanceof Stylesheet)
+        if (baseNode == null)
+          warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);       
+        
+        Document baseDoc = (baseNode == null ? null : (Node.DOCUMENT_NODE == baseNode.getNodeType()) ? 
+                           (Document)baseNode : baseNode.getOwnerDocument());
+        
+        if(baseDoc == null || baseDoc instanceof Stylesheet)
         {
           // base = ((Stylesheet)baseDoc).getBaseIdentifier();
           base = xctxt.getNamespaceContext().getBaseIdentifier();   
