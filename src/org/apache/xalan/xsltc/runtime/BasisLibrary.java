@@ -279,11 +279,12 @@ public final class BasisLibrary implements Operators {
 	    int istart = (int)Math.round(start) - 1;
 	    int isum   = istart + (int)Math.round(length);
 
+	    if (Double.isInfinite(length)) isum = Integer.MAX_VALUE;
+
 	    if (Double.isNaN(start) || Double.isNaN(length))
 		return(EMPTYSTRING);
 	    if (istart > strlen) return(EMPTYSTRING);
-	    if (isum < 0)  return(EMPTYSTRING);
-
+	    if (isum < 0) return(EMPTYSTRING);
  	    if (istart < 0) istart = 0;
 
 	    if (isum > strlen)
