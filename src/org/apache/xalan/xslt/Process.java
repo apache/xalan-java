@@ -628,9 +628,10 @@ public class Process
         else
         {
           strResult = new StreamResult(System.out);
-          tfactory.setAttribute(
-           org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL
-           , Boolean.TRUE);
+	  // We used to default to incremental mode in this case.
+	  // We've since decided that since the -INCREMENTAL switch is
+	  // available, that default is probably not necessary nor
+	  // necessarily a good idea.
         }
 
         SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;
