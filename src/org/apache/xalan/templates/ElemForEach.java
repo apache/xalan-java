@@ -472,7 +472,8 @@ public class ElemForEach extends ElemTemplateElement
           try
           {              
             xctxt.pushCurrentNode(child);
-            transformer.pushPairCurrentMatched(template, child);
+            if(needToFindTemplate)
+              transformer.pushPairCurrentMatched(template, child);
 
             if (check)
               guard.push(this, child);
@@ -507,7 +508,8 @@ public class ElemForEach extends ElemTemplateElement
           finally
           {
             xctxt.popCurrentNode();
-            transformer.popCurrentMatched();
+            if(needToFindTemplate)
+              transformer.popCurrentMatched();
 
             if (check)
               guard.pop();
