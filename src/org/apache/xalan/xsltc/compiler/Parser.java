@@ -166,10 +166,22 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public void setOutput(Output output) {
-	if (_output == null)
+	if (_output != null) {
+	    if (_output.getImportPrecedence() <= output.getImportPrecedence()) {
+		_output.disable();
+		_output = output;
+	    }
+	    else {
+		output.disable();
+	    }
+	}
+	else {
 	    _output = output;
-	else
-	    output.disable();
+	}
+    }
+
+    public Output getOutput() {
+	return _output;
     }
 
     public void addVariable(Variable var) {

@@ -458,7 +458,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	    else if (element instanceof Output) {
 		// save the element for later to pass to compileConstructor 
-		lastOutputElement = (Output)element;
+		Output output = (Output)element;
+		if (output.enabled()) lastOutputElement = output;
 	    }
 	    else {
 		// Global variables and parameters are handled elsewhere.

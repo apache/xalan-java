@@ -76,6 +76,8 @@ import org.apache.xalan.xsltc.runtime.TextOutput;
 
 final class Output extends TopLevelElement {
 
+    // TODO: use three-value variables for boolean values: true/false/default
+
     // These attributes are extracted from the xsl:output element. They also
     // appear as fields (with the same type, only public) in the translet
     private String  _version;
@@ -115,10 +117,17 @@ final class Output extends TopLevelElement {
 	_disabled = true;
     }
 
+    public boolean enabled() {
+	return !_disabled;
+    }
+
     /**
      * Scans the attribute list for the xsl:output instruction
      */
     public void parseContents(Parser parser) {
+
+	// Ask the parser if it wants this <xsl:output> element
+	parser.setOutput(this);
 
 	// Do nothing if other <xsl:output> element has higher precedence
 	if (_disabled) return;
@@ -165,7 +174,12 @@ final class Output extends TopLevelElement {
 
 	// Get the indent setting - only has effect for xml and html output
 	attrib = getAttribute("indent");
-	if ((attrib != null) && (attrib.equals("yes"))) _indent = true;
+	if ((attrib != null) && (!attrib.equals(EMPTYSTRING))) {
+	    if (attrib.equals("yes")) _indent = true;
+	}
+	else if (_method.equals("html")) {
+	    _indent = true;
+	}
 
 	// Get the MIME type for the output file - we don't do anythign with it,
 	// but our client may use it to specify a data transport type, etc.
@@ -173,8 +187,6 @@ final class Output extends TopLevelElement {
 	if (_mediaType.equals(Constants.EMPTYSTRING)) _mediaType = null;
 
 	// parseChildren(parser); - the element is always empty
-
-	parser.setOutput(this);
     }
 
     /**
