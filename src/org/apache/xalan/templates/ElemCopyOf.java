@@ -279,6 +279,10 @@ public class ElemCopyOf extends ElemTemplateElement
                 child != DTM.NULL;
                 child = dtm.getNextSibling(child))
               {
+                // Bugzilla 8473
+                if (dtm.getNamespaceURI(child) == null) {
+                  handler.startPrefixMapping("","");
+                }
                 tw.traverse(child);
               }
             }

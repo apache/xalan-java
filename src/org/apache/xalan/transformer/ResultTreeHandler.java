@@ -1106,6 +1106,9 @@ public class ResultTreeHandler extends QueuedEvents
       String prefix = (String) prefixes.nextElement();
       String uri=m_nsSupport.getURI(prefix);
       
+      if (null == uri)
+        uri = "";
+
       // Send event
       handler.startPrefixMapping(prefix, uri);
 
@@ -1120,9 +1123,6 @@ public class ResultTreeHandler extends QueuedEvents
       }
       else
         name = "xmlns:" + prefix;
-
-      if (null == uri)
-        uri = "";
 
       m_attributes.addAttribute("http://www.w3.org/2000/xmlns/", 
                                 prefix, name, "CDATA", uri);

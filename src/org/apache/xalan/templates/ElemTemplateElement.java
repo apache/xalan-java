@@ -1216,6 +1216,20 @@ public class ElemTemplateElement extends UnImplNode
    */
   protected void executeNSDecls(TransformerImpl transformer) throws TransformerException
   {
+  	executeNSDecls(transformer, null);
+  }
+
+  /**
+   * Send startPrefixMapping events to the result tree handler
+   * for all declared prefix mappings in the stylesheet.
+   *
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param ignorePrefix string prefix to not startPrefixMapping
+   *
+   * @throws TransformerException
+   */
+  void executeNSDecls(TransformerImpl transformer, String ignorePrefix) throws TransformerException
+  {  
 
     try
     {
@@ -1228,7 +1242,7 @@ public class ElemTemplateElement extends UnImplNode
         {
           XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
 
-          if (!decl.getIsExcluded())
+          if (!decl.getIsExcluded() && !(null != ignorePrefix && decl.getPrefix().equals(ignorePrefix)))
           {
             rhandler.startPrefixMapping(decl.getPrefix(), decl.getURI(), true);
           }
@@ -1242,7 +1256,7 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Send startPrefixMapping events to the result tree handler
+   * Send endPrefixMapping events to the result tree handler
    * for all declared prefix mappings in the stylesheet.
    *
    * @param transformer non-null reference to the the current transform-time state.
@@ -1250,6 +1264,20 @@ public class ElemTemplateElement extends UnImplNode
    * @throws TransformerException
    */
   protected void unexecuteNSDecls(TransformerImpl transformer) throws TransformerException
+  {
+  	unexecuteNSDecls(transformer, null);
+  }
+
+  /**
+   * Send endPrefixMapping events to the result tree handler
+   * for all declared prefix mappings in the stylesheet.
+   *
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param ignorePrefix string prefix to not endPrefixMapping
+   * 
+   * @throws TransformerException
+   */
+  void unexecuteNSDecls(TransformerImpl transformer, String ignorePrefix) throws TransformerException
   {
 
     try
@@ -1263,7 +1291,7 @@ public class ElemTemplateElement extends UnImplNode
         {
           XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
 
-          if (!decl.getIsExcluded())
+          if (!decl.getIsExcluded() && !(null != ignorePrefix && decl.getPrefix().equals(ignorePrefix)))
           {
             rhandler.endPrefixMapping(decl.getPrefix());
           }
