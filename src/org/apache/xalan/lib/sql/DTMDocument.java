@@ -106,7 +106,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
   /**
    */
-  private boolean DEBUG = true;
+  private boolean DEBUG = false;
 
   /**
    */
