@@ -199,7 +199,9 @@ public class ElemUse extends ElemTemplateElement
         {
           int nSets = attrSets.size();
 
-          for (int k = 0; k < nSets; k++)
+          // Highest priority attribute set will be at the top,
+          // so process it last.
+          for (int k = nSets-1; k >= 0 ; k--)
           {
             ElemAttributeSet attrSet =
               (ElemAttributeSet) attrSets.elementAt(k);
