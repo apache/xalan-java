@@ -270,7 +270,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final Document    tree = (Document)domsrc.getNode();
 		final DOM2SAX     dom2sax = new DOM2SAX(tree);
 		final InputSource input = null; 
-		final String      systemId = null; 
+		final String      systemId = domsrc.getSystemId(); 
 		dtdMonitor.handleDTD(dom2sax);
 		dom2sax.setContentHandler(inputHandler);
 		dom2sax.parse(input);
