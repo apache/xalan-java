@@ -132,12 +132,13 @@ public class XRTreeFrag extends XObject implements Cloneable
   
   /**
    * Release any resources this object may have by calling destruct().
+   * %ISSUE% This release will occur asynchronously. Resources it manipulates
+   * MUST be thread-safe!
    *
    * @throws Throwable
    */
   protected void finalize() throws Throwable
   {
-
     try
     {
       destruct();
