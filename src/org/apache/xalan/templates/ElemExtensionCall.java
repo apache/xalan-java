@@ -189,7 +189,7 @@ public class ElemExtensionCall extends ElemLiteralResult
       }
     }
 
-    return decl;
+    return null;
   }
   
   /**
