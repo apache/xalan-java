@@ -832,9 +832,10 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
+	    while ((node = super.next()) != NULL) {
+		if (_type[node] == _nodeType) return node;
 	    }
-	    return node;
+	    return END;
 	}
 
     } // end of TypedFollowingSiblingIterator
@@ -1126,14 +1127,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
                   
 	public int next() {
-	    final int limit = _treeNodeLimit;
-	    int node = _node + 1;
-	    final int type = _nodeType;
-	    // skipping nodes not of desired type
-	    while (node < limit && _type[node] != type) {
-		++node;
+	    int node;
+	    while ((node = super.next()) != NULL) {
+		if (_type[node] == _nodeType) return node;
 	    }
-	    return node == limit ? NULL : returnNode(_node = node);
+	    return END;
 	}
     } // end of TypedFollowingIterator
 
@@ -2390,9 +2388,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    while (node != DOM.NULL) {
 		int attr = _lengthOrAttr[node];
 		while (attr != DOM.NULL) {
-		    if (_type[attr] == type) {
+		    if (_type[attr] == type)
 			return(getNodeValue(attr));
-		    }
 		    attr = _nextSibling[attr];
 		}
 		node = getParent(node);
@@ -2465,7 +2462,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	private static final String XML_STRING = "xml";
 	private static final String XMLNS_STRING = "xmlns";
-	private static final String XMLSPACE_STRING = "xmlns";
+	private static final String XMLSPACE_STRING = "xml:space";
 	private static final String PRESERVE_STRING = "preserve";
 
 	/**
@@ -2724,7 +2721,8 @@ public final class DOMImpl implements DOM, Externalizable {
 		    return -1;
 		else if (name.startsWith(XMLSPACE_STRING))
 		    xmlSpaceDefine(attList.getValue(i), parent);
-		xmlAttr = true;
+		if (name.charAt(3) == ':')
+		    xmlAttr = true;
 	    }
 
 	    // fall through to handle a regular attribute
@@ -2802,7 +2800,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    for (int i = 0; i<namesSize; i++) {
 		final String qname = _namesArray[i];
 		final int col = _namesArray[i].lastIndexOf(':');
-		if (col > -1) {
+		if ((!qname.startsWith(XML_STRING)) && (col > -1)) {
 		    final String uri = _namesArray[i].substring(0, col);
 		    final Integer idx = (Integer)_nsIndex.get(uri);
 		    _namespace[i] = idx.shortValue();
