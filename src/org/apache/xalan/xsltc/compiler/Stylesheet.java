@@ -265,7 +265,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public void setIncludingStylesheet(Stylesheet parent) {
-	_importedFrom = parent;
+	_includedFrom = parent;
     }
 
     public void setSystemId(String systemId) {
