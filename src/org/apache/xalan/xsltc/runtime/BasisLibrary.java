@@ -907,6 +907,10 @@ public final class BasisLibrary implements Operators {
 
     public static String formatNumber(double number, String pattern,
 				      DecimalFormat formatter) {
+        // bugzilla fix 12813 
+	if (formatter == null) {
+	    formatter = defaultFormatter;
+	}
 	try {
 	    StringBuffer result = new StringBuffer();
 	    if (pattern != defaultPattern) {
