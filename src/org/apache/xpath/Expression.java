@@ -57,7 +57,6 @@
 package org.apache.xpath;
 
 //import org.w3c.dom.Node;
-
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
@@ -95,32 +94,32 @@ public abstract class Expression implements java.io.Serializable
    *  @serial
    */
   protected SourceLocator m_slocator;
-  
+
   /**
-   * Tell if this expression or it's subexpressions can traverse outside 
+   * Tell if this expression or it's subexpressions can traverse outside
    * the current subtree.
-   * 
+   *
    * @return true if traversal outside the context node's subtree can occur.
    */
-   public boolean canTraverseOutsideSubtree()
-   {
+  public boolean canTraverseOutsideSubtree()
+  {
     return false;
-   }
+  }
 
   /**
    * Set the location where this expression was built from.
    *
    *
-   * @param locator the location where this expression was built from, may be 
+   * @param locator the location where this expression was built from, may be
    *                null.
    */
   public void setSourceLocator(SourceLocator locator)
   {
     m_slocator = locator;
   }
-  
+
   /**
-   * Execute an expression in the XPath runtime context, and return the 
+   * Execute an expression in the XPath runtime context, and return the
    * result of the expression.
    *
    *
@@ -129,18 +128,19 @@ public abstract class Expression implements java.io.Serializable
    *
    * @return The result of the expression in the form of a <code>XObject</code>.
    *
-   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   * @throws javax.xml.transform.TransformerException if a runtime exception
    *         occurs.
    */
   public XObject execute(XPathContext xctxt, int currentNode)
-    throws javax.xml.transform.TransformerException
+          throws javax.xml.transform.TransformerException
   {
+
     // For now, the current node is already pushed.
     return execute(xctxt);
   }
-  
+
   /**
-   * Execute an expression in the XPath runtime context, and return the 
+   * Execute an expression in the XPath runtime context, and return the
    * result of the expression.
    *
    *
@@ -151,20 +151,20 @@ public abstract class Expression implements java.io.Serializable
    *
    * @return The result of the expression in the form of a <code>XObject</code>.
    *
-   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   * @throws javax.xml.transform.TransformerException if a runtime exception
    *         occurs.
    */
-  public XObject execute(XPathContext xctxt, int currentNode, 
-                         DTM dtm, int expType)
-    throws javax.xml.transform.TransformerException
+  public XObject execute(
+          XPathContext xctxt, int currentNode, DTM dtm, int expType)
+            throws javax.xml.transform.TransformerException
   {
+
     // For now, the current node is already pushed.
     return execute(xctxt);
   }
 
-
   /**
-   * Execute an expression in the XPath runtime context, and return the 
+   * Execute an expression in the XPath runtime context, and return the
    * result of the expression.
    *
    *
@@ -172,35 +172,38 @@ public abstract class Expression implements java.io.Serializable
    *
    * @return The result of the expression in the form of a <code>XObject</code>.
    *
-   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   * @throws javax.xml.transform.TransformerException if a runtime exception
    *         occurs.
    */
   public abstract XObject execute(XPathContext xctxt)
     throws javax.xml.transform.TransformerException;
-    
+
   /**
    * Evaluate expression to a number.
    *
+   *
+   * NEEDSDOC @param xctxt
    * @return 0.0
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public double num(XPathContext xctxt) 
-    throws javax.xml.transform.TransformerException
+  public double num(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
   {
-
     return execute(xctxt).num();
   }
 
   /**
    * Evaluate expression to a boolean.
    *
+   *
+   * NEEDSDOC @param xctxt
    * @return false
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean bool(XPathContext xctxt) 
-    throws javax.xml.transform.TransformerException
+  public boolean bool(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
   {
     return execute(xctxt).bool();
   }
@@ -208,16 +211,20 @@ public abstract class Expression implements java.io.Serializable
   /**
    * Cast result object to a string.
    *
+   *
+   * NEEDSDOC @param xctxt
    * @return The string this wraps or the empty string if null
+   *
+   * @throws javax.xml.transform.TransformerException
    */
   public XMLString xstr(XPathContext xctxt)
-    throws javax.xml.transform.TransformerException
+          throws javax.xml.transform.TransformerException
   {
     return execute(xctxt).xstr();
   }
-    
+
   /**
-   * Tell if the expression is a nodeset expression.  In other words, tell 
+   * Tell if the expression is a nodeset expression.  In other words, tell
    * if you can execute {@link asNode() asNode} without an exception.
    * @return true if the expression can be represented as a nodeset.
    */
@@ -225,39 +232,44 @@ public abstract class Expression implements java.io.Serializable
   {
     return false;
   }
-  
+
   /**
-   * Return the first node out of the nodeset, if this expression is 
+   * Return the first node out of the nodeset, if this expression is
    * a nodeset expression.
    * @param xctxt The XPath runtime context.
    * @return the first node out of the nodeset, or DTM.NULL.
+   *
+   * @throws javax.xml.transform.TransformerException
    */
   public int asNode(XPathContext xctxt)
-    throws javax.xml.transform.TransformerException
+          throws javax.xml.transform.TransformerException
   {
     return execute(xctxt).iter().nextNode();
   }
-  
+
   /**
    * <meta name="usage" content="experimental"/>
    * Given an select expression and a context, evaluate the XPath
    * and return the resulting iterator.
-   * 
+   *
    * @param xctxt The execution context.
    * @param contextNode The node that "." expresses.
-   * 
+   *
+   *
+   * NEEDSDOC ($objectName$) @return
    * @throws TransformerException thrown if the active ProblemListener decides
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public DTMIterator asIterator(
-          XPathContext xctxt, int contextNode)
-            throws javax.xml.transform.TransformerException
+  public DTMIterator asIterator(XPathContext xctxt, int contextNode)
+          throws javax.xml.transform.TransformerException
   {
+
     try
     {
       xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+
       return execute(xctxt).iter();
     }
     finally
@@ -265,53 +277,72 @@ public abstract class Expression implements java.io.Serializable
       xctxt.popCurrentNodeAndExpression();
     }
   }
-    
+
   /**
-   * Execute an expression in the XPath runtime context, and return the 
+   * Execute an expression in the XPath runtime context, and return the
    * result of the expression.
    *
    *
    * @param xctxt The XPath runtime context.
+   * NEEDSDOC @param handler
    *
    * @return The result of the expression in the form of a <code>XObject</code>.
    *
-   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   * @throws javax.xml.transform.TransformerException if a runtime exception
    *         occurs.
+   * @throws org.xml.sax.SAXException
    */
-  public void executeCharsToContentHandler(XPathContext xctxt, 
-                                              ContentHandler handler)
-    throws javax.xml.transform.TransformerException,
-           org.xml.sax.SAXException
+  public void executeCharsToContentHandler(
+          XPathContext xctxt, ContentHandler handler)
+            throws javax.xml.transform.TransformerException,
+                   org.xml.sax.SAXException
   {
+
     XObject obj = execute(xctxt);
+
     obj.dispatchCharactersEvents(handler);
   }
-  
+
   /**
-   * This function is used to fixup variables from QNames to stack frame 
+   * Tell if this expression returns a stable number that will not change during 
+   * iterations within the expression.  This is used to determine if a proximity 
+   * position predicate can indicate that no more searching has to occur.
+   * 
+   *
+   * @return true if the expression represents a stable number.
+   */
+  public boolean isStableNumber()
+  {
+    return false;
+  }
+
+  /**
+   * This function is used to fixup variables from QNames to stack frame
    * indexes at stylesheet build time.
-   * @param vars List of QNames that correspond to variables.  This list 
-   * should be searched backwards for the first qualified name that 
-   * corresponds to the variable reference qname.  The position of the 
-   * QName in the vector from the start of the vector will be its position 
-   * in the stack frame (but variables above the globalsTop value will need 
+   * @param vars List of QNames that correspond to variables.  This list
+   * should be searched backwards for the first qualified name that
+   * corresponds to the variable reference qname.  The position of the
+   * QName in the vector from the start of the vector will be its position
+   * in the stack frame (but variables above the globalsTop value will need
    * to be offset to the current stack frame).
+   * NEEDSDOC @param globalsSize
    */
   public abstract void fixupVariables(java.util.Vector vars, int globalsSize);
-
 
   /**
    * Warn the user of an problem.
    *
    * @param xctxt The XPath runtime context.
-   * @param msg An error number that corresponds to one of the numbers found 
-   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   * @param msg An error number that corresponds to one of the numbers found
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is
    *            a key for a format string.
-   * @param args An array of arguments represented in the format string, which 
+   * @param args An array of arguments represented in the format string, which
    *             may be null.
    *
-   * @throws TransformerException if the current ErrorListoner determines to 
+   * @throws TransformerException if the current ErrorListoner determines to
    *                              throw an exception.
+   *
+   * @throws javax.xml.transform.TransformerException
    */
   public void warn(XPathContext xctxt, int msg, Object[] args)
           throws javax.xml.transform.TransformerException
@@ -334,8 +365,10 @@ public abstract class Expression implements java.io.Serializable
    *
    * @param b  If false, a runtime exception will be thrown.
    * @param msg The assertion message, which should be informative.
-   * 
+   *
    * @throws RuntimeException if the b argument is false.
+   *
+   * @throws javax.xml.transform.TransformerException
    */
   public void assertion(boolean b, java.lang.String msg)
           throws javax.xml.transform.TransformerException
@@ -356,14 +389,16 @@ public abstract class Expression implements java.io.Serializable
    * exception.
    *
    * @param xctxt The XPath runtime context.
-   * @param msg An error number that corresponds to one of the numbers found 
-   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   * @param msg An error number that corresponds to one of the numbers found
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is
    *            a key for a format string.
-   * @param args An array of arguments represented in the format string, which 
+   * @param args An array of arguments represented in the format string, which
    *             may be null.
    *
-   * @throws TransformerException if the current ErrorListoner determines to 
+   * @throws TransformerException if the current ErrorListoner determines to
    *                              throw an exception.
+   *
+   * @throws javax.xml.transform.TransformerException
    */
   public void error(XPathContext xctxt, int msg, Object[] args)
           throws javax.xml.transform.TransformerException

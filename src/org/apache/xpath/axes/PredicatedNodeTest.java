@@ -335,6 +335,15 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
             System.out.println("index predicate is true: "+proxPos);
             System.out.println("\n===== end predicate count ========");
           }
+          
+          // If there is a proximity index that will not change during the 
+          // course of itteration, then we know there can be no more true 
+          // occurances of this predicate, so flag that we're done after 
+          // this.
+          if(m_predicates[i].isStableNumber())
+          {
+            m_foundLast = true;
+          }
         }
         else if (!pred.bool())
           return false;
@@ -484,6 +493,9 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
     }
     return false;
    }
+   
+  /** This is true if nextNode returns null. */
+  transient protected boolean m_foundLast = false;
     
   /** The owning location path iterator.
    *  @serial */

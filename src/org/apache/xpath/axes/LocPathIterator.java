@@ -1017,9 +1017,6 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    */
   transient NodeSetDTM m_cachedNodes;
 
-  /** This is true if nextNode returns null. */
-  transient protected boolean m_foundLast = false;
-
   /**
    * The context node for this iterator, which doesn't change through
    * the course of the iteration.

@@ -240,7 +240,7 @@ public class AxesWalker extends PredicatedNodeTest
     m_dtm = wi().getXPathContext().getDTM(root);
     m_traverser = m_dtm.getAxisTraverser(m_axis);
     m_isFresh = true;
-    m_isDone = false;
+    m_foundLast = false;
     m_root = root;
     m_currentNode = root;
     m_prevReturned = DTM.NULL;
@@ -340,6 +340,8 @@ public class AxesWalker extends PredicatedNodeTest
    */
   protected int getNextNode()
   {
+    if (m_foundLast)
+      return DTM.NULL;
 
     if (m_isFresh)
     {
@@ -355,7 +357,7 @@ public class AxesWalker extends PredicatedNodeTest
     }
 
     if (DTM.NULL == m_currentNode)
-      this.m_isDone = true;
+      this.m_foundLast = true;
 
     return m_currentNode;
   }
@@ -371,7 +373,6 @@ public class AxesWalker extends PredicatedNodeTest
    */
   public int nextNode()
   {
-
     int nextNode = DTM.NULL;
     AxesWalker walker = wi().getLastUsedWalker();
 
@@ -530,9 +531,6 @@ public class AxesWalker extends PredicatedNodeTest
   
   /** The node last returned from nextNode(). */
   transient int m_prevReturned = DTM.NULL;
-
-  /** True if this walker has found it's last node.  */
-  transient boolean m_isDone = false;
 
   /** True if an itteration has not begun.  */
   transient boolean m_isFresh;

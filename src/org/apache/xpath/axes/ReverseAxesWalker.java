@@ -108,6 +108,8 @@ public class ReverseAxesWalker extends AxesWalker
    */
   protected int getNextNode()
   {
+    if (m_foundLast)
+      return DTM.NULL;
 
     int next = m_iterator.next();
     
@@ -115,7 +117,7 @@ public class ReverseAxesWalker extends AxesWalker
       m_isFresh = false;
 
     if (DTM.NULL == next)
-      this.m_isDone = true;
+      this.m_foundLast = true;
 
     return next;
   }
