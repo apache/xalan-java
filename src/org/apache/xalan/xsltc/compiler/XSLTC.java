@@ -688,7 +688,10 @@ public final class XSLTC {
 	try {
 	    switch (_outputType) {
 	    case FILE_OUTPUT:
-		clazz.dump(getOutputFile(clazz.getClassName()));
+		clazz.dump(
+		    new BufferedOutputStream(
+			new FileOutputStream(
+			    getOutputFile(clazz.getClassName()))));
 		break;
 	    case JAR_OUTPUT:
 		_classes.addElement(clazz);	 
