@@ -57,7 +57,8 @@
 package org.apache.xalan.templates;
 
 import java.util.Vector;
-
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
@@ -84,6 +85,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import trax.TransformException;
 
@@ -224,6 +227,7 @@ public class FuncDocument extends Function2Args
     if(uri.length() == 0)
       uri = xctxt.getNamespaceContext().getBaseIdentifier();
     
+    String diagnosticsString = null;
     try
     {
       if((null != uri) && (uri.toString().length() > 0))
@@ -234,14 +238,66 @@ public class FuncDocument extends Function2Args
       else
         warn(xctxt, XSLTErrorResources.WG_CANNOT_MAKE_URL_FROM, new Object[]{((base == null) ? "" : base )+uri}); //"Can not make URL from: "+((base == null) ? "" : base )+uri);
     }
-    catch(Exception e)
+    catch(Throwable throwable)
     {
       newDoc = null;
       // path.warn(XSLTErrorResources.WG_ENCODING_NOT_SUPPORTED_USING_JAVA, new Object[]{((base == null) ? "" : base )+uri}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+        while(throwable instanceof org.apache.xalan.utils.WrappedRuntimeException)
+          throwable = ((org.apache.xalan.utils.WrappedRuntimeException)throwable).getException();
+
+        if((throwable instanceof NullPointerException) ||
+           (throwable instanceof ClassCastException)
+           )
+        {
+          throw new org.apache.xalan.utils.WrappedRuntimeException((Exception)throwable);
+        }
+        
+        StringWriter sw = new StringWriter();
+        PrintWriter diagnosticsWriter = new PrintWriter(sw);
+        if(throwable instanceof SAXException)
+        {
+          SAXException spe = (SAXException)throwable;
+          {
+            Exception e = spe;
+            while(null != e)
+            {
+              if(null != e.getMessage())
+              {
+                diagnosticsWriter.println(" ("+e.getClass().getName()+"): " 
+                                    + e.getMessage());        
+              }
+              if(e instanceof SAXParseException)
+              {
+                SAXParseException spe2 = (SAXParseException)e;
+                if(null != spe2.getSystemId())
+                  diagnosticsWriter.println("   ID: "+spe2.getSystemId()
+                                            +" Line #"+spe2.getLineNumber()
+                                            +" Column #"+spe2.getColumnNumber());
+                e = spe2.getException();
+                if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+                  e = ((org.apache.xalan.utils.WrappedRuntimeException)e).getException();
+              }
+              else
+                e = null;
+            }
+          }
+        }      
+        else 
+        {
+          diagnosticsWriter.println(" ("+throwable.getClass().getName()+"): " 
+                                    + throwable.getMessage());        
+        }
+         diagnosticsString = sw.toString();
     }
     if(null == newDoc)
     {
-      warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC, new Object[]{uri== null ?((base == null) ? "" : base)+uri : uri.toString()}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+      // System.out.println("what?: "+base+", uri: "+uri);
+      if(null != diagnosticsString)
+      {
+        warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC, new Object[]{diagnosticsString}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+      }
+      else
+        warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC, new Object[]{uri== null ?((base == null) ? "" : base)+uri : uri.toString()}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
     }
     else
     {
