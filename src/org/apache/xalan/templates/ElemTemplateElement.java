@@ -593,7 +593,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   public void setXmlSpace(int v)
   {
-    m_defaultSpace = ((Constants.ATTRVAL_STRIP == v) ? true : false);;
+    m_defaultSpace = ((Constants.ATTRVAL_STRIP == v) ? true : false);
   }
 
   /**
