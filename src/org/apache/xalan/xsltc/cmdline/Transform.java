@@ -100,7 +100,7 @@ final public class Transform {
     private String  _jarFileSrc;
     private boolean _isJarFileSpecified = false;
     private Vector  _params = null;
-    private boolean _uri, _debug;
+    private boolean _uri, _debug, _allowExit = true;
 
     public Transform(String className, String fileName,
 		     boolean uri, boolean debug) {
@@ -207,38 +207,38 @@ final public class Transform {
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("\nTranslet Error: " + e.getMessage());
-	    System.exit(-1);	    
+	    if (_allowExit) System.exit(-1);	    
 	}
 	catch (RuntimeException e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("\nRuntime Error: " + e.getMessage());
-	    System.exit(-1);
+	    if (_allowExit) System.exit(-1);
 	}
 	catch (FileNotFoundException e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: File or URI '"+_fileName+"' not found.");
-	    System.exit(-1);
+	    if (_allowExit) System.exit(-1);
 	}
 	catch (MalformedURLException e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: Invalid URI '"+_fileName+"'.");
-	    System.exit(-1);
+	    if (_allowExit) System.exit(-1);
 	}
 	catch (ClassNotFoundException e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: Cannot find class '"+_className+"'.");
-	    System.exit(-1);
+	    if (_allowExit) System.exit(-1);
 	}
         catch (UnknownHostException e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: Can't resolve URI specification '"+ 
 			       _fileName+"'.");
-	    System.exit(-1);
+	    if (_allowExit) System.exit(-1);
         }
 	catch (Exception e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: "+e.getMessage());
-	    System.exit(-1);
+	    if (_allowExit) System.exit(-1);
 	}
     }
 
@@ -255,7 +255,7 @@ final public class Transform {
 
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
-	System.exit(-1);
+	if (_allowExit) System.exit(-1);
     }
 
     public static void main(String[] args) {
@@ -273,6 +273,9 @@ final public class Transform {
 		    }
 		    else if (args[i].equals("-x")) {
 			debug = true;
+		    }
+		    else if (args[i].equals("-s")) {
+			_allowExits = false;
 		    }
 		    else if (args[i].equals("-j")) {
 			isJarFileSpecified = true;	
@@ -307,7 +310,7 @@ final public class Transform {
 		if (i == args.length) {
 		    handler.setParameters(params);
 		    handler.doTransform();
-		    System.exit(0);
+		    if (_allowExit) System.exit(0);
 		}
 	    } else {
 		printUsage();
