@@ -99,9 +99,16 @@ import java.io.FileOutputStream;
  */
 public class SQLDocument extends DTMDefaultBaseIterators
 {
+
+  public interface CharacterNodeHandler
+  {
+    public void characters(Node node)
+            throws org.xml.sax.SAXException;
+  }
+
   private boolean DEBUG = false;
 
-  private static final String S_NAMESPACE = null;
+  private static final String S_NAMESPACE = "";
 
   private static final String S_ATTRIB_NOT_SUPPORTED="Not Supported";
   private static final String S_ISTRUE="true";
@@ -114,7 +121,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
   private static final String S_COLUMN_HEADER = "column-header";
   private static final String S_ROW_SET = "row-set";
   private static final String S_ROW = "row";
-  private static final String S_COL = "col";
+  private static final String S_COL = "column";
 
   private static final String S_CATALOGUE_NAME = "catalogue-name";
   private static final String S_DISPLAY_SIZE = "column-display-size";
@@ -278,10 +285,6 @@ public class SQLDocument extends DTMDefaultBaseIterators
       error("ERROR Extracting Metadata");
     }
 
-    // The idx will represent the previous sibling for all the
-    // attribute nodes
-    int idx;
-
     // The ColHeaderIdx will be used to keep track of the
     // Element entries for the individual Column Header.
     int lastColHeaderIdx = DTM.NULL;
@@ -321,7 +324,6 @@ public class SQLDocument extends DTMDefaultBaseIterators
           S_ATTRIB_NOT_SUPPORTED,
           m_ColAttrib_COLUMN_LABEL_TypeID, lastColHeaderIdx);
       }
-
 /*
       try
       {
@@ -740,7 +742,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
       }
       else
       {
-        m_LastRowIdx = addElement(2, m_Row_TypeID, m_RowSetIdx, m_LastRowIdx);
+        m_LastRowIdx = addElement(3, m_Row_TypeID, m_RowSetIdx, m_LastRowIdx);
       }
 
       int colID = DTM.NULL;
@@ -761,7 +763,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
     }
 
     // Only do a single row...
-    return false;
+    return true;
   }
 
 
@@ -1023,6 +1025,76 @@ public class SQLDocument extends DTMDefaultBaseIterators
     }
   }
 
+
+  /**
+   * Retrieve the text content of a DOM subtree, appending it into a
+   * user-supplied FastStringBuffer object. Note that attributes are
+   * not considered part of the content of an element.
+   * <p>
+   * There are open questions regarding whitespace stripping.
+   * Currently we make no special effort in that regard, since the standard
+   * DOM doesn't yet provide DTD-based information to distinguish
+   * whitespace-in-element-context from genuine #PCDATA. Note that we
+   * should probably also consider xml:space if/when we address this.
+   * DOM Level 3 may solve the problem for us.
+   * <p>
+   * %REVIEW% Note that as a DOM-level operation, it can be argued that this
+   * routine _shouldn't_ perform any processing beyond what the DOM already
+   * does, and that whitespace stripping and so on belong at the DTM level.
+   * If you want a stripped DOM view, wrap DTM2DOM around DOM2DTM.
+   *
+   * @param node Node whose subtree is to be walked, gathering the
+   * contents of all Text or CDATASection nodes.
+   * @param buf FastStringBuffer into which the contents of the text
+   * nodes are to be concatenated.
+   */
+  protected static void dispatchNodeData(Node node,
+                                         org.xml.sax.ContentHandler ch,
+                                         int depth)
+            throws org.xml.sax.SAXException
+  {
+
+    switch (node.getNodeType())
+    {
+    case Node.DOCUMENT_FRAGMENT_NODE :
+    case Node.DOCUMENT_NODE :
+    case Node.ELEMENT_NODE :
+    {
+      for (Node child = node.getFirstChild(); null != child;
+              child = child.getNextSibling())
+      {
+        dispatchNodeData(child, ch, depth+1);
+      }
+    }
+    break;
+    case Node.PROCESSING_INSTRUCTION_NODE : // %REVIEW%
+    case Node.COMMENT_NODE :
+      if(0 != depth)
+        break;
+        // NOTE: Because this operation works in the DOM space, it does _not_ attempt
+        // to perform Text Coalition. That should only be done in DTM space.
+    case Node.TEXT_NODE :
+    case Node.CDATA_SECTION_NODE :
+    case Node.ATTRIBUTE_NODE :
+      String str = node.getNodeValue();
+      if(ch instanceof CharacterNodeHandler)
+      {
+        ((CharacterNodeHandler)ch).characters(node);
+      }
+      else
+      {
+        ch.characters(str.toCharArray(), 0, str.length());
+      }
+      break;
+//    /* case Node.PROCESSING_INSTRUCTION_NODE :
+//      // warning(XPATHErrorResources.WG_PARSING_AND_PREPARING);
+//      break; */
+    default :
+      // ignore
+      break;
+    }
+  }
+
   /*********************************************************************/
   /*********************************************************************/
   /******************* End of Functions we Wrote ***********************/
@@ -1237,18 +1309,31 @@ public class SQLDocument extends DTMDefaultBaseIterators
    * @return
    * @throws org.xml.sax.SAXException
    */
-  public void dispatchCharactersEvents( int parm1, ContentHandler parm2, boolean parm3 )
-    throws org.xml.sax.SAXException
+  public void dispatchCharactersEvents(
+          int nodeHandle, org.xml.sax.ContentHandler ch,
+          boolean normalize)
+            throws org.xml.sax.SAXException
   {
     if (DEBUG)
     {
       System.out.println("dispatchCharacterEvents(" +
-      parm1 + "," +
-      parm2 + "," +
-      parm3 + ")");
+      nodeHandle + "," +
+      ch + "," +
+      normalize + ")");
     }
 
-    return;
+    if(normalize)
+    {
+      XMLString str = getStringValue(nodeHandle);
+      str = str.fixWhiteSpace(true, true, false);
+      str.dispatchCharactersEvents(ch);
+    }
+    else
+    {
+      int type = getNodeType(nodeHandle);
+      Node node = getNode(nodeHandle);
+      dispatchNodeData(node, ch, 0);
+    }
   }
 
   /**
