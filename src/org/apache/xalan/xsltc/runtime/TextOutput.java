@@ -456,6 +456,10 @@ public final class TextOutput implements TransletOutputHandler {
      */
     public void startElement(String elementName)
 	throws TransletException {
+
+	// bug fix # 1499, GTM.
+	if (_outputType == TEXT) return; 
+
 	try {
 	    // Close any open start tag
 	    if (_startTagOpen) {
@@ -479,7 +483,7 @@ public final class TextOutput implements TransletOutputHandler {
 		}
 	    }
 
-	    _depth++;
+            _depth++;
 	    _elementName = elementName;
 	    _attributes.clear();
 	    _startTagOpen = true;
@@ -549,6 +553,10 @@ public final class TextOutput implements TransletOutputHandler {
      */
     public void attribute(final String name, final String value)
 	throws TransletException {
+	
+	// bug fix #1499, GTM
+	if (_outputType == TEXT) return; 
+
 	if (_startTagOpen) {
 	    // Intercept namespace declarations and handle them separately
 	    if (name.startsWith("xmlns"))
@@ -569,6 +577,10 @@ public final class TextOutput implements TransletOutputHandler {
      * End an element or CDATA section in the output document
      */
     public void endElement(String elementName) throws TransletException {
+	
+	// bug fix #1499, GTM
+	if (_outputType == TEXT) return;
+ 
 	try {
 	    // Close any open element
 	    if (_startTagOpen) {
