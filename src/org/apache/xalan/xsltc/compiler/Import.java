@@ -115,6 +115,14 @@ final class Import extends TopLevelElement {
 		input = new InputSource(docToLoad);
 	    }
 
+	    // Return if we could not resolve the URL
+	    if (input == null) {
+		final ErrorMsg msg = 
+		    new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
+		parser.reportError(Constants.FATAL, msg);
+		return;
+	    }
+
 	    SyntaxTreeNode root = parser.parse(input);
 
 	    if (root == null) return;
