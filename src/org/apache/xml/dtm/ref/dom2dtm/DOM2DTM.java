@@ -163,20 +163,20 @@ public class DOM2DTM extends DTMDefaultBaseIterators
       int attrsize=(attrs==null) ? 0 : attrs.getLength();
       if(attrsize>0)
       {
-	int attrIndex=NULL; // start with no previous sib
-	for(int i=0;i<attrsize;++i)
-	{
-	  // No need to force nodetype in this case;
-	  // addNode() will take care of switching it from
-	  // Attr to Namespace if necessary.
-	  attrIndex=addNode(attrs.item(i),1,0,attrIndex,NULL);
-	  m_firstch.setElementAt(DTM.NULL,attrIndex);
-	}
-	// Terminate list of attrs, and make sure they aren't
-	// considered children of the element
-	m_nextsib.setElementAt(DTM.NULL,attrIndex);
+        int attrIndex=NULL; // start with no previous sib
+        for(int i=0;i<attrsize;++i)
+        {
+          // No need to force nodetype in this case;
+          // addNode() will take care of switching it from
+          // Attr to Namespace if necessary.
+          attrIndex=addNode(attrs.item(i),1,0,attrIndex,NULL);
+          m_firstch.setElementAt(DTM.NULL,attrIndex);
+        }
+        // Terminate list of attrs, and make sure they aren't
+        // considered children of the element
+        m_nextsib.setElementAt(DTM.NULL,attrIndex);
 
-	// IMPORTANT: This does NOT change m_last_parent or m_last_kid!
+        // IMPORTANT: This does NOT change m_last_parent or m_last_kid!
       } // if attrs exist
     } //if(ELEMENT_NODE)
 
@@ -209,6 +209,35 @@ public class DOM2DTM extends DTMDefaultBaseIterators
         type = node.getNodeType();
     else
         type=forceNodeType;
+        
+    // %REVIEW% The Namespace Spec currently says that Namespaces are
+    // processed in a non-namespace-aware manner, by matching the
+    // QName, even though there is in fact a namespace assigned to
+    // these nodes in the DOM. If and when that changes, we will have
+    // to consider whether we check the namespace-for-namespaces
+    // rather than the node name.
+    //
+    // %TBD% Note that the DOM does not necessarily explicitly declare
+    // all the namespaces it uses. DOM Level 3 will introduce a
+    // namespace-normalization operation which reconciles that, and we
+    // can request that users invoke it or otherwise ensure that the
+    // tree is namespace-well-formed before passing the DOM to Xalan.
+    // But if they don't, what should we do about it? We probably
+    // don't want to alter the source DOM (and may not be able to do
+    // so if it's read-only). The best available answer might be to
+    // synthesize additional DTM Namespace Nodes that don't correspond
+    // to DOM Attr Nodes.
+    //
+    // %REVIEW% With forceNodeType... Is this trip really necessary?
+    if (Node.ATTRIBUTE_NODE == type)
+    {
+      String name = node.getNodeName();
+
+      if (name.startsWith("xmlns:") || name.equals("xmlns"))
+      {
+        type = DTM.NAMESPACE_NODE;
+      }
+    }
     
     m_nodes.addElement(node);
     
@@ -269,36 +298,14 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     m_exptype.setElementAt(expandedNameID,nodeIndex);
     
     indexNode(expandedNameID, nodeIndex);
-    // %REVIEW% The Namespace Spec currently says that Namespaces are
-    // processed in a non-namespace-aware manner, by matching the
-    // QName, even though there is in fact a namespace assigned to
-    // these nodes in the DOM. If and when that changes, we will have
-    // to consider whether we check the namespace-for-namespaces
-    // rather than the node name.
-    //
-    // %TBD% Note that the DOM does not necessarily explicitly declare
-    // all the namespaces it uses. DOM Level 3 will introduce a
-    // namespace-normalization operation which reconciles that, and we
-    // can request that users invoke it or otherwise ensure that the
-    // tree is namespace-well-formed before passing the DOM to Xalan.
-    // But if they don't, what should we do about it? We probably
-    // don't want to alter the source DOM (and may not be able to do
-    // so if it's read-only). The best available answer might be to
-    // synthesize additional DTM Namespace Nodes that don't correspond
-    // to DOM Attr Nodes.
-    if (Node.ATTRIBUTE_NODE == type)
-    {
-      String name = node.getNodeName();
-
-      if (name.startsWith("xmlns:") || name.equals("xmlns"))
-      {
-        type = DTM.NAMESPACE_NODE;
-        declareNamespaceInContext(parentIndex,nodeIndex);
-      }
-    }
 
     if (DTM.NULL != previousSibling)
       m_nextsib.setElementAt(nodeIndex,previousSibling);
+
+    // This should be done after m_exptype has been set, and probably should
+    // always be the last thing we do
+    if (type == DTM.NAMESPACE_NODE)
+        declareNamespaceInContext(parentIndex,nodeIndex);
 
     return nodeIndex;
   }
