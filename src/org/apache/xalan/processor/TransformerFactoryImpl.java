@@ -317,6 +317,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     // the parse.
     StylesheetPIHandler handler = new StylesheetPIHandler(baseID, media,
                                     title, charset);
+    
+    // Use URIResolver. Patch from Dmitri Ilyin 
+    if (m_uriResolver != null) 
+    {
+      handler.setURIResolver(m_uriResolver); 
+    }
 
     try
     {

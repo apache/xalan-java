@@ -66,6 +66,7 @@ import java.util.StringTokenizer;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.URIResolver;
 
 import org.apache.xml.utils.SystemIDResolver;
 
@@ -89,6 +90,37 @@ public class StylesheetPIHandler extends DefaultHandler
 
   /** A list of SAXSource objects that match the criteria.  */
   Vector m_stylesheets = new Vector();
+  
+  // Add code to use a URIResolver. Patch from Dmitri Ilyin. 
+  
+  /**
+   * The object that implements the URIResolver interface,
+   * or null.
+   */
+  URIResolver m_uriResolver;
+
+  /**
+   * Get the object that will be used to resolve URIs in href 
+   * in xml-stylesheet processing instruction.
+   *
+   * @param resolver An object that implements the URIResolver interface,
+   * or null.
+   */
+  public void setURIResolver(URIResolver resolver)
+  {
+    m_uriResolver = resolver;
+  }
+
+  /**
+   * Get the object that will be used to resolve URIs in href 
+   * in xml-stylesheet processing instruction.
+   *
+   * @return The URIResolver that was set with setURIResolver.
+   */
+  public URIResolver getURIResolver()
+  {
+    return m_uriResolver;
+  }
 
   /**
    * Construct a StylesheetPIHandler instance that will search 
@@ -123,9 +155,8 @@ public class StylesheetPIHandler extends DefaultHandler
 
     if (sz > 0)
     {
-      SAXSource ssource 
-        = new SAXSource((InputSource) m_stylesheets.elementAt(sz-1));
-      return ssource;
+      Source source = (Source) m_stylesheets.elementAt(sz-1);
+      return source;      
     }
     else
       return null;
@@ -156,6 +187,7 @@ public class StylesheetPIHandler extends DefaultHandler
       boolean alternate = false;  // (yes|no) "no"
       StringTokenizer tokenizer = new StringTokenizer(data, " \t=", true);
       boolean lookedAhead = false; 
+      Source source = null;
 
       String token = "";
       while (tokenizer.hasMoreTokens())
@@ -212,8 +244,17 @@ public class StylesheetPIHandler extends DefaultHandler
           }
           href = href.substring(1, href.length() - 1);
           try
-          {              
-            href = SystemIDResolver.getAbsoluteURI(href, m_baseID);
+          { 
+            // Add code to use a URIResolver. Patch from Dmitri Ilyin. 
+            if (m_uriResolver != null) 
+            {
+              source = m_uriResolver.resolve(href, m_baseID);
+            } 
+           else 
+            {
+              href = SystemIDResolver.getAbsoluteURI(href, m_baseID);
+              source = new SAXSource(new InputSource(href));
+            }            
           }
           catch(TransformerException te)
           {
@@ -293,7 +334,7 @@ public class StylesheetPIHandler extends DefaultHandler
             return;
         }
 
-        m_stylesheets.addElement(new InputSource(href));
+        m_stylesheets.addElement(source);
       }
     }
   }
