@@ -670,6 +670,7 @@ public final class TransformerImpl extends Transformer
 	    else {
 		_translet.transform(getDOM(source), handler);
 	    }
+	    _dtmManager = null;
 	}
 	catch (TransletException e) {
 	    if (_errorListener != null)	postErrorToListener(e.getMessage());
