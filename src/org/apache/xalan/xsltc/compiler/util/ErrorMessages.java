@@ -231,7 +231,7 @@ public class ErrorMessages extends ResourceBundle {
 	"   Notes:\n"+
 	"         The -i options forces the compiler to read from stdin\n"+
 	"         The -o option is ignored if compiling multiple stylesheets\n"+
-	"         The -x option switched on debug messages.\n"+
+	"         The -x option switches on debug messages.\n"+
 	"         The -s option disables calling System.exit.",
 	// TRANSFORM_USAGE_STR
 	"Usage: \n" +
@@ -243,7 +243,7 @@ public class ErrorMessages extends ResourceBundle {
 	"         user's CLASSPATH or in the <jarfile> specified \n" +
 	"         with the -j option.\n" +
 	"   Notes:\n"+
-	"         The -x option switched on debug messages.\n"+
+	"         The -x option switches on debug messages.\n"+
 	"         The -s option disables calling System.exit."
     };
 
