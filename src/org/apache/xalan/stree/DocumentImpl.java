@@ -204,19 +204,22 @@ public class DocumentImpl extends DocImpl
   public Node appendChild(Node newChild) throws DOMException
   {
 
-    short type = newChild.getNodeType();
-
-    if (type == Node.ELEMENT_NODE)
+    if(getNodeType() != Node.DOCUMENT_FRAGMENT_NODE)
     {
-      if (null != m_docElement)
-        throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR,
-                               "DOM006 Hierarchy request error");
-
-      m_docElement = (ElementImpl) newChild;
-    }
-    else if (type == Node.DOCUMENT_TYPE_NODE)
-    {
-      m_docType = (DocumentTypeImpl) newChild;
+      short type = newChild.getNodeType();
+  
+      if (type == Node.ELEMENT_NODE)
+      {
+        if (null != m_docElement)
+          throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "DOM006 Hierarchy request error");
+  
+        m_docElement = (ElementImpl) newChild;
+      }
+      else if (type == Node.DOCUMENT_TYPE_NODE)
+      {
+        m_docType = (DocumentTypeImpl) newChild;
+      }
     }
 
     return super.appendChild(newChild);
@@ -277,7 +280,7 @@ public class DocumentImpl extends DocImpl
    */
   public DocumentFragment createDocumentFragment()
   {
-    return new DocumentFragmentImpl(this);
+    return new DocumentFragmentImpl();
   }
 
   /**
@@ -421,7 +424,7 @@ public class DocumentImpl extends DocImpl
           // but we seem to come out of wait() too soon! 
           while (!isComplete())
           {
-            m_doc.wait();
+            m_doc.wait(100);
             throwIfParseError();
 
             elem = (Element) m_idAttributes.get(elementId);
