@@ -110,10 +110,10 @@ final class Sort extends Instruction implements Closure {
     private AttributeValue _order;
     private AttributeValue _caseOrder;
     private AttributeValue _dataType;
+    private String  _lang; // bug! see 26869
 
     private String         _data = null;
-    public  String         _lang;
-    public  String         _country;
+
 
     private String _className = null;
     private ArrayList _closureVars = null;
@@ -185,11 +185,6 @@ final class Sort extends Instruction implements Closure {
 	if (val.length() == 0) val = "ascending";
 	_order = AttributeValue.create(this, val, parser);
 
-	// Get the case order; default is language dependant
-	val = getAttribute("case-order");
-	if (val.length() == 0) val = "upper-first";
-	_caseOrder = AttributeValue.create(this, val, parser);
-
 	// Get the sort data type; default is text
 	val = getAttribute("data-type");
 	if (val.length() == 0) {
@@ -206,16 +201,13 @@ final class Sort extends Instruction implements Closure {
 	}
 	_dataType = AttributeValue.create(this, val, parser);
 
-	// Get the language whose sort rules we will use; default is env.dep.
-	if ((val = getAttribute("lang")) != null) {
-	    try {
-		StringTokenizer st = new StringTokenizer(val,"-",false);
-		_lang = st.nextToken();
-		_country = st.nextToken();
-	    }
-	    catch (NoSuchElementException e) { // ignore
-	    }
-	}
+	 _lang =  getAttribute("lang"); // bug! see 26869
+  // val =  getAttribute("lang"); 
+  // _lang = AttributeValue.create(this, val, parser);
+        // Get the case order; default is language dependant
+    val = getAttribute("case-order");
+    _caseOrder = AttributeValue.create(this, val, parser);
+	
     }
     
     /**
@@ -249,6 +241,18 @@ final class Sort extends Instruction implements Closure {
     public void translateSortOrder(ClassGenerator classGen,
 				   MethodGenerator methodGen) {
 	_order.translate(classGen, methodGen);
+    }
+    
+     public void translateCaseOrder(ClassGenerator classGen,
+                   MethodGenerator methodGen) {
+    _caseOrder.translate(classGen, methodGen);
+    }
+    
+    public void translateLang(ClassGenerator classGen,
+                   MethodGenerator methodGen) {
+    final ConstantPoolGen cpg = classGen.getConstantPool();
+    final InstructionList il = methodGen.getInstructionList();
+    il.append(new PUSH(cpg, _lang)); // bug! see 26869
     }
     
     /**
@@ -365,6 +369,26 @@ final class Sort extends Instruction implements Closure {
 	    sort.translateSortType(classGen, methodGen);
 	    il.append(AASTORE);
 	}
+  
+  il.append(new PUSH(cpg, nsorts));
+  il.append(new ANEWARRAY(cpg.addClass(STRING)));
+  for (int level = 0; level < nsorts; level++) {
+        final Sort sort = (Sort)sortObjects.elementAt(level);
+        il.append(DUP);
+        il.append(new PUSH(cpg, level));
+        sort.translateLang(classGen, methodGen);
+        il.append(AASTORE);
+   }
+ 
+   il.append(new PUSH(cpg, nsorts));
+   il.append(new ANEWARRAY(cpg.addClass(STRING)));
+   for (int level = 0; level < nsorts; level++) {
+        final Sort sort = (Sort)sortObjects.elementAt(level);
+        il.append(DUP);
+        il.append(new PUSH(cpg, level));
+        sort.translateCaseOrder(classGen, methodGen);
+        il.append(AASTORE);
+  }
 
 	il.append(new INVOKESPECIAL(
 	    cpg.addMethodref(sortRecordFactoryClass, "<init>", 
@@ -372,6 +396,8 @@ final class Sort extends Instruction implements Closure {
 		    + STRING_SIG
 		    + TRANSLET_INTF_SIG
 		    + "[" + STRING_SIG
+        + "[" + STRING_SIG
+        + "[" + STRING_SIG
 		    + "[" + STRING_SIG + ")V")));
 
 	// Initialize closure variables in sortRecordFactory
@@ -444,19 +470,24 @@ final class Sort extends Instruction implements Closure {
 
 	// Define a constructor for this class
 	final org.apache.bcel.generic.Type[] argTypes = 
-	    new org.apache.bcel.generic.Type[5];
+	    new org.apache.bcel.generic.Type[7];
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(STRING_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_INTF_SIG);
 	argTypes[3] = Util.getJCRefType("[" + STRING_SIG);
 	argTypes[4] = Util.getJCRefType("[" + STRING_SIG);
+  argTypes[5] = Util.getJCRefType("[" + STRING_SIG);
+  argTypes[6] = Util.getJCRefType("[" + STRING_SIG);
 
-	final String[] argNames = new String[5];
+	final String[] argNames = new String[7];
 	argNames[0] = DOCUMENT_PNAME;
 	argNames[1] = "className";
 	argNames[2] = TRANSLET_PNAME;
 	argNames[3] = "order";
 	argNames[4] = "type";
+  argNames[5] = "lang";
+  argNames[6] = "case_order";
+  
 
 	InstructionList il = new InstructionList();
 	final MethodGenerator constructor =
@@ -472,12 +503,16 @@ final class Sort extends Instruction implements Closure {
 	il.append(new ALOAD(3));
 	il.append(new ALOAD(4));
 	il.append(new ALOAD(5));
+  il.append(new ALOAD(6));
+  il.append(new ALOAD(7));
 	il.append(new INVOKESPECIAL(cpg.addMethodref(NODE_SORT_FACTORY,
 	    "<init>", 
 	    "(" + DOM_INTF_SIG 
 		+ STRING_SIG 
 		+ TRANSLET_INTF_SIG 
 		+ "[" + STRING_SIG
+    + "[" + STRING_SIG
+    + "[" + STRING_SIG
 		+ "[" + STRING_SIG + ")V")));
 	il.append(RETURN);
 
@@ -614,69 +649,7 @@ final class Sort extends Instruction implements Closure {
 	il.append(new INVOKESPECIAL(cpg.addMethodref(NODE_SORT_RECORD,
 						     "<init>", "()V")));
 
-	final int initLocale =  cpg.addMethodref("java/util/Locale",
-						 "<init>",
-						 "(Ljava/lang/String;"+
-						 "Ljava/lang/String;)V");
 	
-	final int getCollator = cpg.addMethodref(COLLATOR_CLASS,
-						 "getInstance",
-						 "(Ljava/util/Locale;)"+
-						 COLLATOR_SIG);
-
-	final int setStrength = cpg.addMethodref(COLLATOR_CLASS,
-						 "setStrength", "(I)V");
-
-	final int levels = sortObjects.size();
-
-	/*
-	final int levelsField = cpg.addFieldref(className, "_levels", "I");
-	il.append(new PUSH(cpg, levels));
-	il.append(new PUTSTATIC(levelsField));
-	*/
-
-	// Compile code that initializes the locale
-	String language = null;
-	String country = null;
-	Sort sort = (Sort)sortObjects.elementAt(0);
-
-	for (int level = 0; level < levels; level++) {
-	    if (language == null && sort._lang != null) {
-		language = sort._lang;
-	    }
-	    if (country == null && sort._country != null) {
-		country = sort._country;
-	    }
-	}
-
-	final int collator =
-	    cpg.addFieldref(className, "_collator", COLLATOR_SIG);
-	final int locale =
-	    cpg.addFieldref(className, "_locale", LOCALE_SIG);
-
-	if (language != null) {
-	    // Create new Locale object on stack
-	    il.append(new NEW(cpg.addClass("java/util/Locale")));
-	    il.append(DUP);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, language));
-	    il.append(new PUSH(cpg, (country != null ? country : EMPTYSTRING)));
-	    il.append(new INVOKESPECIAL(initLocale));
-	    il.append(ALOAD_0);
-	    il.append(SWAP);
-	    il.append(new PUTFIELD(locale));
-	    
-	    // Use that Locale object to get the required Collator object
-	    il.append(new INVOKESTATIC(getCollator));
-	    il.append(ALOAD_0);
-	    il.append(SWAP);
-	    il.append(new PUTFIELD(collator));
-	}
-
-	il.append(ALOAD_0);
-	il.append(new GETFIELD(collator));
-	il.append(new ICONST(Collator.TERTIARY));
-	il.append(new INVOKEVIRTUAL(setStrength));
 
 	il.append(RETURN);
 

@@ -69,6 +69,9 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xml.utils.ObjectFactory;
+import org.apache.xml.utils.LocaleUtility;
+import java.util.Locale;
+import java.text.Collator;
 
 public class NodeSortRecordFactory {
 
@@ -80,6 +83,9 @@ public class NodeSortRecordFactory {
     private Class _class;
     private int   _order[];
     private int   _type[];
+    private Locale _locale[];
+    private Collator _collator[];
+    private String _case_order[];
     private final AbstractTranslet _translet;
 
     /**
@@ -89,35 +95,39 @@ public class NodeSortRecordFactory {
      * class), and the translet parameter is needed for methods called by
      * this object.
      */
-    public NodeSortRecordFactory(DOM dom, String className, Translet translet,
-				 String order[], String type[])
-	throws TransletException {
-	try {
-	    _dom = dom;
-	    _className = className;
-	    // This should return a Class definition if using TrAX
-	    _class = translet.getAuxiliaryClass(className);
-	    // This code is only run when the native API is used
-	    if (_class == null) {
+     public NodeSortRecordFactory(DOM dom, String className, Translet translet,
+                 String order[], String type[], String lang[], String case_order[])
+    throws TransletException {
+    try {
+        _dom = dom;
+        _className = className;
+        // This should return a Class definition if using TrAX
+        _class = translet.getAuxiliaryClass(className);
+        // This code is only run when the native API is used
+        if (_class == null) {
                 _class = ObjectFactory.findProviderClass(
                     className, ObjectFactory.findClassLoader(), true);
             } 
-	    _translet = (AbstractTranslet)translet;
+        _translet = (AbstractTranslet)translet;
 
-	    int levels = order.length;
-	    _order = new int[levels];
-	    _type = new int[levels];
-	    for (int i = 0; i < levels; i++) {
-		if (order[i].length() == DESCENDING)
-		    _order[i] = NodeSortRecord.COMPARE_DESCENDING;
-		if (type[i].length() == NUMBER)
-		    _type[i] = NodeSortRecord.COMPARE_NUMERIC;
-	    }
-	}
-	catch (ClassNotFoundException e) {
-	    throw new TransletException(e);
-	}
+        int levels = order.length;
+        _order = new int[levels];
+        _type = new int[levels];
+        for (int i = 0; i < levels; i++) {
+        if (order[i].length() == DESCENDING)
+            _order[i] = NodeSortRecord.COMPARE_DESCENDING;
+        if (type[i].length() == NUMBER)
+            _type[i] = NodeSortRecord.COMPARE_NUMERIC;
+        }
+         setLang(lang);
+        _case_order = case_order;
     }
+    catch (ClassNotFoundException e) {
+        throw new TransletException(e);
+    }
+    }
+    
+    
 
     /**
      * Create an instance of a sub-class of NodeSortRecord. The name of this
@@ -133,11 +143,23 @@ public class NodeSortRecordFactory {
 
 	final NodeSortRecord sortRecord =
 	    (NodeSortRecord)_class.newInstance();
-	sortRecord.initialize(node, last, _dom, _translet, _order, _type, this);
+	sortRecord.initialize(node, last, _dom, _translet, _order, 
+                         _type, _locale,  _collator, _case_order, this);
 	return sortRecord;
     }
 
     public String getClassName() {
 	return _className;
+    }
+    
+   private final void setLang(final String lang[]){
+        
+      final int length = lang.length;
+      _locale = new Locale[length];
+      _collator = new Collator[length];
+      for(int i = 0; i< length; i++){
+        _locale[i] = LocaleUtility.langToLocale(lang[i]);
+        _collator[i] = Collator.getInstance(_locale[i] );
+      }
     }
 }

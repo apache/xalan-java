@@ -86,23 +86,20 @@ public abstract class NodeSortRecord {
     public static final int COMPARE_DESCENDING = 1;
 
     /**
-     * A reference to a locale. May be updated by subclass if the stylesheet
-     * specifies a different language.
+     * A reference to a locales. 
      */
-    protected static final Locale DEFAULT_LOCALE = Locale.getDefault();
-    protected Locale _locale = Locale.getDefault();
+    protected Locale[] _locale;
 
     /**
-     * A reference to a collator. May be updated by subclass if the stylesheet
-     * specifies a different language (will be updated iff _locale is updated).
+     * A reference to a collators. 
      */
-    protected static final Collator DEFAULT_COLLATOR = Collator.getInstance();
-    protected Collator _collator = DEFAULT_COLLATOR;
+    protected Collator[] _collator ;
     protected CollatorFactory _collatorFactory;
 
     protected int   _levels = 1;
     protected int[] _compareType;
     protected int[] _sortOrder;
+    protected String[] _case_order;
 
     private AbstractTranslet _translet = null;
 
@@ -121,9 +118,6 @@ public abstract class NodeSortRecord {
      */ 
     public NodeSortRecord(int node) {
 	_node = node;
-	if (_locale != DEFAULT_LOCALE) {
-	    _collator = Collator.getInstance(_locale);
-	}
     }
 
     public NodeSortRecord() {
@@ -135,8 +129,8 @@ public abstract class NodeSortRecord {
      * to the default constructor.
      */
     public final void initialize(int node, int last, DOM dom,
-	 AbstractTranslet translet, int[] order, int[] type,
-	 NodeSortRecordFactory nsrFactory) throws TransletException
+	 AbstractTranslet translet, int[] order, int[] type, final Locale[] locale, final Collator[] collator,
+     final String[] case_order, NodeSortRecordFactory nsrFactory) throws TransletException
     {
 	_dom = dom;
 	_node = node;
@@ -149,7 +143,8 @@ public abstract class NodeSortRecord {
 	_compareType = type;
 
 	_values = new Object[_levels];
-
+   _locale = locale;
+  
 	// -- W. Eliot Kimber (eliot@isogen.com)
         String colFactClassname = 
 	    System.getProperty("org.apache.xalan.xsltc.COLLATOR_FACTORY");
@@ -160,14 +155,18 @@ public abstract class NodeSortRecord {
                     colFactClassname, ObjectFactory.findClassLoader(), true);
                 _collatorFactory = (CollatorFactory)candObj;
             } 
-	    catch (ClassNotFoundException e) {
-		throw new TransletException(e);
+	          catch (ClassNotFoundException e) {
+		          throw new TransletException(e);
             }
-        } 
-	else {
-	    _collatorFactory = new CollatorFactoryBase();
+             for(int i = 0; i< _levels; i++){
+                _collator[i] = _collatorFactory.getCollator(_locale[i]);
+             }
+        }else {
+    	    _collator = collator;
         }
-        _collator = _collatorFactory.getCollator(_locale);
+     
+     
+     _case_order = case_order;
     }
 
     /**
@@ -195,7 +194,7 @@ public abstract class NodeSortRecord {
 	    // Get value from DOM if accessed for the first time
 	    final String str = extractValueFromDOM(_dom, _node, level,
 						   _translet, _last);
-	    final CollationKey key = _collator.getCollationKey(str);
+	    final CollationKey key = _collator[level].getCollationKey(str);
 	    _values[_scanned++] = key;
 	    return(key);
 	}
@@ -257,7 +256,7 @@ public abstract class NodeSortRecord {
      * Returns the Collator used for text comparisons in this object.
      * May be overridden by inheriting classes
      */
-    public Collator getCollator() {
+    public Collator[] getCollator() {
 	return _collator;
     }
 
