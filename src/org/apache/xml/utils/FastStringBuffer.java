@@ -1110,6 +1110,8 @@ public class FastStringBuffer
    * This version is aware of the fact that it may be called several times
    * in succession if the data is made up of multiple "chunks", and thus
    * must actively manage the handling of leading and trailing whitespace.
+   * 
+   * Note: The recursion is due to the possible recursion of inner FSBs.
    *
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
@@ -1141,6 +1143,8 @@ public class FastStringBuffer
    * suppressed.</dd>
    * </dd>
    * </dl>
+   *
+   * 
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    */
@@ -1153,16 +1157,23 @@ public class FastStringBuffer
     int end = length + start;
     int scanpos=start;
 		
-	// Leading whitespaces should be _completely_ suppressed if and only if
-	// (a) we're the first chunk in the normalized sequence or (b) the
-	// previous chunk ended in a normalized-but-not-suppressed whitespace.
-	if(0!= (edgeTreatmentFlags&SUPPRESS_LEADING_WS) )
-		for (; scanpos < end; scanpos++)
-		{
-			char c = ch[scanpos];
-			if(!XMLCharacterRecognizer.isWhiteSpace(c))
-				break;
-		}
+    // Leading whitespaces should be _completely_ suppressed if and only if
+    // (a) we're the first chunk in the normalized sequence or (b) the
+    // previous chunk ended in a normalized-but-not-suppressed whitespace.
+    // If no suppression required and first char is whitespace, than
+    // add single space and suppress following white spaces
+    if (XMLCharacterRecognizer.isWhiteSpace(ch[scanpos]))
+    {
+        if(0 == (edgeTreatmentFlags&SUPPRESS_LEADING_WS) )
+            handler.characters(SINGLE_SPACE, 0, 1);
+
+        while(++scanpos < end)
+        {
+            char c = ch[scanpos];
+            if(!XMLCharacterRecognizer.isWhiteSpace(c))
+                break;
+        }
+    }
 
 	// %REVIEW% Do we really need both flags?
     boolean whiteSpaceFound = false;  // Last char seen was whitespace
