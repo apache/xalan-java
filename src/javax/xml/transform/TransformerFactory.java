@@ -303,25 +303,23 @@ public abstract class TransformerFactory
    */
   private static String findFactory(String factoryId, String defaultFactory)
   {
-
+    // Use the system property first
+    try {
+      String systemProp =
+	System.getProperty( factoryId );
+      if( systemProp!=null) {
+	if( debug ) 
+	  System.err.println("JAXP: found system property" +
+			     systemProp );
+	return systemProp;
+      }
+      
+    }catch (SecurityException se) {
+    }
+    
     if (foundFactory != null)
       return foundFactory;
-
-    // Use the system property first
-    try
-    {
-      foundFactory = System.getProperty(factoryId);
-
-      if (foundFactory != null)
-      {
-        if (debug)
-          System.err.println("JAXP: found system property" + foundFactory);
-
-        return foundFactory;
-      }
-    }
-    catch (SecurityException se){}
-
+    
     // try to read from $java.home/lib/jaxp.properties
     try
     {
