@@ -284,7 +284,10 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
       if((null == attrNS) || (attrNS.length() == 0))
         elem.setAttribute(atts.getQName(i), atts.getValue(i));
       else
-        elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+      {
+        // elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+        elem.setAttributeNS(atts.getURI(i), atts.getQName(i), atts.getValue(i));
+      }
     }
     m_elemStack.push(elem);
     m_currentNode = elem;
