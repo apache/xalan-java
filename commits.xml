@@ -339,4 +339,49 @@ TreeWalker to change fields in the locator and not set it for each node.</Log>
 <Modified>java/src/org/apache/xalan/xslt EnvironmentCheck.java</Modified>
 <Log>Added checkDirForJars() which checks java.ext.dirs as well now</Log>
 </Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>04/26/2001</DateCommitted>
+<Added>java/src/javax/xml/transform package.html
+ java/src/javax/xml/transform/dom package.html
+ java/src/javax/xml/transform/sax package.html
+ java/src/javax/xml/transform/stream package.html</Added>
+<Log>Add package.html for each package in javax.xml.transform.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>04/27/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Resolve bug 1496 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1496&gt; 
+where xsl:param statements were not being reset properly if the TransformerImpl 
+was reused.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>04/27/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/stree DocImpl.java</Modified>
+<Log>Fix for #1561</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>04/29/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/functions FuncExtFunction.java</Modified>
+<Log>Resolve bugzilla bug 1373 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1373&gt;.
+ Added code to support return of Integer or Long by an external function.
+ Code was contributed by Patrick Moore &lt;patmoore@ieee.org>.</Log>
+</Commit>
+<Commit category="core">
+<Who>costin@apache.org</Who>
+<DateCommitted>05/03/2001</DateCommitted>
+<Modified>java/src/javax/xml/transform/stream StreamResult.java
+ StreamSource.java</Modified>
+<Log>Small fix to avoid file:////path that may fail on some JDK.</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>05/04/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql package.html</Modified>
+<Log>Preliminary updates for John G's work.</Log>
+</Commit>
 </Commits>
