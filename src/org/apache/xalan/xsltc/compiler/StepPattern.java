@@ -73,15 +73,15 @@ import de.fub.bytecode.classfile.Field;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 
-final class StepPattern extends RelativePathPattern {
+class StepPattern extends RelativePathPattern {
 
     private static final int NO_CONTEXT = 0;
     private static final int SIMPLE_CONTEXT = 1;
     private static final int GENERAL_CONTEXT = 2;
 
-    private final int    _axis;
-    private final Vector _predicates;
-    private final int    _nodeType;
+    protected final int _axis;
+    protected final int _nodeType;
+    protected Vector _predicates;
 
     private Step    _step = null;
     private boolean _isEpsilon = false;
@@ -116,8 +116,13 @@ final class StepPattern extends RelativePathPattern {
     public boolean isWildcard() {
 	return _isEpsilon && hasPredicates() == false;
     }
+
+    public StepPattern setPredicates(Vector predicates) {
+	_predicates = predicates;
+	return(this);
+    }
     
-    private boolean hasPredicates() {
+    protected boolean hasPredicates() {
 	return _predicates != null && _predicates.size() > 0;
     }
 

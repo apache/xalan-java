@@ -78,7 +78,7 @@ final class Step extends RelativeLocationPath {
     private int _axis;
 
     // A vector of predicates (filters) defined on this step - may be null
-    private final Vector _predicates;
+    private Vector _predicates;
 
     // Some simple predicates can be handled by this class (and not by the
     // Predicate class) and will be removed from the above vector as they are
@@ -138,6 +138,16 @@ final class Step extends RelativeLocationPath {
      */
     public Vector getPredicates() {
 	return _predicates;
+    }
+
+    /**
+     * Returns the vector containing all predicates for this step.
+     */
+    public void addPredicates(Vector predicates) {
+	if (_predicates == null)
+	    _predicates = predicates;
+	else
+	    _predicates.addAll(predicates);
     }
 
     /**

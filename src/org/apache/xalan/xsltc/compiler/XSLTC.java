@@ -458,6 +458,7 @@ public final class XSLTC {
 	final String base  = Util.baseName(className);
 	final String noext = Util.noExtName(base); 
 	String name  = Util.toJavaName(noext);
+
 	if (_packageName == null)
 	    _className = name;
 	else

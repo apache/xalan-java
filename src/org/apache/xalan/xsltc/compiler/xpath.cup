@@ -222,7 +222,7 @@ terminal LT, GT, LE, GE;
 terminal PLUS, MINUS, DIV, MOD;
 terminal String Literal;
 terminal String QNAME;
-terminal ID, KEY, TEXT, NODE, OR, AND, COMMENT, PI, PRECEDINGSIBLING;
+terminal ID, KEY, TEXT, NODE, OR, AND, COMMENT, PI, PIPARAM, PRECEDINGSIBLING;
 terminal SELF, PARENT, CHILD, ATTRIBUTE, ANCESTOR, ANCESTORORSELF, DESCENDANT; 
 terminal DESCENDANTORSELF, FOLLOWING, FOLLOWINGSIBLING, NAMESPACE, PRECEDING;
 terminal Double REAL;
@@ -246,6 +246,7 @@ non terminal Object NodeTest, NameTest;
 non terminal IdKeyPattern IdKeyPattern;
 non terminal Pattern Pattern;
 non terminal Pattern LocationPathPattern;
+non terminal StepPattern ProcessingInstructionPattern;
 non terminal RelativePathPattern RelativePathPattern;
 non terminal StepPattern StepPattern;
 non terminal Object NodeTestPattern, NameTestPattern;
@@ -289,6 +290,12 @@ LocationPathPattern ::= SLASH
             | SLASH RelativePathPattern:rpp
             {: RESULT = new AbsolutePathPattern(rpp); :}
 
+            | ProcessingInstructionPattern:pip
+            {: RESULT = pip; :}
+
+	    | ProcessingInstructionPattern:pip Predicates:pp
+            {: RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); :}
+
             | IdKeyPattern:ikp
             {: RESULT = ikp; :}
 
@@ -309,6 +316,9 @@ IdKeyPattern ::= ID LPAREN Literal:l RPAREN
 
             | KEY LPAREN Literal:l1 COMMA Literal:l2 RPAREN
             {: RESULT = new KeyPattern(l1, l2); :};
+
+ProcessingInstructionPattern ::= PIPARAM LPAREN Literal:l RPAREN
+            {: RESULT = new ProcessingInstructionPattern(l); :};
 
 RelativePathPattern ::= StepPattern:sp
             {: RESULT = sp; :}
@@ -598,15 +608,28 @@ AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
 
 
 Step ::= NodeTest:ntest
-        {: RESULT = new Step(Axis.CHILD,
+        {:
+            if (ntest instanceof Step) {
+                RESULT = (Step)ntest;
+            }
+            else {
+		RESULT = new Step(Axis.CHILD,
                              parser.findNodeType(Axis.CHILD, ntest, false),
                              null);
+            }
         :}
 
         | NodeTest:ntest Predicates:pp
-        {: RESULT = new Step(Axis.CHILD,
-                             parser.findNodeType(Axis.CHILD, ntest, false),
-                             pp);
+        {: 
+            if (ntest instanceof Step) {
+                Step step = (Step)ntest;
+                step.addPredicates(pp);
+                RESULT = (Step)ntest;
+            }
+            else {
+                RESULT = new Step(Axis.CHILD,
+                             parser.findNodeType(Axis.CHILD, ntest, false),pp);
+            }
         :}
 
         | AxisSpecifier:axis NodeTest:ntest Predicates:pp
@@ -748,6 +771,7 @@ VariableReference ::= DOLLAR VariableName:varName
 
 FunctionCall ::= FunctionName:fname LPAREN RPAREN
         {: 
+
           if (fname == parser.getQName("current")) {
             RESULT = new CurrentCall(fname);
 	  }
@@ -878,7 +902,6 @@ NonemptyArgumentList ::= Argument:arg
 
         | Argument:arg COMMA NonemptyArgumentList:argl
         {: argl.insertElementAt(arg, 0); RESULT = argl; :};
-        /* Is insertElement ok ? */
 
 FunctionName ::= QName:fname
         {:
@@ -906,6 +929,18 @@ NodeTest ::= NameTest:nt
 
         | COMMENT
         {: RESULT = new Integer(NodeTest.COMMENT); :}
+
+        | PIPARAM LPAREN Literal:l RPAREN
+        {:
+           QName name = parser.getQName("name");
+           Expression exp = new EqualityExpr(Operators.EQ,
+                                             new NameCall(name),
+                                             new LiteralExpr(l));
+           Vector predicates = new Vector();
+           predicates.addElement(new Predicate(exp));
+           RESULT = new Step(Axis.CHILD, NodeTest.PI, predicates);
+	           //RESULT = new Integer(NodeTest.PI);
+        :}
 
         | PI
         {: RESULT = new Integer(NodeTest.PI); :};

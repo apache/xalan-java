@@ -112,6 +112,7 @@ NCName=({Letter}|"_")({NCNameChar})*
 "node"+[ \t\r\n\f]+"()"  { return new Symbol(sym.NODE); }
 "comment()"                 { return new Symbol(sym.COMMENT); }
 "comment"+[ \t\r\n\f]+"()"  { return new Symbol(sym.COMMENT); }
+"processing-instruction" { return new Symbol(sym.PIPARAM); }
 "processing-instruction()"                { return new Symbol(sym.PI); }
 "processing-instruction"+[ \t\r\n\f]+"()" { return new Symbol(sym.PI); }
 "or"                     { return new Symbol(sym.OR); }
