@@ -548,7 +548,11 @@ public abstract class DTMDefaultBase implements DTM
       if (identity >= m_size &&!isMore)
         return NULL;
       else
+      {
         info = m_firstch.elementAt(identity);
+        if(info == NOTPROCESSED && !isMore)
+          return NULL;
+      }
     }
 
     return info;
@@ -577,7 +581,11 @@ public abstract class DTMDefaultBase implements DTM
       if (identity >= m_size &&!isMore)
         return NULL;
       else
+      {
         info = m_nextsib.elementAt(identity);
+        if(info == NOTPROCESSED && !isMore)
+          return NULL;
+      }
     }
 
     return info;
