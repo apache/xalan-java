@@ -428,7 +428,7 @@ public class StylesheetHandler extends DefaultHandler
    * Receive a Locator object for document events.
    * This is called by the parser to push a locator for the
    * stylesheet being parsed. The stack needs to be popped
-   * after the stylesheed has been parsed. We pop in
+   * after the stylesheet has been parsed. We pop in
    * popStylesheet.
    *
    * @param locator A locator for all SAX document events.
