@@ -399,7 +399,7 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Shouldn't this be in the transformer?  Big worries about threads...
    */
-  private XSLTResourceBundle thisBundle;
+ // private XSLTResourceBundle thisBundle;
 
   /**
    * Table to help in converting decimals to roman numerals.
@@ -1026,7 +1026,8 @@ public class ElemNumber extends ElemTemplateElement
     {     
     case 'A':
       if (m_alphaCountTable == null)
-      {  
+      { 
+        XSLTResourceBundle thisBundle;
         thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode) );       
         char[] alphabet;
         alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
@@ -1036,7 +1037,8 @@ public class ElemNumber extends ElemTemplateElement
       break;
     case 'a':      
       if (m_alphaCountTable == null)
-      {  
+      { 
+        XSLTResourceBundle thisBundle;
         thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode) );       
         char[] alphabet;
         alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
@@ -1053,84 +1055,117 @@ public class ElemNumber extends ElemTemplateElement
       formattedNumber.append( long2roman(listElement, true).toLowerCase( getLocale(transformer, contextNode)));
       break;
     case 0x3042:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP","HA" ) );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-      break;
-    case 0x3044:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP", "HI") );
-      if ((letterVal != null) && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-      break;
-    case 0x30A2:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP","A" ) );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-      break;
-    case 0x30A4:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP", "I") );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-      break;
-    case 0x4E00:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("zh","CN" ) );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
       {
-        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
-      }	
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);
-      break;
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP","HA" ) );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
+        break;
+      }
+    case 0x3044:
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP", "HI") );
+        if ((letterVal != null) && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
+        break;
+      }
+    case 0x30A2:
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP","A" ) );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
+        break;
+      }
+    case 0x30A4:
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP", "I") );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
+        break;
+      }
+    case 0x4E00:
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("zh","CN" ) );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        {
+          formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+        }	
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);
+        break;
+      }
     case 0x58F9:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("zh","TW") );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);			
-      break;
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("zh","TW") );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);			
+        break;
+      }
     case 0x0E51:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("th","") );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
-      break;
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("th","") );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
+        break;
+      }
     case 0x05D0:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("he","") );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
-      break;
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("he","") );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
+        break;
+      }
     case 0x10D0:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ka","") );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
-      break;
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ka","") );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
+        break;
+      }
     case 0x03B1:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("el","") );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);		
-      break;
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("el","") );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);		
+        break;
+      }
     case 0x0430:
-      thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("cy","") );
-      if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-      else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-        int2alphaCount(listElement,(char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);		
-      break;
+      {
+        XSLTResourceBundle thisBundle;
+        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("cy","") );
+        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
+        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+          int2alphaCount(listElement,(char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);		
+        break;
+      }
     default: // "1"
       String numString = formatter.format(listElement);
       int nPadding = numberWidth - numString.length();
