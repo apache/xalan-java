@@ -69,6 +69,7 @@ package org.apache.xalan.xsltc.runtime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import java.text.NumberFormat;
 import java.text.MessageFormat;
 import java.text.FieldPosition;
 import java.text.DecimalFormat;
@@ -864,7 +865,9 @@ public final class BasisLibrary implements Operators {
     private static String defaultPattern = "";
 
     static {
-	defaultFormatter = new DecimalFormat();
+	NumberFormat f = NumberFormat.getInstance(Locale.getDefault());
+	defaultFormatter = (f instanceof DecimalFormat) ?
+	    (DecimalFormat) f : new DecimalFormat();
 	defaultFormatter.setGroupingUsed(false);
     }
 
@@ -909,7 +912,9 @@ public final class BasisLibrary implements Operators {
 				      DecimalFormat formatter) {
 	try {
 	    StringBuffer result = new StringBuffer();
-	    formatter.applyLocalizedPattern(pattern);
+	    if (pattern != defaultPattern) {
+		formatter.applyLocalizedPattern(pattern);
+	    }
 
 	    //------------------------------------------------------
  	    // bug fix # 9179 - make sure localized pattern contains
