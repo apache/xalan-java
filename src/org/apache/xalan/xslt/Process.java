@@ -558,7 +558,7 @@ public class Process
         StreamResult strResult;
         if (null != outFileName)
         {
-          strResult = new StreamResult(new File(outFileName));
+          strResult = new StreamResult(new FileOutputStream(outFileName));
         }
         else
         {
