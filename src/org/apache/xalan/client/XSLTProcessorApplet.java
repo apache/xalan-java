@@ -713,11 +713,7 @@ public class XSLTProcessorApplet extends Applet
         e.printStackTrace();
         System.exit(-1);
       }
-      catch (IOException e)
-      {
-        e.printStackTrace();
-        System.exit(-1);
-      }
+      
       this.showStatus("Transformation Done!");
       htmlData = osw.toString();
     }
