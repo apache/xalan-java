@@ -636,18 +636,27 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    */
   private int getHandleFromNode(Node node)
   {
-    // %TBD% Will this ever be called with Nodes that haven't yet been built?
-    // Do we need to be prepared to call nextNode()?
     if (null != node)
     {
-      int len = m_nodes.size();
-      for (int i = 0; i < len; i++)
+      int len = m_nodes.size();        
+      boolean isMore;
+      int i = 0;
+      do
+      {          
+        for (; i < len; i++)
         {
           if (m_nodes.elementAt(i) == node)
-            return i | m_dtmIdent;
+            return i | m_dtmIdent;         
         }
-    }
 
+        isMore = nextNode();
+  
+        len = m_nodes.size();
+            
+      } 
+      while(isMore || i < len);
+    }
+    
     return DTM.NULL;
   }
 
