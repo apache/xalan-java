@@ -770,7 +770,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    while (prefixes.hasMoreElements()) {
 		prefix = (String)prefixes.nextElement();
 		theuri = lookupNamespace(prefix);
-		if (theuri.equals(uri)) return prefix;
+		if ((theuri != null) && (theuri.equals(uri))) return prefix;
 	    }
 	    prefix = generateNamespacePrefix();
 	    pushNamespace(prefix, uri);
