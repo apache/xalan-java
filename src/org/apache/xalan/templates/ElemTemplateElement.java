@@ -217,7 +217,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   public Stylesheet getStylesheet()
   {
-    return m_parentNode.getStylesheet();
+    return (null==m_parentNode) ? null : m_parentNode.getStylesheet();
   }
 
   /**
@@ -791,7 +791,8 @@ public class ElemTemplateElement extends UnImplNode
    */
   public String getSystemId()
   {
-    return (null != m_parentNode) ? this.getStylesheet().getHref() : null;
+    Stylesheet sheet=getStylesheet();
+    return (sheet==null) ? null : sheet.getHref();
   }
 
   /**
