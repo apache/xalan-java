@@ -126,7 +126,8 @@ final class XslAttribute extends Instruction {
 	    // The output handler will generate an error if not (at runtime)
 	    if (item instanceof If) continue;
 	    if (item instanceof Choose) continue;
-	    if (item instanceof CopyOf) continue;  // bug fix 3320, g. briem
+ 	    if (item instanceof CopyOf) continue;
+ 	    if (item instanceof VariableBase) continue;
 	    reportWarning(this, parser, ErrorMsg.STRAY_ATTRIBUTE_ERR, name);
 	    _ignore = true;
 	}
