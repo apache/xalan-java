@@ -95,8 +95,11 @@ import org.xml.sax.SAXParseException;
  * supported.
  * 
  * This version is derived from SAX2DTM for ease of implementation and
- * support, but deliberately blocks external access to
- * the SAX-listener calls to make our testing a bit more rigorous.
+ * support. We probably want to fold it back into SAX2DTM, removing the
+ * distinction, to allow types and untyped trees to participate in the
+ * same shared DTM. The downside will be that even untyped trees will
+ * need to cary the type field -- though since that's a SparseVector
+ * it shouldn't cost much when not used.
  * 
  * Note to developers: Both XNI and Xalan have classes called XMLString.
  * Don't confuse them!
@@ -188,7 +191,7 @@ public class XNI2DTM
                         int dataOrPrefix, boolean canHaveFirstChild,
                         XPath2Type actualType)
   {
-    int identity=super.addNode(type,expandedTypeID,
+    int identity=addNode(type,expandedTypeID,
                                parentIndex,previousSibling,
                                dataOrPrefix,canHaveFirstChild);
 
@@ -446,75 +449,6 @@ public class XNI2DTM
     incrementalXNISource.setDTDHandler(this);
   }
 
-  /** DISABLED FOR XNI:
-   * 
-   * getContentHandler returns "our SAX builder" -- the thing that
-   * someone else should send SAX events to in order to extend this
-   * DTM model.
-   * 
-   * %REVIEW% We _could_ leave SAX support in place and have a single model
-   * that handles both kinds of event streams. I've chosen to block it
-   * during development for better isolation of XNI support.
-   *
-   * @return null since this model doesn't respond to SAX events
-   */
-  public org.xml.sax.ContentHandler getContentHandler()
-  {
-    return null;
-  }
-
-  /**
-   * Return this DTM's lexical handler.
-   *
-   * %REVIEW% Should this return null if constrution already done/begun?
-   * 
-   * %REVIEW% We _could_ leave SAX support in place and have a single model
-   * that handles both kinds of event streams. I've chosen to block it
-   * during development for better isolation of XNI support.
-   *
-   * @return null since this model doesn't respond to SAX events
-   */
-  public org.xml.sax.ext.LexicalHandler getLexicalHandler()
-  {
-    return null;
-  }
-
-  /**
-   * Return this DTM's DTDHandler.
-   * 
-   * %REVIEW% We _could_ leave SAX support in place and have a single model
-   * that handles both kinds of event streams. I've chosen to block it
-   * during development for better isolation of XNI support.
-   *
-   * @return null since this model doesn't respond to SAX events
-   */
-  public org.xml.sax.DTDHandler getDTDHandler()
-  {
-    return null;
-  }
-
-  /**
-   * Return this DTM's ErrorHandler.
-   *
-   * @return null if this model doesn't respond to SAX error events.
-   */
-  public org.xml.sax.ErrorHandler getErrorHandler()
-  {
-    //return this;
-    return null;
-  }
-
-  /**
-   * Return this DTM's DeclHandler.
-   *
-   * @return null if this model doesn't respond to SAX Decl events.
-   */
-  public org.xml.sax.ext.DeclHandler getDeclHandler()
-  {
-    //return this;
-    return null;
-  }
-
   /** OVERRIDDEN FOR XNI:
    * 
    * @return true iff we're building this model incrementally (eg
@@ -563,37 +497,15 @@ public class XNI2DTM
       return gotMore;
     }
     catch(RuntimeException e)
-    {
-      throw e;
-    }
+    {      throw e;    }
     catch(Exception e)
-    {
-      throw new WrappedRuntimeException(e);
-    }
+    {      throw new WrappedRuntimeException(e);    }
 
     // %REVIEW% dead code
     //clearCoRoutine();
     //return false;
   }
   
-  /** %REVIEW% XNI should let us support this better...
-   * 
-   * Return the public identifier of the external subset,
-   * normalized as described in 4.2.2 External Entities [XML]. If there is
-   * no external subset or if it has no public identifier, this property
-   * has no value.
-   *
-   * @param the document type declaration handle
-   *
-   * @return the public identifier String object, or null if there is none.
-   */
-  public String getDocumentTypeDeclarationPublicIdentifier()
-  {
-    return super.getDocumentTypeDeclarationPublicIdentifier();
-  }
-
-
-
   ////////////////////////////////////////////////////////////////////
   // Implementation of XNI XMLDocumentHandler interface.
   //
@@ -649,13 +561,9 @@ public class XNI2DTM
     throws XNIException
   {
     try
-    {
-      super.unparsedEntityDecl(name,publicId,systemId,notationName);
-    } 
+    {      super.unparsedEntityDecl(name,publicId,systemId,notationName);    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -685,17 +593,10 @@ public class XNI2DTM
   public void startDocument(XMLLocator locator,String encoding,Augmentations augs)
     throws XNIException
   {
-    if (DEBUG)
-      System.out.println("startDocument");
- 
     try
-    {    
-      super.startDocument();
-    } 
+    {	super.startDocument();    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {	throw new XNIException(e);    }
   }
 
   /**
@@ -707,17 +608,10 @@ public class XNI2DTM
    */
   public void endDocument(Augmentations augs) throws XNIException
   {
-    if (DEBUG)
-      System.out.println("endDocument");
-      
     try
-    {
-      super.endDocument();
-    } 
+    {      super.endDocument();    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -754,9 +648,7 @@ public class XNI2DTM
       super.startPrefixMapping(prefix,uri);
     } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -791,9 +683,7 @@ public class XNI2DTM
       super.endPrefixMapping(prefix);
     } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -1157,7 +1047,6 @@ public class XNI2DTM
         m_schemaTypeOverride.setElementAt(actualType,m_previous);
       }
     }
-    
   }
 
   /** An empty element.
@@ -1196,13 +1085,9 @@ public class XNI2DTM
   public void characters(org.apache.xerces.xni.XMLString text,Augmentations augs) throws XNIException
   {
     try
-    {
-      super.characters(text.ch, text.offset, text.length);
-    } 
+    {      super.characters(text.ch, text.offset, text.length);    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -1227,13 +1112,9 @@ public class XNI2DTM
     // %OPT% We can probably take advantage of the fact that we know this 
     // is whitespace... or has that been dealt with at the source?
     try
-    {
-      super.characters(text.ch, text.offset, text.length);
-    } 
+    {      super.characters(text.ch, text.offset, text.length);    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -1257,16 +1138,12 @@ public class XNI2DTM
     if (DEBUG)
       System.out.println("processingInstruction: target: " + target +", data: "+data);
 
+    // %REVIEW% Can we avoid toString? I don't think so, given our 
+    // current data structures, but that bears reconsideration
     try
-    {
-      // %REVIEW% Can we avoid toString? I don't think so, given our 
-      // current data structures, but that bears reconsideration
-      super.processingInstruction(target,data.toString());
-    } 
+    {      super.processingInstruction(target,data.toString());    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -1295,7 +1172,6 @@ public class XNI2DTM
                                  String encoding,Augmentations augs) 
     throws XNIException
   {
-
     // no op
   }
 
@@ -1308,8 +1184,7 @@ public class XNI2DTM
    */
   public void endGeneralEntity(String name,Augmentations augs) throws XNIException
   {
-
-    // no op
+	// no op
   }
   
   /** Notifies of the presence of an XMLDecl line in the document. 
@@ -1347,7 +1222,6 @@ public class XNI2DTM
   public void textDecl(String version,String encoding,Augmentations augs)
     throws XNIException
   {
-
     // no op
   }
               
@@ -1365,13 +1239,9 @@ public class XNI2DTM
   public void startCDATA(Augmentations augs) throws XNIException
   {
     try
-    {
-      super.startCDATA();
-    } 
+    {      super.startCDATA();    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
         
   }
 
@@ -1384,13 +1254,9 @@ public class XNI2DTM
   public void endCDATA(Augmentations augs) throws XNIException
   {
     try
-    {
-      super.endCDATA();
-    } 
+    {      super.endCDATA();    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
   /**
@@ -1408,13 +1274,9 @@ public class XNI2DTM
   public void comment(org.apache.xerces.xni.XMLString text,Augmentations augs) throws XNIException
   {
     try
-    {
-      super.comment(text.ch,text.offset,text.length);
-    } 
+    {      super.comment(text.ch,text.offset,text.length);    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
 
 
@@ -1513,13 +1375,9 @@ public class XNI2DTM
     throws XNIException
   {
     try
-    {
-      super.startDTD("unknownDocumentTypeName",locator.getPublicId(),locator.getLiteralSystemId());
-    } 
+    {      super.startDTD("unknownDocumentTypeName",locator.getPublicId(),locator.getLiteralSystemId());    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }
   
   public void startParameterEntity(java.lang.String name,
@@ -1604,13 +1462,9 @@ public class XNI2DTM
   {
     // This one's the wnole point of the exercise...
     try
-    {
-      super.unparsedEntityDecl(name,identifier.getPublicId(),identifier.getLiteralSystemId(),notation);
-    } 
+    {      super.unparsedEntityDecl(name,identifier.getPublicId(),identifier.getLiteralSystemId(),notation);    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }     
  
   public void notationDecl(java.lang.String name,
@@ -1642,133 +1496,9 @@ public class XNI2DTM
     throws XNIException
   {
     try
-    {
-      super.endDTD();
-    } 
+    {      super.endDTD();    } 
     catch(SAXException e)
-    {
-      throw new XNIException(e);
-    }
+    {      throw new XNIException(e);    }
   }     
  
-  ////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////
-  // %REVIEW% SAX APIs are currently _blocked_ for debugging purposes. We can
-  // re-enable them if/when we fold the XNI support back into the main SAX2DTM
-  ////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////
-  
- 
-  // Implementation of DTDHandler interface.
-
-  // SAME AS XNI? OR DID WE RETAIN THEM ABOVE FOR OTHER REASONS?
-  //public void notationDecl(String name, String publicId, String systemId)
-  //        throws SAXException
-  // public void unparsedEntityDecl(
-  //        String name, String publicId, String systemId, String notationName)
-  //        throws SAXException
-
-  // Implementation of ContentHandler interface.
-
-  public void setDocumentLocator(org.xml.sax.Locator locator)
-  {
-    throw new RuntimeException(UNEXPECTED+"setDocumentLocator");
-  }
-  public void startDocument() throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"startDocument");
-  }
-  public void endDocument() throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"endDocument");
-  }
-  public void startPrefixMapping(String prefix, String uri)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"startPrefixMapping");
-  }
-  public void endPrefixMapping(String prefix) throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"endPrefixMapping");
-  }
-  public void startElement(
-                           String uri, String localName, String qName, org.xml.sax.Attributes attributes)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"startElement");
-  }
-  public void endElement(String uri, String localName, String qName)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"endElement");
-  }
-  public void characters(char ch[], int start, int length) throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"characters");
-  }
-  public void ignorableWhitespace(char ch[], int start, int length)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"ignorableWhitespace");
-  }
-  public void processingInstruction(String target, String data)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"processingInstruction");
-  }
-  public void skippedEntity(String name) throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"skippedEntity");
-  }
-  
-  // Implementation of SAX error handler
-
-  public void warning(SAXParseException e) throws SAXException
-  {
-    // %REVIEW% Is there anyway to get the JAXP error listener here?
-    throw new SAXException(UNEXPECTED+"Warning: "+e.getMessage());
-  }
-  public void error(SAXParseException e) throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"Error: "+e.getMessage());
-  }
-  public void fatalError(SAXParseException e) throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"Fatal Error: "+e.getMessage());
-  }
-
-  // Implementation of SAX DeclHandler interface.
-  
-  public void elementDecl(String name, String model) throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"elementDecl "+name);
-  }
-  public void attributeDecl(
-                            String eName, String aName, String type, String valueDefault, String value)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"attributeDecl "+aName);
-  }
-  public void internalEntityDecl(String name, String value)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"internalEntityDecl "+name);
-  }
-  public void externalEntityDecl(
-                                 String name, String publicId, String systemId) throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"externalEntityDecl "+name);
-  }
-
-  // Implementation of the LexicalHandler interface.
-  public void startDTD(String name, String publicId, String systemId)
-    throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"startDTD");
-  }
-  public void endDTD() throws SAXException
-  {
-    throw new SAXException(UNEXPECTED+"endDTD");
-  }
-
 } // XNI2DTM
