@@ -241,7 +241,8 @@ public class OutputPropertiesFactory
                     new Object[] { fileName, method }),
                 ioe);
         }
-
+        // wrap these cached defaultProperties in a new Property object just so
+        // that the caller of this method can't modify the default values
         return new Properties(defaultProperties);
     }
 
