@@ -381,7 +381,14 @@ public class XNodeSet extends NodeSequence
    */
   public NodeList nodelist() throws javax.xml.transform.TransformerException
   {
-    return new org.apache.xml.dtm.ref.DTMNodeList(iter());
+    org.apache.xml.dtm.ref.DTMNodeList nodelist = new org.apache.xml.dtm.ref.DTMNodeList(this);
+    // Creating a DTMNodeList has the side-effect that it will create a clone
+    // XNodeSet with cache and run m_iter to the end. You cannot get any node
+    // from m_iter after this call. As a fix, we call SetVector() on the clone's 
+    // cache. See Bugzilla 14406.
+    XNodeSet clone = (XNodeSet)nodelist.getDTMIterator();
+    SetVector(clone.getVector());
+    return nodelist;
   }
 
   
