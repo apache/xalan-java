@@ -13,9 +13,9 @@
 <s2 title="Downloading what you need">
 <p>To use Xalan, you need the following:</p>
 <ul>
-<li>The JDK or JRE 1.1.8 or 1.2.2</li>
+<li>The JDK or JRE 1.1.8, 1.2.2, or 1.3</li>
 <li>xalan.jar</li>
-<li>xerces.jar (or another <link idref="usagepatterns" anchor="xmlreader">XMLReader</link>)</li>
+<li>xerces.jar (or another <link idref="usagepatterns" anchor="plug">XML Parser</link>)</li>
 </ul>
 <p>You can get the JDK or JRE from <jump href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
 <p>Download <resource-ref idref="xslt4j-dist-zip"/> or <resource-ref idref="xslt4j-dist-targz"/>. Both of these files contain <resource-ref idref="xslt4j-current"/> (with xalan.jar) and xerces.jar from <resource-ref idref="xml4j-used"/>. You can use a zip or tar utility to expand these files into a full build.</p>
@@ -23,7 +23,7 @@
 <p>If you plan to run <link idref="extensions">XSLT extensions</link>, you need bsf.jar, which is included in the &xslt4j; distribution. If you plan to run XSLT extensions implemented in Javascript or another scripting language, you will need one or more additional files as indicated in <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.</p>
 </s2><anchor name="classpath"/>
 <s2 title="Setting up the system class path">
-<p>At the very minimum, you must include xalan.jar and xerces.jar (or another conformant XMLReader -- see <link idref="usagepatterns" anchor="xmlreader">Setting the XMLReader</link>) on the system class path. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the class path and where you can get them.</p>
+<p>At the very minimum, you must include xalan.jar and xerces.jar (or another conformant XML parser -- see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>) on the system class path. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the class path and where you can get them.</p>
 <p>If you are using JDK or JRE 1.1.8, also include classes.zip on the class path.</p>
 <note>If you are using xerces.jar from a Xerces release that is more recent than &xml4j-used;, you may need to put xerces.jar before xalan.jar on the classpath. Both JAR files include the org.w3c.dom packages. The Xerces team is tracking updates to DOM level 2, and the Xerces parser may require access to updates in these packages.</note>
 </s2><anchor name="samples"/>
@@ -39,7 +39,7 @@
 </ol>
 <p>For example, go to the SimpleTransform subdirectory and issue the following command:</p>
 <p><code>java SimpleTransform</code></p>
-<p>The sample writes the transformation result  to a file (foo.out). To see how the example works, examine the source files: foo.xml, foo.xsl, and SimpleTransform.java.</p>
+<p>The sample writes the transformation result  to a file (birds.out). To see how the example works, examine the source files: birds.xml, birds.xsl, and SimpleTransform.java.</p>
 <p>The extensions examples require additional JAR files on the class path, and the procedure for running the sample applet and sample servlet is different. For more information about all the samples, see <link idref="samples">&xslt4j; Samples</link>.</p>
 </s2><anchor name="commandline"/>
 <s2 title="Performing your own transformations from the command line">
@@ -55,13 +55,8 @@
 <p>Here is the basic TRaX procedure to keep in mind when you set up a transformation:</p>
 <ol>
 <li>Use the <jump href="apidocs/javax/xml/transform/TransformerFactory.html">TransformerFactory</jump> static newInstance() method to instantiate a TransformerFactory.<br/><br/></li>
-<li>Use the TransformerFactory newTransformer(Source stylesheet) method to process the transformation instructions in an XSLT stylesheet Source (producing under the covers a <jump href="apidocs/javax/xml/transform/Templates.html"></jump>Templates object) and generate a <jump href="apidocs/javax/xml/transform/Transformer.html">Transformer</jump>.<br/><br/></li>
-<li>Use the Transformer transform(Source xmlSource, Result transformResult) method to apply the transformation instructions (the Template object) to the XML Source and produce the transformation Result.<br/><br/></li>
-</ol>
-<p>A couple of alternatives:</p>
-<ol>
-<li>If you want to apply the same transformation instructions to a number of XML sources, use the TransformerFactory newTemplates(Source stylesheet) method to process the stylesheet and explicitly produce a Templates object, which you can then use repeatedly and even in concurrently running threads to generate a Transformer and perform a transformation.<br/><br/></li>
-<li>If you are processing SAX input, cast the TransformerFactory object you instantiate to <jump href="apidocs/javax/xml/transform/sax/SAXTransformerer.html">SAXTransformerFactory</jump>, which provides access to SAX ContentHandlers for producing Templates objects and Transformers.</li>
+<li>Use the TransformerFactory newTransformer(Source stylesheet) method to process the transformation instructions in an XSLT stylesheet Source (producing under the covers a <jump href="apidocs/javax/xml/transform/Templates.html">Templates</jump> object) and generate a <jump href="apidocs/javax/xml/transform/Transformer.html">Transformer</jump>.<br/><br/></li>
+<li>Use the Transformer transform(Source xmlSource, Result transformResult) method to apply the transformation instructions (the Templates object) to the XML Source and produce the transformation Result.<br/><br/></li>
 </ol>
 <p>For more information about this procedure and its variations, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
 </s2>

@@ -73,7 +73,6 @@
     <li><link anchor="done">Changes since version 2.0.D01</link></li>
     <li><link anchor="bugs">Open bugs and bug reporting</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
-    <li><link anchor="notes">Other release notes</link></li>    
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
@@ -82,13 +81,14 @@
      &bugs-j;
      <anchor name="status"/>
      &status-j;
-     <anchor name="notes"/>
-     <s3 title="Other Release Notes">
-     <ul>
-       <li>Indenting in the output is turned off for a significant performance gain. To enable indenting, you must reset
-        _indentAmount from 0 to the value you want in org.apache.serialize.OutputFormat and rebuild xalan.jar.</li>
-       </ul>
-     </s3>
+     <anchor name="to-do"/>
+     <s3 title="To-do tasks">
+       <p>For a list of goals, tasks, and target dates for completion, see <jump href="todo.html">Xalan-Java Version 2: Things To Do</jump>. 
+       As tasks are completed, they are moved from the to-do list to 
+       <jump href="todo.html#release-date-completed">Completed</jump>.</p>
+       <p>The source document for the todo list is an active document in the Apache CVS repository: 
+       <jump href="http://xml.apache.org/websrc/cvsweb.cgi/xml-xalan/java/todo.xml">xml-xalan/java/todo.xml</jump>.</p>
+      </s3> 
   </s2>
   <anchor name="build"/>
   
@@ -178,34 +178,39 @@
        <li>To build doc in a build/docs subdirectory, run StyleBook from the xdocs directory as follows:<br/><br/>
        <code>java org.apache.stylebook.StyleBook "targetDirectory=../build/docs/" sources/xalanLocal.xml style</code>
        <br/><br/></li>
-       <li>To build the HTML source files that javadoc needs for top-level and package-level documentation, run
-        StyleBook from the xdocs directory as follows:<br/><br/>
-        <code>java org.apache.stylebook.StyleBook "loaderConfig=sbk:/style/loaderjdoc.xml" targetDirectory=../src sources/javadocPackages.xml style</code><br/><br/></li>
+       <li>To build the HTML source files that javadoc needs for the TrAX top-level and package-level documentation, add
+       a build/docs/apdidocs/javax/xml/transform directory and run the Xalan command-line utility from the xdocs directory 
+       as follows (all one line):<br/><br/>
+<code>
+java org.apache.xalan.xslt.Process -in sources/trax/trax.xml
+  -param package-root '../../../src/'
+  -xsl style/stylesheets/spec.xsl 
+  -out build/docs/apidocs/javax/xml/transform/trax.html</code><br/><br/></li>
         <li>Before you run javadoc, make sure the following directory structure exists under the Xalan root
          directory: build/docs/apidocs.<br/><br/></li>
-       <li>To build the API documentation, run the JDK 1.2.2 javadoc tool from the xdocs directory:<br/><br/>
+       <li>To build the API documentation, run the JDK 1.2.2 javadoc tool from the xdocs directory (all one line):<br/><br/>
 <code>
 javadoc -doclet xalanjdoc.Standard -docletpath ../bin/xalanjdoc.jar -private
  -overview ../src/javadocOverview.html -sourcepath ../src 
- -group TrAX "org.apache.trax" 
+ -group TrAX "javax.xml.transform*" 
  -group Xalan_Core "org.apache.xalan.processor:org.apache.xalan.templates:
  org.apache.xalan.transformer"
- -group XPath "org.apache.xpath*:org.w3c.xslt" 
+ -group XPath "org.apache.xpath*"
+ -group Utilities "org.apache.xml.utils*"
  -group Xalan_Other "org.apache.xalan.client:org.apache.xalan.dtm:
  org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:
- org.apache.xalan.trace:org.apache.xalan.utils:org.apache.xalan.xslt" 
+ org.apache.xalan.trace:org.apache.xalan.xslt" 
  -group Xalan_Extensions "org.apache.xalan.lib*" 
- -group Serializers "org.apache.serialize*:org.apache.xml.serialize.transition" 
+ -group Serializers "org.apache.xalan.serialize" 
  org.apache.xalan.client org.apache.xalan.dtm org.apache.xalan.extensions 
  org.apache.xalan.lib org.apache.xalan.lib.sql org.apache.xalan.processor 
  org.apache.xalan.res org.apache.xalan.stree org.apache.xalan.templates 
- org.apache.xalan.trace org.apache.xalan.transformer org.apache.xalan.utils 
- org.apache.xalan.xslt 
+ org.apache.xalan.trace org.apache.xalan.transformer org.apache.xalan.xslt 
  org.apache.xpath org.apache.xpath.axes org.apache.xpath.compiler 
- org.apache.xpath.functions org.apache.xpath.objects org.apache.xpath.operations 
- org.apache.xpath.patterns org.apache.xpath.res org.w3c.xslt 
- org.apache.serialize org.apache.serialize.helpers org.apache.xml.serialize.transition 
- org.apache.trax 
+ org.apache.xpath.functions org.apache.xpath.objects 
+ org.apache.xpath.operations org.apache.xpath.patterns org.apache.xpath.res
+ org.apache.xalan.serialize javax.xml.transform  javax.xml.transform.dom
+ javax.xml.transform.sax javax.xml.transform.stream javax.xml.parsers
  -d ../build/docs/apidocs -windowtitle "Xalan-Java 2" -doctitle "Xalan-Java 2"
  -bottom "Copyright &#169; 2000 Apache XML Project. All Rights Reserved."
 </code></li>

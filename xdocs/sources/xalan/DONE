@@ -1,4 +1,9 @@
 <s3 title="Changes since &xslt4j; version 2.0.D01">
+<p><em>TrAX</em></p>
 <p>The Transformation API for XML (TrAX) that &xslt4j2; implements has undergone substantial revisions since the release of &xslt4j; 2.0.D01. TrAX has joined the Java API for XML Parsing (JAXP) as part of the Sun&reg; <resource-ref idref="jsr063"/>. Accordingly, the TrAX package names have changed. The conceptual organization has also changed somewhat: The primary transformation interfaces are defined in javax.xml.transform, with concrete classes for managing stream input/output, SAX parsers and ContentHandler, and DOM parsers and DOM trees in javax.xml.transform.stream, javax.xml.transform.sax, and javax.xml.transform.dom. For more information, see <resource-ref idref="trax"/>, and review <link idref="usagepatterns">Usage Patterns</link>.</p>
-<p>Other changes:</p>
+<p><em>Output properties</em></p>
+<p>The handling of xsl:output properties has changed: org.apache.xalan.serialize.OutputFormat and apache.xalan.templates.OutputFormatExtended were removed and replaced with org.apache.xalan.templates.OutputProperties. The SerializerFactory getSerializer() method now takes Properties rather than a String indicating the output method. You can replace <code>getSerializer("xml")</code>, for example, with <code>getSerializer(OutputProperties.getDefaultMethodProperties("xml"))</code>.</p>
+<p>HTML, XML, and text xsl:output properties are specified in property files in org.apache.xalan.templates: output_html.properties, output_xml.properties, and output_text.properties.</p>
+<p>You can start using the output proprties defined in these files in your stylesheets. For example, you can turn URL escaping off in HTML output, by setting use-url-escaping=no, and you can set indent-amount to control indenting.</p>
+<p>Character-to-entity mapping is specified in org.apache.xalan.serialize: HTMLEntities.res and XMLEntities.res. We need to do some more work in this area before such .res files will really be usable.</p>
 </s3>

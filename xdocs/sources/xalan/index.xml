@@ -63,14 +63,14 @@
      in an applet or a servlet, or as a module in other program.</p>
   </s2>
   <s2 title="I've heard of &xslt4j;, but what is version 2?">
-    <p>&xslt4j; version 2 recasts Xalan as an implementation of the <resource-ref idref="trax"/> interfaces, part of the Java API for XML Processing. TRaX provides a
+    <p>&xslt4j; version 2 recasts Xalan as an implementation of the <resource-ref idref="trax"/> interfaces, part of the <resource-ref idref="jaxp"/>. TRaX provides a
     modular framework and a standard API for performing XML transformations, and it utilizies system properties to determine which Transformer and which XML parser to use.</p>
-     <p>&xslt4j; version 2 also builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the 
+     <p>&xslt4j; version 2 also builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the XML parser API in
      <resource-ref idref="jaxp"/>.</p>
      <p>For more information, see <link idref="whatsnew">What's new in &xslt4j2;</link>.</p>
   </s2>
   <s2 title="How about this release?">
-    <p>&xslt4j-current; is an alpha Developer's release of &xslt4j2;. The primary change between &xslt4j-current; and &xslt4j; 2.0.D01 is the integration of the TrAX interfaces into <resource-ref idref="jaxp"/>. For the details, and for information about known limitations and problems with this alpha release, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, and feedback to the <human-resource-ref idref="xalandev"/></p>
+    <p>&xslt4j-current; is an alpha Developer's release of &xslt4j2;. Since &xslt4j; 2.0.D01, TrAX has been revised and integrated with the XMP Parser API in the Java API for XML Processing, so &xslt4j; has been revised accordingly. For the details, and for information about the known limitations with this alpha release, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, and feedback to the <human-resource-ref idref="xalandev"/></p>
   </s2> 
   <s2 title="How do I get it?">
     <p>Download and unzip either of the following:</p>
@@ -83,8 +83,8 @@
   <s2 title="Where do I get Xerces?">
     <p>The Xalan download includes xerces.jar from &xml4j-used;. This is all you need to run Xalan with the Xerces XML parser. 
     You can, however, download the complete Xerces distribution from the <resource-ref idref="xml4j-distdir"/>.</p>
-    <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and
-    XML parser</link>.</note> 
+    <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer
+     and XML parser</link>.</note> 
   </s2>
   <s2 title="What else do I need?">
     <p>You need the Java Development Kit or Java Runtime 1.1.8, 1.2.2, or 1.3, which you can obtain from <jump
@@ -92,7 +92,7 @@
   </s2>  
     <s2 title="For more information...">
     <p>For more information, go to <link idref="overview">Xalan Overview</link> and <link idref="getstarted">Getting
-    Started</link>. All of the Xalan documentation on this website is included in the Xalan download, as are a number of samples
-    to help you start using &xslt4j2; to transform XML documents.</p>
+    Started</link>. All of the Xalan documentation on this website is included in the Xalan download, as are a number of
+    <link idref="samples">Samples</link> to help you start using &xslt4j2; to transform XML documents.</p>
   </s2>  
 </s1> 

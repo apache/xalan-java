@@ -62,7 +62,7 @@
 <li><link anchor="usestylesheetpi">UseStylesheetPI</link></li>
 <li><link anchor="usestylesheetparam">UseStylesheetParam</link></li>
 <li><link anchor="sax2sax">SAX2SAX</link></li>
-<li><link anchor="domtodom">DomToDom</link></li>
+<li><link anchor="dom2dom">DOM2DOM</link></li>
 <li><link anchor="pipe">Pipe</link></li>
 <li><link anchor="usexmlfilters">UseXMLFilters</link></li>
 <li><link anchor="applyxpath">ApplyXPath</link></li>
@@ -93,17 +93,15 @@
      additional argument. Several samples in extensions use the &xslt4j; 
      <link idref="commandline">command-line utility</link>, so they take arguments for the XML source
      file and the XSL stylesheet.</p>
-     <note>A number of simple examples are also available for your examination in 
-     <jump href="apidocs/org/apache/trax/Examples.html">org.apache.trax.Examples.html</jump>.</note>
   	</s2><anchor name="simpletransform"/>
     <s2 title="SimpleTransform">
-    <p>What it does: The SimpleTransform class uses the foo.xsl stylesheet to transform foo.xml, and prints the
-     output to System.out.</p>
+    <p>What it does: The SimpleTransform class uses the birds.xsl stylesheet to transform birds.xml, and prints the
+     output to birds.out.</p>
     <p>You can run it from the SimpleTransform subdirectory with</p>
     <p><code>java SimpleTransform</code></p>
     </s2><anchor name="usestylesheetpi"/>
     <s2 title="UseStylesheetPI">
-    <p>What it does: The UseStylesheetPI class uses the styesheet processing insturction in the XML source document to determine
+    <p>What it does: The UseStylesheetPI class uses the styesheet processing instruction in the XML source document to determine
      which stylesheet to use to perform the transformation.</p>
      <p>You can run it from the UseStylesheetPI subdirectory with</p>
      <p><code>java UseStylesheetPI</code></p>
@@ -117,17 +115,17 @@
     <p>where <ref>param</ref> is the stylesheet parameter value (a string of your choice).</p>  
     </s2><anchor name="sax2sax"/>
   <s2 title="SAX2SAX">
-  <p>What it does: Explicitly set the SAX XMLReader and SAX ContentHandler for processing the stylesheet, processing the XML input, and producing the output.</p>
+  <p>What it does: Explicitly set the SAX XMLReader and SAX ContentHandler for processing the stylesheet (birds.xsl), processing the XML input (birds.xml), and producing the output (birds.out).</p>
   <p>Run this sample from the SAX2SAX subdirectory with</p>
    <p><code>java SAX2SAX</code></p>
-    </s2><anchor name="domtodom"/>
-    <s2 title="DomToDom">
-    <p>What it does: the DomToDom class uses the foo.xsl stylesheet to transform a DOM document derived from foo.xml, produces an output
-     DOM, and traverses the DOM, printing the traversal to System.out. In contrast to SimpleTransform,
+    </s2><anchor name="dom2dom"/>
+    <s2 title="DOM2DOM">
+    <p>What it does: the DOM2DOM class uses the birds.xsl stylesheet to transform a DOM Document generated from birds.xml,
+     produces an output DOM, and traverses the DOM, printing the traversal to System.out. In contrast to SimpleTransform,
       DomToDom illustrates the procedure for processing an input DOM and creating an output DOM that is available for
       further processing.</p>
-   <p>You can run it from the DomToDom subdirectory with</p>
-    <p><code>java DomToDom</code></p>
+   <p>You can run it from the DOM2DOM subdirectory with</p>
+    <p><code>java DOM2DOM</code></p>
     </s2><anchor name="pipe"/>
     <s2 title="Pipe">
     <p>What it does: Pipes the output from one transformation to a second transformation, then from the second
@@ -243,6 +241,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <s3 title="2-basicJscript">
       <p>What it does: Uses an extension element and extension function implemented in JavaScript to compute a
       deadline for responding to a customer inquiry.</p>
+      <note>js.jar must be on the classpath.</note>
       <p>Run this sample from the extensions subdirectory with</p>
       <p><code>java org.apache.xalan.xslt.Process -in 2-basicJscript.xml</code>
          <br/>&nbsp;&nbsp;<code>-xsl 2-jbasicJscript.xsl</code></p>     
@@ -264,6 +263,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <s3 title="5-numlistJscript">
       <p>What it does: Uses a JavaScript  extension to transform a set of name elements into a numbered and
       alphabetized list. This sample performs the same operations as the preceding Java extension.</p>
+      <note>js.jar must be on the classpath.</note>
     <p>Run this sample from the extensions subdirectory with</p>
       <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>
         <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>

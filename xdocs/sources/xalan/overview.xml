@@ -94,7 +94,7 @@
 &lt;/xsl:stylesheet></source>
 <p>foo.out:</p>
 <source>&lt;out>Hello&lt;/out></source>
-<p>By default, &xslt4j; uses &xml4j;, and it may be configured with system properties to work with other XML parsers (see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>). The input may be submitted in the form of a SAX InputStream (from a URI, a character or byte stream, or another transformation) or a DOM Node.</p>
+<p>By default, &xslt4j; uses &xml4j;, and it may be configured with system properties to work with other XML parsers (see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>). The input may be submitted in the form of a stream of XML markup (from a URI, a character or byte stream, or another transformation), a SAX InputStream, or a DOM Node.</p>
 <p>&xslt4j; performs the transformations specified in the XSL stylesheet and packages a sequence of SAX events that may be serialized to an output stream or writer, used to build a DOM tree, or forwarded as input to another transformation.</p>
       </s2><anchor name="features"/>
    	  <s2 title="&xslt4j; Features">
