@@ -64,8 +64,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.BitSet;
-import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -78,7 +76,6 @@ import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.QName;
-import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.w3c.dom.Node;
@@ -89,12 +86,9 @@ import org.xml.sax.SAXException;
 //import com.sun.media.sound.IESecurity;
 
 /**
- * This abstract class is a base class for other serializers (xml, html, text
- * ...) that write output to a stream.
- * @author minchau
- *
+ * This abstract class is a base class for other stream 
+ * serializers (xml, html, text ...) that write output to a stream.
  */
-
 abstract public class ToStream extends SerializerBase
 {
 
@@ -883,6 +877,14 @@ abstract public class ToStream extends SerializerBase
         throws SAXException
     {
     }
+    
+    static boolean isWhitespace(char ch)
+    {
+        if (ch == 0x20 || ch == 0x0A || ch == 0x0D || ch == 0x09 )
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Tell if this character can be written without escaping.
@@ -1376,7 +1378,7 @@ abstract public class ToStream extends SerializerBase
      *
      * @throws org.xml.sax.SAXException
      */
-    public void characters(char chars[], int start, int length)
+    public void characters(final char chars[], final int start, final int length)
         throws org.xml.sax.SAXException
     {
         if (0 == length)
@@ -1428,85 +1430,89 @@ abstract public class ToStream extends SerializerBase
             closeStartTag();
             m_startTagOpen = false;
         }
-            
 
-        int startClean = start;
-        int lengthClean = 0;
-
-        // int pos = 0;
-        int end = start + length;
-        boolean checkWhite = true;
-        final int maxCharacter = m_maxCharacter;
-        final BitSet specialsMap = m_charInfo.m_specialsMap;
+        
         try
         {
-            for (int i = start; i < end; i++)
+            int i;
+            char ch1;
+            int startClean;
+            
+            // skip any leading whitspace 
+            // don't go off the end and use a hand inlined version
+            // of isWhitespace(ch)
+            final int end = start + length;
+            int lastDirty = start - 1; // last character that needed processing
+            for (i = start;
+                ((i < end)                
+                    && ((ch1 = chars[i]) == 0x20
+                        || ch1 == 0xA
+                        || ch1 == 0xD
+                        || ch1 == 0x09));
+                i++)
             {
-                char ch = chars[i];
-
-                if (checkWhite
-                    && ((ch > 0x20)
-                        || !((ch == 0x20)
-                            || (ch == 0x09)
-                            || (ch == 0xD)
-                            || (ch == 0xA))))
+                /*
+                 * We are processing leading whitespace, but are doing the same
+                 * processing for dirty characters here as for non-whitespace.
+                 * 
+                 */
+                if (!m_charInfo.isASCIIClean(ch1))
                 {
-                    m_ispreserve = true;
-                    checkWhite = false;
+                    lastDirty = processDirty(chars,end, i,ch1, lastDirty);
+                    i = lastDirty;
                 }
+            }
+            /* If there is some non-whitespace, mark that we may need
+             * to preserve this. This is only important if we have indentation on.
+             */            
+            if (i < end) 
+                m_ispreserve = true;
+                
 
-                // The first if(...) has the most common part of escapingNotNeeded()
-                // inlined to save the call.  If the expression is false it will
-                // fall back to the next else if(...) which does the real thing
-                // with esacapingNotNeeded()
-                if ((((ch < 127)
-                    && (0x20 <= ch || (0x0A == ch || 0x0D == ch || 0x09 == ch)))
-                    && (!specialsMap.get(ch)))
-                    || ('"' == ch))
+//            int lengthClean;    // number of clean characters in a row
+//            final boolean[] isAsciiClean = m_charInfo.getASCIIClean();
+            
+            // we've skipped the leading whitespace, now deal with the rest
+            for (; i < end; i++)
+            {                      
                 {
-                    lengthClean++;
-                }
-                else if (
-                    (escapingNotNeeded(ch) && (!specialsMap.get(ch)))
+                    // A tight loop to skip over common clean chars
+                    // This tight loop makes it easier for the JIT
+                    // to optimize.
+                    char ch2;
+                    while (i<end 
+                            && ((ch2 = chars[i])<127)
+                            && m_charInfo.isASCIIClean(ch2))
+                            i++;
+                    if (i == end)
+                        break;
+                }  
+                   
+                final char ch = chars[i];
+                if (
+                
+                    (escapingNotNeeded(ch) && (!m_charInfo.isSpecial(ch)))
                         || ('"' == ch))
                 {
-                    lengthClean++;
+                    ; // a character needing no special processing
                 }
                 else
                 {
-                    if (lengthClean > 0)
-                    {
-                        m_writer.write(chars, startClean, lengthClean);
-
-                        lengthClean = 0;
-                    }
-
-                    if (CharInfo.S_LINEFEED == ch)
-                    {
-                        m_writer.write(m_lineSep, 0, m_lineSepLen);
-
-                        startClean = i + 1;
-                    }
-                    else
-                    {
-                        startClean =
-                            accumDefaultEscape(
-                                m_writer,
-                                ch,
-                                i,
-                                chars,
-                                end,
-                                false);
-                        i = startClean - 1;
-                    }
+                    lastDirty = processDirty(chars,end, i, ch, lastDirty);
+                    i = lastDirty;
                 }
             }
-
-            if (lengthClean > 0)
+            
+            // we've reached the end. Any clean characters at the
+            // end of the array than need to be written out?
+            startClean = lastDirty + 1;
+            if (i > startClean)
             {
+                int lengthClean = i - startClean;
                 m_writer.write(chars, startClean, lengthClean);
             }
 
+            // For indentation purposes, mark that we've just writen text out
             m_isprevtext = true;
         }
         catch (IOException e)
@@ -1517,6 +1523,54 @@ abstract public class ToStream extends SerializerBase
         // time to fire off characters generation event
         if (m_tracer != null)
             super.fireCharEvent(chars, start, length);
+    }
+    /**
+     * Process a dirty character and any preeceding clean characters
+     * that were not yet processed.
+     * @param chars array of characters being processed
+     * @param end one (1) beyond the last character 
+     * in chars to be processed
+     * @param i the index of the dirty character
+     * @param ch the character in chars[i]
+     * @param lastDirty the last dirty character previous to i
+     * @return the index of the last character processed
+     */
+    private int processDirty(
+        char[] chars, 
+        int end,
+        int i, 
+        char ch,
+        int lastDirty) throws IOException
+    {
+        int startClean = lastDirty + 1;
+        // if we have some clean characters accumulated
+        // process them before the dirty one.                   
+        if (i > startClean)
+        {
+            int lengthClean = i - startClean;
+            m_writer.write(chars, startClean, lengthClean);
+        }
+
+        // process the "dirty" character
+        if (CharInfo.S_LINEFEED == ch)
+        {
+            m_writer.write(m_lineSep, 0, m_lineSepLen);
+        }
+        else
+        {
+            startClean =
+                accumDefaultEscape(
+                    m_writer,
+                    (char)ch,
+                    i,
+                    chars,
+                    end,
+                    false);
+            i = startClean - 1;
+        }
+        // Return the index of the last character that we just processed 
+        // which is a dirty character.
+        return i;
     }
 
     /**
@@ -2757,9 +2811,6 @@ abstract public class ToStream extends SerializerBase
      * written by the method writeAttrString() into a string buffer.
      * In this manner trace events, and the real writing of attributes will use
      * the same code.
-     * 
-     * @author minchau
-     *
      */
     private class WritertoStringBuffer extends java.io.Writer
     {
