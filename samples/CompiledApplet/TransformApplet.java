@@ -73,7 +73,9 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
 import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.MessageHandler;
+import org.apache.xalan.xsltc.runtime.output.*;
 import org.apache.xalan.xsltc.dom.*;
 
 /**
@@ -214,10 +216,13 @@ public final class TransformApplet extends Applet {
 		AbstractTranslet translet = (AbstractTranslet)tc.newInstance();
 		((AbstractTranslet)translet).setMessageHandler(msgHandler);
 
-		// Initialise the translet's output handler
-		DefaultSAXOutputHandler saxHandler = 
-		    new DefaultSAXOutputHandler(out);
-		TextOutput textOutput = new TextOutput(saxHandler);
+		// Create output handler
+		TransletOutputHandlerFactory tohFactory = 
+		    TransletOutputHandlerFactory.newInstance();
+		tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+		tohFactory.setEncoding(translet._encoding);
+		tohFactory.setOutputMethod(translet._method);
+		tohFactory.setWriter(out);
 
 		getDOM(documentUrl);
 
@@ -232,7 +237,7 @@ public final class TransformApplet extends Applet {
 		translet.setUnparsedEntityURIs(_dtdMonitor.
 					       getUnparsedEntityURIs());
 		// Do the actual transformation
-		translet.transform(_dom, textOutput);
+		translet.transform(_dom, tohFactory.getTransletOutputHandler());
 
 		final long done = System.currentTimeMillis() - start;
 		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");

@@ -76,7 +76,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
 import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.output.*;
 import org.apache.xalan.xsltc.dom.*;
 
 public class TransformBean implements SessionBean {
@@ -153,13 +154,17 @@ public class TransformBean implements SessionBean {
 		// Read input document from the DOM cache
 		DOMImpl dom = getDOM(document, translet);
 
-		// Initialize the (default) SAX output handler
-		DefaultSAXOutputHandler saxHandler = 
-		    new DefaultSAXOutputHandler(out);
+		// Create output handler
+		TransletOutputHandlerFactory tohFactory = 
+		    TransletOutputHandlerFactory.newInstance();
+		tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+		tohFactory.setEncoding(translet._encoding);
+		tohFactory.setOutputMethod(translet._method);
+		tohFactory.setWriter(out);
 
 		// Start the transformation
 		final long start = System.currentTimeMillis();
-		translet.transform(dom, new TextOutput(saxHandler));
+		translet.transform(dom, tohFactory.getTransletOutputHandler());
 		final long done = System.currentTimeMillis() - start;
 		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
 	    }
