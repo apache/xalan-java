@@ -39,7 +39,7 @@ but which are supported by a number of other XSLT processors:</p>
 <ul>
   <li>Incomplete support for extension elements and external Java functions. Currently you can set up an extension function
     to call a static Java function. For the extension namespace, use<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;http://xml.apache.org/xalan/xsltc/java/java/&lt;class&gt;<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;http://xml.apache.org/xalan/xsltc/java/&lt;class&gt;<br/>
     where &lt;class&gt; identifies the class with the static method.</li>
   <li>Lack of support for the redirection of output to multiple
     output files from within a stylesheet (equivalent to xalan:redirect or
