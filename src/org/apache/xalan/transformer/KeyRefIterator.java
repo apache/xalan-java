@@ -115,12 +115,12 @@ public class KeyRefIterator extends LocPathIterator
   public KeyRefIterator(XMLString ref, KeyIterator ki)
   {
 
-    super(ki.getPrefixResolver());
-    setShouldCacheNodes(true);
+    super(ki.getPrefixResolver());   
     m_ki = ki;
     m_name = ki.getName();
     m_lookupKey = ref;
     this.m_execContext = ki.getXPathContext();
+    setShouldCacheNodes(true);
   }
 
   /**

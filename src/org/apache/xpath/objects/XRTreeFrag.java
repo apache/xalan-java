@@ -116,7 +116,7 @@ public class XRTreeFrag extends XObject implements Cloneable
    */
   public Object object()
   {
-    return new org.apache.xml.dtm.ref.DTMNodeIterator((DTMIterator)(new org.apache.xpath.NodeSetDTM(m_dtmRoot)));
+    return new org.apache.xml.dtm.ref.DTMNodeIterator((DTMIterator)(new org.apache.xpath.NodeSetDTM(m_dtmRoot, m_xctxt.getDTMManager())));
   }
   
   /**

@@ -957,7 +957,7 @@ public class ElemNumber extends ElemTemplateElement
             throws javax.xml.transform.TransformerException
   {
 
-    NodeSetDTM ancestors = new NodeSetDTM();
+    NodeSetDTM ancestors = new NodeSetDTM(xctxt.getDTMManager());
     XPath countMatchPattern = getCountMatchPattern(xctxt, node);
     DTM dtm = xctxt.getDTM(node);
 

@@ -96,7 +96,7 @@ public class Counter
   /**
    * A vector of all nodes counted so far.
    */
-  NodeSetDTM m_countNodes = new NodeSetDTM();
+  NodeSetDTM m_countNodes;
 
   /**
    * The node from where the counting starts.  This is needed to
@@ -137,11 +137,11 @@ public class Counter
    * @param numberElem The owning xsl:number element. 
    *
    * @throws TransformerException
-   */
+   *
   Counter(ElemNumber numberElem) throws TransformerException
   {
     m_numberElem = numberElem;
-  }
+  }*/
 
   /**
    * Try and find a node that was previously counted. If found,

@@ -38,7 +38,7 @@ public class WalkingIteratorSorted extends WalkingIterator
             throws javax.xml.transform.TransformerException
   {
     super(compiler, opPos, analysis, shouldLoadWalkers);
-    this.setShouldCacheNodes(true);
+    //this.setShouldCacheNodes(true);
   }
   
   /**

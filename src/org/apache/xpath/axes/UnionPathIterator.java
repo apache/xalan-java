@@ -240,7 +240,7 @@ public class UnionPathIterator extends Expression
   {
 
     if (b)
-      m_cachedNodes = new NodeSetDTM();
+      m_cachedNodes = new NodeSetDTM(getDTMManager());
     else
       m_cachedNodes = null;
   }

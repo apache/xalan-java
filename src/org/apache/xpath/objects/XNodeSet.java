@@ -104,7 +104,7 @@ public class XNodeSet extends XObject
    */
   public XNodeSet(DTMManager dtmMgr)
   {
-    super(new NodeSetDTM());
+    super(new NodeSetDTM(dtmMgr));
     m_dtmMgr = dtmMgr;
   }
 
@@ -116,7 +116,7 @@ public class XNodeSet extends XObject
   public XNodeSet(int n, DTMManager dtmMgr)
   {
 
-    super(new NodeSetDTM());
+    super(new NodeSetDTM(dtmMgr));
     m_dtmMgr = dtmMgr;
 
     if (DTM.NULL != n)

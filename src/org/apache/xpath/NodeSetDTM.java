@@ -103,9 +103,10 @@ public class NodeSetDTM extends NodeVector
   /**
    * Create an empty nodelist.
    */
-  public NodeSetDTM()
+  public NodeSetDTM(DTMManager dtmManager)
   {
     super();
+    m_manager = dtmManager;
   }
 
   /**
@@ -114,9 +115,10 @@ public class NodeSetDTM extends NodeVector
    * @param blocksize Size of blocks to allocate 
    * @param dummy pass zero for right now...
    */
-  public NodeSetDTM(int blocksize, int dummy)
+  public NodeSetDTM(int blocksize, int dummy, DTMManager dtmManager)
   {
     super(blocksize);
+    m_manager = dtmManager;
   }
 
   // %TBD%
@@ -144,6 +146,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     super();
+    m_manager = nodelist.getDTMManager();
 
     addNodes((DTMIterator) nodelist);
   }
@@ -159,6 +162,7 @@ public class NodeSetDTM extends NodeVector
 
     super();
 
+    m_manager = ni.getDTMManager();
     addNodes(ni);
   }
   
@@ -174,6 +178,7 @@ public class NodeSetDTM extends NodeVector
     super();
 
     Node node;
+    m_manager = xctxt.getDTMManager();
 
     while (null != (node = iterator.nextNode()))
     {
@@ -187,10 +192,11 @@ public class NodeSetDTM extends NodeVector
    *
    * @param node Single node to be added to the new set.
    */
-  public NodeSetDTM(int node)
+  public NodeSetDTM(int node, DTMManager dtmManager)
   {
 
     super();
+    m_manager = dtmManager;
 
     addNode(node);
   }
@@ -351,9 +357,12 @@ public class NodeSetDTM extends NodeVector
    */
   public DTM getDTM(int nodeHandle)
   {
-    // %TBD%
-    return null;
+    
+    return m_manager.getDTM(nodeHandle);
   }
+  
+  /* An instance of the DTMManager. */
+  DTMManager m_manager;
   
   /**
    * Get an instance of the DTMManager.  Since a node 
@@ -364,8 +373,8 @@ public class NodeSetDTM extends NodeVector
    */
   public DTMManager getDTMManager()
   {
-    // %TBD%
-    return null;
+    
+    return m_manager;
   }
 
   /**

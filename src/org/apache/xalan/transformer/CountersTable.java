@@ -123,7 +123,7 @@ public class CountersTable extends Hashtable
   /**
    * Place to collect new counters.
    */
-  transient private NodeSetDTM m_newFound = new NodeSetDTM();
+  transient private NodeSetDTM m_newFound;
 
   /**
    * Add a list of counted nodes that were built in backwards document
@@ -192,6 +192,8 @@ public class CountersTable extends Hashtable
       // of forward counting by one, this will mean a single node copy from 
       // the backwards list (m_newFound) to the forwards list (counter.m_countNodes).
       count = 0;
+      if (m_newFound == null)
+        m_newFound = new NodeSetDTM(support.getDTMManager());
 
       for (; DTM.NULL != target;
               target = numberElem.getPreviousNode(support, target))
@@ -230,7 +232,7 @@ public class CountersTable extends Hashtable
 
       // If we got to this point, then we didn't find a counter, so make 
       // one and add it to the list.
-      Counter counter = new Counter(numberElem);
+      Counter counter = new Counter(numberElem, new NodeSetDTM(support.getDTMManager()));
 
       m_countersMade++;  // for diagnostics
 
