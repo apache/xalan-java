@@ -154,6 +154,9 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     private String    _documentURI = null;
     static private int _documentURIIndex = 0;
 
+    // Object used to map TransletOutputHandler events to SAX events
+    private CH2TOH _ch2toh = new CH2TOH();
+
     // Support for access/navigation through org.w3c.dom API
     private Node[] _nodes;
     private NodeList[] _nodeLists;
@@ -1504,18 +1507,19 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     }
 
     /**
-     * Copy the contents of a text-node to an output handler
+     * Copy the string value of a node directly to an output handler
      */
-    public void characters(final int textNode, TransletOutputHandler handler)
+    public void characters(final int node, TransletOutputHandler handler)
       throws TransletException 
     {
-      //TODO: child of a text node== null!!
-      /* handler.characters(_text,
-                         _offsetOrChild[textNode],
-                         _lengthOrAttr[textNode]); */
-       char[] buffer;
-        buffer = getNodeValue(textNode).toCharArray();
-        handler.characters(buffer, 0, buffer.length);
+        if (node != DTM.NULL) {
+            _ch2toh.setTOH(handler);
+            try {
+                dispatchCharactersEvents(node, _ch2toh, false);
+            } catch (SAXException e) {
+                throw new TransletException(e);
+            }
+        }
     }
 
     /**
@@ -1569,10 +1573,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
                                    _lengthOrAttr[node])*/);
         break;
       case DTM.TEXT_NODE:
-        char[] buffer = getNodeValue(node).toCharArray();
-        handler.characters(buffer, 0, buffer.length);/*_text,
-                           _offsetOrChild[node],
-                           _lengthOrAttr[node]);*/
+        characters(node, handler);
         break;
       case DTM.ATTRIBUTE_NODE:
         shallowCopy(node, handler);
@@ -1657,13 +1658,10 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       switch(type)
       {
       case DTM.ROOT_NODE: // do nothing
-     case DTM.DOCUMENT_NODE:
+      case DTM.DOCUMENT_NODE:
         return EMPTYSTRING;
       case DTM.TEXT_NODE:
-              char[] buffer = this.getNodeValue(node).toCharArray();
-        handler.characters(buffer, 0, buffer.length); /*_text,
-                           _offsetOrChild[node],
-                           _lengthOrAttr[node]); */
+        characters(node, handler);
         return null;
       case DTM.PROCESSING_INSTRUCTION_NODE:
         copyPI(node, handler);
