@@ -478,26 +478,28 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 
 AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
         {: 
-	   // GTM bug fix 2553. 
+	   // GTM bug fix 2553; 3360 (handles predicates in nodeStep2). 
 	   // Try to get node type and axis from the RelativeLocationPath
 	   int nodeType = NodeTest.ELEMENT;
 	   int axis = Axis.CHILD;
+	   Vector predicates = null;
 	   if (rlp instanceof Step) {
 	       nodeType = ((Step)rlp).getNodeType();
 	       axis = ((Step)rlp).getAxis();
+	       predicates = ((Step)rlp).getPredicates();
 	   }
 	   // create the new abs location path
 	   Step nodeStep1 = new Step(Axis.DESCENDANTORSELF, -1, null);
-	   Step nodeStep2 = new Step(axis, nodeType, null);
+	   //Step nodeStep2 = new Step(axis, nodeType, null);
+	   Step nodeStep2 = new Step(axis, nodeType, predicates);
 	   AbsoluteLocationPath path =  new AbsoluteLocationPath(
-		new ParentLocationPath(nodeStep1, nodeStep2)); 
+		new ParentLocationPath(nodeStep1, nodeStep2));
 
 	   // uncomment for no dup filtering. Used in debugging. 
 	   //RESULT = path; 
 
            // Filtered the Abs Loc Path to remove dups 
 	   RESULT = new FilteredAbsoluteLocationPath(path); 
-
         :};
 
 Step ::= NodeTest:ntest
