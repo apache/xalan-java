@@ -26,17 +26,6 @@
     <xsl:if test="count(Commit[@category='core'])=0">
       <note>This release includes no updates of the non-XSLTC core source code.</note>
     </xsl:if>
-    <xsl:if test="count(Commit[@category='compat'])>0">
-      <p>Compatibility source code updates:</p>
-      <ul>
-      <xsl:for-each select="Commit[@category='compat']">
-        <li><xsl:apply-templates select="Who|DateCommitted|Modified|Added|Removed|Log"/></li>
-      </xsl:for-each>
-      </ul>
-    </xsl:if>
-    <xsl:if test="count(Commit[@category='compat'])=0">
-      <note>This release includes no updates of the compatibility source code (now deprecated).</note>
-    </xsl:if>
     
     <xsl:if test="count(Commit[@category='xsltc'])>0">
       <redirect:write file="{$xsltcdone}">
