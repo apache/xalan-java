@@ -1077,6 +1077,9 @@ public class TransformerImpl extends Transformer
     synchronized (m_outputContentHandler)
     {
       m_hasBeenReset = false;
+      
+      XPathContext xctxt = getXPathContext();
+      DTM dtm = xctxt.getDTM(node);
 
       try
       {
@@ -1109,7 +1112,17 @@ public class TransformerImpl extends Transformer
 
         // ===========
         // System.out.println("Calling applyTemplateToNode - "+Thread.currentThread().getName());
-        this.applyTemplateToNode(null, null, node);
+        DTMIterator dtmIter = new org.apache.xpath.axes.SelfIteratorNoPredicate();
+        dtmIter.setRoot(node, xctxt);
+        xctxt.pushContextNodeList(dtmIter);
+        try
+        {
+          this.applyTemplateToNode(null, null, node);
+        }
+        finally
+        {
+          xctxt.popContextNodeList();
+        }
         // m_stylesheetRoot.getStartRule().execute(this);
 
         // System.out.println("Done with applyTemplateToNode - "+Thread.currentThread().getName());
