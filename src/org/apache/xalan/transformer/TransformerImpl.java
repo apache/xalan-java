@@ -400,7 +400,6 @@ public class TransformerImpl extends Transformer
   {
     setStylesheet(stylesheet);
     setXPathContext(new XPathContext(this));
-    getXPathContext().setNamespaceContext(stylesheet);
     m_stackGuard = new StackGuard(this);
   }
   
@@ -620,6 +619,7 @@ public class TransformerImpl extends Transformer
 
     try
     {
+      getXPathContext().setNamespaceContext(getStylesheet());
       String base = source.getSystemId();
       
       // If no systemID of the source, use the base of the stylesheet.
