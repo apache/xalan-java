@@ -96,19 +96,29 @@ public class PrecedingSiblingWalker extends ReverseAxesWalker
 
     if (m_currentNode == m_root)
     {
-      Node parent = m_lpi.getDOMHelper().getParentOfNode(m_currentNode);
-
-      if (null == parent)
-        return null;
-
-      next = parent.getFirstChild();
+      if(m_currentNode.getNodeType() == Node.ATTRIBUTE_NODE)
+      {
+        // then don't bother, since attributes don't have siblings.
+        // Otherwise, we would go up to the parent, and get the so-called 
+        // first attribute.
+        next = null;
+      }
+      else
+      {
+        Node parent = m_lpi.getDOMHelper().getParentOfNode(m_currentNode);
+  
+        if (null == parent)
+          return null;
+  
+        next = parent.getFirstChild();
+      }
     }
     else
     {
       next = m_currentNode.getNextSibling();
     }
 
-    if (next.equals(m_root))
+    if (null != next && next.equals(m_root))
       next = null;
 
     return setCurrentIfNotNull(next);

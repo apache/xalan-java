@@ -88,11 +88,31 @@ public class FollowingWalker extends AxesWalker
    * NEEDSDOC @param root
    */
   public void setRoot(Node root)
-  {
+  {      
 
     super.setRoot(root);
-
-    m_currentAncestor = root;
+    
+    if(root.getNodeType() == Node.ATTRIBUTE_NODE)
+    {
+      // The current node could be an attribute node, so getNextSibling() will 
+      // always return null.  In that case, we want to continue the search 
+      // with the first child of the owner element, as if the attribute nodes 
+      // are children which are always _before_ the first child element.  We 
+      // don't have to consider following attributes, since they never match 
+      // the following axes.
+      /*
+      Node e = m_lpi.getDOMHelper().getParentOfNode(root);
+      root = e.getLastChild();
+      if(null == root)
+        root = e;
+      m_currentAncestor = e.getParentNode();
+      */
+      Node e = m_lpi.getDOMHelper().getParentOfNode(root);
+      m_currentNode = e;
+      m_currentAncestor = e.getOwnerDocument(); // Not totally sure why
+    } 
+    else
+      m_currentAncestor = root;
 
     // Following is always moving up the tree, 
     // so I think this should be OK.
@@ -154,8 +174,26 @@ public class FollowingWalker extends AxesWalker
   public Node firstChild()
   {
 
-    Node n = (m_currentAncestor == m_currentNode)
-             ? m_currentNode.getNextSibling() : m_currentNode.getFirstChild();
+    Node n;
+    if(m_currentAncestor == m_currentNode)
+    {
+//      if(m_currentNode.getNodeType() == Node.ATTRIBUTE_NODE)
+//      {
+//        // The current node could be an attribute node, so getNextSibling() will 
+//        // always return null.  In that case, we want to continue the search 
+//        // with the first child of the owner element, as if the attribute nodes 
+//        // are children which are always _before_ the first child element.  We 
+//        // don't have to consider following attributes, since they never match 
+//        // the following axes.
+//        n = m_lpi.getDOMHelper().getParentOfNode(m_currentNode).getFirstChild();
+//      } 
+//      else
+        n = m_currentNode.getNextSibling();
+    }
+    else
+    {
+      n = m_currentNode.getFirstChild();
+    }
 
     m_nextLevelAmount = (null == n) ? 0 : (n.hasChildNodes() ? 1 : 0);
 
@@ -172,7 +210,8 @@ public class FollowingWalker extends AxesWalker
   public Node nextSibling()
   {
 
-    Node n = m_currentNode.getNextSibling();
+    Node n;    
+    n = m_currentNode.getNextSibling();
 
     m_nextLevelAmount = (null == n) ? 0 : (n.hasChildNodes() ? 1 : 0);
 
