@@ -550,11 +550,16 @@ public class SimpleNode implements Node
         return prefix + toString();
     }
 
-    /* Override this method if you want to customize how the node dumps
-       out its children. */
     public void dump(String prefix)
     {
-        System.out.println(toString(prefix));
+        dump(prefix, System.out);
+    }
+
+    /* Override this method if you want to customize how the node dumps
+       out its children. */
+    public void dump(String prefix, java.io.PrintStream out)
+    {
+        out.println(toString(prefix));
 
         if (children != null)
         {
@@ -564,12 +569,10 @@ public class SimpleNode implements Node
 
                 if (n != null)
                 {
-                    n.dump(prefix + " ");
+                    n.dump(prefix + " ", out);
                 }
             }
         }
     }
-
-   
 
 }
