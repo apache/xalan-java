@@ -97,7 +97,7 @@ public final class Compile {
 	"         <package-name> is a package name to prefix all class names with.\n\n"+
 	"   Notes:\n"+
 	"         The -o option is ignored when multiple stylesheets are specified.\n"+
-	"         The -x option switched on debug messages.";
+	"         The -x option switched on debug messages."+
 	"         The -s option disables calling System.exit.";
     
     public static void printUsage() {

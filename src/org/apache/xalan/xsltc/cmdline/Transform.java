@@ -100,7 +100,9 @@ final public class Transform {
     private String  _jarFileSrc;
     private boolean _isJarFileSpecified = false;
     private Vector  _params = null;
-    private boolean _uri, _debug, _allowExit = true;
+    private boolean _uri, _debug;
+
+    private static boolean _allowExit = true;
 
     public Transform(String className, String fileName,
 		     boolean uri, boolean debug) {
@@ -275,7 +277,7 @@ final public class Transform {
 			debug = true;
 		    }
 		    else if (args[i].equals("-s")) {
-			_allowExits = false;
+			_allowExit = false;
 		    }
 		    else if (args[i].equals("-j")) {
 			isJarFileSpecified = true;	
