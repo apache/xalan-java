@@ -268,6 +268,8 @@ public class Parent extends Child
   public Node getFirstChild()
   {
 
+//    synchronized (m_doc)
+//    {
     if (null != m_first)
       return m_first;
     else if (!m_isComplete)
@@ -293,6 +295,7 @@ public class Parent extends Child
         }
       }
     }
+//    }
 
     return m_first;
   }
@@ -370,8 +373,10 @@ public class Parent extends Child
           try
           {
             ElementImpl elem = (ElementImpl) child;
+            if(null == doc.m_xpathContext)
+              doc.m_xpathContext = new org.apache.xpath.XPathContext(doc);
             WhiteSpaceInfo info =
-              stylesheet.getWhiteSpaceInfo(transformer.getXPathContext(),
+              stylesheet.getWhiteSpaceInfo(doc.m_xpathContext,
                                            elem);
             boolean shouldStrip;
 

@@ -57,6 +57,7 @@
 package org.apache.xalan.stree;
 
 import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -82,6 +83,11 @@ public abstract class DocImpl extends Parent
   /** Contains exception thrown from transformation thread, 
    * if one occured. */
   public Exception m_exceptionThrown = null;
+  
+  /**
+   * For execution of whitespace matching.
+   */
+   XPathContext m_xpathContext = null;
 
   /**
    * Constructor DocImpl
