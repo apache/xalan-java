@@ -191,7 +191,12 @@ public final class DocumentCache implements DOMCache {
      */
     public DocumentCache(int size) throws SAXException {
         this(size, null);
-        _dtmManager = XSLTCDTMManager.newInstance();
+        try {
+            _dtmManager = (XSLTCDTMManager)XSLTCDTMManager.getDTMManagerClass()
+                                                          .newInstance();
+        } catch (Exception e) {
+            throw new SAXException(e);
+        }
     }
 
     /**

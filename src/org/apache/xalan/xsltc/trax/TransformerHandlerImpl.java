@@ -222,9 +222,17 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
 
         if (!_isIdentity) {
             boolean hasIdCall = (_translet != null) ? _translet.hasIdCall() : false;
+            XSLTCDTMManager dtmManager = null;
             
             // Create an internal DOM (not W3C) and get SAX2 input handler
-            XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
+            try {
+                dtmManager = 
+                    (XSLTCDTMManager)_transformer.getTransformerFactory()
+                                                 .getDTMManagerClass()
+                                                 .newInstance();
+            } catch (Exception e) {
+                throw new SAXException(e);
+            }
 
             DTMWSFilter wsFilter;
             if (_translet != null && _translet instanceof StripFilter) {
@@ -234,20 +242,21 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
             }            
           
             // Construct the DTM using the SAX events that come through
-            _dom = (SAXImpl)dtmManager.getDTM(null, false, wsFilter, true, false, hasIdCall);         
-            
+            _dom = (SAXImpl)dtmManager.getDTM(null, false, wsFilter, true,
+                                              false, hasIdCall);         
+
             _handler = _dom.getBuilder();
             _lexHandler = (LexicalHandler) _handler;
             _dtdHandler = (DTDHandler) _handler;
             _declHandler = (DeclHandler) _handler;  
             
             
-	        // Set document URI
-	        _dom.setDocumentURI(_systemId);
+            // Set document URI
+            _dom.setDocumentURI(_systemId);
             
-             if (_locator != null) {
+            if (_locator != null) {
                 _handler.setDocumentLocator(_locator);
-             }            
+            }            
         }
 
 	// Proxy call
