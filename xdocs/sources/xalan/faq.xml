@@ -119,7 +119,7 @@
             <br />
             <br />
 	    <code>java -Xbootclasspath/p:&lt;path&gt;
-		    java.org.apache.xalan.xslt.Process</code>
+		    org.apache.xalan.xslt.Process</code>
             <br />
 	    <br />where &lt;path&gt; is a colon seperated lists of the paths to the files xalan.jar, xercesImpl.jar, and xml-apis.jar (e.g. bin/xalan.jar:bin/xercesImpl.jar:bin/xml-apis.jar) containing the new-version of Xalan-Java.
           </li>
