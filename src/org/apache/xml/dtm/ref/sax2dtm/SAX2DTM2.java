@@ -3236,13 +3236,15 @@ public class SAX2DTM2 extends SAX2DTM
       
         if (uri.length() == 0) {
             handler.startElement(name);
-            return name;
+            copyNS(nodeID,handler);
+            return name;           
         }
         else {
             int qnameIndex = m_dataOrQName.elementAt(nodeID);
     
             if (qnameIndex == 0) {
                 handler.startElement(name);
+                copyNS(nodeID,handler);
                 handler.namespaceAfterStartElement(EMPTY_STR, uri);
                 return name;
             }
@@ -3254,7 +3256,6 @@ public class SAX2DTM2 extends SAX2DTM
     
             String qName = m_valuesOrPrefixes.indexToString(qnameIndex);
             handler.startElement(qName);
-            
             int prefixIndex = qName.indexOf(':');
             String prefix;
             if (prefixIndex > 0) {
@@ -3263,10 +3264,43 @@ public class SAX2DTM2 extends SAX2DTM
             else {
                 prefix = null;
             }
-            
+            copyNS(nodeID,handler);
             handler.namespaceAfterStartElement(prefix, uri);
-            return qName;
-        }      
+            return qName;           
+        }        
+             
+    }
+    
+    /**
+     * Copy  namespace nodes.
+     *
+     * @param nodeID The Element node identity
+     * @param handler The SerializationHandler
+     */
+
+   public void copyNS(final int nodeID, SerializationHandler handler)
+        throws SAXException
+    {
+      int current = nodeID;
+      try{
+          while (true)
+          {
+              current++;
+              int eType = _exptype2(current);
+              int type = _exptype2Type(eType);
+         
+              if (type == DTM.ATTRIBUTE_NODE) {
+                 continue;
+              }
+              else if (type == DTM.NAMESPACE_NODE) {
+                  handler.namespaceAfterStartElement(getNodeNameX(makeNodeHandle(current)), getNodeValue(makeNodeHandle(current)));            
+              }
+              else
+                  break;
+                        }
+        }catch (Exception e) {
+            throw new SAXException(e);
+        }
     }
 
     /**
