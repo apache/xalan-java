@@ -99,7 +99,6 @@ public class JAXPTransletOneTransformation
     // Instantiate the TransformerFactory, and use it along with a SteamSource
     // XSL stylesheet to create a Transformer.
     TransformerFactory tFactory = TransformerFactory.newInstance();
-    System.out.println(tFactory.getClass().getName());
     Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI));
     // Perform the transformation from a StreamSource to a StreamResult;
     transformer.transform(new StreamSource(xmlInURI),
