@@ -200,7 +200,7 @@ public class ElemAttribute extends ElemTemplateElement
       if (null == attrName)
         return;
 
-      String attrNameSpace = null;  // by default
+      String attrNameSpace = "";  // by default
 
       // Did they declare a namespace attribute?
       if (null != m_namespace_avt)
@@ -258,6 +258,7 @@ public class ElemAttribute extends ElemTemplateElement
         try
         {
           attrNameSpace = getNamespaceForPrefix(nsprefix);
+          // System.out.println("attrNameSpace: "+attrNameSpace);
 
           if ((null == attrNameSpace) && (nsprefix.length() > 0))
           {
@@ -267,12 +268,13 @@ public class ElemAttribute extends ElemTemplateElement
 
             return;
           }
+          else if(null == attrNameSpace)
+            attrNameSpace = "";
         }
         catch (Exception ex)
         {
 
           // Could not resolve prefix
-          attrNameSpace = null;
 
           transformer.getMsgMgr().warn(
                                        XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
@@ -283,7 +285,11 @@ public class ElemAttribute extends ElemTemplateElement
       }
 
       String localName = QName.getLocalPart(attrName);
-
+//      System.out.println("rhandler.addAttribute("+attrNameSpace+", "
+//                                                 +localName+", "
+//                                                 +attrName+", "
+//                                                 +"CDATA"+", "
+//                                                 +val+");");
       rhandler.addAttribute(attrNameSpace, localName, attrName, "CDATA", val);
     }
     catch(org.xml.sax.SAXException se)
