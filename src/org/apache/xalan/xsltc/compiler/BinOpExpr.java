@@ -136,7 +136,9 @@ final class BinOpExpr extends Expression {
 	    il.append(_type.REM());
 	    break;
 	default:
-	    getParser().addFatalError("Unknown operator for binary expression");
+	    final ErrorMsg msg =
+		new ErrorMsg("Unknown operator for binary expression");
+	    getParser().reportError(Constants.ERROR, msg);
 	}
     }
 

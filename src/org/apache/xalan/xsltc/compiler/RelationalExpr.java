@@ -242,7 +242,9 @@ final class RelationalExpr extends Expression implements Operators {
 		break;
 		
 	    default:
-		getParser().addFatalError("Unknown operator for relational expression");
+		final ErrorMsg msg = 
+		    new ErrorMsg("Unknown operator for relational expression");
+		getParser().reportError(Constants.FATAL, msg);
 	    }
 
 	    _falseList.add(il.append(bi));		// must be backpatched

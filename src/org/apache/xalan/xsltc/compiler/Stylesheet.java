@@ -278,8 +278,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final Stylesheet sheet = stable.addStylesheet(_name, this);
 	if (sheet != null) {
 	    // Error: more that one stylesheet defined
-	    ErrorMsg error = new ErrorMsg(ErrorMsg.STLREDEF_ERR, this);
-	    parser.addError(error);
+	    final ErrorMsg msg = new ErrorMsg(ErrorMsg.STLREDEF_ERR, this);
+	    parser.reportError(Constants.ERROR, msg);
 	}
 
 	// If this is a simplified stylesheet we must create a template that

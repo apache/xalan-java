@@ -191,8 +191,7 @@ final class Variable extends TopLevelElement {
 
 	// check whether variable/param of the same name is already in scope
 	if (parser.lookupVariable(_name) != null) {
-	    ErrorMsg error = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
-	    parser.addError(error);
+	    reportError(this, parser, ErrorMsg.VARREDEF_ERR, _name.toString());
 	}
 
 	final String select = getAttribute("select");
@@ -216,9 +215,8 @@ final class Variable extends TopLevelElement {
 		final int them = var.getImportPrecedence();
 		// It is an error if the two have the same import precedence
 		if (us == them) {
-		    ErrorMsg error = 
-			new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
-		    parser.addError(error);
+		    reportError(this, parser, ErrorMsg.VARREDEF_ERR,
+				_name.toString());
 		}
 		// Ignore this if previous definition has higher precedence
 		else if (them > us) {

@@ -451,13 +451,13 @@ public abstract class SyntaxTreeNode implements Constants {
     protected static void reportError(SyntaxTreeNode element, Parser parser,
 				      int errorCode, String msg) {
 	final ErrorMsg error = new ErrorMsg(errorCode, 0 /*lineNumber*/, msg);
-        parser.addError(error);
+        parser.reportError(Constants.ERROR, error);
     }
 
     protected static void reportWarning(SyntaxTreeNode element, Parser parser,
 					int errorCode, String msg) {
 	final ErrorMsg error = new ErrorMsg(errorCode, 0 /*lineNumber*/, msg);
-        parser.addWarning(error);
+        parser.reportError(Constants.WARNING, error);
     }
 
 }

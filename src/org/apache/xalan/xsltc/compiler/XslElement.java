@@ -113,7 +113,9 @@ final class XslElement extends Instruction {
 	    (prefix != null)) {
 	    namespace = lookupNamespace(prefix); 
 	    if (namespace == null) {
-		parser.addWarning(new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix));
+		final ErrorMsg msg =
+		    new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix);
+		parser.reportError(Constants.WARNING, msg);
 		parseChildren(parser);
 		_ignore = true; // Ignore the element if prefix is undeclared
 		return;
@@ -122,8 +124,10 @@ final class XslElement extends Instruction {
 
 	// Next check that the local part of the QName is legal (no whitespace)
 	if (qname.getLocalPart().indexOf(' ') > -1) {
-	    parser.addWarning(new ErrorMsg("You can't call an element \""+
-					   qname.getLocalPart()+"\""));
+	    final ErrorMsg msg = 
+		new ErrorMsg("You can't call an element \""+
+			     qname.getLocalPart()+"\"");
+	    parser.reportError(Constants.WARNING, msg);
 	    parseChildren(parser);
 	    _ignore = true; // Ignore the element if the local part is invalid
 	    return;

@@ -109,8 +109,9 @@ final class When extends Instruction {
     }
 	
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	getParser()
-	    .addError(new ErrorMsg("Instruction 'when' must be used within a 'choose'.", 
-				   getLineNumber()));
+	final ErrorMsg msg =
+	    new ErrorMsg("Instruction 'when' must be used within a 'choose'.", 
+			 getLineNumber());
+	getParser().reportError(Constants.ERROR, msg);
     }
 }

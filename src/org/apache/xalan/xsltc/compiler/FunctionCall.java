@@ -411,9 +411,9 @@ class FunctionCall extends Expression {
 	    try {
 		final Class clazz = Class.forName(_className);
 		if (clazz == null) {
-		    ErrorMsg error =
+		    final ErrorMsg msg =
 			new ErrorMsg(ErrorMsg.CLSUNDEF_ERR, _className);
-		    getParser().addError(error);
+		    getParser().reportError(Constants.ERROR, msg);
 		}
 		else {
 		    final String methodName = _fname.getLocalPart();
@@ -437,9 +437,9 @@ class FunctionCall extends Expression {
 		}
 	    }
 	    catch (ClassNotFoundException e) {
-		ErrorMsg error =
+		final ErrorMsg msg =
 		    new ErrorMsg(ErrorMsg.CLSUNDEF_ERR, _className);
-		getParser().addError(error);
+		getParser().reportError(Constants.ERROR, msg);
 	    }
 	}
 	return result;

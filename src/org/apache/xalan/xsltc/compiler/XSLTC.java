@@ -227,9 +227,9 @@ public final class XSLTC {
 	}
 	catch (CompilerException e) {
 	    e.printStackTrace();
-	    _parser.addError(new ErrorMsg(e.getMessage()));
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
 	    _parser.printErrors();
-	    return false;	    
+	    return false;  
 	}
     }
     

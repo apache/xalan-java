@@ -152,8 +152,8 @@ final class Param extends TopLevelElement {
 
 	// check whether variable/param of the same name is already in scope
 	if (parser.lookupVariable(_name) != null) {
-	    ErrorMsg error = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
-	    parser.addError(error);
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
+	    parser.reportError(Constants.ERROR, msg);
 	}
 	
 	final String select = getAttribute("select");
