@@ -1947,6 +1947,9 @@ public class SAX2DTM2 extends SAX2DTM
  
   /**
    * The optimized version of DTMDefaultBase._exptype().
+   *
+   * @param identity A node identity, which <em>must not</em> be equal to
+   *        <code>DTM.NULL</code>
    */
   public final int _exptype2(int identity)
   {
@@ -1960,6 +1963,9 @@ public class SAX2DTM2 extends SAX2DTM
   
   /**
    * The optimized version of DTMDefaultBase._nextsib().
+   *
+   * @param identity A node identity, which <em>must not</em> be equal to
+   *        <code>DTM.NULL</code>
    */
   public final int _nextsib2(int identity)
   {
@@ -1973,6 +1979,9 @@ public class SAX2DTM2 extends SAX2DTM
   
   /**
    * The optimized version of DTMDefaultBase._firstch().
+   *
+   * @param identity A node identity, which <em>must not</em> be equal to
+   *        <code>DTM.NULL</code>
    */
   public final int _firstch2(int identity)
   {
@@ -1986,6 +1995,9 @@ public class SAX2DTM2 extends SAX2DTM
   
   /**
    * The optimized version of DTMDefaultBase._parent().
+   *
+   * @param identity A node identity, which <em>must not</em> be equal to
+   *        <code>DTM.NULL</code>
    */
   public final int _parent2(int identity)
   {
@@ -1999,6 +2011,9 @@ public class SAX2DTM2 extends SAX2DTM
   
   /**
    * The optimized version of DTMDefaultBase._type().
+   *
+   * @param identity A node identity, which <em>must not</em> be equal to
+   *        <code>DTM.NULL</code>
    */
   public final int _type2(int identity)
   {
@@ -2540,6 +2555,9 @@ public class SAX2DTM2 extends SAX2DTM
    * @return Identity of first attribute, or DTM.NULL to indicate none exists.
    */
   protected int getFirstAttributeIdentity(int identity) {
+    if (identity == NULL) {
+        return NULL;
+    }
     int type = _type2(identity);
 
     if (DTM.ELEMENT_NODE == type)
