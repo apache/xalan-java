@@ -675,6 +675,12 @@ public class AdaptiveResultTreeImpl extends SimpleResultTreeImpl
         endElement(qName);
     }
 
+ public void addUniqueAttribute(String qName, String value, int flags)
+        throws SAXException
+    {
+        addAttribute(qName, value); 
+    }
+
     public void addAttribute(String name, String value)
     {    
 	if (_openElementName != null) {
