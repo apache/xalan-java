@@ -564,6 +564,23 @@ public class TransformerImpl extends Transformer
 
     try
     {
+      String base = source.getSystemId();
+      
+      // If no systemID of the source, use the base of the stylesheet.
+      if(null == base)
+      {
+        base = m_stylesheetRoot.getBaseIdentifier();
+      }
+
+      // As a last resort, use the current user dir.
+      if(null == base)
+      {
+        String currentDir = System.getProperty("user.dir");
+
+        base = "file:///" + currentDir + java.io.File.separatorChar
+                 + source.getClass().getName();
+      }
+      setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
       DTM dtm = mgr.getDTM(source, false, this, true, true);
       boolean hardDelete = true;  // %REVIEW% I have to think about this. -sb
