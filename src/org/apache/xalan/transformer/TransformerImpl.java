@@ -889,7 +889,7 @@ public class TransformerImpl extends Transformer
 
         if (null != method)
           m_outputFormat = new OutputProperties(method);
-        else
+        else if(m_outputFormat==null)
           m_outputFormat = new OutputProperties();
       }
 
