@@ -1164,8 +1164,10 @@ public class Parser implements Constants, ContentHandler {
 	if ((bro != null) && (bro instanceof Text)) {
 	    Text text = (Text)bro;
 	    if (!text.isTextElement()) {
-		text.setText(string);
-		return;
+		if ((length > 1) || ( ((int)ch[0]) < 0x100)) {
+		    text.setText(string);
+		    return;
+		}
 	    }
 	}
 
