@@ -791,7 +791,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   public String getSystemId()
   {
-    return (null != m_parentNode) ? this.getStylesheet().getHref() : null;
+    return this.getStylesheet().getHref();
   }
 
   /**
