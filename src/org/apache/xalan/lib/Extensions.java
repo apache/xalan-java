@@ -280,7 +280,7 @@ public class Extensions
   }
 
   /**
-   * Returns true of both node-sets contain the same set of nodes.
+   * Returns true if both node-sets contain the same set of nodes.
    * @param n1 NodeIterator for first node-set
    *
    * NEEDSDOC @param ni1

@@ -94,7 +94,7 @@ import javax.xml.parsers.*;
  * This class contains EXSLT common extension functions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
- *    xmlns:exslt="http://exslt.org/xalan/common"
+ *    xmlns:exslt="http://exslt.org/common"
  * </pre>
  * 
  * The documentation for each function has been copied from the relevant
