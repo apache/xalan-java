@@ -321,6 +321,15 @@ m_builtInFunctions.put(
       new QName("node-name"),
       new FuncNodeName());
 m_builtInFunctions.put(
+      new QName("expanded-QName"),
+      new FuncExpandedQName());
+m_builtInFunctions.put(
+      new QName("get-local-name-from-QName"),
+      new FuncGetLocalNameFromQName());
+m_builtInFunctions.put(
+      new QName("get-namespace-from-QName"),
+      new FuncGetNamespaceFromQName());
+m_builtInFunctions.put(
       new QName("base-uri"),
       new FuncBaseURI());
 m_builtInFunctions.put(

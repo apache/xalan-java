@@ -56,79 +56,63 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xpath.res.XPATHErrorResources;
-
 //import org.w3c.dom.Node;
-//import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
 
-import java.util.Vector;
-
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XExpandedQName;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XSequence;
-import org.apache.xpath.objects.XExpandedQName;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the xf:node-name function, returning a QName.
+ * Execute the get-namespace-from-QName() function.
  * 
  * @author Joe Kesselman
  * @since Aug 27, 2002
  */
-public class FuncNodeName extends FunctionDef1Arg
+public class FuncGetNamespaceFromQName extends FunctionOneArg
 {
+
   /**
-   * Execute the xf:node-name function.  The function must return
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
-   * @return An expanded QName containing the node's namespace URI and
-   * localname, or 
-   * XObject.EMPTY if the input wasn't a node that can have such
-   * a name.
-   * %BUG% We don't yet know what the behavior of an expanded QName
-   * should be, so we don't yet have a "proper" XObject for it.
+   * @return A valid XObject.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    int context = getArg0AsNode(xctxt);
-    XExpandedQName qn=null;
-    
-    if(DTM.NULL != context)
-    {
-	    DTM dtm = xctxt.getDTM(context);
-    	switch (dtm.getNodeType(context))
-	    {
-    		case DTM.ATTRIBUTE_NODE:
-    		case DTM.ELEMENT_NODE:
-    			qn=new XExpandedQName(dtm.getNamespaceURI(context),
-    				dtm.getLocalName(context));
-    			break;
-    		default:
-    			// leave it unknown? SHOULD NOT ARISE!
-    			break;
-	    }
-    }
+  	XObject val=m_arg0.execute(xctxt);
+  	
+  	if(val==XSequence.EMPTY)
+  		return val; // Empty returns empty as its namespace
+  		
+  	// Might be a sequence (eg, a DTMSequence); unwrap if so	
+  	if(val.isSequenceProper())
+  	{
+  		XSequence s=val.xseq();
+  		s.next();
+  		val=s.getCurrent();
+  	}
+  		
+  	if (val.getType() == val.CLASS_QNAME)
+  	{
+  		String ns=((XExpandedQName)val).getNamespace();
+  		if(ns==null || "".equals(ns))
+  			return XSequence.EMPTY;
+  		else
+  			return new XString(ns);
+  	}
 
-	// %BUG% %REVIEW% THIS IS WRONG. We probably want a real XQName
-	// XObject to solve this properly. Problem is, "expanded QName"
-	// is underspecified in the spec; not knowing its intended lexical
-	// representation or behavior when manipulated keeps me from
-	// implementing it. (For example: If inserted as text, is it
-	// supposed to turn back into a Qualified Name? If so, using whose
-	// definition of the prefix?)
-	//
-	// For now, this compiles and passes the primitive smoketest...
-	// but it is *NOT* correct.
-
-	if(qn==null)
-		return XSequence.EMPTY;
 	else
-		return qn;
+	{
+		// We shouldn't be called unless the parameter is a QName. But 
+		// it's unclear whether we should throw a runtime exception or 
+		// return something else if this somehow arises.
+		return XSequence.EMPTY;		
+	}
   }
 }

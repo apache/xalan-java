@@ -73,7 +73,11 @@ import org.apache.xpath.NodeSetDTM;
  * have their values retreived via xf:get-*-from-QName(), but
  * no other XPath/XSLT 2.0 operations are valid.
  * 
- * @author keshlam
+ * NOTE: It is currently undefined whether an attempt is made to normalize
+ * relative namespaces before comparing them for equality. We have
+ * delegated that issue to the QName object...
+ * 
+ * @author Joe Kesselman
  * @since Aug 26, 2002
  */
 public class XExpandedQName extends XObject

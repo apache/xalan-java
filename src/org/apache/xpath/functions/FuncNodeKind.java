@@ -79,6 +79,9 @@ import org.apache.xpath.objects.XSequence;
  * each of the possible XStrings? More resources burned during 
  * initialization, fewer during execution... but this is a rarely
  * used function.
+ * 
+ * @author Joe Kesselman
+ * @since Aug 27, 2002
  */
 public class FuncNodeKind extends FunctionDef1Arg
 {

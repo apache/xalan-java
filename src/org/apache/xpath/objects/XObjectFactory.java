@@ -6,7 +6,7 @@ import org.apache.xml.utils.Duration;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.axes.OneStepIterator;
-
+import org.apache.xml.utils.QName;
 
 public class XObjectFactory
 {
@@ -44,6 +44,10 @@ public class XObjectFactory
     else if (val instanceof Integer)
     {
       result = new XInteger(((Integer) val)); 
+    }
+    else if (val instanceof QName)
+    {
+    	result=new XExpandedQName((QName)val);
     }
     else
     { 

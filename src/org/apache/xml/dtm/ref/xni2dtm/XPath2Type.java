@@ -266,13 +266,20 @@ public class XPath2Type
 
       //The normalized value of a string type
       // (Should we check for stings and return this instead?)
-      String normalizedValue = validatedInfo.normalizedValue ;
-
+      //String normalizedValue = validatedInfo.normalizedValue ;
+      
       // If the type is a union type, then the member type which
       // actually validated the string value will be:
       // XSSimpleType memberType = validatedInfo.memberType ;
 
       // %REVIEW% I presume this handles lists by returning arrays...?
+      
+      // Some types may want to be converted from XNI-native to Xalan-native
+      if(value instanceof org.apache.xerces.xni.QName)
+      {
+      	org.apache.xerces.xni.QName xniq=(org.apache.xerces.xni.QName)value;
+      	value=new org.apache.xml.utils.QName(xniq.uri,xniq.localpart);
+      }
                 
       seq=new DTM_XSequence(value,this);
     }
