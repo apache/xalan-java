@@ -86,6 +86,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.ErrorListener;
 
 import java.util.*;
 import java.net.*;
@@ -535,7 +536,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
   {
     try{
       if (baseIdentifier == null)
-        return new StylesheetRoot(); //this, baseIdentifier); 
+        return new StylesheetRoot(this, baseIdentifier); 
       
       Source inSource = new XSLTInputSource(baseIdentifier).getSourceObject();
       Templates templates = m_tfactory.newTemplates(inSource);
@@ -810,7 +811,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
       // What's the right way to do this?
 
       // Create a XPath parser.
-      XPathParser parser = new XPathParser();
+      XPathParser parser = new XPathParser((ErrorListener)m_problemListener.getErrorHandler(), null);
       XPathContext xpathContext = new XPathContext();
       PrefixResolverDefault nsNode = new PrefixResolverDefault(fragBase); //xpathContext.getNamespaceContext();
 

@@ -97,16 +97,12 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
                         String baseIdentifier)
     throws TransformerConfigurationException
   {   
-    m_sRootObject = new org.apache.xalan.templates.StylesheetRoot(); 
-    m_liaisonClassUsedToCreate = ((Object)processor.getXMLProcessorLiaison()).getClass().getName();
+    m_sRootObject = new org.apache.xalan.templates.StylesheetRoot(processor.getTransformerFactory().getErrorListener()); 
+    if (processor.getXMLProcessorLiaison()!= null)
+      m_liaisonClassUsedToCreate = ((Object)processor.getXMLProcessorLiaison()).getClass().getName();
     
-  }
-  
-  public StylesheetRoot()
-    throws TransformerConfigurationException
-  {   
-    m_sRootObject = new org.apache.xalan.templates.StylesheetRoot();     
-  }
+  }  
+
 
   /**
    * Constructor using an org.apache.xalan.templates.StylesheetRoot.
