@@ -120,6 +120,15 @@ final class FunctionAvailableCall extends FunctionCall {
     }
 
     /**
+     * Returns an object representing the compile-time evaluation 
+     * of an expression. We are only using this for function-available
+     * and element-available at this time.
+     */
+    public Object evaluateAtCompileTime() {
+	return getResult() ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    /**
      * (For ext. java functions only)
      * Parses the argument to function-available to extract the package 
      * qualified class name, for example, given the argument 

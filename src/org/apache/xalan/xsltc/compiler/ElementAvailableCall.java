@@ -88,6 +88,15 @@ final class ElementAvailableCall extends FunctionCall {
     }
 
     /**
+     * Returns an object representing the compile-time evaluation 
+     * of an expression. We are only using this for function-available
+     * and element-available at this time.
+     */
+    public Object evaluateAtCompileTime() {
+	return getResult() ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    /**
      * Returns the result that this function will return
      */
     public boolean getResult() {
