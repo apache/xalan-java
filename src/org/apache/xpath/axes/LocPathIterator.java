@@ -394,7 +394,10 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   {
 
     if (b)
-      m_cachedNodes = new NodeSetDTM();
+    {
+      if(null == m_cachedNodes)
+        m_cachedNodes = new NodeSetDTM();
+    }
     else
       m_cachedNodes = null;
   }
