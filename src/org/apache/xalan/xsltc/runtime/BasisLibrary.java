@@ -838,6 +838,7 @@ public final class BasisLibrary implements Operators {
     public static String formatNumber(double number, String pattern,
 				      DecimalFormat formatter) {
 	try {
+	    if (Double.isNaN(number)) return("NaN");
 	    StringBuffer result = new StringBuffer();
 	    formatter.applyLocalizedPattern(pattern);
 	    formatter.format(number,result,_fieldPosition);
