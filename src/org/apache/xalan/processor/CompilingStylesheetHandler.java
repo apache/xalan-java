@@ -94,9 +94,9 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-// Java Compiler support, being swiped from BSF
-// TODO: ADOPT OR ADAPT THIS LOGIC, TO REMOVE THIS DEPENDENCY *****
-import com.ibm.cs.util.JavaUtils;
+// Java Compiler support. *****
+// TODO: Merge the Microsoft VJ++ workarounds in this file into that one.
+import synthetic.JavaUtils;
 
 /**
  * <meta name="usage" content="advanced"/>
