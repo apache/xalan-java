@@ -88,8 +88,9 @@ final class Include extends TopLevelElement {
     }
 
     public void parseContents(final Parser parser) {
-	final Stylesheet context = parser.getCurrentStylesheet();
-
+	XSLTC xsltc = parser.getXSLTC();
+	Stylesheet context = parser.getCurrentStylesheet();
+        
 	String docToLoad = getAttribute("href");
 	try {
 	    if (context.checkForLoop(docToLoad)) {
@@ -99,44 +100,41 @@ final class Include extends TopLevelElement {
 		return;
 	    }
 
-	    String currLoadedDoc = context.getSystemId();
-	    SourceLoader loader = context.getSourceLoader();
 	    InputSource input = null;
 	    XMLReader reader = null;
+	    String currLoadedDoc = context.getSystemId();
+	    SourceLoader loader = context.getSourceLoader();
 
+            // Initialize currLoadedDocURL using currLoadedDoc
+            URL docToLoadURL = null, currLoadedDocURL = null;      
+            if (currLoadedDoc != null && currLoadedDoc.length() > 0) {
+                try {
+                    currLoadedDocURL = new URL(currLoadedDoc);
+                }
+                catch (MalformedURLException e) {
+                    // ignore
+                }
+            }
+            
+            // Use SourceLoader if available
 	    if (loader != null) {
-		final XSLTC xsltc = parser.getXSLTC();
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
-        if (input != null)
-            docToLoad = input.getSystemId();
-		reader = xsltc.getXMLReader();
+                if (input != null) {
+                    docToLoad = input.getSystemId();
+                    reader = xsltc.getXMLReader();
+                }
 	    }
-	    else {
-		// bug 7835, patch by Stefan Kost (s.kost@webmacher.de)
-		if ((currLoadedDoc != null) && (currLoadedDoc.length() > 0)) {
-		    File file = new File(currLoadedDoc);
-		    if (file.exists()) {
-		        currLoadedDoc = "file:" + file.getCanonicalPath();
-		    }
-		    final URL url = new URL(new URL(currLoadedDoc), docToLoad);
-		    docToLoad = url.toString();
-		    input = new InputSource(docToLoad);
-		}
-		else {
-		    File file = new File(System.getProperty("user.dir"),
-			docToLoad);
-		    if (file.exists()) {
-			docToLoad = "file:" + file.getCanonicalPath();
-		    }
-		    else {
-			final ErrorMsg msg =
-                                       new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR,
-                                                    docToLoad);
-                        parser.reportError(Constants.FATAL, msg);
-                        return;
-		    }
-		    input = new InputSource(docToLoad);
-		}
+
+            // No SourceLoader or not resolved by SourceLoader
+            if (input == null) {
+                docToLoadURL = (currLoadedDocURL != null) ?
+                    new URL(currLoadedDocURL, docToLoad) :
+                    new URL("file", "", System.getProperty("user.dir")
+                            + System.getProperty("file.separator")
+                            + docToLoad);
+                
+		docToLoad = docToLoadURL.toString();
+		input = new InputSource(docToLoad);
 	    }
 
 	    // Return if we could not resolve the URL
@@ -160,7 +158,7 @@ final class Include extends TopLevelElement {
 	    if (_included == null) return;
 
 	    _included.setSourceLoader(loader);
-	    _included.setSystemId(docToLoad);
+	    _included.setSystemId(docToLoadURL.toString());
 	    _included.setParentStylesheet(context);
 	    _included.setIncludingStylesheet(context);
 	    _included.setTemplateInlining(context.getTemplateInlining());
@@ -188,14 +186,6 @@ final class Include extends TopLevelElement {
 		    }
 		}
 	    }
-	}
-	catch (FileNotFoundException e) {
-	    // Update systemId in parent stylesheet for error reporting
-	    context.setSystemId(getAttribute("href"));
-
-	    final ErrorMsg msg = 
-		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
-	    parser.reportError(Constants.FATAL, msg);
 	}
 	catch (MalformedURLException e) {
 	    // Update systemId in parent stylesheet for error reporting

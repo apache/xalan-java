@@ -65,6 +65,8 @@
 
 package org.apache.xalan.xsltc.dom;
 
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.Enumeration;
 
 import javax.xml.transform.Source;
@@ -188,8 +190,37 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
      * Define the origin of the document from which the tree was built
      */
     public void setDocumentURI(String uri) {
-        setDocumentBaseURI(uri);
-        _documentURI = uri;
+        URL documentURI = null; 
+        
+        if (uri != null && uri.length() > 0) {
+            try {
+                documentURI = new URL(uri);
+            }
+            catch (MalformedURLException e) {
+                String userDir = System.getProperty("user.dir");
+                String fileSep = System.getProperty("file.separator");
+                
+                // Make it absolute if a relative path
+                if (!uri.startsWith(fileSep)) {
+                    uri = userDir + fileSep + uri;
+                }
+                try {
+                    documentURI = new URL("file", "", uri);
+                }
+                catch (MalformedURLException ep) {
+                    try {
+                        documentURI = new URL("file", "", userDir + fileSep);
+                    }
+                    catch (MalformedURLException epp) {
+                        // ignore
+                    }
+                }
+            }
+        }
+        if (documentURI != null) {       
+            _documentURI = documentURI.toString();
+            setDocumentBaseURI(_documentURI);
+        }
     }
 
     /**

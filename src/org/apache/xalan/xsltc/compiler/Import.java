@@ -67,6 +67,7 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.io.File;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.Enumeration;
 
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
@@ -87,6 +88,7 @@ final class Import extends TopLevelElement {
     }
 
     public void parseContents(final Parser parser) {
+	final XSLTC xsltc = parser.getXSLTC();
 	final Stylesheet context = parser.getCurrentStylesheet();
 
 	try {
@@ -103,18 +105,35 @@ final class Import extends TopLevelElement {
 	    InputSource input = null;
 	    XMLReader reader = null;
 
+            // Initialize currLoadedDocURL using currLoadedDoc
+            URL docToLoadURL = null, currLoadedDocURL = null;      
+            if (currLoadedDoc != null && currLoadedDoc.length() > 0) {
+                try {
+                    currLoadedDocURL = new URL(currLoadedDoc);
+                }
+                catch (MalformedURLException e) {
+                    // ignore
+                }
+            }
+            
+            // Use SourceLoader if available
 	    if (loader != null) {
-		final XSLTC xsltc = parser.getXSLTC();
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
-        if (input != null)
-            docToLoad = input.getSystemId();
-		reader = xsltc.getXMLReader();
+                if (input != null) {
+                    docToLoad = input.getSystemId();
+                    reader = xsltc.getXMLReader();
+                }
 	    }
-	    else {
-		File file = new File(currLoadedDoc);
-		if (file.exists()) currLoadedDoc = "file:"+currLoadedDoc;
-		final URL url = new URL(new URL(currLoadedDoc), docToLoad);
-		docToLoad = url.toString();
+
+            // No SourceLoader or not resolved by SourceLoader
+            if (input == null) {
+                docToLoadURL = (currLoadedDocURL != null) ?
+                    new URL(currLoadedDocURL, docToLoad) :
+                    new URL("file", "", System.getProperty("user.dir")
+                            + System.getProperty("file.separator")
+                            + docToLoad);
+                
+		docToLoad = docToLoadURL.toString();
 		input = new InputSource(docToLoad);
 	    }
 
@@ -125,7 +144,7 @@ final class Import extends TopLevelElement {
 		parser.reportError(Constants.FATAL, msg);
 		return;
 	    }
-
+            
 	    final SyntaxTreeNode root;
             if (reader != null) {
                 root = parser.parse(reader,input);
