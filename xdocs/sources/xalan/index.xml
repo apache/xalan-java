@@ -72,7 +72,7 @@
   <s2 title="How about this release?">
     <p>&xslt4j-current; is a beta Developer's release of &xslt4j2;. Since &xslt4j; 2.0.D01, TrAX has been revised and integrated 
     with the XMP Parser API in the Java API for XML Processing, so &xslt4j; has been revised accordingly. &xslt4j-current; represents a stable build
-    with significant performance enhancements that conforms to the XSLT and XPath 1.0 specifications. For the details, see the 
+    that conforms to the XSLT and XPath 1.0 specifications. For the details, see the 
     <link idref="readme">Release notes</link>. Please send your comments, bug reports, and feedback to the <human-resource-ref idref="xalandev"/></p>
   </s2> 
   <s2 title="How do I get it?">
