@@ -70,8 +70,10 @@
      <p>For more information, see <link idref="whatsnew">What's new in &xslt4j2;</link>.</p>
   </s2>
   <s2 title="How about this release?">
-    <p>&xslt4j-current; is a beta Developer's release of &xslt4j2;. Along with performance enhancements and bug fixes, this release includes a new compatibility layer that lets you rebuild your existing Xalan-Java 1.x applications to take advantage of the performance and conformance enhancements in &xslt4j2;. For the details, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, 
-    and feedback to the <human-resource-ref idref="xalandev"/>.</p>
+  <p>&xslt4j-current; is a production release It incorporates the fixes and enhancements that we have made based on testing and user feedback 
+   over the course of a number of alpha and beta 2.0 Developer's releases dating from October 2000 to January 2001. For the details, see 
+   <link idref="readme">Release Notes</link>. Please send your comments, bug reports, and feedback to the 
+   <human-resource-ref idref="xalandev"/>.</p>
   </s2> 
   <s2 title="How do I get it?">
     <p>Download and unzip either of the following:</p>
