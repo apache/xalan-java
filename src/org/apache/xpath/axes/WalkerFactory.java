@@ -232,7 +232,12 @@ public class WalkerFactory
     // BIT_DESCENDANT_OR_SELF
     // It's highly possible that we should have a seperate bit set for 
     // "//foo" patterns.
-    else if (((BIT_DESCENDANT | BIT_DESCENDANT_OR_SELF | 0x00000001)
+    // For at least the time being, we can't optimize patterns like 
+    // "//table[3]", because this has to be analyzed as 
+    // "/descendant-or-self::node()/table[3]" in order for the indexes 
+    // to work right.
+    else if (0 == (BIT_PREDICATE & analysis) &&
+            (((BIT_DESCENDANT | BIT_DESCENDANT_OR_SELF | 0x00000001)
              == (analysis
                  & (BIT_DESCENDANT | BIT_DESCENDANT_OR_SELF | BITS_COUNT))) ||
             ((BIT_DESCENDANT_OR_SELF | BIT_SELF | 0x00000002)
@@ -249,7 +254,7 @@ public class WalkerFactory
               BIT_ANY_DESCENDANT_FROM_ROOT | 0x00000003)
              == (analysis
                  & (BIT_DESCENDANT_OR_SELF | BIT_ROOT | BIT_CHILD | 
-                    BIT_NODETEST_ANY | BIT_ANY_DESCENDANT_FROM_ROOT | BITS_COUNT)))
+                    BIT_NODETEST_ANY | BIT_ANY_DESCENDANT_FROM_ROOT | BITS_COUNT))))
     )
     {
       if (DEBUG_ITERATOR_CREATION)
