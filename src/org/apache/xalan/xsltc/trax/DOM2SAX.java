@@ -205,12 +205,17 @@ class DOM2SAX implements XMLReader, Locator {
 	    // These node types are ignored!!!
 	    break;
 	case Node.CDATA_SECTION_NODE:
+	    final String cdata = node.getNodeValue();
 	    if (_lex != null) {
-		final String data = node.getNodeValue();
 		_lex.startCDATA();
-		_sax.characters(data.toCharArray(), 0, data.length());
+	        _sax.characters(cdata.toCharArray(), 0, cdata.length());
 		_lex.endCDATA();
-	    }
+ 	    } 
+	    else {
+		// in the case where there is no lex handler, we still
+		// want the text of the cdate to make its way through.
+	        _sax.characters(cdata.toCharArray(), 0, cdata.length());
+	    }	
 	    break;
 
 	case Node.COMMENT_NODE:           // should be handled!!!
