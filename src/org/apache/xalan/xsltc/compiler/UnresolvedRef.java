@@ -119,10 +119,10 @@ final class UnresolvedRef extends VariableRefBase {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_VARIABLE_ERR,
 					name, this);
 	}
-	if ((_ref = resolve(getParser(), stable)) != null)
-	    return(_ref.typeCheck(stable));
-	else
-	    throw new TypeCheckError(reportError());
+	if ((_ref = resolve(getParser(), stable)) != null) {
+	    return (_type = _ref.typeCheck(stable));
+	}
+	throw new TypeCheckError(reportError());
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
@@ -131,4 +131,9 @@ final class UnresolvedRef extends VariableRefBase {
 	else
 	    reportError();
     }
+
+    public String toString() {
+	return "unresolved-ref()";
+    }
+
 }
