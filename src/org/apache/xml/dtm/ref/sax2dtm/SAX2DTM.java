@@ -265,7 +265,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // %REVIEW%  Initial size pushed way down to reduce weight of RTFs
     // (I'm not entirely sure 0 would work, so I'm playing it safe for now.)
     //m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
-    m_data = new SuballocatedIntVector(32, 1024);
+    m_data = new SuballocatedIntVector(m_initialblocksize);
 
     m_data.addElement(0);   // Need placeholder in case index into here must be <0.
 
@@ -917,9 +917,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     case DTM.ATTRIBUTE_NODE:
       break;
     default:
-      if (DTM.NULL != parentIndex &&
-	  NOTPROCESSED == m_firstch.elementAt(parentIndex))
+      if (DTM.NULL == previousSibling && DTM.NULL != parentIndex) {
         m_firstch.setElementAt(nodeIndex,parentIndex);
+      }
       break;
     }
 
@@ -1812,9 +1812,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     String prefix = getPrefix(qName, uri);
     int prefixIndex = (null != prefix)
                       ? m_valuesOrPrefixes.stringToIndex(qName) : 0;
+
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true);
-
 
     if(m_indexing)
       indexNode(exName, elemNode);
@@ -1974,9 +1974,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     m_previous = m_parents.pop();
 
-    if (NOTPROCESSED == m_firstch.elementAt(m_previous))
+    // If lastNode is still DTM.NULL, this element had no children
+    if (DTM.NULL == lastNode)
       m_firstch.setElementAt(DTM.NULL,m_previous);
-    else if (DTM.NULL != lastNode)
+    else
       m_nextsib.setElementAt(DTM.NULL,lastNode);
 
     popShouldStripWhitespace();
@@ -2388,6 +2389,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // seperate FSB buffer instead.
     int dataIndex = m_valuesOrPrefixes.stringToIndex(new String(ch, start,
                       length));
+
 
     m_previous = addNode(DTM.COMMENT_NODE, exName,
                          m_parents.peek(), m_previous, dataIndex, false);
