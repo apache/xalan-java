@@ -242,6 +242,13 @@ SRCS = \
   trax$(PATHSEP)Transformer.java \
   trax$(PATHSEP)TransformException.java \
   trax$(PATHSEP)URIResolver.java \
+  synthetic$(PATHSEP)Class.java \
+  synthetic$(PATHSEP)SynthesisException.java \
+  synthetic$(PATHSEP)reflection$(PATHSEP)Constructor.java \
+  synthetic$(PATHSEP)reflection$(PATHSEP)EntryPoint.java \
+  synthetic$(PATHSEP)reflection$(PATHSEP)Field.java \
+  synthetic$(PATHSEP)reflection$(PATHSEP)Member.java \
+  synthetic$(PATHSEP)reflection$(PATHSEP)Method.java \
   org$(PATHSEP)w3c$(PATHSEP)xslt$(PATHSEP)ExpressionContext.java
    
 OBJS = $($(subst /,\\,$(SRCS)):%.java=classes/%.class)
