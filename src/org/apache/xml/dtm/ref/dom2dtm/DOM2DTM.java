@@ -597,7 +597,10 @@ public class DOM2DTM extends DTMDefaultBaseIterators
               // have to synthesize one. You can think of this as
               // being a default attribute defined by the XML
               // Namespaces spec rather than by the DTD.
-              attrIndex=addNode(new defaultNamespaceDeclarationNode((Element)next,"xml",NAMESPACE_DECL_NS),
+              attrIndex=addNode(new DOM2DTMdefaultNamespaceDeclarationNode(
+																	(Element)next,"xml",NAMESPACE_DECL_NS,
+																	makeNodeHandle(((attrIndex==NULL)?nextindex:attrIndex)+1)
+																	),
                                 nextindex,attrIndex,NULL);      
               m_firstch.setElementAt(DTM.NULL,attrIndex);
               m_processedFirstElement=true;
@@ -1713,60 +1716,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
   {
     return null;
   }
-        
-  //---------------------------------------------------------------------
-  /** This is a kluge to let us shove a declaration for xml: into the model.
-   * Basically, it creates a proxy node in DOM space to carry the
-   * additional information. This is _NOT_ a full DOM implementation,
-   * and shouldn't be one since it sits alongside the DOM rather than
-   * becoming part of the DOM model.
-   * 
-   * %REVIEW% An alternative solution would be to create the node _only_
-   * in DTM space, but given how DOM2DTM is currently written I think
-   * this is simplest.
-   */
-  class defaultNamespaceDeclarationNode implements Attr
-  {
-    final String NOT_SUPPORTED_ERR="Unsupported operation on pseudonode";
-                
-    Element pseudoparent;
-    String prefix,uri;
-    defaultNamespaceDeclarationNode(Element pseudoparent,String prefix,String uri)
-    {
-      this.pseudoparent=pseudoparent;
-      this.prefix=prefix;
-      this.uri=uri;
-    }
-    public String getNodeName() {return "xmlns:"+prefix;}
-    public String getName() {return getNodeName();}
-    public String getNamespaceURI() {return "http://www.w3.org/2000/xmlns/";}
-    public String getPrefix() {return prefix;}
-    public String getLocalName() {return prefix;}
-    public String getNodeValue() {return uri;}
-    public String getValue() {return uri;}
-    public Element getOwnerElement() {return pseudoparent;}
-
-    public boolean isSupported(String feature, String version) {return false;}
-    public boolean hasChildNodes() {return false;}
-    public boolean hasAttributes() {return false;}
-    public Node getParentNode() {return null;}
-    public Node getFirstChild() {return null;}
-    public Node getLastChild() {return null;}
-    public Node getPreviousSibling() {return null;}
-    public Node getNextSibling() {return null;}
-    public boolean getSpecified() {return false;}
-    public void normalize() {return;}
-    public NodeList getChildNodes() {return null;}
-    public NamedNodeMap getAttributes() {return null;}
-    public short getNodeType() {return Node.ATTRIBUTE_NODE;}
-    public void setNodeValue(String value) {throw new DTMException(NOT_SUPPORTED_ERR);}
-    public void setValue(String value) {throw new DTMException(NOT_SUPPORTED_ERR);}
-    public void setPrefix(String value) {throw new DTMException(NOT_SUPPORTED_ERR);}
-    public Node insertBefore(Node a, Node b) {throw new DTMException(NOT_SUPPORTED_ERR);}
-    public Node replaceChild(Node a, Node b) {throw new DTMException(NOT_SUPPORTED_ERR);}
-    public Node appendChild(Node a) {throw new DTMException(NOT_SUPPORTED_ERR);}
-    public Node removeChild(Node a) {throw new DTMException(NOT_SUPPORTED_ERR);}
-    public Document getOwnerDocument() {return pseudoparent.getOwnerDocument();}
-    public Node cloneNode(boolean deep) {throw new DTMException(NOT_SUPPORTED_ERR);}
-  }
 }
+
+
