@@ -482,6 +482,17 @@ class FunctionCall extends Expression {
 		if (match != null) {
 		    currConstrDistance += ((JavaType)match).distance;
 		}
+		else if (intType instanceof ObjectType) {
+		    ObjectType objectType = (ObjectType)intType;
+		    if (objectType.getJavaClass() == extType)
+		        continue;
+		    else if (extType.isAssignableFrom(objectType.getJavaClass()))
+		        currConstrDistance += 1;
+		    else {
+			currConstrDistance = Integer.MAX_VALUE;
+			break;
+		    }
+		}
 		else {
 		    // no mapping available
 		    currConstrDistance = Integer.MAX_VALUE;
