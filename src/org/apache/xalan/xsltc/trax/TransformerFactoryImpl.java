@@ -84,6 +84,8 @@ import org.apache.xalan.xsltc.compiler.CompilerException;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
+import org.w3c.dom.Document;
+import javax.xml.transform.dom.DOMSource;
 /**
  * Implementation of a JAXP1.1 SAXTransformerFactory for Translets.
  */
@@ -373,6 +375,18 @@ public class TransformerFactoryImpl extends TransformerFactory {
 	    input = sax.getInputSource();
 	    // Pass the SAX parser to the compiler
 	    xsltc.setXMLReader(sax.getXMLReader());
+	}
+	// handle  DOMSource  
+	else if (source instanceof DOMSource) {
+	    throw new TransformerConfigurationException(
+		"DOMSource not supported yet.");
+	  /****
+ 	    final DOMSource domsrc = (DOMSource)source;
+            final Document dom = (Document)domsrc.getNode();
+            final DOM2SAX dom2sax = new DOM2SAX(dom);
+	    xsltc.setXMLReader(dom2sax);  
+	    input = null; 	
+  	   ****/
 	}
 	// Try to get InputStream or Reader from StreamSource
 	else if (source instanceof StreamSource) {
