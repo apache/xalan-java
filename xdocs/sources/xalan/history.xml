@@ -1,4 +1,4 @@
-<s3 title="Changes for &xslt4j; 2.2.D8>
+<s3 title="Changes for &xslt4j; 2.2.D8">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Code Update
  Submitted by:John Gentilin<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Fixed DTM.NULL compile error<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TreeWalker2Result.java<br/><ref>Committer's log entry: </ref>Redundant test removed, possibly redundant code flagged for %REVIEW%<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java
  java/src/org/apache/xalan/transformer
@@ -101,7 +101,7 @@ to simple step patterns.
  only if the position is [1]. This optimization is not
  used by the xsltmark benchmarks and so does
  not offer any performance benefits.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes DescendantIterator.java<br/><ref>Committer's log entry: </ref>Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1336<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
-
+</s3>
 <s3 title="Changes for &xslt4j; 2.2.D7">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/03/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Since the real root of our tree may be a DocumentFragment, we need to
  use getParent to find the root, instead of getOwnerDocument. Otherwise
