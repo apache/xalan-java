@@ -57,36 +57,13 @@
 package org.apache.xalan.lib;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.w3c.dom.traversal.NodeIterator;
 
 import org.apache.xpath.NodeSet;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XRTreeFrag;
-
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.ref.DTMNodeIterator;
-import org.apache.xml.utils.XMLString;
-
-import org.xml.sax.SAXNotSupportedException;
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 
 import java.util.Hashtable;
-import java.util.StringTokenizer;
-
-import org.apache.xalan.extensions.ExpressionContext;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.xslt.EnvironmentCheck;
-
-import javax.xml.parsers.*;
 
 /**
  * <meta name="usage" content="general"/>
@@ -104,6 +81,15 @@ import javax.xml.parsers.*;
  */
 public class ExsltMath
 {
+  // Constants
+  private static String PI = "3.1415926535897932384626433832795028841971693993751";
+  private static String E  = "2.71828182845904523536028747135266249775724709369996";
+  private static String SQRRT2 = "1.41421356237309504880168872420969807856967187537694";
+  private static String LN2 = "0.69314718055994530941723212145817656807550013436025";
+  private static String LN10 = "2.302585092994046";
+  private static String LOG2E = "1.4426950408889633";
+  private static String SQRT1_2 = "0.7071067811865476";
+	
   /**
    * The math:max function returns the maximum value of the nodes passed as the argument. 
    * The maximum value is defined as follows. The node set passed as an argument is sorted 
@@ -114,32 +100,31 @@ public class ExsltMath
    * If the node set is empty, or if the result of converting the string values of any of the 
    * nodes to a number is NaN, then NaN is returned.
    * 
-   * @param expCon is passed in by the Xalan extension processor
-   * @param ni The NodeIterator for the node-set to be evaluated.
+   * @param nl The NodeList for the node-set to be evaluated.
    * 
    * @return String representation of the maximum value found, NaN if any node cannot be 
    * converted to a number.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static String max (ExpressionContext expCon, NodeIterator ni)
+  public static String max (NodeList nl)
   {
-    NodeSet ns = new NodeSet(ni);
-    Node maxNode = null;
-    double m = Double.MIN_VALUE;
-    for (int i = 0; i < ns.getLength(); i++)
-    {
-      Node n = ns.elementAt(i);
-      double d = expCon.toNumber(n);
-      if (Double.isNaN(d))
-        return "NaN";
-      else if (d > m)
-      {
-        m = d;
-        maxNode = n;
-      }
-    }
-    return expCon.toString(maxNode);      
+  	Node maxNode = null;
+  	double m = Double.MIN_VALUE;
+  	for (int i = 0; i < nl.getLength(); i++)
+  	{
+  		Node n = nl.item(i);
+  		double d = toNumber(n);
+  		if (Double.isNaN(d))
+  		  return "NaN";
+  		else if (d > m)
+  		{
+  			m = d;
+  			maxNode = n;
+  		}
+  	}
+  	
+  	return toString(maxNode);  	
   }
 
   /**
@@ -152,23 +137,21 @@ public class ExsltMath
    * If the node set is empty, or if the result of converting the string values of any of 
    * the nodes to a number is NaN, then NaN is returned.
    * 
-   * @param expCon is passed in by the Xalan extension processor
-   * @param ni The NodeIterator for the node-set to be evaluated.
+   * @param nl The NodeList for the node-set to be evaluated.
    * 
    * @return String representation of the minimum value found, NaN if any node cannot be 
    * converted to a number.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static String min (ExpressionContext expCon, NodeIterator ni)
+  public static String min (NodeList nl)
   {
-    NodeSet ns = new NodeSet(ni);
     Node minNode = null;
     double m = Double.MAX_VALUE;
-    for (int i = 0; i < ns.getLength(); i++)
+    for (int i = 0; i < nl.getLength(); i++)
     {
-      Node n = ns.elementAt(i);
-      double d = expCon.toNumber(n);
+      Node n = nl.item(i);
+      double d = toNumber(n);
       if (Double.isNaN(d))
         return "NaN";
       else if (d < m)
@@ -177,7 +160,7 @@ public class ExsltMath
         minNode = n;
       }
     }
-    return expCon.toString(minNode);
+    return toString(minNode);
   }
   
   /**
@@ -192,30 +175,26 @@ public class ExsltMath
    * of the nodes in the node set has a non-numeric value, math:highest will return an empty 
    * node set. 
    * 
-   * @param expCon is passed in by the Xalan extension processor
-   * @param ni The NodeIterator for the node-set to be evaluated.
+   * @param nl The NodeList for the node-set to be evaluated.
    * 
    * @return node-set with nodes containing the maximum value found, an empty node-set
    * if any node cannot be converted to a number.
    */
-  public static NodeSet highest (ExpressionContext expCon, NodeIterator ni)
-    throws java.lang.CloneNotSupportedException
+  public static NodeList highest (NodeList nl)
   {    
-    NodeSet ns = new NodeSet(ni);
-    NodeIterator niClone = ns.cloneWithReset();
-    double high = new Double(max(expCon, niClone)).doubleValue();
+    double high = new Double(max(nl)).doubleValue();
     NodeSet highNodes = new NodeSet();
     highNodes.setShouldCacheNodes(true);
     
     if (Double.isNaN(high))
       return highNodes;  // empty Nodeset
     
-     for (int i = 0; i < ns.getLength(); i++)
+    for (int i = 0; i < nl.getLength(); i++)
     {
-      Node n = ns.elementAt(i);
-      double d = expCon.toNumber(n); 
+      Node n = nl.item(i);
+      double d = toNumber(n); 
       if (d == high)
-      highNodes.addElement(n);
+        highNodes.addElement(n);
     }
     return highNodes;
   }
@@ -231,19 +210,15 @@ public class ExsltMath
    * NaN. The definition numeric comparisons entails that NaN != NaN. Therefore if any of the nodes 
    * in the node set has a non-numeric value, math:lowest will return an empty node set.
    * 
-   * @param expCon is passed in by the Xalan extension processor
-   * @param ni The NodeIterator for the node-set to be evaluated.
+   * @param nl The NodeList for the node-set to be evaluated.
    * 
    * @return node-set with nodes containing the minimum value found, an empty node-set
    * if any node cannot be converted to a number.
    * 
    */
-  public static NodeSet lowest (ExpressionContext expCon, NodeIterator ni)
-    throws java.lang.CloneNotSupportedException
+  public static NodeList lowest (NodeList nl)
   {
-    NodeSet ns = new NodeSet(ni);
-    NodeIterator niClone = ns.cloneWithReset();
-    double low = new Double(min(expCon, niClone)).doubleValue();
+    double low = new Double(min(nl)).doubleValue();
 
     NodeSet lowNodes = new NodeSet();
     lowNodes.setShouldCacheNodes(true);
@@ -251,13 +226,191 @@ public class ExsltMath
     if (Double.isNaN(low))
       return lowNodes;  // empty Nodeset
     
-     for (int i = 0; i < ns.getLength(); i++)
+    for (int i = 0; i < nl.getLength(); i++)
     {
-      Node n = ns.elementAt(i);
-      double d = expCon.toNumber(n); 
+      Node n = nl.item(i);
+      double d = toNumber(n); 
       if (d == low)
-      lowNodes.addElement(n);
+        lowNodes.addElement(n);
     }
     return lowNodes;
-  }  
+  }
+  
+  /**
+   *  Return the string value of a Node
+   */
+  private static String toString(Node n)
+  {
+  	if (n instanceof DTMNodeProxy)
+  	 return ((DTMNodeProxy)n).getStringValue();
+  	else
+  	 return n.getNodeValue();
+  }
+  
+  /**
+   * Convert the string value of a Node to a number
+   */
+  private static double toNumber(Node n)
+  {
+  	double d = 0.0;
+  	String str = toString(n);
+  	try
+  	{
+  	  d = Double.parseDouble(str);
+  	}
+  	catch (NumberFormatException e)
+  	{
+  	  d= Double.NaN;  		
+  	}
+  	return d;
+  }
+
+  /**
+   * The math:abs function returns the absolute value of a number. 
+   */
+   public static double abs(double num)
+   {
+     return Math.abs(num);
+   }
+
+  /**
+   * The math:acos function returns the arccosine value of a number. 
+   */
+   public static double acos(double num)
+   {
+     return Math.acos(num);
+   }
+
+  /**
+   * The math:asin function returns the arcsine value of a number. 
+   */
+   public static double asin(double num)
+   {
+     return Math.asin(num);
+   }
+
+  /**
+   * The math:atan function returns the arctangent value of a number. 
+   */
+   public static double atan(double num)
+   {
+     return Math.atan(num);
+   }
+  
+  /**
+   * The math:atan2 function returns the angle ( in radians ) from the X axis to a point (y,x). 
+   */
+   public static double atan2(double num1, double num2)
+   {
+     return Math.atan2(num1, num2);
+   }
+
+  /**
+   * The math:cos function returns cosine of the passed argument. 
+   */
+   public static double cos(double num)
+   {
+     return Math.cos(num);
+   }
+
+  /**
+   * The math:exp function returns e (the base of natural logarithms) raised to a power. 
+   */
+   public static double exp(double num)
+   {
+     return Math.exp(num);
+   }
+
+  /**
+   * The math:log function returns the natural logarithm of a number. 
+   */
+   public static double log(double num)
+   {
+     return Math.log(num);
+   }
+
+  /**
+   * The math:power function returns the value of a base expression taken to a specified power. 
+   */
+   public static double power(double num1, double num2)
+   {
+     return Math.pow(num1, num2);
+   }
+
+  /**
+   * The math:random function returns a random number from 0 to 1. 
+   */
+   public static double random()
+   {
+     return Math.random();
+   }
+
+  /**
+   * The math:sin function returns the sine of the number. 
+   */
+   public static double sin(double num)
+   {
+     return Math.sin(num);
+   }
+
+  /**
+   * The math:sqrt function returns the square root of a number. 
+   */
+   public static double sqrt(double num)
+   {
+     return Math.sqrt(num);
+   }
+
+  /**
+   * The math:tan function returns the tangent of the number passed as an argument. 
+   */
+   public static double tan(double num)
+   {
+     return Math.tan(num);
+   }
+
+  /**
+   * The math:constant function returns the specified constant to a set precision. 
+   * The possible constants are:
+   *
+   * PI
+   * E
+   * SQRRT2
+   * LN2
+   * LN10
+   * LOG2E
+   * SQRT1_2 
+   */
+   public static double constant(String name, double precision)
+   {
+     String value = null;
+     if (name.equals("PI"))
+       value = PI;
+     else if (name.equals("E"))
+       value = E;
+     else if (name.equals("SQRRT2"))
+       value = SQRRT2;
+     else if (name.equals("LN2"))
+       value = LN2;
+     else if (name.equals("LN10"))
+       value = LN10;
+     else if (name.equals("LOG2E"))
+       value = LOG2E;
+     else if (name.equals("SQRT1_2"))
+       value = SQRT1_2;
+     
+     if (value != null)
+     {
+       int bits = new Double(precision).intValue();
+       
+       if (bits <= value.length())
+         value = value.substring(0, bits);
+         
+       return new Double(value).doubleValue();
+     }
+     else
+       return Double.NaN;
+            
+   }
+      
 }
