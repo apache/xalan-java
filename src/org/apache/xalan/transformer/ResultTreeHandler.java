@@ -60,6 +60,8 @@ import java.util.Enumeration;
 
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xml.utils.MutableAttrListImpl;
@@ -72,6 +74,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
@@ -82,9 +85,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.Locator;
-import javax.xml.transform.TransformerException;
 
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Transformer;
 
 /**
  * This class is a layer between the direct calls to the result
@@ -96,7 +100,7 @@ import javax.xml.transform.ErrorListener;
  * can call startElement.
  */
 public class ResultTreeHandler extends QueuedEvents
-        implements ContentHandler, LexicalHandler
+        implements ContentHandler, LexicalHandler, TransformState
 {
 
   /** Indicate whether running in Debug mode        */
@@ -144,7 +148,9 @@ public class ResultTreeHandler extends QueuedEvents
       m_lexicalHandler = (LexicalHandler) m_contentHandler;
     else
       m_lexicalHandler = null;
-
+      
+    m_startElement.setIsTransformClient(m_contentHandler instanceof TransformerClient);
+      
     m_cloner = new ClonerToResultTree(transformer, this);
 
     // The stylesheet is set at a rather late stage, so I do 
@@ -190,23 +196,6 @@ public class ResultTreeHandler extends QueuedEvents
 
       qsd.setPending(false);
     }
-  }
-
-  /**
-   * Bottleneck the startElement event.  This is used to "pend" an
-   * element, so that attributes can still be added to it before
-   * the real "startElement" is called on the result tree listener.
-   *
-   * @param ns Namespace URI of element
-   * @param localName Local part of qname of element
-   * @param name Name of element
-   *
-   * @throws org.xml.sax.SAXException
-   */
-  public void startElement(String ns, String localName, String name)
-          throws org.xml.sax.SAXException
-  {
-    startElement(ns, localName, name, null);
   }
 
   /**
@@ -755,7 +744,7 @@ public class ResultTreeHandler extends QueuedEvents
 
     if ((type != EVT_STARTPREFIXMAPPING) && qdab.isPending)
     {
-      qdab.flush();
+      qdab.flush(this);
     }
 
     if ((null != qe) && qe.isPending)
@@ -1109,6 +1098,7 @@ public class ResultTreeHandler extends QueuedEvents
   {
 
     m_contentHandler = ch;
+    m_startElement.setIsTransformClient(m_contentHandler instanceof TransformerClient);
 
     reInitEvents();
   }
@@ -1322,6 +1312,122 @@ public class ResultTreeHandler extends QueuedEvents
 
     return (null != qse) ? qse.isPending : false;
   }
+  
+  /**
+   * Retrieves the stylesheet element that produced
+   * the SAX event.
+   *
+   * <p>Please note that the ElemTemplateElement returned may
+   * be in a default template, and thus may not be
+   * defined in the stylesheet.</p>
+   *
+   * @return the stylesheet element that produced the SAX event.
+   */
+  public ElemTemplateElement getCurrentElement()
+  {
+    QueuedStartElement qe = getQueuedElem();
+    if(null != qe && qe.isPending)
+      return qe.getCurrentElement(); 
+    else
+      return m_transformer.getCurrentElement();
+  }
+
+  /**
+   * This method retrieves the current context node
+   * in the source tree.
+   *
+   * @return the current context node in the source tree.
+   */
+  public Node getCurrentNode()
+  {
+    QueuedStartElement qe = getQueuedElem();
+    if(null != qe && qe.isPending)
+      return qe.getCurrentNode();
+    else
+      return m_transformer.getCurrentNode();
+  }
+
+  /**
+   * This method retrieves the xsl:template
+   * that is in effect, which may be a matched template
+   * or a named template.
+   *
+   * <p>Please note that the ElemTemplate returned may
+   * be a default template, and thus may not have a template
+   * defined in the stylesheet.</p>
+   *
+   * @return the xsl:template that is in effect
+   */
+  public ElemTemplate getCurrentTemplate()
+  {
+    QueuedStartElement qe = getQueuedElem();
+    if(null != qe && qe.isPending)
+      return qe.getCurrentTemplate();
+    else
+      return m_transformer.getCurrentTemplate();
+  }
+
+  /**
+   * This method retrieves the xsl:template
+   * that was matched.  Note that this may not be
+   * the same thing as the current template (which
+   * may be from getCurrentElement()), since a named
+   * template may be in effect.
+   *
+   * <p>Please note that the ElemTemplate returned may
+   * be a default template, and thus may not have a template
+   * defined in the stylesheet.</p>
+   *
+   * @return the xsl:template that was matched.
+   */
+  public ElemTemplate getMatchedTemplate()
+  {
+    QueuedStartElement qe = getQueuedElem();
+    if(null != qe && qe.isPending)
+      return qe.getMatchedTemplate();
+    else
+      return m_transformer.getMatchedTemplate();
+  }
+
+  /**
+   * Retrieves the node in the source tree that matched
+   * the template obtained via getMatchedTemplate().
+   *
+   * @return the node in the source tree that matched
+   * the template obtained via getMatchedTemplate().
+   */
+  public Node getMatchedNode()
+  {
+    QueuedStartElement qe = getQueuedElem();
+    if(null != qe && qe.isPending)
+      return qe.getMatchedNode();
+    else
+      return m_transformer.getMatchedNode();
+  }
+
+  /**
+   * Get the current context node list.
+   *
+   * @return the current context node list.
+   */
+  public NodeIterator getContextNodeList()
+  {
+    QueuedStartElement qe = getQueuedElem();
+    if(null != qe && qe.isPending)
+      return qe.getContextNodeList();
+    else
+      return m_transformer.getContextNodeList();
+  }
+
+  /**
+   * Get the TrAX Transformer object in effect.
+   *
+   * @return the TrAX Transformer object in effect.
+   */
+  public Transformer getTransformer()
+  {
+    return m_transformer;
+  }
 
   /**
    * Use the SAX2 helper class to track result namespaces.
@@ -1355,7 +1461,7 @@ public class ResultTreeHandler extends QueuedEvents
 
   /** Prefix used to create unique prefix names          */
   private static final String S_NAMESPACEPREFIX = "ns";
-
+  
   /**
    * This class clones nodes to the result tree.
    */

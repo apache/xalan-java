@@ -100,7 +100,7 @@ public class QueuedStartDocument extends QueuedSAXEvent
    *
    * @throws TransformerException
    */
-  void flush() throws org.xml.sax.SAXException
+  void flush(ResultTreeHandler rth) throws org.xml.sax.SAXException
   {
 
     if (isPending)
@@ -111,12 +111,12 @@ public class QueuedStartDocument extends QueuedSAXEvent
       {
         fireGenerateEvent(GenerateEvent.EVENTTYPE_STARTDOCUMENT, null, null);
       }
-
+      
       ContentHandler chandler = getContentHandler();
 
       if ((null != chandler) && (chandler instanceof TransformerClient))
       {
-        ((TransformerClient) chandler).setTransformState(m_transformer);
+        ((TransformerClient) chandler).setTransformState(rth);
       }
 
       super.flush();

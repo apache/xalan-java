@@ -677,7 +677,7 @@ public class ElemLiteralResult extends ElemUse
       child.resolvePrefixTables();
     }
   }*/
-
+  
   /**
    * Copy a Literal Result Element into the Result tree, copy the
    * non-excluded namespace attributes, copy the attributes not
@@ -701,7 +701,7 @@ public class ElemLiteralResult extends ElemUse
 
       // Add namespace declarations.
       executeNSDecls(transformer);
-      rhandler.startElement(getNamespace(), getLocalName(), getRawName());
+      rhandler.startElement(getNamespace(), getLocalName(), getRawName(), null);
 
       try
       {

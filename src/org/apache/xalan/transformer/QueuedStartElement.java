@@ -59,17 +59,26 @@ package org.apache.xalan.transformer;
 import java.util.Vector;
 
 import org.xml.sax.ContentHandler;
-import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.Transformer;
+
 import org.apache.xml.utils.MutableAttrListImpl;
-import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xml.utils.NameSpace;
+
+import org.apache.xalan.trace.GenerateEvent;
+
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemTemplate;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * Tracks the state of a queued element event.
  */
-public class QueuedStartElement extends QueuedSAXEvent
+public class QueuedStartElement extends QueuedSAXEvent implements TransformState
 {
 
   /**
@@ -106,6 +115,57 @@ public class QueuedStartElement extends QueuedSAXEvent
 
   /** Local part of qualified name of the element           */
   private String m_localName;
+  
+  /**
+   * The stylesheet element that produced the SAX event.
+   */
+  private ElemTemplateElement m_currentElement;
+  
+  /**
+   * The current context node in the source tree.
+   */
+  private Node m_currentNode;
+  
+  /**
+   * The xsl:template that is in effect, which may be a matched template
+   * or a named template.
+   */
+  private ElemTemplate m_currentTemplate;
+  
+  /**
+   * The xsl:template that was matched.
+   */
+  private ElemTemplate m_matchedTemplate;
+  
+  /**
+   * The node in the source tree that matched
+   * the template obtained via getMatchedTemplate().
+   */
+  private Node m_matchedNode;
+  
+  /**
+   * The current context node list.
+   */
+  private NodeIterator m_contextNodeList;
+  
+  /**
+   * Clear the pending event.
+   */
+  void clearPending()
+  {
+    super.clearPending();
+    
+    if(m_isTransformClient)
+    {
+      m_currentElement = null;
+      m_currentNode = null;
+      m_currentTemplate = null;
+      m_matchedTemplate = null;
+      m_matchedNode = null;
+      m_contextNodeList = null; // TODO: Need to clone
+    }
+  }
+
 
   /**
    * Set the pending element names.
@@ -125,7 +185,18 @@ public class QueuedStartElement extends QueuedSAXEvent
     if (null != atts)
       m_attributes.addAttributes(atts);
 
-    setPending(true);
+    super.setPending(true);
+    
+    if(m_isTransformClient)
+    {
+      m_currentElement = m_transformer.getCurrentElement();
+      m_currentNode = m_transformer.getCurrentNode();
+      m_currentTemplate = m_transformer.getCurrentTemplate();
+      m_matchedTemplate = m_transformer.getMatchedTemplate();
+      m_matchedNode = m_transformer.getMatchedNode();
+      m_contextNodeList = m_transformer.getContextNodeList(); // TODO: Need to clone
+    }
+
   }
 
   /**
@@ -297,4 +368,97 @@ public class QueuedStartElement extends QueuedSAXEvent
       // super.flush();
     }
   }
+  
+  /**
+   * Retrieves the stylesheet element that produced
+   * the SAX event.
+   *
+   * <p>Please note that the ElemTemplateElement returned may
+   * be in a default template, and thus may not be
+   * defined in the stylesheet.</p>
+   *
+   * @return the stylesheet element that produced the SAX event.
+   */
+  public ElemTemplateElement getCurrentElement()
+  {
+    return m_currentElement;
+  }
+
+  /**
+   * This method retrieves the current context node
+   * in the source tree.
+   *
+   * @return the current context node in the source tree.
+   */
+  public Node getCurrentNode()
+  {
+    return m_currentTemplate;
+  }
+  
+  /**
+   * This method retrieves the xsl:template
+   * that is in effect, which may be a matched template
+   * or a named template.
+   *
+   * <p>Please note that the ElemTemplate returned may
+   * be a default template, and thus may not have a template
+   * defined in the stylesheet.</p>
+   *
+   * @return the xsl:template that is in effect
+   */
+  public ElemTemplate getCurrentTemplate()
+  {
+    return m_currentTemplate;
+  }
+  
+  /**
+   * This method retrieves the xsl:template
+   * that was matched.  Note that this may not be
+   * the same thing as the current template (which
+   * may be from getCurrentElement()), since a named
+   * template may be in effect.
+   *
+   * <p>Please note that the ElemTemplate returned may
+   * be a default template, and thus may not have a template
+   * defined in the stylesheet.</p>
+   *
+   * @return the xsl:template that was matched.
+   */
+  public ElemTemplate getMatchedTemplate()
+  {
+    return m_matchedTemplate;
+  }
+
+  /**
+   * Retrieves the node in the source tree that matched
+   * the template obtained via getMatchedTemplate().
+   *
+   * @return the node in the source tree that matched
+   * the template obtained via getMatchedTemplate().
+   */
+  public Node getMatchedNode()
+  {
+    return m_matchedNode;
+  }
+  
+  /**
+   * Get the current context node list.
+   *
+   * @return the current context node list.
+   */
+  public NodeIterator getContextNodeList()
+  {
+    return m_contextNodeList;
+  }
+
+  /**
+   * Get the TrAX Transformer object in effect.
+   *
+   * @return the TrAX Transformer object in effect.
+   */
+  public Transformer getTransformer()
+  {
+    return m_transformer;
+  }
+
 }

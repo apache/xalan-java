@@ -212,7 +212,7 @@ public class ClonerToResultTree
           String ns = dhelper.getNamespaceOfNode(node);
           String localName = dhelper.getLocalNameOfNode(node);
 
-          m_rth.startElement(ns, localName, node.getNodeName());
+          m_rth.startElement(ns, localName, node.getNodeName(), null);
         }
         break;
       case Node.CDATA_SECTION_NODE :

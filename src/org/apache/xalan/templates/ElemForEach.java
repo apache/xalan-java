@@ -465,10 +465,13 @@ public class ElemForEach extends ElemTemplateElement
             }
           }
 
+          ElemTemplateElement t = template.m_firstChild;
+            
           // If we are processing the default text rule, then just clone 
           // the value directly to the result tree.
           try
-          {
+          {              
+            xctxt.pushCurrentNode(child);
             transformer.pushPairCurrentMatched(template, child);
 
             if (check)
@@ -487,7 +490,7 @@ public class ElemForEach extends ElemTemplateElement
 
               // Loop through the children of the template, calling execute on 
               // each of them.
-              for (ElemTemplateElement t = template.m_firstChild; t != null;
+              for (; t != null;
                    t = t.m_nextSibling)
               {
                 xctxt.setSAXLocator(t);
@@ -503,6 +506,7 @@ public class ElemForEach extends ElemTemplateElement
           }
           finally
           {
+            xctxt.popCurrentNode();
             transformer.popCurrentMatched();
 
             if (check)

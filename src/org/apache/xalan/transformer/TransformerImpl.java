@@ -1989,6 +1989,8 @@ public class TransformerImpl extends Transformer
     // the value directly to the result tree.
     try
     {
+      pushElemTemplateElement(template);
+      m_xcontext.pushCurrentNode(child);
       pushPairCurrentMatched(template, child);
 
       if (isDefaultTextRule)
@@ -2027,6 +2029,8 @@ public class TransformerImpl extends Transformer
         // also unclear that "execute" is really the right name for
         // that entry point.)
 
+        m_xcontext.setSAXLocator(template);
+
         if (template.isCompiledTemplate())
           template.execute(this, child, mode);
         else
@@ -2039,7 +2043,9 @@ public class TransformerImpl extends Transformer
     }
     finally
     {
+      m_xcontext.popCurrentNode();
       popCurrentMatched();
+      popElemTemplateElement();
     }
 
     return true;
@@ -2111,13 +2117,13 @@ public class TransformerImpl extends Transformer
   {
 
     // Does this element have any children?
-    ElemTemplateElement firstChild = elem.getFirstChildElem();
+    ElemTemplateElement t = elem.getFirstChildElem();
 
-    if (null == firstChild)
+    if (null == t)
       return;
-
+      
     XPathContext xctxt = getXPathContext();
-
+    
     // Check for infinite loops if we have to.
     boolean check = (m_stackGuard.m_recursionLimit > -1);
 
@@ -2138,7 +2144,7 @@ public class TransformerImpl extends Transformer
 
       // Loop through the children of the template, calling execute on 
       // each of them.
-      for (ElemTemplateElement t = firstChild; t != null;
+      for (; t != null;
               t = t.getNextSiblingElem())
       {
         if(!shouldAddAttrs && t.getXSLToken() == Constants.ELEMNAME_ATTRIBUTE)

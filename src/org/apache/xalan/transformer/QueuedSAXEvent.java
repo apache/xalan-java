@@ -57,11 +57,12 @@
 package org.apache.xalan.transformer;
 
 import org.xml.sax.ContentHandler;
-import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.trace.GenerateEvent;
+
+import javax.xml.transform.TransformerException;
 
 /**
  * Acts as a base class for queued SAX events.
@@ -95,6 +96,10 @@ public abstract class QueuedSAXEvent
   /** Instance of ContentHandler          */
   protected ContentHandler m_contentHandler;
 
+  /** Flag indicating that the ContentHandler is a TransformerClient, 
+   *  so we need to save the transform state of the queue. */
+  protected boolean m_isTransformClient = false;
+  
   /** Flag indicating that an event is pending          */
   public boolean isPending = false;
 
@@ -103,7 +108,7 @@ public abstract class QueuedSAXEvent
 
   /** Type of SAX event          */
   private int m_type;
-
+  
   /**
    * Get the type of this SAX event 
    *
@@ -175,6 +180,14 @@ public abstract class QueuedSAXEvent
   {
     m_contentHandler = ch;
   }
+  
+  /**
+   * Tell this queued element if the content handler is a TransformerClient.
+   */
+  void setIsTransformClient(boolean b)
+  {
+    m_isTransformClient = b;
+  }
 
   /**
    * Clear the pending event.
@@ -194,6 +207,7 @@ public abstract class QueuedSAXEvent
   {
     isPending = b;
     this.isEnded = !isPending;
+        
   }
 
   /**
@@ -214,4 +228,5 @@ public abstract class QueuedSAXEvent
   {
     isPending = false;
   }
+  
 }

@@ -133,7 +133,7 @@ public class TreeWalker2Result extends TreeWalker
         String localName = dhelper.getLocalNameOfNode(node);
         String namespace = dhelper.getNamespaceOfNode(node);
 
-        m_handler.startElement(namespace, localName, elemName);
+        m_handler.startElement(namespace, localName, elemName, null);
 
         for (Node parent = node; parent != null;
              parent = parent.getParentNode())

@@ -182,7 +182,7 @@ public class ElemElement extends ElemUse
   {
     return Constants.ELEMNAME_ELEMENT_STRING;
   }
-
+  
   /**
    * Create an element in the result tree.
    * The xsl:element element allows an element to be created with a
@@ -316,7 +316,7 @@ public class ElemElement extends ElemUse
           }
   
           rhandler.startElement(elemNameSpace, QName.getLocalPart(elemName),
-                                elemName);
+                                elemName, null);
         }
       }
 
