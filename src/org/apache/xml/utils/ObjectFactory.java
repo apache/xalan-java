@@ -81,7 +81,7 @@ import java.io.InputStreamReader;
  *
  * @version $Id:  $
  */
-public class ObjectFactory {
+class ObjectFactory {
 
     //
     // Constants
