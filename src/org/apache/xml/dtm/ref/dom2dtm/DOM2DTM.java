@@ -217,34 +217,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     // m_level's type, or we may truncate values without warning!
     //m_level[nodeIndex] = (byte)level;
     m_level.addElement((byte)level); // setElementAt(level,nodeIndex)?
-
-    // %REVIEW% The Namespace Spec currently says that Namespaces are
-    // processed in a non-namespace-aware manner, by matching the
-    // QName, even though there is in fact a namespace assigned to
-    // these nodes in the DOM. If and when that changes, we will have
-    // to consider whether we check the namespace-for-namespaces
-    // rather than the node name.
-    //
-    // %TBD% Note that the DOM does not necessarily explicitly declare
-    // all the namespaces it uses. DOM Level 3 will introduce a
-    // namespace-normalization operation which reconciles that, and we
-    // can request that users invoke it or otherwise ensure that the
-    // tree is namespace-well-formed before passing the DOM to Xalan.
-    // But if they don't, what should we do about it? We probably
-    // don't want to alter the source DOM (and may not be able to do
-    // so if it's read-only). The best available answer might be to
-    // synthesize additional DTM Namespace Nodes that don't correspond
-    // to DOM Attr Nodes.
-    if (Node.ATTRIBUTE_NODE == type)
-    {
-      String name = node.getNodeName();
-
-      if (name.startsWith("xmlns:") || name.equals("xmlns"))
-      {
-        type = DTM.NAMESPACE_NODE;
-        declareNamespaceInContext(parentIndex,nodeIndex);
-      }
-    }
     
     m_firstch.setElementAt(NOTPROCESSED,nodeIndex);
     m_nextsib.setElementAt(NOTPROCESSED,nodeIndex);
@@ -297,6 +269,33 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     m_exptype.setElementAt(expandedNameID,nodeIndex);
     
     indexNode(expandedNameID, nodeIndex);
+    // %REVIEW% The Namespace Spec currently says that Namespaces are
+    // processed in a non-namespace-aware manner, by matching the
+    // QName, even though there is in fact a namespace assigned to
+    // these nodes in the DOM. If and when that changes, we will have
+    // to consider whether we check the namespace-for-namespaces
+    // rather than the node name.
+    //
+    // %TBD% Note that the DOM does not necessarily explicitly declare
+    // all the namespaces it uses. DOM Level 3 will introduce a
+    // namespace-normalization operation which reconciles that, and we
+    // can request that users invoke it or otherwise ensure that the
+    // tree is namespace-well-formed before passing the DOM to Xalan.
+    // But if they don't, what should we do about it? We probably
+    // don't want to alter the source DOM (and may not be able to do
+    // so if it's read-only). The best available answer might be to
+    // synthesize additional DTM Namespace Nodes that don't correspond
+    // to DOM Attr Nodes.
+    if (Node.ATTRIBUTE_NODE == type)
+    {
+      String name = node.getNodeName();
+
+      if (name.startsWith("xmlns:") || name.equals("xmlns"))
+      {
+        type = DTM.NAMESPACE_NODE;
+        declareNamespaceInContext(parentIndex,nodeIndex);
+      }
+    }
 
     if (DTM.NULL != previousSibling)
       m_nextsib.setElementAt(nodeIndex,previousSibling);
