@@ -406,7 +406,8 @@ public class SampleXSLTServlet extends javax.servlet.http.HttpServlet {
   }  
 }</source>
 <p>For a working sample, see <link idref="samples" anchor="simplexsltservlet">SimpleXSLTServlet</link>.</p>
-<p>In the preceding example, the URLs for the XML document and XSL stylesheet are hardcoded in the servlet. You can also create a servlet that parses the request URL for input parameters specifying the XML document, XSL stylesheet, and any relevant stylesheet parameters. For a sample, see <link idref="samples" anchor="xsltservletwithparams">XSLTServletWithParams</link>. For a more robust and complex sample that also employs a properties file to determine which stylesheet to use depending on the client browser/device, see <link idref="samples" anchor="applyxslt">ApplyXSLT</link>.</p>
+<p>In the preceding example, the URLs for the XML document and XSL stylesheet are hardcoded in the servlet. You can also create a servlet that parses the request URL for input parameters specifying the XML document, XSL stylesheet, and any relevant stylesheet parameters. For samples, see <link idref="samples"
+anchor="usestylesheetparamservlet">UseStylesheetParamServlet</link> and <link idref="samples" anchor="xsltservletwithparams">XSLTServletWithParams</link>. For a more robust and complex sample that also employs a properties file to determine which stylesheet to use depending on the client browser/device, see <link idref="samples" anchor="applyxslt">ApplyXSLT</link>.</p>
 </s2><anchor name="extensions"/>
 <s2 title="Creating and using extensions">
 <p>For those cases where you want to be able to call procedural code from within a stylesheet, the &xslt4j; Extensions facility supports the creation of extension elements and extension functions. See <link idref="extensions">Extensions</link> and <link idref="samples" anchor="extensions">Extensions samples</link>.</p>

@@ -182,20 +182,22 @@
     </s2><anchor name="servlet"/>
     <s2 title="servlet">
    <p>For a general introduction, see <link idref="usagepatterns" anchor="servlet">Using &xslt4j; in a servlet</link>.</p>
-    <p>The servlet subdirectory contains three sample servlets that use &xslt4j; to perform transformations. These servlets are in a package
-    named servlet and are compiled in
-    xalanservlet.jar. To run these samples, you must place xalanservlet.jar, and any XML and XSL files you want to use
-    on a web server with a servlet engine, place xalanservlet.jar on the servlet engine class path, and configure the servlet engine to
+    <p>The servlet subdirectory contains four sample servlets that use &xslt4j; to perform transformations. These servlets 
+    are in a package named servlet and are compiled in xalanservlet.jar. To run these samples, you must place 
+    xalanservlet.jar, and any XML and XSL files you want to use on a web server with a servlet engine, place 
+    xalanservlet.jar, xalan.jar, and xerces.jar on the servlet engine class path, and configure the servlet engine to
     locate the XML and XSL files, and the properties file used by ApplyXSL.</p>
-    <p>SimplestXSLTServlet applies a particular stylesheet to a particular XML document. XSLTServletWithParams accepts parameters for
-    stylesheet, XML document, and stylesheet parameters. ApplyXSLT (and associated classes) is much closer 
-    to a production level servlet. It accepts parameters, provides a listener for capturing and reporting debugger messages, and supports 
-    use of a property file to determine which stylesheet to apply based on the identity of the client browser/device.</p>
-    <ul>
-      <li><link anchor="simplexsltservlet">servlet.SimpleXSLTServlet</link></li>      
-      <li><link anchor="xsltservletwithparams">servlet.XSLTServletWithParams</link></li>      
-      <li><link anchor="applyxslt">servlet.ApplyXSLT</link></li>
-    </ul><anchor name="simplexsltservlet"/>
+    <p><link anchor="simplexsltservlet">servlet.SimpleXSLTServlet</link> applies a particular stylesheet to a particular 
+    XML document.</p> 
+    <p><link anchor="usestylesheetparamservlet">servlet.UseStylesheetParamServlet</link> sets a stylesheet parameter 
+    (the parameter name is hardwired into the servlet), and requires the user to supply parameters for the 
+    XML document and XSL stylesheet.</p>
+    <p><link anchor="xsltservletwithparams">servlet.XSLTServletWithParams</link> accepts parameters for the XML document, 
+    the XSL stylesheet, and any number of stylesheet parameters.</p>
+    <p><link anchor="applyxslt">servlet.ApplyXSLT</link> (and associated classes) is closer to a production level servlet. It accepts parameters, provides a 
+    listener for capturing and reporting debugger messages, and supports  use of a property file to determine which 
+    stylesheet to apply based on the identity of the client browser/device.</p>
+    <anchor name="simplexsltservlet"/>
     <s3 title="servlet.SimpleXSLTServlet">
     <p>What it does: servlet.SimpleXSLTServlet applies the todo.xsl stylesheet to todo.xml and returns the transformation result to the
     HTTP client.</p>
@@ -203,6 +205,28 @@
     looks for HTTP documents, place xalanservlet.jar on the servlet engine classpath, and set up an HTML page to call the servlet as
     follows:</p>
 <gloss><label>http://localhost/servlethome/servlet.SimpleXSLTServlet</label></gloss>
+     </s3><anchor name="usestylesheetparamservlet"/>
+     <s3 title="servlet.UseStylesheetParamServlet">
+     <note>Paul Campbell &lt;seapwc@halcyon.com&gt; wrote this servlet and the following explanatory text.
+     Thank you, Paul!</note>
+     <p>What it does: The client (perhaps an HTML form ) specifies an XML document, a stylesheet, and a value to be passed
+      to the stylesheet for a stylesheet parameter named "param1". The servlet performs the transformation and returns
+      the output to the client. The client must specify which stylesheet (containing a "param1" stylesheet parameter") 
+      and XML file are to be used.</p>
+     <p>How to run it: Configure your application server (Tomcat, Websphere or JServ, for example)
+     so it can find servlet.UseStylesheetParamServlet (in xalanservlet.jar) as well as the XML document 
+     and XSL stylesheet. For example, you can copy fooparam.xml and fooparam.xsl from samples/servlet to the application 
+     server root directory for documents.</p>
+     <p>Then you can set up an HTML client to call the servlet with arguments along the lines of</p>
+    <gloss><label>http://localhost/servlethome/servlet.UseStylesheetParamServlet?
+    XML=fooparam.xml&amp;XSL=fooparam.xsl&amp;PVAL=GoodBye</label></gloss>
+     <p>In the doGet() method, the servlet obtains the PVAL value "GoodBye") from the servlet request and passes it to the 
+     stylesheet as the paramValue argument in a Transformer setParameter() call:</p>
+      <p><code>String paramValue = httpServletRequest.getParameter("PVAL");</code><br/>
+      <code>...</code><br/>
+     <code>transformer.setParameter("param1", paramValue);</code></p>
+ <p>The result is returned to the client:</p>
+<p><code>&lt;html&gt;&lt;body&gt;&lt;p&gt;GoodBye&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</code></p>
      </s3><anchor name="xsltservletwithparams"/>
      <s3 title="servlet.XSLTServletWithParams">
      <p>What it does: servlet.XSLTServletWithParams takes parameters in the request -- a URL parameter for
