@@ -95,6 +95,10 @@ public abstract class SerializerFactory
    *
    * @param format The output format
    * @return A suitable serializer, or null
+   * @throws IllegalArgumentException (apparently -sc) if method is 
+   * null or an appropriate serializer can't be found
+   * @throws WrappedRuntimeException (apparently -sc) if an 
+   * exception is thrown while trying to find serializer
    */
   public static Serializer getSerializer(Properties format)
   {
@@ -108,7 +112,7 @@ public abstract class SerializerFactory
 
       if (method == null)
         throw new IllegalArgumentException(
-          "The output format has not method name");
+          "The output format has a null method name");
 
       cls = null;  // (Class)_serializers.get(method);
 
