@@ -336,8 +336,7 @@ $Id$
            debug="${build.debug}"
            target="1.1" >
       <include name="${apachexml.reldir}/**/*.java" />
-      <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
-      <exclude name="${apachexml.reldir}/utils/synthetic/**/*.java" />      
+      <!-- Exclude file that depends upon presence of Xerces in build path -->
       <exclude name="**/IncrementalSAXSource_Xerces.java" 
         unless="xerces.present"	 />
       <classpath refid="compile.class.path" />
