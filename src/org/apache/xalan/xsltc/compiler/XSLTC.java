@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author G. Todd Miller
  * @author Morten Jorgensen
+ * @author John Howard (johnh@schemasoft.com)
  *
  */
 
@@ -693,9 +694,10 @@ public final class XSLTC {
 	    new java.util.jar.Attributes.Name("Date");
 	while (classes.hasMoreElements()) {
 	    final JavaClass clazz = (JavaClass)classes.nextElement();
+	    final String className = clazz.getClassName().replace('.','/');
 	    final java.util.jar.Attributes attr = new java.util.jar.Attributes();
 	    attr.put(dateAttr, now);
-	    map.put(classFileName(clazz.getClassName()), attr);
+	    map.put(className+".class", attr);
 	}
 
 	final File jarFile = new File(_destDir, _jarFileName);
@@ -703,10 +705,11 @@ public final class XSLTC {
 	    new JarOutputStream(new FileOutputStream(jarFile), manifest);
 	classes = _classes.elements();
 	while (classes.hasMoreElements()) {
-	    final JavaClass cl = (JavaClass)classes.nextElement();
-	    jos.putNextEntry(new JarEntry(classFileName(cl.getClassName())));
+	    final JavaClass clazz = (JavaClass)classes.nextElement();
+	    final String className = clazz.getClassName().replace('.','/');
+	    jos.putNextEntry(new JarEntry(className+".class"));
 	    final ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
-	    cl.dump(out);	// dump() closes it's output stream
+	    clazz.dump(out); // dump() closes it's output stream
 	    out.writeTo(jos);
 	}
 	jos.close();
