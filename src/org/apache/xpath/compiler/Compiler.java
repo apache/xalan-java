@@ -775,11 +775,31 @@ public class Compiler extends OpMap
     case OpCodes.NODETYPE_COMMENT :
       return NodeFilter.SHOW_COMMENT;
     case OpCodes.NODETYPE_TEXT :
-      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT;
+//      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT;
+      return NodeFilter.SHOW_TEXT;
     case OpCodes.NODETYPE_PI :
       return NodeFilter.SHOW_PROCESSING_INSTRUCTION;
     case OpCodes.NODETYPE_NODE :
-      return NodeFilter.SHOW_ALL;
+//      return NodeFilter.SHOW_ALL;
+      switch (axesType)
+      {
+      case OpCodes.FROM_NAMESPACE:
+        return NodeFilter.SHOW_ATTRIBUTE | NodeTest.SHOW_NAMESPACE;
+      case OpCodes.FROM_ATTRIBUTES :
+      case OpCodes.MATCH_ATTRIBUTE :
+        return NodeFilter.SHOW_ATTRIBUTE;
+      case OpCodes.FROM_SELF:
+      case OpCodes.FROM_ANCESTORS_OR_SELF:
+      case OpCodes.FROM_DESCENDANTS_OR_SELF:
+        return NodeFilter.SHOW_ALL;
+      default:
+        if (getOp(0) == OpCodes.OP_MATCHPATTERN)
+          return ~NodeFilter.SHOW_ATTRIBUTE
+                  & ~NodeFilter.SHOW_DOCUMENT
+                  & ~NodeFilter.SHOW_DOCUMENT_FRAGMENT;
+        else
+          return ~NodeFilter.SHOW_ATTRIBUTE;
+      }
     case OpCodes.NODETYPE_ROOT :
       return NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT;
     case OpCodes.NODETYPE_FUNCTEST :
@@ -803,6 +823,7 @@ public class Compiler extends OpMap
         return NodeFilter.SHOW_ELEMENT;
       }
     default :
+      // System.err.println("We should never reach here.");
       return NodeFilter.SHOW_ALL;
     }
   }
