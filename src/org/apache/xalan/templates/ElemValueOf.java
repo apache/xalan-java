@@ -65,6 +65,7 @@ import org.apache.xalan.trace.SelectionEvent;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.ResultTreeHandler;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -158,11 +159,6 @@ public class ElemValueOf extends ElemTemplateElement
     return m_disableOutputEscaping;
   }
   
-  /**
-   * Optimization to tell if pattern is a simple ".".
-   */
-  private boolean isDot = false;
-
   /** 
    * Get an integer representation of the element type.
    * 
@@ -202,75 +198,25 @@ public class ElemValueOf extends ElemTemplateElement
     if(TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-    if(isDot)
+    XObject value = m_selectExpression.execute(transformer.getXPathContext(), 
+                                               sourceNode, this);
+    
+    if(TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireSelectedEvent(sourceNode,
+                                                      this, "select", m_selectExpression, value);
+    String s = value.str();
+    int len = s.length();
+    if(len > 0)
     {
-      String s;
-      
-      int t = sourceNode.getNodeType();
-      if(((Node.COMMENT_NODE ==t) || 
-          (Node.PROCESSING_INSTRUCTION_NODE == t)))
+      ResultTreeHandler hth = transformer.getResultTreeHandler();
+      if(m_disableOutputEscaping)
       {
-        s = sourceNode.getNodeValue();
+        hth.startNonEscaping();
+        hth.characters(s.toCharArray(), 0, len);
+        hth.endNonEscaping();
       }
       else
-      {
-        s = org.apache.xpath.DOMHelper.getNodeData(sourceNode);
-      }
-
-      if(TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireSelectedEvent(sourceNode,
-                                      this, "select", m_selectExpression, new XString(s));
-      
-      if(null != s)
-      {
-        int len = s.length();
-        if(len > 0)
-        {
-          if(m_disableOutputEscaping)
-          {
-            transformer.getResultTreeHandler().startNonEscaping();
-          }
-          transformer.getResultTreeHandler().characters(s.toCharArray(), 0, s.length());
-          if(m_disableOutputEscaping)
-          {
-            transformer.getResultTreeHandler().endNonEscaping();
-          }
-        }
-      }
-
-    }
-    else
-    {
-      XObject value = m_selectExpression.execute(transformer.getXPathContext(), 
-                                                 sourceNode, this);
-      
-      if(TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireSelectedEvent(sourceNode,
-                                      this, "select", m_selectExpression, value);
-      if(null != value)
-      {
-        int type = value.getType();
-        if(XObject.CLASS_NULL != type)
-        {
-          String s = value.str();
-          if(null != s)
-          {
-            int len = s.length();
-            if(len > 0)
-            {
-              if(m_disableOutputEscaping)
-              {
-                transformer.getResultTreeHandler().startNonEscaping();
-              }
-              transformer.getResultTreeHandler().characters(s.toCharArray(), 0, s.length());
-              if(m_disableOutputEscaping)
-              {
-                transformer.getResultTreeHandler().endNonEscaping();
-              }
-            }
-          }
-        }
-      }
+        hth.characters(s.toCharArray(), 0, len);
     }
   }
   
