@@ -12,10 +12,8 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class DOMHelper
 {
   /**
-   * Create an empty DOM Document.  Mainly used for creating an 
-   * output document.  Implementation of XPathContext
-   * interface method.
-   * Default handling: Not supported - need parser-specific implementation.
+   * Used as a helper for handling DOM issues.  May be subclassed to take advantage 
+   * of specific DOM implementations.
    */
   public Document createDocument()
   {
