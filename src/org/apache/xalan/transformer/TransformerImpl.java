@@ -2126,6 +2126,10 @@ public class TransformerImpl extends Transformer
         t.execute(this, sourceNode, mode);
       }
     }
+    catch(TransformerException te)
+    {
+      throw te;
+    }
     finally
     {
       popElemTemplateElement();

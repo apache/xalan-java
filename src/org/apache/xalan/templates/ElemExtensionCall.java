@@ -348,7 +348,7 @@ public class ElemExtensionCall extends ElemLiteralResult
     }
     catch(org.xml.sax.SAXException se)
     {
-      throw new TransformerException(se);
+      transformer.getErrorListener().fatalError(new TransformerException(se));
     }
   }
 

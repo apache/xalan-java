@@ -497,6 +497,10 @@ public class ElemForEach extends ElemTemplateElement
             }
             reMarkParams(xctxt);
           }
+          catch(TransformerException te)
+          {
+            throw te;
+          }
           finally
           {
             transformer.popCurrentMatched();
