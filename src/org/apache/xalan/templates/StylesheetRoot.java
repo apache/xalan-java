@@ -379,7 +379,7 @@ public class StylesheetRoot extends StylesheetComposed
       }
     }
 
-    OutputFormatExtended of = getOutput();
+    OutputFormatExtended of = stylesheet.getOutput();
 
     if (null != of)
     {
