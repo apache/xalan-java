@@ -135,7 +135,7 @@ public class TransformerException extends Exception
       throw new IllegalStateException("Can't overwrite cause");
     if (cause == this)
       throw new IllegalArgumentException("Self-causation not permitted");
-    this.containedException = cause;
+    this.containedException = (Exception)cause;
     return this;
   }
 
