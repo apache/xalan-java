@@ -100,6 +100,9 @@ public final class LoadDocument {
     throws TransletException {
         try {
             if (arg instanceof String) {
+                if (xslURI == null )
+                    xslURI = "";
+
                 String baseURI = xslURI;
                 if (!SystemIDResolver.isAbsoluteURI(xslURI))
                    baseURI = SystemIDResolver.getAbsoluteURIFromRelative(xslURI);
