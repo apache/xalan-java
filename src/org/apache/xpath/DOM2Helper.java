@@ -250,7 +250,8 @@ public class DOM2Helper extends DOMHelper
    */
   public String getLocalNameOfNode(Node n)
   {
-    return n.getLocalName();
+    String name = n.getLocalName();
+    return (null == name) ? super.getLocalNameOfNode(n) : name;
   }
 
   /**
