@@ -69,6 +69,7 @@ import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xml.utils.SuballocatedIntVector;
+import org.apache.xml.utils.NodeVector;
 import org.w3c.dom.Node;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ErrorHandler;
@@ -1596,6 +1597,16 @@ public class DTMDocument extends DTMDefaultBaseIterators
   {
     if (DEBUG) System.out.println("getElementByID("+parm1+")");
     return DTM.NULL;
+  }
+  
+  /**
+   * @param parm1
+   * @return
+   */
+  public NodeVector getElementByIdref( String parm1 )
+  {
+    if (DEBUG) System.out.println("getElementByIDREF("+parm1+")");
+    return null;
   }
 
   /**
