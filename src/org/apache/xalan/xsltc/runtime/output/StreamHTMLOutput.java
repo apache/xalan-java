@@ -97,16 +97,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
-
 // System.out.println("StreamHTMLOutput.<init>");
-
-	// Transfer output settings
-	setDoctype(output._doctypeSystem, output._doctypePublic);
-	omitHeader(output._omitHeader);
-	setStandalone(output._standalone);
-
-	// Indentation turned on for HTML
-	setIndent(true);
     }
 
     public StreamHTMLOutput(Writer writer, String encoding) {

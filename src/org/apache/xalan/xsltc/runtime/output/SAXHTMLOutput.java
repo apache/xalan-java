@@ -75,8 +75,6 @@ import org.apache.xalan.xsltc.runtime.AttributeList;
 
 public class SAXHTMLOutput extends SAXOutput { 
 
-    private String  _mediaType   = "text/html";
-
     public SAXHTMLOutput(ContentHandler handler, String encoding) 
 	throws IOException 
     {
@@ -202,12 +200,5 @@ public class SAXHTMLOutput extends SAXOutput {
         catch (SAXException e) {
             throw new TransletException(e);
         }
-    }
-
-    /**
-     * Set the output media type - only relevant for HTML output
-     */
-    public void setMediaType(String mediaType) {
-	_mediaType = mediaType;
     }
 }

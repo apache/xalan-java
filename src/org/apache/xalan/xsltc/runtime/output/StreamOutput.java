@@ -181,6 +181,10 @@ abstract class StreamOutput extends OutputBase {
 	_standalone = standalone;
     }
 
+    public void setVersion(String version) { 
+	_version = version;
+    }
+
     protected void outputBuffer() {
 	try {
 	    int n = 0;

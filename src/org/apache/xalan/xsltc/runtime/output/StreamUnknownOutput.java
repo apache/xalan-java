@@ -78,15 +78,21 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 public class StreamUnknownOutput extends StreamOutput {
 
     private StreamOutput _handler;
-    private boolean      _callStartDocument  = false;
 
     private boolean      _isHtmlOutput = false;
-    private boolean      _firstTagOpen  = false;
+    private boolean      _firstTagOpen = false;
     private boolean      _firstElement = true;
     private String       _firstTagPrefix, _firstTag;
 
     private ArrayList    _attributes = null;
     private ArrayList    _namespaces = null;
+
+    // Cache calls to output properties events
+    private String       _mediaType          = null;
+    private boolean      _callStartDocument  = false;
+    private boolean      _callSetIndent      = false;
+    private boolean      _callSetVersion     = false;
+    private boolean      _callSetDoctype     = false;
 
     static class Pair {
 	public String name, value;
@@ -235,10 +241,26 @@ public class StreamUnknownOutput extends StreamOutput {
 
     public void setDoctype(String system, String pub) {
 	_handler.setDoctype(system, pub);
+
+	// Cache call to setDoctype()
+	super.setDoctype(system, pub);
+	_callSetDoctype = true;
     }
 
     public void setIndent(boolean indent) { 
 	_handler.setIndent(indent);
+
+	// Cache call to setIndent()
+	super.setIndent(indent);
+	_callSetIndent = true;
+    }
+
+    public void setVersion(String version) { 
+	_handler.setVersion(version);
+
+	// Cache call to setVersion()
+	super.setVersion(version);
+	_callSetVersion = true;
     }
 
     public void omitHeader(boolean value) {
@@ -247,6 +269,11 @@ public class StreamUnknownOutput extends StreamOutput {
 
     public void setStandalone(String standalone) {
 	_handler.setStandalone(standalone);
+    }
+
+    public void setMediaType(String mediaType) { 
+	_handler.setMediaType(mediaType);
+	_mediaType = mediaType;
     }
 
     public boolean setEscaping(boolean escape) 
@@ -262,10 +289,27 @@ public class StreamUnknownOutput extends StreamOutput {
     private void initStreamOutput() 
 	throws TransletException 
     {
+// System.out.println("initStreamOutput() _isHtmlOutput = " + _isHtmlOutput);
 	// Create a new handler if output is HTML
 	if (_isHtmlOutput) {
 	    _handler = new StreamHTMLOutput(_handler);
+
+	    // Transfer output properties (HTML only)
+	    if (_callSetIndent) {
+		_handler.setIndent(_indent);
+	    }
+	    if (_callSetVersion) {
+		_handler.setVersion(_version);
+	    }
+	    if (_callSetDoctype) {
+		_handler.setDoctype(_doctypeSystem, _doctypePublic);
+	    }
+	    if (_mediaType != null) {
+		_handler.setMediaType(_mediaType);
+	    }
 	}
+
+	// Call startDocument() if necessary
 	if (_callStartDocument) {
 	    _handler.startDocument();
 	    _callStartDocument = false;
