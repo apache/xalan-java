@@ -320,13 +320,13 @@ Copyright:
                    
   </target>
   
-   <!-- =================================================================== -->
+  <!-- =================================================================== -->
   <!-- Compiles the sample servlet and jars the class files.                -->  
   <!-- The javax.servlet and javax.servlet.http packages                    -->
   <!-- must be on the classpath                                             -->
   <!-- =================================================================== -->
  <target name="servlet" depends="jar"
-    description="Compile and jar just the servlet sample" >
+    description="Compile and jar the servlet sample" >
      <echo message="To compile and run the sample servlet, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.samples}/servlet"/>
      <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.xalan.jar}" 
@@ -634,7 +634,7 @@ Copyright:
   <!-- =================================================================== -->
 
   <!--Collate the xml sources into a single xml source with a litle extra structure -->
-  <target name="print.docs">
+  <target name="print.docs" depends="prepare.docs">
     <echo message="fop.jar and xml.jar must be on the classpath"/>
     <java fork="yes" classname="org.apache.xalan.xslt.Process"
       classpath="${java.class.path}:${build.dir}/xalan.jar">
@@ -647,6 +647,8 @@ Copyright:
     <java fork="yes" classname="org.apache.xalan.xslt.Process"
       classpath="${java.class.path}:${build.dir}/xalan.jar">
       <arg line="-in  ${xdocs.dir}/sources/xalan/xalan-collate.xml
+                 -param resourceFile '../../sources/xalan/resources.xml'
+                 -param project ${Name}      
                  -xsl ${xdocs.style}/stylesheets/xml2fo.xsl 
                  -out ${build.docs}/xalan-collate.fo"/>
     </java>
