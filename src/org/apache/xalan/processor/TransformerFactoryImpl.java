@@ -884,14 +884,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     }
     else
     {
-      try
-      {
-        baseID = SystemIDResolver.getAbsoluteURI(baseID);
-      }
-      catch (TransformerException te)
-      {
-        throw new TransformerConfigurationException(te);
-      }
+      baseID = SystemIDResolver.getAbsoluteURI(baseID);
     }
 
     if (source instanceof DOMSource)
@@ -916,6 +909,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     try
     {
       InputSource isource = SAXSource.sourceToInputSource(source);
+      isource.setSystemId(baseID);
       XMLReader reader = null;
 
       if (source instanceof SAXSource)

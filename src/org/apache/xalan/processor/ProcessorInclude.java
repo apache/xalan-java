@@ -56,34 +56,24 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-
-import javax.xml.transform.TransformerException;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.EntityResolver;
-
-import java.net.URL;
-
 import java.io.IOException;
 
-import org.xml.sax.helpers.XMLReaderFactory;
-
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Node;
-
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.TreeWalker;
+import org.w3c.dom.Node;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * TransformerFactory class for xsl:include markup.
@@ -238,7 +228,15 @@ class ProcessorInclude extends XSLTElementProcessor
         if (null != source && source instanceof DOMSource)
         {
           Node node = ((DOMSource)source).getNode();
-          TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper(), source.getSystemId());
+          String systemId = source.getSystemId();
+          if (systemId == null)
+          {
+            systemId = SystemIDResolver.getAbsoluteURI(getHref(),
+                         handler.getBaseIdentifier());
+            
+          }
+          
+          TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper(), systemId);
 
           try
           {
