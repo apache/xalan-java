@@ -77,7 +77,10 @@ public class TransletTemplates implements Templates {
 	_translet = (AbstractTranslet)translet;
     }
 
-    public Properties getOutputProperties() { /*TBD*/ return null; }
+    public Properties getOutputProperties() { 
+	/*TBD*/ 
+	return new Properties(); 
+    }
 
     public Transformer newTransformer() throws 
 	TransformerConfigurationException

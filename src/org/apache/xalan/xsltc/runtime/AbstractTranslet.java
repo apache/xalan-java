@@ -410,30 +410,48 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
     }
 
     public void setErrorListener(ErrorListener listener) throws 
-        IllegalArgumentException {  /* TBD */ }
+        IllegalArgumentException 
+    {  
+	/* TBD */ 
+        throw new IllegalArgumentException(
+            "AbstractTranslet:setErrorListener(ErrorListener) " +
+            "not implemented yet.");
+    }
 
     public Properties getOutputProperties() throws IllegalArgumentException { 
         /*TBD*/ 
-    	return null; 
+	throw new IllegalArgumentException(
+            "AbstractTranslet:getOutputProperties() " +
+            "not implemented yet.");
+    	//return null; 
     }
 
     public String getOutputProperty(String name) throws 
 	IllegalArgumentException
     { 
         /*TBD*/ 
-	return ""; 
+        throw new IllegalArgumentException(
+            "AbstractTranslet:getOutputProperty(String) " +
+            "not implemented yet.");
+	//return ""; 
     }
 
     public void setOutputProperties(Properties props) throws 
 	IllegalArgumentException 
     { 
 	/*TBD */ 
+        throw new IllegalArgumentException(
+            "AbstractTranslet:setOutputProperty(Properties) " +
+            "not implemented yet.");
     }
 
     public void setOutputProperty(String name, String value) throws 
 	IllegalArgumentException 
     {
-	/*TBD*/ 
+	/*TBD*/
+	throw new IllegalArgumentException(
+	    "AbstractTranslet:setOutputProperty(String,String) " +
+	    "not implemented yet."); 
     }
 
     public URIResolver getURIResolver() { /*TBD*/ return null; }
@@ -441,7 +459,10 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
     public void setParameter(String name, Object value) { 
 	addParameter(name, value);
     }
-    public void setURIResolver(URIResolver resolver) { /*TBD*/}
+
+    public void setURIResolver(URIResolver resolver) { 
+	/*TBD*/
+    }
 
     public void transform(Source xmlsrc, Result outputTarget)
         throws TransformerException 
