@@ -237,6 +237,11 @@ public class ElemTemplateElement extends UnImplNode
   
   /** 
    * Add a child to the child list.
+   * NOTE: This presumes the child did not previously have a parent.
+   * Making that assumption makes this a less expensive operation -- but
+   * requires that if you *do* want to reparent a node, you use removeChild()
+   * first to remove it from its previous context. Failing to do so will
+   * damage the tree.
    * 
    * @exception DOMException 
    * @param newChild 
@@ -286,46 +291,72 @@ public class ElemTemplateElement extends UnImplNode
     return this;
   }
   
+  /** Remove a child. 
+   * ADDED 9/8/200 to support compilation.
+   * TODO: ***** Alternative is "removeMe() from my parent if any"
+   * ... which is less well checked, but more convenient in some cases.
+   * Given that we assume only experts are calling this class, it might
+   * be preferable. It's less DOMish, though.
+   * @param oldChild The child to remove. This operation is a no-op
+   * if oldChild is not a child of this node.
+   * @return the removed child, or null if the specified
+   * node was not a child of this element.
+   */
+  public Node              removeChild(ElemTemplateElement childETE)
+  	      throws DOMException
+  {
+	if(childETE==null || childETE.m_parentNode!=this)
+		return null;
+	
+	// Pointers to the child
+	if(childETE==m_firstChild)
+		m_firstChild=childETE.m_nextSibling;
+	else
+	{
+		ElemTemplateElement prev=(ElemTemplateElement)(childETE.getPreviousSibling());
+		prev.m_nextSibling=childETE.m_nextSibling;
+	}
+			
+	// Pointers from the child
+     childETE.m_parentNode = null;
+     childETE.m_nextSibling = null;
+	 return childETE;
+  }
   
-  /** Replace the old child with a new child. */
+  /** Replace the old child with a new child.
+   */
   public Node               replaceChild(Node newChild,
                                          Node oldChild)
     throws DOMException
   {
-    ElemTemplateElement node = (ElemTemplateElement)getFirstChild();
-    while(null != node)
-    {
-      if(node == oldChild)
-      {
-        ElemTemplateElement newChildElem 
-          = ((ElemTemplateElement)newChild);
-        ElemTemplateElement oldChildElem 
-          = ((ElemTemplateElement)oldChild);
+	if(oldChild==null || oldChild.getParentNode()!=this)
+		return null;
+	
+    ElemTemplateElement newChildElem 
+      = ((ElemTemplateElement)newChild);
+    ElemTemplateElement oldChildElem 
+      = ((ElemTemplateElement)oldChild);
 
-        // Fix up previous sibling.
-        ElemTemplateElement prev 
-          = (ElemTemplateElement)oldChildElem.getPreviousSibling();
-        if(null != prev)
-          prev.m_nextSibling = newChildElem;
+    // Fix up previous sibling.
+    ElemTemplateElement prev 
+      = (ElemTemplateElement)oldChildElem.getPreviousSibling();
+    if(null != prev)
+      prev.m_nextSibling = newChildElem;
 
-        // Fix up parent.
-        if(newChildElem.m_parentNode.m_firstChild == oldChildElem)
-          newChildElem.m_parentNode.m_firstChild = newChildElem;
+    // Fix up parent (this)
+    if(m_firstChild == oldChildElem)
+      m_firstChild = newChildElem;
 
-        newChildElem.m_parentNode = oldChildElem.m_parentNode;
-        oldChildElem.m_parentNode = null;
+    newChildElem.m_parentNode = this;
+    oldChildElem.m_parentNode = null;
         
-        newChildElem.m_nextSibling = oldChildElem.m_nextSibling;
-        oldChildElem.m_nextSibling = null;
+    newChildElem.m_nextSibling = oldChildElem.m_nextSibling;
+    oldChildElem.m_nextSibling = null;
 
-        // newChildElem.m_stylesheet = oldChildElem.m_stylesheet;
-        // oldChildElem.m_stylesheet = null;
+    // newChildElem.m_stylesheet = oldChildElem.m_stylesheet;
+    // oldChildElem.m_stylesheet = null;
         
-        return newChildElem;
-      }
-      node = (ElemTemplateElement)node.getNextSibling();
-    }
-    return null;
+    return newChildElem;
   }
   
   /** 
@@ -404,7 +435,6 @@ public class ElemTemplateElement extends UnImplNode
   {
     return m_lineNumber;
   }
-  
   
   private int m_columnNumber;
 
@@ -539,14 +569,16 @@ public class ElemTemplateElement extends UnImplNode
   
   /** 
    * Given a namespace, get the corrisponding prefix.
+   * 9/15/00: This had been iteratively examining the m_declaredPrefixes
+   * field for this node and its parents. That makes life difficult for
+   * the compilation experiment, which doesn't have a static vector of
+   * local declarations. Replaced a recursive solution, which permits
+   * easier subclassing/overriding.
    */
   public String getNamespaceForPrefix(String prefix)
   {
-    ElemTemplateElement elem = this;
-    while(null != elem)
-    {
-      Vector nsDecls = elem.m_declaredPrefixes;
-      if(null != nsDecls)
+    Vector nsDecls = m_declaredPrefixes;
+    if(null != nsDecls)
       {
         int n = nsDecls.size();
         for(int i = 0; i < n; i++)
@@ -556,9 +588,12 @@ public class ElemTemplateElement extends UnImplNode
             return decl.getURI();
         }
       }
-      elem = elem.m_parentNode;
-    }
 
+    // Not found; ask our ancestors
+    if(null!=m_parentNode)
+      return m_parentNode.getNamespaceForPrefix(prefix);
+
+    // No parent, so no definition
     return null;
   }
 
@@ -711,7 +746,7 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /** 
-   * Get the parent as a Node.
+   * Get the parent as an ElemTemplateElement.
    */
   public ElemTemplateElement getParentElem()
   {
@@ -731,6 +766,27 @@ public class ElemTemplateElement extends UnImplNode
   {
     return m_nextSibling;
   }
+  
+  /** 
+   * Get the previous sibling (as a Node) or return null.
+   * Note that this may be expensive if the parent has many kids;
+   * we accept that price in exchange for avoiding the prev pointer
+   * TODO: If we were sure parents and sibs are always ElemTemplateElements,
+   * we could hit the fields directly rather than thru accessors.
+   */
+  public Node getPreviousSibling()
+  {
+	Node walker=getParentNode(),prev=null;
+	if(walker!=null)
+		for(walker=walker.getFirstChild();
+			walker!=null;
+			prev=walker,walker=walker.getNextSibling())
+			if(walker==this)
+				return prev;
+    return null;
+  }
+  
+  
 
   /** 
    * Get the next sibling (as a ElemTemplateElement) or return null.

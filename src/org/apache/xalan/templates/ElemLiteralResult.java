@@ -447,4 +447,12 @@ public class ElemLiteralResult extends ElemUse
     rhandler.endElement (getNamespace(), getLocalName(), getRawName());
   }
   
+  /** Compiling templates requires that we be able to list the AVTs
+   * ADDED 9/5/2000 to support compilation experiment
+   */
+  public Enumeration enumerateLiteralResultAttributes()
+  {
+	  return (null==m_avts) ? null : m_avts.elements();
+  }
+
 }

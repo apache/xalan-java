@@ -91,8 +91,9 @@ public class AVT implements java.io.Serializable
   
   /**
    * Get the raw name of the attribute, with the prefix unprocessed.
+   * MADE PUBLIC 9/5/2000 to support compilation experiment
    */
-  String getRawName()
+  public String getRawName()
   {
     return m_rawName;
   }
@@ -104,8 +105,9 @@ public class AVT implements java.io.Serializable
   
   /**
    * Get the local name of the attribute.
+   * MADE PUBLIC 9/5/2000 to support compilation experiment
    */
-  String getName()
+  public String getName()
   {
     return m_name;
   }
@@ -117,8 +119,9 @@ public class AVT implements java.io.Serializable
   
   /**
    * Get the namespace URI of the attribute.
+   * MADE PUBLIC 9/5/2000 to support compilation experiment
    */
-  String getURI()
+  public String getURI()
   {
     return m_uri;
   }
@@ -373,4 +376,18 @@ public class AVT implements java.io.Serializable
       return "";
     }
   }
+
+  /** Test whether the AVT is insensitive to the context in which
+   *  it is being evaluated. This is intended to facilitate 
+   *  compilation of templates, by allowing simple AVTs to be 
+   *  converted back into strings.
+   *  
+   *  Currently the only case we recognize is simple strings.
+   * ADDED 9/5/2000 to support compilation experiment
+   */
+  public boolean isContextInsensitive()
+  {
+    return null != m_simpleString;
+  }
+
 }

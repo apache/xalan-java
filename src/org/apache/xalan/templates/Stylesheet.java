@@ -1095,4 +1095,21 @@ public class Stylesheet  extends ElemTemplateElement
     return Constants.ELEMNAME_STYLESHEET_STRING;
   }
 
+  /**
+   * Replace an "xsl:template" property.
+   * This is a hook for CompilingStylesheetHandler, to allow
+   * us to access a template, compile it, instantiate it,
+   * and replace the original with the compiled instance.
+   * ADDED 9/5/2000 to support compilation experiment
+   */
+  public void replaceTemplate(ElemTemplate v, int i)
+    throws SAXException
+  {
+    if(null == m_templates)
+      throw new ArrayIndexOutOfBoundsException();
+    replaceChild(v,(Node)m_templates.elementAt(i));
+    m_templates.setElementAt(v,i);
+	v.setStylesheet(this);
+  }
+
 }

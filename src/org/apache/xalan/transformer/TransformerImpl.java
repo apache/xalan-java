@@ -1178,12 +1178,24 @@ public class TransformerImpl extends XMLFilterImpl
       }
       else
       {
-        // Fire a trace event for the template.
+		// 9/11/00: If template has been compiled, hand off to it
+		// since much (most? all?) of the processing has been inlined.
+		// (It would be nice if there was a single entry point that
+		// worked for both... but the interpretive system works by
+		// having the Tranformer execute the children, while the
+		// compiled obviously has to run its own code. It's
+		// also unclear that "execute" is really the right name for
+		// that entry point.)
+
+		// Fire a trace event for the template.
         if(TransformerImpl.S_DEBUG)
-          getTraceManager().fireTraceEvent(child, mode, template);
+        getTraceManager().fireTraceEvent(child, mode, template);
         
         // And execute the child templates.
-        executeChildTemplates(template, child, mode);
+		if(template instanceof org.apache.xalan.processor.CompiledTemplate)
+			template.execute(this,child,mode);
+		else
+			executeChildTemplates(template, child, mode);
       }
     }
     finally

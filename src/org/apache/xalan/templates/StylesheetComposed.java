@@ -580,6 +580,22 @@ public class StylesheetComposed extends Stylesheet
   }
 
   /**
+   * For compilation support, we need the option of overwriting
+   * (rather than appending to) previous composition.
+   * We could phase out the old API in favor of this one, but I'm
+   * holding off until we've made up our minds about compilation.
+   * ADDED 9/5/2000 to support compilation experiment
+   * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   */
+  public void recomposeTemplates(boolean flushFirst)
+    throws SAXException
+  {
+    if(flushFirst)
+        m_templateList = new TemplateList(this);    
+    recomposeTemplates();
+  }
+
+  /**
    * Get an "xsl:template" property by node match. This looks in the imports as 
    * well as this stylesheet.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
