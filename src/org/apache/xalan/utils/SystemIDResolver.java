@@ -66,6 +66,18 @@ import java.lang.StringBuffer;
 public class SystemIDResolver
 {  
   
+  public static String getAbsoluteURIFromRelative(String uri)
+  {
+    String curdir = System.getProperty("user.dir");
+    if(null != curdir)
+    {
+      uri = "file:///"+curdir+System.getProperty("file.separator")+uri;
+    }
+    if(null != uri  && (uri.indexOf('\\') > -1))
+      uri = uri.replace('\\', '/');
+    return uri;
+  }
+  
   /**
    * Take a SystemID string and try and turn it into a good absolute URL.
    * @exception SAXException thrown if the string can't be turned into a URL.
@@ -73,6 +85,12 @@ public class SystemIDResolver
   public static String getAbsoluteURI(String urlString, String base)
     throws SAXException 
   {
+    if((urlString.indexOf(':') < 0) && (null != base) && 
+       (base.indexOf(':') < 0))
+    {
+      base = getAbsoluteURIFromRelative(base);
+    }
+
     // bit of a hack here.  Need to talk to URI person to see if this can be fixed.
     if((null != base) && 
        urlString.startsWith("file:") && (urlString.charAt(5) != '/'))
