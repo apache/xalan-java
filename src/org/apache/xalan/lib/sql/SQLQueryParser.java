@@ -341,6 +341,8 @@ public class SQLQueryParser
     StringBuffer    tok = new StringBuffer();
     boolean         firstword = true;
 
+    if (m_Parameters == null) m_Parameters = new Vector();
+
     if (m_ParsedQuery == null) m_ParsedQuery = new StringBuffer();
 
     for ( int idx = 0 ; idx < m_OrigQuery.length() ; idx++ )
