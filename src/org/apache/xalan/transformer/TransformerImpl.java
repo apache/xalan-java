@@ -3037,10 +3037,11 @@ public class TransformerImpl extends Transformer
         m_isTransformDone = false;
 
         transformNode(m_doc);
+        
       }
       catch (Exception e)
       {
-        e.printStackTrace();
+        // e.printStackTrace();
 
         // Strange that the other catch won't catch this...
         postExceptionFromThread(e);
