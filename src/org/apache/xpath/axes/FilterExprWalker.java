@@ -144,19 +144,25 @@ public class FilterExprWalker extends AxesWalker
       // so we have to set up the variable context, execute the expression, 
       // and then restore the variable context.
 
-      // System.out.println("calling m_expr.execute(m_lpi.getXPathContext())");
-      VariableStack vars = m_lpi.m_execContext.getVarStack();
-      
-      // These three statements need to be combined into one operation.
-      int savedStart = vars.getSearchStart();
-      vars.setSearchStart(m_lpi.m_varStackPos);
-      vars.pushContextPosition(m_lpi.m_varStackContext);
-      
-      XObject obj = m_expr.execute(m_lpi.getXPathContext());
-      
-      // These two statements need to be combined into one operation.
-      vars.setSearchStart(savedStart);
-      vars.popContextPosition();
+      XObject obj;
+      if(m_lpi.getIsTopLevel())
+      {
+        // System.out.println("calling m_expr.execute(m_lpi.getXPathContext())");
+        VariableStack vars = m_lpi.m_execContext.getVarStack();
+        
+        // These three statements need to be combined into one operation.
+        int savedStart = vars.getSearchStart();
+        vars.setSearchStart(m_lpi.m_varStackPos);
+        vars.pushContextPosition(m_lpi.m_varStackContext);
+        
+        obj = m_expr.execute(m_lpi.getXPathContext());
+        
+        // These two statements need to be combined into one operation.
+        vars.setSearchStart(savedStart);
+        vars.popContextPosition();
+      }
+      else
+        obj = m_expr.execute(m_lpi.getXPathContext());
       
       // System.out.println("Back from m_expr.execute(m_lpi.getXPathContext()): "+obj);
       m_nodeSet = (null != obj) ? obj.nodeset() : null;

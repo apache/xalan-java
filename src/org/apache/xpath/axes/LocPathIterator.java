@@ -246,6 +246,19 @@ public class LocPathIterator extends PredicatedNodeTest
   }
 
   /**
+   * <meta name="usage" content="advanced"/>
+   * Get if this is an iterator at the upper level of
+   * the XPath.
+   *
+   * @return true if this location path is at the top level of the
+   *          expression.
+   */
+  public boolean getIsTopLevel()
+  {
+    return m_isTopLevel;
+  }
+
+  /**
    * Initialize the context values for this expression
    * after it is cloned.
    *
