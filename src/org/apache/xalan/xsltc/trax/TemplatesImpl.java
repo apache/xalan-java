@@ -64,6 +64,9 @@
 package org.apache.xalan.xsltc.trax;
 
 import java.io.Serializable;
+import java.util.Properties;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.transform.*;
 
@@ -71,10 +74,9 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.runtime.*;
 
-import java.util.Properties;
 
 public final class TemplatesImpl implements Templates, Serializable {
-    
+
     // Contains the name of the main translet class
     private String   _transletName = null;
 
@@ -84,8 +86,14 @@ public final class TemplatesImpl implements Templates, Serializable {
 
     // This error could occur when a compilation inside the TransformerFactory
     // failed and when a template has been loaded from stable storage.
-    private final static String TRANSLET_ERR_MSG =
+    private final static String NO_TRANSLET_CODE =
 	"This template does not contain a valid translet class definition.";
+    private final static String NO_MAIN_TRANSLET =
+	"This template does not contain a class with the name ";
+    private final static String TRANSLET_CLASS_ERR =
+	"Could not load the translet class ";
+    private final static String TRANSLET_OBJECT_ERR =
+	"Translet class loaded, but unable to create translet instance.";
     
     // Our own private class loader - builds Class definitions from bytecodes
     private class TransletClassLoader extends ClassLoader {
@@ -137,23 +145,58 @@ public final class TemplatesImpl implements Templates, Serializable {
      * Defines the translet class and auxiliary classes.
      * Returns a reference to the Class object that defines the main class
      */
-    private Class defineTransletClasses() {
-	if (_bytecodes == null) return null;
+    private Translet defineTransletClasses()
+	throws TransformerConfigurationException {
 
-	TransletClassLoader loader = new TransletClassLoader();
+	if (_bytecodes == null)
+	    throw new TransformerConfigurationException(NO_TRANSLET_CODE);
+
+	TransletClassLoader loader = 
+	    (TransletClassLoader) AccessController.doPrivileged(
+		new PrivilegedAction() {
+			public Object run() {
+			    return new TransletClassLoader();
+			}
+		    }
+		);
 
 	try {
-	    Class transletClass = null;
+	    int transletIndex = -1;
 	    final int classCount = _bytecodes.length;
+	    Class[] clazz = new Class[classCount];
+
 	    for (int i = 0; i < classCount; i++) {
-		Class clazz = loader.defineClass(_bytecodes[i]);
-		if (clazz.getName().equals(_transletName))
-		    transletClass = clazz;
+		clazz[i] = loader.defineClass(_bytecodes[i]);
+		if (clazz[i].getName().equals(_transletName)) transletIndex = i;
 	    }
-	    return transletClass; // Could still be 'null'
+
+	    if (transletIndex < 0)
+		throw new TransformerConfigurationException(NO_MAIN_TRANSLET+
+							    _transletName);
+
+	    Translet translet = (Translet)clazz[transletIndex].newInstance();
+	    for (int i = 0; i < classCount; i++) {
+		if (i != transletIndex)
+		    translet.addAuxiliaryClass(clazz[i]);
+	    }
+	    return translet;
 	}
-	catch (ClassFormatError e) {
-	    return null;
+
+	catch (ClassFormatError e)       {
+	    throw new TransformerConfigurationException(TRANSLET_CLASS_ERR+
+							_transletName);
+	}
+	catch (LinkageError e)           {
+	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
+							_transletName);
+	}
+	catch (InstantiationException e) {
+	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
+							_transletName);
+	}
+	catch (IllegalAccessException e) {
+	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
+							_transletName);
 	}
     }
 
@@ -162,7 +205,8 @@ public final class TemplatesImpl implements Templates, Serializable {
      * wrapped inside this Template. The translet instance will later
      * be wrapped inside a Transformer object.
      */
-    private Translet getTransletInstance() {
+    private Translet getTransletInstance()
+	throws TransformerConfigurationException {
 	if (_transletName == null) return null;
 
 	// First assume that the JVM already had the class definition
@@ -177,14 +221,7 @@ public final class TemplatesImpl implements Templates, Serializable {
 	catch (IllegalAccessException e) { }
 
 	// Create the class definition from the bytecodes if failed
-	try {
-	    Class transletClass = defineTransletClasses();
-	    if (transletClass == null) return null;
-	    return((Translet)transletClass.newInstance());
-	}
-	catch (LinkageError e) { return(null); }
-	catch (InstantiationException e) { return(null); }
-	catch (IllegalAccessException e) { return(null); }
+	return((Translet)defineTransletClasses());
     }
 
     /**
@@ -194,11 +231,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     public Transformer newTransformer()
 	throws TransformerConfigurationException {
-	Translet translet = getTransletInstance();
-	if (translet == null)
-	    throw new TransformerConfigurationException(TRANSLET_ERR_MSG);
-	TransformerImpl transformer = new TransformerImpl(translet);
-        return(transformer);
+        return(new TransformerImpl(getTransletInstance()));
     }
 
     /**

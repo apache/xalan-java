@@ -600,4 +600,15 @@ public abstract class AbstractTranslet implements Translet {
 	}
     }
 
+    private Hashtable _auxClasses = null;
+
+    public void addAuxiliaryClass(Class auxClass) {
+	if (_auxClasses == null) _auxClasses = new Hashtable();
+	_auxClasses.put(auxClass.getName(), auxClass);
+    }
+
+    public Class getAuxiliaryClass(String className) {
+	if (_auxClasses == null) return null;
+	return((Class)_auxClasses.get(className));
+    }
 }

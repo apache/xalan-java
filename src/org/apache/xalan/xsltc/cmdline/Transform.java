@@ -145,7 +145,7 @@ final public class Transform {
 
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
 	    final DOMImpl dom = new DOMImpl();
-	    final DOMBuilder builder = dom.getBuilder();
+	    DOMBuilder builder = dom.getBuilder();
 	    reader.setContentHandler(builder);
 
 	    try {
@@ -166,7 +166,9 @@ final public class Transform {
 		reader.parse(_fileName);
 	    else
 		reader.parse("file:"+(new File(_fileName).getAbsolutePath()));
-	    
+
+	    builder = null;
+
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
 	    // If there are any elements with ID attributes, build an index

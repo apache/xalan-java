@@ -71,8 +71,8 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 public class NodeSortRecordFactory {
     private final DOM      _dom;
-    private final Class    _class;
     private final String   _className;
+    private Class _class;
 
     private final AbstractTranslet _translet;
 
@@ -88,7 +88,8 @@ public class NodeSortRecordFactory {
 	try {
 	    _dom = dom;
 	    _className = className;
-	    _class = Class.forName(className);
+	    _class = translet.getAuxiliaryClass(className);
+	    if (_class == null)	_class = Class.forName(className);
 	    _translet = (AbstractTranslet)translet;
 	}
 	catch (ClassNotFoundException e) {

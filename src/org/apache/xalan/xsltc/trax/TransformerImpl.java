@@ -82,6 +82,7 @@ import java.lang.IllegalArgumentException;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -276,7 +277,8 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 
 	    // Create an internal DOM (not W3C) and get SAX2 input handler
 	    final DOMImpl dom = new DOMImpl();
-	    final ContentHandler inputHandler = dom.getBuilder();
+	    DOMBuilder builder = dom.getBuilder();
+	    String prop = "http://xml.org/sax/properties/lexical-handler";
 
 	    // Create a DTDMonitor that will trace all unparsed entity URIs
 	    final DTDMonitor dtdMonitor = new DTDMonitor();
@@ -289,7 +291,13 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final InputSource input  = sax.getInputSource();
 		final String      systemId = sax.getSystemId();
 		dtdMonitor.handleDTD(reader);
-		reader.setContentHandler(inputHandler);
+		reader.setContentHandler(builder);
+		try {
+		    reader.setProperty(prop, builder);
+		}
+		catch (SAXException e) {
+		    // quitely ignored
+		}
 		reader.parse(input);
 		dom.setDocumentURI(systemId);
 	    }
@@ -301,7 +309,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final InputSource input = null; 
 		final String      systemId = domsrc.getSystemId(); 
 		dtdMonitor.handleDTD(dom2sax);
-		dom2sax.setContentHandler(inputHandler);
+		dom2sax.setContentHandler(builder);
 		dom2sax.parse(input); // need this parameter?
 		dom.setDocumentURI(systemId);
 	    }
@@ -319,8 +327,13 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final Reader streamReader = stream.getReader();
 		final String systemId = stream.getSystemId();
 
-		reader.setContentHandler(inputHandler);
-		
+		reader.setContentHandler(builder);
+		try {
+		    reader.setProperty(prop, builder);
+		}
+		catch (SAXException e) {
+		    // quitely ignored
+		}
 		InputSource input;
 		if (streamInput != null)
 		    input = new InputSource(streamInput);
@@ -336,6 +349,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	    else {
 		return null;
 	    }
+            builder = null;
 
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
@@ -390,6 +404,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	    _translet.transform(dom, handler);
 	}
 	catch (TransletException e) {
+	    e.printStackTrace();
 	    if (_errorListener != null)
 		postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
