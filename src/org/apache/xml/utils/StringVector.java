@@ -64,16 +64,16 @@ package org.apache.xml.utils;
 public class StringVector implements java.io.Serializable
 {
 
-  /** Size of blocks to allocate           */
+  /** @serial Size of blocks to allocate           */
   protected int m_blocksize;
 
-  /** Array of strings this contains          */
+  /** @serial Array of strings this contains          */
   protected String m_map[];
 
-  /** Number of strings this contains          */
+  /** @serial Number of strings this contains          */
   protected int m_firstFree = 0;
 
-  /** Size of the array          */
+  /** @serial Size of the array          */
   protected int m_mapSize;
 
   /**
