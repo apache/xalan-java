@@ -69,13 +69,110 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.5.0</link></li>
+    <li><link anchor="done">Changes since version 2.5.1</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
+   <s3 title="Changes since &xslt4j; 2.5.1">
+     <p>&xslt4j; 2.5.2 contains bug fixes and performance enhancements.</p>
+      <p>Fixes in this release include the following: </p>
+     <ul>
+     <li>
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=782">782</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=788">788</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=789">789</jump>, 
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=795">795</jump>,                
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=890">890</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3415">3415</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5133">5133</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5972">5972</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6155">6155</jump>, 
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7205">7205</jump>,           
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7408">7408</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10900">10900</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11414">11414</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12441">12441</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13082">13082</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14149">14149</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14607">14607</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15090">15090</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15327">15327</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15700">15700</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15828">15828</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15901">15901</jump>,            
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=16311">16311</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=16512">16512</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=16675">16675</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=17630">17630</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=18821">18821</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=18907">18907</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19297">19297</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19591">19591</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19770">19770</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19823">19823</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19890">19890</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19918">19918</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19972">19972</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19973">19973</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20074">20074</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20114">20114</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20256">20256</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20537">20537</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20572">20572</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20625">20625</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20685">20685</jump>,            
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20795">20795</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20819">20819</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20832">20832</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20841">20841</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20909">20909</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20913">20913</jump>, 
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20920">20920</jump>,     
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21039">21039</jump>,   
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21048">21048</jump>,         
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21087">21087</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21300">21300</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21309">21309</jump>,   
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21449">21449</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21452">21452</jump>,               
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21471">21471</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21478">21478</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21491">21491</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21697">21697</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21713">21713</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21805">21805</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=21893">21893</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22025">22025</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22115">22115</jump>,   
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22167">22167</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22342">22342</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22422">22422</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22438">22438</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22623">22623</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22769">22769</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22777">22777</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22808">22808</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22880">22880</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23200">23200</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23113">23113</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23115">23115</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23271">23271</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23418">23418</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23706">23706</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23812">23812</jump>,   
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23896">23896</jump>,   
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23983">23983</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24013">24013</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24025">24025</jump>      
+     </li>
+     <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+      <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.
+     </li>         
+     </ul>
+   </s3>       
    <s3 title="Changes since &xslt4j; 2.5.0">
      <p>&xslt4j; 2.5.1 contains bug fixes and performance enhancements.</p>
       <p>Fixes in this release include the following: </p>

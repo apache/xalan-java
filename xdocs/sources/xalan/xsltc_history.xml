@@ -58,6 +58,441 @@
  -->
 <s1 title="XSLTC software changes">
 <p>The following sections list <link idref="xsltc_usage">XSLTC</link> changes back to the incorporation of XSLTC into &xslt4j;.</p>
+<s2 title="Changes for &xslt4j; 2.5.2">
+<p>XSLTC source code updates:</p>
+<ul>
+<li><ref>Committed by </ref>grchiu@apache.org<ref> on </ref>2003/06/11<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Expression.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla 20685. In startResetIterator(), check see if the
+expression wrapped by the CastExpr is a VariableRef. If so, don't
+generate a call to setStartNode.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/16<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom MultiDOM.java<br/>
+<ref>Committer's log entry: </ref>Fix a minor bug in MultiDOM.addDOMAdapter().<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc DOMCache.java xml-xalan/java/src/org/apache/xalan/xsltc/dom 
+DocumentCache.java LoadDocument.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Patch for bugzilla #15828.
+Arguments to URIResolver.resolve method for document function, in XSLTC are now
+href: argument passed to document function
+base: URI of stylesheet<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java<br/>
+<ref>Committer's log entry: </ref>
+Putting back LoadDocument.java<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java<br/>
+<ref>Committer's log entry: </ref>
+Patch for bugzilla #15828.
+Arguments to URIResolver.resolve method for document function, in XSLTC are now
+href: argument passed to document function
+base: URI of stylesheet<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Putting back TransformerImpl<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Patch for bugzilla #15828.
+Arguments to URIResolver.resolve method for document function, in XSLTC are now
+href: argument passed to document function
+base: URI of stylesheet<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/06/19<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerFactoryImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Added SAXTransformerFactory.FEATURE and SAXTransformerFactory.FEATURE_XMLFILTER
+to the list of features that are implemented.  Fix for bug 20795.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/23<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc DOM.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler SyntaxTreeNode.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMAdapter.java MultiDOM.java SAXImpl.java SimpleResultTreeImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Performance improvement for XSLTC
+Don't add a simple or adaptive RTF to the DTMManager if the nodeset
+extension is not used. The DOMAdapters are also not created in
+this case. This is a noticeable improvement for stylesheets that use
+many small RTFs but do not use the nodeset extension.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/23<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler CallTemplate.java Mode.java Param.java Template.java WithParam.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util NamedMethodGenerator.java<br/>
+<ref>Committer's log entry: </ref>
+Performance improvement for XSLTC
+
+New codegen solution for parameter passing in named templates,
+which provides significant improvement for stylesheets that use
+xsl:call-template and xsl:with-param heavily.
+
+The old solution generates code to call Translet.addParameter(),
+which seems to be too expensive. In the new solution, parameters
+are passed to named templates via method arguments. The method
+signature for a named template is not fixed. It depends on the number
+of parameters declared in the template.
+
+The caller (xsl:call-template) is responsible for generating the
+correct parameter list and passes it to the called template. This is
+done in the CallTemplate class, which finds out the corresponding
+called template and processes its own xsl:with-param children together
+with the xsl:params in the called template to generate an effective
+parameter list. In the case where a xsl:param references another xsl:param,
+local variables are generated to hold the temporary parameter value.<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/23<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java<br/>
+<ref>Committer's log entry: </ref>
+Patch for bugzilla #15828.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/24<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TrAXFilter.java<br/>
+<ref>Committer's log entry: </ref>
+Add a "public Transformer getTransformer()" method to XSLTC's TrAXFilter class.
+The Xalan TrAXFilter class already has such an interface.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/24<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java XSLTCSource.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for XSLTCSource (see bugzilla 21048).<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/24<br/>
+<ref>Modified: </ref> xml-xalan/java/xdocs/sources/xsltc xsltc_trax_api.xml<br/>
+<ref>Committer's log entry: </ref>
+Update documentation about how to use XSLTCSource.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java VariableBase.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/dom CachedNodeListIterator.java ClonedNodeListIterator.java<br/>
+<ref>Committer's log entry: </ref>
+Performance improvement for XSLTC
+
+Introduce two new iterators (CachedNodeListIterator and CloneNodeListIterator).
+They are used by variable/param references that are evaluated to nodesets.
+CachedNodeListIterator traverses the underlying iterator once and caches the
+nodes in an IntegerArray. Its clone() method returns an object of
+CloneNodeListIterator, which also retrieves nodes from the cache.
+
+This mostly improves the case where a variable is referenced multiple times
+in a context. In the old code, the iterator for the variable is traversed
+as many times as the variable is referenced. Using the cached iterators,
+the iterator is only traversed once. All later references retrieve nodes
+from the cache.
+<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/06/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java MultiDOM.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java xml-xalan/java/src/org/apache/xalan/xsltc/trax 
+TemplatesImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Implement a feature to cache the DTM for the stylesheet in
+the Templates object. This improves the case where document('')
+is used. In this case the DTM for the stylesheet is only built
+once per thread. It can be reused by multiple transformers
+created by the sample Templates.
+<br/><br/></li>
+<li><ref>Committed by </ref>grchiu@apache.org<ref> on </ref>2003/06/26<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom UnionIterator.java<br/>
+<ref>Committer's log entry: </ref>
+Patch from Christine Li (jycli@ca.ibm.com) for bugzilla 20913, with
+modifications. In UnionIterator, after calling the getLast() method, the
+heap is not restored properly. Recreate the heap in gotoMark(), as well
+as restore _returnedLast and _heapSize.<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/30<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom DocumentCache.java<br/>
+<ref>Committer's log entry: </ref>
+Put back DocumentCache<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/30<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java xml-xalan/java/src/org/apache/xalan/xsltc 
+DOMCache.java xml-xalan/java/src/org/apache/xalan/xsltc/dom DocumentCache.java<br/>
+<ref>Committer's log entry: </ref>
+Update the DocumentCache class to be compatible with the DOMCache 
+interface.  Although, with the native interface no longer supported, users
+should not be using the DocumentCache.  Instead they should set a 
+URIResolver on the Transformer in order to resolve arguments
+passed to the document function.<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/06/30<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for 3 trax.localPath failures.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/07/07<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Fix a memory leak problem with the DTMManager.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/07/08<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler CallTemplate.java Stylesheet.java Template.java<br/>
+<ref>Committer's log entry: </ref>
+Fix a few conformance regressions introduced by the addParameter
+optimization work.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/07/10<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/util IntegerArray.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla 20074. Don't create an IntegerArray of size 0.<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/07/11<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ErrorMessages.java ErrorMsg.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerHandlerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+XSLTC: TransformerHandler.setResult should throw an IllegalArgumentException
+when the result argument is null.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/07/16<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util MethodGenerator.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for bug 20256. Remove an unused reference to an
+inexistent class.<br/><br/></li>
+<li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/07/21<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Import.java Include.java<br/>
+<ref>Committer's log entry: </ref>
+Patch for bugzilla #20537.  
+When URIResolver was set for includes/imports, the system id of the included/imported
+files was not always set correctly.<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/07/22<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Predicate.java<br/>
+<ref>Committer's log entry: </ref>
+Applying patch from Igor Hersht (igorh@ca.ibm.com) for Bugzilla bug 18821.
+At some point in the recent past, Predicate started trying to optimize filter
+expressions with positional predicates, but the receiving code in FilterExpr
+was always incorrect.  The fixes to FilterExpr and related code aren't so
+straightforward, so the easiest thing to do for now is to disable the
+broken optimization for FilterExpr objects.<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/07/22<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom UnionIterator.java<br/>
+<ref>Committer's log entry: </ref>
+Applying patch from Igor Hersht (igorh@ca.ibm.com) for Bugzilla bug 18821.
+Nested iterators in UnionIterator weren't correctly handling multiple calls to
+setStartNode in generated code.  Fixed by ignoring calls after the first.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/07/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler LiteralElement.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla 20832. Also fix testcase attribset19.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/07/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Stylesheet.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla 21805.<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/08/01<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Stylesheet.java<br/>
+<ref>Committer's log entry: </ref>
+Added code to create static char[] fields in the translet containing the
+literal text in the source stylesheet.  The code generation for xsl:comment and
+for literal text that constructs text nodes takes advantage of this by using
+the serializer's comment(char[],int,int) and characters(char[],int,int) methods,
+respectively, rather than the comment(String) and characters(String) methods.
+The former pair of methods avoid some potential overhead in the serializer from
+copying the contents of strings to char[] objects.
+
+Code that creates a static initializer method in a translet was written by
+Morris Kwan (mkwan@ca.ibm.com).
+
+Reviewed by Morris Kwan (mkwan@ca.ibm.com)
+<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/08/01<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Comment.java Constants.java Text.java XSLTC.java<br/>
+<ref>Committer's log entry: </ref>
+Added code to create static char[] fields in the translet containing the
+literal text in the source stylesheet.  The code generation for xsl:comment and
+for literal text that constructs text nodes takes advantage of this by using
+the serializer's comment(char[],int,int) and characters(char[],int,int) methods,
+respectively, rather than the comment(String) and characters(String) methods.
+The former pair of methods avoid some potential overhead in the serializer from
+copying the contents of strings to char[] objects.
+
+Reviewed by Morris Kwan (mkwan@ca.ibm.com)<br/><br/></li>
+<li><ref>Committed by </ref>grchiu@apache.org<ref> on </ref>2003/08/06<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Patch from Bruno Dumon (bruno@outerthought.org) for bugzilla 20114.
+When using XSLTC's TemplatesHandler to create templates, errors are never
+reported; getTemplates() just returns null.
+Changed behaviour to be inline with Xalan behaviour: stylesheets are
+compiled in the endDocument() event and a SAXException wrapping the real
+exception is thrown.<br/><br/></li>
+\<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2003/08/08<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler AttributeSet.java Constants.java 
+UseAttributeSets.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util AttributeSetMethodGenerator.java<br/>
+<ref>Committer's log entry: </ref>
+Patch for Bugzilla Bug 19918<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/08/12<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionCall.java<br/>
+<ref>Committer's log entry: </ref>
+Fix bytecode generation problem for extension method calls via
+interfaces for bugzilla 22115.<br/><br/></li>
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/08/12<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler LiteralElement.java<br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 19972	
+Submitted by:	William Lee (william.lee@cognos.com)
+Reviewed by:	Brian Minchau and Gordon Chui
+
+The code loops over elements in a Vector, incrementing the index j.
+Some elements should not be processed so they were removed from the Vector.
+The removal of element "j" shifted all higher elements down and made the
+Vector 1 shorter.  So removal of an element and incrementing "j" actually caused
+elements to be skipped.
+
+It is not quite clear why the element is being removed from the Vector rather
+than just skipped over. For safety sake an iteration over the loop either removes an
+element, or increments "j", but not both in the same iteration.<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/08/27<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Stylesheet.java<br/>
+<ref>Committer's log entry: </ref>
+Applying patch for bug 19973 from Christine Li (jycli@ca.ibm.com).
+A call to buildKeys (for xsl:key) should be generated before a call to topLevel
+(to handle top-level variable and parameter declarations) because top-level
+variables and parameters can contain references to the key() function, but not
+the other way around.<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/09/05<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler VariableRefBase.java<br/>
+<ref>Committer's log entry: </ref>
+Applied patch for bug 22769 from Christine Li (jycli@ca.ibm.com).  If a
+variable reference occurs inside the definition of another variable, XSLTC adds
+a dependency link upon the referenced variable to the defined variable.
+However, if the referenced variable was overrode by another variable definition
+with higher import precendence, the dependency should be placed on the
+overriding variable instead.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/09/09<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler XSLTC.java xml-xalan/java/src/org/apache/xalan/xsltc/trax Util.java<br/>
+<ref>Committer's log entry: </ref>
+Moved return statements outside of finally block. The compiler correctly points out that when an exception is not caught by a catch, the 
+finally block cannot return normally.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/03<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler XSLTC.java<br/>
+<ref>Committer's log entry: </ref>
+Ensure we set a non-empty name for the translet even when one cannot be obtained from the systemId.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/06<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler CallTemplate.java<br/>
+<ref>Committer's log entry: </ref>
+Fixed problem in XSLT parameter optimization. The search for the template being called should start from the top-level stylesheet. 
+The incorrect signature was generated when xsl:template and xsl:call-template were located in different stylesheets.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/06<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Stylesheet.java<br/>
+<ref>Committer's log entry: </ref>
+(Committing this again to get the log message right! - c.f. revision 1.54)
+1. Added Javadoc comments to instance variables.
+2. getAllValidTemplates() now caches result in top-level stylesheet.
+3. setSystemId() maps a file system path to a URI (if needed).<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/06<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Import.java Include.java xml-xalan/java/src/org/apache/xalan/xsltc/dom 
+SAXImpl.java<br/>
+<ref>Committer's log entry: </ref>
+1. New code to map relative paths to URIs in Include.java and Import.java.
+2. If SourceLoader returns null, the JAXP API states that the processor
+should attempt to resolve the reference. Changed the logic to do this.
+(1 and 2 should solve some of the problems we have resolving relative
+paths and also using URI resolvers. More testing is needed, though).<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/07<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler CastCall.java Parser.java xpath.cup<br/>
+<ref>Committer's log entry: </ref>
+Adding a new extension function for XSLTC. Using this extension function, it is
+possible to recover type information lost by the use of xsl:param (see Bugzilla
+19038). Here is an example:
+
+&lt;xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:java="http://xml.apache.org/xalan/java"
+    xmlns:xsltc="http://xml.apache.org/xalan/xsltc"&gt;
+
+&lt;xsl:param name="object"/&gt;
+
+&lt;xsl:template match="/"&gt;
+    &lt;xsl:value-of select="java:length(xsltc:cast('java.lang.String', $object))"/&gt;
+&lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;
+
+Without using xsltc:cast(), XSLTC will report an error as the type of param
+'object' cannot be determined statically. The type of xsltc:cast() is:
+
+object[T] cast('T', reference | object[R])
+
+where 'T' indicates that the type of the first argument must be a literal
+string. A ClassCastException may be thrown at runtime if R is not convertible
+to T.
+
+I believe we still need a fully-dynamic solution that does not rely on this
+extension function. However, the two solutions can coexists, especially since
+using xsltc:cast() will always be more efficient than any alternative based
+on Java reflection.<br/><br/></li>
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2003/10/10<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler xpath.cup XSLTC.java xml-xalan/java/src/org/apache/xalan/xsltc/dom 
+DOMAdapter.java SAXImpl.java<br/><ref>Committer's log entry: </ref>
+Patch for Bugzilla Bug 14607<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/10/15<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Fix the makeNode and makeNodeList methods in SAXImpl for bugzilla 23115.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/10/15<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Sort.java<br/>
+<ref>Committer's log entry: </ref>
+Apply the patch for bugzilla 23271 from Bruno Fernandez-Ruiz (brunofr@olympum.com).<br/><br/></li>
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/10/15<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 15901
+Submitted by:	Brian Minchau
+Reviewed by:	John Meyer (bug reporter)
+
+XSLTC now uses properties from the serializer's factory rather than
+setting its own defaults. This makes XSLTC's default serialializer 
+properties (indentation, entity file ... ) the same as Xalan-J.<br/><br/></li>
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/10/15<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler BinOpExpr.java LogicalExpr.java Predicate.java 
+RelationalExpr.java UnaryOpExpr.java<br/><ref>Committer's log entry: </ref>
+PR: bugzilla 15327	
+Submitted by:	Christine Li
+Reviewed by:	Brian Minchau
+Fix for XSLTC problems with [last()] and [last()-1] predicates.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Import.java 
+Include.java Stylesheet.java xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Replace ad-hoc code to resolve relative URIs by calls to the xml.utils.SystemIDResolver 
+class. This change fixes a few a regressions and also simplifies the code in XSLTC.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler CastCall.java 
+CastExpr.java FunctionCall.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util 
+ObjectType.java StringType.java Type.java<br/>
+<ref>Committer's log entry: </ref>
+Allow conversion between types 'string' and 'object[java.lang.String]'.
+Conversion is trivial as instances of both types have the same runtime
+representation. This was needed in order to write expressions such
+as,
+    string:new(xsltc:cast('java.lang.String', $object))
+where 'object' is a param bound to a value of type 'java.lang.String'.<br/><br/></li>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/10/20<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer 
+TransformerIdentityImpl.java TransformerImpl.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Patch from Christine Li (jycli@ca.ibm.com) for Bugzilla bug report 22167.
+When the zero-argument constructor of DOMSource, StreamSource or SAXSource is
+invoked, and no setter method is called to specify an actual source, the
+source should be treated as if it contained only a root node.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/20<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Check for null before setting DTM base URI.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/21<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax Util.java<br/>
+<ref>Committer's log entry: </ref>
+Fix for regression in Resolve002 TCK.<br/><br/></li>
+<li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/10/22<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Parser.java 
+UnsupportedElement.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime 
+BasisLibrary.java ErrorMessages.java<br/>
+<ref>Committer's log entry: </ref>
+Apply Joanne Tong (joannet@ca.ibm.com) patch for bugzilla 23706,
+with my own modifications. I also fixed bug 23896 in the same
+patch.
+
+This patch includes the fixes for the following:
+1. an unsupported XSL element will trigger a syntax error in 1.0 mode.
+2. In forward-compatibility mode, if an unsupported XSL element is in
+a template, has no fallback, it will trigger a runtime error if it is
+instantiated.
+3. All fallback children are called in sequence. The old code only makes
+use of the first fallback child.
+4. Only direct fallback children are processed. The old code finds the fallback
+from all descendants of an unsupported element, which is wrong behavior
+according to the spec.<br/><br/></li>
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/10/22<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java<br/>
+<ref>Committer's log entry: </ref>
+Committing path for bugzilla 22438 from Bhakti Mehta (Bhakti.Mehta@sun.com). This patch 
+fixes serialization problems of Templates objects in XSLTC. A user-defined URIResolver 
+associated to a Templates object is also serialized whenever possible (i.e. if it is also 
+serializable).<br/><br/></li>
+</ul>
+</s2>
 <s2 title="Changes for &xslt4j; 2.5.1">
 <p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/16<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler DocumentCall.java xml-xalan/java/src/org/apache/xalan/xsltc/dom LoadDocument.java<br/><ref>Committer's log entry: </ref>
 Applying patches from Igor Hersht (igorh@ca.ibm.com) for bug 15200 and
