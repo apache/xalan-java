@@ -167,9 +167,8 @@ public class XRTreeFrag extends XObject
   /**
    * Cast result object to a nodelist.
    */
-  public NodeIterator nodeset()
+  public NodeIterator asNodeIterator()
   {
-    System.out.println("**m_obj: "+((Object)m_obj).getClass().getName());
     if(m_obj instanceof NodeIterator)
       return (NodeIterator)m_obj;
     else 
@@ -181,7 +180,12 @@ public class XRTreeFrag extends XObject
    */
   public NodeList convertToNodeset()
   {
-    return ((DocumentFragment)m_obj).getChildNodes();
+    if(m_obj instanceof DocumentFragment)
+      return ((DocumentFragment)m_obj).getChildNodes();
+    else if(m_obj instanceof NodeList)
+      return (NodeList)m_obj;
+    else
+      return null;
   }  
   
   /**
