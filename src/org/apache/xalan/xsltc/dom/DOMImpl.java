@@ -153,6 +153,10 @@ public final class DOMImpl implements DOM, Externalizable {
     private final static String XML_LANG_ATTRIBUTE =
 	"http://www.w3.org/XML/1998/namespace:@lang";
 
+    // Types for generic elements and attributes
+    private final static Integer elementInt = new Integer(ELEMENT);
+    private final static Integer attributeInt = new Integer(ATTRIBUTE);
+
     /**
      * Define the origin of the document from which the tree was built
      */
@@ -164,7 +168,10 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the origin of the document from which the tree was built
      */
     public String getDocumentURI() {
-	return (_documentURI != null) ? _documentURI : "rtf" + _documentURIIndex++;
+	synchronized (getClass()) {	// synchornize access to static
+	    return (_documentURI != null) ? _documentURI : 
+					    "rtf" + _documentURIIndex++;
+	}
     }
 
     public String getDocumentURI(int node) {
@@ -2053,16 +2060,13 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the internal type associated with an expaneded QName
      */
     public int getGeneralizedType(final String name) {
-	final Integer type = (Integer)_types.get(name);
+	Integer type = (Integer)_types.get(name);
 	if (type == null) {
 	    // memorize default type
-	    final int code = name.charAt(0) == '@' ? ATTRIBUTE : ELEMENT;
-	    _types.put(name, new Integer(code));
-	    return code;
+	    _types.put(name, 
+		type = (name.charAt(0) == '@') ? attributeInt : elementInt);
 	}
-	else {
-	    return type.intValue();
-	}
+	return type.intValue();
     }
 
     /**
