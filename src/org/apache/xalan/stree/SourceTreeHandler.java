@@ -1054,6 +1054,14 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
                                   String notationName)
     throws org.xml.sax.SAXException
   {
+    try
+    {
+      systemId = org.apache.xml.utils.SystemIDResolver.getAbsoluteURI(systemId, m_inputSource.getSystemId());
+    }
+    catch(Exception e)
+    {
+      throw new org.xml.sax.SAXException(e);
+    }
     EntityImpl entity = new EntityImpl(name, notationName, publicId, systemId);
     m_root.getDoctype().getEntities().setNamedItem(entity);
   }
