@@ -811,11 +811,11 @@ public class TransformerImpl extends Transformer
           m_outputFormat = new OutputProperties();
       }
       
-      m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
       if(null != oformat)
       {
         m_outputFormat.copyFrom(oformat);
       }
+      m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
     }
   }
   
@@ -2071,7 +2071,7 @@ public class TransformerImpl extends Transformer
       this.setContentHandler(savedHandler);
     }
   }
-
+  
   /**
    * <meta name="usage" content="advanced"/>
    * Execute each of the children of a template element.
@@ -2087,6 +2087,27 @@ public class TransformerImpl extends Transformer
    */
   public void executeChildTemplates(
           ElemTemplateElement elem, Node sourceNode, QName mode)
+            throws TransformerException
+  {
+    executeChildTemplates(elem, sourceNode, mode, true);
+  }
+
+  /**
+   * <meta name="usage" content="advanced"/>
+   * Execute each of the children of a template element.
+   *
+   * @param transformer The XSLT transformer instance.
+   *
+   * @param elem The ElemTemplateElement that contains the children 
+   * that should execute.
+   * @param sourceNode The current context node.
+   * @param mode The current mode.
+   * @param shouldAddAttrs true if xsl:attributes should be executed.
+   * 
+   * @throws TransformerException
+   */
+  public void executeChildTemplates(
+          ElemTemplateElement elem, Node sourceNode, QName mode, boolean shouldAddAttrs)
             throws TransformerException
   {
 
@@ -2121,6 +2142,8 @@ public class TransformerImpl extends Transformer
       for (ElemTemplateElement t = firstChild; t != null;
               t = t.getNextSiblingElem())
       {
+        if(!shouldAddAttrs && t.getXSLToken() == Constants.ELEMNAME_ATTRIBUTE)
+          continue;
         xctxt.setSAXLocator(t);
         m_currentTemplateElements.setTail(t);
         t.execute(this, sourceNode, mode);
