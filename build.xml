@@ -62,7 +62,9 @@ Copyright:
   <property name="xalan.reldir" value="org/apache/xalan"/>
   <property name="trax.reldir" value="trax"/>
   <property name="serialize.reldir" value="serialize"/>
-
+  <property name="jaxp.reldir" value="javax/xml/parsers"/>
+  <property name="sax.reldir" value="org/xml/sax"/>
+  <property name="dom.reldir" value="org/w3c/dom"/>    
   <property name="build.dir" value="./build"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
@@ -130,7 +132,7 @@ Copyright:
            debug="${debug}"/>
   </target>
 
-  <target name="compile" depends="prepare,compile.trax,compile.serialize">
+  <target name="compile" depends="prepare,compile.serialize,compile.trax">
     <echo message="compile target includes=${src.dir}/${xpath.reldir}/**,${src.dir}/${xalan.reldir}/**" />
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}" 
@@ -138,19 +140,11 @@ Copyright:
            excludesfile="compat.excludes" 
            debug="${debug}" />
   </target>
-
-  <!-- =================================================================== -->
-  <!-- Creates the xalan JAR                                               -->
-  <!-- =================================================================== -->
-  <target name="jar" depends="compile">
-    <jar jarfile="${build.dir}/${xalan.jar}" basedir="${build.classes}"/>
-  </target>
-  <target name="pacakge" depends="jar">
-    <!-- OK, what are the 'Apache-standard' names for various targets? -->
-    <echo message="pacakge is an alias for jar"/>  
-  </target>
-
-
+  
+  <target name="compile.other" depends="compile,compile.sax,compile.dom,compile.jaxp">
+    <echo message="compiling SAX 2, DOM 2, and Java API for XML Parsing"/>
+  </target>  
+   
   <!-- =================================================================== -->
   <!-- Compiles other source trees                                         -->
   <!-- =================================================================== -->
@@ -164,7 +158,34 @@ Copyright:
            destdir="${build.classes}" 
            debug="${debug}"/>
   </target>
+  <target name="compile.sax" depends="prepare">
+    <javac srcdir="${src.dir}/${sax.reldir}" 
+           destdir="${build.classes}" 
+           debug="${debug}"/>
+  </target>
+    <target name="compile.dom" depends="prepare">
+    <javac srcdir="${src.dir}/${dom.reldir}" 
+           destdir="${build.classes}" 
+           debug="${debug}"/>
+  </target>
+    <target name="compile.jaxp" depends="prepare">
+    <javac srcdir="${src.dir}/${jaxp.reldir}" 
+           destdir="${build.classes}" 
+           debug="${debug}"/>
+  </target>
   
+
+  <!-- =================================================================== -->
+  <!-- Creates the xalan JAR                                               -->
+  <!-- =================================================================== -->
+  <target name="jar" depends="compile">
+    <jar jarfile="${build.dir}/${xalan.jar}" basedir="${build.classes}"/>
+  </target>
+  <target name="package" depends="jar">
+    <!-- OK, what are the 'Apache-standard' names for various targets? -->
+    <echo message="package is an alias for jar"/>  
+  </target>
+
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
@@ -247,8 +268,8 @@ Copyright:
          doclet="xalanjdoc.Standard"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
-         packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.lib.sql,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xpath,org.apache.xalan.xpath.xml,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,org.w3c.xslt,serialize,serialize.helpers,trax"
-         group="TrAX trax,Xalan_Core org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer,XPath org.apache.xpath*:org.w3c.xslt,Xalan_Other org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils,Xalan_Extensions org.apache.xalan.lib*,Serializers serialize*,Xalan-Java_1_Interface org.apache.xalan.xslt:org.apache.xalan.xpath*"
+         packagenames="org.apache.xalan.client,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.lib.sql,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xpath,org.apache.xalan.xpath.xml,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,org.w3c.xslt,serialize,serialize.helpers,trax,org.xml.sax,org.xml.sax.helpers,org.w3c.dom,org.w3c.dom.range,org.w3c.dom.traversal,javax.xml.parsers"
+         group="TrAX trax,Xalan_Core org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer,XPath org.apache.xpath*:org.w3c.xslt,Xalan_Other org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils,Xalan_Extensions org.apache.xalan.lib*,Serializers serialize*,Xalan-Java_1_Interface org.apache.xalan.xslt:org.apache.xalan.xpath*, SAX_2 org.xml.sax*,DOM_2 org.w3c.dom*,XML_PARSING javax.xml.parsers"
          destdir="${build.apidocs}"
          author="true"
          version="true"
