@@ -1332,5 +1332,36 @@ public abstract class SerializerBase
             addAttributeAlways(uri, localName, rawName, type, value, false);
         }
     }
+    
+    /**
+     * @see org.xml.sax.DTDHandler#notationDecl(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void notationDecl(String arg0, String arg1, String arg2)
+        throws SAXException {
+        // This method just provides a definition to satisfy the interface
+        // A particular sub-class of SerializerBase provides the implementation (if desired)        
+    }
+
+    /**
+     * @see org.xml.sax.DTDHandler#unparsedEntityDecl(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void unparsedEntityDecl(
+        String arg0,
+        String arg1,
+        String arg2,
+        String arg3)
+        throws SAXException {
+        // This method just provides a definition to satisfy the interface
+        // A particular sub-class of SerializerBase provides the implementation (if desired)        
+    }
+
+    /**
+     * If set to false the serializer does not expand DTD entities,
+     * but leaves them as is, the default value is true.
+     */
+    public void setDTDEntityExpansion(boolean expand) {
+        // This method just provides a definition to satisfy the interface
+        // A particular sub-class of SerializerBase provides the implementation (if desired)        
+    }
 
 }

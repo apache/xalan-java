@@ -163,6 +163,13 @@ abstract public class ToStream extends SerializerBase
      * remembers if we are in between the startCDATA() and endCDATA() callbacks
      */
     protected boolean m_cdataStartCalled = false;
+    
+    /**
+     * If this flag is true DTD entity references are not left as-is,
+     * which is exiting older behavior.
+     */
+    private boolean m_expandDTDEntities = true;
+  
 
     /**
      * Default constructor
@@ -309,18 +316,7 @@ abstract public class ToStream extends SerializerBase
         try
         {
             final java.io.Writer writer = m_writer;
-            if (m_needToOutputDocTypeDecl)
-            {
-                outputDocTypeDecl(m_elemContext.m_elementName, false);
-                m_needToOutputDocTypeDecl = false;
-            }            
-            if (m_inDoctype)
-            {
-                writer.write(" [");
-                writer.write(m_lineSep, 0, m_lineSepLen);
-
-                m_inDoctype = false;
-            }
+            DTDprolog();
 
             writer.write("<!ELEMENT ");
             writer.write(name);
@@ -357,20 +353,7 @@ abstract public class ToStream extends SerializerBase
             return;
         try
         {
-            if (m_needToOutputDocTypeDecl)
-            {
-                outputDocTypeDecl(m_elemContext.m_elementName, false);
-                m_needToOutputDocTypeDecl = false;
-            }        	
-            if (m_inDoctype)
-            {
-                final java.io.Writer writer = m_writer;
-                writer.write(" [");
-                writer.write(m_lineSep, 0, m_lineSepLen);
-
-                m_inDoctype = false;
-            }
-
+            DTDprolog();
             outputEntityDecl(name, value);
         }
         catch (IOException e)
@@ -799,18 +782,7 @@ abstract public class ToStream extends SerializerBase
         try
         {
             final java.io.Writer writer = m_writer;
-            if (m_needToOutputDocTypeDecl)
-            {
-                outputDocTypeDecl(m_elemContext.m_elementName, false);
-                m_needToOutputDocTypeDecl = false;
-            }
-            if (m_inDoctype)
-            {
-                writer.write(" [");
-                writer.write(m_lineSep, 0, m_lineSepLen);
-
-                m_inDoctype = false;
-            }
+            DTDprolog();
 
             writer.write("<!ATTLIST ");
             writer.write(eName);
@@ -867,6 +839,27 @@ abstract public class ToStream extends SerializerBase
         String systemId)
         throws SAXException
     {
+        try {
+            DTDprolog();
+            
+            m_writer.write("<!ENTITY ");            
+            m_writer.write(name);
+            if (publicId != null) {
+                m_writer.write(" PUBLIC \"");
+                m_writer.write(publicId);
+  
+            }
+            else {
+                m_writer.write(" SYSTEM \"");
+                m_writer.write(systemId);
+            }
+            m_writer.write("\" >");
+            m_writer.write(m_lineSep, 0, m_lineSepLen);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -1368,6 +1361,8 @@ abstract public class ToStream extends SerializerBase
     public void characters(final char chars[], final int start, final int length)
         throws org.xml.sax.SAXException
     {
+        if (m_inEntityRef && !m_expandDTDEntities)
+            return;
         if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
@@ -1564,6 +1559,8 @@ abstract public class ToStream extends SerializerBase
      */
     public void characters(String s) throws org.xml.sax.SAXException
     {
+        if (m_inEntityRef && !m_expandDTDEntities)
+            return;
         final int length = s.length();
         if (length > m_charsBuff.length)
         {
@@ -2327,6 +2324,17 @@ abstract public class ToStream extends SerializerBase
     {
         if (name.equals("[dtd]"))
             m_inExternalDTD = true;
+
+        if (!m_expandDTDEntities && !m_inExternalDTD) {
+            /* Only leave the entity as-is if
+             * we've been told not to expand them
+             * and this is not the magic [dtd] name.
+             */
+            startNonEscaping();
+            characters("&" + name + ';');
+            endNonEscaping();
+        }
+
         m_inEntityRef = true;
     }
 
@@ -2983,7 +2991,8 @@ abstract public class ToStream extends SerializerBase
          this.m_triedToGetConverter = false;
          this.m_lineSepUse = true;
          // DON'T SET THE WRITER TO NULL, IT MAY BE REUSED !!
-         // this.m_writer = null;        
+         // this.m_writer = null;  
+         this.m_expandDTDEntities = true;      
  
     }        
     
@@ -3175,5 +3184,96 @@ abstract public class ToStream extends SerializerBase
 
         m_values = newVector;
       }
+    }
+    
+    // Implement DTDHandler
+    /**
+     * If this method is called, the serializer is used as a
+     * DTDHandler, which changes behavior how the serializer 
+     * handles document entities. 
+     * @see org.xml.sax.DTDHandler#notationDecl(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void notationDecl(String name, String pubID, String sysID) throws SAXException {
+        // TODO Auto-generated method stub
+        try {
+            DTDprolog();
+            
+            m_writer.write("<!NOTATION ");            
+            m_writer.write(name);
+            if (pubID != null) {
+                m_writer.write(" PUBLIC \"");
+                m_writer.write(pubID);
+  
+            }
+            else {
+                m_writer.write(" SYSTEM \"");
+                m_writer.write(sysID);
+            }
+            m_writer.write("\" >");
+            m_writer.write(m_lineSep, 0, m_lineSepLen);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * If this method is called, the serializer is used as a
+     * DTDHandler, which changes behavior how the serializer 
+     * handles document entities. 
+     * @see org.xml.sax.DTDHandler#unparsedEntityDecl(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void unparsedEntityDecl(String name, String pubID, String sysID, String notationName) throws SAXException {
+        // TODO Auto-generated method stub
+        try {
+            DTDprolog();       
+            
+            m_writer.write("<!ENTITY ");            
+            m_writer.write(name);
+            if (pubID != null) {
+                m_writer.write(" PUBLIC \"");
+                m_writer.write(pubID);
+  
+            }
+            else {
+                m_writer.write(" SYSTEM \"");
+                m_writer.write(sysID);
+            }
+            m_writer.write("\" NDATA ");
+            m_writer.write(notationName);
+            m_writer.write(" >");
+            m_writer.write(m_lineSep, 0, m_lineSepLen);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }        
+    }
+    
+    /**
+     * A private helper method to output the 
+     * @throws SAXException
+     * @throws IOException
+     */
+    private void DTDprolog() throws SAXException, IOException {
+        final java.io.Writer writer = m_writer;
+        if (m_needToOutputDocTypeDecl)
+        {
+            outputDocTypeDecl(m_elemContext.m_elementName, false);
+            m_needToOutputDocTypeDecl = false;
+        }
+        if (m_inDoctype)
+        {
+            writer.write(" [");
+            writer.write(m_lineSep, 0, m_lineSepLen);
+            m_inDoctype = false;
+        }
+    }
+    
+    /**
+     * If set to false the serializer does not expand DTD entities,
+     * but leaves them as is, the default value is true;
+     */
+    public void setDTDEntityExpansion(boolean expand) { 
+        m_expandDTDEntities = expand;     
     }
 }

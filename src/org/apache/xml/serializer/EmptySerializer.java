@@ -725,4 +725,31 @@ public class EmptySerializer implements SerializationHandler
     {
         couldThrowSAXException();        
     }
+    /**
+     * @see org.xml.sax.DTDHandler#notationDecl(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void notationDecl(String arg0, String arg1, String arg2) throws SAXException 
+    {
+        couldThrowSAXException(); 
+    }
+
+    /**
+     * @see org.xml.sax.DTDHandler#unparsedEntityDecl(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void unparsedEntityDecl(
+        String arg0,
+        String arg1,
+        String arg2,
+        String arg3)
+        throws SAXException {
+        couldThrowSAXException();
+    }
+
+    /**
+     * @see org.apache.xml.serializer.SerializationHandler#setDTDEntityExpansion(boolean)
+     */
+    public void setDTDEntityExpansion(boolean expand) {
+        aMethodIsCalled();
+
+    }
 }

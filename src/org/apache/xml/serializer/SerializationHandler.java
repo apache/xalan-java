@@ -43,6 +43,7 @@ public interface SerializationHandler
         ExtendedLexicalHandler,
         XSLOutputAttributes,
         DeclHandler,
+        org.xml.sax.DTDHandler,
         ErrorHandler,
         DOMSerializer,
         Serializer
@@ -109,6 +110,14 @@ public interface SerializationHandler
      * output.
      */
     public void flushPending() throws SAXException;
+    
+    /**
+     * Default behavior is to expand DTD entities,
+     * that is the initall default value is true.
+     * @param expand true if DTD entities are to be expanded,
+     * false if they are to be left as DTD entity references. 
+     */
+    public void setDTDEntityExpansion(boolean expand);
 
 
 }
