@@ -113,6 +113,7 @@ $Id$
   <property name="XSLTInfo.props" value="./src/org/apache/xalan/res/XSLTInfo.properties"/>  
   <property name="src.dir" value="./src"/>
   <property name="apachexml.reldir" value="org/apache/xml"/>
+  <property name="serializer.reldir" value="org/apache/xml/serializer"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
   <property name="domxpath.reldir" value="org/w3c/dom/xpath"/>
@@ -166,6 +167,24 @@ $Id$
   <property name="xdocs.XSLTCDONE.file" value="XSLTCDONE"/>
   <property name="xdocs.XSLTCDONE.location" value="${xdocs.dir}/sources/xalan/${xdocs.XSLTCDONE.file}"/>
 
+      
+  <!-- PROPERTIES TO COMPILE THE SERIALIZER  ======================================= -->  
+  <property name="serializer.src.dir"       value="./src"                     />
+  <property name="serializer.build.dir"     value="./build"                   /> 
+  <property name="serializer.build.classes" value="${serializer.build.dir}/serializer"/> 
+  
+  <!-- PROPERTIES TO MAKE THE SERIALIZER JAR ======================================= -->
+  <property name="serializer.notice"        value="NOTICE"                    />
+  <property name="serializer.license"       value="LICENSE"                   />  
+  <property name="serializer.manifest.basename" value="MANIFEST.SERIALIZER"   /> 
+  <property name="serializer.manifest"      value="${serializer.src.dir}/${serializer.manifest.basename}" />
+  <property name="serializer.impl.version"  value="${impl.version}"           />
+  <property name="serializer.java.version"  value="${java.version}"           />
+  <property name="serializer.java.vendor"   value="${java.vendor}"            />
+  <property name="serializer.jar"           value="${serializer.build.dir}/serializer.jar"/> 
+  <!-- a copy of the value above, but for clarity of what it is used for -->
+  <property name="build.serializer.jar"     value="${serializer.jar}"/> 
+ 
   <!-- Class paths used in various targets -->
   <path id="docs.class.path">
     <pathelement location="${xmlapis.jar}" />
@@ -175,6 +194,7 @@ $Id$
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
     <pathelement location="${taglet.jar}" />
+    <pathelement location="${build.serializer.jar}" />
     <pathelement location="${build.xalan.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
@@ -187,6 +207,7 @@ $Id$
   <path id="compile.class.path">
     <!-- Ensure the selected parser.jar file is used to compile against -->
     <pathelement location="${build.classes}" />
+    <pathelement location="${serializer.jar}" />
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
     <pathelement path="${java.class.path}" />
@@ -215,6 +236,7 @@ $Id$
     <include name="${dist.file}/bin/xsltc.jar"/>      
     <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
     <include name="${dist.file}/bin/${parser.jar.name}"/>
+    <include name="${dist.file}/bin/serializer.jar"/>
     <include name="${dist.file}/bin/xalansamples.jar"/>
     <include name="${dist.file}/bin/xalanservlet.war"/>
     <include name="${dist.file}/bin/xsltcapplet.jar"/>
@@ -234,6 +256,7 @@ $Id$
     <include name="${dist.file}/bin/xsltc.jar"/>      
     <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
     <include name="${dist.file}/bin/${parser.jar.name}"/>
+    <include name="${dist.file}/bin/serializer.jar"/>
     <include name="${dist.file}/bin/xalansamples.jar"/>
     <include name="${dist.file}/bin/xalanservlet.war"/>
     <include name="${dist.file}/bin/xsltcapplet.jar"/>
@@ -323,13 +346,15 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compile the DTM implementation and xml utilities                    -->
   <!-- =================================================================== -->
-  <target name="xml.compile" depends="prepare">
+    <target name="xml.compile" depends="prepare,serializer.jar">
     <echo message="Compiling DTM implementation and utilities" />
     <javac srcdir="${src.dir}"
            destdir="${build.classes}"
            debug="${build.debug}"
            target="1.1" >
       <include name="${apachexml.reldir}/**/*.java" />
+      <!-- exclude the serializer -->
+      <exclude name="${serializer.reldir}/**/*.java" />      
       <!-- Exclude file that depends upon presence of Xerces in build path -->
       <exclude name="**/IncrementalSAXSource_Xerces.java" 
         unless="xerces.present"	 />
@@ -338,7 +363,10 @@ $Id$
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
-      <fileset dir="${src.dir}" includes="${apachexml.reldir}/**/*.properties"/>
+      <fileset dir="${src.dir}" 
+          includes="${apachexml.reldir}/**/*.properties" 
+          excludes="${serializer.reldir}/**/*.properties"
+      />
     </copy>  
   </target>
   
@@ -378,6 +406,7 @@ $Id$
   <!-- =================================================================== -->
   <path id="xsltc.class.path">
     <pathelement location="${xmlapis.jar}" />
+    <pathelement location="${serializer.jar}" />
     <pathelement location="${bcel.jar}" />
     <pathelement location="${jlex.jar}" />
     <pathelement location="${java_cup.jar}" />
@@ -458,7 +487,8 @@ $Id$
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="${xsltc.reldir}/**/*.java"
-           debug="${build.debug}">
+           excludes="${serializer.reldir}/**/*.java"
+           debug="${build.debug}"> 
       <classpath refid="xsltc.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
     </javac>
@@ -579,7 +609,8 @@ $Id$
         <include name="org/apache/xalan/xsltc/**"/>
         <exclude name="org/apache/xalan/xsltc/util/JavaCupRedirect*" />
       </fileset>
-      <fileset dir="${build.classes}" includes="org/apache/xml/**" />
+      <fileset dir="${build.classes}" includes="org/apache/xml/**" 
+                                      excludes="${serializer.reldir}/**" />
       <fileset dir="${build.classes}" includes="org/apache/bcel/**" />
       <fileset dir="${build.classes}" includes="JLex/**" />
       <fileset dir="${build.classes}" includes="java_cup/**" />
@@ -606,6 +637,7 @@ $Id$
         <include name="${xalan.reldir}/**/*" />
         <include name="META-INF/services/*" />
         <exclude name="${xsltc.reldir}/**/*" />
+        <exclude name="${serializer.reldir}/**/*" />
       </patternset>
     </jar>
   </target>
@@ -627,6 +659,7 @@ $Id$
         <include name="${xalan.reldir}/**/*" />
         <include name="META-INF/services/*" />
         <exclude name="${xsltc.reldir}/util/JavaCupRedirect*" />
+        <exclude name="${serializer.reldir}/**/*.*" />
       </patternset>    
     </jar>
   </target>
@@ -648,6 +681,7 @@ $Id$
          basedir="${build.classes}" >
        <patternset>
          <exclude name="${xsltc.reldir}/util/JavaCupRedirect*" />
+         <exclude name="${serializer.reldir}/**/*" />
        </patternset>
     </jar>  
   
@@ -1230,6 +1264,7 @@ $Id$
     <copy todir="${dist.dir}/bin">
       <fileset dir="${build.dir}" includes="xsltc.jar"/>
     </copy>
+    <copy file="${build.serializer.jar}" todir="${dist.dir}/bin" />
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,LICENSE,NOTICE,build.xml,build.sh,build.bat,xsltc_todo.xml,todo.xsl,commits.xml"/>
@@ -1461,5 +1496,212 @@ $Id$
     <zip zipfile="./build/xalan-j-docs.zip" basedir="./xml-site/target/xalan-j" includes="**"/>
   </target>
 
+
+<!-- ####################################################
+     # START OF SECTION TO BUILD STAND-ALONE SERIALIZER #
+     #################################################### -->
+
+  <!-- try not to use other properties directly when building the serializer -->
+  <!-- either create new values, or copy, just in case we separate into      -->
+  <!-- a totally new build.xml file                                          -->
+  <property name="serializer.build.debug"   value="${build.debug}"            />
+ 
+  
+  <!-- PROPERTIES TO MAKE THE SOURCE DISTRIBUTION ========================== --> 
+  <property name="serializer.name"          value="serializer"                />
+  <property name="serializer.version"       value="${version}"                />
+  <property name="serializer.bin.dir"       value="./bin"                     />  
+  <property name="serializer.dist.file"     value="${serializer.name}-j_${serializer.version}"/>  
+  <property name="serializer.dist.dir"      value="${serializer.build.dir}/${serializer.dist.file}"/>
+
+  <!-- patternset for source distribution packages -->
+  <patternset id="serializer-src-distro" >
+    <!-- some license and legal stuff -->
+    <include name="${serializer.dist.file}/${serializer.license}"/>
+    <include name="${serializer.dist.file}/${serializer.notice}"/>  
+    <include name="${serializer.dist.file}/KEYS"/>  
+    
+    <!-- The build stuff that uses Ant and this file itself, build.xml
+         this is getting into a strange loop but the source distribution
+         needs to build, and it uses this file, build.xml to do so ... -->
+    <include name="${serializer.dist.file}/build.bat"/>
+    <include name="${serializer.dist.file}/build.sh"/>
+    <include name="${serializer.dist.file}/build.xml"/>
+    
+    <!-- The source code that the source distribution would build -->
+    <include name="${serializer.dist.file}/src/${serializer.reldir}/**/*.java" />
+    <include name="${serializer.dist.file}/src/${serializer.reldir}/**/*.properties" />
+    <include name="${serializer.dist.file}/src/${serializer.manifest.basename}" />
+        
+    <!-- We need Ant in order to run build.xml in the source distribution -->
+    <include name="${serializer.dist.file}/bin/ant.jar"/>
+    <include name="${serializer.dist.file}/bin/ant.LICENSE.txt"/>
+    <include name="${serializer.dist.file}/bin/ant.README.txt"/>
+    <include name="${serializer.dist.file}/bin/antRun"/>
+    <include name="${serializer.dist.file}/bin/antRun.bat"/>
+    
+    <!-- The serializer needs this jar in order to build -->
+    <include name="${serializer.dist.file}/bin/xml-apis.jar"/>
+    <include name="${serializer.dist.file}/bin/xml-apis.LICENSE.txt"/>
+    <include name="${serializer.dist.file}/bin/xml-apis.README.txt"/>
+    
+    <!-- Ant needs an XML parser in order to read in the build.xml, so it
+         can even do the build ... this is a strange loop ... -->
+    <include name="${serializer.dist.file}/bin/xercesImpl.jar"/>
+    <include name="${serializer.dist.file}/bin/xercesImpl.LICENSE.txt"/>
+    <include name="${serializer.dist.file}/bin/xercesImpl.README.txt"/>    
+  </patternset> 
+  
+  <!-- patternset for  binary distribution packages ... if needed
+  <patternset id="serializer-bin-distro" >
+    <include name="${serializer.dist.file}/readme.html"/>
+    <include name="${serializer.dist.file}/LICENSE"/>
+    <include name="${serializer.dist.file}/NOTICE"/>      
+    <include name="${serializer.dist.file}/KEYS"/>
+    <include name="${serializer.dist.file}/bin/${serializer.name}.jar"/>
+    <include name="${serializer.dist.file}/bin/${xmlapis.jar.name}"/>
+  </patternset>
+  -->
+ 
+
+ 
+ 
+  
+  <!-- =================================================================== -->
+  <!-- Creates the Serializer jar                                          -->
+  <!-- =================================================================== -->  
+  <target name="serializer.jar"
+    depends="serializer.prepare,serializer.compile"
+    description="Build the serializer and created serializer.jar" >
+    <!-- Copy over the manifest, with filtering (for version number) -->
+    <filter token="impl.version" value="${serializer.impl.version}"/>
+    <filter token="java.version" value="${serializer.java.version}"/>
+    <filter token="java.vendor" value="${serializer.java.vendor}"/>   
+    <copy todir="${serializer.build.dir}" file="${serializer.manifest}" filtering="true"/>
+
+
+    <jar jarfile="${serializer.jar}" 
+      manifest="${serializer.build.dir}/${serializer.manifest.basename}" 
+      basedir="${serializer.build.classes}" >
+      <patternset><!-- relative to jar/@basedir -->
+        <include name="${serializer.reldir}/**/*" />
+        <include name="${serializer.notice}" />
+        <include name="${serializer.license}" />
+      </patternset>
+    </jar>
+  </target>  
+
+  <target name="serializer.prepare">
+    <mkdir dir="${serializer.build.dir}"/>
+    <mkdir dir="${serializer.build.classes}"/>
+  </target>  
+  
+
+  <target name="serializer.compile">
+    <echo message="Compiling the Serializer" />
+    <javac srcdir="${serializer.src.dir}"
+           destdir="${serializer.build.classes}"
+           debug="${serializer.build.debug}"
+           target="1.1" >
+      <include name="${serializer.reldir}/**/*.java" />
+      <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
+      <classpath refid="compile.class.path" />
+      <bootclasspath refid="xslt.boot.class.path" />
+    </javac>
+    <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
+    <copy todir="${serializer.build.classes}">
+      <fileset dir="${serializer.src.dir}" includes="${serializer.reldir}/**/*.properties"/>
+    </copy>  
+        
+    <copy todir="${serializer.build.classes}" file="${serializer.license}" />
+    <copy todir="${serializer.build.classes}" file="${serializer.notice}" />
+  </target> 
+
+  <!-- =================================================================== -->
+  <!-- Create the serializer source distribution                           -->
+  <!-- =================================================================== -->
+  <target name="serializer-dist"
+          depends="serializer.jar"
+          description="Build the serializer source distribution .tar and .zip">
+    <antcall target="serializer-autodist-mkdirs"/>
+    <antcall target="serializer-autodist-copy-files"/>
+      <!-- <antcall target="serializer-autodist-create-bin-packages"/> -->
+    <antcall target="serializer-autodist-create-src-packages"/>    
+  </target>  
+  
+  <target name="serializer-autodist-mkdirs">
+    <echo message="Serializer: making distribution directories" />
+    <mkdir dir="${serializer.dist.dir}"/>
+    <mkdir dir="${serializer.dist.dir}/bin"/>
+    <mkdir dir="${serializer.dist.dir}/src"/>
+  </target>
+  
+  <target name="serializer-autodist-copy-files">
+    <!-- Copy bin directory, which includes preexisting checked-in .jar files -->
+    <copy todir="${serializer.dist.dir}/bin">
+      <fileset dir="${serializer.bin.dir}" />
+    </copy> 
+
+    <echo message="Serializer: copy source files to ${serializer.dist.dir}/src" />
+    <echo message="            ... from ${serializer.src.dir}/${serializer.reldir}" />
+    <!-- Copy sources -->
+    <copy todir="${serializer.dist.dir}/src/${serializer.reldir}">
+      <fileset dir="${serializer.src.dir}/${serializer.reldir}"/>
+    </copy>
+    <!-- Copy the manifest -->
+    <copy file="${serializer.src.dir}/${serializer.manifest.basename}"
+          todir="${serializer.dist.dir}/src" />
+
+    <!-- Copy built jars -->
+    <copy file="${serializer.jar}" todir="${serializer.dist.dir}/bin" />
+
+
+    <copy todir="${serializer.dist.dir}">
+      <fileset dir="." includes="readme.html,KEYS,LICENSE,NOTICE,build.xml,build.sh,build.bat,xsltc_todo.xml,todo.xsl,commits.xml"/>
+    </copy>
+  </target>
+  
+  
+  <target name="serializer-autodist-create-bin-packages">
+    <tar tarfile="${serializer.build.dir}/${serializer.dist.file}-bin.tar" >
+      <tarfileset dir="${serializer.build.dir}">
+        <patternset refid="serializer-bin-distro"/>
+      </tarfileset>
+    </tar>
+    <gzip src="${serializer.build.dir}/${serializer.dist.file}-bin.tar" 
+      zipfile="${serializer.build.dir}/${serializer.dist.file}-bin.tar.gz"/>
+      
+    <!--  
+    <delete file="${serializer.build.dir}/${serializer.dist.file}-bin.tar" />
+      -->
+
+    <zip zipfile="${serializer.build.dir}/${serializer.dist.file}-bin.zip" >
+      <fileset dir="${serializer.build.dir}">
+        <patternset refid="serializer-bin-distro"/>
+      </fileset>
+    </zip>
+  </target>
+  
+  <target name="serializer-autodist-create-src-packages">
+    <tar tarfile="${serializer.build.dir}/${serializer.dist.file}-src.tar" >
+      <tarfileset dir="${serializer.build.dir}">
+        <patternset refid="serializer-src-distro"/>
+      </tarfileset>
+    </tar>
+    <gzip src="${serializer.build.dir}/${serializer.dist.file}-src.tar" zipfile="${serializer.build.dir}/${serializer.dist.file}-src.tar.gz"/>
+    
+    
+    <delete file="${serializer.build.dir}/${serializer.dist.file}-src.tar" />
+    
+    
+    <zip zipfile="${serializer.build.dir}/${serializer.dist.file}-src.zip" >
+      <fileset dir="${serializer.build.dir}">
+        <patternset refid="serializer-src-distro"/>
+      </fileset>
+    </zip>    
+  </target>  
+<!-- ##################################################
+     # END OF SECTION TO BUILD STAND-ALONE SERIALIZER #
+     ################################################## -->
  
 </project>
