@@ -85,7 +85,7 @@ public class AVTPartSimple extends AVTPart
   /**
    * Get the AVT part as the original string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the AVT part as the original string.
    */
   public String getSimpleString()
   {

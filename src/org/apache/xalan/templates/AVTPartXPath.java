@@ -78,9 +78,8 @@ public class AVTPartXPath extends AVTPart
 
   /**
    * Construct a simple AVT part.
-   * @param val A pure string section of an AVT.
    *
-   * NEEDSDOC @param xpath
+   * @param xpath Xpath section of AVT 
    */
   public AVTPartXPath(XPath xpath)
   {
@@ -89,13 +88,14 @@ public class AVTPartXPath extends AVTPart
 
   /**
    * Construct a simple AVT part.
+   * 
    * @param val A pure string section of an AVT.
    * @param nsNode An object which can be used to determine the
    * Namespace Name (URI) for any Namespace prefix used in the XPath. 
    * Usually this is based on the context where the XPath was specified,
    * such as a node within a Stylesheet.
-   * NEEDSDOC @param xpathProcessor
-   * NEEDSDOC @param factory
+   * @param xpathProcessor XPath parser
+   * @param factory XPath factory
    * @param liaison An XPathContext object, providing infomation specific
    * to this invocation and this thread. Maintains SAX output state, 
    * variables, error handler and so on, so the transformation/XPath 
@@ -105,7 +105,9 @@ public class AVTPartXPath extends AVTPart
    * TODO: Fix or remove this unused c'tor.
    */
   public AVTPartXPath(
-          String val, org.apache.xml.utils.PrefixResolver nsNode, XPathParser xpathProcessor, XPathFactory factory, XPathContext liaison)
+          String val, org.apache.xml.utils.PrefixResolver nsNode, 
+          XPathParser xpathProcessor, XPathFactory factory, 
+          XPathContext liaison)
             throws javax.xml.transform.TransformerException
   {
     m_xpath = new XPath(val, null, nsNode, XPath.SELECT);
@@ -114,7 +116,7 @@ public class AVTPartXPath extends AVTPart
   /**
    * Get the AVT part as the original string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the AVT part as the original string.
    */
   public String getSimpleString()
   {

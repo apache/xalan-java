@@ -410,49 +410,41 @@ public class Constants
                              ATTRVAL_OUTPUT_METHOD_XML = "xml",
                              ATTRVAL_OUTPUT_METHOD_TEXT = "text";
 
-  // For space-att
-
-  /* NEEDSDOC */
+  
+  /* For space-att*/
   public static final int ATTRVAL_PRESERVE = 1, ATTRVAL_STRIP = 2;
 
-  // For indent-result
-
-  /** NEEDSDOC Field ATTRVAL_YES, ATTRVAL_NO          */
+  
+  /** For indent-result          */
   public static final boolean ATTRVAL_YES = true, ATTRVAL_NO = false;
 
-  // For letter-value attribute (part of conversion attributes).
-
-  /** NEEDSDOC Field ATTRVAL_ALPHABETIC, ATTRVAL_OTHER, ATTRVAL_TRADITIONAL          */
+  
+  /** For letter-value attribute (part of conversion attributes).          */
   public static final String ATTRVAL_ALPHABETIC = "alphabetic",
                              ATTRVAL_OTHER = "other",
                              ATTRVAL_TRADITIONAL = "traditional";
 
-  // For level attribute in xsl:number.
-
-  /** NEEDSDOC Field ATTRVAL_SINGLE, ATTRVAL_MULTI, ATTRVAL_ANY          */
+  
+  /** For level attribute in xsl:number.          */
   public static final String ATTRVAL_SINGLE = "single",
                              ATTRVAL_MULTI = "multiple", ATTRVAL_ANY = "any";
 
-  // For Stylesheet-prefix and result-prefix in xsl:namespace-alias 
-
-  /** NEEDSDOC Field ATTRVAL_DEFAULT_PREFIX          */
+  
+  /** For Stylesheet-prefix and result-prefix in xsl:namespace-alias          */
   public static final String ATTRVAL_DEFAULT_PREFIX = "#default";
 
-  // Integer equivelents for above
-
-  /** NEEDSDOC Field NUMBERLEVEL_SINGLE, NUMBERLEVEL_MULTI, NUMBERLEVEL_ANY, MAX_MULTI_COUNTING_DEPTH          */
+  
+  /** Integer equivelents for above        */
   public static final int NUMBERLEVEL_SINGLE = 1, NUMBERLEVEL_MULTI = 2,
                           NUMBERLEVEL_ANY = 3, MAX_MULTI_COUNTING_DEPTH = 32;
 
-  // some stuff for my patterns-by-example
-
-  /** NEEDSDOC Field ATTRVAL_THIS, ATTRVAL_PARENT, ATTRVAL_ANCESTOR, ATTRVAL_ID          */
+  
+  /** some stuff for my patterns-by-example         */
   public static final String ATTRVAL_THIS = ".", ATTRVAL_PARENT = "..",
                              ATTRVAL_ANCESTOR = "ancestor", ATTRVAL_ID = "id";
 
-  // Stuff for sorting
-
-  /** NEEDSDOC Field ATTRVAL_DATATYPE_TEXT, ATTRVAL_DATATYPE_NUMBER, ATTRVAL_ORDER_ASCENDING, ATTRVAL_ORDER_DESCENDING, ATTRVAL_CASEORDER_UPPER, ATTRVAL_CASEORDER_LOWER          */
+  
+  /** Stuff for sorting      */
   public static final String ATTRVAL_DATATYPE_TEXT = "text",
                              ATTRVAL_DATATYPE_NUMBER = "number",
                              ATTRVAL_ORDER_ASCENDING = "ascending",
@@ -460,15 +452,13 @@ public class Constants
                              ATTRVAL_CASEORDER_UPPER = "upper-first",
                              ATTRVAL_CASEORDER_LOWER = "lower-first";
 
-  // some stuff for Decimal-format
-
-  /** NEEDSDOC Field ATTRVAL_INFINITY, ATTRVAL_NAN, DEFAULT_DECIMAL_FORMAT          */
+  
+  /** some stuff for Decimal-format       */
   public static final String ATTRVAL_INFINITY = "Infinity",
                              ATTRVAL_NAN = "NaN",
                              DEFAULT_DECIMAL_FORMAT = "#default";
 
-  // temp dummy 
-
-  /** NEEDSDOC Field ATTRNAME_XXXX          */
+  
+  /** temp dummy         */
   public static final String ATTRNAME_XXXX = "XXXX";
 }
