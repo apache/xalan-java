@@ -246,6 +246,9 @@ public interface Constants extends InstructionConstants {
     public static final String MAKE_NODE_LIST_SIG2 
 	= "(" + NODE_ITERATOR_SIG + ")Lorg/w3c/dom/NodeList;";
 
+    public static final String LOAD_DOCUMENT_CLASS
+	= "org.apache.xalan.xsltc.dom.LoadDocument";
+
     public static final String KEY_INDEX_CLASS
 	= "org/apache/xalan/xsltc/dom/KeyIndex";
     public static final String KEY_INDEX_SIG

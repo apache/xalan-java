@@ -146,14 +146,18 @@ final class DocumentCall extends FunctionCall {
 					     DOM_FIELD,
 					     classGen.getDOMClassSig());
 
-	final int doc = cpg.addMethodref("org.apache.xalan.xsltc.dom.LoadDocument",
-					 "document",
-					 "("+
-					 OBJECT_SIG+
-					 NODE_ITERATOR_SIG+
-					 TRANSLET_SIG+
-					 MULTI_DOM_SIG+
-					 ")"+NODE_ITERATOR_SIG);
+	final String docParamList =
+	    "("+OBJECT_SIG+STRING_SIG+TRANSLET_SIG+MULTI_DOM_SIG+")"+
+	    NODE_ITERATOR_SIG;
+	final int docIdx = cpg.addMethodref(LOAD_DOCUMENT_CLASS,
+					    "document", docParamList);
+
+	final int uriIdx = cpg.addMethodref(DOM_CLASS,
+					    "getNodeURI",
+					    "(I)"+STRING_SIG);
+
+	final int nextIdx = cpg.addInterfaceMethodref(NODE_ITERATOR,
+						      NEXT, NEXT_SIG);
 
 	// The URI can be either a node-set or something else cast to a string
 	_uri.translate(classGen, methodGen);
@@ -161,15 +165,20 @@ final class DocumentCall extends FunctionCall {
 	    _uri.startResetIterator(classGen, methodGen);
 
 	// The base of the URI may be given as a second argument (a node-set)
-	if (_base == null)
-	    il.append(new ACONST_NULL());
-	else
+	il.append(methodGen.loadDOM());
+	if (_base != null) {
 	    _base.translate(classGen, methodGen);
+	    il.append(new INVOKEINTERFACE(nextIdx, 2));
+	}
+	else {
+	     il.append(methodGen.loadContextNode());
+	}
+	il.append(new INVOKEVIRTUAL(uriIdx));
 
 	// Feck the rest of the parameters on the stack
 	il.append(classGen.loadTranslet());
 	il.append(DUP);
 	il.append(new GETFIELD(domField));
-	il.append(new INVOKESTATIC(doc));
+	il.append(new INVOKESTATIC(docIdx));
     }
 }

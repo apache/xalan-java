@@ -91,21 +91,26 @@ public final class LoadDocument {
 					MultiDOM multiplexer)
 	throws Exception {
 
-	// Check if this is a local file name
-	final File file = new File(uri);
-	if (file.exists())
-	    uri = "file:" + file.getAbsolutePath();
-	
 	// Return an empty iterator if the URI is clearly invalid
 	// (to prevent some unncessary MalformedURL exceptions).
 	if ((uri == null) || (uri.equals("")))
 	    return(new SingletonIterator(DOM.NULL,true));
 
+	// Prepend URI base to URI (from context)
 	if ((base != null) && (!base.equals(""))) {
-	    if (!uri.startsWith(base))
+	    if ((!uri.startsWith(base)) &&     // unless URI contains base
+		(!uri.startsWith("/")) &&      // unless URI is abs. file path
+		(!uri.startsWith("http:/")) && // unless URI is abs. http URL
+		(!uri.startsWith("file:/"))) { // unless URI is abs. file URL
 		uri = base+uri;
+	    }
 	}
 
+	// Check if this is a local file name
+	final File file = new File(uri);
+	if (file.exists())
+	    uri = "file:" + file.getAbsolutePath();
+	
 	// Check if this DOM has already been added to the multiplexer
 	int mask = multiplexer.getDocumentMask(uri);
 	if (mask != -1) {
@@ -159,12 +164,11 @@ public final class LoadDocument {
 
     /**
      * Interprets the arguments passed from the document() function (see
-     * org/apache/xalan/xsltc/compiler/DocumentCall.java) and returns an iterator
-     * containing the requested nodes. Builds a union-iterator if several
-     * documents are requested.
+     * org/apache/xalan/xsltc/compiler/DocumentCall.java) and returns an
+     * iterator containing the requested nodes. Builds a union-iterator if
+     * several documents are requested.
      */
-    public static NodeIterator document(Object arg,
-					NodeIterator nodeset,
+    public static NodeIterator document(Object arg, String contextURI,
 					AbstractTranslet translet,
 					MultiDOM multiplexer)
 	throws TransletException {
@@ -172,18 +176,10 @@ public final class LoadDocument {
 
 	    String baseURI = "";
 
-	    // Get the base of the URI (if any)
-	    if (nodeset != null) {
-		final int node = nodeset.next();
-		if (node != DOM.NULL) {
-		    baseURI = multiplexer.getNodeURI(node);
-		    if (baseURI == null) baseURI = "";
-		    final int sep = baseURI.lastIndexOf('/');
-		    if (sep > 0)
-			baseURI = baseURI.substring(0,sep);
-		    else
-			baseURI = "";
-		}
+	    // Get the base of the conext URI (if any)
+	    if (contextURI != null) {
+		final int sep = contextURI.lastIndexOf('/') + 1;
+		baseURI = contextURI.substring(0, sep); // could be empty string
 	    }
 
 	    // If the argument is just a single string (an URI) we just return
