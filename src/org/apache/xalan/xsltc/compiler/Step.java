@@ -80,7 +80,7 @@ final class Step extends RelativeLocationPath {
     private final Vector _predicates; 	// may be null
 
     // Type of the node test.
-    private final int _nodeType;
+    private int _nodeType;
 
     private boolean _hadPredicates = false;
 
@@ -142,7 +142,6 @@ final class Step extends RelativeLocationPath {
     public int getNodeType() {
 	return _nodeType;
     }
-
 
     /**
      * Returns the vector containing all predicates for this step.
@@ -277,6 +276,13 @@ final class Step extends RelativeLocationPath {
 	    if (_type == Type.Node) {
 		il.append(methodGen.loadContextNode());
 		return;
+	    }
+
+	    // Special case for /foo/*/bar
+	    SyntaxTreeNode parent = getParent();
+	    if ((parent instanceof ParentLocationPath) &&
+		(parent.getParent() instanceof ParentLocationPath)) {
+		if (_nodeType == NodeTest.ELEMENT) _nodeType = NodeTest.ANODE;
 	    }
 
 	    // "ELEMENT" or "*" or "@*" or ".." or "@attr" with a parent.
