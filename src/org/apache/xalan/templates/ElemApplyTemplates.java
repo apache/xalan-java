@@ -253,7 +253,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
     DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
     VariableStack vars = xctxt.getVarStack();
     int nParams = getParamElemCount();
-
+    int thisframe = vars.getStackFrame();
+      
     try
     {
 
@@ -299,7 +300,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
         // This code will create a section on the stack that is all the 
         // evaluated arguments.  These will be copied into the real params 
         // section of each called template.
-        int thisframe = vars.getStackFrame();
         argsFrame = vars.link(nParams);
         vars.setStackFrame(thisframe);
         
@@ -312,7 +312,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
         vars.setStackFrame(argsFrame);
       }
-      
       
       int child;
       while (DTM.NULL != (child = sourceNodes.nextNode()))
@@ -440,9 +439,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
         transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
-
+      
+      // Unlink to the original stack frame  
       if(nParams > 0)
-        vars.unlink();
+        vars.unlink(thisframe);
       xctxt.popSAXLocator();
       xctxt.popContextNodeList();
       transformer.popElemTemplateElement();

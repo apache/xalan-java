@@ -282,7 +282,16 @@ public class ElemCallTemplate extends ElemForEach
       {
         transformer.popElemTemplateElement();
         xctxt.setSAXLocator(savedLocator);
-        vars.unlink();
+        // When we entered this function, the current 
+        // frame buffer (cfb) index in the variable stack may 
+        // have been manually set.  If we just call 
+        // unlink(), however, it will restore the cfb to the 
+        // previous link index from the link stack, rather than 
+        // the manually set cfb.  So, 
+        // the only safe solution is to restore it back 
+        // to the same position it was on entry, since we're 
+        // really not working in a stack context here. (Bug4218)
+        vars.unlink(thisframe);
       }
     }
     else
