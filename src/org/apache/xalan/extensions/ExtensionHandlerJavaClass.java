@@ -54,6 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 package org.apache.xalan.extensions;
 
 import java.util.Vector;
@@ -75,8 +76,7 @@ import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="internal"/>
- * Class handling the java extension namespace for XPath.
- * This handler is used for namespaces that contain the name of a java class.
+ * Represents an extension namespace for XPath that handles java classes.
  * It is recommended that the class URI be of the form:
  * <pre>
  *   xalan://fully.qualified.class.name
@@ -85,7 +85,10 @@ import org.xml.sax.SAXException;
  * a /, we only use the part to the right of the rightmost slash.
  * In addition, we ignore any "class:" prefix.
  * Provides functions to test a function's existence and call a function.
+ * Also provides functions to test an element's existence and call an
+ * element.
  *
+ * @author <a href="mailto:garyp@firstech.com">Gary L Peskin</a>
  */
 
 public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
@@ -104,12 +107,9 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
   /**
    * Construct a new extension namespace handler given all the information
    * needed. 
-   * 
    * @param namespaceUri the extension namespace URI that I'm implementing
    * @param scriptLang   language of code implementing the extension
-   * @param className    value of src attribute (if any) - treated as a URL
-   *                     or a classname depending on the value of lang. If
-   *                     srcURL is not null, then scriptSrc is ignored.
+   * @param className    the fully qualified class name of the class
    */
   public ExtensionHandlerJavaClass(String namespaceUri,
                                    String scriptLang,
@@ -129,45 +129,60 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
   /**
    * Tests whether a certain function name is known within this namespace.
-   * Since this is the generic Java namespace, we simply try to find a
-   * method or constructor for the fully qualified class name passed in the
-   * argument.  There is no guarantee, of course, that this will actually
-   * work at runtime since we may have problems converting the arguments.
-   *
+   * Simply looks for a method with the appropriate name.  There is
+   * no information regarding the arguments to the function call or
+   * whether the method implementing the function is a static method or
+   * an instance method.
    * @param function name of the function being tested
-   *
    * @return true if its known, false if not.
    */
 
   public boolean isFunctionAvailable(String function) 
   {
-    // TODO:  This function needs to be implemented.
-    return true;
+    Method[] methods = m_classObj.getMethods();
+    int nMethods = methods.length;
+    for (int i = 0; i < nMethods; i++)
+    {
+      if (methods[i].getName().equals(function))
+        return true;
+    }
+    return false;
   }
 
 
   /**
    * Tests whether a certain element name is known within this namespace.
-   * Since this is the generic Java namespace, we simply try to find a
-   * method or constructor for the fully qualified class name passed in the
-   * argument.  There is no guarantee, of course, that this will actually
-   * work at runtime since we may have problems converting the arguments.
-   *
+   * Looks for a method with the appropriate name and signature.
+   * This method examines both static and instance methods.
    * @param element name of the element being tested
-   *
    * @return true if its known, false if not.
    */
 
   public boolean isElementAvailable(String element) 
   {
-    // TODO:  This function needs to be implemented.
-    return true;
+    Method[] methods = m_classObj.getMethods();
+    int nMethods = methods.length;
+    for (int i = 0; i < nMethods; i++)
+    {
+      if (methods[i].getName().equals(element))
+      {
+        Class[] paramTypes = methods[i].getParameterTypes();
+        if ( (paramTypes.length == 2)
+          && paramTypes[0].isAssignableFrom(
+                                     org.apache.xalan.extensions.XSLProcessorContext.class)
+          && paramTypes[1].isAssignableFrom(org.w3c.dom.Element.class) )
+        {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
 
   /**
    * Process a call to a function in the java class represented by
-   * the namespace URI.
+   * this <code>ExtensionHandlerJavaClass<code>.
    * There are three possible types of calls:
    * <pre>
    *   Constructor:
@@ -196,15 +211,10 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    *
    * @param funcName Function name.
    * @param args     The arguments of the function call.
-   *
+   * @param methodKey A key that uniquely identifies this class and method call.
+   * @param exprContext The context in which this expression is being executed.
    * @return the return value of the function evaluation.
-   *
-   * @exception XSLProcessorException thrown if something goes wrong 
-   *            while running the extension handler.
-   * @exception MalformedURLException if loading trouble
-   * @exception FileNotFoundException if loading trouble
-   * @exception IOException           if loading trouble
-   * @exception SAXException          if parsing trouble
+   * @exception SAXException
    */
 
   public Object callFunction (String funcName, 
@@ -343,21 +353,20 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
   /**
    * Process a call to this extension namespace via an element. As a side
-   * effect, the results are sent to the TransformerImpl's result tree.
+   * effect, the results are sent to the TransformerImpl's result tree. 
+   * We invoke the static or instance method in the class represented by
+   * by the namespace URI.  If we don't already have an instance of this class,
+   * we create one upon the first call.
    *
    * @param localPart      Element name's local part.
    * @param element        The extension element being processed.
    * @param transformer      Handle to TransformerImpl.
    * @param stylesheetTree The compiled stylesheet tree.
-   * @param mode           The current mode.
    * @param sourceTree     The root of the source tree (but don't assume
    *                       it's a Document).
    * @param sourceNode     The current context node.
-   *
-   * @exception XSLProcessorException thrown if something goes wrong
-   *            while running the extension handler.
-   * @exception MalformedURLException if loading trouble
-   * @exception FileNotFoundException if loading trouble
+   * @param mode           The current mode.
+   * @param methodKey      A key that uniquely identifies this element call.
    * @exception IOException           if loading trouble
    * @exception SAXException          if parsing trouble
    */
