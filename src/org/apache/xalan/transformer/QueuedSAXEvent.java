@@ -147,11 +147,11 @@ public abstract class QueuedSAXEvent
    */
   protected void fireGenerateEvent(int type, String name, Attributes attrs)
   {
-
-    GenerateEvent ge = new GenerateEvent(m_transformer, type, name, attrs);
-
     if (null != m_traceManager)
+    {
+      GenerateEvent ge = new GenerateEvent(m_transformer, type, name, attrs);
       m_traceManager.fireGenerateEvent(ge);
+    }
   }
 
   /**

@@ -106,7 +106,11 @@ public class QueuedStartDocument extends QueuedSAXEvent
     if (isPending)
     {
       m_contentHandler.startDocument();
-      fireGenerateEvent(GenerateEvent.EVENTTYPE_STARTDOCUMENT, null, null);
+      
+      if(null != m_traceManager)
+      {
+        fireGenerateEvent(GenerateEvent.EVENTTYPE_STARTDOCUMENT, null, null);
+      }
 
       ContentHandler chandler = getContentHandler();
 

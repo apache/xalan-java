@@ -285,8 +285,11 @@ public class QueuedStartElement extends QueuedSAXEvent
       {
         m_contentHandler.startElement(m_url, m_localName, m_name,
                                       m_attributes);
-        fireGenerateEvent(GenerateEvent.EVENTTYPE_STARTELEMENT, m_name,
-                          m_attributes);
+        if(null != m_traceManager)
+        {
+          fireGenerateEvent(GenerateEvent.EVENTTYPE_STARTELEMENT, m_name,
+                            m_attributes);
+        }
       }
 
       reset();
