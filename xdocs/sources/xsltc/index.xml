@@ -1,0 +1,115 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
+<!-- 
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 2001, Sun
+ * Microsystems., http://www.sun.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ -->
+<s1 title="Introduction to XSLTC">
+    <p><ref>Design documents by <jump href="mailto:morten@xml.apache.org">Morten J&oslash;rgensen</jump> 
+    - updated 06.03.2001</ref></p>
+<ul>
+  <li><link anchor="compiler">Compiler design</link></li>
+  <li><link anchor="runtime">Runtime library/DOM design</link></li>  
+</ul>
+<anchor name="compiler"/>
+ <s2 title="Compiler design">
+  <p><link idref="xsltc_compiler"><img src="compiler_architecture.gif" alt="compiler_architecture.gif"/></link></p>
+  <p><ref>Figure 1: Compiler architecture overview</ref></p>
+  <p>Click on the picture to jump to the overall design document for the compiler.</p>
+    <p>Each XSL element/function and XPath expression/pattern is represented by
+  its own class in the Abstract Syntax Tree (AST). Some of these classes have
+  their own design documents (I am working on the rest of them):</p>
+    <s3 title="XSL elements">
+        <ul>
+          <li>
+            <link idref="xsl_whitespace_design">&lt;xsl:preserve-space&gt;/&lt;xsl:strip-space&gt;</link>
+          </li>
+          <li>
+            <link idref="xsl_sort_design">&lt;xsl:sort&gt;</link>
+          </li>
+          <li>
+            <link idref="xsl_key_design">&lt;xsl:key&gt;</link>
+          </li>
+          <li>
+            <link idref="xsl_comment_design">&lt;xsl:comment&gt;/&lt;xsl:message&gt;</link>
+          </li>
+        </ul>
+        </s3>
+        <s3 title="XSL functions">
+        <ul>
+          <li>
+            <link idref="xsl_key_design">key()</link>
+          </li>
+          <li>
+            <link idref="xsl_lang_design">lang()</link>
+          </li>
+          <li>
+            <link idref="xsl_unparsed_design">unparsed-entity-uri()</link>
+          </li>
+        </ul>
+  </s3>
+  </s2><anchor name="runtime"/>
+  <s2 title="Runtime library/DOM design">
+  <p><link idref="xsltc_runtime"><img src="runtime_architecture.gif" alt="runtime_architecture.gif"/></link></p>
+  <p><ref>Figure 2: Runtime library architecture overview</ref></p>
+  <p>Click on the picture to jump to the overall design document for the XSLTC
+  runtime library. This document describes the structure of the compiled
+  translet as well as the translet runtime library.</p> 
+  <p>The <link idref="xsltc_dom">Internal DOM</link> describes the components and structure of the internal DOM,
+   support for DOM2 navigation, the DOM adapter, DOM multiplexer, and DOM builder.</p>
+    <p><link idref="xsltc_namespace">Namespaces</link> explains how XSLTC (including the compiler) handles
+     namespaces.</p>   
+  </s2>
+</s1>
