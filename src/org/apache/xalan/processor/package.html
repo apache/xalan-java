@@ -1,12 +1,17 @@
 <html>
   <title>Xalan Processor Package.</title>
   <body>
-    <p>Processes XSLT stylesheets into Xalan Templates/Stylesheets, using a 
-    schema (see XSLTSchema) to drive the process -- the StylesheetProcessor 
-    class implements the TRaX Process interface, the SAX event handling is done 
-    in the StylesheetHandler class.<p>
+    <p>Parses an XSLT stylesheet document (which may include and import other stylesheet documents) and produces a StylesheetRoot
+    (a TrAX Templates object).</p>
+    <p>StylesheetProcessor implements the TRaX Processor interface. It registers a StylesheetHandler 
+    (a TrAX TemplatesBuilder) as the SAX ContentHandler for an XMLReader, and uses the XMLReader to parse the stylesheet
+    document.</p>
+    <p>Before parsing the XSLT input, StylesheetHandler assembles an XSLT schema (see XSLTSchema), which uses XSLTElementDef
+    and XSLTAttributeDef objects to recursively define the elements and attributes that an XSLT stylesheet may contain. The
+    StylesheetHandler then passes on each parse event to the XSLTElementProcessor which the XSLTElementDef assigned to the
+    element associated with that event.</p>
     <dl>
-      <dt><b>Version: </b></dt><dd>Alpha, 2.0.0, July 05, 2000</dd>
+      <dt><b>Version: </b></dt><dd>xalan-j_2_0_D01, September 6, 2000</dd>
       <dt><b>Author: </b></dt><dd><a href="mailto:scott_boag@lotus.com">Scott Boag</a></dd>
     </dl>
  </body>

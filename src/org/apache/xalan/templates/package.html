@@ -1,17 +1,19 @@
 <html>
   <title>Xalan Templates Package.</title>
   <body>
-    <p>Contains XSLT "beans", that act as a data source for the transformation.
-       The StylesheetRoot class implements the TRaX Templates interface -- the 
-       ElemTemplateElement is the superclass of all XSLT instructions, including 
-       Stylesheet, StylesheetComposed is used for stylesheets that are composed of 
-       multiple included stylesheets, and many properties have pure data accessors as 
-       well as "composed" accessors -- ElemTemplateElements are executed via an 
-       "execute" method, which puts a bit of a fuzzy line between the "transformer"
-       package and the "templates" package -- this as opposed to a visitor pattern 
-       in the transformer package.<p>
+    <p>Implements the trax.Templates interface, and defines a set of classes that represent an XSLT stylesheet.</p>
+    
+    <p>StylesheetRoot implements trax.Templates and extends StylesheetComposed, which is a Stylesheet composed of itself and its
+    included Stylesheet objects. A StylesheetRoot also contains a global list of all imported StylesheetComposed objects. The
+    primary role of these objects is to hold immutable stylesheet data, not to perform procedural tasks associated with the
+    construction of the data (the org.apache.xalan.processor package) or with the transformation (the org.apache.xalan.transformer
+    package).</p>
+    <p>ElemTemplateElement is the superclass of all XSLT instruction elements, including Stylesheet. The <i>xxx</i>Func classes
+    derive from org.apache.xpath and implement XSLT functions. Unlike the Stylesheet "container" objects, these classes do contain
+    execute() methods that are called during the transformation.</p>
+    <p>
     <dl>
-      <dt><b>Version: </b></dt><dd>Alpha, 2.0.0, July 05, 2000</dd>
+      <dt><b>Version: </b></dt><dd>xalan-j_2_0_D01, September 6, 2000</dd>
       <dt><b>Author: </b></dt><dd><a href="mailto:scott_boag@lotus.com">Scott Boag</a></dd>
     </dl>
  </body>

@@ -107,7 +107,8 @@ transformer.transform
   <p>The trax.Processor static newInstance() method with "xslt" as its argument instantiates the processor designated by the trax.processor.xslt system property. If this system property has not already been set, trax.Processor sets it from a file. For &xslt4j;, this system property should be set to org.apache.xalan.processor.StylesheetProcessor.</p>
 </s2><anchor name="process"/>
   <s2 title="2. Process the stylesheet, producing a Templates object">
-  <p>The Templates object is an immutable runtime representation of the structure and content of a stylesheet (which may incorporate via includes and imports multiple stylesheet sources).</p>
+  <p>The Templates object is an immutable runtime representation of the structure and content of a stylesheet (which may include
+  and import multiple stylesheet sources).</p>
 <p>A given Templates object may be used repeatedly and by multiple concurrent threads for the transformation of XML input. Each Templates object also incorporates XSLTSchema, which encapsulates the underlying XSLT stylesheet schema.</p>
   <p>You may provide the stylesheet as a SAX input source (from a file or stream) or as a DOM tree.</p>
   <p>Use the Processor process() method with a SAX input source (as in the example above), or the processFromNode() method with a DOM tree to generate a Templates object.</p>
