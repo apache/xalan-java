@@ -221,10 +221,8 @@ public class SourceTreeManager
           "Programmer's Error!  "
           + "putDocumentInCache found reparse of doc: "
           + source.getSystemId());
-
       return;
     }
-
     if (null != source.getSystemId())
     {
       m_sourceTree.addElement(new SourceTree(n, source.getSystemId()));
@@ -241,8 +239,8 @@ public class SourceTreeManager
   public Node getNode(Source source)
   {
 
-    if (source instanceof DOMSource)
-      return ((DOMSource) source).getNode();
+//    if (source instanceof DOMSource)
+//      return ((DOMSource) source).getNode();
 
     // TODO: Not sure if the BaseID is really the same thing as the ID.
     String url = source.getSystemId();
