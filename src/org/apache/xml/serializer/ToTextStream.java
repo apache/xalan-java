@@ -61,7 +61,8 @@ package org.apache.xml.serializer;
 
 import java.io.IOException;
 
-import org.apache.xml.serializer.CharInfo;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -356,7 +357,11 @@ void writeNormalizedChars(
                 }
                 else
                 {
-                    writer.write(c);
+                    String encoding = getEncoding();
+                    String integralValue = Integer.toString(c);
+                    throw new SAXException(XMLMessages.createXMLMessage(
+                        XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                        new Object[]{ integralValue, encoding}));
                 }
             }
         }
@@ -383,7 +388,11 @@ void writeNormalizedChars(
             }
             else
             {
-                writer.write(c);
+                String encoding = getEncoding();
+                String integralValue = Integer.toString(c);
+                throw new SAXException(XMLMessages.createXMLMessage(
+                    XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                    new Object[]{ integralValue, encoding}));                 
             }
         }
     }

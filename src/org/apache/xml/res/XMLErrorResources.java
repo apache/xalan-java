@@ -204,6 +204,7 @@ public class XMLErrorResources extends ListResourceBundle
   public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
   public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
   public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_ILLEGAL_CHARACTER = "ER_ILLEGAL_CHARACTER";
 
   /*
    * Now fill in the message text.
@@ -462,6 +463,9 @@ public class XMLErrorResources extends ListResourceBundle
 
     {ER_COULD_NOT_LOAD_RESOURCE,
       "Could not load ''{0}'' (check CLASSPATH), now using just the defaults"},
+
+    { ER_ILLEGAL_CHARACTER,
+       "Attempt to output character of integral value {0} that is not represented in specified output encoding of {1}."},
     
     {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
       "Could not load the propery file ''{0}'' for output method ''{1}'' (check CLASSPATH)" }
