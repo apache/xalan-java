@@ -98,6 +98,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
@@ -110,7 +111,9 @@ import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+
 import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.utils.XMLReaderManager;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -186,12 +189,11 @@ public final class TransformerImpl extends Transformer
      * object belongs to.
      */
     private TransformerFactoryImpl _tfactory = null;
-    
+
     /**
-     * A reference to the XSLTCDTMManager which is used to build the DOM/DTM
-     * for this transformer.
+     * A reference to an object that creates and caches XMLReader objects.
      */
-    private XSLTCDTMManager _dtmManager = null;
+    private XMLReaderManager _readerManager = XMLReaderManager.getInstance();
     
     /**
      * A flag indicating whether we use incremental building of the DTM.
@@ -435,229 +437,136 @@ public final class TransformerImpl extends Transformer
     /**
      * Builds an internal DOM from a TrAX Source object
      */
-    private DOM getDOM(Source source)
-	throws TransformerException {
-	try {
-	    DOM dom = null;
-	    SAXImpl saxImpl = null;
-	    DTMWSFilter wsfilter;
-	    if (_translet != null && _translet instanceof StripFilter) {
-	        wsfilter = new DOMWSFilter(_translet);
-            } else {
-	        wsfilter = null;
-            }
+    private DOM getDOM(Source source) throws TransformerException {
+        try {
+            DOM dom = null;
+
+            if (source != null) {
+                DTMWSFilter wsfilter;
+                if (_translet != null && _translet instanceof StripFilter) {
+                    wsfilter = new DOMWSFilter(_translet);
+                 } else {
+                    wsfilter = null;
+                 }
             
-            boolean hasIdCall = (_translet != null) ? _translet.hasIdCall() 
-                                                      : false;
-	    // Get systemId from source
-	    if (source != null) {
-                _sourceSystemId = source.getSystemId();
-	    }
+                 boolean hasIdCall = (_translet != null) ? _translet.hasIdCall()
+                                                         : false;
 
-	    if (source instanceof SAXSource) {
-		// Get all info from the input SAXSource object
-		final SAXSource sax = (SAXSource)source;
-		XMLReader reader = sax.getXMLReader();
-		final InputSource input = sax.getInputSource();
-                final boolean hasUserReader = reader != null;
+                 XSLTCDTMManager dtmManager =
+                         (XSLTCDTMManager)_tfactory.getDTMManagerClass()
+                                                   .newInstance();
+                 dom = (DOM)dtmManager.getDTM(source, false, wsfilter, true,
+                                              false, false, 0, hasIdCall);
+            } else if (_dom != null) {
+                 dom = _dom;
+                 _dom = null;  // use only once, so reset to 'null'
+            } else {
+                 return null;
+            }
 
-		// Create a reader if not set by user
-		if (reader == null) {
-		    reader = _tfactory.getXMLReader();
-		}
-
-		// Create a new internal DOM and set up its builder to trap
-		// all content/lexical events
-		if (_dtmManager == null) {
-		    _dtmManager = XSLTCDTMManager.newInstance();
-		}
-
-                //dtmManager.setIncremental(_isIncremental);
-		saxImpl = (SAXImpl)_dtmManager.getDTM(sax, false, wsfilter, true, false,
-                                                 hasUserReader, 0, hasIdCall);
-		//final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
-		try {
-		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, saxImpl);
-		}
-		catch (SAXException e) {
-		    // quitely ignored
-		}
-		reader.setContentHandler(saxImpl);
-		reader.setDTDHandler(saxImpl);
-		saxImpl.setDocumentURI(_sourceSystemId);
-	    }
-	    else if (source instanceof DOMSource) {
-		// Create a new internal DTM and build it directly from DOM
-		if (_dtmManager == null) {
-		    _dtmManager = XSLTCDTMManager.newInstance();
-		}
-    
-                //dtmManager.setIncremental(_isIncremental);
-		saxImpl = (SAXImpl)_dtmManager.getDTM(source, false, wsfilter, true,
-                                                 false, hasIdCall);
-		saxImpl.setDocumentURI(_sourceSystemId);
-	    }
-	    // Handle StreamSource input
-	    else if (source instanceof StreamSource) {
-		// Get all info from the input StreamSource object
-		final StreamSource stream = (StreamSource)source;
-		final InputStream streamInput = stream.getInputStream();
-		final Reader streamReader = stream.getReader();
-		final XMLReader reader = _tfactory.getXMLReader();
-
-		// Create a new internal DOM and set up its builder to trap
-		// all content/lexical events
-		if (_dtmManager == null) {
-		    _dtmManager = XSLTCDTMManager.newInstance();
-		}
-
-		//dtmManager.setIncremental(_isIncremental);
-		
-		InputSource input;
-		if (streamInput != null) {
-		    input = new InputSource(streamInput);
-		    input.setSystemId(_sourceSystemId);
-		}
-		else if (streamReader != null) {
-		    input = new InputSource(streamReader);
-		    input.setSystemId(_sourceSystemId);
-		}
-		else if (_sourceSystemId != null)
-		    input = new InputSource(_sourceSystemId);
-		else {
-		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
-		    throw new TransformerException(err.toString());
-		}
-		saxImpl = (SAXImpl)_dtmManager.getDTM(new SAXSource(reader, input),
-                                                 false, wsfilter, true,
-                                                 false, hasIdCall);
-		saxImpl.setDocumentURI(_sourceSystemId);
-	    }
-	    else if (source instanceof XSLTCSource) {
-		final XSLTCSource xsltcsrc = (XSLTCSource)source;
-		if (_dtmManager == null) {
-		    _dtmManager = XSLTCDTMManager.newInstance();
-		}
-		
-		dom = xsltcsrc.getDOM(_dtmManager, _translet);
-	    }
-	    // DOM already set via a call to setDOM()
-	    else if (_dom != null) {
-		dom = _dom; _dom = null;   // use only once, so reset to 'null'
-	    }
-	    else {
-		return null;
-	    }
-
-	    if (saxImpl != null) {
-	        dom = saxImpl;
-	    }
-	    
-	    if (!_isIdentity) {
+            if (!_isIdentity) {
                 // Give the translet the opportunity to make a prepass of
                 // the document, in case it can extract useful information early
-		_translet.prepassDocument(dom);
-	    }
-	    	    
-	    return dom;
+                _translet.prepassDocument(dom);
+            }
 
-	}
-	//catch (FileNotFoundException e) {
-//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-//	    throw new TransformerException(e);
-//	}
-	//catch (MalformedURLException e) {
-//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-//	    throw new TransformerException(e);
-//	}
-//	catch (UnknownHostException e) {
-//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-//	    throw new TransformerException(e);
-//	}
-	catch (Exception e) {
-	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
+            return dom;
+
+        }
+        catch (Exception e) {
+            if (_errorListener != null) {
+                postErrorToListener(e.getMessage());
+            }
+            throw new TransformerException(e);
+        }
     }
  
     private void transformIdentity(Source source, SerializationHandler handler)
 	throws Exception 
     {
-	// Get systemId from source
-	if (source != null) {
-	    _sourceSystemId = source.getSystemId();
-	}
+        // Get systemId from source
+        if (source != null) {
+            _sourceSystemId = source.getSystemId();
+        }
 
-	if (source instanceof StreamSource) {
-	    final StreamSource stream = (StreamSource) source;
-	    final InputStream streamInput = stream.getInputStream();
-	    final Reader streamReader = stream.getReader();
-	    final XMLReader reader = _tfactory.getXMLReader();
+        if (source instanceof StreamSource) {
+            final StreamSource stream = (StreamSource) source;
+            final InputStream streamInput = stream.getInputStream();
+            final Reader streamReader = stream.getReader();
+            final XMLReader reader = _readerManager.getXMLReader();
 
-	    // Hook up reader and output handler 
-	    try {
-		reader.setProperty(LEXICAL_HANDLER_PROPERTY, handler);
-	    }
-	    catch (SAXException e) {
-		// Falls through
-	    }
-	    reader.setContentHandler(handler);
+            try {
+                // Hook up reader and output handler 
+                try {
+                    reader.setProperty(LEXICAL_HANDLER_PROPERTY, handler);
+                }
+                catch (SAXException e) {
+                    // Falls through
+                }
+                reader.setContentHandler(handler);
 
-	    // Create input source from source
-	    InputSource input;
-	    if (streamInput != null) {
-		input = new InputSource(streamInput);
-		input.setSystemId(_sourceSystemId); 
-	    } 
-	    else if (streamReader != null) {
-		input = new InputSource(streamReader);
-		input.setSystemId(_sourceSystemId); 
-	    } 
-	    else if (_sourceSystemId != null) {
-		input = new InputSource(_sourceSystemId);
-	    } 
-	    else {
-		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
-		throw new TransformerException(err.toString());
-	    }
+                // Create input source from source
+                InputSource input;
+                if (streamInput != null) {
+                    input = new InputSource(streamInput);
+                    input.setSystemId(_sourceSystemId); 
+                } 
+                else if (streamReader != null) {
+                    input = new InputSource(streamReader);
+                    input.setSystemId(_sourceSystemId); 
+                } 
+                else if (_sourceSystemId != null) {
+                    input = new InputSource(_sourceSystemId);
+                } 
+                else {
+                    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
+                    throw new TransformerException(err.toString());
+                }
 
-	    // Start pushing SAX events
-	    reader.parse(input);
-	}
-	else if (source instanceof SAXSource) {
-	    final SAXSource sax = (SAXSource) source;
-	    XMLReader reader = sax.getXMLReader();
-	    final InputSource input = sax.getInputSource();
+                // Start pushing SAX events
+                reader.parse(input);
+            } finally {
+                _readerManager.releaseXMLReader(reader);
+            }
+        } else if (source instanceof SAXSource) {
+            final SAXSource sax = (SAXSource) source;
+            XMLReader reader = sax.getXMLReader();
+            final InputSource input = sax.getInputSource();
+            boolean userReader = true;
 
-	    // Create a reader if not set by user
-	    if (reader == null) {
-		reader = _tfactory.getXMLReader();
-	    }
+            try {
+                // Create a reader if not set by user
+                if (reader == null) {
+                    reader = _readerManager.getXMLReader();
+                    userReader = false;
+                }
 
-	    // Hook up reader and output handler 
-	    try {
-		reader.setProperty(LEXICAL_HANDLER_PROPERTY, handler);
-	    }
-	    catch (SAXException e) {
-		// Falls through
-	    }
-	    reader.setContentHandler(handler);
+                // Hook up reader and output handler 
+                try {
+                    reader.setProperty(LEXICAL_HANDLER_PROPERTY, handler);
+                }
+                catch (SAXException e) {
+                    // Falls through
+                }
+                reader.setContentHandler(handler);
 
-	    // Start pushing SAX events
-	    reader.parse(input);
-	}
-	else if (source instanceof DOMSource) {
-	    final DOMSource domsrc = (DOMSource) source;
-	    new DOM2TO(domsrc.getNode(), handler).parse();
-	}
-	else if (source instanceof XSLTCSource) {
-	    final DOM dom = ((XSLTCSource) source).getDOM(null, _translet);
-	    ((SAXImpl)dom).copy(handler);
-	}
-	else {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
-	    throw new TransformerException(err.toString());
-	}
+                // Start pushing SAX events
+                reader.parse(input);
+            } finally {
+                if (!userReader) {
+                    _readerManager.releaseXMLReader(reader);
+                }
+            }
+        } else if (source instanceof DOMSource) {
+            final DOMSource domsrc = (DOMSource) source;
+            new DOM2TO(domsrc.getNode(), handler).parse();
+        } else if (source instanceof XSLTCSource) {
+            final DOM dom = ((XSLTCSource) source).getDOM(null, _translet);
+            ((SAXImpl)dom).copy(handler);
+        } else {
+            ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
+            throw new TransformerException(err.toString());
+        }
     }
 
     /**
@@ -701,7 +610,6 @@ public final class TransformerImpl extends Transformer
 	    else {
 		_translet.transform(getDOM(source), handler);
 	    }
-	    _dtmManager = null;
 	}
 	catch (TransletException e) {
 	    if (_errorListener != null)	postErrorToListener(e.getMessage());
@@ -1219,7 +1127,7 @@ public final class TransformerImpl extends Transformer
 	    return(null);
 	}
     }
-    
+
     /**
      * Receive notification of a recoverable error. 
      * The transformer must continue to provide normal parsing events after
