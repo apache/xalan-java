@@ -2844,10 +2844,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 
 	    // Assign an internal type to this element (may exist)
-	    if (uri != null)
+	    if (uri != null && localName.length() > 0) { 
 		_type[node] = internElement(uri, localName);
-	    else
+	    } else {
 		_type[node] = internElement(qname);
+	    }
 	}
 	
 	/**
