@@ -993,9 +993,9 @@ public class ToHTMLStream extends ToStream
         }
         else
         {
-                // %REVIEW% %OPT%
-                // Two calls to single-char write may NOT
-                // be more efficient than one to string-write...
+            // %REVIEW% %OPT%
+            // Two calls to single-char write may NOT
+            // be more efficient than one to string-write...
             m_writer.write(name);
             m_writer.write("=\"");
             if (   elemDesc != null
@@ -1083,15 +1083,24 @@ public class ToHTMLStream extends ToStream
         // causing damage.  If the URL is already properly escaped, in theory, this 
         // function should not change the string value.
 
-        char[] stringArray = string.toCharArray();
-        int len = stringArray.length;
-
-        for (int i = 0; i < len; i++)
+        final char[] chars = string.toCharArray();
+        final int end = chars.length;
+        int cleanStart = 0;
+        int cleanLength = 0;
+        
+        
+        char ch = 0;
+        for (int i = 0; i < end; i++)
         {
-            char ch = stringArray[i];
+            ch = chars[i];
 
             if ((ch < 32) || (ch > 126))
             {
+                if (cleanLength > 0)
+                {
+                    m_writer.write(chars, cleanStart, cleanLength);
+                    cleanLength = 0;
+                }
                 if (doURLEscaping)
                 {
                     // Encode UTF16 to UTF8.
@@ -1147,7 +1156,7 @@ public class ToHTMLStream extends ToStream
                         int yyyyyy = ((highSurrogate & 0x0003) << 4) & 0x30;
 
                         // Get low surrogate character.
-                        ch = stringArray[++i];
+                        ch = chars[++i];
 
                         // Clear high 6 bits.
                         int lowSurrogate = ((int) ch) & 0x03FF;
@@ -1199,8 +1208,16 @@ public class ToHTMLStream extends ToStream
                     m_writer.write(Integer.toString(ch));
                     m_writer.write(';');
                 }
+                // In this character range we have first written out any previously accumulated 
+                // "clean" characters, then processed the current more complicated character,
+                // which may have incremented "i".
+                // We now we reset the next possible clean character.
+                cleanStart = i + 1;
             }
-            else if ('%' == ch)
+            // Since http://www.ietf.org/rfc/rfc2396.txt refers to the URI grammar as
+            // not allowing quotes in the URI proper syntax, nor in the fragment 
+            // identifier, we believe that it's OK to double escape quotes.
+            else if (ch == '"')
             {
                 // If the character is a '%' number number, try to avoid double-escaping.
                 // There is a question if this is legal behavior.
@@ -1211,39 +1228,50 @@ public class ToHTMLStream extends ToStream
                 //        if( ((i+2) < len) && isASCIIDigit(stringArray[i+1]) && isASCIIDigit(stringArray[i+2]) )
 
                 // We are no longer escaping '%'
-                /* if ( ((i+2) < len) && isHHSign(new String(stringArray,i+1,2)) )
-                 {
-                   m_writer.write(ch);
-                 }
-                 else
-                 {
-                   if (doURLEscaping)
-                   {
-                    m_writer.write('%');
-                    m_writer.write(makeHHString(ch));
-                   }
-                   else*/
-                m_writer.write(ch);
-                // }   
 
-            }
-            // Since http://www.ietf.org/rfc/rfc2396.txt refers to the URI grammar as
-            // not allowing quotes in the URI proper syntax, nor in the fragment 
-            // identifier, we believe that it's OK to double escape quotes.
-            else if (ch == '"')
-            {
+                if (cleanLength > 0)
+                {
+                    m_writer.write(chars, cleanStart, cleanLength);
+                    cleanLength = 0;
+                }   
+                
+                
                 // Mike Kay encodes this as &#34;, so he may know something I don't?
                 if (doURLEscaping)
                     m_writer.write("%22");
                 else
                     m_writer.write("&quot;"); // we have to escape this, I guess.
+
+                // We have written out any clean characters, then the escaped '%' and now we
+                // We now we reset the next possible clean character.
+                cleanStart = i + 1;    
             }
             else
             {
-                m_writer.write(ch);
+                // no processing for this character, just count how
+                // many characters in a row that we have that need no processing
+                cleanLength++;
             }
         }
-
+        
+        // are there any clean characters at the end of the array
+        // that we haven't processed yet?
+        if (cleanLength > 1)
+        {
+            // if the whole string can be written out as-is do so
+            // otherwise write out the clean chars at the end of the
+            // array
+            if (cleanStart == 0)
+                m_writer.write(string);
+            else
+                m_writer.write(chars, cleanStart, cleanLength);
+        }
+        else if (cleanLength == 1)
+        {
+            // a little optimization for 1 clean character
+            // (we could have let the previous if(...) handle them all)
+            m_writer.write(ch);
+        }
     }
 
     /**
@@ -1260,14 +1288,15 @@ public class ToHTMLStream extends ToStream
     {
 
         final char chars[] = string.toCharArray();
-        final int strLen = chars.length;
+        final int end = chars.length;
 
-        // %REVIEW%%OPT% Should we be buffering rather than issuing
-        // so many calls to write(int)?
+        int cleanStart = 0;
+        int cleanLength = 0;
 
-        for (int i = 0; i < strLen; i++)
+        char ch = 0;
+        for (int i = 0; i < end; i++)
         {
-            char ch = chars[i];
+            ch = chars[i];
 
             // System.out.println("SPECIALSSIZE: "+SPECIALSSIZE);
             // System.out.println("ch: "+(int)ch);
@@ -1275,20 +1304,25 @@ public class ToHTMLStream extends ToStream
             // System.out.println("m_attrCharsMap[ch]: "+(int)m_attrCharsMap[ch]);
             if (escapingNotNeeded(ch) && (!m_charInfo.isSpecial(ch)))
             {
-                m_writer.write(ch);
+                cleanLength++;
             }
             else if ('<' == ch || '>' == ch)
             {
-                m_writer.write(ch); // no escaping in this case, as specified in 15.2
+                cleanLength++; // no escaping in this case, as specified in 15.2
             }
             else if (
-                ('&' == ch) && ((i + 1) < strLen) && ('{' == chars[i + 1]))
+                ('&' == ch) && ((i + 1) < end) && ('{' == chars[i + 1]))
             {
-                m_writer.write(ch); // no escaping in this case, as specified in 15.2
+                cleanLength++; // no escaping in this case, as specified in 15.2
             }
             else
             {
-                int pos = accumDefaultEntity(m_writer, ch, i, chars, strLen, false);
+                if (cleanLength > 0)
+                {
+                    m_writer.write(chars,cleanStart,cleanLength);
+                    cleanLength = 0;
+                }
+                int pos = accumDefaultEntity(m_writer, ch, i, chars, end, false);
 
                 if (i != pos)
                 {
@@ -1299,7 +1333,7 @@ public class ToHTMLStream extends ToStream
                     if (isUTF16Surrogate(ch))
                     {
  
-                            i = writeUTF16Surrogate(ch, chars, i, strLen);
+                            i = writeUTF16Surrogate(ch, chars, i, end);
 
                     }
 
@@ -1333,7 +1367,27 @@ public class ToHTMLStream extends ToStream
                         m_writer.write(';');
                     }
                 }
+                cleanStart = i + 1;
             }
+        } // end of for()
+        
+        // are there any clean characters at the end of the array
+        // that we haven't processed yet?
+        if (cleanLength > 1)
+        {
+            // if the whole string can be written out as-is do so
+            // otherwise write out the clean chars at the end of the
+            // array
+            if (cleanStart == 0)
+                m_writer.write(string);
+            else
+                m_writer.write(chars, cleanStart, cleanLength);
+        }
+        else if (cleanLength == 1)
+        {
+            // a little optimization for 1 clean character
+            // (we could have let the previous if(...) handle them all)
+            m_writer.write(ch);
         }
     }
 
