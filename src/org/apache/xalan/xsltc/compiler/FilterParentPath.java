@@ -153,6 +153,18 @@ final class FilterParentPath extends Expression {
 					      "includeSelf",
 					      "()"+NODE_ITERATOR_SIG);
 	    il.append(new INVOKEVIRTUAL(incl));
+
+	    if (!(getParent() instanceof RelativeLocationPath) &&
+		!(getParent() instanceof FilterParentPath)) {
+		String params = "("+NODE_ITERATOR_SIG+"I)"+NODE_ITERATOR_SIG;
+		final int order = cpg.addInterfaceMethodref(DOM_INTF,
+							    "orderNodes",
+							    params);
+		il.append(methodGen.loadDOM());
+		il.append(SWAP);
+		il.append(methodGen.loadContextNode());
+		il.append(new INVOKEINTERFACE(order, 3));
+	    }
 	}
     }
 }
