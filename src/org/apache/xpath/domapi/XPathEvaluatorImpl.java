@@ -198,7 +198,7 @@ public class XPathEvaluatorImpl implements XPathEvaluator {
 			// If the resolver is null, create a dummy prefix resolver
 			XPath xpath =  new XPath(expression,null,
 			     ((null == resolver) ? new DummyPrefixResolver() : ((PrefixResolver)resolver)), 
-			      XPath.SELECT);
+			      XPath.SELECT, null, 1.0);
                   
             return new XPathExpressionImpl(xpath, m_doc);
 			      

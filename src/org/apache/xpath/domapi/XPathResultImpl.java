@@ -472,7 +472,7 @@ public class XPathResultImpl implements XPathResult, EventListener {
         case XObject.CLASS_NODESET: return UNORDERED_NODE_ITERATOR_TYPE; 
         case XObject.CLASS_NUMBER: return NUMBER_TYPE;
         case XObject.CLASS_STRING: return STRING_TYPE;
-        // XPath 2.0 types                         
+        // XPath 2.0 types  ?                        
 //          case XObject.CLASS_DATE: 
 //          case XObject.CLASS_DATETIME:
 //          case XObject.CLASS_DTDURATION:
