@@ -40,6 +40,11 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
       * @see #setLocalHost
       */
     protected transient String localHost = null;
+    
+    /**
+     * Server port. Used in toSafeURL() -- fix submitted by Ritesh Kumar.
+     */
+    protected static int port =0;
 
     /**
       * Constructor to use program defaults.
@@ -59,12 +64,12 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
       */
     public DefaultApplyXSLTProperties(ServletConfig config)
     {
-	super(config);
-	String cat = config.getInitParameter("catalog");
-	if (cat != null) DEFAULT_catalog = cat;
-	else DEFAULT_catalog = null;
-	setLocalHost();
-	setSystemProperties();
+	    super(config);
+	    String cat = config.getInitParameter("catalog");
+	    if (cat != null) DEFAULT_catalog = cat;
+	    else DEFAULT_catalog = null;
+	    setLocalHost();
+	    setSystemProperties();
     }
 
     /**
@@ -74,11 +79,14 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
       */
     protected void setLocalHost()
     {
-	try { 
-	    localHost = InetAddress.getLocalHost().getHostName();
-	} catch (Exception uhe) {
-	    localHost = null;
-	}
+	    try 
+	    { 
+	        localHost = InetAddress.getLocalHost().getHostName();
+	    } 
+	    catch (Exception uhe) 
+	    {
+	      localHost = null;
+	    }
     }
 
     /**
@@ -88,7 +96,7 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
       */
     public String getLocalHost()
     {
-	return localHost;
+	    return localHost;
     }
 
     /**
@@ -99,34 +107,48 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
       * @see #setLocalHost
       * @see #getLocalHost
       */
-    public URL toSafeURL(String xURL)
+    public URL toSafeURL(String xURL, HttpServletRequest request)
     throws MalformedURLException
     {
-	if (xURL == null)
-	    return null;
+      // Fix submitted by Ritesh Kumar. Port is included in construction of URL that is returned.
+      if (port == 0)
+        port = request.getServerPort();
+      
+	    if (xURL == null)
+	      return null;
 
-	if (xURL.startsWith("/")) {
-	    try {
-		return new URL("http", localHost, xURL);
-	    } catch (MalformedURLException mue) {
-	    throw new MalformedURLException("toSafeURL(): " + xURL + 
-					    " did not map to local");
+	    if (xURL.startsWith("/")) 
+      {
+	      try 
+        {
+		      return new URL("http", localHost, port, xURL);
+	      }
+        catch (MalformedURLException mue) 
+        {
+	        throw new MalformedURLException("toSafeURL(): " + xURL + 
+					                                " did not map to local");
+	      }
 	    }
-	}
-	URL tempURL = null;
-	try { 
-	    tempURL = new URL(xURL);
-	} catch (MalformedURLException mue) {
-	    throw new MalformedURLException("toSafeURL(): " + xURL + 
-					    " not a valid URL");
-	}
-	try { 
-	    return new URL(tempURL.getProtocol(), localHost, 
-			   tempURL.getPort(), tempURL.getFile());
-	} catch (MalformedURLException mue) {
-	    throw new MalformedURLException("toSafeURL(): " + xURL + 
-					    " could not be converted to local host");
-	}
+	    URL tempURL = null;
+	    try 
+      { 
+	      tempURL = new URL(xURL);
+	    } 
+      catch (MalformedURLException mue) 
+      {
+	      throw new MalformedURLException("toSafeURL(): " + xURL + 
+					                              " not a valid URL"); 
+	    }
+	    try 
+      { 
+	      return new URL(tempURL.getProtocol(), localHost, 
+			                 port, tempURL.getFile());
+	    } 
+      catch (MalformedURLException mue) 
+      {
+	      throw new MalformedURLException("toSafeURL(): " + xURL + 
+				                          	    " could not be converted to local host");
+	    }
     }
 
     /**
@@ -140,10 +162,10 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     public String getXMLurl(HttpServletRequest request)
     throws MalformedURLException
     {
-	URL url = toSafeURL(getRequestParmString(request, "URL"));
-	if (url == null)
-	    return super.getXMLurl(null);
-	return url.toExternalForm();
+	    URL url = toSafeURL(getRequestParmString(request, "URL"),request);
+	    if (url == null)
+	      return super.getXMLurl(null);
+	    return url.toExternalForm();
     }
 
     /**
@@ -157,10 +179,10 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     public String getXSLRequestURL(HttpServletRequest request)
     throws MalformedURLException
     {
-	URL url = toSafeURL(getRequestParmString(request, "xslURL"));
-	if (url == null)
-	    return null;
-	return url.toExternalForm();
+	    URL url = toSafeURL(getRequestParmString(request, "xslURL"),request);
+	    if (url == null)
+	        return null;
+	    return url.toExternalForm();
     }
 
     /**
@@ -174,10 +196,10 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     public String getXSLurl(HttpServletRequest request)
     throws MalformedURLException
     {
-	String reqURL = getXSLRequestURL(request);
-	if (reqURL != null)
-	    return reqURL;
-	return super.getXSLurl(null);
+	    String reqURL = getXSLRequestURL(request);
+	    if (reqURL != null)
+	        return reqURL;
+	    return super.getXSLurl(null);
     }
 
     /**
@@ -191,21 +213,23 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
       */
     public String[] getCatalog(HttpServletRequest request)
     {
-	String temp[] = request.getParameterValues("catalog");
-	if (DEFAULT_catalog == null)
-	    return temp;
-	if (temp == null) {
-	    String defaultArray[] = new String [1];
-	    defaultArray[0] = DEFAULT_catalog;
-	    return defaultArray;
-	}
-	int i, len = temp.length + 1;
-	String newCatalogs[] = new String[len];
-	newCatalogs[0] = DEFAULT_catalog;
-	for (i=1; i < len; i++) {
-	    newCatalogs[i] = temp[i-1];
-	}
-	return newCatalogs;
+	    String temp[] = request.getParameterValues("catalog");
+	    if (DEFAULT_catalog == null)
+	        return temp;
+	    if (temp == null) 
+      {
+	      String defaultArray[] = new String [1];
+	      defaultArray[0] = DEFAULT_catalog;
+	      return defaultArray;
+	    }
+	    int i, len = temp.length + 1;
+	    String newCatalogs[] = new String[len];
+	    newCatalogs[0] = DEFAULT_catalog;
+	    for (i=1; i < len; i++) 
+      {
+	      newCatalogs[i] = temp[i-1];
+	    }
+	    return newCatalogs;
     }
 	
 	 /**
@@ -215,19 +239,18 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     protected void setSystemProperties()
 	{
 	  Properties props = new Properties();
-	  props.put("org.apache.trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
+//	  props.put("org.apache.trax.processor.xslt", "org.apache.xalan.processor.StylesheetProcessor");
 	  props.put("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
-	  props.put("serialize.methods", "xml,html,Text");
-	  props.put("serialize.xml", "org.apache.xml.serialize.transition.XMLSerializer");	 
-	  props.put("serialize.html", "org.apache.xml.serialize.transition.HTMLSerializer");	 
-	  props.put("serialize.text", "org.apache.xml.serialize.transition.XTextSerializer");	 
-	  props.put("serialize.xhtml", "org.apache.xml.serialize.transition.XHTMLSerializer");	 
-	  props.put("serialize.wml", "org.apache.xml.serialize.transition.XWMLSerializer");	
-	  props.put("serialize.format.xml", "serialize.format.XMLOutputFormat");	 
-	  props.put("serialize.format.html", "serialize.format.XMLOutputFormat");	 
-	  props.put("serialize.format.text", "serialize.format.XMLOutputFormat");	 
-	  props.put("serialize.format.xhtml", "serialize.format.XHTMLOutputFormat");	 
-	  props.put("serialize.format.text", "serialize.format.TextOutputFormat");	 
+	  props.put("serialize.methods", "xml,html,xhtml,Text");
+	  props.put("serialize.xml", "org.apache.xalan.serialize.FormatterToXML");	 
+	  props.put("serialize.html", "org.apache.xalan.serialize.FormatterToHTML");	 
+	  props.put("serialize.text", "org.apache.xalan.serialize.FormatterToText");	 
+	  props.put("serialize.xhtml", "org.apache.xalan.serialize.FormatterToXML"); 
+	  props.put("serialize.wml", "org.apache.xalan.serialize.transition.WMLSerializer");	
+	  props.put("serialize.format.xml", "org.apache.serialize.helpers.XMLOutputFormat");	 
+	  props.put("serialize.format.html", "org.apache.serialize.helpers.HTMLOutputFormat");	 
+	  props.put("serialize.format.xhtml", "org.apache.serialize.helpers.XHTMLOutputFormat");	 
+	  props.put("serialize.format.text", "org.apache.serialize.helpers.TextOutputFormat");	 
 	  
       Properties systemProps = System.getProperties();
       Enumeration propEnum = props.propertyNames();

@@ -116,7 +116,7 @@ public class ApplyXSLT extends HttpServlet
     ourDefaultParameters = new DefaultApplyXSLTProperties(config);
   }
   
-    /**
+  /**
    *	Loads the media properties file specified by the given string.
    * @param mediaURLstring Location of the media properties file.  Can be either a full URL or a path relative
    * to the System's server.root /servlets directory.  If this parameter is null,
