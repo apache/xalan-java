@@ -80,12 +80,15 @@ public class SAXOutput extends OutputBase implements Constants {
     protected String	     _elementName = null;
 
     // parameters set by <xsl:output> element, or by set/getOutputProperty()
-    protected String    _encoding = null; 
-    protected String    _doctypeSystem = null;
-    protected String    _doctypePublic = null;
+    protected String         _encoding = null; 
+    protected String         _doctypeSystem = null;
+    protected String         _doctypePublic = null;
  
     // The top of this stack contains the QName of the currently open element
-    protected Stack     _qnameStack;
+    protected Stack          _qnameStack;
+
+    // Holds the current tree depth (see startElement() and endElement()).
+    protected int            _depth = 0;
 
 
     public SAXOutput(ContentHandler handler, String encoding) {

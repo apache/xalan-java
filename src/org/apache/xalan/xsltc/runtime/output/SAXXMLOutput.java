@@ -92,9 +92,6 @@ public class SAXXMLOutput extends SAXOutput  {
     // contents should be output as CDATA sections.
     private Stack     _cdataStack;
 
-    // Holds the current tree depth (see startElement() and endElement()).
-    private int _depth = 0;
-
     // The top of this stack contains the QName of the currently open element
     private Stack     _qnameStack;
 

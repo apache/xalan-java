@@ -86,9 +86,6 @@ public class SAXHTMLOutput extends SAXOutput  {
     }
 
 
-    public void startElement(String elementName) throws TransletException {
-    }
-
     public void attribute(String name, final String value) 
 	throws TransletException
     {
@@ -160,6 +157,40 @@ public class SAXHTMLOutput extends SAXOutput  {
         _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, "meta");
     }
 
+    /**
+     * Start an element in the output document. This might be an XML
+     * element (<elem>data</elem> type) or a CDATA section.
+     */
+    public void startElement(String elementName) throws TransletException {
+    	try {
+	    // Close any open start tag
+            if (_startTagOpen) closeStartTag();
+
+            // Handle document type declaration (for first element only)
+            if (_lexHandler != null) {
+                if ((_doctypeSystem != null) || (_doctypePublic != null))
+                    _lexHandler.startDTD(elementName,
+                             _doctypePublic,_doctypeSystem);
+                _lexHandler = null;
+            }
+
+            _depth++;
+            _elementName = elementName;
+            _attributes.clear();
+            _startTagOpen = true;
+            _qnameStack.push(elementName);
+
+            // Insert <META> tag directly after <HEAD> element in HTML doc
+            if (elementName.toLowerCase().equals("head")) {
+                _headTagOpen = true;
+	    }
+        } catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
+
+
+
    
     /**
      * End an element or CDATA section in the output document
@@ -175,6 +206,33 @@ public class SAXHTMLOutput extends SAXOutput  {
         }
 
     }
+
+    /**
+     * Set the output media type - only relevant for HTML output
+     */
+    public void setMediaType(String mediaType) {
+        // This value does not have to be passed to the SAX handler. This
+        // handler creates the HTML <meta> tag in which the media-type
+        // (MIME-type) will be used.
+	_mediaType = mediaType;
+    }
+
+
+    /**
+     * Ends the document output.
+     */
+    public void endDocument() throws TransletException {
+        try {
+            // Close any open start tag
+            if (_startTagOpen) closeStartTag();
+
+            // Close output document
+            _saxHandler.endDocument();
+        } catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
+
 
     private void initNamespaces() { 
 	//empty 
