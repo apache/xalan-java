@@ -55,13 +55,14 @@
  * <http://www.apache.org/>.
  */
 
-// Imported trax classes
-import trax.*;
-
-// Imported java classes
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.IOException;
+// Imported TraX classes
+import trax.Processor; 
+import trax.Templates;
+import trax.Transformer; 
+import trax.Result;
+import trax.ProcessorException; 
+import trax.ProcessorFactoryException;
+import trax.TransformException; 
 
 // Imported SAX classes
 import org.xml.sax.InputSource;
@@ -71,6 +72,7 @@ import org.xml.sax.helpers.ParserAdapter;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 // Imported DOM classes
 import org.w3c.dom.Node;
@@ -80,10 +82,17 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.Serializer;
 import org.apache.xml.serialize.SerializerFactory;
 
+// Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
 
+// Imported java.io classes
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.IOException;
+
+import org.apache.xalan.transformer.TransformerImpl;
 
   /**
    * This example shows how to chain a series of transformations by
@@ -108,36 +117,26 @@ public class Pipe
     Templates  stylesheet3 = processor.process(new InputSource("foo3.xsl"));
     Transformer transformer3= stylesheet3.newTransformer();
     
-    // Create an XMLReader (implemented by the Xerces SAXParser).
+    // Create an XMLReader.
 	XMLReader reader = XMLReaderFactory.createXMLReader();
-    
-    // transformer1 uses the reader (SAXParser) as its reader.
-    transformer1.setParent(reader);
-    
-    // transformer2 uses transformer1 as its reader.
-    transformer2.setParent(transformer1);
-    
-    // transform3 uses transform2 as its reader.
-    transformer3.setParent(transformer2);
-    
+	
+	ContentHandler chandler = transformer1.getInputContentHandler();
+    reader.setContentHandler(chandler);
+    if(chandler instanceof LexicalHandler)
+       reader.setProperty("http://xml.org/sax/properties/lexical-handler", chandler);
+    else
+       reader.setProperty("http://xml.org/sax/properties/lexical-handler", null);
+
+    transformer1.setContentHandler(transformer2.getInputContentHandler());
+    transformer2.setContentHandler(transformer3.getInputContentHandler());	
+	
     // transformer3 outputs SAX events to the serializer.
     SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
     Serializer serializer = sf.makeSerializer(System.out, new OutputFormat());
     transformer3.setContentHandler(serializer.asContentHandler());
 
-	// Perform the series of transformations as follows:
-	//   transformer3 gets its parent (transformer2) as the XMLReader/XMLFilter
-	//   and calls transformer2.parse(new InputSource("foo.xml")).
-    //   transformer2 gets its parent (transformer1) as the XMLReader/XMLFilter
-	//   and calls transformer1.parse(new InputSource("foo.xml")). 
-    //   transformer1 gets its parent (reader, a SAXParser) as the XMLReader 
-    //   and calls reader.parse(new InputSource("foo.xml")).
-	//   reader parses the XML document and sends the SAX parse events to transformer1, 
-	//   which performs transformation 1 and sends the output to transformer2.
-	//   transformer2 parses the transformation 1 output, performs transformation 2, and 
-	//   sends the output to transformer3.
-	//   transformer3 parses the transformation 2 output, performs transformation 3,
-	//   and sends the output to the serializer.
-    transformer3.parse(new InputSource("foo.xml"));
+	// Parse the XML input document. The input ContentHandler and output ContentHandler
+    // work in separate threads to optimize performance.   
+    reader.parse("foo.xml");	
   }
 }
