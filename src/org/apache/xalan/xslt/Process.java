@@ -105,7 +105,6 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 
 // Needed Serializer classes
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 
