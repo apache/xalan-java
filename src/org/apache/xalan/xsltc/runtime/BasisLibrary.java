@@ -1075,5 +1075,31 @@ public final class BasisLibrary implements Operators {
 	System.out.println(msg);
     }
 
+    /**
+     * Replace a certain character in a string with a new substring.
+     */
+    public static String replace(String base, char ch, String str) {
+	return (base.indexOf(ch) < 0) ? base : 
+	    replace(base, String.valueOf(ch), new String[] { str });
+    }
+
+    public static String replace(String base, String delim, String[] str) {
+	final int len = base.length();
+	final StringBuffer result = new StringBuffer();
+
+	for (int i = 0; i < len; i++) {
+	    final char ch = base.charAt(i);
+	    final int k = delim.indexOf(ch);
+
+	    if (k >= 0) {
+		result.append(str[k]);
+	    }
+	    else {
+		result.append(ch);
+	    }
+	}
+	return result.toString();
+    }
+
     //-- End utility functions
 }

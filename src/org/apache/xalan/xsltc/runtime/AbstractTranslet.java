@@ -103,6 +103,25 @@ public abstract class AbstractTranslet implements Translet {
     // Use one empty string instead of constantly instanciating String("");
     private final static String EMPTYSTRING = "";
 
+    
+    /************************************************************************
+     * Debugging
+     ************************************************************************/
+    public void printInternalState() {
+	System.out.println("-------------------------------------");
+	System.out.println("AbstractTranslet this = " + this);
+	System.out.println("vbase = " + vbase);
+	System.out.println("vframe = " + vframe);
+	System.out.println("varsStack.size() = " + varsStack.size());
+	System.out.println("pbase = " + pbase);
+	System.out.println("vframe = " + pframe);
+	System.out.println("paramsStack.size() = " + paramsStack.size());
+	System.out.println("namesArray.size = " + namesArray.length);
+	System.out.println("namespaceArray.size = " + namespaceArray.length);
+	System.out.println("");
+	System.out.println("Total memory = " + Runtime.getRuntime().totalMemory());
+    }
+
     /**
      * Wrap the initial input DOM in a dom adapter. This adapter is wrapped in
      * a DOM multiplexer if the document() function is used (handled by compiled
@@ -144,8 +163,8 @@ public abstract class AbstractTranslet implements Translet {
     public final void popParamFrame() {
 	if (pbase > 0) {
 	    final int oldpbase = ((Integer)paramsStack.get(--pbase)).intValue();
-	    for (int i = pbase; i < pframe; i++) {
-		paramsStack.set(i, null);	// for the GC
+	    for (int i = pframe - 1; i >= pbase; i--) {
+		paramsStack.remove(i);
 	    }
 	    pframe = pbase; pbase = oldpbase;
 	}
@@ -155,10 +174,9 @@ public abstract class AbstractTranslet implements Translet {
      * Add a new global parameter if not already in the current frame.
      */
     public final Object addParameter(String name, Object value) {
-	String parName = new String(name);
-	parName = replace(parName, '.', "$dot$");
-	parName = replace(parName, '-', "$dash$");
-	return addParameter(parName, value, false);
+	name = BasisLibrary.replace(name, ".-", 
+				    new String[] { "$dot$", "$dash$" });
+	return addParameter(name, value, false);
     }
 
     /**
@@ -167,16 +185,17 @@ public abstract class AbstractTranslet implements Translet {
      * default value from the <xsl:parameter> element's select attribute or
      * element body.
      */
-    public final Object addParameter(String name, Object value,
-				     boolean isDefault) {
-
+    public final Object addParameter(String name, Object value, 
+	boolean isDefault) 
+    {
 	// Local parameters need to be re-evaluated for each iteration
 	for (int i = pframe - 1; i >= pbase; i--) {
 	    final Parameter param = (Parameter) paramsStack.get(i);
+
 	    if (param._name.equals(name)) {
 		// Only overwrite if current value is the default value and
 		// the new value is _NOT_ the default value.
-		if ((param._isDefault == true) || (!isDefault)) {
+		if (param._isDefault || !isDefault) {
 		    param._value = value;
 		    param._isDefault = isDefault;
 		    return value;
@@ -186,8 +205,7 @@ public abstract class AbstractTranslet implements Translet {
 	}
 
 	// Add new parameter to parameter stack
-	final Parameter param = new Parameter(name, value, isDefault);
-	paramsStack.add(pframe++, param);
+	paramsStack.add(pframe++, new Parameter(name, value, isDefault));
 	return value;
     }
 
@@ -250,30 +268,6 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void addVariable(int vindex, Object value) {
 	varsStack.set(vbase + vindex, value);
-    }
-
-    /**
-     * Replace a certain character in a string with a new substring.
-     */
-    private static String replace(String base, char c, String str) {
-	final int len = base.length() - 1;
-	int pos;
-	while ((pos = base.indexOf(c)) > -1) {
-	    if (pos == 0) {
-		final String after = base.substring(1);
-		base = str + after;
-	    }
-	    else if (pos == len) {
-		final String before = base.substring(0, pos);
-		base = before + str;
-	    }
-	    else {
-		final String before = base.substring(0, pos);
-		final String after = base.substring(pos+1);
-		base = before + str + after;
-	    }
-	}
-	return base;
     }
 
     /************************************************************************
