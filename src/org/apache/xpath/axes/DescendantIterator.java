@@ -271,8 +271,8 @@ public class DescendantIterator extends LocPathIterator
     // System.out.println("what: ");
     // NodeTest.debugWhatToShow(what);
     if(DTMFilter.SHOW_ALL == what
-       || localName == NodeTest.WILD
-       || namespace == NodeTest.WILD)
+       || NodeTest.WILD.equals(localName)
+       || NodeTest.WILD.equals(namespace))
     {
       m_extendedTypeID = 0;
     }
