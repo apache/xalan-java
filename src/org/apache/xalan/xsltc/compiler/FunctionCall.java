@@ -479,7 +479,7 @@ class FunctionCall extends Expression {
 		exp.translate(classGen, methodGen);
 		// Convert the argument to its Java type
 		exp.startResetIterator(classGen, methodGen);
-		exp._type.translateTo(classGen, methodGen, paramTypes[i]);
+		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
 	    }
 
 	    final StringBuffer buffer = new StringBuffer();
