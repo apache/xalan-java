@@ -466,7 +466,9 @@ public final class TransformerImpl extends Transformer
 	    DTDMonitor dtd = null;
 
 	    // Get systemId from source
-	    _sourceSystemId = source.getSystemId();
+	    if (source != null) {
+		_sourceSystemId = source.getSystemId();
+	    }
 
 	    // Handle SAXSource input
 	    if (source instanceof SAXSource) {
