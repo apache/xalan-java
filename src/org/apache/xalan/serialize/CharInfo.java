@@ -66,6 +66,8 @@ import java.net.*;
 
 import java.util.Hashtable;
 
+import org.apache.xml.utils.CharKey;
+
 /**
  * This class provides services that tell if a character should have
  * special treatement, such as entity reference substitution or normalization
@@ -208,11 +210,13 @@ public class CharInfo
   protected void defineEntity(String name, char value)
   {
 
-    Character character = new Character(value);
+    CharKey character = new CharKey(value);
 
     m_charToEntityRef.put(character, name);
     m_specialsMap.set(value);
   }
+  
+  private CharKey m_charKey = new CharKey();
 
   /**
    * Resolve a character to an entity reference name.
@@ -223,7 +227,8 @@ public class CharInfo
    */
   public String getEntityNameForChar(char value)
   {
-    return (String) m_charToEntityRef.get(new Character(value));
+    m_charKey.setChar(value);
+    return (String) m_charToEntityRef.get(m_charKey);
   }
 
   /**
