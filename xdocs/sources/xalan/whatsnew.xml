@@ -59,7 +59,7 @@
 <s1 title="What's new in &xslt4j2;">
 <ul>
   <li><link anchor="design">New Design</link></li>
-  <li><link anchor="basic">Basic 4 steps</link></li>
+  <li><link anchor="basic">Basic steps</link></li>
   <ol>
     <li><link anchor="processor">Instantiate stylesheet Processor</link></li>
     <li><link anchor="process">Process stylesheet</link></li>
@@ -84,8 +84,8 @@
      System properties, for example, identify the stylesheet processor and SAX parser to use, and the serializers that are available for various output methods.<br/><br/></li>
   </ul>
   </s2><anchor name="basic"/>
-  <s2 title="Basic 4 steps">
-    <p>The following simple example highlights the basic steps involved in performing a transformation.</p>
+  <s2 title="Basic steps">
+    <p>The following simple example highlights the four basic steps involved in performing a transformation.</p>
     <source>// 1. Instantiate a stylesheet Processor.
 trax.Processor processor = trax.Processor.newInstance("xslt");
 
