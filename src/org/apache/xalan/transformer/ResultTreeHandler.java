@@ -257,12 +257,12 @@ public class ResultTreeHandler extends QueuedEvents
     
     if(m_isTransformClient && (null != m_transformer))
     {
-      m_currentElement = m_transformer.getCurrentElement();
-      m_currentTemplate = m_transformer.getCurrentTemplate();
-      m_matchedTemplate = m_transformer.getMatchedTemplate();
-      m_currentNode = m_transformer.getCurrentNode();
-      m_matchedNode = m_transformer.getMatchedNode();
-      m_contextNodeList = m_transformer.getContextNodeList(); // TODO: Need to clone
+      m_snapshot.m_currentElement = m_transformer.getCurrentElement();
+      m_snapshot.m_currentTemplate = m_transformer.getCurrentTemplate();
+      m_snapshot.m_matchedTemplate = m_transformer.getMatchedTemplate();
+      m_snapshot.m_currentNode = m_transformer.getCurrentNode();
+      m_snapshot.m_matchedNode = m_transformer.getMatchedNode();
+      m_snapshot.m_contextNodeList = m_transformer.getContextNodeList(); // TODO: Need to clone
     }
     // initQSE(m_startElement);
 
@@ -1473,7 +1473,7 @@ public class ResultTreeHandler extends QueuedEvents
   {
 
     if (m_elemIsPending)
-      return m_currentElement;
+      return m_snapshot.m_currentElement;
     else
       return m_transformer.getCurrentElement();
   }
@@ -1486,15 +1486,17 @@ public class ResultTreeHandler extends QueuedEvents
    */
   public org.w3c.dom.Node getCurrentNode()
   {
-
-    // %DTBD% Need DTM2DOM stuff
-    return null;
-
-    //    QueuedStartElement qe = getQueuedElem();
-    //    if(null != qe && qe.isPending)
-    //      return qe.getCurrentNode();
-    //    else
-    //      return m_transformer.getCurrentNode();
+    
+    if (m_elemIsPending)
+    {
+      DTM dtm = m_transformer.getXPathContext().getDTM(m_snapshot.m_currentNode);
+      return dtm.getNode(m_snapshot.m_currentNode);
+    }
+    else
+    {
+      DTM dtm = m_transformer.getXPathContext().getDTM(m_transformer.getCurrentNode());
+      return dtm.getNode(m_transformer.getCurrentNode());
+    }
   }
 
   /**
@@ -1512,7 +1514,7 @@ public class ResultTreeHandler extends QueuedEvents
   {
 
     if (m_elemIsPending)
-      return m_currentTemplate;
+      return m_snapshot.m_currentTemplate;
     else
       return m_transformer.getCurrentTemplate();
   }
@@ -1534,7 +1536,7 @@ public class ResultTreeHandler extends QueuedEvents
   {
 
     if (m_elemIsPending)
-      return m_matchedTemplate;
+      return m_snapshot.m_matchedTemplate;
     else
       return m_transformer.getMatchedTemplate();
   }
@@ -1549,14 +1551,16 @@ public class ResultTreeHandler extends QueuedEvents
   public org.w3c.dom.Node getMatchedNode()
   {
 
-    // %DTBD% Need DTM2DOM stuff
-    return null;
-
-    //    QueuedStartElement qe = getQueuedElem();
-    //    if(null != qe && qe.isPending)
-    //      return qe.getMatchedNode();
-    //    else
-    //      return m_transformer.getMatchedNode();
+    if (m_elemIsPending)
+    {
+      DTM dtm = m_transformer.getXPathContext().getDTM(m_snapshot.m_matchedNode);
+      return dtm.getNode(m_snapshot.m_matchedNode);
+    }
+    else
+    {
+      DTM dtm = m_transformer.getXPathContext().getDTM(m_transformer.getMatchedNode());
+      return dtm.getNode(m_transformer.getMatchedNode());
+    }
   }
 
   /**
@@ -1567,14 +1571,12 @@ public class ResultTreeHandler extends QueuedEvents
   public org.w3c.dom.traversal.NodeIterator getContextNodeList()
   {
 
-    // %DTBD% Need DTM2DOM stuff
-    return null;
-
-    //    QueuedStartElement qe = getQueuedElem();
-    //    if(null != qe && qe.isPending)
-    //      return qe.getContextNodeList();
-    //    else
-    //      return m_transformer.getContextNodeList();
+    if (m_elemIsPending)
+    {
+      return new org.apache.xml.dtm.ref.DTMNodeIterator(m_snapshot.m_contextNodeList);
+    }
+    else
+      return new org.apache.xml.dtm.ref.DTMNodeIterator(m_transformer.getContextNodeList());
   }
 
   /**
@@ -1631,7 +1633,44 @@ public class ResultTreeHandler extends QueuedEvents
    * Trace manager for debug support.
    */
   private TraceManager m_tracer;
+  
+  private QueuedStateSnapshot m_snapshot = new QueuedStateSnapshot();
 
   // These are passed to flushPending, to help it decide if it 
   // should really flush.
+  
+  class QueuedStateSnapshot
+  {
+    /**
+     * The stylesheet element that produced the SAX event.
+     */
+    ElemTemplateElement m_currentElement;
+    
+    /**
+     * The current context node in the source tree.
+     */
+    int m_currentNode;
+    
+    /**
+     * The xsl:template that is in effect, which may be a matched template
+     * or a named template.
+     */
+    ElemTemplate m_currentTemplate;
+    
+    /**
+     * The xsl:template that was matched.
+     */
+    ElemTemplate m_matchedTemplate;
+    
+    /**
+     * The node in the source tree that matched
+     * the template obtained via getMatchedTemplate().
+     */
+    int m_matchedNode;
+    
+    /**
+     * The current context node list.
+     */
+    DTMIterator m_contextNodeList;
+  }
 }

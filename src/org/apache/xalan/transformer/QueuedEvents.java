@@ -121,37 +121,6 @@ public abstract class QueuedEvents
   /** Local part of qualified name of the element           */
   protected String m_localName;
   
-  /**
-   * The stylesheet element that produced the SAX event.
-   */
-  protected ElemTemplateElement m_currentElement;
-  
-  /**
-   * The current context node in the source tree.
-   */
-  protected int m_currentNode;
-  
-  /**
-   * The xsl:template that is in effect, which may be a matched template
-   * or a named template.
-   */
-  protected ElemTemplate m_currentTemplate;
-  
-  /**
-   * The xsl:template that was matched.
-   */
-  protected ElemTemplate m_matchedTemplate;
-  
-  /**
-   * The node in the source tree that matched
-   * the template obtained via getMatchedTemplate().
-   */
-  protected int m_matchedNode;
-  
-  /**
-   * The current context node list.
-   */
-  protected DTMIterator m_contextNodeList;
   
   /** Vector of namespaces for this element          */
   protected Vector m_namespaces = null;
