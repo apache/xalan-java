@@ -505,135 +505,85 @@ public class Process
         if(doDiag)
           diagnosticsWriter.println("\n\n========\nTransform of "+inFileName+" via "+xslFileName+" took "+millisecondsDuration+" ms");
       }
-      catch(SAXParseException spe)
+      catch(Throwable throwable)
       {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + spe.getMessage());
-        Exception containedException = spe.getException();
-        if(null != containedException)
+        while(throwable instanceof org.apache.xalan.utils.WrappedRuntimeException)
+          throwable = ((org.apache.xalan.utils.WrappedRuntimeException)throwable).getException();
+
+        if((throwable instanceof NullPointerException) ||
+           (throwable instanceof ClassCastException)
+           )
+          doStackDumpOnError = true;
+        
+        if(throwable instanceof SAXException)
         {
+          SAXException spe = (SAXException)throwable;
           if(doStackDumpOnError)
           {
-            containedException = spe;
-            while(containedException instanceof SAXException)
-            {
-              containedException.printStackTrace(dumpWriter);
-              containedException = ((SAXException)containedException).getException();
-              dumpWriter.println("====================");
-            }
+            Exception containedException = spe.getException();
             if(null != containedException)
             {
-              containedException.printStackTrace(dumpWriter);
-              dumpWriter.println("====================");
-           }
+              containedException = spe;
+              while(containedException instanceof SAXException)
+              {
+                containedException.printStackTrace(dumpWriter);
+                containedException = ((SAXException)containedException).getException();
+                dumpWriter.println("====================");
+              }
+              if(null != containedException)
+              {
+                containedException.printStackTrace(dumpWriter);
+                dumpWriter.println("====================");
+              }
+              // else
+              //  System.out.println("Error! "+se.getMessage());
+              diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
+            }
+            else
+            {
+              spe.printStackTrace(dumpWriter);
+            }
           }
-          // else
-          //  System.out.println("Error! "+se.getMessage());
-          diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-        }
-        else
+          else
+          {
+            Exception e = spe;
+            while(null != e)
+            {
+              if(null != e.getMessage())
+              {
+                diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
+                                    +" ("+e.getClass().getName()+"): " 
+                                    + e.getMessage());        
+              }
+              if(e instanceof SAXParseException)
+              {
+                SAXParseException spe2 = (SAXParseException)e;
+                if(null != spe2.getSystemId())
+                  diagnosticsWriter.println("   ID: "+spe2.getSystemId()
+                                            +" Line #"+spe2.getLineNumber()
+                                            +" Column #"+spe2.getColumnNumber());
+                e = spe2.getException();
+                if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+                  e = ((org.apache.xalan.utils.WrappedRuntimeException)e).getException();
+              }
+              else
+                e = null;
+            }
+          }
+        }      
+        else 
         {
+          diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
+                                    +" ("+throwable.getClass().getName()+"): " 
+                                    + throwable.getMessage());        
           if(doStackDumpOnError)
-            spe.printStackTrace(dumpWriter);
-          // else
-          //  System.out.println("Error! "+se.getMessage());
-          diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null) ); //"XSL Process was not successful.");
+            throwable.printStackTrace(dumpWriter);
         }
-        diagnosticsWriter.println(" ID: "+spe.getSystemId()
-                                  +" Line #"+spe.getLineNumber()
-                                  +" Column #"+spe.getColumnNumber());
-        System.exit(-1);
-      }      
-      catch(TooManyListenersException tmle)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + tmle.getMessage());        
-        if(doStackDumpOnError)
-          tmle.printStackTrace(dumpWriter);
-        // else
-        //  System.out.println("Error! "+se.getMessage());
         diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-        System.exit(-1);
-      }
-
-      catch(SAXException se)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + se.getMessage());        
-        Exception containedException = se.getException();
-        if(null != containedException)
+        if(null != dumpFileName)
         {
-          if(doStackDumpOnError)
-            containedException.printStackTrace(dumpWriter);
-          // else
-          //  System.out.println("Error! "+se.getMessage());
-          diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
+          dumpWriter.close();
         }
-        else
-        {
-          if(doStackDumpOnError)
-            se.printStackTrace(dumpWriter);
-          // else
-          //  System.out.println("Error! "+se.getMessage());
-          diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null) ); //"XSL Process was not successful.");
-        }
-        System.exit(-1);
-      }
-      catch(ClassNotFoundException cnfe)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + cnfe.getMessage());        
-        if(doStackDumpOnError)
-          cnfe.printStackTrace(dumpWriter);
-        else
-          System.out.println("Error! "+cnfe.getMessage());
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-        System.exit(-1);
-      }
-      catch(IOException ioe)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + ioe.getMessage());
-        if(doStackDumpOnError)
-          ioe.printStackTrace(dumpWriter);
-        else
-          System.out.println("Error! "+ioe.getMessage());
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-        System.exit(-1);
-      }
-      catch(RuntimeException rte)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + rte.getMessage());
-        if(doStackDumpOnError)
-          rte.printStackTrace(dumpWriter);
-        else
-          System.out.println("Error! "+rte.getMessage());
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-        System.exit(-1);
-      }
-      catch(Exception e)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + e.getMessage());
-        if(doStackDumpOnError)
-          e.printStackTrace(dumpWriter);
-        else
-          System.out.println("Error! "+e.getMessage());
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-        System.exit(-1);
-      }
-      catch(Error err)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + err.getMessage());
-        if(doStackDumpOnError)
-          err.printStackTrace(dumpWriter);
-        else
-          System.out.println("Error! "+err.getMessage());
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-        System.exit(-1);
-      }
-      catch(Throwable thr)
-      {
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + thr.getMessage());        
-        if(doStackDumpOnError)
-          thr.printStackTrace(dumpWriter);
-        else          
-          System.out.println("Error! "+thr.getMessage());
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
         System.exit(-1);
       }
 
