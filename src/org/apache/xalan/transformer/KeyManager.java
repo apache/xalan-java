@@ -87,7 +87,7 @@ public class KeyManager
     LocPathIterator nl = null;
     ElemTemplateElement template = (ElemTemplateElement)nscontext; // yuck -sb
 
-    if(null != template.getStylesheetComposed().getKeysComposed())
+    if((null != template) && null != template.getStylesheetComposed().getKeysComposed())
     {
       boolean foundDoc = false;
       if(null == m_key_tables)
