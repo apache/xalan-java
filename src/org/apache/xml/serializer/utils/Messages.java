@@ -102,9 +102,7 @@ public final class Messages
 
     /** The class name of the error message string table with no language suffix. */
     private String m_resourceBundleName;
-    
-    /** The class name of the error message, with language suffix */ 
-    private String m_resourceBundleName_withSuffix;
+
 
     /** 
      * String to use if a bad message key is used.
@@ -320,8 +318,6 @@ public final class Messages
     {
         m_resourceBundleName = resourceBundle;
         Locale locale = getLocale();
-        String suffix = getResourceSuffix(locale);
-        m_resourceBundleName_withSuffix = m_resourceBundleName + suffix;
 
         ListResourceBundle lrb;
 
@@ -329,7 +325,7 @@ public final class Messages
         {
 
             ResourceBundle rb =
-                ResourceBundle.getBundle(m_resourceBundleName_withSuffix, locale);
+                ResourceBundle.getBundle(m_resourceBundleName, locale);
             lrb = (ListResourceBundle) rb;
         }
         catch (MissingResourceException e)
