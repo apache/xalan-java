@@ -163,19 +163,38 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
     }
 
     public Object getAttribute(String name) 
-	throws IllegalArgumentException { 
-	// GTM: look at name, if one of ours, get attr from xsltc fact
-	// else default to xalan
-	return _currFactory.getAttribute(name);
+	throws IllegalArgumentException 
+    {
+	// GTM: NB: 'debug' should change to something more unique... 
+	if ((name.equals("translet-name")) || (name.equals("debug"))) { 
+	    if (_xsltcFactory == null) {
+                createXSLTCTransformerFactory();
+            }
+            return _xsltcFactory.getAttribute(name); 
+        }
+        else {
+	    if (_xalanFactory == null) {
+	        createXalanTransformerFactory();
+	    } 
+	    return _xalanFactory.getAttribute(name);
+        }
     }
 
     public void setAttribute(String name, Object value) 
 	throws IllegalArgumentException { 
-	// GTM: look at name arg, if it is an xsltc attr (debug,defaulttransfor)
-	// then create an xsltc factory and set attr
-	// else default to xalan factory and set attr
-	_xsltcFactory.setAttribute(name, value);
-	_xalanFactory.setAttribute(name, value);
+	// GTM: NB: 'debug' should change to something more unique... 
+	if ((name.equals("translet-name")) || (name.equals("debug"))) { 
+	    if (_xsltcFactory == null) {
+                createXSLTCTransformerFactory();
+            }
+            _xsltcFactory.setAttribute(name, value); 
+        }
+        else {
+	    if (_xalanFactory == null) {
+	        createXalanTransformerFactory();
+	    } 
+	    _xalanFactory.setAttribute(name, value);
+        }
     }
 
     public boolean getFeature(String name) { 
@@ -365,5 +384,4 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
             throw e1;
         }
     }
-
 }
