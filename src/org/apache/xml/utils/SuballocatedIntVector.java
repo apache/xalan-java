@@ -434,8 +434,8 @@ public class SuballocatedIntVector
   {
     // %OPT% Does this really buy us anything? Test versus division for small,
     // test _plus_ division for big docs.
-    //if(i<m_blocksize)
-    //  return m_map0[i];
+    if(i<m_blocksize)
+      return m_map0[i];
 
     return m_map[i/m_blocksize][i%m_blocksize];
   }

@@ -407,26 +407,34 @@ public class SuballocatedByteVector
   }
 
   /**
-   * Get the nth element.
+   * Get the nth element. This is often at the innermost loop of an
+   * application, so performance is critical.
    *
-   * @param i index of object to get
+   * @param i index of value to get
    *
-   * @return object at given index
+   * @return value at given index. If that value wasn't previously set,
+   * the result is undefined for performance reasons. It may throw an
+   * exception (see below), may return zero, or (if setSize has previously
+   * been used) may return stale data.
+   *
+   * @throw ArrayIndexOutOfBoundsException if the index was _clearly_
+   * unreasonable (negative, or past the highest block).
+   *
+   * @throw NullPointerException if the index points to a block that could
+   * have existed (based on the highest index used) but has never had anything
+   * set into it.
+   * %REVIEW% Could add a catch to create the block in that case, or return 0.
+   * Try/Catch is _supposed_ to be nearly free when not thrown to. Do we
+   * believe that? Should we have a separate safeElementAt?
    */
   public byte elementAt(int i)
   {
+    // %OPT% Does this really buy us anything? Test versus division for small,
+    // test _plus_ division for big docs.
     if(i<m_blocksize)
       return m_map0[i];
-    if(i>=m_firstFree)
-      return Byte.MIN_VALUE; // %REVIEW% Does anyone _care_?
-    
-    int index=i/m_blocksize;
-    int offset=i%m_blocksize;
 
-    byte[] block=m_map[index];
-    if(null==block)
-      return Byte.MIN_VALUE; // %REVIEW% Does anyone _care_?
-    return block[offset];
+    return m_map[i/m_blocksize][i%m_blocksize];
   }
 
   /**
