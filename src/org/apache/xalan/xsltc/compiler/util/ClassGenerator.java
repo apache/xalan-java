@@ -104,7 +104,7 @@ public class ClassGenerator extends ClassGen {
 	_parser = stylesheet.getParser();
 	_aloadTranslet = new ALOAD(TRANSLET_INDEX);
 	
-	if (stylesheet.isMultiDOM()) {
+	if (stylesheet.isMultiDocument()) {
 	    _domClass = "org.apache.xalan.xsltc.dom.MultiDOM";
 	    _domClassSig = "Lorg/apache/xalan/xsltc/dom/MultiDOM;";
 	}
