@@ -1013,6 +1013,7 @@ public class XStringForFSB extends XString
           return Double.NaN;    // Second period is error
       }
       
+      // Should embedded whitespace _REALLY_ be ignored???
       else if(XMLCharacterRecognizer.isWhiteSpace(c))
         break;                  // Whitespace is ignored
 
