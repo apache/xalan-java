@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Created-By: 1.2.2 (Sun Microsystems Inc.)
+Created-By: @java.version@ (@java.vendor@)
 Main-Class: org.apache.xalan.xslt.Process
 Class-Path: xercesImpl.jar xml-apis.jar
 

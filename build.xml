@@ -410,6 +410,8 @@ Copyright:
     description="Jar just the xsltc.jar file" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
+    <filter token="java.version" value="${java.version}"/>
+    <filter token="java.vendor" value="${java.vendor}"/>        
     <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
     <jar jarfile="${build.xsltc.jar}" manifest="${build.dir}/manifest.xsltc" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
@@ -495,6 +497,8 @@ Copyright:
 
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
+    <filter token="java.version" value="${java.version}"/>
+    <filter token="java.vendor" value="${java.vendor}"/>     
     <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
     
     <!-- make bundled jar named xsltc.jar -->
@@ -520,6 +524,8 @@ Copyright:
     description="Jar up everything in Xalan interpretive (without XSLTC)" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
+    <filter token="java.version" value="${java.version}"/>
+    <filter token="java.vendor" value="${java.vendor}"/>     
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     <jar jarfile="${build.xalan-interpretive.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
@@ -539,6 +545,8 @@ Copyright:
   <target name="unbundledjar" depends="xalan-interpretive.compile,xsltc.compile"
     description="Jar up Xalan and XSLTC, without the XSLTC dependencies" >
     <filter token="impl.version" value="${impl.version}"/>
+    <filter token="java.version" value="${java.version}"/>
+    <filter token="java.vendor" value="${java.vendor}"/>     
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     <jar jarfile="${build.xalan-unbundled.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
       <patternset>
@@ -559,6 +567,8 @@ Copyright:
     
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
+    <filter token="java.version" value="${java.version}"/>
+    <filter token="java.vendor" value="${java.vendor}"/>     
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     
     <!-- make bundled jar named xalan.jar -->
