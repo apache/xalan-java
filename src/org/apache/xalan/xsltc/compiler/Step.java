@@ -224,14 +224,7 @@ final class Step extends RelativeLocationPath {
 	    _type = Type.NodeSet;
 	}
 	else {
-	    // Special case for '@attr' with no parent or predicates
-	    if ((_axis == Axis.ATTRIBUTE) && (_nodeType!=NodeTest.ATTRIBUTE) &&
-		(!hasParentPattern()) && (!_hadPredicates) && (!isPredicate())) {
-		_type = Type.Node;
-	    }
-	    else {
-		_type = Type.NodeSet;
-	    }
+	    _type = Type.NodeSet;
 	}
 
 	// Type check all predicates (expressions applied to the step)
@@ -303,25 +296,13 @@ final class Step extends RelativeLocationPath {
 	    // If it is an attribute but not '@*' or '@attr' with a parent
 	    if ((_axis == Axis.ATTRIBUTE) &&
 		(_nodeType != NodeTest.ATTRIBUTE) && (!hasParentPattern())) {
-		int node = cpg.addInterfaceMethodref(DOM_INTF,
-						     "getAttributeNode",
-						     "(II)I");
 		int iter = cpg.addInterfaceMethodref(DOM_INTF,
 						     "getTypedAxisIterator",
 						     "(II)"+NODE_ITERATOR_SIG);
-		if (_type instanceof NodeType) {
-		    il.append(methodGen.loadDOM());
-		    il.append(new PUSH(cpg, _nodeType));
-		    il.append(methodGen.loadContextNode());
-		    il.append(new INVOKEINTERFACE(node, 3));
-		}
-		// If it is the case '@attr[P_1]...[P_k]'
-		else if (_type instanceof NodeSetType) {
-		    il.append(methodGen.loadDOM());
-		    il.append(new PUSH(cpg, Axis.ATTRIBUTE));
-		    il.append(new PUSH(cpg, _nodeType));
-		    il.append(new INVOKEINTERFACE(iter, 3));
-		}
+		il.append(methodGen.loadDOM());
+		il.append(new PUSH(cpg, Axis.ATTRIBUTE));
+		il.append(new PUSH(cpg, _nodeType));
+		il.append(new INVOKEINTERFACE(iter, 3));
 		return;
 	    }
 
