@@ -19,7 +19,7 @@ set ANT=bin\ant.jar
 set XERCES=bin\xerces.jar
 set BSF=bin\bsf.jar
 set BSFENGINES=bin\bsfengines.jar
-set DOCGENERATOR=bin\stylebook-1.0-b2.jar
+set DOCGENERATOR=bin\stylebook-1.0-b3_xalan-2.jar
 set DOCLET=bin\xalanjdoc.jar
 
 rem DOCLET must be on system CLASSPATH for javadocs task to work. Just including it in

@@ -8,7 +8,7 @@ Setup instructions:
    
      - set the JAVA_HOME environment variable to the JDK root directory
      - To build 'servlet' sample: Include Servlet SDK in your classpath
-     - To build docs/javadocs: use JDK 1.2.x or higher, and have a xalan1.jar available
+     - To build docs/javadocs: use JDK 1.2.x or higher
      
    
 Build Instructions:   
@@ -85,11 +85,6 @@ Copyright:
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
-  <!-- Note: to properly rebuild the normal documentation (i.e. not the javadoc) 
-       you'll need a copy of a Xalan 1.x jar to do it, since some of the doc tools
-       we use still are tied to the Xalan 1.x codebase.  This path points to where 
-       a Xalan 1.x jar would get compiled (since we're in the same tree) -->
-  <property name="xalan1.jar" value="../build/xalan.jar"/> <!-- still used by StyleBook -->
   
   <property name="site.root" value="./xml-site"/>
   <property name="site.dir" value="${site.root}/target/xalan"/>
@@ -225,7 +220,7 @@ Copyright:
   
   <target name="autodocs">
     <echo message="autodocs is for automated build process, without dependencies"/>   
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalan1.jar}" 
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalan.jar}" 
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
   </target>
   

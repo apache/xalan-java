@@ -25,7 +25,7 @@ TOOLS_JAR=$JAVA_HOME/lib/tools.jar
 XERCES=$BINDIR/xerces.jar
 BSF=$BINDIR/bsf.jar
 BSFENGINES=$BINDIR/bsfengines.jar
-DOCGENERATOR=$BINDIR/stylebook-1.0-b2.jar
+DOCGENERATOR=$BINDIR/stylebook-1.0-b3_xalan-2.jar
 DOCLET=$BINDIR/xalanjdoc.jar
 
 # Make sure this classpath scheme works. I.e., can javadoc find xalanjdoc.Standard?
