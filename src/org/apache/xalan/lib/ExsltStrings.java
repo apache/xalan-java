@@ -67,7 +67,7 @@ import java.util.StringTokenizer;
  *
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
- *    xmlns:math="http://exslt.org/strings"
+ *    xmlns:strings="http://exslt.org/strings"
  * </pre>
  * The documentation for each function has been copied from the relevant
  * EXSLT Implementer page.

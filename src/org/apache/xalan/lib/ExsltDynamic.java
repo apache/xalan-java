@@ -83,7 +83,7 @@ import javax.xml.parsers.*;
  *
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
- *    xmlns:math="http://exslt.org/dynamic"
+ *    xmlns:dynamic="http://exslt.org/dynamic"
  * </pre>
  * The documentation for each function has been copied from the relevant
  * EXSLT Implementer page.
