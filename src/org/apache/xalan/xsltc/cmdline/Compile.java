@@ -88,7 +88,7 @@ public final class Compile {
     private final static String USAGE_STRING =
 	"Usage:\n" + 
 	"   xsltc [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
-	"         [-p <package name>] [-x] [-u] <stylesheet>... \n\n"+
+	"         [-p <package name>] [-x] [-s] [-u] <stylesheet>... \n\n"+
 	"   Where <output> is the name to give the the generated translet.\n"+
 	"         <stylesheet> is one or more stylesheet file names, or if,\n"+
 	"         the -u options is specified, one or more stylesheet URLs.\n"+
@@ -98,6 +98,7 @@ public final class Compile {
 	"   Notes:\n"+
 	"         The -o option is ignored when multiple stylesheets are specified.\n"+
 	"         The -x option switched on debug messages.";
+	"         The -s option disables calling System.exit.";
     
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
