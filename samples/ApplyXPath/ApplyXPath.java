@@ -133,7 +133,23 @@ public class ApplyXPath
       Node n;
       while ((n = nl.nextNode())!= null)
       {         
-        serializer.transform(new DOMSource(n), new StreamResult(System.out));
+	if (isTextNode(n)) {
+	    // DOM may have more than one node corresponding to a 
+	    // single XPath text node.  Coalesce all contiguous text nodes
+	    // at this level
+	    StringBuffer sb = new StringBuffer(n.getNodeValue());
+	    for (
+	      Node nn = n.getNextSibling(); 
+	      isTextNode(nn);
+	      nn = nn.getNextSibling()
+	    ) {
+	      sb.append(nn.getNodeValue());
+	    }
+	    System.out.print(sb);
+	}
+	else {
+	  serializer.transform(new DOMSource(n), new StreamResult(System.out));
+	}
         System.out.println();
       }
       System.out.println("</output>");
@@ -144,6 +160,14 @@ public class ApplyXPath
     }
   }
   
+  /** Decide if the node is text, and so must be handled specially */
+  static boolean isTextNode(Node n) {
+    if (n == null)
+      return false;
+    short nodeType = n.getNodeType();
+    return nodeType == Node.CDATA_SECTION_NODE || nodeType == Node.TEXT_NODE;
+  }
+
   /** Main method to run from the command line.    */
   public static void main (String[] args)
     throws Exception
