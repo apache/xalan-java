@@ -348,7 +348,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <target name="docs" depends="prepare.docs,autodocs"
+  <target name="docs" depends="jar,prepare.docs,autodocs"
     description="Build the framework documentation (overview, readme, etc.)" >
     <echo message="docs is human-usable target with dependencies"/>  
   </target>
@@ -435,7 +435,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="docs,javadocs,samples,servlet,compat.jar,compat.javadocs,autodist"
+  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
