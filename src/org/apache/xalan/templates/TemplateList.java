@@ -98,6 +98,14 @@ public class TemplateList implements java.io.Serializable
    */
   public void setTemplate(ElemTemplate template)
   {
+    XPath matchXPath = template.getMatch();
+    
+    if (null == template.getName() && null == matchXPath)
+    {  
+      template.error(XSLTErrorResources.ER_NEED_NAME_OR_MATCH_ATTRIB,
+          new Object[]{ "xsl:template" });
+    }
+    
     if (null != template.getName())
     {
       ElemTemplate existingTemplate = (ElemTemplate) m_namedTemplates.get(template.getName());
@@ -121,7 +129,7 @@ public class TemplateList implements java.io.Serializable
       }
     }
 
-    XPath matchXPath = template.getMatch();
+    
 
     if (null != matchXPath)
     {
