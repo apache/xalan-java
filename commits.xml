@@ -534,4 +534,14 @@ haste, more speed."</Log>
  method or getOwnerDocument(), both of which take a node as input
  and thus more clearly identify which document we're referring to.</Log>
 </Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/12/2002</DateCommitted>
+<Modified>java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
+<Log>Bugzilla 6328, whitespace normalization. Late fix, but it was a genuine 
+regresion.
+ This code could still do with a rationalization pass; I think it can be made 
+slightly
+ a touch faster.</Log>
+</Commit>
 </Commits>
