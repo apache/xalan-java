@@ -79,7 +79,10 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.jar.*;
 
-import com.sun.xml.tree.*;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.Element;
+import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.util.getopt.*;
@@ -180,7 +183,7 @@ public final class XSLTC {
 		setClassName(Util.toJavaName(Util.noExtName(baseName)));
 	    }
 	    
-	    final ElementEx stylesheetElement = _parser.parse(stylesheet);
+	    final Element stylesheetElement = _parser.parse(stylesheet);
 	    if (_parser.errorsFound()) {
 		_parser.printErrors();
 		return false;
@@ -484,16 +487,18 @@ public final class XSLTC {
 	// create the manifest
 	final Manifest manifest = new Manifest();
 	manifest.getMainAttributes()
-	    .put(Attributes.Name.MANIFEST_VERSION, "1.0");
+	    .put(java.util.jar.Attributes.Name.MANIFEST_VERSION, "1.0");
 
 	final Map map = manifest.getEntries();
 	// create manifest
 	Enumeration classes = _classes.elements();
 	final String now = (new Date()).toString();
-	final Attributes.Name dateAttr = new Attributes.Name("Date");
+	final java.util.jar.Attributes.Name dateAttr = 
+	    new java.util.jar.Attributes.Name("Date");
 	while (classes.hasMoreElements()) {
 	    final JavaClass clazz = (JavaClass)classes.nextElement();
-	    final Attributes attr = new Attributes();
+	    final java.util.jar.Attributes attr = 
+		new java.util.jar.Attributes();
 	    attr.put(dateAttr, now);
 	    map.put(classFileName(clazz.getClassName()), attr);
 	}

@@ -63,7 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class When extends Instruction {
@@ -82,7 +83,7 @@ final class When extends Instruction {
 	return _test;
     }
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	boolean ignore = false;
 	_test = parser.parseExpression(this, element, "test");
 	if (_test instanceof ElementAvailableCall) {

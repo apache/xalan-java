@@ -63,7 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -71,7 +72,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class ProcessingInstruction extends Instruction {
     private AttributeValue _name; // name treated as AVT (7.1.3)
     
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	final String name  =element.getAttribute("name");
 	_name = AttributeValue.create(this, name, parser);
 	if (name.equals("xml")) {

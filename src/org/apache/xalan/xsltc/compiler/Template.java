@@ -68,7 +68,8 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 
 import de.fub.bytecode.generic.*;
@@ -206,7 +207,7 @@ public final class Template extends TopLevelElement {
 	return _stylesheet;
     }
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 
 	final String name     = element.getAttribute("name");
 	final String mode     = element.getAttribute("mode");
@@ -251,7 +252,7 @@ public final class Template extends TopLevelElement {
 	parser.setTemplate(null);	// clear template
     }
 
-    public void parseSimplified(ElementEx element, Parser parser) {
+    public void parseSimplified(Element element, Parser parser) {
 
 	_stylesheet = super.getStylesheet();
 

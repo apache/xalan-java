@@ -67,7 +67,11 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Enumeration;
 
-import com.sun.xml.tree.ElementEx;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.*;
 
@@ -81,7 +85,7 @@ final class Include extends TopLevelElement {
 	return(_included);
     }
 
-    public void parseContents(ElementEx element, final Parser parser) {
+    public void parseContents(Element element, final Parser parser) {
 	try {
 	    final Stylesheet context = parser.getCurrentStylesheet();
 	    final String href = element.getAttribute("href");
@@ -89,7 +93,7 @@ final class Include extends TopLevelElement {
 	    if (context.checkForLoop(toInclude))
 		throw new Exception(toInclude.toString() + " already loaded");
 
-	    final ElementEx stylesheetEl = parser.parse(toInclude);
+	    final Element stylesheetEl = parser.parse(toInclude);
 	    if (stylesheetEl == null) return;
 	    final Stylesheet _included = parser.makeStylesheet(stylesheetEl);
 	    if (_included == null) return;

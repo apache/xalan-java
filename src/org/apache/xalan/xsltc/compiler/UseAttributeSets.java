@@ -66,7 +66,7 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import com.sun.xml.tree.ElementEx;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;

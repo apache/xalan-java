@@ -66,8 +66,11 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 import java.util.Enumeration;
+
+import javax.xml.parsers.*;
+
 import org.w3c.dom.*;
-import com.sun.xml.tree.ElementEx;
+import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 
@@ -180,7 +183,7 @@ public abstract class SyntaxTreeNode implements Constants {
      * This method is normally overriden by subclasses.
      * By default, it parses all the children of <tt>element</tt>.
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	parseChildren(element, parser);
     }
 
@@ -188,7 +191,7 @@ public abstract class SyntaxTreeNode implements Constants {
      * Parse all the children of <tt>element</tt>.
      * XSLT commands are recognized by the XSLT namespace
      */
-    public final void parseChildren(ElementEx element, Parser parser) {
+    public final void parseChildren(Element element, Parser parser) {
 	final NodeList nl = element.getChildNodes();
 	final int n = nl != null ? nl.getLength() : 0;
 	Vector locals = null;	// only create when needed
@@ -198,7 +201,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	    switch (node.getNodeType()) {
 	    case Node.ELEMENT_NODE:
 		
-		final ElementEx child = (ElementEx)node;
+		final Element child = (Element)node;
 		// Add namespace declarations to symbol table
 		parser.pushNamespaces(child);
 		final SyntaxTreeNode instance = parser.makeInstance(child);
@@ -367,17 +370,17 @@ public abstract class SyntaxTreeNode implements Constants {
 	return _line;
     }
 
-    protected static void reportError(ElementEx element, Parser parser,
+    protected static void reportError(Element element, Parser parser,
 				      int errorCode, String errMsg) {
-	final int lineNumber = ((Integer)element.getUserObject()).intValue();
-	final ErrorMsg error = new ErrorMsg(errorCode, lineNumber, errMsg);
+	//final int lineNumber = ((Integer)element.getUserObject()).intValue();
+	final ErrorMsg error = new ErrorMsg(errorCode, -1 /*lineNumber*/, errMsg);
         parser.addError(error);
     }
 
-    protected static void reportWarning(ElementEx element, Parser parser,
+    protected static void reportWarning(Element element, Parser parser,
 				      int errorCode, String errMsg) {
-	final int lineNumber = ((Integer)element.getUserObject()).intValue();
-	final ErrorMsg error = new ErrorMsg(errorCode, lineNumber, errMsg);
+	//final int lineNumber = ((Integer)element.getUserObject()).intValue();
+	final ErrorMsg error = new ErrorMsg(errorCode, -1 /*lineNumber*/, errMsg);
         parser.addWarning(error);
     }
 

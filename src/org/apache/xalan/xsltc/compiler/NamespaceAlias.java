@@ -66,7 +66,9 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import com.sun.xml.tree.ElementEx;
+
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -80,7 +82,7 @@ final class NamespaceAlias extends TopLevelElement {
      * The namespace alias definitions given here have an impact only on
      * literal elements and literal attributes.
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	sPrefix = element.getAttribute("stylesheet-prefix");
 	rPrefix = element.getAttribute("result-prefix");
 	parser.getSymbolTable().addPrefixAlias(sPrefix,rPrefix);

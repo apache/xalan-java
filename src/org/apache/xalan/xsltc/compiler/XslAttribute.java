@@ -66,7 +66,8 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -96,7 +97,7 @@ final class XslAttribute extends Instruction {
     /**
      * Parses the attribute's contents. Special care taken for namespaces.
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 
 	final SymbolTable stable = parser.getSymbolTable();
 	String namespace = element.getAttribute("namespace");

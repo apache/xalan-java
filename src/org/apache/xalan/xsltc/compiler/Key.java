@@ -62,7 +62,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -76,7 +80,7 @@ final class Key extends TopLevelElement {
     private Expression _use;
     private Type       _useType;
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	// make sure values are provided
 	_name = parser.getQName(element.getAttribute("name"));
 	_match = parser.parsePattern(this, element, "match");

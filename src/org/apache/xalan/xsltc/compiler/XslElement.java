@@ -67,7 +67,9 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import com.sun.xml.tree.ElementEx;
+
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -98,7 +100,7 @@ final class XslElement extends Instruction {
      * around the problem by treating the namaspace attribute as a constant.
      *          (Yes, I know this is a hack, bad, bad, bad.)
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 
 	final SymbolTable stable = parser.getSymbolTable();
 

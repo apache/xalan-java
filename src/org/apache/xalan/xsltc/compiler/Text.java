@@ -64,7 +64,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.w3c.dom.*;
-import com.sun.xml.tree.ElementEx;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -90,7 +90,7 @@ final class Text extends Instruction {
 	Util.println(_text);
     }
 		
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
         final String str = element.getAttribute("disable-output-escaping");
 	if ((str != null) && (str.equals("yes"))) {
 	    _escaping = false;

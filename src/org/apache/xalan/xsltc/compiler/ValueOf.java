@@ -64,7 +64,10 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
+import de.fub.bytecode.generic.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -80,7 +83,7 @@ final class ValueOf extends Instruction {
 	Util.println("select " + _select.toString());
     }
 		
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	_select = parser.parseExpression(this, element, "select");
 
         // make sure required attribute(s) have been set

@@ -64,7 +64,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.w3c.dom.*;
-import com.sun.xml.tree.ElementEx;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.classfile.JavaClass;
@@ -103,7 +103,7 @@ final class Number extends Instruction {
 	"___any_node_counter"			   // LEVEL_ANY
     };
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	NamedNodeMap attributes = element.getAttributes();
 	final int nAttributes = attributes.getLength();
 

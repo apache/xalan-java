@@ -66,7 +66,12 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 import java.util.Enumeration;
-import com.sun.xml.tree.ElementEx;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.generic.*;
@@ -83,7 +88,7 @@ final class ForEach extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 		
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	_select = parser.parseExpression(this, element, "select");
 	parseChildren(element, parser);
 

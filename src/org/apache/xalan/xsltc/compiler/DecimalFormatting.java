@@ -64,8 +64,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import javax.xml.parsers.*;
+
 import org.w3c.dom.*;
-import com.sun.xml.tree.ElementEx;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.generic.*;
@@ -83,7 +86,7 @@ final class DecimalFormatting extends TopLevelElement {
     private static final String DFS_CLASS = "java.text.DecimalFormatSymbols";
     private static final String DFS_SIG   = "Ljava/text/DecimalFormatSymbols;";
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	NamedNodeMap attributes = element.getAttributes();
 	final int nAttributes = attributes.getLength();
 	for (int i = 0; i < nAttributes; i++) {

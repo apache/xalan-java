@@ -63,7 +63,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -82,7 +86,7 @@ final class CallTemplate extends Instruction {
 	return elementCount() > 0;
     }
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	_name = parser.getQName(element.getAttribute("name"));
 	parseChildren(element, parser);
     }

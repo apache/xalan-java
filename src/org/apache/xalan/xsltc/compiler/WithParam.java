@@ -63,7 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.generic.*;
@@ -83,7 +84,7 @@ final class WithParam extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	final String name = element.getAttribute("name");
 	if (name.length() > 0) {
 	    _name = parser.getQName(name);

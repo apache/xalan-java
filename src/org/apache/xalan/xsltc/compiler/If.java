@@ -63,7 +63,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -80,7 +84,7 @@ final class If extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 		
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	_test = parser.parseExpression(this, element, "test");
 	parseChildren(element, parser);
 

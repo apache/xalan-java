@@ -65,7 +65,12 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import com.sun.xml.tree.ElementEx;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -97,7 +102,7 @@ final class Fallback extends Instruction {
      * Parse contents only if this fallback element is put in place of
      * some unsupported element or non-XSLTC extension element
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	if (_active) {
 	    parseChildren(element, parser);
 	}

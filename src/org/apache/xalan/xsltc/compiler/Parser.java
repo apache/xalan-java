@@ -74,10 +74,10 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.net.MalformedURLException;
 
+import javax.xml.parsers.*;
+
 import org.w3c.dom.*;
 import org.xml.sax.*;
-import com.sun.xml.tree.*;
-import com.sun.xml.parser.Resolver;
 
 import java_cup.runtime.Symbol;
 
@@ -277,7 +277,7 @@ public final class Parser implements Constants {
      * and then parse, typecheck and compile the instance.
      * Must be called after <code>parse()</code>.
      */
-    public Stylesheet makeStylesheet(ElementEx element) 
+    public Stylesheet makeStylesheet(Element element) 
 	throws CompilerException {
 	try {
 	    Stylesheet stylesheet;
@@ -287,7 +287,7 @@ public final class Parser implements Constants {
 
 	    // Get the name of this element and try to map it to a class
 	    final QName qName = getQName(element.getTagName());
-	    final String namespace = element.getNamespace();
+	    final String namespace = element.getNamespaceURI();
 	    final String classname = (String)_instructionClasses.get(qName);
 
 	    // Make a Stylesheet object from the root node if it is an
@@ -317,7 +317,7 @@ public final class Parser implements Constants {
      * Update the symbol table with the namespace declarations defined in
      * <tt>element</tt>.
      */
-    public void pushNamespaces(ElementEx element) {
+    public void pushNamespaces(Element element) {
 	pushPopNamespaces(element, true);
     }
 
@@ -325,7 +325,7 @@ public final class Parser implements Constants {
      * Update the symbol table with the namespace declarations defined in
      * <tt>element</tt>.
      */
-    public void popNamespaces(ElementEx element) {
+    public void popNamespaces(Element element) {
 	pushPopNamespaces(element, false);
     }
 
@@ -334,7 +334,7 @@ public final class Parser implements Constants {
      * <tt>element</tt>. The declarations are added or removed form the
      * symbol table depending on the value of <tt>push</tt>.
      */
-    private void pushPopNamespaces(ElementEx element, boolean push) {
+    private void pushPopNamespaces(Element element, boolean push) {
 	final NamedNodeMap map = element.getAttributes();
 	final int n = map.getLength();
 	for (int i = 0; i < n; i++) {
@@ -362,18 +362,18 @@ public final class Parser implements Constants {
 	}
     }
 
-    public void createAST(ElementEx stylesheetElement, Stylesheet stylesheet) {
+    public void createAST(Element element, Stylesheet stylesheet) {
 	try {
 	    if (stylesheet != null) {
-		stylesheet.parseContents(stylesheetElement, this);
+		stylesheet.parseContents(element, this);
 		final int precedence = stylesheet.getImportPrecedence();
 		final Enumeration elements = stylesheet.elements();
 		while (elements.hasMoreElements()) {
-		    Object element = elements.nextElement();
+		    Object child = elements.nextElement();
 		    // GTM: fixed bug # 4415344 
-		    if (element instanceof Text){
+		    if (child instanceof Text){
 			throw new TypeCheckError(new ErrorMsg(
-			    "character data '" + ((Text)element).getText() +
+			    "character data '" + ((Text)child).getText() +
 			    "' found outside top level stylesheet element."));
 		    }
 		}
@@ -388,23 +388,29 @@ public final class Parser implements Constants {
 	}
     }
 
-    public ElementEx parse(URL stylesheetURL) {
+    public Element parse(URL url) {
+	return(parse(url.toString()));
+    }
+
+    public Element parse(String stylesheetURL) {
 	try {
-	    final InputSource input =
-		Resolver.createInputSource(stylesheetURL, true);
-	    com.sun.xml.parser.Parser parser = new com.sun.xml.parser.Parser();
-	    final XmlDocumentBuilderEx builder = new XmlDocumentBuilderEx();
-	    builder.setDisableNamespaces(false); // enable namespaces
-	    parser.setDocumentHandler(builder);
-	    parser.parse(input);
-	    final XmlDocument document = builder.getDocument();
-	    return (ElementEx)getStylesheet(document);
+	    // Get an instance of the document builder factory
+	    final DocumentBuilderFactory factory =
+		DocumentBuilderFactory.newInstance();
+	    factory.setNamespaceAware(true);
+
+	    // Then make an instance of the actual document builder
+	    final DocumentBuilder builder = factory.newDocumentBuilder();
+	    if (!builder.isNamespaceAware()) { // Must be namespace aware
+		addError(new ErrorMsg("SAX parser is not namespace aware"));
+	    }
+
+	    // Parse the stylesheet document and return the root element
+	    Document document = builder.parse(stylesheetURL);
+	    return document.getDocumentElement();
 	}
-	catch (FileNotFoundException e) {
-	    addError(new ErrorMsg(ErrorMsg.FILENOTF_ERR, stylesheetURL));
-	}
-	catch (MalformedURLException e) {
-	    addError(new ErrorMsg(ErrorMsg.INVALURI_ERR, stylesheetURL));
+	catch (ParserConfigurationException e) {
+	    addError(new ErrorMsg("JAXP parser not configured correctly"));
 	}
 	catch (IOException e) {
 	    addError(new ErrorMsg(ErrorMsg.FILECANT_ERR, stylesheetURL));
@@ -413,9 +419,6 @@ public final class Parser implements Constants {
 	    addError(new ErrorMsg(e.getMessage(),e.getLineNumber()));
 	}
 	catch (SAXException e) {
-	    addError(new ErrorMsg(e.getMessage()));
-	}
-	catch (CompilerException e) {
 	    addError(new ErrorMsg(e.getMessage()));
 	}
 	return null;
@@ -428,14 +431,14 @@ public final class Parser implements Constants {
      * same as the value declared in the <?xml-stylesheet...?> processing 
      * instruction (P.I.). In the xml-stylesheet P.I. the value is labeled
      * as the 'href' data of the P.I. The extracted DOM representing the
-     * stylesheet is returned as an ElementEx object.
+     * stylesheet is returned as an Element object.
      */
-    private ElementEx getStylesheet(XmlDocument doc) throws CompilerException {
+    private Element getStylesheet(Document doc) throws CompilerException {
 
 	// Get the xml-stylesheet processing instruction (P.I.)
 	org.w3c.dom.ProcessingInstruction stylesheetPI = getStylesheetPI(doc);
 	// If there is none we assume this is a pure XSL file and return root.
-	if (stylesheetPI == null ) return (ElementEx)doc.getDocumentElement();
+	if (stylesheetPI == null ) return (Element)doc.getDocumentElement();
 
 	// Get href value from P.I. to identify the correct stylesheet
 	String href = getXmlStylesheetPIHrefValue(stylesheetPI);
@@ -458,7 +461,7 @@ public final class Parser implements Constants {
 		Node attr = map.getNamedItem("id");
 		String attrValue = attr.getNodeValue();
 		if ((href == null) || (href.equals(attrValue))) {
-		    return (ElementEx)curr;
+		    return (Element)curr;
 		}
 	    }
 	}
@@ -469,7 +472,7 @@ public final class Parser implements Constants {
 	//   the absence of an href should be an error. See 'href == null'
 	//   above.... we will remove this comment and associated line
 	//   after test suite confirms it has not damaged anything else. 
-	// if (href == null) return (ElementEx)doc.getDocumentElement();
+	// if (href == null) return (Element)doc.getDocumentElement();
 
 	// If we did not find the references stylesheet in the current XML
 	// file we assume it is an external file and load that...
@@ -479,30 +482,30 @@ public final class Parser implements Constants {
     /**
      * For embedded stylesheets: Load an external file with stylesheet
      */
-    private ElementEx loadExternalStylesheet(XmlDocument doc, String url)
+    private Element loadExternalStylesheet(Document doc, String url)
 	throws CompilerException {
 	try {
 	    // Check if the URL is a local file
 	    if ((new File(url)).exists()) url = "file:"+url;
 
-	    // Create the input source from the URL
-	    InputSource input = Resolver.createInputSource(new URL(url), true);
+	    // Get an instance of the document builder factory
+	    final DocumentBuilderFactory factory =
+		DocumentBuilderFactory.newInstance();
+	    factory.setNamespaceAware(true);
 
-	    // Parse the input document
-	    com.sun.xml.parser.Parser parser = new com.sun.xml.parser.Parser();
-	    final XmlDocumentBuilderEx builder = new XmlDocumentBuilderEx();
-	    builder.setDisableNamespaces(false); // enable namespaces
-	    parser.setDocumentHandler(builder);
-	    parser.parse(input);
+	    // Then make an instance of the actual document builder
+	    final DocumentBuilder builder = factory.newDocumentBuilder();
+	    if (!builder.isNamespaceAware()) { // Must be namespace aware
+		addError(new ErrorMsg("SAX parser is not namespace aware"));
+	    }
 
-	    // Get the document handler and return the root element
-	    doc = builder.getDocument();
-	    return (ElementEx)doc.getDocumentElement();
+	    // Parse the stylesheet document and return the root element
+	    Document document = builder.parse(url);
+	    return document.getDocumentElement();
 	}
-	catch (MalformedURLException e) {
-	    throw new CompilerException("Could not find stylesheet - '"+url+
-					"' is not a named element in the "+
-					"current file nor a valid URL.");
+	catch (ParserConfigurationException e) {
+	    throw new CompilerException("JAXP parser not configured "+
+					"correctly");
 	}
 	catch (IOException e) {
 	    throw new CompilerException("Could not find stylesheet - '"+url+
@@ -518,20 +521,41 @@ public final class Parser implements Constants {
     /**
      * Returns the first xml-stylesheet processing instruction found in the DOM.
      */
-    private org.w3c.dom.ProcessingInstruction getStylesheetPI(XmlDocument doc) {
-        TreeWalker walker = new TreeWalker(doc);
-        Node node = null;
-        String embStylesheetName = null;
+    private org.w3c.dom.ProcessingInstruction getStylesheetPI(Document doc) {
 
-        while ((node = walker.getNext()) != null ) {
-            if(node.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-                org.w3c.dom.ProcessingInstruction curr;
-		curr = (org.w3c.dom.ProcessingInstruction)node;
-		if (curr.getTarget().equals("xml-stylesheet")) {
-		    return curr;
-	        } 
-            }
-        }
+        Node node = doc;
+
+	while (node != null) {
+	    switch (node.getNodeType ()) {
+	    case Node.PROCESSING_INSTRUCTION_NODE:
+		org.w3c.dom.ProcessingInstruction pi =
+		    (org.w3c.dom.ProcessingInstruction)node;
+		if (pi.getTarget().equals("xml-stylesheet")) return pi;
+		// FALLTHROUGH
+	    case Node.DOCUMENT_FRAGMENT_NODE:
+	    case Node.DOCUMENT_NODE:
+	    case Node.ELEMENT_NODE:
+		// First try to traverse any children of the node
+		Node child = node.getFirstChild();
+		if (child != null) {
+		    node = child;
+		    break;
+		}
+		// FALLTHROUGH
+	    default:
+		// Then try the siblings
+		Node next = node.getNextSibling();
+		if (next == null) {
+		    // Then step up to the parent node
+		    Node parent = node.getParentNode();
+		    if ((parent == null) || (node == doc)) return null;
+		    node = parent;
+		}
+		else {
+		    node = next;
+		}
+	    }
+	}
 	return null;
     }
 
@@ -784,36 +808,22 @@ public final class Parser implements Constants {
 	_template = template;
     }
 
-    private ElementEx findFallback(ElementEx root) {
-	/*
-	Node node = root.getNextSibling();
-	while (node != null) {
-	    if (node.getNodeType() == Node.ELEMENT_NODE) {
-		String namespace = ((ElementEx)node).getNamespace();
-		String localname = ((ElementEx)node).getLocalName();
-		if (namespace.equals(XSLT_URI) && localname.equals("fallback"))
-		    return (ElementEx)node;
-		//else
-		//    node = null; // Stop when
-	    }
-	    node = node.getNextSibling();
-	}
-	*/
+    private Element findFallback(Element root) {
 	final NodeList nodes = root.getChildNodes();
 	final int length = (nodes != null) ? nodes.getLength() : 0;
 
 	for (int i = 0; i < length; i++) {
 	    Node node = nodes.item(i);
 	    if (node.getNodeType() == Node.ELEMENT_NODE) {
-		ElementEx child = (ElementEx)node;
-		String namespace = child.getNamespace();
+		Element child = (Element)node;
+		String namespace = child.getNamespaceURI();
 		String localname = child.getLocalName();
 		if (namespace.equals(XSLT_URI) &&
 		    localname.equals("fallback")) {
 		    return child;
 		}
 		else {
-		    ElementEx result = findFallback(child);
+		    Element result = findFallback(child);
 		    if (result != null) return result;
 		}
 	    }
@@ -821,8 +831,8 @@ public final class Parser implements Constants {
 	return null;
     }
 
-    public Fallback makeFallback(ElementEx root) {
-	ElementEx element = findFallback(root);
+    public Fallback makeFallback(Element root) {
+	Element element = findFallback(root);
 	if (element != null) {
 	    Fallback fallback = (Fallback)makeInstance(FALLBACK_CLASS, element);
 	    fallback.activate();
@@ -838,14 +848,14 @@ public final class Parser implements Constants {
      * Creates an object that is of a sub-class of SyntaxTreeNode 
      * from the node in the DOM (if possible).
      */
-    public SyntaxTreeNode makeInstance(ElementEx element) {
+    public SyntaxTreeNode makeInstance(Element element) {
 	QName qName = getQName(element.getTagName());
 	String className = (String)_instructionClasses.get(qName);
 	if (className != null) {
 	    return makeInstance(className, element);
 	}
 	else {
-	    final String namespace = element.getNamespace();
+	    final String namespace = element.getNamespaceURI();
 	    if (namespace != null) {
 		// Check if the element belongs in our namespace
 		if (namespace.equals(XSLT_URI)) {
@@ -873,7 +883,7 @@ public final class Parser implements Constants {
 	}
     }
 	
-    private SyntaxTreeNode makeInstance(String className, ElementEx element) {
+    private SyntaxTreeNode makeInstance(String className, Element element) {
 	if (className != null) {
 	    try {
 		final Class clazz = Class.forName(className);
@@ -902,20 +912,20 @@ public final class Parser implements Constants {
     }
 
     public Expression parseExpression(SyntaxTreeNode parent,
-				      ElementEx element, String attrName) {
+				      Element element, String attrName) {
 	return parseExpression(parent, element, attrName, null);
     }
 
     public Expression parseExpression(SyntaxTreeNode parent,
-				      ElementEx element, String attrName,
+				      Element element, String attrName,
 				      String defaultValue) {
         String expression = element.getAttribute(attrName);
         if (expression.length() == 0 && defaultValue != null) {
             expression = defaultValue;
         }
-        final int line = ((Integer)element.getUserObject()).intValue();
+        //final int line = ((Integer)element.getUserObject()).intValue();
         return (Expression)parseTopLevel(parent, "<EXPRESSION>" + expression, 
-					 line, expression);
+					 -1 /*line*/, expression);
     }
 
     public Pattern parsePattern(SyntaxTreeNode parent, String pattern) {
@@ -923,11 +933,11 @@ public final class Parser implements Constants {
     }
 
     public Pattern parsePattern(SyntaxTreeNode parent,
-				ElementEx element, String attrName) {
+				Element element, String attrName) {
         final String pattern = element.getAttribute(attrName);
-        final int line = ((Integer)element.getUserObject()).intValue();
-        return (Pattern)parseTopLevel(parent,
-				      "<PATTERN>" + pattern, line, pattern);
+        //final int line = ((Integer)element.getUserObject()).intValue();
+        return (Pattern)parseTopLevel(parent, "<PATTERN>" + pattern, 
+				      -1 /*line*/, pattern);
     }
 
     private SyntaxTreeNode parseTopLevel(SyntaxTreeNode parent,

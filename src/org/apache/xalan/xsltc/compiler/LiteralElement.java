@@ -68,8 +68,10 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import javax.xml.parsers.*;
+
 import org.w3c.dom.*;
-import com.sun.xml.tree.ElementEx;
+import org.xml.sax.*;
 
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -185,7 +187,7 @@ final class LiteralElement extends Instruction {
      * Determines the final QName for the element and its attributes.
      * Registers all namespaces that are used by the element/attributes
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
 	// Find the closest literal element ancestor (if there is one)

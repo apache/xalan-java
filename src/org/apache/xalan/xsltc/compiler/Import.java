@@ -66,7 +66,12 @@ package org.apache.xalan.xsltc.compiler;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Enumeration;
-import com.sun.xml.tree.ElementEx;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.*;
 
@@ -80,7 +85,7 @@ final class Import extends TopLevelElement {
 	return(_imported);
     }
 
-    public void parseContents(ElementEx element, final Parser parser) {
+    public void parseContents(Element element, final Parser parser) {
 	try {
 	    final Stylesheet context = parser.getCurrentStylesheet();
 	    final String href = element.getAttribute("href");
@@ -88,7 +93,7 @@ final class Import extends TopLevelElement {
 	    if (context.checkForLoop(toImport))
 		throw new Exception(toImport.toString() + " already loaded");
 
-	    final ElementEx stylesheetEl = parser.parse(toImport);
+	    final Element stylesheetEl = parser.parse(toImport);
 	    if (stylesheetEl == null) return;
 	    final Stylesheet _imported = parser.makeStylesheet(stylesheetEl);
 	    if (_imported == null) return;

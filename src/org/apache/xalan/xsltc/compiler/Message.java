@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 
@@ -76,7 +76,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class Message extends Instruction {
     private boolean _terminate = false;
 	
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	String termstr = element.getAttribute("terminate");
 	if (termstr != null) {
             _terminate = termstr.equals("yes");

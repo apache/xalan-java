@@ -66,7 +66,12 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
-import com.sun.xml.tree.ElementEx;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -78,7 +83,7 @@ final class AttributeSet extends TopLevelElement {
     private UseAttributeSets _useSets;
     private String           _methodName;
     
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	_name = parser.getQName(element.getAttribute("name"));
 	final String useSets = element.getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {

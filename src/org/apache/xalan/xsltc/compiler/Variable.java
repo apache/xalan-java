@@ -65,7 +65,9 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
-import com.sun.xml.tree.ElementEx;
+
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.Instruction;
 import de.fub.bytecode.generic.*;
@@ -179,7 +181,7 @@ final class Variable extends TopLevelElement {
 	return _stackIndex;
     }
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	// parse attributes name and select (if present)
 	final String name = element.getAttribute("name");
 	if (name.length() > 0) {

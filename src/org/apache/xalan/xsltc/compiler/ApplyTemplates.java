@@ -65,7 +65,12 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 import java.util.Enumeration;
-import com.sun.xml.tree.ElementEx;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.generic.*;
@@ -92,7 +97,7 @@ final class ApplyTemplates extends Instruction {
 	return hasContents();
     }
 
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	final String select = element.getAttribute("select");
 	final String mode   = element.getAttribute("mode");
 	

@@ -64,7 +64,10 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 import org.w3c.dom.*;
 import java.util.Vector;
@@ -78,7 +81,8 @@ import de.fub.bytecode.classfile.JavaClass;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Comment extends Instruction {
-    public void parseContents(ElementEx element, Parser parser) {
+
+    public void parseContents(Element element, Parser parser) {
 	parseChildren(element, parser);
     }
 

@@ -65,9 +65,11 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
+
 import de.fub.bytecode.classfile.JavaClass;
 import de.fub.bytecode.classfile.Field;
 import de.fub.bytecode.classfile.Method;
@@ -159,7 +161,7 @@ final class Whitespace extends TopLevelElement {
      * Parse the attributes of the xsl:strip/preserve-space element.
      * The element should have not contents (ignored if any).
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	// Determine if this is an xsl:strip- or preserve-space element
 	_action = element.getTagName().endsWith("strip-space") 
 	    ? STRIP_SPACE : PRESERVE_SPACE;

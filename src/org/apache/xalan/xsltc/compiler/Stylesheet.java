@@ -70,14 +70,22 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.net.URL;
 
+import javax.xml.parsers.*;
+
 import org.w3c.dom.*;
-import com.sun.xml.tree.ElementEx;
+import org.xml.sax.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 
 import de.fub.bytecode.generic.*;
 import de.fub.bytecode.classfile.JavaClass;
 
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.compiler.util.Util;
+
 import org.apache.xalan.xsltc.DOM;
 
 public final class Stylesheet extends SyntaxTreeNode {
@@ -245,7 +253,7 @@ public final class Stylesheet extends SyntaxTreeNode {
      * entry to the symbol table mapping the name <tt>%stylesheet%</tt>
      * to an instance of this class.
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
 	// Add namespace declarations to symbol table

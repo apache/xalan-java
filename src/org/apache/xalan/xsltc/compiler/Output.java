@@ -64,17 +64,17 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import com.sun.xml.tree.ElementEx;
-import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.runtime.TextOutput;
-
-import org.w3c.dom.*;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
+import org.w3c.dom.*;
+
 import de.fub.bytecode.generic.*;
 import de.fub.bytecode.classfile.JavaClass;
+
+import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.runtime.TextOutput;
 
 final class Output extends TopLevelElement {
 
@@ -138,7 +138,7 @@ final class Output extends TopLevelElement {
     /**
      * Scans the attribute list for the xsl:output instruction
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 
 	_method        = element.getAttribute("method");
 	_version       = element.getAttribute("version");

@@ -69,9 +69,11 @@ import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
 import java.text.Collator;
 
-import com.sun.xml.tree.ElementEx;
+import org.w3c.dom.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
+
 import de.fub.bytecode.classfile.JavaClass;
 import de.fub.bytecode.classfile.Field;
 import de.fub.bytecode.classfile.Method;
@@ -93,7 +95,7 @@ final class Sort extends Instruction {
     /**
      * Parse the attributes of the xsl:sort element
      */
-    public void parseContents(ElementEx element, Parser parser) {
+    public void parseContents(Element element, Parser parser) {
 	// Parse the select expression (node string value if no expression)
 	_select = parser.parseExpression(this, element, "select", "string(.)");
 
