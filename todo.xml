@@ -52,15 +52,6 @@
     Fill in all NEEDSDOC sections.
   </action>
 
-  <action context="code" category="architecture" priority="high" who="SB">
-    Fix remaining axes tests.
-  </action>
-
-  <action context="code" category="performance" priority="high" who="MM">
-    When using STree for the input, use STree for the document() and
-    result tree fragments.
-  </action>
-
   <action context="code" who="SB" packages="xpath.axes" category="performance" priority="high">
     implement fast iterator for "//foo" pattern.
   </action>
@@ -195,17 +186,26 @@
 
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
+  
+  <action context="code" category="architecture" priority="high" who="SB" completed="12/10/00">
+    Fix remaining axes tests.
+  </action>
 
-  <action context="code" category="architecture, conformance" priority="high" who="SB" completed="01/06/00">
+  <action context="code" category="performance" priority="high" who="MM" completed="12/8/00">
+    When using STree for the input, use STree for the document() and
+    result tree fragments.
+  </action>
+
+  <action context="code" category="architecture, conformance" priority="high" who="SB" completed="12/06/00">
     Restructure OutputFormat class to be based on properties.  Make sure 
     include/import conformance is correct.
   </action>
   
-  <action context="code" category="architecture" priority="high" who="SB" completed="01/06/00">
+  <action context="code" category="architecture" priority="high" who="SB" completed="12/06/00">
     Make entities in the html serializer to be resource file driven.
   </action>
   
-  <action context="code" category="architecture" priority="high" who="SB" completed="01/06/00">
+  <action context="code" category="architecture" priority="high" who="SB" completed="12/06/00">
     Removed linefeed normalization from serializers.  I think.
   </action>
 
