@@ -11,14 +11,37 @@
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 
 <xsl:template match="/">
-    <xsl:variable name="db" select="sql:new($driver, $datasource)"/>
+    <xsl:variable name="db" select="sql:new()"/>
+    
+    <!-- Connect to the database with minimal error detection -->
+		<xsl:if test="not(sql:connect($db, $driver, $datasource))" >
+    	<xsl:message>Error Connecting to the Database</xsl:message>
+      <xsl:copy-of select="sql:getError($db)/ext-error" />
+    </xsl:if>
+    
 
     <HTML>
       <HEAD>
         <TITLE>List of products</TITLE>
       </HEAD>
       <BODY>
+      
+      <!-- Turn off Streaming -->
+      <xsl:value-of select="sql:disableStreamingMode()" />
+      
       <xsl:variable name="table" select='sql:query($db, $query)'/>
+      
+      <!-- 
+        	Let's include Error Checking, the error is actually stored 
+          in the connection since $table will be either data or null
+       -->
+             
+          <xsl:if test="not($table)" >
+          	<xsl:message>Error in Query</xsl:message>
+            <xsl:copy-of select="sql:getError($db)/ext-error" />
+          </xsl:if>
+          
+      
       
         <TABLE border="1">
           <TR>
@@ -29,18 +52,6 @@
           <xsl:apply-templates select="$table/row-set/row"/>
         </TABLE>
         
-<!--        
-        <TABLE border="1">
-          <TR>
-             <xsl:for-each select="$table/row-set/column-header">
-               <TH><xsl:value-of select="@column-label"/></TH>
-             </xsl:for-each>
-          </TR>
-          <xsl:apply-templates select="$table/row-set/row"/>
-        </TABLE>
-        
-  -->      
- 
         <TABLE border="1">
 
         <xsl:for-each select="$table/row-set/column-header">
