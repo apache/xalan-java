@@ -126,6 +126,14 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
   {
     m_targetString = key;
   }
+  
+  /**
+   * Tell if two modes match according to the rules of XSLT.
+   */
+  boolean matchMode(QName m1)
+  {
+    return matchModes(m1, m_template.getMode());
+  }
     
   /**
    * Tell if two modes match according to the rules of XSLT.

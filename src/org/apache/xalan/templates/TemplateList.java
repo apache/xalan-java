@@ -476,7 +476,8 @@ public class TemplateList implements java.io.Serializable
         xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
         do
         {
-          if(head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE)
+          if((head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE) 
+             && head.matchMode(mode))
           {
             if(quietConflictWarnings)
               checkConflicts(head, xctxt, targetNode, mode);
