@@ -239,7 +239,7 @@ public abstract class TransformerFactory
   public abstract void setURIResolver(URIResolver resolver);
 
   /**
-   * Set an object that will be used to resolve URIs used in
+   * Get the object that will be used to resolve URIs used in
    * xsl:import, etc.  This will be used as the default for the
    * transformation.
    *
@@ -262,6 +262,7 @@ public abstract class TransformerFactory
   /**
    * Allows the user to set specific attributes on the underlying
    * implementation.
+   * 
    * @param name The name of the attribute.
    * @param value The value of the attribute.
    * @exception IllegalArgumentException thrown if the underlying
