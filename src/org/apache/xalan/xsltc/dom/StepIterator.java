@@ -104,12 +104,10 @@ public class StepIterator extends NodeIteratorBase {
 	if (_isRestartable) {
 	    // Set start node for left-hand iterator...
 	    _source.setStartNode(_startNode = node);
+
 	    // ... and get start node for right-hand iterator from left-hand,
 	    // with special case for //* path - see ParentLocationPath
-	    if (_includeSelf)
-		_iterator.setStartNode(_startNode);
-	    else
-		_iterator.setStartNode(_source.next());
+	    _iterator.setStartNode(_includeSelf ? _startNode : _source.next());
 	    return resetPosition();
 	}
 	return this;
@@ -118,10 +116,7 @@ public class StepIterator extends NodeIteratorBase {
     public NodeIterator reset() {
 	_source.reset();
 	// Special case for //* path - see ParentLocationPath
-	if (_includeSelf)
-	    _iterator.setStartNode(_startNode);
-	else
-	    _iterator.setStartNode(_source.next());
+	_iterator.setStartNode(_includeSelf ? _startNode : _source.next());
 	return resetPosition();
     }
     
