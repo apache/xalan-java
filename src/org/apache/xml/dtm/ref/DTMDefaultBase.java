@@ -81,11 +81,11 @@ public abstract class DTMDefaultBase implements DTM
 {
 	static boolean JJK_DEBUG=false;
 
-// %HZ%:  Added following back in temporarily only - must remove!!!
+  // This constant is likely to be removed in the future. Use the 
+  // getDocument() method instead of ROOTNODE to get at the root 
+  // node of a DTM.
   /** The identity of the root node. */
   public static final int ROOTNODE = 0;
-// %HZ%:  Added preceding back in temporarily only - must remove!!!
-
 	
   /**
    * The number of nodes, which is also used to determine the next
