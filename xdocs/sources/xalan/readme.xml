@@ -77,7 +77,7 @@
    </ul>
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.2">
-     <p>&xslt4j-current; includes two global adjustments:</p>
+     <p>Global updates:</p>
      <ul>
      <li>This release is integrated with release 2 of &xml4j;.</li>
      <li>This release does not include support for the deprecated &xslt4j; 1 compatability API. The &xslt4j; 1 compatability code does 
