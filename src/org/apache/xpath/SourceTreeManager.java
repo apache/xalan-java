@@ -60,29 +60,60 @@ import java.net.MalformedURLException;
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
+
 import trax.URIResolver;
 import trax.TransformException;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.EntityResolver;
+
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.utils.SystemIDResolver;
+
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * This class bottlenecks all management of source trees.  The methods
  * in this class should allow easy garbage collection of source 
  * trees, and should centralize parsing for those source trees.
  */
-public class SourceTreeManager implements URIResolver
+public class SourceTreeManager
 {
+  public static int CACHESIZE = 4;
   private int m_size = 0;
-  private SourceTree m_sourceTree[] = new SourceTree[20];
+  private SourceTree m_sourceTree[] = new SourceTree[CACHESIZE];
+  
+  URIResolver m_uriResolver;
+  
+  /**
+   * Set an object that will be used to resolve URIs used in 
+   * document(), etc.
+   * @param resolver An object that implements the URIResolver interface, 
+   * or null.
+   */
+  public void setURIResolver(URIResolver resolver)
+  {
+    m_uriResolver = resolver;
+  }
+
+  EntityResolver m_entityResolver;
+    
+  /*
+  * Allow an application to register an entity resolver.
+  */
+  public void setEntityResolver (EntityResolver resolver)
+  {
+    m_entityResolver = resolver;
+  }
     
   /**
    * Given a document, find the URL associated with that document.
@@ -106,6 +137,93 @@ public class SourceTreeManager implements URIResolver
     }
     return url;
   }
+    
+  /**
+   * This will be called by the processor when it encounters 
+   * an xsl:include, xsl:import, or document() function.
+   * 
+   * @param base The base URI that should be used.
+   * @param uri Value from an xsl:import or xsl:include's href attribute, 
+   * or a URI specified in the document() function.
+   * @returns a InputSource that can be used to process the resource.
+   */
+  public InputSource resolveURI (String base, String urlString)
+    throws TransformException, IOException
+  {
+    String uri;
+    try
+    {
+      if(urlString.startsWith("../"))
+       {
+        // urlString = "file:/"+urlString;
+      }
+      // System.out.println("Calling getAbsoluteURI urlString: "+urlString + ", base: "+base);
+
+      uri = SystemIDResolver.getAbsoluteURI(urlString, base);
+      // System.out.println("Returned from getAbsoluteURI: "+uri);
+    }
+    catch(SAXException se)
+    {
+      // Try and see if the entity resolver can do the job. 
+      // If not, throw an exception.
+      if(null != m_entityResolver)
+      {
+        try
+        {
+          return m_entityResolver.resolveEntity(null, urlString);
+        }
+        catch(SAXException se2)
+        {
+          throw new TransformException(se2);
+        }
+      }
+      else
+        throw new TransformException(se);
+    }
+    
+    InputSource source;
+    try
+    {
+      if(null != m_entityResolver)
+        source = m_entityResolver.resolveEntity(null, urlString);
+      else
+        source = new InputSource(uri);
+    }
+    catch(SAXException se2)
+    {
+      throw new TransformException(se2);
+    }
+
+    return source;
+  }
+  
+  /**
+   * Put the source tree root node in the document cache.
+   * TODO: This function needs to be a LOT more sophisticated.
+   */
+  public void putDocumentInCache(Node n, InputSource source)
+  {
+    if(m_size < CACHESIZE)
+    {
+      // TODO: What to do if the SystemID isn't specified?
+      if(null != source.getSystemId())
+      {
+        m_sourceTree[m_size] = new SourceTree(n, source.getSystemId());
+        m_size++;
+      }
+    }
+    else
+    {
+      // TODO: Implement a smart cache algorithm (read: pain)
+      if(null != source.getSystemId())
+      {
+        // For now, always cache on the last, on the theory that we're 
+        // probably in some sort of loop.
+        m_sourceTree[m_size-1] = new SourceTree(n, source.getSystemId());
+      }
+    }
+    
+  }
   
   /**
    * Given a document, find the URL associated with that document.
@@ -128,68 +246,172 @@ public class SourceTreeManager implements URIResolver
   }
   
   /**
-   * Return a string suitible for telling the user what parser is being used.
+   * Get the source tree from the a base URL and a URL string.
    */
-  public String getParserDescription()
+  public Node getSourceTree (String base, String urlString) 
+    throws TransformException
   {
-    return "(No parser - generic DOM)";
+    try
+    {
+      InputSource source = this.resolveURI(base, urlString);
+      // System.out.println("base: "+base+", urlString: "+urlString+", source: "+source.getSystemId());
+      return getSourceTree(source);
+    }
+    catch(IOException ioe)
+    {
+      throw new TransformException(ioe);
+    }
+  }
+
+  /**
+   * Get the source tree from the input source.
+   */
+  public Node getSourceTree (InputSource source) 
+    throws TransformException
+  {
+    // Try first to see if we have a node cached that matches this 
+    // systemID.
+    if(null != source.getSystemId())
+    {
+      Node n = findNodeFromURL(source.getSystemId());
+      if(null != n)
+        return n;
+    }
+    
+    Node root = null;
+    
+    if(null != m_uriResolver)
+      root = m_uriResolver.getDOMNode(source);
+    
+    if(null == root)
+      root = getDOMNode(source);
+    
+    if(null != root)
+      putDocumentInCache(root, source);
+    return root;
   }
   
   /**
-   * This will be called by the processor when it encounters 
-   * an xsl:include, xsl:import, or document() function.
-   * 
-   * @param base The base URI that should be used.
-   * @param uri Value from an xsl:import or xsl:include's href attribute, 
-   * or a URI specified in the document() function.
-   * @returns a InputSource that can be used to process the resource.
+   * Try to create a DOM source tree from the input source.
    */
-  public InputSource resolveURI (String base, String urlString)
-    throws TransformException, IOException
+  public Node getDOMNode (InputSource source) 
+    throws TransformException
   {
-    String uri;
+    Node doc = null;
+    String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
+
+    if(null != liaisonClassName)
+    {
+      try 
+      {
+        DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
+        liaison.parse(source);
+        doc = liaison.getDocument();
+      } 
+      catch (SAXException se) 
+      {
+        throw new TransformException(se);
+      } 
+      catch (ClassNotFoundException e1) 
+      {
+        throw new TransformException("XML Liaison class " + liaisonClassName +
+          " specified but not found", e1);
+      } 
+      catch (IllegalAccessException e2) 
+      {
+          throw new TransformException("XML Liaison class " + liaisonClassName +
+            " found but cannot be loaded", e2);
+      } 
+      catch (InstantiationException e3) 
+      {
+          throw new TransformException("XML Liaison class " + liaisonClassName +
+            " loaded but cannot be instantiated (no empty public constructor?)",
+            e3);
+      } 
+      catch (ClassCastException e4) 
+      {
+          throw new TransformException("XML Liaison class " + liaisonClassName +
+            " does not implement DOM2Helper", e4);
+      }
+    }
+    else
+    {
     try
     {
-      uri = SystemIDResolver.getAbsoluteURI(base, urlString);
+      XMLReader reader = getXMLReader(source) ;
+      
+      // TODO: Need to use factory of some kind to create the ContentHandler
+      // (Also, try using JAXP if need be...)
+      ContentHandler handler = new SourceTreeHandler();
+      if(handler instanceof org.apache.xalan.stree.SourceTreeHandler)
+      {
+        // temp hack
+        ((org.apache.xalan.stree.SourceTreeHandler)handler).m_useMultiThreading = false;
+      }
+      reader.setContentHandler(handler);
+
+      try
+      {
+        reader.setProperty("http://xml.org/sax/properties/lexical-handler", 
+                           handler);
+      }
+      catch(SAXException se){}
+      
+      reader.parse(source);
+
+      if(handler instanceof org.apache.xalan.stree.SourceTreeHandler)
+      {
+        doc = ((org.apache.xalan.stree.SourceTreeHandler)handler).getRoot();
+      }
+    }
+    catch(IOException ioe)
+    {
+      throw new TransformException(ioe);
     }
     catch(SAXException se)
     {
       throw new TransformException(se);
     }
-    InputSource source = new InputSource();
-    
-    source.setSystemId(uri);
-    return source;
+    }
+    return doc;
   }
 
   /**
-   * This will be called by the processor when it encounters 
-   * an xsl:include, xsl:import, or document() function, if it needs 
-   * a DOM tree.
+   * This method returns the SAX2 parser to use with the InputSource 
+   * obtained from this URI.
+   * It may return null if any SAX2-conformant XML parser can be used,
+   * or if getInputSource() will also return null. The parser must 
+   * be free for use (i.e.
+   * not currently in use for another parse().
    * 
-   * @param base The base URI that should be used.
-   * @param uri Value from an xsl:import or xsl:include's href attribute, 
-   * or a URI specified in the document() function.
-   * @returns a DOM node that represents the resolution of the URI to a tree.
+   * @param inputSource The value returned from the EntityResolver.
+   * @returns a SAX2 parser to use with the InputSource.
    */
-  public Node resolveURIToDOMTree (String base, String uri)
-    throws TransformException, IOException
+  public XMLReader getXMLReader(InputSource inputSource) 
+    throws TransformException
   {
-    InputSource source = resolveURI (base, uri);
     try
     {
-      XMLReader reader = XMLReaderFactory.createXMLReader();
-      SourceTreeHandler handler = new SourceTreeHandler();
-      reader.setContentHandler(handler);
-      reader.parse(source);
-      return handler.getRoot();
+      XMLReader reader = (null != m_uriResolver) 
+                         ? m_uriResolver.getXMLReader(inputSource) : null;
+      if(null == reader)
+        reader = XMLReaderFactory.createXMLReader();
+      
+      try
+      {
+        reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+      }
+      catch(SAXException se)
+      {
+        // What can we do?
+        // TODO: User diagnostics.
+      }
+
+      return reader;
     }
     catch(SAXException se)
     {
       throw new TransformException(se);
     }
   }
-
-
-
 }
