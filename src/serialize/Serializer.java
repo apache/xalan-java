@@ -129,6 +129,7 @@ public interface Serializer
      * @param output The output stream
      */
     public void setOutputStream( OutputStream output );
+    public OutputStream getOutputStream();
 
 
     /**
@@ -142,7 +143,7 @@ public interface Serializer
      * @param writer The output writer stream
      */
     public void setWriter( Writer writer );
-
+    public Writer getWriter();
 
     /**
      * Specifies an output format for this serializer. It the
