@@ -163,7 +163,6 @@ public class DOM2TO implements XMLReader, Locator {
 	    // Generate SAX event to start element
 	    final String qname = node.getNodeName();
 	    _handler.startElement(qname);
-
 	    String prefix;
 	    final NamedNodeMap map = node.getAttributes();
 	    final int length = map.getLength();
@@ -184,7 +183,7 @@ public class DOM2TO implements XMLReader, Locator {
 		else {
 		    final String uriAttr = attr.getNamespaceURI();
 		    // Uri may be implicitly declared
-		    if (uriAttr != null) {	
+		    if (uriAttr != null && !uriAttr.equals(EMPTYSTRING) ) {	
 			colon = qnameAttr.lastIndexOf(':');
 			prefix = (colon > 0) ? qnameAttr.substring(0, colon) 
 			    : EMPTYSTRING;
