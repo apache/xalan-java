@@ -990,6 +990,27 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     return m_axesIteratorStack.isEmpty()
            ? null : (SubContextList) m_axesIteratorStack.peek();
   }
+  
+  /**
+   * <meta name="usage" content="internal"/>
+   * Get the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a> 
+   * as defined by the XSLT spec.
+   *
+   * @return the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>.
+   */
+  public org.apache.xpath.axes.LocPathIterator getCurrentNodeList()
+  {
+    for (int i = m_axesIteratorStack.size()-1; i >= 0; i--) 
+    {
+      org.apache.xpath.axes.PredicatedNodeTest iter 
+       = (org.apache.xpath.axes.PredicatedNodeTest)m_axesIteratorStack.elementAt(i);
+      org.apache.xpath.axes.LocPathIterator lpi = iter.getLocPathIterator();
+      if(lpi.getIsTopLevel())
+        return lpi;
+    }
+    return null;
+  }
+
 
   //==========================================================
   // SECTION: Implementation of ExpressionContext interface
