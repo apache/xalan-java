@@ -756,7 +756,7 @@ public class ResultTreeHandler extends QueuedEvents
     TreeWalker tw = new TreeWalker(this);
 
     Node n;
-    for (n = docFrag.getFirstChild(); null != n; n = docFrag.getNextSibling())
+    for (n = docFrag.getFirstChild(); null != n; n = n.getNextSibling())
     {
       flushPending(EVT_NODE);  // I think.
       tw.traverse(n);
