@@ -147,7 +147,7 @@ public class SAXSource implements Source
    */
   public void setInputSource(InputSource inputSource)
   {
-    inputSource = inputSource;
+    this.inputSource = inputSource;
   }
   
   /**
