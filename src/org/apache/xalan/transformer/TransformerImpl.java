@@ -1932,6 +1932,10 @@ public class TransformerImpl extends Transformer
       pushElemTemplateElement(template);
       m_xcontext.pushCurrentNode(child);
       pushPairCurrentMatched(template, child);
+      
+      // Fix copy copy29 test.
+      DTMIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
+      m_xcontext.pushContextNodeList(cnl);
 
       if (isDefaultTextRule)
       {
@@ -1977,6 +1981,7 @@ public class TransformerImpl extends Transformer
     {
       m_xcontext.getVarStack().unlink();
       m_xcontext.popCurrentNode();
+      m_xcontext.popContextNodeList();
       popCurrentMatched();
       popElemTemplateElement();
     }

@@ -805,7 +805,7 @@ public class NodeSet
         "This NodeSet can not do indexing or counting functions!");
 
     int saved = m_next;
-    Node n = elementAt(m_next-1);
+    Node n = (m_next < m_firstFree) ? elementAt(m_next) : null;
     m_next = saved; // HACK: I think this is a bit of a hack.  -sb
     return n;
   }
