@@ -364,7 +364,7 @@ public class Printer
     public void breakLine()
     {
       try {
-        if ( _pos == BufferSize ) {
+        if ( (_pos+(_lineSepLen-1)) == BufferSize ) {
           _writer.write( _buffer );
           _pos = 0;
         }
