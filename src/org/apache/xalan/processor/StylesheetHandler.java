@@ -1589,7 +1589,7 @@ public class StylesheetHandler extends DefaultHandler
     String value = attrs.getValue("xml:space");
     if(null == value)
     {
-      m_spacePreserveStack.push(m_spacePreserveStack.peek());
+      m_spacePreserveStack.push(m_spacePreserveStack.peekOrFalse());
     }
     else if(value.equals("preserve"))
     {
