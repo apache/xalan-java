@@ -86,7 +86,7 @@
 <tr>
   <td>xalansamples.jar</td>
   <td>Everything except the Xalan-J Interpretive servlet sample and some
-      XSLTC samples</td>
+      &xslt4jc-short; samples</td>
 </tr>
 <tr>
   <td>xalanservlet.jar</td>
@@ -94,19 +94,19 @@
 </tr>
 <tr>
   <td>xsltcapplet.jar</td>
-  <td>XSLTC applet sample</td>
+  <td>&xslt4jc-short; applet sample</td>
 </tr>
 <tr>
   <td>xsltcbrazil.jar</td>
-  <td>XSLTC Brazil server sample</td>
+  <td>&xslt4jc-short; Brazil server sample</td>
 </tr>
 <tr>
   <td>xsltcejb.jar</td>
-  <td>XSLTC EJB sample</td>
+  <td>&xslt4jc-short; EJB sample</td>
 </tr>
 <tr>
   <td>xsltcservlet.jar</td>
-  <td>XSLTC servlet sample</td>
+  <td>&xslt4jc-short; servlet sample</td>
 </tr>
 </table>
      <p>With most of the samples, you can use the following procedure:</p>

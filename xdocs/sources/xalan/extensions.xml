@@ -526,7 +526,7 @@ org.w3c.dom.NodeList (or an org.apache.xpath.NodeSet, which implements NodeList,
 <p>Use the declared prefix with the syntax described in <link anchor="ext-func-calls">Extension function Java calls</link>.</p>
 <p>That is all. You do not include an xalan:component element. Using the abbreviated syntax clearly involves less setup than using the xalan:component/xalan:script approach.</p>
 <note>We recommend that, for extensions coded in Java, the abbreviated syntax should always be used since the xalan:component/xalan:script constructs add no functionality.</note>
-<note>The abbreviated syntax is supported in XSLTC, but the xalan:component/xalan:script constructs are not.</note>
+<note>The abbreviated syntax is supported in &xslt4jc-short;, but the xalan:component/xalan:script constructs are not.</note>
 </s3><anchor name="ex-java-namespace"/> 
 <s3 title="Example: Formatting a date">
 <p>This example uses extension functions to call the SimpleDateFormat class and the IntDate class. IntDate uses String arguments to set up a Date object:</p>

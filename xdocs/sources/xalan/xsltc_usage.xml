@@ -56,48 +56,48 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  -->
-<s1 title="Using XSLTC (Xalan-J Compiler)">
+<s1 title="Using &xslt4jc-short;">
 
 <ul>
 <li><link anchor="intro">Introduction</link></li>
-  <li><link anchor="classpath">Setting the system classpath for XSLTC</link></li>
+  <li><link anchor="classpath">Setting the system classpath for &xslt4jc-short;</link></li>
   <li><link anchor="compile">Compiling translets from the command line</link></li>
   <li><link anchor="run">Running translets from the command line</link></li>
-  <li><link anchor="api">Calling XSLTC with the TrAX/JAXP API</link></li>
+  <li><link anchor="api">Calling &xslt4jc-short; with the TrAX/JAXP API</link></li>
   <li><link anchor="xsltcsmart">Smart Transformer Switch</link></li>
-  <li><link anchor="native_api">Calling XSLTC with the native API</link></li>
+  <li><link anchor="native_api">Calling &xslt4jc-short; with the native API</link></li>
   <li><link anchor="constraints">Usage constraints</link></li>
   <li><link idref="samples" anchor="translets">Sample translets</link></li>
-  <li><link idref="extensions_xsltc">Extensions for XSLTC</link></li>  
+  <li><link idref="extensions_xsltc">Extensions for &xslt4jc-short;</link></li>  
 </ul>
-<p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
+<p>See also: <jump href="xsltc/index.html">&xslt4jc-short; Design</jump></p>
 <anchor name="intro"/>
 <s2 title="Introduction">
-<p>XSLTC provides a compiler and a runtime processor. 
+<p>&xslt4jc-short; provides a compiler and a runtime processor. 
 Use the compiler to compile an XSL stylesheet into a translet (i.e., a set of
 Java classes). Use the runtime processor to apply the translet to an XML
 document and perform a transformation.</p>
 <note>To compile and run translets, you must have a JDK or a JRE 1.2 or
 higher.</note>
 </s2><anchor name="classpath"/>
-<s2 title="Setting the system classpath for XSLTC">
+<s2 title="Setting the system classpath for &xslt4jc-short;">
 
 <p>
-The jar file structure of the XSLTC component has changed again.  In the
-original structure, the xsltc.jar file contained only XSLTC classes, and the
+The jar file structure of the &xslt4jc-short; component has changed again.  In the
+original structure, the xsltc.jar file contained only &xslt4jc-short; classes, and the
 other support jar files needed to be in your class path.
-In a subsequent model, all of the support classes were bundled with the XSLTC
+In a subsequent model, all of the support classes were bundled with the &xslt4jc-short;
 classes into one xsltc.jar file. 
-Now, a single xalan.jar contains the code for both Xalan-J processors.  You
+Now, a single xalan.jar contains the code for both &xslt4j; processors.  You
 can use the JAXP <code>javax.xml.transform.TransformerFactory</code> property
-(see <link anchor="api">"Calling XSLTC with the TrAX/JAXP API"</link> below) to
+(see <link anchor="api">"Calling &xslt4jc-short; with the TrAX/JAXP API"</link> below) to
 select which processor to use:  the Interpretive or the Compiling processor.</p>
 <p>Refer to the subsection 'Bundled System Classpath' below to learn more about
 the new bundling.</p>
-<note>Although the XSLTC developers make every effort to avoid changes that
+<note>Although the &xslt4jc-short; developers make every effort to avoid changes that
 affect binary compatibility, we cannot guarantee that a translet will work with
 any version of the run-time processor other than the one that corresponds to
-the version of the XSLTC compiler that was used to create the translet.</note>
+the version of the &xslt4jc-short; compiler that was used to create the translet.</note>
 </s2>
 
 <s3 title="Bundled System Classpath">
@@ -114,10 +114,10 @@ includes <jump href="http://xml.apache.org/xerces2-j/index.html">Xerces</jump>
 </s3>
 
 <s3 title="Unbundled System Classpath">
-<note>Support for building an unbundled version of XSLTC is not currently
+<note>Support for building an unbundled version of &xslt4jc-short; is not currently
 available.  This section will be brought up-to-date when that support is
 available.</note>
-<p>To compile translets, run translets, and use the XSLTC API, put the following on the system classpath:</p>
+<p>To compile translets, run translets, and use the &xslt4jc-short; API, put the following on the system classpath:</p>
 <table>
 <tr>
   <th>Classes or JAR</th>
@@ -186,8 +186,8 @@ the compiler; see <link anchor="compile">Compiling translets</link>.</p>
     synopsis of the options and arguments accepted by this class is shown below.
     </p>
     <note>You can also use the
-    <jump href="commandline.html">Xalan-J command-line utility</jump>, to
-          compile or run XSLTC translets.</note>
+    <jump href="commandline.html">&xslt4j; command-line utility</jump>, to
+          compile or run &xslt4jc-short; translets.</note>
     <anchor name="comp-synopsis"/>
 <s3 title="Synopsis">
 <p>
@@ -284,11 +284,11 @@ the compiler; see <link anchor="compile">Compiling translets</link>.</p>
       <li><link anchor="run-examples">Examples</link></li>
     </ul>
 
-    <p>The XSLTC runtime processor is a Java-based tool for 
+    <p>The &xslt4jc-short; runtime processor is a Java-based tool for 
     transforming XML document files using a translet (compiled 
     stylesheet). </p>
 
-    <p>The XSLTC processor can be run on any platform including UNIX,
+    <p>The &xslt4jc-short; processor can be run on any platform including UNIX,
     Windows, NT, Mac that supports Java, including a Palm Pilot
     with J2ME CLDC (Java 2 Micro Edition, Connected Limited Device
     Configuration).</p>
@@ -299,8 +299,8 @@ the compiler; see <link anchor="compile">Compiling translets</link>.</p>
      (described below).</p>
 
     <note>You can also use the
-    <jump href="commandline.html">Xalan-J Command-line Utility</jump>, to
-          compile or run XSLTC translets.</note>
+    <jump href="commandline.html">&xslt4j; Command-line Utility</jump>, to
+          compile or run &xslt4jc-short; translets.</note>
 <anchor name="run-synopsis"/>
 <s3 title="Synopsis">
 <p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
@@ -375,18 +375,18 @@ Arguments without flags:
     the flag (-u) is optional.</p>
 </s3>
 </s2><anchor name="api"/>
-<s2 title="Calling XSLTC with the TrAX/JAXP API">
+<s2 title="Calling &xslt4jc-short; with the TrAX/JAXP API">
 <ul>
-<li><link anchor="api-attributes">XSLTC TransformerFactory attributes</link></li>
+<li><link anchor="api-attributes">&xslt4jc-short; TransformerFactory attributes</link></li>
 <li><link anchor="api-examples">Examples</link></li>
 </ul>
-<p>XSLTC translets are integrated with the TrAX/JAXP 1.2 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
+<p>&xslt4jc-short; translets are integrated with the TrAX/JAXP 1.2 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
 
 <p>When you use the JAXP 1.2 API to run &xslt4j;, the
 <code>javax.xml.transform.TransformerFactory</code> system property is set to
 <code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently
-stands, this Xalan implementation of TransformerFactory always uses the Xalan-J
-Interpretive processor to perform transformations.  To use translets to perform
+stands, this Xalan implementation of TransformerFactory always uses the
+&xslt4ji; processor to perform transformations.  To use translets to perform
 transformations, set this system property to
 <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code>. For
 information on setting this and related system properties designating XML
@@ -422,11 +422,11 @@ parser</link>.</p>
    thread at the same time, use a <code>Templates</code> object and create
    as many <code>Transformer</code> objects as you require.</p>
 
-<p>XSLTC also defines a set of attributes that you can set on the
+<p>&xslt4jc-short; also defines a set of attributes that you can set on the
 <code>TransformerFactory</code> in order to save and subsequently use those
 translets by way of the JAXP Transform API - without having to recompile the
 stylesheet each time.</p><anchor name="api-attributes"/>
-<s3 title="XSLTC TransformerFactory attributes">
+<s3 title="&xslt4jc-short; TransformerFactory attributes">
 The JAXP Transform API defines a <code><jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute</jump>
 </code> method that you can use to set implementation-defined attributes.
 <table>
@@ -571,23 +571,23 @@ transformer.transform(new StreamSource(xmlInURI2),
 </s2>
 <anchor name="xsltcsmart"/>
 <s2 title="Smart Transformer Switch">
-<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching between Xalan and XSLTC 
-processors within your application. It uses Xalan to create your 
- <code>Transformer</code> objects, and uses XSLTC to create your <code>Templates</code> objects.</p>
+<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching between &xslt4ji; and &xslt4jc-short; 
+processors within your application. It uses &xslt4ji; to create your 
+ <code>Transformer</code> objects, and uses &xslt4jc-short; to create your <code>Templates</code> objects.</p>
 <p>To use the switch, you set the TrAX system property,
 <code>javax.xml.transform.TransformerFactory</code>, to
 <code>org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl</code>. 
 For one-time transformations or transformations that require extensions
-supported by Xalan, and not XSLTC, you would use the
+supported by &xslt4ji;, and not &xslt4jc-short;, you would use the
 <code>SmartTransformerFactoryImpl</code> to create <code>Transformer</code>
 objects. For a repeated transformation where performance is critical, you would
 create a <code>Templates</code> object from which you would create your
 <code>Transformer</code> objects.</p> 
 </s2>
 <anchor name="native_api"/>
-<s2 title="Calling XSLTC with the native API">
-<p>The XSLTC Native API is no longer supported.  Instead, you should always
-use XSLTC with the JAXP Transform API.</p>
+<s2 title="Calling &xslt4jc-short; with the native API">
+<p>The &xslt4jc-short; Native API is no longer supported.  Instead, you should always
+use &xslt4jc-short; with the JAXP Transform API.</p>
 </s2>
 <anchor name="constraints"/>
 <s2 title="Usage constraints">
@@ -595,7 +595,7 @@ use XSLTC with the JAXP Transform API.</p>
   <li>The default for template inlining has been changed. Previously,
     by default, inlining (putting all the templates into one big method) was on and 
     the <code>&quot;-n&quot;</code> option to the compile command line disabled inlining. 
-    With inlining on, XSLTC can generate methods that are too long (<em>&gt; 64K length</em>) 
+    With inlining on, &xslt4jc-short; can generate methods that are too long (<em>&gt; 64K length</em>) 
     to run, or contain jump offsets that are too large for the JVM to handle. 
     Now the default is not to inline templates. Instead, compilation creates separate 
     methods for each template. Inlining was thought to improve performance, 
@@ -605,7 +605,7 @@ use XSLTC with the JAXP Transform API.</p>
     For example, 
       <source>TransformerFactory tfac = new TransformerFactory(); 
 tfac.setAttribute(&quot;enable-inlining&quot;, Boolean.TRUE);</source><br/></li>
-  <li>XSLTC tries to determine the order in which global variables are initialized 
+  <li>&xslt4jc-short; tries to determine the order in which global variables are initialized 
     by tracking the dependencies between them. In some cases, the value of a variable 
     may depend on a template, e.g., if <code>xsl:call-template</code> is used to initialized
     a variable whose type is RTF. If this happens, a
