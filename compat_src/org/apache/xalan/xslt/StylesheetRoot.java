@@ -217,7 +217,11 @@ public class StylesheetRoot extends Stylesheet
         }*/
 
         // Find the root pattern in the XSL.
-        ElemTemplate rootRule = m_sRootObject.getTemplateComposed(processor.getTransformer().getXPathContext(), sourceTree, null, -1, false);
+        int child = processor.getTransformer().getXPathContext().getDTMHandleFromNode(sourceTree);
+        ElemTemplate rootRule = m_sRootObject.getTemplateComposed(processor.getTransformer().getXPathContext(), 
+                                                                  child, 
+                                                                  null, -1, false,
+                                                                  processor.getTransformer().getXPathContext().getDTM(child));
                                //this.findTemplate(processor, sourceTree, sourceTree);
 
         if(null == rootRule)
@@ -326,7 +330,7 @@ public class StylesheetRoot extends Stylesheet
 
         // Output the action of the found root rule.  All processing
         // occurs from here.  buildResultFromTemplate is highly recursive.
-        rootRule.execute(processor.getTransformer(), sourceTree, null);
+        rootRule.execute(processor.getTransformer());
 
          processor.getTransformer().getResultTreeHandler().endDocument();
 
@@ -338,10 +342,11 @@ public class StylesheetRoot extends Stylesheet
           processor.displayDuration("transform", sourceTree);
         }
       }
-      catch(TransformerException te)
+      catch (TransformerException te)
       {
-        throw new SAXException(te);
-      }  
+        throw new SAXException(te); 
+      }
+       
       finally
       {
         if (null != ostream)

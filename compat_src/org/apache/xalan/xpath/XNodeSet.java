@@ -57,12 +57,18 @@
 package org.apache.xalan.xpath;
 
 import org.w3c.dom.*;
+import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.NodeFilter;
 import java.text.*;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
+import org.apache.xpath.DOMHelper;
+import org.apache.xml.dtm.ref.DTMNodeIterator;
+import org.apache.xml.dtm.ref.DTMNodeList;
+import org.apache.xml.dtm.ref.DTMManagerDefault;
+import org.apache.xml.dtm.DTM;
 
 /**
  * <meta name="usage" content="general"/>
@@ -72,6 +78,7 @@ import org.apache.xpath.NodeSet;
 public class XNodeSet extends XObject  
 {
   org.apache.xpath.objects.XNodeSet m_xnodeset;
+  DTMManagerDefault dtmMgr = new DTMManagerDefault(); 
   
   /**
    * Construct a XNodeSet object.
@@ -79,7 +86,8 @@ public class XNodeSet extends XObject
   public XNodeSet(NodeList val)
   {
     super();
-    m_xnodeset = new org.apache.xpath.objects.XNodeSet(new NodeIteratorWrapper(val)) ;
+    int node = dtmMgr.getDTMHandleFromNode(val.item(0));
+    m_xnodeset = new org.apache.xpath.objects.XNodeSet(dtmMgr.createDTMIterator(node)) ;
   }
   
   /**
@@ -88,7 +96,7 @@ public class XNodeSet extends XObject
   public XNodeSet()
   {
     super();
-    m_xnodeset = new org.apache.xpath.objects.XNodeSet();
+    m_xnodeset = new org.apache.xpath.objects.XNodeSet(dtmMgr);
   }
 
   /**
@@ -96,8 +104,8 @@ public class XNodeSet extends XObject
    */
   public XNodeSet(Node n)
   {
-    super(n); 
-    m_xnodeset = new org.apache.xpath.objects.XNodeSet(n);
+    super(n);    
+    m_xnodeset = new org.apache.xpath.objects.XNodeSet(dtmMgr.getDTMHandleFromNode(n), dtmMgr);
   }
   
   
@@ -123,7 +131,7 @@ public class XNodeSet extends XObject
    */
   double getNumberFromNode(Node n)
   {
-    return m_xnodeset.getNumberFromNode(n);
+    return m_xnodeset.getNumberFromNode(dtmMgr.getDTMHandleFromNode(n));
   }
 
   /**
@@ -148,8 +156,23 @@ public class XNodeSet extends XObject
    */
   static String getStringFromNode(Node n)
   {
-    return org.apache.xpath.objects.XNodeSet.getStringFromNode(n);
+    switch (n.getNodeType())
+    {
+    case Node.ELEMENT_NODE :
+    case Node.DOCUMENT_NODE :
+      return DOMHelper.getNodeData(n);
+    case Node.CDATA_SECTION_NODE :
+    case Node.TEXT_NODE :
+      return ((Text) n).getData();
+    case Node.COMMENT_NODE :
+    case Node.PROCESSING_INSTRUCTION_NODE :
+    case Node.ATTRIBUTE_NODE :
+      return n.getNodeValue();
+    default :
+      return DOMHelper.getNodeData(n);
+    }
   }
+  
 
   /**
    * Cast result object to a string.
@@ -164,7 +187,7 @@ public class XNodeSet extends XObject
    */
   public DocumentFragment rtree(XPathSupport support)
   {    
-    return m_xnodeset.rtree((XPathContext) support);
+    return rtree((XPathContext) support);
   }
   
   /**
@@ -176,23 +199,25 @@ public class XNodeSet extends XObject
    */
   public DocumentFragment rtree(XPathContext support)
   {
-    return m_xnodeset.rtree(support);
+    org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
+    int result = m_xnodeset.rtree(context);
+    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
   }
 
   /**
    * Cast result object to a nodelist.
    */
-  public NodeIterator nodeset()
+  public NodeList nodeset()
   {
-    return m_xnodeset.nodeset();
+    return new DTMNodeList(m_xnodeset.nodeset());
   }  
 
   /**
    * Cast result object to a nodelist.
    */
-  public NodeSet mutableNodeset()
+  public NodeList mutableNodeset()
   {
-   return m_xnodeset.mutableNodeset();
+   return new DTMNodeList(m_xnodeset.mutableNodeset());
   }  
   
   /**
@@ -201,7 +226,7 @@ public class XNodeSet extends XObject
   public boolean lessThan(XObject obj2)
     throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
   {
-    return m_xnodeset.lessThan(obj2);
+    return m_xnodeset.lessThan(obj2.m_xObject);
   }
   
   /**
@@ -210,7 +235,7 @@ public class XNodeSet extends XObject
   public boolean lessThanOrEqual(XObject obj2)
     throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
   {
-    return m_xnodeset.lessThanOrEqual(obj2);
+    return m_xnodeset.lessThanOrEqual(obj2.m_xObject);
   }
   
   /**
@@ -219,7 +244,7 @@ public class XNodeSet extends XObject
   public boolean greaterThan(XObject obj2)
     throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
   {
-    return m_xnodeset.greaterThan(obj2);
+    return m_xnodeset.greaterThan(obj2.m_xObject);
   }
   
   /**
@@ -228,14 +253,14 @@ public class XNodeSet extends XObject
   public boolean greaterThanOrEqual(XObject obj2)
     throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
   {
-    return m_xnodeset.greaterThanOrEqual(obj2);
+    return m_xnodeset.greaterThanOrEqual(obj2.m_xObject);
   }   
   
   /**
    * Tell if two objects are functionally equal.
    */
   public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+    throws org.xml.sax.SAXException
   {
     return m_xnodeset.equals(obj2);
   }  
@@ -246,10 +271,10 @@ public class XNodeSet extends XObject
   public boolean notEquals(XObject obj2)
     throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
   {
-    return m_xnodeset.notEquals(obj2);
+    return m_xnodeset.notEquals(obj2.m_xObject);
   }  
  
- static class NodeIteratorWrapper implements NodeIterator
+ static class NodeIteratorWrapper extends org.apache.xpath.NodeSet
   {
 
     /** Position of next node          */
@@ -257,6 +282,7 @@ public class XNodeSet extends XObject
 
     /** Document fragment instance this will wrap         */
     private NodeList m_list;
+    private org.apache.xml.dtm.DTMManager dtmManager; 
 
     /**
      * Constructor NodeIteratorWrapper
@@ -266,60 +292,12 @@ public class XNodeSet extends XObject
      */
     NodeIteratorWrapper(NodeList list)
     {
+      super();
       m_list = list;
+      dtmManager = new org.apache.xml.dtm.ref.DTMManagerDefault(); 
     }
 
-    /**
-     *  The root node of the Iterator, as specified when it was created.
-     *
-     * @return null
-     */
-    public Node getRoot()
-    {
-      return null;
-    }
-
-    /**
-     *  This attribute determines which node types are presented via the
-     * iterator. The available set of constants is defined in the
-     * <code>NodeFilter</code> interface.
-     *
-     * @return All node types
-     */
-    public int getWhatToShow()
-    {
-      return NodeFilter.SHOW_ALL;
-    }
-
-    /**
-     *  The filter used to screen nodes.
-     *
-     * @return null
-     */
-    public NodeFilter getFilter()
-    {
-      return null;
-    }
-
-    /**
-     *  The value of this flag determines whether the children of entity
-     * reference nodes are visible to the iterator. If false, they will be
-     * skipped over.
-     * <br> To produce a view of the document that has entity references
-     * expanded and does not expose the entity reference node itself, use the
-     * whatToShow flags to hide the entity reference node and set
-     * expandEntityReferences to true when creating the iterator. To produce
-     * a view of the document that has entity reference nodes but no entity
-     * expansion, use the whatToShow flags to show the entity reference node
-     * and set expandEntityReferences to false.
-     *
-     * @return true
-     */
-    public boolean getExpandEntityReferences()
-    {
-      return true;
-    }
-
+  
     /**
      *  Returns the next node in the set and advances the position of the
      * iterator in the set. After a NodeIterator is created, the first call
@@ -330,15 +308,18 @@ public class XNodeSet extends XObject
      *    INVALID_STATE_ERR: Raised if this method is called after the
      *   <code>detach</code> method was invoked.
      */
-    public Node nextNode() throws DOMException
+    public int nextNode() throws DOMException
     {
 
+      Node n;
       if (m_pos < m_list.getLength())
       {
-        return m_list.item(m_pos++);
+       n = m_list.item(m_pos++);
+       return dtmManager.getDTMHandleFromNode(n);
       }
+      
       else
-        return null;
+        return DTM.NULL;
     }
 
     /**
@@ -350,15 +331,17 @@ public class XNodeSet extends XObject
      *    INVALID_STATE_ERR: Raised if this method is called after the
      *   <code>detach</code> method was invoked.
      */
-    public Node previousNode() throws DOMException
+    public int previousNode() throws DOMException
     {
 
+      Node n;
       if (m_pos >0)
       {
-        return m_list.item(m_pos-1);
+        n = m_list.item(m_pos-1);
+        return dtmManager.getDTMHandleFromNode(n);
       }
       else
-        return null;
+        return DTM.NULL;
     }
 
     /**

@@ -130,7 +130,7 @@ public class XBoolean extends XObject
    * Tell if two objects are functionally equal.
    */
   public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+    throws org.xml.sax.SAXException
   {    
     return m_xboolean.equals(obj2);
   }

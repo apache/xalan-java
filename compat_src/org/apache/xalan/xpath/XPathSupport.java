@@ -73,7 +73,7 @@ import org.xml.sax.*;
  * of this should derive from XPathSupportDefault (hence, it should 
  * probably be an abstract class instead of an interface).
  */
-public interface XPathSupport extends org.apache.xalan.extensions.ExpressionContext
+public interface XPathSupport 
 {
   
 }

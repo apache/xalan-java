@@ -124,7 +124,7 @@ public class XNull extends XObject
    */
   public DocumentFragment rtree(XPathSupport support)
   {
-    return m_xnull.rtree((XPathContext)support);
+    return rtree((XPathContext)support);
   }
   
   /**
@@ -136,14 +136,15 @@ public class XNull extends XObject
    */
   public DocumentFragment rtree(XPathContext support)
   {
-    return m_xnull.rtree(support);
-  }
-
+    org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
+    int result = m_xnull.rtree(context);
+    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+  } 
 
   /**
    * Cast result object to a nodelist.
    */
-  public NodeIterator nodeset()
+  public NodeList nodeset()
   {
     return null;
   }  

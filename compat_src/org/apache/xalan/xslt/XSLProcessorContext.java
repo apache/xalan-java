@@ -78,8 +78,7 @@ public class XSLProcessorContext extends org.apache.xalan.extensions.XSLProcesso
     
   {
     super((TransformerImpl)(processor.getTransformer()),
-          stylesheetTree, 
-          sourceTree, sourceNode, mode);
+          stylesheetTree);
   }
 
   

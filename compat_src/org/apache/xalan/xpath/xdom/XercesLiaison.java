@@ -287,7 +287,7 @@ public class XercesLiaison extends XMLParserLiaisonDefault //implements XPathSup
    * output document.  Implementation of XMLParserLiaison
    * interface method.
    */
-  public Document createDocument()
+  static public Document createDocument()
   {
     org.apache.xerces.dom.DocumentImpl doc = new org.apache.xerces.dom.DocumentImpl();
     return doc;

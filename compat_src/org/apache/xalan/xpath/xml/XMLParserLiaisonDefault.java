@@ -63,7 +63,6 @@ import java.util.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 
-import org.apache.xalan.xpath.xml.*;
 import org.apache.xalan.xpath.*;
 import org.apache.xpath.*;
 import org.apache.xalan.xpath.xml.XMLParserLiaison;

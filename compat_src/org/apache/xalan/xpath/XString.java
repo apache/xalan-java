@@ -101,7 +101,52 @@ public class XString extends XObject
    */
   public static double castToNum(String s)
   {  
-    return org.apache.xpath.objects.XString.castToNum(s);    
+    double result;
+
+    if (null == s)
+      result = 0.0;
+    else
+    {
+      try
+      {
+
+        /**
+         * TODO: Adjust this for locale. Need to take into
+         * account the lang parameter on the xsl:sort
+         */
+
+        // It seems we can not use this as it just parses the 
+        // start of the string until it finds a non-number char, 
+        // which is not what we want according to the XSLT spec.  
+        // Also, I *think* this is a local-specific
+        // parse, which is also not what we want according to the 
+        // XSLT spec (see below).
+        // NumberFormat formatter = NumberFormat.getNumberInstance();
+        // result = formatter.parse(s.trim()).doubleValue();
+        // The dumb XSLT spec says: "The number function should 
+        // not be used for conversion of numeric data occurring 
+        // in an element in an XML document unless the element 
+        // is of a type that represents numeric data in a 
+        // language-neutral format (which would typically be 
+        // transformed into a language-specific format for 
+        // presentation to a user). In addition, the number 
+        // function cannot be used unless the language-neutral 
+        // format used by the element is consistent with the 
+        // XPath syntax for a Number."
+        // So I guess we need to check, if the default local 
+        // is french, does Double.valueOf use the local specific 
+        // parse?  Or does it use the ieee parse?
+        result = Double.valueOf(s.trim()).doubleValue();
+      }
+
+      // catch (ParseException e) 
+      catch (NumberFormatException nfe)
+      {
+        result = Double.NaN;
+      }
+    }
+
+    return result;  
   }
   
   /**
@@ -132,8 +177,10 @@ public class XString extends XObject
    * Cast result object to a result tree fragment.
    */
   public DocumentFragment rtree(XPathSupport support)
-  {    
-    return m_xstring.rtree((XPathContext)support);
+  {  
+    org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
+    int result = m_xstring.rtree(context);
+    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
   }
   
   
@@ -145,15 +192,18 @@ public class XString extends XObject
    * @return A document fragment with this string as a child node
    */
   public DocumentFragment rtree(XPathContext support)
-  {      
-    return m_xstring.rtree(support);
-  }
+  {
+    org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
+    int result = m_xstring.rtree(context);
+    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+  } 
+  
   
   /**
    * Tell if two objects are functionally equal.
    */
   public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+    throws org.xml.sax.SAXException
   {
     return m_xstring.equals(obj2);
   }

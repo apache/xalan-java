@@ -67,14 +67,16 @@ public class XRTreeFrag extends XObject
 { 
   
   org.apache.xpath.objects.XRTreeFrag m_xrtreefrag;
+  org.apache.xpath.XPathContext context = new org.apache.xpath.XPathContext();
+    
   
   /**
    * Create an XObject.
    */
   public XRTreeFrag(DocumentFragment frag)
   {
-    super(frag);
-    m_xrtreefrag = new org.apache.xpath.objects.XRTreeFrag(frag); 
+    super(frag);   
+    m_xrtreefrag = new org.apache.xpath.objects.XRTreeFrag(context.getDTMHandleFromNode(frag), context); 
   }
   
   /**
@@ -97,7 +99,7 @@ public class XRTreeFrag extends XObject
   /**
    * Cast result object to a number.
    */
-  public double num()
+  public double num() throws javax.xml.transform.TransformerException
   {    
     return m_xrtreefrag.num();
   }
@@ -123,22 +125,23 @@ public class XRTreeFrag extends XObject
    */
   public DocumentFragment rtree()
   {
-    return m_xrtreefrag.rtree();
-  }
+    int result = m_xrtreefrag.rtree(context);
+    return  (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+  }  
   
   /**
    * Cast result object to a nodelist. (special function).
    */
   public NodeList convertToNodeset()
   {
-    return m_xrtreefrag.convertToNodeset();
+    return ((DocumentFragment)this.object()).getChildNodes();    
   }  
   
   /**
    * Tell if two objects are functionally equal.
    */
   public boolean equals(XObject obj2)
-    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+    throws org.xml.sax.SAXException
   {   
       return m_xrtreefrag.equals(obj2);    
   }

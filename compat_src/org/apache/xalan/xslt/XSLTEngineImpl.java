@@ -112,7 +112,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.DefaultErrorHandler;
-import org.apache.xalan.stree.SourceTreeHandler;
+import org.apache.xalan.transformer.TransformerHandlerImpl;
 
 
 /**
@@ -471,8 +471,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
           m_transformerImpl = (TransformerImpl)templates.newTransformer(); 
           if (m_problemListener != null)
             m_transformerImpl.setErrorListener(m_problemListener);
-          if (m_liaison != null)
-            m_transformerImpl.getXPathContext().setDOMHelper(m_liaison);
+        //  if (m_liaison != null)
+        //    m_transformerImpl.getXPathContext().setDOMHelper(m_liaison);
    
         }
         catch (TransformerConfigurationException tce)
@@ -786,14 +786,19 @@ public class XSLTEngineImpl implements  XSLTProcessor
           //StylesheetHandler inputHandler = (StylesheetHandler)m_processor.getTemplatesBuilder();
           //reader.setContentHandler( inputHandler );
           
-          SourceTreeHandler handler = new SourceTreeHandler();
+         /*TransformerHandlerImpl handler = new TransformerHandlerImpl(getTransformer(), false,
+              xmlIdentifier);
           reader.setContentHandler(handler);
           reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-        
+        */
           // Kick off the parse.  When the ContentHandler gets 
           // the startDocument event, it will call transformNode( node ).
-          reader.parse( SAXSource.sourceToInputSource(iSource));
+       /*   reader.parse( SAXSource.sourceToInputSource(iSource));
           sourceTree = handler.getRoot();
+        */  
+          org.apache.xml.dtm.DTMManager dtmManager = new org.apache.xml.dtm.ref.DTMManagerDefault();
+          org.apache.xml.dtm.DTM dtm = dtmManager.getDTM(inputSource.getSourceObject(), true, null, false, false);
+          sourceTree = dtm.getNode(dtm.getDocument());
         }
       }
       catch(Exception e)
@@ -857,7 +862,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
       parser.initXPath(compiler, "id("+fragID+")", nsNode);
       org.apache.xpath.objects.XObject xobj = xpath.execute(xpathContext, fragBase, nsNode);
 
-      nl = xobj.nodeset();
+      nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
       if(nl.nextNode() == null)
       {
         // xobj = Stylesheet.evalXPathStr(getExecContext(), "//*[@id='"+fragID+"']", fragBase, nsNode);
@@ -868,7 +873,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         parser.initXPath(compiler, "//*[@id='"+fragID+"']", nsNode);
         xobj = xpath.execute(xpathContext, fragBase, nsNode);
 
-        nl = xobj.nodeset();
+        nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
         if(nl.nextNode() == null)
         {
           // xobj = Stylesheet.evalXPathStr(getExecContext(), "//*[@name='"+fragID+"']", fragBase, nsNode);
@@ -878,7 +883,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
           // Parse the xpath
           parser.initXPath(compiler, "//*[@name='"+fragID+"']", nsNode);
           xobj = xpath.execute(xpathContext, fragBase, nsNode);
-          nl = xobj.nodeset();
+          nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
           if(nl.nextNode() == null)
           {
             // Well, hell, maybe it's an XPath...
@@ -890,7 +895,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
             // Parse the xpath
             parser.initXPath(compiler, fragID, nsNode);
             xobj = xpath.execute(xpathContext, fragBase, nsNode);
-            nl = xobj.nodeset();
+            nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
           }
         }
       }
@@ -2104,7 +2109,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */
   public void setOutputStream(java.io.OutputStream os)
   {
-    SourceTreeHandler handler = new SourceTreeHandler(m_transformerImpl);
+    TransformerHandlerImpl handler = new TransformerHandlerImpl(m_transformerImpl, false, null);
     handler.setResult(new StreamResult(os));   
   }
   
@@ -2259,7 +2264,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */
   public void setStylesheetParam(String key, XObject value)
   {
-    setParameter(key, value);
+    setParameter(key, value.object());
   }
 
   /**
