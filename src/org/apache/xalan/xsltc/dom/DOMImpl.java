@@ -981,25 +981,22 @@ public final class DOMImpl implements DOM, Externalizable {
      * all ancestors.
      */
     private class PrecedingIterator extends NodeIteratorBase {
-	// start node + ancestors up to ROOTNODE
+
+	private int _node = 0;
 	private int[] _stack = new int[8];
-	private int _sp, _oldsp;
-         
-	//  _node precedes candidates
-	private int _node;
+	private int _sp = 0;
+	private int _spStart = 0;
+	private int _spMark = 0;
 
 	public boolean isReverse() {
 	    return true;
 	}
          
 	public NodeIterator cloneIterator() {
-	    _isRestartable = false;
-	    final int[] stackCopy = new int[8];
 	    try {
+		_isRestartable = false;
 		final PrecedingIterator clone = 
 		    (PrecedingIterator)super.clone();
-		System.arraycopy(_stack, 0, stackCopy, 0, _stack.length);
-		clone._stack = stackCopy; 
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1010,50 +1007,49 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		// iterator is not a clone
-		int parent, index;
 		_startNode = node;
 		_node = ROOTNODE;
-		_stack[index = 0] = node;
-		if (node > ROOTNODE) {
-		    while ((parent = _parent[node]) != ROOTNODE) {
-			if (++index == _stack.length) {
-			    final int[] stack = new int[index + 4];
-			    System.arraycopy(_stack, 0, stack, 0, index);
-			    _stack = stack;
-			}
-			_stack[index] = node = parent;
+		int parent = node;
+		while ((parent = _parent[parent]) >= ROOTNODE) {
+		    if (_sp == _stack.length) {
+			final int[] stack = new int[_sp + 4];
+			System.arraycopy(_stack, 0, stack, 0, _sp);
+			_stack = stack;
 		    }
+		    _stack[_sp++] = parent;
 		}
-		_oldsp = _sp = index;
+		_spStart = _sp;
 		return resetPosition();
 	    }
 	    return this;
 	}
                   
 	public int next() {
-	    final int node = _node + 1;
-	    if ((_sp >= 0) && (node < _stack[_sp])) {
-		return returnNode(_node = node);
+	    // Advance node index and check if all nodes have been returned.
+	    while (++_node < _startNode) {
+		// Check if we reached one of the base node's ancestors
+		if ((_sp < 0) || (_node < _stack[_sp])) return(_node);
+		// Anvance past the next ancestor node
+		_sp--;
 	    }
-	    else {
-		_node = node;         // skip ancestor
-		return --_sp >= 0 ? next() : NULL;
-	    }
+	    return(NULL);
 	}
 
 	// redefine NodeIteratorBase's reset
 	public NodeIterator reset() {
-	    _sp = _oldsp;
+	    _node = ROOTNODE;
+	    _spStart = _sp;
 	    return resetPosition();
 	}
 
 	public void setMark() {
 	    _markedNode = _node;
+	    _spMark = _sp;
 	}
 
 	public void gotoMark() {
 	    _node = _markedNode;
+	    _sp = _spMark;
 	}
     } // end of PrecedingIterator
 
@@ -1951,11 +1947,10 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the attribute node of a given type (if any) for an element
      */
     public int getAttributeNode(final int gType, final int element) {
-	for (int attr = _lengthOrAttr[element]; attr != NULL;
+	for (int attr = _lengthOrAttr[element];
+	     attr != NULL;
 	     attr = _nextSibling[attr]) {
-	    if (_type[attr] == gType) {
-		return attr;
-	    }
+	    if (_type[attr] == gType) return attr;
 	}
 	return NULL;
     }
@@ -2075,6 +2070,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	   do not exist in the DOM (translet types which do not correspond
 	   to a DOM type are mapped to the DOM.ELEMENT type).
 	*/
+
 	if (type == NO_TYPE) {
 	    return(EMPTYITERATOR);
 	}
