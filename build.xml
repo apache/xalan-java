@@ -168,7 +168,6 @@ Copyright:
   <target name="samples" depends="jar">
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
     <mkdir dir="${build.samples}"/>
-    <mkdir dir="${build.samples}/servlet"/>
     <!-- Since the samples are packageless, they must be compiled separately. -->   
     <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${xalanjar}" 
            destdir="${build.samples}"  excludes="${exclude}"
@@ -197,6 +196,7 @@ Copyright:
   <!-- =================================================================== -->
 
  <target name="servlet" depends="jar">
+     <mkdir dir="${build.samples}/servlet"/>
      <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${xalanjar}:${servletjar}" 
            destdir="${build.samples}" excludes="${exclude}"
            debug="${debug}"/>      
