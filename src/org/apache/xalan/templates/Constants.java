@@ -113,9 +113,15 @@ public class Constants
    * Xalan extension namespaces.
    */
   public static final String 
-    S_EXTENSIONS_JAVA_URL = "http://xml.apache.org/xslt/java",
+    // The old namespace for Java extension
+    S_EXTENSIONS_OLD_JAVA_URL = "http://xml.apache.org/xslt/java",
+    // The new namespace for Java extension
+    S_EXTENSIONS_JAVA_URL = "http://xml.apache.org/xalan/java",
     S_EXTENSIONS_LOTUSXSL_JAVA_URL = "http://xsl.lotus.com/java",
-    S_EXTENSIONS_XALANLIB_URL = "http://xml.apache.org/xalan";   
+    S_EXTENSIONS_XALANLIB_URL = "http://xml.apache.org/xalan",
+    S_EXTENSIONS_REDIRECT_URL = "http://xml.apache.org/xalan/redirect",
+    S_EXTENSIONS_PIPE_URL = "http://xml.apache.org/xalan/PipeDocument",
+    S_EXTENSIONS_SQL_URL = "http://xml.apache.org/xalan/sql";
   
   /**
    * EXSLT extension namespaces.
@@ -125,7 +131,9 @@ public class Constants
     S_EXSLT_MATH_URL = "http://exslt.org/math",
     S_EXSLT_SETS_URL = "http://exslt.org/sets",
     S_EXSLT_DATETIME_URL = "http://exslt.org/dates-and-times",
-    S_EXSLT_FUNCTIONS_URL = "http://exslt.org/functions";
+    S_EXSLT_FUNCTIONS_URL = "http://exslt.org/functions",
+    S_EXSLT_DYNAMIC_URL = "http://exslt.org/dynamic",
+    S_EXSLT_STRINGS_URL = "http://exslt.org/strings";
     
     
   /**
