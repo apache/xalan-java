@@ -86,7 +86,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 109;          
+  public static final int MAX_CODE = 110;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 26;
@@ -1091,6 +1091,15 @@ public class XSLTErrorResources extends XResourceBundleBase
   {
     contents[ER_CLASS_NOT_FOUND_FOR_OPTION][1] =
 			"Class file not found for option {0}";
+  }
+	
+	/** Required Element not found         */
+  public static final int ER_REQUIRED_ELEM_NOT_FOUND = 110;
+
+  static
+  {
+    contents[ER_REQUIRED_ELEM_NOT_FOUND][1] =
+			"Required Element not found: {0}";
   }
   
 

@@ -223,6 +223,9 @@ public class XSLTElementProcessor
   {
 		if (m_savedLastOrder != null && !m_savedLastOrder.empty())
 			getElemDef().setLastOrder(m_savedLastOrder.pop());
+		
+		if (!getElemDef().getRequiredFound())
+			handler.error(XSLTErrorResources.ER_REQUIRED_ELEM_NOT_FOUND, new Object[]{getElemDef().getRequiredElem()}, null);
   }
 
   /**

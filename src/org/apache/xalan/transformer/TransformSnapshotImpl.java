@@ -4,7 +4,6 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.VariableStack;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.BoolStack;
-import org.apache.xalan.serialize.SerializerToXML;
 import java.util.Stack;
 import org.xml.sax.helpers.NamespaceSupport;
 import java.util.Enumeration;

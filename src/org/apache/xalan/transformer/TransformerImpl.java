@@ -3026,8 +3026,7 @@ public class TransformerImpl extends Transformer
    * This will execute the following XSLT instructions
    * from the snapshot point.
    */
-  public void resetToStylesheet(TransformSnapshot ts)
-		//throws TransformerException
+  public void resetToStylesheet(TransformSnapshot ts)		
   {
     ((TransformSnapshotImpl)ts).apply(this);		
   }
