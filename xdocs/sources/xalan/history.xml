@@ -1,5 +1,57 @@
+<s3 title="Changes for &xslt4j; 2.2.D11">
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>09/05/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Removed the code which precalculated node levels
+ (depth in tree). This has been IFed out for some time, but
+ was retained in case we wanted to go back to it. Since it
+ seems we're happy with this choice, zapping it entirely
+ saves a few more cycles.
 
+ It's simple enough to recreate if we change our minds later.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>09/07/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>Minor cleanup and updates in preparation for extension function;
+ note SAX portion isn't complete yet<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>09/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib Extensions.java
+ java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>Update EnvironmentCheck service with SAX checking; better method organization;
+ Add checkEnvironment to xalan: built-in Extensions class<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/compiler Lexer.java<br/><ref>Committer's log entry: </ref>Bug 2140: Catch index out of bounds exception<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Bug 2130: Check for null data to avoid NPE<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/templates ElemElement.java<br/><ref>Committer's log entry: </ref>Bug 3421: Issue an error if namespace attribute is used with an empty string 
+in xsl:element<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemElement.java<br/><ref>Committer's log entry: </ref>Backing out this change. Some conformance tests need to be updated first<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemElement.java<br/><ref>Committer's log entry: </ref>Bug 3421: Issue an error if namespace
+ attribute is used with an empty string in xsl:element<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemTemplateElement.java<br/><ref>Committer's log entry: </ref>Bug 3442: when building the prefix table for an element, just override 
+prefixes defined in parent element with uris that have been redefined by the 
+element instead of keeping both uris in the table.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>09/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerFactory.java<br/><ref>Committer's log entry: </ref>Fix Bugzilla 3491: updated error message text; also updated Javadoc to
+ reflect @throws; note that the Javadoc is still somewhat contradictory
+ about returning a null on error (it appears to throw exceptions instead)
+ PR:3491
+ Submitted by:Julian.Birch@ranplc.co.uk<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>09/13/2001<br/><ref>Modified: </ref>java/src/javax/xml/transform TransformerFactory.java
+ java/src/org/apache/xml/dtm DTMManager.java<br/><ref>Committer's log entry: </ref>Fix Bugzilla 3423: documentation updates for proper class, property names
+ (one of two checkins)
+ PR:3423
+ Submitted by:gthb@dimon.is<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>09/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath XPath.java<br/><ref>Committer's log entry: </ref>Fix Bugzilla 2637: documentation updates for constructor functionality
+ PR:2637
+ Submitted by:gthb@dimon.is<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemUse.java<br/><ref>Committer's log entry: </ref>Bug 2548: Combine attribute sets with the same name but process them in order 
+of precedence.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes UnionPathIterator.java<br/><ref>Committer's log entry: </ref>Bug 3533: Check for null m_iterators before trying to use it.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer KeyRefIterator.java<br/><ref>Committer's log entry: </ref>Bugzilla 3618: Check cache before anything else when getting the next node in 
+the iterator.<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>09/19/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc TransletException.java<br/><ref>Committer's log entry: </ref>Changed the TransletException class so that it inherits from SAXException
+ and not from Exception. This should make it possible for us to avoid
+ testing for both SAXExceptions and TransletExceptions. Exception handling
+ is one of the things that JVM takes its time with, and we should try to
+ avoid using them when we can, and use as few of them as possible otherwise.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/19/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Bugzilla 2332: Implement getAttribute() method to return the values for 
+incremental and optimize<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>09/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java<br/><ref>Committer's log entry: </ref>Enable Attr.getOwnerElement()<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetHandler.java
+ java/src/org/apache/xalan/templates ElemLiteralResult.java<br/><ref>Committer's log entry: </ref>Bugzilla 1803: Handle version attribute on a litteral element.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>09/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>release 2.2.D11<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>09/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>release 2.2.D11<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLTSchema.java<br/><ref>Committer's log entry: </ref>Mark xsl:template as containing ordered elements. Fix for no error when 
+xsl:param not first child of xsl:template<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemLiteralResult.java
+ ElemTemplateElement.java Stylesheet.java<br/><ref>Committer's log entry: </ref>Bugzilla 3800: Make sure that when looking for excluded prefixes, we check 
+the URI associated with the prefix, not the prefix in the excluded list.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>09/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath NodeSetDTM.java<br/><ref>Committer's log entry: </ref>Do not reorder or strip duplicate nodes when converting a DOM nodelist into a 
+DTM nodelist<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/01/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref
+ IncrementalSAXSource_Filter.java<br/><ref>Committer's log entry: </ref>Catch for unwrappered StopException (apparently not all parsers generate
+ a SAXException wrapper).<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>10/01/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDefaultBaseIterators.java
+ DTMDefaultBaseTraversers.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Creating the implied Namespace Node for xml:<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
+</s3>
 <s3 title="Changes for &xslt4j; 2.2.D10">
+<note>The SQL Extension library has been updated to work with DTM.</note>
 <p> Core (Non-XSLTC) source code updates:</p><ul>
 <li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Fix bugzilla bug 3056 
 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3056). SAX2DTM now keeps 
