@@ -188,6 +188,9 @@ public class Parent extends Child
       doc = (DocumentImpl)this.getOwnerDocument();
       doc.incrementDocOrderCount();
       child.setUid(doc.getDocOrderCount());
+      
+      // I think this was put in to handle Result tree fragments.
+      // Maybe endDocument is not being called??    
       if(!doc.getUseMultiThreading() && (child instanceof Parent))
         ((Parent)child).setComplete(true);
 
