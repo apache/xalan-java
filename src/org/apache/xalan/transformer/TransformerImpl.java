@@ -81,6 +81,7 @@ import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemParam;
+import org.apache.xalan.templates.ElemTemplate;
 
 import org.apache.xalan.trace.TraceManager;
 
@@ -162,7 +163,8 @@ import trax.URIResolver;
  * @see XSLTProcessorFactory
  * @see XSLTProcessor
  */
-public class TransformerImpl extends XMLFilterImpl implements Transformer, Runnable
+public class TransformerImpl extends XMLFilterImpl 
+  implements Transformer, Runnable, TransformState
 {
   //==========================================================
   // SECTION: Constructors
@@ -1016,30 +1018,40 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer, Runna
     
     // If we are processing the default text rule, then just clone 
     // the value directly to the result tree.
-    if(isDefaultTextRule)
+    try
     {
-      switch(nodeType)
+      m_currentMatchTemplates.push(template);
+      m_currentMatchNodes.push(child);
+      if(isDefaultTextRule)
       {
-      case Node.CDATA_SECTION_NODE:
-      case Node.TEXT_NODE:
-        getResultTreeHandler().cloneToResultTree(stylesheetTree, child, false, false, false);
-        break;
-      case Node.ATTRIBUTE_NODE:
+        switch(nodeType)
         {
-          String val = ((Attr)child).getValue();
-          getResultTreeHandler().characters(val.toCharArray(), 0, val.length());
+        case Node.CDATA_SECTION_NODE:
+        case Node.TEXT_NODE:
+          getResultTreeHandler().cloneToResultTree(stylesheetTree, child, false, false, false);
+          break;
+        case Node.ATTRIBUTE_NODE:
+          {
+            String val = ((Attr)child).getValue();
+            getResultTreeHandler().characters(val.toCharArray(), 0, val.length());
+          }
+          break;
         }
-        break;
+      }
+      else
+      {
+        // Fire a trace event for the template.
+        if(TransformerImpl.S_DEBUG)
+          getTraceManager().fireTraceEvent(child, mode, template);
+        
+        // And execute the child templates.
+        executeChildTemplates(template, child, mode);
       }
     }
-    else
+    finally
     {
-      // Fire a trace event for the template.
-      if(TransformerImpl.S_DEBUG)
-        getTraceManager().fireTraceEvent(child, mode, template);
-      
-      // And execute the child templates.
-      executeChildTemplates(template, child, mode);
+      m_currentMatchTemplates.pop();
+      m_currentMatchNodes.pop();
     }
     return true;
   }
@@ -1085,7 +1097,15 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer, Runna
            t = t.getNextSiblingElem()) 
       {
         xctxt.setSAXLocator(t);
-        t.execute(this, sourceNode, mode);
+        try
+        {
+          pushElemTemplateElement(t, sourceNode);
+          t.execute(this, sourceNode, mode);
+        }
+        finally
+        {
+          popElemTemplateElement();
+        }
       }
     }
     finally
@@ -1173,6 +1193,115 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer, Runna
     }
     return keys;
   }
+  
+  //==========================================================
+  // SECTION: TransformState implementation
+  //==========================================================
+  
+  private Stack m_currentTemplateElements = new Stack();
+  private Stack m_currentNodes = new Stack();
+  
+  /**
+   * Push the current template element.
+   */
+  public void pushElemTemplateElement(ElemTemplateElement elem, Node currentNode)
+  {
+    m_currentTemplateElements.push(elem);
+    m_currentNodes.push(currentNode);
+  }
+  
+  /**
+   * Pop the current template element.
+   */
+  public void popElemTemplateElement()
+  {
+    m_currentTemplateElements.pop();
+    m_currentNodes.pop();
+  }
+  
+  /**
+   * Retrieves the stylesheet element that produced 
+   * the SAX event.
+   */
+  public ElemTemplateElement getCurrentElement()
+  {
+    return (ElemTemplateElement)m_currentTemplateElements.peek();
+  }
+
+  /**
+   * This method retrieves the current context node 
+   * in the source tree.
+   */
+  public Node getCurrentNode()
+  {
+    return (Node)m_currentNodes.peek();
+  }
+  
+  /**
+   * This method retrieves the xsl:template 
+   * that is in effect, which may be a matched template 
+   * or a named template.
+   * 
+   * <p>Please note that the ElemTemplate returned may 
+   * be a default template, and thus may not have a template 
+   * defined in the stylesheet.</p>
+   */
+  public ElemTemplate getCurrentTemplate()
+  {
+    ElemTemplateElement elem = getCurrentElement();
+    while((null != elem) && (elem.getXSLToken() != Constants.ELEMNAME_TEMPLATE))
+      elem = elem.getParentElem();
+    return (ElemTemplate)elem;
+  }
+
+  private Stack m_currentMatchTemplates = new Stack();
+  private Stack m_currentMatchNodes = new Stack();
+
+  /**
+   * This method retrieves the xsl:template 
+   * that was matched.  Note that this may not be 
+   * the same thing as the current template (which 
+   * may be from getCurrentElement()), since a named 
+   * template may be in effect.
+   */
+  public ElemTemplate getMatchedTemplate()
+  {
+    return (ElemTemplate)m_currentMatchTemplates.peek();
+  }
+
+  /**
+   * Retrieves the node in the source tree that matched 
+   * the template obtained via getMatchedTemplate().
+   */
+  public Node getMatchedNode()
+  {
+    return (Node)m_currentMatchNodes.peek();
+  }
+  
+  /**
+   * Get the current context node list.
+   */
+  public NodeIterator getContextNodeList()
+  {
+    try
+    {
+      return getXPathContext().getContextNodeList().cloneWithReset();
+    }
+    catch(CloneNotSupportedException cnse)
+    {
+      // should never happen.
+      return null;
+    }
+  }
+  
+  /**
+   * Get the TrAX Transformer object in effect.
+   */
+  public Transformer getTransformer()
+  {
+    return this;
+  }
+  
   
   //==========================================================
   // SECTION: Member variables
