@@ -214,15 +214,15 @@ public class XSLTEngineImpl implements  XSLTProcessor
   public XSLTEngineImpl(String liaisonClassName)
     throws SAXException 
   {   
-    TransformerFactory m_tfactory = TransformerFactory.newInstance();
+    m_tfactory = TransformerFactory.newInstance();
     m_problemListener = new ProblemListenerDefault();
     
     try 
       {
         m_liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
-        org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
+        //org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
 
-        xctxt.setDOMHelper(m_liaison);        
+        //xctxt.setDOMHelper(m_liaison);        
       } 
       catch (ClassNotFoundException e1) 
       {
@@ -264,13 +264,13 @@ public class XSLTEngineImpl implements  XSLTProcessor
   public XSLTEngineImpl(XMLParserLiaison parserLiaison)
     throws org.xml.sax.SAXException
   {
-    TransformerFactory m_tfactory = TransformerFactory.newInstance();
+    m_tfactory = TransformerFactory.newInstance();
     m_problemListener = new ProblemListenerDefault();
     
     m_liaison =  (DOM2Helper)parserLiaison;
-    org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
+   // org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
 
-    xctxt.setDOMHelper(m_liaison);    
+    //xctxt.setDOMHelper(m_liaison);    
   }
 
   /**
@@ -290,9 +290,9 @@ public class XSLTEngineImpl implements  XSLTProcessor
     m_problemListener = new ProblemListenerDefault();
     
     m_liaison =  (DOM2Helper)parserLiaison;
-    org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
+   // org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
 
-    xctxt.setDOMHelper(m_liaison);    
+    //xctxt.setDOMHelper(m_liaison);    
   }
  
   /**
@@ -454,6 +454,9 @@ public class XSLTEngineImpl implements  XSLTProcessor
           m_transformerImpl = (TransformerImpl)templates.newTransformer(); 
           if (m_problemListener != null)
             m_transformerImpl.setErrorListener(m_problemListener);
+          if (m_liaison != null)
+          m_transformerImpl.getXPathContext().setDOMHelper(m_liaison);
+   
         }
         catch (TransformerConfigurationException tce)
         {
@@ -583,12 +586,12 @@ public class XSLTEngineImpl implements  XSLTProcessor
         stylesheetProcessor.pushStylesheet(m_stylesheetRoot.getObject());      
         diag("========= Parsing "+xslIdentifier+" ==========");
         pushTime(xslIdentifier);
-        String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
+        //String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
 
-        if(null != liaisonClassName)
+        if(null != m_liaison)
         {
-          DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
-          liaison.parse(SAXSource.sourceToInputSource(ssSource));
+         // DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
+          m_liaison.parse(SAXSource.sourceToInputSource(ssSource));
         }  
         if(null != m_diagnosticsPrintWriter)
           displayDuration("Parse of "+xslIdentifier, xslIdentifier);
