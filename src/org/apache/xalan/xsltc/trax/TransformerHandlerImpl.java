@@ -98,6 +98,10 @@ public class TransformerHandlerImpl implements TransformerHandler {
 
 	// Get a reference to the translet wrapped inside the transformer
 	_translet = _transformer.getTranslet();
+
+	// Create a DOMBuilder object and get the handler
+	_dom = new DOMImpl();
+	_handler = _dom.getBuilder();
     }
 
     /**
@@ -127,7 +131,7 @@ public class TransformerHandlerImpl implements TransformerHandler {
      * @return The Transformer object
      */
     public Transformer getTransformer() {
-	return(_transformer);
+	return _transformer;
     }
 
     /**
@@ -158,7 +162,8 @@ public class TransformerHandlerImpl implements TransformerHandler {
      * Receive notification of character data.
      */
     public void characters(char[] ch, int start, int length) 
-	throws SAXException {
+	throws SAXException 
+    {
 	_handler.characters(ch, start, length);
     }
 
@@ -173,10 +178,8 @@ public class TransformerHandlerImpl implements TransformerHandler {
 	    throw new SAXException(err.toString());
 	}
 
-	// Create an internal DOM (not W3C) and get SAX2 input handler
-	_dom = new DOMImpl();
+	// Set document URI
 	_dom.setDocumentURI(_systemId);
-	_handler = _dom.getBuilder();
 
 	// Proxy call
 	_handler.startDocument();
