@@ -83,12 +83,12 @@ import javax.xml.transform.SourceLocator;
  * A simple RTF is an RTF that has only one Text node. The Text node can be produced by a
  * combination of Text, xsl:value-of and xsl:number instructions. It can also be produced
  * by a control structure (xsl:if or xsl:choose) whose body is pure Text.
- *
+ * <p>
  * A SimpleResultTreeImpl has only two nodes, i.e. the ROOT node and its Text child. All DOM
  * interfaces are overridden with this in mind. For example, the getStringValue() interface
  * returns the value of the Text node. This class receives the character data from the 
  * characters() interface.
- *
+ * <p>
  * This class implements DOM and SerializationHandler. It also implements the DTM interface
  * for support in MultiDOM. The nested iterators (SimpleIterator and SingletonIterator) are
  * used to support the nodeset() extension function.

@@ -76,20 +76,20 @@ import org.xml.sax.*;
  * and DTMDefaultBase are overridden in SAX2DTM2 in order to allow fast, efficient 
  * access to the DTM model. Some nested iterators in DTMDefaultBaseIterators
  * are also overridden in SAX2DTM2 for performance reasons.
- *
+ * <p>
  * Performance is the biggest consideration in the design of SAX2DTM2. To make the code most 
  * efficient, the incremental support is dropped in SAX2DTM2, which means that you should not
  * use it in incremental situation. To reduce the overhead of pulling data from the DTM model,
  * a few core interfaces in SAX2DTM2 have direct access to the internal arrays of the
  * SuballocatedIntVectors.
- * 
+ * <p>
  * The design of SAX2DTM2 may limit its extensibilty. If you have a reason to extend the
  * SAX2DTM model, please extend from SAX2DTM instead of this class.
- *
+ * <p>
  * TODO: This class is currently only used by XSLTC. We need to investigate the possibility
  * of also using it in Xalan-J Interpretive. Xalan's performance is likely to get an instant 
  * boost if we use SAX2DTM2 instead of SAX2DTM in non-incremental case.
- *
+ * <p>
  * %MK% The code in this class is critical to the XSLTC_DTM performance. Be very careful
  * when making changes here!
  */
@@ -109,7 +109,7 @@ public class SAX2DTM2 extends SAX2DTM
     /**
      * Setting start to END should 'close' the iterator,
      * i.e. subsequent call to next() should return END.
-     *
+     * <p>
      * If the iterator is not restartable, this has no effect.
      * %REVIEW% Should it return/throw something in that case,
      * or set current node to END, to indicate request-not-honored?
@@ -1927,7 +1927,7 @@ public class SAX2DTM2 extends SAX2DTM
   /**
    * Override DTMDefaultBase._exptype() by dropping the incremental code.
    * 
-   * This one is less efficient than _exptype2. It is only used during
+   * <p>This one is less efficient than _exptype2. It is only used during
    * DTM building. _exptype2 is used after the document is fully built.
    */
   public final int _exptype(int identity)
@@ -2018,7 +2018,7 @@ public class SAX2DTM2 extends SAX2DTM
   /**
    * The optimized version of DTMDefaultBase.getExpandedTypeID(int).
    *
-   * This one is only used by DOMAdapter.getExpandedTypeID(int), which
+   * <p>This one is only used by DOMAdapter.getExpandedTypeID(int), which
    * is mostly called from the compiled translets.
    */
   public final int getExpandedTypeID2(int nodeHandle)
@@ -2076,7 +2076,7 @@ public class SAX2DTM2 extends SAX2DTM
   /**
    * Override SAX2DTM.startElement()
    *
-   * Receive notification of the start of an element.
+   * <p>Receive notification of the start of an element.
    *
    * <p>By default, do nothing.  Application writers may override this
    * method in a subclass to take specific actions at the start of
@@ -2459,7 +2459,7 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * Override the processingInstruction() interface in SAX2DTM2.
-   * 
+   * <p>
    * %OPT% This one is different from SAX2DTM.processingInstruction()
    * in that we do not use extended types for PI nodes. The name of
    * the PI is saved in the DTMStringPool.
@@ -2493,7 +2493,7 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * The optimized version of DTMDefaultBase.getFirstAttribute().
-   * 
+   * <p>
    * Given a node handle, get the index of the node's first attribute.
    *
    * @param nodeHandle int Handle of the node.
@@ -2533,7 +2533,7 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * The optimized version of DTMDefaultBase.getFirstAttributeIdentity(int).
-   *
+   * <p>
    * Given a node identity, get the index of the node's first attribute.
    *
    * @param identity int identity of the node.
@@ -2568,7 +2568,7 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * The optimized version of DTMDefaultBase.getNextAttributeIdentity(int).
-   *
+   * <p>
    * Given a node identity for an attribute, advance to the next attribute.
    *
    * @param identity int identity of the attribute node.  This
@@ -2596,7 +2596,7 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * The optimized version of DTMDefaultBase.getTypedAttribute(int, int).
-   * 
+   * <p>
    * Given a node handle and an expanded type ID, get the index of the node's
    * attribute of that type, if any.
    *
@@ -2643,8 +2643,8 @@ public class SAX2DTM2 extends SAX2DTM
   }
 
   /**
-   * Override SAX2DTM.getLocalName() in SAX2DTM2
-   * Processing for PIs is different.
+   * Override SAX2DTM.getLocalName() in SAX2DTM2.
+   * <p>Processing for PIs is different.
    * 
    * Given a node handle, return its XPath- style localname. (As defined in
    * Namespaces, this is the portion of the name after any colon character).
@@ -2668,8 +2668,8 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * The optimized version of SAX2DTM.getNodeNameX().
-   * 
-   * Given  a node handle, return the XPath node name. This should be the name
+   * <p>
+   * Given a node handle, return the XPath node name. This should be the name
    * as described by the XPath data model, NOT the DOM- style name.
    *
    * @param nodeHandle the id of the node.
@@ -2713,7 +2713,7 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * The optimized version of SAX2DTM.getNodeName().
-   * 
+   * <p>
    * Given a node handle, return its DOM-style node name. This will include
    * names such as #text or #document.
    *
@@ -2773,9 +2773,9 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * Override SAX2DTM.getStringValue(int)
-   *
+   * <p>
    * This method is only used by Xalan-J Interpretive. It is not used by XSLTC.
-   *
+   * <p>
    * If the caller supplies an XMLStringFactory, the getStringValue() interface
    * in SAX2DTM will be called. Otherwise just calls getStringValueX() and
    * wraps the returned String in an XMLString.
@@ -2889,7 +2889,7 @@ public class SAX2DTM2 extends SAX2DTM
   
   /**
    * The optimized version of SAX2DTM.getStringValue(int).
-   * 
+   * <p>
    * %OPT% This is one of the most often used interfaces. Performance is
    * critical here. This one is different from SAX2DTM.getStringValue(int) in
    * that it returns a String instead of a XMLString.
@@ -3011,7 +3011,7 @@ public class SAX2DTM2 extends SAX2DTM
 
   /**
    * The optimized version of SAX2DTM.dispatchCharactersEvents(int, ContentHandler, boolean).
-   *
+   * <p>
    * Directly call the
    * characters method on the passed ContentHandler for the
    * string-value of the given node (see http://www.w3.org/TR/xpath#data-model

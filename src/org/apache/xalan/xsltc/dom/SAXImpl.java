@@ -88,7 +88,6 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM2;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.ToXMLSAXHandler;
 import org.apache.xml.utils.XMLStringFactory;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
@@ -100,6 +99,18 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 
+/**
+ * SAXImpl is the core model for SAX input source. SAXImpl objects are
+ * usually created from an XSLTCDTMManager.
+ *
+ * <p>DOMSource inputs are handled using DOM2SAX + SAXImpl. SAXImpl has a
+ * few specific fields (e.g. _node2Ids, _document) to keep DOM-related
+ * information. They are used when the processing behavior between DOM and
+ * SAX has to be different. Examples of these include id function and 
+ * unparsed entity.
+ *
+ * <p>SAXImpl extends SAX2DTM2 instead of SAX2DTM for better performance.
+ */
 public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
 {
     
@@ -1461,9 +1472,8 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
     }
     
     /**
-     * Returns a DOMBuilder class wrapped in a SAX adapter.
-     * I am not sure if we need this one anymore now that the
-     * DOM builder's interface is pure SAX2 (must investigate)
+     * Return a SerializationHandler for output handling.
+     * This method is used by Result Tree Fragments.
      */
     public SerializationHandler getOutputDomBuilder()
     {
