@@ -243,8 +243,15 @@ class ProcessorInclude extends XSLTElementProcessor
           reader.setEntityResolver(entityResolver);
 
         reader.setContentHandler(handler);
-        reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                          true);
+        try
+        {
+          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+                            true);
+        }
+        catch(org.xml.sax.SAXNotRecognizedException snre)
+        {
+          // We don't care.
+        }
         handler.pushBaseIndentifier(inputSource.getSystemId());
 
         try

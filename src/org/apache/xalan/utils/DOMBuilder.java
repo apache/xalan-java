@@ -341,7 +341,8 @@ public class DOMBuilder
 
         // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
         //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
-        if ((null == attrNS) || (attrNS.length() == 0))
+        // Crimson won't let us set an xmlns: attribute on the DOM.
+        if ((null == attrNS) || (attrNS.length() == 0) || atts.getQName(i).startsWith("xmlns:"))
           elem.setAttribute(atts.getQName(i), atts.getValue(i));
         else
         {

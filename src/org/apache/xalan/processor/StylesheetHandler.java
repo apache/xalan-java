@@ -479,7 +479,8 @@ public class StylesheetHandler extends DefaultHandler
         getStylesheetRoot().recompose();
 
       // Resolve the result prefix tables in the elements.
-      getLastPoppedStylesheet().resolvePrefixTables();
+      if(null != getLastPoppedStylesheet())
+        getLastPoppedStylesheet().resolvePrefixTables();
     }
     else
       throw new SAXException("Did not find the stylesheet root!");
@@ -1072,9 +1073,11 @@ public class StylesheetHandler extends DefaultHandler
     // The stylesheetLocatorStack needs to be popped because
     // a locator was pushed in for this stylesheet by the SAXparser by calling
     // setDocumentLocator().
-    m_stylesheetLocatorStack.pop();
+    if(!m_stylesheetLocatorStack.isEmpty())
+      m_stylesheetLocatorStack.pop();
 
-    m_lastPoppedStylesheet = (Stylesheet) m_stylesheets.pop();
+    if(!m_stylesheets.isEmpty())
+      m_lastPoppedStylesheet = (Stylesheet) m_stylesheets.pop();
 
     return m_lastPoppedStylesheet;
   }

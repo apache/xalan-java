@@ -486,9 +486,7 @@ public class TransformerImpl extends Transformer
       }
       catch (SAXException se)
       {
-
-        // What can we do?
-        // TODO: User diagnostics.
+        // We don't care.
       }
 
       // Get the input content handler, which will handle the 
