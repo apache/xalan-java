@@ -431,8 +431,9 @@ public class TransformerFactoryImpl
 		throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
 	    }
 
-	    if ((new File(systemId)).exists())
-		systemId = "file:"+systemId;
+	    if ((new File(systemId)).exists()) {
+		systemId = new File(systemId).toURL().toExternalForm(); 
+ 	    }
 
 	    // Try to create an InputStream from the SystemId if no input so far
 	    if (input == null) input = new InputSource(systemId);

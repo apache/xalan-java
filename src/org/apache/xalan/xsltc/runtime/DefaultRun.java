@@ -149,8 +149,9 @@ final public class DefaultRun {
 	    dom.setDocumentURI(_fileName);
 	    if (_uri)
 		reader.parse(_fileName);
-	    else
-		reader.parse("file:"+(new File(_fileName).getAbsolutePath()));
+	    else {
+	        reader.parse(new File(_fileName).toURL().toExternalForm());
+	    }
 	    
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
