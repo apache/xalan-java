@@ -73,11 +73,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public Node         getFirstChild()
   {
-    // The call to getAttrCount gets the number of attributes in the list.
-    // The attributes are put in the list before the actual children.
-    // Force attributes to be added first!
-    int attrs = getAttrCount();
-    return (getChildCount() == 0) ? null : getChild(attrs);
+    return hasChildNodes() ? getChild(attrsEnd) : null;
   }
       
   /**
