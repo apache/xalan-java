@@ -210,19 +210,19 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
 <p>Extension elements pass the extension two objects:</p>
 <ul>
 <li><jump href="apidocs/org/apache/xalan/extensions/XSLProcessorContext.html">org.apache.xalan.extensions.XSLProcessorContext</jump>, which provides access to the XSL processor, the XML source tree, the stylesheet tree, the current context node, and the current mode (if any).<br/><br/></li>
-<li><jump href="apidocs/org/apache/xalan/xslt/ElemExtensionCall.html">org.apache.xalan.xslt.ElemExtensionCall</jump>, which provides the API for interacting with the extension element.</li>
+<li><jump href="apidocs/org/apache/xalan/templates/ElemExtensionCall.html">org.apache.xalan.templates.ElemExtensionCall</jump>, which provides the API for interacting with the extension element.</li>
 </ul>
-<p>You can use the ElemExtensionCall getAttribute(String name) method, for example, to read element attributes in their raw form.  Use the getAttribute(String name, Node sourceNode, XSLTEngineImpl processor) method to evaluate the attribute as an attribute value template.  Note that the method names are the same but the method signatures are different.  For full details, see the <jump href="apidocs/org/apache/xalan/xslt/ElemExtensionCall.html">Javadoc</jump> for the ElemExtensionCall class.</p>
+<p>You can use the ElemExtensionCall getAttribute(String name) method, for example, to read element attributes in their raw form.  Use the getAttribute(String name, Node sourceNode, XSLTEngineImpl processor) method to evaluate the attribute as an attribute value template.  Note that the method names are the same but the method signatures are different.  For full details, see the <jump href="apidocs/org/apache/xalan/templates/ElemExtensionCall.html">Javadoc</jump> for the ElemExtensionCall class.</p>
 <s3 title="Implementing an extension element">
 <p>For each extension element in a namespace, the implementation must be a Java method with the following signature, or the scripting language equivalent:</p>
 <p><code><ref>Type element</ref>(org.apache.xalan.extensions.XSLProcessorContext, </code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.xalan.xslt.ElemExtensionCall extensionElement)</code></p>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.xalan.templates.ElemExtensionCall extensionElement)</code></p>
 <p>where <ref>Type</ref> designates the return type and <ref>element</ref> is the local part of the extension element name (the element name without the namespace prefix). In the method signature, you may also use superclasses of the indicated types.</p>
 <p>If the extension element is implemented in a loosely typed scripting language, such as JavaScript, the arguments and return value are untyped.</p>
 <p><em>Caution:</em> The value returned by an extension element is placed in the transformation result. If you are not interested in a return value, use a public void Java method or return null from a scripting language function.</p>
 <p>Java example: <code>public void myElement</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(org.apache.xalan.xslt.XSLProcessorContext, </code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.xalan.xslt.ElemExtensionCall extensionElement)</code></p>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.xalan.templates.ElemExtensionCall extensionElement)</code></p>
 <p>JavaScript example: <code>function myElement(xslProcContext, element)</code></p>
 <p>The <link idref="extensionslib" anchor="redirect">Redirect extension</link> in the extensions library contains three extension elements.</p>
 </s3>
@@ -507,7 +507,7 @@ public class MyCounter {
 
   public void init
              ( org.apache.xalan.extensions.XSLProcessorContext context,
-               org.apache.xalan.xslt.ElemExtensionCall extElem ) 
+               org.apache.xalan.templates.ElemExtensionCall extElem ) 
   {
     String name = extElem.getAttribute("name");
     String value = extElem.getAttribute("value");
@@ -532,7 +532,7 @@ public class MyCounter {
 
   public void incr
              ( org.apache.xalan.extensions.XSLProcessorContext context,
-               org.apache.xalan.xslt.ElemExtensionCall extElem) 
+               org.apache.xalan.templates.ElemExtensionCall extElem) 
   {
     String name = extElem.getAttribute("name");
     Integer cval = (Integer) counters.get(name);
