@@ -366,7 +366,12 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
           // course of itteration, then we know there can be no more true 
           // occurances of this predicate, so flag that we're done after 
           // this.
-          if(m_predicates[i].isStableNumber())
+          //
+          // bugzilla 14365
+          // We can't set m_foundLast = true unless we're sure that -all-
+          // remaining parameters are stable, or else last() fails. Fixed so
+          // only sets m_foundLast if on the last predicate
+          if(m_predicates[i].isStableNumber() && i == nPredicates - 1)
           {
             m_foundLast = true;
           }
