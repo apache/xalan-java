@@ -88,48 +88,48 @@ import java.lang.reflect.Method;
 public class ExtensionHandlerGeneral extends ExtensionHandler
 {
 
-  /** NEEDSDOC Field m_scriptSrc          */
-  private String m_scriptSrc;  // script source to run (if any)
+  /** script source to run (if any)      */
+  private String m_scriptSrc;   
 
-  /** NEEDSDOC Field m_scriptSrcURL          */
-  private String m_scriptSrcURL;  // URL of source of script (if any)
+  /** URL of source of script (if any)         */
+  private String m_scriptSrcURL;  
 
-  /** NEEDSDOC Field m_functions          */
-  private Hashtable m_functions = new Hashtable();  // functions of namespace
+  /** functions of namespace        */
+  private Hashtable m_functions = new Hashtable();  
 
-  /** NEEDSDOC Field m_elements          */
-  private Hashtable m_elements = new Hashtable();  // elements of namespace
+  /** elements of namespace         */
+  private Hashtable m_elements = new Hashtable();   
 
   // BSF objects used to invoke BSF by reflection.  Do not import the BSF classes
   // since we don't want a compile dependency on BSF.
 
-  /** NEEDSDOC Field m_mgr          */
-  private Object m_mgr;  // BSF manager used to run scripts
+  /** Instance of Manager class          */
+  private Object m_mgr;  // 
 
-  /** NEEDSDOC Field m_engine          */
-  private Object m_engine;  // BSF engine used to run scripts
+  /** BSF manager used to run scripts         */
+  private Object m_engine;  
 
   // static fields
 
-  /** NEEDSDOC Field BSF_MANAGER          */
+  /** BSFManager package name          */
   private static final String BSF_MANAGER = "com.ibm.bsf.BSFManager";
 
-  /** NEEDSDOC Field managerClass          */
+  /** Manager class          */
   private static Class managerClass;
 
-  /** NEEDSDOC Field mgrLoadScriptingEngine          */
+  /** Manager load scripting engine          */
   private static Method mgrLoadScriptingEngine;
 
-  /** NEEDSDOC Field BSF_ENGINE          */
+  /** BSFEngine package name          */
   private static final String BSF_ENGINE = "com.ibm.bsf.BSFEngine";
 
-  /** NEEDSDOC Field engineExec          */
-  private static Method engineExec;  // Engine call to "compile" scripts
+  /** Engine call to "compile" scripts         */
+  private static Method engineExec;   
 
-  /** NEEDSDOC Field engineCall          */
-  private static Method engineCall;  // Engine call to invoke scripts
+  /** Engine call to invoke scripts          */
+  private static Method engineCall;   
 
-  /** NEEDSDOC Field NEG1INT          */
+  /** Negative one integer         */
   private static final Integer NEG1INT = new Integer(-1);
 
   static
@@ -167,14 +167,14 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * needed.
    *
    * @param namespaceUri the extension namespace URI that I'm implementing
-   * NEEDSDOC @param elemNames
+   * @param elemNames Vector of element names
    * @param funcNames    string containing list of functions of extension NS
    * @param lang         language of code implementing the extension
    * @param srcURL       value of src attribute (if any) - treated as a URL
    *                     or a classname depending on the value of lang. If
    *                     srcURL is not null, then scriptSrc is ignored.
-   * NEEDSDOC @param scriptLang
-   * NEEDSDOC @param scriptSrcURL
+   * @param scriptLang Scripting language of implementation
+   * @param scriptSrcURL URL of source script
    * @param scriptSrc    the actual script code (if any)
    *
    * @throws TransformerException
@@ -256,7 +256,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * Tests whether a certain element name is known within this namespace.
    * @param function name of the function being tested
    *
-   * NEEDSDOC @param element
+   * @param element name of the element being tested
    * @return true if its known, false if not.
    */
   public boolean isElementAvailable(String element)
@@ -269,8 +269,8 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    *
    * @param funcName Function name.
    * @param args     The arguments of the function call.
-   * NEEDSDOC @param methodKey
-   * NEEDSDOC @param exprContext
+   * @param methodKey A key that uniquely identifies this class and method call.
+   * @param exprContext The context in which this expression is being executed.
    *
    * @return the return value of the function evaluation.
    *
@@ -340,7 +340,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @param sourceTree     The root of the source tree (but don't assume
    *                       it's a Document).
    * @param sourceNode     The current context node.
-   * NEEDSDOC @param methodKey
+   * @param methodKey A key that uniquely identifies this class and method call.
    *
    * @exception XSLProcessorException thrown if something goes wrong
    *            while running the extension handler.

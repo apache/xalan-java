@@ -68,10 +68,10 @@ import java.util.Hashtable;
 public abstract class ExtensionHandlerJava extends ExtensionHandler
 {
 
-  /** NEEDSDOC Field m_className          */
+  /** Extension class name         */
   protected String m_className = "";
 
-  /** NEEDSDOC Field m_cachedMethods          */
+  /** Table of cached methods          */
   private Hashtable m_cachedMethods = new Hashtable();
 
   /**
@@ -85,8 +85,8 @@ public abstract class ExtensionHandlerJava extends ExtensionHandler
    *                     or a classname depending on the value of lang. If
    *                     srcURL is not null, then scriptSrc is ignored.
    * @param scriptSrc    the actual script code (if any)
-   * NEEDSDOC @param scriptLang
-   * NEEDSDOC @param className
+   * @param scriptLang   the scripting language
+   * @param className    the extension class name 
    */
   protected ExtensionHandlerJava(String namespaceUri, String scriptLang,
                                  String className)
@@ -105,7 +105,7 @@ public abstract class ExtensionHandlerJava extends ExtensionHandler
    * @param methodArgs  An array of the XObject arguments to be used for
    *                    function mangling.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The given method from the method cache
    */
   public Object getFromCache(Object methodKey, Object objType,
                              Object[] methodArgs)
@@ -122,9 +122,9 @@ public abstract class ExtensionHandlerJava extends ExtensionHandler
    * @param objType     A Class object or instance object representing the type
    * @param methodArgs  An array of the XObject arguments to be used for
    *                    function mangling.
-   * NEEDSDOC @param methodObj
+   * @param methodObj   A Class object or instance object representing the method
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The cached method object
    */
   public Object putToCache(Object methodKey, Object objType,
                            Object[] methodArgs, Object methodObj)

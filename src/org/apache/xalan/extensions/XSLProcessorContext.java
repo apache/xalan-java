@@ -90,11 +90,11 @@ public class XSLProcessorContext
    * Create a processor context to be passed to an extension.
    * (Notice it is a package-only constructor).
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param stylesheetTree
-   * NEEDSDOC @param sourceTree
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null transformer instance
+   * @param stylesheetTree The owning stylesheet
+   * @param sourceTree The source document
+   * @param sourceNode The current source node
+   * @param mode the current mode being executed.
    */
   public XSLProcessorContext(TransformerImpl transformer,
                              Stylesheet stylesheetTree, Node sourceTree,
@@ -108,65 +108,65 @@ public class XSLProcessorContext
     this.sourceNode = sourceNode;
   }
 
-  /** NEEDSDOC Field transformer          */
+  /** An instance of a transformer          */
   private TransformerImpl transformer;
 
   /**
    * Get the transformer.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the transformer instance for this context
    */
   public TransformerImpl getTransformer()
   {
     return transformer;
   }
 
-  /** NEEDSDOC Field stylesheetTree          */
+  /** The owning stylesheet for this context          */
   private Stylesheet stylesheetTree;
 
   /**
    * Get the Stylesheet being executed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the Stylesheet being executed.
    */
   public Stylesheet getStylesheet()
   {
     return stylesheetTree;
   }
 
-  /** NEEDSDOC Field sourceTree          */
+  /**  The root of the source tree being executed.        */
   private Node sourceTree;
 
   /**
    * Get the root of the source tree being executed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the root of the source tree being executed.
    */
   public Node getSourceTree()
   {
     return sourceTree;
   }
 
-  /** NEEDSDOC Field sourceNode          */
+  /** the current context node.          */
   private Node sourceNode;
 
   /**
    * Get the current context node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the current context node.
    */
   public Node getContextNode()
   {
     return sourceNode;
   }
 
-  /** NEEDSDOC Field mode          */
+  /** the current mode being executed.         */
   private QName mode;
 
   /**
    * Get the current mode being executed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the current mode being executed.
    */
   public QName getMode()
   {
@@ -178,7 +178,7 @@ public class XSLProcessorContext
    * This is public for access by extensions.
    *
    *
-   * NEEDSDOC @param stylesheetTree
+   * @param stylesheetTree The owning stylesheet
    * @param obj the Java object to output. If its of an X<something> type
    *        then that conversion is done first and then sent out.
    *

@@ -64,7 +64,7 @@ import org.apache.xpath.XPathProcessorException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ExtensionsTable <needs-comment/>
+ * Class holding a table registered extension namespace handlers
  */
 public class ExtensionsTable
 {
@@ -112,7 +112,8 @@ public class ExtensionsTable
    * given namespace.
    * @param extns A valid extension namespace.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ExtensionHandler object that represents the
+   * given namespace.
    */
   public ExtensionHandler get(String extns)
   {
@@ -175,7 +176,7 @@ public class ExtensionsTable
    * Execute the element-available() function.
    * @param ns       the URI of namespace in which the function is needed
    * @param funcName the function name being tested
-   * NEEDSDOC @param elemName
+   * @param elemName name of element being tested
    *
    * @return whether the given function is available or not.
    *

@@ -112,6 +112,8 @@ public abstract class ExtensionHandler
    * Replacement for Class.forName.  This method loads a class using the context class loader
    * if we're running under Java2 or higher.  If we're running under Java1, this
    * method just uses Class.forName to load the class.
+   * 
+   * @param className Name of the class to load
    */
   static Class getClassForName(String className)
       throws ClassNotFoundException
@@ -166,7 +168,7 @@ public abstract class ExtensionHandler
    * Tests whether a certain element name is known within this namespace.
    * @param function name of the function being tested
    *
-   * NEEDSDOC @param element
+   * @param element Name of element to check
    * @return true if its known, false if not.
    */
   public abstract boolean isElementAvailable(String element);
@@ -176,8 +178,8 @@ public abstract class ExtensionHandler
    *
    * @param funcName Function name.
    * @param args     The arguments of the function call.
-   * NEEDSDOC @param methodKey
-   * NEEDSDOC @param exprContext
+   * @param methodKey A key that uniquely identifies this class and method call.
+   * @param exprContext The context in which this expression is being executed.
    *
    * @return the return value of the function evaluation.
    *
@@ -199,7 +201,7 @@ public abstract class ExtensionHandler
    * @param sourceTree     The root of the source tree (but don't assume
    *                       it's a Document).
    * @param sourceNode     The current context node.
-   * NEEDSDOC @param methodKey
+   * @param methodKey      A key that uniquely identifies this class and method call.
    *
    * @exception XSLProcessorException thrown if something goes wrong
    *            while running the extension handler.
