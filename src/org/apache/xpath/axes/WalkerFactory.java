@@ -282,10 +282,8 @@ public class WalkerFactory
       case OpCodes.FROM_CHILDREN :
         if (1 == stepCount)
         {
-          int whatToShow = compiler.getWhatToShow(stepOpCodePos);
-          if (whatToShow == NodeFilter.SHOW_ALL)
+          if (OpCodes.NODETYPE_NODE == ops[stepOpCodePos+3])    // child::node()
           {
-
             // System.out.println("ONESTEP_CHILDREN_ANY");
             if(predAnalysis == HAS_NOPREDICATE)
               analysisResult = ONESTEP_CHILDREN_ANY;
