@@ -119,10 +119,15 @@ public class FuncSubstring extends Function3Args
         else if (end > lenOfS1)
           end = lenOfS1;
 
+        if (startIndex > lenOfS1)
+          startIndex = lenOfS1;
+
         substr = s1.substring(startIndex, end);
       }
       else
       {
+        if (startIndex > lenOfS1)
+          startIndex = lenOfS1;
         substr = s1.substring(startIndex);
       }
     }
