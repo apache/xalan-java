@@ -521,13 +521,14 @@ public class ResultTreeHandler
       }
       else
       */
-      {
-        getContentHandler().characters(ch, start, length);
-        m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                          GenerateEvent.EVENTTYPE_CHARACTERS,
-                                                          ch, start, length));
-      }
-    }
+    } 
+    
+    getContentHandler().characters(ch, start, length);
+    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                                        GenerateEvent.EVENTTYPE_CHARACTERS,
+                                                                        ch, start, length));
+    
+    
   }
 
   /**
