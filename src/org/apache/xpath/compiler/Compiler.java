@@ -1112,10 +1112,14 @@ private static final boolean DEBUG = false;
 
     opPos++;
 
-    Function extension = new FuncExtFunction(ns, funcName,
+    // We create a method key to uniquely identify this function so that we
+    // can cache the object needed to invoke it.  This way, we only pay the
+    // reflection overhead on the first call.
 
-    // Create a method key, for faster lookup.
-    String.valueOf(opPos) + String.valueOf(hashCode()));
+    Function extension = new FuncExtFunction(ns, funcName, 
+         String.valueOf(opPos)
+       + String.valueOf(hashCode())
+       + String.valueOf(System.currentTimeMillis()));
 
     try
     {
