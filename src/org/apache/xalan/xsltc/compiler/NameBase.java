@@ -136,7 +136,7 @@ class NameBase extends FunctionCall {
 	
 	// Function was called with no parameters
 	if (argumentCount() == 0) {
-	    il.append(methodGen.loadCurrentNode());
+	    il.append(methodGen.loadContextNode());
 	}
 	// Function was called with node parameter
 	else if (_type == Type.Node) {
