@@ -64,6 +64,10 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xpath.NodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.xml.sax.SAXNotSupportedException;
 import java.util.Hashtable;
 
 
@@ -197,6 +201,41 @@ public class Extensions {
 				return false;
 		}
 		return true;
+	}  
+
+	/**
+	 * Returns the result of evaluating the argument as a string containing
+   * an XPath expression.  Used where the XPath expression is not known until
+   * run-time.  The expression is evaluated as if the run-time value of the
+   * argument appeared in place of the evaluate function call at compile time.
+	 * @param myContext an <code>ExpressionContext</code> passed in by the
+   *                  extension mechanism.  This must be an XPathContext.
+	 * @param xpathExtr The XPath expression to be evaluated.
+	 * @return the XObject resulting from evaluating the XPath
+	 */	
+	public static XObject evaluate(ExpressionContext myContext, String xpathExpr)
+                  throws SAXNotSupportedException, Exception
+	{
+    if (myContext instanceof XPathContext)
+    {
+      try
+      {
+        XPathContext xctxt = (XPathContext) myContext;
+        XPath dynamicXPath = new XPath(xpathExpr,
+                                  xctxt.getSAXLocator(),
+                                  xctxt.getNamespaceContext(),
+                                  XPath.SELECT);
+        return dynamicXPath.execute(xctxt,
+                                    myContext.getContextNode(),
+                                    xctxt.getNamespaceContext());
+      }
+      catch (Exception e)
+      {
+        throw e;
+      }
+    }
+    else
+      throw new SAXNotSupportedException("Invalid context passed to evaluate " + myContext);
 	}  
 
 }
