@@ -60,19 +60,18 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class String <needs-comment/>
+ * The 'string()' operation expression executer.
  */
 public class String extends UnaryOperation
 {
 
   /**
-   * NEEDSDOC Method operate 
+   * Apply the operation to two operands, and return the result.
    *
    *
-   * NEEDSDOC @param right
+   * @param right non-null reference to the evaluated right operand.
    *
-   * NEEDSDOC (operate) @return
+   * @return non-null reference to the XObject that represents the result of the operation.
    *
    * @throws javax.xml.transform.TransformerException
    */

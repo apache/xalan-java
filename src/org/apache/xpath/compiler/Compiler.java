@@ -96,18 +96,23 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.traversal.NodeFilter;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Compiler <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * An instance of this class compiles an XPath string expression into 
+ * a Expression object.  This class compiles the string into a sequence 
+ * of operation codes (op map) and then builds from that into an Expression 
+ * tree.
  */
 public class Compiler extends OpMap
 {
 
   /**
-   * Constructor Compiler
+   * Construct a Compiler object with a specific ErrorListener and 
+   * SourceLocator where the expression is located.
    *
-   *
-   * NEEDSDOC @param errorHandler
-   * NEEDSDOC @param locator
+   * @param errorHandler Error listener where messages will be sent, or null 
+   *                     if messages should be sent to System err.
+   * @param locator The location object where the expression lives, which 
+   *                may be null.
    */
   public Compiler(ErrorListener errorHandler, SourceLocator locator)
   {
@@ -124,8 +129,8 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Constructor Compiler
-   *
+   * Construct a Compiler instance that has a null error listener and a 
+   * null source locator.
    */
   public Compiler()
   {
@@ -143,7 +148,7 @@ public class Compiler extends OpMap
    * @param callbackInfo Object that will be passed to the processLocatedNode method.
    * @return The result of the XPath.
    *
-   * @throws TransformerException
+   * @throws TransformerException if there is a syntax or other error.
    */
   public Expression compile(int opPos) throws TransformerException
   {
@@ -182,8 +187,8 @@ public class Compiler extends OpMap
       expr = div(opPos); break;
     case OpCodes.OP_MOD :
       expr = mod(opPos); break;
-    case OpCodes.OP_QUO :
-      expr = quo(opPos); break;
+//    case OpCodes.OP_QUO :
+//      expr = quo(opPos); break;
     case OpCodes.OP_NEG :
       expr = neg(opPos); break;
     case OpCodes.OP_STRING :
@@ -227,14 +232,14 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Bottle-neck compilation of an operation.
+   * Bottle-neck compilation of an operation with left and right operands.
    *
-   * NEEDSDOC @param operation
-   * NEEDSDOC @param opPos
+   * @param operation non-null reference to parent operation.
+   * @param opPos The op map position of the parent operation.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Operation} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if there is a syntax or other error.
    */
   private Expression compileOperation(Operation operation, int opPos)
           throws TransformerException
@@ -249,14 +254,14 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Bottle-neck compilation of an operation.
+   * Bottle-neck compilation of a unary operation.
    *
-   * NEEDSDOC @param unary
-   * NEEDSDOC @param opPos
+   * @param unary The parent unary operation.
+   * @param opPos The position in the op map of the parent operation.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The unary argument.
    *
-   * @throws TransformerException
+   * @throws TransformerException if syntax or other error occurs.
    */
   private Expression compileUnary(UnaryOperation unary, int opPos)
           throws TransformerException
@@ -270,14 +275,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * OR two expressions and return the boolean result.
-   * @param context The current source tree context node.
+   * Compile an 'or' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if the one of the two arguments are true.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Or} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression or(int opPos) throws TransformerException
   {
@@ -285,14 +289,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * AND two expressions and return the boolean result.
-   * @param context The current source tree context node.
+   * Compile an 'and' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if the two arguments are both true.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.And} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression and(int opPos) throws TransformerException
   {
@@ -300,14 +303,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Tell if two expressions are functionally not equal.
-   * @param context The current source tree context node.
+   * Compile a '!=' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if the two arguments are not equal.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.NotEquals} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression notequals(int opPos) throws TransformerException
   {
@@ -315,14 +317,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Tell if two expressions are functionally equal.
-   * @param context The current source tree context node.
+   * Compile a '=' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if the two arguments are equal.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Equals} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression equals(int opPos) throws TransformerException
   {
@@ -330,14 +331,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Tell if one argument is less than or equal to the other argument.
-   * @param context The current source tree context node.
+   * Compile a '<=' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if arg 1 is less than or equal to arg 2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Lte} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression lte(int opPos) throws TransformerException
   {
@@ -345,14 +345,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Tell if one argument is less than the other argument.
-   * @param context The current source tree context node.
+   * Compile a '<' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if arg 1 is less than arg 2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Lt} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression lt(int opPos) throws TransformerException
   {
@@ -360,14 +359,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Tell if one argument is greater than or equal to the other argument.
-   * @param context The current source tree context node.
+   * Compile a '>=' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if arg 1 is greater than or equal to arg 2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Gte} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression gte(int opPos) throws TransformerException
   {
@@ -375,14 +373,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Tell if one argument is greater than the other argument.
-   * @param context The current source tree context node.
+   * Compile a '>' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns XBoolean set to true if arg 1 is greater than arg 2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Gt} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression gt(int opPos) throws TransformerException
   {
@@ -390,14 +387,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Give the sum of two arguments.
-   * @param context The current source tree context node.
+   * Compile a '+' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns sum of arg1 and arg2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Plus} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression plus(int opPos) throws TransformerException
   {
@@ -405,14 +401,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Give the difference of two arguments.
-   * @param context The current source tree context node.
+   * Compile a '-' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns difference of arg1 and arg2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Minus} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression minus(int opPos) throws TransformerException
   {
@@ -420,14 +415,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Multiply two arguments.
-   * @param context The current source tree context node.
+   * Compile a '*' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns arg1 * arg2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Mult} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression mult(int opPos) throws TransformerException
   {
@@ -435,14 +429,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Divide a number.
-   * @param context The current source tree context node.
+   * Compile a 'div' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Div} instance.
    *
-   * @throws TransformerException
-   * @returns arg1 / arg2.
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression div(int opPos) throws TransformerException
   {
@@ -450,45 +443,41 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Return the remainder from a truncating division.
-   * @param context The current source tree context node.
+   * Compile a 'mod' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns arg1 mod arg2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Mod} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression mod(int opPos) throws TransformerException
   {
     return compileOperation(new Mod(), opPos);
   }
 
-  /**
-   * Return the remainder from a truncating division.
-   * (Quo is no longer supported by xpath).
-   * @param context The current source tree context node.
+  /*
+   * Compile a 'quo' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns arg1 mod arg2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Quo} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
-  protected Expression quo(int opPos) throws TransformerException
-  {
-    return compileOperation(new Quo(), opPos);
-  }
+//  protected Expression quo(int opPos) throws TransformerException
+//  {
+//    return compileOperation(new Quo(), opPos);
+//  }
 
   /**
-   * Return the negation of a number.
-   * @param context The current source tree context node.
+   * Compile a unary '-' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns -arg.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Neg} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression neg(int opPos) throws TransformerException
   {
@@ -496,14 +485,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Cast an expression to a string.
-   * @param context The current source tree context node.
+   * Compile a 'string(...)' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns arg cast to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.String} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression string(int opPos) throws TransformerException
   {
@@ -511,14 +499,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Cast an expression to a boolean.
-   * @param context The current source tree context node.
+   * Compile a 'boolean(...)' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns arg cast to a boolean.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Bool} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression bool(int opPos) throws TransformerException
   {
@@ -526,14 +513,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Cast an expression to a number.
-   * @param context The current source tree context node.
+   * Compile a 'number(...)' operation.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns arg cast to a number.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Number} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression number(int opPos) throws TransformerException
   {
@@ -541,12 +527,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Get a literal value.
-   * @param context The current source tree context node.
+   * Compile a literal string value.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns an XString object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.objects.XString} instance.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression literal(int opPos)
   {
@@ -557,12 +544,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Get a literal value.
-   * @param context The current source tree context node.
+   * Compile a literal number value.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns an XString object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.objects.XNumber} instance.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression numberlit(int opPos)
   {
@@ -573,14 +561,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Get a literal value.
-   * @param context The current source tree context node.
+   * Compile a variable reference.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns an XObject object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.operations.Variable} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression variable(int opPos) throws TransformerException
   {
@@ -603,14 +590,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Execute an expression as a group.
-   * @param context The current source tree context node.
+   * Compile an expression group.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns arg.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to the contained expression.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression group(int opPos) throws TransformerException
   {
@@ -620,14 +606,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Execute a function argument.
-   * @param context The current source tree context node.
+   * Compile a function argument.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns the result of the argument expression.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to the argument expression.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression arg(int opPos) throws TransformerException
   {
@@ -637,16 +622,14 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Computes the union of its operands which must be node-sets.
-   * @param context The current source tree context node.
+   * Compile a location path union. The UnionPathIterator itself may create
+   * {@link org.apache.xpath.axes.LocPathIterator} children.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @param callback Interface that implements the processLocatedNode method.
-   * @param callbackInfo Object that will be passed to the processLocatedNode method.
-   * @returns the union of node-set operands.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.axes.UnionPathIterator} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression union(int opPos) throws TransformerException
   {
@@ -656,17 +639,14 @@ public class Compiler extends OpMap
   private int locPathDepth = -1;
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * Execute a location path.
-   * @param context The current source tree context node.
+   * Compile a location path.  The LocPathIterator itself may create
+   * {@link org.apache.xpath.axes.AxesWalker} children.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @param callback Interface that implements the processLocatedNode method.
-   * @param callbackInfo Object that will be passed to the processLocatedNode method.
-   * @returns a node-set.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.axes.LocPathIterator} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   public Expression locationPath(int opPos) throws TransformerException
   {
@@ -679,15 +659,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * Evaluate a predicate.
-   * @param context The current source tree context node.
+   * Compile a location step predicate expression.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns either a boolean or a number.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the contained predicate expression.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   public Expression predicate(int opPos) throws TransformerException
   {
@@ -695,14 +673,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Computes the union of its operands which must be node-sets.
-   * @param context The current source tree context node.
+   * Compile an entire match pattern expression.
+   * 
    * @param opPos The current position in the m_opMap array.
-   * @returns the match score in the form of an XObject.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.patterns.UnionPattern} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression matchPattern(int opPos) throws TransformerException
   {
@@ -735,18 +712,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Execute a a location path pattern.  This will return a score
-   * of MATCH_SCORE_NONE, MATCH_SCORE_NODETEST,
-   * MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   * @param opPos The current position in the xpath.m_opMap array.
-   * @returns score, one of MATCH_SCORE_NODETEST,
-   * MATCH_SCORE_NONE, MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
+   * Compile a location match pattern unit expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.patterns.StepPattern} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   public Expression locationPathPattern(int opPos)
           throws TransformerException
@@ -758,12 +730,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * NEEDSDOC Method getWhatToShow 
+   * Get a {@link org.w3c.dom.traversal.NodeFilter} bit set that tells what 
+   * to show for a given node test.
    *
+   * @param opPos the op map position for the location step.
    *
-   * NEEDSDOC @param opPos
-   *
-   * NEEDSDOC (getWhatToShow) @return
+   * @return {@link org.w3c.dom.traversal.NodeFilter} bit set that tells what 
+   *         to show for a given node test.
    */
   public int getWhatToShow(int opPos)
   {
@@ -831,17 +804,16 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Execute a step in a location path.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   * @param opPos The current position in the xpath.m_opMap array.
-   * @returns the last matched context node.
-   * NEEDSDOC @param stepCount
-   * NEEDSDOC @param ancestorPattern
+   * Compile a step pattern unit expression, used for both location paths 
+   * and match patterns.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * @param stepCount The number of steps to expect.
+   * @param ancestorPattern The owning StepPattern, which may be null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to {@link org.apache.xpath.patterns.StepPattern} instance.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected StepPattern stepPattern(
           int opPos, int stepCount, StepPattern ancestorPattern)
@@ -910,14 +882,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * NEEDSDOC Method getCompiledPredicates 
+   * Compile a zero or more predicates for a given match pattern.
+   * 
+   * @param opPos The position of the first predicate the m_opMap array.
    *
+   * @return reference to array of {@link org.apache.xpath.Expression} instances.
    *
-   * NEEDSDOC @param opPos
-   *
-   * NEEDSDOC (getCompiledPredicates) @return
-   *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   public Expression[] getCompiledPredicates(int opPos)
           throws TransformerException
@@ -940,11 +911,11 @@ public class Compiler extends OpMap
   /**
    * Count the number of predicates in the step.
    *
-   * NEEDSDOC @param opPos
+   * @param opPos The position of the first predicate the m_opMap array.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The number of predicates for this step.
    *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   public int countPredicates(int opPos) throws TransformerException
   {
@@ -962,10 +933,11 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Allocate predicates in the step.
+   * Compiles predicates in the step.
    *
-   * NEEDSDOC @param opPos
-   * NEEDSDOC @param predicates
+   * @param opPos The position of the first predicate the m_opMap array.
+   * @param predicates An empty pre-determined array of 
+   *            {@link org.apache.xpath.Expression}s, that will be filled in.
    *
    * @throws TransformerException
    */
@@ -981,13 +953,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Execute a function from an op code.
+   * Compile a built-in XPath function.
+   * 
+   * @param opPos The current position in the m_opMap array.
    *
-   * NEEDSDOC @param opPos
+   * @return reference to {@link org.apache.xpath.functions.Function} instance.
    *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   Expression compileFunction(int opPos) throws TransformerException
   {
@@ -1037,13 +1009,13 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Execute an extension function from an op code.
+   * Compile an extension function.
+   * 
+   * @param opPos The current position in the m_opMap array.
    *
-   * NEEDSDOC @param opPos
+   * @return reference to {@link org.apache.xpath.functions.FuncExtFunction} instance.
    *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws TransformerException
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   private Expression compileExtension(int opPos)
           throws TransformerException
@@ -1093,10 +1065,14 @@ public class Compiler extends OpMap
   /**
    * Warn the user of an problem.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   public void warn(int msg, Object[] args) throws TransformerException
   {
@@ -1120,13 +1096,12 @@ public class Compiler extends OpMap
    * Tell the user of an assertion error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param b
-   * NEEDSDOC @param msg
-   *
-   * @throws TransformerException
+   * @param b  If false, a runtime exception will be thrown.
+   * @param msg The assertion message, which should be informative.
+   * 
+   * @throws RuntimeException if the b argument is false.
    */
   public void assert(boolean b, java.lang.String msg)
-          throws TransformerException
   {
 
     if (!b)
@@ -1143,10 +1118,14 @@ public class Compiler extends OpMap
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   public void error(int msg, Object[] args) throws TransformerException
   {
@@ -1176,7 +1155,7 @@ public class Compiler extends OpMap
   /**
    * Get the current namespace context for the xpath.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The current prefix resolver, *may* be null, though hopefully not.
    */
   public PrefixResolver getNamespaceContext()
   {
@@ -1186,16 +1165,17 @@ public class Compiler extends OpMap
   /**
    * Set the current namespace context for the xpath.
    *
-   * NEEDSDOC @param pr
+   * @param pr The resolver for prefixes in the XPath expression.
    */
   public void setNamespaceContext(PrefixResolver pr)
   {
     m_currentPrefixResolver = pr;
   }
 
-  /** NEEDSDOC Field m_errorHandler          */
+  /** The error listener where errors will be sent.  If this is null, errors 
+   *  and warnings will be sent to System.err.  May be null.    */
   ErrorListener m_errorHandler;
 
-  /** NEEDSDOC Field m_locator          */
+  /** The source locator for the expression being compiled.  May be null. */
   SourceLocator m_locator;
 }

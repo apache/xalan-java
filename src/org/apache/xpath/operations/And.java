@@ -65,8 +65,7 @@ import org.apache.xpath.objects.XBoolean;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class And <needs-comment/>
+ * The 'and' operation expression executer.
  */
 public class And extends Operation
 {
@@ -75,9 +74,10 @@ public class And extends Operation
    * AND two expressions and return the boolean result. Override
    * superclass method for optimization purposes.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The runtime execution context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return {@link org.apache.xpath.objects.XBoolean.S_TRUE} or 
+   * {@link org.apache.xpath.objects.XBoolean.S_FALSE}.
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -65,116 +65,112 @@ import org.apache.xpath.functions.Function;
 public class FunctionTable
 {
 
-  /** NEEDSDOC Field FUNC_CURRENT          */
+  /** The 'current()' id. */
   public static final int FUNC_CURRENT = 0;
 
-  /** NEEDSDOC Field FUNC_LAST          */
+  /** The 'last()' id. */
   public static final int FUNC_LAST = 1;
 
-  /** NEEDSDOC Field FUNC_POSITION          */
+  /** The 'position()' id. */
   public static final int FUNC_POSITION = 2;
 
-  /** NEEDSDOC Field FUNC_COUNT          */
+  /** The 'count()' id. */
   public static final int FUNC_COUNT = 3;
 
-  /** NEEDSDOC Field FUNC_ID          */
+  /** The 'id()' id. */
   public static final int FUNC_ID = 4;
 
-  /** NEEDSDOC Field FUNC_KEY          */
+  /** The 'key()' id (XSLT). */
   public static final int FUNC_KEY = 5;
 
-  // public static final int FUNC_DOC = 6;
-
-  /** NEEDSDOC Field FUNC_LOCAL_PART          */
+  /** The 'local-name()' id. */
   public static final int FUNC_LOCAL_PART = 7;
 
-  /** NEEDSDOC Field FUNC_NAMESPACE          */
+  /** The 'namespace-uri()' id. */
   public static final int FUNC_NAMESPACE = 8;
 
-  /** NEEDSDOC Field FUNC_QNAME          */
+  /** The 'name()' id. */
   public static final int FUNC_QNAME = 9;
 
-  /** NEEDSDOC Field FUNC_GENERATE_ID          */
+  /** The 'generate-id()' id. */
   public static final int FUNC_GENERATE_ID = 10;
 
-  /** NEEDSDOC Field FUNC_NOT          */
+  /** The 'not()' id. */
   public static final int FUNC_NOT = 11;
 
-  /** NEEDSDOC Field FUNC_TRUE          */
+  /** The 'true()' id. */
   public static final int FUNC_TRUE = 12;
 
-  /** NEEDSDOC Field FUNC_FALSE          */
+  /** The 'false()' id. */
   public static final int FUNC_FALSE = 13;
 
-  /** NEEDSDOC Field FUNC_BOOLEAN          */
+  /** The 'boolean()' id. */
   public static final int FUNC_BOOLEAN = 14;
 
-  /** NEEDSDOC Field FUNC_NUMBER          */
+  /** The 'number()' id. */
   public static final int FUNC_NUMBER = 15;
 
-  /** NEEDSDOC Field FUNC_FLOOR          */
+  /** The 'floor()' id. */
   public static final int FUNC_FLOOR = 16;
 
-  /** NEEDSDOC Field FUNC_CEILING          */
+  /** The 'ceiling()' id. */
   public static final int FUNC_CEILING = 17;
 
-  /** NEEDSDOC Field FUNC_ROUND          */
+  /** The 'round()' id. */
   public static final int FUNC_ROUND = 18;
 
-  /** NEEDSDOC Field FUNC_SUM          */
+  /** The 'sum()' id. */
   public static final int FUNC_SUM = 19;
 
-  /** NEEDSDOC Field FUNC_STRING          */
+  /** The 'string()' id. */
   public static final int FUNC_STRING = 20;
 
-  /** NEEDSDOC Field FUNC_STARTS_WITH          */
+  /** The 'starts-with()' id. */
   public static final int FUNC_STARTS_WITH = 21;
 
-  /** NEEDSDOC Field FUNC_CONTAINS          */
+  /** The 'contains()' id. */
   public static final int FUNC_CONTAINS = 22;
 
-  /** NEEDSDOC Field FUNC_SUBSTRING_BEFORE          */
+  /** The 'substring-before()' id. */
   public static final int FUNC_SUBSTRING_BEFORE = 23;
 
-  /** NEEDSDOC Field FUNC_SUBSTRING_AFTER          */
+  /** The 'substring-after()' id. */
   public static final int FUNC_SUBSTRING_AFTER = 24;
 
-  /** NEEDSDOC Field FUNC_NORMALIZE_SPACE          */
+  /** The 'normalize-space()' id. */
   public static final int FUNC_NORMALIZE_SPACE = 25;
 
-  /** NEEDSDOC Field FUNC_TRANSLATE          */
+  /** The 'translate()' id. */
   public static final int FUNC_TRANSLATE = 26;
 
-  /** NEEDSDOC Field FUNC_CONCAT          */
+  /** The 'concat()' id. */
   public static final int FUNC_CONCAT = 27;
 
-  // public static final int FUNC_FORMAT_NUMBER = 28;
-
-  /** NEEDSDOC Field FUNC_SUBSTRING          */
+  /** The 'substring()' id. */
   public static final int FUNC_SUBSTRING = 29;
 
-  /** NEEDSDOC Field FUNC_STRING_LENGTH          */
+  /** The 'string-length()' id. */
   public static final int FUNC_STRING_LENGTH = 30;
 
-  /** NEEDSDOC Field FUNC_SYSTEM_PROPERTY          */
+  /** The 'system-property()' id. */
   public static final int FUNC_SYSTEM_PROPERTY = 31;
 
-  /** NEEDSDOC Field FUNC_LANG          */
+  /** The 'lang()' id. */
   public static final int FUNC_LANG = 32;
 
-  /** NEEDSDOC Field FUNC_EXT_FUNCTION_AVAILABLE          */
+  /** The 'function-available()' id (XSLT). */
   public static final int FUNC_EXT_FUNCTION_AVAILABLE = 33;
 
-  /** NEEDSDOC Field FUNC_EXT_ELEM_AVAILABLE          */
+  /** The 'element-available()' id (XSLT). */
   public static final int FUNC_EXT_ELEM_AVAILABLE = 34;
+
+  /** The 'unparsed-entity-uri()' id (XSLT). */
+  public static final int FUNC_UNPARSED_ENTITY_URI = 36;
 
   // Proprietary
 
-  /** NEEDSDOC Field FUNC_DOCLOCATION          */
+  /** The 'document-location()' id (Proprietary). */
   public static final int FUNC_DOCLOCATION = 35;
-
-  /** NEEDSDOC Field FUNC_UNPARSED_ENTITY_URI          */
-  public static final int FUNC_UNPARSED_ENTITY_URI = 36;
 
   /**
    * The function table.
@@ -260,14 +256,16 @@ public class FunctionTable
   }
 
   /**
-   * NEEDSDOC Method getFunction 
+   * Obtain a new Function object from a function ID.
    *
+   * @param which  The function ID, which may correspond to one of the FUNC_XXX 
+   *    values found in {@link org.apache.xpath.compiler.FunctionTable}, but may 
+   *    be a value installed by an external module. 
    *
-   * NEEDSDOC @param which
+   * @return a a new Function instance.
    *
-   * NEEDSDOC (getFunction) @return
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if ClassNotFoundException, 
+   *    IllegalAccessException, or InstantiationException is thrown.
    */
   public static Function getFunction(int which)
           throws javax.xml.transform.TransformerException
@@ -308,10 +306,11 @@ public class FunctionTable
   }
 
   /**
-   * Install a built-in function at a specific index.
-   * @param name The unqualified name of the function.
+   * Install a function loader at a specific index.
    * @param func A Implementation of an XPath Function object.
-   * NEEDSDOC @param funcIndex
+   * @param which  The function ID, which may correspond to one of the FUNC_XXX 
+   *    values found in {@link org.apache.xpath.compiler.FunctionTable}, but may 
+   *    be a value installed by an external module. 
    * @return the position of the function in the internal index.
    */
   public static void installFunction(Expression func, int funcIndex)

@@ -60,23 +60,22 @@ import java.util.*;
 
 /**
  * <meta name="usage" content="internal"/>
- * LangResources_en.properties
+ * The default (english) resource bundle.
  */
 public class XPATHErrorResourceBundle extends ListResourceBundle
 {
 
   /**
-   * NEEDSDOC Method getContents 
+   * Get the association list.
    *
-   *
-   * NEEDSDOC (getContents) @return
+   * @return The association list.
    */
   public Object[][] getContents()
   {
     return contents;
   }
 
-  /** NEEDSDOC Field contents          */
+  /** The association list.         */
   static final Object[][] contents =
   {
     { "ui_language", "en" }, { "help_language", "en" }, { "language", "en" },

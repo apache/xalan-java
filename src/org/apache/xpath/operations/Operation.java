@@ -64,24 +64,23 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Operation <needs-comment/>
+ * The baseclass for a binary operation.
  */
 public class Operation extends Expression
 {
 
-  /** NEEDSDOC Field m_left          */
+  /** The left operand expression.  */
   protected Expression m_left;
 
-  /** NEEDSDOC Field m_right          */
+  /** The right operand expression.   */
   protected Expression m_right;
 
   /**
-   * NEEDSDOC Method setLeftRight 
+   * Set the left and right operand expressions for this operation.
    *
    *
-   * NEEDSDOC @param l
-   * NEEDSDOC @param r
+   * @param l The left expression operand.
+   * @param r The right expression operand.
    */
   public void setLeftRight(Expression l, Expression r)
   {
@@ -90,12 +89,13 @@ public class Operation extends Expression
   }
 
   /**
-   * NEEDSDOC Method execute 
+   * Execute a binary operation by calling execute on each of the operands, 
+   * and then calling the operate method on the derived class.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The runtime execution context.
    *
-   * NEEDSDOC (execute) @return
+   * @return The XObject result of the operation.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -109,13 +109,13 @@ public class Operation extends Expression
   }
 
   /**
-   * NEEDSDOC Method operate 
+   * Apply the operation to two operands, and return the result.
    *
    *
-   * NEEDSDOC @param left
-   * NEEDSDOC @param right
+   * @param left non-null reference to the evaluated left operand.
+   * @param right non-null reference to the evaluated right operand.
    *
-   * NEEDSDOC (operate) @return
+   * @return non-null reference to the XObject that represents the result of the operation.
    *
    * @throws javax.xml.transform.TransformerException
    */

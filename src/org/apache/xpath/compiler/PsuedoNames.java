@@ -57,51 +57,39 @@
 package org.apache.xpath.compiler;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class PsuedoNames <needs-comment/>
+ * This is used to represent names of nodes that may not be named, like a 
+ * comment node.
  */
 public class PsuedoNames
 {
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * used mainly for keys in the pattern lookup table,
-   * for those nodes that don't have unique lookup values.
+   * Psuedo name for a wild card pattern ('*').
    */
   public static final String PSEUDONAME_ANY = "*";
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * used mainly for keys in the pattern lookup table,
-   * for those nodes that don't have unique lookup values.
+   * Psuedo name for the root node.
    */
   public static final String PSEUDONAME_ROOT = "/";
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * used mainly for keys in the pattern lookup table,
-   * for those nodes that don't have unique lookup values.
+   * Psuedo name for a text node.
    */
   public static final String PSEUDONAME_TEXT = "#text";
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * used mainly for keys in the pattern lookup table,
-   * for those nodes that don't have unique lookup values.
+   * Psuedo name for a comment node.
    */
   public static final String PSEUDONAME_COMMENT = "#comment";
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * used mainly for keys in the pattern lookup table,
-   * for those nodes that don't have unique lookup values.
+   * Psuedo name for a processing instruction node.
    */
   public static final String PSEUDONAME_PI = "#pi";
 
   /**
-   * <meta name="usage" content="advanced"/>
-   * used mainly for keys in the pattern lookup table,
-   * for those nodes that don't have unique lookup values.
+   * Psuedo name for an unknown type value.
    */
   public static final String PSEUDONAME_OTHER = "*";
 }

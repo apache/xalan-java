@@ -119,9 +119,9 @@ public class XPathParser implements java.io.Serializable
    * Given an string, init an XPath object for selections,
    * in order that a parse doesn't
    * have to be done each time the expression is evaluated.
+   * 
    * @param compiler The compiler object.
-   * @param expresson A String representing the OpMap.
-   * NEEDSDOC @param expression
+   * @param expression A string conforming to the XPath grammar.
    * @param namespaceContext An object that is able to resolve prefixes in
    * the XPath to namespaces.
    *
@@ -164,23 +164,14 @@ public class XPathParser implements java.io.Serializable
     }
 
     compiler.shrink();
-    doStaticAnalysis(compiler);
   }
-
-  /**
-   * Analyze the XPath object to give optimization information.
-   *
-   * NEEDSDOC @param compiler
-   */
-  void doStaticAnalysis(Compiler compiler){}
 
   /**
    * Given an string, init an XPath object for pattern matches,
    * in order that a parse doesn't
    * have to be done each time the expression is evaluated.
    * @param compiler The XPath object to be initialized.
-   * @param expresson A String representing the XPath.
-   * NEEDSDOC @param expression
+   * @param expression A String representing the XPath.
    * @param namespaceContext An object that is able to resolve prefixes in
    * the XPath to namespaces.
    *
@@ -229,36 +220,39 @@ public class XPathParser implements java.io.Serializable
     m_ops.shrink();
   }
 
-  /** NEEDSDOC Field m_errorHandler          */
-  private ErrorListener m_errorHandler;
+  /** The error listener where syntax errors are to be sent.  */
+  private ErrorListener m_errorListener;
 
   /**
-   * Allow an application to register an error event handler.
-   *
-   * NEEDSDOC @param handler
+   * Allow an application to register an error event handler, where syntax 
+   * errors will be sent.  If the error listener is not set, syntax errors 
+   * will be sent to System.err.
+   * 
+   * @param handler Reference to error listener where syntax errors will be 
+   *                sent.
    */
   public void setErrorHandler(ErrorListener handler)
   {
-    m_errorHandler = handler;
+    m_errorListener = handler;
   }
 
   /**
-   * Return the current error handler.
+   * Return the current error listener.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The error listener, which should not normally be null, but may be.
    */
   public ErrorListener getErrorListener()
   {
-    return m_errorHandler;
+    return m_errorListener;
   }
 
   /**
-   * Check whether m_token==s. If m_token is null, returns false (or true if s is also null);
-   * do not throw an exception.
+   * Check whether m_token matches the target string. 
    *
-   * NEEDSDOC @param s
+   * @param s A string reference or null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return If m_token is null, returns false (or true if s is also null), or 
+   * return true if the current token matches the string, else false.
    */
   final boolean tokenIs(String s)
   {
@@ -266,12 +260,12 @@ public class XPathParser implements java.io.Serializable
   }
 
   /**
-   * Check whether m_token==c. If m_token is null, returns false (or true if c is also null);
-   * do not throw an exception.
+   * Check whether m_tokenChar==c. 
    *
-   * NEEDSDOC @param c
+   * @param c A character to be tested.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return If m_token is null, returns false, or return true if c matches 
+   *         the current token.
    */
   final boolean tokenIs(char c)
   {
@@ -281,13 +275,12 @@ public class XPathParser implements java.io.Serializable
   /**
    * Look ahead of the current token in order to
    * make a branching decision.
-   * @param s the string to compare it to.
    *
-   * NEEDSDOC @param c
+   * @param c the character to be tested for.
    * @param n number of tokens to look ahead.  Must be
    * greater than 1.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the next token matches the character argument.
    */
   final boolean lookahead(char c, int n)
   {
@@ -313,6 +306,7 @@ public class XPathParser implements java.io.Serializable
   /**
    * Look behind the first character of the current token in order to
    * make a branching decision.
+   * 
    * @param c the character to compare it to.
    * @param n number of tokens to look behind.  Must be
    * greater than 1.  Note that the look behind terminates
@@ -320,7 +314,8 @@ public class XPathParser implements java.io.Serializable
    * character.  Because of this, this method should only
    * be used for pattern matching.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the token behind the current token matches the character 
+   *         argument.
    */
   private final boolean lookbehind(char c, int n)
   {
@@ -354,11 +349,13 @@ public class XPathParser implements java.io.Serializable
   /**
    * look behind the current token in order to
    * see if there is a useable token.
+   * 
    * @param n number of tokens to look behind.  Must be
    * greater than 1.  Note that the look behind terminates
    * at either the beginning of the string or on a '|'
    * character.  Because of this, this method should only
    * be used for pattern matching.
+   * 
    * @return true if look behind has a token, false otherwise.
    */
   private final boolean lookbehindHasToken(int n)
@@ -384,11 +381,13 @@ public class XPathParser implements java.io.Serializable
   /**
    * Look ahead of the current token in order to
    * make a branching decision.
+   * 
    * @param s the string to compare it to.
    * @param n number of tokens to lookahead.  Must be
    * greater than 1.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the token behind the current token matches the string 
+   *         argument.
    */
   private final boolean lookahead(String s, int n)
   {
@@ -430,9 +429,11 @@ public class XPathParser implements java.io.Serializable
 
   /**
    * Retrieve a token relative to the current token.
+   * 
    * @param i Position relative to current token.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The string at the given index, or null if the index is out 
+   *         of range.
    */
   private final String getTokenRelative(int i)
   {
@@ -477,7 +478,7 @@ public class XPathParser implements java.io.Serializable
    * Consume an expected token, throwing an exception if it
    * isn't there.
    *
-   * NEEDSDOC @param expected
+   * @param expected The string to be expected.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -500,7 +501,7 @@ public class XPathParser implements java.io.Serializable
    * Consume an expected token, throwing an exception if it
    * isn't there.
    *
-   * NEEDSDOC @param expected
+   * @param expected the character to be expected.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -523,10 +524,14 @@ public class XPathParser implements java.io.Serializable
   /**
    * Warn the user of a problem.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   void warn(int msg, Object[] args) throws TransformerException
   {
@@ -542,7 +547,7 @@ public class XPathParser implements java.io.Serializable
     else
     {
       // Should never happen.
-      System.out.println(fmsg);
+      System.err.println(fmsg);
     }
   }
 
@@ -550,8 +555,10 @@ public class XPathParser implements java.io.Serializable
    * Notify the user of an assertion error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param b
-   * NEEDSDOC @param msg
+   * @param b  If false, a runtime exception will be thrown.
+   * @param msg The assertion message, which should be informative.
+   * 
+   * @throws RuntimeException if the b argument is false.
    */
   private void assert(boolean b, String msg)
   {
@@ -570,10 +577,14 @@ public class XPathParser implements java.io.Serializable
    * Notify the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   void error(int msg, Object[] args) throws TransformerException
   {
@@ -588,7 +599,7 @@ public class XPathParser implements java.io.Serializable
     }
     else
     {
-      System.out.println(fmsg);
+      System.err.println(fmsg);
     }
   }
 
@@ -596,7 +607,8 @@ public class XPathParser implements java.io.Serializable
    * Dump the remaining token queue.
    * Thanks to Craig for this.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A dump of the remaining token queue, which may be appended to 
+   *         an error message.
    */
   protected String dumpRemainingTokenQueue()
   {
@@ -628,9 +640,11 @@ public class XPathParser implements java.io.Serializable
   /**
    * Given a string, return the corresponding function token.
    *
-   * NEEDSDOC @param key
+   * @param key A local name of a function.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return   The function ID, which may correspond to one of the FUNC_XXX 
+   *    values found in {@link org.apache.xpath.compiler.FunctionTable}, but may 
+   *    be a value installed by an external module.
    */
   final int getFunctionToken(String key)
   {
@@ -658,9 +672,9 @@ public class XPathParser implements java.io.Serializable
    * the length value of the operation, but will update
    * the length value for the total expression.
    *
-   * NEEDSDOC @param pos
-   * NEEDSDOC @param length
-   * NEEDSDOC @param op
+   * @param pos The position where the op is to be inserted.
+   * @param length The length of the operation space in the op map.
+   * @param op The op code to the inserted.
    */
   void insertOp(int pos, int length, int op)
   {
@@ -681,8 +695,8 @@ public class XPathParser implements java.io.Serializable
    * the length value of the operation, and will update
    * the length value for the total expression.
    *
-   * NEEDSDOC @param length
-   * NEEDSDOC @param op
+   * @param length The length of the operation.
+   * @param op The op code to the inserted.
    */
   void appendOp(int length, int op)
   {
@@ -772,9 +786,9 @@ public class XPathParser implements java.io.Serializable
    * | EqualityExpr '=' RelationalExpr
    *
    *
-   * NEEDSDOC @param addPos
+   * @param addPos Position where expression is to be added, or -1 for append.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the position at the end of the equality expression.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -832,9 +846,9 @@ public class XPathParser implements java.io.Serializable
    * | RelationalExpr '>=' AdditiveExpr
    *
    *
-   * NEEDSDOC @param addPos
+   * @param addPos Position where expression is to be added, or -1 for append.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the position at the end of the relational expression.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -898,20 +912,18 @@ public class XPathParser implements java.io.Serializable
   }
 
   /**
-   * XXXX.
-   * @returns an Object which is either a String, a Number, a Boolean, or a vector
-   * of nodes.
    * This has to handle construction of the operations so that they are evaluated
    * in pre-fix order.  So, for 9+7-6, instead of |+|9|-|7|6|, this needs to be
    * evaluated as |-|+|9|7|6|.
-   * @param addPos The position where the op should be inserted.
    *
    * AdditiveExpr  ::=  MultiplicativeExpr
    * | AdditiveExpr '+' MultiplicativeExpr
    * | AdditiveExpr '-' MultiplicativeExpr
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @param addPos Position where expression is to be added, or -1 for append.
+   *
+   * @return the position at the end of the equality expression.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -957,13 +969,9 @@ public class XPathParser implements java.io.Serializable
   }
 
   /**
-   * XXXX.
-   * @returns an Object which is either a String, a Number, a Boolean, or a vector
-   * of nodes.
    * This has to handle construction of the operations so that they are evaluated
    * in pre-fix order.  So, for 9+7-6, instead of |+|9|-|7|6|, this needs to be
    * evaluated as |-|+|9|7|6|.
-   * @param addPos The position where the op should be inserted.
    *
    * MultiplicativeExpr  ::=  UnaryExpr
    * | MultiplicativeExpr MultiplyOperator UnaryExpr
@@ -971,8 +979,9 @@ public class XPathParser implements java.io.Serializable
    * | MultiplicativeExpr 'mod' UnaryExpr
    * | MultiplicativeExpr 'quo' UnaryExpr
    *
+   * @param addPos Position where expression is to be added, or -1 for append.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the position at the end of the equality expression.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -1042,9 +1051,6 @@ public class XPathParser implements java.io.Serializable
   }
 
   /**
-   * XXXX.
-   * @returns an Object which is either a String, a Number, a Boolean, or a vector
-   * of nodes.
    *
    * UnaryExpr  ::=  UnionExpr
    * | '-' UnaryExpr
@@ -1184,81 +1190,6 @@ public class XPathParser implements java.io.Serializable
 
     m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
-  }
-
-  /**
-   * Analyze a union pattern and tell if the axes are
-   * all descendants.
-   * (Move to XPath?)
-   *
-   * NEEDSDOC @param opmap
-   * NEEDSDOC @param opPos
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  private static boolean isLocationPathSimpleFollowing(OpMap opmap, int opPos)
-  {
-
-    if (true)
-    {
-
-      // int posOfLastOp = OpMap.getNextOpPos(opPos)-1;
-      opPos = OpMap.getFirstChildPos(opPos);
-
-      // step
-      int stepType = opmap.m_opMap[opPos];
-
-      // make sure all step types are going forwards
-      switch (stepType)
-      {
-      case OpCodes.FROM_SELF :
-      case OpCodes.FROM_ATTRIBUTES :
-      case OpCodes.FROM_CHILDREN :
-      case OpCodes.FROM_DESCENDANTS :
-      case OpCodes.FROM_DESCENDANTS_OR_SELF :
-      case OpCodes.FROM_FOLLOWING :
-      case OpCodes.FROM_FOLLOWING_SIBLINGS :
-        if (opmap.m_opMap[opmap.getNextOpPos(opPos)] == OpCodes.ENDOP)
-        {
-
-          // Add the length of the step itself, plus the length of the op,
-          // and two length arguments, to the op position.
-          opPos = (opmap.getArgLengthOfStep(opPos)
-                   + opmap.getFirstChildPosOfStep(opPos));
-
-          int nextStepType = opmap.m_opMap[opPos];
-
-          if (OpCodes.OP_PREDICATE == nextStepType)
-          {
-            int firstPredPos = opPos + 2;
-            int predicateType = opmap.m_opMap[firstPredPos];
-
-            if ((OpCodes.OP_NUMBERLIT == predicateType)
-                    || (OpCodes.OP_NUMBER == predicateType)
-                    || (FunctionTable.FUNC_NUMBER == predicateType))
-            {
-              return false;
-            }
-
-            opPos = opmap.getNextOpPos(opPos);
-            nextStepType = opmap.m_opMap[opPos];
-
-            // Multiple predicates?
-            if (OpCodes.OP_PREDICATE == nextStepType)
-              return false;
-          }
-
-          return true;
-        }
-        break;
-      }
-
-      return false;
-    }
-    else
-    {
-      return false;
-    }
   }
 
   /**
@@ -1716,7 +1647,7 @@ public class XPathParser implements java.io.Serializable
    * Basis    ::=    AxisName '::' NodeTest
    * | AbbreviatedBasis
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return FROM_XXX axes type, found in {@link org.apache.xpath.compiler.Keywords}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -1744,7 +1675,7 @@ public class XPathParser implements java.io.Serializable
    * | NodeType '(' ')'
    * | 'processing-instruction' '(' Literal ')'
    *
-   * NEEDSDOC @param axesType
+   * @param axesType FROM_XXX axes type, found in {@link org.apache.xpath.compiler.Keywords}.
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -62,225 +62,193 @@ import org.apache.xml.utils.StringKey;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Keywords <needs-comment/>
+ * Table of strings to operation code lookups.
  */
 public class Keywords
 {
 
-  /** NEEDSDOC Field m_keywords          */
+  /** Table of keywords to opcode associations. */
   static Hashtable m_keywords = new Hashtable();
 
-  /** NEEDSDOC Field m_axisnames          */
+  /** Table of axes names to opcode associations. */
   static Hashtable m_axisnames = new Hashtable();
 
-  /** NEEDSDOC Field m_functions          */
+  /** Table of function name to function ID associations. */
   static Hashtable m_functions = new Hashtable();
 
-  /** NEEDSDOC Field m_nodetypes          */
+  /** Table of node type strings to opcode associations. */
   static Hashtable m_nodetypes = new Hashtable();
 
-  /** NEEDSDOC Field FROM_ANCESTORS_STRING          */
+  /** ancestor axes string. */
   private static final String FROM_ANCESTORS_STRING = "ancestor";
 
-  /** NEEDSDOC Field FROM_ANCESTORS_OR_SELF_STRING          */
+  /** ancestor-or-self axes string. */
   private static final String FROM_ANCESTORS_OR_SELF_STRING =
     "ancestor-or-self";
 
-  /** NEEDSDOC Field FROM_ATTRIBUTES_STRING          */
+  /** attribute axes string. */
   private static final String FROM_ATTRIBUTES_STRING = "attribute";
 
-  /** NEEDSDOC Field FROM_CHILDREN_STRING          */
+  /** child axes string. */
   private static final String FROM_CHILDREN_STRING = "child";
 
-  /** NEEDSDOC Field FROM_DESCENDANTS_STRING          */
+  /** descendant-or-self axes string. */
   private static final String FROM_DESCENDANTS_STRING = "descendant";
 
-  /** NEEDSDOC Field FROM_DESCENDANTS_OR_SELF_STRING          */
+  /** ancestor axes string. */
   private static final String FROM_DESCENDANTS_OR_SELF_STRING =
     "descendant-or-self";
 
-  /** NEEDSDOC Field FROM_FOLLOWING_STRING          */
+  /** following axes string. */
   private static final String FROM_FOLLOWING_STRING = "following";
 
-  /** NEEDSDOC Field FROM_FOLLOWING_SIBLINGS_STRING          */
+  /** following-sibling axes string. */
   private static final String FROM_FOLLOWING_SIBLINGS_STRING =
     "following-sibling";
 
-  /** NEEDSDOC Field FROM_PARENT_STRING          */
+  /** parent axes string. */
   private static final String FROM_PARENT_STRING = "parent";
 
-  /** NEEDSDOC Field FROM_PRECEDING_STRING          */
+  /** preceding axes string. */
   private static final String FROM_PRECEDING_STRING = "preceding";
 
-  /** NEEDSDOC Field FROM_PRECEDING_SIBLINGS_STRING          */
+  /** preceding-sibling axes string. */
   private static final String FROM_PRECEDING_SIBLINGS_STRING =
     "preceding-sibling";
 
-  /** NEEDSDOC Field FROM_SELF_STRING          */
+  /** self axes string. */
   private static final String FROM_SELF_STRING = "self";
 
-  /** NEEDSDOC Field FROM_NAMESPACE_STRING          */
+  /** namespace axes string. */
   private static final String FROM_NAMESPACE_STRING = "namespace";
 
-  /** NEEDSDOC Field FROM_SELF_ABBREVIATED_STRING          */
+  /** self axes abreviated string. */
   private static final String FROM_SELF_ABBREVIATED_STRING = ".";
 
-  /** NEEDSDOC Field NODETYPE_COMMENT_STRING          */
+  /** comment node test string. */
   private static final String NODETYPE_COMMENT_STRING = "comment";
 
-  /** NEEDSDOC Field NODETYPE_TEXT_STRING          */
+  /** text node test string. */
   private static final String NODETYPE_TEXT_STRING = "text";
 
-  /** NEEDSDOC Field NODETYPE_PI_STRING          */
+  /** processing-instruction node test string. */
   private static final String NODETYPE_PI_STRING = "processing-instruction";
 
-  /** NEEDSDOC Field NODETYPE_NODE_STRING          */
+  /** Any node test string. */
   private static final String NODETYPE_NODE_STRING = "node";
 
-  /** NEEDSDOC Field FROM_ATTRIBUTE_STRING          */
-  private static final String FROM_ATTRIBUTE_STRING = "@";
-
-  /** NEEDSDOC Field FROM_DOC_STRING          */
-  private static final String FROM_DOC_STRING = "document";
-
-  /** NEEDSDOC Field FROM_DOCREF_STRING          */
-  private static final String FROM_DOCREF_STRING = "document";
-
-  /** NEEDSDOC Field FROM_ID_STRING          */
-  private static final String FROM_ID_STRING = "id";
-
-  /** NEEDSDOC Field FROM_IDREF_STRING          */
-  private static final String FROM_IDREF_STRING = "idref";
-
-  /** NEEDSDOC Field NODETYPE_ANYELEMENT_STRING          */
+  /** Wildcard element string. */
   private static final String NODETYPE_ANYELEMENT_STRING = "*";
 
-  /** NEEDSDOC Field FUNC_CURRENT_STRING          */
+  /** current function string. */
   private static final String FUNC_CURRENT_STRING = "current";
 
-  /** NEEDSDOC Field FUNC_LAST_STRING          */
+  /** last function string. */
   private static final String FUNC_LAST_STRING = "last";
 
-  /** NEEDSDOC Field FUNC_POSITION_STRING          */
+  /** position function string. */
   private static final String FUNC_POSITION_STRING = "position";
 
-  /** NEEDSDOC Field FUNC_COUNT_STRING          */
+  /** count function string. */
   private static final String FUNC_COUNT_STRING = "count";
 
-  /** NEEDSDOC Field FUNC_ID_STRING          */
+  /** id function string. */
   static final String FUNC_ID_STRING = "id";
 
-  /** NEEDSDOC Field FUNC_IDREF_STRING          */
-  private static final String FUNC_IDREF_STRING = "idref";
-
-  /** NEEDSDOC Field FUNC_KEY_STRING          */
+  /** key function string (XSLT). */
   public static final String FUNC_KEY_STRING = "key";
 
-  /** NEEDSDOC Field FUNC_KEYREF_STRING          */
-  private static final String FUNC_KEYREF_STRING = "keyref";
-
-  /** NEEDSDOC Field FUNC_DOC_STRING          */
-  private static final String FUNC_DOC_STRING = "doc";
-
-  /** NEEDSDOC Field FUNC_DOCUMENT_STRING          */
-  private static final String FUNC_DOCUMENT_STRING = "document";
-
-  /** NEEDSDOC Field FUNC_DOCREF_STRING          */
-  private static final String FUNC_DOCREF_STRING = "docref";
-
-  /** NEEDSDOC Field FUNC_LOCAL_PART_STRING          */
+  /** local-name function string. */
   private static final String FUNC_LOCAL_PART_STRING = "local-name";
 
-  /** NEEDSDOC Field FUNC_NAMESPACE_STRING          */
+  /** namespace-uri function string. */
   private static final String FUNC_NAMESPACE_STRING = "namespace-uri";
 
-  /** NEEDSDOC Field FUNC_NAME_STRING          */
+  /** name function string. */
   private static final String FUNC_NAME_STRING = "name";
 
-  /** NEEDSDOC Field FUNC_GENERATE_ID_STRING          */
+  /** generate-id function string (XSLT). */
   private static final String FUNC_GENERATE_ID_STRING = "generate-id";
 
-  /** NEEDSDOC Field FUNC_NOT_STRING          */
+  /** not function string. */
   private static final String FUNC_NOT_STRING = "not";
 
-  /** NEEDSDOC Field FUNC_TRUE_STRING          */
+  /** true function string. */
   private static final String FUNC_TRUE_STRING = "true";
 
-  /** NEEDSDOC Field FUNC_FALSE_STRING          */
+  /** false function string. */
   private static final String FUNC_FALSE_STRING = "false";
 
-  /** NEEDSDOC Field FUNC_BOOLEAN_STRING          */
+  /** boolean function string. */
   private static final String FUNC_BOOLEAN_STRING = "boolean";
 
-  /** NEEDSDOC Field FUNC_LANG_STRING          */
+  /** lang function string. */
   private static final String FUNC_LANG_STRING = "lang";
 
-  /** NEEDSDOC Field FUNC_NUMBER_STRING          */
+  /** number function string. */
   private static final String FUNC_NUMBER_STRING = "number";
 
-  /** NEEDSDOC Field FUNC_FLOOR_STRING          */
+  /** floor function string. */
   private static final String FUNC_FLOOR_STRING = "floor";
 
-  /** NEEDSDOC Field FUNC_CEILING_STRING          */
+  /** ceiling function string. */
   private static final String FUNC_CEILING_STRING = "ceiling";
 
-  /** NEEDSDOC Field FUNC_ROUND_STRING          */
+  /** round function string. */
   private static final String FUNC_ROUND_STRING = "round";
 
-  /** NEEDSDOC Field FUNC_SUM_STRING          */
+  /** sum function string. */
   private static final String FUNC_SUM_STRING = "sum";
 
-  /** NEEDSDOC Field FUNC_STRING_STRING          */
+  /** string function string. */
   private static final String FUNC_STRING_STRING = "string";
 
-  /** NEEDSDOC Field FUNC_STARTS_WITH_STRING          */
+  /** starts-with function string. */
   private static final String FUNC_STARTS_WITH_STRING = "starts-with";
 
-  /** NEEDSDOC Field FUNC_CONTAINS_STRING          */
+  /** contains function string. */
   private static final String FUNC_CONTAINS_STRING = "contains";
 
-  /** NEEDSDOC Field FUNC_SUBSTRING_BEFORE_STRING          */
+  /** substring-before function string. */
   private static final String FUNC_SUBSTRING_BEFORE_STRING =
     "substring-before";
 
-  /** NEEDSDOC Field FUNC_SUBSTRING_AFTER_STRING          */
+  /** substring-after function string. */
   private static final String FUNC_SUBSTRING_AFTER_STRING = "substring-after";
 
-  /** NEEDSDOC Field FUNC_NORMALIZE_SPACE_STRING          */
+  /** normalize-space function string. */
   private static final String FUNC_NORMALIZE_SPACE_STRING = "normalize-space";
 
-  /** NEEDSDOC Field FUNC_TRANSLATE_STRING          */
+  /** translate function string. */
   private static final String FUNC_TRANSLATE_STRING = "translate";
 
-  /** NEEDSDOC Field FUNC_CONCAT_STRING          */
+  /** concat function string. */
   private static final String FUNC_CONCAT_STRING = "concat";
 
-  //private static final String FUNC_FORMAT_NUMBER_STRING = "format-number";
-
-  /** NEEDSDOC Field FUNC_SYSTEM_PROPERTY_STRING          */
+  /** system-property function string. */
   private static final String FUNC_SYSTEM_PROPERTY_STRING = "system-property";
 
-  /** NEEDSDOC Field FUNC_EXT_FUNCTION_AVAILABLE_STRING          */
+  /** function-available function string (XSLT). */
   private static final String FUNC_EXT_FUNCTION_AVAILABLE_STRING =
     "function-available";
 
-  /** NEEDSDOC Field FUNC_EXT_ELEM_AVAILABLE_STRING          */
+  /** element-available function string (XSLT). */
   private static final String FUNC_EXT_ELEM_AVAILABLE_STRING =
     "element-available";
 
-  /** NEEDSDOC Field FUNC_SUBSTRING_STRING          */
+  /** substring function string. */
   private static final String FUNC_SUBSTRING_STRING = "substring";
 
-  /** NEEDSDOC Field FUNC_STRING_LENGTH_STRING          */
+  /** string-length function string. */
   private static final String FUNC_STRING_LENGTH_STRING = "string-length";
 
-  /** NEEDSDOC Field FUNC_UNPARSED_ENTITY_URI_STRING          */
+  /** unparsed-entity-uri function string (XSLT). */
   private static final String FUNC_UNPARSED_ENTITY_URI_STRING =
     "unparsed-entity-uri";
 
   // Proprietary, built in functions
 
-  /** NEEDSDOC Field FUNC_DOCLOCATION_STRING          */
+  /** current function string (Proprietary). */
   private static final String FUNC_DOCLOCATION_STRING = "document-location";
 
   static
@@ -323,18 +291,10 @@ public class Keywords
                     new Integer(OpCodes.NODETYPE_ANYELEMENT));
     m_keywords.put(new StringKey(FROM_SELF_ABBREVIATED_STRING),
                    new Integer(OpCodes.FROM_SELF));
-
-    // m_keywords.put(new StringKey(FROM_ATTRIBUTE_STRING), new Integer(OpCodes.FROM_ATTRIBUTE));
-    // m_keywords.put(new StringKey(FROM_DOC_STRING), new Integer(OpCodes.FROM_DOC));
-    // m_keywords.put(new StringKey(FROM_DOCREF_STRING), new Integer(OpCodes.FROM_DOCREF));
-    // m_keywords.put(new StringKey(FROM_ID_STRING), new Integer(OpCodes.FROM_ID));
-    // m_keywords.put(new StringKey(FROM_IDREF_STRING), new Integer(OpCodes.FROM_IDREF));
     m_keywords.put(new StringKey(FUNC_ID_STRING),
                    new Integer(FunctionTable.FUNC_ID));
     m_keywords.put(new StringKey(FUNC_KEY_STRING),
                    new Integer(FunctionTable.FUNC_KEY));
-
-    // m_keywords.put(new StringKey(FUNC_DOCUMENT_STRING), new Integer(FunctionTable.FUNC_DOC));
     m_functions.put(new StringKey(FUNC_CURRENT_STRING),
                     new Integer(FunctionTable.FUNC_CURRENT));
     m_functions.put(new StringKey(FUNC_LAST_STRING),
@@ -347,8 +307,6 @@ public class Keywords
                     new Integer(FunctionTable.FUNC_ID));
     m_functions.put(new StringKey(FUNC_KEY_STRING),
                     new Integer(FunctionTable.FUNC_KEY));
-
-    // m_functions.put(new StringKey(FUNC_DOCUMENT_STRING), new Integer(FunctionTable.FUNC_DOC));
     m_functions.put(new StringKey(FUNC_LOCAL_PART_STRING),
                     new Integer(FunctionTable.FUNC_LOCAL_PART));
     m_functions.put(new StringKey(FUNC_NAMESPACE_STRING),
@@ -421,25 +379,34 @@ public class Keywords
                     new Integer(FunctionTable.FUNC_DOCLOCATION));
   }
 
+  /**
+   * Tell if a built-in, non-namespaced function is available.
+   *
+   * @param methName The local name of the function.
+   *
+   * @return True if the function can be executed.
+   */
   public static boolean functionAvailable(String methName)
   {
 
     try
     {
       Object tblEntry = m_functions.get(methName);
+
       if (null == tblEntry)
         return false;
+
       int funcType = ((Integer) tblEntry).intValue();
+
       switch (funcType)
       {
-        case OpCodes.NODETYPE_COMMENT:
-        case OpCodes.NODETYPE_TEXT:
-        case OpCodes.NODETYPE_PI:
-        case OpCodes.NODETYPE_NODE:
-          return false;                 // These look like functions but they're NodeTests.
-
-        default:
-          return true;
+      case OpCodes.NODETYPE_COMMENT :
+      case OpCodes.NODETYPE_TEXT :
+      case OpCodes.NODETYPE_PI :
+      case OpCodes.NODETYPE_NODE :
+        return false;  // These look like functions but they're NodeTests.
+      default :
+        return true;
       }
     }
     catch (Exception e)

@@ -113,9 +113,10 @@ class Lexer
   /**
    * Create a Lexer object.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param resolver
-   * NEEDSDOC @param xpathProcessor
+   * @param compiler The owning compiler for this lexer.
+   * @param resolver The prefix resolver for mapping qualified name prefixes 
+   *                 to namespace URIs.
+   * @param xpathProcessor The parser that is processing strings to opcodes.
    */
   Lexer(Compiler compiler, PrefixResolver resolver,
         XPathParser xpathProcessor)
@@ -415,11 +416,11 @@ class Lexer
    * this is a top-level element.  Must be called before the
    * next token is added to the m_tokenQueue.
    *
-   * NEEDSDOC @param nesting
-   * NEEDSDOC @param isStart
-   * NEEDSDOC @param isAttrName
+   * @param nesting The nesting count for the pattern element.
+   * @param isStart true if this is the start of a pattern.
+   * @param isAttrName true if we have determined that this is an attribute name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if this is the start of a pattern.
    */
   private boolean mapPatternElemPos(int nesting, boolean isStart,
                                     boolean isAttrName)
@@ -446,9 +447,9 @@ class Lexer
   /**
    * Given a map pos, return the corresponding token queue pos.
    *
-   * NEEDSDOC @param i
+   * @param i The index in the m_patternMap.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the token queue position.
    */
   private int getTokenQueuePosFromMap(int i)
   {
@@ -487,9 +488,9 @@ class Lexer
   /**
    * Given a string, return the corresponding keyword token.
    *
-   * NEEDSDOC @param key
+   * @param key The keyword.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An opcode value.
    */
   final int getKeywordToken(String key)
   {
@@ -515,9 +516,9 @@ class Lexer
   }
 
   /**
-   * Record the correct token string in the passed vector.
+   * Record the current token in the passed vector.
    *
-   * NEEDSDOC @param targetStrings
+   * @param targetStrings Vector of string.
    */
   private void recordTokenString(Vector targetStrings)
   {
@@ -573,10 +574,10 @@ class Lexer
   }
 
   /**
-   * NEEDSDOC Method addToTokenQueue 
+   * Add a token to the token queue.
    *
    *
-   * NEEDSDOC @param s
+   * @param s The token.
    */
   private final void addToTokenQueue(String s)
   {
@@ -587,12 +588,12 @@ class Lexer
    * When a seperator token is found, see if there's a element name or
    * the like to map.
    *
-   * NEEDSDOC @param pat
-   * NEEDSDOC @param startSubstring
-   * NEEDSDOC @param posOfNSSep
-   * NEEDSDOC @param posOfScan
+   * @param pat The XPath name string.
+   * @param startSubstring The start of the name string.
+   * @param posOfNSSep The position of the namespace seperator (':').
+   * @param posOfScan The end of the name index.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return -1 always.
    */
   private int mapNSTokens(String pat, int startSubstring, int posOfNSSep,
                           int posOfScan)

@@ -60,8 +60,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Quo <needs-comment/>
+ * The 'quo' operation expression executer. (no longer supported by XPath).
+ * @deprecated.
  */
 public class Quo extends Operation
 {
@@ -69,13 +69,13 @@ public class Quo extends Operation
   // Actually, this is no longer supported by xpath...
 
   /**
-   * NEEDSDOC Method operate 
+   * Apply the operation to two operands, and return the result.
    *
    *
-   * NEEDSDOC @param left
-   * NEEDSDOC @param right
+   * @param left non-null reference to the evaluated left operand.
+   * @param right non-null reference to the evaluated right operand.
    *
-   * NEEDSDOC (operate) @return
+   * @return non-null reference to the XObject that represents the result of the operation.
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -68,20 +68,18 @@ import org.w3c.dom.Node;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Variable <needs-comment/>
+ * The variable reference expression executer.
  */
 public class Variable extends Expression
 {
 
-  /** NEEDSDOC Field m_qname          */
+  /** The qualified name of the variable.   */
   protected QName m_qname;
 
   /**
-   * NEEDSDOC Method setQName 
+   * Set the qualified name of the variable.
    *
-   *
-   * NEEDSDOC @param qname
+   * @param qname Must be a non-null reference to a qualified name.
    */
   public void setQName(QName qname)
   {
@@ -89,12 +87,14 @@ public class Variable extends Expression
   }
 
   /**
-   * NEEDSDOC Method execute 
+   * Dereference the variable, and return the reference value.  Note that lazy 
+   * evaluation will occur.  If a variable within scope is not found, a warning 
+   * will be sent to the error listener, and an empty nodeset will be returned.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The runtime execution context.
    *
-   * NEEDSDOC (execute) @return
+   * @return The evaluated variable, or an empty nodeset if not found.
    *
    * @throws javax.xml.transform.TransformerException
    */

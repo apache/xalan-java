@@ -77,25 +77,25 @@ import java.text.DecimalFormat;
 public class XPATHErrorResources extends XResourceBundleBase
 {
 
-  /** NEEDSDOC Field ERROR_SUFFIX          */
+  /** Field ERROR_SUFFIX          */
   public static final String ERROR_SUFFIX = "ER";
 
-  /** NEEDSDOC Field WARNING_SUFFIX          */
+  /** Field WARNING_SUFFIX          */
   public static final String WARNING_SUFFIX = "WR";
 
-  /** NEEDSDOC Field MAX_CODE          */
+  /** Field MAX_CODE          */
   public static final int MAX_CODE = 68;  // this is needed to keep track of the number of messages          
 
-  /** NEEDSDOC Field MAX_WARNING          */
+  /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
 
-  /** NEEDSDOC Field MAX_OTHERS          */
+  /** Field MAX_OTHERS          */
   public static final int MAX_OTHERS = 20;
 
-  /** NEEDSDOC Field MAX_MESSAGES          */
+  /** Field MAX_MESSAGES          */
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
 
-  /** NEEDSDOC Field contents          */
+  /** Field contents          */
   static final Object[][] contents =
     new Object[MAX_MESSAGES + MAX_OTHERS + 1][2];
 
@@ -129,7 +129,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   // Error messages...
 
-  /** NEEDSDOC Field ERROR0000          */
+  /** Field ERROR0000          */
   public static final int ERROR0000 = 0;
 
   static
@@ -137,7 +137,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ERROR0000][1] = "{0}";
   }
 
-  /** NEEDSDOC Field ER_CURRENT_NOT_ALLOWED_IN_MATCH          */
+  /** Field ER_CURRENT_NOT_ALLOWED_IN_MATCH          */
   public static final int ER_CURRENT_NOT_ALLOWED_IN_MATCH = 1;
 
   static
@@ -146,7 +146,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "The current() function is not allowed in a match pattern!";
   }
 
-  /** NEEDSDOC Field ER_CURRENT_TAKES_NO_ARGS          */
+  /** Field ER_CURRENT_TAKES_NO_ARGS          */
   public static final int ER_CURRENT_TAKES_NO_ARGS = 2;
 
   static
@@ -155,7 +155,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "The current() function does not accept arguments!";
   }
 
-  /** NEEDSDOC Field ER_DOCUMENT_REPLACED          */
+  /** Field ER_DOCUMENT_REPLACED          */
   public static final int ER_DOCUMENT_REPLACED = 3;
 
   static
@@ -164,7 +164,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "document() function implementation has been replaced by org.apache.xalan.xslt.FuncDocument!";
   }
 
-  /** NEEDSDOC Field ER_CONTEXT_HAS_NO_OWNERDOC          */
+  /** Field ER_CONTEXT_HAS_NO_OWNERDOC          */
   public static final int ER_CONTEXT_HAS_NO_OWNERDOC = 4;
 
   static
@@ -173,7 +173,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "context does not have an owner document!";
   }
 
-  /** NEEDSDOC Field ER_LOCALNAME_HAS_TOO_MANY_ARGS          */
+  /** Field ER_LOCALNAME_HAS_TOO_MANY_ARGS          */
   public static final int ER_LOCALNAME_HAS_TOO_MANY_ARGS = 5;
 
   static
@@ -182,7 +182,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "local-name() has too many arguments.";
   }
 
-  /** NEEDSDOC Field ER_NAMESPACEURI_HAS_TOO_MANY_ARGS          */
+  /** Field ER_NAMESPACEURI_HAS_TOO_MANY_ARGS          */
   public static final int ER_NAMESPACEURI_HAS_TOO_MANY_ARGS = 6;
 
   static
@@ -191,7 +191,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "namespace-uri() has too many arguments.";
   }
 
-  /** NEEDSDOC Field ER_NORMALIZESPACE_HAS_TOO_MANY_ARGS          */
+  /** Field ER_NORMALIZESPACE_HAS_TOO_MANY_ARGS          */
   public static final int ER_NORMALIZESPACE_HAS_TOO_MANY_ARGS = 7;
 
   static
@@ -200,7 +200,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "normalize-space() has too many arguments.";
   }
 
-  /** NEEDSDOC Field ER_NUMBER_HAS_TOO_MANY_ARGS          */
+  /** Field ER_NUMBER_HAS_TOO_MANY_ARGS          */
   public static final int ER_NUMBER_HAS_TOO_MANY_ARGS = 8;
 
   static
@@ -209,7 +209,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "number() has too many arguments.";
   }
 
-  /** NEEDSDOC Field ER_NAME_HAS_TOO_MANY_ARGS          */
+  /** Field ER_NAME_HAS_TOO_MANY_ARGS          */
   public static final int ER_NAME_HAS_TOO_MANY_ARGS = 9;
 
   static
@@ -217,7 +217,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_NAME_HAS_TOO_MANY_ARGS][1] = "name() has too many arguments.";
   }
 
-  /** NEEDSDOC Field ER_STRING_HAS_TOO_MANY_ARGS          */
+  /** Field ER_STRING_HAS_TOO_MANY_ARGS          */
   public static final int ER_STRING_HAS_TOO_MANY_ARGS = 10;
 
   static
@@ -226,7 +226,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "string() has too many arguments.";
   }
 
-  /** NEEDSDOC Field ER_STRINGLENGTH_HAS_TOO_MANY_ARGS          */
+  /** Field ER_STRINGLENGTH_HAS_TOO_MANY_ARGS          */
   public static final int ER_STRINGLENGTH_HAS_TOO_MANY_ARGS = 11;
 
   static
@@ -235,7 +235,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "string-length() has too many arguments.";
   }
 
-  /** NEEDSDOC Field ER_TRANSLATE_TAKES_3_ARGS          */
+  /** Field ER_TRANSLATE_TAKES_3_ARGS          */
   public static final int ER_TRANSLATE_TAKES_3_ARGS = 12;
 
   static
@@ -244,7 +244,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "The translate() function takes three arguments!";
   }
 
-  /** NEEDSDOC Field ER_UNPARSEDENTITYURI_TAKES_1_ARG          */
+  /** Field ER_UNPARSEDENTITYURI_TAKES_1_ARG          */
   public static final int ER_UNPARSEDENTITYURI_TAKES_1_ARG = 13;
 
   static
@@ -253,7 +253,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "The unparsed-entity-uri function should take one argument!";
   }
 
-  /** NEEDSDOC Field ER_NAMESPACEAXIS_NOT_IMPLEMENTED          */
+  /** Field ER_NAMESPACEAXIS_NOT_IMPLEMENTED          */
   public static final int ER_NAMESPACEAXIS_NOT_IMPLEMENTED = 14;
 
   static
@@ -262,7 +262,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "namespace axis not implemented yet!";
   }
 
-  /** NEEDSDOC Field ER_UNKNOWN_AXIS          */
+  /** Field ER_UNKNOWN_AXIS          */
   public static final int ER_UNKNOWN_AXIS = 15;
 
   static
@@ -270,7 +270,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_UNKNOWN_AXIS][1] = "unknown axis: {0}";
   }
 
-  /** NEEDSDOC Field ER_UNKNOWN_MATCH_OPERATION          */
+  /** Field ER_UNKNOWN_MATCH_OPERATION          */
   public static final int ER_UNKNOWN_MATCH_OPERATION = 16;
 
   static
@@ -278,7 +278,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_UNKNOWN_MATCH_OPERATION][1] = "unknown match operation!";
   }
 
-  /** NEEDSDOC Field ER_INCORRECT_ARG_LENGTH          */
+  /** Field ER_INCORRECT_ARG_LENGTH          */
   public static final int ER_INCORRECT_ARG_LENGTH = 17;
 
   static
@@ -287,7 +287,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Arg length of processing-instruction() node test is incorrect!";
   }
 
-  /** NEEDSDOC Field ER_CANT_CONVERT_TO_NUMBER          */
+  /** Field ER_CANT_CONVERT_TO_NUMBER          */
   public static final int ER_CANT_CONVERT_TO_NUMBER = 18;
 
   static
@@ -296,7 +296,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Can not convert {0} to a number";
   }
 
-  /** NEEDSDOC Field ER_CANT_CONVERT_TO_NODELIST          */
+  /** Field ER_CANT_CONVERT_TO_NODELIST          */
   public static final int ER_CANT_CONVERT_TO_NODELIST = 19;
 
   static
@@ -305,7 +305,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Can not convert {0} to a NodeList!";
   }
 
-  /** NEEDSDOC Field ER_CANT_CONVERT_TO_MUTABLENODELIST          */
+  /** Field ER_CANT_CONVERT_TO_MUTABLENODELIST          */
   public static final int ER_CANT_CONVERT_TO_MUTABLENODELIST = 20;
 
   static
@@ -314,7 +314,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Can not convert {0} to a NodeSet!";
   }
 
-  /** NEEDSDOC Field ER_CANT_CONVERT_TO_TYPE          */
+  /** Field ER_CANT_CONVERT_TO_TYPE          */
   public static final int ER_CANT_CONVERT_TO_TYPE = 21;
 
   static
@@ -323,7 +323,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Can not convert {0} to a type#{1}";
   }
 
-  /** NEEDSDOC Field ER_EXPECTED_MATCH_PATTERN          */
+  /** Field ER_EXPECTED_MATCH_PATTERN          */
   public static final int ER_EXPECTED_MATCH_PATTERN = 22;
 
   static
@@ -332,7 +332,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Expected match pattern in getMatchScore!";
   }
 
-  /** NEEDSDOC Field ER_COULDNOT_GET_VAR_NAMED          */
+  /** Field ER_COULDNOT_GET_VAR_NAMED          */
   public static final int ER_COULDNOT_GET_VAR_NAMED = 23;
 
   static
@@ -341,7 +341,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Could not get variable named {0}";
   }
 
-  /** NEEDSDOC Field ER_UNKNOWN_OPCODE          */
+  /** Field ER_UNKNOWN_OPCODE          */
   public static final int ER_UNKNOWN_OPCODE = 24;
 
   static
@@ -349,7 +349,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_UNKNOWN_OPCODE][1] = "ERROR! Unknown op code: {0}";
   }
 
-  /** NEEDSDOC Field ER_EXTRA_ILLEGAL_TOKENS          */
+  /** Field ER_EXTRA_ILLEGAL_TOKENS          */
   public static final int ER_EXTRA_ILLEGAL_TOKENS = 25;
 
   static
@@ -357,7 +357,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_EXTRA_ILLEGAL_TOKENS][1] = "Extra illegal tokens: {0}";
   }
 
-  /** NEEDSDOC Field ER_EXPECTED_DOUBLE_QUOTE          */
+  /** Field ER_EXPECTED_DOUBLE_QUOTE          */
   public static final int ER_EXPECTED_DOUBLE_QUOTE = 26;
 
   static
@@ -366,7 +366,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "misquoted literal... expected double quote!";
   }
 
-  /** NEEDSDOC Field ER_EXPECTED_SINGLE_QUOTE          */
+  /** Field ER_EXPECTED_SINGLE_QUOTE          */
   public static final int ER_EXPECTED_SINGLE_QUOTE = 27;
 
   static
@@ -375,7 +375,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "misquoted literal... expected single quote!";
   }
 
-  /** NEEDSDOC Field ER_EMPTY_EXPRESSION          */
+  /** Field ER_EMPTY_EXPRESSION          */
   public static final int ER_EMPTY_EXPRESSION = 28;
 
   static
@@ -383,7 +383,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_EMPTY_EXPRESSION][1] = "Empty expression!";
   }
 
-  /** NEEDSDOC Field ER_EXPECTED_BUT_FOUND          */
+  /** Field ER_EXPECTED_BUT_FOUND          */
   public static final int ER_EXPECTED_BUT_FOUND = 29;
 
   static
@@ -391,7 +391,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_EXPECTED_BUT_FOUND][1] = "Expected {0}, but found: {1}";
   }
 
-  /** NEEDSDOC Field ER_INCORRECT_PROGRAMMER_ASSERTION          */
+  /** Field ER_INCORRECT_PROGRAMMER_ASSERTION          */
   public static final int ER_INCORRECT_PROGRAMMER_ASSERTION = 30;
 
   static
@@ -400,7 +400,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Programmer assertion is incorrect! - {0}";
   }
 
-  /** NEEDSDOC Field ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL          */
+  /** Field ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL          */
   public static final int ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL = 31;
 
   static
@@ -409,7 +409,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "boolean(...) argument is no longer optional with 19990709 XPath draft.";
   }
 
-  /** NEEDSDOC Field ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG          */
+  /** Field ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG          */
   public static final int ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG = 32;
 
   static
@@ -418,7 +418,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Found ',' but no preceding argument!";
   }
 
-  /** NEEDSDOC Field ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG          */
+  /** Field ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG          */
   public static final int ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG = 33;
 
   static
@@ -427,7 +427,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Found ',' but no following argument!";
   }
 
-  /** NEEDSDOC Field ER_PREDICATE_ILLEGAL_SYNTAX          */
+  /** Field ER_PREDICATE_ILLEGAL_SYNTAX          */
   public static final int ER_PREDICATE_ILLEGAL_SYNTAX = 34;
 
   static
@@ -436,7 +436,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "'..[predicate]' or '.[predicate]' is illegal syntax.  Use 'self::node()[predicate]' instead.";
   }
 
-  /** NEEDSDOC Field ER_ILLEGAL_AXIS_NAME          */
+  /** Field ER_ILLEGAL_AXIS_NAME          */
   public static final int ER_ILLEGAL_AXIS_NAME = 35;
 
   static
@@ -444,7 +444,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_ILLEGAL_AXIS_NAME][1] = "illegal axis name: {0}";
   }
 
-  /** NEEDSDOC Field ER_UNKNOWN_NODETYPE          */
+  /** Field ER_UNKNOWN_NODETYPE          */
   public static final int ER_UNKNOWN_NODETYPE = 36;
 
   static
@@ -452,7 +452,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_UNKNOWN_NODETYPE][1] = "Unknown nodetype: {0}";
   }
 
-  /** NEEDSDOC Field ER_PATTERN_LITERAL_NEEDS_BE_QUOTED          */
+  /** Field ER_PATTERN_LITERAL_NEEDS_BE_QUOTED          */
   public static final int ER_PATTERN_LITERAL_NEEDS_BE_QUOTED = 37;
 
   static
@@ -461,7 +461,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Pattern literal ({0}) needs to be quoted!";
   }
 
-  /** NEEDSDOC Field ER_COULDNOT_BE_FORMATTED_TO_NUMBER          */
+  /** Field ER_COULDNOT_BE_FORMATTED_TO_NUMBER          */
   public static final int ER_COULDNOT_BE_FORMATTED_TO_NUMBER = 38;
 
   static
@@ -470,7 +470,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "{0} could not be formatted to a number!";
   }
 
-  /** NEEDSDOC Field ER_COULDNOT_CREATE_XMLPROCESSORLIAISON          */
+  /** Field ER_COULDNOT_CREATE_XMLPROCESSORLIAISON          */
   public static final int ER_COULDNOT_CREATE_XMLPROCESSORLIAISON = 39;
 
   static
@@ -479,7 +479,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Could not create XML TransformerFactory Liaison: {0}";
   }
 
-  /** NEEDSDOC Field ER_DIDNOT_FIND_XPATH_SELECT_EXP          */
+  /** Field ER_DIDNOT_FIND_XPATH_SELECT_EXP          */
   public static final int ER_DIDNOT_FIND_XPATH_SELECT_EXP = 40;
 
   static
@@ -488,7 +488,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Error! Did not find xpath select expression (-select).";
   }
 
-  /** NEEDSDOC Field ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH          */
+  /** Field ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH          */
   public static final int ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH = 41;
 
   static
@@ -497,7 +497,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "ERROR! Could not find ENDOP after OP_LOCATIONPATH";
   }
 
-  /** NEEDSDOC Field ER_ERROR_OCCURED          */
+  /** Field ER_ERROR_OCCURED          */
   public static final int ER_ERROR_OCCURED = 42;
 
   static
@@ -505,7 +505,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_ERROR_OCCURED][1] = "Error occured!";
   }
 
-  /** NEEDSDOC Field ER_ILLEGAL_VARIABLE_REFERENCE          */
+  /** Field ER_ILLEGAL_VARIABLE_REFERENCE          */
   public static final int ER_ILLEGAL_VARIABLE_REFERENCE = 43;
 
   static
@@ -514,7 +514,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "VariableReference given for variable out of context or without definition!  Name = {0}";
   }
 
-  /** NEEDSDOC Field ER_AXES_NOT_ALLOWED          */
+  /** Field ER_AXES_NOT_ALLOWED          */
   public static final int ER_AXES_NOT_ALLOWED = 44;
 
   static
@@ -523,7 +523,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = {0}";
   }
 
-  /** NEEDSDOC Field ER_KEY_HAS_TOO_MANY_ARGS          */
+  /** Field ER_KEY_HAS_TOO_MANY_ARGS          */
   public static final int ER_KEY_HAS_TOO_MANY_ARGS = 45;
 
   static
@@ -532,7 +532,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "key() has an incorrect number of arguments.";
   }
 
-  /** NEEDSDOC Field ER_COUNT_TAKES_1_ARG          */
+  /** Field ER_COUNT_TAKES_1_ARG          */
   public static final int ER_COUNT_TAKES_1_ARG = 46;
 
   static
@@ -541,7 +541,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "The count function should take one argument!";
   }
 
-  /** NEEDSDOC Field ER_COULDNOT_FIND_FUNCTION          */
+  /** Field ER_COULDNOT_FIND_FUNCTION          */
   public static final int ER_COULDNOT_FIND_FUNCTION = 47;
 
   static
@@ -549,7 +549,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_COULDNOT_FIND_FUNCTION][1] = "Could not find function: {0}";
   }
 
-  /** NEEDSDOC Field ER_UNSUPPORTED_ENCODING          */
+  /** Field ER_UNSUPPORTED_ENCODING          */
   public static final int ER_UNSUPPORTED_ENCODING = 48;
 
   static
@@ -557,7 +557,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_UNSUPPORTED_ENCODING][1] = "Unsupported encoding: {0}";
   }
 
-  /** NEEDSDOC Field ER_PROBLEM_IN_DTM_NEXTSIBLING          */
+  /** Field ER_PROBLEM_IN_DTM_NEXTSIBLING          */
   public static final int ER_PROBLEM_IN_DTM_NEXTSIBLING = 49;
 
   static
@@ -566,7 +566,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Problem occured in DTM in getNextSibling... trying to recover";
   }
 
-  /** NEEDSDOC Field ER_CANNOT_WRITE_TO_EMPTYNODELISTIMPL          */
+  /** Field ER_CANNOT_WRITE_TO_EMPTYNODELISTIMPL          */
   public static final int ER_CANNOT_WRITE_TO_EMPTYNODELISTIMPL = 50;
 
   static
@@ -575,7 +575,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Programmer error: EmptyNodeList can not be written to.";
   }
 
-  /** NEEDSDOC Field ER_SETDOMFACTORY_NOT_SUPPORTED          */
+  /** Field ER_SETDOMFACTORY_NOT_SUPPORTED          */
   public static final int ER_SETDOMFACTORY_NOT_SUPPORTED = 51;
 
   static
@@ -584,7 +584,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "setDOMFactory is not supported by XPathContext!";
   }
 
-  /** NEEDSDOC Field ER_PREFIX_MUST_RESOLVE          */
+  /** Field ER_PREFIX_MUST_RESOLVE          */
   public static final int ER_PREFIX_MUST_RESOLVE = 52;
 
   static
@@ -593,7 +593,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Prefix must resolve to a namespace: {0}";
   }
 
-  /** NEEDSDOC Field ER_PARSE_NOT_SUPPORTED          */
+  /** Field ER_PARSE_NOT_SUPPORTED          */
   public static final int ER_PARSE_NOT_SUPPORTED = 53;
 
   static
@@ -602,7 +602,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "parse (InputSource source) not supported in XPathContext! Can not open {0}";
   }
 
-  /** NEEDSDOC Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
+  /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
   public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
 
   static
@@ -611,7 +611,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "createDocument() not supported in XPathContext!";
   }
 
-  /** NEEDSDOC Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
+  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
   public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
 
   static
@@ -620,7 +620,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Attribute child does not have an owner document!";
   }
 
-  /** NEEDSDOC Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
+  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
   public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
 
   static
@@ -629,7 +629,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Attribute child does not have an owner document element!";
   }
 
-  /** NEEDSDOC Field ER_SAX_API_NOT_HANDLED          */
+  /** Field ER_SAX_API_NOT_HANDLED          */
   public static final int ER_SAX_API_NOT_HANDLED = 57;
 
   static
@@ -638,7 +638,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "SAX API characters(char ch[]... not handled by the DTM!";
   }
 
-  /** NEEDSDOC Field ER_IGNORABLE_WHITESPACE_NOT_HANDLED          */
+  /** Field ER_IGNORABLE_WHITESPACE_NOT_HANDLED          */
   public static final int ER_IGNORABLE_WHITESPACE_NOT_HANDLED = 58;
 
   static
@@ -647,7 +647,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "ignorableWhitespace(char ch[]... not handled by the DTM!";
   }
 
-  /** NEEDSDOC Field ER_DTM_CANNOT_HANDLE_NODES          */
+  /** Field ER_DTM_CANNOT_HANDLE_NODES          */
   public static final int ER_DTM_CANNOT_HANDLE_NODES = 59;
 
   static
@@ -656,7 +656,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "DTMLiaison can not handle nodes of type {0}";
   }
 
-  /** NEEDSDOC Field ER_XERCES_CANNOT_HANDLE_NODES          */
+  /** Field ER_XERCES_CANNOT_HANDLE_NODES          */
   public static final int ER_XERCES_CANNOT_HANDLE_NODES = 60;
 
   static
@@ -665,7 +665,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "DOM2Helper can not handle nodes of type {0}";
   }
 
-  /** NEEDSDOC Field ER_XERCES_PARSE_ERROR_DETAILS          */
+  /** Field ER_XERCES_PARSE_ERROR_DETAILS          */
   public static final int ER_XERCES_PARSE_ERROR_DETAILS = 61;
 
   static
@@ -674,7 +674,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "DOM2Helper.parse error: SystemID - {0} line - {1}";
   }
 
-  /** NEEDSDOC Field ER_XERCES_PARSE_ERROR          */
+  /** Field ER_XERCES_PARSE_ERROR          */
   public static final int ER_XERCES_PARSE_ERROR = 62;
 
   static
@@ -682,7 +682,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_XERCES_PARSE_ERROR][1] = "DOM2Helper.parse error";
   }
 
-  /** NEEDSDOC Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
+  /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
   public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
 
   static
@@ -691,7 +691,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Warning: can't output text before document element!  Ignoring...";
   }
 
-  /** NEEDSDOC Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
+  /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
   public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
 
   static
@@ -700,7 +700,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Can't have more than one root on a DOM!";
   }
 
-  /** NEEDSDOC Field ER_INVALID_UTF16_SURROGATE          */
+  /** Field ER_INVALID_UTF16_SURROGATE          */
   public static final int ER_INVALID_UTF16_SURROGATE = 65;
 
   static
@@ -709,7 +709,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Invalid UTF-16 surrogate detected: {0} ?";
   }
 
-  /** NEEDSDOC Field ER_OIERROR          */
+  /** Field ER_OIERROR          */
   public static final int ER_OIERROR = 66;
 
   static
@@ -717,7 +717,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_OIERROR][1] = "IO error";
   }
 
-  /** NEEDSDOC Field ER_CANNOT_CREATE_URL          */
+  /** Field ER_CANNOT_CREATE_URL          */
   public static final int ER_CANNOT_CREATE_URL = 67;
 
   static
@@ -725,7 +725,7 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_CANNOT_CREATE_URL][1] = "Cannot create url for: {0}";
   }
 
-  /** NEEDSDOC Field ER_XPATH_READOBJECT          */
+  /** Field ER_XPATH_READOBJECT          */
   public static final int ER_XPATH_READOBJECT = 68;
 
   static
@@ -735,7 +735,7 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   // Warnings...
 
-  /** NEEDSDOC Field WG_LOCALE_NAME_NOT_HANDLED          */
+  /** Field WG_LOCALE_NAME_NOT_HANDLED          */
   public static final int WG_LOCALE_NAME_NOT_HANDLED = 1;
 
   static
@@ -744,7 +744,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "locale name in the format-number function not yet handled!";
   }
 
-  /** NEEDSDOC Field WG_PROPERTY_NOT_SUPPORTED          */
+  /** Field WG_PROPERTY_NOT_SUPPORTED          */
   public static final int WG_PROPERTY_NOT_SUPPORTED = 2;
 
   static
@@ -753,7 +753,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "XSL Property not supported: {0}";
   }
 
-  /** NEEDSDOC Field WG_DONT_DO_ANYTHING_WITH_NS          */
+  /** Field WG_DONT_DO_ANYTHING_WITH_NS          */
   public static final int WG_DONT_DO_ANYTHING_WITH_NS = 3;
 
   static
@@ -762,7 +762,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Do not currently do anything with namespace {0} in property: {1}";
   }
 
-  /** NEEDSDOC Field WG_SECURITY_EXCEPTION          */
+  /** Field WG_SECURITY_EXCEPTION          */
   public static final int WG_SECURITY_EXCEPTION = 4;
 
   static
@@ -771,7 +771,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "SecurityException when trying to access XSL system property: {0}";
   }
 
-  /** NEEDSDOC Field WG_QUO_NO_LONGER_DEFINED          */
+  /** Field WG_QUO_NO_LONGER_DEFINED          */
   public static final int WG_QUO_NO_LONGER_DEFINED = 5;
 
   static
@@ -780,7 +780,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Old syntax: quo(...) is no longer defined in XPath.";
   }
 
-  /** NEEDSDOC Field WG_NEED_DERIVED_OBJECT_TO_IMPLEMENT_NODETEST          */
+  /** Field WG_NEED_DERIVED_OBJECT_TO_IMPLEMENT_NODETEST          */
   public static final int WG_NEED_DERIVED_OBJECT_TO_IMPLEMENT_NODETEST = 6;
 
   static
@@ -789,7 +789,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "XPath needs a derived object to implement nodeTest!";
   }
 
-  /** NEEDSDOC Field WG_FUNCTION_TOKEN_NOT_FOUND          */
+  /** Field WG_FUNCTION_TOKEN_NOT_FOUND          */
   public static final int WG_FUNCTION_TOKEN_NOT_FOUND = 7;
 
   static
@@ -798,7 +798,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "function token not found.";
   }
 
-  /** NEEDSDOC Field WG_COULDNOT_FIND_FUNCTION          */
+  /** Field WG_COULDNOT_FIND_FUNCTION          */
   public static final int WG_COULDNOT_FIND_FUNCTION = 8;
 
   static
@@ -807,7 +807,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Could not find function: {0}";
   }
 
-  /** NEEDSDOC Field WG_CANNOT_MAKE_URL_FROM          */
+  /** Field WG_CANNOT_MAKE_URL_FROM          */
   public static final int WG_CANNOT_MAKE_URL_FROM = 9;
 
   static
@@ -816,7 +816,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "Can not make URL from: {0}";
   }
 
-  /** NEEDSDOC Field WG_EXPAND_ENTITIES_NOT_SUPPORTED          */
+  /** Field WG_EXPAND_ENTITIES_NOT_SUPPORTED          */
   public static final int WG_EXPAND_ENTITIES_NOT_SUPPORTED = 10;
 
   static
@@ -825,7 +825,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "-E option not supported for DTM parser";
   }
 
-  /** NEEDSDOC Field WG_ILLEGAL_VARIABLE_REFERENCE          */
+  /** Field WG_ILLEGAL_VARIABLE_REFERENCE          */
   public static final int WG_ILLEGAL_VARIABLE_REFERENCE = 11;
 
   static
@@ -834,7 +834,7 @@ public class XPATHErrorResources extends XResourceBundleBase
       "VariableReference given for variable out of context or without definition!  Name = {0}";
   }
 
-  /** NEEDSDOC Field WG_UNSUPPORTED_ENCODING          */
+  /** Field WG_UNSUPPORTED_ENCODING          */
   public static final int WG_UNSUPPORTED_ENCODING = 12;
 
   static
@@ -897,39 +897,38 @@ public class XPATHErrorResources extends XResourceBundleBase
 
   // ================= INFRASTRUCTURE ======================
 
-  /** NEEDSDOC Field BAD_CODE          */
+  /** Field BAD_CODE          */
   public static final String BAD_CODE = "BAD_CODE";
 
-  /** NEEDSDOC Field FORMAT_FAILED          */
+  /** Field FORMAT_FAILED          */
   public static final String FORMAT_FAILED = "FORMAT_FAILED";
 
-  /** NEEDSDOC Field ERROR_RESOURCES          */
+  /** Field ERROR_RESOURCES          */
   public static final String ERROR_RESOURCES =
     "org.apache.xpath.res.XPATHErrorResources";
 
-  /** NEEDSDOC Field ERROR_STRING          */
+  /** Field ERROR_STRING          */
   public static final String ERROR_STRING = "#error";
 
-  /** NEEDSDOC Field ERROR_HEADER          */
+  /** Field ERROR_HEADER          */
   public static final String ERROR_HEADER = "Error: ";
 
-  /** NEEDSDOC Field WARNING_HEADER          */
+  /** Field WARNING_HEADER          */
   public static final String WARNING_HEADER = "Warning: ";
 
-  /** NEEDSDOC Field XSL_HEADER          */
+  /** Field XSL_HEADER          */
   public static final String XSL_HEADER = "XSL ";
 
-  /** NEEDSDOC Field XML_HEADER          */
+  /** Field XML_HEADER          */
   public static final String XML_HEADER = "XML ";
 
-  /** NEEDSDOC Field QUERY_HEADER          */
+  /** Field QUERY_HEADER          */
   public static final String QUERY_HEADER = "PATTERN ";
 
   /**
-   * NEEDSDOC Method getContents 
+   * Get the association list.
    *
-   *
-   * NEEDSDOC (getContents) @return
+   * @return The association list.
    */
   public Object[][] getContents()
   {
@@ -943,7 +942,7 @@ public class XPATHErrorResources extends XResourceBundleBase
    * @param res the name of the resource to load.
    * @param locale the locale to prefer when searching for the bundle
    *
-   * NEEDSDOC @param className
+   * @param className Name of local-specific subclass.
    * @return the ResourceBundle
    * @throws MissingResourceException
    */
@@ -1005,9 +1004,9 @@ public class XPATHErrorResources extends XResourceBundleBase
   /**
    * Get the error string associated with the error code
    *
-   * NEEDSDOC @param errorCode
+   * @param errorCode Error code
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return error string associated with the given error code
    */
   public String getMessageKey(int errorCode)
   {
@@ -1023,11 +1022,11 @@ public class XPATHErrorResources extends XResourceBundleBase
   }
 
   /**
-   * Get the error string associated with the error code
+   * Get the warning string associated with the error code
    *
-   * NEEDSDOC @param errorCode
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param errorCode Error code
+   * 
+   * @return warning string associated with the given error code
    */
   public String getWarningKey(int errorCode)
   {
@@ -1043,11 +1042,11 @@ public class XPATHErrorResources extends XResourceBundleBase
   }
 
   /**
-   * Get the error string associated with the error code
+   * Get the key string for an error based on the integer representation.
    *
-   * NEEDSDOC @param errorCode
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param errorCode Error code
+   * 
+   * @return key string that may be used for lookup in the association table.
    */
   public static String getMKey(int errorCode)
   {
@@ -1063,11 +1062,11 @@ public class XPATHErrorResources extends XResourceBundleBase
   }
 
   /**
-   * Get the error string associated with the error code
+   * Get the key string for an warning based on the integer representation.
    *
-   * NEEDSDOC @param errorCode
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param errorCode Error code
+   * 
+   * @return key string that may be used for lookup in the association table.
    */
   public static String getWKey(int errorCode)
   {

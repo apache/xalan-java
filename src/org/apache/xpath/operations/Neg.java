@@ -60,19 +60,18 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Neg <needs-comment/>
+ * The unary '-' operation expression executer.
  */
 public class Neg extends UnaryOperation
 {
 
   /**
-   * NEEDSDOC Method operate 
+   * Apply the operation to two operands, and return the result.
    *
    *
-   * NEEDSDOC @param right
+   * @param right non-null reference to the evaluated right operand.
    *
-   * NEEDSDOC (operate) @return
+   * @return non-null reference to the XObject that represents the result of the operation.
    *
    * @throws javax.xml.transform.TransformerException
    */

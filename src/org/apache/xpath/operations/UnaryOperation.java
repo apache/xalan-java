@@ -64,20 +64,20 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class UnaryOperation <needs-comment/>
+ * The unary operation base class.
  */
 public abstract class UnaryOperation extends Expression
 {
 
-  /** NEEDSDOC Field m_right          */
+  /** The operand for the operation. */
   protected Expression m_right;
 
   /**
-   * NEEDSDOC Method setRight 
+   * Set the expression operand for the operation.
    *
    *
-   * NEEDSDOC @param r
+   * @param r The expression operand to which the unary operation will be 
+   *          applied.
    */
   public void setRight(Expression r)
   {
@@ -85,12 +85,13 @@ public abstract class UnaryOperation extends Expression
   }
 
   /**
-   * NEEDSDOC Method execute 
+   * Execute the operand and apply the unary operation to the result.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The runtime execution context.
    *
-   * NEEDSDOC (execute) @return
+   * @return An XObject that represents the result of applying the unary 
+   *         operation to the evaluated operand.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -103,12 +104,12 @@ public abstract class UnaryOperation extends Expression
   }
 
   /**
-   * NEEDSDOC Method operate 
+   * Apply the operation to two operands, and return the result.
    *
    *
-   * NEEDSDOC @param right
+   * @param right non-null reference to the evaluated right operand.
    *
-   * NEEDSDOC (operate) @return
+   * @return non-null reference to the XObject that represents the result of the operation.
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -348,7 +348,8 @@ public class OpCodes
    */
   public static final int OP_LITERAL = 21;
 
-  /** NEEDSDOC Field FIRST_NODESET_OP          */
+  /** The low opcode for nodesets, needed by getFirstPredicateOpPos and 
+   *  getNextStepPos.          */
   static final int FIRST_NODESET_OP = 22;
 
   /**
@@ -415,7 +416,7 @@ public class OpCodes
    */
   public static final int OP_FUNCTION = 25;
 
-  /** NEEDSDOC Field LAST_NODESET_OP          */
+  /** The last opcode for stuff that can be a nodeset.         */
   static final int LAST_NODESET_OP = 25;
 
   /**
@@ -599,46 +600,46 @@ public class OpCodes
    */
   public static final int AXES_START_TYPES = 37;
 
-  /** NEEDSDOC Field FROM_ANCESTORS          */
+  /** ancestor axes opcode.         */
   public static final int FROM_ANCESTORS = 37;
 
-  /** NEEDSDOC Field FROM_ANCESTORS_OR_SELF          */
+  /** ancestor-or-self axes opcode.         */
   public static final int FROM_ANCESTORS_OR_SELF = 38;
 
-  /** NEEDSDOC Field FROM_ATTRIBUTES          */
+  /** attribute axes opcode.         */
   public static final int FROM_ATTRIBUTES = 39;
 
-  /** NEEDSDOC Field FROM_CHILDREN          */
+  /** children axes opcode.         */
   public static final int FROM_CHILDREN = 40;
 
-  /** NEEDSDOC Field FROM_DESCENDANTS          */
+  /** descendants axes opcode.         */
   public static final int FROM_DESCENDANTS = 41;
 
-  /** NEEDSDOC Field FROM_DESCENDANTS_OR_SELF          */
+  /** descendants-of-self axes opcode.         */
   public static final int FROM_DESCENDANTS_OR_SELF = 42;
 
-  /** NEEDSDOC Field FROM_FOLLOWING          */
+  /** following axes opcode.         */
   public static final int FROM_FOLLOWING = 43;
 
-  /** NEEDSDOC Field FROM_FOLLOWING_SIBLINGS          */
+  /** following-siblings axes opcode.         */
   public static final int FROM_FOLLOWING_SIBLINGS = 44;
 
-  /** NEEDSDOC Field FROM_PARENT          */
+  /** parent axes opcode.         */
   public static final int FROM_PARENT = 45;
 
-  /** NEEDSDOC Field FROM_PRECEDING          */
+  /** preceding axes opcode.         */
   public static final int FROM_PRECEDING = 46;
 
-  /** NEEDSDOC Field FROM_PRECEDING_SIBLINGS          */
+  /** preceding-sibling axes opcode.         */
   public static final int FROM_PRECEDING_SIBLINGS = 47;
 
-  /** NEEDSDOC Field FROM_SELF          */
+  /** self axes opcode.         */
   public static final int FROM_SELF = 48;
 
-  /** NEEDSDOC Field FROM_NAMESPACE          */
+  /** namespace axes opcode.         */
   public static final int FROM_NAMESPACE = 49;
 
-  /** NEEDSDOC Field FROM_ROOT          */
+  /** '/' axes opcode.         */
   public static final int FROM_ROOT = 50;
 
   /**
@@ -659,9 +660,9 @@ public class OpCodes
    */
   public static final int MATCH_IMMEDIATE_ANCESTOR = 53;
 
-  /** NEEDSDOC Field AXES_END_TYPES          */
+  /** The end of the axes types.    */
   public static final int AXES_END_TYPES = 53;
 
-  /** NEEDSDOC Field NEXT_FREE_ID          */
+  /** The next free ID.  Please keep this up to date.  */
   private static final int NEXT_FREE_ID = 99;
 }
