@@ -119,7 +119,8 @@ parser code {:
           _xsltc.setMultiDocument(flag);
     }
 
-    public int findNodeType(int axis, Object test, boolean inPattern) {
+    public int findNodeType(int axis, Object test) {
+
 	if (test == null) {  // *
             if (axis == Axis.ATTRIBUTE)
                 return NodeTest.ATTRIBUTE;
@@ -151,8 +152,7 @@ parser code {:
                 }
                 else if (local.equals("@*"))
                     return(NodeTest.ATTRIBUTE);
-	        if (inPattern)
-                    name = new QName(null,null,local);
+                name = new QName(null,null,local);
             }
             if (axis == Axis.ATTRIBUTE) {
                 return _xsltc.registerAttribute(name);
@@ -331,28 +331,26 @@ RelativePathPattern ::= StepPattern:sp
 
 StepPattern ::= NodeTestPattern:nt
             {: RESULT = new StepPattern(Axis.CHILD,
-                                        parser.findNodeType(Axis.CHILD,nt,true),
+                                        parser.findNodeType(Axis.CHILD, nt),
                                         null);
             :}
 
             | NodeTestPattern:nt Predicates:pp
             {: RESULT = new StepPattern(Axis.CHILD,
-                                        parser.findNodeType(Axis.CHILD,nt,true),
+                                        parser.findNodeType(Axis.CHILD, nt),
                                         pp);
             :}
 
             | ChildOrAttributeAxisSpecifier:axis NodeTestPattern:nt
             {: RESULT=new StepPattern(axis.intValue(),
-                                      parser.findNodeType(axis.intValue(),
-                                                          nt, true),
+                                      parser.findNodeType(axis.intValue(), nt),
                                       null);
             :}
 
 	    | ChildOrAttributeAxisSpecifier:axis
 		  NodeTestPattern:nt Predicates:pp
             {: RESULT = new StepPattern(axis.intValue(),
-                                        parser.findNodeType(axis.intValue(),
-                                                            nt, true),
+                                        parser.findNodeType(axis.intValue(),nt),
                                         pp);
             :};
 
@@ -615,7 +613,7 @@ Step ::= NodeTest:ntest
             }
             else {
 		RESULT = new Step(Axis.CHILD,
-                             parser.findNodeType(Axis.CHILD, ntest, false),
+                             parser.findNodeType(Axis.CHILD, ntest),
                              null);
             }
         :}
@@ -629,19 +627,19 @@ Step ::= NodeTest:ntest
             }
             else {
                 RESULT = new Step(Axis.CHILD,
-                             parser.findNodeType(Axis.CHILD, ntest, false),pp);
+                             parser.findNodeType(Axis.CHILD, ntest), pp);
             }
         :}
 
         | AxisSpecifier:axis NodeTest:ntest Predicates:pp
         {: RESULT = new Step(axis.intValue(),
-                             parser.findNodeType(axis.intValue(), ntest, false),
+                             parser.findNodeType(axis.intValue(), ntest),
                              pp);
         :}
 
         | AxisSpecifier:axis NodeTest:ntest
         {: RESULT = new Step(axis.intValue(),
-                             parser.findNodeType(axis.intValue(), ntest, false),
+                             parser.findNodeType(axis.intValue(), ntest),
                              null);
         :}
 
