@@ -1127,7 +1127,7 @@ public class Compiler extends OpMap
    * 
    * @throws RuntimeException if the b argument is false.
    */
-  public void assert(boolean b, java.lang.String msg)
+  public void assertion(boolean b, java.lang.String msg)
   {
 
     if (!b)

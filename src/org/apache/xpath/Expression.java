@@ -166,7 +166,7 @@ public abstract class Expression implements java.io.Serializable
    * 
    * @throws RuntimeException if the b argument is false.
    */
-  public void assert(boolean b, java.lang.String msg)
+  public void assertion(boolean b, java.lang.String msg)
           throws javax.xml.transform.TransformerException
   {
 

@@ -404,7 +404,7 @@ public class XPath implements Serializable
    * 
    * @throws RuntimeException if the b argument is false.
    */
-  public void assert(boolean b, String msg)
+  public void assertion(boolean b, String msg)
   {
 
     if (!b)

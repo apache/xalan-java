@@ -568,7 +568,7 @@ public class XPathParser
    * 
    * @throws RuntimeException if the b argument is false.
    */
-  private void assert(boolean b, String msg)
+  private void assertion(boolean b, String msg)
   {
 
     if (!b)

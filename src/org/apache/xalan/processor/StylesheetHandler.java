@@ -240,7 +240,7 @@ public class StylesheetHandler extends DefaultHandler
 
     // Don't need to support this here.  Return the current URI for the prefix,
     // ignoring the context.
-    assert(true, "can't process a context node in StylesheetHandler!");
+    assertion(true, "can't process a context node in StylesheetHandler!");
 
     return null;
   }
@@ -821,7 +821,7 @@ public class StylesheetHandler extends DefaultHandler
    * argument.
    * @throws RuntimeException if the condition is not true.
    */
-  private void assert(boolean condition, String msg) throws RuntimeException
+  private void assertion(boolean condition, String msg) throws RuntimeException
   {
     if (!condition)
       throw new RuntimeException(msg);

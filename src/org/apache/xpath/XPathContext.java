@@ -432,7 +432,7 @@ public class XPathContext implements ExpressionContext
    * 
    * @throws javax.xml.transform.TransformerException if b is false.
    */
-  private void assert(boolean b, String msg) throws javax.xml.transform.TransformerException
+  private void assertion(boolean b, String msg) throws javax.xml.transform.TransformerException
   {
 
     ErrorListener errorHandler = getErrorListener();
