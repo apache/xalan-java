@@ -77,6 +77,8 @@ import javax.xml.transform.Source;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 
+import java.io.*; // for dumpDTM
+
 /**
  * The <code>DTMDefaultBase</code> class serves as a helper base for DTMs.
  * It sets up structures for navigation and type, while leaving data
@@ -443,7 +445,7 @@ public abstract class DTMDefaultBase implements DTM
     if (capacity <= index)
     {
       int newcapacity = capacity + m_blocksize;
-      // System.out.println("resizing to new capacity: "+newcapacity);
+      // ps.println("resizing to new capacity: "+newcapacity);
 
       // %OPT% Compilers might be happier if we operated on one array
       // at a time, though the parallel code might be a trifle less
@@ -665,122 +667,133 @@ public abstract class DTMDefaultBase implements DTM
    */
   public void dumpDTM()
   {
-
-    while (nextNode()){}
-
-    int nRecords = m_size;
-
-    System.out.println("Total nodes: " + nRecords);
-
-    for (int i = 0; i < nRecords; i++)
+    try
     {
-      System.out.println("=========== " + i + " ===========");
-      System.out.println("NodeName: " + getNodeName(i));
-      System.out.println("NodeNameX: " + getNodeNameX(i));
-      System.out.println("LocalName: " + getLocalName(i));
-      System.out.println("NamespaceURI: " + getNamespaceURI(i));
-      System.out.println("Prefix: " + getPrefix(i));
-
-      int exTypeID = getExpandedTypeID(i);
-
-      System.out.println("Expanded Type ID: "
-                         + Integer.toHexString(exTypeID));
-
-      int type = getNodeType(i);
-      String typestring;
-
-      switch (type)
+      File f = new File("DTMDump"+((Object)this).hashCode()+".txt");
+      System.err.println("Dumping... "+f.getAbsolutePath());
+      PrintStream ps = new PrintStream(new FileOutputStream(f));
+  
+      while (nextNode()){}
+  
+      int nRecords = m_size;
+  
+      ps.println("Total nodes: " + nRecords);
+  
+      for (int i = 0; i < nRecords; i++)
       {
-      case DTM.ATTRIBUTE_NODE :
-        typestring = "ATTRIBUTE_NODE";
-        break;
-      case DTM.CDATA_SECTION_NODE :
-        typestring = "CDATA_SECTION_NODE";
-        break;
-      case DTM.COMMENT_NODE :
-        typestring = "COMMENT_NODE";
-        break;
-      case DTM.DOCUMENT_FRAGMENT_NODE :
-        typestring = "DOCUMENT_FRAGMENT_NODE";
-        break;
-      case DTM.DOCUMENT_NODE :
-        typestring = "DOCUMENT_NODE";
-        break;
-      case DTM.DOCUMENT_TYPE_NODE :
-        typestring = "DOCUMENT_NODE";
-        break;
-      case DTM.ELEMENT_NODE :
-        typestring = "ELEMENT_NODE";
-        break;
-      case DTM.ENTITY_NODE :
-        typestring = "ENTITY_NODE";
-        break;
-      case DTM.ENTITY_REFERENCE_NODE :
-        typestring = "ENTITY_REFERENCE_NODE";
-        break;
-      case DTM.NAMESPACE_NODE :
-        typestring = "NAMESPACE_NODE";
-        break;
-      case DTM.NOTATION_NODE :
-        typestring = "NOTATION_NODE";
-        break;
-      case DTM.NULL :
-        typestring = "NULL";
-        break;
-      case DTM.PROCESSING_INSTRUCTION_NODE :
-        typestring = "PROCESSING_INSTRUCTION_NODE";
-        break;
-      case DTM.TEXT_NODE :
-        typestring = "TEXT_NODE";
-        break;
-      default :
-        typestring = "Unknown!";
-        break;
+        ps.println("=========== " + i + " ===========");
+        ps.println("NodeName: " + getNodeName(i));
+        ps.println("NodeNameX: " + getNodeNameX(i));
+        ps.println("LocalName: " + getLocalName(i));
+        ps.println("NamespaceURI: " + getNamespaceURI(i));
+        ps.println("Prefix: " + getPrefix(i));
+  
+        int exTypeID = getExpandedTypeID(i);
+  
+        ps.println("Expanded Type ID: "
+                           + Integer.toHexString(exTypeID));
+  
+        int type = getNodeType(i);
+        String typestring;
+  
+        switch (type)
+        {
+        case DTM.ATTRIBUTE_NODE :
+          typestring = "ATTRIBUTE_NODE";
+          break;
+        case DTM.CDATA_SECTION_NODE :
+          typestring = "CDATA_SECTION_NODE";
+          break;
+        case DTM.COMMENT_NODE :
+          typestring = "COMMENT_NODE";
+          break;
+        case DTM.DOCUMENT_FRAGMENT_NODE :
+          typestring = "DOCUMENT_FRAGMENT_NODE";
+          break;
+        case DTM.DOCUMENT_NODE :
+          typestring = "DOCUMENT_NODE";
+          break;
+        case DTM.DOCUMENT_TYPE_NODE :
+          typestring = "DOCUMENT_NODE";
+          break;
+        case DTM.ELEMENT_NODE :
+          typestring = "ELEMENT_NODE";
+          break;
+        case DTM.ENTITY_NODE :
+          typestring = "ENTITY_NODE";
+          break;
+        case DTM.ENTITY_REFERENCE_NODE :
+          typestring = "ENTITY_REFERENCE_NODE";
+          break;
+        case DTM.NAMESPACE_NODE :
+          typestring = "NAMESPACE_NODE";
+          break;
+        case DTM.NOTATION_NODE :
+          typestring = "NOTATION_NODE";
+          break;
+        case DTM.NULL :
+          typestring = "NULL";
+          break;
+        case DTM.PROCESSING_INSTRUCTION_NODE :
+          typestring = "PROCESSING_INSTRUCTION_NODE";
+          break;
+        case DTM.TEXT_NODE :
+          typestring = "TEXT_NODE";
+          break;
+        default :
+          typestring = "Unknown!";
+          break;
+        }
+  
+        ps.println("Type: " + typestring);
+  
+        int firstChild = _firstch(i);
+  
+        if (DTM.NULL == firstChild)
+          ps.println("First child: DTM.NULL");
+        else if (NOTPROCESSED == firstChild)
+          ps.println("First child: NOTPROCESSED");
+        else
+          ps.println("First child: " + firstChild);
+  
+        int prevSibling = _prevsib(i);
+  
+        if (DTM.NULL == prevSibling)
+          ps.println("Prev sibling: DTM.NULL");
+        else if (NOTPROCESSED == prevSibling)
+          ps.println("Prev sibling: NOTPROCESSED");
+        else
+          ps.println("Prev sibling: " + prevSibling);
+  
+        int nextSibling = _nextsib(i);
+  
+        if (DTM.NULL == nextSibling)
+          ps.println("Next sibling: DTM.NULL");
+        else if (NOTPROCESSED == nextSibling)
+          ps.println("Next sibling: NOTPROCESSED");
+        else
+          ps.println("Next sibling: " + nextSibling);
+  
+        int parent = _parent(i);
+  
+        if (DTM.NULL == parent)
+          ps.println("Parent: DTM.NULL");
+        else if (NOTPROCESSED == parent)
+          ps.println("Parent: NOTPROCESSED");
+        else
+          ps.println("Parent: " + parent);
+  
+        int level = _level(i);
+  
+        ps.println("Level: " + level);
+        ps.println("Node Value: " + getNodeValue(i));
+        ps.println("String Value: " + getStringValue(i));
       }
-
-      System.out.println("Type: " + typestring);
-
-      int firstChild = _firstch(i);
-
-      if (DTM.NULL == firstChild)
-        System.out.println("First child: DTM.NULL");
-      else if (NOTPROCESSED == firstChild)
-        System.out.println("First child: NOTPROCESSED");
-      else
-        System.out.println("First child: " + firstChild);
-
-      int prevSibling = _prevsib(i);
-
-      if (DTM.NULL == prevSibling)
-        System.out.println("Prev sibling: DTM.NULL");
-      else if (NOTPROCESSED == prevSibling)
-        System.out.println("Prev sibling: NOTPROCESSED");
-      else
-        System.out.println("Prev sibling: " + prevSibling);
-
-      int nextSibling = _nextsib(i);
-
-      if (DTM.NULL == nextSibling)
-        System.out.println("Next sibling: DTM.NULL");
-      else if (NOTPROCESSED == nextSibling)
-        System.out.println("Next sibling: NOTPROCESSED");
-      else
-        System.out.println("Next sibling: " + nextSibling);
-
-      int parent = _parent(i);
-
-      if (DTM.NULL == parent)
-        System.out.println("Parent: DTM.NULL");
-      else if (NOTPROCESSED == parent)
-        System.out.println("Parent: NOTPROCESSED");
-      else
-        System.out.println("Parent: " + parent);
-
-      int level = _level(i);
-
-      System.out.println("Level: " + level);
-      System.out.println("Node Value: " + getNodeValue(i));
-      System.out.println("String Value: " + getStringValue(i));
+    }
+    catch(IOException ioe)
+    {
+      ioe.printStackTrace(System.err);
+      System.exit(-1);
     }
   }
 
