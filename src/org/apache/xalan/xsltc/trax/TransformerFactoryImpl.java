@@ -128,31 +128,24 @@ public class TransformerFactoryImpl
     protected static String DEFAULT_TRANSLET_NAME = "GregorSamsa";
     
     /**
-     * The following four attributes are thread local variables. Each thread
-     * has a different copy of the variables.
-     *
      * The class name of the translet
      */
-    private static ThreadLocal _transletName = new ThreadLocal() {
-    	protected synchronized Object initialValue() {
-    	    return DEFAULT_TRANSLET_NAME;
-    	}
-    };
+    private String _transletName = DEFAULT_TRANSLET_NAME;
     
     /**
      * The destination directory for the translet
      */
-    private static ThreadLocal _destinationDirectory = new ThreadLocal();
+    private String _destinationDirectory = null;
     
     /**
      * The package name prefix for all generated translet classes
      */
-    private static ThreadLocal _packageName = new ThreadLocal();
+    private String _packageName = null;
     
     /**
      * The jar file name which the translet classes are packaged into
      */
-    private static ThreadLocal _jarFileName = new ThreadLocal();
+    private String _jarFileName = null;
 
     /**
      * This Hashtable is used to store parameters for locating
@@ -264,7 +257,7 @@ public class TransformerFactoryImpl
     { 
 	// Return value for attribute 'translet-name'
 	if (name.equals("translet-name")) {
-	    return (String)_transletName.get();
+	    return _transletName;
 	}
 	else if (name.equals("generate-translet")) {
 	    return new Boolean(_generateTranslet);
@@ -292,19 +285,19 @@ public class TransformerFactoryImpl
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
 	if (name.equals("translet-name") && value instanceof String) {
-	    _transletName.set(value);	      
+	    _transletName = (String) value;	      
 	    return;
 	}
 	else if (name.equals("destination-directory") && value instanceof String) {
-	    _destinationDirectory.set(value);
+	    _destinationDirectory = (String) value;
 	    return;
 	}
 	else if (name.equals("package-name") && value instanceof String) {
-	    _packageName.set(value);
+	    _packageName = (String) value;
 	    return;
 	}
 	else if (name.equals("jar-name") && value instanceof String) {
-	    _jarFileName.set(value);
+	    _jarFileName = (String) value;
 	    return;
 	}
 	else if (name.equals("generate-translet")) {
@@ -549,16 +542,16 @@ public class TransformerFactoryImpl
 	    byte[][] bytecodes = null;
 	    String transletClassName = getTransletClassName(source);
 	    
-	    if (_jarFileName.get() != null)
+	    if (_jarFileName != null)
 	    	bytecodes = getBytecodesFromJar(source, transletClassName);
 	    else
 	    	bytecodes = getBytecodesFromClasses(source, transletClassName);	    
 	  
 	    if (bytecodes != null) {
 	    	if (_debug) {
-	      	    if (_jarFileName.get() != null)
+	      	    if (_jarFileName != null)
 	        	System.err.println(new ErrorMsg(
-	            	    ErrorMsg.TRANSFORM_WITH_JAR_STR, transletClassName, (String)_jarFileName.get()));
+	            	    ErrorMsg.TRANSFORM_WITH_JAR_STR, transletClassName, _jarFileName));
 	            else
 	            	System.err.println(new ErrorMsg(
 	            	    ErrorMsg.TRANSFORM_WITH_TRANSLET_STR, transletClassName));
@@ -577,7 +570,7 @@ public class TransformerFactoryImpl
 	if (_debug) xsltc.setDebug(true);
 	if (_enableInlining) xsltc.setTemplateInlining(true);
 	xsltc.init();
-	  
+
 	// Set a document loader (for xsl:include/import) if defined
 	if (_uriResolver != null) {
 	    xsltc.setSourceLoader(this);
@@ -598,12 +591,11 @@ public class TransformerFactoryImpl
 	int outputType = XSLTC.BYTEARRAY_OUTPUT;
 	if (_generateTranslet || _autoTranslet) {
 	    // Set the translet name
-	    if (!DEFAULT_TRANSLET_NAME.equals(_transletName.get()))
-	        xsltc.setClassName((String)_transletName.get());
-	    
-	    // Set the destination directory
-	    if (_destinationDirectory.get() != null)
-	    	xsltc.setDestDirectory((String)_destinationDirectory.get());
+	    if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
+	        xsltc.setClassName(_transletName);
+	  
+	    if (_destinationDirectory != null)
+	    	xsltc.setDestDirectory(_destinationDirectory);
 	    else {
 	    	String xslName = getStylesheetFileName(source);
 	    	if (xslName != null) {
@@ -615,11 +607,11 @@ public class TransformerFactoryImpl
 	    	}
 	    }
 	  
-	    if (_packageName.get() != null)
-	        xsltc.setPackageName((String)_packageName.get());
+	    if (_packageName != null)
+	        xsltc.setPackageName(_packageName);
 	
-	    if (_jarFileName.get() != null) {
-	    	xsltc.setJarFileName((String)_jarFileName.get());
+	    if (_jarFileName != null) {
+	    	xsltc.setJarFileName(_jarFileName);
 	    	outputType = XSLTC.BYTEARRAY_AND_JAR_OUTPUT;
 	    }
 	    else
@@ -633,7 +625,7 @@ public class TransformerFactoryImpl
 
 	// Output to the jar file if the jar file name is set.
 	if ((_generateTranslet || _autoTranslet)
-	   	&& bytecodes != null && _jarFileName.get() != null) {
+	   	&& bytecodes != null && _jarFileName != null) {
 	    try {
 	    	xsltc.outputToJar();
 	    }
@@ -925,10 +917,10 @@ public class TransformerFactoryImpl
      * Reset the per-session attributes to their default values
      */
     private void resetTransientAttributes() {
-	_transletName.set(DEFAULT_TRANSLET_NAME);
-	_destinationDirectory.set(null);
-	_packageName.set(null);
-	_jarFileName.set(null);    
+	_transletName = DEFAULT_TRANSLET_NAME;
+	_destinationDirectory = null;
+	_packageName = null;
+	_jarFileName = null;    
     }
         
     /**
@@ -959,8 +951,8 @@ public class TransformerFactoryImpl
     	    	
     	// Construct the path name for the translet class file
     	String transletPath = fullClassName.replace('.', '/');
-    	if (_destinationDirectory.get() != null) {
-    	    transletPath = (String)_destinationDirectory.get() + "/" + transletPath + ".class";
+    	if (_destinationDirectory != null) {
+    	    transletPath = _destinationDirectory + "/" + transletPath + ".class";
     	}
     	else {
     	    if (xslFile != null && xslFile.getParent() != null)
@@ -1085,13 +1077,13 @@ public class TransformerFactoryImpl
       
       	// Construct the path for the jar file
       	String jarPath = null;
-      	if (_destinationDirectory.get() != null)
-            jarPath = (String)_destinationDirectory.get() + "/" + (String)_jarFileName.get();
+      	if (_destinationDirectory != null)
+            jarPath = _destinationDirectory + "/" + _jarFileName;
       	else {
       	    if (xslFile != null && xslFile.getParent() != null)
-    	    	jarPath = xslFile.getParent() + "/" + (String)_jarFileName.get();
+    	    	jarPath = xslFile.getParent() + "/" + _jarFileName;
     	    else
-    	    	jarPath = (String)_jarFileName.get();
+    	    	jarPath = _jarFileName;
     	}
             
       	// Return null if the jar file does not exist.
@@ -1191,8 +1183,8 @@ public class TransformerFactoryImpl
     private String getTransletClassName(Source source)
     {      
         String transletBaseName = null;
-        if (!DEFAULT_TRANSLET_NAME.equals(_transletName.get()))
-            transletBaseName = (String)_transletName.get();
+        if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
+            transletBaseName = _transletName;
       	else {
             String systemId = source.getSystemId();
             if (systemId != null) {
@@ -1205,8 +1197,8 @@ public class TransformerFactoryImpl
         if (transletBaseName == null)
             transletBaseName = DEFAULT_TRANSLET_NAME;
         
-        if (_packageName.get() != null)
-            return (String)_packageName.get() + "." + transletBaseName;
+        if (_packageName != null)
+            return _packageName + "." + transletBaseName;
         else
             return transletBaseName;
     }
