@@ -261,14 +261,7 @@ Copyright:
 
   <target name="autojavadocs">
     <echo message="autojavadocs is for automated build process, without dependencies"/>
-    
-    <!-- generate patterns.html, a TRaX "patterns design" document -->
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/${xalan.jar}"
-       args="-in ${src.dir}/org/apache/trax/patterns.xml 
-             -xsl ${xdocs.style}/stylesheets/patterns.xsl 
-             -out ${build.apidocs}/org/apache/trax/patterns.html"/>  <!-- patterns.html TRaX desing document -->    
-    <copyfile src="./xdocs/sources/xalan/trax.gif" dest="${build.apidocs}/org/apache/trax/trax.gif"/>
-      
+          
     <javadoc
          public="true"
          doclet="xalanjdoc.Standard"
@@ -284,6 +277,14 @@ Copyright:
          doctitle="${Name} 2"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved."
     />
+    
+    <!-- generate patterns.html, a TRaX "patterns design" document -->
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/${xalan.jar}"
+       args="-in ${src.dir}/org/apache/trax/patterns.xml 
+             -xsl ${xdocs.style}/stylesheets/patterns.xsl 
+             -out ${build.apidocs}/org/apache/trax/patterns.html"/>  <!-- patterns.html TRaX design document -->    
+    <copyfile src="./xdocs/sources/xalan/trax.gif" dest="${build.apidocs}/org/apache/trax/trax.gif"/>
+    
   </target>
 
   <!-- =================================================================== -->
@@ -363,5 +364,5 @@ Copyright:
     <!--copydir src="${build.docs}/resources" dest="${site.dir}/docs/resources"/-->
     <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
   </target>
- 
+   
 </project>
