@@ -83,6 +83,8 @@ public class TransletOutputHandlerFactory {
     private int    _outputType     = STREAM;
     private OutputStream _ostream  = System.out;
     private Writer _writer         = null;
+    private ContentHandler _handler= null;
+    private LexicalHandler _lexHandler = null;
 
     static public TransletOutputHandlerFactory newInstance() {
 	return new TransletOutputHandlerFactory();
@@ -108,6 +110,14 @@ public class TransletOutputHandlerFactory {
 
     public void setWriter(Writer writer) {
 	_writer = writer;
+    }
+
+    public void setHandler(ContentHandler handler) {
+        _handler = handler;
+    }
+
+    public void setLexicalHandler(LexicalHandler lex) {
+	_lexHandler = lex;
     }
 
     public TransletOutputHandler getTransletOutputHandler() throws IOException {
@@ -136,8 +146,22 @@ public class TransletOutputHandlerFactory {
 		}
 	    break;
 	    case SAX:
-		// TODO
-	    break;
+                if (_method == null) {
+                    _method = "xml";    // default case
+                }
+
+                if (_method.equalsIgnoreCase("xml")) {
+                    return (_lexHandler == null) ? 
+			new SAXXMLOutput(_handler, _encoding) :
+			new SAXXMLOutput(_handler, _lexHandler, _encoding);
+                }
+                else if (_method.equalsIgnoreCase("html")) {
+                    return (_lexHandler == null) ? 
+			new SAXXMLOutput(_handler, _encoding) :
+			new SAXXMLOutput(_handler, _lexHandler, _encoding);
+                }
+            break;
+
 	    case DOM:
 		// TODO
 	    break;
