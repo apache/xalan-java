@@ -121,7 +121,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   public void error(SAXParseException exception) throws SAXException
   {
     printLocation(exception);
-    System.out.println("Parser error: " + exception.getMessage());
+
+    throw exception;
   }
 
   /**
@@ -200,7 +201,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   {
     printLocation(exception);
 
-    System.out.println("Parser error: " + exception.getMessage());
+    throw exception;
   }
 
   /**
