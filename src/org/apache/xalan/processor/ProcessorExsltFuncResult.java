@@ -54,68 +54,63 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.extensions;
+package org.apache.xalan.processor;
 
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Node;
-import org.apache.xpath.objects.XObject;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemExsltFunction;
+import org.apache.xalan.templates.ElemExsltFuncResult;
+import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.ElemParam;
+import org.apache.xalan.templates.ElemFallback;
+import org.apache.xalan.res.XSLTErrorResources;
+
+import javax.xml.transform.TransformerException;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.NoSuchMethodException;
+import java.lang.InstantiationException;
+import java.lang.IllegalAccessException;
+
+import java.util.Vector;
 
 /**
- * An object that implements this interface can supply
- * information about the current XPath expression context.
+ * <meta name="usage" content="internal"/>
+ * This class processes parse events for an exslt func:result element.
  */
-public interface ExpressionContext
+public class ProcessorExsltFuncResult extends ProcessorTemplateElem
 {
-
-  /**
-   * Get the current context node.
-   * @return The current context node.
-   */
-  public Node getContextNode();
-
-  /**
-   * Get the current context node list.
-   * @return An iterator for the current context list, as
-   * defined in XSLT.
-   */
-  public NodeIterator getContextNodes();
-
-  /**
-   * Get the value of a node as a number.
-   * @param n Node to be converted to a number.  May be null.
-   * @return value of n as a number.
-   */
-  public double toNumber(Node n);
-
-  /**
-   * Get the value of a node as a string.
-   * @param n Node to be converted to a string.  May be null.
-   * @return value of n as a string, or an empty string if n is null.
-   */
-  public String toString(Node n);
-
-  /**
-   * Get a variable based on it's qualified name.
-   *
-   * @param qname The qualified name of the variable.
-   *
-   * @return The evaluated value of the variable.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject getVariableOrParam(org.apache.xml.utils.QName qname)
-            throws javax.xml.transform.TransformerException;
   
   /**
-   * Get the XPathContext that owns this ExpressionContext.
-   * 
-   * Note: exslt:function requires the XPathContext to access
-   * the variable stack and TransformerImpl.
-   * 
-   * @return The current XPathContext.
-   * @throws javax.xml.transform.TransformerException
+   * Verify that the func:result element does not appear within a variable,
+   * parameter, or another func:result, and that it belongs to a func:function 
+   * element.
    */
-  public org.apache.xpath.XPathContext getXPathContext()
-            throws javax.xml.transform.TransformerException;
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
+  {
+    String msg = "";
 
+    super.startElement(handler, uri, localName, rawName, attributes);
+    ElemTemplateElement ancestor = handler.getElemTemplateElement().getParentElem();
+    while (ancestor != null && !(ancestor instanceof ElemExsltFunction))
+    {
+      if (ancestor instanceof ElemVariable 
+          || ancestor instanceof ElemParam
+          || ancestor instanceof ElemExsltFuncResult)
+      {
+        msg = "func:result cannot appear within a variable, parameter, or another func:result.";
+        handler.error(msg, new SAXException(msg));
+      }
+      ancestor = ancestor.getParentElem();
+    }
+    if (ancestor == null)
+    {
+      msg = "func:result must appear in a func:function element";
+      handler.error(msg, new SAXException(msg));
+    }
+  }
 }

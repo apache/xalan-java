@@ -92,9 +92,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.dom.DOMSource;
 
-// Temporary!!!
-import org.apache.xalan.extensions.ExtensionsTable;
-
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Source;
 import javax.xml.transform.ErrorListener;
@@ -462,34 +459,6 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   public Object getOwnerObject()
   {
     return m_owner;
-  }
-
-  // ================ extensionsTable ===================
-
-  /**
-   * The table of Extension Handlers.
-   */
-  private ExtensionsTable m_extensionsTable = new ExtensionsTable();
-
-  /**
-   * Get the extensions table object.
-   *
-   * @return The extensions table.
-   */
-  public ExtensionsTable getExtensionsTable()
-  {
-    return m_extensionsTable;
-  }
-
-  /**
-   * Set the extensions table object.
-   *
-   *
-   * @param table The extensions table object.
-   */
-  void setExtensionsTable(ExtensionsTable table)
-  {
-    m_extensionsTable = table;
   }
 
   // ================ VarStack ===================

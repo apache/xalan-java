@@ -130,6 +130,10 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
+//dml
+import org.apache.xpath.ExtensionsProvider;
+import org.apache.xalan.extensions.ExtensionsTable;
+
 /**
  * <meta name="usage" content="advanced"/>
  * This class implements the
@@ -137,7 +141,7 @@ import org.xml.sax.ext.LexicalHandler;
  * representation of the transformation execution.</p>
  */
 public class TransformerImpl extends Transformer
-        implements Runnable, DTMWSFilter
+        implements Runnable, DTMWSFilter, ExtensionsProvider
 {
 
   // Synch object to gaurd against setting values from the TrAX interface 
@@ -382,7 +386,7 @@ public class TransformerImpl extends Transformer
   private Stack m_modes = new Stack();
 
   //==========================================================
-  // SECTION: Constructors
+  // SECTION: Constructor
   //==========================================================
 
   /**
@@ -391,12 +395,73 @@ public class TransformerImpl extends Transformer
    * @param stylesheet The root of the stylesheet tree.
    */
   public TransformerImpl(StylesheetRoot stylesheet)
+   // throws javax.xml.transform.TransformerException    
   {
-
     setStylesheet(stylesheet);
     setXPathContext(new XPathContext(this));
     getXPathContext().setNamespaceContext(stylesheet);
   }
+  
+  // ================ ExtensionsTable ===================
+
+  /**
+   * The table of ExtensionHandlers.
+   */
+  private ExtensionsTable m_extensionsTable = null;
+
+  /**
+   * Get the extensions table object.
+   *
+   * @return The extensions table.
+   */
+  public ExtensionsTable getExtensionsTable()
+  {
+    return m_extensionsTable;
+  }
+
+  /**
+   * If the stylesheet contains extensions, set the extensions table object.
+   *
+   *
+   * @param sroot The stylesheet.
+   * @throws javax.xml.transform.TransformerException
+   */
+  void setExtensionsTable(StylesheetRoot sroot)
+       throws javax.xml.transform.TransformerException
+  {
+    try
+    {
+      if (sroot.getExtensions() != null)
+        m_extensionsTable = new ExtensionsTable(sroot);
+    }
+    catch (javax.xml.transform.TransformerException te)
+    {te.printStackTrace();}
+  }
+  
+  //== Implementation of the XPath ExtensionsProvider interface.
+  
+  public boolean functionAvailable(String ns, String funcName)
+          throws javax.xml.transform.TransformerException
+  {
+    return getExtensionsTable().functionAvailable(ns, funcName);
+  }
+  
+  public boolean elementAvailable(String ns, String elemName)
+          throws javax.xml.transform.TransformerException
+  {
+    return getExtensionsTable().elementAvailable(ns, elemName);   
+  }
+   
+  public Object extFunction(String ns, String funcName, 
+                            Vector argVec, Object methodKey)
+            throws javax.xml.transform.TransformerException
+  {//System.out.println("TransImpl.extFunction() " + ns + " " + funcName +" " + getExtensionsTable());
+    return getExtensionsTable().extFunction(ns, funcName, 
+                                        argVec, methodKey,
+                                        getXPathContext().getExpressionContext());   
+  }
+  
+  //=========================
 
   /**
    * Reset the state.  This needs to be called after a process() call
@@ -1068,6 +1133,7 @@ public class TransformerImpl extends Transformer
   public void transformNode(int node, Result outputTarget)
           throws TransformerException
   {
+    
 
     ContentHandler handler = createResultContentHandler(outputTarget);
 
@@ -1089,7 +1155,8 @@ public class TransformerImpl extends Transformer
    */
   public void transformNode(int node) throws TransformerException
   {
-
+    //dml
+    setExtensionsTable(getStylesheet());
     // Make sure we're not writing to the same output content handler.
     synchronized (m_outputContentHandler)
     {
@@ -1126,8 +1193,7 @@ public class TransformerImpl extends Transformer
             }
           }
         }
-
-        // ===========
+        // ===========        
         // System.out.println("Calling applyTemplateToNode - "+Thread.currentThread().getName());
         DTMIterator dtmIter = new org.apache.xpath.axes.SelfIteratorNoPredicate();
         dtmIter.setRoot(node, xctxt);
@@ -1589,7 +1655,7 @@ public class TransformerImpl extends Transformer
    * <p>If we encounter a variable
    * that is already defined in the variable stack, we ignore it.  This
    * is because the second variable definition will be at a lower import
-   * precedence.  Presumably, global variables at the same import precedence
+   * precedence.  Presumably, global"variables at the same import precedence
    * with the same name will have been caught during the recompose process.
    * <p>However, if we encounter a parameter that is already defined in the
    * variable stack, we need to see if this is a parameter whose value was
