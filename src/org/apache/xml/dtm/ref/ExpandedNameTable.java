@@ -222,7 +222,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public /*static*/ /*final*/ int getLocalNameID(int ExpandedNameID)
+  public /*static*/ final int getLocalNameID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_LOCALNAME);
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
@@ -255,7 +255,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this namespace.
    */
-  public /*static*/ /*final*/ int getNamespaceID(int ExpandedNameID)
+  public /*static*/ final int getNamespaceID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
@@ -271,7 +271,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public /*final*/ short getType(int ExpandedNameID)
+  public final short getType(int ExpandedNameID)
   {
     //return (short)(ExpandedNameID >> ROTAMOUNT_TYPE);
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
@@ -284,7 +284,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return a schema type object -- probably an XNI PSVI type.
    */
-  public /*final*/ Object getSchemaType(int ExpandedNameID)
+  public final Object getSchemaType(int ExpandedNameID)
   {
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
     return etype.schemaType;
@@ -299,7 +299,7 @@ public class ExpandedNameTable
    * @return false if previously set to something different
    *  (as determined by Object.equals), otherwise true.
    */
-  public /*final*/ boolean getSchemaType(int ExpandedNameID, Object schemaType)
+  public final boolean setSchemaType(int ExpandedNameID, Object schemaType)
   {
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
     Object oldtype=etype.schemaType;
