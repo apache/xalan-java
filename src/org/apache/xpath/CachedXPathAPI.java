@@ -59,24 +59,33 @@ public class CachedXPathAPI
   */
   protected XPathContext xpathSupport;
 
-  /** Default constructor. Establishes its own XPathContext, and hence
-   *  its own DTMManager.  Good choice for simple uses.
-   * */
+  /**
+   * <p>Default constructor. Establishes its own {@link XPathContext}, and hence
+   * its own {@link org.apache.xml.dtm.DTMManager}.
+   * Good choice for simple uses.</p>
+   * <p>Note that any particular instance of {@link CachedXPathAPI} must not be
+   * operated upon by multiple threads without synchronization; we do
+   * not currently support multithreaded access to a single
+   * {@link org.apache.xml.dtm.DTM}.</p>
+   */
   public CachedXPathAPI()
   {
     xpathSupport = new XPathContext();
   }
   
-  /** This constructor shares its XPathContext with a pre-existing
-   *  CachedXPathAPI.  That allows sharing document models (DTMs) and
-   *  previously established location state.
+  /**
+   * <p>This constructor shares its {@link XPathContext} with a pre-existing
+   * {@link CachedXPathAPI}.  That allows sharing document models
+   * ({@link org.apache.xml.dtm.DTM}) and previously established location
+   * state.</p>
+   * <p>Note that the original {@link CachedXPathAPI} and the new one should
+   * not be operated upon concurrently; we do not support multithreaded access
+   * to a single {@link org.apache.xml.dtm.DTM} at this time.  Similarly,
+   * any particular instance of {@link CachedXPathAPI} must not be operated
+   * upon by multiple threads without synchronization.</p>
+   * <p>%REVIEW% Should this instead do a clone-and-reset on the XPathSupport object?</p>
    *
-   *  Note that the original CachedXPathAPI and the new one should not
-   *  be operated concurrently; we do not support multithreaded access
-   *  to a single DTM at this time.
-   *
-   *  %REVIEW% Should this instead do a clone-and-reset on the XPathSupport object?
-   * */
+   */
   public CachedXPathAPI(CachedXPathAPI priorXPathAPI)
   {
     xpathSupport = priorXPathAPI.xpathSupport;
