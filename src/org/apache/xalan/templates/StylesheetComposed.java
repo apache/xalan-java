@@ -166,8 +166,7 @@ public class StylesheetComposed extends Stylesheet
       s = included.getDecimalFormatCount();
       for (int j = 0; j < s; j++)
       {
-        DecimalFormatProperties dfp = included.getDecimalFormat(j);
-        recomposableElements.addElement(new RecomposableImpl(this, dfp.getUid(), dfp));
+        recomposableElements.addElement(included.getDecimalFormat(j));
       }
 
       // Now the keys
@@ -183,8 +182,7 @@ public class StylesheetComposed extends Stylesheet
       s = included.getNamespaceAliasCount();
       for (int j = 0; j < s; j++)
       {
-        NamespaceAlias nsa = included.getNamespaceAlias(j);
-        recomposableElements.addElement(new RecomposableImpl(this, nsa.getUid(), nsa));
+        recomposableElements.addElement(included.getNamespaceAlias(j));
       }
 
       // Next comes the templates

@@ -176,21 +176,6 @@ public class NamespaceAlias extends ElemTemplateElement
   }
 
   /**
-   *  The document order number, analogous to the same field in an ElemTemplateElement.
-   */
-  protected int m_docOrderNumber;
-
-  /**
-   * Get the UID (document order index).
-   *
-   * @return Index of this child
-   */
-  public int getUid()
-  {
-    return m_docOrderNumber;
-  }
-
-  /**
    * This function is called to recompose() all of the namespace alias properties elements.
    */
   public void recompose(StylesheetRoot root)

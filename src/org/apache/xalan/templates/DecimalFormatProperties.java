@@ -93,7 +93,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
  */
-public class DecimalFormatProperties implements RecomposableBase
+public class DecimalFormatProperties extends ElemTemplateElement
 {
 
   /** NEEDSDOC Field m_dfs          */
@@ -413,21 +413,6 @@ public class DecimalFormatProperties implements RecomposableBase
   public char getPatternSeparator()
   {
     return m_dfs.getPatternSeparator();
-  }
-
-  /**
-   *  The document order number, analogous to the same field in an ElemTemplateElement.
-   */
-  protected int m_docOrderNumber;
-
-  /**
-   * Get the UID (document order index).
-   *
-   * @return Index of this child
-   */
-  public int getUid()
-  {
-    return m_docOrderNumber;
   }
 
   /**
