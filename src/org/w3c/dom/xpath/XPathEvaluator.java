@@ -1,17 +1,16 @@
 /*
- * Copyright (c) 2002 World Wide Web Consortium,
- * (Massachusetts Institute of Technology, Institut National de
- * Recherche en Informatique et en Automatique, Keio University). All
- * Rights Reserved. This program is distributed under the W3C's Software
- * Intellectual Property License. This program is distributed in the
- * hope that it will be useful, but WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.
- * See W3C License http://www.w3.org/Consortium/Legal/ for more details.
+ * Copyright (c) 2004 World Wide Web Consortium,
+ *
+ * (Massachusetts Institute of Technology, European Research Consortium for
+ * Informatics and Mathematics, Keio University). All Rights Reserved. This
+ * work is distributed under the W3C(r) Software License [1] in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
  */
 
 package org.w3c.dom.xpath;
-
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
@@ -32,7 +31,7 @@ import org.w3c.dom.DOMException;
  * from other sources that could provide specific support for specialized 
  * extension functions or variables as would be defined by other 
  * specifications. 
- * <p>See also the <a href='http://www.w3.org/2002/08/WD-DOM-Level-3-XPath-20020820'>Document Object Model (DOM) Level 3 XPath Specification</a>.
+ * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.
  */
 public interface XPathEvaluator {
     /**
@@ -42,15 +41,16 @@ public interface XPathEvaluator {
      * efficient internal form and preresolve all namespace prefixes which 
      * occur within the expression.
      * @param expression The XPath expression string to be parsed.
-     * @param resolver The <code>resolver</code> permits translation of 
-     *   prefixes within the XPath expression into appropriate namespace URIs
-     *   . If this is specified as <code>null</code>, any namespace prefix 
-     *   within the expression will result in <code>DOMException</code> 
-     *   being thrown with the code <code>NAMESPACE_ERR</code>.
+     * @param resolver The <code>resolver</code> permits translation of all 
+     *   prefixes, including the <code>xml</code> namespace prefix, within 
+     *   the XPath expression into appropriate namespace URIs. If this is 
+     *   specified as <code>null</code>, any namespace prefix within the 
+     *   expression will result in <code>DOMException</code> being thrown 
+     *   with the code <code>NAMESPACE_ERR</code>.
      * @return The compiled form of the XPath expression.
      * @exception XPathException
      *   INVALID_EXPRESSION_ERR: Raised if the expression is not legal 
-     *   according to the rules of the <code>XPathEvaluator</code>i
+     *   according to the rules of the <code>XPathEvaluator</code>.
      * @exception DOMException
      *   NAMESPACE_ERR: Raised if the expression contains namespace prefixes 
      *   which cannot be resolved by the specified 
@@ -91,11 +91,12 @@ public interface XPathEvaluator {
      *   <code>CDATASection</code>, then the context is interpreted as the 
      *   whole logical text node as seen by XPath, unless the node is empty 
      *   in which case it may not serve as the XPath context.
-     * @param resolver The <code>resolver</code> permits translation of 
-     *   prefixes within the XPath expression into appropriate namespace URIs
-     *   . If this is specified as <code>null</code>, any namespace prefix 
-     *   within the expression will result in <code>DOMException</code> 
-     *   being thrown with the code <code>NAMESPACE_ERR</code>.
+     * @param resolver The <code>resolver</code> permits translation of all 
+     *   prefixes, including the <code>xml</code> namespace prefix, within 
+     *   the XPath expression into appropriate namespace URIs. If this is 
+     *   specified as <code>null</code>, any namespace prefix within the 
+     *   expression will result in <code>DOMException</code> being thrown 
+     *   with the code <code>NAMESPACE_ERR</code>.
      * @param type If a specific <code>type</code> is specified, then the 
      *   result will be returned as the corresponding type.For XPath 1.0 
      *   results, this must be one of the codes of the 
