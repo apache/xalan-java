@@ -148,6 +148,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
      */
     protected TransformerImpl(Translet translet) {
 	_translet = (AbstractTranslet)translet;
+	_properties = createOutputProperties();
     }
 
     /**
@@ -513,19 +514,6 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     }
 
     /**
-     * Implements JAXP's Transformer.getOutputProperties().
-     * Returns a copy of the output properties for the transformation. Note that
-     * this method will only return properties that were set in this class.
-     * The output settings defined in the stylesheet's <xsl:output> element
-     * and default XSLT output settings will not be returned by this method.
-     *
-     * @return Properties explicitly set for this Transformer
-     */
-    public Properties getOutputProperties() {
-	return(_properties);
-    }
-
-    /**
      * The translet stores all CDATA sections set in the <xsl:output> element
      * in a Hashtable. This method will re-construct the whitespace separated
      * list of elements given in the <xsl:output> element.
@@ -551,6 +539,21 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     }
 
     /**
+     * Implements JAXP's Transformer.getOutputProperties().
+     * Returns a copy of the output properties for the transformation. This is
+     * a set of layered properties. The first layer contains properties set by
+     * calls to setOutputProperty() and setOutputProperties() on this class,
+     * and the output settings defined in the stylesheet's <xsl:output>
+     * element makes up the second level, while the default XSLT output
+     * settings are returned on the third level.
+     *
+     * @return Properties in effect for this Transformer
+     */
+    public Properties getOutputProperties() {
+	return(_properties);
+    }
+
+    /**
      * Implements JAXP's Transformer.getOutputProperty().
      * Get an output property that is in effect for the transformation. The
      * property specified may be a property that was set with setOutputProperty,
@@ -561,61 +564,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
      */
     public String getOutputProperty(String name)
 	throws IllegalArgumentException {
-
-	String value = null;
-
-	// Level1: Check if the property is overridden in this Transformer
-	if (_properties != null) value = _properties.getProperty(name);
-
-	// Level2: Check if the property value is set in the translet
-	if ((value == null) && (_translet != null)) {
-	    if (name.equals(OutputKeys.ENCODING))
-		value = _translet._encoding;
-	    else if (name.equals(OutputKeys.METHOD))
-		value = _translet._method;
-	    else if (name.equals(OutputKeys.INDENT))
-		value = (new Boolean(_translet._indent)).toString();
-	    else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
-		value = _translet._doctypePublic;
-	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
-		value = _translet._doctypeSystem;
-	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
-		value = makeCDATAString(_translet._cdata);
-	    else if (name.equals(OutputKeys.MEDIA_TYPE))
-		value = _translet._mediaType;
-	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION))
-		value = (new Boolean(_translet._omitHeader)).toString();
-	    else if (name.equals(OutputKeys.STANDALONE))
-		value = _translet._standalone;
-	    else if (name.equals(OutputKeys.VERSION))
-		value = _translet._version;
-	}
-
-	// Level3: Return the default property value
-	if (value == null) {
-	    if (name.equals(OutputKeys.ENCODING))
-		value = "utf-8";
-	    else if (name.equals(OutputKeys.METHOD))
-		value = XML_STRING;
-	    else if (name.equals(OutputKeys.INDENT))
-		value = NO_STRING;
-	    else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
-		value = EMPTY_STRING;
-	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
-		value = EMPTY_STRING;
-	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
-		value = EMPTY_STRING;
-	    else if (name.equals(OutputKeys.MEDIA_TYPE))
-		value = "text/xml";
-	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION))
-		value = NO_STRING;
-	    else if (name.equals(OutputKeys.STANDALONE))
-		value = NO_STRING;
-	    else if (name.equals(OutputKeys.VERSION))
-		value = "1.0";
-	}
-
-	return value;
+	return(_properties.getProperty(name));
     }
 
     /**
@@ -629,7 +578,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
      */
     public void setOutputProperties(Properties properties)
 	throws IllegalArgumentException {
-	_properties = properties;
+	_properties.putAll(properties);
     }
 
     /**
@@ -644,7 +593,6 @@ public final class TransformerImpl extends Transformer implements DOMCache {
      */
     public void setOutputProperty(String name, String value)
 	throws IllegalArgumentException {
-	if (_properties == null) _properties = new Properties();
 	_properties.setProperty(name, value);
     }
 
@@ -661,8 +609,8 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	Enumeration names = properties.propertyNames();
 	while (names.hasMoreElements()) {
 	    // Get the next property name and value
-	    String name = (String)names.nextElement();
-	    String value = properties.getProperty(name);
+	    String name  = (String)names.nextElement();
+	    String value = (String)properties.get(name);
 
 	    // Pass property value to translet - override previous setting
 	    if (name.equals(OutputKeys.ENCODING))
@@ -698,6 +646,86 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	    }
 
 	}
+    }
+
+    /**
+     * Internal method to pass any properties to the translet prior to
+     * initiating the transformation
+     */
+    private Properties createOutputProperties() {
+	
+	// Level3: Return the default property value
+	Properties third = new Properties();
+	third.setProperty(OutputKeys.ENCODING, "utf-8");
+	third.setProperty(OutputKeys.METHOD, XML_STRING);
+	third.setProperty(OutputKeys.INDENT, NO_STRING);
+	third.setProperty(OutputKeys.DOCTYPE_PUBLIC, EMPTY_STRING);
+	third.setProperty(OutputKeys.DOCTYPE_SYSTEM, EMPTY_STRING);
+	third.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, EMPTY_STRING);
+	third.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
+	third.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
+	third.setProperty(OutputKeys.STANDALONE, NO_STRING);
+	third.setProperty(OutputKeys.VERSION, "1.0");
+
+	// Level2: Return the property value is set in the translet
+	// Creating these properties with the third-level properties as default
+	Properties second = new Properties(third);
+	if (_translet != null) {
+	    String value = _translet._encoding;
+	    if (value != null) second.setProperty(OutputKeys.ENCODING, value);
+
+	    value = _translet._method;
+	    if (value != null) second.setProperty(OutputKeys.METHOD, value);
+
+	    value = (new Boolean(_translet._indent)).toString();
+	    if (value != null) second.setProperty(OutputKeys.INDENT, value);
+
+	    value = _translet._doctypePublic;
+	    if (value != null) 
+		second.setProperty(OutputKeys.DOCTYPE_PUBLIC, value);
+
+	    value = _translet._doctypeSystem;
+	    if (value != null) 
+		second.setProperty(OutputKeys.DOCTYPE_SYSTEM, value);
+
+	    value = makeCDATAString(_translet._cdata);
+	    if (value != null) 
+		second.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS,value);
+
+	    value = _translet._mediaType;
+	    if (value != null) second.setProperty(OutputKeys.MEDIA_TYPE, value);
+
+	    value = (new Boolean(_translet._omitHeader)).toString();
+	    if (value != null) 
+		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, value);
+
+	    value = _translet._standalone;
+	    if (value != null) second.setProperty(OutputKeys.STANDALONE, value);
+
+	    value = _translet._version;
+	    if (value != null) second.setProperty(OutputKeys.VERSION, value);
+	}
+
+	// Creating the properties with the second-level properties as default
+	return(new Properties(second));
+    }
+
+    /**
+     * Verifies if a given output property name is a property defined in
+     * the JAXP 1.1 / TrAX spec
+     */
+    private boolean validOutputProperty(String name) {
+	if (name.equals(OutputKeys.ENCODING)) return true;
+	if (name.equals(OutputKeys.METHOD)) return true;
+	if (name.equals(OutputKeys.INDENT)) return true;
+	if (name.equals(OutputKeys.DOCTYPE_PUBLIC)) return true;
+	if (name.equals(OutputKeys.DOCTYPE_SYSTEM)) return true;
+	if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) return true;
+	if (name.equals(OutputKeys.MEDIA_TYPE)) return true;
+	if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) return true;
+	if (name.equals(OutputKeys.STANDALONE)) return true;
+	if (name.equals(OutputKeys.VERSION)) return true;
+	return false;
     }
 
     /**
