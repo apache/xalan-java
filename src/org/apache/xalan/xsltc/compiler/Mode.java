@@ -160,11 +160,39 @@ final class Mode implements Constants {
 	_templates.addElement(template);
     }
 
+    /*
+    private Vector quicksort(Vector templates, int p, int r) {
+	while (p < r) {
+	    final int q = partition(templates, p, r);
+	    quicksort(templates, p, q);
+	    p = q + 1;
+	}
+	return templates;
+    }
+    
+    private int partition(Vector templates, int p, int r) {
+	final Template x = (Template)templates.elementAt((p + r) >>> 1);
+	int i = p - 1;
+	int j = r + 1;
+	while (true) {
+	    while (x.compareTo((Template)templates.elementAt(--j)) < 0);
+	    while (x.compareTo((Template)templates.elementAt(++i)) > 0);
+	    if (i < j)
+		templates.set(j, templates.set(i, templates.elementAt(j)));
+	    else
+		return(j);
+	}
+    }
+    */
+
     /**
      * Process all the test patterns in this mode
      */
     public void processPatterns(Hashtable keys) {
 	_keys = keys;
+
+	//_templates = quicksort(_templates, 0, _templates.size() - 1);
+
 	// Traverse all templates
 	final Enumeration templates = _templates.elements();
 	while (templates.hasMoreElements()) {

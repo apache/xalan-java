@@ -148,6 +148,23 @@ public final class Template extends TopLevelElement {
 	return _mode;
     }
 
+    /**
+     * Compare this template to another. First checks priority, then position.
+     */
+    public int compareTo(Object template) {
+	Template other = (Template)template;
+	if (_priority > other._priority)
+	    return 1;
+	else if (_priority < other._priority)
+	    return -1;
+	else if (_position > other._position)
+	    return 1;
+	else if (_position < other._position)
+	    return -1;
+	else
+	    return 0;
+    }
+
     private Hashtable _variables;
     private int _nextIndex;
 

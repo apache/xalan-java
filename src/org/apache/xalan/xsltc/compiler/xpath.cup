@@ -490,7 +490,8 @@ PathExpr ::= LocationPath:lp
            Step step = new Step(Axis.DESCENDANTORSELF, NodeTest.ANODE, null);
            FilterParentPath fpp = new FilterParentPath(fexp, step);
            fpp = new FilterParentPath(fpp, rlp);
-           fpp.setDescendantAxis();
+           if (!(fexp instanceof KeyCall))
+               fpp.setDescendantAxis();
            RESULT = fpp;
         :};
 
