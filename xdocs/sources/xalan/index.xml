@@ -93,7 +93,7 @@
   </s2>
   
   <s2 title="Where do I get Xerces?">
-    <p>The Xalan download includes xerces.jar from &xml4j-used;. This is all you need to run Xalan with the Xerces XML parser. 
+    <p>The Xalan download includes &xml4j-jar; from &xml4j-used;. This is all you need to run Xalan with the Xerces XML parser. 
     You can, however, download the complete Xerces distribution from the <resource-ref idref="xml4j-distdir"/>. If you are interested in testing
     or prototyping &xml4j2;, you can run &xslt4j-current; with &xml4j; 2.0.0.beta4.</p>
     <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer

@@ -136,7 +136,7 @@ transformer.transform
 <ol>
   <li>Set the system property from the command line when you launch Java or from within your application.<br/><br/></li>
   <li>Set the system property in jaxp.properties in the JAVA_HOME/lib directory, where JAVA_HOME is the root of the JDK.<br/><br/></li>
-  <li>Revise the entry in src/META-INF/services and rebuild xalan.jar or xerces.jar (depending on which entry you have changed).<br/><br/></li>
+  <li>Revise the entry in src/META-INF/services and rebuild xalan.jar or &xml4j-jar;, depending on which entry you have changed.<br/><br/></li>
 </ol>
 <p>For example, to use the Crimson XML parser in place of the Xerces XML parser, place Crimson on the class path and set the 
 <code>javax.xml.parsers.SAXParserFactory</code> system property to <code>org.apache.crimson.jaxp.SAXParserFactoryImpl</code>.</p>
@@ -384,7 +384,7 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 <source>&lt;applet  
     name="xslControl"
     code="org.apache.xalan.client.XSLTProcessorApplet.class"
-    archive="../../bin/xalan.jar,../../bin/xerces.jar"
+    archive="../../bin/xalan.jar,../../bin/xml-apis.jar,../../bin/xercesImpl.jar"
     height="0"
     width"0">
     &lt;param name="documentURL" value="xalanApplets.xml"/&gt;

@@ -79,7 +79,7 @@
      sample applications. The class files for the samples are in xalansamples.jar (everything except the servlet) and xalanservlet.jar, so to run the samples, you should place these JAR files on the system classpath.</p>
      <p>With most of the samples, you can use the following procedure:</p>
      <ol>
-     <li>Be sure xalan.jar, xalansamples.jar, and xerces.jar are on the system class
+     <li>Be sure xalan.jar, xalansamples.jar, and &xml4j-jar; are on the system class
       path. For the extension examples, bsf.jar and (for the JavaScript extensions) js.jar must also be on the class
       path.</li>
      <li>Be sure the java executable is on your path.</li>
@@ -187,7 +187,7 @@
     <p>The servlet subdirectory contains four sample servlets that use &xslt4j; to perform transformations. These servlets 
     are in a package named servlet and are compiled in xalanservlet.jar. To run these samples, you must place 
     xalanservlet.jar, and any XML and XSL files you want to use on a web server with a servlet engine, place 
-    xalanservlet.jar, xalan.jar, and xerces.jar on the servlet engine class path, and configure the servlet engine to
+    xalanservlet.jar, xalan.jar, and &xml4j-jar; on the servlet engine class path, and configure the servlet engine to
     locate the XML and XSL files, and the properties file used by ApplyXSL.</p>
     <p><link anchor="simplexsltservlet">servlet.SimpleXSLTServlet</link> applies a particular stylesheet to a particular 
     XML document.</p> 

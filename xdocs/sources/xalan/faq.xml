@@ -28,7 +28,7 @@
     Processing. JAXP (including TrAX) provides users a standard, vendor-neutral API for working with (and transforming) XML documents. 
     You can use this API to build applications that are not bound to the particular implementation details of a given XML parser or XSL
     transformer.</p>
-    <p>&xslt4j; includes the JAXP packages, implements the TrAX portion of that API (javax.xml.transform....), and includes xerces.jar from
+    <p>&xslt4j; includes the JAXP packages, implements the TrAX portion of that API (javax.xml.transform....), and includes &xml4j-jar; from
     &xml4j;, which implements the parser portion of the API (javax.xml.parser....).</p>
 <p>For more information, see <link idref="trax">TRaX (Transformation API for XML)</link> and <resource-ref idref="jaxp11"/>.</p></a>
   </faq>
@@ -49,7 +49,7 @@
   <faq title="Issues running Xalan on JDK 1.3">
   <q>I'm having a problem building or running &xslt4j; on the JDK 1.3.</q>
   <a><p>The JDK 1.3 automatically places everything in the lib/ext directory in front of everything you place on the classpath. If this directory contains a version of DOM, JAXP, or Xerces that predates the &xslt4j; distribution you are using, you may have problems!</p> 
-<p>The IBM JDK 1.3 includes an earlier version of xerces.jar in the lib/ext directory, a version that does not implement the JAXP 1.1 interfaces and therefore does not work with the current Xalan release. Accordingly, you must either purge the xerces.jar that is in that directory or overwrite it with the xerces.jar that is included with the Xalan distribution.</p>
+<p>The IBM JDK 1.3 includes an earlier version of xerces.jar in the lib/ext directory, a version that does not implement the JAXP 1.1 interfaces and therefore does not work with the current Xalan release. Accordingly, you must either purge the xerces.jar that is in that directory or replace it with the &xml4j-jar; that is included with the Xalan distribution.</p>
 <p>The SUN JDK 1.3 includes a pre-1.1 version of the JAXP in crimson.jar. Either purge the crimson.jar in that directory or overwrite it with a newer crimson.jar that includes and implements the JAXP 1.1 interfaces.</p></a>  
   </faq>
   <faq title="a &quot;DOM006 Hierarchy request error&quot;">
@@ -97,7 +97,7 @@
     <q>I'm getting a NoClassDefFound error. What has to be on the classpath?</q>
     
     <a><ol>
-    <li>xalan.jar, xml-apis.jar, and xerces.jar (or the XML parser you are using) must always be on the classpath.<br/><br/></li>
+    <li>xalan.jar, xml-apis.jar, and &xml4j-jar; -- or the XML parser you are using -- must always be on the classpath.<br/><br/></li>
     <li>To run the samples in the samples subdirectories, xalansamples.jar must be on the classpath. To run the servlet (in
     samples/servlet), xalanservlet.jar must be on the classpath along with the javax.servlet and javax.servlet.http packages. Sun distributes
     the javax.servlet packages in the JSWDK servlet.jar file.<br/><br/></li>

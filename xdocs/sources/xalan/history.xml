@@ -1170,7 +1170,7 @@ hand. Change code to use the new constructors.<br/><br/></li><li><ref>Committed 
 is currently a working draft (it is not yet a W3C recommendation), and Xalan does not support these new methods. 
 To run Xalan in the JDK 1.1.8 platform, you must put xalan.jar (with its DOM level-2 interfaces) in front of 
 xerces.jar on the system class path. If you want to rebuild Xalan (on JDK 1.1.8 or higher), you must put Xalan 
-in front of xerces.jar on the system class path.</em></p>
+in front of xerces.jar the system class path.</em></p>
 
      <p>This beta release includes the following non-XSLTC code changes:</p>     
      <ul>
