@@ -766,7 +766,7 @@ Copyright:
       <fileset dir="${samples.dir}"/>
     </copy>   
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
-    <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xalanservlet.war" todir="${dist.dir}/bin"/>
 
     <!-- Copy various built product .jars into the bin directory 
          of the distro, note that changes to what .jars we ship 
@@ -795,7 +795,7 @@ Copyright:
       <include name="${dist.file}/bin/xercesImpl.jar"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
       <include name="${dist.file}/bin/xalansamples.jar"/>
-      <include name="${dist.file}/bin/xalanservlet.jar"/>
+      <include name="${dist.file}/bin/xalanservlet.war"/>
       <include name="${dist.file}/samples/"/>
       <include name="${dist.file}/docs/"/>
     </patternset>
