@@ -261,7 +261,7 @@ public class DTMManagerDefault extends DTMManager
 				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
 				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
 				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
-				m_incremental=true;			
+				//m_incremental=true;			
 				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
 				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
 				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
