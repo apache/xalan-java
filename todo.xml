@@ -48,6 +48,20 @@
 
   <!-- Move to completed section when done. -->
  
+   <action context="code" category="bug" who="SB">
+    Implement xsl:strip-space for generic DOM processing.
+   </action>
+
+   <action context="code" category="bug" who="SB">
+    Handle qName paramterer to the ContentHandler methods being an empty string.
+    See note from mikael@ingen.reklam.staldal.nu (Mikael Ståldal), 01/01/2001 09:42 AM.
+   </action>
+
+   <action context="code" category="bug" who="SB">
+    Fix 1.8 problems: extend01 (exception), numberformat 06, numberformat16, output77 (exception).
+    JDK 1.1.8, using xml-xalan\test\ConformanceTest.bat, runharness.bat, and testthreads.bat as-is.
+   </action>
+
    <action context="code" category="feature" who="SB">
     Integrate John Gentilin &lt;johnglinux@eyecatching.com> code, 
     for SQL Extension Enhancements.
@@ -56,10 +70,6 @@
    <action context="code" category="error-handling" who="SB">
     Simplify some of the exception nesting, maybe, and make sure error listeners 
     are being called for all cases.
-   </action>
-   
-   <action context="code" category="performance" who="SB">
-    For default transformer, do direct transform without stylesheet.
    </action>
    
    <action context="doc" category="documentation" who="SB">
@@ -217,6 +227,10 @@
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
   
+   <action context="code" category="performance" who="SB" completed="01/03/01">
+    For default transformer, do direct transform without stylesheet.
+   </action>
+   
    <action context="code" category="documentation" who="SB" completed="01/01/01">
     Fix some javadoc headers that still have old XalanJ1 text.  For instance, 
     TransformerImpl.
