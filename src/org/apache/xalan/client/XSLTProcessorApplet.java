@@ -49,6 +49,11 @@ import org.apache.xalan.res.XSLTErrorResources;
  * <li>Call the {@link #getHtmlText} method (or one of the transformToHtml() methods)
  * to perform the transformation and return the result as a String.</li>
  * </ol>
+ * 
+ * This class extends Applet which ultimately causes this class to implement Serializable.
+ * This is a serious restriction on this class. All fields that are not transient and not
+ * static are written-out/read-in during serialization. So even private fields essentially
+ * become part of the API. Developers need to take care when modifying fields.
  * @xsl.usage general
  */
 public class XSLTProcessorApplet extends Applet
@@ -56,9 +61,11 @@ public class XSLTProcessorApplet extends Applet
 
   /**
    * The stylesheet processor.
-   * @serial
+   * This field is now transient because a 
+   * javax.xml.transform.TransformerFactory from JAXP 
+   * makes no claims to be serializable.
    */
-  TransformerFactory m_tfactory = null;
+  transient TransformerFactory m_tfactory = null;
 
   /**
    * @serial
@@ -358,10 +365,6 @@ public class XSLTProcessorApplet extends Applet
     m_attrValueToSet = value;
   }
 
-  /** 
-   * Stylesheet parameter keys
-   */
-  private Enumeration m_keys;
 
   /** 
    * Stylesheet parameter key/value pair stored in a hashtable
@@ -658,7 +661,8 @@ public class XSLTProcessorApplet extends Applet
 
         Transformer transformer = m_tfactory.newTransformer(xslSource);
 
-        m_keys = m_parameters.keys();
+        
+        Enumeration m_keys = m_parameters.keys();
         while (m_keys.hasMoreElements()){
           Object key = m_keys.nextElement();
           Object expression = m_parameters.get(key);
@@ -753,4 +757,21 @@ public class XSLTProcessorApplet extends Applet
       }
     }
   }
+  
+  // For compatiblity with old serialized objects
+  // We will change non-serialized fields and change methods
+  // and not have this break us.
+  private static final long serialVersionUID=4618876841979251422L;
+  
+  // For compatibility when de-serializing old objects
+  private void readObject(java.io.ObjectInputStream inStream) throws IOException, ClassNotFoundException 
+  {
+      inStream.defaultReadObject();
+      
+      // Needed assignment of non-serialized fields
+      
+      // A TransformerFactory is not guaranteed to be serializable, 
+      // so we create one here
+      m_tfactory = TransformerFactory.newInstance();
+  }      
 }
