@@ -125,7 +125,7 @@ public class OutputFormat
     /**
      * The amount to indent a line, when indent is set to true.
      */
-    private int _indentAmount = 4;
+    private int _indentAmount = 0;
 
     /**
      * The encoding to use, if an input stream is used, UTF-8 for
