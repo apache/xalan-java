@@ -104,11 +104,21 @@ public class TransletTemplates implements Templates {
 	    isSuccessful = xsltc.compile(inputStream, transletName);
 	} else if (stylesheetName != null ){
 	    int index = stylesheetName.indexOf('.');
-	    transletName = stylesheetName.substring(0,index);
+	    if (index > 0) { 
+                transletName = stylesheetName.substring(0,index);
+            }
+            else {
+                // indexOf returns -1 if '.' is not present
+                transletName = stylesheetName;
+            }   
             try {
-                File file = new File(stylesheetName);
-                URL url = file.toURL();
-                isSuccessful = xsltc.compile(url);
+                if (stylesheetName.startsWith("file:/")) {
+                    isSuccessful = xsltc.compile(new URL(stylesheetName));
+                } else {
+                    File file = new File(stylesheetName);
+                    URL url = file.toURL();
+                    isSuccessful = xsltc.compile(url);
+                }
             } catch (MalformedURLException e) {
                 throw new TransformerConfigurationException(
                     "URL for stylesheet '" + stylesheetName +

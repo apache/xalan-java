@@ -65,6 +65,7 @@ package org.apache.xalan.xsltc.runtime;
 
 import javax.xml.transform.Templates; 
 import javax.xml.transform.Transformer; 
+import javax.xml.transform.TransformerException; 
 import javax.xml.transform.ErrorListener; 
 import javax.xml.transform.Source; 
 import javax.xml.transform.stream.StreamSource; 
@@ -132,23 +133,46 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
             "not implemented yet."); 
 	//return null; 
     }
+
+
+  /**
+   * Create an XMLFilter that uses the given source as the
+   * transformation instructions.
+   *
+   * @param src The source of the transformation instructions.
+   *
+   * @return An XMLFilter object, or null if this feature is not supported.
+   *
+   * @throws TransformerConfigurationException
+   */
     public XMLFilter newXMLFilter(Source src) 
 	throws TransformerConfigurationException 
-    { 
-	/*TBD*/ 
-        throw new TransformerConfigurationException(
-            "TransformerFactoryImpl:newXMLFilter(Source) " +
-            "not implemented yet."); 
-	//return null; 
+    {
+System.out.println("GTM> In newXMLFilter Source");
+	Templates templates = newTemplates(src);
+	if (templates == null ) {
+	    return null; 
+	}
+	return newXMLFilter(templates);
     }
+
     public XMLFilter newXMLFilter(Templates templates) 
 	throws TransformerConfigurationException 
-    { 
-	/*TBD*/ 
-        throw new TransformerConfigurationException(
-            "TransformerFactoryImpl:newXMLFilter(Templates) " +
-            "not implemented yet."); 
-	//return null; 
+    {
+System.out.println("GTM> In newXMLFilter Templates");
+	try {
+      	    return new org.apache.xalan.xsltc.runtime.TrAXFilter(templates);
+    	} catch( TransformerConfigurationException ex ) {
+      	    if( _errorListener != null) {
+                try {
+          	    _errorListener.fatalError( ex );
+          	    return null;
+        	} catch( TransformerException ex1 ) {
+          	    new TransformerConfigurationException(ex1);
+        	}
+      	    }
+      	    throw ex;
+    	}
     }
     //
     // End SAXTransformerFactory methods 
@@ -242,11 +266,21 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
             isSuccessful = xsltc.compile(inputStream, transletName);
         } else if (stylesheetName != null ){
             int index = stylesheetName.indexOf('.');
-            transletName = stylesheetName.substring(0,index);
+	    if (index > 0) { 
+                transletName = stylesheetName.substring(0,index);
+	    }
+	    else {
+		// indexOf returns -1 if '.' is not present
+		transletName = stylesheetName;
+	    }
             try {
-                File file = new File(stylesheetName);
-                URL url = file.toURL();
-                isSuccessful = xsltc.compile(url);
+		if (stylesheetName.startsWith("file:/")) {
+                    isSuccessful = xsltc.compile(new URL(stylesheetName));
+		} else {
+                    File file = new File(stylesheetName);
+                    URL url = file.toURL();
+                    isSuccessful = xsltc.compile(url);
+		}
             } catch (MalformedURLException e) {
                 throw new TransformerConfigurationException(
                     "URL for stylesheet '" + stylesheetName +
@@ -264,6 +298,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
 
 	Translet translet = null;
 	try {
+System.out.println("GTM> doing Class.forName on translet");
 	    Class clazz = Class.forName(transletName);
 	    translet = (Translet)clazz.newInstance();
 	    ((AbstractTranslet)translet).setTransletName(transletName);
