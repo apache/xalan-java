@@ -280,7 +280,7 @@ final class CallTemplate extends Instruction {
      * template is not a simple named template.
      */
     public Template getCalleeTemplate() {
-    	Stylesheet stylesheet = getStylesheet();
+    	Stylesheet stylesheet = getXSLTC().getStylesheet();
     	Vector templates = stylesheet.getAllValidTemplates();
     	int size = templates.size();
     	for (int i = 0; i < size; i++) {
