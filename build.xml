@@ -66,6 +66,8 @@ Copyright:
   <property name="stylebook.jar" value="${bin.dir}/${stylebook.jar.name}"/>
   <property name="doclet.jar.name" value="xalan2jdoc.jar"/>
   <property name="doclet.jar" value="${bin.dir}/${doclet.jar.name}"/>
+  <property name="taglet.jar.name" value="xalan2jtaglet.jar"/>
+  <property name="taglet.jar" value="${bin.dir}/${taglet.jar.name}"/>
 
   <!-- GUMP: Currently 18-Apr-01 used only for xsltc.compile -->
   <property name="bcel.jar.name" value="BCEL.jar"/>
@@ -161,6 +163,7 @@ Copyright:
     <pathelement location="${runtime.jar}" />
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
+    <pathelement location="${taglet.jar}" />
     <pathelement location="${build.xalan.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
@@ -827,8 +830,78 @@ Copyright:
     <echo message="javadocs is human-usable target with dependencies"/>  
   </target>
 
-  <target name="autojavadocs">
+  <target name="autojavadocs" 
+          depends="autojavadocs-1.4-if,autojavadocs-non1.4-if">
     <echo message="autojavadocs is for automated build process, without dependencies"/>
+  </target>
+
+  <target name="check-using-java-1.4">
+    <condition property="using-java-1.4">
+		  <equals arg1="${ant.java.version}" arg2="1.4"/>
+	  </condition>
+  </target>
+
+  <target name="autojavadocs-1.4-if" if="using-java-1.4" 
+          depends="check-using-java-1.4">
+	  <antcall target="autojavadocs-1.4"/>
+  </target>
+
+  <target name="autojavadocs-non1.4-if" unless="using-java-1.4" 
+          depends="check-using-java-1.4">
+	  <antcall target="autojavadocs-non1.4"/>
+  </target>
+
+  <target name="autojavadocs-1.4">
+    
+      <!-- Expand xml-commons sources (JAXP 1.1, DOM 2, and SAX 2) into source tree for 
+           inclusion in the Javadoc. -->                                            
+     <gunzip src="${xml-commons-srcs.tar.gz}" dest="${build.dir}" />                                                                         
+     <untar src="${xml-commons-srcs.tar}" dest="${src.dir}" /><!-- Note this is into the src area.-->                                                                         
+     <delete file="${xml-commons-srcs.tar}"/>
+      
+    <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
+    <javadoc
+	 destdir="${build.apidocs}"
+         public="true"
+         sourcepath="${src.dir}"
+         overview="${src.dir}/javadocOverview.html"
+         packagenames="org.apache.*,org.xml.*,org.w3c.*,javax.xml.*"
+         author="true"
+         version="true"
+         use="true"
+         windowtitle="${Name-in-docs} ${impl.version}" 
+         doctitle="${Name-in-docs} ${impl.version}"
+         bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+          <classpath refid="docs.class.path" />
+          <taglet name="xalan2jtaglet.XSLUsageTag" path="${taglet.jar}"/>
+          <group title="Transformations API for XML (TrAX)" packages="javax.xml.transform*"/>
+          <group title="Java API for XML Parsing" packages="javax.xml.parsers"/>
+          <group title="Xalan Core"
+                 packages="org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer"/>
+          <group title="XPath" packages="org.apache.xpath*"/>
+          <group title="Document Table Model (DTM)" packages="org.apache.xml.dtm*"/>          
+          <group title="Utilities" packages="org.apache.xml.utils*"/>
+          <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt"/>
+          <group title="Xalan Extensions" packages="org.apache.xalan.lib*"/>
+          <group title="Serializers" packages="org.apache.xalan.serialize"/>
+          <group title="SAX 2" packages="org.xml.sax*"/>
+          <group title="DOM 2" packages="org.w3c.dom*"/>
+          <group title="XSLTC Core"
+                 packages="org.apache.xalan.xsltc*"/>
+    </javadoc>
+    
+    <!-- remove the xml-commons sources -->
+    <delete dir="${src.dir}/javax" />
+    <delete includeEmptyDirs="true" quiet="true">
+      <fileset dir="${src.dir}/org/w3c">
+        <exclude name="dom/xpath/**"/>
+      </fileset>
+    </delete>    
+    <delete dir="${src.dir}/org/xml" />
+    <delete dir="${src.dir}/org/apache/xmlcommons" />
+    <delete file="${src.dir}/manifest.commons" />
+  </target>
+  <target name="autojavadocs-non1.4">
     
       <!-- Expand xml-commons sources (JAXP 1.1, DOM 2, and SAX 2) into source tree for 
            inclusion in the Javadoc. -->                                            
@@ -879,7 +952,6 @@ Copyright:
     <delete dir="${src.dir}/org/apache/xmlcommons" />
     <delete file="${src.dir}/manifest.commons" />
   </target>
-
   <!-- =================================================================== -->
   <!-- Various targets to clean the build tree                             -->
   <!-- =================================================================== -->
