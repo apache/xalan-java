@@ -88,7 +88,8 @@ public final class UnionIterator extends NodeIteratorBase {
 	}
 		
 	public int step() {
-	    return node = iterator.next();
+	    node = iterator.next();
+	    return node;
 	}
 
 	public void setMark() {

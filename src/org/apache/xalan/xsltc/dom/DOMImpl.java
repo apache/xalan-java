@@ -131,7 +131,6 @@ public final class DOMImpl implements DOM, Externalizable {
     private String[]  _nsNamesArray;
     private short[]   _namespace;
     private Hashtable _nsIndex = new Hashtable();
-    private int       _nsCounter = 0;
 
     // Tracks which textnodes are whitespaces and which are not
     private BitArray  _whitespace; // takes xml:space into acc.
@@ -157,15 +156,6 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public String getDocumentURI() {
 	return(_documentURI);
-    }
-
-    /**
-     * Generates a namespace prefix for URIs that have no associated
-     * prefix. Can happen quite frequently since we do not store
-     * namespace prefixes in the tree (we only store the URIs).
-     */
-    private String generateNamespacePrefix() {
-	return(new String("ns"+Integer.toString(_nsCounter++)));
     }
 
     /**
@@ -1250,6 +1240,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	protected int _limit;
 
 	public NodeIterator setStartNode(int node) {
+	    _startNode = node;
 	    if (_isRestartable) {
 		_node = _startNode = _includeSelf ? node - 1 : node;
 		// no descendents if no children
@@ -2312,9 +2303,13 @@ public final class DOMImpl implements DOM, Externalizable {
 		// Copy element name - start tag
 		col = name.lastIndexOf(':');
 		if (col > 0) {
-		    final String prefix = generateNamespacePrefix();
-		    handler.startElement(prefix+':'+name.substring(col+1));
-		    handler.namespace(prefix, name.substring(0,col));
+		    final String uri = name.substring(0,col);
+		    final String prefix = handler.getPrefix(uri);
+		    final String local = name.substring(col+1);
+		    if (prefix.equals(EMPTYSTRING))
+			handler.startElement(local);
+		    else
+			handler.startElement(prefix+':'+local);
 		}
 		else {
 		    handler.startElement(name);
@@ -2330,10 +2325,15 @@ public final class DOMImpl implements DOM, Externalizable {
 			handler.attribute(aname,makeStringValue(attr));
 		    }
 		    else {
-			final String prefix = generateNamespacePrefix();
-			handler.namespace(prefix,aname.substring(0,col));
-			handler.attribute(prefix+':'+aname.substring(col+1),
-					  makeStringValue(attr));
+			final String uri = aname.substring(0,col);
+			final String prefix = handler.getPrefix(uri);
+			final String local = aname.substring(col+1);
+			final String value = makeStringValue(attr);
+			final String qname = prefix+':'+local;
+			if (prefix.equals(EMPTYSTRING))
+			    handler.attribute(local, value);
+			else
+			    handler.attribute(prefix+':'+local, value);
 		    }
 		}
 
@@ -2403,9 +2403,13 @@ public final class DOMImpl implements DOM, Externalizable {
 		// Copy element name - start tag
 		int col = name.lastIndexOf(':');
 		if (col > 0) {
-		    final String prefix = generateNamespacePrefix();
-		    handler.startElement(prefix+':'+name.substring(col+1));
-		    handler.namespace(prefix, name.substring(0,col));
+		    final String uri = name.substring(0,col);
+		    final String prefix = handler.getPrefix(uri);
+		    final String local = name.substring(col+1);
+		    if (prefix.equals(EMPTYSTRING))
+			handler.startElement(local);
+		    else
+			handler.startElement(prefix+':'+local);
 		}
 		else {
 		    handler.startElement(name);

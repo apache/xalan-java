@@ -70,7 +70,7 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 public final class StepIterator extends NodeIteratorBase {
     private NodeIterator _source;
     private NodeIterator _iterator;
-	
+
     public StepIterator(NodeIterator source, NodeIterator iterator) {
 	_source = source;
 	_iterator = iterator;
@@ -105,8 +105,10 @@ public final class StepIterator extends NodeIteratorBase {
     }
 
     public NodeIterator reset() {
+	_source.setStartNode(_startNode);
 	_source.reset();
-	_iterator.setStartNode(_source.next());
+	int node = _source.next();
+	_iterator.setStartNode(node);
 	return resetPosition();
     }
     

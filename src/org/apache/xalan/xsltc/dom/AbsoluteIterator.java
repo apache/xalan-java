@@ -80,6 +80,7 @@ public final class AbsoluteIterator extends NodeIteratorBase {
     }
 	
     public NodeIterator setStartNode(int node) {
+	_startNode = DOM.ROOTNODE;
 	if (_isRestartable) {
 	    resetPosition();
 	    return _source.setStartNode(_startNode = DOM.ROOTNODE);
