@@ -461,7 +461,7 @@ public abstract class DTMDefaultBase implements DTM
     int info = _exptype(identity);
 
     if (NULL != info)
-      return ExpandedNameTable.getType(info);
+      return m_expandedNameTable.getType(info);
     else
       return NULL;
   }
@@ -1572,7 +1572,7 @@ public abstract class DTMDefaultBase implements DTM
     int identity = makeNodeIdentity(nodeHandle);
     int expandedNameID = _exptype(identity);
 
-    return ExpandedNameTable.getNamespaceID(expandedNameID);
+    return m_expandedNameTable.getNamespaceID(expandedNameID);
   }
 
   /**
@@ -1662,7 +1662,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public short getNodeType(int nodeHandle)
   {
-    return (short)(_exptype(makeNodeIdentity(nodeHandle)) >>> ExpandedNameTable.ROTAMOUNT_TYPE);
+    return m_expandedNameTable.getType(_exptype(makeNodeIdentity(nodeHandle))); 
   }
 
   /**

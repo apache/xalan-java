@@ -340,7 +340,7 @@ public class Variable extends Expression implements PathComponent
       vvar = prev.getStylesheetRoot().getVariableOrParamComposed(m_qname);
       if (null != vvar)
       {
-        return vvar;;
+        return vvar;
       }
 
     }

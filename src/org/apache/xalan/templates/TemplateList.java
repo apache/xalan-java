@@ -535,7 +535,7 @@ public class TemplateList implements java.io.Serializable
     
     TemplateSubPatternAssociation head;
 
-    switch (expTypeID >> ExpandedNameTable.ROTAMOUNT_TYPE)
+    switch (dtm.getNodeType(targetNode))
     {
     case DTM.ELEMENT_NODE :
     case DTM.ATTRIBUTE_NODE :

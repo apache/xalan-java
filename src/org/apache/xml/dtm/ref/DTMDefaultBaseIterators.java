@@ -1036,7 +1036,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
           return resetPosition();
         }
           
-        int type = getExpandedTypeID(node) & ExpandedNameTable.MASK_NODETYPE;
+        int type = m_expandedNameTable.getType(getExpandedTypeID(node)); 
         if(ExpandedNameTable.ATTRIBUTE == type 
            || ExpandedNameTable.NAMESPACE == type )
         {

@@ -329,7 +329,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
         
         final int exNodeType = dtm.getExpandedTypeID(child);
-        final int nodeType = (exNodeType >> ExpandedNameTable.ROTAMOUNT_TYPE);
+        final int nodeType = dtm.getNodeType(child);
 
         final QName mode = transformer.getMode();
 

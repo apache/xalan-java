@@ -644,7 +644,7 @@ public class NodeTest extends Expression
       return m_score;
 
     int nodeBit = (m_whatToShow & (0x00000001 
-                   << ((expType >> ExpandedNameTable.ROTAMOUNT_TYPE) - 1)));
+                   << ((dtm.getNodeType(context)) - 1)));
 
     switch (nodeBit)
     {

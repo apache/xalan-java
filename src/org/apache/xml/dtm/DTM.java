@@ -190,6 +190,11 @@ public interface DTM
    * currently a node type defined by the DOM API.
    */
   public static final short NAMESPACE_NODE = 13;
+  
+  /**
+   * The number of valid nodetypes.
+   */
+  public static final short  NTYPES = 14;
 
   // ========= DTM Implementation Control Functions. ==============
   // %TBD% RETIRED -- do via setFeature if needed. Remove from impls.

@@ -424,8 +424,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
           docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
         }
 
-        final int exNodeType = dtm.getExpandedTypeID(child);
-        final int nodeType = (exNodeType >> ExpandedNameTable.ROTAMOUNT_TYPE);
+        //final int exNodeType = dtm.getExpandedTypeID(child);
+        final int nodeType = dtm.getNodeType(child); 
 
         // Fire a trace event for the template.
         if (TransformerImpl.S_DEBUG)

@@ -19,7 +19,7 @@ public class VarNameCollector extends XPathVisitor
 	 */
 	public void reset()
 	{
-		m_refs.clear();
+		m_refs.removeAllElements(); //.clear();
 	}
 	
 	/**

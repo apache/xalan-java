@@ -58,6 +58,8 @@ package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.DTM;
 
+import java.util.Vector;
+
 /**
  * This is a default implementation of a table that manages mappings from
  * expanded names to expandedNameIDs.
@@ -81,30 +83,27 @@ public class ExpandedNameTable
   /** Probably a reference to static pool.   */
   private DTMStringPool m_namespaceNames;
   
-  public static int BITS_PER_LOCALNAME = 16;
-  public static int BITS_PER_NAMESPACE = 10;
-
-  public static int MASK_LOCALNAME = 0x0000FFFF;
-  public static int MASK_NAMESPACE = 0x03FF0000;
-  public static int MASK_NODETYPE = 0xFC000000;
-  public static int MASK_NODEHANDLE = 0x000FFFFF;
-
-  public static final int ROTAMOUNT_TYPE = (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME);
+  /** Vector of extended types for this document   */
+  private /*static*/ Vector m_extendedTypes;
   
+  /** Next available extended type   */
+  private int m_nextType;
+    
   // These are all the types prerotated, for caller convenience.
-  public static final int ELEMENT = ((int)DTM.ELEMENT_NODE) << ROTAMOUNT_TYPE;
-  public static final int ATTRIBUTE = ((int)DTM.ATTRIBUTE_NODE) << ROTAMOUNT_TYPE;
-  public static final int TEXT = ((int)DTM.TEXT_NODE) << ROTAMOUNT_TYPE;
-  public static final int CDATA_SECTION = ((int)DTM.CDATA_SECTION_NODE) << ROTAMOUNT_TYPE;
-  public static final int ENTITY_REFERENCE = ((int)DTM.ENTITY_REFERENCE_NODE) << ROTAMOUNT_TYPE;
-  public static final int ENTITY = ((int)DTM.ENTITY_NODE) << ROTAMOUNT_TYPE;
-  public static final int PROCESSING_INSTRUCTION = ((int)DTM.PROCESSING_INSTRUCTION_NODE) << ROTAMOUNT_TYPE;
-  public static final int COMMENT = ((int)DTM.COMMENT_NODE) << ROTAMOUNT_TYPE;
-  public static final int DOCUMENT = ((int)DTM.DOCUMENT_NODE) << ROTAMOUNT_TYPE;
-  public static final int DOCUMENT_TYPE = ((int)DTM.DOCUMENT_TYPE_NODE) << ROTAMOUNT_TYPE;
-  public static final int DOCUMENT_FRAGMENT =((int)DTM.DOCUMENT_FRAGMENT_NODE) << ROTAMOUNT_TYPE;
-  public static final int NOTATION = ((int)DTM.NOTATION_NODE) << ROTAMOUNT_TYPE;
-  public static final int NAMESPACE = ((int)DTM.NAMESPACE_NODE) << ROTAMOUNT_TYPE;
+  public static final int ELEMENT = ((int)DTM.ELEMENT_NODE) ;
+  public static final int ATTRIBUTE = ((int)DTM.ATTRIBUTE_NODE) ;
+  public static final int TEXT = ((int)DTM.TEXT_NODE) ;
+  public static final int CDATA_SECTION = ((int)DTM.CDATA_SECTION_NODE) ;
+  public static final int ENTITY_REFERENCE = ((int)DTM.ENTITY_REFERENCE_NODE) ;
+  public static final int ENTITY = ((int)DTM.ENTITY_NODE) ;
+  public static final int PROCESSING_INSTRUCTION = ((int)DTM.PROCESSING_INSTRUCTION_NODE) ;
+  public static final int COMMENT = ((int)DTM.COMMENT_NODE) ;
+  public static final int DOCUMENT = ((int)DTM.DOCUMENT_NODE) ;
+  public static final int DOCUMENT_TYPE = ((int)DTM.DOCUMENT_TYPE_NODE) ;
+  public static final int DOCUMENT_FRAGMENT =((int)DTM.DOCUMENT_FRAGMENT_NODE) ;
+  public static final int NOTATION = ((int)DTM.NOTATION_NODE) ;
+  public static final int NAMESPACE = ((int)DTM.NAMESPACE_NODE) ;
+  
 
   /**
    * Create an expanded name table that uses private string pool lookup.
@@ -113,6 +112,7 @@ public class ExpandedNameTable
   {
     m_locNamesPool = new DTMSafeStringPool();
     m_namespaceNames = new DTMSafeStringPool();
+    initExtendedTypes(); 
   }
 
   /**
@@ -126,6 +126,22 @@ public class ExpandedNameTable
   {
     m_locNamesPool = locNamesPool;
     m_namespaceNames = namespaceNames;
+    initExtendedTypes();
+  }
+  
+  /**
+   *  Initialize the vector of extended types with the 
+   *  basic DOM node types. 
+   */
+  private void initExtendedTypes()
+  {
+    m_extendedTypes = new Vector();
+    int i;
+    for (i = 0; i < DTM.NTYPES; i++)
+    {
+      m_extendedTypes.addElement(new ExtendedType(i, "", "") ); 
+    }
+    m_nextType = m_extendedTypes.size();
   }
 
   /**
@@ -141,13 +157,25 @@ public class ExpandedNameTable
    */
   public int getExpandedTypeID(String namespace, String localName, int type)
   {
-    int nsID = (null != namespace) ? m_namespaceNames.stringToIndex(namespace) : 0;
+    /*int nsID = (null != namespace) ? m_namespaceNames.stringToIndex(namespace) : 0;
     int lnID = m_locNamesPool.stringToIndex(localName);
     
     int expandedTypeID = (type << (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME)) 
                        | (nsID << BITS_PER_LOCALNAME) | lnID;
-
     return expandedTypeID;
+*/
+    if (null == namespace) 
+      namespace = "";
+      if (null == localName) 
+      localName = "";
+    for (int i = 0; i < m_extendedTypes.size(); i++)
+    {
+      ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt(i);
+      if( type == etype.nodetype && namespace.equals(etype.namespace) && localName.equals(etype.localName)) 
+        return i;
+    }
+    m_extendedTypes.addElement(new ExtendedType(type, namespace, localName));
+    return m_nextType++;
   }
   
   /**
@@ -161,9 +189,17 @@ public class ExpandedNameTable
    */
   public int getExpandedTypeID(int type)
   {
-    int expandedTypeID = (type << (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME));
+    /*int expandedTypeID = (type << (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME));
 
     return expandedTypeID;
+    */
+    for (int i = 0; i < m_extendedTypes.size(); i++)
+    {
+      ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt(i);
+      if( type == etype.nodetype ) 
+        return i;
+    }
+    return -1; // something's very wrong!
   }
 
   /**
@@ -174,7 +210,9 @@ public class ExpandedNameTable
    */
   public String getLocalName(int ExpandedNameID)
   {
-    return m_locNamesPool.indexToString(ExpandedNameID & MASK_LOCALNAME);
+    //return m_locNamesPool.indexToString(ExpandedNameID & MASK_LOCALNAME);
+    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    return etype.localName;
   }
   
   /**
@@ -183,9 +221,14 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public static final int getLocalNameID(int ExpandedNameID)
+  public /*static*/ final int getLocalNameID(int ExpandedNameID)
   {
-    return (ExpandedNameID & MASK_LOCALNAME);
+    //return (ExpandedNameID & MASK_LOCALNAME);
+    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    if (etype.localName.equals(""))
+      return 0;
+    else
+    return ExpandedNameID;
   }
 
 
@@ -199,8 +242,10 @@ public class ExpandedNameTable
   public String getNamespace(int ExpandedNameID)
   {
 
-    int id = (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
-    return (0 == id) ? null : m_namespaceNames.indexToString(id);
+    //int id = (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
+    //return (0 == id) ? null : m_namespaceNames.indexToString(id);
+    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    return (etype.namespace.equals("") ? null : etype.namespace); 
   }
   
   /**
@@ -209,9 +254,14 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this namespace.
    */
-  public static final int getNamespaceID(int ExpandedNameID)
+  public /*static*/ final int getNamespaceID(int ExpandedNameID)
   {
-    return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
+    //return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
+    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    if (etype.namespace.equals(""))
+      return 0;
+    else
+    return ExpandedNameID;
   }
   
   /**
@@ -220,9 +270,29 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public static final short getType(int ExpandedNameID)
+  public final short getType(int ExpandedNameID)
   {
-    return (short)(ExpandedNameID >> ROTAMOUNT_TYPE);
+    //return (short)(ExpandedNameID >> ROTAMOUNT_TYPE);
+    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    return (short)etype.nodetype;
+  }
+  
+  
+  /**
+   * Private class representing an extended type object 
+   */
+  private class ExtendedType
+  {
+    private int nodetype;
+    private String namespace;
+    private String localName;
+    
+    private ExtendedType (int nodetype, String namespace, String localName)
+    {
+      this.nodetype = nodetype;
+      this.namespace = namespace;
+      this.localName = localName;
+    }
   }
   
 }
