@@ -228,6 +228,21 @@ parser code {:
     public void report_fatal_error(String message, Object info) {
         // empty
     }
+    
+    public RelativeLocationPath insertStep(Step step, RelativeLocationPath rlp) {
+	if (rlp instanceof Step) {
+	    return new ParentLocationPath(step, (Step) rlp);
+	}
+	else if (rlp instanceof ParentLocationPath) {
+	    final ParentLocationPath plp = (ParentLocationPath) rlp;
+	    final RelativeLocationPath newrlp = insertStep(step, plp.getPath());
+	    return new ParentLocationPath(newrlp, plp.getStep());
+	}
+	else {
+	    addError(new ErrorMsg(ErrorMsg.INTERNAL_ERR, "XPathParser.insertStep"));
+	    return rlp;
+	}
+    }
 :}
 
 terminal SLASH, DOT, LBRACK, RBRACK, VBAR, LPAREN, RPAREN, STAR, COMMA;
@@ -610,29 +625,12 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 
 AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
         {:
+	    final Step step = new Step(Axis.DESCENDANTORSELF, -1, null);
 
-	AbsoluteLocationPath alp = null;
-
-        Step left = new Step(Axis.DESCENDANTORSELF, -1, null);
-
-	if (rlp instanceof ParentLocationPath) {
-	    ParentLocationPath plp = new ParentLocationPath(left, rlp);
-	    alp = new AbsoluteLocationPath(plp);
-	}
-	else if (rlp instanceof Step) {
-            Step right = (Step)rlp;
-            alp = new AbsoluteLocationPath(new ParentLocationPath(left, right));
-	}
-	else {
-            // Don't think we'll ever get here...
-            Step right = new Step(Axis.CHILD, NodeTest.ELEMENT, null);
-	    alp = new AbsoluteLocationPath(new ParentLocationPath(left, right));
-        }
-
-	RESULT = new FilteredAbsoluteLocationPath(alp);
+	    RESULT = new FilteredAbsoluteLocationPath(
+			new AbsoluteLocationPath(parser.insertStep(step, 
+				(RelativeLocationPath) rlp)));
 	:};
-
-
 
 Step ::= NodeTest:ntest
         {:
