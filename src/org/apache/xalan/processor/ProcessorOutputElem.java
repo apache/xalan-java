@@ -232,6 +232,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
 
     m_outputProperties.setDOMBackPointer(handler.getOriginatingNode());
     m_outputProperties.setLocaterInfo(handler.getLocator());
+    m_outputProperties.setUid(handler.nextUid());
     setPropertiesFromAttributes(handler, rawName, attributes, this);
     
     // Access this only from the Hashtable level... we don't want to 

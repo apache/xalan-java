@@ -61,6 +61,7 @@ import java.io.InputStream;
 import java.io.IOException;
 
 import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Enumeration;
 
@@ -785,7 +786,7 @@ public class OutputProperties extends ElemTemplateElement
 
     super.compose();  // just good form, not really needed.
 
-    m_currentStylesheetComposed = null;
+    m_propertiesLevels = null;
   }
 
   /**
@@ -829,7 +830,8 @@ public class OutputProperties extends ElemTemplateElement
     while (enum.hasMoreElements())
     {
       String key = (String) enum.nextElement();
-      if (null == m_properties.get(key))
+      Object oldValue = m_properties.get(key);
+      if (null == oldValue)
       {
         String val = (String) src.get(key);
         
@@ -839,6 +841,10 @@ public class OutputProperties extends ElemTemplateElement
         }
 
         m_properties.put(key, val);
+      }
+      else if (key.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
+      {
+        m_properties.put(key, (String) oldValue + (String) src.get(key));
       }
     }
   }
@@ -871,36 +877,45 @@ public class OutputProperties extends ElemTemplateElement
     throws TransformerException
   {
 
+    if (null == m_propertiesLevels)
+      m_propertiesLevels = new Hashtable();
+
     // This operation assumes that the OutputProperties are being called 
-    // from most important to least important, in document order.
-    // Are the new properties at the same importance level as the properties 
-    // that were last used?
-    StylesheetComposed sc = newProps.getStylesheetComposed();
+    // from most important to least important, in reverse document order.
 
-    if (sc != m_currentStylesheetComposed)
-    {
-      m_currentStylesheetComposed = sc;
-    }
-    else
-    {
-      Properties p = newProps.getProperties();
-      Enumeration enum = p.keys();
+    int newPrecedence = newProps.getStylesheetComposed().getImportCountComposed();
 
-      while (enum.hasMoreElements())
+    Properties p = newProps.getProperties();
+    Enumeration enum = p.keys();
+
+    while (enum.hasMoreElements())
+    {
+      String key = (String) enum.nextElement();
+
+      if (key.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
+        continue;
+
+      // Do we already have this property? Call hashtable operation, 
+      // since we don't want to look at default properties.
+      Integer oldPrecedence = (Integer) m_propertiesLevels.get(key);
+      if (null == oldPrecedence)
       {
-        String key = (String) enum.nextElement();
-
-        // Do we already have this property? Call hashtable operation, 
-        // since we don't want to look at default properties.
-        if (null != m_properties.get(key))
+        m_propertiesLevels.put(key, new Integer(newPrecedence));
+      }
+      else if (newPrecedence >= oldPrecedence.intValue())
+      {
+        String oldValue = (String) this.m_properties.get(key);
+        String newValue = (String) newProps.m_properties.get(key);
+        if ( ((oldValue == null) && (newValue != null)) || !oldValue.equals(newValue) )
         {
           String msg = key + " can not be multiply defined at the same "
-                       + "import level!";
+                       + "import level! Old value = " 
+                       + oldValue + "; New value = " + newValue;
           throw new TransformerException(msg, newProps);
         }
       }
     }
-  }
+}
 
   /**
    * Report if the key given as an argument is a legal xsl:output key.
@@ -926,15 +941,13 @@ public class OutputProperties extends ElemTemplateElement
   }
 
   /**
-   * This ugly field is to let us know what StylesheetComposed was last
-   *  used to set this element, so we can flag errors about values being
-   *  set multiple time at the same precedence level.  There is likely to
-   *  be discovered a better way to do this, but this is the easiest mechanism
-   *  I can work out for the moment.  Note that this field is only used
+   *  This ugly field is used during recomposition to track the import precedence
+   *  at which each attribute was first specified, so we can flag errors about values being
+   *  set multiple time at the same precedence level. Note that this field is only used
    *  during recomposition, with the OutputProperties object owned by the
    *  {@link org.apache.xalan.templates.StylesheetRoot} object.
    */
-  private transient StylesheetComposed m_currentStylesheetComposed;
+  private transient Hashtable m_propertiesLevels;
 
   /** The output properties. */
   private Properties m_properties = null;
