@@ -235,7 +235,6 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrappedRuntimeException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)XMLCharacterRecognizer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)StylesheetSpec.java \
   org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Examples.java \
   org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Processor.java \
   org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)ProcessorException.java \
