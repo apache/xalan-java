@@ -140,7 +140,11 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	}
 	il.append(new INVOKEINTERFACE(getType, 2));
 	il.append(new PUSH(cpg, DOM.ROOT));
-	_falseList.add(il.append(new IF_ICMPNE(null)));
+	
+	// long jump: _falseList.add(il.append(new IF_ICMPNE(null)));
+	final BranchHandle skip = il.append(new IF_ICMPEQ(null));
+	_falseList.add(il.append(new GOTO_W(null)));
+	skip.setTarget(il.append(NOP));
     }
 	
     public String toString() {
