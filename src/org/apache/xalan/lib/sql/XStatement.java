@@ -78,20 +78,20 @@ public class XStatement extends StreamableNode
         implements NodeIterator, ContextNodeList, Cloneable
 {
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag for DEBUG mode          */
   private static final boolean DEBUG = false;
 
-  /** NEEDSDOC Field m_statement          */
+  /** JDBC Query statement          */
   private Statement m_statement;
 
-  /** NEEDSDOC Field m_nodeCounter          */
+  /** Node counter          */
   private int m_nodeCounter = 0;
 
   /**
-   * NEEDSDOC Method getAndIncrementNodeCounter 
+   * Get And Increment Node Counter 
    *
    *
-   * NEEDSDOC (getAndIncrementNodeCounter) @return
+   * @return Node counter
    */
   int getAndIncrementNodeCounter()
   {
@@ -104,52 +104,52 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method getStatement 
+   * Get the JDBC Query statement
    *
    *
-   * NEEDSDOC (getStatement) @return
+   * @return the JDBC Query statement
    */
   public Statement getStatement()
   {
     return m_statement;
   }
 
-  /** NEEDSDOC Field m_resultSet          */
+  /** ResultSet instance from executing the query string          */
   ResultSet m_resultSet;
 
   /**
-   * NEEDSDOC Method getResultSet 
+   * Get the ResultSet from executing the query string 
    *
    *
-   * NEEDSDOC (getResultSet) @return
+   * @return ResultSet instance
    */
   public ResultSet getResultSet()
   {
     return m_resultSet;
   }
 
-  /** NEEDSDOC Field m_xconnection          */
+  /** XConnection instance (for access to JDBC data).          */
   private XConnection m_xconnection;
 
-  /** NEEDSDOC Field m_queryString          */
+  /** The SQL Query string         */
   private String m_queryString;
 
-  /** NEEDSDOC Field m_rowset          */
+  /** Rowset instance (for the JDBC query result set).          */
   RowSet m_rowset;
 
-  /** NEEDSDOC Field m_nextHasBeenCalled          */
+  /** Flag          */
   boolean m_nextHasBeenCalled = false;
 
-  /** NEEDSDOC Field S_DOCELEMENTNAME          */
+  /** Constant for DOCELEMENTNAME          */
   static final String S_DOCELEMENTNAME = "row-set";
 
-  /** NEEDSDOC Field S_COLUMNHEADERNAME          */
+  /** Constant for COLUMNHEADERNAME          */
   static final String S_COLUMNHEADERNAME = "column-header";
 
-  /** NEEDSDOC Field S_ROWNAME          */
+  /** Constant for ROWNAME          */
   static final String S_ROWNAME = "row";
 
-  /** NEEDSDOC Field S_COLUMNNAME          */
+  /** Constant for COLUMNNAME          */
   static final String S_COLUMNNAME = "col";
 
   /**
@@ -185,10 +185,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method getXStatement 
+   * Get the representation of the JDBC Query statement 
    *
    *
-   * NEEDSDOC (getXStatement) @return
+   * @return the representation of the JDBC Query statement, this 
    */
   public XStatement getXStatement()
   {
@@ -215,7 +215,7 @@ public class XStatement extends StreamableNode
    * iterator. The available set of constants is defined in the
    * <code>NodeFilter</code> interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return which node types are to be presented 
    */
   public int getWhatToShow()
   {
@@ -289,7 +289,7 @@ public class XStatement extends StreamableNode
    * Throw an exception, since streaming nodes and iterators can not
    * go backwards.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -329,10 +329,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method toString 
+   * Return the String value of this object
    *
    *
-   * NEEDSDOC (toString) @return
+   * @return String value of the JDBC query string
    */
   public String toString()
   {
@@ -344,7 +344,7 @@ public class XStatement extends StreamableNode
   /**
    * The parent of a document is null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Document getOwnerDocument()
   {
@@ -352,9 +352,9 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * Return Node.DOCUMENT_NODE.
+   * Return node type: Node.DOCUMENT_NODE.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node.DOCUMENT_NODE.
    */
   public short getNodeType()
   {
@@ -362,9 +362,9 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * Return "#Document".
+   * Return node name: "#Document".
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return "#Document".
    */
   public String getNodeName()
   {
@@ -374,7 +374,7 @@ public class XStatement extends StreamableNode
   /**
    * Return the row-set node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the row-set node or null if not found.
    */
   public Node getFirstChild()
   {
@@ -400,9 +400,9 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * This always returns null.
+   * getNextSibling - This always returns null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getNextSibling()
   {
@@ -416,7 +416,7 @@ public class XStatement extends StreamableNode
   /**
    * The parent node of document is always null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getParentNode()
   {
@@ -431,7 +431,7 @@ public class XStatement extends StreamableNode
    * Tell if there are any children of the document,
    * which is always true.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true
    */
   public boolean hasChildNodes()
   {
@@ -445,10 +445,10 @@ public class XStatement extends StreamableNode
   // ===== ContextNodeList implementation =====
 
   /**
-   * NEEDSDOC Method getCurrentNode 
+   * The current node is the RowSet  
    *
    *
-   * NEEDSDOC (getCurrentNode) @return
+   * @return The row-set
    */
   public Node getCurrentNode()
   {
@@ -456,10 +456,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method getCurrentPos 
+   * Get Current Position
    *
    *
-   * NEEDSDOC (getCurrentPos) @return
+   * @return 0
    */
   public int getCurrentPos()
   {
@@ -467,7 +467,7 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method reset 
+   * Reset this object
    *
    */
   public void reset()
@@ -476,10 +476,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method setShouldCacheNodes 
+   * Set whether nodes should be cached - not implemented
    *
    *
-   * NEEDSDOC @param b
+   * @param b Flag indicating whether nodes should be cached 
    */
   public void setShouldCacheNodes(boolean b)
   {
@@ -488,10 +488,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method runTo 
+   * Not implemented
    *
    *
-   * NEEDSDOC @param index
+   * @param index
    */
   public void runTo(int index)
   {
@@ -500,10 +500,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method setCurrentPos 
+   * Not implemented 
    *
    *
-   * NEEDSDOC @param i
+   * @param i
    */
   public void setCurrentPos(int i)
   {
@@ -512,10 +512,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method size 
+   * Return size 
    *
    *
-   * NEEDSDOC (size) @return
+   * @return 1
    */
   public int size()
   {
@@ -523,10 +523,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method isFresh 
+   * Return whether this iterator is fresh
    *
    *
-   * NEEDSDOC (isFresh) @return
+   * @return True if this has not been called
    */
   public boolean isFresh()
   {
@@ -534,10 +534,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method cloneWithReset 
+   * Overide cloneWithReset method 
    *
    *
-   * NEEDSDOC (cloneWithReset) @return
+   * @return A clone of this which has been reset
    *
    * @throws CloneNotSupportedException
    */
@@ -552,10 +552,10 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * NEEDSDOC Method clone 
+   * Clone this object
    *
    *
-   * NEEDSDOC (clone) @return
+   * @return A clone of this object 
    *
    * @throws CloneNotSupportedException
    */
@@ -567,13 +567,26 @@ public class XStatement extends StreamableNode
     return clone;
   }
   
+  /** Index of Last node found by this iterator   */
   private int m_last = 0;
   
+  /**
+   * Get index of the last found node 
+   *
+   *
+   * @return index of last found node 
+   */
   public int getLast()
   {
     return m_last;
   }
   
+  /**
+   * Set the index of the last found node 
+   *
+   *
+   * @aram index of last found node 
+   */
   public void setLast(int last)
   {
     m_last = last;

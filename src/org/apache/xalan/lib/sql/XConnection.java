@@ -85,7 +85,7 @@ import org.w3c.dom.traversal.NodeIterator;
 public class XConnection
 {
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag for DEBUG mode          */
   private static final boolean DEBUG = false;
 
   /**
@@ -153,9 +153,8 @@ public class XConnection
    * Create an XConnection object with a connection protocol
    * @param driver JDBC driver of the form foo.bar.Driver.
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
-   * @param protocol list of string tag/value connection arguments,
+   * @param protocolElem list of string tag/value connection arguments,
    * normally including at least "user" and "password".
-   * NEEDSDOC @param protocolElem
    */
   public XConnection(String driver, String dbURL, Element protocolElem)
   {
@@ -168,12 +167,13 @@ public class XConnection
   /**
    * Initialize.
    *
-   * NEEDSDOC @param driver
-   * NEEDSDOC @param dbURL
-   * NEEDSDOC @param user
-   * NEEDSDOC @param password
-   * NEEDSDOC @param protocolElem
-   * NEEDSDOC @param getConnectionArgs
+   * @param driver JDBC driver of the form foo.bar.Driver.
+   * @param dbURL database URL of the form jdbc:subprotocol:subname.
+   * @param user user ID
+   * @param password connection password.
+   * @param protocolElem list of string tag/value connection arguments,
+   * normally including at least "user" and "password".
+   * @param getConnectionArgs Connection arguments
    */
   private void init(String driver, String dbURL, String user,
                     String password, Element protocolElem,
@@ -206,13 +206,13 @@ public class XConnection
   /**
    * Connect to the JDBC database.
    * @param driver Database url of the form jdbc:subprotocol:subname .
-   * NEEDSDOC @param dbURL
-   * NEEDSDOC @param user
-   * NEEDSDOC @param password
+   * @param dbURL database URL of the form jdbc:subprotocol:subname.
+   * @param user user ID
+   * @param password connection password.
    * @param protocol List of arbitrary string tag/value pairs as
    * connection arguments; normally at least a "user" and "password"
    * property should be included.
-   * NEEDSDOC @param getConnectionArgs
+   * @param getConnectionArgs Connection arguments
    */
   public void connect(String driver, String dbURL, String user,
                       String password, Properties protocol,
@@ -283,12 +283,8 @@ public class XConnection
     return new XStatement(this, queryString);
   }
 
-  /*
-   * Close the connection to the data source.
-   */
-
   /**
-   * NEEDSDOC Method close 
+   * Close the connection to the data source.
    *
    *
    * @throws SQLException

@@ -97,130 +97,130 @@ import org.apache.xalan.res.XSLTErrorResources;
 public class ColumnAttribute extends StreamableNode implements Attr
 {
 
-  /** NEEDSDOC Field m_owner          */
+  /** Column owning this attribute          */
   Element m_owner;
 
-  /** NEEDSDOC Field m_metadata          */
+  /** Meta data (column header)          */
   ResultSetMetaData m_metadata;
 
-  /** NEEDSDOC Field m_name          */
+  /** Attribute name          */
   String m_name;
 
-  /** NEEDSDOC Field m_type          */
+  /** Attribute type          */
   int m_type;
 
-  /** NEEDSDOC Field m_columnIndex          */
+  /** Owner Column index          */
   int m_columnIndex;
 
-  /** NEEDSDOC Field m_columnAttr          */
+  /** Column attribute         */
   ColumnAttribute m_columnAttr;
 
-  /** NEEDSDOC Field S_ISTRUE          */
+  /** Constant for ISTRUE          */
   static final String S_ISTRUE = "true";
 
-  /** NEEDSDOC Field S_ISFALSE          */
+  /** Constant for ISFALSE          */
   static final String S_ISFALSE = "false";
 
-  /** NEEDSDOC Field CATALOGUE_NAME          */
+  /** Constant for CATALOGUE_NAME          */
   public static final int CATALOGUE_NAME = 0;
 
-  /** NEEDSDOC Field DISPLAY_SIZE          */
+  /** Constnat for DISPLAY_SIZE          */
   public static final int DISPLAY_SIZE = 1;
 
-  /** NEEDSDOC Field COLUMN_LABEL          */
+  /** Constant for COLUMN_LABEL          */
   public static final int COLUMN_LABEL = 2;
 
-  /** NEEDSDOC Field COLUMN_NAME          */
+  /** Constant for COLUMN_NAME          */
   public static final int COLUMN_NAME = 3;
 
-  /** NEEDSDOC Field COLUMN_TYPE          */
+  /** Constant for COLUMN_TYPE          */
   public static final int COLUMN_TYPE = 4;
 
-  /** NEEDSDOC Field COLUMN_TYPENAME          */
+  /** Constant for COLUMN_TYPENAME          */
   public static final int COLUMN_TYPENAME = 5;
 
-  /** NEEDSDOC Field PRECISION          */
+  /** Constant for PRECISION          */
   public static final int PRECISION = 6;
 
-  /** NEEDSDOC Field SCALE          */
+  /** Constant for SCALE          */
   public static final int SCALE = 7;
 
-  /** NEEDSDOC Field SCHEMA_NAME          */
+  /** Constant for SCHEMA_NAME          */
   public static final int SCHEMA_NAME = 8;
 
-  /** NEEDSDOC Field TABLE_NAME          */
+  /** Constant for TABLE_NAME          */
   public static final int TABLE_NAME = 9;
 
-  /** NEEDSDOC Field CASESENSITIVE          */
+  /** Constant for CASESENSITIVE          */
   public static final int CASESENSITIVE = 10;
 
-  /** NEEDSDOC Field DEFINATELYWRITABLE          */
+  /** Constant for DEFINATELYWRITABLE          */
   public static final int DEFINATELYWRITABLE = 11;
 
-  /** NEEDSDOC Field ISNULLABLE          */
+  /** Constant for ISNULLABLE          */
   public static final int ISNULLABLE = 12;
 
-  /** NEEDSDOC Field ISSIGNED          */
+  /** Constant for ISSIGNED          */
   public static final int ISSIGNED = 13;
 
-  /** NEEDSDOC Field ISWRITEABLE          */
+  /** Constant for ISWRITEABLE          */
   public static final int ISWRITEABLE = 14;
 
-  /** NEEDSDOC Field ISSEARCHABLE          */
+  /** Constant for ISSEARCHABLE          */
   public static final int ISSEARCHABLE = 15;
 
-  /** NEEDSDOC Field NUMBER_ATTRIBUTES          */
+  /** Constant for NUMBER_ATTRIBUTES          */
   public static final int NUMBER_ATTRIBUTES = 16;
 
-  /** NEEDSDOC Field S_CATALOGUE_NAME          */
+  /** Constant for S_CATALOGUE_NAME          */
   public static final String S_CATALOGUE_NAME = "catalogue-name";
 
-  /** NEEDSDOC Field S_DISPLAY_SIZE          */
+  /** Constant for S_DISPLAY_SIZE          */
   public static final String S_DISPLAY_SIZE = "column-display-size";
 
-  /** NEEDSDOC Field S_COLUMN_LABEL          */
+  /** Constant for S_COLUMN_LABEL          */
   public static final String S_COLUMN_LABEL = "column-label";
 
-  /** NEEDSDOC Field S_COLUMN_NAME          */
+  /** Constant for S_COLUMN_NAME          */
   public static final String S_COLUMN_NAME = "column-name";
 
-  /** NEEDSDOC Field S_COLUMN_TYPE          */
+  /** Constant for S_COLUMN_TYPE          */
   public static final String S_COLUMN_TYPE = "column-type";
 
-  /** NEEDSDOC Field S_COLUMN_TYPENAME          */
+  /** Constant for S_COLUMN_TYPENAME          */
   public static final String S_COLUMN_TYPENAME = "column-type-name";
 
-  /** NEEDSDOC Field S_PRECISION          */
+  /** Constant for S_PRECISION          */
   public static final String S_PRECISION = "precision";
 
-  /** NEEDSDOC Field S_SCALE          */
+  /** Constant for S_SCALE          */
   public static final String S_SCALE = "scale";
 
-  /** NEEDSDOC Field S_SCHEMA_NAME          */
+  /** Constant for S_SCHEMA_NAME          */
   public static final String S_SCHEMA_NAME = "schema-name";
 
-  /** NEEDSDOC Field S_TABLE_NAME          */
+  /** Constant for S_TABLE_NAME          */
   public static final String S_TABLE_NAME = "table-name";
 
-  /** NEEDSDOC Field S_CASESENSITIVE          */
+  /** Constant for S_CASESENSITIVE          */
   public static final String S_CASESENSITIVE = "case-sensitive";
 
-  /** NEEDSDOC Field S_DEFINATELYWRITABLE          */
+  /** Constant for S_DEFINATELYWRITABLE          */
   public static final String S_DEFINATELYWRITABLE = "definitely-writable";
 
-  /** NEEDSDOC Field S_ISNULLABLE          */
+  /** Constant for S_ISNULLABLE          */
   public static final String S_ISNULLABLE = "nullable";
 
-  /** NEEDSDOC Field S_ISSIGNED          */
+  /** Constant for S_ISSIGNED          */
   public static final String S_ISSIGNED = "signed";
 
-  /** NEEDSDOC Field S_ISWRITEABLE          */
+  /** Constant for S_ISWRITEABLE          */
   public static final String S_ISWRITEABLE = "writable";
 
-  /** NEEDSDOC Field S_ISSEARCHABLE          */
+  /** Constant for S_ISSEARCHABLE          */
   public static final String S_ISSEARCHABLE = "searchable";
 
-  /** NEEDSDOC Field m_namelookup          */
+  /** Table of column attribute names           */
   static java.util.Hashtable m_namelookup = new java.util.Hashtable();
 
   static
@@ -247,11 +247,11 @@ public class ColumnAttribute extends StreamableNode implements Attr
    * Constructor ColumnAttribute
    *
    *
-   * NEEDSDOC @param statement
-   * NEEDSDOC @param owner
-   * NEEDSDOC @param columnIndex
-   * NEEDSDOC @param type
-   * NEEDSDOC @param metadata
+   * @param statement Owning document
+   * @param owner Column owning this attribute
+   * @param columnIndex Owning column index
+   * @param type attribute type
+   * @param metadata Column header
    */
   public ColumnAttribute(XStatement statement, Element owner,
                          int columnIndex, int type,
@@ -267,12 +267,13 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getAttrNameFromPos 
+   * Get column attribute name using constant value
    *
    *
-   * NEEDSDOC @param pos
+   * @param pos Constant value of attribute
    *
-   * NEEDSDOC (getAttrNameFromPos) @return
+   * @return Attribute name corresponding to the given value
+   * or null if not found
    */
   static String getAttrNameFromPos(int pos)
   {
@@ -317,12 +318,12 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getAttrPosFromName 
+   * Get attribute constant value from name
    *
    *
-   * NEEDSDOC @param name
+   * @param name Name of attribute
    *
-   * NEEDSDOC (getAttrPosFromName) @return
+   * @return Attribute value or -1 if not found
    */
   static int getAttrPosFromName(String name)
   {
@@ -338,12 +339,12 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method setName 
+   * Set column name
    *
    *
-   * NEEDSDOC @param name
+   * @param name column attribute name
    *
-   * NEEDSDOC (setName) @return
+   * @return True if the name is found in the lookup table
    */
   public boolean setName(String name)
   {
@@ -356,10 +357,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getNodeName 
+   * Get the column name
    *
    *
-   * NEEDSDOC (getNodeName) @return
+   * @return the column name
    */
   public String getNodeName()
   {
@@ -367,10 +368,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getName 
+   * Get the column name
    *
    *
-   * NEEDSDOC (getName) @return
+   * @return the column name
    */
   public String getName()
   {
@@ -378,10 +379,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getSpecified 
+   * Return Specified 
    *
    *
-   * NEEDSDOC (getSpecified) @return
+   * @return true
    */
   public boolean getSpecified()
   {
@@ -389,10 +390,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getNodeValue 
+   * Return column value
    *
    *
-   * NEEDSDOC (getNodeValue) @return
+   * @return column value
    */
   public String getNodeValue()
   {
@@ -400,10 +401,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getValue 
+   * Return column value 
    *
    *
-   * NEEDSDOC (getValue) @return
+   * @return column value
    */
   public String getValue()
   {
@@ -459,10 +460,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method setValue 
+   * setValue - Not supported
    *
    *
-   * NEEDSDOC @param value
+   * @param value column value to set
    *
    * @throws DOMException
    */
@@ -472,10 +473,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getOwnerElement 
+   * Return column owner
    *
    *
-   * NEEDSDOC (getOwnerElement) @return
+   * @return Column owner
    */
   public Element getOwnerElement()
   {
@@ -483,10 +484,10 @@ public class ColumnAttribute extends StreamableNode implements Attr
   }
 
   /**
-   * NEEDSDOC Method getParentNode 
+   * Get parent node 
    *
    *
-   * NEEDSDOC (getParentNode) @return
+   * @return null
    */
   public Node getParentNode()
   {
@@ -496,7 +497,7 @@ public class ColumnAttribute extends StreamableNode implements Attr
   /**
    * Return Node.ATTRIBUTE_NODE.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ATTRIBUTE_NODE type 
    */
   public short getNodeType()
   {

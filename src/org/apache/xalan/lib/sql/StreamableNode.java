@@ -75,14 +75,14 @@ public class StreamableNode extends UnImplNode
         implements NodeTestFilter, NamedNodeMap, DOMOrder
 {
 
-  /** NEEDSDOC Field m_statement          */
+  /** Owning document         */
   private XStatement m_statement;
 
   /**
-   * NEEDSDOC Method getXStatement 
+   * Get XStatement (owning document) 
    *
    *
-   * NEEDSDOC (getXStatement) @return
+   * @return owning document
    */
   public XStatement getXStatement()
   {
@@ -90,13 +90,13 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method isSupported 
+   * Check if a given feature is supported 
    *
    *
-   * NEEDSDOC @param feature
-   * NEEDSDOC @param version
+   * @param feature Feature to check
+   * @param version Version to check
    *
-   * NEEDSDOC (supports) @return
+   * @return True if NodeTest feature is supported
    */
   public boolean isSupported(String feature, String version)
   {
@@ -104,14 +104,14 @@ public class StreamableNode extends UnImplNode
            || feature.equals(AxesWalker.FEATURE_NODETESTFILTER);
   }
 
-  /** NEEDSDOC Field m_nodetest          */
+  /** Instance of a NodeTest          */
   private NodeTest m_nodetest;
 
   /**
-   * NEEDSDOC Method getNodeTest 
+   * Return the current NodeTest instance
    *
    *
-   * NEEDSDOC (getNodeTest) @return
+   * @return the current NodeTest instance
    */
   public NodeTest getNodeTest()
   {
@@ -122,7 +122,7 @@ public class StreamableNode extends UnImplNode
    * Constructor StreamableNode
    *
    *
-   * NEEDSDOC @param statement
+   * @param statement Owning document
    */
   public StreamableNode(XStatement statement)
   {
@@ -136,10 +136,10 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method setNodeTest 
+   * Set NodeTest instance
    *
    *
-   * NEEDSDOC @param nodeTest
+   * @param nodeTest The NodeTest to use
    */
   public void setNodeTest(NodeTest nodeTest)
   {
@@ -147,10 +147,10 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method getOwnerDocument 
+   * Get Owner Document 
    *
    *
-   * NEEDSDOC (getOwnerDocument) @return
+   * @return owner document
    */
   public Document getOwnerDocument()
   {
@@ -160,7 +160,7 @@ public class StreamableNode extends UnImplNode
   /**
    * Streamable nodes default to being elements.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node.ELEMENT_NODE;
    */
   public short getNodeType()
   {
@@ -170,7 +170,7 @@ public class StreamableNode extends UnImplNode
   /**
    * Return NodeName.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the node name
    */
   public String getLocalName()
   {
@@ -178,9 +178,9 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Returns null.
+   * getNamespaceURI - Always Returns null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getNamespaceURI()
   {
@@ -188,9 +188,9 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Returns null.
+   * getPrefix - Always Returns null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getPrefix()
   {
@@ -198,10 +198,10 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method getAttributes 
+   * Get list of attributes 
    *
    *
-   * NEEDSDOC (getAttributes) @return
+   * @return the list of attributes for this node, itself  
    */
   public NamedNodeMap getAttributes()
   {
@@ -209,12 +209,12 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method getNamedItem 
+   * Get the attribute with the given name - Not implemented 
    *
    *
-   * NEEDSDOC @param name
+   * @param name attribute name to get
    *
-   * NEEDSDOC (getNamedItem) @return
+   * @return null
    */
   public Node getNamedItem(String name)
   {
@@ -222,12 +222,12 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method item 
+   * Return the attribute at the given index - Not implemented 
    *
    *
-   * NEEDSDOC @param index
+   * @param index Index of attribute to get
    *
-   * NEEDSDOC (item) @return
+   * @return null
    */
   public Node item(int index)
   {
@@ -235,10 +235,10 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method getLength 
+   * The number of attributes for this node - Not implemented 
    *
    *
-   * NEEDSDOC (getLength) @return
+   * @return 0
    */
   public int getLength()
   {
@@ -246,13 +246,13 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method getNamedItemNS 
+   * Get the attribute with the given namespaced name - Not implemented 
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI Namespace URI of the attribute to get
+   * @param localName Local name of the attribute to get
    *
-   * NEEDSDOC (getNamedItemNS) @return
+   * @return null
    */
   public Node getNamedItemNS(String namespaceURI, String localName)
   {
@@ -260,12 +260,12 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method setNamedItem 
+   * Set the given attribute - Not supported 
    *
    *
-   * NEEDSDOC @param arg
+   * @param arg attribute node
    *
-   * NEEDSDOC (setNamedItem) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -278,12 +278,12 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method removeNamedItem 
+   * Remove the attribute with the given name - Not supported 
    *
    *
-   * NEEDSDOC @param name
+   * @param name Attribute name
    *
-   * NEEDSDOC (removeNamedItem) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -296,12 +296,12 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method setNamedItemNS 
+   * Set the attribute with the given namespaced name - Not supported 
    *
    *
-   * NEEDSDOC @param arg
+   * @param arg Attriute node
    *
-   * NEEDSDOC (setNamedItemNS) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -314,13 +314,13 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method removeNamedItemNS 
+   * Remove the attribute with the given namespaced name - Not supported
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI Namespace URI of the attribute to remove
+   * @param localName Local name of the attribute to remove
    *
-   * NEEDSDOC (removeNamedItemNS) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -333,13 +333,13 @@ public class StreamableNode extends UnImplNode
     return null;
   }
 
-  /** NEEDSDOC Field m_orderIndex          */
+  /** Document Order index of this node         */
   int m_orderIndex = -1;
 
   /**
    * Get the UID (document order index).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return document order index for this node
    */
   public int getUid()
   {

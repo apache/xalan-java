@@ -70,26 +70,26 @@ import java.sql.ResultSetMetaData;
 public class Column extends StreamableNode
 {
 
-  /** NEEDSDOC Field m_columnIndex          */
+  /** column Index          */
   int m_columnIndex;
 
-  /** NEEDSDOC Field m_parent          */
+  /** Parent row node          */
   Row m_parent;
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag indicating if in DEBUG mode         */
   private static final boolean DEBUG = false;
 
-  /** NEEDSDOC Field m_text          */
+  /** Column data          */
   ColumnData m_text;
 
   /**
    * Constructor Column
    *
    *
-   * NEEDSDOC @param statement
-   * NEEDSDOC @param parent
-   * NEEDSDOC @param columnIndex
-   * NEEDSDOC @param metadata
+   * @param statement Current Document
+   * @param parent Parent row node of this column
+   * @param columnIndex Index for this column
+   * @param metadata Meta data (column header).
    */
   public Column(XStatement statement, Row parent, int columnIndex,
                 ResultSetMetaData metadata)
@@ -105,7 +105,7 @@ public class Column extends StreamableNode
   /**
    * The parent of col is #Document (represented by XStatement).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The parent of this column
    */
   public Document getOwnerDocument()
   {
@@ -115,7 +115,7 @@ public class Column extends StreamableNode
   /**
    * Return "col".
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the deault column name "col".
    */
   public String getNodeName()
   {
@@ -125,7 +125,7 @@ public class Column extends StreamableNode
   /**
    * Return the col text node (the column value).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the column value
    */
   public Node getFirstChild()
   {
@@ -158,7 +158,7 @@ public class Column extends StreamableNode
   /**
    * The parent node of col is a row.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The parent node of this column 
    */
   public Node getParentNode()
   {
@@ -174,7 +174,7 @@ public class Column extends StreamableNode
    * which is always true. I.e., col contains a text node
    * with a textual representation of the column value.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True
    */
   public boolean hasChildNodes()
   {
@@ -188,7 +188,7 @@ public class Column extends StreamableNode
   /**
    * Return the metadata for this column.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the metadata for this column(column header).
    */
   public NamedNodeMap getAttributes()
   {

@@ -76,33 +76,33 @@ import java.sql.ResultSet;
 public class Row extends StreamableNode
 {
 
-  /** NEEDSDOC Field m_childCount          */
+  /** Number of children for this row         */
   int m_childCount;
 
-  /** NEEDSDOC Field m_columns          */
+  /** Number of columns in this row         */
   Column[] m_columns;
 
-  /** NEEDSDOC Field m_metadata          */
+  /** Meta data           */
   ResultSetMetaData m_metadata;
 
-  /** NEEDSDOC Field m_isStreamable          */
+  /** Flag for whether this is streamable           */
   boolean m_isStreamable = false;
 
-  /** NEEDSDOC Field m_next          */
+  /** Next row          */
   Row m_next;  // normally null, if streamable.
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag for DEBUG mode        */
   private static final boolean DEBUG = false;
 
-  /** NEEDSDOC Field m_parent          */
+  /** Parent node, a row-set          */
   RowSet m_parent;
 
   /**
    * Constructor Row
    *
    *
-   * NEEDSDOC @param statement
-   * NEEDSDOC @param parent
+   * @param statement Owning document
+   * @param parent parent node, a row-set
    */
   public Row(XStatement statement, RowSet parent)
   {
@@ -138,7 +138,7 @@ public class Row extends StreamableNode
   /**
    * The parent of a row is #Document represented by XStatement).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The owning document
    */
   public Document getOwnerDocument()
   {
@@ -146,9 +146,9 @@ public class Row extends StreamableNode
   }
 
   /**
-   * Return "row".
+   * Return node name: "row".
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return "row".
    */
   public String getNodeName()
   {
@@ -158,7 +158,8 @@ public class Row extends StreamableNode
   /**
    * Return the first col element for the current row.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the first col element for the current row or
+   * null if none
    */
   public Node getFirstChild()
   {
@@ -176,7 +177,7 @@ public class Row extends StreamableNode
    * Return next row in the row-set. Use the same Row object over and over
    * if the row-set is streamable.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return next row in the row-set or null if none
    */
   public Node getNextSibling()
   {
@@ -253,7 +254,7 @@ public class Row extends StreamableNode
    * Tell if the row Node has any children (col Nodes),
    * which should always be true.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the row has any children
    */
   public boolean hasChildNodes()
   {

@@ -73,18 +73,18 @@ import org.apache.xalan.res.XSLTErrorResources;
 public class ColumnData extends StreamableNode implements Text
 {
 
-  /** NEEDSDOC Field m_parent          */
+  /** The column for which this is the data          */
   Column m_parent;
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag for debug mode         */
   private static final boolean DEBUG = false;
 
   /**
    * Constructor ColumnData
    *
    *
-   * NEEDSDOC @param statement
-   * NEEDSDOC @param parent
+   * @param statement Owning document
+   * @param parent Owning column
    */
   public ColumnData(XStatement statement, Column parent)
   {
@@ -95,9 +95,9 @@ public class ColumnData extends StreamableNode implements Text
   }
 
   /**
-   * Return Node.TEXT_NODE.
+   * Return node type, Node.TEXT_NODE.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node.TEXT_NODE.
    */
   public short getNodeType()
   {
@@ -105,12 +105,12 @@ public class ColumnData extends StreamableNode implements Text
   }
 
   /**
-   * NEEDSDOC Method splitText 
+   * splitText - not supported
    *
    *
-   * NEEDSDOC @param offset
+   * @param offset Offset where to split text
    *
-   * NEEDSDOC (splitText) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -126,7 +126,7 @@ public class ColumnData extends StreamableNode implements Text
    * Return the value for this col element text node. I.e., return a String representation
    * of the data for this column in the current row.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the data for this column
    *
    * @throws DOMException
    */
@@ -160,7 +160,7 @@ public class ColumnData extends StreamableNode implements Text
    * of the data for this column in the current row.
    * Calls @link #getNodeValue() getNodeValue()}.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the value for this column
    *
    * @throws DOMException
    */
@@ -175,7 +175,7 @@ public class ColumnData extends StreamableNode implements Text
    * This may have the value zero, i.e., <code>CharacterData</code> nodes
    * may be empty.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of characters in data
    */
   public int getLength()
   {
@@ -186,12 +186,12 @@ public class ColumnData extends StreamableNode implements Text
   }
 
   /**
-   * Not supported.
+   * substringData - Not supported.
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param count
+   * @param offset Starting offset of substring
+   * @param count Number of characters isn substring 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -206,7 +206,7 @@ public class ColumnData extends StreamableNode implements Text
   /**
    * Not supported.
    *
-   * NEEDSDOC @param arg
+   * @param arg
    *
    * @throws DOMException
    */
@@ -218,8 +218,8 @@ public class ColumnData extends StreamableNode implements Text
   /**
    * Not supported.
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param arg
+   * @param offset
+   * @param arg
    *
    * @throws DOMException
    */
@@ -231,8 +231,8 @@ public class ColumnData extends StreamableNode implements Text
   /**
    * Not supported.
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param count
+   * @param offset
+   * @param count
    *
    * @throws DOMException
    */
@@ -244,9 +244,9 @@ public class ColumnData extends StreamableNode implements Text
   /**
    * Not supported.
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param count
-   * NEEDSDOC @param arg
+   * @param offset
+   * @param count
+   * @param arg
    *
    * @throws DOMException
    */
@@ -259,7 +259,7 @@ public class ColumnData extends StreamableNode implements Text
   /**
    * Not supported.
    *
-   * NEEDSDOC @param data
+   * @param data
    *
    * @throws DOMException
    */
@@ -272,9 +272,9 @@ public class ColumnData extends StreamableNode implements Text
   }
 
   /**
-   * The owner of a col text ode is the #Document (represented by XStatement).
+   * The owner of a col text node is the #Document (represented by XStatement).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The owning document
    */
   public Document getOwnerDocument()
   {
@@ -282,9 +282,9 @@ public class ColumnData extends StreamableNode implements Text
   }
 
   /**
-   * Return "#Text".
+   * Return node name, "#Text".
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return "#Text".
    */
   public String getNodeName()
   {
@@ -292,9 +292,9 @@ public class ColumnData extends StreamableNode implements Text
   }
 
   /**
-   * Return null.
+   * Return First child. This always returns null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getFirstChild()
   {
@@ -306,9 +306,9 @@ public class ColumnData extends StreamableNode implements Text
   }
 
   /**
-   * This always returns null.
+   * Return next sibling. This always returns null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getNextSibling()
   {
@@ -322,7 +322,7 @@ public class ColumnData extends StreamableNode implements Text
   /**
    * The parent node of the col text node is the col node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The parent node i.e the column node
    */
   public Node getParentNode()
   {
@@ -337,7 +337,7 @@ public class ColumnData extends StreamableNode implements Text
    * Tell if there are any children of the col node,
    * which is always false.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false
    */
   public boolean hasChildNodes()
   {

@@ -71,20 +71,20 @@ import java.sql.ResultSetMetaData;
 public class RowSet extends StreamableNode
 {
 
-  /** NEEDSDOC Field m_columnHeaders          */
+  /** Array of column headers in this row-set          */
   ColumnHeader[] m_columnHeaders;
 
-  /** NEEDSDOC Field m_firstrow          */
+  /** First row in this row-set          */
   Row m_firstrow;
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag for debug mode         */
   private static final boolean DEBUG = false;
 
   /**
    * Constructor RowSet
    *
    *
-   * NEEDSDOC @param statement
+   * @param statement Owning document
    */
   public RowSet(XStatement statement)
   {
@@ -94,9 +94,9 @@ public class RowSet extends StreamableNode
   // ===== Element implementation =====
 
   /**
-   * Return "row-set".
+   * Return node name: "row-set".
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return "row-set".
    */
   public String getNodeName()
   {
@@ -166,9 +166,9 @@ public class RowSet extends StreamableNode
   }
 
   /**
-   * This always returns null.
+   * getNextSibling - This always returns null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getNextSibling()
   {
@@ -182,7 +182,7 @@ public class RowSet extends StreamableNode
   /**
    * The parent node of row-set is #Document (represented by XStatement).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Owner document
    */
   public Node getParentNode()
   {
@@ -197,7 +197,7 @@ public class RowSet extends StreamableNode
    * Tell if there are any children of the document,
    * which is always true.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True  
    */
   public boolean hasChildNodes()
   {

@@ -73,26 +73,26 @@ import org.apache.xalan.res.XSLTErrorResources;
 public class ColumnHeader extends StreamableNode implements NamedNodeMap
 {
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Flag for DEBUG mode         */
   private static final boolean DEBUG = false;
 
-  /** NEEDSDOC Field m_columnIndex          */
+  /** Column index         */
   int m_columnIndex;
 
-  /** NEEDSDOC Field m_metaData          */
+  /** Meta data          */
   ResultSetMetaData m_metaData;
 
-  /** NEEDSDOC Field m_parent          */
+  /** Parent node, a row-set          */
   RowSet m_parent;
 
   /**
    * Constructor ColumnHeader
    *
    *
-   * NEEDSDOC @param statement
-   * NEEDSDOC @param parent
-   * NEEDSDOC @param columnIndex
-   * NEEDSDOC @param metaData
+   * @param statement Owning document
+   * @param parent Parent node, a row-set
+   * @param columnIndex Index of column this header is for
+   * @param metaData Meta data
    */
   public ColumnHeader(XStatement statement, RowSet parent, int columnIndex,
                       ResultSetMetaData metaData)
@@ -106,9 +106,9 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * Return "column-header".
+   * Return Node name, "column-header".
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return "column-header".
    */
   public String getNodeName()
   {
@@ -116,9 +116,9 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * Always returns null.
+   * getFirstChild - Always returns null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getFirstChild()
   {
@@ -174,9 +174,8 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
 
   /**
    * The parent node of a column-header Node is the row-set Node.
-   * @returns a RowSet.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a RowSet.
    */
   public Node getParentNode()
   {
@@ -191,7 +190,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
    * Tell if there are any children of the column-header Node,
    * which is always false.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false
    */
   public boolean hasChildNodes()
   {
@@ -205,7 +204,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   /**
    * Return the metadata for this column.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node.
    */
   public NamedNodeMap getAttributes()
   {
@@ -214,11 +213,11 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
 
   // ============= NamedNodeMap ===============
 
-  /** NEEDSDOC Field m_attributes          */
+  /** Array of attributes for column          */
   ColumnAttribute[] m_attributes = null;
 
   /**
-   * NEEDSDOC Method allocAttrs 
+   * Allocate an array of attributes for this column
    *
    */
   private void allocAttrs()
@@ -237,13 +236,13 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method allocAttr 
+   * Create an attribute
    *
    *
-   * NEEDSDOC @param pos
-   * NEEDSDOC @param name
+   * @param pos Index of attribute in array
+   * @param name Attribut name
    *
-   * NEEDSDOC (allocAttr) @return
+   * @return The attribute at the given index
    */
   private ColumnAttribute allocAttr(int pos, String name)
   {
@@ -264,9 +263,9 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   /**
    * Get an attribute by name from the metadata for this column.
    *
-   * NEEDSDOC @param name
+   * @param name Attribute name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Attribute with given name or null if not found 
    */
   public Node getNamedItem(String name)
   {
@@ -287,9 +286,9 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   /**
    * Get an attribute by index from the metadata for this column.
    *
-   * NEEDSDOC @param index
+   * @param index Index of attribut to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Attribute node at given index or null if not found  
    */
   public Node item(int index)
   {
@@ -310,7 +309,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   /**
    * Get the number of attributes of column metadata attributes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of attributes of column
    */
   public int getLength()
   {
@@ -318,13 +317,14 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method getNamedItemNS 
+   * Get an attribute by namespaced name from the metadata for this column.
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI Namespace URI of attribute
+   * @param localName Local name of attribute
    *
-   * NEEDSDOC (getNamedItemNS) @return
+   * @return the attribute with the given local name and a null
+   * namespace, or null.
    */
   public Node getNamedItemNS(String namespaceURI, String localName)
   {
@@ -336,12 +336,12 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method setNamedItem 
+   * Set an attribute from the metadata for this column. Not supported
    *
    *
-   * NEEDSDOC @param arg
+   * @param arg
    *
-   * NEEDSDOC (setNamedItem) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -354,12 +354,12 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method removeNamedItem 
+   * Remove an attribute - Not supported 
    *
    *
-   * NEEDSDOC @param name
+   * @param name
    *
-   * NEEDSDOC (removeNamedItem) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -372,12 +372,12 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method setNamedItemNS 
+   * Set namespaced attribute - Not supported 
    *
    *
-   * NEEDSDOC @param arg
+   * @param arg
    *
-   * NEEDSDOC (setNamedItemNS) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -390,13 +390,13 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method removeNamedItemNS 
+   * Removed namespaced attribute - Not supported
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI
+   * @param localName
    *
-   * NEEDSDOC (removeNamedItemNS) @return
+   * @return null
    *
    * @throws DOMException
    */
