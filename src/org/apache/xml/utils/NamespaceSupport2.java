@@ -288,13 +288,13 @@ public class NamespaceSupport2
                                   boolean isAttribute)
     {
         String[] name=currentContext.processName(qName, isAttribute);
-	if(name==null)
-	    return null;
+        if(name==null)
+            return null;
 
-	// JJK: This recopying is required because processName may return
-	// a cached result. I Don't Like It. *****
-	System.arraycopy(name,0,parts,0,3);
-	return parts;
+        // JJK: This recopying is required because processName may return
+        // a cached result. I Don't Like It. *****
+        System.arraycopy(name,0,parts,0,3);
+        return parts;
     }
 
 
@@ -381,14 +381,14 @@ public class NamespaceSupport2
      * @see #getURI */
     public Enumeration getPrefixes (String uri)
     {
-	// JJK: The old code involved creating a vector, filling it
-	// with all the matching prefixes, and then getting its
-	// elements enumerator. Wastes storage, wastes cycles if we
-	// don't actually need them all. Better to either implement
-	// a specific enumerator for these prefixes... or a filter
-	// around the all-prefixes enumerator, which comes out to
-	// roughly the same thing.
-	
+        // JJK: The old code involved creating a vector, filling it
+        // with all the matching prefixes, and then getting its
+        // elements enumerator. Wastes storage, wastes cycles if we
+        // don't actually need them all. Better to either implement
+        // a specific enumerator for these prefixes... or a filter
+        // around the all-prefixes enumerator, which comes out to
+        // roughly the same thing.
+        
 //          Vector prefixes = new Vector();
 //          Enumeration allPrefixes = getPrefixes();
 //          while (allPrefixes.hasMoreElements()) {
@@ -399,52 +399,57 @@ public class NamespaceSupport2
 //          }
 //          return prefixes.elements();
 
-	// Anonymous implementation of Enumeration filter, wrapped
-	// aroung the get-all-prefixes version of the operation.
-	return new Enumeration()
-	    {
-		private Enumeration allPrefixes;
-		private String uri;
-		private String lookahead=null;
-	     
-		// Kluge: Since one can't do a constructor on an
-		// anonymous class (as far as I know)...
-		Enumeration setup(String uri, Enumeration allPrefixes)
-		{
-		    this.uri=uri;
-		    this.allPrefixes=allPrefixes;
-		    return this;
-		}
-		
-		public boolean hasMoreElements()
-		{
-		    if(lookahead!=null)
-			return true;
-		    
-		    while(allPrefixes.hasMoreElements())
-			{
-			    String prefix=(String)allPrefixes.nextElement();
-			    if(uri.equals(getURI(prefix)))
-				{
-				    lookahead=prefix;
-				    return true;
-				}
-			}
-		    return false;
-		}
-		
-		public Object nextElement()
-		{
-		    if(hasMoreElements())
-			{
-			    String tmp=lookahead;
-			    lookahead=null;
-			    return tmp;
-			}
-		    else
-			throw new java.util.NoSuchElementException();
-		}
-	    }.setup(uri,getPrefixes());	
+        PrefixEnumerator prefixEnumerator = new PrefixEnumerator();
+        return prefixEnumerator.setup(uri,getPrefixes());	
+    }
+    
+    /**
+     * Implementation of Enumeration filter, wrapped
+     * aroung the get-all-prefixes version of the operation.
+     */
+    class PrefixEnumerator implements Enumeration
+    {
+        private Enumeration allPrefixes;
+        private String uri;
+        private String lookahead=null;
+     
+        // Kluge: Since one can't do a constructor on an
+        // anonymous class (as far as I know)...
+        Enumeration setup(String uri, Enumeration allPrefixes)
+        {
+            this.uri=uri;
+            this.allPrefixes=allPrefixes;
+            return this;
+        }
+        
+        public boolean hasMoreElements()
+        {
+            if(lookahead!=null)
+                return true;
+            
+            while(allPrefixes.hasMoreElements())
+                {
+                    String prefix=(String)allPrefixes.nextElement();
+                    if(uri.equals(getURI(prefix)))
+                        {
+                            lookahead=prefix;
+                            return true;
+                        }
+                }
+            return false;
+        }
+        
+        public Object nextElement()
+        {
+            if(hasMoreElements())
+                {
+                    String tmp=lookahead;
+                    lookahead=null;
+                    return tmp;
+                }
+            else
+                throw new java.util.NoSuchElementException();
+        }
     }
 
 
@@ -660,7 +665,7 @@ public class NamespaceSupport2
                                 // Save in the cache for future use.
             table.put(name[2], name);
             tablesDirty = true;
-	    return name;
+            return name;
         }
         
 
