@@ -95,12 +95,6 @@ public class ElemExtensionCall extends ElemLiteralResult
    *  @serial          */
   String m_extns;
 
-  // String m_extHandlerLookup;
-
-  // YOU CAN'T DO THIS HERE, AS STYLESHEETS MUST BE IMMUTABLE DURING RUNTIME. -sb
-  /* Flag indicating if the extension is available for execution    */
-  transient boolean isAvailable = false;
-
   /** Language used by extension.
    *  @serial          */
   String m_lang;
@@ -139,15 +133,6 @@ public class ElemExtensionCall extends ElemLiteralResult
   // TODO: Need prefix.
   // return localPart;
   // }
-
-  /**
-   * Tell if this extension element is available for execution.
-   */
-  public boolean elementIsAvailable()
-  {
-    return isAvailable;
-    // This needs to ask the execution context...
-  }
 
   /**
    * This function is called after everything else has been
@@ -263,7 +248,7 @@ public class ElemExtensionCall extends ElemLiteralResult
         try
         {
           transformer.pushElemTemplateElement(child);
-          child.execute(transformer, sourceNode, mode);
+          ((ElemFallback) child).execute(transformer, sourceNode, mode, true);
         }
         finally
         {
@@ -316,12 +301,6 @@ public class ElemExtensionCall extends ElemLiteralResult
 
       try
       {
-
-        // We set isAvailable to true so that if the extension element processes its
-        // children, and one of those children is an <xsl:fallback>, it won't get invoked.
-
-        // YOU CAN'T DO THIS HERE, AS STYLESHEETS MUST BE IMMUTABLE DURING RUNTIME. -sb
-        isAvailable = true;
         nsh.processElement(this.getLocalName(), this, transformer,
                            getStylesheet(), sourceNode.getOwnerDocument(),
                            sourceNode, mode, this);
@@ -350,9 +329,6 @@ public class ElemExtensionCall extends ElemLiteralResult
         }
 
         // transformer.message(msg);
-        
-        // YOU CAN'T DO THIS HERE, AS STYLESHEETS MUST BE IMMUTABLE DURING RUNTIME. -sb
-        isAvailable = false;
         
         executeFallbacks(
           transformer, sourceNode, mode);

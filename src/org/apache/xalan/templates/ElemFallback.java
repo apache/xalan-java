@@ -60,7 +60,7 @@ import org.w3c.dom.*;
 
 import org.xml.sax.*;
 
-import org.apache.xpath.*;
+// import org.apache.xpath.*;
 import org.apache.xalan.trace.SelectionEvent;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -102,12 +102,9 @@ public class ElemFallback extends ElemTemplateElement
   }
 
   /**
-   * Execute the fallback elements.
-   * When an XSLT transformer performs fallback for an instruction
-   * element, if the instruction element has one or more xsl:fallback
-   * children, then the content of each of the xsl:fallback children
-   * must be instantiated in sequence; otherwise, an error must
-   * be signaled. The content of an xsl:fallback element is a template.
+   * This is the normal call when xsl:fallback is instantiated.
+   * In accordance with the XSLT 1.0 Recommendation, chapter 15,
+   * "Normally, instantiating an xsl:fallback element does nothing."
    *
    * @param transformer non-null reference to the the current transform-time state.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
@@ -119,20 +116,39 @@ public class ElemFallback extends ElemTemplateElement
           TransformerImpl transformer, Node sourceNode, QName mode)
             throws TransformerException
   {
+  }
+
+  /**
+   * Execute the fallback elements.  This must be explicitly called to
+   * instantiate the content of an xsl:fallback element.
+   * When an XSLT transformer performs fallback for an instruction
+   * element, if the instruction element has one or more xsl:fallback
+   * children, then the content of each of the xsl:fallback children
+   * must be instantiated in sequence; otherwise, an error must
+   * be signaled. The content of an xsl:fallback element is a template.
+   *
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
+   * @param dummyArg used to indicate that this method, rather than the three argument method
+   *        is to be executed resulting in processing of the fallback elements.
+   *
+   * @throws TransformerException
+   */
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode, boolean dummyArg)
+            throws TransformerException
+  {
 
     if (Constants.ELEMNAME_EXTENSIONCALL == m_parentNode.getXSLToken())
     {
-      ElemExtensionCall parent = (ElemExtensionCall) m_parentNode;
 
-      if (!parent.elementIsAvailable())
-      {
-        if (TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireTraceEvent(sourceNode, mode,
-                  this);
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEvent(sourceNode, mode,
+                this);
 
-        // XPathContext xctxt = transformer.getXPathContext();
-        transformer.executeChildTemplates(this, sourceNode, mode);
-      }
+      transformer.executeChildTemplates(this, sourceNode, mode);
+
     }
     else
     {
