@@ -206,7 +206,7 @@ class StreamOutput extends OutputBase {
     }
 
     protected void appendDTD(String name) {
-	_buffer.append(name);
+	_buffer.append("<!DOCTYPE ").append(name);
 	if (_doctypePublic == null) {
 	    _buffer.append(" SYSTEM");
 	}
