@@ -655,30 +655,50 @@ public class Process
            }
             else
             {
-							if (entityResolver != null)
-							{
-								XMLReader reader = XMLReaderFactory.createXMLReader();
-								reader.setEntityResolver(entityResolver);
-								if (contentHandler != null)
-								{
-									SAXResult result = new SAXResult(contentHandler);
-									transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
-																				result);
-								}
-								else
-								{
-									transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
-																			strResult);
-								}
-							}
-							else if (contentHandler != null)
-							{
-								SAXResult result = new SAXResult(contentHandler);
-								transformer.transform(new StreamSource(inFileName),
-																			result);
-							}
-							else
-								transformer.transform(new StreamSource(inFileName), strResult);
+		if (entityResolver != null)
+		    {
+			XMLReader reader=null;
+			// Use JAXP1.1 ( if possible )      
+			try {
+			    javax.xml.parsers.SAXParserFactory factory=
+				javax.xml.parsers.SAXParserFactory.newInstance();
+			    factory.setNamespaceAware( true );
+			    javax.xml.parsers.SAXParser jaxpParser=
+				factory.newSAXParser();
+			    reader=jaxpParser.getXMLReader();
+			    
+			} catch( javax.xml.parsers.ParserConfigurationException ex ) {
+			    throw new org.xml.sax.SAXException( ex );
+			} catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+			    throw new org.xml.sax.SAXException( ex1.toString() );
+			} catch( NoSuchMethodError ex2 ) {
+			}
+			catch (AbstractMethodError ame){}
+			if (null == reader) {
+			    reader = XMLReaderFactory.createXMLReader();
+			}
+
+			reader.setEntityResolver(entityResolver);
+			if (contentHandler != null)
+			    {
+				SAXResult result = new SAXResult(contentHandler);
+				transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
+						      result);
+			    }
+			else
+			    {
+				transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
+						      strResult);
+			    }
+		    }
+		else if (contentHandler != null)
+		    {
+			SAXResult result = new SAXResult(contentHandler);
+			transformer.transform(new StreamSource(inFileName),
+					      result);
+		    }
+		else
+		    transformer.transform(new StreamSource(inFileName), strResult);
             }
           }
           else
