@@ -90,8 +90,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
   /**
    * Show how to transform a DOM tree into another DOM tree.  
-   * This uses the javax.xml.parsers to parse an XML file into a 
-   * DOM, and create an output DOM.
+   * This uses the javax.xml.parsers to parse both an XSL file 
+   * and the XML file into a DOM, and create an output DOM.
    */
 public class DOM2DOM
 {
@@ -103,32 +103,44 @@ public class DOM2DOM
 
     if(tFactory.getFeature(DOMSource.FEATURE) && tFactory.getFeature(DOMResult.FEATURE))
     {
-      // Process the stylesheet StreamSource and generate a Transformer.
-      Transformer transformer = tFactory.newTransformer(new StreamSource("birds.xsl"));
-      
       //Instantiate a DocumentBuilderFactory.
       DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+
+      // And setNamespaceAware, which is required when parsing xsl files
+      dFactory.setNamespaceAware(true);
       
       //Use the DocumentBuilderFactory to create a DocumentBuilder.
       DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
       
+      //Use the DocumentBuilder to parse the XSL stylesheet.
+      Document xslDoc = dBuilder.parse("birds.xsl");
+
+      // Use the DOM Document to define a DOMSource object.
+      DOMSource xslDomSource = new DOMSource(xslDoc);
+
+      // Set the systemId: note this is actually a URL, not a local filename
+      xslDomSource.setSystemId("birds.xsl");
+
+      // Process the stylesheet DOMSource and generate a Transformer.
+      Transformer transformer = tFactory.newTransformer(xslDomSource);
+
       //Use the DocumentBuilder to parse the XML input.
-      Document doc = dBuilder.parse("birds.xml");
+      Document xmlDoc = dBuilder.parse("birds.xml");
       
       // Use the DOM Document to define a DOMSource object.
-      DOMSource domSource = new DOMSource(doc);
+      DOMSource xmlDomSource = new DOMSource(xmlDoc);
       
       // Set the base URI for the DOMSource so any relative URIs it contains can
       // be resolved.
-      domSource.setSystemId("birds.xml");
+      xmlDomSource.setSystemId("birds.xml");
       
       // Create an empty DOMResult for the Result.
       DOMResult domResult = new DOMResult();
   
   	  // Perform the transformation, placing the output in the DOMResult.
-      transformer.transform(domSource, domResult);
+      transformer.transform(xmlDomSource, domResult);
 	  
-	    //Instantiate an XML serializer and use it to serialize the output DOM to System.out
+	    //Instantiate an Xalan XML serializer and use it to serialize the output DOM to System.out
 	    // using a default output format.
       Serializer serializer = SerializerFactory.getSerializer
                                    (OutputProperties.getDefaultMethodProperties("xml"));
