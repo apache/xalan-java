@@ -1,4 +1,52 @@
+     <anchor name="dtm"/>
+     <s3 title="Changes for &xslt4j; 2.2.D2">
+     <p>This release includes the following changes:</p>
+     <ul>
+       <li>Deprecation of the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatiblity API</link></li>
+       <li>The DTM</li>
+       <li>Other optimization work</li>
+     </ul>
+     <anchor name="dtm"/>
+     <p>The primary focus of the 2.2 Developer releases is incorporation of all our work over the past several months on the Document Table
+      Model (<link idref="dtm">DTM</link>).</p>
 
+<p>As a result of the changes in *internal* api, you may encounter problems with extensions. We have done some bug fixing in support
+for extensions since 2.2.D1.  John Gentilin is working on fixing the SQL library extension,which currently is broken. Please report 
+any problems you find (see <link anchor="bugs">bugs</link>).</p>
+
+<p>The DTM and related work provides faster performance and less accumulation of garbage... though it is an
+ongoing battle.  Brief summary:</p>
+<ul>
+<li>The DTM identifies nodes with 32-bit integer handles.
+The DTM has many features, including direct character dispatch to SAX2,
+native DTM iterators and "traversers", multiple document management, etc.<br/><br/></li>
+<li>Joe Kesselman's CoRoutine parsers, which are in a threaded SAX flavor
+and in a Xerces parseMore() flavor (no threads).  These do away with the
+"race" conditions that occured in the original code, and should make Xalan
+much more robust.<br/><br/></li>
+<li>*Much* more robust XPath itteration.  The "waiting" iterators of old are
+no more, and good riddance.  There is stil lots more we want to do with
+this mechanism.  (There is something here called MatchIterators, but it's
+not being used yet for various reasons.  We will be taking advantage of
+these down the line.)<br/><br/></li>
+<li>A fair amount of XObject creation reduction.  You can now get boolean,
+number, nodeset, and string values directly from an Expression, instead of
+going through an XObject.<br/><br/></li>
+<li>XMLString, which allows us to work with string objects that don't wrap
+Java's String object. These objects get their character data from an array or
+Fast String Buffer.<br/><br/></li>
+<li>Serializers now only do internal buffering if they know they are writing
+to a FileStream.<br/><br/></li>
+<li>The variable stack mechanism has been redisigned, so that it is no
+longer so interpretive, and we believe it is much more robust.<br/><br/></li>
+<li> Some small amount of stylesheet rewriting (but not yet redundent
+expression elimination), in particular to reduce full RTF creation and
+interpretation.</li>
+</ul>
+<p>&xslt4j; implements two DTM performance features that you can control with the TransformerFactory
+<jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">setAttribute()</jump>
+method. See <link idref="dtm" anchor="settings">DTM performance settings</link></p>
+     </s3>
      <s3 title="Changes for &xslt4j; 2.1.0">
      &xsltcdone;
      <p>This release also includes a number of bug fixes to &xslt4j; and TrAX. 
