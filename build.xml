@@ -29,6 +29,7 @@ Build targets
     - auto*    targets used by automated build programs, without dependencies
     - minitest compile and run the minitest in xml-xalan\test
     - conftest compile and run the conftest in xml-xalan\test
+    - smoketest run a pre-checkin smoketest (5 to 10 minutes).
         
 If you build a target that depends on other targets, those other targets are created in 
 the correct order.
@@ -50,7 +51,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Defines variables used by the other targets                         -->
   <!-- =================================================================== -->
-  <property name="version" value="2_0_D05"/>
+  <property name="version" value="2_0_D06"/>
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
