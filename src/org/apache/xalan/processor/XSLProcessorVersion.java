@@ -118,7 +118,7 @@ public class XSLProcessorVersion
    *          When missing, it designates the final and complete
    *          development drop for a release.
    */
-  public static int MAINTENANCE = 1;
+  public static int MAINTENANCE = 2;
 
   /**
    * Development Drop Number.

@@ -723,21 +723,15 @@ public class EnvironmentCheck
               // Note "-" char is looked for in appendFoundJars
               h.put(jars[i] + "-path", f.getAbsolutePath());
              
-              // We won't bother reporting on the xalan.jar on the
-              // foundclasses.java.class.path since this requires
-              // knowing the size of the xalan.jar and putting that 
-              // value in the hashtable below before we build the
-              // jar. Once we do that and perform a build, the 
-              // xalan.jar size changes!.  If we find a better way
-              // to do this, we can reable this function.  The user
-              // will still be given information on the xalan.jar
-              // found on the java.class.path.
+              // We won't bother reporting on the xalan.jar apparent version
+              // since this requires knowing the jar size of the xalan.jar
+              // before we build it. 
               // For other jars, eg. xml-apis.jar and xercesImpl.jar, we 
               // report the apparent version of the file we've found
               if (!("xalan.jar".equalsIgnoreCase(jars[i]))) {              
                 h.put(jars[i] + "-apparent.version",
                     getApparentVersion(jars[i], f.length()));
-              }                    
+              }
               v.addElement(h);
             }
             catch (Exception e)
@@ -1251,15 +1245,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(983377), "xalan.jar from xalan-j_2_4_D1");    
     jarVersions.put(new Long(997276), "xalan.jar from xalan-j_2_4_0");
     jarVersions.put(new Long(1031036), "xalan.jar from xalan-j_2_4_1");    
-    
-    jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
-    jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
-    jarVersions.put(new Long(857692), "xalan.jar from lotusxsl-j_2_2");
-    jarVersions.put(new Long(906359), "xalan.jar from lotusxsl-j_2_3_1");
-    jarVersions.put(new Long(857692), "xalan.jar from lotusxsl-j_2_3_2");
-    jarVersions.put(new Long(1201514), "xalan.jar from lotusxsl-j_2_3_3");
-    jarVersions.put(new Long(1201599), "xalan.jar from lotusxsl-j_2_3_4");
-    jarVersions.put(new Long(1201641), "xalan.jar from lotusxsl-j_2_3_5");    
+    // Stop recording xalan.jar sizes as of Xalan Java 2.5.0    
 
     jarVersions.put(new Long(596540), "xsltc.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(590247), "xsltc.jar from xalan-j_2_3_D1");
@@ -1269,14 +1255,16 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1328227), "xsltc.jar from xalan-j_2_4_0");
     jarVersions.put(new Long(1344009), "xsltc.jar from xalan-j_2_4_1");
     jarVersions.put(new Long(1348361), "xsltc.jar from xalan-j_2_5_D1");    
+    // Stop recording xsltc.jar sizes as of Xalan Java 2.5.0
+
     jarVersions.put(new Long(1268634), "xsltc.jar-bundled from xalan-j_2_3_0");
 
     jarVersions.put(new Long(100196), "xml-apis.jar from xalan-j_2_2_0 or xalan-j_2_3_D1");
     jarVersions.put(new Long(108484), "xml-apis.jar from xalan-j_2_3_0, or xalan-j_2_3_1 from xml-commons-1.0.b2");
     jarVersions.put(new Long(109049), "xml-apis.jar from xalan-j_2_4_0 from xml-commons RIVERCOURT1 branch");
-    jarVersions.put(new Long(109049), "xml-apis.jar from xalan-j_2_4_0, lotusxsl-j_2_3_2 or lotusxsl-j_2_3_3 from xml-commons RIVERCOURT1");
-    jarVersions.put(new Long(113749), "xml-apis.jar from xalan-j_2_4_1, lotusxsl-j_2_3_4 or lotusxsl-j_2_3_5 from factoryfinder-build of xml-commons RIVERCOURT1");
-    jarVersions.put(new Long(124704), "xml-apis.jar from xalan-j_2_5_0 from from tck-jaxp-1_2_0 branch of xml-commons");    
+    jarVersions.put(new Long(113749), "xml-apis.jar from xalan-j_2_4_1 from factoryfinder-build of xml-commons RIVERCOURT1");
+    jarVersions.put(new Long(124704), "xml-apis.jar from tck-jaxp-1_2_0 branch of xml-commons");    
+
     // If the below were more common I would update it to report 
     //  errors better; but this is so old hardly anyone has it
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
@@ -1288,14 +1276,10 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1499244), "xerces.jar from xalan-j_2_0_0 from xerces-1_2_3.bin");
     jarVersions.put(new Long(1605266), "xerces.jar from xalan-j_2_0_1 from xerces-1_3_0.bin");
     jarVersions.put(new Long(904030), "xerces.jar from xalan-j_2_1_0 from xerces-1_4.bin");
-    jarVersions.put(new Long(1190776), "xerces.jar from lotusxsl_1_0_1 apparently-from xerces-1_0_3.bin");
-    jarVersions.put(new Long(1489400), "xerces.jar from lotusxsl-j_2_0_0 from XML4J-3_1_1");
-    jarVersions.put(new Long(1787796), "xerces.jar from lotusxsl-j_2_2 or xerces-1_4_1.bin");
     jarVersions.put(new Long(904030), "xerces.jar from xerces-1_4_0.bin");
     jarVersions.put(new Long(1802885), "xerces.jar from xerces-1_4_2.bin");
     jarVersions.put(new Long(1734594), "xerces.jar from Xerces-J-bin.2.0.0.beta3");
     jarVersions.put(new Long(1808883), "xerces.jar from xalan-j_2_2_D10,D11,D12 or xerces-1_4_3.bin");
-    jarVersions.put(new Long(1803877), "xerces.jar from XML4J-3_2_1");
     jarVersions.put(new Long(1812019), "xerces.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(1720292), "xercesImpl.jar from xalan-j_2_3_D1");
     jarVersions.put(new Long(1730053), "xercesImpl.jar from xalan-j_2_3_0 or xalan-j_2_3_1 from xerces-2_0_0");
@@ -1303,23 +1287,16 @@ public class EnvironmentCheck
     jarVersions.put(new Long(972027), "xercesImpl.jar from xalan-j_2_4_0 from xerces-2_1");
     jarVersions.put(new Long(831587), "xercesImpl.jar from xalan-j_2_4_1 from xerces-2_2"); 
     jarVersions.put(new Long(891817), "xercesImpl.jar from xalan-j_2_5_D1 from xerces-2_3");  
-    jarVersions.put(new Long(895924), "xercesImpl.jar from xalan-j_2_5_0 from xerces-2_4");                    
-    jarVersions.put(new Long(1729063), "xercesImpl.jar from lotusxsl-j_2_3_1 from XML4J-4_0_0");
-    jarVersions.put(new Long(1738551), "xercesImpl.jar from lotusxsl-j_2_3_2 from XML4J-4_0_2");
-    jarVersions.put(new Long(3243826), "xercesImpl.jar from lotusxsl-j_2_3_3 from XML4J-4_0_5");
-    jarVersions.put(new Long(1171789), "xercesImpl.jar from lotusxsl-j_2_3_4 from XML4J-4_0_6");
-    jarVersions.put(new Long(1174955), "xercesImpl.jar from lotusxsl-j_2_3_5 from XML4J-4_0_8");
-    jarVersions.put(new Long(1173922), "xercesImpl.jar from lotusxsl-j_2_3_6 from XML4J-4_0_9");
-    jarVersions.put(new Long(831828), "xercesImpl.jar from lotusxsl-j_2_4_0 from XML4J-4_1_1");
-  
+    jarVersions.put(new Long(895924), "xercesImpl.jar from xerces-2_4");                    
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
 
     jarVersions.put(new Long(18779), "xalanservlet.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(21453), "xalanservlet.jar from xalan-j_2_0_1");
-    jarVersions.put(new Long(24826), "xalanservlet.jar from xalan-j_2_3_1 or xalan-j_2_4_1 or lotusxsl-j_2_3_1 to lotusxsl-j-2_3_5");    
+    jarVersions.put(new Long(24826), "xalanservlet.jar from xalan-j_2_3_1 or xalan-j_2_4_1");    
     jarVersions.put(new Long(24831), "xalanservlet.jar from xalan-j_2_4_1");
+    // Stop recording xalanservlet.jar sizes as of Xalan Java 2.5.0; now a .war file
     
     // For those who've downloaded JAXP from sun
     jarVersions.put(new Long(5618), "jaxp.jar from jaxp1.0.1");
@@ -1336,18 +1313,6 @@ public class EnvironmentCheck
     // jakarta-ant: since many people use ant these days
     jarVersions.put(new Long(136198), "parser.jar from jakarta-ant-1.3 or 1.2");
     jarVersions.put(new Long(5537), "jaxp.jar from jakarta-ant-1.3 or 1.2");
-
-    // Various LotusXSL versions, which are based on Xalan code 
-    //  (LotusXSL was donated by Lotus to Apache to become Xalan)
-    jarVersions.put(new Long(120274), "lotusxsl.jar from lotusxsl-0_16_4");
-    jarVersions.put(new Long(120293), "lotusxsl.jar from lotusxsl-0_16_5");
-    jarVersions.put(new Long(283777), "lotusxsl.jar from lotusxsl-0_17_2");
-    jarVersions.put(new Long(305577), "lotusxsl.jar from lotusxsl-0_17_3");
-    jarVersions.put(new Long(304500), "lotusxsl.jar from lotusxsl-0_17_4");
-    jarVersions.put(new Long(714959), "lotusxsl.jar from lotusxsl-0_18_1");
-    jarVersions.put(new Long(717674), "lotusxsl.jar from lotusxsl-0_18_2");
-    jarVersions.put(new Long(752343), "lotusxsl.jar from lotusxsl-0_18_3");
-    jarVersions.put(new Long(907101), "lotusxsl.jar from lotusxsl-0_18_4");
   }
 
   /** Simple PrintWriter we send output to; defaults to System.out.  */
