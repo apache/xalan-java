@@ -729,6 +729,17 @@ public class XSLTSchema extends XSLTElementDef
    * TODO:  When we convert to Java2, this should be a Set.
    */
   private Hashtable m_availElems = new Hashtable();
+  
+  /**
+   * Get the table of available elements.
+   * 
+   * @return table of available elements, keyed by qualified names, and with 
+   * values of the same qualified names.
+   */
+  public Hashtable getElemsAvailable() 
+  {
+    return m_availElems;
+  }
 
   /**
    * Adds a new element name to the Hashtable of available elements.
