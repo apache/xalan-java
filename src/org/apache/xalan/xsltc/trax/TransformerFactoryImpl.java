@@ -72,15 +72,16 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+import javax.xml.parsers.SAXParserFactory;
 
+import org.xml.sax.*;
 import org.w3c.dom.Document;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.InputSource;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
@@ -120,21 +121,6 @@ public class TransformerFactoryImpl
     protected static String _defaultTransletName = "GregorSamsa";
 
     /**
-     * Cache for the newTransformer() method - see method for details
-     */
-    private Transformer _copyTransformer = null;
-
-    /**
-     * XSL document for the default transformer
-     */
-    private static final String COPY_TRANSLET_CODE =
-	"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"+
-	"<xsl:template match=\"/\">"+
-	"  <xsl:copy-of select=\".\"/>"+
-	"</xsl:template>"+
-	"</xsl:stylesheet>";
-
-    /**
      * This Hashtable is used to store parameters for locating
      * <?xml-stylesheet ...?> processing instructions in XML docs.
      */
@@ -170,8 +156,10 @@ public class TransformerFactoryImpl
      */
     private int _indentNumber = -1;
 
-    // Temporary
-    private boolean _oldOutputSystem = false;
+    /**
+     * A reference to an XML reader for parsing.
+     */
+    private XMLReader _xmlReader = null;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -265,16 +253,6 @@ public class TransformerFactoryImpl
 	    }
 	    else if (value instanceof String) {
 		_disableInlining = ((String) value).equalsIgnoreCase("true");
-		return;
-	    }
-	}
-	else if (name.equals("old-output")) {
-	    if (value instanceof Boolean) {
-		_oldOutputSystem = ((Boolean) value).booleanValue();
-		return;
-	    }
-	    else if (value instanceof String) {
-		_oldOutputSystem = ((String) value).equalsIgnoreCase("true");
 		return;
 	    }
 	}
@@ -395,40 +373,12 @@ public class TransformerFactoryImpl
     public Transformer newTransformer()
 	throws TransformerConfigurationException 
     { 
-	if (_copyTransformer != null) {
-	    if (_uriResolver != null) {
-		_copyTransformer.setURIResolver(_uriResolver);
-	    }
-	    return _copyTransformer;
-	}
-
-	XSLTC xsltc = new XSLTC();
-	if (_debug) xsltc.setDebug(true);
-	if (_disableInlining) xsltc.setTemplateInlining(false);
-	xsltc.init();
-
-	// Compile the default copy-stylesheet
-	byte[] bytes = COPY_TRANSLET_CODE.getBytes();
-	ByteArrayInputStream bytestream = new ByteArrayInputStream(bytes);
-	InputSource input = new InputSource(bytestream);
-	input.setSystemId(_defaultTransletName);
-	byte[][] bytecodes = xsltc.compile(_defaultTransletName, input);
-
-	// Check that the transformation went well before returning
-	if (bytecodes == null) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
-	    throw new TransformerConfigurationException(err.toString());
-	}
-
-	// Create a Transformer object and store for other calls
-	Templates templates = new TemplatesImpl(bytecodes, _defaultTransletName,
-	    xsltc.getOutputProperties(), _indentNumber, _oldOutputSystem);
-
-	_copyTransformer = templates.newTransformer();
+	TransformerImpl result = new TransformerImpl(new Properties(), 
+	    _indentNumber, this);
 	if (_uriResolver != null) {
-	    _copyTransformer.setURIResolver(_uriResolver);
+	    result.setURIResolver(_uriResolver);
 	}
-	return _copyTransformer;
+	return result;
     }
 
     /**
@@ -556,7 +506,7 @@ public class TransformerFactoryImpl
 	}
 
 	return new TemplatesImpl(bytecodes, transletName, 
-	    xsltc.getOutputProperties(), _indentNumber, _oldOutputSystem);
+	    xsltc.getOutputProperties(), _indentNumber, this);
     }
 
     /**
@@ -571,7 +521,7 @@ public class TransformerFactoryImpl
 	throws TransformerConfigurationException 
     { 
 	final TemplatesHandlerImpl handler = 
-	    new TemplatesHandlerImpl(_indentNumber, _oldOutputSystem);
+	    new TemplatesHandlerImpl(_indentNumber, this);
 	handler.init();
 	if (_uriResolver != null) {
 	    handler.setURIResolver(_uriResolver);
@@ -772,5 +722,15 @@ public class TransformerFactoryImpl
 	    // Falls through
 	}
 	return null;
+    }
+
+    public XMLReader getXMLReader() throws Exception {
+	if (_xmlReader == null) {
+	    final SAXParserFactory pfactory 
+		= SAXParserFactory.newInstance();
+	    pfactory.setNamespaceAware(true);
+	    _xmlReader = pfactory.newSAXParser().getXMLReader();
+	}
+	return _xmlReader;
     }
 }

@@ -188,7 +188,17 @@ public class DOM2SAX implements XMLReader, Locator {
 
     public void parse() throws IOException, SAXException {
 	if (_dom != null) {
-	    parse(_dom);
+	    boolean isIncomplete = 
+		(_dom.getNodeType() != org.w3c.dom.Node.DOCUMENT_NODE);
+
+	    if (isIncomplete) {
+		_sax.startDocument();
+		parse(_dom);
+		_sax.endDocument();
+	    }
+	    else {
+		parse(_dom);
+	    }
 	}
     }
 

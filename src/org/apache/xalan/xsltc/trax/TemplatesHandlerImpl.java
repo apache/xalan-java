@@ -94,16 +94,21 @@ public class TemplatesHandlerImpl extends Parser
      */
     private URIResolver _uriResolver = null;
 
-    // Temporary
-    private boolean _oldOutputSystem;
+    /**
+     * A reference to the transformer factory that this templates
+     * object belongs to.
+     */
+    private TransformerFactoryImpl _tfactory = null;
 
     /**
      * Default constructor
      */
-    protected TemplatesHandlerImpl(int indentNumber, boolean oldOutputSystem) {
+    protected TemplatesHandlerImpl(int indentNumber, 
+	TransformerFactoryImpl tfactory) 
+    {
 	super(null);
 	_indentNumber = indentNumber;
-	_oldOutputSystem = oldOutputSystem;
+	_tfactory = tfactory;
     }
 
     /**
@@ -184,6 +189,10 @@ public class TemplatesHandlerImpl extends Parser
 		stylesheet.setSystemId(_systemId);
 		stylesheet.setParentStylesheet(null);
 		setCurrentStylesheet(stylesheet);
+
+		// Set it as top-level in the XSLTC object
+		xsltc.setStylesheet(stylesheet);
+
 		// Create AST under the Stylesheet element 
 		createAST(stylesheet);
 	    }
@@ -200,8 +209,7 @@ public class TemplatesHandlerImpl extends Parser
 		if (bytecodes != null) {
 		    final TemplatesImpl templates = 
 			new TemplatesImpl(xsltc.getBytecodes(), transletName, 
-			    getOutputProperties(), _indentNumber, 
-			    _oldOutputSystem);
+			    getOutputProperties(), _indentNumber, _tfactory);
 
 		    // Set URIResolver on templates object
 		    if (_uriResolver != null) {
@@ -223,6 +231,7 @@ public class TemplatesHandlerImpl extends Parser
      * of the location of the parsed document. 
      */
     public void setDocumentLocator(Locator locator) {
+	super.setDocumentLocator(locator);
   	setSystemId(locator.getSystemId());
     }
 
