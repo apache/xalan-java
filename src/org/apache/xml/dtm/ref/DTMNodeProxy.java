@@ -58,6 +58,7 @@ package org.apache.xml.dtm.ref;
 
 import org.w3c.dom.*;
 import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.Axis;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -355,6 +356,13 @@ public class DTMNodeProxy
   public final NodeList getChildNodes()
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+		
+		// Annoyingly, AxisIterators do not currently implement DTMIterator, so
+		// the following simple solution is not avaiable.
+		//
+		//DTMAxisIterator it=dtm.getAxisIterator(Axis.CHILD);
+		//it.setStartNode(node);
+		//return new DTMNodeList(it);
   }
 
   /**
