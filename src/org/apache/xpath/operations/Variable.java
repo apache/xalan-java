@@ -72,6 +72,9 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class Variable extends Expression
 {
+  /** Tell if fixupVariables was called.
+   *  @serial   */
+  private boolean m_fixUpWasCalled = false;
 
   /** The qualified name of the variable.
    *  @serial   */
@@ -98,6 +101,7 @@ public class Variable extends Expression
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
+    m_fixUpWasCalled = true;
     int sz = vars.size();
     for (int i = vars.size()-1; i >= 0; i--) 
     {
@@ -152,25 +156,73 @@ public class Variable extends Expression
 
     // Is the variable fetched always the same?
     // XObject result = xctxt.getVariable(m_qname);
-    
-    XObject result;
-    if(m_isGlobal)
-      result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index);
-    else
-      result = xctxt.getVarStack().getLocalVariable(xctxt, m_index);
-
-    if (null == result)
-    {
-      // This should now never happen...
-      warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE,
-           new Object[]{ m_qname.getLocalPart() });  //"VariableReference given for variable out "+
-//      (new RuntimeException()).printStackTrace();
-//      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
-//            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
-      
-      result = new XNodeSet(xctxt.getDTMManager());
+    if(m_fixUpWasCalled)
+    {    
+      XObject result;
+      if(m_isGlobal)
+        result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index);
+      else
+        result = xctxt.getVarStack().getLocalVariable(xctxt, m_index);
+  
+      if (null == result)
+      {
+        // This should now never happen...
+        warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE,
+             new Object[]{ m_qname.getLocalPart() });  //"VariableReference given for variable out "+
+  //      (new RuntimeException()).printStackTrace();
+  //      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
+  //            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
+        
+        result = new XNodeSet(xctxt.getDTMManager());
+      }
+  
+      return result;
     }
+    else
+    {
+      // Hack city... big time.  This is needed to evaluate xpaths from extensions, 
+      // pending some bright light going off in my head.  Some sort of callback?
+      synchronized(this)
+      {
+        org.apache.xml.utils.PrefixResolver prefixResolver = xctxt.getNamespaceContext();
 
-    return result;
+        // Get the current ElemTemplateElement, which must be pushed in as the 
+        // prefix resolver, and then walk backwards in document order, searching 
+        // for an xsl:param element or xsl:variable element that matches our 
+        // qname.  For this to work really correctly, the stylesheet element 
+        // should be immediatly resolve to the root stylesheet, and the operation 
+        // performed on it's list of global variables.  But that will have to wait 
+        // for another day, or someone else can do it, or I will come up with a 
+        // better solution to this whole damned hack.
+        if(prefixResolver instanceof org.apache.xalan.templates.ElemTemplateElement)
+        {
+          org.apache.xalan.templates.ElemTemplateElement prev = 
+            (org.apache.xalan.templates.ElemTemplateElement)prefixResolver;
+            
+          while(null != prev)
+          {
+            org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
+            while(null != (prev = prev.getPreviousSiblingElem()))
+            {
+              if(prev instanceof org.apache.xalan.templates.ElemVariable)
+              {
+                org.apache.xalan.templates.ElemVariable vvar = 
+                  (org.apache.xalan.templates.ElemVariable)prev;
+                
+                if(vvar.getName().equals(m_qname))
+                {
+                  m_index = vvar.getIndex();
+                  m_isGlobal = vvar.getIsTopLevel();
+                  m_fixUpWasCalled = true;
+                  return execute(xctxt);
+                }
+              }
+            }
+            prev = savedprev.getParentElem();
+          }
+        }
+      }
+      throw new javax.xml.transform.TransformerException("Variable not resolavable: "+m_qname);
+    }
   }
 }
