@@ -280,8 +280,9 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 		  can implement. Or, like the <link idref="commandline">command-line utility</link>, you can use the <jump
       href="apidocs/org/apache/xalan/trace/PrintTraceListener.html">PrintTraceListener</jump> implementation of that interface.
       <br/><br/></li>
-      <li>You can associate a <jump href="apidocs/org/apache/xalan/trace/TraceManager.html">TraceManager</jump> with the
-      Transformer for a given transformation, and register a TraceListener with the TraceManager.<br/><br/></li>
+      <li>You can register a TraceListener with the 
+      <jump href="apidocs/org/apache/xalan/trace/TraceManager.html">TraceManager</jump> associated
+      with the Transformer that will perform a given transformation.<br/><br/></li>
 		  <li><jump href="apidocs/org/apache/xalan/trace/TracerEvent.html">TracerEvent</jump> is an event that is 
 		  passed to the TraceListener.trace function. It is called before a node is 'executed' in the stylesheet.<br/><br/></li>
 		  <li><jump href="apidocs/org/apache/xalan/trace/GenerateEvent.html">GenerateEvent</jump> is an event that is 
@@ -322,9 +323,9 @@ org.apache.trax.Transformer transformer = templates.newTransformer();
 if (transformer instanceof TransformerImpl) {
   TransformerImpl transformerImpl = (TransformerImpl)transformer;
   
-  // Register the TraceListener with a TraceManager associated 
+  // Register the TraceListener with the TraceManager associated 
   // with the TransformerImpl.
-  TraceManager trMgr = new TraceManager(transformerImpl);
+  TraceManager trMgr = new transformerImpl.getTraceManager();
   trMgr.addTraceListener(ptl);
   
   // Perform the transformation --printing information to
