@@ -666,8 +666,9 @@ public class FormatterToHTML extends FormatterToXML
       {
         this.accum('>');
 
-        if (shouldIndent)
-          indent(m_currentIndent);
+        // As per Dave/Paul recommendation 12/06/2000
+        // if (shouldIndent)
+        //  indent(m_currentIndent);
 
         this.accum('<');
         this.accum('/');
