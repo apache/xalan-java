@@ -236,7 +236,6 @@ final class Output extends TopLevelElement {
 	    }
 	    outputProperties.setProperty(OutputKeys.INDENT, attrib);
 	}
-
 	else if (_method != null && _method.equals("html")) {
 	    _indent = true;
 	}
@@ -259,7 +258,6 @@ final class Output extends TopLevelElement {
 		if (_mediaType == null) {
 		    _mediaType = "text/html";
 		}
-		_indent = true;
 	    }
 	    else if (_method.equals("text")) {
 		if (_mediaType == null) {
@@ -346,7 +344,7 @@ final class Output extends TopLevelElement {
 	}
 
 	// Compile code to set output indentation on/off
-	if (_indent ) {
+	if (_indent) {
 	    field = cpg.addFieldref(TRANSLET_CLASS, "_indent", "Z");
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, _indent));
