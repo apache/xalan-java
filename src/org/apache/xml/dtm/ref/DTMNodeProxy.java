@@ -75,7 +75,7 @@ import org.apache.xml.dtm.*;
  */
 public class DTMNodeProxy
         implements Node, Document, Text, Element, Attr,
-                   ProcessingInstruction, Comment
+                   ProcessingInstruction, Comment, DocumentFragment
 {
 
   /** The DTM for this node. */
