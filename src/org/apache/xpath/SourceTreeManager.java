@@ -60,6 +60,7 @@ import java.net.MalformedURLException;
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
@@ -88,9 +89,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class SourceTreeManager
 {
-  public static int CACHESIZE = 4;
-  private int m_size = 0;
-  private SourceTree m_sourceTree[] = new SourceTree[CACHESIZE];
+  private Vector m_sourceTree = new Vector();
   
   URIResolver m_uriResolver;
   
@@ -125,13 +124,13 @@ public class SourceTreeManager
     if(null == root)
       root = owner;
     String url = null;
-    int n = m_size;
+    int n = m_sourceTree.size();
     for(int i = 0; i < n; i++)
     {
-      SourceTree ass = m_sourceTree[i];
-      if(root == ass.m_root)
+      SourceTree sTree = (SourceTree)m_sourceTree.elementAt(i);
+      if(root == sTree.m_root)
       {
-        url = ass.m_url;
+        url = sTree.m_url;
         break;
       }
     }
@@ -153,14 +152,7 @@ public class SourceTreeManager
     String uri;
     try
     {
-      if(urlString.startsWith("../"))
-       {
-        // urlString = "file:/"+urlString;
-      }
-      // System.out.println("Calling getAbsoluteURI urlString: "+urlString + ", base: "+base);
-
       uri = SystemIDResolver.getAbsoluteURI(urlString, base);
-      // System.out.println("Returned from getAbsoluteURI: "+uri);
     }
     catch(SAXException se)
     {
@@ -203,46 +195,43 @@ public class SourceTreeManager
    */
   public void putDocumentInCache(Node n, InputSource source)
   {
-    if(m_size < CACHESIZE)
+    if(null != source.getSystemId())
     {
-      // TODO: What to do if the SystemID isn't specified?
-      if(null != source.getSystemId())
-      {
-        m_sourceTree[m_size] = new SourceTree(n, source.getSystemId());
-        m_size++;
-      }
-    }
-    else
-    {
-      // TODO: Implement a smart cache algorithm (read: pain)
-      if(null != source.getSystemId())
-      {
-        // For now, always cache on the last, on the theory that we're 
-        // probably in some sort of loop.
-        m_sourceTree[m_size-1] = new SourceTree(n, source.getSystemId());
-      }
-    }
-    
+      m_sourceTree.addElement(new SourceTree(n, source.getSystemId()));        
+    }      
   }
   
+  
+  
   /**
-   * Given a document, find the URL associated with that document.
-   * @param owner Document that was previously processed by this liaison.
+   * Given a URL, find the node associated with that document.
+   * @param url 
    */
-  public Node findNodeFromURL(String url)
+  public Node findNodeFromURL(String base, String url)
+    throws TransformException
   {
-    Node node = null;
-    int n = m_size;
-    for(int i = 0; i < n; i++)
+    try
     {
-      SourceTree ass = m_sourceTree[i];
-      if(url == ass.m_url)
+      InputSource source = this.resolveURI(base, url);
+      if(null != source.getSystemId())
+        url = source.getSystemId();
+      Node node = null;
+      int n = m_sourceTree.size();;
+      for(int i = 0; i < n; i++)
       {
-        node = ass.m_root;
-        break;
+        SourceTree sTree = (SourceTree)m_sourceTree.elementAt(i);
+        if(url.equals(sTree.m_url))
+        {
+          node = sTree.m_root;
+          break;
+        }
       }
+      return node;
     }
-    return node;
+    catch(IOException ioe)
+    {
+      throw new TransformException(ioe);
+    }
   }
   
   /**
@@ -273,7 +262,7 @@ public class SourceTreeManager
     // systemID.
     if(null != source.getSystemId())
     {
-      Node n = findNodeFromURL(source.getSystemId());
+      Node n = findNodeFromURL(null, source.getSystemId());
       if(null != n)
         return n;
     }

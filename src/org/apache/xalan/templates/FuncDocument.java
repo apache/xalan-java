@@ -199,7 +199,7 @@ public class FuncDocument extends Function2Args
       if(null != newDoc)
       {
         // TODO: mnl.addNodeInDocOrder(newDoc, true, xctxt); ??
-        mnl.addElement(newDoc);
+        mnl.addElement(newDoc);        
       }
       
       if(null == iterator)
@@ -216,7 +216,7 @@ public class FuncDocument extends Function2Args
   {
     // System.out.println("base: "+base+", uri: "+uri);
     SourceTreeManager treeMgr = xctxt.getSourceTreeManager();
-    Node newDoc = treeMgr.findNodeFromURL(uri);
+    Node newDoc = treeMgr.findNodeFromURL(base, uri);
     if(null != newDoc)
       return newDoc;
 
