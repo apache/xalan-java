@@ -245,7 +245,8 @@ public final class Parser implements Constants, ContentHandler {
 	    if (prefix.equals("xmlns") == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
 		if (namespace == null) {
-		    addError(new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix));
+		    reportError(Constants.ERROR,
+			new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix)); 
 		    Exception e = new Exception();
 		    e.printStackTrace();
 		}
@@ -344,7 +345,8 @@ public final class Parser implements Constants, ContentHandler {
 		while (elements.hasMoreElements()) {
 		    Object child = elements.nextElement();
 		    if (child instanceof Text) {
-			addError(new ErrorMsg(TEXT_NODE_ERROR));
+			reportError(Constants.ERROR,
+			    new ErrorMsg(TEXT_NODE_ERROR));
 		    }
 		}
 		if (!errorsFound()) {
@@ -353,7 +355,7 @@ public final class Parser implements Constants, ContentHandler {
 	    }
 	}
 	catch (TypeCheckError e) {
-	    addError(new ErrorMsg(e.toString()));
+	    reportError(Constants.ERROR, new ErrorMsg(e.toString()));
 	}
     }
 
@@ -385,19 +387,22 @@ public final class Parser implements Constants, ContentHandler {
 	    return (SyntaxTreeNode)getStylesheet(_root);
 	}
 	catch (ParserConfigurationException e) {
-	    addError(new ErrorMsg("JAXP parser not configured correctly"));
+	    reportError(Constants.ERROR,
+		new ErrorMsg("JAXP parser not configured correctly"));
 	}
 	catch (IOException e) {
-	    addError(new ErrorMsg(ErrorMsg.FILECANT_ERR, location));
+	    reportError(Constants.ERROR,
+		new ErrorMsg(ErrorMsg.FILECANT_ERR, location));
 	}
 	catch (SAXParseException e){
-	    addError(new ErrorMsg(e.getMessage(),e.getLineNumber()));
+	    reportError(Constants.ERROR,
+		new ErrorMsg(e.getMessage(),e.getLineNumber()));
 	}
 	catch (SAXException e) {
-	    addError(new ErrorMsg(e.getMessage()));
+	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
 	}
 	catch (CompilerException e) {
-	    addError(new ErrorMsg(e.getMessage()));
+	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
 	}
 	return null;
     }
@@ -716,10 +721,12 @@ public final class Parser implements Constants, ContentHandler {
 		}
 	    }
 	    catch (ClassNotFoundException e) {
-                addError(new ErrorMsg(CLASS_NOT_FOUND+className));
+		reportError(Constants.ERROR,
+		    new ErrorMsg(CLASS_NOT_FOUND+className));
 	    }
 	    catch (Exception e) {
-		addError(new ErrorMsg(INTERNAL_ERROR+e.getMessage()));
+		reportError(Constants.ERROR,
+		    new ErrorMsg(INTERNAL_ERROR+e.getMessage()));
 	    }
 	}
 	else {
@@ -821,7 +828,8 @@ public final class Parser implements Constants, ContentHandler {
 		    return node;
 		}
 	    } 
-	    addError(new ErrorMsg(ErrorMsg.XPATHPAR_ERR, line, expression));
+	    reportError(Constants.ERROR,
+		new ErrorMsg(ErrorMsg.XPATHPAR_ERR, line, expression));
 	}
 	catch (Exception e) {
 	    if (_xsltc.debug()) {
@@ -841,67 +849,20 @@ public final class Parser implements Constants, ContentHandler {
 	return _errors.size() > 0;
     }
 
-    /**
-     * Adds an error to the vector containing compile-time errors.
-     */
-    public void addError(ErrorMsg error) {
-	_errors.addElement(error);
-    }
-
-    public void addFatalError(String message) {
-	_errors.addElement(new ErrorMsg(message));
-	// support for TrAX Error Listener
-  	if (_errorListener != null ) {  
-	    postErrorToListener(message);
-	}
-    }
-
-    /**
-     * inform TrAX error listener of this error
-     */
-    private void postErrorToListener(String msg) {
-	try {
-	    _errorListener.error(new TransformerException(
-	        "Stylesheet Parsing Error: " + msg));
-	} catch (TransformerException e) {
-	    // TBD
-	}
-    }
-
-    /**
-     * Prints all compile-time warnings
-     */
-    public void addWarning(ErrorMsg msg) {
-	_warnings.addElement(msg);
-    }
 
     public void internalError() {
 	Exception e = new Exception();
 	e.printStackTrace();
-	addFatalError("Internal compiler error.\n"+
-		      "Please report to xalan-dev@xml.apache.org\n"+
-		      "(include stack trace)");
+	reportError(Constants.INTERNAL,
+	    new ErrorMsg("Internal compiler error.\n"+
+                "Please report to xalan-dev@xml.apache.org\n"+
+                "(include stack trace)"));
     }
 
     public void notYetImplemented(String message) {
-	addWarning(new ErrorMsg("Unsupported: "+message));
-	// support for TrAX Error Listener
-  	if (_errorListener != null ) {
-	    postWarningToListener(message);
-	}
+	reportError(Constants.UNSUPPORTED, new ErrorMsg(message));
     }
 
-    /**
-     * inform TrAX error listener of this warning 
-     */
-    private void postWarningToListener(String msg) {
-	try {
-	    _errorListener.warning(new TransformerException(
-	        "Stylesheet Parsing Warning: " + msg));
-	} catch (TransformerException e) {
-	    // TBD
-	}
-    }
 
     /**
      * Prints all compile-time errors
@@ -932,33 +893,60 @@ public final class Parser implements Constants, ContentHandler {
     /**
      * Suggested common error handler - not in use yet!!!
      */
+// JUMP
     public void reportError(final int category, final ErrorMsg error) {
 	try {
 	    switch (category) {
+	    case Constants.INTERNAL:
 		// Unexpected internal errors, such as null-ptr exceptions, etc.
 		// Immediately terminates compilation, no translet produced
-	    case Constants.INTERNAL:
+		_errors.addElement(error);
+		if (_errorListener != null) {
+		    _errorListener.fatalError(new TransformerException(
+			error.toString()));
+		}
+		break;
+	    case Constants.UNSUPPORTED:
 		// XSLT elements that are not implemented and unsupported ext.
 		// Immediately terminates compilation, no translet produced
-	    case Constants.UNSUPPORTED:
-		// Fatal error in the stylesheet input (parsing or content)
-		// Immediately terminates compilation, no translet produced
-	    case Constants.FATAL:
-		// Other error in the stylesheet input (parsing or content)
-		// Does not terminate compilation, no translet produced
-	    case Constants.ERROR:
-		// Other error in the stylesheet input (content errors only)
-		// Does not terminate compilation, a translet is produced
 		_errors.addElement(error);
 		if (_errorListener != null) {
 		    final String msg = error.toString();
-		    _errorListener.error(new TransformerException(msg));
+                    _errorListener.fatalError(new TransformerException(
+                        "Not Implemented, Unsupported Extension: " +
+			msg));
+                }
+
+		break;
+	    case Constants.FATAL:
+		// Fatal error in the stylesheet input (parsing or content)
+		// Immediately terminates compilation, no translet produced
+
+        	_errors.addElement(error);
+        	if (_errorListener != null ) {
+		    final String msg = error.toString();
+		    _errorListener.fatalError(new TransformerException(
+                        "Stylesheet Parsing Fatal Error: " + msg));
+        	}
+		break;
+	    case Constants.ERROR:
+		// Other error in the stylesheet input (parsing or content)
+		// Does not terminate compilation, no translet produced
+		_errors.addElement(error);
+		if (_errorListener != null) {
+		    final String msg = error.toString();
+		    _errorListener.error(new TransformerException(
+		        "Stylesheet Parsing Error: " + msg));
 		}
+		break;
 	    case Constants.WARNING:
+		// Other error in the stylesheet input (content errors only)
+		// Does not terminate compilation, a translet is produced
 		_warnings.addElement(error);
 		if (_errorListener != null) {
 		    final String msg = error.toString();
-		    _errorListener.warning(new TransformerException(msg));
+		    _errorListener.warning(new TransformerException(
+		        "Stylesheet Parsing Warning: " + msg));
 		}
 		break;
 	    }

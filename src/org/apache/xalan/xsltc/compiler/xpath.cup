@@ -111,7 +111,7 @@ parser code {:
         }
         catch (IllegalCharException e) {
 	    addError(new ErrorMsg("Illegal character '" + e.getMessage() +
-		"' in XPath expression.", lineNumber));
+	    	"' in XPath expression.", lineNumber));
         }
         return null;
     }
@@ -131,8 +131,9 @@ parser code {:
     }
 
     public final void addError(ErrorMsg error) {
-        _parser.addError(error);
-    }
+        //_parser.addError(error);
+	_parser.reportError(Constants.ERROR, error);
+    } 
            
     public void report_error(String message, Object info) {
         // empty
@@ -617,7 +618,11 @@ VariableReference ::= DOLLAR QName:varName
                     RESULT = new ParameterRef((Param)node);
                 } 
                 else {
-                    node.getParser().addFatalError("Cannot resolve variable or parameter feference to "+varName);
+                    //node.getParser().addFatalError("Cannot resolve variable or parameter feference to "+varName);
+                    node.getParser().reportError(Constants.FATAL,
+			new ErrorMsg(
+		 	"Cannot resolve variable or parameter feference to "+
+			varName));
                 }
             }
             else {

@@ -242,7 +242,8 @@ public final class Template extends TopLevelElement {
 	if (_name != null) {
 	    Template other = parser.getSymbolTable().addTemplate(this);
 	    if (!resolveNamedTemplates(other, parser)) {
-		parser.addError(new ErrorMsg(ErrorMsg.TMPREDEF_ERR,_name,this));
+		parser.reportError( Constants.ERROR,
+		    new ErrorMsg(ErrorMsg.TMPREDEF_ERR,_name,this));
 	    }
 	}
 
