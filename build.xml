@@ -270,7 +270,7 @@ Copyright:
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
-      <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,META-INF/services/javax.xml.transform.*"/>
+      <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,META-INF/services/*"/>
     </copy>  
   </target>
 
