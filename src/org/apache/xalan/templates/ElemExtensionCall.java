@@ -85,7 +85,7 @@ public class ElemExtensionCall extends ElemLiteralResult
   // ExtensionNSHandler nsh;
   String m_extns;
   String m_extHandlerLookup;
-  String localPart;
+  // String localPart;
   Attributes m_attrs;
   // public Vector m_avts = null;
   transient boolean isAvailable = false;
@@ -106,11 +106,11 @@ public class ElemExtensionCall extends ElemLiteralResult
   /** 
    * Return the node name.
    */
-  public String getNodeName()
-  {
+  // public String getNodeName()
+  // {
     // TODO: Need prefix.
-    return localPart;
-  }
+    // return localPart;
+  // }
 
   /**
    * Tell if this extension element is available for execution.
@@ -131,9 +131,27 @@ public class ElemExtensionCall extends ElemLiteralResult
     try
     {
       transformer.getResultTreeHandler().flushPending();
+      
+      ExtensionNSHandler nsh = null;
+      if(null == m_extns)
+      {
+        m_extns = this.getNamespace();
+        nsh = new ExtensionNSHandler (m_extns);
+        m_lang = nsh.scriptLang;
+        m_srcURL = nsh.scriptSrcURL;
+        m_scriptSrc = nsh.scriptSrc;
+        
+        // System.out.println("localName: "+this.getLocalName());
+        // System.out.println("m_lang: "+m_lang);
+        // System.out.println("m_javaClass: "+m_javaClass);
+        // System.out.println("m_srcURL: "+m_srcURL);
+        // System.out.println("m_scriptSrc: "+m_scriptSrc);
+        // System.out.println("m_extns: "+m_extns);
+      }
+
       XPathContext liaison = ((XPathContext)transformer.getXPathContext());
       ExtensionsTable etable = liaison.getExtensionsTable();
-      ExtensionNSHandler nsh = etable.get(m_extns);
+      nsh = etable.get(m_extns);
 
       if(null == nsh)
       {
@@ -142,7 +160,7 @@ public class ElemExtensionCall extends ElemLiteralResult
         etable.addExtensionElementNamespace(m_extns, nsh);
       }
 
-      nsh.processElement (localPart, this,
+      nsh.processElement (this.getLocalName(), this,
                           transformer, 
                           getStylesheet(),
                           sourceNode.getOwnerDocument(), 
@@ -150,6 +168,8 @@ public class ElemExtensionCall extends ElemLiteralResult
     }
     catch(Exception e)
     {
+      // System.out.println(e);
+      // e.printStackTrace();
       String msg = e.getMessage();
       if(null != msg)
       {
