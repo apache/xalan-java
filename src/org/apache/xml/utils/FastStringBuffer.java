@@ -397,6 +397,8 @@ public class FastStringBuffer
   public final void append(char value)
   {
 
+    if (value == null) 
+      return;
     char[] chunk;
 
     // We may have preallocated chunks. If so, all but last should
@@ -459,6 +461,8 @@ public class FastStringBuffer
   public final void append(String value)
   {
 
+    if (value == null) 
+      return;
     int strlen = value.length();
 
     if (0 == strlen)
@@ -539,6 +543,8 @@ public class FastStringBuffer
   public final void append(StringBuffer value)
   {
 
+    if (value == null) 
+      return;
     int strlen = value.length();
 
     if (0 == strlen)
@@ -707,6 +713,8 @@ public class FastStringBuffer
     // different chunk sizes, and even if they're the same we're
     // probably on a different alignment due to previously appended
     // data. We have to work through the source in bite-sized chunks.
+    if (value == null) 
+      return;
     int strlen = value.length();
 
     if (0 == strlen)
