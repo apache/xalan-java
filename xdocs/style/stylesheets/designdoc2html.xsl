@@ -18,7 +18,7 @@
       <body text="#000000" link="#0000ff" vlink="#0000aa" alink="#ff0000"
             topmargin="4" leftmargin="4" marginwidth="4" marginheight="4"
             bgcolor="#ffffff">
-         <xsl:variable name="topimage" select="string(./p/img/@src)"/>
+         <xsl:variable name="topimage" select="./p/img/@src"/>
          <h1><a href="http://xml.apache.org"><img src="images/{$topimage}"/></a>&#160;&#160;
          <xsl:value-of select="@title"/></h1><hr/>
              <xsl:apply-templates/>
@@ -70,6 +70,18 @@
     </table>
   </xsl:template>
 
+  <xsl:template match="u">
+    <u><xsl:apply-templates/></u>
+  </xsl:template>
+
+  <xsl:template match="i">
+    <i><xsl:apply-templates/></i>
+  </xsl:template>
+
+  <xsl:template match="b">
+    <b><xsl:apply-templates/></b>
+  </xsl:template>
+
   <xsl:template match="ul">
     <ul><xsl:apply-templates/></ul>
   </xsl:template>
@@ -103,6 +115,33 @@
   <xsl:template match="source">
     <p><font size="-1"><pre><xsl:apply-templates/></pre></font></p>
   </xsl:template>
+
+  <xsl:template match="small-table">
+    <center>
+      <xsl:choose>
+        <xsl:when test="@leave-me-alone = 'yes'">
+          <table>
+            <xsl:copy-of select="@*"/>
+            <xsl:copy-of select="*"/>
+          </table>
+        </xsl:when>
+        <xsl:otherwise>
+          <table width="90%" border="0" cellspacing="2">
+            <xsl:apply-templates mode="small-table"/>
+          </table>
+        </xsl:otherwise>
+      </xsl:choose>
+    </center>
+  </xsl:template>
+
+  <xsl:template match="tr" mode="small-table">
+    <tr><xsl:apply-templates mode="small-table"/></tr>
+  </xsl:template>
+
+  <xsl:template match="td" mode="small-table">
+    <td valign="top"><font size="-1"><xsl:apply-templates/></font></td>
+  </xsl:template>
+
 
   <xsl:template match="table">
     <table width="100%" border="0" cellspacing="2" cellpadding="2">

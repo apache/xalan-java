@@ -57,23 +57,26 @@
  * <http://www.apache.org/>.
  -->
   <s1 title="&lt;xsl:sort&gt;">
+
+  <p><img src="xmllogo.gif"/></p>
+
   <ul>
     <li><link anchor="functionality">Functionality</link></li>
     <li><link anchor="sort-class">The Sort class</link></li>
-    <li><link anchor="sortingiterator-class">The SortingIterator class</link></li>
-    <li><link anchor="nodesortrecord-class">The NodeSortRecord class</link></li>    
-    <li><link anchor="nodesortrecordfactory-class">The NodeSortRecordFactory class</link></li>
+    <li><link anchor="iterator">The SortingIterator class</link></li>
+    <li><link anchor="sortrecord">The NodeSortRecord class</link></li>    
+    <li><link anchor="recordfactory">The NodeSortRecordFactory class</link></li>
   </ul>
   
   <anchor name="functionality"/>
   <s2 title="Functionality">
 
-  <p>The <code>&lt;xsl:sort&gt;</code> element is used to define a sort key which
-  specifies the order in which nodes selected by either
-  <code>&lt;xsl:apply-templates&gt;</code> or <code>&lt;xsl:for-each&gt;</code> are
-  processed. The nodes can be sorted either in numerical or alphabetic order,
-  and the alphabetic order may vary depeinding on the language in use. The
-  nodes can be sorted either in ascending or descending order.</p>
+  <p>The <code>&lt;xsl:sort&gt;</code> element is used to define a sort key
+  which specifies the order in which nodes selected by either
+  <code>&lt;xsl:apply-templates&gt;</code> or <code>&lt;xsl:for-each&gt;</code>
+  are processed. The nodes can be sorted either in numerical or alphabetic
+  order, and the alphabetic order may vary depeinding on the language in use.
+  The nodes can be sorted either in ascending or descending order.</p>
 
   </s2><anchor name="sort-class"/>
   <s2 title="The Sort class">
@@ -97,7 +100,7 @@
   specific order to the code handling the <code>&lt;xsl:apply-templates&gt;</code>
   or <code>&lt;xsl:for-each&gt;</code> element.</p>
 
-  </s2><anchor name="sortingiterator-class"/>
+  </s2><anchor name="iterator"/>
   <s2 title="The SortingIterator class">
 
   <p>The SortingIterator class is responsible for sorting nodes encapsulated in
@@ -113,7 +116,7 @@
   object and sorts them using quicksort and calling <code>compareTo()</code> on
   pairs of NodeSortRecord objects.</p>
 
-  </s2><anchor name="nodesortrecord-class"/>
+  </s2><anchor name="sortrecord"/>
   <s2 title="The NodeSortRecord class">
 
   <p>The static methods in the Sort class generates a class inheriting from
@@ -199,7 +202,7 @@
   called when needed. The value for a node's secondary sort key is never
   retrieved if the node can be uniquely identified by its primary key.</p>
 
-  </s2><anchor name="nodesortrecordfactory-class"/>
+  </s2><anchor name="recordfactory"/>
   <s2 title="The NodeSortRecordFactory class">
 
   <p>After the static methods of the Sort class has generated the new class for

@@ -59,6 +59,8 @@
 
 <s1 title="XSLTC TrAX API">
 
+  <p><img src="xmllogo.gif"/></p>
+
   <s2 title="The JAXP/TrAX API">
 
   <p>XSLTC is 100% compliant with the TrAX poriton of the
@@ -109,6 +111,11 @@
 	:
 	:
     }</source>
+
+  <p>If you do chose to implement a DOM cache, you should have your cache
+  implement the <code>javax.xml.transform.URIResolver</code> interface so
+  that documents loaded by the <code>document()</code> function are also read
+  from your cache.</p>
 
   </s2>
 

@@ -59,7 +59,13 @@
  -->
 <s1 title="The Translet API and TrAX">
 
+  <p><img src="xmllogo.gif"/></p>
+
   <s2 title="Contents">
+
+  <p>Note: This document describes the design of XSLTC's TrAX implementation.
+  The XSLTC <link idref="xsltc_trax_api">TrAX API user documentation</link>
+  is kept in a separate document.</p>
 
   <p>The structure of this document is, and should be kept, as follows:</p>
 

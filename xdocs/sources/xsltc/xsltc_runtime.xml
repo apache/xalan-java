@@ -59,6 +59,8 @@
 
 <s1 title="XSLTC runtime environment">
 
+  <p><img src="xmllogo.gif"/></p>
+
   <s2 title="Contents">
 
   <p>This document describes the design and overall architecture of XSLTC's

@@ -59,6 +59,8 @@
 
 <s1 title="XSLTC Native API Documentation">
 
+  <p><img src="xmllogo.gif"/></p>
+
   <s2 title="XSLTC Compiler API">
 
     <p>XSLTC's native API is represented by the
@@ -140,6 +142,7 @@
 
     </s3>
 
+    <anchor name="document-locator"/>
     <s3 title="Input document locator interface">
 
     <p>XSLTC's compiler has an interface that a client application can implement

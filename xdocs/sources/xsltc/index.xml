@@ -59,12 +59,13 @@
 
 <s1 title="XSLTC Documentation">
 
-  <s2 title="XSLTC User Documentation">
+  <p><img src="xmllogo.gif"/></p>
 
+  <s2 title="User Documentation">
     <p>The following user documentation is currently available:</p>
-
     <ul>
-      <li>XSLTC <jump href="README">Installation and Requirements</jump> 'README'  (not updated)</li>
+      <li>XSLTC <jump href="README">Installation and Requirements</jump>
+      'README' (not updated)</li>
       <li>Command-line <jump href="README.xsltc">compiler</jump> and
       <jump href="README.xslt">runtime</jump> 'README'</li>
       <li><link idref="xsltc_native_api">XSLTC Native API reference</link></li>
@@ -73,10 +74,8 @@
     </ul>
   </s2>
 
-  <s2 title="XSLTC Design Documents">
-
+  <s2 title="Design Documents">
     <p>The following design documents are currently available:</p>
-
     <ul>
       <li><link anchor="overall">XSLTC overall design</link></li>
       <li><link anchor="compiler">XSLTC compiler design</link></li>
@@ -95,8 +94,8 @@
     <p><ref>Figure 1: Architectural overview of XSLTC</ref></p>
 
     <p>A client application can use XSLTC either through its
-    <link anchor="user_native">native API</link> or through or implementation
-    of the <link anchor="user_trax">TrAX API</link>. The
+    <link idref="xsltc_native_api">native API</link> or through or
+    implementation of the <link idref="xsltc_trax_api">TrAX API</link>. The
     <link anchor="compiler">compiler</link> generates one or more Java classes
     (we have chosen to call them 'translets').
     The <link anchor="runtime">runtime library</link> contains classes that
@@ -120,19 +119,28 @@
     design documents for some XSL elements and XPath expressions, patterns
     and functions:</p>
 
+    <small-table>
+    <tr><td>
 
     <s4 title="XSL elements">
       <ul>
         <li><link idref="xsl_sort_design">&lt;xsl:sort&gt;</link></li>
         <li><link idref="xsl_key_design">&lt;xsl:key&gt;</link></li>
-        <li>
-          <link idref="xsl_whitespace_design">&lt;xsl:preserve-space&gt;/&lt;xsl:strip-space&gt;</link>
-        </li>
-        <li>
-          <link idref="xsl_comment_design">&lt;xsl:comment&gt;/&lt;xsl:message&gt;</link>
-        </li>
+        <li><link idref="xsl_whitespace_design">&lt;xsl:preserve-space&gt;</link></li>
+        <li><link idref="xsl_whitespace_design">&lt;xsl:strip-space&gt;</link></li>
+        <li><link idref="xsl_comment_design">&lt;xsl:comment&gt;</link></li>
+        <li><link idref="xsl_comment_design">&lt;xsl:message&gt;</link></li>
+        <li><link idref="xsl_if_design">&lt;xsl:if&gt;</link></li>
+        <li><link idref="xsl_choose_design">&lt;xsl:choose&gt;</link></li>
+        <li><link idref="xsl_variable_design">&lt;xsl:variable&gt;</link></li>
+        <li><link idref="xsl_variable_design">&lt;xsl:param&gt;</link></li>
+        <li><link idref="xsl_include_design">&lt;xsl:include&gt;</link></li>
+        <li><link idref="xsl_include_design">&lt;xsl:import&gt;</link></li>
+        <li><link idref="xsl_apply_imp_design">&lt;xsl:apply-imports&gt;</link></li>
       </ul>
     </s4>
+
+    </td><td>
 
     <s4 title="XPath functions">
       <ul>
@@ -142,19 +150,22 @@
       </ul>
     </s4>
 
-
     <s4 title="XPath expressons">
       <ul>
         <li><link idref="xsltc_predicates">Predicates</link></li>
       </ul>
     </s4>
 
-
     <s4 title="XPath patterns">
       <ul>
-        <li>StepPattern</li>
+        <li><jump href="xsltc_predicates.html#step-pattern">StepPattern</jump></li>
+        <li><jump href="xsl_key_design.html#patterns">IdPattern</jump></li>
+        <li><jump href="xsl_key_design.html#patterns">KeyPattern</jump></li>
       </ul>
     </s4>
+
+    </td></tr>
+    </small-table>
 
     </s3>
 

@@ -57,6 +57,8 @@
  * <http://www.apache.org/>.
  -->
   <s1 title="unparsed-entity-uri()">
+  <p><img src="xmllogo.gif"/></p>
+
   <ul>
     <li><link anchor="functionality">Functionality</link></li>
     <li><link anchor="implementation">Implementation</link></li>

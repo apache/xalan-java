@@ -58,6 +58,9 @@
  -->
 
 <s1 title="XSLTC Compiler Design">
+
+  <p><img src="xmllogo.gif"/></p>
+
   <ul>  
     <li><link anchor="overview">Compiler Overview</link></li>
     <li><link anchor="ast">Building the Abstract Syntax Tree</link></li>
