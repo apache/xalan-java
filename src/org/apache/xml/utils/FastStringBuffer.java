@@ -122,6 +122,12 @@ public class FastStringBuffer
 	public static final int SUPPRESS_BOTH
 		= SUPPRESS_LEADING_WS | SUPPRESS_TRAILING_WS;
 
+	/** Manefest constant: Carry trailing whitespace of one chunk as leading 
+	 * whitespace of the next chunk. Used internally; I don't see any reason
+	 * to make it public right now.
+	 */
+	private static final int CARRY_WS=0x04;
+
 	/**
    * Field m_chunkBits sets our chunking strategy, by saying how many
    * bits of index can be used within a single chunk before flowing over
@@ -1056,11 +1062,11 @@ public class FastStringBuffer
           org.xml.sax.ContentHandler ch, int start, int length)
             throws org.xml.sax.SAXException
   {
-	  // This call always starts at the beginning of the 
+	// This call always starts at the beginning of the 
     // string being written out, either because it was called directly or
     // because it was an m_innerFSB recursion. This is important since
-		// it gives us a well-known initial state for this flag:
-		int stateForNextChunk=SUPPRESS_LEADING_WS;
+	// it gives us a well-known initial state for this flag:
+	int stateForNextChunk=SUPPRESS_LEADING_WS;
 
     int stop = start + length;
     int startChunk = start >>> m_chunkBits;
@@ -1144,68 +1150,63 @@ public class FastStringBuffer
 						 int edgeTreatmentFlags)
           throws org.xml.sax.SAXException
   {
-		int stateForNextChunk=0; // Initially, assume no retained trailing spaces.
-		
     int end = length + start;
-    int s=start;
+    int scanpos=start;
 		
-		// Leading whitespaces should be _completely_ suppressed if and only if
-		// (a) we're the first chunk in the normalized sequence or (b) the
-		// previous chunk ended in a normalized-but-not-suppressed whitespace.
-		if(0!= (edgeTreatmentFlags&SUPPRESS_LEADING_WS) )
-			for (; s < end; s++)
-			{
-				char c = ch[s];
-				if(!XMLCharacterRecognizer.isWhiteSpace(c))
-					break;
-			}
+	// Leading whitespaces should be _completely_ suppressed if and only if
+	// (a) we're the first chunk in the normalized sequence or (b) the
+	// previous chunk ended in a normalized-but-not-suppressed whitespace.
+	if(0!= (edgeTreatmentFlags&SUPPRESS_LEADING_WS) )
+		for (; scanpos < end; scanpos++)
+		{
+			char c = ch[scanpos];
+			if(!XMLCharacterRecognizer.isWhiteSpace(c))
+				break;
+		}
 
-		// Normal processing converts multiple whitespace characters into
-		// a single whitespace
-    boolean whiteSpaceFound = false;
-    boolean needToFlushSpace = false;
-    int d = s;
-    for (; s < end; s++)
+	// %REVIEW% Do we really need both flags?
+    boolean whiteSpaceFound = false;  // Last char seen was whitespace
+    // Pending whitespace. May be carried from previous chunk
+    boolean needToFlushSpace = 0!=(edgeTreatmentFlags&CARRY_WS); 
+    
+    int datapos = scanpos;	// Start of non-whitespace data (if any)
+    for (; scanpos < end; scanpos++)
     {
-      char c = ch[s];
+      char c = ch[scanpos];
 
       if (XMLCharacterRecognizer.isWhiteSpace(c))
       {
         if (!whiteSpaceFound)
         {
           whiteSpaceFound = true;
-          if(c != ' ')
+          int len = (scanpos-datapos);
+          if( len > 0)
           {
-            int len = (s-d);
-            if( len > 0)
-            {
-              if(needToFlushSpace)
-                handler.characters(SINGLE_SPACE, 0, 1);
-                
-              handler.characters(ch, d, len);
-              needToFlushSpace = true;
-              // handler.characters(SINGLE_SPACE, 0, 1);
-            }
-            d = s+1;
+            if(needToFlushSpace)
+              handler.characters(SINGLE_SPACE, 0, 1);
+              
+            handler.characters(ch, datapos, len);
+            needToFlushSpace = true;
           }
+          datapos = scanpos+1;
         }
         else
         {
-          int z;
-          for (z = s+1; z < end; z++)
+          int nonwhitescan = scanpos+1; // Hunt for first nonwhite character after whitespace
+          for (; nonwhitescan < end; nonwhitescan++)
           {
-            c = ch[z];
+            c = ch[nonwhitescan];
             if(!XMLCharacterRecognizer.isWhiteSpace(c))
               break;
           }
 
-          int len = (s-d);
-
-          if(z == end)
+          if(nonwhitescan == end)
           {
-            end = s;
+            end = scanpos;
             break; // Let the flush at the end handle it.
           }
+
+          int len = (scanpos-datapos);
           if(len > 0)
           {
             if(needToFlushSpace)
@@ -1214,11 +1215,11 @@ public class FastStringBuffer
               needToFlushSpace = false;
             }
               
-            handler.characters(ch, d, len);
+            handler.characters(ch, datapos, len);
           }
 
           whiteSpaceFound = false;
-          d = s = z;
+          datapos = scanpos = nonwhitescan;
         }
       }
       else
@@ -1228,24 +1229,32 @@ public class FastStringBuffer
     }
 
     if (whiteSpaceFound)
-      s--;
+      scanpos--;
     
-    int len = (s-d);
-    
-		// If we aren't at the end of the (possibly multi-chunk) text,
-		// we should ouput the single space even if there is nothing
-		// following it in this chunk
-    if(len > 0 || 0==(edgeTreatmentFlags&SUPPRESS_TRAILING_WS) )
+    int len = (scanpos-datapos);
+
+	// If have non-space text, output it (possibly with a space before it)
+	// and 
+    if(len > 0)
     {
-      if(needToFlushSpace)
+      if(needToFlushSpace) // Pending space
         handler.characters(SINGLE_SPACE, 0, 1); // Output single space
-			if(len>0)
-				handler.characters(ch, d, len);
-			else
-				stateForNextChunk=SUPPRESS_LEADING_WS;
+  
+  	  handler.characters(ch, datapos, len);
+  	  edgeTreatmentFlags &= ~(SUPPRESS_LEADING_WS | CARRY_WS);
+    }
+    // If we ended in (nonsuppressed) whitespace, tell the next chunk to suppress
+    // leading whitespace _BUT_ to output a single space before any non-whitespace.
+    // (This allows us to skip through multiple chunks' worth of whitespace, if
+    // necessary, yet still output the one required space if needed. The last block
+    // will aways have SUPPRESS_TRAILING_WS set, and so discard any remaining space.)
+	if(whiteSpaceFound && 0==(edgeTreatmentFlags&SUPPRESS_TRAILING_WS))
+	{
+        // handler.characters(SINGLE_SPACE, 0, 1); // Output single space
+		edgeTreatmentFlags |= SUPPRESS_LEADING_WS | CARRY_WS;
     }
 		
-		return stateForNextChunk;
+	return edgeTreatmentFlags;
   }
   
   /**
