@@ -276,13 +276,12 @@ Copyright:
   <!-- =================================================================== -->
   <target name="clean">
     <property name="xalanonly-styledocs"
-              value="loaderjdoc.xml,dtd/javadocpackages.dtd,dtd/xsl-html40s.dtd, stylesheets/designdoc2html.xsl, stylesheets/design2project.xsl,stylesheets/notice.xsl,stylesheets/package2html.xsl,stylesheets/packages2project.xsl,${xdocs.dir}/xml-site-style.tar"/>
+              value="dtd/xsl-html40s.dtd, stylesheets/patterns.xsl, stylesheets/notice.xsl,${xdocs.dir}/xml-site-style.tar"/>
     <deltree dir="${build.dir}"/>
     <deltree dir="${site.root}"/>
     <!-- Until we are ready to maintain this, comment out deletion of various 
          doc miscellaneous files from the xml-site-style stuff
-    <delete dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/> 
-    <delete dir="${src.dir}" includes="javadocOverview.html,**/package.html"/>    
+    <delete dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/>
     --> 
   </target>
   
