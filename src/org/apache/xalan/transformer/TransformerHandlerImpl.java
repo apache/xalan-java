@@ -170,8 +170,22 @@ public class TransformerHandlerImpl
           if(null != ex)
           {
             sp.getCoroutineManager().co_exit(sp.getParserCoroutineID());
+            sp.doMore(false, sax2dtm.getAppCoroutineID()); 
+            
+            // Actually, I think we're always incremental here...
+            if(DTMManager.getIncremental())
+            {
+              try
+              {
+                m_transformer.waitTransformThread();
+              }
+              catch(SAXException se){}
+            }
           }
-          sp.doMore(false, sax2dtm.getAppCoroutineID()); 
+          else
+          {
+            sp.doMore(false, sax2dtm.getAppCoroutineID()); 
+          }
         }
       }
       
@@ -181,17 +195,6 @@ public class TransformerHandlerImpl
       m_entityResolver = null;
       m_errorHandler = null;
       m_lexicalHandler = null;
-      
-      if(null != ex)
-      {
-        Thread thread = m_transformer.getTransformThread();
-        if(null != thread)
-        {
-          thread.interrupt();
-          // Damn... we can't stop() it, since stop() is deprecated.
-        }
-        // I don't think we need to do anything else with the exception.
-      }
       
       if(DEBUG)
         System.out.println("...exiting clearCoRoutine");
@@ -390,13 +393,16 @@ public class TransformerHandlerImpl
    // Thread listener = new Thread(m_transformer);
 
     //m_transformer.setTransformThread(listener);
-    m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
-        
-    int cpriority = Thread.currentThread().getPriority();
-
-    // runTransformThread is equivalent with the 2.0.1 code,
-    // except that the Thread may come from a pool.
-    m_transformer.runTransformThread( cpriority );
+    if(DTMManager.getIncremental())
+    {
+      m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
+          
+      int cpriority = Thread.currentThread().getPriority();
+  
+      // runTransformThread is equivalent with the 2.0.1 code,
+      // except that the Thread may come from a pool.
+      m_transformer.runTransformThread( cpriority );
+    }
         
    //listener.setDaemon(false);
    //listener.start();
@@ -427,7 +433,15 @@ public class TransformerHandlerImpl
       m_contentHandler.endDocument();
     }
     
-                m_transformer.waitTransformThread();
+    if(DTMManager.getIncremental())
+    {
+      m_transformer.waitTransformThread();
+    }
+    else
+    {
+      m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
+      m_transformer.run();
+    }
    /* Thread transformThread = m_transformer.getTransformThread();
 
     if (null != transformThread)
