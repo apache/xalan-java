@@ -56,16 +56,17 @@
  */
 
 // Imported TraX classes
-import org.apache.trax.Processor; 
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer; 
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.dom.DOMResult;
 
 // Imported java.io class
 import java.io.IOException;
+import java.io.FileNotFoundException;
 
 // Imported SAX classes
 import org.xml.sax.InputSource;
@@ -76,9 +77,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.SerializerFactory;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -93,25 +94,19 @@ import javax.xml.parsers.ParserConfigurationException;
 public class TransformToDom
 {
 	public static void main(String[] args)
-		throws SAXException, IOException, ParserConfigurationException
-  {  
-    Processor processor = Processor.newInstance("xslt");
+    throws TransformerException, TransformerConfigurationException, FileNotFoundException,
+           org.xml.sax.SAXNotSupportedException, IOException
+  {    
+	TransformerFactory tFactory = TransformerFactory.newInstance();
 
-    if(processor.getFeature("http://xml.org/trax/features/dom/input"))
+    if(tFactory.getFeature(DOMResult.FEATURE))
     {
-      Templates templates = processor.process(new InputSource("foo.xsl"));
-      Transformer transformer = templates.newTransformer();
-
-	  // Use an implementation of the JAVA API for XML Parsing 1.0 to
-	  // create a DOM Document node to contain the result.
-	  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-	  dfactory.setNamespaceAware(true);
-      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-      Document outNode = docBuilder.newDocument();
-	  
-	  // Perform the transformation, placing the output in the DOM
-	  // Document Node.
-      transformer.transform(new InputSource("foo.xml"), new Result(outNode));
+    	Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
+      DOMResult domResult = new DOMResult();
+  
+  	  // Perform the transformation, placing the output in the DOM
+	    // Document Node.
+      transformer.transform(new StreamSource("foo.xml"), domResult);
 	  
       // If also wanted to process DOM input, replace the preceding statement with
 	  // the following:
@@ -122,7 +117,7 @@ public class TransformToDom
 	  // using a default output format.
       Serializer serializer = SerializerFactory.getSerializer("xml");
       serializer.setOutputStream(System.out);
-      serializer.asDOMSerializer().serialize(outNode);
+      serializer.asDOMSerializer().serialize(domResult.getNode());
 	}
     else
     {

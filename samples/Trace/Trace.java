@@ -1,13 +1,18 @@
-
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.trace.PrintTraceListener;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
 
 public class Trace
 {	
   public static void main (String[] args)
 	  throws java.io.IOException, 
-			 org.apache.trax.TransformException, org.apache.trax.ProcessorException,
+			 TransformerException, TransformerConfigurationException,
 			 java.util.TooManyListenersException, 
 			 org.xml.sax.SAXException			 
   {
@@ -26,10 +31,9 @@ public class Trace
     ptl.m_traceTemplates = true;
 
     // Set up the transformation
-    org.apache.trax.Processor processor = org.apache.trax.Processor.newInstance("xslt");
-    org.apache.trax.Templates templates = processor.process
-                             (new org.xml.sax.InputSource("foo.xsl"));
-    org.apache.trax.Transformer transformer = templates.newTransformer();
+    
+   	TransformerFactory tFactory = TransformerFactory.newInstance();
+    Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
 
     // Cast the Transformer object as TransformerImpl.
     if (transformer instanceof TransformerImpl) 
@@ -43,8 +47,8 @@ public class Trace
       // Perform the transformation --printing information to
       // the events log during the process.
       transformer.transform
-                         ( new org.xml.sax.InputSource("foo.xml"), 
-                           new org.apache.trax.Result(new java.io.FileWriter("foo.out")) );
+                         ( new StreamSource("foo.xml"), 
+                           new StreamResult(new java.io.FileWriter("foo.out")) );
     }
     // Close the PrintWriter and FileWriter.
     pw.close();

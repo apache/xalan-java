@@ -4,7 +4,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     version="1.0"   
     xmlns:lxslt="http://xml.apache.org/xslt"
-    xmlns:my-ext="ext1"
+    xmlns:my-ext="ext2"
     extension-element-prefixes="my-ext">
     
   <!--The component and its script are in the lxslt namespace and define the implementation-->

@@ -56,14 +56,14 @@
  */
 
 // Imported TraX classes
-import org.apache.trax.Processor; 
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer; 
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
-
+// Imported TraX classes
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
 
 // Imported SAX classes
 import org.xml.sax.InputSource;
@@ -78,28 +78,25 @@ import java.io.IOException;
 
 public class UseStylesheetParam
 {
-	public static void main(String[] args)
-	    throws ProcessorException, ProcessorFactoryException, 
-           TransformException, SAXException, IOException
-  {
+  public static void main(String[] args)
+	throws TransformerException, TransformerConfigurationException, 
+         SAXException, IOException	   
+	{
     if(args.length != 1)
     {
       System.err.println("Please pass one string to this program");
       return;
     }
-	// Get the parameter value from the command line.
+  	// Get the parameter value from the command line.
     String paramValue = args[0];
 	
-	Processor processor = Processor.newInstance("xslt");
+   	TransformerFactory tFactory = TransformerFactory.newInstance();
+    Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
 
-    Templates templates = processor.process(new InputSource("foo.xsl"));
-    Transformer transformer = templates.newTransformer();
-	
 	// Set the parameter. I can't get non-null namespaces to work!!
     transformer.setParameter("param1",	/* parameter name */
-							 null,		/* parameter namespace -- usually null */
-							 paramValue /* parameter value */ );
+               							 paramValue /* parameter value */ );
     
-    transformer.transform(new InputSource("foo.xml"), new Result(System.out));
+    transformer.transform(new StreamSource("foo.xml"), new StreamResult(System.out));
   }   
 }

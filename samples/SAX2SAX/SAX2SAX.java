@@ -61,14 +61,19 @@
  *  stylesheet, the XML input, and the transformation.
  */
 
-import org.apache.trax.Processor;
-import org.apache.trax.TemplatesBuilder;
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer;
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.Templates;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TemplatesHandler;
+import javax.xml.transform.sax.TransformerHandler;              
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
@@ -76,9 +81,9 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import org.apache.serialize.SerializerFactory;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.OutputFormat;
+import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.OutputFormat;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -87,61 +92,55 @@ import java.io.IOException;
 public class SAX2SAX
 {
   public static void main(String[] args)
-  throws ProcessorException, ProcessorFactoryException, 
-         TransformException, SAXException, IOException
-  {  
+	throws TransformerException, TransformerConfigurationException, 
+         SAXException, IOException	   
+	{
 
-    // I. Instantiate  a stylesheet processor.
-    Processor processor = Processor.newInstance("xslt");
+    // Instantiate  a TransformerFactory.
+  	TransformerFactory tFactory = TransformerFactory.newInstance();
+    // Determine whether the TransformerFactory supports The use uf SAXSource 
+    // and SAXResult
+    if (tFactory.getFeature(SAXSource.FEATURE) && tFactory.getFeature(SAXResult.FEATURE))
+    { 
+      // Cast the TransformerFactory.
+      SAXTransformerFactory stFactory = ((SAXTransformerFactory) tFactory);
+      // Create a ContentHandler to handle parsing of the stylesheet.
+      TemplatesHandler templatesHandler = stFactory.newTemplatesHandler();
 
-    // II. Process the stylesheet. producing a Templates object.
+      // Create an XMLReader and set its ContentHandler.
+      XMLReader reader = XMLReaderFactory.createXMLReader();
+      reader.setContentHandler(templatesHandler);
+    
+      // Parse the stylesheet.                       
+      reader.parse("foo.xsl");
 
-    // Get the XMLReader.
-    XMLReader reader = XMLReaderFactory.createXMLReader();
+      //Get the Templates object from the ContentHandler.
+      Templates templates = templatesHandler.getTemplates();
+      // Create a ContentHandler to handle parsing of the XML source.  
+      TransformerHandler handler 
+        = stFactory.newTransformerHandler(templates);
+      // Reset the XMLReader's ContentHandler.
+      reader.setContentHandler(handler);  
 
-    // Set the ContentHandler.
-    TemplatesBuilder templatesBuilder = processor.getTemplatesBuilder();
-    reader.setContentHandler(templatesBuilder);
-
-    // Set the ContentHandler to also function as a LexicalHandler, which
-    // includes "lexical" (e.g., comments and CDATA) events. The Xalan
-    // TemplatesBuilder -- org.apache.xalan.processor.StylesheetHandler -- is
-    // also a LexicalHandler).
-    if(templatesBuilder instanceof LexicalHandler)
-       reader.setProperty("http://xml.org/sax/properties/lexical-handler", 
-                           templatesBuilder);
-
-    // Parse the stylesheet.                       
-    reader.parse("foo.xsl");
-
-    //Get the Templates object from the ContentHandler.
-    Templates templates = templatesBuilder.getTemplates();
-
-    // III. Use the Templates object to instantiate a Transformer.
-    Transformer transformer = templates.newTransformer();
-
-    // IV. Perform the transformation.
-
-    // Set up the ContentHandler for the output.
-	FileOutputStream fos = new FileOutputStream("foo.out");
-    Result result = new Result(fos);
-    Serializer serializer = SerializerFactory.getSerializer("xml");
-    serializer.setOutputStream(fos);
-
-    transformer.setContentHandler(serializer.asContentHandler());
-
-    // Set up the ContentHandler for the input.
-    org.xml.sax.ContentHandler chandler = transformer.getInputContentHandler();
-    reader.setContentHandler(chandler);
-    if(chandler instanceof LexicalHandler)
-       reader.setProperty("http://xml.org/sax/properties/lexical-handler", chandler);
+      // Set the ContentHandler to also function as a LexicalHandler, which
+      // includes "lexical" (e.g., comments and CDATA) events. 
+      reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
+      
+   	  FileOutputStream fos = new FileOutputStream("foo.out");
+      Serializer serializer = SerializerFactory.getSerializer("xml");
+      serializer.setOutputStream(fos);
+   
+      
+      // Set the result handling to be a serialization to the file output stream.
+      Result result = new SAXResult(serializer.asContentHandler());
+      handler.setResult(result);
+      
+      // Parse the XML input document.
+      reader.parse("foo.xml");
+      
+    	System.out.println("************* The result is in foo.out *************");	
+    }	
     else
-       reader.setProperty("http://xml.org/sax/properties/lexical-handler", null);
-
-    // Parse the XML input document. The input ContentHandler and output ContentHandler
-    // work in separate threads to optimize performance.   
-    reader.parse("foo.xml");
-	
-	System.out.println("************* The result is in foo.out *************");	
+      System.out.println("The TransformerFactory does not support SAX input and SAX output");
   }
 }

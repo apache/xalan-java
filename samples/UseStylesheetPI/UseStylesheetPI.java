@@ -32,6 +32,9 @@ public class UseStylesheetPI
         
 		   transformer.transform(new StreamSource("fooX.xml"), 
                              new StreamResult(new java.io.FileOutputStream("foo.out")));
+       
+      System.out.println("************* The result is in foo.out *************");
+       
 	  }
   	  catch (Exception e)
 	  {

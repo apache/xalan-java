@@ -56,13 +56,16 @@
  */
 
 // Imported TraX classes
-import org.apache.trax.Processor; 
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer; 
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.dom.DOMResult;
 
 // Imported SAX classes
 import org.xml.sax.InputSource;
@@ -78,9 +81,9 @@ import org.xml.sax.ext.LexicalHandler;
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.SerializerFactory;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -102,40 +105,31 @@ import org.apache.xalan.transformer.TransformerImpl;
 public class Pipe
 {
 	public static void main(String[] args)
-	    throws SAXException, IOException, ParserConfigurationException
-  {  
-    // Instantiate a stylesheet processor.
-	Processor processor = Processor.newInstance("xslt");
-
-	// Create a Templates object and a Transformer for each stylesheet.
-    Templates stylesheet1 = processor.process(new InputSource("foo1.xsl"));
-    Transformer transformer1 = stylesheet1.newTransformer();
-
-	Templates stylesheet2= processor.process(new InputSource("foo2.xsl"));
-    Transformer transformer2 = stylesheet2.newTransformer();
-
-    Templates  stylesheet3 = processor.process(new InputSource("foo3.xsl"));
-    Transformer transformer3= stylesheet3.newTransformer();
+	throws TransformerException, TransformerConfigurationException, 
+         SAXException, IOException	   
+	{
+    // Instantiate a TransformerFactory.
+  	TransformerFactory tFactory = TransformerFactory.newInstance();
+    SAXTransformerFactory saxTFactory = (SAXTransformerFactory)tFactory;
+	  // Create a Transformer for each stylesheet.
+    TransformerHandler tHandler1 = saxTFactory.newTransformerHandler(new StreamSource("foo1.xsl"));
+    TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource("foo2.xsl"));
+    TransformerHandler tHandler3 = saxTFactory.newTransformerHandler(new StreamSource("foo3.xsl"));
     
     // Create an XMLReader.
-	XMLReader reader = XMLReaderFactory.createXMLReader();
-	
-	ContentHandler chandler = transformer1.getInputContentHandler();
-    reader.setContentHandler(chandler);
-    if(chandler instanceof LexicalHandler)
-       reader.setProperty("http://xml.org/sax/properties/lexical-handler", chandler);
-    else
-       reader.setProperty("http://xml.org/sax/properties/lexical-handler", null);
+	  XMLReader reader = XMLReaderFactory.createXMLReader();
+    reader.setContentHandler(tHandler1);
+    reader.setProperty("http://xml.org/sax/properties/lexical-handler", tHandler1);
 
-    transformer1.setContentHandler(transformer2.getInputContentHandler());
-    transformer2.setContentHandler(transformer3.getInputContentHandler());	
-	
+    tHandler1.setResult(new SAXResult(tHandler2));
+    tHandler2.setResult(new SAXResult(tHandler3));
+
     // transformer3 outputs SAX events to the serializer.
     Serializer serializer = SerializerFactory.getSerializer("xml");
     serializer.setOutputStream(System.out);
-    transformer3.setContentHandler(serializer.asContentHandler());
+    tHandler3.setResult(new SAXResult(serializer.asContentHandler()));
 
-	// Parse the XML input document. The input ContentHandler and output ContentHandler
+	  // Parse the XML input document. The input ContentHandler and output ContentHandler
     // work in separate threads to optimize performance.   
     reader.parse("foo.xml");	
   }

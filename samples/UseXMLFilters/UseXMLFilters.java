@@ -56,13 +56,19 @@
  */
 
 // Imported TraX classes
-import org.apache.trax.Processor; 
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer; 
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.Templates;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TemplatesHandler;
+import javax.xml.transform.sax.TransformerHandler;              
 
 // Imported SAX classes
 import org.xml.sax.InputSource;
@@ -71,15 +77,16 @@ import org.xml.sax.Parser;
 import org.xml.sax.helpers.ParserAdapter;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
+import org.xml.sax.XMLFilter;
 import org.xml.sax.ContentHandler;
 
 // Imported DOM classes
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.SerializerFactory;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -98,38 +105,34 @@ import java.io.IOException;
    */
 public class UseXMLFilters
 {
-	public static void main(String[] args)
-	    throws SAXException, IOException, ParserConfigurationException
-  {  
-    // Instantiate a stylesheet processor.
-	Processor processor = Processor.newInstance("xslt");
+  public static void main(String[] args)
+	throws TransformerException, TransformerConfigurationException, 
+         SAXException, IOException	   
+	{
+    // Instantiate  a TransformerFactory.
+  	SAXTransformerFactory saxTFactory = (SAXTransformerFactory)TransformerFactory.newInstance();
 
-	// Create a Templates object and a Transformer for each stylesheet.
-    Templates stylesheet1 = processor.process(new InputSource("foo1.xsl"));
-    Transformer transformer1 = stylesheet1.newTransformer();
-
-	Templates stylesheet2= processor.process(new InputSource("foo2.xsl"));
-    Transformer transformer2 = stylesheet2.newTransformer();
-
-    Templates  stylesheet3 = processor.process(new InputSource("foo3.xsl"));
-    Transformer transformer3= stylesheet3.newTransformer();
+	  // Create a a Transformer for each stylesheet.
+    XMLFilter xmlFilter1 = saxTFactory.newXMLFilter(new StreamSource("foo1.xsl"));
+    XMLFilter xmlFilter2 = saxTFactory.newXMLFilter(new StreamSource("foo2.xsl"));
+    XMLFilter xmlFilter3 = saxTFactory.newXMLFilter(new StreamSource("foo3.xsl"));
     
     // Create an XMLReader (implemented by the Xerces SAXParser).
-	XMLReader reader = XMLReaderFactory.createXMLReader();
+	  XMLReader reader = XMLReaderFactory.createXMLReader();
     
-    // transformer1 uses the reader (SAXParser) as its reader.
-    transformer1.setParent(reader);
+    // xmlFilter1 uses the reader (SAXParser) as its reader.
+    xmlFilter1.setParent(reader);
     
-    // transformer2 uses transformer1 as its reader.
-    transformer2.setParent(transformer1);
+    // xmlFilter2 uses xmlFilter1 as its reader.
+    xmlFilter2.setParent(xmlFilter1);
     
-    // transform3 uses transform2 as its reader.
-    transformer3.setParent(transformer2);
+    // xmlFilter3 uses xmlFilter2 as its reader.
+    xmlFilter3.setParent(xmlFilter2);
     
-    // transformer3 outputs SAX events to the serializer.
+    // xmlFilter3 outputs SAX events to the serializer.
     Serializer serializer = SerializerFactory.getSerializer("xml");
     serializer.setOutputStream(System.out);
-    transformer3.setContentHandler(serializer.asContentHandler());
+    xmlFilter3.setContentHandler(serializer.asContentHandler());
 
 	// Perform the series of transformations as follows:
 	//   transformer3 gets its parent (transformer2) as the XMLReader/XMLFilter
@@ -144,6 +147,6 @@ public class UseXMLFilters
 	//   sends the output to transformer3.
 	//   transformer3 parses the transformation 2 output, performs transformation 3,
 	//   and sends the output to the serializer.
-    transformer3.parse(new InputSource("foo.xml"));
+    xmlFilter3.parse(new InputSource("foo.xml"));
   }
 }
