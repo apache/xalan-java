@@ -62,7 +62,7 @@
   <resources source="sbk:/sources/xalan/resources.xml"/>
   <external href="../index.html" label="Home"/>
   <separator/>
-  <document id="index" label="Xalan-J 2.4.0" source="xalan/index.xml"/>
+  <document id="index" label="Xalan-J 2.4.1" source="xalan/index.xml"/>
   <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/>
   <document id="dtm" label="DTM" source="xalan/dtm.xml"/>  
   <document id="xsltc_usage" label="XSLTC Translets" source="xalan/xsltc_usage.xml"/>
