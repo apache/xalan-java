@@ -338,7 +338,7 @@ public class OpMap
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * @param msg An error number that corresponds to one of the numbers found 
+   * @param msg An error msgkey that corresponds to one of the constants found 
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which 
@@ -347,7 +347,7 @@ public class OpMap
    * @throws TransformerException if the current ErrorListoner determines to 
    *                              throw an exception.
    */
-  public void error(int msg, Object[] args) throws javax.xml.transform.TransformerException
+  public void error(String msg, Object[] args) throws javax.xml.transform.TransformerException
   {
 
     java.lang.String fmsg = org.apache.xalan.res.XSLMessages.createXPATHMessage(msg, args);

@@ -66,6 +66,8 @@ import java.util.Properties;
 import java.util.Enumeration;
 
 import java.lang.Cloneable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.w3c.dom.Document;
 
@@ -189,7 +191,7 @@ public class OutputProperties extends ElemTemplateElement
    * @param resourceName non-null reference to resource name.
    * @param defaults Default properties, which may be null.
    */
-  static private Properties loadPropertiesFile(String resourceName, Properties defaults)
+  static private Properties loadPropertiesFile(final String resourceName, Properties defaults)
     throws IOException
   {
 
@@ -204,16 +206,36 @@ public class OutputProperties extends ElemTemplateElement
 
     try {
       try {
-        java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
-        if (getCCL != null) {
-          ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-          is = contextClassLoader.getResourceAsStream("org/apache/xalan/templates/" + resourceName);
-        }
+	// Using doPrivileged to be able to read property file without opening
+        // up secured container permissions like J2EE container
+        is =(InputStream)AccessController.doPrivileged( new PrivilegedAction() {
+          public Object run() {
+            try {
+              java.lang.reflect.Method getCCL = Thread.class.getMethod(
+                  "getContextClassLoader", NO_CLASSES);
+              if (getCCL != null) {
+                ClassLoader contextClassLoader = (ClassLoader)
+                    getCCL.invoke(Thread.currentThread(), NO_OBJS);
+                return ( contextClassLoader.getResourceAsStream (
+                    "org/apache/xalan/templates/" + resourceName) );
+              }
+            }
+            catch ( Exception e ) { }
+
+            return null;
+            
+          } 
+        });
       }
       catch (Exception e) {}
 
       if ( is == null ) {
-        is = OutputProperties.class.getResourceAsStream(resourceName);
+        is = (InputStream)AccessController.doPrivileged( new PrivilegedAction(){
+	  public Object run() {
+            return OutputProperties.class.getResourceAsStream(resourceName);
+          }
+        });
+
       }
       
       bis = new BufferedInputStream(is);
