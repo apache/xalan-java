@@ -38,6 +38,9 @@
   <resource id="ApacheLicense" 
             title="The Apache Software License, Version 1.1" 
             location="http://xml.apache.org/dist/LICENSE.txt"/>
+  <resource id="bugzilla"
+            title="Bugzilla (the Apache bug database)"
+            location="http://nagoya.betaversion.org/bugzilla/"/>
   <resource id="bsf"
             title="Bean Scripting Framework (BSF)"
             location="http://oss.software.ibm.com/developerworks/projects/bsf"/>
