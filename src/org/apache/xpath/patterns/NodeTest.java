@@ -65,6 +65,8 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.WhitespaceStrippingElementMatcher;
+import org.apache.xml.utils.PrefixResolver;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
@@ -80,6 +82,11 @@ public class NodeTest extends Expression
   /** The namespace or local name for node tests with a wildcard.
    *  @see <a href="http://www.w3.org/TR/xpath#NT-NameTest">the XPath NameTest production.</a> */
   public static final String WILD = "*";
+  
+  /** The URL to pass to the Node#supports method, to see if the 
+   * DOM has already been stripped of whitespace nodes. */
+  public static final String SUPPORTS_PRE_STRIPPING =
+    "http://xml.apache.org/xpath/features/whitespace-pre-stripping";
 
   /**
    * This attribute determines which node types are accepted.
@@ -373,11 +380,35 @@ public class NodeTest extends Expression
   public XObject execute(XPathContext xctxt, Node context)
           throws javax.xml.transform.TransformerException
   {
+    short nodeType = context.getNodeType();
+    
+    // Yuck!  Blech!  -sb
+    if(Node.TEXT_NODE == nodeType && !context.isSupported(SUPPORTS_PRE_STRIPPING, null))
+    {
+      Node parent = context.getParentNode();
+      if(null != parent && Node.ELEMENT_NODE == parent.getNodeType())
+      {
+        String data = context.getNodeValue();
+        if(org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(data))
+        {
+          // Ugly trick for now.
+          PrefixResolver resolver = xctxt.getNamespaceContext();
+          if(resolver instanceof WhitespaceStrippingElementMatcher)
+          {
+            WhitespaceStrippingElementMatcher wsem = 
+               (WhitespaceStrippingElementMatcher)resolver;
+            if(wsem.shouldStripWhiteSpace(xctxt, (org.w3c.dom.Element)parent))
+            {
+              return SCORE_NONE;
+            }
+          }
+        }
+      }
+    }
 
     if (m_whatToShow == NodeFilter.SHOW_ALL)
       return m_score;
 
-    short nodeType = context.getNodeType();
     int nodeBit = (m_whatToShow & (0x00000001 << (nodeType - 1)));
 
     switch (nodeBit)

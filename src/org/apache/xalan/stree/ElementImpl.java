@@ -874,7 +874,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   {
     return getChildAttribute(index);
   }
-
+  
   /**
    *  Retrieves a node specified by local name and namespace URI. HTML-only
    * DOM implementations do not need to implement this method.

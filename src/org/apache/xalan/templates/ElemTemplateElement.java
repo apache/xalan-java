@@ -75,6 +75,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultNameSpace;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xpath.VariableStack;
+import org.apache.xpath.WhitespaceStrippingElementMatcher;
 
 // TRaX imports
 import javax.xml.transform.Templates;
@@ -105,7 +106,8 @@ import org.xml.sax.helpers.NamespaceSupport;
  * @see Stylesheet
  */
 public class ElemTemplateElement extends UnImplNode
-        implements PrefixResolver, Serializable, SourceLocator
+        implements PrefixResolver, Serializable, SourceLocator, 
+                   WhitespaceStrippingElementMatcher
 {
 
   /**
@@ -1195,6 +1197,37 @@ public class ElemTemplateElement extends UnImplNode
       return 1;
     else
       return this.getUid() - ro.getUid();
+  }
+  
+  /**
+   * Get information about whether or not an element should strip whitespace.
+   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * @param support The XPath runtime state.
+   * @param targetElement Element to check
+   *
+   * @return true if the whitespace should be stripped.
+   *
+   * @throws TransformerException
+   */
+  public boolean shouldStripWhiteSpace(
+          org.apache.xpath.XPathContext support, 
+          org.w3c.dom.Element targetElement) throws TransformerException
+  {
+    StylesheetRoot sroot = this.getStylesheetRoot();
+    return (null != sroot) ? sroot.shouldStripWhiteSpace(support, targetElement) :false;
+  }
+  
+  /**
+   * Get information about whether or not whitespace can be stripped.
+   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * @return true if the whitespace can be stripped.
+   */
+  public boolean canStripWhiteSpace()
+  {
+    StylesheetRoot sroot = this.getStylesheetRoot();
+    return (null != sroot) ? sroot.canStripWhiteSpace() : false;
   }
 
 }

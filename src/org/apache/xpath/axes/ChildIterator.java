@@ -59,14 +59,17 @@ package org.apache.xpath.axes;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.WhitespaceStrippingElementMatcher;
+import org.apache.xml.utils.PrefixResolver;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class implements an optimized iterator for 
- * "node()" patterns, that is, any children of the 
+ * This class implements an optimized iterator for
+ * "node()" patterns, that is, any children of the
  * context node.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
  */
@@ -77,8 +80,9 @@ public class ChildIterator extends LocPathIterator
    * Create a ChildIterator object.
    *
    * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the 
+   * @param opPos The position within the op map, which contains the
    * location path expression for this itterator.
+   * NEEDSDOC @param analysis
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -92,10 +96,10 @@ public class ChildIterator extends LocPathIterator
    *  Returns the next node in the set and advances the position of the
    * iterator in the set. After a NodeIterator is created, the first call
    * to nextNode() returns the first node in the set.
-   * 
+   *
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * 
+   *
    * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
@@ -120,10 +124,62 @@ public class ChildIterator extends LocPathIterator
 
     Node next;
 
-    m_lastFetched = next = (null == m_lastFetched)
-                           ? m_context.getFirstChild()
-                           : m_lastFetched.getNextSibling();
+    while (true)
+    {
+      m_lastFetched = next = (null == m_lastFetched)
+                             ? m_context.getFirstChild()
+                             : m_lastFetched.getNextSibling();
 
+      // Yuck!  Blech!  -sb
+      if (null != next)
+      {
+        int nt = next.getNodeType();
+        if(Node.DOCUMENT_TYPE_NODE == nt) // bug fix, position14, d2d, xerces DOM
+          continue;
+        else if ((Node.TEXT_NODE == nt)
+                &&!next.isSupported(SUPPORTS_PRE_STRIPPING, null))
+        {
+          Node parent = next.getParentNode();
+
+          if (null != parent && Node.ELEMENT_NODE == parent.getNodeType())
+          {
+            String data = next.getNodeValue();
+
+            if (org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(
+                    data))
+            {
+
+              // Ugly trick for now.
+              PrefixResolver resolver =
+                getXPathContext().getNamespaceContext();
+
+              if (resolver instanceof WhitespaceStrippingElementMatcher)
+              {
+                WhitespaceStrippingElementMatcher wsem =
+                  (WhitespaceStrippingElementMatcher) resolver;
+
+                try
+                {
+                  if (wsem.shouldStripWhiteSpace(
+                          getXPathContext(), (org.w3c.dom.Element) parent))
+                  {
+                    continue;
+                  }
+                }
+                catch (javax.xml.transform.TransformerException te)
+                {
+                  throw new org.apache.xml.utils.WrappedRuntimeException(te);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      break;
+    }
+
+    // m_lastFetched = next;
     if (null != next)
     {
       if (null != m_cachedNodes)

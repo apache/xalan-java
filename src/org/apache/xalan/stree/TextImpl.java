@@ -241,10 +241,11 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    *
    * @return true if feature is SaxEventDispatch.SUPPORTSINTERFACE 
    */
-  public boolean supports(String feature, String version)
+  public boolean isSupported(String feature, String version)
   {
 
-    if (feature == SaxEventDispatch.SUPPORTSINTERFACE)
+    if (feature == SaxEventDispatch.SUPPORTSINTERFACE ||
+        feature == org.apache.xpath.patterns.NodeTest.SUPPORTS_PRE_STRIPPING)
       return true;
     else
       return false;
@@ -252,7 +253,7 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
     // else if(feature.equals(SaxEventDispatch.SUPPORTSINTERFACE))
     //  return true;
     // else
-    //  return super.supports(feature, version);
+    //  return super.isSupported(feature, version);
   }
   
   /**

@@ -364,7 +364,7 @@ public class Child extends UnImplNode implements DOMOrder
    * @return Returns <code>true</code> if the specified feature is supported
    *   on this node, <code>false</code> otherwise.
    */
-  public boolean supports(String feature, String version)
+  public boolean isSupported(String feature, String version)
   {
     return false;
   }

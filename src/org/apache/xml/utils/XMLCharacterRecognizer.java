@@ -118,4 +118,25 @@ public class XMLCharacterRecognizer
 
     return true;
   }
+  
+  /**
+   * Tell if the string is whitespace.
+   *
+   * @param buf StringBuffer to check as XML whitespace.
+   * @return True if characters in buffer are XML whitespace, false otherwise
+   */
+  public static boolean isWhiteSpace(String s)
+  {
+
+    int n = s.length();
+
+    for (int i = 0; i < n; i++)
+    {
+      if (!isWhiteSpace(s.charAt(i)))
+        return false;
+    }
+
+    return true;
+  }
+
 }

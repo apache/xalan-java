@@ -828,6 +828,52 @@ public class StylesheetRoot extends StylesheetComposed
     else
       return null;
   }
+  
+  /**
+   * Get information about whether or not an element should strip whitespace.
+   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * @param support The XPath runtime state.
+   * @param targetElement Element to check
+   *
+   * @return true if the whitespace should be stripped.
+   *
+   * @throws TransformerException
+   */
+  public boolean shouldStripWhiteSpace(
+          XPathContext support, Element targetElement) throws TransformerException
+  {
+    if (null != m_whiteSpaceInfoList)
+    {
+      while(null != targetElement)
+      {
+        WhiteSpaceInfo info = (WhiteSpaceInfo) m_whiteSpaceInfoList.getTemplate(support,
+                targetElement, null, -1, false);
+        if(null != info)
+          return info.getShouldStripSpace();
+          
+        Node parent = targetElement.getParentNode();
+        if(null != parent && Node.ELEMENT_NODE == parent.getNodeType())
+          targetElement = (Element)parent;
+        else
+          targetElement = null;
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Get information about whether or not whitespace can be stripped.
+   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * @return true if the whitespace can be stripped.
+   */
+  public boolean canStripWhiteSpace()
+  {
+    return (null != m_whiteSpaceInfoList);
+  }
+  
+
 
   /**
    * <meta name="usage" content="advanced"/>
