@@ -245,7 +245,7 @@ public class StepPattern extends NodeTest implements SubContextList
     {
       score = NodeTest.SCORE_NONE;
     }
-    else if (nodeType == Node.DOCUMENT_NODE
+    else if ((nodeType == Node.DOCUMENT_NODE || nodeType == Node.DOCUMENT_FRAGMENT_NODE)
              && m_whatToShow != NodeFilter.SHOW_DOCUMENT)
     {
       score = NodeTest.SCORE_NONE;
