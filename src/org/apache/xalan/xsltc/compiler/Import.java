@@ -105,6 +105,7 @@ final class Import extends TopLevelElement {
 	    _imported.setSystemId(docToLoad);
 	    _imported.setParentStylesheet(context);
 	    _imported.setImportingStylesheet(context);
+        _imported.setTemplateInlining(context.getTemplateInlining());
 
 	    // precedence for the including stylesheet
 	    final int currPrecedence = parser.getCurrentImportPrecedence();
