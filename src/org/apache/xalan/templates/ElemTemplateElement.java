@@ -105,7 +105,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * @see Stylesheet
  */
 public class ElemTemplateElement extends UnImplNode
-        implements PrefixResolver, Serializable, SourceLocator, Recomposable
+        implements PrefixResolver, Serializable, SourceLocator
 {
 
   /**
@@ -1177,7 +1177,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   public int compareTo(Object o) throws ClassCastException {
     
-    Recomposable ro = (Recomposable) o;
+    ElemTemplateElement ro = (ElemTemplateElement) o;
     int roPrecedence = ro.getStylesheetComposed().getImportCountComposed();
     int myPrecedence = this.getStylesheetComposed().getImportCountComposed();
 

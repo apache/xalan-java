@@ -89,7 +89,7 @@ import javax.xml.transform.OutputKeys;
  * @
  */
 public class OutputProperties extends ElemTemplateElement
-        implements RecomposableBase, Cloneable
+        implements Cloneable
 {
 
   /**

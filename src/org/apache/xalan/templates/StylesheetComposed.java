@@ -119,14 +119,8 @@ public class StylesheetComposed extends Stylesheet
   /**
    * Adds all recomposable values for this precedence level into the recomposableElements Vector
    * that was passed in as the first parameter.  All elements added to the
-   * recomposableElements vector should implement the Recomposable interface.  That is,
-   * we must be able to determine the precedence level and document order sequence.  Also,
-   * they must have a compareTo method so that we can sort the Vector members according
-   * to precedence and document order.  If the value to be added does not implement
-   * Recomposable, then it must at least implement RecomposableBase.  In that case,
-   * we wrap it in a RecomposableImpl object that adds the precedence and document order
-   * features.
-   * @param recomposableElements a Vector of Recomposable objects that we will add all of
+   * recomposableElements vector should extend ElemTemplateElement.
+   * @param recomposableElements a Vector of ElemTemplateElement objects that we will add all of
    *        our recomposable objects to.
    */
   public void recompose(Vector recomposableElements) throws TransformerException

@@ -262,7 +262,7 @@ public class StylesheetRoot extends StylesheetComposed
     // appropriate routine here to actually do the recomposition.
     // Note that we're going backwards, encountering the highest precedence items first.
     for (int i = recomposableElements.size() - 1; i >= 0; i--)
-      ((Recomposable) recomposableElements.elementAt(i)).recompose(this);
+      ((ElemTemplateElement) recomposableElements.elementAt(i)).recompose(this);
     
     // Need final composition of TemplateList.  This adds the wild cards onto the chains.
     m_templateList.compose();
@@ -951,7 +951,7 @@ public class StylesheetRoot extends StylesheetComposed
    * left and highest index or right.  The first time you call
    * this function it will be with the parameters 0, a.length - 1.
    *
-   * @param v       a vector of Recomposable elements 
+   * @param v       a vector of ElemTemplateElement elements 
    * @param lo0     left boundary of partition
    * @param hi0     right boundary of partition
    *
@@ -966,28 +966,28 @@ public class StylesheetRoot extends StylesheetComposed
       {
         // Arbitrarily establishing partition element as the midpoint of
         // the array.
-        Recomposable midNode = (Recomposable) v.elementAt( ( lo0 + hi0 ) / 2 );
+        ElemTemplateElement midNode = (ElemTemplateElement) v.elementAt( ( lo0 + hi0 ) / 2 );
 
         // loop through the array until indices cross
         while( lo <= hi )
         {
           // find the first element that is greater than or equal to
           // the partition element starting from the left Index.
-          while( (lo < hi0) && (((Recomposable) v.elementAt(lo)).compareTo(midNode) < 0) )
+          while( (lo < hi0) && (((ElemTemplateElement) v.elementAt(lo)).compareTo(midNode) < 0) )
           {
             ++lo;
           } // end while
 
           // find an element that is smaller than or equal to
           // the partition element starting from the right Index.
-          while( (hi > lo0) && (((Recomposable) v.elementAt(hi)).compareTo(midNode) > 0) )          {
+          while( (hi > lo0) && (((ElemTemplateElement) v.elementAt(hi)).compareTo(midNode) > 0) )          {
             --hi;
           }
 
           // if the indexes have not crossed, swap
           if( lo <= hi )
           {
-            Recomposable node = (Recomposable) v.elementAt(lo);
+            ElemTemplateElement node = (ElemTemplateElement) v.elementAt(lo);
             v.setElementAt(v.elementAt(hi), lo);
             v.setElementAt(node, hi);
 
