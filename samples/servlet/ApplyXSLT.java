@@ -207,7 +207,7 @@ public class ApplyXSLT extends HttpServlet
     try
     {	
       Processor processor = Processor.newInstance("xslt");	  
-      process(processor, request, response); 
+      process(processor, request, response);
     }
     catch (Exception e)
     {
@@ -297,12 +297,7 @@ public class ApplyXSLT extends HttpServlet
         listener.out.println("Performing transformation...");
 		
         Templates templates = processor.process(xslSource);
-        Transformer transformer = templates.newTransformer();
-	  	  
-	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-        Document outNode = docBuilder.newDocument();
-		
+        Transformer transformer = templates.newTransformer();	  	  
         {
           try
           {
@@ -316,20 +311,10 @@ public class ApplyXSLT extends HttpServlet
 			  TransformerImpl transformerImpl = (TransformerImpl)transformer;
               transformerImpl.setQuietConflictWarnings(ourDefaultParameters.isNoCW(request));
 			}
-
-			setStylesheetParams(transformer, request);
 			
-    	    Node doc = docBuilder.parse(xmlSource);
-            transformer.transformNode(doc, new Result(outNode));
-	  
- 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Result outBuffer = new Result(baos);
-
-
-	        SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
-            Serializer serializer = sf.makeSerializer(baos, new OutputFormat());
-            serializer.asDOMSerializer().serialize(outNode);
-    	    baos.writeTo(response.getOutputStream());
+			setStylesheetParams(transformer, request);			
+	        transformer.transform(xmlSource, new Result(response.getOutputStream()));
+			
 			if (debug)              
               writeLog(listener.getMessage(), response.SC_OK);
           }
@@ -346,7 +331,7 @@ public class ApplyXSLT extends HttpServlet
           }
           finally
           {
-//            transformer.reset();
+            // transformer.reset();
           } // end of try ... catch ... finally
 		}
 	  }
