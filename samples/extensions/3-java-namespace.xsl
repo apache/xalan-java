@@ -3,12 +3,12 @@
                 xmlns:java="http://xml.apache.org/xslt/java"
                 version="1.0">
  
-  <xsl:template match="date">
-    <xsl:variable name="year" select="string(./@year)"/>
-    <xsl:variable name="month" select="string(./@month)"/> 
-    <xsl:variable name="day" select="string(./@day)"/>          
-    <xsl:variable name="format" select="string(./@format)"/>
-    
+  <xsl:template match="//date">
+    <xsl:variable name="year" select="string(@year)"/>
+    <xsl:variable name="month" select="string(@month)"/> 
+    <xsl:variable name="day" select="string(@day)"/>          
+    <xsl:variable name="format" select="string(@format)"/>
+
     <xsl:variable name="formatter"       
          select="java:java.text.SimpleDateFormat.new($format)"/>
     <xsl:variable name="date" 
