@@ -126,6 +126,7 @@ public final class TextOutput implements TransletOutputHandler {
 
     private static final String EMPTYSTRING     = "";
     private static final String HREF_STR        = "href";
+    private static final String CITE_STR        = "cite";
     private static final String SRC_STR         = "str";
     private static final String CHAR_ESC_START  = "&#";
     private static final String CDATA_ESC_START = "]]>&#";
@@ -828,15 +829,41 @@ public final class TextOutput implements TransletOutputHandler {
 
 	    // URL-encode href attributes in HTML output
 	    final String tmp = name.toLowerCase();
-	    if  (tmp.equals(HREF_STR) || tmp.equals(SRC_STR)) {
-		_attributes.add(name,quickAndDirtyUrlEncode(escapeAttr(value)));
+	    if (tmp.equals(HREF_STR) || tmp.equals(SRC_STR) ||
+		 tmp.equals(CITE_STR)) {
+		_attributes.add(name,
+		    quickAndDirtyUrlEncode(escapeAttr(value)));
 	    }
 	    else {
-		_attributes.add(expandAttribute(name), escapeAttr(value));
+		_attributes.add(expandAttribute(name), 
+			escapeNonURLAttr(value));
 	    }
 	    return;
 	}
     }
+
+    /**
+     * Escape non ASCII characters (> u007F) as &#XXX; entities.
+     */
+    private String escapeNonURLAttr(String base) {
+	final int len = base.length() - 1;
+
+	char[] ch = base.toCharArray();
+	StringBuffer buf = new StringBuffer();
+        for(int i=0; i<base.length(); i++){
+	    if (ch[i] > '\u007F') {
+	        buf.append(CHAR_ESC_START);
+		buf.append(Integer.toString((int)ch[i]));
+	        buf.append(';');
+	    }
+	    else {
+	        buf.append(ch[i]); 
+	    } 
+  	}
+	base = buf.toString();
+	return base;
+    }
+
 
     /**
      * End an element or CDATA section in the output document
