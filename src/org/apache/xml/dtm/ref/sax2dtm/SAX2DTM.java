@@ -1538,6 +1538,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       System.out.println("startPrefixMapping: prefix: " + prefix + ", uri: "
                          + uri);
 
+    if(null == prefix)
+      prefix = "";
     m_prefixMappings.addElement(prefix);  // JDK 1.1.x compat -sc
     m_prefixMappings.addElement(uri);  // JDK 1.1.x compat -sc
   }
@@ -1559,6 +1561,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     if (DEBUG)
       System.out.println("endPrefixMapping: prefix: " + prefix);
+
+    if(null == prefix)
+      prefix = "";
 
     int start = m_contextIndexes.peek();
     int index = m_prefixMappings.indexOf(prefix, start);
@@ -1628,7 +1633,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           String uri, String localName, String qName, Attributes attributes)
             throws SAXException
   {
-
     charactersFlush();
 
     int exName = m_expandedNameTable.getExpandedTypeID(uri, localName, DTM.ELEMENT_NODE);
