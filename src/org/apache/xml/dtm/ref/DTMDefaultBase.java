@@ -982,11 +982,25 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     int firstChild, eType;
-    for(firstChild = _firstch(makeNodeIdentity(nodeHandle));firstChild != DTM.NULL; firstChild = _nextsib(firstChild))
-    {
-    	if ((eType =_exptype(firstChild)) == nodeType || m_expandedNameTable.getType(eType) == nodeType)
-    	//_type(firstChild) == nodeType)
+    if (nodeType < DTM.NTYPES) {
+      for (firstChild = _firstch(makeNodeIdentity(nodeHandle));
+           firstChild != DTM.NULL;
+           firstChild = _nextsib(firstChild)) {
+        eType = _exptype(firstChild);
+        if (eType == nodeType
+               || (eType >= DTM.NTYPES
+                      && m_expandedNameTable.getType(eType) == nodeType)) {
           return makeNodeHandle(firstChild);
+        }
+      }
+    } else {
+      for (firstChild = _firstch(makeNodeIdentity(nodeHandle));
+           firstChild != DTM.NULL;
+           firstChild = _nextsib(firstChild)) {
+    	if (_exptype(firstChild) == nodeType) {
+          return makeNodeHandle(firstChild);
+        }
+      }
     }
     return DTM.NULL;
   }
