@@ -108,6 +108,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    public NodeIterator cloneIterator() { return this; }
 	    public boolean isReverse() { return false; }
 	    public NodeIterator resetOnce() { return this; }
+	    public NodeIterator includeSelf() { return this; }
 	};
 
     // Contains the number of nodes and attribute nodes in the tree
@@ -594,17 +595,39 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int _last = -1;
 
 	public NodeIterator setStartNode(final int node) {
-	    _last = -1;
+	    if (node != _startNode) _last = -1;
+
 	    if (_isRestartable) {
-		_currentChild = hasChildren(node)
-		    ? _offsetOrChild[_startNode = node] : END;
+		_startNode = node;
+		if (_includeSelf) {
+		    _currentChild = -1;
+		}
+		else {
+		    if (hasChildren(node))
+			_currentChild = _offsetOrChild[node];
+		    else
+			_currentChild = END;
+		}
 		return resetPosition();
 	    }
 	    return this;
 	}
 
 	public int next() {
-	    final int node = _currentChild;
+	    int node = _currentChild;
+	    if (_includeSelf) {
+		if (node == -1) {
+		    node = _startNode;
+		    if (hasChildren(node))
+			_currentChild = _offsetOrChild[node];
+		    else
+			_currentChild = END;
+		    // IMPORTANT: The start node (parent of all children) is
+		    // returned, but the node position counter (_position)
+		    // should not be increased, so returnNode() is not called
+		    return node;
+		}
+	    }
 	    _currentChild = _nextSibling[node];
 	    return returnNode(node);
 	}
@@ -1317,8 +1340,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int next() {
 	    while (++_node < _limit) {
-		if (_type[_node] > TEXT)
-		    return(returnNode(_node));
+		if (_type[_node] > TEXT) return(returnNode(_node));
 	    } 
 	    return(NULL);
 	}
@@ -1984,18 +2006,26 @@ public final class DOMImpl implements DOM, Externalizable {
      * Dump the whole tree to a file (serialized)
      */
     public void writeExternal(ObjectOutput out) throws IOException {
-	out.writeInt(_treeNodeLimit);
-	out.writeObject(_type);
-	out.writeObject(_namespace);
-	out.writeObject(_parent);
-	out.writeObject(_nextSibling);
-	out.writeObject(_offsetOrChild);
-	out.writeObject(_lengthOrAttr);
-	out.writeObject(_text);
-	out.writeObject(_namesArray);
-	out.writeObject(_uriArray);
+	out.writeInt(_treeNodeLimit);      // number of nodes in DOM
+	out.writeInt(_firstAttributeNode); // index of first attribute node
+	out.writeObject(_documentURI);     // URI of original document
+
+	out.writeObject(_type);            // type of every node in DOM
+	out.writeObject(_namespace);       // namespace URI of each type
+	out.writeObject(_prefix);          // prefix type of every node in DOM
+
+	out.writeObject(_parent);          // parent of every node in DOM
+	out.writeObject(_nextSibling);     // next sibling of every node in DOM
+	out.writeObject(_offsetOrChild);   // first child of every node in DOM
+	out.writeObject(_lengthOrAttr);    // first attr of every node in DOM
+
+	out.writeObject(_text);            // all text in DOM (text, PIs, etc)
+	out.writeObject(_namesArray);      // names of all element/attr types
+	out.writeObject(_uriArray);        // name of all URIs
+	out.writeObject(_prefixArray);     // name of all prefixes
+
 	out.writeObject(_whitespace);
-	out.writeObject(_prefix);
+
 	out.flush();
     }
 
@@ -2005,17 +2035,25 @@ public final class DOMImpl implements DOM, Externalizable {
     public void readExternal(ObjectInput in)
 	throws IOException, ClassNotFoundException {
 	_treeNodeLimit = in.readInt();
+	_firstAttributeNode = in.readInt();
+	_documentURI = (String)in.readObject();
+
 	_type          = (short[])in.readObject();
 	_namespace     = (short[])in.readObject();
+	_prefix        = (short[])in.readObject();
+
 	_parent        = (int[])in.readObject();
 	_nextSibling   = (int[])in.readObject();
 	_offsetOrChild = (int[])in.readObject();
 	_lengthOrAttr  = (int[])in.readObject();
+
 	_text          = (char[])in.readObject();
 	_namesArray    = (String[])in.readObject();
 	_uriArray      = (String[])in.readObject();
+	_prefixArray   = (String[])in.readObject();
+
 	_whitespace    = (BitArray)in.readObject();
-	_prefix        = (short[])in.readObject();
+
 	_types         = setupMapping(_namesArray);
     }
 
@@ -2023,7 +2061,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * Constructor - defaults to 32K nodes
      */
     public DOMImpl() {
-	this(32*1024);
+	//this(32*1024);
+	this(8*1024);
     }
          
     /**
@@ -2038,7 +2077,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	_text          = new char[size * 10];
 	_whitespace    = new BitArray(size);
 	_prefix        = new short[size];
-	// _namesArray[] and _uriArray are allocated in endDocument
+	// _namesArray[] and _uriArray[] are allocated in endDocument
     }
 
     /**
@@ -2346,20 +2385,26 @@ public final class DOMImpl implements DOM, Externalizable {
      * a given type.
      */
     public NodeIterator getTypedDescendantIterator(int type) {
-	NodeIterator iterator = new TypedDescendantIterator(type);
-	iterator.setStartNode(1);
+	NodeIterator iterator;
+	if (type == ELEMENT)
+	    iterator = new FilterIterator(new DescendantIterator(),
+					  getElementFilter());
+	else
+	    iterator = new TypedDescendantIterator(type);
 	return(iterator);
     }
 
     /**
-     * Returns the nth descendant of a node (1 = parent, 2 = gramps)
+     * Returns the nth descendant of a node
      */
-    public NodeIterator getNthDescendant(int type, int n) {
+    public NodeIterator getNthDescendant(int type, int n, boolean includeself) {
 	NodeIterator source;
-	if (type == -1)
-	    source = new DescendantIterator();
+	if (type == ELEMENT)
+	    source = new FilterIterator(new DescendantIterator(),
+					getElementFilter());
 	else
 	    source = new TypedDescendantIterator(type);
+	if (includeself) ((NodeIteratorBase)source).includeSelf();
 	return(new NthDescendantIterator(source, n, type));
     }
 
@@ -3203,41 +3248,42 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _currentOffset += length;
 	}
 
-	private void resizeArrays(final int newSize, final int length) {
-	    if (newSize > length) {
-		// Resize the '_type' array
-		final short[] newType = new short[newSize];
-		System.arraycopy(_type, 0, newType, 0, length);
-		_type = newType;
+	private void resizeArrays(final int newSize, int length) {
+	    if ((length < newSize) && (newSize == _currentNode))
+		length = _currentNode;
 
-		// Resize the '_parent' array
-		final int[] newParent = new int[newSize];
-		System.arraycopy(_parent, 0, newParent, 0, length);
-		_parent = newParent;
+	    // Resize the '_type' array
+	    final short[] newType = new short[newSize];
+	    System.arraycopy(_type, 0, newType, 0, length);
+	    _type = newType;
 
-		// Resize the '_nextSibling' array
-		final int[] newNextSibling = new int[newSize];
-		System.arraycopy(_nextSibling, 0, newNextSibling, 0, length);
-		_nextSibling = newNextSibling;
+	    // Resize the '_parent' array
+	    final int[] newParent = new int[newSize];
+	    System.arraycopy(_parent, 0, newParent, 0, length);
+	    _parent = newParent;
 
-		// Resize the '_offsetOrChild' array
-		final int[] newOffsetOrChild = new int[newSize];
-		System.arraycopy(_offsetOrChild, 0, newOffsetOrChild, 0,length);
-		_offsetOrChild = newOffsetOrChild;
+	    // Resize the '_nextSibling' array
+	    final int[] newNextSibling = new int[newSize];
+	    System.arraycopy(_nextSibling, 0, newNextSibling, 0, length);
+	    _nextSibling = newNextSibling;
 
-		// Resize the '_lengthOrAttr' array
-		final int[] newLengthOrAttr = new int[newSize];
-		System.arraycopy(_lengthOrAttr, 0, newLengthOrAttr, 0, length);
-		_lengthOrAttr = newLengthOrAttr;
+	    // Resize the '_offsetOrChild' array
+	    final int[] newOffsetOrChild = new int[newSize];
+	    System.arraycopy(_offsetOrChild, 0, newOffsetOrChild, 0,length);
+	    _offsetOrChild = newOffsetOrChild;
 
-		// Resize the '_whitespace' array (a BitArray instance)
-		_whitespace.resize(newSize);
+	    // Resize the '_lengthOrAttr' array
+	    final int[] newLengthOrAttr = new int[newSize];
+	    System.arraycopy(_lengthOrAttr, 0, newLengthOrAttr, 0, length);
+	    _lengthOrAttr = newLengthOrAttr;
 
-		// Resize the '_prefix' array
-		final short[] newPrefix = new short[newSize];
-		System.arraycopy(_prefix, 0, newPrefix, 0, length);
-		_prefix = newPrefix;
-	    }
+	    // Resize the '_whitespace' array (a BitArray instance)
+	    _whitespace.resize(newSize);
+
+	    // Resize the '_prefix' array
+	    final short[] newPrefix = new short[newSize];
+	    System.arraycopy(_prefix, 0, newPrefix, 0, length);
+	    _prefix = newPrefix;
 	}
 	
 	private void resizeArrays2(final int newSize, final int length) {

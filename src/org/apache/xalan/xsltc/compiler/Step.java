@@ -405,13 +405,13 @@ final class Step extends RelativeLocationPath {
 	    // Handle '//*[n]' expression
 	    else if (predicate.isNthDescendant()) {
 		il.append(methodGen.loadDOM());
-		//il.append(methodGen.loadContextNode());
-		il.append(new ICONST(-1));
+		il.append(new ICONST(NodeTest.ELEMENT));
 		predicate.translate(classGen, methodGen);
+		il.append(new ICONST(0));
 		idx = cpg.addInterfaceMethodref(DOM_INTF,
 						"getNthDescendant",
-						"(II)"+NODE_ITERATOR_SIG);
-		il.append(new INVOKEINTERFACE(idx, 3));
+						"(IIZ)"+NODE_ITERATOR_SIG);
+		il.append(new INVOKEINTERFACE(idx, 4));
 	    }
 	    // Handle 'elem[n]' expression
 	    else if (predicate.isNthPositionFilter()) {
@@ -422,10 +422,14 @@ final class Step extends RelativeLocationPath {
 		    il.append(methodGen.loadDOM());
 		    il.append(new PUSH(cpg, _nodeType));
 		    predicate.translate(classGen, methodGen);
+		    if (_axis == Axis.DESCENDANT)
+			il.append(new ICONST(0));
+		    else
+			il.append(new ICONST(1));
 		    idx = cpg.addInterfaceMethodref(DOM_INTF,
 						    "getNthDescendant",
-						    "(II)"+NODE_ITERATOR_SIG);
-		    il.append(new INVOKEINTERFACE(idx, 3));		    
+						    "(IIZ)"+NODE_ITERATOR_SIG);
+		    il.append(new INVOKEINTERFACE(idx, 4));
 		}
 		else {
 		    idx = cpg.addMethodref(NTH_ITERATOR_CLASS,

@@ -407,10 +407,11 @@ PathExpr ::= LocationPath:lp
         | FilterExpr:fexp DSLASH RelativeLocationPath:rlp
         {:
            // Expand '//' into '/descendant-or-self::node()/'
-           Step nodeStep = new Step(Axis.DESCENDANTORSELF, 
-	                            NodeTest.ANODE, null); 
-           RESULT = new FilterParentPath(
-	                new FilterParentPath(fexp, nodeStep), rlp);
+           Step step = new Step(Axis.DESCENDANTORSELF, NodeTest.ANODE, null);
+           FilterParentPath fpp = new FilterParentPath(fexp, step);
+           fpp = new FilterParentPath(fpp, rlp);
+           fpp.setDescendantAxis();
+           RESULT = fpp;
         :};
 
 LocationPath ::= RelativeLocationPath:rlp
@@ -481,33 +482,25 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
         {:
 
-	// GTM bug fix 2553; 3360 (handles predicates in nodeStep2). 
-	AbsoluteLocationPath absLocPath = null;
+	AbsoluteLocationPath alp = null;
+
+        Step left = new Step(Axis.DESCENDANTORSELF, -1, null);
+
 	if (rlp instanceof ParentLocationPath) {
-	    // GTM, bug fix 3312  
-            Step nodeStep1 = new Step(Axis.DESCENDANTORSELF, -1, null);
-	    ParentLocationPath parLocPath = new ParentLocationPath(nodeStep1,
-		rlp);
-	    absLocPath = new AbsoluteLocationPath(parLocPath);
+	    ParentLocationPath plp = new ParentLocationPath(left, rlp);
+	    alp = new AbsoluteLocationPath(plp);
+	}
+	else if (rlp instanceof Step) {
+            Step right = (Step)rlp;
+            alp = new AbsoluteLocationPath(new ParentLocationPath(left, right));
 	}
 	else {
-	    int nodeType = NodeTest.ELEMENT;
-            int axis = Axis.CHILD;
-            Vector predicates = null;
+            // Don't think we'll ever get here...
+            Step right = new Step(Axis.CHILD, NodeTest.ELEMENT, null);
+	    alp = new AbsoluteLocationPath(new ParentLocationPath(left, right));
+        }
 
-	    if (rlp instanceof Step) {
-                nodeType = ((Step)rlp).getNodeType();
-                axis = ((Step)rlp).getAxis();
-                predicates = ((Step)rlp).getPredicates();
-	    }
- 	    // create the new abs location path
-            Step nodeStep1 = new Step(Axis.DESCENDANTORSELF, -1, null);
-            Step nodeStep2 = new Step(axis, nodeType, predicates);
-	    absLocPath = new AbsoluteLocationPath(
-                   new ParentLocationPath(nodeStep1, nodeStep2));
-	}
-
-	RESULT = new FilteredAbsoluteLocationPath(absLocPath);	
+	RESULT = new FilteredAbsoluteLocationPath(alp);
 	:};
 
 

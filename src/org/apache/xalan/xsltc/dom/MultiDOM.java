@@ -230,8 +230,8 @@ public final class MultiDOM implements DOM {
 	return new AxisIterator(axis, type);
     }
 
-    public NodeIterator getNthDescendant(int node, int n) {
-	return _adapters[node>>>24].getNthDescendant(node & CLR, n);
+    public NodeIterator getNthDescendant(int node, int n, boolean includeself) {
+	return _adapters[node>>>24].getNthDescendant(node & CLR,n,includeself);
     }
 
     public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,

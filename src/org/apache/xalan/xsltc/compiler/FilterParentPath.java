@@ -63,14 +63,17 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class FilterParentPath extends Expression {
+
     private Expression _filterExpr;
     private Expression _path;
+    private boolean _hasDescendantAxis = false;
 
     public FilterParentPath(Expression filterExpr, Expression path) {
 	(_path = path).setParent(this);
@@ -85,6 +88,10 @@ final class FilterParentPath extends Expression {
     
     public String toString() {
 	return "FilterParentPath(" + _filterExpr + ", " + _path + ')';
+    }
+
+    public void setDescendantAxis() {
+	_hasDescendantAxis = true;
     }
 
     /**
@@ -139,5 +146,13 @@ final class FilterParentPath extends Expression {
 
 	// Initialize StepIterator with iterators from the stack
 	il.append(new INVOKESPECIAL(initSI));
+
+	// This is a special case for the //* path with or without predicates
+        if (_hasDescendantAxis) {
+	    final int incl = cpg.addMethodref(STEP_ITERATOR_CLASS,
+					      "includeSelf",
+					      "()"+NODE_ITERATOR_SIG);
+	    il.append(new INVOKEVIRTUAL(incl));
+	}
     }
 }

@@ -97,7 +97,7 @@ public interface DOM {
     public NodeIterator getTypedChildren(final int type);
     public NodeIterator getAxisIterator(final int axis);
     public NodeIterator getTypedAxisIterator(final int axis, final int type);
-    public NodeIterator getNthDescendant(int node, int n);
+    public NodeIterator getNthDescendant(int node, int n, boolean includeself);
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns);
     public NodeIterator getNodeValueIterator(NodeIterator iter, int returnType,
 					     String value, boolean op);

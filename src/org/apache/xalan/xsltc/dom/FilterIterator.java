@@ -111,7 +111,6 @@ public final class FilterIterator extends NodeIteratorBase {
 
     public NodeIterator setStartNode(int node) {
 	if (_isRestartable) {
-	    // iterator is not a clone
 	    _source.setStartNode(_startNode = node); 
 	    return resetPosition();
 	}
@@ -125,4 +124,5 @@ public final class FilterIterator extends NodeIteratorBase {
     public void gotoMark() {
 	_source.gotoMark();
     }
+
 }

@@ -81,7 +81,8 @@ public final class NthIterator extends NodeIteratorBase {
 	if (_ready && _position > 0) {
 	    _ready = false;
 	    // skip N-1 nodes
-	    for (int n = _position - 1; n-- > 0;) {
+	    final int pos = _position;
+	    for (int n = pos - 1; n-- > 0;) {
 		if (_source.next() == NodeIterator.END) {
 		    return NodeIterator.END;
 		}

@@ -155,7 +155,7 @@ final class ApplyTemplates extends Instruction {
 		sortObjects.addElement(child);
 	    }
 	}
-	
+
 	// Push a new parameter frame
 	if (stylesheet.hasLocalParams()) {
 	    il.append(classGen.loadTranslet());

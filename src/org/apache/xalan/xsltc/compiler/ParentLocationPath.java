@@ -144,6 +144,19 @@ final class ParentLocationPath extends RelativeLocationPath {
 	// Initialize StepIterator with iterators from the stack
 	il.append(new INVOKESPECIAL(initSI));
 
+	// This is a special case for the //* path with or without predicates
+	if ((_path instanceof Step) && (_step instanceof Step)) {
+	    final Step path = (Step)_path;
+	    final Step step = (Step)_step;
+	    if ((path.getAxis() == Axis.DESCENDANTORSELF) &&
+		(step.getAxis() == Axis.CHILD)) {
+		final int incl = cpg.addMethodref(STEP_ITERATOR_CLASS,
+						  "includeSelf",
+						  "()"+NODE_ITERATOR_SIG);
+		il.append(new INVOKEVIRTUAL(incl));
+	    }
+	}
+
 	/*
 	 * If this pattern contains a sequence of descendant iterators we
 	 * run the risk of returning the same node several times. We put
