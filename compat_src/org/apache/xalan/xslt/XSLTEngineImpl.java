@@ -721,7 +721,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
     if(iSource instanceof DOMSource)
     {
       //if(getXMLProcessorLiaison() instanceof org.apache.xalan.xpath.dtm.DTMLiaison)
-       // error(XSLTErrorResources.ER_CANT_USE_DTM_FOR_INPUT); //"Can't use a DTMLiaison for a input DOM node... pass a org.apache.xalan.xpath.xdom.XercesLiaison instead!");
+       // error(XSLTErrorResources.ER_CANT_USE_DTM_FOR_INPUT);
 
       sourceTree = ((DOMSource)iSource).getNode();
     }
@@ -2164,8 +2164,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
   /**
    * Get the preferred stylesheet for the XSLTInputSource XML document,
    * as identified by the xml-stylesheet PI, and matching the media and
-   * charset criteria. See {@link http://www.w3.org/TR/xml-stylesheet/
-   * Associating Style Sheets with XML documents}
+   * charset criteria. See <a href="http://www.w3.org/TR/xml-stylesheet/">
+   * Associating Style Sheets with XML documents</a>.
    * Does not yet handle the LINK REL="stylesheet" syntax.
    *
    * @param media The media attribute to be matched.  May be null, in which
@@ -2198,8 +2198,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
   /**
    * Get a list of stylesheet specifications for the XSLTInputSource XML document,
    * as identified by the xml-stylesheet PI, and matching the media and
-   * charset criteria. See {@link http://www.w3.org/TR/xml-stylesheet/
-   * Associating Style Sheets with XML documents}.
+   * charset criteria. See <a href="http://www.w3.org/TR/xml-stylesheet/">
+   * Associating Style Sheets with XML documents</a>.
    * Does not yet handle the LINK REL="stylesheet" syntax.
    *
    * @param media The media attribute to be matched.  May be null, in which

@@ -84,14 +84,10 @@ public class XSLTInputSource //extends SAXSource
   
   /**
     * Zero-argument default constructor -- Before you can use the new XSLTInputSource object in a transformation,
-    * you must define the document source with setSystemId(), setNode(), setByteStream(), or setCharacterStream().
+    * you must define the document source with setSystemId().
     *
     * @see #setSystemId(String)
-    * @see #setNode(Node)
-    * @see #setByteStream
-    * @see #setCharacterStream
     * @see #setEncoding(String)
-    * @see #setPublicId(String)
     */
   public XSLTInputSource ()
   {
@@ -107,11 +103,7 @@ public class XSLTInputSource //extends SAXSource
     *
     * @param systemId The system identifier (URI).
     * @see #setSystemId(String)
-    * @see #setNode(Node)
-    * @see #setByteStream
     * @see #setEncoding(String)
-    * @see #setCharacterStream
-    * @see #setPublicId(String)
     */
   public XSLTInputSource (String systemId)
   {
@@ -122,16 +114,11 @@ public class XSLTInputSource //extends SAXSource
 
 
   /**
-    * Create a new input source with a byte stream -- the equivalent of creating an input source
-    * with the zero-argument constructor and setting the new object's ByteStream property.
+    * Create a new input source with a byte stream.
     *
     * @param byteStream The raw byte stream containing the document.
-    * @see #setByteStream
     * @see #setSystemId(String)
-    * @see #setNode(Node)
     * @see #setEncoding(String)
-    * @see #setCharacterStream
-    * @see #setPublicId(String)
     */
   public XSLTInputSource (InputStream byteStream)
   {
@@ -145,12 +132,8 @@ public class XSLTInputSource //extends SAXSource
     * <p>The character stream shall not include a byte order mark.</p>
     *
     * @param characterStream The character stream containing the document.
-    * @see #setCharacterStream
-    * @see #setByteStream
     * @see #setSystemId(String)
-    * @see #setNode(Node)
     * @see #setEncoding(String)
-    * @see #setPublicId(String)
     */
   public XSLTInputSource (Reader characterStream)
   {
@@ -163,12 +146,7 @@ public class XSLTInputSource //extends SAXSource
     * with the zero-argument constructor and setting the new object's Node property.
     *
     * @param node The DOM Node containing the document.
-    * @see #setNode(Node)
-    * @see #setCharacterStream
-    * @see #setByteStream
     * @see #setSystemId(String)
-    * @see #setEncoding(String)
-    * @see #setPublicId(String)
     */
   public XSLTInputSource (Node node)
   {
@@ -181,12 +159,8 @@ public class XSLTInputSource //extends SAXSource
     * This operation sets the ByteStream, CharacterStream, SystemId, PublicID, and Encoding properties.
     *
     * @param isource The SAX input source.
-    * @see #setCharacterStream
-    * @see #setByteStream
     * @see #setSystemId(String)
     * @see #setEncoding(String)
-    * @see #setPublicId(String)
-    * @see #setNode(Node)
     */
   public XSLTInputSource (InputSource isource)
   {
@@ -204,7 +178,6 @@ public class XSLTInputSource //extends SAXSource
     * @param characterStream The character stream containing the
     *        XML document or XSL stylesheet.
     * @see #XSLTInputSource(Node)
-    * @see #getCharacterStream()
     * @see java.io.Reader
     *
   public void setNode (Node node)
@@ -217,7 +190,6 @@ public class XSLTInputSource //extends SAXSource
     *
     * @return The DOM node containing the document, or null if none was supplied.
     * @see #XSLTInputSource(Node)
-    * @see #setNode(Node)
     *
   public Node getNode ()
   {
@@ -238,7 +210,6 @@ public class XSLTInputSource //extends SAXSource
      *
      * @param encoding A string describing the character encoding.
      * @see #setSystemId
-     * @see #setByteStream
      * @see #getEncoding
      */
     public void setEncoding (String encoding)
@@ -251,9 +222,7 @@ public class XSLTInputSource //extends SAXSource
      * Get the character encoding for a byte stream or URI.
      *
      * @return The encoding, or null if none was supplied.
-     * @see #setByteStream
      * @see #getSystemId
-     * @see #getByteStream
      */
     public String getEncoding ()
     {
@@ -271,7 +240,6 @@ public class XSLTInputSource //extends SAXSource
      *
      * @param characterStream The character stream containing the
      *        XML document or other entity.
-     * @see #getCharacterStream
      * @see java.io.Reader
      *
     public void setCharacterStream (Reader characterStream)
@@ -284,7 +252,6 @@ public class XSLTInputSource //extends SAXSource
      * Get the character stream for this input source.
      *
      * @return The character stream, or null if none was supplied.
-     * @see #setCharacterStream
      *
     public Reader getCharacterStream ()
     {

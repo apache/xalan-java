@@ -3,13 +3,8 @@
    
       <P>An implementation of the {@link org.apache.xalan.xpath.xml.XMLParserLiaison} interface provides a liaison
      between the XSLT processor and an XML parser. Unless you specify an XML parser and your own implementation of 
-     the XMLParserLiaison interface, Xalan-Java uses one of the following extensions of the 
+     the XMLParserLiaison interface, Xalan-Java uses the 
      {@link org.apache.xalan.xpath.xml.XMLParserLiaisonDefault}:</P>
-     <UL>
-     <LI>{@link org.apache.xalan.xpath.dtm.DTMLiaison org.apache.xalan.xpath.dtm.DTMLiaison} for the DTM XML Parser</LI>
-     <LI>{@link org.apache.xalan.xpath.xdom.XercesLiaison org.apache.xalan.xpath.xdom.XercesLiaison} for the Xerces XML
-      Parser</LI>
-     </UL>  
      <P>This package also includes four implementations of the <A href="http://www.megginson.com/SAX/sax.html" target="_top">SAX</A> <A href="http://www.megginson.com/SAX/javadoc/org.xml.sax.DocumentHandler.html#_top" target="_top">org.xml.sax.DocumentHandler</A> interface:</P>
      <UL>
      <LI>{@link org.apache.xalan.xpath.xml.FormatterToDOM}</LI>

@@ -71,11 +71,7 @@ import org.apache.xml.utils.TreeWalker;
 public class XSLTProcessorFactory
 {
   /**
-   * Get a new XSLTProcessor with the default high-performance DTM (Document Table Model) liaison and XML parser.
-   * <p><b>Note</b> If you want to process DOM Node input, use {@link #getProcessorUsingLiaisonName
-   * getProcessorUsingLiaisonName("org.apache.xalan.xpath.xdom.XercesLiaison")}.</p>
-   * @return An implentation of the XSLTProcessor interface with which you can perform transformations.
-   * @see org.apache.xalan.xpath.dtm.DTMLiaison
+   * Get a new XSLTProcessor.
    */
   public static XSLTProcessor getProcessor()
     throws org.xml.sax.SAXException
@@ -85,18 +81,10 @@ public class XSLTProcessorFactory
   }
 
   /**
-   * Get a new XSLTProcessor that will use a given XMLParserLiaison class to interact with
-   * a given XML parser. You can use this method, for example, if you are processing DOM Node input with
-   * org.apache.xalan.xpath.xdom.XercesLiaison and the Xerces XML parser.
-   * <p>If your input is in the form of
-   * a file, character stream, byte stream, or SAX DocumentHandler, you may want to use the high-performance
-   * DTM liaison and parser, in which case you can use the no-argument constructor.</p>
-   * @param parserLiaisonClassName The name of the ParserLiaison class.
-   * @return An implentation of the XSLTProcessor interface with which you can perform transformations.
-   *
+   * Get a new XSLTProcessor (parserLiaisonClassName no longre used).
+   * *
    * @see #getProcessor()
    * @see org.apache.xalan.xpath.xml.XMLParserLiaison
-   * @see org.apache.xalan.xpath.dtm.DTMLiaison
    */
   public static XSLTProcessor getProcessorUsingLiaisonName(String parserLiaisonClassName)
     throws org.xml.sax.SAXException
@@ -107,17 +95,13 @@ public class XSLTProcessorFactory
   }
 
   /**
-   * Get a new XSLTProcessor that will use the specified XMLParserLiaison to interact
-   * with a given XML parser. If your input is in the form of
-   * a file, character stream, byte stream, or SAX DocumentHandler, you may want to use the high-performance
-   * DTM liaison and parser, in which case you can use the no-argument getProcessor() method.
+   * Get a new XSLTProcessor (XMLParserLiaison no longer used).
    *
    * @param parserLiaison the XMLParserLiaison set up to interact with a given XML parser.
-   * @return An implentation of the XSLTProcessor interface with which you can perform transformations.
+   * @return An implementation of the XSLTProcessor interface with which you can perform transformations.
    *
    * @see #getProcessor()
    * @see org.apache.xalan.xpath.xml.XMLParserLiaison
-   * @see org.apache.xalan.xpath.dtm.DTMLiaison
    */
   public static XSLTProcessor getProcessor(XMLParserLiaison parserLiaison)
   {
@@ -138,10 +122,7 @@ public class XSLTProcessorFactory
   }
 
   /**
-   * Get a new XSLTProcessor that will use the specified XMLParserLiaison and XPathFactory to interact
-   * with a given XML parser.  If your input is in the form of
-   * a file, character stream, byte stream, or SAX DocumentHandler, you may want to use the high-performance
-   * DTM liaison and parser, in which case you can use the no-argument getProcessor() method.
+   * Get a new XSLTProcessor (XMLParserLiaison and XPathFactory no longer used).
    *
    * @param parserLiaison the XMLParserLiaison set up to interact with a given XML parser.
    * @param xpathFactory A custom XPathFactory.
@@ -150,7 +131,6 @@ public class XSLTProcessorFactory
    *
    * @see #getProcessor()
    * @see org.apache.xalan.xpath.xml.XMLParserLiaison
-   * @see org.apache.xalan.xpath.dtm.DTMLiaison
    */
   public static XSLTProcessor getProcessor(XMLParserLiaison parserLiaison,
                                                   XPathFactory xpathFactory)
@@ -169,5 +149,4 @@ public class XSLTProcessorFactory
       return null;
     }
   }
-
 }

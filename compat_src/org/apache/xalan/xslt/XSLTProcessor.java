@@ -187,15 +187,15 @@ public interface XSLTProcessor extends DocumentHandler, LexicalHandler
   /**
    * Get the preferred stylesheet for the XSLTInputSource XML document,
    * as identified by the xml-stylesheet PI, and matching the media and
-   * charset criteria. See {@link http://www.w3.org/TR/xml-stylesheet/
-   * Associating Style Sheets with XML documents}
+   * charset criteria. See <a href="http://www.w3.org/TR/xml-stylesheet/">
+   * Associating Style Sheets with XML documents</a>.
    * Does not yet handle the LINK REL="stylesheet" syntax.
    *
    * @param media The media attribute to be matched.  May be null, in which
    *              case the prefered stylesheet will be used (i.e., alternate = no).
    * @param title The value of the title attribute to match.  May be null.
    * @param charset The value of the charset attribute to match.  May be null.
-   * @returns StylesheetSpec extends XSLTInputSource extedns SAX InputSource; the return value
+   * @returns StylesheetSpec extends XSLTInputSource extends SAX InputSource; the return value
    * can be passed to the processStylesheet method.
    */
   public StylesheetSpec getAssociatedStylesheet(XSLTInputSource source,
@@ -206,8 +206,8 @@ public interface XSLTProcessor extends DocumentHandler, LexicalHandler
   /**
    * Get a list of stylesheet specifications for the XSLTInputSource XML document,
    * as identified by the xml-stylesheet PI, and matching the media and
-   * charset criteria. See {@link http://www.w3.org/TR/xml-stylesheet/
-   * Associating Style Sheets with XML documents}.
+   * charset criteria. See <a href="http://www.w3.org/TR/xml-stylesheet/">
+   * Associating Style Sheets with XML documents</a>.
    * Does not yet handle the LINK REL="stylesheet" syntax.
    *
    * @param media The media attribute to be matched.  May be null, in which

@@ -269,8 +269,8 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
         {
           ParserAdapter handler = new ParserAdapter(new org.apache.xerces.parsers.SAXParser());
           // Patch from Costin Manolache
-          if( "org.apache.xalan.xpath.dtm.DTMLiaison".equals( processor.getXMLProcessorLiaison().getClass().getName()))
-            processor.error(XSLTErrorResources.ER_CANT_USE_DTM_FOR_OUTPUT); //"Can't use a DTMLiaison for an output DOM node... pass a org.apache.xalan.xpath.xdom.XercesLiaison instead!");
+//          if( "org.apache.xalan.xpath.dtm.DTMLiaison".equals( processor.getXMLProcessorLiaison().getClass().getName()))
+//            processor.error(XSLTErrorResources.ER_CANT_USE_DTM_FOR_OUTPUT); //Can't use a DTMLiaison for an output DOM node... pass a org.apache.xalan.xpath.xdom.XercesLiaison instead!");
           
           switch(outputTarget.getNode().getNodeType())
           {

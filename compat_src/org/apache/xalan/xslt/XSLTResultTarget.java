@@ -92,9 +92,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
     * Zero-argument default constructor  -- Before you can use the new XSLTResultTarget object in a transformation,
     * you must define the output container by setting its FileName, CharacterStrea, ByteStream, or Node property.
     *
-    * @see #setFileName(String)
-    * @see #setCharacterStream(Writer)
-    * @see #setByteStream(OutputStream)
     * @see #setNode(Node)
     * @see #setDocumentHandler(DocumentHandler)
     * @see #setEncoding(String)
@@ -110,9 +107,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param fileName Identifies the file that will contain the transformation result (must be a valid system file name).
    *
-   * @see #setFileName(String)
-   * @see #setCharacterStream(Writer)
-   * @see #setByteStream(OutputStream)
    * @see #setNode(Node)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
@@ -130,9 +124,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param byteStream The raw byte stream that will contain the transformation result.
    *
-   * @see #setByteStream(OutputStream)
-   * @see #setFileName(String)
-   * @see #setCharacterStream(Writer)
    * @see #setNode(Node)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
@@ -151,9 +142,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param characterStream The character stream where the transformation result is written.
    *
-   * @see #setCharacterStream(Writer)
-   * @see #setByteStream(OutputStream)
-   * @see #setFileName(String)
    * @see #setNode(Node)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
@@ -171,9 +159,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    * @param node The DOM Node that will contain the transformation result.
    *
    * @see #setNode(Node)
-   * @see #setCharacterStream(Writer)
-   * @see #setByteStream(OutputStream)
-   * @see #setFileName(String)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
    */
@@ -192,9 +177,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setNode(Node)
-   * @see #setCharacterStream(Writer)
-   * @see #setByteStream(OutputStream)
-   * @see #setFileName(String)
    * @see #setEncoding(String)
    */
   public XSLTResultTarget(DocumentHandler handler)
@@ -204,8 +186,7 @@ public class XSLTResultTarget //implements Result //extends StreamResult
       saxResult.setHandler(((ParserAdapter)handler).getContentHandler());
     setDocumentHandler(handler);
   }
-  
-  
+    
 
   /**
    * Set the file name or URL where the transformation result will be written.
@@ -213,7 +194,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    * @param fileName The system identifier as a string.
    *
    * @see #XSLTResultTarget(String)
-   * @see #getFileName
    *
   public void setFileName (String fileName) // File?
   {
@@ -227,7 +207,6 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    * @return The file name or URL.
    *
    * @see #XSLTResultTarget(String)
-   * @see #setFileName(String)
    */
   public String getFileName ()
   {

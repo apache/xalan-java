@@ -1,14 +1,10 @@
 <HTML><HEAD></HEAD><BODY>
-    <P>This compataiblity API supports limited use of the Xalan-Java 1.x API in the Xalan-Java 2 environment. For the Xalan-Java 2 API, see <A href="../apidocs/index.html" target="_top">Xalan-Java 2 API</A>.</P>
+    <P>This compatatiblity API supports limited use of the Xalan-Java 1 API in the Xalan-Java 2 environment. For the Xalan-Java 2 API, see <A href="../apidocs/index.html" target="_top">Xalan-Java 2 API</A>.</P>
   
      <P><B>Basic procedure for performing transformations:</B></P>
     <OL>
       <LI>Use one of the {@link org.apache.xalan.xslt.XSLTProcessorFactory} static getProcessor methods to
       instantiate an {@link org.apache.xalan.xslt.XSLTProcessor}.<BR><BR>
-       By default, the XSLTProcessor uses the {@link org.apache.xalan.xpath.dtm.DTMLiaison} and the
-       high-performance DTM (Document Table Model) DOM parser to process the input.  If your input or output
-       is a DOM node (rather than a URL, file, or stream), Xalan-Java uses {@link org.apache.xalan.xpath.xdom.XercesLiaison
-       XercesLiaison} and the Xerces DOM parser.<BR><BR>
        The XSLT and XPath engines are independent from any given DOM or XML implementation. All parser-dependent
        calls are funneled through the {@link org.apache.xalan.xpath.xml.XMLParserLiaison}.<BR><BR></LI>     
        <LI>Set up {@link org.apache.xalan.xslt.XSLTInputSource} objects for the XML input and XSL stylesheet. 
