@@ -235,6 +235,7 @@ public class DescendantIterator extends LocPathIterator
       {
         if(getSelf)
         {
+          m_lastFetched = pos; // we have to do this for a clone in a predicate to work correctly.
           if(NodeFilter.FILTER_ACCEPT == acceptNode(pos))
           {
             next = pos;
