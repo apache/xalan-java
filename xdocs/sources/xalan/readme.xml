@@ -143,8 +143,6 @@
      <anchor name="status"/>
      <s3 title="Version of Xerces to use"> 
        <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including &xml4j-jar; on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
-       <note>You may also use &xslt4j-current; for prototyping or beta testing with &xml4j; 2.0.0.beta3. <em>You may not use the 
-       <link idref="usagepatterns" anchor="compat">&xslt4j; version 1 API (deprecated)</link> with &xml4j; 2.0.0.beta3.</em></note>
        <p><em>Important</em> You may experience unpredictable anomalies if your &xslt4j; and &xml4j; builds are not in synch. If you download an update to &xslt4j;, check the release notes to determine which version of &xml4j; you should use.</p>
        <note>You can use &xslt4j; with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
        <link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>
@@ -212,7 +210,7 @@
    </s3><anchor name="samples"/>
    <s3 title="Rebuilding a sample application">
    <p>If you modify a sample and want to recompile it, you can run the Java compiler in the directory containing the
-   example. Be sure xalan.jar and &xml4j-jar; are on the classpath. To recompile (and run!) the class files in the
+   example. Be sure xalan.jar, xml-apis.jar, and &xml4j-jar; are on the classpath. To recompile (and run!) the class files in the
    Servlet subdirectory, the javax.servlet and javax.servlet.http packages must also be on the classpath. Sun
    distributes these packages in the JSWDK 1.0.1 servlet.jar file.</p> 
    <p>After recompiling a sample, you can use the Sun jar utility to place your new .class files in
@@ -236,7 +234,7 @@
        <ul>
        <li>Unzip xml-site-style.tar.gz into the xdocs directory (the operation places files in a number of subdirectories).
        <br/><br/></li>
-       <li>Be sure stylebook-1.0-b2.jar, xalanjdoc.jar, xalan.jar, bsf.jar, bsfengines.jar, and &xml4j-jar; are on the class
+       <li>Be sure stylebook-1.0-b2.jar, xalan2jdoc.jar, xalan.jar, bsf.jar, bsfengines.jar, and &xml4j-jar; are on the class
        path.<br/><br/></li>
        <li>To build doc in a build/docs subdirectory, run StyleBook from the xdocs directory as follows:<br/><br/>
        <code>java org.apache.stylebook.StyleBook "targetDirectory=../build/docs/" sources/xalanLocal.xml style</code>
@@ -300,7 +298,7 @@ javadoc -doclet xalanjdoc.Standard
   <!-- in alphabetical order, by last name -->
   <ul>
   <li><human-resource-ref idref="sboag"/>
-    <br/>Xalan architect, lead developer on Xalan-J 2.x.
+    <br/>Xalan architect, lead developer on Xalan-J.
   </li>
   <li><human-resource-ref idref="scurcuru"/>
     <br/>Lead tester for API issues, automation framework.
@@ -309,22 +307,22 @@ javadoc -doclet xalanjdoc.Standard
     <br/>XSLT Conformance stylesheet issues and Xalan-C testing.
   </li>
   <li><human-resource-ref idref="jkesselman"/>
-    <br/>Xalan-J 2.x developer, compiling/compiled stylesheets experiments.
+    <br/>Xalan-J developer, compiling/compiled stylesheets experiments.
   </li>
   <li><human-resource-ref idref="dleslie"/>
     <br/>Xalan-J and -C documentation, servlets, applets, and samples.
   </li>
   <li><human-resource-ref idref="cmanolache"/>
-    <br/>Xalan-J 2.x developer and JAXP expert.
+    <br/>Xalan-Jdeveloper and JAXP expert.
   </li>
   <li><human-resource-ref idref="dmarston"/>
     <br/>Lead tester for XSLT Conformance stylesheet issues.
   </li>
   <li><human-resource-ref idref="mmidy"/>
-    <br/>Xalan-J 1.x and 2.x developer.
+    <br/>Xalan-J  developer.
   </li>
   <li><human-resource-ref idref="gpeskin"/>
-    <br/>Xalan-J 1.x and 2.x developer, especially extension mechanisim.
+    <br/>Xalan-J developer, especially extension mechanisim.
   </li>
   <li><human-resource-ref idref="jgentilin"/>
     <br/>Major work on the SQL extensions library.

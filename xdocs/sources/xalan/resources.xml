@@ -17,7 +17,7 @@
 <resources> 	
   <resource id="xslt4j-current" 
             title="&xslt4j-current;" 
-            location="http://xml.apache.org/xalan"/>
+            location="http://xml.apache.org/xalan-j"/>
 
   <resource id="xslt4j-distdir" 
             title="xalan-j distribution directory" 
@@ -70,8 +70,12 @@
             
   <resource id="dpawsonxslfaq" title="XSL Frequently Asked Questions" location="http://www.dpawson.co.uk/xsl/xslfaq.html"/>
   
+  <resource id="xsl" 
+            title="Extensible Stylesheet Language (XSL) Version 1.0"
+            location="http://www.w3.org/TR/xsl"/>
+
   <resource id="xslt" 
-            title="W3C Recommendation XSL Transformations (XSLT) Version 1.0"
+            title="XSL Transformations (XSLT) Version 1.0"
             location="http://www.w3.org/TR/xslt"/>
   
   <resource id="xpath" 
@@ -120,7 +124,7 @@
                   name="Paul Dick"
                   mailto="Paul_Dick@us.ibm.com"/>
   <human-resource id="jkesselman"
-                  name="Josepah Kesselman"
+                  name="Joseph Kesselman"
                   mailto="keshlam@us.ibm.com"/>
   <human-resource id="dleslie"
                   name="Donald Leslie"
