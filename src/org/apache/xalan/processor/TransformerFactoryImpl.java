@@ -740,21 +740,6 @@ public javax.xml.transform.Templates processFromNode(Node node)
   public TransformerHandler newTransformerHandler()
           throws TransformerConfigurationException
   {
-
-//    if (null == m_identityTemplate)
-//    {
-//      synchronized (identityTransform)
-//      {
-//        if (null == m_identityTemplate)
-//        {
-//          StringReader reader = new StringReader(identityTransform);
-//
-//          m_identityTemplate = newTemplates(new StreamSource(reader));
-//        }
-//      }
-//    }
-//
-//    return newTransformerHandler(m_identityTemplate);
     return new TransformerIdentityImpl();
   }
 
@@ -814,21 +799,6 @@ public javax.xml.transform.Templates processFromNode(Node node)
    */
   public Transformer newTransformer() throws TransformerConfigurationException
   {
-
-//    if (null == m_identityTemplate)
-//    {
-//      synchronized (identityTransform)
-//      {
-//        if (null == m_identityTemplate)
-//        {
-//          StringReader reader = new StringReader(identityTransform);
-//
-//          m_identityTemplate = newTemplates(new StreamSource(reader));
-//        }
-//      }
-//    }
-//
-//    return m_identityTemplate.newTransformer();
       return new TransformerIdentityImpl();
   }
 
