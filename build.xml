@@ -884,6 +884,7 @@ Copyright:
     </delete>
     <delete file="${xdocs.DONE.file}"/>
     <delete file="${xdocs.XSLTCDONE.location}"/>
+    <delete file="${src.dir}/${xalan.reldir}/Version.java"/>
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
     <delete dir="${src.dir}/javax" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/org/xml" includeEmptyDirs="true" quiet="true"/>
