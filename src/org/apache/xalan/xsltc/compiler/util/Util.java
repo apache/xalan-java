@@ -177,11 +177,13 @@ public final class Util {
     }
 
     /**
-     * Replace occurances of '.' with '$dot$' and '-' with '$dash$'
+     * Replace occurances of '.', '-', '/' and ':'
      */
     public static String escape(String input) {
 	input = replace(input, '.', "$dot$");
 	input = replace(input, '-', "$dash$");
+	input = replace(input, '/', "$slash$");
+	input = replace(input, ':', "$colon$");
 	return input;
     }
 
