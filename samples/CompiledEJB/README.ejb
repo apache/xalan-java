@@ -71,9 +71,22 @@ HOW TO INVOKE TRANSLETS FROM AN ENTERPRISE JAVA BEAN
 
  o) Set up your J2EE_CLASSPATH to include JAXP and the XSLTC
     runtime jars.
+ 
 
  o) Compile your XSL stylesheets and place them either in
     your J2EE_CLASSPATH or wrap them in your EJB jar.
+    Make sure that the XSLTC TransformerFactory will be used
+    by either setting the system property
+    "javax.xml.transform.TransformerFactory" with the value
+    "org.apache.xalan.xsltc.trax.TransformerFactoryImpl", or
+    by making a file with the name
+    "META-INF/services/javax.xml.transform.TransformerFactory"
+    containing the single line
+
+       org.apache.xalan.xsltc.trax.TransformerFactoryImpl
+
+    available on your J2EE_CLASSPATH.
+
 
  o) Deploy your EJB
 
