@@ -281,7 +281,7 @@ final class CallTemplate extends Instruction {
      */
     public Template getCalleeTemplate() {
     	Stylesheet stylesheet = getStylesheet();
-    	Vector templates = stylesheet.getTemplates();
+    	Vector templates = stylesheet.getAllValidTemplates();
     	int size = templates.size();
     	for (int i = 0; i < size; i++) {
     	    Template t = (Template)templates.elementAt(i);

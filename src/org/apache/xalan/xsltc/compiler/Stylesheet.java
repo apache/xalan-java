@@ -120,6 +120,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public  Stylesheet _importedFrom = null;
     public  Stylesheet _includedFrom = null;
+    private Vector _includedStylesheets = null;
     private int _importPrecedence = 1;
     private Mode _defaultMode;
     private boolean _multiDocument = false;
@@ -302,10 +303,19 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public void setImportingStylesheet(Stylesheet parent) {
 	_importedFrom = parent;
+	parent.addIncludedStylesheet(this);
     }
 
     public void setIncludingStylesheet(Stylesheet parent) {
 	_includedFrom = parent;
+	parent.addIncludedStylesheet(this);
+    }
+
+    public void addIncludedStylesheet(Stylesheet child) {
+    	if (_includedStylesheets == null) {
+    	    _includedStylesheets = new Vector();
+    	}
+    	_includedStylesheets.addElement(child);
     }
 
     public void setSystemId(String systemId) {
@@ -575,7 +585,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    if (element instanceof Template) {
 		// Separate templates by modes
 		final Template template = (Template)element;
-		_templates.addElement(template);
+		//_templates.addElement(template);
 		getMode(template.getModeName()).addTemplate(template);
 	    }
 	    // xsl:attribute-set
@@ -1090,5 +1100,24 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public Vector getTemplates() {
 	return _templates;
+    }
+
+    public Vector getAllValidTemplates() {
+        if (_includedStylesheets != null) {
+            Vector templates = new Vector();
+            int size = _includedStylesheets.size();
+            for (int i = 0; i < size; i++) {
+                Stylesheet included =(Stylesheet)_includedStylesheets.elementAt(i);
+                templates.addAll(included.getAllValidTemplates());
+            }
+            templates.addAll(_templates);
+            return templates;
+        }
+        else
+            return _templates;
+    }
+    
+    protected void addTemplate(Template template) {
+        _templates.addElement(template);
     }
 }

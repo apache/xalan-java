@@ -270,6 +270,10 @@ public final class Template extends TopLevelElement {
 	    }
 	}
 
+	if (_parent instanceof Stylesheet) {
+	    ((Stylesheet)_parent).addTemplate(this);
+	}
+	
 	parser.setTemplate(this);	// set current template
 	parseChildren(parser);
 	parser.setTemplate(null);	// clear template
