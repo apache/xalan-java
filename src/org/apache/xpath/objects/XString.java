@@ -110,96 +110,30 @@ public class XString extends XObject implements XMLString
    */
   public double toDouble()
   {
-    int end = length();
-    
-    if(0 == end)
-      return Double.NaN;
-
-    double result = 0.0;
-    int start = 0;
-    int punctPos = end-1;
-
-    // Scan to first whitespace character.
-    for (int i = start; i < end; i++)
-    {
-      char c = charAt(i);
-
-      if (!XMLCharacterRecognizer.isWhiteSpace(c))
-      {
-        break;
-      }
-      else
-        start++;
-    }
-
-    double sign = 1.0;
-
-    if (start < end && charAt(start) == '-')
-    {
-      sign = -1.0;
-
-      start++;
-    }
-
-    int digitsFound = 0;
-
-    for (int i = start; i < end; i++)  // parse the string from left to right converting the integer part
-    {
-      char c = charAt(i);
-
-      if (c != '.')
-      {
-        if (XMLCharacterRecognizer.isWhiteSpace(c))
-          break;
-        else if (Character.isDigit(c))
-        {
-          result = result * 10.0 + (c - 0x30);
-
-          digitsFound++;
+    /* XMLCharacterRecognizer.isWhiteSpace(char c) methods treats the following 
+     * characters as white space characters.
+     * ht - horizontal tab, nl - newline , cr - carriage return and sp - space
+     * trim() methods by default also takes care of these white space characters
+     * So trim() method is used to remove leading and trailing white spaces.
+     */
+	XMLString s = trim();
+	double result = Double.NaN;
+	for (int i = 0; i < s.length(); i++)
+	{
+		char c = s.charAt(i);
+		if (c != '-' & c != '.' & ( c < 0X30 | c > 0x39)) {
+            // The character is not a '-' or a '.' or a digit
+            // then return NaN because something is wrong.
+			return result;
         }
-        else
-        {
-          return Double.NaN;
-        }
-      }
-      else
-      {
-        punctPos = i;
+	}
+	try
+	{
+		result = Double.parseDouble(s.toString());
+	} catch (NumberFormatException e){}
 
-        break;
-      }
-    }
-
-    if (charAt(punctPos) == '.')  // parse the string from the end to the '.' converting the fractional part
-    {
-      double fractPart = 0.0;
-
-      for (int i = end - 1; i > punctPos; i--)
-      {
-        char c = charAt(i);
-
-        if (XMLCharacterRecognizer.isWhiteSpace(c))
-          break;
-        else if (Character.isDigit(c))
-        {
-          fractPart = fractPart / 10.0 + (c - 0x30);
-
-          digitsFound++;
-        }
-        else
-        {
-          return Double.NaN;
-        }
-      }
-
-      result += fractPart / 10.0;
-    }
-
-    if (0 == digitsFound)
-      return Double.NaN;
-
-    return result * sign;
-  }
+	return result;
+}
 
   /**
    * Cast result object to a boolean.
