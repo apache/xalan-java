@@ -430,6 +430,6 @@ public final class MultiDOM implements DOM {
     }
 
     public String getDocumentURI(int node) {
-	return _adapters[node>>24].getDocumentURI(0);
+	return _adapters[node>>>24].getDocumentURI(0);
     }
 }

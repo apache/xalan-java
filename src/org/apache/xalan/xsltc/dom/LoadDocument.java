@@ -205,12 +205,18 @@ public final class LoadDocument {
 
 		while ((node = iterator.next()) != DOM.NULL) {
 		    String uri = dom.getNodeValue(node);
+		    if ((baseURI == null) || baseURI.equals("")) {
+			String base = dom.getDocumentURI(node);
+			final int sep = base.lastIndexOf('/') + 1;
+			baseURI = base.substring(0, sep);
+		    }
 		    union.addIterator(document(uri, baseURI, translet, dom));
 		}
 		return(union);
 	    }
 	}
 	catch (Exception e) {
+	    e.printStackTrace();
 	    throw new TransletException(e);
 	}
     }
