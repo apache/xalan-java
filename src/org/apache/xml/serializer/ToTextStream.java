@@ -65,6 +65,9 @@ import org.apache.xml.serializer.CharInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 public class ToTextStream extends ToStream 
 { 
 
@@ -356,7 +359,9 @@ void writeNormalizedChars(
                 }
                 else
                 {
-                    writer.write(c);
+                    // writer.write(c);
+                    throw new SAXException(XSLMessages.createMessage(
+                        XSLTErrorResources.ER_ILLEGAL_CHARACTER,null));
                 }
             }
         }
@@ -383,7 +388,9 @@ void writeNormalizedChars(
             }
             else
             {
-                writer.write(c);
+                // writer.write(c);
+                throw new SAXException(XSLMessages.createMessage(
+                    XSLTErrorResources.ER_ILLEGAL_CHARACTER,null));
             }
         }
     }

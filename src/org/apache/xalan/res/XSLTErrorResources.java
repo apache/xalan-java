@@ -418,6 +418,9 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "ER_NOT_ALLOWED_IN_POSITION";
   public static final String ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 
 	 "ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION";
+  public static final String ER_ILLEGAL_CHARACTER = 
+     "ER_ILLEGAL_CHARACTER";
+     
   public static final String INVALID_TCHAR = "INVALID_TCHAR";
   public static final String INVALID_QNAME = "INVALID_QNAME";
   public static final String INVALID_ENUM = "INVALID_ENUM";
@@ -482,6 +485,7 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME";
   public static final String WG_ILLEGAL_ATTRIBUTE_POSITION = 
 	 "WG_ILLEGAL_ATTRIBUTE_POSITION";
+
 
 
 //  public static final int ER_NO_CURLYBRACE = 1;
@@ -2145,7 +2149,11 @@ public class XSLTErrorResources extends ListResourceBundle
     { ER_FUNCTION_NOT_FOUND,
      "The function named {0} does not exist"},
 
+//   ER_ILLEGAL_CHARACTER
+//     public static final int ER_ILLEGAL_CHARACTER = 255;
 
+     { ER_ILLEGAL_CHARACTER,
+      "Attempt to output character not represented in specified encoding."},
 
 
 
