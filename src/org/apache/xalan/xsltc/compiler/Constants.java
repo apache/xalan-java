@@ -159,8 +159,6 @@ public interface Constants extends InstructionConstants {
 	= "org.apache.xalan.xsltc.dom.SortingIterator";
     public static final String SORT_ITERATOR_SIG     
 	= "Lorg.apache.xalan.xsltc.dom.SortingIterator;";
-    public static final String FORWARD_POSITION_ITERATOR      
-	= "org.apache.xalan.xsltc.dom.ForwardPositionIterator";
     public static final String NODE_SORT_RECORD 
 	= "org.apache.xalan.xsltc.dom.NodeSortRecord";
     public static final String NODE_SORT_FACTORY
