@@ -68,7 +68,7 @@ parser code {:
           _xsltc.setMultiDocument(flag);
     }
 
-    public int findNodeType(int axis, Object test) {
+    public int findNodeType(int axis, Object test, boolean inPattern) {
 	if (test == null) {  // *
             return axis == Axis.ATTRIBUTE
                    ? NodeTest.ATTRIBUTE
@@ -85,7 +85,8 @@ parser code {:
                     return(NodeTest.ELEMENT);
                 else if (local.equals("@*"))
                     return(NodeTest.ATTRIBUTE);
-                name = new QName(null,null,local);
+	        if (inPattern)
+                    name = new QName(null,null,local);
             }
 	    return axis == Axis.ATTRIBUTE
 		? _xsltc.registerAttribute(name)
@@ -251,19 +252,20 @@ RelativePathPattern ::= StepPattern:sp
 
 StepPattern ::= NodeTestPattern:nt
             {: RESULT = new StepPattern(Axis.CHILD,
-                                        parser.findNodeType(Axis.CHILD, nt),
+                                        parser.findNodeType(Axis.CHILD,nt,true),
                                         null);
             :}
 
             | NodeTestPattern:nt Predicates:pp
             {: RESULT = new StepPattern(Axis.CHILD,
-                                        parser.findNodeType(Axis.CHILD, nt),
+                                        parser.findNodeType(Axis.CHILD,nt,true),
                                         pp);
             :}
 
             | ChildOrAttributeAxisSpecifier:axis NodeTestPattern:nt
             {: RESULT=new StepPattern(axis.intValue(),
-                                      parser.findNodeType(axis.intValue(), nt),
+                                      parser.findNodeType(axis.intValue(),
+                                                          nt, true),
                                       null);
             :}
 
@@ -271,7 +273,7 @@ StepPattern ::= NodeTestPattern:nt
 		  NodeTestPattern:nt Predicates:pp
             {: RESULT = new StepPattern(axis.intValue(),
                                         parser.findNodeType(axis.intValue(),
-                                                            nt),
+                                                            nt, true),
                                         pp);
             :};
 
@@ -528,25 +530,25 @@ AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
 
 Step ::= NodeTest:ntest
         {: RESULT = new Step(Axis.CHILD,
-                             parser.findNodeType(Axis.CHILD, ntest),
+                             parser.findNodeType(Axis.CHILD, ntest, false),
                              null);
         :}
 
         | NodeTest:ntest Predicates:pp
         {: RESULT = new Step(Axis.CHILD,
-                             parser.findNodeType(Axis.CHILD, ntest),
+                             parser.findNodeType(Axis.CHILD, ntest, false),
                              pp);
         :}
 
         | AxisSpecifier:axis NodeTest:ntest Predicates:pp
         {: RESULT = new Step(axis.intValue(),
-                             parser.findNodeType(axis.intValue(), ntest),
+                             parser.findNodeType(axis.intValue(), ntest, false),
                              pp);
         :}
 
         | AxisSpecifier:axis NodeTest:ntest
         {: RESULT = new Step(axis.intValue(),
-                             parser.findNodeType(axis.intValue(), ntest),
+                             parser.findNodeType(axis.intValue(), ntest, false),
                              null);
         :}
 
