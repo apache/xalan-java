@@ -247,7 +247,7 @@ final class Step extends RelativeLocationPath {
 	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
 
 	    // Do not reverse nodes if we had predicates
-	    if (_hadPredicates) return false;
+	    // if (_hadPredicates) return false;
 	    
 	    // Check if this step occured under an <xsl:apply-templates> element
 	    SyntaxTreeNode parent = this;
@@ -260,6 +260,7 @@ final class Step extends RelativeLocationPath {
 		if (parent instanceof ApplyTemplates) return true;
 		if (parent instanceof ForEach) return true;
 		if (parent instanceof FilterParentPath) return true;
+		if (parent instanceof FilterExpr) return true;
 		if (parent instanceof WithParam) return true;
 		if (parent instanceof ValueOf) return true;
 
@@ -281,6 +282,11 @@ final class Step extends RelativeLocationPath {
 
 	if (hasPredicates()) {
 	    translatePredicates(classGen, methodGen);
+
+	    // If needed, create a reverse iterator after compiling preds
+	    if (_predicates.size() == 0) {
+		orderIterator(classGen, methodGen);
+	    }
 	}
 	else {
 	    // If it is an attribute but not '@*' or '@attr' with a parent
@@ -483,11 +489,6 @@ final class Step extends RelativeLocationPath {
 		    il.append(new CHECKCAST(cpg.addClass(className)));
 		}
 		il.append(new INVOKESPECIAL(idx));
-
-		// If needed, create a reverse iterator after compiling preds
-		if (_predicates.size() == 0) {
-		    orderIterator(classGen, methodGen);
-		}
 	    }
 	}
     }
