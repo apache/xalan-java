@@ -238,10 +238,10 @@ final class TestSeq {
 	    il.append(methodGen.loadCurrentNode());
 
 	    // Apply the test-code compiled for the pattern
-	    InstructionList ilist = _mode.getInstructionList(pattern);
+	    InstructionList ilist = methodGen.getInstructionList(pattern);
 	    if (ilist == null) {
 		ilist = pattern.compile(classGen, methodGen);
-		_mode.addInstructionList(pattern, ilist);
+		methodGen.addInstructionList(pattern, ilist);
 	    }
 
 	    // Make a copy of the instruction list for backpatching

@@ -120,14 +120,7 @@ final class Mode implements Constants {
      */
     private TestSeq[] _testSeq;
 
-    /**
-     * A mapping between patterns and instruction lists used by 
-     * test sequences to avoid compiling the same pattern multiple 
-     * times. Note that patterns whose kernels are "*", "node()" 
-     * and "@*" can between shared by test sequences.
-     */
-    private Hashtable _preCompiled = new Hashtable();
-
+    
     /**
      * A mapping between templates and test sequences.
      */
@@ -202,23 +195,6 @@ final class Mode implements Constants {
 	}
 	_importLevels.put(new Integer(max), new Integer(min));
 	return _methodName + '_' + max;
-    }
-
-    /**
-     * Add a pre-compiled pattern to this mode. 
-     */
-    public void addInstructionList(Pattern pattern, 
-	InstructionList ilist) 
-    {
-	_preCompiled.put(pattern, ilist);
-    }
-
-    /**
-     * Get the instruction list for a pre-compiled pattern. Used by 
-     * test sequences to avoid compiling patterns more than once.
-     */
-    public InstructionList getInstructionList(Pattern pattern) {
-	return (InstructionList) _preCompiled.get(pattern);
     }
 
     /**
