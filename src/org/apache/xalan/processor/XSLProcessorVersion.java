@@ -69,7 +69,7 @@ public class XSLProcessorVersion
    *            -  API or behaviour change.
    *            -  its designated as a reference release.
    */
-  public static final int RELEASE = 5;
+  public static final int RELEASE = 6;
 
   /**
    * Maintenance Drop Number.
@@ -80,7 +80,7 @@ public class XSLProcessorVersion
    *          When missing, it designates the final and complete
    *          development drop for a release.
    */
-  public static final int MAINTENANCE = 2;
+  public static final int MAINTENANCE = 0;
 
   /**
    * Development Drop Number.
