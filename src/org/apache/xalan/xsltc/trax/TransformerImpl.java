@@ -961,6 +961,11 @@ public final class TransformerImpl extends Transformer
 		base.setProperty(name, outputProperties.getProperty(name));
 	    }
 	}
+	else {
+	    base.setProperty(OutputKeys.ENCODING, _translet._encoding);
+	    if (_translet._method != null)
+	        base.setProperty(OutputKeys.METHOD, _translet._method);
+	}
 
 	// Update defaults based on output method
 	final String method = base.getProperty(OutputKeys.METHOD);
