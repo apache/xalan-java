@@ -198,7 +198,7 @@ public class XSequenceSingleton extends XObject implements XSequence
   /**
    * @see org.apache.xml.dtm.XSequence#setShouldCache(boolean)
    */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
   }
 

@@ -108,7 +108,7 @@ public class ExceptPathIterator
         {
           DTMIterator iter = m_exprs[i].asIterator(m_execContext, context);
           newIters[i] = iter;
-          iter.setShouldCache(true);
+          iter.setShouldCacheNodes(true);
           iter.nextNode();
         }
         m_iterators = newIters;

@@ -169,7 +169,7 @@ public class NodeSequence extends XObject
     m_dtmMgr = xctxt.getDTMManager();
   	setIter(iter);
   	setRoot(context, xctxt);
-  	setShouldCache(shouldCacheNodes);
+  	setShouldCacheNodes(shouldCacheNodes);
   }
   
   /**
@@ -284,7 +284,7 @@ public class NodeSequence extends XObject
   		if(!m_iter.isDocOrdered())
   		{
   			if(!hasCache())
-  				setShouldCache(true);
+  				setShouldCacheNodes(true);
   			runTo(-1);
   			m_next=0;
   		}
@@ -419,7 +419,7 @@ public class NodeSequence extends XObject
   {
   	if((false == allowRelease) && !hasCache())
   	{
-  		setShouldCache(true);
+  		setShouldCacheNodes(true);
   	}
   	
   	if(null != m_iter)
@@ -461,7 +461,7 @@ public class NodeSequence extends XObject
   /**
    * @see DTMIterator#setShouldCache(boolean)
    */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
     if (b)
     {

@@ -535,10 +535,6 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 		return ORDER_UNDEFINED;
 	if(n1==n2) 
 		return true;
-
-	/* DEBUGGING HOOK, REMEMBER TO REMOVE -- GONK! */
-	String DBG_N1=n1.getNodeName()+"="+n1.getNodeValue();
-	String DBG_N2=n2==null ? null : n2.getNodeName()+"="+n2.getNodeValue();
 		
 	// Problem: Our synthetic namespace nodes for xml: can't
 	// (of course) be tested by Xerces and require a few

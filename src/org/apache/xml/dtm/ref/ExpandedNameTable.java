@@ -84,10 +84,10 @@ public class ExpandedNameTable
   static final Object UNKNOWN_SCHEMA_TYPE=Boolean.FALSE;    
 
   /** Probably a reference to static pool.     */
-  private DTMStringPool m_locNamesPool;
+  //private DTMStringPool m_locNamesPool;
 
   /** Probably a reference to static pool.   */
-  private DTMStringPool m_namespaceNames;
+  //private DTMStringPool m_namespaceNames;
   
   /** Vector of extended types for this document   */
   private /*static*/ Vector m_extendedTypes;
@@ -112,18 +112,37 @@ public class ExpandedNameTable
   
   Hashtable m_hashtable = new Hashtable();
   
-	/** Workspace for lookup. NOT THREAD SAFE!
-	 * */
-	ExtendedType hashET=new ExtendedType(-1,"","");  
+  /** Workspace for lookup. NOT THREAD SAFE!
+   * */
+  ExtendedType hashET=new ExtendedType(-1,"","");  
   
+  private static Hashtable m_defaultHashtable;
+  private static Vector m_defaultExtendedTypes;
+
+  /**
+   *  Init default vales
+   */
+  static {
+    // use bigger values than default, to avoid reallocation in the future
+    m_defaultExtendedTypes = new Vector(23);
+    m_defaultHashtable = new Hashtable(23, 0.75f);
+
+    for (int i = 0; i < DTM.NTYPES; i++)
+    {
+      ExtendedType newET = new ExtendedType(i, "", "");
+      m_defaultExtendedTypes.addElement(newET);
+      m_defaultHashtable.put(newET, new Integer(i));
+    }
+  }
+
 
   /**
    * Create an expanded name table that uses private string pool lookup.
    */
   public ExpandedNameTable()
   {
-    m_locNamesPool = new DTMSafeStringPool();
-    m_namespaceNames = new DTMSafeStringPool();
+    //m_locNamesPool = new DTMSafeStringPool();
+    //m_namespaceNames = new DTMSafeStringPool();
     initExtendedTypes(); 
   }
 
@@ -136,8 +155,8 @@ public class ExpandedNameTable
   public ExpandedNameTable(DTMStringPool locNamesPool,
                            DTMStringPool namespaceNames)
   {
-    m_locNamesPool = locNamesPool;
-    m_namespaceNames = namespaceNames;
+    //m_locNamesPool = locNamesPool;
+    //m_namespaceNames = namespaceNames;
     initExtendedTypes();
   }
   
@@ -147,14 +166,10 @@ public class ExpandedNameTable
    */
   private void initExtendedTypes()
   {
-    m_extendedTypes = new Vector();
-    int i;
-    for (i = 0; i < DTM.NTYPES; i++)
-    {
-      ExtendedType newET = new ExtendedType(i, "", ""); 
-      m_extendedTypes.addElement(newET); 
-      m_hashtable.put(newET, new Integer(i));
-    }
+    // Since objects in the Vector a m_extendedTypes and m_hashtable are never changed
+    // it should be safe to copy default tables
+    m_extendedTypes = (Vector)m_defaultExtendedTypes.clone();
+    m_hashtable = (Hashtable)m_defaultHashtable.clone();
     m_nextType = m_extendedTypes.size();
   }
 
@@ -322,7 +337,7 @@ public class ExpandedNameTable
   /**
    * Private class representing an extended type object 
    */
-  private class ExtendedType
+  private static class ExtendedType
   {
     protected Object schemaType=UNKNOWN_SCHEMA_TYPE;
     
@@ -360,27 +375,27 @@ public class ExpandedNameTable
 
     /* Override super method
 	 * */
-	public boolean equals(Object other)
-	{
-		//Usually an optimization, but 
-		// won't arise in our usage:
-		//if(other==this) return true;
-		try
-		{
-			ExtendedType et=(ExtendedType)other;
-			return et.nodetype==this.nodetype &&
-				et.localName.equals(this.localName) &&
-				et.namespace.equals(this.namespace);
-		}
-		catch(ClassCastException e)
-		{
-			return false;
-		}
-		catch(NullPointerException e)
-		{
-			return false;
-		}
-	}
+    public boolean equals(Object other)
+    {
+      //Usually an optimization, but
+      // won't arise in our usage:
+      //if(other==this) return true;
+      try
+      {
+          ExtendedType et=(ExtendedType)other;
+          return et.nodetype==this.nodetype &&
+                  et.localName.equals(this.localName) &&
+                  et.namespace.equals(this.namespace);
+      }
+      catch(ClassCastException e)
+      {
+              return false;
+      }
+      catch(NullPointerException e)
+      {
+              return false;
+      }
+    }
   }
-  
+    
 }

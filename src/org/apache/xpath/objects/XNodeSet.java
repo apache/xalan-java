@@ -112,7 +112,7 @@ public class XNodeSet extends NodeSequence implements XSequence
 	    m_dtmMgr = xns.m_dtmMgr;
 	    m_last = xns.m_last;
 	    if(!xns.hasCache())
-	    	xns.setShouldCache(true);
+	    	xns.setShouldCacheNodes(true);
 	    m_obj = xns.m_obj;
   	}
   	else

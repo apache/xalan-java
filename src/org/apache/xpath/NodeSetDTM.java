@@ -1235,7 +1235,7 @@ public class NodeSetDTM extends NodeVector
    * request caching after we've already begun stepping through the
    * nodes in this set.
   */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
 
     if (!isFresh())

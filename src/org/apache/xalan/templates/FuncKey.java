@@ -127,7 +127,7 @@ public class FuncKey extends Function2Args
     if(argIsNodeSetDTM)
     {
     	XSequence ns = arg.xseq();
-    	ns.setShouldCache(true);
+    	ns.setShouldCacheNodes(true);
     	int len = ns.getLength();
     	if(len <= 1)
     		argIsNodeSetDTM = false;

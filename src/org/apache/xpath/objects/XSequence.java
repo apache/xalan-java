@@ -198,7 +198,7 @@ public interface XSequence extends Cloneable
    * @param b true if the items should be cached.
    * @throws exception if XSequence can't cache.
    */
-  public void setShouldCache(boolean b);
+  public void setShouldCacheNodes(boolean b);
   
   /**
    * Tell if the random access methods (i.e. those methods 

@@ -194,7 +194,7 @@ public class RangeIter extends XObject implements XSequence
   /**
    * @see org.apache.xpath.objects.XSequence#setShouldCache(boolean)
    */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
   }
 

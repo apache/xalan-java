@@ -195,8 +195,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     }
 
     if (null == traverser)
-      throw new DTMException("Axis traverser not supported: "
-                             + Axis.names[axis]);
+      throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_AXIS_TRAVERSER_NOT_SUPPORTED, new Object[]{Axis.names[axis]})); //"Axis traverser not supported: " + Axis.names[axis]);
 
     m_traversers[axis] = traverser;
 

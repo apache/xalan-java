@@ -113,7 +113,7 @@ public abstract class DOM2DTM2Base implements DTM
 	protected Node m_root;
 	
 	/** Tool for mapping DOM to node identities */
-	protected NodeDTMIDResolver m_resolver;
+	protected org.apache.xml.dtm.dom2dtm2.NodeDTMIDResolver m_resolver;
 	
 	/** Base URI for document */
 	protected String m_documentBaseURI;

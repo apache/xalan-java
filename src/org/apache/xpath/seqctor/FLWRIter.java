@@ -95,7 +95,7 @@ public class FLWRIter extends XSequenceCachedBase implements XSequence
   public FLWRIter(Binding[] bindings, Expression returnExpr, XPathContext xctxt)
   {
     super(xctxt);
-    setShouldCache(true);
+    setShouldCacheNodes(true);
     m_xctxt = xctxt;
     m_returnExpr = returnExpr;
     m_bindings = bindings;

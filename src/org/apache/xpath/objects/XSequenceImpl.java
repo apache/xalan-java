@@ -480,7 +480,7 @@ public class XSequenceImpl extends XObject
    * This method performs no actions.
    * @see org.apache.xml.dtm.XSequence#setShouldCache(boolean)
    */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
     // Ignore.  We always cache.
   }

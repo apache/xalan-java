@@ -87,7 +87,7 @@ public class ExprSequenceIter extends XSequenceCachedBase
   public ExprSequenceIter(Vector exprs, XPathContext xctxt)
   {
     super(xctxt);
-    this.setShouldCache(true); // for now!
+    this.setShouldCacheNodes(true); // for now!
     m_exprs = exprs;
     m_contextItem = xctxt.getCurrentItem();
   }

@@ -428,7 +428,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    *
    * @param b True if this iterator should cache nodes.
    */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
 
     assertion(false, "setShouldCache not supported by this iterater!");

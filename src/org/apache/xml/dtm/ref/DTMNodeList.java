@@ -112,7 +112,7 @@ public class DTMNodeList implements org.w3c.dom.NodeList
         dtm_iter=(DTMIterator)dtmIterator.cloneWithReset();
       }
       catch(CloneNotSupportedException cnse) {}
-      dtm_iter.setShouldCache(true);
+      dtm_iter.setShouldCacheNodes(true);
       dtm_iter.runTo(-1);
       dtm_iter.setCurrentPos(pos);
     }

@@ -267,7 +267,7 @@ public interface DTMIterator
    *
    * @param b true if the nodes should be cached.
    */
-  public void setShouldCache(boolean b);
+  public void setShouldCacheNodes(boolean b);
   
   /**
    * Tells if this iterator can have nodes added to it or set via 
@@ -378,5 +378,5 @@ public interface DTMIterator
    * types.
    */
   public int getAxis();
-
+  
 }

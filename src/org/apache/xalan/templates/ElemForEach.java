@@ -339,7 +339,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   {
 
     NodeSorter sorter = new NodeSorter(xctxt);
-    sourceNodes.setShouldCache(true);
+    sourceNodes.setShouldCacheNodes(true);
     sourceNodes.runTo(-1);
     xctxt.pushContextNodeList(sourceNodes);
 
@@ -374,7 +374,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   {
 
     ItemSorter sorter = new ItemSorter(xctxt);
-    sequence.setShouldCache(true);
+    sequence.setShouldCacheNodes(true);
     sequence.getLength();  // force cache to fill up.
     xctxt.pushContextSequence(sequence);
 

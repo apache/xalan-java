@@ -106,7 +106,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
         vars.setStackFrame(stackFrame);
 
         result = (XSequence) expr.execute(xctxt);
-        result.setShouldCache(true);
+        result.setShouldCacheNodes(true);
 
         // These two statements need to be combined into one operation.
         vars.setStackFrame(savedStart);

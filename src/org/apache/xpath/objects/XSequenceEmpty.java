@@ -230,7 +230,7 @@ class XSequenceEmpty extends XObject implements XSequence, Cloneable
    * Calling this method doesn't do anything.
    * @see org.apache.xml.dtm.XSequence#setShouldCache(boolean)
    */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
   }
 

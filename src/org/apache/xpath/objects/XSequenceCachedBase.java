@@ -232,7 +232,7 @@ public abstract class XSequenceCachedBase extends XSequenceImpl implements XSequ
   /**
    * @see org.apache.xpath.objects.XSequence#setShouldCache(boolean)
    */
-  public void setShouldCache(boolean b)
+  public void setShouldCacheNodes(boolean b)
   {
     if(!isFresh())
      throw new RuntimeException(this.getClass().getName()+" cache can not be changed after it has started!");
@@ -304,7 +304,7 @@ public abstract class XSequenceCachedBase extends XSequenceImpl implements XSequ
   public int getLength()
   {
     if(isFresh())
-      setShouldCache(true);
+      setShouldCacheNodes(true);
     else if(!getIsRandomAccess())
       throw new RuntimeException("This "+this.getClass().getName()+" is not set for random access!");
     
