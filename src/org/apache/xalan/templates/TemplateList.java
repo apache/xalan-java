@@ -92,7 +92,8 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * Add a template to the table of named templates.  This routine should
+   * Add a template to the table of named templates and/or the table of templates
+   * with match patterns.  This routine should
    * be called in decreasing order of precedence but it checks nonetheless.
    *
    * @param template
@@ -553,6 +554,15 @@ public class TemplateList implements java.io.Serializable
   }  // end findTemplate
 
   /**
+   * Get a TemplateWalker for use by a compiler.  See the documentation for
+   * the TreeWalker inner class for further details.
+   */
+  public TemplateWalker getWalker()
+  {
+    return new TemplateWalker();
+  }
+
+  /**
    * Check for match conflicts, and warn the stylesheet author.
    *
    * NEEDSDOC @param head
@@ -679,4 +689,73 @@ public class TemplateList implements java.io.Serializable
 
     m_patternTable.put(key, assoc);
   }
+
+  /**
+   * An inner class used by a compiler to iterate over all of the ElemTemplates
+   * stored in this TemplateList.  The compiler can replace returned templates
+   * with their compiled equivalent.
+   */
+  public class TemplateWalker
+  {
+    private Enumeration hashIterator;
+    private boolean inPatterns;
+    private TemplateSubPatternAssociation curPattern;
+
+    private Hashtable m_compilerCache = new Hashtable();
+
+    private TemplateWalker()
+    {
+      hashIterator = m_patternTable.elements();
+      inPatterns = true;
+      curPattern = null;
+    }
+
+    public ElemTemplate next()
+    {
+
+      ElemTemplate retValue = null;
+      ElemTemplate ct;
+
+      while (true)
+      {
+        if (inPatterns)
+        {
+          if (null != curPattern)
+            curPattern = curPattern.getNext();
+
+          if (null != curPattern)
+            retValue = curPattern.getTemplate();
+          else
+          {
+            if (hashIterator.hasMoreElements())
+            {
+              curPattern = (TemplateSubPatternAssociation) hashIterator.nextElement();
+              retValue =  curPattern.getTemplate();
+            }
+            else
+            {
+              inPatterns = false;
+              hashIterator = m_namedTemplates.elements();
+            }
+          }
+        }
+
+        if (!inPatterns)
+        {
+          if (hashIterator.hasMoreElements())
+            retValue = (ElemTemplate) hashIterator.nextElement();
+          else
+            return null;
+        }
+
+        ct = (ElemTemplate) m_compilerCache.get(new Integer(retValue.getUid()));
+        if (null == ct)
+        {
+          m_compilerCache.put(new Integer(retValue.getUid()), retValue);
+          return retValue;
+        }
+      }
+    }
+  }
+
 }

@@ -692,14 +692,25 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
-   * NEEDSDOC Method getTemplateListComposed 
-   *
-   *
-   * NEEDSDOC (getTemplateListComposed) @return
+   * Accessor method to retrieve the <code>TemplateList</code> associated with
+   * this StylesheetRoot.
+   * @return The composed <code>TemplateList</code>.
    */
   public final TemplateList getTemplateListComposed()
   {
     return m_templateList;
+  }
+
+  /**
+   * Mutator method to set the <code>TemplateList</code> associated with this
+   * StylesheetRoot.  This method should only be used by the compiler.  Normally,
+   * the template list is built during the recompose process and should not be
+   * altered by the user.
+   * @param templateList The new <code>TemplateList</code> for this StylesheetRoot.
+   */
+  public final void setTemplateListComposed(TemplateList templateList)
+  {
+    m_templateList = templateList;
   }
 
   /**
