@@ -97,6 +97,12 @@ public class SuballocatedIntVector
   /** "Shortcut" handle to m_map[0]. Surprisingly helpful for short vectors. */
   protected int m_map0[];
 
+  /** "Shortcut" handle to most recently added row of m_map.
+   * Very helpful during construction.
+   */
+  protected int m_buildCache[];
+  protected int m_buildCacheStartIndex;
+
 
   /**
    * Default constructor.  Note that the default
@@ -126,6 +132,8 @@ public class SuballocatedIntVector
     m_map0=new int[m_blocksize];
     m_map = new int[m_numblocks][];
     m_map[0]=m_map0;
+    m_buildCache = m_map0;
+    m_buildCacheStartIndex = 0;
   }
 	
   /** We never _did_ use the increasesize parameter, so I'm phasing
@@ -168,10 +176,13 @@ public class SuballocatedIntVector
    */
   public  void addElement(int value)
   {
-    if(m_firstFree<m_blocksize)
-      m_map0[m_firstFree++]=value;
-    else
-    {
+    int indexRelativeToCache = m_firstFree - m_buildCacheStartIndex;
+
+    // Is the new index an index into the cache row of m_map?
+    if(indexRelativeToCache >= 0 && indexRelativeToCache < m_blocksize) {
+      m_buildCache[indexRelativeToCache]=value;
+      ++m_firstFree;
+    } else {
       // Growing the outer array should be rare. We initialize to a
       // total of m_blocksize squared elements, which at the default
       // size is 4M integers... and we grow by at least that much each
@@ -194,10 +205,15 @@ public class SuballocatedIntVector
 	block=m_map[index]=new int[m_blocksize];
       block[offset]=value;
 
+      // Cache the current row of m_map.  Next m_blocksize-1
+      // values added will go to this row.
+      m_buildCache = block;
+      m_buildCacheStartIndex = m_firstFree-offset;
+
       ++m_firstFree;
     }
   }
-  
+
   /**
    * Append several int values onto the vector.
    *
@@ -326,6 +342,8 @@ public class SuballocatedIntVector
   public void removeAllElements()
   {
     m_firstFree = 0;
+    m_buildCache = m_map0;
+    m_buildCacheStartIndex = 0;
   }
 
   /**
