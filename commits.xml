@@ -551,7 +551,7 @@ slightly
 <Log>bug fix 6189, ArrayIndexOutOfBoundsException, contrib
  by Mirko Seifert</Log>
 </Commit>
-<Commit category="core">
+<Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>02/14/2002</DateCommitted>
 <Added>java/src/org/apache/xalan/xsltc
