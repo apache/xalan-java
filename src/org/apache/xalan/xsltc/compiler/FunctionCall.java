@@ -86,8 +86,8 @@ class FunctionCall extends Expression {
     private final static Vector EMPTY_ARG_LIST = new Vector(0);
 
     // Valid namespaces for Java function-call extension
-    private final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
-    private final static String JAVA_EXT_XALAN =
+    protected final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
+    protected final static String JAVA_EXT_XALAN =
 	"http://xml.apache.org/xslt/java";
 
     // External Java function's class/method/signature
