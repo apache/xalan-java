@@ -858,7 +858,6 @@ public class OutputProperties extends ElemTemplateElement
 
     super.compose(sroot);
 
-    m_propertiesLevels = null;
   }
 
   /**
@@ -968,15 +967,6 @@ public class OutputProperties extends ElemTemplateElement
             || key.equals(OutputKeys.VERSION)
             || (key.length() > 0) && (key.charAt(0) == '{'));
   }
-
-  /**
-   *  This ugly field is used during recomposition to track the import precedence
-   *  at which each attribute was first specified, so we can flag errors about values being
-   *  set multiple time at the same precedence level. Note that this field is only used
-   *  during recomposition, with the OutputProperties object owned by the
-   *  {@link org.apache.xalan.templates.StylesheetRoot} object.
-   */
-  private transient Hashtable m_propertiesLevels;
 
   /** The output properties.
    *  @serial */
