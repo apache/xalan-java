@@ -129,7 +129,7 @@ public MutableAttrListImpl()
   /**
    * Add the contents of the attribute list to this list.
    *
-   * NEEDSDOC @param atts
+   * @param atts List of attributes to add to this list
    */
   public void addAttributes(Attributes atts)
   {
@@ -159,9 +159,9 @@ public MutableAttrListImpl()
   /**
    * Return true if list contains the given (raw) attribute name.
    *
-   * NEEDSDOC @param name
+   * @param name Raw name of attribute to look for 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if an attribute is found with this name
    */
   public boolean contains(String name)
   {

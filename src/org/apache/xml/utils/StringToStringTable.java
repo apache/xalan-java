@@ -64,16 +64,16 @@ package org.apache.xml.utils;
 public class StringToStringTable
 {
 
-  /** NEEDSDOC Field m_blocksize          */
+  /** Size of blocks to allocate          */
   private int m_blocksize;
 
-  /** NEEDSDOC Field m_map[]          */
+  /** Array of strings this contains          */
   private String m_map[];
 
-  /** NEEDSDOC Field m_firstFree          */
+  /** Number of strings this contains           */
   private int m_firstFree = 0;
 
-  /** NEEDSDOC Field m_mapSize          */
+  /** Size of this table           */
   private int m_mapSize;
 
   /**
@@ -91,7 +91,7 @@ public class StringToStringTable
   /**
    * Construct a StringToStringTable, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of blocks to allocate 
    */
   public StringToStringTable(int blocksize)
   {
@@ -104,7 +104,7 @@ public class StringToStringTable
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of strings in the list
    */
   public final int getLength()
   {
@@ -113,9 +113,11 @@ public class StringToStringTable
 
   /**
    * Append a string onto the vector.
+   * The strings go to the even locations in the array 
+   * and the values in the odd. 
    *
-   * NEEDSDOC @param key
-   * NEEDSDOC @param value
+   * @param key String to add to the list 
+   * @param value Value of the string
    */
   public final void put(String key, String value)
   {
@@ -143,9 +145,9 @@ public class StringToStringTable
   /**
    * Tell if the table contains the given string.
    *
-   * NEEDSDOC @param key
+   * @param key String to look up
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return return the value of the string or null if not found. 
    */
   public final String get(String key)
   {
@@ -160,9 +162,9 @@ public class StringToStringTable
   }
 
   /**
-   * Tell if the table contains the given string.
+   * Remove the given string and its value from this table.
    *
-   * NEEDSDOC @param key
+   * @param key String to remove from the table
    */
   public final void remove(String key)
   {
@@ -184,11 +186,11 @@ public class StringToStringTable
   }
 
   /**
-   * Tell if the table contains the given string.
+   * Tell if the table contains the given string. Ignore case
    *
-   * NEEDSDOC @param key
+   * @param key String to look up
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the string or null if not found
    */
   public final String getIgnoreCase(String key)
   {
@@ -208,9 +210,9 @@ public class StringToStringTable
   /**
    * Tell if the table contains the given string in the value.
    *
-   * NEEDSDOC @param val
+   * @param val Value of the string to look up
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the string associated with the given value or null if not found
    */
   public final String getByValue(String val)
   {
@@ -227,9 +229,9 @@ public class StringToStringTable
   /**
    * Get the nth element.
    *
-   * NEEDSDOC @param i
+   * @param i index of the string to look up.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The string at the given index.
    */
   public final String elementAt(int i)
   {
@@ -239,9 +241,9 @@ public class StringToStringTable
   /**
    * Tell if the table contains the given string.
    *
-   * NEEDSDOC @param key
+   * @param key String to look up
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given string is in this table 
    */
   public final boolean contains(String key)
   {
@@ -258,9 +260,9 @@ public class StringToStringTable
   /**
    * Tell if the table contains the given string.
    *
-   * NEEDSDOC @param val
+   * @param val value to look up
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given value is in the table.
    */
   public final boolean containsValue(String val)
   {

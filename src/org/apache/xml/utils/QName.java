@@ -154,7 +154,7 @@ public class QName implements java.io.Serializable
    * Construct a QName from a string, without namespace resolution.  Good
    * for a few odd cases.
    *
-   * NEEDSDOC @param localName
+   * @param localName Local part of qualified name
    */
   public QName(String localName)
   {
@@ -172,8 +172,8 @@ public class QName implements java.io.Serializable
    * using the given namespace stack. The default namespace is
    * not resolved.
    *
-   * NEEDSDOC @param qname
-   * NEEDSDOC @param namespaces
+   * @param qname Qualified name to resolve
+   * @param namespaces Namespace stack to use to resolve namespace
    */
   public QName(String qname, Stack namespaces)
   {
@@ -235,12 +235,12 @@ public class QName implements java.io.Serializable
 
   /**
    * Construct a QName from a string, resolving the prefix
-   * using the given namespace stack. The default namespace is
-   * not resolved.
-   *
-   * NEEDSDOC @param qname
-   * NEEDSDOC @param namespaceContext
-   * NEEDSDOC @param resolver
+   * using the given namespace context and prefix resolver. 
+   * The default namespace is not resolved.
+   * 
+   * @param qname Qualified name to resolve
+   * @param namespaceContext Namespace Context to use
+   * @param resolver Prefix resolver for this context
    */
   public QName(String qname, Element namespaceContext,
                PrefixResolver resolver)
@@ -293,8 +293,8 @@ public class QName implements java.io.Serializable
    * using the given namespace stack. The default namespace is
    * not resolved.
    *
-   * NEEDSDOC @param qname
-   * NEEDSDOC @param resolver
+   * @param qname Qualified name to resolve
+   * @param resolver Prefix resolver for this context
    */
   public QName(String qname, PrefixResolver resolver)
   {
@@ -366,7 +366,7 @@ public class QName implements java.io.Serializable
    * Return the string representation of the namespace. Performs
    * string concatenation, so beware of performance issues.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the string representation of the namespace
    */
   public String toString()
   {
@@ -380,7 +380,7 @@ public class QName implements java.io.Serializable
   /**
    * Get the namespace of the qualified name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the namespace URI of the qualified name
    */
   public String getNamespace()
   {
@@ -390,7 +390,7 @@ public class QName implements java.io.Serializable
   /**
    * Get the local part of the qualified name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the local part of the qualified name
    */
   public String getLocalPart()
   {
@@ -400,7 +400,7 @@ public class QName implements java.io.Serializable
   /**
    * Return the cached hashcode of the qualified name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the cached hashcode of the qualified name
    */
   public int hashCode()
   {
@@ -412,10 +412,10 @@ public class QName implements java.io.Serializable
    * the passed object is a string and it matches
    * the name of the arg.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localPart
+   * @param ns Namespace URI to compare to
+   * @param localPart Local part of qualified name to compare to 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the local name and uri match 
    */
   public boolean equals(String ns, String localPart)
   {
@@ -433,9 +433,9 @@ public class QName implements java.io.Serializable
    * the passed object is a QName and it matches
    * the name of the arg.
    *
-   * NEEDSDOC @param qname
+   * @param qname Qualified name to compare to 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the qualified names are equal
    */
   public boolean equals(Object object)
   {
@@ -458,12 +458,12 @@ public class QName implements java.io.Serializable
   }
 
   /**
-   * NEEDSDOC Method getQNameFromString 
+   * Given a string, create and return a QName object  
    *
    *
-   * NEEDSDOC @param name
+   * @param name String to use to create QName
    *
-   * NEEDSDOC (getQNameFromString) @return
+   * @return a QName object
    */
   public static QName getQNameFromString(String name)
   {
@@ -485,9 +485,9 @@ public class QName implements java.io.Serializable
    * This function tells if a raw attribute name is a
    * xmlns attribute.
    *
-   * NEEDSDOC @param attRawName
+   * @param attRawName Raw name of attribute
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the attribute starts with or is equal to xmlns 
    */
   public static boolean isXMLNSDecl(String attRawName)
   {
@@ -501,9 +501,9 @@ public class QName implements java.io.Serializable
    * This function tells if a raw attribute name is a
    * xmlns attribute.
    *
-   * NEEDSDOC @param attRawName
+   * @param attRawName Raw name of attribute
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Prefix of attribute
    */
   public static String getPrefixFromXMLNSDecl(String attRawName)
   {
@@ -516,9 +516,9 @@ public class QName implements java.io.Serializable
   /**
    * Returns the local name of the given node.
    *
-   * NEEDSDOC @param qname
+   * @param qname Input name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Local part of the name if prefixed, or the given name if not
    */
   public static String getLocalPart(String qname)
   {
@@ -531,9 +531,9 @@ public class QName implements java.io.Serializable
   /**
    * Returns the local name of the given node.
    *
-   * NEEDSDOC @param qname
+   * @param qname Input name 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Prefix of name or empty string if none there   
    */
   public static String getPrefixPart(String qname)
   {

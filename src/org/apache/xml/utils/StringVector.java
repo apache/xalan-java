@@ -64,16 +64,16 @@ package org.apache.xml.utils;
 public class StringVector
 {
 
-  /** NEEDSDOC Field m_blocksize          */
+  /** Size of blocks to allocate           */
   protected int m_blocksize;
 
-  /** NEEDSDOC Field m_map[]          */
+  /** Array of strings this contains          */
   protected String m_map[];
 
-  /** NEEDSDOC Field m_firstFree          */
+  /** Number of strings this contains          */
   protected int m_firstFree = 0;
 
-  /** NEEDSDOC Field m_mapSize          */
+  /** Size of the array          */
   protected int m_mapSize;
 
   /**
@@ -91,7 +91,7 @@ public class StringVector
   /**
    * Construct a StringVector, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of the blocks to allocate 
    */
   public StringVector(int blocksize)
   {
@@ -104,7 +104,7 @@ public class StringVector
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of strings in the list 
    */
   public int getLength()
   {
@@ -114,7 +114,7 @@ public class StringVector
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of strings in the list
    */
   public final int size()
   {
@@ -124,7 +124,7 @@ public class StringVector
   /**
    * Append a string onto the vector.
    *
-   * NEEDSDOC @param value
+   * @param value Sting to add to the vector
    */
   public final void addElement(String value)
   {
@@ -148,9 +148,9 @@ public class StringVector
   /**
    * Get the nth element.
    *
-   * NEEDSDOC @param i
+   * @param i Index of string to find
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String at given index
    */
   public final String elementAt(int i)
   {
@@ -160,9 +160,9 @@ public class StringVector
   /**
    * Tell if the table contains the given string.
    *
-   * NEEDSDOC @param s
+   * @param s String to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the string is in this table  
    */
   public final boolean contains(String s)
   {
@@ -180,11 +180,11 @@ public class StringVector
   }
 
   /**
-   * Tell if the table contains the given string.
+   * Tell if the table contains the given string. Ignore case.
    *
-   * NEEDSDOC @param s
+   * @param s String to find
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the String is in this vector
    */
   public final boolean containsIgnoreCase(String s)
   {
@@ -204,7 +204,7 @@ public class StringVector
   /**
    * Tell if the table contains the given string.
    *
-   * NEEDSDOC @param s
+   * @param s String to push into the vector
    */
   public final void push(String s)
   {
@@ -226,9 +226,10 @@ public class StringVector
   }
 
   /**
-   * Tell if the table contains the given string.
+   * Pop the tail of this vector.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The String last added to this vector or null not found.
+   * The string is removed from the vector.
    */
   public final String pop()
   {
@@ -246,9 +247,9 @@ public class StringVector
   }
 
   /**
-   * Tell if the table contains the given string.
+   * Get the string at the tail of this vector without popping.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The string at the tail of this vector.
    */
   public final String peek()
   {

@@ -64,19 +64,21 @@ package org.apache.xml.utils;
 public class StringToIntTable
 {
 
-  /** NEEDSDOC Field m_blocksize          */
+  /** Block size to allocate          */
   private int m_blocksize;
 
-  /** NEEDSDOC Field m_map[]          */
+  /** Array of strings this table points to. Associated with ints
+   * in m_values         */
   private String m_map[];
 
-  /** NEEDSDOC Field m_values[]          */
+  /** Array of ints this table points. Associated with strings from
+   * m_map.         */
   private int m_values[];
 
-  /** NEEDSDOC Field m_firstFree          */
+  /** Number of ints in the table          */
   private int m_firstFree = 0;
 
-  /** NEEDSDOC Field m_mapSize          */
+  /** Size of this table         */
   private int m_mapSize;
 
   /**
@@ -95,7 +97,7 @@ public class StringToIntTable
   /**
    * Construct a StringToIntTable, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of block to allocate
    */
   public StringToIntTable(int blocksize)
   {
@@ -109,7 +111,7 @@ public class StringToIntTable
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the length of the list 
    */
   public final int getLength()
   {
@@ -119,8 +121,8 @@ public class StringToIntTable
   /**
    * Append a string onto the vector.
    *
-   * NEEDSDOC @param key
-   * NEEDSDOC @param value
+   * @param key String to append
+   * @param value The int value of the string
    */
   public final void put(String key, int value)
   {
@@ -151,9 +153,9 @@ public class StringToIntTable
   /**
    * Tell if the table contains the given string.
    *
-   * NEEDSDOC @param key
+   * @param key String to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The String's int value or a bogus value if not found 
    */
   public final int get(String key)
   {
@@ -168,11 +170,11 @@ public class StringToIntTable
   }
 
   /**
-   * Tell if the table contains the given string.
+   * Tell if the table contains the given string. Ignore case.
    *
-   * NEEDSDOC @param key
+   * @param key String to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The string's int value, or a bogus value if not found
    */
   public final int getIgnoreCase(String key)
   {
@@ -192,9 +194,9 @@ public class StringToIntTable
   /**
    * Tell if the table contains the given string.
    *
-   * NEEDSDOC @param key
+   * @param key String to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the string is in the table
    */
   public final boolean contains(String key)
   {

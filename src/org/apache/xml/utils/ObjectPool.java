@@ -60,22 +60,22 @@ import java.util.*;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ObjectPool <needs-comment/>
+ * Pool of object of a given type to pick from to help memory usage
  */
 public class ObjectPool implements java.io.Serializable
 {
 
-  /** NEEDSDOC Field objectType          */
+  /** Type of objects in this pool          */
   private final Class objectType;
 
-  /** NEEDSDOC Field freeStack          */
+  /** Vector of given objects this points to          */
   private final Vector freeStack;
 
   /**
    * Constructor ObjectPool
    *
    *
-   * NEEDSDOC @param type
+   * @param type Type of objects for this pool
    */
   public ObjectPool(Class type)
   {
@@ -87,8 +87,8 @@ public class ObjectPool implements java.io.Serializable
    * Constructor ObjectPool
    *
    *
-   * NEEDSDOC @param type
-   * NEEDSDOC @param size
+   * @param type Type of objects for this pool
+   * @param size Size of vector to allocate
    */
   public ObjectPool(Class type, int size)
   {
@@ -107,10 +107,10 @@ public class ObjectPool implements java.io.Serializable
   }
 
   /**
-   * NEEDSDOC Method getInstanceIfFree 
+   * Get an instance of the given object in this pool if available
    *
    *
-   * NEEDSDOC (getInstanceIfFree) @return
+   * @return an instance of the given object if available or null
    */
   public synchronized Object getInstanceIfFree()
   {
@@ -131,10 +131,10 @@ public class ObjectPool implements java.io.Serializable
   }
 
   /**
-   * NEEDSDOC Method getInstance 
+   * Get an instance of the given object in this pool 
    *
    *
-   * NEEDSDOC (getInstance) @return
+   * @return An instance of the given object
    */
   public synchronized Object getInstance()
   {
@@ -167,10 +167,10 @@ public class ObjectPool implements java.io.Serializable
   }
 
   /**
-   * NEEDSDOC Method freeInstance 
+   * Add an instance of the given object to the pool  
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj Object to add.
    */
   public synchronized void freeInstance(Object obj)
   {

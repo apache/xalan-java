@@ -64,16 +64,16 @@ package org.apache.xml.utils;
 public class StringToStringTableVector
 {
 
-  /** NEEDSDOC Field m_blocksize          */
+  /** Size of blocks to allocate         */
   private int m_blocksize;
 
-  /** NEEDSDOC Field m_map[]          */
+  /** Array of StringToStringTable objects          */
   private StringToStringTable m_map[];
 
-  /** NEEDSDOC Field m_firstFree          */
+  /** Number of StringToStringTable objects in this array          */
   private int m_firstFree = 0;
 
-  /** NEEDSDOC Field m_mapSize          */
+  /** Size of this array          */
   private int m_mapSize;
 
   /**
@@ -91,7 +91,7 @@ public class StringToStringTableVector
   /**
    * Construct a StringToStringTableVector, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of blocks to allocate 
    */
   public StringToStringTableVector(int blocksize)
   {
@@ -104,7 +104,7 @@ public class StringToStringTableVector
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of StringToStringTable objects in the list
    */
   public final int getLength()
   {
@@ -114,7 +114,7 @@ public class StringToStringTableVector
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of StringToStringTable objects in the list
    */
   public final int size()
   {
@@ -122,9 +122,9 @@ public class StringToStringTableVector
   }
 
   /**
-   * Append a string onto the vector.
+   * Append a StringToStringTable object onto the vector.
    *
-   * NEEDSDOC @param value
+   * @param value StringToStringTable object to add
    */
   public final void addElement(StringToStringTable value)
   {
@@ -149,9 +149,10 @@ public class StringToStringTableVector
    * Given a string, find the last added occurance value
    * that matches the key.
    *
-   * NEEDSDOC @param key
+   * @param key String to look up
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the last added occurance value that matches the key
+   * or null if not found.
    */
   public final String get(String key)
   {
@@ -168,12 +169,12 @@ public class StringToStringTableVector
   }
 
   /**
-   * Given a string, find the last added occurance value
+   * Given a string, find out if there is a value in this table
    * that matches the key.
    *
-   * NEEDSDOC @param key
+   * @param key String to look for  
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the string was found in table, null if not
    */
   public final boolean containsKey(String key)
   {
@@ -204,9 +205,9 @@ public class StringToStringTableVector
   /**
    * Get the nth element.
    *
-   * NEEDSDOC @param i
+   * @param i Index of element to find
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The StringToStringTable object at the given index
    */
   public final StringToStringTable elementAt(int i)
   {
@@ -214,11 +215,11 @@ public class StringToStringTableVector
   }
 
   /**
-   * Tell if the table contains the given string.
+   * Tell if the table contains the given StringToStringTable.
    *
-   * NEEDSDOC @param s
+   * @param s The StringToStringTable to find
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the StringToStringTable is found
    */
   public final boolean contains(StringToStringTable s)
   {

@@ -67,9 +67,9 @@ public interface RawCharacterHandler
   /**
    * Serialize the characters without escaping.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Array of characters
+   * @param start Start index of characters in the array
+   * @param length Number of characters in the array
    *
    * @throws javax.xml.transform.TransformerException
    */

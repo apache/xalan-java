@@ -173,7 +173,7 @@ public class PrefixResolverDefault implements PrefixResolver
   /**
    * Return the base identifier.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getBaseIdentifier()
   {

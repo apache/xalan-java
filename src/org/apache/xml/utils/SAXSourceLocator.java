@@ -83,7 +83,7 @@ public class SAXSourceLocator extends LocatorImpl
    * Constructor SAXSourceLocator
    *
    *
-   * NEEDSDOC @param locator
+   * @param locator Source locator
    */
   public SAXSourceLocator(Locator locator)
   {

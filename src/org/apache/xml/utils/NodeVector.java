@@ -67,16 +67,16 @@ import org.w3c.dom.Node;
 public class NodeVector implements Serializable, Cloneable
 {
 
-  /** NEEDSDOC Field m_blocksize          */
+  /** Size of blocks to allocate          */
   private int m_blocksize;
 
-  /** NEEDSDOC Field m_map[]          */
+  /** Array of nodes this points to          */
   private Node m_map[];
 
-  /** NEEDSDOC Field m_firstFree          */
+  /** Number of nodes in this NodeVector          */
   protected int m_firstFree = 0;
 
-  /** NEEDSDOC Field m_mapSize          */
+  /** Size of the array this points to           */
   private int m_mapSize;  // lazy initialization
 
   /**
@@ -91,7 +91,7 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Construct a NodeVector, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of blocks to allocate 
    */
   public NodeVector(int blocksize)
   {
@@ -102,7 +102,7 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Get a cloned LocPathIterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A clone of this
    *
    * @throws CloneNotSupportedException
    */
@@ -124,7 +124,7 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of nodes in this NodeVector
    */
   public int size()
   {
@@ -134,7 +134,7 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Append a Node onto the vector.
    *
-   * NEEDSDOC @param value
+   * @param value Node to add to the vector
    */
   public void addElement(Node value)
   {
@@ -166,7 +166,7 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Append a Node onto the vector.
    *
-   * NEEDSDOC @param value
+   * @param value Node to add to the vector
    */
   public final void push(Node value)
   {
@@ -202,7 +202,7 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Pop a node from the tail of the vector and return the result.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the node at the tail of the vector
    */
   public final Node pop()
   {
@@ -220,7 +220,7 @@ public class NodeVector implements Serializable, Cloneable
    * Pop a node from the tail of the vector and return the
    * top of the stack after the pop.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The top of the stack after it's been popped 
    */
   public final Node popAndTop()
   {
@@ -244,10 +244,11 @@ public class NodeVector implements Serializable, Cloneable
   }
 
   /**
+   * Return the node at the top of the stack without popping the stack.
    * Special purpose method for TransformerImpl, pushElemTemplateElement.
    * Performance critical.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node at the top of the stack or null if stack is empty.  
    */
   public final Node peepOrNull()
   {
@@ -256,11 +257,12 @@ public class NodeVector implements Serializable, Cloneable
   }
 
   /**
+   * Push a pair of nodes into the stack.  
    * Special purpose method for TransformerImpl, pushElemTemplateElement.
    * Performance critical.
    *
-   * NEEDSDOC @param v1
-   * NEEDSDOC @param v2
+   * @param v1 First node to add to vector
+   * @param v2 Second node to add to vector
    */
   public final void pushPair(Node v1, Node v2)
   {
@@ -290,6 +292,7 @@ public class NodeVector implements Serializable, Cloneable
   }
 
   /**
+   * Pop a pair of nodes from the tail of the stack. 
    * Special purpose method for TransformerImpl, pushElemTemplateElement.
    * Performance critical.
    */
@@ -302,10 +305,11 @@ public class NodeVector implements Serializable, Cloneable
   }
 
   /**
+   * Set the tail of the stack to the given node.
    * Special purpose method for TransformerImpl, pushElemTemplateElement.
    * Performance critical.
    *
-   * NEEDSDOC @param n
+   * @param n Node to set at the tail of vector
    */
   public final void setTail(Node n)
   {
@@ -313,10 +317,11 @@ public class NodeVector implements Serializable, Cloneable
   }
 
   /**
+   * Set the given node one position from the tail.
    * Special purpose method for TransformerImpl, pushElemTemplateElement.
    * Performance critical.
    *
-   * NEEDSDOC @param n
+   * @param n Node to set
    */
   public final void setTailSub1(Node n)
   {
@@ -324,10 +329,11 @@ public class NodeVector implements Serializable, Cloneable
   }
 
   /**
+   * Return the node at the tail of the vector without popping
    * Special purpose method for TransformerImpl, pushElemTemplateElement.
    * Performance critical.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node at the tail of the vector
    */
   public final Node peepTail()
   {
@@ -335,10 +341,11 @@ public class NodeVector implements Serializable, Cloneable
   }
 
   /**
+   * Return the node one position from the tail without popping.
    * Special purpose method for TransformerImpl, pushElemTemplateElement.
    * Performance critical.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node one away from the tail
    */
   public final Node peepTailSub1()
   {
@@ -351,8 +358,8 @@ public class NodeVector implements Serializable, Cloneable
    * the specified index is shifted upward to have an index one greater
    * than the value it had previously.
    *
-   * NEEDSDOC @param value
-   * NEEDSDOC @param at
+   * @param value Node to insert
+   * @param at Position where to insert
    */
   public void insertElementAt(Node value, int at)
   {
@@ -386,7 +393,7 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Append the nodes to the list.
    *
-   * NEEDSDOC @param nodes
+   * @param nodes NodeVector to append to this list
    */
   public void appendNodes(NodeVector nodes)
   {
@@ -441,9 +448,9 @@ public class NodeVector implements Serializable, Cloneable
    * downward to have an index one smaller than the value it had
    * previously.
    *
-   * NEEDSDOC @param s
+   * @param s Node to remove from the list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the node was successfully removed
    */
   public boolean removeElement(Node s)
   {
@@ -477,7 +484,7 @@ public class NodeVector implements Serializable, Cloneable
    * index is shifted downward to have an index one smaller than
    * the value it had previously.
    *
-   * NEEDSDOC @param i
+   * @param i Index of node to remove
    */
   public void removeElementAt(int i)
   {
@@ -498,8 +505,8 @@ public class NodeVector implements Serializable, Cloneable
    * The index must be a value greater than or equal to 0 and less
    * than the current size of the vector.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param index
+   * @param node Node to set
+   * @param index Index of where to set the node
    */
   public void setElementAt(Node node, int index)
   {
@@ -516,9 +523,9 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Get the nth element.
    *
-   * NEEDSDOC @param i
+   * @param i Index of node to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node at specified index
    */
   public Node elementAt(int i)
   {
@@ -532,9 +539,9 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Tell if the table contains the given node.
    *
-   * NEEDSDOC @param s
+   * @param s Node to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given node was found.
    */
   public boolean contains(Node s)
   {
@@ -558,8 +565,8 @@ public class NodeVector implements Serializable, Cloneable
    * beginning the search at index, and testing for equality
    * using the equals method.
    *
-   * NEEDSDOC @param elem
-   * NEEDSDOC @param index
+   * @param elem Node to look for
+   * @param index Index of where to start the search
    * @return the index of the first occurrence of the object
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.
@@ -586,7 +593,7 @@ public class NodeVector implements Serializable, Cloneable
    * beginning the search at index, and testing for equality
    * using the equals method.
    *
-   * NEEDSDOC @param elem
+   * @param elem Node to look for 
    * @return the index of the first occurrence of the object
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.

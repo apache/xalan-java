@@ -67,21 +67,21 @@ import java.io.Serializable;
 public class NameSpace implements Serializable
 {
 
-  /** NEEDSDOC Field m_next          */
+  /** Next NameSpace element on the stack             */
   public NameSpace m_next = null;
 
-  /** NEEDSDOC Field m_prefix          */
+  /** Prefix of this NameSpace element          */
   public String m_prefix;
 
-  /** NEEDSDOC Field m_uri          */
+  /** Namespace URI of this NameSpace element           */
   public String m_uri;  // if null, then Element namespace is empty.
 
   /**
    * Construct a namespace for placement on the
    * result tree namespace stack.
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
+   * @param prefix Prefix of this element
+   * @param uri URI of  this element
    */
   public NameSpace(String prefix, String uri)
   {

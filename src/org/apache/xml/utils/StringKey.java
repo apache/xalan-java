@@ -64,17 +64,17 @@ package org.apache.xml.utils;
 public class StringKey extends Object
 {
 
-  /** NEEDSDOC Field m_str          */
+  /** String value          */
   private String m_str;
 
-  /** NEEDSDOC Field m_hash          */
+  /** Hash value of the string         */
   int m_hash;
 
   /**
    * Constructor StringKey
    *
    *
-   * NEEDSDOC @param key
+   * @param key String value to cache
    */
   public StringKey(String key)
   {
@@ -83,10 +83,10 @@ public class StringKey extends Object
   }
 
   /**
-   * NEEDSDOC Method hashCode 
+   * Get the hash value of the string  
    *
    *
-   * NEEDSDOC (hashCode) @return
+   * @return hash value of the string
    */
   public int hashCode()
   {
@@ -94,12 +94,12 @@ public class StringKey extends Object
   }
 
   /**
-   * NEEDSDOC Method equals 
+   * Override of equals() for this object 
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj to compare to
    *
-   * NEEDSDOC (equals) @return
+   * @return True if this object equals this string value 
    */
   public final boolean equals(Object obj)
   {
