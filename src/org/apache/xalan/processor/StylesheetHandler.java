@@ -1175,6 +1175,8 @@ public class StylesheetHandler extends DefaultHandler
       return null;
     }
   }
+  
+  private int m_docOrderCount = 0;
 
   /**
    * Push the current XSLTElementProcessor to the top of the stack.
@@ -1183,6 +1185,8 @@ public class StylesheetHandler extends DefaultHandler
    */
   void pushElemTemplateElement(ElemTemplateElement elem)
   {
+    if(elem.getUid() == -1)
+      elem.setUid(m_docOrderCount++);
     m_elems.push(elem);
   }
 

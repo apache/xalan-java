@@ -99,41 +99,8 @@ public class TemplateList implements java.io.Serializable
    *
    * @param template
    */
-  public void setTemplate(ElemTemplate template)
+  public void setTemplate(ElemTemplate template, int pos)
   {
-
-    int pos = 0;
-
-    if (null == m_firstTemplate)
-    {
-      m_firstTemplate = template;
-    }
-    else
-    {
-      ElemTemplateElement next = m_firstTemplate;
-
-      while (null != next)
-      {
-        if (null == next.m_nextSibling)
-        {
-          next.m_nextSibling = template;
-          template.m_nextSibling = null;  // just to play it safe.
-
-          break;
-        }
-        else if (template.equals(next.m_nextSibling))
-        {
-          pos++;
-
-          break;
-        }
-
-        pos++;
-
-        next = next.m_nextSibling;
-      }
-    }
-
     if (null != template.getName())
     {
       if (m_namedTemplates.get(template.getName()) == null)

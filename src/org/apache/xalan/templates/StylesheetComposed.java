@@ -350,7 +350,7 @@ public class StylesheetComposed extends Stylesheet
 
         XPath match = included.getStripSpace(i);
 
-        m_whiteSpaceInfoList.setTemplate(new WhiteSpaceInfo(match, true));
+        m_whiteSpaceInfoList.setTemplate(new WhiteSpaceInfo(match, true), i+k);
       }
 
       n = included.getPreserveSpaceCount();
@@ -362,7 +362,7 @@ public class StylesheetComposed extends Stylesheet
 
         XPath match = included.getPreserveSpace(i);
 
-        m_whiteSpaceInfoList.setTemplate(new WhiteSpaceInfo(match, false));
+        m_whiteSpaceInfoList.setTemplate(new WhiteSpaceInfo(match, false), i+k);
       }
     }
   }
@@ -688,7 +688,8 @@ public class StylesheetComposed extends Stylesheet
 
       for (int i = 0; i < n; i++)
       {
-        m_templateList.setTemplate(included.getTemplate(i));
+        ElemTemplate template = included.getTemplate(i);
+        m_templateList.setTemplate(template, template.getUid());
       }
     }
 

@@ -942,6 +942,29 @@ public class ElemTemplateElement extends UnImplNode
       throw new TransformerException(se);
     }
   }
+  
+  protected int m_docOrderNumber = -1;
+  
+  /**
+   * Set the UID (document order index).
+   *
+   * @param kIndex Index of this child.
+   */
+  public void setUid(int i)
+  {
+    m_docOrderNumber = i;
+  }
+
+  /**
+   * Get the UID (document order index).
+   *
+   * @return Index of this child
+   */
+  public int getUid()
+  {
+    return m_docOrderNumber;
+  }
+
 
   /**
    * Parent node.
