@@ -221,7 +221,7 @@ Copyright:
     <!-- Compile XPath engine and some common utilities -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           includes="org/apache/xml/**/*.java,org/apache/xpath/**/*.java"
+           includes="org/apache/xml/**/*.java,${xpath.reldir}/**/*.java"
            debug="${debug}"/>
     <!-- Compile Xalan main engine (but not xsltc package yet) -->
     <javac srcdir="${src.dir}" 
@@ -275,7 +275,7 @@ Copyright:
     last one generates XPathLexer.java. The lexiographical analyser
     has to be generated after sym.java, so order is important. -->
     <echo message="java_cup preparsing"/>
-    <java fork="yes" failonerror="true" classname="org.apache.xalan.xsltc.util.JavaCupRedirect" >
+    <java fork="no" failonerror="true" classname="org.apache.xalan.xsltc.util.JavaCupRedirect" >
       <classpath refid="xsltc.class.path" />
       <!-- We're using JavaCupRedirect to call the java_cup application -->
       <arg line="-parser XPathParser -expect 0 -stdin ${src.dir}/${xsltc.reldir}/compiler/xpath.cup"/>
@@ -285,7 +285,7 @@ Copyright:
     <move file="sym.java" tofile="${src.dir}/${xsltc.reldir}/compiler/sym.java"/>
 
     <echo message="JLex preparsing"/>
-    <java fork="yes" failonerror="true" classname="JLex.Main" >
+    <java fork="no" failonerror="true" classname="JLex.Main" >
       <classpath refid="xsltc.class.path" />
       <arg line="-static ${src.dir}/${xsltc.reldir}/compiler/xpath.lex"/>
     </java>
