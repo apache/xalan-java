@@ -15,7 +15,7 @@ public class Function3Args extends Function2Args
     throws WrongNumberArgsException
   {
     if(argNum < 2)
-      super.setArg(arg, 1);
+      super.setArg(arg, argNum);
     else if(2 == argNum)
       m_arg2 = arg;
     else
