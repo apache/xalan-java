@@ -949,6 +949,10 @@ public class ToHTMLStream extends ToStream
         {
             throw new SAXException(e);
         }
+        
+
+		m_elementURI = null;
+		m_elementLocalName = null;
 
         // fire off the end element event
         super.fireEndElem(name);        

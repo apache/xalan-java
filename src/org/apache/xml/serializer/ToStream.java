@@ -1978,6 +1978,9 @@ abstract public class ToStream extends SerializerBase
 
         // m_disableOutputEscapingStates.pop();
 
+		m_elementURI = null;
+		m_elementLocalName = null;
+
         // fire off the end element event
         super.fireEndElem(name);
     }

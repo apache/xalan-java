@@ -308,6 +308,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
         m_startTagOpen = false;
         // m_disableOutputEscapingStates.pop();
         m_cdataSectionStates.pop();
+        m_elementURI = null;
+        m_elementLocalName = null;
     }
 
     /**
