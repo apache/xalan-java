@@ -262,9 +262,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
   boolean executePredicates(int context, XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-
-    m_predicateIndex = 0;
-
+    
     int nPredicates = getPredicateCount();
     // System.out.println("nPredicates: "+nPredicates);
     if (nPredicates == 0)
@@ -274,6 +272,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
 
     try
     {
+      m_predicateIndex = 0;
       xctxt.pushSubContextList(this);
       xctxt.pushNamespaceContext(m_lpi.getPrefixResolver());
       xctxt.pushCurrentNode(context);
@@ -325,9 +324,8 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
       xctxt.popCurrentNode();
       xctxt.popNamespaceContext();
       xctxt.popSubContextList();
+      m_predicateIndex = -1;
     }
-
-    m_predicateIndex = -1;
 
     return true;
   }
