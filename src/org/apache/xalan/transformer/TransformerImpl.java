@@ -1949,7 +1949,7 @@ public class TransformerImpl extends Transformer
 
     if (null == template)
     {
-      int maxImportLevel;
+      int maxImportLevel, endImportLevel=0;
       boolean isApplyImports = ((xslInstruction == null)
                                 ? false
                                 : xslInstruction.getXSLToken()
@@ -1959,6 +1959,8 @@ public class TransformerImpl extends Transformer
       {
         maxImportLevel =
           xslInstruction.getStylesheetComposed().getImportCountComposed() - 1;
+        endImportLevel =
+          xslInstruction.getStylesheetComposed().getEndImportCountComposed();
       }
       else
       {
@@ -1987,9 +1989,14 @@ public class TransformerImpl extends Transformer
           xctxt.pushNamespaceContext(xslInstruction);
 
           QName mode = this.getMode();
-
-          template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
-                  maxImportLevel, m_quietConflictWarnings, dtm);
+          
+          if (isApplyImports)
+            template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
+                  maxImportLevel, endImportLevel, m_quietConflictWarnings, dtm);
+          else
+            template = m_stylesheetRoot.getTemplateComposed(xctxt, child, mode,
+                  m_quietConflictWarnings, dtm);
+          
         }
         finally
         {
