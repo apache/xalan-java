@@ -178,7 +178,7 @@ public class NamespaceWalker extends AxesWalker
   }
 
   /** NEEDSDOC Field m_namespaces          */
-  Stack m_namespaces;
+  transient Stack m_namespaces;
 
   /**
    * Tell what's the maximum level this axes can descend to.

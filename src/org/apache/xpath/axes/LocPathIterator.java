@@ -105,17 +105,17 @@ public class LocPathIterator extends Expression
   ContextNodeList, NodeList, java.io.Serializable 
 {
 
-  /** The pool for cloned iterators.  Iterators need to be cloned 
+  /* The pool for cloned iterators.  Iterators need to be cloned 
    * because the hold running state, and thus the original iterator 
    * expression from the stylesheet pool can not be used.          */
-  ObjectPool m_pool = new ObjectPool(this.getClass());
+  // ObjectPool m_pool = new ObjectPool(this.getClass());
 
   /** The last node that was fetched, usually by nextNode. */
-  public Node m_lastFetched;
+  transient public Node m_lastFetched;
 
   /** If this iterator needs to cache nodes that are fetched, they
    * are stored here.   */
-  NodeSet m_cachedNodes;
+  transient NodeSet m_cachedNodes;
 
   /** The last used step walker in the walker list.      */
   protected AxesWalker m_lastUsedWalker;
@@ -128,18 +128,18 @@ public class LocPathIterator extends Expression
 
   /** Quicker access to the DOM helper than going through the  
    * XPathContext object.   */
-  protected DOMHelper m_dhelper;
+  transient protected DOMHelper m_dhelper;
 
   /** The context node for this iterator, which doesn't change through 
    * the course of the iteration.  */
-  protected Node m_context;
+  transient protected Node m_context;
 
   /** The node context from where the expression is being
    * executed from (i.e. for current() support).  Different 
    * from m_context in that this is the context for the entire 
    * expression, rather than the context for the subexpression.
    */
-  protected Node m_currentContextNode;
+  transient protected Node m_currentContextNode;
 
   /** Fast access to the current prefix resolver.  It isn't really 
    * clear that this is needed.  */
@@ -147,7 +147,7 @@ public class LocPathIterator extends Expression
 
   /** The XPathContext reference, needed for execution of many 
    * operations.    */
-  protected XPathContext m_execContext;
+  transient protected XPathContext m_execContext;
 
   /** The index of the next node to be fetched.  Useful if this 
    * is a cached iterator, and is being used as random access 
@@ -263,10 +263,9 @@ public class LocPathIterator extends Expression
 
     try
     {
-      LocPathIterator clone = (LocPathIterator) m_pool.getInstanceIfFree();
-
-      if (null == clone)
-        clone = (LocPathIterator) this.clone();
+      // LocPathIterator clone = (LocPathIterator) m_pool.getInstanceIfFree();
+      // if (null == clone)
+      LocPathIterator clone = (LocPathIterator) this.clone();
 
       clone.initContext(xctxt);
 
@@ -568,7 +567,7 @@ public class LocPathIterator extends Expression
     this.m_varStackPos = -1;
     this.m_varStackContext = 0;
 
-    m_pool.freeInstance(this);
+    // m_pool.freeInstance(this);
   }
 
   /**
@@ -588,7 +587,7 @@ public class LocPathIterator extends Expression
 
     return clone;
   }
-
+  
   /**
    * Get a cloned LocPathIterator that holds the same 
    * position as this iterator.
@@ -601,43 +600,33 @@ public class LocPathIterator extends Expression
   {
     
     LocPathIterator clone = (LocPathIterator) super.clone();
-    clone.m_varStackPos = this.m_varStackPos;
-    clone.m_varStackContext = this.m_varStackContext;
+//    clone.m_varStackPos = this.m_varStackPos;
+//    clone.m_varStackContext = this.m_varStackContext;
 
     if (null != m_firstWalker)
     {
-      AxesWalker walker = m_firstWalker;
-      AxesWalker prevClonedWalker = null;
-
-      while (null != walker)
+      Vector clones = new Vector(); // yuck
+      clone.m_firstWalker = m_firstWalker.cloneDeep(clone, clones);
+      
+      if(null != m_waiting)
       {
-        AxesWalker clonedWalker = (AxesWalker) walker.clone();
-
-        clonedWalker.setLocPathIterator(clone);
-
-        if (clone.m_lastUsedWalker == walker)
-          clone.m_lastUsedWalker = clonedWalker;
-
-        if (null == prevClonedWalker)
+        clone.m_waiting = (Vector)m_waiting.clone(); // or is new Vector faster?
+        int n = m_waiting.size();
+        for (int i = 0; i < n; i++) 
         {
-          clone.m_firstWalker = clonedWalker;
-          prevClonedWalker = clonedWalker;
+          AxesWalker waiting = (AxesWalker)m_waiting.elementAt(i);
+          clone.m_waiting.setElementAt(waiting.cloneDeep(clone, clones), i);
         }
-        else
-        {
-          prevClonedWalker.setNextWalker(clonedWalker);
-          clonedWalker.setPrevWalker(prevClonedWalker);
-
-          prevClonedWalker = clonedWalker;
-        }
-
-        walker = walker.getNextWalker();
       }
-    }
 
+      if(null != m_lastUsedWalker)
+        clone.m_lastUsedWalker = m_lastUsedWalker.cloneDeep(clone, clones);
+    }
+             
     return clone;
   }
-
+  
+  
   /**
    * Reset the iterator.
    */

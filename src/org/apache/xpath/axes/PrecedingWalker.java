@@ -234,7 +234,7 @@ public class PrecedingWalker extends ReverseAxesWalker
   }
 
   /** NEEDSDOC Field m_doc          */
-  Node m_doc;
+  transient Node m_doc;
 
   /**
    * Tell what's the maximum level this axes can descend to.

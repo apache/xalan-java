@@ -120,7 +120,7 @@ public class FollowingWalker extends AxesWalker
   }
 
   /** NEEDSDOC Field m_ancestors          */
-  protected Stack m_ancestors = new Stack();
+  transient protected Stack m_ancestors = new Stack();
 
   /**
    *  Moves to and returns the closest visible ancestor node of the current
@@ -219,7 +219,7 @@ public class FollowingWalker extends AxesWalker
   }
 
   /** NEEDSDOC Field m_currentAncestor          */
-  Node m_currentAncestor;
+  transient Node m_currentAncestor;
 
   /**
    * Tell what's the maximum level this axes can descend to.

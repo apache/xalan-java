@@ -254,7 +254,7 @@ public class DescendantIterator extends LocPathIterator
   }
   
   /** The top of the subtree, may not be the same as m_context if "//foo" pattern. */ 
-  private Node m_startContext;
+  transient private Node m_startContext;
 
   /** The NodeTest for this iterator. */
   private NodeTest m_nodeTest;

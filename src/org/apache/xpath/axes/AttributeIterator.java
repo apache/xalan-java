@@ -249,7 +249,7 @@ public class AttributeIterator extends LocPathIterator
   private NodeTest m_nodeTest;
 
   /** The attribute list for the given context. */
-  private NamedNodeMap m_attributeList;
+  transient private NamedNodeMap m_attributeList;
 
   /** The position within the attribute list. */
   private int m_attrListPos = 0;

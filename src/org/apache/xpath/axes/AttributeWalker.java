@@ -150,7 +150,7 @@ public class AttributeWalker extends AxesWalker
   }
 
   /** The attribute list for the given context.    */
-  NamedNodeMap m_attributeList;
+  transient NamedNodeMap m_attributeList;
 
   /** The position within the attribute list.   */
   int m_attrListPos;

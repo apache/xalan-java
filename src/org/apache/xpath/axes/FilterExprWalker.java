@@ -274,10 +274,10 @@ public class FilterExprWalker extends AxesWalker
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
-  private NodeIterator m_nodeSet;
+  transient private NodeIterator m_nodeSet;
 
   /** I think this is always null right now.    */
-  private Node m_peek = null;
+  transient private Node m_peek = null;
 
   /**
    * Tell what's the maximum level this axes can descend to (which is actually

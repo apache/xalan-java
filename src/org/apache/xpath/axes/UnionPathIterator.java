@@ -150,7 +150,7 @@ public class UnionPathIterator extends Expression
   }
 
   /** NEEDSDOC Field m_pool          */
-  ObjectPool m_pool = new ObjectPool(this.getClass());
+  transient ObjectPool m_pool = new ObjectPool(this.getClass());
 
   /**
    * NEEDSDOC Method execute 
@@ -183,7 +183,7 @@ public class UnionPathIterator extends Expression
   }
 
   /** NEEDSDOC Field m_cachedNodes          */
-  NodeSet m_cachedNodes = null;
+  transient NodeSet m_cachedNodes = null;
 
   /** NEEDSDOC Field m_next          */
   protected int m_next = 0;
@@ -489,7 +489,7 @@ public class UnionPathIterator extends Expression
   }
 
   /** NEEDSDOC Field m_lastFetched          */
-  Node m_lastFetched;
+  transient Node m_lastFetched;
 
   /**
    *  Returns the next node in the set and advances the position of the
@@ -628,18 +628,18 @@ public class UnionPathIterator extends Expression
   /**
    * The execution context for the expression.
    */
-  protected XPathContext m_execContext;
+  transient protected XPathContext m_execContext;
 
   /**
    * The node context for the expression.
    */
-  protected Node m_context;
+  transient protected Node m_context;
 
   /**
    * The node context from where the Location Path is being
    * executed from (i.e. for current() support).
    */
-  protected Node m_currentContextNode;
+  transient protected Node m_currentContextNode;
 
   /**
    * NEEDSDOC Method getCurrentContextNode 

@@ -70,7 +70,7 @@ public class AttributeWalkerOneStep extends AxesWalker
 {
 
   /** NEEDSDOC Field m_attributeList          */
-  NamedNodeMap m_attributeList;
+  transient NamedNodeMap m_attributeList;
 
   /** NEEDSDOC Field m_attrListPos          */
   int m_attrListPos;

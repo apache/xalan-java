@@ -57,6 +57,7 @@
 package org.apache.xpath.axes;
 
 import java.util.Stack;
+import java.util.Vector;
 
 // Xalan imports
 import org.apache.xpath.axes.LocPathIterator;
@@ -87,6 +88,12 @@ public abstract class AxesWalker extends NodeTest
         implements Cloneable, TreeWalker, NodeFilter, SubContextList
 {
 
+  //  public static boolean DEBUG = true;
+  //  public static boolean DEBUG_WAITING = true;
+  //  public static boolean DEBUG_TRAVERSAL = true;
+  //  public static boolean DEBUG_LOCATED = true;
+  //  public static boolean DEBUG_PREDICATECOUNTING = false;
+  
   /** NEEDSDOC Field DEBUG          */
   static final boolean DEBUG = false;
 
@@ -120,16 +127,16 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * NEEDSDOC Method setLocPathIterator 
+   * Set the location path iterator owner for this walker.  Besides 
+   * initialization, this function is called during cloning operations.
    *
-   *
-   * NEEDSDOC @param li
+   * @param li non-null reference to the owning location path iterator.
    */
   public void setLocPathIterator(LocPathIterator li)
   {
     m_lpi = li;
   }
-
+  
   /**
    * Construct an AxesWalker using a LocPathIterator.
    *
@@ -182,7 +189,8 @@ public abstract class AxesWalker extends NodeTest
    */
   public Object clone() throws CloneNotSupportedException
   {
-
+    // Do not access the location path itterator during this operation!
+    
     AxesWalker clone = (AxesWalker) super.clone();
 
     if ((null != this.m_proximityPositions)
@@ -201,7 +209,58 @@ public abstract class AxesWalker extends NodeTest
 
     return clone;
   }
-
+  
+  /**
+   * Do a deep clone of this walker, including next and previous walkers.
+   * If the this AxesWalker is on the clone list, don't clone but 
+   * return the already cloned version.
+   * 
+   * @param cloneOwner non-null reference to the cloned location path 
+   *                   iterator to which this clone will be added.
+   * @param cloneList non-null vector of sources in odd elements, and the 
+   *                  corresponding clones in even vectors.
+   * 
+   * @return non-null clone, which may be a new clone, or may be a clone 
+   *         contained on the cloneList.
+   */
+  AxesWalker cloneDeep(LocPathIterator cloneOwner, Vector cloneList)
+     throws CloneNotSupportedException
+  {
+    AxesWalker clone = findClone(this, cloneList);
+    if(null != clone)
+      return clone;
+    clone = (AxesWalker)this.clone();
+    clone.setLocPathIterator(cloneOwner);
+    cloneList.addElement(this);
+    cloneList.addElement(clone);
+    if(null != m_nextWalker)
+      clone.m_nextWalker = m_nextWalker.cloneDeep(cloneOwner, cloneList);
+    if(null != m_prevWalker)
+      clone.m_prevWalker = m_prevWalker.cloneDeep(cloneOwner, cloneList);
+    return clone;
+  }
+  
+  /**
+   * Find a clone that corresponds to the key argument.
+   * 
+   * @param key The original AxesWalker for which there may be a clone.
+   * @param cloneList non-null vector of sources in odd elements, and the 
+   *                  corresponding clones in even vectors.
+   * 
+   * @return A clone that corresponds to the key, or null if key not found.
+   */
+  static AxesWalker findClone(AxesWalker key, Vector cloneList)
+  {
+    // First, look for clone on list.
+    int n = cloneList.size();
+    for (int i = 0; i < n; i+=2) 
+    {
+      if(key == cloneList.elementAt(i))
+        return (AxesWalker)cloneList.elementAt(i+1);
+    }
+    return null;    
+  }
+  
   /**
    * The step type of the XPath step. Does not change after the constructor.
    */
@@ -555,7 +614,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    *  The root node of the TreeWalker, as specified when it was created.
    */
-  Node m_root;
+  transient Node m_root;
 
   /**
    * The root node of the TreeWalker, as specified in setRoot(Node root).
@@ -606,7 +665,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    *  The node at which the TreeWalker is currently positioned.
    */
-  Node m_currentNode;
+  transient Node m_currentNode;
 
   /**
    * The node at which the TreeWalker is currently positioned.
@@ -1397,7 +1456,7 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /** NEEDSDOC Field m_prevReturned          */
-  Node m_prevReturned;
+  transient Node m_prevReturned;
 
   /** NEEDSDOC Field m_didDumpAll          */
   static boolean m_didDumpAll = false;
