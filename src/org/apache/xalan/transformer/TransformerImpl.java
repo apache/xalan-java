@@ -69,6 +69,7 @@ import java.io.UnsupportedEncodingException;
 
 // Xalan imports
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.stree.DocumentImpl;
 import org.apache.xalan.templates.Constants;
@@ -451,8 +452,17 @@ public class TransformerImpl extends Transformer
     {
       DOMSource dsource = (DOMSource)source;
       m_urlOfSource = dsource.getSystemId();
-      this.transformNode(dsource.getNode());
-      return;
+      Node dNode = dsource.getNode();
+      if (null != dNode)
+      {  
+        this.transformNode(dsource.getNode());
+        return;
+      }
+      else
+      {
+        String messageStr = XSLMessages.createMessage(XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
+        throw new IllegalArgumentException(messageStr);
+      } 
     }
     InputSource xmlSource = SAXSource.sourceToInputSource(source);
     if(null == xmlSource)
