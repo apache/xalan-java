@@ -702,11 +702,12 @@ public class TransformerImpl extends Transformer
   public void setOutputProperty(String name, String value)
     throws IllegalArgumentException
   {
+    if(null == m_outputFormat)
+      m_outputFormat = new OutputProperties(Method.XML);
+
     if(!m_outputFormat.isLegalPropertyKey(name))
       throw new IllegalArgumentException("output property not recognized: "+name);
     
-    if(null == m_outputFormat)
-      m_outputFormat = new OutputProperties(Method.XML);
     m_outputFormat.setProperty(name, value);
   }
   
@@ -1090,6 +1091,7 @@ public class TransformerImpl extends Transformer
       {
         m_resultTreeHandler.endDocument();
       }
+      this.reset();
     }
     catch (Exception se)
     {
