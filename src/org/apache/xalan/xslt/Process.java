@@ -124,13 +124,32 @@ public class Process
   protected static void printArgOptions(ResourceBundle resbundle)
   {
     System.out.println(resbundle.getString("xslProc_option"));  //"xslproc options: ");
-    System.out.println(resbundle.getString("optionIN"));  //"    -IN inputXMLURL");
+    System.out.println("\n\t\t\t" + resbundle.getString("xslProc_common_options") + "\n");
     System.out.println(resbundle.getString("optionXSLTC"));  //"    [-XSLTC (use XSLTC for transformation)]
+    System.out.println(resbundle.getString("optionIN"));  //"    [-IN inputXMLURL]");
     System.out.println(resbundle.getString("optionXSL"));  //"   [-XSL XSLTransformationURL]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
     System.out.println(resbundle.getString("optionV"));  //"   [-V (Version info)]");
+
+    // System.out.println(resbundle.getString("optionVALIDATE")); //"   [-VALIDATE (Set whether validation occurs.  Validation is off by default.)]");
+    System.out.println(resbundle.getString("optionEDUMP"));  //"   [-EDUMP {optional filename} (Do stackdump on error.)]");
+    System.out.println(resbundle.getString("optionXML"));  //"   [-XML (Use XML formatter and add XML header.)]");
+    System.out.println(resbundle.getString("optionTEXT"));  //"   [-TEXT (Use simple Text formatter.)]");
+    System.out.println(resbundle.getString("optionHTML"));  //"   [-HTML (Use HTML formatter.)]");
+    System.out.println(resbundle.getString("optionPARAM"));  //"   [-PARAM name expression (Set a stylesheet parameter)]");
+    
+    System.out.println(resbundle.getString("optionMEDIA"));
+    System.out.println(resbundle.getString("optionFLAVOR"));
+    System.out.println(resbundle.getString("optionDIAG"));
+    System.out.println(resbundle.getString("optionURIRESOLVER"));  //"   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]");    
+    System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
+    waitForReturnKey(resbundle);
+    System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
+    
+    System.out.println("\n\t\t\t" + resbundle.getString("xslProc_xalan_options") + "\n");
+    
     System.out.println(resbundle.getString("optionQC"));  //"   [-QC (Quiet Pattern Conflicts Warnings)]");
 
     // System.out.println(resbundle.getString("optionQ"));  //"   [-Q  (Quiet Mode)]"); // sc 28-Feb-01 commented out
@@ -139,24 +158,20 @@ public class Process
     System.out.println(resbundle.getString("optionTS"));  //"   [-TS (Trace each selection event.)]");
     System.out.println(resbundle.getString("optionTTC"));  //"   [-TTC (Trace the template children as they are being processed.)]");
     System.out.println(resbundle.getString("optionTCLASS"));  //"   [-TCLASS (TraceListener class for trace extensions.)]");
-
-    // System.out.println(resbundle.getString("optionVALIDATE")); //"   [-VALIDATE (Set whether validation occurs.  Validation is off by default.)]");
-    System.out.println(resbundle.getString("optionEDUMP"));  //"   [-EDUMP {optional filename} (Do stackdump on error.)]");
-    System.out.println(resbundle.getString("optionXML"));  //"   [-XML (Use XML formatter and add XML header.)]");
-    System.out.println(resbundle.getString("optionTEXT"));  //"   [-TEXT (Use simple Text formatter.)]");
-    System.out.println(resbundle.getString("optionHTML"));  //"   [-HTML (Use HTML formatter.)]");
-    System.out.println(resbundle.getString("optionPARAM"));  //"   [-PARAM name expression (Set a stylesheet parameter)]");
     System.out.println(resbundle.getString("optionLINENUMBERS")); //"   [-L use line numbers]"
-    
-    System.out.println(resbundle.getString("optionMEDIA"));
-    System.out.println(resbundle.getString("optionFLAVOR"));
-    System.out.println(resbundle.getString("optionDIAG"));
-    System.out.println(resbundle.getString("optionURIRESOLVER"));  //"   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]");
-    System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
-    System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
     System.out.println(resbundle.getString("optionINCREMENTAL"));
     System.out.println(resbundle.getString("optionNOOPTIMIMIZE"));
     System.out.println(resbundle.getString("optionRL"));
+        
+    System.out.println("\n\t\t\t" + resbundle.getString("xslProc_xsltc_options") + "\n");
+    System.out.println(resbundle.getString("optionXO"));
+    System.out.println(resbundle.getString("optionXD"));
+    waitForReturnKey(resbundle);    
+    System.out.println(resbundle.getString("optionXJ"));
+    System.out.println(resbundle.getString("optionXP"));
+    System.out.println(resbundle.getString("optionXN"));
+    System.out.println(resbundle.getString("optionXX"));
+    System.out.println(resbundle.getString("optionXT"));
   }
   
   /**
@@ -333,7 +348,7 @@ public class Process
         }
         else if ("-IN".equalsIgnoreCase(argv[i]))
         {
-          if (i + 1 < argv.length)
+          if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
             inFileName = argv[++i];
           else
             System.err.println(
@@ -353,7 +368,7 @@ public class Process
         }
         else if ("-OUT".equalsIgnoreCase(argv[i]))
         {
-          if (i + 1 < argv.length)
+          if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
             outFileName = argv[++i];
           else
             System.err.println(
@@ -363,7 +378,7 @@ public class Process
         }
         else if ("-XSL".equalsIgnoreCase(argv[i]))
         {
-          if (i + 1 < argv.length)
+          if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
             xslFileName = argv[++i];
           else
             System.err.println(
@@ -578,17 +593,144 @@ public class Process
           }
           else
           {
-            if (i + 1 < argv.length)
+            if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
              i++;
              
             printInvalidXSLTCOption("-RL");
           }
         }
-
+        // Generate the translet class and optionally specify the name
+        // of the translet class.
+        else if ("-XO".equalsIgnoreCase(argv[i]))
+        {
+          if (useXSLTC)
+          {
+            if (i + 1 < argv.length && argv[i+1].charAt(0) != '-')
+            {
+              tfactory.setAttribute("generate-translet", "true");
+              tfactory.setAttribute("translet-name", argv[++i]);
+            }
+            else
+              tfactory.setAttribute("generate-translet", "true");
+          }
+          else
+          {
+            if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
+             i++;
+            printInvalidXalanOption("-XO");
+          }
+        }
+        // Specify the destination directory for the translet classes.
+        else if ("-XD".equalsIgnoreCase(argv[i]))
+        {
+          if (useXSLTC)
+          {
+            if (i + 1 < argv.length && argv[i+1].charAt(0) != '-')
+              tfactory.setAttribute("destination-directory", argv[++i]);
+            else
+              System.err.println(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                  new Object[]{ "-XD" }));  //"Missing argument for);
+            
+          }          
+          else
+          {
+            if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
+             i++;
+             
+            printInvalidXalanOption("-XD");
+          }
+        }
+        // Specify the jar file name which the translet classes are packaged into.
+        else if ("-XJ".equalsIgnoreCase(argv[i]))
+        {
+          if (useXSLTC)
+          {
+            if (i + 1 < argv.length && argv[i+1].charAt(0) != '-')
+            {
+              tfactory.setAttribute("generate-translet", "true");
+              tfactory.setAttribute("jar-name", argv[++i]);
+            }
+            else
+              System.err.println(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                  new Object[]{ "-XJ" }));  //"Missing argument for);
+          }                    
+          else
+          {
+            if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
+             i++;
+             
+            printInvalidXalanOption("-XJ");
+          }
+        
+        }
+        // Specify the package name prefix for the generated translet classes.
+        else if ("-XP".equalsIgnoreCase(argv[i]))
+        {
+          if (useXSLTC)
+          {
+            if (i + 1 < argv.length && argv[i+1].charAt(0) != '-')
+              tfactory.setAttribute("package-name", argv[++i]);
+            else
+              System.err.println(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                  new Object[]{ "-XP" }));  //"Missing argument for);
+          }                              
+          else
+          {
+            if (i + 1 < argv.length && argv[i + 1].charAt(0) != '-')
+             i++;
+             
+            printInvalidXalanOption("-XP");
+          }
+        
+        }
+        // Enable template inlining.
+        else if ("-XN".equalsIgnoreCase(argv[i]))
+        {
+          if (useXSLTC)
+          {
+            tfactory.setAttribute("enable-inlining", "true");
+          }                                        
+          else
+            printInvalidXalanOption("-XN");        
+        }
+        // Turns on additional debugging message output
+        else if ("-XX".equalsIgnoreCase(argv[i]))
+        {
+          if (useXSLTC)
+          {
+            tfactory.setAttribute("debug", "true");
+          }                                        
+          else
+            printInvalidXalanOption("-XX");        
+        }
+        // Create the Transformer from the translet if the translet class is newer
+        // than the stylesheet.
+        else if ("-XT".equalsIgnoreCase(argv[i]))
+        {
+          if (useXSLTC)
+          {
+            tfactory.setAttribute("auto-translet", "true");
+          }                                        
+          else
+            printInvalidXalanOption("-XT");        
+        }
         else
           System.err.println(
             XSLMessages.createMessage(
               XSLTErrorResources.ER_INVALID_OPTION, new Object[]{ argv[i] }));  //"Invalid argument:);
+      }
+      
+      // Print usage instructions if no xml and xsl file is specified in the command line
+      if (inFileName == null && xslFileName == null)
+      {
+        System.err.println(resbundle.getString("xslProc_no_input"));
+        doExit(-1);
       }
 
       // Note that there are usage cases for calling us without a -IN arg
@@ -688,9 +830,9 @@ public class Process
             transformer.setOutputProperty(OutputKeys.METHOD, outputType);
           }
 
-          if (transformer instanceof TransformerImpl)
+          if (transformer instanceof org.apache.xalan.transformer.TransformerImpl)
           {
-            TransformerImpl impl = ((TransformerImpl) transformer);
+            org.apache.xalan.transformer.TransformerImpl impl = (org.apache.xalan.transformer.TransformerImpl)transformer;
             TraceManager tm = impl.getTraceManager();
 
             if (null != tracer)
@@ -917,6 +1059,19 @@ public class Process
               XSLTErrorResources.ER_NOT_SUCCESSFUL, null));  //"XSL Process was not successful.");
           doExit(-1);
         }
+        
+	// close output streams
+	if (null != outFileName && strResult!=null)
+	{
+   	  java.io.OutputStream out = strResult.getOutputStream();
+   	  java.io.Writer writer = strResult.getWriter();
+   	  try
+   	  {
+      	    if (out != null) out.close();
+      	    if (writer != null) writer.close();
+   	  }
+   	  catch(java.io.IOException ie) {}
+	}        
 
         long stop = System.currentTimeMillis();
         long millisecondsDuration = stop - start;
@@ -993,10 +1148,37 @@ public class Process
   }
   
   /**
+   * Wait for a return key to continue
+   * 
+   * @param resbundle The resource bundle
+   */
+  private static void waitForReturnKey(ResourceBundle resbundle)
+  {
+    System.out.println(resbundle.getString("xslProc_return_to_continue"));
+    try
+    {
+      while (System.in.read() != '\n');
+    }
+    catch (java.io.IOException e) { }  
+  }
+  
+  /**
    * Print a message if an option cannot be used with -XSLTC.
+   *
+   * @param option The option String
    */
   private static void printInvalidXSLTCOption(String option)
   {
-    System.err.println(XSLMessages.createMessage("invalid_xsltc_option", new Object[]{option}));
+    System.err.println(XSLMessages.createMessage("xslProc_invalid_xsltc_option", new Object[]{option}));
+  }
+  
+  /**
+   * Print a message if an option can only be used with -XSLTC.
+   *
+   * @param option The option String
+   */
+  private static void printInvalidXalanOption(String option)
+  {
+    System.err.println(XSLMessages.createMessage("xslProc_invalid_xalan_option", new Object[]{option}));
   }
 }
