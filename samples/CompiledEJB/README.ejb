@@ -12,7 +12,7 @@ an Enterprise Java Bean (EJB) and exported through a servlet.
 This sample code demonstrates how that can be implemented.
 
 The CompiledServlet and CompiledBrazil sample code
-demonstrates other aproaches to providing XSL transformations
+demonstrate other approaches to providing XSL transformations
 as a web service.
 
 ------------------------------------------------------------
@@ -42,7 +42,7 @@ HOW TO INVOKE TRANSLETS FROM AN ENTERPRISE JAVA BEAN
     }
 
  o) Create the EJB's home interface, which your servlet
-    will use to instanciate the remote interface:
+    will use to instantiate the remote interface:
 
     public interface TransformHome extends EJBHome {
         TransformRemote create()
