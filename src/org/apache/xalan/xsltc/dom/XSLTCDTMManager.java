@@ -94,8 +94,8 @@ import org.xml.sax.ext.LexicalHandler;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 /**
  * The default implementation for the DTMManager.
@@ -170,7 +170,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
 
     if (classname == null)
     {
-      throw new DTMConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
+      throw new DTMConfigurationException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
     }
 
     DTMManager factoryImpl;
@@ -520,7 +520,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
 
         // It should have been handled by a derived class or the caller
         // made a mistake.
-        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{source})); //"Not supported: " + source);
+        throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NOT_SUPPORTED, new Object[]{source})); //"Not supported: " + source);
       }
     }
   }  

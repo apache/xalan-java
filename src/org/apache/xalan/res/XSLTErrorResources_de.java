@@ -83,7 +83,7 @@ public class XSLTErrorResources_de extends XSLTErrorResources
 {
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 253;
+  public static final int MAX_CODE = 201;
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 29;
@@ -652,12 +652,6 @@ public class XSLTErrorResources_de extends XSLTErrorResources
   {
     ER_SAX_EXCEPTION, "SAX-Ausnahme"},
 
-  /** ER_FUNCTION_NOT_SUPPORTED          */
-//  public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
-
-  {
-    ER_FUNCTION_NOT_SUPPORTED, "Funktion nicht unterst\u00fctzt!"},
-
   /** ER_XSLT_ERROR          */
 //  public static final int ER_XSLT_ERROR = 81;
 
@@ -891,13 +885,6 @@ public class XSLTErrorResources_de extends XSLTErrorResources
   {
     ER_SOURCE_CANNOT_BE_NULL,
 			"InputSource kann nicht Null sein"},
-  
-  /** Can't overwrite cause         */
- // public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
-
-  {
-    ER_CANNOT_OVERWRITE_CAUSE,
-			"Ursache f\u00fcr nicht m\u00f6gliches \u00dcberschreiben"},
   
   /** Could not initialize BSF Manager        */
  // public static final int ER_CANNOT_INIT_BSFMGR = 116;
@@ -1181,280 +1168,19 @@ public class XSLTErrorResources_de extends XSLTErrorResources
     ER_NO_STYLESHEET_PI,
          "Kein xml-Stylesheet PI gefunden in: {0}"},
   
-   /**  No default implementation found */
-  //public static final int ER_NO_DEFAULT_IMPL = 156;
-
-  {
-    ER_NO_DEFAULT_IMPL,
-         "Keine Standardimplementierung gefunden"},
-  
-   /**  ChunkedIntArray({0}) not currently supported */
-  //public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
-
-  {
-    ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-       "ChunkedIntArray({0}) zurzeit nicht unterst\u00fctzt"},
-  
-   /**  Offset bigger than slot */
-  //public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
-
-  {
-    ER_OFFSET_BIGGER_THAN_SLOT,
-       "Offset gr\u00f6\u00dfer als Slot"},
-  
-   /**  Coroutine not available, id= */
-  //public static final int ER_COROUTINE_NOT_AVAIL = 159;
-
-  {
-    ER_COROUTINE_NOT_AVAIL,
-       "Coroutine nicht verf\u00fcgbar, ID={0}"},
-  
-   /**  CoroutineManager recieved co_exit() request */
-  //public static final int ER_COROUTINE_CO_EXIT = 160;
-
-  {
-    ER_COROUTINE_CO_EXIT,
-       "CoroutineManager empfing Anforderung co_exit()"},
-  
-   /**  co_joinCoroutineSet() failed */
-  //public static final int ER_COJOINROUTINESET_FAILED = 161;
-
-  {
-    ER_COJOINROUTINESET_FAILED,
-       "co_joinCoroutineSet() fehlgeschlagen"},
-  
-   /**  Coroutine parameter error () */
-  //public static final int ER_COROUTINE_PARAM = 162;
-
-  {
-    ER_COROUTINE_PARAM,
-       "Parameterfehler in Coroutine ({0})"},
-  
-   /**  UNEXPECTED: Parser doTerminate answers  */
-  //public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
-
-  {
-    ER_PARSER_DOTERMINATE_ANSWERS,
-       "\nUNEXPECTED: Parser doTerminate antwortet {0}"},
-  
-   /**  parse may not be called while parsing */
-  //public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
-
-  {
-    ER_NO_PARSE_CALL_WHILE_PARSING,
-       "parse darf w\u00e4hrend des Parsens nicht aufgerufen werden"},
-  
-   /**  Error: typed iterator for axis  {0} not implemented  */
-  //public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
-
-  {
-    ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Fehler: Typisierter Iterator f\u00fcr Achse {0} nicht implementiert"},
-  
-   /**  Error: iterator for axis {0} not implemented  */
-  //public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
-
-  {
-    ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Fehler: Iterator f\u00fcr Achse {0} nicht implementiert"},
-  
-   /**  Iterator clone not supported  */
-  //public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
-
-  {
-    ER_ITERATOR_CLONE_NOT_SUPPORTED,
-       "Iterator-Klone nicht unterst\u00fctzt"},
-  
-   /**  Unknown axis traversal type  */
-  //public static final int ER_UNKNOWN_AXIS_TYPE = 168;
-
-  {
-    ER_UNKNOWN_AXIS_TYPE,
-       "Unbekannter Achsen-Traversaltyp: {0}"},
-  
-   /**  Axis traverser not supported  */
-  //public static final int ER_AXIS_NOT_SUPPORTED = 169;
-
-  {
-    ER_AXIS_NOT_SUPPORTED,
-       "Achsen-Traverser nicht unterst\u00fctzt: {0}"},
-  
-   /**  No more DTM IDs are available  */
-  //public static final int ER_NO_DTMIDS_AVAIL = 170;
-
-  {
-    ER_NO_DTMIDS_AVAIL,
-       "Keine weiteren DTM-IDs verf\u00fcgbar"},
-  
    /**  Not supported  */
   //public static final int ER_NOT_SUPPORTED = 171;
 
   {
     ER_NOT_SUPPORTED,
        "Nicht unterst\u00fctzt: {0}"},
-  
-   /**  node must be non-null for getDTMHandleFromNode  */
-  //public static final int ER_NODE_NON_NULL = 172;
-
-  {
-    ER_NODE_NON_NULL,
-       "Knoten darf f\u00fcr getDTMHandleFromNode nicht Null sein"},
-  
-   /**  Could not resolve the node to a handle  */
-  //public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
-
-  {
-    ER_COULD_NOT_RESOLVE_NODE,
-       "Der Knoten zu einem Handle konnte nicht aufgel\u00f6st werden"},
-  
-   /**  startParse may not be called while parsing */
-  //public static final int ER_STARTPARSE_WHILE_PARSING = 174;
-
-  {
-    ER_STARTPARSE_WHILE_PARSING,
-       "startParse darf beim Parsen nicht aufgerufen werden"},
-  
-   /**  startParse needs a non-null SAXParser  */
-  //public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
-
-  {
-    ER_STARTPARSE_NEEDS_SAXPARSER,
-       "startParse ben\u00f6tigt einen SAXParser, der nicht Null ist"},
-  
-   /**  could not initialize parser with */
-  //public static final int ER_COULD_NOT_INIT_PARSER = 176;
-
-  {
-    ER_COULD_NOT_INIT_PARSER,
-       "Parser konnte nicht initialisiert werden"},
-  
+    
    /**  Value for property {0} should be a Boolean instance  */
   //public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
 
   {
     ER_PROPERTY_VALUE_BOOLEAN,
        "Wert f\u00fcr Eigenschaft {0} sollte eine Boolesche Instanz sein"},
-  
-   /**  exception creating new instance for pool  */
-  //public static final int ER_EXCEPTION_CREATING_POOL = 178;
-
-  {
-    ER_EXCEPTION_CREATING_POOL,
-       "Ausnahme, die neue Instanz f\u00fcr Pool erstellt"},
-  
-   /**  Path contains invalid escape sequence  */
-  //public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
-
-  {
-    ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-       "Pfad enth\u00e4lt ung\u00fcltige Escape-Sequenz"},
-  
-   /**  Scheme is required!  */
-  //public static final int ER_SCHEME_REQUIRED = 180;
-
-  {
-    ER_SCHEME_REQUIRED,
-       "Schema ist erforderlich!"},
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_IN_URI = 181;
-
-  {
-    ER_NO_SCHEME_IN_URI,
-       "Kein Schema gefunden in URI: {0}"},
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_INURI = 182;
-
-  {
-    ER_NO_SCHEME_INURI,
-       "Kein Schema gefunden in URI"},
-  
-   /**  Path contains invalid character:   */
-  //public static final int ER_PATH_INVALID_CHAR = 183;
-
-  {
-    ER_PATH_INVALID_CHAR,
-       "Pfad enth\u00e4lt ung\u00fcltiges Zeichen: {0}"},
-  
-   /**  Cannot set scheme from null string  */
-  //public static final int ER_SCHEME_FROM_NULL_STRING = 184;
-
-  {
-    ER_SCHEME_FROM_NULL_STRING,
-       "Schema kann ausgehend von Null-Zeichenkette nicht gesetzt werden"},
-  
-   /**  The scheme is not conformant. */
-  //public static final int ER_SCHEME_NOT_CONFORMANT = 185;
-
-  {
-    ER_SCHEME_NOT_CONFORMANT,
-       "Schema ist nicht konform."},
-  
-   /**  Host is not a well formed address  */
-  //public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
-
-  {
-    ER_HOST_ADDRESS_NOT_WELLFORMED,
-       "Hostadresse nicht korrekt gebildet"},
-  
-   /**  Port cannot be set when host is null  */
-  //public static final int ER_PORT_WHEN_HOST_NULL = 187;
-
-  {
-    ER_PORT_WHEN_HOST_NULL,
-       "Port kann nicht gesetzt werden, wenn Host Null ist"},
-  
-   /**  Invalid port number  */
-  //public static final int ER_INVALID_PORT = 188;
-
-  {
-    ER_INVALID_PORT,
-       "Ung\u00fcltige Port-Nummer"},
-  
-   /**  Fragment can only be set for a generic URI  */
-  //public static final int ER_FRAG_FOR_GENERIC_URI = 189;
-
-  {
-    ER_FRAG_FOR_GENERIC_URI,
-       "Fragment kann nur f\u00fcr einen generischen URI gesetzt werden"},
-  
-   /**  Fragment cannot be set when path is null  */
-  //public static final int ER_FRAG_WHEN_PATH_NULL = 190;
-
-  {
-    ER_FRAG_WHEN_PATH_NULL,
-       "Fragment kann nicht gesetzt werden, wenn der Pfad Null ist"},
-  
-   /**  Fragment contains invalid character  */
-  //public static final int ER_FRAG_INVALID_CHAR = 191;
-
-  {
-    ER_FRAG_INVALID_CHAR,
-       "Fragment enth\u00e4lt ung\u00fcltiges Zeichen"},
-  
- 
-  
-   /** Parser is already in use  */
-  //public static final int ER_PARSER_IN_USE = 192;
-
-  {
-    ER_PARSER_IN_USE,
-        "Parser wird bereits verwendet"},
-  
-   /** Parser is already in use  */
-  //public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
-
-  {
-    ER_CANNOT_CHANGE_WHILE_PARSING,
-        "{0} {1} kann beim Parsen nicht ge\u00e4ndert werden"},
-  
-   /** Self-causation not permitted  */
-  //public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
-
-  {
-    ER_SELF_CAUSATION_NOT_PERMITTED,
-        "Selbst-Kausalit\u00e4t nicht erlaubt"},
   
    /* This key/message changed ,NEED ER_COULD_NOT_FIND_EXTERN_SCRIPT: Pending,Ramesh */
    /** src attribute not yet supported for  */
@@ -1477,42 +1203,7 @@ public class XSLTErrorResources_de extends XSLTErrorResources
   {
     ER_OUTPUT_PROPERTY_NOT_RECOGNIZED,
         "Ausgabe-Eigenschaft nicht erkannt: {0}"},
-  
-   /** Userinfo may not be specified if host is not specified   */
-  //public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
-
-  {
-    ER_NO_USERINFO_IF_NO_HOST,
-        "Userinfo kann nicht angegeben werden, wenn Host nicht angegeben ist"},
-  
-   /** Port may not be specified if host is not specified   */
-  //public static final int ER_NO_PORT_IF_NO_HOST = 199;
-
-  {
-    ER_NO_PORT_IF_NO_HOST,
-        "Port kann nicht angegeben werden, wenn Host nicht angegeben ist"},
-  
-   /** Query string cannot be specified in path and query string   */
-  //public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
-
-  {
-    ER_NO_QUERY_STRING_IN_PATH,
-        "Abfragezeichenkette kann nicht sowohl im Pfad als auch in der Abfragezeichenkette angegeben werden"},
-  
-   /** Fragment cannot be specified in both the path and fragment   */
-  //public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
-
-  {
-    ER_NO_FRAGMENT_STRING_IN_PATH,
-        "Fragment kann nicht sowohl im Pfad als auch im Fragment angegeben werden"},
-  
-   /** Cannot initialize URI with empty parameters   */
-  //public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
-
-  {
-    ER_CANNOT_INIT_URI_EMPTY_PARMS,
-        "URI kann nicht mit leeren Parametern initialisiert werden"},
-  
+    
    /** Failed creating ElemLiteralResult instance   */
   //public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
 
@@ -1567,13 +1258,6 @@ public class XSLTErrorResources_de extends XSLTErrorResources
     ER_ATTR_NOT_ALLOWED,
         "\"{0}\" Attribut ist nicht erlaubt f\u00fcr Element {1}!"},
   
-  /**  Method not yet supported    */
-  //public static final int ER_METHOD_NOT_SUPPORTED = 210;
-
-  {
-    ER_METHOD_NOT_SUPPORTED,
-        "Methode noch nicht unterst\u00fctzt "},
- 
   /**  Bad value    */
   //public static final int ER_BAD_VALUE = 211;
 
@@ -1595,21 +1279,7 @@ public class XSLTErrorResources_de extends XSLTErrorResources
     ER_ATTRIB_VALUE_NOT_RECOGNIZED,
      "{0} Attributwert nicht erkannt "},
 
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 214;
-
-  {
-    ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
-     "IncrementalSAXSource_Filter kann zurzeit nicht neu gestartet werden"},
-  
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
-
-  {
-    ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-     "XMLReader nicht vor startParse-Anforderung"},
-  
-    /** Attempting to generate a namespace prefix with a null URI   */
+  /** Attempting to generate a namespace prefix with a null URI   */
   //public static final int ER_NULL_URI_NAMESPACE = 216;
 
   {
@@ -1748,18 +1418,6 @@ public class XSLTErrorResources_de extends XSLTErrorResources
     ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR,
      "Programmierannahme in RundundentExprEliminator: {0}"},
 
-// Axis traverser not supported: {0}
-  //public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
-  {
-    ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-     "Achsen-Traverser nicht unterst\u00fctzt: {0}"},
-
-// ListingErrorHandler created with null PrintWriter!
-  //public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
-  {
-    ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
-     "ListingErrorHandler wurde mit Null-PrintWriter erstellt!"},
-
   // {0}is not allowed in this position in the stylesheet!
   //public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
   {
@@ -1779,17 +1437,6 @@ public class XSLTErrorResources_de extends XSLTErrorResources
   {
     INVALID_TCHAR,
      "Ung\u00fcltiger Wert: {1} wurde f\u00fcr das CHAR-Attribut {0} verwendet. Ein Attribut vom Typ CHAR darf nur ein Zeichen aufweisen!"},
-
-  //public static final int ER_SYSTEMID_UNKNOWN = 240;
-  {
-    ER_SYSTEMID_UNKNOWN,
-     "Unbekannte SystemId"},
-
-  // Location of error unknown
-  //public static final int ER_LOCATION_UNKNOWN = 241;
-  {
-    ER_LOCATION_UNKNOWN,
-     "Fehler befindet sich an unbekannter Stelle"},
 
     // Note to translators:  The following message is used if the value of
     // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of

@@ -71,6 +71,7 @@ import org.w3c.dom.Node;
 import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.DefaultErrorHandler;
+import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.apache.xalan.transformer.TrAXFilter;
@@ -213,7 +214,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     try
     {
       TemplatesHandler builder = newTemplatesHandler();
-      TreeWalker walker = new TreeWalker(builder, new org.apache.xpath.DOM2Helper(), builder.getSystemId());
+      TreeWalker walker = new TreeWalker(builder, new org.apache.xml.utils.DOM2Helper(), builder.getSystemId());
 
       walker.traverse(node);
 
@@ -379,7 +380,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     {
       if (null != node)
       {
-        TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper(), baseID);
+        TreeWalker walker = new TreeWalker(handler, new org.apache.xml.utils.DOM2Helper(), baseID);
 
         walker.traverse(node);
       }
@@ -506,11 +507,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
    * 
    * The default is false. Setting it true may significantly
    * increase storage cost per node. 
-   * 
-   * %REVIEW% SAX2DTM is explicitly reaching up to retrieve this global field.
-   * We should instead have an architected pathway for passing hints of this
-   * sort down from TransformerFactory to Transformer to DTMManager to DTM.
-   * */
+   */
   public static boolean m_source_location = false;
   
   /**
@@ -574,11 +571,14 @@ public javax.xml.transform.Templates processFromNode(Node node)
       {
         // Accept a Boolean object..
         m_source_location = ((Boolean)value).booleanValue();
+        // Pass the source location property to SAX2DTM, where it actually gets used.
+        SAX2DTM.setUseSourceLocation(m_source_location);
       }
       else if(value instanceof String)
       {
         // .. or a String object
         m_source_location = (new Boolean((String)value)).booleanValue();
+        SAX2DTM.setUseSourceLocation(m_source_location);
       }
       else
       {

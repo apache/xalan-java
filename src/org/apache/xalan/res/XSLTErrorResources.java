@@ -118,7 +118,7 @@ public class XSLTErrorResources extends ListResourceBundle
  */
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 253;
+  public static final int MAX_CODE = 201;
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 29;
@@ -249,8 +249,6 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL = 
 	 "ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL";
   public static final String ER_SAX_EXCEPTION = "ER_SAX_EXCEPTION";
-  public static final String ER_FUNCTION_NOT_SUPPORTED = 
-	 "ER_FUNCTION_NOT_SUPPORTED";
   public static final String ER_XSLT_ERROR = "ER_XSLT_ERROR";
   public static final String ER_CURRENCY_SIGN_ILLEGAL=
 	 "ER_CURRENCY_SIGN_ILLEGAL";
@@ -306,8 +304,6 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_FILE_CANNOT_BE_NULL = "ER_FILE_CANNOT_BE_NULL";
   public static final String ER_SOURCE_CANNOT_BE_NULL = 
 	 "ER_SOURCE_CANNOT_BE_NULL";
-  public static final String ER_CANNOT_OVERWRITE_CAUSE = 
-	 "ER_CANNOT_OVERWRITE_CAUSE";
   public static final String ER_CANNOT_INIT_BSFMGR = "ER_CANNOT_INIT_BSFMGR";
   public static final String ER_CANNOT_CMPL_EXTENSN = "ER_CANNOT_CMPL_EXTENSN";
   public static final String ER_CANNOT_CREATE_EXTENSN = 
@@ -368,80 +364,15 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_NO_STYLESHEET_IN_MEDIA = 
 	 "ER_NO_STYLESHEET_IN_MEDIA";
   public static final String ER_NO_STYLESHEET_PI = "ER_NO_STYLESHEET_PI";
-  public static final String ER_NO_DEFAULT_IMPL = "ER_NO_DEFAULT_IMPL";
-  public static final String ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 
-	 "ER_CHUNKEDINTARRAY_NOT_SUPPORTED";
-  public static final String ER_OFFSET_BIGGER_THAN_SLOT = 
-	 "ER_OFFSET_BIGGER_THAN_SLOT";
-  public static final String ER_COROUTINE_NOT_AVAIL = "ER_COROUTINE_NOT_AVAIL";
-  public static final String ER_COROUTINE_CO_EXIT = "ER_COROUTINE_CO_EXIT";
-  public static final String ER_COJOINROUTINESET_FAILED = 
-	 "ER_COJOINROUTINESET_FAILED";
-  public static final String ER_COROUTINE_PARAM = "ER_COROUTINE_PARAM";
-  public static final String ER_PARSER_DOTERMINATE_ANSWERS = 
-	 "ER_PARSER_DOTERMINATE_ANSWERS";
-  public static final String ER_NO_PARSE_CALL_WHILE_PARSING = 
-	 "ER_NO_PARSE_CALL_WHILE_PARSING";
-  public static final String ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 
-	 "ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED";
-  public static final String ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 
-	 "ER_ITERATOR_AXIS_NOT_IMPLEMENTED";
-  public static final String ER_ITERATOR_CLONE_NOT_SUPPORTED = 
-	 "ER_ITERATOR_CLONE_NOT_SUPPORTED";
-  public static final String ER_UNKNOWN_AXIS_TYPE = "ER_UNKNOWN_AXIS_TYPE";
-  public static final String ER_AXIS_NOT_SUPPORTED = "ER_AXIS_NOT_SUPPORTED";
-  public static final String ER_NO_DTMIDS_AVAIL = "ER_NO_DTMIDS_AVAIL";
   public static final String ER_NOT_SUPPORTED = "ER_NOT_SUPPORTED";
-  public static final String ER_NODE_NON_NULL = "ER_NODE_NON_NULL";
-  public static final String ER_COULD_NOT_RESOLVE_NODE = 
-	 "ER_COULD_NOT_RESOLVE_NODE";
-  public static final String ER_STARTPARSE_WHILE_PARSING = 
-	 "ER_STARTPARSE_WHILE_PARSING";
-  public static final String ER_STARTPARSE_NEEDS_SAXPARSER = 
-	 "ER_STARTPARSE_NEEDS_SAXPARSER";
-  public static final String ER_COULD_NOT_INIT_PARSER = 
-	 "ER_COULD_NOT_INIT_PARSER";
   public static final String ER_PROPERTY_VALUE_BOOLEAN = 
 	 "ER_PROPERTY_VALUE_BOOLEAN";
-  public static final String ER_EXCEPTION_CREATING_POOL = 
-	 "ER_EXCEPTION_CREATING_POOL";
-  public static final String ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 
-	 "ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE";
-  public static final String ER_SCHEME_REQUIRED = "ER_SCHEME_REQUIRED";
-  public static final String ER_NO_SCHEME_IN_URI = "ER_NO_SCHEME_IN_URI";
-  public static final String ER_NO_SCHEME_INURI = "ER_NO_SCHEME_INURI";
-  public static final String ER_PATH_INVALID_CHAR = "ER_PATH_INVALID_CHAR";
-  public static final String ER_SCHEME_FROM_NULL_STRING = 
-	 "ER_SCHEME_FROM_NULL_STRING";
-  public static final String ER_SCHEME_NOT_CONFORMANT = 
-	 "ER_SCHEME_NOT_CONFORMANT";
-  public static final String ER_HOST_ADDRESS_NOT_WELLFORMED = 
-	 "ER_HOST_ADDRESS_NOT_WELLFORMED";
-  public static final String ER_PORT_WHEN_HOST_NULL = "ER_PORT_WHEN_HOST_NULL";
-  public static final String ER_INVALID_PORT = "ER_INVALID_PORT";
-  public static final String ER_FRAG_FOR_GENERIC_URI ="ER_FRAG_FOR_GENERIC_URI";
-  public static final String ER_FRAG_WHEN_PATH_NULL = "ER_FRAG_WHEN_PATH_NULL";
-  public static final String ER_FRAG_INVALID_CHAR = "ER_FRAG_INVALID_CHAR";
-  public static final String ER_PARSER_IN_USE = "ER_PARSER_IN_USE";
-  public static final String ER_CANNOT_CHANGE_WHILE_PARSING = 
-	 "ER_CANNOT_CHANGE_WHILE_PARSING";
-  public static final String ER_SELF_CAUSATION_NOT_PERMITTED = 
-	 "ER_SELF_CAUSATION_NOT_PERMITTED";
   public static final String ER_COULD_NOT_FIND_EXTERN_SCRIPT = 
 	 "ER_COULD_NOT_FIND_EXTERN_SCRIPT";
   public static final String ER_RESOURCE_COULD_NOT_FIND = 
 	 "ER_RESOURCE_COULD_NOT_FIND";
   public static final String ER_OUTPUT_PROPERTY_NOT_RECOGNIZED = 
 	 "ER_OUTPUT_PROPERTY_NOT_RECOGNIZED";
-  public static final String ER_NO_USERINFO_IF_NO_HOST = 
-	 "ER_NO_USERINFO_IF_NO_HOST";
-  public static final String ER_NO_PORT_IF_NO_HOST = "ER_NO_PORT_IF_NO_HOST";
-  public static final String ER_NO_QUERY_STRING_IN_PATH = 
-	 "ER_NO_QUERY_STRING_IN_PATH";
-  public static final String ER_NO_FRAGMENT_STRING_IN_PATH = 
-	 "ER_NO_FRAGMENT_STRING_IN_PATH";
-  public static final String ER_CANNOT_INIT_URI_EMPTY_PARMS = 
-	 "ER_CANNOT_INIT_URI_EMPTY_PARMS";
   public static final String ER_FAILED_CREATING_ELEMLITRSLT = 
 	 "ER_FAILED_CREATING_ELEMLITRSLT";
   public static final String ER_VALUE_SHOULD_BE_NUMBER = 
@@ -453,16 +384,11 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "ER_FAILED_CREATING_ELEMTMPL";
   public static final String ER_CHARS_NOT_ALLOWED = "ER_CHARS_NOT_ALLOWED";
   public static final String ER_ATTR_NOT_ALLOWED = "ER_ATTR_NOT_ALLOWED";
-  public static final String ER_METHOD_NOT_SUPPORTED ="ER_METHOD_NOT_SUPPORTED";
   public static final String ER_BAD_VALUE = "ER_BAD_VALUE";
   public static final String ER_ATTRIB_VALUE_NOT_FOUND = 
 	 "ER_ATTRIB_VALUE_NOT_FOUND";
   public static final String ER_ATTRIB_VALUE_NOT_RECOGNIZED = 
 	 "ER_ATTRIB_VALUE_NOT_RECOGNIZED";
-  public static final String ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 
-	 "ER_INCRSAXSRCFILTER_NOT_RESTARTABLE";
-  public static final String ER_XMLRDR_NOT_BEFORE_STARTPARSE = 
-	 "ER_XMLRDR_NOT_BEFORE_STARTPARSE";
   public static final String ER_NULL_URI_NAMESPACE = "ER_NULL_URI_NAMESPACE";
   public static final String ER_NUMBER_TOO_BIG = "ER_NUMBER_TOO_BIG";
   public static final String  ER_CANNOT_FIND_SAX1_DRIVER = 
@@ -492,17 +418,11 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "ER_ASSERT_NO_TEMPLATE_PARENT";
   public static final String ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR = 
 	 "ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR";
-  public static final String ER_AXIS_TRAVERSER_NOT_SUPPORTED = 
-	 "ER_AXIS_TRAVERSER_NOT_SUPPORTED";
-  public static final String ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 
-	 "ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER";
   public static final String ER_NOT_ALLOWED_IN_POSITION = 
 	 "ER_NOT_ALLOWED_IN_POSITION";
   public static final String ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 
 	 "ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION";
   public static final String INVALID_TCHAR = "INVALID_TCHAR";
-  public static final String ER_SYSTEMID_UNKNOWN = "ER_SYSTEMID_UNKNOWN";
-  public static final String ER_LOCATION_UNKNOWN = "ER_LOCATION_UNKNOWN";
   public static final String INVALID_QNAME = "INVALID_QNAME";
   public static final String INVALID_ENUM = "INVALID_ENUM";
   public static final String INVALID_NMTOKEN = "INVALID_NMTOKEN";
@@ -1097,8 +1017,8 @@ public class XSLTErrorResources extends ListResourceBundle
   /** ER_FUNCTION_NOT_SUPPORTED          */
 //  public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
 
-    { ER_FUNCTION_NOT_SUPPORTED, 
-     "Function not supported!"},
+    //{ ER_FUNCTION_NOT_SUPPORTED, 
+    // "Function not supported!"},
 
   /** ER_XSLT_ERROR          */
 //  public static final int ER_XSLT_ERROR = 81;
@@ -1307,8 +1227,8 @@ public class XSLTErrorResources extends ListResourceBundle
   /** Can't overwrite cause         */
 //  public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
 
-    { ER_CANNOT_OVERWRITE_CAUSE,
-		"Cannot overwrite cause"},
+    //{ ER_CANNOT_OVERWRITE_CAUSE,
+	//	"Cannot overwrite cause"},
 
   /** Could not initialize BSF Manager        */
 //  public static final int ER_CANNOT_INIT_BSFMGR = 116;
@@ -1554,92 +1474,92 @@ public class XSLTErrorResources extends ListResourceBundle
    /**  No default implementation found */
 //  public static final int ER_NO_DEFAULT_IMPL = 156;
 
-    { ER_NO_DEFAULT_IMPL,
-         "No default implementation found "},
+    //{ ER_NO_DEFAULT_IMPL,
+     //    "No default implementation found "},
 
    /**  ChunkedIntArray({0}) not currently supported */
 //  public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
 
-    { ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-       "ChunkedIntArray({0}) not currently supported"},
+    //{ ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
+     //  "ChunkedIntArray({0}) not currently supported"},
 
    /**  Offset bigger than slot */
 //  public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
 
-    { ER_OFFSET_BIGGER_THAN_SLOT,
-       "Offset bigger than slot"},
+    //{ ER_OFFSET_BIGGER_THAN_SLOT,
+     //  "Offset bigger than slot"},
 
    /**  Coroutine not available, id= */
 //  public static final int ER_COROUTINE_NOT_AVAIL = 159;
 
-    { ER_COROUTINE_NOT_AVAIL,
-       "Coroutine not available, id={0}"},
+    //{ ER_COROUTINE_NOT_AVAIL,
+    //   "Coroutine not available, id={0}"},
 
    /**  CoroutineManager recieved co_exit() request */
 //  public static final int ER_COROUTINE_CO_EXIT = 160;
 
-    { ER_COROUTINE_CO_EXIT,
-       "CoroutineManager received co_exit() request"},
+    //{ ER_COROUTINE_CO_EXIT,
+     //  "CoroutineManager received co_exit() request"},
 
    /**  co_joinCoroutineSet() failed */
 //  public static final int ER_COJOINROUTINESET_FAILED = 161;
 
-    { ER_COJOINROUTINESET_FAILED,
-       "co_joinCoroutineSet() failed"},
+    //{ ER_COJOINROUTINESET_FAILED,
+    //   "co_joinCoroutineSet() failed"},
 
    /**  Coroutine parameter error () */
 //  public static final int ER_COROUTINE_PARAM = 162;
 
-    { ER_COROUTINE_PARAM,
-       "Coroutine parameter error ({0})"},
+    //{ ER_COROUTINE_PARAM,
+    //   "Coroutine parameter error ({0})"},
 
    /**  UNEXPECTED: Parser doTerminate answers  */
 //  public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
 
-    { ER_PARSER_DOTERMINATE_ANSWERS,
-       "\nUNEXPECTED: Parser doTerminate answers {0}"},
+    //{ ER_PARSER_DOTERMINATE_ANSWERS,
+    //   "\nUNEXPECTED: Parser doTerminate answers {0}"},
 
    /**  parse may not be called while parsing */
 //  public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
 
-    { ER_NO_PARSE_CALL_WHILE_PARSING,
-       "parse may not be called while parsing"},
+    //{ ER_NO_PARSE_CALL_WHILE_PARSING,
+    //   "parse may not be called while parsing"},
 
    /**  Error: typed iterator for axis  {0} not implemented  */
 //  public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
 
-    { ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Error: typed iterator for axis  {0} not implemented"},
+    //{ ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
+     //  "Error: typed iterator for axis  {0} not implemented"},
 
    /**  Error: iterator for axis {0} not implemented  */
 //  public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
 
-    { ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Error: iterator for axis {0} not implemented "},
+    //{ ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
+    //   "Error: iterator for axis {0} not implemented "},
 
    /**  Iterator clone not supported  */
 //  public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
 
-    { ER_ITERATOR_CLONE_NOT_SUPPORTED,
-       "Iterator clone not supported"},
+    //{ ER_ITERATOR_CLONE_NOT_SUPPORTED,
+     //  "Iterator clone not supported"},
 
    /**  Unknown axis traversal type  */
 //  public static final int ER_UNKNOWN_AXIS_TYPE = 168;
 
-    { ER_UNKNOWN_AXIS_TYPE,
-       "Unknown axis traversal type: {0}"},
+    //{ ER_UNKNOWN_AXIS_TYPE,
+    //   "Unknown axis traversal type: {0}"},
 
    /**  Axis traverser not supported  */
 //  public static final int ER_AXIS_NOT_SUPPORTED = 169;
 
-    { ER_AXIS_NOT_SUPPORTED,
-       "Axis traverser not supported: {0}"},
+    //{ ER_AXIS_NOT_SUPPORTED,
+    //   "Axis traverser not supported: {0}"},
 
    /**  No more DTM IDs are available  */
 //  public static final int ER_NO_DTMIDS_AVAIL = 170;
 
-    { ER_NO_DTMIDS_AVAIL,
-       "No more DTM IDs are available"},
+    //{ ER_NO_DTMIDS_AVAIL,
+     //  "No more DTM IDs are available"},
 
    /**  Not supported  */
 //  public static final int ER_NOT_SUPPORTED = 171;
@@ -1650,31 +1570,31 @@ public class XSLTErrorResources extends ListResourceBundle
    /**  node must be non-null for getDTMHandleFromNode  */
 //  public static final int ER_NODE_NON_NULL = 172;
 
-    { ER_NODE_NON_NULL,
-       "Node must be non-null for getDTMHandleFromNode"},
+    //{ ER_NODE_NON_NULL,
+    //   "Node must be non-null for getDTMHandleFromNode"},
 
    /**  Could not resolve the node to a handle  */
 //  public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
 
-    { ER_COULD_NOT_RESOLVE_NODE,
-       "Could not resolve the node to a handle"},
+    //{ ER_COULD_NOT_RESOLVE_NODE,
+    //   "Could not resolve the node to a handle"},
 
    /**  startParse may not be called while parsing */
 //  public static final int ER_STARTPARSE_WHILE_PARSING = 174;
 
-    { ER_STARTPARSE_WHILE_PARSING,
-       "startParse may not be called while parsing"},
+    //{ ER_STARTPARSE_WHILE_PARSING,
+     //  "startParse may not be called while parsing"},
 
    /**  startParse needs a non-null SAXParser  */
 //  public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
 
-    { ER_STARTPARSE_NEEDS_SAXPARSER,
-       "startParse needs a non-null SAXParser"},
+    //{ ER_STARTPARSE_NEEDS_SAXPARSER,
+    //   "startParse needs a non-null SAXParser"},
 
    /**  could not initialize parser with */
 //  public static final int ER_COULD_NOT_INIT_PARSER = 176;
-    { ER_COULD_NOT_INIT_PARSER,
-       "could not initialize parser with"},
+    //{ ER_COULD_NOT_INIT_PARSER,
+     //  "could not initialize parser with"},
 
    /**  Value for property {0} should be a Boolean instance  */
 //  public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
@@ -1685,106 +1605,106 @@ public class XSLTErrorResources extends ListResourceBundle
    /**  exception creating new instance for pool  */
 //  public static final int ER_EXCEPTION_CREATING_POOL = 178;
 
-    { ER_EXCEPTION_CREATING_POOL,
-       "exception creating new instance for pool"},
+    //{ ER_EXCEPTION_CREATING_POOL,
+    //   "exception creating new instance for pool"},
 
    /**  Path contains invalid escape sequence  */
 //  public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
 
-    { ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-       "Path contains invalid escape sequence"},
+    //{ ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
+    //   "Path contains invalid escape sequence"},
 
    /**  Scheme is required!  */
 //  public static final int ER_SCHEME_REQUIRED = 180;
 
-    { ER_SCHEME_REQUIRED,
-       "Scheme is required!"},
+    //{ ER_SCHEME_REQUIRED,
+     //  "Scheme is required!"},
 
    /**  No scheme found in URI  */
 //  public static final int ER_NO_SCHEME_IN_URI = 181;
 
-    { ER_NO_SCHEME_IN_URI,
-       "No scheme found in URI: {0}"},
+    //{ ER_NO_SCHEME_IN_URI,
+    //   "No scheme found in URI: {0}"},
 
    /**  No scheme found in URI  */
 //  public static final int ER_NO_SCHEME_INURI = 182;
 
-    { ER_NO_SCHEME_INURI,
-       "No scheme found in URI"},
+    //{ ER_NO_SCHEME_INURI,
+    //   "No scheme found in URI"},
 
    /**  Path contains invalid character:   */
 //  public static final int ER_PATH_INVALID_CHAR = 183;
 
-    { ER_PATH_INVALID_CHAR,
-       "Path contains invalid character: {0}"},
+    //{ ER_PATH_INVALID_CHAR,
+    //   "Path contains invalid character: {0}"},
 
    /**  Cannot set scheme from null string  */
 //  public static final int ER_SCHEME_FROM_NULL_STRING = 184;
 
-    { ER_SCHEME_FROM_NULL_STRING,
-       "Cannot set scheme from null string"},
+    //{ ER_SCHEME_FROM_NULL_STRING,
+    //   "Cannot set scheme from null string"},
 
    /**  The scheme is not conformant. */
 //  public static final int ER_SCHEME_NOT_CONFORMANT = 185;
 
-    { ER_SCHEME_NOT_CONFORMANT,
-       "The scheme is not conformant."},
+    //{ ER_SCHEME_NOT_CONFORMANT,
+    //   "The scheme is not conformant."},
 
    /**  Host is not a well formed address  */
 //  public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
 
-    { ER_HOST_ADDRESS_NOT_WELLFORMED,
-       "Host is not a well formed address"},
+    //{ ER_HOST_ADDRESS_NOT_WELLFORMED,
+    //   "Host is not a well formed address"},
 
    /**  Port cannot be set when host is null  */
 //  public static final int ER_PORT_WHEN_HOST_NULL = 187;
 
-    { ER_PORT_WHEN_HOST_NULL,
-       "Port cannot be set when host is null"},
+    //{ ER_PORT_WHEN_HOST_NULL,
+    //   "Port cannot be set when host is null"},
 
    /**  Invalid port number  */
 //  public static final int ER_INVALID_PORT = 188;
 
-    { ER_INVALID_PORT,
-       "Invalid port number"},
+    //{ ER_INVALID_PORT,
+    //   "Invalid port number"},
 
    /**  Fragment can only be set for a generic URI  */
 //  public static final int ER_FRAG_FOR_GENERIC_URI = 189;
 
-    { ER_FRAG_FOR_GENERIC_URI,
-       "Fragment can only be set for a generic URI"},
+    //{ ER_FRAG_FOR_GENERIC_URI,
+    //   "Fragment can only be set for a generic URI"},
 
    /**  Fragment cannot be set when path is null  */
 //  public static final int ER_FRAG_WHEN_PATH_NULL = 190;
 
-    { ER_FRAG_WHEN_PATH_NULL,
-       "Fragment cannot be set when path is null"},
+    //{ ER_FRAG_WHEN_PATH_NULL,
+    //   "Fragment cannot be set when path is null"},
 
    /**  Fragment contains invalid character  */
 //  public static final int ER_FRAG_INVALID_CHAR = 191;
 
-    { ER_FRAG_INVALID_CHAR,
-       "Fragment contains invalid character"},
+    //{ ER_FRAG_INVALID_CHAR,
+    //   "Fragment contains invalid character"},
 
 
 
    /** Parser is already in use  */
 //  public static final int ER_PARSER_IN_USE = 192;
 
-    { ER_PARSER_IN_USE,
-        "Parser is already in use"},
+    //{ ER_PARSER_IN_USE,
+    //    "Parser is already in use"},
 
    /** Parser is already in use  */
 //  public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
 
-    { ER_CANNOT_CHANGE_WHILE_PARSING,
-        "Cannot change {0} {1} while parsing"},
+    //{ ER_CANNOT_CHANGE_WHILE_PARSING,
+    //    "Cannot change {0} {1} while parsing"},
 
    /** Self-causation not permitted  */
 //  public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
 
-    { ER_SELF_CAUSATION_NOT_PERMITTED,
-        "Self-causation not permitted"},
+    //{ ER_SELF_CAUSATION_NOT_PERMITTED,
+     //   "Self-causation not permitted"},
 
    /** src attribute not yet supported for  */
 //  public static final int ER_COULD_NOT_FIND_EXTERN_SCRIPT = 195;
@@ -1807,32 +1727,32 @@ public class XSLTErrorResources extends ListResourceBundle
    /** Userinfo may not be specified if host is not specified   */
 //  public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
 
-    { ER_NO_USERINFO_IF_NO_HOST,
-        "Userinfo may not be specified if host is not specified"},
+    //{ ER_NO_USERINFO_IF_NO_HOST,
+    //    "Userinfo may not be specified if host is not specified"},
 
    /** Port may not be specified if host is not specified   */
 //  public static final int ER_NO_PORT_IF_NO_HOST = 199;
 
-    { ER_NO_PORT_IF_NO_HOST,
-        "Port may not be specified if host is not specified"},
+    //{ ER_NO_PORT_IF_NO_HOST,
+    //    "Port may not be specified if host is not specified"},
 
    /** Query string cannot be specified in path and query string   */
 //  public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
 
-    { ER_NO_QUERY_STRING_IN_PATH, 
-        "Query string cannot be specified in path and query string"},
+    //{ ER_NO_QUERY_STRING_IN_PATH, 
+    //    "Query string cannot be specified in path and query string"},
 
    /** Fragment cannot be specified in both the path and fragment   */
 //  public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
 
-    { ER_NO_FRAGMENT_STRING_IN_PATH,
-        "Fragment cannot be specified in both the path and fragment"},
+    //{ ER_NO_FRAGMENT_STRING_IN_PATH,
+    //    "Fragment cannot be specified in both the path and fragment"},
 
    /** Cannot initialize URI with empty parameters   */
 //  public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
 
-    { ER_CANNOT_INIT_URI_EMPTY_PARMS, 
-        "Cannot initialize URI with empty parameters"},
+    //{ ER_CANNOT_INIT_URI_EMPTY_PARMS, 
+    //    "Cannot initialize URI with empty parameters"},
 
    /** Failed creating ElemLiteralResult instance   */
 //  public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
@@ -1883,8 +1803,8 @@ public class XSLTErrorResources extends ListResourceBundle
   /**  Method not yet supported    */
 //  public static final int ER_METHOD_NOT_SUPPORTED = 210;
 
-    { ER_METHOD_NOT_SUPPORTED,
-        "Method not yet supported "},
+    //{ ER_METHOD_NOT_SUPPORTED,
+     //   "Method not yet supported "},
 
   /**  Bad value    */
 //  public static final int ER_BAD_VALUE = 211;
@@ -1907,14 +1827,14 @@ public class XSLTErrorResources extends ListResourceBundle
   /** IncrementalSAXSource_Filter not currently restartable   */
 //  public static final int ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 214;
 
-    { ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
-     "IncrementalSAXSource_Filter not currently restartable"},
+    //{ ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
+   //  "IncrementalSAXSource_Filter not currently restartable"},
 
   /** IncrementalSAXSource_Filter not currently restartable   */
 //  public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
 
-    { ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-     "XMLReader not before startParse request"},
+    //{ ER_XMLRDR_NOT_BEFORE_STARTPARSE,
+    // "XMLReader not before startParse request"},
 
   /** Attempting to generate a namespace prefix with a null URI   */
 //  public static final int ER_NULL_URI_NAMESPACE = 216;
@@ -2038,13 +1958,13 @@ public class XSLTErrorResources extends ListResourceBundle
 
 // Axis traverser not supported: {0}
 //  public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
-    { ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-     "Axis traverser not supported: {0}"},
+    //{ ER_AXIS_TRAVERSER_NOT_SUPPORTED,
+    // "Axis traverser not supported: {0}"},
 
 // ListingErrorHandler created with null PrintWriter!
 //  public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
-    { ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
-     "ListingErrorHandler created with null PrintWriter!"},
+    //{ ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
+    // "ListingErrorHandler created with null PrintWriter!"},
 
   // {0}is not allowed in this position in the stylesheet!
 //  public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
@@ -2064,13 +1984,13 @@ public class XSLTErrorResources extends ListResourceBundle
      "Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!"},
 
 //  public static final int ER_SYSTEMID_UNKNOWN = 240;
-    { ER_SYSTEMID_UNKNOWN,
-     "SystemId Unknown"},
+    //{ ER_SYSTEMID_UNKNOWN,
+    // "SystemId Unknown"},
 
   // Location of error unknown
 //  public static final int ER_LOCATION_UNKNOWN = 241;
-    { ER_LOCATION_UNKNOWN,
-     "Location of error unknown"},
+    //{ ER_LOCATION_UNKNOWN,
+    // "Location of error unknown"},
 
     // Note to translators:  The following message is used if the value of
     // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of

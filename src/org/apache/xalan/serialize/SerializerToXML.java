@@ -2560,7 +2560,7 @@ public class SerializerToXML
     try
     {
       TreeWalker walker = new TreeWalker(this,
-                                         new org.apache.xpath.DOM2Helper());
+                                         new org.apache.xml.utils.DOM2Helper());
 
       walker.traverse(node);
     }

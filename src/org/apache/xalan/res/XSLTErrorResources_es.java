@@ -82,7 +82,7 @@ public class XSLTErrorResources_es extends XSLTErrorResources
 {
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 253;          
+  public static final int MAX_CODE = 201;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 29;
@@ -637,12 +637,6 @@ public class XSLTErrorResources_es extends XSLTErrorResources
   {
     ER_SAX_EXCEPTION, "Excepci\u00f3n SAX"},
 
-  /** ER_FUNCTION_NOT_SUPPORTED          */
-  //public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
-
-  {
-    ER_FUNCTION_NOT_SUPPORTED, "Funci\u00f3n no admitida"},
-
   /** ER_XSLT_ERROR          */
   //public static final int ER_XSLT_ERROR = 81;
 
@@ -878,14 +872,7 @@ public class XSLTErrorResources_es extends XSLTErrorResources
   {
     ER_SOURCE_CANNOT_BE_NULL,
 			"InputSource no puede ser nulo"},
-  
-  /** Can't overwrite cause         */
-  //public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
-
-  {
-    ER_CANNOT_OVERWRITE_CAUSE,
-			"No se puede sobrescribir la causa"},
-  
+    
   /** Could not initialize BSF Manager        */
   //public static final int ER_CANNOT_INIT_BSFMGR = 116;
 
@@ -1171,280 +1158,19 @@ public class XSLTErrorResources_es extends XSLTErrorResources
     ER_NO_STYLESHEET_PI,
          "No se ha encontrado xml-stylesheet PI en: {0}"},
   
-   /**  No default implementation found */
-  //public static final int ER_NO_DEFAULT_IMPL = 156;
-
-  {
-    ER_NO_DEFAULT_IMPL,
-         "No se ha encontrado ninguna implementaci\u00f3n predeterminada "},
-  
-   /**  ChunkedIntArray({0}) not currently supported */
-  //public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
-
-  {
-    ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-       "ChunkedIntArray({0}) no se utiliza actualmente"},
-  
-   /**  Offset bigger than slot */
-  //public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
-
-  {
-    ER_OFFSET_BIGGER_THAN_SLOT,
-       "La desviaci\u00f3n es mayor que el intervalo"},
-  
-   /**  Coroutine not available, id= */
-  //public static final int ER_COROUTINE_NOT_AVAIL = 159;
-
-  {
-    ER_COROUTINE_NOT_AVAIL,
-       "Corrutina no disponible, id={0}"},
-  
-   /**  CoroutineManager recieved co_exit() request */
-  //public static final int ER_COROUTINE_CO_EXIT = 160;
-
-  {
-    ER_COROUTINE_CO_EXIT,
-       "CoroutineManager ha recibido una solicitud co_exit()"},
-  
-   /**  co_joinCoroutineSet() failed */
-  //public static final int ER_COJOINROUTINESET_FAILED = 161;
-
-  {
-    ER_COJOINROUTINESET_FAILED,
-       "Fallo co_joinCoroutineSet()"},
-  
-   /**  Coroutine parameter error () */
-  //public static final int ER_COROUTINE_PARAM = 162;
-
-  {
-    ER_COROUTINE_PARAM,
-       "Error de par\u00e1metro de corrutina({0})"},
-  
-   /**  UNEXPECTED: Parser doTerminate answers  */
-  //public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
-
-  {
-    ER_PARSER_DOTERMINATE_ANSWERS,
-       "\nUNEXPECTED: el analizador sint\u00e1ctico doTerminate responde {0}"},
-  
-   /**  parse may not be called while parsing */
-  //public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
-
-  {
-    ER_NO_PARSE_CALL_WHILE_PARSING,
-       "no puede invocarse el analizador sint\u00e1ctico con un an\u00e1lisis sint\u00e1ctico en curso"},
-  
-   /**  Error: typed iterator for axis  {0} not implemented  */
-  //public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
-
-  {
-    ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Error: El iterador introducido para el eje  {0} no est\u00e1 implementado"},
-  
-   /**  Error: iterator for axis {0} not implemented  */
-  //public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
-
-  {
-    ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-       "Error: el iterador para el eje {0} no est\u00e1 implementado "},
-  
-   /**  Iterator clone not supported  */
-  //public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
-
-  {
-    ER_ITERATOR_CLONE_NOT_SUPPORTED,
-       "no se admite clon del iterador"},
-  
-   /**  Unknown axis traversal type  */
-  //public static final int ER_UNKNOWN_AXIS_TYPE = 168;
-
-  {
-    ER_UNKNOWN_AXIS_TYPE,
-       "El tipo de eje transversal es desconocido: {0}"},
-  
-   /**  Axis traverser not supported  */
-  //public static final int ER_AXIS_NOT_SUPPORTED = 169;
-
-  {
-    ER_AXIS_NOT_SUPPORTED,
-       "No se admite traverser de eje: {0}"},
-  
-   /**  No more DTM IDs are available  */
-  //public static final int ER_NO_DTMIDS_AVAIL = 170;
-
-  {
-    ER_NO_DTMIDS_AVAIL,
-       "No hay m\u00e1s Id de DTM disponibles"},
-  
    /**  Not supported  */
   //public static final int ER_NOT_SUPPORTED = 171;
 
   {
     ER_NOT_SUPPORTED,
        "No se admite: {0}"},
-  
-   /**  node must be non-null for getDTMHandleFromNode  */
-  //public static final int ER_NODE_NON_NULL = 172;
-
-  {
-    ER_NODE_NON_NULL,
-       "El nodo no puede ser nulo para getDTMHandleFromNode"},
-  
-   /**  Could not resolve the node to a handle  */
-  //public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
-
-  {
-    ER_COULD_NOT_RESOLVE_NODE,
-       "No se ha podido convertir el nodo en un manejador"},
-  
-   /**  startParse may not be called while parsing */
-  //public static final int ER_STARTPARSE_WHILE_PARSING = 174;
-
-  {
-    ER_STARTPARSE_WHILE_PARSING,
-       "no se puede invocar startParse con un an\u00e1lisis sint\u00e1ctico en curso"},
-  
-   /**  startParse needs a non-null SAXParser  */
-  //public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
-
-  {
-    ER_STARTPARSE_NEEDS_SAXPARSER,
-       "startParse no admite SAXParser nulo"},
-  
-   /**  could not initialize parser with */
-  //public static final int ER_COULD_NOT_INIT_PARSER = 176;
-
-  {
-    ER_COULD_NOT_INIT_PARSER,
-       "No se ha podido inicializar el analizador sint\u00e1ctico con"},
-  
+    
    /**  Value for property {0} should be a Boolean instance  */
   //public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
 
   {
     ER_PROPERTY_VALUE_BOOLEAN,
        "El valor de propiedad {0} debe ser una instancia booleana"},
-  
-   /**  exception creating new instance for pool  */
-  //public static final int ER_EXCEPTION_CREATING_POOL = 178;
-
-  {
-    ER_EXCEPTION_CREATING_POOL,
-       "se ha producido una excepci\u00f3n al crear una nueva instancia para pool"},
-  
-   /**  Path contains invalid escape sequence  */
-  //public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
-
-  {
-    ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-       "El trayecto contiene una secuencia de escape no v\u00e1lida"},
-  
-   /**  Scheme is required.  */
-  //public static final int ER_SCHEME_REQUIRED = 180;
-
-  {
-    ER_SCHEME_REQUIRED,
-       "Se necesita un esquema."},
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_IN_URI = 181;
-
-  {
-    ER_NO_SCHEME_IN_URI,
-       "No se ha encontrado ning\u00fan esquema en el URI: {0}"},
-  
-   /**  No scheme found in URI  */
-  //public static final int ER_NO_SCHEME_INURI = 182;
-
-  {
-    ER_NO_SCHEME_INURI,
-       "No se ha encontrado ning\u00fan esquema en el URI"},
-  
-   /**  Path contains invalid character:   */
-  //public static final int ER_PATH_INVALID_CHAR = 183;
-
-  {
-    ER_PATH_INVALID_CHAR,
-       "El trayecto contiene un car\u00e1cter no v\u00e1lido: {0}"},
-  
-   /**  Cannot set scheme from null string  */
-  //public static final int ER_SCHEME_FROM_NULL_STRING = 184;
-
-  {
-    ER_SCHEME_FROM_NULL_STRING,
-       "No se puede establecer un esquema a partir de una cadena nula"},
-  
-   /**  The scheme is not conformant. */
-  //public static final int ER_SCHEME_NOT_CONFORMANT = 185;
-
-  {
-    ER_SCHEME_NOT_CONFORMANT,
-       "El esquema no es aceptable."},
-  
-   /**  Host is not a well formed address  */
-  //public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
-
-  {
-    ER_HOST_ADDRESS_NOT_WELLFORMED,
-       "El sistema central no es una direcci\u00f3n bien construida"},
-  
-   /**  Port cannot be set when host is null  */
-  //public static final int ER_PORT_WHEN_HOST_NULL = 187;
-
-  {
-    ER_PORT_WHEN_HOST_NULL,
-       "No puede establecerse el puerto cuando el sistema central es nulo"},
-  
-   /**  Invalid port number  */
-  //public static final int ER_INVALID_PORT = 188;
-
-  {
-    ER_INVALID_PORT,
-       "N\u00famero de puerto no v\u00e1lido"},
-  
-   /**  Fragment can only be set for a generic URI  */
-  //public static final int ER_FRAG_FOR_GENERIC_URI = 189;
-
-  {
-    ER_FRAG_FOR_GENERIC_URI,
-       "S\u00f3lo puede establecerse el fragmento para un URI gen\u00e9rico"},
-  
-   /**  Fragment cannot be set when path is null  */
-  //public static final int ER_FRAG_WHEN_PATH_NULL = 190;
-
-  {
-    ER_FRAG_WHEN_PATH_NULL,
-       "No puede establecerse el fragmento cuando el trayecto es nulo"},
-  
-   /**  Fragment contains invalid character  */
-  //public static final int ER_FRAG_INVALID_CHAR = 191;
-
-  {
-    ER_FRAG_INVALID_CHAR,
-       "El fragmento contiene un car\u00e1cter no v\u00e1lido"},
-  
- 
-  
-   /** Parser is already in use  */
-  //public static final int ER_PARSER_IN_USE = 192;
-
-  {
-    ER_PARSER_IN_USE,
-        "El analizador sint\u00e1ctico est\u00e1 en uso"},
-  
-   /** Parser is already in use  */
-  //public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
-
-  {
-    ER_CANNOT_CHANGE_WHILE_PARSING,
-        "No se puede cambiar {0} {1} mientras el an\u00e1lisis sint\u00e1ctico est\u00e1 en curso"},
-  
-   /** Self-causation not permitted  */
-  //public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
-
-  {
-    ER_SELF_CAUSATION_NOT_PERMITTED,
-        "No se permite la autocausalidad"},
   
   /* This key/message changed ,NEED ER_COULD_NOT_FIND_EXTERN_SCRIPT: Pending,Ra
 mesh */
@@ -1468,41 +1194,6 @@ mesh */
   {
     ER_OUTPUT_PROPERTY_NOT_RECOGNIZED,
         "Propiedad de salida no reconocida: {0}"},
-  
-   /** Userinfo may not be specified if host is not specified   */
-  //public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
-
-  {
-    ER_NO_USERINFO_IF_NO_HOST,
-        "La informaci\u00f3n de usuario no puede especificarse si no se especifica el sistema central"},
-  
-   /** Port may not be specified if host is not specified   */
-  //public static final int ER_NO_PORT_IF_NO_HOST = 199;
-
-  {
-    ER_NO_PORT_IF_NO_HOST,
-        "El puerto no puede especificarse si no est\u00e1 especificado el sistema central"},
-  
-   /** Query string cannot be specified in path and query string   */
-  //public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
-
-  {
-    ER_NO_QUERY_STRING_IN_PATH,
-        "La cadena de consulta no puede especificarse a la vez en el trayecto y en la cadena de consulta"},
-  
-   /** Fragment cannot be specified in both the path and fragment   */
-  //public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
-
-  {
-    ER_NO_FRAGMENT_STRING_IN_PATH,
-        "El fragmento no puede especificarse a la vez en el trayecto y en el fragmento"},
-  
-   /** Cannot initialize URI with empty parameters   */
-  //public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
-
-  {
-    ER_CANNOT_INIT_URI_EMPTY_PARMS,
-        "No se puede inicializar el URI con par\u00e1metros vac\u00edos"},
   
    /** Failed creating ElemLiteralResult instance   */
   //public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
@@ -1558,13 +1249,6 @@ mesh */
   {
     ER_ATTR_NOT_ALLOWED,
         "el atributo \"{0}\" no se permite en el elemento {1}."},
-  
-  /**  Method not yet supported    */
-  //public static final int ER_METHOD_NOT_SUPPORTED = 210;
-
-  {
-    ER_METHOD_NOT_SUPPORTED,
-        "M\u00e9todo todav\u00eda no utilizado"},
  
   /**  Bad value    */
   //public static final int ER_BAD_VALUE = 211;
@@ -1587,19 +1271,6 @@ mesh */
     ER_ATTRIB_VALUE_NOT_RECOGNIZED,
      "no se reconoce el valor del atributo {0}"},
 
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 214;
-
-  {
-    ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
-     "IncrementalSAXSource_Filter no puede reiniciarse actualmente"},
-  
-  /** IncrementalSAXSource_Filter not currently restartable   */
-  //public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
-
-  {
-    ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-     "XMLReader no antes de una solicitud startParse"},
   /** Attempting to generate a namespace prefix with a null URI   */
   //public static final int ER_NULL_URI_NAMESPACE = 216;
 
@@ -1739,18 +1410,6 @@ mesh */
     ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR,
      "Confirmaci\u00f3n del programador en RundundentExprEliminator: {0}"},
 
-  // Axis traverser not supported: {0}
-  //public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
-  {
-    ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-     "No se admite el eje transversal: {0}"},
-
-  // ListingErrorHandler created with null PrintWriter!
-  //public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
-  {
-    ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
-     "ListingErrorHandler creado con PrintWriter nulo"},
-
   // {0}is not allowed in this position in the stylesheet!
   //public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
   {
@@ -1770,17 +1429,6 @@ mesh */
   {
     INVALID_TCHAR,
      "Valor no v\u00e1lido: {1} utilizado para el atributo CHAR: {0}.  Un atributo de tipo CHAR debe tener 1 solo car\u00e1cter"},
-
-  //public static final int ER_SYSTEMID_UNKNOWN = 240;
-  {
-    ER_SYSTEMID_UNKNOWN,
-     "Id de sistema desconocido"},
-
-  // Location of error unknown
-  //public static final int ER_LOCATION_UNKNOWN = 241;
-  {
-    ER_LOCATION_UNKNOWN,
-     "Ubicaci\u00f3n del error desconocida"},
 
     // Note to translators:  The following message is used if the value of
     // an attribute in a stylesheet is invalid.  "QNAME" is the XML data-type of
