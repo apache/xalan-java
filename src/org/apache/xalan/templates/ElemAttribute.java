@@ -25,7 +25,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 import org.xml.sax.SAXException;
 
@@ -158,7 +158,7 @@ public class ElemAttribute extends ElemElement
         return false;
       if(nodeName.equals("xmlns"))
         return false;
-      return XMLChar.isValidQName(nodeName);
+      return XML11Char.isXML11ValidQName(nodeName);
    }
   
   /**

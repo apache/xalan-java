@@ -31,7 +31,7 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * @author Jacek Ambroziak
@@ -59,7 +59,7 @@ final class DecimalFormatting extends TopLevelElement {
 	// Get the name of these decimal formatting symbols
         final String name = getAttribute("name");
         if (name.length() > 0) {
-            if (!XMLChar.isValidQName(name)){
+            if (!XML11Char.isXML11ValidQName(name)){
                 ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
                 parser.reportError(Constants.ERROR, err);           
             }

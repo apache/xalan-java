@@ -23,7 +23,7 @@ import java.util.StringTokenizer;
 
 import org.apache.bcel.generic.Type;
 import org.apache.xalan.xsltc.compiler.Constants;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * @author Jacek Ambroziak
@@ -188,7 +188,7 @@ public final class Util {
         if ((str != null) && (!str.equals(Constants.EMPTYSTRING))) {
             final StringTokenizer tokens = new StringTokenizer(str);
             while (tokens.hasMoreTokens()) {
-                if (!XMLChar.isValidQName(tokens.nextToken())) {
+                if (!XML11Char.isXML11ValidQName(tokens.nextToken())) {
                     return false;
                 }
             }

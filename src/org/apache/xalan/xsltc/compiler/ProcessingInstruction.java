@@ -34,7 +34,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * @author Jacek Ambroziak
@@ -51,7 +51,7 @@ final class ProcessingInstruction extends Instruction {
         if (name.length() > 0) {
             _isLiteral = Util.isLiteral(name);
             if (_isLiteral) {
-                if (!XMLChar.isValidNCName(name)) {
+                if (!XML11Char.isXML11ValidNCName(name)) {
                     ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_NCNAME_ERR, name, this);
                     parser.reportError(Constants.ERROR, err);           
                 }

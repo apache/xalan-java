@@ -33,7 +33,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * @author Jacek Ambroziak
@@ -85,7 +85,7 @@ final class XslElement extends Instruction {
 	// Optimize compilation when name is known at compile time
         _isLiteralName = Util.isLiteral(name);
 	if (_isLiteralName) {
-            if (!XMLChar.isValidQName(name)) {
+            if (!XML11Char.isXML11ValidQName(name)) {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
 					    name, this);
 		parser.reportError(WARNING, msg);

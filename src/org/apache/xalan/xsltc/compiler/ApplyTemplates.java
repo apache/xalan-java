@@ -36,7 +36,7 @@ import org.apache.xalan.xsltc.compiler.util.ResultTreeType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * @author Jacek Ambroziak
@@ -73,7 +73,7 @@ final class ApplyTemplates extends Instruction {
 	}
 	
 	if (mode.length() > 0) {
-            if (!XMLChar.isValidQName(mode)) {
+            if (!XML11Char.isXML11ValidQName(mode)) {
                 ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, mode, this);
                 parser.reportError(Constants.ERROR, err);           
             }		

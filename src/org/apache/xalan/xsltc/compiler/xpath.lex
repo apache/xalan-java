@@ -53,9 +53,15 @@ Digit=[\u0030-\u0039\u0660-\u0669\u06F0-\u06F9\u0966-\u096F\u09E6-\u09EF\u0A66-\
 
 Extender=[\u00B7\u02D0\u02D1\u0387\u0640\u0E46\u0EC6\u3005\u3031-\u3035\u309D-\u309E\u30FC-\u30FE] 
 
-NCName=({Letter}|"_")({NCNameChar})*
+NCName=({Letter}|"_"|{NCNameStartChar})({NCNameChar})*
 
-NCNameChar={Letter}|{Digit}|"."|"-"|"_"|{CombiningChar}|{Extender}
+NCNameChar={Letter}|{Digit}|"."|"-"|"_"|{CombiningChar}|{Extender}|{NCNameStartChar}| \u00B7 | [\u0300-\u036F] | [\u203F-\u2040] | [\u0130-\u0136]
+
+NCNameStartChar=[\u0041-\u005A\u0061-\u007A\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD] | \u005F |({HighSurrogate}{LowSurrogate})
+
+HighSurrogate=[\uD800-\uDBFF]
+
+LowSurrogate=[\uDC00-\uDFFF]
 
 %%
 

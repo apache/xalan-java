@@ -33,7 +33,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringToIntTable;
 import org.apache.xml.utils.StringVector;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 import org.apache.xpath.XPath;
 
  
@@ -794,7 +794,7 @@ public class XSLTAttributeDef
 	      AVT avt = new AVT(handler, uri, name, rawName, value, owner);
 	
 		  // If an AVT wasn't used, validate the value
-		  if ((avt.isSimple()) && (!XMLChar.isValidNmtoken(value))) {
+		  if ((avt.isSimple()) && (!XML11Char.isXML11ValidNmtoken(value))) {
             handleError(handler,XSLTErrorResources.INVALID_NMTOKEN, new Object[] {name,value},null);
             return null;
 		  }	
@@ -805,7 +805,7 @@ public class XSLTAttributeDef
 	      throw new org.xml.sax.SAXException(te);
 	    }  		
   	} else {
-  		if (!XMLChar.isValidNmtoken(value)) {
+  		if (!XML11Char.isXML11ValidNmtoken(value)) {
             handleError(handler,XSLTErrorResources.INVALID_NMTOKEN, new Object[] {name,value},null);
             return null;
   		}
@@ -983,7 +983,7 @@ public class XSLTAttributeDef
              if (indexOfNSSep >= 0) 
              {   
                   String prefix = value.substring(0, indexOfNSSep);
-                  if (!XMLChar.isValidNCName(prefix))
+                  if (!XML11Char.isXML11ValidNCName(prefix))
                   {
                      handleError(handler,XSLTErrorResources.INVALID_QNAME,new Object[]{name,value },null);
                      return null;
@@ -994,7 +994,7 @@ public class XSLTAttributeDef
                  ? value : value.substring(indexOfNSSep + 1); 
              
              if ((localName == null) || (localName.length() == 0) ||
-                 (!XMLChar.isValidNCName(localName)))
+                 (!XML11Char.isXML11ValidNCName(localName)))
              {    
                      handleError(handler,XSLTErrorResources.INVALID_QNAME,new Object[]{name,value },null );
                      return null;
@@ -1039,7 +1039,7 @@ public class XSLTAttributeDef
           avt = new AVT(handler, uri, name, rawName, value, owner);
     
           // If an AVT wasn't used, validate the value
-          if ((avt.isSimple()) &&  (!XMLChar.isValidNCName(value))) 
+          if ((avt.isSimple()) &&  (!XML11Char.isXML11ValidNCName(value))) 
           {
              handleError(handler,XSLTErrorResources.INVALID_NCNAME,new Object[] {name,value},null);
              return null;
@@ -1053,7 +1053,7 @@ public class XSLTAttributeDef
         } 
         
     } else {
-        if (!XMLChar.isValidNCName(value)) 
+        if (!XML11Char.isXML11ValidNCName(value)) 
         {
             handleError(handler,XSLTErrorResources.INVALID_NCNAME,new Object[] {name,value},null);
             return null;

@@ -36,10 +36,10 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xml.utils.XMLChar;
 
 import org.apache.xml.serializer.ElemDesc;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * @author Jacek Ambroziak
@@ -91,7 +91,7 @@ final class XslAttribute extends Instruction {
   
         _isLiteral = Util.isLiteral(name);
         if (_isLiteral) {
-            if (!XMLChar.isValidQName(name)) {
+            if (!XML11Char.isXML11ValidQName(name)) {
                 reportError(this, parser, ErrorMsg.ILLEGAL_ATTR_NAME_ERR, name);
                 return;
             }

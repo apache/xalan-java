@@ -35,7 +35,7 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xml.serializer.Encodings;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * @author Jacek Ambroziak
@@ -167,7 +167,7 @@ final class Output extends TopLevelElement {
             if ((_method.equals("xml"))||
                 (_method.equals("html"))||
                 (_method.equals("text"))||
-                ((XMLChar.isValidQName(_method)&&(_method.indexOf(":") > 0)))) {
+                ((XML11Char.isXML11ValidQName(_method)&&(_method.indexOf(":") > 0)))) {
 	       outputProperties.setProperty(OutputKeys.METHOD, _method);
             } else {
                 reportError(this, parser, ErrorMsg.INVALID_METHOD_IN_OUTPUT, _method);
@@ -243,7 +243,7 @@ final class Output extends TopLevelElement {
 	    // Make sure to store names in expanded form
 	    while (tokens.hasMoreTokens()) {
             	String qname = tokens.nextToken();
-                if (!XMLChar.isValidQName(qname)) {
+                if (!XML11Char.isXML11ValidQName(qname)) {
                     ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, qname, this);
                     parser.reportError(Constants.ERROR, err);	
                 }	    	

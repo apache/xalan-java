@@ -111,7 +111,7 @@ public class QName implements java.io.Serializable
 
     if (validate) 
     {
-        if (!XMLChar.isValidNCName(localName))
+        if (!XML11Char.isXML11ValidNCName(localName))
         {
             throw new IllegalArgumentException(XMLMessages.createXMLMessage(
             XMLErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");
@@ -158,13 +158,13 @@ public class QName implements java.io.Serializable
 
     if (validate)
     {    
-        if (!XMLChar.isValidNCName(localName))
+        if (!XML11Char.isXML11ValidNCName(localName))
         {
             throw new IllegalArgumentException(XMLMessages.createXMLMessage(
             XMLErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");
         }
 
-        if ((null != prefix) && (!XMLChar.isValidNCName(prefix)))
+        if ((null != prefix) && (!XML11Char.isXML11ValidNCName(prefix)))
         {
             throw new IllegalArgumentException(XMLMessages.createXMLMessage(
             XMLErrorResources.ER_ARG_PREFIX_INVALID,null )); //"Argument 'prefix' not a valid NCName");
@@ -208,7 +208,7 @@ public class QName implements java.io.Serializable
 
     if (validate)
     {    
-        if (!XMLChar.isValidNCName(localName))
+        if (!XML11Char.isXML11ValidNCName(localName))
         {
             throw new IllegalArgumentException(XMLMessages.createXMLMessage(
             XMLErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");
@@ -299,7 +299,7 @@ public class QName implements java.io.Serializable
                  
     if (validate)
     {
-        if ((_localName == null) || (!XMLChar.isValidNCName(_localName))) 
+        if ((_localName == null) || (!XML11Char.isXML11ValidNCName(_localName))) 
         {
            throw new IllegalArgumentException(XMLMessages.createXMLMessage(
             XMLErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");
@@ -388,7 +388,7 @@ public class QName implements java.io.Serializable
 
     if (validate)
     {
-        if ((_localName == null) || (!XMLChar.isValidNCName(_localName))) 
+        if ((_localName == null) || (!XML11Char.isXML11ValidNCName(_localName))) 
         {
            throw new IllegalArgumentException(XMLMessages.createXMLMessage(
             XMLErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");
@@ -466,7 +466,7 @@ public class QName implements java.io.Serializable
                  
     if (validate)
     {
-        if ((_localName == null) || (!XMLChar.isValidNCName(_localName))) 
+        if ((_localName == null) || (!XML11Char.isXML11ValidNCName(_localName))) 
         {
            throw new IllegalArgumentException(XMLMessages.createXMLMessage(
             XMLErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");

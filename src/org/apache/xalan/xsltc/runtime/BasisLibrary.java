@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xml.utils.XML11Char;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 
@@ -1291,20 +1291,20 @@ public final class BasisLibrary {
         
             if (firstOccur != lastOccur) {
                final String oriPrefix = name.substring(firstOccur+1, lastOccur); 
-                if (!XMLChar.isValidNCName(oriPrefix)) {
+                if (!XML11Char.isXML11ValidNCName(oriPrefix)) {
                     // even though the orignal prefix is ignored, it should still get checked for valid NCName
                     runTimeError(INVALID_QNAME_ERR,oriPrefix+":"+localName);
                 }
             }
             
             // prefix must be a valid NCName
-            if (!XMLChar.isValidNCName(newPrefix)) {
+            if (!XML11Char.isXML11ValidNCName(newPrefix)) {
                 runTimeError(INVALID_QNAME_ERR,newPrefix+":"+localName); 
             }  
         }
                 
         // local name must be a valid NCName and must not be XMLNS
-        if ((!XMLChar.isValidNCName(localName))||(localName.equals(Constants.XMLNS_PREFIX))) {
+        if ((!XML11Char.isXML11ValidNCName(localName))||(localName.equals(Constants.XMLNS_PREFIX))) {
             runTimeError(INVALID_QNAME_ERR,localName); 
         }
     }
@@ -1314,7 +1314,7 @@ public final class BasisLibrary {
      * This method should only be invoked if the attribute value is an AVT
      */    
     public static void checkNCName(String name) {
-        if (!XMLChar.isValidNCName(name)) {
+        if (!XML11Char.isXML11ValidNCName(name)) {
             runTimeError(INVALID_NCNAME_ERR,name); 
         }  
     }        
@@ -1324,7 +1324,7 @@ public final class BasisLibrary {
      * This method should only be invoked if the attribute value is an AVT
      */    
     public static void checkQName(String name) {
-        if (!XMLChar.isValidQName(name)) {
+        if (!XML11Char.isXML11ValidQName(name)) {
             runTimeError(INVALID_QNAME_ERR,name); 
         }  
     }
