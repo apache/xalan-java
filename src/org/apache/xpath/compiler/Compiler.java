@@ -1074,8 +1074,10 @@ private static final boolean DEBUG = false;
       {
         java.lang.String name = FunctionTable.m_functions[funcID].getName();
 
-        m_errorHandler.fatalError( new TransformerException(name + " only allows " + wnae.getMessage()
-                               + " arguments", m_locator));
+        m_errorHandler.fatalError( new TransformerException(
+                  XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
+                      new Object[]{name, wnae.getMessage()}), m_locator)); 
+              //"name + " only allows " + wnae.getMessage() + " arguments", m_locator));
       }
 
       return func;

@@ -69,6 +69,9 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.patterns.NodeTest;
 
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
 /**
  * Serves as common interface for axes Walkers, and stores common
  * state variables.
@@ -261,7 +264,7 @@ public class AxesWalker extends PredicatedNodeTest
     if (DTM.NULL == root)
     {
       throw new RuntimeException(
-        "\n !!!! Error! Setting the root of a walker to null!!!");
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_SETTING_WALKER_ROOT_TO_NULL, null)); //"\n !!!! Error! Setting the root of a walker to null!!!");
     }
 
     resetProximityPositions();

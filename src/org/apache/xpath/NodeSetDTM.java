@@ -455,7 +455,7 @@ public class NodeSetDTM extends NodeVector
 
     if (!m_cacheNodes)
       throw new RuntimeException(
-        "This NodeSetDTM can not iterate to a previous node!");
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_CANNOT_ITERATE, null)); //"This NodeSetDTM can not iterate to a previous node!");
 
     if ((m_next - 1) > 0)
     {
@@ -522,7 +522,7 @@ public class NodeSetDTM extends NodeVector
 
     if (!m_cacheNodes)
       throw new RuntimeException(
-        "This NodeSetDTM can not do indexing or counting functions!");
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_CANNOT_INDEX, null)); //"This NodeSetDTM can not do indexing or counting functions!");
 
     if ((index >= 0) && (m_next < m_firstFree))
       m_next = index;
@@ -1174,7 +1174,7 @@ public class NodeSetDTM extends NodeVector
 
     if (!m_cacheNodes)
       throw new RuntimeException(
-        "This NodeSetDTM can not do indexing or counting functions!");
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_CANNOT_INDEX, null)); //"This NodeSetDTM can not do indexing or counting functions!");
 
     m_next = i;
   }
@@ -1240,7 +1240,7 @@ public class NodeSetDTM extends NodeVector
 
     if (!isFresh())
       throw new RuntimeException(
-        "Can not call setShouldCacheNodes after nextNode has been called!");
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_CALL_SETSHOULDCACHENODE, null)); //"Can not call setShouldCacheNodes after nextNode has been called!");
 
     m_cacheNodes = b;
     m_mutable = true;
