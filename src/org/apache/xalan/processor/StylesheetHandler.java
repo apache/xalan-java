@@ -57,6 +57,7 @@
 package org.apache.xalan.processor;
 
 import java.net.URL;
+
 import java.io.IOException;
 
 import javax.xml.transform.sax.TemplatesHandler;
@@ -67,22 +68,17 @@ import javax.xml.transform.TransformerConfigurationException;
 import java.util.Stack;
 
 import org.apache.xalan.res.XSLMessages;
-
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
-
 import org.apache.xalan.utils.NodeConsumer;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.utils.XMLCharacterRecognizer;
-
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
-
 import org.apache.xpath.functions.Function;
-
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.XPath;
 
@@ -94,13 +90,13 @@ import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.utils.SAXSourceLocator;
 
 /**
@@ -118,11 +114,10 @@ public class StylesheetHandler extends DefaultHandler
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
    *
-   * NEEDSDOC @param processor
-   * @exception May throw TransformerConfigurationException if a StylesheetRoot
-   * can not be constructed for some reason.
+   * @param processor non-null reference to the transformer factory that owns this handler.
    *
-   * @throws TransformerConfigurationException
+   * @throws TransformerConfigurationException if a StylesheetRoot
+   * can not be constructed for some reason.
    */
   public StylesheetHandler(TransformerFactoryImpl processor)
           throws TransformerConfigurationException
@@ -141,12 +136,12 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Do common initialization.
    *
-   * NEEDSDOC @param processor
+   * @param processor non-null reference to the transformer factory that owns this handler.
    */
   void init(TransformerFactoryImpl processor)
   {
 
-    // Not sure about double-check of this flag, but 
+    // Not sure about double-check of this flag, but
     // it seems safe...
     if (false == m_xpathFunctionsInited)
     {
@@ -183,13 +178,15 @@ public class StylesheetHandler extends DefaultHandler
    * Process an expression string into an XPath.
    * Must be public for access by the AVT class.
    *
-   * NEEDSDOC @param str
+   * @param str A non-null reference to a valid or invalid XPath expression string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A non-null reference to an XPath object that represents the string argument.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if the expression can not be processed.
+   * @see <a href="http://www.w3.org/TR/xslt#section-Expressions">Section 4 Expressions in XSLT Specification</a>
    */
-  public XPath createXPath(String str) throws javax.xml.transform.TransformerException
+  public XPath createXPath(String str)
+          throws javax.xml.transform.TransformerException
   {
     return new XPath(str, getLocator(), this, XPath.SELECT);
   }
@@ -197,25 +194,27 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Process an expression string into an XPath.
    *
-   * NEEDSDOC @param str
+   * @param str A non-null reference to a valid or invalid match pattern string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A non-null reference to an XPath object that represents the string argument.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if the pattern can not be processed.
+   * @see <a href="http://www.w3.org/TR/xslt#patterns">Section 5.2 Patterns in XSLT Specification</a>
    */
-  XPath createMatchPatternXPath(String str) throws javax.xml.transform.TransformerException
+  XPath createMatchPatternXPath(String str)
+          throws javax.xml.transform.TransformerException
   {
     return new XPath(str, getLocator(), this, XPath.MATCH);
   }
 
   /**
-   * Given a namespace, get the corrisponding prefix.  This assumes that
-   * the PrevixResolver hold's it's own namespace context, or is a namespace
-   * context itself.
+   * Given a namespace, get the corrisponding prefix from the current
+   * namespace support context.
    *
-   * NEEDSDOC @param prefix
+   * @param prefix The prefix to look up, which may be an empty string ("") for the default Namespace.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The associated Namespace URI, or null if the prefix
+   *         is undeclared in this context.
    */
   public String getNamespaceForPrefix(String prefix)
   {
@@ -223,17 +222,20 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Given a namespace, get the corrisponding prefix.
+   * Given a namespace, get the corrisponding prefix.  This is here only
+   * to support the {@link org.apache.xalan.utils.PrefixResolver} interface,
+   * and will throw an error if invoked on this object.
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param context
+   * @param prefix The prefix to look up, which may be an empty string ("") for the default Namespace.
+   * @param context The node context from which to look up the URI.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The associated Namespace URI, or null if the prefix
+   *         is undeclared in this context.
    */
   public String getNamespaceForPrefix(String prefix, org.w3c.dom.Node context)
   {
 
-    // Don't need to support this here.  Return the current URI for the prefix, 
+    // Don't need to support this here.  Return the current URI for the prefix,
     // ignoring the context.
     assert(true, "can't process a context node in StylesheetHandler!");
 
@@ -241,12 +243,12 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Test to see if the stack contains the given URL.
+   * Utility function to see if the stack contains the given URL.
    *
-   * NEEDSDOC @param stack
-   * NEEDSDOC @param url
+   * @param stack non-null reference to a Stack.
+   * @param url URL string on which an equality test will be performed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the stack contains the url argument.
    */
   private boolean stackContains(Stack stack, String url)
   {
@@ -283,8 +285,6 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @version Alpha
    * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
-   *
-   * @throws TransformerException
    */
   public Templates getTemplates()
   {
@@ -295,23 +295,24 @@ public class StylesheetHandler extends DefaultHandler
    * Set the base ID (URL or system ID) for the stylesheet
    * created by this builder.  This must be set in order to
    * resolve relative URLs in the stylesheet.
+   *
    * @param baseID Base URL for this stylesheet.
    */
   public void setSystemId(String baseID)
   {
     pushBaseIndentifier(baseID);
   }
-  
+
   /**
-   * Get the base ID (URI or system ID) from where relative 
+   * Get the base ID (URI or system ID) from where relative
    * URLs will be resolved.
+   *
    * @return The systemID that was set with {@link #setSystemId}.
    */
   public String getSystemId()
   {
     return this.getBaseIdentifier();
   }
-
 
   ////////////////////////////////////////////////////////////////////
   // Implementation of the EntityResolver interface.
@@ -327,10 +328,10 @@ public class StylesheetHandler extends DefaultHandler
    * @return The new input source, or null to require the
    *         default behaviour.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException if the entity can not be resolved.
    */
   public InputSource resolveEntity(String publicId, String systemId)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
     return getCurrentProcessor().resolveEntity(this, publicId, systemId);
   }
@@ -378,17 +379,18 @@ public class StylesheetHandler extends DefaultHandler
    * Given a namespace URI, and a local name or a node type, get the processor
    * for the element, or return null if not allowed.
    *
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A non-null reference to a element processor.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException if the element is not allowed in the
+   * found position in the stylesheet.
    */
   XSLTElementProcessor getProcessorFor(
-          String uri, String localName, String rawName) 
-    throws org.xml.sax.SAXException
+          String uri, String localName, String rawName)
+            throws org.xml.sax.SAXException
   {
 
     XSLTElementProcessor currentProcessor = getCurrentProcessor();
@@ -396,9 +398,9 @@ public class StylesheetHandler extends DefaultHandler
     XSLTElementProcessor elemProcessor = def.getProcessorFor(uri, localName);
 
     if (null == elemProcessor
-        && ( null==getStylesheet() 
-	     || Double.valueOf(getStylesheet().getVersion()).doubleValue()
-	     > Constants.XSLTVERSUPPORTED) )
+            && (null == getStylesheet()
+                || Double.valueOf(getStylesheet().getVersion()).doubleValue()
+                   > Constants.XSLTVERSUPPORTED))
     {
       elemProcessor = def.getProcessorForUnknown(uri, localName);
     }
@@ -440,11 +442,10 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Receive notification of the beginning of the document.
    *
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startDocument
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void startDocument() throws org.xml.sax.SAXException
   {
@@ -452,33 +453,35 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   // support for isParsingComplete
-  private boolean m_parsingComplete=false; 
 
-  
-  /** Test whether the _last_ endDocument() has been processed.
+  /** NEEDSDOC Field m_parsingComplete */
+  private boolean m_parsingComplete = false;
+
+  /**
+   * Test whether the _last_ endDocument() has been processed.
    * This is needed as guidance for stylesheet optimization
    * and compilation engines, which generally don't want to start
    * until all included and imported stylesheets have been fully
    * parsed.
-   * 
+   *
    * @return true iff the complete stylesheet tree has been built.
    */
   public boolean isStylesheetParsingComplete()
   {
-	  return m_parsingComplete;
+    return m_parsingComplete;
   }
 
   /**
    * Receive notification of the end of the document.
    *
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endDocument
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void endDocument() throws org.xml.sax.SAXException
   {
+
     try
     {
       if (null != getStylesheetRoot())
@@ -487,7 +490,7 @@ public class StylesheetHandler extends DefaultHandler
           getStylesheetRoot().recompose();
 
         // Resolve the result prefix tables in the elements.
-        if(null != getLastPoppedStylesheet())
+        if (null != getLastPoppedStylesheet())
           getLastPoppedStylesheet().resolvePrefixTables();
       }
       else
@@ -499,19 +502,18 @@ public class StylesheetHandler extends DefaultHandler
         elemProcessor.startNonText(this);
 
       m_stylesheetLevel--;
-      
+
       // WARNING: This test works only as long as stylesheets are parsed
       // more or less recursively. If we switch to an iterative "work-list"
-      // model, this will become true prematurely. In that case, 
+      // model, this will become true prematurely. In that case,
       // isStylesheetParsingComplete() will have to be adjusted to be aware
       // of the worklist.
-      m_parsingComplete=(m_stylesheetLevel<0);
+      m_parsingComplete = (m_stylesheetLevel < 0);
     }
-    catch(TransformerException te)
+    catch (TransformerException te)
     {
       throw new org.xml.sax.SAXException(te);
     }
-
   }
 
   /**
@@ -524,11 +526,10 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI mapped to the prefix.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startPrefixMapping
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
@@ -547,11 +548,10 @@ public class StylesheetHandler extends DefaultHandler
    * output to a file).</p>
    *
    * @param prefix The Namespace prefix being declared.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endPrefixMapping
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException
   {
@@ -562,7 +562,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Flush the characters buffer.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   private void flushCharacters() throws org.xml.sax.SAXException
   {
@@ -578,10 +578,12 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @param name The element type name.
    *
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    * @param attributes The specified or defaulted attributes.
+   *
+   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String uri, String localName, String rawName, Attributes attributes)
@@ -598,12 +600,11 @@ public class StylesheetHandler extends DefaultHandler
     flushCharacters();
 
     XSLTElementProcessor elemProcessor = getProcessorFor(uri, localName,
-                                                         rawName);
+                                           rawName);
 
     this.pushProcessor(elemProcessor);
     elemProcessor.startElement(this, uri, localName, rawName, attributes);
     this.getNamespaceSupport().pushContext();
-
   }
 
   /**
@@ -612,14 +613,13 @@ public class StylesheetHandler extends DefaultHandler
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
    *
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    * @see org.xml.sax.ContentHandler#endElement
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void endElement(String uri, String localName, String rawName)
           throws org.xml.sax.SAXException
@@ -649,14 +649,13 @@ public class StylesheetHandler extends DefaultHandler
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#characters
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
-  public void characters(char ch[], int start, int length) 
-    throws org.xml.sax.SAXException
+  public void characters(char ch[], int start, int length)
+          throws org.xml.sax.SAXException
   {
 
     if (!m_shouldProcess)
@@ -688,11 +687,10 @@ public class StylesheetHandler extends DefaultHandler
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#ignorableWhitespace
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void ignorableWhitespace(char ch[], int start, int length)
           throws org.xml.sax.SAXException
@@ -715,11 +713,10 @@ public class StylesheetHandler extends DefaultHandler
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void processingInstruction(String target, String data)
           throws org.xml.sax.SAXException
@@ -741,11 +738,10 @@ public class StylesheetHandler extends DefaultHandler
    * invoking other methods.</p>
    *
    * @param name The name of the skipped entity.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void skippedEntity(String name) throws org.xml.sax.SAXException
   {
@@ -760,12 +756,14 @@ public class StylesheetHandler extends DefaultHandler
    * <meta name="usage" content="internal"/>
    * Warn the user of an problem.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
-   * the error condition is severe enough to halt processing.
+   * @param msg An index into the {@link org.apache.xalan.res.XSLTErrorResources}
+   * table, that is one of the WG_ prefixed definitions.
+   * @param args An array of arguments for the given warning.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the current
+   * {@link javax.xml.transform.ErrorListener#warning}
+   * method chooses to flag this condition as an error.
    */
   public void warn(int msg, Object args[]) throws org.xml.sax.SAXException
   {
@@ -779,7 +777,7 @@ public class StylesheetHandler extends DefaultHandler
       if (null != handler)
         handler.warning(new TransformerException(formattedMsg, locator));
     }
-    catch(TransformerException te)
+    catch (TransformerException te)
     {
       throw new org.xml.sax.SAXException(te);
     }
@@ -789,11 +787,12 @@ public class StylesheetHandler extends DefaultHandler
    * <meta name="usage" content="internal"/>
    * Assert that a condition is true.  If it is not true, throw an error.
    *
-   * NEEDSDOC @param condition
-   * NEEDSDOC @param msg
-   * @exception throws Runtime Exception.
+   * @param condition false if an error should not be thrown, otherwise true.
+   * @param msg Error message to be passed to the RuntimeException as an
+   * argument.
+   * @throws RuntimeException if the condition is not true.
    */
-  private void assert(boolean condition, String msg)
+  private void assert(boolean condition, String msg) throws RuntimeException
   {
     if (!condition)
       throw new RuntimeException(msg);
@@ -804,35 +803,38 @@ public class StylesheetHandler extends DefaultHandler
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param e
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
-   * the error condition is severe enough to halt processing.
+   * @param msg An error message.
+   * @param e An error which the SAXException should wrap.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the current
+   * {@link javax.xml.transform.ErrorListener#error}
+   * method chooses to flag this condition as an error.
    */
-  protected void error(String msg, Exception e) throws org.xml.sax.SAXException
+  protected void error(String msg, Exception e)
+          throws org.xml.sax.SAXException
   {
 
     SAXSourceLocator locator = getLocator();
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
     TransformerException pe;
-    if(!(e instanceof TransformerException))
+
+    if (!(e instanceof TransformerException))
     {
       pe = (null == e)
            ? new TransformerException(msg, locator)
-             : new TransformerException(msg, locator, e);
+           : new TransformerException(msg, locator, e);
     }
     else
-      pe = (TransformerException)e;
+      pe = (TransformerException) e;
 
     if (null != handler)
     {
       try
       {
-        handler.fatalError(pe);
+        handler.error(pe);
       }
-      catch(TransformerException te)
+      catch (TransformerException te)
       {
         throw new org.xml.sax.SAXException(te);
       }
@@ -846,13 +848,15 @@ public class StylesheetHandler extends DefaultHandler
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
-   * NEEDSDOC @param e
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
-   * the error condition is severe enough to halt processing.
+   * @param msg An index into the {@link org.apache.xalan.res.XSLTErrorResources}
+   * table, that is one of the WG_ prefixed definitions.
+   * @param args An array of arguments for the given warning.
+   * @param e An error which the SAXException should wrap.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the current
+   * {@link javax.xml.transform.ErrorListener#error}
+   * method chooses to flag this condition as an error.
    */
   protected void error(int msg, Object args[], Exception e)
           throws org.xml.sax.SAXException
@@ -864,65 +868,87 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Receive notification of a parser warning.
+   * Receive notification of a XSLT processing warning.
    *
    * @param e The warning information encoded as an exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the current
+   * {@link javax.xml.transform.ErrorListener#warning}
+   * method chooses to flag this condition as an error.
    */
-  public void warning(org.xml.sax.SAXParseException e) 
-    throws org.xml.sax.SAXException
+  public void warning(org.xml.sax.SAXParseException e)
+          throws org.xml.sax.SAXException
   {
 
-    // Need to set up a diagnosticsWriter here?
-    System.out.println("WARNING: " + e.getMessage());
-    System.out.println(" ID: " + e.getSystemId() + " Line #"
-                       + e.getLineNumber() + " Column #"
-                       + e.getColumnNumber());
+    String formattedMsg = e.getMessage();
+    SAXSourceLocator locator = getLocator();
+    ErrorListener handler = m_stylesheetProcessor.getErrorListener();
+
+    try
+    {
+      handler.warning(new TransformerException(formattedMsg, locator));
+    }
+    catch (TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
-   * Receive notification of a recoverable parser error.
-   *
-   * @param e The warning information encoded as an exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
-   *
-   * @throws TransformerException
-   */
-  public void error(org.xml.sax.SAXParseException e) 
-    throws org.xml.sax.SAXException
-  {
-
-    // Need to set up a diagnosticsWriter here?
-    System.out.println("RECOVERABLE ERROR: " + e.getMessage());
-    System.out.println(" ID: " + e.getSystemId() + " Line #"
-                       + e.getLineNumber() + " Column #"
-                       + e.getColumnNumber());
-  }
-
-  /**
-   * Report a fatal XML parsing error.
-   *
-   * <p>The default implementation throws a TransformerException.
-   * Application writers may override this method in a subclass if
-   * they need to take specific actions for each fatal error (such as
-   * collecting all of the errors into a single report): in any case,
-   * the application must stop all regular processing when this
-   * method is invoked, since the document is no longer reliable, and
-   * the parser may no longer report parsing events.</p>
+   * Receive notification of a recoverable XSLT processing error.
    *
    * @param e The error information encoded as an exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the current
+   * {@link javax.xml.transform.ErrorListener#error}
+   * method chooses to flag this condition as an error.
    */
-  public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException
+  public void error(org.xml.sax.SAXParseException e)
+          throws org.xml.sax.SAXException
   {
-    throw e;
+
+    String formattedMsg = e.getMessage();
+    SAXSourceLocator locator = getLocator();
+    ErrorListener handler = m_stylesheetProcessor.getErrorListener();
+
+    try
+    {
+      handler.error(new TransformerException(formattedMsg, locator));
+    }
+    catch (TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
+  }
+
+  /**
+   * Report a fatal XSLT processing error.
+   *
+   * @param e The error information encoded as an exception.
+   *
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the current
+   * {@link javax.xml.transform.ErrorListener#fatalError}
+   * method chooses to flag this condition as an error.
+   */
+  public void fatalError(org.xml.sax.SAXParseException e)
+          throws org.xml.sax.SAXException
+  {
+
+    String formattedMsg = e.getMessage();
+    SAXSourceLocator locator = getLocator();
+    ErrorListener handler = m_stylesheetProcessor.getErrorListener();
+
+    try
+    {
+      handler.fatalError(new TransformerException(formattedMsg, locator));
+    }
+    catch (TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -959,7 +985,7 @@ public class StylesheetHandler extends DefaultHandler
    * Check to see if an ID attribute matched the #id, called
    * from startElement.
    *
-   * NEEDSDOC @param attributes
+   * @param attributes The specified or defaulted attributes.
    */
   private void checkForFragmentID(Attributes attributes)
   {
@@ -995,32 +1021,42 @@ public class StylesheetHandler extends DefaultHandler
   private TransformerFactoryImpl m_stylesheetProcessor;
 
   /**
-   * Get the XSLT TransformerFactory for needed services.
+   * Get the XSLT TransformerFactoryImpl for needed services.
+   * TODO: This method should be renamed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The TransformerFactoryImpl that owns this handler.
    */
   TransformerFactoryImpl getStylesheetProcessor()
   {
     return m_stylesheetProcessor;
   }
 
-  /** NEEDSDOC Field STYPE_ROOT          */
+  /**
+   * If {@link #getStylesheetType} returns this value, the current stylesheet
+   *  is a root stylesheet.
+   */
   static final int STYPE_ROOT = 1;
 
-  /** NEEDSDOC Field STYPE_INCLUDE          */
+  /**
+   * If {@link #getStylesheetType} returns this value, the current stylesheet
+   *  is an included stylesheet.
+   */
   static final int STYPE_INCLUDE = 2;
 
-  /** NEEDSDOC Field STYPE_IMPORT          */
+  /**
+   * If {@link #getStylesheetType} returns this value, the current stylesheet
+   *  is an imported stylesheet.
+   */
   static final int STYPE_IMPORT = 3;
 
-  /** NEEDSDOC Field m_stylesheetType          */
+  /** The current stylesheet type. */
   private int m_stylesheetType = STYPE_ROOT;
 
   /**
    * Get the type of stylesheet that should be built
    * or is being processed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return one of STYPE_ROOT, STYPE_INCLUDE, or STYPE_IMPORT.
    */
   int getStylesheetType()
   {
@@ -1031,7 +1067,7 @@ public class StylesheetHandler extends DefaultHandler
    * Set the type of stylesheet that should be built
    * or is being processed.
    *
-   * NEEDSDOC @param type
+   * @param type Must be one of STYPE_ROOT, STYPE_INCLUDE, or STYPE_IMPORT.
    */
   void setStylesheetType(int type)
   {
@@ -1046,7 +1082,8 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Return the stylesheet that this handler is constructing.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The current stylesheet that is on top of the stylesheets stack,
+   *  or null if no stylesheet is on the stylesheets stack.
    */
   Stylesheet getStylesheet()
   {
@@ -1055,9 +1092,9 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Return the stylesheet that this handler is constructing.
+   * Return the last stylesheet that was popped off the stylesheets stack.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The last popped stylesheet, or null.
    */
   Stylesheet getLastPoppedStylesheet()
   {
@@ -1065,25 +1102,27 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Return the stylesheet that this handler is constructing.
+   * Return the stylesheet root that this handler is constructing.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The root stylesheet of the stylesheets tree.
    */
   public StylesheetRoot getStylesheetRoot()
   {
     return m_stylesheetRoot;
   }
 
-  /** NEEDSDOC Field m_stylesheetRoot          */
+  /** The root stylesheet of the stylesheets tree. */
   StylesheetRoot m_stylesheetRoot;
 
-  /** NEEDSDOC Field m_lastPoppedStylesheet          */
+  /** The last stylesheet that was popped off the stylesheets stack. */
   Stylesheet m_lastPoppedStylesheet;
 
   /**
-   * Return the stylesheet that this handler is constructing.
+   * Push the current stylesheet being constructed. If no other stylesheets
+   * have been pushed onto the stack, assume the argument is a stylesheet
+   * root, and also set the stylesheet root member.
    *
-   * NEEDSDOC @param s
+   * @param s non-null reference to a stylesheet.
    */
   void pushStylesheet(Stylesheet s)
   {
@@ -1095,9 +1134,11 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Return the stylesheet that this handler is constructing.
+   * Pop the last stylesheet pushed, and return the stylesheet that this
+   * handler is constructing, and set the last popped stylesheet member.
+   * Also pop the stylesheet locator stack.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The stylesheet popped off the stack, or the last popped stylesheet.
    */
   Stylesheet popStylesheet()
   {
@@ -1105,12 +1146,13 @@ public class StylesheetHandler extends DefaultHandler
     // The stylesheetLocatorStack needs to be popped because
     // a locator was pushed in for this stylesheet by the SAXparser by calling
     // setDocumentLocator().
-    if(!m_stylesheetLocatorStack.isEmpty())
+    if (!m_stylesheetLocatorStack.isEmpty())
       m_stylesheetLocatorStack.pop();
 
-    if(!m_stylesheets.isEmpty())
+    if (!m_stylesheets.isEmpty())
       m_lastPoppedStylesheet = (Stylesheet) m_stylesheets.pop();
 
+    // Shouldn't this be null if stylesheets is empty?  -sb
     return m_lastPoppedStylesheet;
   }
 
@@ -1121,6 +1163,7 @@ public class StylesheetHandler extends DefaultHandler
 
   /**
    * Get the current XSLTElementProcessor at the top of the stack.
+   *
    * @return Valid XSLTElementProcessor, which should never be null.
    */
   XSLTElementProcessor getCurrentProcessor()
@@ -1131,7 +1174,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Push the current XSLTElementProcessor onto the top of the stack.
    *
-   * NEEDSDOC @param processor
+   * @param processor non-null reference to the current element processor.
    */
   void pushProcessor(XSLTElementProcessor processor)
   {
@@ -1159,7 +1202,7 @@ public class StylesheetHandler extends DefaultHandler
    * Get the root of the XSLT Schema, which tells us how to
    * transition content handlers, create elements, etc.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The root XSLT Schema, which should never be null.
    */
   XSLTSchema getSchema()
   {
@@ -1187,18 +1230,24 @@ public class StylesheetHandler extends DefaultHandler
       return null;
     }
   }
-  
+
+  /** NEEDSDOC Field m_docOrderCount */
   private int m_docOrderCount = 0;
 
   /**
-   * Push the current XSLTElementProcessor to the top of the stack.
+   * Push the current XSLTElementProcessor to the top of the stack.  As a
+   * side-effect, set the document order index (simply because this is a
+   * convenient place to set it).
    *
-   * NEEDSDOC @param elem
+   * @param elem Should be a non-null reference to the intended current
+   * template element.
    */
   void pushElemTemplateElement(ElemTemplateElement elem)
   {
-    if(elem.getUid() == -1)
+
+    if (elem.getUid() == -1)
       elem.setUid(m_docOrderCount++);
+
     m_elems.push(elem);
   }
 
@@ -1226,7 +1275,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Get an XSLMessages instance capable of producing user messages.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to the error and warnings table.
    */
   XSLMessages getXSLMessages()
   {
@@ -1242,7 +1291,10 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Push a base identifier onto the base URI stack.
    *
-   * NEEDSDOC @param baseID
+   * @param baseID The current base identifier for this position in the
+   * stylesheet, which may be a fragment identifier, or which may be null.
+   * @see <a href="http://www.w3.org/TR/xslt#base-uri">
+   * Section 3.2 Base URI of XSLT specification.</a>
    */
   void pushBaseIndentifier(String baseID)
   {
@@ -1273,7 +1325,7 @@ public class StylesheetHandler extends DefaultHandler
   {
     return (String) m_baseIdentifiers.pop();
   }
-  
+
   /**
    * Return the base identifier.
    *
@@ -1281,21 +1333,23 @@ public class StylesheetHandler extends DefaultHandler
    */
   public String getBaseIdentifier()
   {
-    // Try to get the baseIdentifier from the baseIdentifier's stack, 
-    // which may not be the same thing as the value found in the 
+
+    // Try to get the baseIdentifier from the baseIdentifier's stack,
+    // which may not be the same thing as the value found in the
     // SourceLocators stack.
-    String base = (String)(m_baseIdentifiers.isEmpty() ? null : m_baseIdentifiers.peek());
+    String base = (String) (m_baseIdentifiers.isEmpty()
+                            ? null : m_baseIdentifiers.peek());
 
     // Otherwise try the stylesheet.
-    if(null == base)
+    if (null == base)
     {
       SourceLocator locator = getLocator();
 
       base = (null == locator) ? "" : locator.getSystemId();
     }
+
     return base;
   }
-
 
   /**
    * The top of this stack should contain the currently processed
@@ -1306,7 +1360,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Get the current stylesheet Locator object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to the current locator object.
    */
   public SAXSourceLocator getLocator()
   {
@@ -1314,9 +1368,11 @@ public class StylesheetHandler extends DefaultHandler
     if (m_stylesheetLocatorStack.isEmpty())
     {
       SAXSourceLocator locator = new SAXSourceLocator();
-      
+
       locator.setSystemId(this.getStylesheetProcessor().getDOMsystemID());
+
       return locator;
+
       // m_stylesheetLocatorStack.push(locator);
     }
 
@@ -1332,7 +1388,8 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Push an import href onto the stylesheet stack.
    *
-   * NEEDSDOC @param hrefUrl
+   * @param hrefUrl non-null reference to the URL for the current imported
+   * stylesheet.
    */
   void pushImportURL(String hrefUrl)
   {
@@ -1341,11 +1398,11 @@ public class StylesheetHandler extends DefaultHandler
 
   /**
    * See if the imported stylesheet stack already contains
-   * the given URL.
+   * the given URL.  Used to test for recursive imports.
    *
-   * NEEDSDOC @param hrefUrl
+   * @param hrefUrl non-null reference to a URL string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the URL is on the import stack.
    */
   boolean importStackContains(String hrefUrl)
   {
@@ -1355,7 +1412,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Pop an import href from the stylesheet stack.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to the import URL that was popped.
    */
   String popImportURL()
   {
@@ -1373,12 +1430,11 @@ public class StylesheetHandler extends DefaultHandler
    */
   private XPathParser m_xpathProcessor = new XPathParser();
 
-  /** NEEDSDOC Field m_nsSupportStack          */
+  /** Stack of {@link org.xml.sax.helpers.NamespaceSupport} objects. */
   Stack m_nsSupportStack = new Stack();
 
   /**
-   * NEEDSDOC Method pushNewNamespaceSupport 
-   *
+   * Push a new {@link org.xml.sax.helpers.NamespaceSupport} instance.
    */
   void pushNewNamespaceSupport()
   {
@@ -1386,7 +1442,7 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * NEEDSDOC Method popNamespaceSupport 
+   * Pop the current {@link org.xml.sax.helpers.NamespaceSupport} object.
    *
    */
   void popNamespaceSupport()
@@ -1395,22 +1451,28 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Get the NamespaceSupport object.
+   * Get the current NamespaceSupport object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a non-null reference to the current NamespaceSupport object,
+   * which is the top of the namespace support stack.
    */
   NamespaceSupport getNamespaceSupport()
   {
     return (NamespaceSupport) m_nsSupportStack.peek();
   }
 
-  /** NEEDSDOC Field m_originatingNode          */
+  /**
+   * The originating node if the current stylesheet is being created
+   *  from a DOM.
+   *  @see org.apache.xalan.utils.NodeConsumer
+   */
   private Node m_originatingNode;
 
   /**
    * Set the node that is originating the SAX event.
    *
-   * NEEDSDOC @param n
+   * @param n Reference to node that originated the current event.
+   * @see org.apache.xalan.utils.NodeConsumer
    */
   public void setOriginatingNode(Node n)
   {
@@ -1420,7 +1482,8 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Set the node that is originating the SAX event.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Reference to node that originated the current event.
+   * @see org.apache.xalan.utils.NodeConsumer
    */
   public Node getOriginatingNode()
   {

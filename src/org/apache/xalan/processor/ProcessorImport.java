@@ -97,10 +97,9 @@ class ProcessorImport extends ProcessorInclude
    *        performed.
    * @param rawName The raw XML 1.0 name (with prefix), or the
    *        empty string if raw names are not available.
-   * @param atts The attributes attached to the element.  If
+   * @param attributes The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
-   * NEEDSDOC @param attributes
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)

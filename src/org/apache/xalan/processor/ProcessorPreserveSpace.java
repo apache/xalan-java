@@ -81,9 +81,12 @@ class ProcessorPreserveSpace extends XSLTElementProcessor
   private Vector m_elements;
 
   /**
-   * Set from the elements attribute.
+   * Set from the elements attribute.  This is a list of 
+   * whitespace delimited element qualified names that specify
+   * preservation of whitespace.
    *
-   * NEEDSDOC @param elems
+   * @param elems Should be a non-null reference to a list 
+   *              of {@link org.apache.xpath.XPath} objects.
    */
   public void setElements(Vector elems)
   {
@@ -91,9 +94,12 @@ class ProcessorPreserveSpace extends XSLTElementProcessor
   }
 
   /**
-   * Get the property set by setElements().
+   * Get the property set by setElements().  This is a list of 
+   * whitespace delimited element qualified names that specify
+   * preservation of whitespace.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A reference to a list of {@link org.apache.xpath.XPath} objects, 
+   *         or null.
    */
   Vector getElements()
   {
@@ -112,10 +118,9 @@ class ProcessorPreserveSpace extends XSLTElementProcessor
    *        performed.
    * @param rawName The raw XML 1.0 name (with prefix), or the
    *        empty string if raw names are not available.
-   * @param atts The attributes attached to the element.  If
+   * @param attributes The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
-   * NEEDSDOC @param attributes
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)

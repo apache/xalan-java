@@ -70,37 +70,35 @@ import javax.xml.transform.sax.SAXSource;
 import org.apache.xalan.utils.SystemIDResolver;
 
 /**
- * Handle the xml-stylesheet processing instruction.
+ * Search for the xml-stylesheet processing instructions in an XML document.
  * @see <a href="http://www.w3.org/TR/xml-stylesheet/">Associating Style Sheets with XML documents, Version 1.0</a>
  */
 public class StylesheetPIHandler extends DefaultHandler
 {
-
-  /** NEEDSDOC Field STARTELEM_FOUND_MSG          */
-  static final String STARTELEM_FOUND_MSG = "##startElement found";
-
-  /** NEEDSDOC Field m_baseID          */
+  /** The baseID of the document being processed.  */
   String m_baseID;
 
-  /** NEEDSDOC Field m_media          */
+  /** The desired media criteria. */
   String m_media;
 
-  /** NEEDSDOC Field m_title          */
+  /** The desired title criteria.  */
   String m_title;
 
-  /** NEEDSDOC Field m_charset          */
+  /** The desired character set criteria.   */
   String m_charset;
 
-  /** NEEDSDOC Field m_stylesheets          */
+  /** A list of SAXSource objects that match the criteria.  */
   Vector m_stylesheets = new Vector();
 
   /**
-   * Construct a StylesheetPIHandler instance.
+   * Construct a StylesheetPIHandler instance that will search 
+   * for xml-stylesheet PIs based on the given criteria.
    *
-   * NEEDSDOC @param source
-   * NEEDSDOC @param media
-   * NEEDSDOC @param title
-   * NEEDSDOC @param charset
+   * @param baseID The base ID of the XML document, needed to resolve 
+   *               relative IDs.
+   * @param media The desired media criteria.
+   * @param title The desired title criteria.
+   * @param charset The desired character set criteria.
    */
   public StylesheetPIHandler(String baseID, String media, String title,
                              String charset)
@@ -113,9 +111,10 @@ public class StylesheetPIHandler extends DefaultHandler
   }
 
   /**
-   * Return all stylesheets found that match the constraints.
+   * Return the last stylesheet found that match the constraints.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Source object that references the last stylesheet reference 
+   *         that matches the constraints.
    */
   public Source getAssociatedStylesheet()
   {
@@ -138,11 +137,9 @@ public class StylesheetPIHandler extends DefaultHandler
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
-   *
-   * @throws TransformerException
    * @see <a href="http://www.w3.org/TR/xml-stylesheet/">Associating Style Sheets with XML documents, Version 1.0</a>
    */
   public void processingInstruction(String target, String data)
@@ -251,12 +248,13 @@ public class StylesheetPIHandler extends DefaultHandler
    * so, at least for right now, I'm going to go ahead an throw a TransformerException
    * in order to stop the parse.
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param qName
-   * NEEDSDOC @param atts
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param attributes The specified or defaulted attributes.
    *
-   * @throws TransformerException
+   * @throws StopParseException since there can be no valid xml-stylesheet processing 
+   *                            instructions past the first element.
    */
   public void startElement(
           String namespaceURI, String localName, String qName, Attributes atts)

@@ -90,10 +90,12 @@ public class XSLTAttributeDef
   /**
    * Construct an instance of XSLTAttributeDef.
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
-   * NEEDSDOC @param type
-   * NEEDSDOC @param required
+   * @param namespace The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param type One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR, 
+   * T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST, 
+   * T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST.
+   * @param required true if this is attribute is required by the XSLT specification.
    */
   XSLTAttributeDef(String namespace, String name, int type, boolean required)
   {
@@ -107,10 +109,12 @@ public class XSLTAttributeDef
   /**
    * Construct an instance of XSLTAttributeDef.
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
-   * NEEDSDOC @param type
-   * NEEDSDOC @param defaultVal
+   * @param namespace The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param type One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, 
+   * T_CHAR, T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, 
+   * T_SIMPLEPATTERNLIST, T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST.
+   * @param defaultVal The default value for this attribute.
    */
   XSLTAttributeDef(String namespace, String name, int type, String defaultVal)
   {
@@ -126,13 +130,13 @@ public class XSLTAttributeDef
    * Construct an instance of XSLTAttributeDef that uses two
    * enumerated values.
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
-   * NEEDSDOC @param required
-   * NEEDSDOC @param k1
-   * NEEDSDOC @param v1
-   * NEEDSDOC @param k2
-   * NEEDSDOC @param v2
+   * @param namespace The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param required true if this attribute is required by the XSLT specification.
+   * @param k1 The XSLT name of the enumerated value.
+   * @param v1 An integer representation of k1.
+   * @param k2 The XSLT name of the enumerated value.
+   * @param v2 An integer representation of k2.
    */
   XSLTAttributeDef(String namespace, String name, boolean required,
                    String k1, int v1, String k2, int v2)
@@ -152,15 +156,15 @@ public class XSLTAttributeDef
    * Construct an instance of XSLTAttributeDef that uses three
    * enumerated values.
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
-   * NEEDSDOC @param required
-   * NEEDSDOC @param k1
-   * NEEDSDOC @param v1
-   * NEEDSDOC @param k2
-   * NEEDSDOC @param v2
-   * NEEDSDOC @param k3
-   * NEEDSDOC @param v3
+   * @param namespace The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param required true if this attribute is required by the XSLT specification.
+   * @param k1 The XSLT name of the enumerated value.
+   * @param v1 An integer representation of k1.
+   * @param k2 The XSLT name of the enumerated value.
+   * @param v2 An integer representation of k2.
+   * @param k3 The XSLT name of the enumerated value.
+   * @param v3 An integer representation of k3.
    */
   XSLTAttributeDef(String namespace, String name, boolean required,
                    String k1, int v1, String k2, int v2, String k3, int v3)
@@ -181,17 +185,17 @@ public class XSLTAttributeDef
    * Construct an instance of XSLTAttributeDef that uses three
    * enumerated values.
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
-   * NEEDSDOC @param required
-   * NEEDSDOC @param k1
-   * NEEDSDOC @param v1
-   * NEEDSDOC @param k2
-   * NEEDSDOC @param v2
-   * NEEDSDOC @param k3
-   * NEEDSDOC @param v3
-   * NEEDSDOC @param k4
-   * NEEDSDOC @param v4
+   * @param namespace The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param required true if this attribute is required by the XSLT specification.
+   * @param k1 The XSLT name of the enumerated value.
+   * @param v1 An integer representation of k1.
+   * @param k2 The XSLT name of the enumerated value.
+   * @param v2 An integer representation of k2.
+   * @param k3 The XSLT name of the enumerated value.
+   * @param v3 An integer representation of k3.
+   * @param k4 The XSLT name of the enumerated value.
+   * @param v4 An integer representation of k4.
    */
   XSLTAttributeDef(String namespace, String name, boolean required,
                    String k1, int v1, String k2, int v2, String k3, int v3,
@@ -209,8 +213,8 @@ public class XSLTAttributeDef
     m_enums.put(k3, v3);
     m_enums.put(k4, v4);
   }
-
-  /** NEEDSDOC Field T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR, T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST, T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST          */
+ 
+  /** Type values that represent XSLT attribute types.    */
   static final int T_CDATA = 1,
 
     // <!-- Used for the type of an attribute value that is a URI reference.-->
@@ -258,7 +262,7 @@ public class XSLTAttributeDef
     // Used for a list of white-space delimited strings.
     T_PREFIX_URLLIST = 15;
 
-  /** NEEDSDOC Field m_foreignAttr          */
+  /** Representation for an attribute in a foreign namespace.  */
   static XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
                                                                XSLTAttributeDef.T_CDATA, false);
 
@@ -268,9 +272,9 @@ public class XSLTAttributeDef
   private String m_namespace;
 
   /**
-   * Get the allowed namespace for this element.
+   * Get the allowed namespace for this attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The allowed namespace for this attribute, which may be null, or may be "*".
    */
   String getNamespace()
   {
@@ -283,9 +287,9 @@ public class XSLTAttributeDef
   private String m_name;
 
   /**
-   * Get the name of this element.
+   * Get the name of this attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to the name of this attribute, which may be "*".
    */
   String getName()
   {
@@ -300,7 +304,9 @@ public class XSLTAttributeDef
   /**
    * Get the type of this attribute value.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR, 
+   * T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST, 
+   * T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST.
    */
   int getType()
   {
@@ -320,7 +326,7 @@ public class XSLTAttributeDef
    * value.
    * @param key The XSLT attribute value.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The integer representation of the enumerated value for this attribute.
    * @exception Throws NullPointerException if m_enums is null.
    */
   private int getEnum(String key)
@@ -336,7 +342,7 @@ public class XSLTAttributeDef
   /**
    * Get the default value for this attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The default value for this attribute, or null.
    */
   String getDefault()
   {
@@ -346,7 +352,7 @@ public class XSLTAttributeDef
   /**
    * Set the default value for this attribute.
    *
-   * NEEDSDOC @param def
+   * @param def String representation of the default value for this attribute.
    */
   void setDefault(String def)
   {
@@ -361,21 +367,26 @@ public class XSLTAttributeDef
   /**
    * Get whether or not this is a required attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if this is a required attribute.
    */
   boolean getRequired()
   {
     return m_required;
   }
 
-  /** NEEDSDOC Field m_setterString          */
+  /** String that should represent the setter method which which 
+   * may be used on objects to set a value that represents this attribute  */
   String m_setterString = null;
 
   /**
    * Return a string that should represent the setter method.
-   * The setter method name will be created algorithmically
+   * The setter method name will be created algorithmically the 
+   * first time this method is accessed, and then cached for return
+   * by subsequent invocations of this method.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String that should represent the setter method which which 
+   * may be used on objects to set a value that represents this attribute, 
+   * of null if no setter method should be called.
    */
   public String getSetterMethodName()
   {
@@ -432,15 +443,17 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_AVT into
    * a AVT value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value Should be an Attribute Value Template string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An AVT object that may be used to evaluate the Attribute Value Template.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException which will wrap a 
+   * {@link javax.xml.transform.TransformerException}, if there is a syntax error 
+   * in the attribute value template string.
    */
   AVT processAVT(
                  StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -463,19 +476,16 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_CDATA into
    * a String value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value non-null string reference.
    *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws org.xml.sax.SAXException
+   * @return The value argument.
    */
   Object processCDATA(
                       StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
   {
     return value;
   }
@@ -484,15 +494,15 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_CHAR into
    * a Character value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value Should be a string with a length of 1.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Character object.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if the string is not a length of 1.
    */
   Object processCHAR(
                      StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -512,19 +522,17 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_ENUM into
    * a int value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value non-null string that represents an enumerated value that is 
+   * valid for this element.
    *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws org.xml.sax.SAXException
+   * @return An Integer representation of the enumerated value.
    */
   Object processENUM(
                      StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
   {
 
     int enum = this.getEnum(value);
@@ -536,15 +544,17 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_EXPR into
    * an XPath value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value An XSLT expression string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return an XPath object that may be used for evaluation.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException that wraps a 
+   * {@link javax.xml.transform.TransformerException} if the expression 
+   * string contains a syntax error.
    */
   Object processEXPR(
                      StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -567,19 +577,16 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_NMTOKEN into
    * a String value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A NMTOKEN string.
    *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws org.xml.sax.SAXException
+   * @return the value argument.
    */
   Object processNMTOKEN(
                         StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
   {
     return value;
   }
@@ -588,15 +595,17 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_PATTERN into
    * an XPath match pattern value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A match pattern string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An XPath pattern that may be used to evaluate the XPath.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException that wraps a 
+   * {@link javax.xml.transform.TransformerException} if the match pattern 
+   * string contains a syntax error.
    */
   Object processPATTERN(
                         StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -619,36 +628,47 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_PRIORITY into
    * a double value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A string that can be parsed into a double value.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A Double object.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException that wraps a 
+   * {@link javax.xml.transform.TransformerException} 
+   * if the string does not contain a parsable number.
    */
   Object processPRIORITY(
                          StylesheetHandler handler, String uri, String name, String rawName, String value)
     throws org.xml.sax.SAXException
   {
-    return Double.valueOf(value);
+    try
+    {
+      return Double.valueOf(value);
+    }
+    catch(NumberFormatException nfe)
+    {
+      handler.error("Priority value does not contain a parsable number.", nfe);
+      return new Double(0.0);
+    }
   }
 
   /**
    * Process an attribute string of type T_QNAME into
    * a QName value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A string that represents a potentially prefix qualified name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A QName object.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if the string contains a prefix that can not be 
+   * resolved, or the string contains syntax that is invalid for a qualified name.
    */
   Object processQNAME(
                       StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -661,15 +681,17 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_QNAMES into
    * a vector of QNames.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A whitespace delimited list of qualified names.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a Vector of QName objects.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if the one of the qualified name strings
+   * contains a prefix that can not be 
+   * resolved, or a qualified name contains syntax that is invalid for a qualified name.
    */
   Vector processQNAMES(
                        StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -692,15 +714,17 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_SIMPLEPATTERNLIST into
    * a vector of XPath match patterns.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A whitespace delimited list of simple match patterns.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A Vector of XPath objects.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException that wraps a 
+   * {@link javax.xml.transform.TransformerException} if one of the match pattern 
+   * strings contains a syntax error.
    */
   Vector processSIMPLEPATTERNLIST(
                                   StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -732,19 +756,16 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_STRINGLIST into
    * a vector of XPath match patterns.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value a whitespace delimited list of string values.
    *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws org.xml.sax.SAXException
+   * @return A StringVector of the tokenized strings.
    */
   StringVector processSTRINGLIST(
                                  StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
   {
 
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
@@ -761,17 +782,17 @@ public class XSLTAttributeDef
 
   /**
    * Process an attribute string of type T_URLLIST into
-   * a vector of XPath match patterns.
+   * a vector of prefixes that may be resolved to URLs.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A list of whitespace delimited prefixes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A vector of strings that may be resolved to URLs.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if one of the prefixes can not be resolved.
    */
   StringVector processPREFIX_URLLIST(
                                      StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -797,21 +818,21 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_URL into
    * a URL value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value non-null string that conforms to the URL syntax.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The non-absolutized URL argument, in other words, the value argument.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if the URL does not conform to the URL syntax.
    */
   String processURL(
                     StylesheetHandler handler, String uri, String name, String rawName, String value)
     throws org.xml.sax.SAXException
   {
-
+    // TODO: syntax check URL value.
     // return SystemIDResolver.getAbsoluteURI(value, 
     //                                         handler.getBaseIdentifier());
     return value;
@@ -821,13 +842,13 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_YESNO into
    * a Boolean value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A string that should be "yes" or "no".
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Boolean object representation of the value.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -835,21 +856,25 @@ public class XSLTAttributeDef
                                StylesheetHandler handler, String uri, String name, String rawName, String value)
     throws org.xml.sax.SAXException
   {
+    // Is this already checked somewhere else?  -sb
+    if(!(value.equals("yes") || value.equals("no")))
+      handler.error("Value for "+name+" should equal 'yes' or 'no'", null);
+      
     return new Boolean(value.equals("yes") ? true : false);
   }
 
   /**
    * Process an attribute value.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value The unprocessed string value of the attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The processed Object representation of the attribute.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if the attribute value can not be processed.
    */
   Object processValue(
                       StylesheetHandler handler, String uri, String name, String rawName, String value)
@@ -917,10 +942,11 @@ public class XSLTAttributeDef
   /**
    * Set the default value of an attribute.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param elem
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param elem The object on which the property will be set.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException wraps an invocation exception if the 
+   * setter method can not be invoked on the object.
    */
   void setDefAttrValue(StylesheetHandler handler, Object elem)
     throws org.xml.sax.SAXException
@@ -936,9 +962,9 @@ public class XSLTAttributeDef
    * of the 9 primative types, it will return the same
    * class that was passed in.
    *
-   * NEEDSDOC @param obj
+   * @param obj The object which will be resolved to a primative class object if possible.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The most primative class representation possible for the object, never null.
    */
   private Class getPrimativeClass(Object obj)
   {
@@ -988,12 +1014,12 @@ public class XSLTAttributeDef
   /**
    * Set a value on an attribute.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param attrUri
-   * NEEDSDOC @param attrLocalName
-   * NEEDSDOC @param attrRawName
-   * NEEDSDOC @param attrValue
-   * NEEDSDOC @param elem
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param attrUri The Namespace URI of the attribute, or an empty string.
+   * @param attrLocalName The local name (without prefix), or empty string if not namespace processing.
+   * @param attrRawName The raw name of the attribute, including possible prefix.
+   * @param attrValue The attribute's value.
+   * @param elem The object what should contain a property that represents the attribute.
    *
    * @throws org.xml.sax.SAXException
    */

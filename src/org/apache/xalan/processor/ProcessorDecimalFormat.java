@@ -63,7 +63,12 @@ import org.xml.sax.Attributes;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ProcessorDecimalFormat <needs-comment/>
+ * Process xsl:decimal-format by creating a DecimalFormatProperties 
+ * object and passing it to the stylesheet.
+ * 
+ * @see org.apache.xalan.templates.Stylesheet#setDecimalFormat
+ * @see org.apache.xalan.templates.DecimalFormatProperties
+ * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
  */
 class ProcessorDecimalFormat extends XSLTElementProcessor
 {
@@ -80,10 +85,9 @@ class ProcessorDecimalFormat extends XSLTElementProcessor
    *        performed.
    * @param rawName The raw XML 1.0 name (with prefix), or the
    *        empty string if raw names are not available.
-   * @param atts The attributes attached to the element.  If
+   * @param attributes The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
-   * NEEDSDOC @param attributes
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
    * @see org.apache.xalan.processor.StylesheetHandler#endElement
    * @see org.xml.sax.ContentHandler#startElement

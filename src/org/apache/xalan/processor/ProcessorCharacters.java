@@ -78,7 +78,7 @@ public class ProcessorCharacters extends XSLTElementProcessor
    * Receive notification of the start of the non-text event.  This
    * is sent to the current processor when any non-text event occurs.
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    */
   public void startNonText(StylesheetHandler handler) throws org.xml.sax.SAXException
   {
@@ -128,12 +128,12 @@ public class ProcessorCharacters extends XSLTElementProcessor
    * Receive notification of character data inside an element.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param ch The characters.
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#characters
    */
@@ -197,9 +197,11 @@ public class ProcessorCharacters extends XSLTElementProcessor
   private ElemText m_xslTextElement;
 
   /**
-   * Set the current setXslTextElement
+   * Set the current setXslTextElement. The xsl:text 
+   * processor will call this to set a preserve space state.
    *
-   * NEEDSDOC @param xslTextElement
+   * @param xslTextElement The current xslTextElement that 
+   *                       is preserving state, or null.
    */
   void setXslTextElement(ElemText xslTextElement)
   {

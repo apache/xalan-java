@@ -93,7 +93,7 @@ public class XSLTElementProcessor
   /**
    * Get the element definition that belongs to this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element definition object that produced and constrains this element.
    */
   XSLTElementDef getElemDef()
   {
@@ -103,7 +103,7 @@ public class XSLTElementProcessor
   /**
    * Set the element definition that belongs to this element.
    *
-   * NEEDSDOC @param def
+   * @param def The element definition object that produced and constrains this element.
    */
   void setElemDef(XSLTElementDef def)
   {
@@ -114,7 +114,7 @@ public class XSLTElementProcessor
    * Resolve an external entity.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param publicId The public identifer, or null if none is
    *                 available.
    * @param systemId The system identifier provided in the XML
@@ -133,7 +133,7 @@ public class XSLTElementProcessor
    * Receive notification of a notation declaration.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param name The notation name.
    * @param publicId The notation public identifier, or null if not
    *                 available.
@@ -151,7 +151,7 @@ public class XSLTElementProcessor
    * Receive notification of an unparsed entity declaration.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param name The entity name.
    * @param publicId The entity public identifier, or null if not
    *                 available.
@@ -171,7 +171,7 @@ public class XSLTElementProcessor
    * Receive notification of the start of the non-text event.  This
    * is sent to the current processor when any non-text event occurs.
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    */
   public void startNonText(StylesheetHandler handler) throws org.xml.sax.SAXException
   {
@@ -184,10 +184,10 @@ public class XSLTElementProcessor
    *
    * @param name The element type name.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    * @param attributes The specified or defaulted attributes.
    */
   public void startElement(
@@ -204,10 +204,10 @@ public class XSLTElementProcessor
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
@@ -221,7 +221,7 @@ public class XSLTElementProcessor
    * Receive notification of character data inside an element.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param ch The characters.
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
@@ -239,7 +239,7 @@ public class XSLTElementProcessor
    * Receive notification of ignorable whitespace in element content.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param ch The whitespace characters.
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
@@ -257,7 +257,7 @@ public class XSLTElementProcessor
    * Receive notification of a processing instruction.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
@@ -274,7 +274,7 @@ public class XSLTElementProcessor
    * Receive notification of a skipped entity.
    *
    *
-   * NEEDSDOC @param handler
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param name The name of the skipped entity.
    */
   public void skippedEntity(StylesheetHandler handler, String name)

@@ -102,7 +102,8 @@ class ProcessorInclude extends XSLTElementProcessor
   /**
    * Get the base identifier with which this stylesheet is associated.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to the href attribute string, or 
+   *         null if setHref has not been called.
    */
   public String getHref()
   {
@@ -112,10 +113,11 @@ class ProcessorInclude extends XSLTElementProcessor
   /**
    * Get the base identifier with which this stylesheet is associated.
    *
-   * NEEDSDOC @param baseIdent
+   * @param baseIdent Should be a non-null reference to a valid URL string.
    */
   public void setHref(String baseIdent)
   {
+    // Validate?
     m_href = baseIdent;
   }
 
@@ -131,10 +133,12 @@ class ProcessorInclude extends XSLTElementProcessor
    *        performed.
    * @param rawName The raw XML 1.0 name (with prefix), or the
    *        empty string if raw names are not available.
-   * @param atts The attributes attached to the element.  If
+   * @param attributes The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
-   * NEEDSDOC @param attributes
+   *
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
@@ -162,16 +166,19 @@ class ProcessorInclude extends XSLTElementProcessor
   }
 
   /**
-   * NEEDSDOC Method parse 
+   * Set off a new parse for an included or imported stylesheet.  This will 
+   * set the {@link StylesheetHandler} to a new state, and recurse in with 
+   * a new set of parse events.  Once this function returns, the state of 
+   * the StylesheetHandler should be restored.
    *
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, which should be the XSLT namespace.
+   * @param localName The local name (without prefix), which should be "include" or "import".
+   * @param rawName The qualified name (with prefix).
+   * @param attributes The list of attributes on the xsl:include or xsl:import element.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param attributes
-   *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   protected void parse(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)

@@ -73,10 +73,11 @@ class ProcessorTemplate extends ProcessorTemplateElem
    * template element, and then push it onto the current template
    * element stack.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param elem
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param elem Must be a non-null reference to a {@link org.apache.xalan.templates.ElemTemplate} object.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   protected void appendAndPush(
           StylesheetHandler handler, ElemTemplateElement elem)

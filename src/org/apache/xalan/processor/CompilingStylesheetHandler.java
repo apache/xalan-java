@@ -124,7 +124,7 @@ public class CompilingStylesheetHandler
    * Run standard cleanup of the internal representation,
    * then start trying to replace that rep with custom code.
    *
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endDocument
    */
@@ -239,7 +239,7 @@ public class CompilingStylesheetHandler
     try
     {
         // public class ACompiledTemplate000... 
-		// extends CompiledTemplate (partly abstract superclass)
+                // extends CompiledTemplate (partly abstract superclass)
         org.apache.xalan.utils.synthetic.Class tClass=
             org.apache.xalan.utils.synthetic.Class.declareClass(className);
         tClass.setModifiers(java.lang.reflect.Modifier.PUBLIC);
@@ -254,12 +254,12 @@ public class CompilingStylesheetHandler
         ctor.addParameter(tClass.forClass(ElemTemplate.class),"original");
         ctor.addParameter(tClass.forName("java.lang.Object[]"),"interpretArray");
         ctor.getBody().append(
-			"super(original,\n"
-			+'\t'+source.getLineNumber()+','+source.getColumnNumber()+",\n"
-			+'\t'+makeQuotedString(source.getPublicId())+",\n"
-			+'\t'+makeQuotedString(source.getSystemId())+",\n"
-			+"\tinterpretArray);\n"
-		  );
+                        "super(original,\n"
+                        +'\t'+source.getLineNumber()+','+source.getColumnNumber()+",\n"
+                        +'\t'+makeQuotedString(source.getPublicId())+",\n"
+                        +'\t'+makeQuotedString(source.getSystemId())+",\n"
+                        +"\tinterpretArray);\n"
+                  );
 
         // vector built during compilation, winds up in m_interpretArray
         Vector interpretVector=new Vector();
@@ -286,10 +286,10 @@ public class CompilingStylesheetHandler
         // If there are no kids, the body is a no-op.
         ElemTemplateElement firstChild = source.getFirstChildElem();
         if(null == firstChild)
-	  {
-	    exec.getBody().append("//empty template");
-	  }
-	else
+          {
+            exec.getBody().append("//empty template");
+          }
+        else
         {
           // Body startup
           // **** FIRST DRAFT, I'm continuing to use ResultTreeHandler
@@ -317,19 +317,19 @@ public class CompilingStylesheetHandler
               +"if (check)\n"
               +"  transformer.getStackGuard().push(this, sourceNode);\n"
               +"String avtStringedValue; // ***** Optimize away?\n\n"
-		  // Establish dynamic namespace context for this invocation
-			  +"org.xml.sax.helpers.NamespaceSupport nsSupport=new org.xml.sax.helpers.NamespaceSupport();\n"
-			  +"org.xml.sax.helpers.NamespaceSupport savedNsSupport=(org.xml.sax.helpers.NamespaceSupport)m_nsThreadContexts.get(Thread.currentThread());\n"
-			  +"m_nsThreadContexts.put(Thread.currentThread(),nsSupport);\n"
-			  );
+                  // Establish dynamic namespace context for this invocation
+                          +"org.xml.sax.helpers.NamespaceSupport nsSupport=new org.xml.sax.helpers.NamespaceSupport();\n"
+                          +"org.xml.sax.helpers.NamespaceSupport savedNsSupport=(org.xml.sax.helpers.NamespaceSupport)m_nsThreadContexts.get(Thread.currentThread());\n"
+                          +"m_nsThreadContexts.put(Thread.currentThread(),nsSupport);\n"
+                          );
           
           compileChildTemplates(source,body,interpretVector);
           
-		  // Body Cleanup
+                  // Body Cleanup
           body.append(
-		  // Restore dynamic namespace context for this invocation
-			  "if(null!=savedNsSupport) m_nsThreadContexts.put(Thread.currentThread(),savedNsSupport);\n"
-			  +"else m_nsThreadContexts.remove(Thread.currentThread());\n\n"
+                  // Restore dynamic namespace context for this invocation
+                          "if(null!=savedNsSupport) m_nsThreadContexts.put(Thread.currentThread(),savedNsSupport);\n"
+                          +"else m_nsThreadContexts.remove(Thread.currentThread());\n\n"
               +"// Decrement infinite-loop check\n"
               +"if (check)\n"
               +"  transformer.getStackGuard().pop();\n"
@@ -391,18 +391,18 @@ public class CompilingStylesheetHandler
   {
     ++uniqueVarSuffix; // Maintain unique variable naming
       
-	switch(kid.getXSLToken())
-	{
-	case Constants.ELEMNAME_LITERALRESULT:
+        switch(kid.getXSLToken())
+        {
+        case Constants.ELEMNAME_LITERALRESULT:
         compileElemLiteralResult((ElemLiteralResult)kid,body,interpretVector);
-		break;
+                break;
 
-		// TODO: ***** Redirection of attr value not working yet.
-	//case Constants.ELEMNAME_ATTRIBUTE:
+                // TODO: ***** Redirection of attr value not working yet.
+        //case Constants.ELEMNAME_ATTRIBUTE:
     //    compileElemAttribute((ElemAttribute)kid,body,interpretVector);
-	//    break;
-		
-	default:
+        //    break;
+                
+        default:
         // Safety net: We don't yet know how to compile this
         // type of node, so instead we'll pass it into the
         // compiled instance and invoke it interpretively.
@@ -411,8 +411,8 @@ public class CompilingStylesheetHandler
         body.append(
             "((org.apache.xalan.templates.ElemTemplateElement)m_interpretArray["+offset+"]).execute(transformer,sourceNode,mode);\n"
             );
-		break;
-	}
+                break;
+        }
   }  
   
   void compileElemLiteralResult(ElemLiteralResult ele,StringBuffer body,Vector interpretVector)
@@ -618,9 +618,9 @@ public class CompilingStylesheetHandler
   // Used to prepare literal string arguments.
   String makeQuotedString(String in)
   {
-	if(in==null)
-		return "null";
-	
+        if(in==null)
+                return "null";
+        
     StringBuffer out=new StringBuffer("\""); // don't use '"', it's taken as int
       
     int startpos=0,quotepos;
@@ -707,10 +707,10 @@ public class CompilingStylesheetHandler
         +"// warn(templateChild, sourceNode, \"Trying to add attribute after element child has been added, ignoring...\");\n"
         +"}\n"
         );
-	
-	// This check was done in the interpretive code... is it Really Needed?
-	if(null==origAttrName)
-		return;
+        
+        // This check was done in the interpretive code... is it Really Needed?
+        if(null==origAttrName)
+                return;
 
     body.append("boolean "+attributeHandled+"=false;\n");
 
@@ -834,13 +834,13 @@ public class CompilingStylesheetHandler
           kid!=null;
           kid=kid.getNextSiblingElem())
          {
-	   //TODO: *PROBLEM* NEED EQUIVALENT? Node is Going Away...
-	   // body.append("transformer.pushElemTemplateElement(kid);\n");
+           //TODO: *PROBLEM* NEED EQUIVALENT? Node is Going Away...
+           // body.append("transformer.pushElemTemplateElement(kid);\n");
 
            compileElemTemplateElement(kid,body,interpretVector);
 
-	   //TODO: *PROBLEM* NEED EQUIVALENT? Node is Going Away...
-	   // body.append("transformer.popElemTemplateElement(kid);\n");
+           //TODO: *PROBLEM* NEED EQUIVALENT? Node is Going Away...
+           // body.append("transformer.popElemTemplateElement(kid);\n");
          }
 
      // End the class wrapper
@@ -910,24 +910,24 @@ public class CompilingStylesheetHandler
         return null;
     }
 
-	// Try to pick up the same classpath we're executing under. That
-	// ought to include everything in Xalan and the standard libraries.
+        // Try to pick up the same classpath we're executing under. That
+        // ought to include everything in Xalan and the standard libraries.
     String classpath=System.getProperty ("java.class.path");
-	
-	// If compiling with the -g switch (Java debugging), we should retain 
-	// the Java source code to support debugging into the synthesized class.
-	// Some additional diagnostics are also turned on as a side effect.
-	// TODO: Find a better place to put the debugging control.
-	String javac_options=
-			System.getProperty("org.apache.xalan.processor.CompilingStylesheetHandler.options","");
-	boolean debug=(javac_options.indexOf("-g")>=0);
+        
+        // If compiling with the -g switch (Java debugging), we should retain 
+        // the Java source code to support debugging into the synthesized class.
+        // Some additional diagnostics are also turned on as a side effect.
+        // TODO: Find a better place to put the debugging control.
+        String javac_options=
+                        System.getProperty("org.apache.xalan.processor.CompilingStylesheetHandler.options","");
+        boolean debug=(javac_options.indexOf("-g")>=0);
 
-	// Run the compilation. Encapsulates the fallbacks and
-	// workarounds needed to achieve this in various environments.
-	JavaUtils.setDebug(debug);
+        // Run the compilation. Encapsulates the fallbacks and
+        // workarounds needed to achieve this in various environments.
+        JavaUtils.setDebug(debug);
     boolean compileOK=
-		JavaUtils.JDKcompile(filename,classpath);
-	
+                JavaUtils.JDKcompile(filename,classpath);
+        
     if (compileOK)
     {
         if(debug)
@@ -1027,7 +1027,7 @@ public class CompilingStylesheetHandler
     // that helps.
     String className=
         basename
-		+"On"
+                +"On"
         +intAddr
         +"at"
         +new java.util.Date().getTime() // msec since 1970 epoch

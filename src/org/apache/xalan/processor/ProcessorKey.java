@@ -82,9 +82,6 @@ import java.util.Vector;
 class ProcessorKey extends XSLTElementProcessor
 {
 
-  /** NEEDSDOC Field FUNC_KEY_STRING          */
-  static final String FUNC_KEY_STRING = "key";
-
   /**
    * Receive notification of the start of an xsl:key element.
    *
@@ -97,10 +94,9 @@ class ProcessorKey extends XSLTElementProcessor
    *        performed.
    * @param rawName The raw XML 1.0 name (with prefix), or the
    *        empty string if raw names are not available.
-   * @param atts The attributes attached to the element.  If
+   * @param attributes The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
-   * NEEDSDOC @param attributes
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
@@ -154,7 +150,8 @@ class ProcessorKey extends XSLTElementProcessor
       {
         String valueString = attributes.getValue(i);
 
-        if (valueString.indexOf(FUNC_KEY_STRING + "(") >= 0)
+        if (valueString.indexOf(org.apache.xpath.compiler.Keywords.FUNC_KEY_STRING
+                                + "(") >= 0)
           handler.error(
             XSLMessages.createMessage(
             XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);

@@ -70,11 +70,14 @@ public abstract class CompiledTemplate
 extends ElemTemplate 
 implements java.io.Serializable
 {
-  // Object[] m_interpretArray is used to bind to nodes we don't yet
-  // know how to compile. Set at construction.
-  // This array resembles the DOM's getChildren().item(), but includes
-  // some things that aren't children, and is our primary access
-  // point for its contents even when they are kids.
+  /**
+   * Object[] m_interpretArray is used to bind to nodes we don't yet
+  * know how to compile. Set at construction.
+  * This array resembles the DOM's getChildren().item(), but includes
+  * some things that aren't children, and is our primary access
+  * point for its contents even when they are kids.
+  * @serial
+  */
   protected java.lang.Object[] m_interpretArray;
 
   // Namespace context tracking. Note that this is dynamic state
@@ -120,9 +123,9 @@ implements java.io.Serializable
    * in the generated code, for debugging purposes.)
    */
   public CompiledTemplate(ElemTemplate original,
-			  int lineNumber, int columnNumber,
-			  String publicId,String systemId,
-			  java.lang.Object[] interpretArray)
+                          int lineNumber, int columnNumber,
+                          String publicId,String systemId,
+                          java.lang.Object[] interpretArray)
   {
     SAXSourceLocator locator = new SAXSourceLocator();
     locator.setLineNumber(lineNumber);
@@ -148,17 +151,17 @@ implements java.io.Serializable
 
     for(int i=0;i<m_interpretArray.length;++i)
       {
-	if(m_interpretArray[i] instanceof org.apache.xalan.templates.ElemTemplateElement)
-	  {
+        if(m_interpretArray[i] instanceof org.apache.xalan.templates.ElemTemplateElement)
+          {
             org.apache.xalan.templates.ElemTemplateElement ete=
-	      (org.apache.xalan.templates.ElemTemplateElement)
-	      m_interpretArray[i];
-	    
+              (org.apache.xalan.templates.ElemTemplateElement)
+              m_interpretArray[i];
+            
             // Append alone is not enough; it's lightweight, and assumes
             // the child had no previous parent. Need to remove first.
             // (We know that there _was_ a previous parent, of course!)
             appendChild(ete.getParentElem().removeChild(ete));
-	  }
+          }
       }
   } // Constructor initialization ends
   
@@ -168,9 +171,9 @@ implements java.io.Serializable
    * when the actual template code is synthesized.
    */
   public abstract void execute(
-			  org.apache.xalan.transformer.TransformerImpl transformer,
-		      org.w3c.dom.Node sourceNode,
-		      org.apache.xalan.utils.QName mode)
+                          org.apache.xalan.transformer.TransformerImpl transformer,
+                      org.w3c.dom.Node sourceNode,
+                      org.apache.xalan.utils.QName mode)
        throws javax.xml.transform.TransformerException;
   
   /** During deserialization, reinstantiate the transient thread-table
@@ -178,9 +181,9 @@ implements java.io.Serializable
   private void readObject(java.io.ObjectInputStream in)
      throws java.io.IOException, ClassNotFoundException
   {
-	in.defaultReadObject();   
+        in.defaultReadObject();   
 
-	m_nsThreadContexts=new java.util.Hashtable();
+        m_nsThreadContexts=new java.util.Hashtable();
   }
   
 }

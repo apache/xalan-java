@@ -75,7 +75,14 @@ import org.apache.xalan.utils.SAXSourceLocator;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ProcessorLRE <needs-comment/>
+ * Processes an XSLT literal-result-element, or something that looks 
+ * like one.  The actual {@link org.apache.xalan.templates.ElemTemplateElement}
+ * produced may be a {@link org.apache.xalan.templates.ElemLiteralResult}, 
+ * a {@link org.apache.xalan.templates.StylesheetRoot}, or a 
+ * {@link org.apache.xalan.templates.ElemExtensionCall}.
+ * 
+ * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
+ * @see org.apache.xalan.templates.ElemLiteralResult
  */
 public class ProcessorLRE extends ProcessorTemplateElem
 {
@@ -83,12 +90,10 @@ public class ProcessorLRE extends ProcessorTemplateElem
   /**
    * Receive notification of the start of an element.
    *
-   * @param name The element type name.
-   *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    * @param attributes The specified or defaulted attributes.
    */
   public void startElement(
@@ -318,10 +323,10 @@ public class ProcessorLRE extends ProcessorTemplateElem
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)

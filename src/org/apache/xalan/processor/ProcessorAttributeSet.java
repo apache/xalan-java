@@ -82,10 +82,10 @@ class ProcessorAttributeSet extends XSLTElementProcessor
    *        performed.
    * @param rawName The raw XML 1.0 name (with prefix), or the
    *        empty string if raw names are not available.
-   * @param atts The attributes attached to the element.  If
+   * @param attributes The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
-   * NEEDSDOC @param attributes
+   * 
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
@@ -125,10 +125,10 @@ class ProcessorAttributeSet extends XSLTElementProcessor
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param rawName
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)

@@ -78,13 +78,13 @@ class XSLTElementDef
   /**
    * Construct an instance of XSLTElementDef.
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
-   * NEEDSDOC @param nameAlias
-   * NEEDSDOC @param elements
-   * NEEDSDOC @param attributes
-   * NEEDSDOC @param contentHandler
-   * NEEDSDOC @param classObject
+   * @param namespace  The Namespace URI, "*", or null.
+   * @param name The local name (without prefix), "*", or null.
+   * @param nameAlias A potential alias for the name, or null.
+   * @param elements An array of allowed child element defs, or null.
+   * @param attributes An array of allowed attribute defs, or null.
+   * @param contentHandler The element processor for this element.
+   * @param classObject The class of the object that this element def should produce.
    */
   XSLTElementDef(String namespace, String name, String nameAlias,
                  XSLTElementDef[] elements, XSLTAttributeDef[] attributes,
@@ -97,9 +97,9 @@ class XSLTElementDef
   /**
    * Construct an instance of XSLTElementDef that represents text.
    *
-   * NEEDSDOC @param classObject
-   * NEEDSDOC @param contentHandler
-   * NEEDSDOC @param type
+   * @param classObject The class of the object that this element def should produce.
+   * @param contentHandler The element processor for this element.
+   * @param type Content type, one of T_ELEMENT, T_PCDATA, or T_ANY.
    */
   XSLTElementDef(Class classObject, XSLTElementProcessor contentHandler,
                  int type)
@@ -114,13 +114,13 @@ class XSLTElementDef
   /**
    * Construct an instance of XSLTElementDef.
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
-   * NEEDSDOC @param nameAlias
-   * NEEDSDOC @param elements
-   * NEEDSDOC @param attributes
-   * NEEDSDOC @param contentHandler
-   * NEEDSDOC @param classObject
+   * @param namespace  The Namespace URI, "*", or null.
+   * @param name The local name (without prefix), "*", or null.
+   * @param nameAlias A potential alias for the name, or null.
+   * @param elements An array of allowed child element defs, or null.
+   * @param attributes An array of allowed attribute defs, or null.
+   * @param contentHandler The element processor for this element.
+   * @param classObject The class of the object that this element def should produce.
    */
   void build(String namespace, String name, String nameAlias,
              XSLTElementDef[] elements, XSLTAttributeDef[] attributes,
@@ -142,14 +142,15 @@ class XSLTElementDef
    * Tell if two objects are equal, when either one may be null.
    * If both are null, they are considered equal.
    *
-   * NEEDSDOC @param obj1
-   * NEEDSDOC @param obj2
+   * @param obj1 A reference to the first object, or null.
+   * @param obj2 A reference to the second object, or null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the to objects are equal by both being null or 
+   * because obj2.equals(obj1) returns true.
    */
   private static boolean equalsMayBeNull(Object obj1, Object obj2)
   {
-    return ((null == obj1) && (null == obj2))
+    return (obj2 == obj1)
            || ((null != obj1) && (null != obj2) && obj2.equals(obj1));
   }
 
@@ -160,10 +161,13 @@ class XSLTElementDef
    * 2) One string is null and the other is empty.
    * 3) Both strings are non-null, and equal.
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 A reference to the first string, or null.
+   * @param s2 A reference to the second string, or null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if Both strings are null, or if 
+   * one string is null and the other is empty, or if 
+   * both strings are non-null, and equal because 
+   * s1.equals(s2) returns true.
    */
   private static boolean equalsMayBeNullOrZeroLen(String s1, String s2)
   {
@@ -174,7 +178,7 @@ class XSLTElementDef
     return (len1 != len2) ? false : (len1 == 0) ? true : s1.equals(s2);
   }
 
-  /** NEEDSDOC Field T_ELEMENT, T_PCDATA, T_ANY          */
+  /** Content type enumerations    */
   static final int T_ELEMENT = 1, T_PCDATA = 2, T_ANY = 3;
 
   /**
@@ -185,7 +189,7 @@ class XSLTElementDef
   /**
    * Get the type of this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Content type, one of T_ELEMENT, T_PCDATA, or T_ANY.
    */
   int getType()
   {
@@ -195,7 +199,7 @@ class XSLTElementDef
   /**
    * Set the type of this element.
    *
-   * NEEDSDOC @param t
+   * @param t Content type, one of T_ELEMENT, T_PCDATA, or T_ANY.
    */
   void setType(int t)
   {
@@ -210,7 +214,7 @@ class XSLTElementDef
   /**
    * Get the allowed namespace for this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The Namespace URI, "*", or null.
    */
   String getNamespace()
   {
@@ -223,9 +227,9 @@ class XSLTElementDef
   private String m_name;
 
   /**
-   * Get the name of this element.
+   * Get the local name of this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The local name of this element, "*", or null.
    */
   String getName()
   {
@@ -240,7 +244,7 @@ class XSLTElementDef
   /**
    * Get the name of this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A potential alias for the name, or null.
    */
   String getNameAlias()
   {
@@ -255,7 +259,7 @@ class XSLTElementDef
   /**
    * Get the allowed elements for this type.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An array of allowed child element defs, or null.
    */
   XSLTElementDef[] getElements()
   {
@@ -265,7 +269,7 @@ class XSLTElementDef
   /**
    * Set the allowed elements for this type.
    *
-   * NEEDSDOC @param defs
+   * @param defs An array of allowed child element defs, or null.
    */
   void setElements(XSLTElementDef[] defs)
   {
@@ -278,7 +282,8 @@ class XSLTElementDef
    * @param uri The namespace uri, which may be null.
    * @param localName The local name of an element, which may be null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the uri and local name arguments are considered 
+   * to match the uri and local name of this element def.
    */
   private boolean QNameEquals(String uri, String localName)
   {
@@ -292,10 +297,10 @@ class XSLTElementDef
    * Given a namespace URI, and a local name, get the processor
    * for the element, or return null if not allowed.
    *
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element processor that matches the arguments, or null.
    */
   XSLTElementProcessor getProcessorFor(String uri, String localName)
   {
@@ -329,13 +334,14 @@ class XSLTElementDef
   }
 
   /**
-   * Given an unknown element , get the processor
-   * for the element
+   * Given an unknown element, get the processor
+   * for the element.
    *
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return normally a {@link ProcessorUnknown} reference.
+   * @see ProcessorUnknown
    */
   XSLTElementProcessor getProcessorForUnknown(String uri, String localName)
   {
@@ -367,7 +373,7 @@ class XSLTElementDef
   /**
    * Get the allowed attributes for this type.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An array of allowed attribute defs, or null.
    */
   XSLTAttributeDef[] getAttributes()
   {
@@ -378,10 +384,10 @@ class XSLTElementDef
    * Given a namespace URI, and a local name, return the element's
    * attribute definition, if it has one.
    *
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The attribute def that matches the arguments, or null.
    */
   XSLTAttributeDef getAttributeDef(String uri, String localName)
   {
@@ -431,9 +437,9 @@ class XSLTElementDef
   private XSLTElementProcessor m_elementProcessor;
 
   /**
-   * Return the ContentHandler/TransformerFactory for this element.
+   * Return the XSLTElementProcessor for this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element processor for this element.
    */
   XSLTElementProcessor getElementProcessor()
   {
@@ -441,9 +447,9 @@ class XSLTElementDef
   }
 
   /**
-   * Return the ContentHandler/TransformerFactory for this element.
+   * Set the XSLTElementProcessor for this element.
    *
-   * NEEDSDOC @param handler
+   * @param handler The element processor for this element.
    */
   void setElementProcessor(XSLTElementProcessor handler)
   {
@@ -466,7 +472,7 @@ class XSLTElementDef
    * Return the class object that should in instantiated for
    * a Xalan instance of this element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The class of the object that this element def should produce, or null.
    */
   Class getClassObject()
   {

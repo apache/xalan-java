@@ -68,7 +68,7 @@ public class XSLProcessorVersion
   /**
    * Print the processor version to the command line.
    *
-   * NEEDSDOC @param argv
+   * @param argv command line arguments, unused.
    */
   public static void main(String argv[])
   {
