@@ -299,6 +299,33 @@ public class SQLDocument extends DTMDefaultBaseIterators
       try
       {
         addAttributeToNode(
+          meta.getColumnName(i),
+          m_ColAttrib_COLUMN_NAME_TypeID, lastColHeaderIdx);
+      }
+      catch(Exception e)
+      {
+        addAttributeToNode(
+          S_ATTRIB_NOT_SUPPORTED,
+          m_ColAttrib_COLUMN_NAME_TypeID, lastColHeaderIdx);
+      }
+
+      try
+      {
+        addAttributeToNode(
+          meta.getColumnLabel(i),
+          m_ColAttrib_COLUMN_LABEL_TypeID, lastColHeaderIdx);
+      }
+      catch(Exception e)
+      {
+        addAttributeToNode(
+          S_ATTRIB_NOT_SUPPORTED,
+          m_ColAttrib_COLUMN_LABEL_TypeID, lastColHeaderIdx);
+      }
+
+/*
+      try
+      {
+        addAttributeToNode(
           meta.getCatalogName(i),
           m_ColAttrib_CATALOGUE_NAME_TypeID, lastColHeaderIdx);
       }
@@ -320,32 +347,6 @@ public class SQLDocument extends DTMDefaultBaseIterators
         addAttributeToNode(
           S_ATTRIB_NOT_SUPPORTED,
           m_ColAttrib_DISPLAY_SIZE_TypeID, lastColHeaderIdx);
-      }
-
-      try
-      {
-        addAttributeToNode(
-          meta.getColumnLabel(i),
-          m_ColAttrib_COLUMN_LABEL_TypeID, lastColHeaderIdx);
-      }
-      catch(Exception e)
-      {
-        addAttributeToNode(
-          S_ATTRIB_NOT_SUPPORTED,
-          m_ColAttrib_COLUMN_LABEL_TypeID, lastColHeaderIdx);
-      }
-
-      try
-      {
-        addAttributeToNode(
-          meta.getColumnName(i),
-          m_ColAttrib_COLUMN_NAME_TypeID, lastColHeaderIdx);
-      }
-      catch(Exception e)
-      {
-        addAttributeToNode(
-          S_ATTRIB_NOT_SUPPORTED,
-          m_ColAttrib_COLUMN_NAME_TypeID, lastColHeaderIdx);
       }
 
       try
@@ -501,7 +502,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
           S_ATTRIB_NOT_SUPPORTED,
           m_ColAttrib_ISSEARCHABLE_TypeID, lastColHeaderIdx);
       }
-
+*/
     }
 
   }
