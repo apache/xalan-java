@@ -100,7 +100,7 @@ public class FuncTokenize extends Function3Args
     	int[] range = regex.matchString(input, index, length);
     	int start = range[0];
     	int end = range[1];
-    	if (end >0)
+    	if (end >= 0)
     	{
     		seq.insertItemAt(new XString(input.substring(index, start)), i++); 
     	    index = end;

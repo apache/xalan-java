@@ -130,8 +130,7 @@ public class BMPattern {
      */
     public int matches(String str, int start, int limit) {
         if (this.ignoreCase)  return this.matchesIgnoreCase(str, start, limit);
-        System.out.println("<< " + this.pattern.toString());
-        int plength = this.pattern.length;
+       int plength = this.pattern.length;
         if (plength == 0)  return start;
         int index = start+plength;
         while (index <= limit) {

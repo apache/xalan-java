@@ -67,26 +67,26 @@ public class Token implements java.io.Serializable {
     static final boolean COUNTTOKENS = true;
     static int tokens = 0;
 
-    static final int CHAR = 0;                  // Literal char
-    static final int DOT = 11;                  // .
-    static final int CONCAT = 1;                // XY
-    static final int UNION = 2;                 // X|Y|Z
-    static final int CLOSURE = 3;               // X*
-    static final int RANGE = 4;                 // [a-zA-Z] etc.
-    static final int NRANGE = 5;                // [^a-zA-Z] etc.
-    static final int PAREN = 6;                 // (X) or (?:X)
-    static final int EMPTY = 7;                 //
-    static final int ANCHOR = 8;                // ^ $ \b \B \< \> \A \Z \z
-    static final int NONGREEDYCLOSURE = 9;      // *? +?
-    static final int STRING = 10;               // strings
-    static final int BACKREFERENCE = 12;        // back references
-    static final int LOOKAHEAD = 20;            // (?=...)
-    static final int NEGATIVELOOKAHEAD = 21;    // (?!...)
-    static final int LOOKBEHIND = 22;           // (?<=...)
-    static final int NEGATIVELOOKBEHIND = 23;   // (?<!...)
-    static final int INDEPENDENT = 24;          // (?>...)
-    static final int MODIFIERGROUP = 25;        // (?ims-ims:...)
-    static final int CONDITION = 26;            // (?(...)yes|no)
+    public static final int CHAR = 0;                  // Literal char
+    public static final int DOT = 11;                  // .
+    public static final int CONCAT = 1;                // XY
+    public static final int UNION = 2;                 // X|Y|Z
+    public static final int CLOSURE = 3;               // X*
+    public static final int RANGE = 4;                 // [a-zA-Z] etc.
+    public static final int NRANGE = 5;                // [^a-zA-Z] etc.
+    public static final int PAREN = 6;                 // (X) or (?:X)
+    public static final int EMPTY = 7;                 //
+    public static final int ANCHOR = 8;                // ^ $ \b \B \< \> \A \Z \z
+    public static final int NONGREEDYCLOSURE = 9;      // *? +?
+    public static final int STRING = 10;               // strings
+    public static final int BACKREFERENCE = 12;        // back references
+    public static final int LOOKAHEAD = 20;            // (?=...)
+    public static final int NEGATIVELOOKAHEAD = 21;    // (?!...)
+    public static final int LOOKBEHIND = 22;           // (?<=...)
+    public static final int NEGATIVELOOKBEHIND = 23;   // (?<!...)
+    public static final int INDEPENDENT = 24;          // (?>...)
+    public static final int MODIFIERGROUP = 25;        // (?ims-ims:...)
+    public static final int CONDITION = 26;            // (?(...)yes|no)
 
     static final int UTF16_MAX = 0x10ffff;
 
@@ -273,6 +273,10 @@ public class Token implements java.io.Serializable {
     }
     int getChar() {
         return -1;
+    }
+    
+    public int getType() {
+        return type;
     }
 
     public String toString() {

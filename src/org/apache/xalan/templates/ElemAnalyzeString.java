@@ -323,43 +323,75 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     
     String selectResult = m_selectExpression.execute(xctxt).str();
     XSequenceImpl matchSeq = new XSequenceImpl();
-    XSequenceImpl noMatchSeq = new XSequenceImpl();;
-    
-     
+    XSequenceImpl noMatchSeq = new XSequenceImpl();         
+  		  		
     RegularExpression regexp = new RegularExpression(regexValue, flagsValue);
-    int index = 0;
+    int groups = regexp.getNumberOfGroups();
+  	Token tokenTree = regexp.getTokenTree();
+    Token child;
+  	int index = 0;
     int length = selectResult.length();
-    int i=0, j=0;    	
+    int i=0, j=0, t=0;    	
     while (index < length)
     {
-    	int[] range = regexp.matchString(selectResult, index, length);
-    	int start = range[0];
-    	int end = range[1];
-    	if (end >0)
+    	if(tokenTree.size() > 0)
     	{
-    		matchSeq.insertItemAt(new XString(selectResult.substring(start, end)), i++);
-    	    noMatchSeq.insertItemAt(new XString(selectResult.substring(index, start)), j++); 
+    	for(i=0; i<tokenTree.size(); i++)
+  		{
+  			child = tokenTree.getChild(i);
+  			regexp.compileToken(child);
+  			int[] range = regexp.matchString(selectResult, index, length);
+    	   int start = range[0];
+    	   int end = range[1];
+    	   if (end >=0)
+    	   {
+    		if (child.getType() == Token.PAREN)
+    		matchSeq.insertItemAt(new XString(selectResult.substring(start, end)), t++);
+    		noMatchSeq.insertItemAt(new XString(selectResult.substring(index, start)), j++); 
     	    index = end;
+    	   }
+    	   else
+    	   {
+    	   noMatchSeq.insertItemAt(new XString(selectResult.substring(index)), j++);     	    	
+    	   index = length;
+    	   }
+  		}
     	}
     	else
     	{
+    		int[] range = regexp.matchString(selectResult, index, length);
+    	   int start = range[0];
+    	   int end = range[1];
+    	   if (end >=0)
+    	   {
+    		matchSeq.insertItemAt(new XString(selectResult.substring(start, end)), i++);
+    		noMatchSeq.insertItemAt(new XString(selectResult.substring(index, start)), j++); 
+    	    index = end;
+    	   }
+    	   else
+    	   {
     	   noMatchSeq.insertItemAt(new XString(selectResult.substring(index)), j++);     	    	
     	   index = length;
-    	}
-    	   if (m_nonMatchingSubstring != null)
+    	   }
+  		}
+    		
+    		
+  		
+    	if (m_nonMatchingSubstring != null)
     	   {
     		   m_nonMatchingSubstring.setRegexGroup(noMatchSeq);
     		   xctxt.setSAXLocator(m_nonMatchingSubstring);
                transformer.setCurrentElement(m_nonMatchingSubstring);
     	       m_nonMatchingSubstring.execute(transformer);
     	   }
-    	   if (m_matchingSubstring != null)
+    	if (m_matchingSubstring != null && matchSeq.getLength()>0)
     	   {
     	       m_matchingSubstring.setRegexGroup(matchSeq);
     	       xctxt.setSAXLocator(m_matchingSubstring);
                transformer.setCurrentElement(m_matchingSubstring);
     	       m_matchingSubstring.execute(transformer);
     	   }
+  		
       }
     }
     finally

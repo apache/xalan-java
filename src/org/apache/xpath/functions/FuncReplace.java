@@ -87,7 +87,7 @@ public class FuncReplace extends FunctionMultiArgs
   	String replace = m_arg2.execute(xctxt).str();
   	String flags = "";
   	if (m_args != null)
-  	flags = m_args[3].execute(xctxt).str(); 
+  	flags = m_args[0].execute(xctxt).str(); 
   	
   	RegularExpression regex = new RegularExpression(pattern, flags);
   	String outString = "";
@@ -104,6 +104,7 @@ public class FuncReplace extends FunctionMultiArgs
        while (index < length)
     {
     	String[] s = new String[tokenTree.size()];
+    	int t=0;
   		for(int i=0; i<tokenTree.size(); i++)
   		{
   			child = tokenTree.getChild(i);
@@ -111,15 +112,16 @@ public class FuncReplace extends FunctionMultiArgs
   			int[] range = regex.matchString(input, index, length);
     	int start = range[0];
     	int end = range[1];
-    	if (end >0)
+    	if (end >= 0)
     	{
-    		s[i] = input.substring(start, end);
+    		if (child.getType() == Token.PAREN)
+    		s[t++] = input.substring(start, end);
     		outString = outString + input.substring(index, start);
     	    index = end;
   		}
   		else
     	{
-    	    s[i] = "";
+    	    s[t++] = "";
     	    outString = outString + input.substring(index);
     	    index = length;
     	}
@@ -141,7 +143,8 @@ public class FuncReplace extends FunctionMultiArgs
     		}
     		else
     		{
-    		repVars = repVars + s[Integer.parseInt(String.valueOf(replace.charAt(indexVar+1)))];
+    			// need to account for the fact that our array starts at 0 
+    		repVars = repVars + s[Integer.parseInt(String.valueOf(replace.charAt(indexVar+1))) - 1];
     		start = indexVar + 2;
     		}
     		}
@@ -162,7 +165,7 @@ public class FuncReplace extends FunctionMultiArgs
     	int[] range = regex.matchString(input, index, length);
     	int start = range[0];
     	int end = range[1];
-    	if (end >0)
+    	if (end >= 0)
     	{
     		outString = outString + input.substring(index, start);
     	    outString = outString + replace; 
