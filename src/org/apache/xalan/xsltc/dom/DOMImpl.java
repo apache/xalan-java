@@ -789,10 +789,13 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public int next() {
-	    for (int node = _currentChild; node != END;
-		 node = _nextSibling[node]) {
-		if (_type[node] == _nodeType) {
-		    _currentChild = _nextSibling[node];
+	    final short[] type = _type;
+	    final int nodeType = _nodeType;
+	    final int[] nextSibling = _nextSibling;
+
+	    for (int node = _currentChild; node != END; node = nextSibling[node]) {
+		if (type[node] == nodeType) {
+		    _currentChild = nextSibling[node];
 		    return returnNode(node);
 		}
 	    }
@@ -2456,19 +2459,23 @@ public final class DOMImpl implements DOM, Externalizable {
 	   to a DOM type are mapped to the DOM.ELEMENT type).
 	*/
 
+	// Most common case handled first
+	if (axis == Axis.CHILD && type != ELEMENT) {
+	    return new TypedChildrenIterator(type);
+	}
+
 	if (type == NO_TYPE) {
 	    return EMPTYITERATOR;
 	}
-        else if ((type == ELEMENT) && (axis != Axis.NAMESPACE)) {
+
+        if (type == ELEMENT && axis != Axis.NAMESPACE) {
 	    return new FilterIterator(getAxisIterator(axis),
-					  getElementFilter());
+				      getElementFilter());
 	}
 	else {
 	    switch (axis) {
 	    case Axis.SELF:
 		return new TypedSingletonIterator(type);
-	    case Axis.CHILD:
-		return new TypedChildrenIterator(type);
 	    case Axis.PARENT:
 		return new ParentIterator().setNodeType(type);
 	    case Axis.ANCESTOR:
@@ -2768,8 +2775,13 @@ public final class DOMImpl implements DOM, Externalizable {
     /**
      * Returns the string value of the entire tree
      */
+    private String _cachedStringValue = null;
+
     public String getStringValue() {
-	return getElementValue(ROOTNODE);
+	if (_cachedStringValue == null) {
+	    _cachedStringValue = getElementValue(ROOTNODE);
+	}
+	return _cachedStringValue;
     }
 
     /**
@@ -2996,11 +3008,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	private String getNamespaceURI(String prefix) {
 	    // Get the stack associated with this namespace prefix
 	    final Stack stack = (Stack)_nsPrefixes.get(prefix);
-	    if ((stack != null) && (!stack.empty())) {
-		return((String)stack.peek());
-	    }
-	    else
-		return(EMPTYSTRING);
+	    return (stack != null && !stack.empty()) ? (String) stack.peek()
+		: EMPTYSTRING;
 	}
 
 	/**
@@ -3445,23 +3454,14 @@ public final class DOMImpl implements DOM, Externalizable {
 		    }
 		}
 		// Did we append namespace nodes only?
-		if (!attrsAdded && last != -1) {
-		    _nextSibling2[last] = DOM.NULL;
-		}
-		else {
-		    _nextSibling2[attr] = DOM.NULL;
-		}
+		_nextSibling2[(!attrsAdded && last != -1) ? last : attr] = DOM.NULL;
 	    }
 
 	    final int col = qname.lastIndexOf(':');
 
 	    // Assign an internal type to this element (may exist)
-	    if (uri != null && localName.length() > 0) {
-		_type[node] = makeElementNode(uri, localName);
-	    }
-	    else {
-		_type[node] = makeElementNode(qname, col);
-	    }
+	    _type[node] = (uri != null && localName.length() > 0) ?
+		makeElementNode(uri, localName) : makeElementNode(qname, col);
 
 	    // Assign an internal type to the element's prefix (may exist)
 	    if (col > -1) {
