@@ -142,11 +142,6 @@ public final class FilterIterator extends NodeIteratorBase {
 	return this;
     }
 
-    public int getPosition() {
-	final int last = getLast();
-	return _isReverse ? last - _position + 1 : _position;
-    }
-
     public void setMark() {
 	_source.setMark();
     }

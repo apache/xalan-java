@@ -113,6 +113,15 @@ public final class BasisLibrary implements Operators {
     }
 
     /**
+     * Standard function position()
+     */
+    public static int positionF(NodeIterator iterator) {
+       return iterator.isReverse()
+                     ? iterator.getLast() - iterator.getPosition() + 1
+                     : iterator.getPosition();
+    }
+
+    /**
      * XSLT Standard function sum(node-set). 
      * stringToDouble is inlined
      */

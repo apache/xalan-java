@@ -90,11 +90,12 @@ final class PositionCall extends FunctionCall {
 	}
 	else {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
-	    final int getPosition = cpg.addInterfaceMethodref(NODE_ITERATOR,
-							      "getPosition", 
-							      "()I");
+            final int index =
+                    cpg.addMethodref(BASIS_LIBRARY_CLASS, "positionF",
+                                     "("+NODE_ITERATOR_SIG+")I");
+
 	    il.append(methodGen.loadIterator());
-	    il.append(new INVOKEINTERFACE(getPosition, 1));
+            il.append(new INVOKESTATIC(index));
 	}
     }
 }

@@ -1190,10 +1190,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    return resetPosition();
 	}
 
-	public int getPosition() {
-	    return getLast() - _position + 1;
-	}
-
 	public void setMark() {
 	    _markedNode = _sibling;
 	}
@@ -1293,10 +1289,6 @@ public final class DOMImpl implements DOM, Externalizable {
 		_node++;	// skip ancestor
 	    }
 	    return END;
-	}
-
-	public int getPosition() {
-	    return getLast() - _position + 1;
 	}
 
 	public NodeIterator reset() {
@@ -1456,10 +1448,6 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int getLast() {
 	    return _last;
-	}
-
-	public int getPosition() {
-	    return _last - _position + 1;	
 	}
 
 	public NodeIterator reset() {

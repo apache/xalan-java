@@ -99,10 +99,14 @@ public final class NthIterator extends NodeIteratorBase {
 
     public int next() {
 	if (_ready && _position > 0) {
+            final int pos = _source.isReverse()
+                                       ? _source.getLast() - _position + 1
+                                       : _position;
+
 	    _ready = false;
 	    int node;
 	    while ((node = _source.next()) != END) {
-		if (_position == _source.getPosition()) {
+		if (pos == _source.getPosition()) {
 		    return node;
 		}
 	    }

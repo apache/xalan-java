@@ -197,13 +197,6 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	return this;
     }
 	
-    public int getPosition() {
-	if (_last == -1) {
-	    _last = computePositionOfLast();
-	}
-	return _docOrder ? _position : _last - _position + 1;
-    }
-
     public int getLast() {
 	if (_last == -1) {
 	    _last = computePositionOfLast();
