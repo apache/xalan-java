@@ -162,7 +162,11 @@ public class StylesheetProcessor extends Processor
     // If you set the namespaces to true, we'll end up getting double 
     // xmlns attributes.  Needs to be fixed.  -sb
     // reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-    reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
+    try {
+	reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
+    } catch( SAXException ex ) {
+	// feature not recognized
+    }
     reader.setContentHandler(builder);
     reader.parse(source);
     return builder.getTemplates();
