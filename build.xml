@@ -1007,6 +1007,10 @@ Copyright:
          classpathref="docs.class.path" >
       <arg line="targetDirectory=${build.docs}/xsltc ${xdocs.dir}/sources/xsltc.xml ${xdocs.style}"/>
     </java>	 
+    <copy todir="${build.docs}/xsltc" 
+	file="${xdocs.dir}/sources/xsltc/README.xslt" />
+    <copy todir="${build.docs}/xsltc" 
+	file="${xdocs.dir}/sources/xsltc/README.xsltc" />
  </target>
  
    <!-- pack all doc for transfer to website -->
