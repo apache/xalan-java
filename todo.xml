@@ -31,6 +31,12 @@
   <person name="Gary L Peskin" email="garyp@firstech.com" id="GP" expertise="code">
     Xalan-J 1.x and 2.x developer, especially extension mechanisim.
   </person>
+  <person name="John Gentilin" email="johng@apache.org" id="JG" expertise="code">
+    Major work on the SQL extensions library.
+   </person>
+   <person name="Costin Manolache" email="costin@apache.org" id="CM" expertise="code">
+     JAXP expert.
+   </person>
 
  </devs>
 
