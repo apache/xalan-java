@@ -168,6 +168,7 @@ public class ElemAttribute extends ElemTemplateElement
     if(null == rhandler.getPendingElementName())
     {
       transformer.getMsgMgr().warn(XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME, new Object[]{origAttrName}); 
+      return;
       // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
     }
 
