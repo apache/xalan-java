@@ -130,13 +130,22 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   
   private boolean indexedLookup = false;      // for now 
   
+  private int m_eventsCount = 0;
+  private int m_maxEventsToNotify = 10;
+  
   private void notifyWaiters()
   {
-    Object synchObj = getSynchObject();
-    synchronized (synchObj)
-    {      
-      synchObj.notifyAll();
+    if(m_useMultiThreading && (m_eventsCount >= m_maxEventsToNotify))
+    {
+      Object synchObj = getSynchObject();
+      synchronized (synchObj)
+      {      
+        synchObj.notifyAll();
+      }
+      m_eventsCount = 0;
     }
+    else
+      m_eventsCount++;
   }
   
     
@@ -181,6 +190,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
       {
         m_transformer.setSourceTreeDocForThread(m_root);
         Thread t = new Thread(m_transformer);
+        m_transformer.setTransformThread(t);
         t.start();
       }
     }
@@ -206,25 +216,22 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
         m_transformer.transformNode(m_root);
       }
     }
+    m_eventsCount = m_maxEventsToNotify;
     notifyWaiters();
     
     if(m_useMultiThreading && (null != m_transformer))
     {
-      // Since the transform is on the secondary thread, we 
-      // can't really exit until it is done, so we wait...
-      // System.out.println("m_transformer.isTransformDone():" + m_transformer.isTransformDone());
-      while(!m_transformer.isTransformDone())
+      Thread transformThread = m_transformer.getTransformThread();
+      if(null != transformThread)
       {
-        synchronized(synchObj)
+        try
         {
-          try
-          {
-            // System.out.println("Waiting...");
-            synchObj.wait();
-          }
-          catch(InterruptedException ie)
-          {
-          }
+          // This should wait until the transformThread is considered not alive.
+          transformThread.join();
+          m_transformer.setTransformThread(null);
+        }
+        catch(InterruptedException ie)
+        {
         }
       }
     }
