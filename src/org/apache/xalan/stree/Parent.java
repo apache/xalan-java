@@ -348,8 +348,8 @@ public class Parent extends Child
     }
     else
     {
-      m_last.m_next = child;
       child.m_prev = m_last;
+      m_last.m_next = child;
     }
 
     m_last = child;
