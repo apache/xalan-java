@@ -1074,9 +1074,7 @@ public class ElemTemplateElement extends UnImplNode
     if (uri != null)
     {
       if (uri.equals(Constants.S_XSLNAMESPACEURL)
-              || getStylesheet().containsExtensionElementURI(uri)
-              || uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL)
-              || uri.equals(Constants.S_BUILTIN_OLD_EXTENSIONS_URL))
+              || getStylesheet().containsExtensionElementURI(uri))
         return true;
 
       if (containsExcludeResultPrefix(prefix, uri))
