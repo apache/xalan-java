@@ -112,6 +112,8 @@ public class ErrorMessages extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
@@ -257,7 +259,7 @@ public class ErrorMessages extends ListResourceBundle {
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
         "Could not resolve the URI reference ''{0}''."},
- 
+
          /*
          * Note to translators:  The stylesheet contained an element that was
          * not recognized as part of the XSL syntax.  The substitution text
@@ -268,13 +270,22 @@ public class ErrorMessages extends ListResourceBundle {
 
         /*
          * Note to translators:  The stylesheet referred to an extension to the
-         * XSL syntax and indicated that it was defined by XSLTC, but XSTLC does
-         * not recognized the particular extension named.  The substitution text
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
          * gives the extension name.
          */
         {BasisLibrary.UNSUPPORTED_EXT_ERR,
-        "Unrecognised XSLTC extension ''{0}''"}
-       
+        "Unrecognized XSLTC extension ''{0}''"},
+
+
+        //
+        // Note to translators:  This error message is produced if the translet
+        // class was compiled using a newer version of XSLTC and deployed for
+        // execution with an older version of XSLTC.  The substitution text is
+        // the name of the translet class.
+        //
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "The specified translet, ''{0}'', was created using a version of XSLTC more recent than the version of the XSLTC run-time that is in use.  You must recompile the stylesheet or use a more recent version of XSLTC to run this translet."}
     };
 
     public Object[][] getContents() {

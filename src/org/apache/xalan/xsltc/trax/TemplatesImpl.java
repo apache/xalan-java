@@ -370,6 +370,7 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    // The translet needs to keep a reference to all its auxiliary 
 	    // class to prevent the GC from collecting them
 	    AbstractTranslet translet = (AbstractTranslet) _class[_transletIndex].newInstance();
+            translet.postInitialization();
 	    translet.setTemplates(this);
 	    if (_auxClasses != null) {
 	        translet.setAuxiliaryClasses(_auxClasses);
