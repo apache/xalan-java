@@ -66,6 +66,7 @@
 package org.apache.xalan.xsltc.runtime;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.Stack;
 import java.util.Enumeration;
 
@@ -589,6 +590,13 @@ public final class TextOutput implements TransletOutputHandler {
 	if (_outputType == TEXT) return; 
 
 	if (_startTagOpen) {
+
+	    // URL-encode href attributes in HTML output
+	    if ((_outputType == HTML) && (name.equals("href"))) {
+		_attributes.add(name, URLEncoder.encode(value));
+		return;
+	    }
+
 	    // Intercept namespace declarations and handle them separately
 	    if (name.startsWith("xmlns")) {
 		if (name.length() == 5)
@@ -610,9 +618,9 @@ public final class TextOutput implements TransletOutputHandler {
 		    if (uri.equals(EMPTYSTRING)) name = localname;
 		}
 		if (_outputType == HTML)
-		    _attributes.add(name,value);
+		    _attributes.add(name, value);
 		else
-		    _attributes.add(name,escapeChars(value));
+		    _attributes.add(name, escapeChars(value));
 	    }
 	}
 	else {
