@@ -116,9 +116,9 @@ public class XObject extends Expression implements Serializable
   /**
    * Create the right XObject based on the type of the object passed.
    *
-   * NEEDSDOC @param val
+   * @param val The java object which this object will wrap.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the right XObject based on the type of the object passed.
    */
   static public XObject create(Object val)
   {
@@ -162,25 +162,25 @@ public class XObject extends Expression implements Serializable
     return result;
   }
 
-  /** NEEDSDOC Field CLASS_NULL          */
+  /** Constant for NULL object type          */
   public static final int CLASS_NULL = -1;
 
-  /** NEEDSDOC Field CLASS_UNKNOWN          */
+  /** Constant for UNKNOWN object type         */
   public static final int CLASS_UNKNOWN = 0;
 
-  /** NEEDSDOC Field CLASS_BOOLEAN          */
+  /** Constant for BOOLEAN  object type        */
   public static final int CLASS_BOOLEAN = 1;
 
-  /** NEEDSDOC Field CLASS_NUMBER          */
+  /** Constant for NUMBER object type         */
   public static final int CLASS_NUMBER = 2;
 
-  /** NEEDSDOC Field CLASS_STRING          */
+  /** Constant for STRING object type         */
   public static final int CLASS_STRING = 3;
 
-  /** NEEDSDOC Field CLASS_NODESET          */
+  /** Constant for NODESET object type         */
   public static final int CLASS_NODESET = 4;
 
-  /** NEEDSDOC Field CLASS_RTREEFRAG          */
+  /** Constant for RESULT TREE FRAGMENT object type         */
   public static final int CLASS_RTREEFRAG = 5;
 
   /** Represents an unresolved variable type as an integer.          */
@@ -200,7 +200,7 @@ public class XObject extends Expression implements Serializable
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type string "#UNKNOWN" + object class name
    */
   public String getTypeString()
   {
@@ -208,9 +208,9 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Cast result object to a number.
+   * Cast result object to a number. Always issues an error.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return 0.0
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -224,9 +224,9 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Cast result object to a boolean.
+   * Cast result object to a boolean. Always issues an error.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -242,7 +242,7 @@ public class XObject extends Expression implements Serializable
   /**
    * Cast result object to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object as a string
    */
   public String str()
   {
@@ -250,10 +250,10 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * NEEDSDOC Method toString 
+   * Return the string representation of the object 
    *
    *
-   * NEEDSDOC (toString) @return
+   * @return the string representation of the object
    */
   public String toString()
   {
@@ -263,9 +263,9 @@ public class XObject extends Expression implements Serializable
   /**
    * Cast result object to a result tree fragment.
    *
-   * NEEDSDOC @param support
+   * @param support XPath context to use for the conversion
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the objec as a result tree fragment.
    */
   public DocumentFragment rtree(XPathContext support)
   {
@@ -289,7 +289,7 @@ public class XObject extends Expression implements Serializable
   /**
    * For functions to override.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public DocumentFragment rtree()
   {
@@ -297,10 +297,10 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Return a java object that's closes to the represenation
+   * Return a java object that's closest to the representation
    * that should be handed to an extension.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object that this class wraps
    */
   public Object object()
   {
@@ -308,9 +308,9 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Cast result object to a nodelist.
+   * Cast result object to a nodelist. Always issues an error.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -324,9 +324,9 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Cast result object to a nodelist.
+   * Cast result object to a nodelist. Always issues an error.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object as a NodeSet.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -342,10 +342,10 @@ public class XObject extends Expression implements Serializable
   /**
    * Cast object to type t.
    *
-   * NEEDSDOC @param t
-   * NEEDSDOC @param support
+   * @param t Type of object to cast this to
+   * @param support XPath context to use for the conversion 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This object as the given type t
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -389,9 +389,9 @@ public class XObject extends Expression implements Serializable
   /**
    * Tell if one object is less than the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if this object is less than the given object 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -412,9 +412,9 @@ public class XObject extends Expression implements Serializable
   /**
    * Tell if one object is less than or equal to the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if this object is less than or equal to the given object 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -433,11 +433,11 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Tell if one object is less than the other.
+   * Tell if one object is greater than the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if this object is greater than the given object 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -456,11 +456,11 @@ public class XObject extends Expression implements Serializable
   }
 
   /**
-   * Tell if one object is less than the other.
+   * Tell if one object is greater than or equal to the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if this object is greater than or equal to the given object 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -482,9 +482,9 @@ public class XObject extends Expression implements Serializable
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if this object is equal to the given object 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -503,9 +503,9 @@ public class XObject extends Expression implements Serializable
   /**
    * Tell if two objects are functionally not equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if this object is not equal to the given object 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -525,7 +525,7 @@ public class XObject extends Expression implements Serializable
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
+   * @param msg Error message to issue
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -538,8 +538,8 @@ public class XObject extends Expression implements Serializable
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg Error message to issue
+   * @param args Arguments to use in the message 
    *
    * @throws javax.xml.transform.TransformerException
    */

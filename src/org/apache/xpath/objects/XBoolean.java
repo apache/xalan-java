@@ -78,13 +78,13 @@ public class XBoolean extends XObject
    */
   public static XBoolean S_FALSE = new XBooleanStatic(false);
 
-  /** NEEDSDOC Field m_val          */
+  /** Value of the object          */
   boolean m_val;
 
   /**
-   * Construct a XNodeSet object.
+   * Construct a XBoolean object.
    *
-   * NEEDSDOC @param b
+   * @param b Value of the boolean object
    */
   public XBoolean(boolean b)
   {
@@ -97,7 +97,7 @@ public class XBoolean extends XObject
   /**
    * Tell that this is a CLASS_BOOLEAN.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type of CLASS_BOOLEAN
    */
   public int getType()
   {
@@ -108,7 +108,7 @@ public class XBoolean extends XObject
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type string "#BOOLEAN"
    */
   public String getTypeString()
   {
@@ -118,7 +118,7 @@ public class XBoolean extends XObject
   /**
    * Cast result object to a number.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return numeric value of the object value
    */
   public double num()
   {
@@ -128,7 +128,7 @@ public class XBoolean extends XObject
   /**
    * Cast result object to a boolean.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object value as a boolean
    */
   public boolean bool()
   {
@@ -138,7 +138,7 @@ public class XBoolean extends XObject
   /**
    * Cast result object to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object's value as a string
    */
   public String str()
   {
@@ -146,10 +146,10 @@ public class XBoolean extends XObject
   }
 
   /**
-   * Return a java object that's closes to the represenation
+   * Return a java object that's closest to the representation
    * that should be handed to an extension.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object's value as a java object
    */
   public Object object()
   {
@@ -159,9 +159,9 @@ public class XBoolean extends XObject
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare to this  
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the two objects are equal
    *
    * @throws javax.xml.transform.TransformerException
    */

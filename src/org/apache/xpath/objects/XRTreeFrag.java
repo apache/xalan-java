@@ -71,9 +71,9 @@ public class XRTreeFrag extends XObject
 {
 
   /**
-   * Create an XObject.
+   * Create an XRTreeFrag Object.
    *
-   * NEEDSDOC @param frag
+   * @param frag Document fragment this will wrap
    */
   public XRTreeFrag(DocumentFragment frag)
   {
@@ -83,7 +83,7 @@ public class XRTreeFrag extends XObject
   /**
    * Tell what kind of class this is.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type CLASS_RTREEFRAG 
    */
   public int getType()
   {
@@ -94,7 +94,7 @@ public class XRTreeFrag extends XObject
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type string "#RTREEFRAG"
    */
   public String getTypeString()
   {
@@ -104,7 +104,7 @@ public class XRTreeFrag extends XObject
   /**
    * Cast result object to a number.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The result tree fragment as a number or NaN
    */
   public double num()
   {
@@ -143,7 +143,7 @@ public class XRTreeFrag extends XObject
    * Cast result object to a boolean.  This always returns true for a RTreeFrag
    * because it is treated like a node-set with a single root node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true
    */
   public boolean bool()
   {
@@ -153,7 +153,7 @@ public class XRTreeFrag extends XObject
   /**
    * Cast result object to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The document fragment node data or the empty string. 
    */
   public String str()
   {
@@ -166,7 +166,7 @@ public class XRTreeFrag extends XObject
   /**
    * Cast result object to a result tree fragment.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The document fragment this wraps
    */
   public DocumentFragment rtree()
   {
@@ -174,9 +174,9 @@ public class XRTreeFrag extends XObject
   }
 
   /**
-   * Cast result object to a nodelist.
+   * Cast result object to a NodeIterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The document fragment as a NodeIterator
    */
   public NodeIterator asNodeIterator()
   {
@@ -190,7 +190,7 @@ public class XRTreeFrag extends XObject
   /**
    * Cast result object to a nodelist. (special function).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The document fragment as a nodelist
    */
   public NodeList convertToNodeset()
   {
@@ -204,9 +204,9 @@ public class XRTreeFrag extends XObject
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the two objects are equal
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -251,22 +251,22 @@ public class XRTreeFrag extends XObject
 
   /**
    * <meta name="usage" content="internal"/>
-   * NEEDSDOC Class NodeIteratorWrapper <needs-comment/>
+   * Class to wrap a  NodeIterator object
    */
   class NodeIteratorWrapper implements NodeIterator
   {
 
-    /** NEEDSDOC Field m_pos          */
+    /** Position of next node          */
     private int m_pos = -1;
 
-    /** NEEDSDOC Field m_docFrag          */
+    /** Document fragment instance this will wrap         */
     private DocumentFragment m_docFrag;
 
     /**
      * Constructor NodeIteratorWrapper
      *
      *
-     * NEEDSDOC @param df
+     * @param df Document fragment instance this will wrap
      */
     NodeIteratorWrapper(DocumentFragment df)
     {
@@ -276,7 +276,7 @@ public class XRTreeFrag extends XObject
     /**
      *  The root node of the Iterator, as specified when it was created.
      *
-     * NEEDSDOC ($objectName$) @return
+     * @return null
      */
     public Node getRoot()
     {
@@ -288,7 +288,7 @@ public class XRTreeFrag extends XObject
      * iterator. The available set of constants is defined in the
      * <code>NodeFilter</code> interface.
      *
-     * NEEDSDOC ($objectName$) @return
+     * @return All node types
      */
     public int getWhatToShow()
     {
@@ -298,7 +298,7 @@ public class XRTreeFrag extends XObject
     /**
      *  The filter used to screen nodes.
      *
-     * NEEDSDOC ($objectName$) @return
+     * @return null
      */
     public NodeFilter getFilter()
     {
@@ -317,7 +317,7 @@ public class XRTreeFrag extends XObject
      * expansion, use the whatToShow flags to show the entity reference node
      * and set expandEntityReferences to false.
      *
-     * NEEDSDOC ($objectName$) @return
+     * @return true
      */
     public boolean getExpandEntityReferences()
     {

@@ -69,13 +69,13 @@ import org.apache.xalan.res.XSLMessages;
 public class XBooleanStatic extends XBoolean
 {
 
-  /** NEEDSDOC Field m_val          */
+  /** The value of the object          */
   boolean m_val;
 
   /**
-   * Construct a XNodeSet object.
+   * Construct a XBooleanStatic object.
    *
-   * NEEDSDOC @param b
+   * @param b The value of the object
    */
   public XBooleanStatic(boolean b)
   {
@@ -88,9 +88,9 @@ public class XBooleanStatic extends XBoolean
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare to this 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the two objects are equal
    *
    * @throws javax.xml.transform.TransformerException
    */

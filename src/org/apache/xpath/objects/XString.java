@@ -68,13 +68,13 @@ import org.apache.xpath.XPathContext;
 public class XString extends XObject
 {
 
-  /** NEEDSDOC Field EMPTYSTRING          */
+  /** Empty string XString object          */
   public static XString EMPTYSTRING = new XString("");
 
   /**
    * Construct a XNodeSet object.
    *
-   * NEEDSDOC @param val
+   * @param val String object this will wrap.
    */
   public XString(String val)
   {
@@ -84,7 +84,7 @@ public class XString extends XObject
   /**
    * Tell that this is a CLASS_STRING.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type CLASS_STRING
    */
   public int getType()
   {
@@ -95,7 +95,7 @@ public class XString extends XObject
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type string "#STRING"
    */
   public String getTypeString()
   {
@@ -105,9 +105,10 @@ public class XString extends XObject
   /**
    * Cast a string to a number.
    *
-   * NEEDSDOC @param s
+   * @param s The string to convert
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return 0.0 if the string is null, numeric value of the string
+   * or NaN
    */
   public static double castToNum(String s)
   {
@@ -163,7 +164,8 @@ public class XString extends XObject
   /**
    * Cast result object to a number.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return 0.0 if this string is null, numeric value of this string
+   * or NaN
    */
   public double num()
   {
@@ -173,7 +175,8 @@ public class XString extends XObject
   /**
    * Cast result object to a boolean.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the length of this string object is greater
+   * than 0.
    */
   public boolean bool()
   {
@@ -183,7 +186,7 @@ public class XString extends XObject
   /**
    * Cast result object to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The string this wraps or the empty string if null
    */
   public String str()
   {
@@ -193,9 +196,9 @@ public class XString extends XObject
   /**
    * Cast result object to a result tree fragment.
    *
-   * NEEDSDOC @param support
+   * @param support Xpath context to use for the conversion 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A document fragment with this string as a child node
    */
   public DocumentFragment rtree(XPathContext support)
   {
@@ -213,9 +216,9 @@ public class XString extends XObject
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the two objects are equal
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -66,13 +66,13 @@ import org.w3c.dom.*;
 public class XNumber extends XObject
 {
 
-  /** NEEDSDOC Field m_val          */
+  /** Value of the XNumber object         */
   double m_val;
 
   /**
    * Construct a XNodeSet object.
    *
-   * NEEDSDOC @param d
+   * @param d Value of the object
    */
   public XNumber(double d)
   {
@@ -85,7 +85,7 @@ public class XNumber extends XObject
   /**
    * Tell that this is a CLASS_NUMBER.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node type CLASS_NUMBER 
    */
   public int getType()
   {
@@ -96,7 +96,7 @@ public class XNumber extends XObject
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type string "#NUMBER" 
    */
   public String getTypeString()
   {
@@ -106,7 +106,7 @@ public class XNumber extends XObject
   /**
    * Cast result object to a number.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the value of the XNumber object
    */
   public double num()
   {
@@ -116,7 +116,7 @@ public class XNumber extends XObject
   /**
    * Cast result object to a boolean.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false if the value is NaN or equal to 0.0
    */
   public boolean bool()
   {
@@ -126,7 +126,8 @@ public class XNumber extends XObject
   /**
    * Cast result object to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return "NaN" if the number is NaN, Infinity or -Infinity if
+   * the number is infinite or the string value of the number.
    */
   public String str()
   {
@@ -190,12 +191,12 @@ public class XNumber extends XObject
   }
 
   /**
-   * NEEDSDOC Method zeros 
+   * Return a string of '0' of the given length
    *
    *
-   * NEEDSDOC @param n
+   * @param n Length of the string to be returned
    *
-   * NEEDSDOC (zeros) @return
+   * @return a string of '0' with the given length
    */
   static private String zeros(int n)
   {
@@ -211,10 +212,10 @@ public class XNumber extends XObject
   }
 
   /**
-   * Return a java object that's closes to the represenation
+   * Return a java object that's closest to the representation
    * that should be handed to an extension.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of this XNumber as a Double object
    */
   public Object object()
   {
@@ -224,9 +225,9 @@ public class XNumber extends XObject
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the two objects are equal 
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -81,7 +81,7 @@ public class XNull extends XObject
   /**
    * Tell what kind of class this is.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type CLASS_NULL
    */
   public int getType()
   {
@@ -92,7 +92,7 @@ public class XNull extends XObject
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type string "#CLASS_NULL"
    */
   public String getTypeString()
   {
@@ -101,6 +101,8 @@ public class XNull extends XObject
 
   /**
    * Cast result object to a number.
+   * 
+   * @return 0.0
    */
 
   public double num()
@@ -111,7 +113,7 @@ public class XNull extends XObject
   /**
    * Cast result object to a boolean.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false
    */
   public boolean bool()
   {
@@ -121,7 +123,7 @@ public class XNull extends XObject
   /**
    * Cast result object to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return empty string ""
    */
   public String str()
   {
@@ -131,9 +133,9 @@ public class XNull extends XObject
   /**
    * Cast result object to a result tree fragment.
    *
-   * NEEDSDOC @param support
+   * @param support XPath context to use for the conversion
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object as a result tree fragment.
    */
   public DocumentFragment rtree(XPathContext support)
   {
@@ -147,7 +149,7 @@ public class XNull extends XObject
   /**
    * Cast result object to a nodelist.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public NodeIterator nodeset()
   {
@@ -157,9 +159,9 @@ public class XNull extends XObject
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 Object to compare this to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given object is of type CLASS_NULL
    */
   public boolean equals(XObject obj2)
   {

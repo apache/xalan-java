@@ -78,7 +78,7 @@ public class XNodeSet extends XObject
   /**
    * Construct a XNodeSet object.
    *
-   * NEEDSDOC @param val
+   * @param val Value of the XNodeSet object
    */
   public XNodeSet(NodeIterator val)
   {
@@ -96,7 +96,7 @@ public class XNodeSet extends XObject
   /**
    * Construct a XNodeSet object for one node.
    *
-   * NEEDSDOC @param n
+   * @param n Node to add to the new XNodeSet object
    */
   public XNodeSet(Node n)
   {
@@ -112,7 +112,7 @@ public class XNodeSet extends XObject
   /**
    * Tell that this is a CLASS_NODESET.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type CLASS_NODESET
    */
   public int getType()
   {
@@ -123,7 +123,7 @@ public class XNodeSet extends XObject
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return type string "#NODESET"
    */
   public String getTypeString()
   {
@@ -131,11 +131,11 @@ public class XNodeSet extends XObject
   }
 
   /**
-   * Get the string conversion from a single node.
+   * Get numeric value of the string conversion from a single node.
    *
-   * NEEDSDOC @param n
+   * @param n Node to convert
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return numeric value of the string conversion from a single node.
    */
   public static double getNumberFromNode(Node n)
   {
@@ -145,7 +145,8 @@ public class XNodeSet extends XObject
   /**
    * Cast result object to a number.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return numeric value of the string conversion from the 
+   * next node in the NodeSet, or NAN if no node was found
    */
   public double num()
   {
@@ -159,7 +160,7 @@ public class XNodeSet extends XObject
   /**
    * Cast result object to a boolean.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if there is a next node in the nodeset
    */
   public boolean bool()
   {
@@ -169,9 +170,9 @@ public class XNodeSet extends XObject
   /**
    * Get the string conversion from a single node.
    *
-   * NEEDSDOC @param n
+   * @param n Node to convert
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the string conversion from a single node.
    */
   public static String getStringFromNode(Node n)
   {
@@ -196,7 +197,8 @@ public class XNodeSet extends XObject
   /**
    * Cast result object to a string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the string conversion from the next node in the nodeset
+   * or "" if there is no next node
    */
   public String str()
   {
@@ -210,9 +212,9 @@ public class XNodeSet extends XObject
   /**
    * Cast result object to a result tree fragment.
    *
-   * NEEDSDOC @param support
+   * @param support The XPath context to use for the conversion 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the nodeset as a result tree fragment.
    */
   public DocumentFragment rtree(XPathContext support)
   {
@@ -233,7 +235,7 @@ public class XNodeSet extends XObject
   /**
    * Cast result object to a nodelist.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The nodeset as a nodelist
    */
   public NodeIterator nodeset()
   {
@@ -271,9 +273,9 @@ public class XNodeSet extends XObject
   }
 
   /**
-   * Cast result object to a nodelist.
+   * Cast result object to a mutableNodeset.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The nodeset as a mutableNodeset
    */
   public NodeSet mutableNodeset()
   {
@@ -293,32 +295,32 @@ public class XNodeSet extends XObject
     return mnl;
   }
 
-  /** NEEDSDOC Field S_LT          */
+  /** Less than comparator         */
   static LessThanComparator S_LT = new LessThanComparator();
 
-  /** NEEDSDOC Field S_LTE          */
+  /** Less than or equal comparator          */
   static LessThanOrEqualComparator S_LTE = new LessThanOrEqualComparator();
 
-  /** NEEDSDOC Field S_GT          */
+  /** Greater than comparator         */
   static GreaterThanComparator S_GT = new GreaterThanComparator();
 
-  /** NEEDSDOC Field S_GTE          */
+  /** Greater than or equal comparator          */
   static GreaterThanOrEqualComparator S_GTE =
     new GreaterThanOrEqualComparator();
 
-  /** NEEDSDOC Field S_EQ          */
+  /** Equal comparator         */
   static EqualComparator S_EQ = new EqualComparator();
 
-  /** NEEDSDOC Field S_NEQ          */
+  /** Not equal comparator         */
   static NotEqualComparator S_NEQ = new NotEqualComparator();
 
   /**
    * Tell if one object is less than the other.
    *
-   * NEEDSDOC @param obj2
-   * NEEDSDOC @param comparator
+   * @param obj2 Object to compare this nodeset to
+   * @param comparator Comparator to use
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return See the comments below for each object type comparison 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -509,9 +511,9 @@ public class XNodeSet extends XObject
   /**
    * Tell if one object is less than the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 object to compare this nodeset to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return see this.compare(...) 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -523,9 +525,9 @@ public class XNodeSet extends XObject
   /**
    * Tell if one object is less than or equal to the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 object to compare this nodeset to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return see this.compare(...) 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -537,9 +539,9 @@ public class XNodeSet extends XObject
   /**
    * Tell if one object is less than the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 object to compare this nodeset to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return see this.compare(...) 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -551,9 +553,9 @@ public class XNodeSet extends XObject
   /**
    * Tell if one object is less than the other.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 object to compare this nodeset to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return see this.compare(...) 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -566,9 +568,9 @@ public class XNodeSet extends XObject
   /**
    * Tell if two objects are functionally equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 object to compare this nodeset to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return see this.compare(...) 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -580,9 +582,9 @@ public class XNodeSet extends XObject
   /**
    * Tell if two objects are functionally not equal.
    *
-   * NEEDSDOC @param obj2
+   * @param obj2 object to compare this nodeset to
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return see this.compare(...) 
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -599,24 +601,24 @@ abstract class Comparator
 {
 
   /**
-   * NEEDSDOC Method compareStrings 
+   * Compare two strings
    *
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 First string to compare
+   * @param s2 Second String to compare 
    *
-   * NEEDSDOC (compareStrings) @return
+   * @return Whether the strings are equal or not
    */
   abstract boolean compareStrings(String s1, String s2);
 
   /**
-   * NEEDSDOC Method compareNumbers 
+   * Compare two numbers
    *
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
+   * @param n1 First number to compare
+   * @param n2 Second number to compare
    *
-   * NEEDSDOC (compareNumbers) @return
+   * @return Whether the numbers are equal or not
    */
   abstract boolean compareNumbers(double n1, double n2);
 }
@@ -628,13 +630,13 @@ class LessThanComparator extends Comparator
 {
 
   /**
-   * NEEDSDOC Method compareStrings 
+   * Compare two strings for less than.
    *
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 First string to compare
+   * @param s2 Second String to compare 
    *
-   * NEEDSDOC (compareStrings) @return
+   * @return True if s1 is less than s2
    */
   boolean compareStrings(String s1, String s2)
   {
@@ -642,13 +644,13 @@ class LessThanComparator extends Comparator
   }
 
   /**
-   * NEEDSDOC Method compareNumbers 
+   * Compare two numbers for less than.
    *
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
+   * @param n1 First number to compare
+   * @param n2 Second number to compare
    *
-   * NEEDSDOC (compareNumbers) @return
+   * @return true if n1 is less than n2
    */
   boolean compareNumbers(double n1, double n2)
   {
@@ -663,13 +665,13 @@ class LessThanOrEqualComparator extends Comparator
 {
 
   /**
-   * NEEDSDOC Method compareStrings 
+   * Compare two strings for less than or equal.
    *
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 First string to compare
+   * @param s2 Second String to compare
    *
-   * NEEDSDOC (compareStrings) @return
+   * @return true if s1 is less than or equal to s2
    */
   boolean compareStrings(String s1, String s2)
   {
@@ -677,13 +679,13 @@ class LessThanOrEqualComparator extends Comparator
   }
 
   /**
-   * NEEDSDOC Method compareNumbers 
+   * Compare two numbers for less than or equal.
    *
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
+   * @param n1 First number to compare
+   * @param n2 Second number to compare
    *
-   * NEEDSDOC (compareNumbers) @return
+   * @return true if n1 is less than or equal to n2
    */
   boolean compareNumbers(double n1, double n2)
   {
@@ -698,13 +700,13 @@ class GreaterThanComparator extends Comparator
 {
 
   /**
-   * NEEDSDOC Method compareStrings 
+   * Compare two strings for greater than.
    *
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 First string to compare
+   * @param s2 Second String to compare
    *
-   * NEEDSDOC (compareStrings) @return
+   * @return true if s1 is greater than s2
    */
   boolean compareStrings(String s1, String s2)
   {
@@ -712,13 +714,13 @@ class GreaterThanComparator extends Comparator
   }
 
   /**
-   * NEEDSDOC Method compareNumbers 
+   * Compare two numbers for greater than.
    *
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
+   * @param n1 First number to compare
+   * @param n2 Second number to compare
    *
-   * NEEDSDOC (compareNumbers) @return
+   * @return true if n1 is greater than n2
    */
   boolean compareNumbers(double n1, double n2)
   {
@@ -733,13 +735,13 @@ class GreaterThanOrEqualComparator extends Comparator
 {
 
   /**
-   * NEEDSDOC Method compareStrings 
+   * Compare two strings for greater than or equal.
    *
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 First string to compare
+   * @param s2 Second String to compare
    *
-   * NEEDSDOC (compareStrings) @return
+   * @return true if s1 is greater than or equal to s2
    */
   boolean compareStrings(String s1, String s2)
   {
@@ -747,13 +749,13 @@ class GreaterThanOrEqualComparator extends Comparator
   }
 
   /**
-   * NEEDSDOC Method compareNumbers 
+   * Compare two numbers for greater than or equal.
    *
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
+   * @param n1 First number to compare
+   * @param n2 Second number to compare
    *
-   * NEEDSDOC (compareNumbers) @return
+   * @return true if n1 is greater than or equal to n2
    */
   boolean compareNumbers(double n1, double n2)
   {
@@ -768,13 +770,13 @@ class EqualComparator extends Comparator
 {
 
   /**
-   * NEEDSDOC Method compareStrings 
+   * Compare two strings for equality.
    *
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 First string to compare
+   * @param s2 Second String to compare
    *
-   * NEEDSDOC (compareStrings) @return
+   * @return true if s1 is equal to s2
    */
   boolean compareStrings(String s1, String s2)
   {
@@ -782,13 +784,13 @@ class EqualComparator extends Comparator
   }
 
   /**
-   * NEEDSDOC Method compareNumbers 
+   * Compare two numbers for equality.
    *
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
+   * @param n1 First number to compare
+   * @param n2 Second number to compare
    *
-   * NEEDSDOC (compareNumbers) @return
+   * @return true if n1 is equal to n2
    */
   boolean compareNumbers(double n1, double n2)
   {
@@ -803,13 +805,13 @@ class NotEqualComparator extends Comparator
 {
 
   /**
-   * NEEDSDOC Method compareStrings 
+   * Compare two strings for non-equality.
    *
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
+   * @param s1 First string to compare
+   * @param s2 Second String to compare
    *
-   * NEEDSDOC (compareStrings) @return
+   * @return true if s1 is not equal to s2
    */
   boolean compareStrings(String s1, String s2)
   {
@@ -817,13 +819,13 @@ class NotEqualComparator extends Comparator
   }
 
   /**
-   * NEEDSDOC Method compareNumbers 
+   * Compare two numbers for non-equality.
    *
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
+   * @param n1 First number to compare
+   * @param n2 Second number to compare
    *
-   * NEEDSDOC (compareNumbers) @return
+   * @return true if n1 is not equal to n2
    */
   boolean compareNumbers(double n1, double n2)
   {
