@@ -65,6 +65,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.generic.*;
@@ -146,7 +147,7 @@ final class CastExpr extends Expression {
 
 	if ((_left instanceof Step) && (_type == Type.Boolean)) {
 	    Step step = (Step)_left;
-	    if ((step.isSelf()) && (step.getNodeType() != -1)) 
+	    if ((step.getAxis() == Axis.SELF) && (step.getNodeType() != -1)) 
 		_typeTest = true;
 	}
 	

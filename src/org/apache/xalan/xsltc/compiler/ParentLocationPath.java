@@ -179,14 +179,6 @@ final class ParentLocationPath extends RelativeLocationPath {
 	return false;
     }
 
-    public final boolean descendantAxis() {
-	if (_path.descendantAxis())
-	    return true;
-	if (_step instanceof RelativeLocationPath)
-	    return ((RelativeLocationPath)_step).descendantAxis();
-	return(false);
-    }
-
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();

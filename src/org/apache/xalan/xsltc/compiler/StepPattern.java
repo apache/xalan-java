@@ -117,7 +117,7 @@ final class StepPattern extends RelativePathPattern {
 	return _isEpsilon && hasPredicates() == false;
     }
     
-    public boolean hasPredicates() {
+    private boolean hasPredicates() {
 	return _predicates != null && _predicates.size() > 0;
     }
 

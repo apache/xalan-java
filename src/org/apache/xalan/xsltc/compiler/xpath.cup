@@ -459,8 +459,8 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
            if ((axis == Axis.CHILD) && (type != NodeTest.ATTRIBUTE)) {
                // Compress './/child:E' into 'descendant::E' - if possible
                if (predicates == null) {
+                   right.setAxis(Axis.DESCENDANT);
                    if (rlp instanceof Step && ((Step)rlp).isAbbreviatedDot()) {
-                       right.setAxis(Axis.DESCENDANT);
 	               RESULT = right;
                    }
                    else {

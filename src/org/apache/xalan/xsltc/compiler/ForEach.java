@@ -161,9 +161,6 @@ final class ForEach extends Instruction {
 	    }
 	    else {
 		_select.translate(classGen, methodGen);
-		if (_select instanceof Step) {
-		    ((Step)_select).orderIterator(classGen, methodGen);
-		}
 	    }
 	    if (!(_type instanceof ReferenceType)) {
 		_select.startResetIterator(classGen, methodGen);

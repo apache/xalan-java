@@ -77,13 +77,16 @@ final class Step extends RelativeLocationPath {
     // This step's axis as defined in class Axis.
     private int _axis;
 
-    // A vector of predicates (filters) defined on this step.
-    private final Vector _predicates; 	// may be null
+    // A vector of predicates (filters) defined on this step - may be null
+    private final Vector _predicates;
+
+    // Some simple predicates can be handled by this class (and not by the
+    // Predicate class) and will be removed from the above vector as they are
+    // handled. We use this boolean to remember if we did have any predicates.
+    private boolean _hadPredicates = false;
 
     // Type of the node test.
     private int _nodeType;
-
-    private boolean _hadPredicates = false;
 
     /**
      * Constructor
@@ -93,7 +96,6 @@ final class Step extends RelativeLocationPath {
 	_nodeType = nodeType;
 	_predicates = predicates;
     }
-
 
     /**
      * Set the parser for this element and all child predicates
@@ -109,7 +111,6 @@ final class Step extends RelativeLocationPath {
 	    }
 	}
     }
-
     
     /**
      * Define the axis (defined in Axis class) for this step
@@ -117,7 +118,6 @@ final class Step extends RelativeLocationPath {
     public int getAxis() {
 	return _axis;
     }
-
 	
     /**
      * Get the axis (defined in Axis class) for this step
@@ -126,17 +126,6 @@ final class Step extends RelativeLocationPath {
 	_axis = axis;
     }
 
-    public boolean descendantAxis() {
-	if ((_axis == Axis.DESCENDANT) || (_axis == Axis.DESCENDANTORSELF))
-	    return(true);
-	else
-	    return(false);
-    }
-
-    public boolean isSelf() {
-	return (_axis == Axis.SELF);
-    }
-	
     /**
      * Returns the node-type for this step
      */
@@ -151,18 +140,12 @@ final class Step extends RelativeLocationPath {
 	return _predicates;
     }
 
-
     /**
-     *
+     * Returns 'true' if this step has a parent pattern.
+     * This method will return 'false' if this step occurs on its own under
+     * an element like <xsl:for-each> or <xsl:apply-templates>.
      */
-    protected void setParent(SyntaxTreeNode node) {
-	_parent = node;
-    }
-
-    /**
-     * Returns 'true' if this step has a parent pattern
-     */
-    public boolean hasParent() {
+    private boolean hasParentPattern() {
 	SyntaxTreeNode parent = getParent();
 	if ((parent instanceof ParentPattern) ||
 	    (parent instanceof ParentLocationPath) ||
@@ -177,7 +160,7 @@ final class Step extends RelativeLocationPath {
     /**
      * Returns 'true' if this step has any predicates
      */
-    public boolean hasPredicates() {
+    private boolean hasPredicates() {
 	return _predicates != null && _predicates.size() > 0;
     }
 
@@ -203,27 +186,34 @@ final class Step extends RelativeLocationPath {
      * have type node-set.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
+	// Save this value for later - important for testing for special
+	// combinations of steps and patterns than can be optimised
 	_hadPredicates = hasPredicates();
 
+	// Special case for '.' 
 	if (isAbbreviatedDot()) {
-	    if (hasParent())
+	    if (hasParentPattern())
 		_type = Type.NodeSet;
 	    else
 		_type = Type.Node;
 	}
+	// Special case for '..'
 	else if (isAbbreviatedDDot()) {
 	    _type = Type.NodeSet;
 	}
 	else {
 	    // Special case for '@attr' with no parent or predicates
 	    if ((_axis == Axis.ATTRIBUTE) && (_nodeType!=NodeTest.ATTRIBUTE) &&
-		(!hasParent()) && (!hasPredicates())) {
+		(!hasParentPattern()) && (!hasPredicates())) {
 		_type = Type.Node;
 	    }
 	    else {
 		_type = Type.NodeSet;
 	    }
 	}
+
+	// Type check all predicates (expressions applied to the step)
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
@@ -231,6 +221,8 @@ final class Step extends RelativeLocationPath {
 		pred.typeCheck(stable);
 	    }
 	}
+
+	// Return either Type.Node or Type.NodeSet
 	return _type;
     }
 
@@ -248,15 +240,24 @@ final class Step extends RelativeLocationPath {
 
 	    // Do not reverse nodes if we have a parent step that will reverse
 	    // the nodes for us.
-	    if (hasParent()) return false;
+	    if (hasParentPattern()) return false;
 	    if (hasPredicates()) return false;
 	    if (_hadPredicates) return false;
 	    
 	    // Check if this step occured under an <xsl:apply-templates> element
 	    SyntaxTreeNode parent = this;
 	    do {
+		// Get the next ancestor element and check its type
 		parent = parent.getParent();
+
+		// Order node set if descendant of these elements:
+		if (parent instanceof ApplyImports) return true;
 		if (parent instanceof ApplyTemplates) return true;
+		if (parent instanceof ForEach) return true;
+
+		// No not order node set if descendant of these elements:
+		if (parent instanceof ValueOf) return false;
+
 	    } while (parent != null);
 	}
 	return false;
@@ -279,7 +280,7 @@ final class Step extends RelativeLocationPath {
 	else {
 	    // If it is an attribute but not '@*' or '@attr' with a parent
 	    if ((_axis == Axis.ATTRIBUTE) &&
-		(_nodeType != NodeTest.ATTRIBUTE) && (!hasParent())) {
+		(_nodeType != NodeTest.ATTRIBUTE) && (!hasParentPattern())) {
 		int node = cpg.addInterfaceMethodref(DOM_INTF,
 						     "getAttributeNode",
 						     "(II)I");
@@ -305,14 +306,16 @@ final class Step extends RelativeLocationPath {
 	    // Special case for '.'
 	    if (isAbbreviatedDot()) {
 		if (_type == Type.Node) {
+		    // Put context node on stack if using Type.Node
 		    il.append(methodGen.loadContextNode());
 		}
 		else {
+		    // Wrap the context node in a singleton iterator if not.
+		    int init = cpg.addMethodref(SINGLETON_ITERATOR,
+						"<init>", "("+NODE_SIG+")V");
 		    il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
 		    il.append(DUP);
 		    il.append(methodGen.loadContextNode());
-		    final int init = cpg.addMethodref(SINGLETON_ITERATOR, "<init>",
-						      "(" + NODE_SIG +")V");
 		    il.append(new INVOKESPECIAL(init));
 		}
 		return;
@@ -322,7 +325,9 @@ final class Step extends RelativeLocationPath {
 	    SyntaxTreeNode parent = getParent();
 	    if ((parent instanceof ParentLocationPath) &&
 		(parent.getParent() instanceof ParentLocationPath)) {
-		if (_nodeType == NodeTest.ELEMENT) _nodeType = NodeTest.ANODE;
+		if ((_nodeType == NodeTest.ELEMENT) && (!_hadPredicates)) {
+		    _nodeType = NodeTest.ANODE;
+		}
 	    }
 
 	    // "ELEMENT" or "*" or "@*" or ".." or "@attr" with a parent.
@@ -376,7 +381,7 @@ final class Step extends RelativeLocationPath {
 		il.append(new PUSH(cpg, _axis));
 		il.append(new PUSH(cpg, _nodeType));
 		il.append(new INVOKEINTERFACE(ty, 3));
-		//orderIterator(classGen, methodGen);
+		orderIterator(classGen, methodGen);
 		break;
 	    }
 
@@ -505,11 +510,14 @@ final class Step extends RelativeLocationPath {
     }
 
 
-    /*
-     * Order nodes for iterators with reverse axis
+    /**
+     * This method tests if this step needs to have its axis reversed,
+     * and wraps its iterator inside a ReverseIterator to return the node-set
+     * in document order.
      */
     public void orderIterator(ClassGenerator classGen,
 			      MethodGenerator methodGen) {
+	// First test if nodes are in reverse document order
 	if (!reverseNodeSet()) return;
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
