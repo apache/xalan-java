@@ -125,8 +125,22 @@ class NodeSortKey
 
     if (null != langValue && m_treatAsNumbers == false)
     {
-      m_locale = new Locale(langValue.toUpperCase(),
-                            Locale.getDefault().getDisplayCountry());
+      // See http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2851
+      // The constructor of Locale is defined as 
+      //   public Locale(String language, String country)
+      // with
+      //   language - lowercase two-letter ISO-639 code
+      //   country - uppercase two-letter ISO-3166 code
+      // a) language must be provided as a lower-case ISO-code 
+      //    instead of an upper-case code
+      // b) country must be provided as an ISO-code 
+      //    instead of a full localized country name (e.g. "France")
+      m_locale = new Locale(langValue.toLowerCase(), 
+                  Locale.getDefault().getCountry());
+                  
+      // (old, before bug report 2851).
+      //  m_locale = new Locale(langValue.toUpperCase(),
+      //                        Locale.getDefault().getDisplayCountry());                    
 
       if (null == m_locale)
       {
