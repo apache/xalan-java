@@ -169,6 +169,61 @@ public final class XSLTC {
     public void setMultiDocument(boolean flag) {
 	_multiDocument = flag;
     }
+
+    // GTM: TBD this is a prototype to handle input stream input..
+    public boolean compile(InputStream input, String transletName) {
+	return compile(input, transletName, null);
+    }
+    // GTM: TBD this is a prototype, copied and modified fr compile(URL..)
+    public boolean compile(InputStream input, String transletName,
+	ErrorListener elistener) 
+    {
+	if (elistener != null) {
+	    _parser.setErrorListener(elistener);
+	}
+	try {
+	    reset();
+	    final String name = transletName;
+	    setClassName(transletName);
+
+	    // Get the root node of the abstract syntax tree
+	    final SyntaxTreeNode element = _parser.parse(input);
+	    // Process any error and/or warning messages
+	    _parser.printWarnings();
+	    if (_parser.errorsFound()) {
+		_parser.printErrors();
+		return false;
+	    }
+
+	    if ((!_parser.errorsFound()) && (element != null)) {
+		_stylesheet = _parser.makeStylesheet(element);
+		//_stylesheet.setURL(url);
+		// This is the top level stylesheet - it has no parent
+		_stylesheet.setParentStylesheet(null);
+		_parser.setCurrentStylesheet(_stylesheet);
+		_parser.createAST(_stylesheet);
+		if (_stylesheet != null && _parser.errorsFound() == false) {
+		    _stylesheet.setMultiDocument(_multiDocument);
+		    _stylesheet.translate();
+		}
+		else {
+		    _parser.printErrors();
+		}		
+	    }
+	    else {
+		_parser.printErrors();
+	    }
+	    _parser.printWarnings();
+	    return !_parser.errorsFound();
+	}
+	catch (CompilerException e) {
+	    e.printStackTrace();
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.printErrors();
+	    return false;  
+	}
+    }
+    
     
     /**
      * Compiles the stylesheet into Java bytecode. Returns 'true' if the
@@ -177,7 +232,7 @@ public final class XSLTC {
     public boolean compile(URL stylesheet) { 
 	return compile(stylesheet, null);   
     }
-
+    
     /**
      * Compile stylesheet into Java bytecode. Returns 'true' if compilation
      * is successful. - 'false' otherwise. ErrorListener arg (may be null)

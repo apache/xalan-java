@@ -359,6 +359,49 @@ public final class Parser implements Constants, ContentHandler {
 	}
     }
 
+    // GTM prototype:
+    public SyntaxTreeNode parse(InputStream input){
+	try {
+	    // Create a SAX parser and get the XMLReader object it uses
+	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    try {
+		factory.setFeature(Constants.NAMESPACE_FEATURE,true);
+	    }
+	    catch (Exception e) {
+		factory.setNamespaceAware(true);
+	    }
+	    final SAXParser parser = factory.newSAXParser();
+	    final XMLReader reader = parser.getXMLReader();
+
+	    // Parse the input document and build the abstract syntax tree
+	    reader.setContentHandler(this);
+	    InputSource is = new InputSource(input);
+	    reader.parse(new InputSource(input));
+
+	    // Find the start of the stylesheet within the tree
+	    return (SyntaxTreeNode)getStylesheet(_root);
+	}
+	catch (ParserConfigurationException e) {
+	    reportError(Constants.ERROR,
+		new ErrorMsg("JAXP parser not configured correctly"));
+	}
+	catch (IOException e) {
+	    reportError(Constants.ERROR,
+		new ErrorMsg(e.getMessage()));
+	}
+	catch (SAXParseException e){
+	    reportError(Constants.ERROR,
+		new ErrorMsg(e.getMessage(),e.getLineNumber()));
+	}
+	catch (SAXException e) {
+	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
+	}
+	catch (CompilerException e) {
+	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
+	}
+	return null;
+    }
+
     /**
      * Instanciates a SAX2 parser and generate the AST from the input.
      */

@@ -63,6 +63,7 @@ package org.apache.xalan.xsltc.runtime;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Source; 
+import javax.xml.transform.stream.StreamSource; 
 import javax.xml.transform.Transformer; 
 import javax.xml.transform.TransformerConfigurationException; 
 import javax.xml.transform.sax.SAXTransformerFactory; 
@@ -73,6 +74,7 @@ import org.apache.xalan.xsltc.Translet;
 import java.util.Properties;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -91,19 +93,31 @@ public class TransletTemplates implements Templates {
     {
         XSLTC xsltc = new XSLTC();
         xsltc.init();
-        String stylesheetName = _stylesheet.getSystemId();
-        int index = stylesheetName.indexOf('.');
-        String transletName = stylesheetName.substring(0,index);
-        boolean isSuccessful = true;
-        try {
-            File file = new File(stylesheetName);
-            URL url = file.toURL();
-            isSuccessful = xsltc.compile(url);
-        } catch (MalformedURLException e) {
-            throw new TransformerConfigurationException(
-                "URL for stylesheet '" + stylesheetName +
-                "' can not be formed.");
-        }
+
+	// compile stylesheet
+	boolean isSuccessful = true;
+	StreamSource strmsrc = (StreamSource)_stylesheet;
+	InputStream inputStream = strmsrc.getInputStream();
+	String stylesheetName = _stylesheet.getSystemId();
+	String transletName = "no_name";
+	if (inputStream != null) {
+	    isSuccessful = xsltc.compile(inputStream, transletName);
+	} else if (stylesheetName != null ){
+	    int index = stylesheetName.indexOf('.');
+	    transletName = stylesheetName.substring(0,index);
+            try {
+                File file = new File(stylesheetName);
+                URL url = file.toURL();
+                isSuccessful = xsltc.compile(url);
+            } catch (MalformedURLException e) {
+                throw new TransformerConfigurationException(
+                    "URL for stylesheet '" + stylesheetName +
+                    "' can not be formed.");
+	    }
+        } else {
+	   throw new TransformerConfigurationException(
+		"Stylesheet must have a system id or be an InputStream."); 
+	}
 
         if (!isSuccessful) {
             throw new TransformerConfigurationException(
