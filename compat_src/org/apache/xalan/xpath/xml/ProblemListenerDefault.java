@@ -77,7 +77,7 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
   
   public ProblemListenerDefault()
   {
-    //m_errorHandler = new org.apache.xml.utils.DefaultErrorHandler();
+    super();    
   }
   
   public ProblemListenerDefault(ProblemListener l)
@@ -103,7 +103,10 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
   
   public ProblemListener getProblemListener ()
   {
-    return m_problemListener;
+    if (m_problemListener != null)
+      return m_problemListener;
+    else
+      return this;
   }
   
   /**
