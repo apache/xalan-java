@@ -101,7 +101,7 @@
      <li>When your stylesheet asks for an explicit carriage-return character (&amp;#13;) to be inserted into the output, it is output during
      the serialization process in escaped form unless escaping has been disabled.  When your stylesheet asks for an explicit line-feed character
      (&amp;#10;) to be output, the system-default line-break character(s) is/are output during the serialization process.  Also keep in mind that
-     the Parser normalizes line-breaks to line-feeds when it sends character events to the processor.</li>
+     the XML parser normalizes line-breaks to line-feeds when it sends character events to the processor.</li>
      </ul>
      </s3><anchor name="bugs"/>
      <s3 title="Open bugs and bug reporting">
