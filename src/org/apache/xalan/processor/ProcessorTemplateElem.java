@@ -161,6 +161,6 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
     super.endElement(handler, uri, localName, rawName);
-    handler.popElemTemplateElement();
+    handler.popElemTemplateElement().setEndLocaterInfo(handler.getLocator());
   }
 }

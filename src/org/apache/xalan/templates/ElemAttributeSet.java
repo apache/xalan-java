@@ -141,6 +141,9 @@ public class ElemAttributeSet extends ElemUse
             throws TransformerException
   {
 
+	if (TransformerImpl.S_DEBUG)
+	  transformer.getTraceManager().fireTraceEvent(this);
+
     if (transformer.isRecursiveAttrSet(this))
     {
       throw new TransformerException(
@@ -162,6 +165,10 @@ public class ElemAttributeSet extends ElemUse
     }
 
     transformer.popElemAttributeSet();
+   
+	if (TransformerImpl.S_DEBUG)
+	  transformer.getTraceManager().fireTraceEndEvent(this);
+
   }
 
   /**

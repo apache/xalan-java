@@ -228,16 +228,12 @@ public class ElemUse extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(this);
 
     if (null != m_attributeSetsNames)
     {
       applyAttrSets(transformer, getStylesheetRoot(),
                     m_attributeSetsNames);
     }
-    
-    if (TransformerImpl.S_DEBUG)
-	  transformer.getTraceManager().fireTraceEndEvent(this); 
+ 
   }
 }

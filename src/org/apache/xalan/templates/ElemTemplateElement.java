@@ -711,6 +711,22 @@ public class ElemTemplateElement extends UnImplNode
    *  @serial         */
   private int m_lineNumber;
 
+  /** line number where the current document event ends.
+   *  @serial         */
+  private int m_endLineNumber;
+
+  /**
+   * Return the line number where the current document event ends.
+   * Note that this is the line position of the first character
+   * after the text associated with the document event.
+   * @return The line number, or -1 if none is available.
+   * @see #getColumnNumber
+   */
+  public int getEndLineNumber()
+  {
+	return m_endLineNumber;
+  }
+
   /**
    * Return the line number where the current document event ends.
    * Note that this is the line position of the first character
@@ -726,6 +742,23 @@ public class ElemTemplateElement extends UnImplNode
   /** the column number where the current document event ends.
    *  @serial        */
   private int m_columnNumber;
+
+  /** the column number where the current document event ends.
+   *  @serial        */
+  private int m_endColumnNumber;
+
+  /**
+   * Return the column number where the current document event ends.
+   * Note that this is the column number of the first
+   * character after the text associated with the document
+   * event.  The first column in a line is position 1.
+   * @return The column number, or -1 if none is available.
+   * @see #getLineNumber
+   */
+  public int getEndColumnNumber()
+  {
+	return m_endColumnNumber;
+  }
 
   /**
    * Return the column number where the current document event ends.
@@ -778,6 +811,17 @@ public class ElemTemplateElement extends UnImplNode
     m_lineNumber = locator.getLineNumber();
     m_columnNumber = locator.getColumnNumber();
   }
+  
+  /**
+   * Set the end location information for this element.
+   *
+   * @param locator Source Locator with location information for this element
+   */
+  public void setEndLocaterInfo(SourceLocator locator)
+  {
+	m_endLineNumber = locator.getLineNumber();
+	m_endColumnNumber = locator.getColumnNumber();
+  } 
 
   /**
    * Tell if this element has the default space handling

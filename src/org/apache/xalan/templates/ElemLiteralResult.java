@@ -645,6 +645,9 @@ public class ElemLiteralResult extends ElemUse
             throws TransformerException
   {
 
+	if (TransformerImpl.S_DEBUG)
+	  transformer.getTraceManager().fireTraceEvent(this);
+
     try
     {
       SerializationHandler rhandler = transformer.getSerializationHandler();
@@ -710,6 +713,10 @@ public class ElemLiteralResult extends ElemUse
     {
       throw new TransformerException(se);
     }
+
+	if (TransformerImpl.S_DEBUG)
+	  transformer.getTraceManager().fireTraceEndEvent(this);
+
   }
 
   /**
