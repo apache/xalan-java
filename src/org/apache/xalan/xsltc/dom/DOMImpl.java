@@ -2410,7 +2410,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		else {
 		    handler.startElement(name);
 		}
-		handler.endElement(name);
+		return(name);
 	    }
 	    else {                  // attribute
 		handler.attribute(name, makeStringValue(node));

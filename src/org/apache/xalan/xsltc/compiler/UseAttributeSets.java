@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.HashSet;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
@@ -80,7 +80,7 @@ final class UseAttributeSets extends Instruction {
 	"Attempting to use non-existing attribute set: ";
 
     // Contains the names of all references attribute sets
-    private final HashSet _sets = new HashSet(3);
+    private final Vector _sets = new Vector(2);
 
     /**
      * Constructur - define initial attribute sets to use
@@ -121,12 +121,10 @@ final class UseAttributeSets extends Instruction {
 	final InstructionList il = methodGen.getInstructionList();
 	final SymbolTable symbolTable = getParser().getSymbolTable();
 
-	// Get the QNames of the attribut sets we want to use
-	final Iterator sets = _sets.iterator();
 	// Go through each attribute set and generate a method call
-	while (sets.hasNext()) {
+	for (int i=0; i<_sets.size(); i++) {
 	    // Get the attribute set name
-	    final QName name = (QName)sets.next();
+	    final QName name = (QName)_sets.elementAt(i);
 	    // Get the AttributeSet reference from the symbol table
 	    final AttributeSet attrs = symbolTable.lookupAttributeSet(name);
 	    // Compile the call to the set's method if the set exists

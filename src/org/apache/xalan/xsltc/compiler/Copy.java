@@ -105,6 +105,7 @@ final class Copy extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	final String DOM_CLASS = classGen.getDOMClass();
+
 	final LocalVariableGen name =
 	    methodGen.addLocalVariable2("name",
 					Util.getJCRefType(STRING_SIG),
@@ -113,7 +114,7 @@ final class Copy extends Instruction {
 	    methodGen.addLocalVariable2("length",
 					Util.getJCRefType("I"),
 					il.getEnd());
-	
+
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadCurrentNode());
 	il.append(methodGen.loadHandler());

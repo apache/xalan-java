@@ -230,23 +230,28 @@ final class XslAttribute extends Instruction {
 	il.append(methodGen.loadHandler());
 	il.append(DUP);		// first arg to "attributes" call
 	
-	// push attribute name
+	// Push attribute name
 	_name.translate(classGen, methodGen);// 2nd arg
 
-	il.append(classGen.loadTranslet());
-	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-					       "stringValueHandler",
-					       STRING_VALUE_HANDLER_SIG)));
-	il.append(DUP);
-	il.append(methodGen.storeHandler());
+	// Push attribute value - shortcut for literal strings
+	if ((elementCount() == 1) && (elementAt(0) instanceof Text)) {
+	    il.append(new PUSH(cpg, ((Text)elementAt(0)).getText()));
+	}
+	else {
+	    il.append(classGen.loadTranslet());
+	    il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+						   "stringValueHandler",
+						   STRING_VALUE_HANDLER_SIG)));
+	    il.append(DUP);
+	    il.append(methodGen.storeHandler());
+	    // translate contents with substituted handler
+	    translateContents(classGen, methodGen);
+	    // get String out of the handler
+	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_VALUE_HANDLER,
+							 "getValue",
+							 "()" + STRING_SIG)));
+	}
 
-	// translate contents with substituted handler
-	translateContents(classGen, methodGen);
-
-	// get String out of the handler
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_VALUE_HANDLER,
-						     "getValue",
-						     "()" + STRING_SIG)));
 	// call "attribute"
 	il.append(methodGen.attribute());
 	// Restore old handler base from stack

@@ -226,4 +226,16 @@ final class AttributeSet extends TopLevelElement {
 	methodGen.removeNOPs();
 	classGen.addMethod(methodGen.getMethod());
     }
+
+    public String toString() {
+	StringBuffer buf = new StringBuffer("attribute-set: ");
+	// Translate all local attributes
+	final Enumeration attributes = elements();
+	while (attributes.hasMoreElements()) {
+	    final XslAttribute attribute =
+		(XslAttribute)attributes.nextElement();
+	    buf.append(attribute);
+	}
+	return(buf.toString());
+    }
 }
