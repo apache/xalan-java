@@ -3119,7 +3119,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _currentNode    = ROOTNODE + 1;
 	    _currentAttributeNode = 1;
 	    _type2[0] = NAMESPACE;
+
 	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+	    startPrefixMapping("xml", "http://www.w3.org/XML/1998/namespace");
+	    _lengthOrAttr[ROOTNODE] = _nextNamespace;
+	    _parent2[_nextNamespace] = ROOTNODE;
+	    _nextNamespace = DOM.NULL;
 	}
 
 	/**
