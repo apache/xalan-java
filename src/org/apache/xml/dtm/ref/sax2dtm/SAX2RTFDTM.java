@@ -194,6 +194,26 @@ public class SAX2RTFDTM extends SAX2DTM
   }
   
   /**
+   * Given a node identifier, find the owning document node.  Unlike the DOM,
+   * this considers the owningDocument of a Document to be itself. Note that
+   * in shared DTMs this may not be zero.
+   *
+   * @param nodeIdentifier the id of the starting node.
+   * @return int Node identifier of the root of this DTM tree
+   */
+  protected int _documentRoot(int nodeIdentifier)
+  {
+  	if(nodeIdentifier==NULL) return NULL;
+  	
+    for(int parent=_parent(nodeIdentifier);
+    	parent!=NULL;
+    	nodeIdentifier=parent,parent=_parent(nodeIdentifier))
+    	;
+    
+    return nodeIdentifier;
+  }
+
+  /**
    * Receive notification of the beginning of a new RTF document.
    *
    * %REVIEW% Y'know, this isn't all that much of a deoptimization. We
