@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 
 /**
- * This class represents a row from a database.  It is used 
+ * This class represents a row from a query result set.  It is used 
  * over and over, and so is certainly not fully DOM complient, 
  * and will result in strange results in the stylesheet if the 
  * user is not carefull.
@@ -52,7 +52,7 @@ public class Row extends StreamableNode
   // ===== Element implementation =====
     
   /**
-   * The parent of a document is null.
+   * The parent of a row is #Document represented by XStatement).
    */
   public Document getOwnerDocument()
   {
@@ -60,7 +60,7 @@ public class Row extends StreamableNode
   }
   
   /**
-   * Return "#Document".
+   * Return "row".
    */
   public String getNodeName()
   {
@@ -68,7 +68,7 @@ public class Row extends StreamableNode
   }
       
   /**
-   * Return the document element node.
+   * Return the first col element for the current row.
    */
   public Node               getFirstChild()
   {
@@ -82,7 +82,8 @@ public class Row extends StreamableNode
   }
   
   /**
-   * This always returns null.
+   * Return next row in the row-set. Use the same Row object over and over
+   * if the row-set is streamable.
    */
   public Node               getNextSibling()
   {
@@ -144,8 +145,8 @@ public class Row extends StreamableNode
   }
   
   /**
-   * Tell if there are any children of the document, 
-   * which is always true.
+   * Tell if the row Node has any children (col Nodes), 
+   * which should always be true.
    */
   public boolean            hasChildNodes()
   {
@@ -153,5 +154,4 @@ public class Row extends StreamableNode
       System.out.println("In Row.hasChildNodes");
     return (m_childCount > 0);
   }
-
 }

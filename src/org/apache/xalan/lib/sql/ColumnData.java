@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * This class represents a text node from a Column element.
+ * Represents the col element text node, i.e., the column value.
  */
 public class ColumnData extends StreamableNode implements Text
 {
@@ -40,6 +40,10 @@ public class ColumnData extends StreamableNode implements Text
     return null;
   }
 
+  /**
+   * Return the value for this col element text node. I.e., return a String representation 
+   * of the data for this column in the current row.
+   */
   public String getData()
     throws DOMException
   {
@@ -62,6 +66,11 @@ public class ColumnData extends StreamableNode implements Text
       return null;
     }
   }
+  /**
+   * Return the value for this col element text node. I.e., return a String representation 
+   * of the data for this column in the current row.
+   * Calls @link #getNodeValue() getNodeValue()}.
+   */
   
   public String getNodeValue()
     throws DOMException
@@ -80,7 +89,9 @@ public class ColumnData extends StreamableNode implements Text
     String s = getData();
     return (null != s) ? s.length() : 0;
   }
-  
+/**
+ * Not supported.
+ */  
   public String substringData(int offset, 
                               int count)
     throws DOMException
@@ -89,12 +100,18 @@ public class ColumnData extends StreamableNode implements Text
     return null;
   }
   
+ /**
+ * Not supported.
+ */   
   public void appendData(String arg)
     throws DOMException
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
   
+/**
+ * Not supported.
+ */    
   public void insertData(int offset, 
                          String arg)
     throws DOMException
@@ -102,6 +119,9 @@ public class ColumnData extends StreamableNode implements Text
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
+  /**
+ * Not supported.
+ */  
   public void deleteData(int offset, 
                          int count)
     throws DOMException
@@ -109,6 +129,9 @@ public class ColumnData extends StreamableNode implements Text
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
+/**
+ * Not supported.
+ */    
   public void replaceData(int offset, 
                           int count, 
                           String arg)
@@ -116,7 +139,10 @@ public class ColumnData extends StreamableNode implements Text
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
-  
+
+/**
+ * Not supported.
+ */    
   public void setData(String data)
     throws DOMException
   {
@@ -127,7 +153,7 @@ public class ColumnData extends StreamableNode implements Text
 
   
   /**
-   * The parent of a document is null.
+   * The owner of a col text ode is the #Document (represented by XStatement).
    */
   public Document getOwnerDocument()
   {
@@ -163,7 +189,7 @@ public class ColumnData extends StreamableNode implements Text
   }
   
   /**
-   * The parent node of document is always null.
+   * The parent node of the col text node is the col node.
    */
   public Node               getParentNode()
   {
@@ -173,8 +199,8 @@ public class ColumnData extends StreamableNode implements Text
   }
   
   /**
-   * Tell if there are any children of the document, 
-   * which is always true.
+   * Tell if there are any children of the col node, 
+   * which is always false.
    */
   public boolean            hasChildNodes()
   {
@@ -182,6 +208,4 @@ public class ColumnData extends StreamableNode implements Text
       System.out.println("In ColumnData.hasChildNodes");
     return false;
   }
-
-
 }

@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * This class represents a ColumnHeader, which represents the metadata 
+ * This class represents a column-header Node, which contains the metadata 
  * for a column.
  */
 public class ColumnHeader extends StreamableNode implements NamedNodeMap
@@ -31,7 +31,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
 
   /**
-   * Return "row-set".
+   * Return "column-header".
    */
   public String getNodeName()
   {
@@ -39,7 +39,7 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
   
   /**
-   * Return the document element node.
+   * Always returns null.
    */
   public Node               getFirstChild()
   {
@@ -50,7 +50,8 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
   
   /**
-   * This always returns null.
+   * Returns column-header Node for the next column.
+   * @return a ColumnHeader Node or null.
    */
   public Node               getNextSibling()
   {
@@ -83,7 +84,8 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
   
   /**
-   * The parent node of document is always null.
+   * The parent node of a column-header Node is the row-set Node.
+   * @returns a RowSet.
    */
   public Node               getParentNode()
   {
@@ -93,8 +95,8 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
   }
   
   /**
-   * Tell if there are any children of the document, 
-   * which is always true.
+   * Tell if there are any children of the column-header Node, 
+   * which is always false.
    */
   public boolean            hasChildNodes()
   {
@@ -102,7 +104,10 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
       System.out.println("In ColumnHeader.hasChildNodes");
     return false;
   }
-  
+
+  /**
+   * Return the metadata for this column.
+   */
   public NamedNodeMap       getAttributes()
   {
     return this;
@@ -138,6 +143,9 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
     return m_attributes[pos];
   }
   
+ /**
+  * Get an attribute by name from the metadata for this column.
+  */
   public Node getNamedItem(String name)
   {
     if(null == m_attributes)
@@ -151,6 +159,9 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
       return null;
   }
     
+ /**
+  * Get an attribute by index from the metadata for this column.
+  */
   public Node item(int index)
   {
     if(null == m_attributes)
@@ -165,6 +176,9 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
       return null;
   }
 
+ /**
+  * Get the number of attributes of column metadata attributes.
+  */  
   public int getLength()
   {
     return ColumnAttribute.NUMBER_ATTRIBUTES;
@@ -206,7 +220,5 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); 
     return null;
   }
-
-
 
 }

@@ -11,7 +11,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.DOMOrder;
 
 /**
- * This is the superclass for all nodes in the Xalan sql package.
+ * This is the superclass for all nodes in the org.apache.xalan.lib.sql package.
  */
 public class StreamableNode extends UnImplNode 
   implements NodeTestFilter, NamedNodeMap, DOMOrder
@@ -58,7 +58,7 @@ public class StreamableNode extends UnImplNode
   }
   
   /**
-   * Return "#Document".
+   * Return NodeName.
    */
   public String       getLocalName()
   {
@@ -73,7 +73,9 @@ public class StreamableNode extends UnImplNode
     return null;
   }
 
-  /** Returns null. */
+  /** 
+   * Returns null. 
+   */
   public String             getPrefix()
   {
     return null;
@@ -155,5 +157,4 @@ public class StreamableNode extends UnImplNode
     // System.out.flush();
     return m_orderIndex;
   }
-
 }

@@ -14,7 +14,29 @@ import java.sql.ResultSet;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * This class represents a column attribute on a ColumnHeader element.
+ * Represents a column attribute on a column-header element.
+ * Each column-header element can contain any of the following
+ * attributes, depending on the ResultSetMetadata object returned with
+ * the query result set.
+ * <ul>
+ *   <li>column-label</li>
+ *   <li>column-name</li>
+ *   <li>column-display-size</li> 
+ *   <li>column-type</li>
+ *   <li>column-type-name</li>
+ *   <li>precision</li>
+ *   <li>scale</li>
+ *   <li>catalogue-name</li>
+ *   <li>schema-name</li>
+ *   <li>table-name</li>
+ *   <li>case-sensitive</li>
+ *   <li>definitely-writable</li>
+ *   <li>nullable</li>
+ *   <li>signed</li>
+ *   <li>writable</li>
+ *   <li>searchable</li>
+ * </ul>
+ * @see org.apache.xalan.lib.sql.ColumnHeader.
  */
 public class ColumnAttribute extends StreamableNode implements Attr
 {

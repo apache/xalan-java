@@ -9,8 +9,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
 /**
- * This class represents a column node from a row in a JDBC-accessed 
- * database.
+ * Represents a col node from a row node.
  */
 public class Column extends StreamableNode
 {
@@ -29,7 +28,7 @@ public class Column extends StreamableNode
   }
   
   /**
-   * The parent of a document is null.
+   * The parent of col is #Document (represented by XStatement).
    */
   public Document getOwnerDocument()
   {
@@ -37,7 +36,7 @@ public class Column extends StreamableNode
   }
   
   /**
-   * Return "#Document".
+   * Return "col".
    */
   public String getNodeName()
   {
@@ -45,7 +44,7 @@ public class Column extends StreamableNode
   }
       
   /**
-   * Return the document element node.
+   * Return the col text node (the column value).
    */
   public Node getFirstChild()
   {
@@ -59,7 +58,8 @@ public class Column extends StreamableNode
   }
   
   /**
-   * This always returns null.
+   * Return the next col element for the current row.
+   * @return a Column node or null.
    */
   public Node getNextSibling()
   {
@@ -71,7 +71,7 @@ public class Column extends StreamableNode
   }
   
   /**
-   * The parent node of document is always null.
+   * The parent node of col is a row.
    */
   public Node getParentNode()
   {
@@ -81,8 +81,9 @@ public class Column extends StreamableNode
   }
   
   /**
-   * Tell if there are any children of the document, 
-   * which is always true.
+   * Tell if there are any children of col, 
+   * which is always true. I.e., col contains a text node
+   * with a textual representation of the column value.
    */
   public boolean            hasChildNodes()
   {
@@ -90,12 +91,11 @@ public class Column extends StreamableNode
       System.out.println("In Column.hasChildNodes");
     return true;
   }
-  
+  /**
+   * Return the metadata for this column.
+   */
   public NamedNodeMap       getAttributes()
   {
     return m_parent.m_parent.m_columnHeaders[m_columnIndex];
-  }
-
-
-  
+  }  
 }

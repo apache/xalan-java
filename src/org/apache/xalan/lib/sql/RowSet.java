@@ -9,8 +9,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
 /**
- * This class represents the document element of a virtual 
- * document that represents a JDBC query.
+ * This class represents the row-set StreamableNode, a "streamable" holder  
+ * for the JDBC query result set.
  */
 public class RowSet extends StreamableNode
 {
@@ -34,7 +34,9 @@ public class RowSet extends StreamableNode
   }
     
   /**
-   * Return the document element node.
+   * The first time the client asks for a column-header element, instantiate an array of ColumnHeaders
+   * (1 per column), and return the ColumnHeader for the first row.
+   * @return ColumnHeader Node for first row or null.
    */
   public Node               getFirstChild()
   {
@@ -95,7 +97,7 @@ public class RowSet extends StreamableNode
   }
   
   /**
-   * The parent node of document is always null.
+   * The parent node of row-set is #Document (represented by XStatement).
    */
   public Node               getParentNode()
   {

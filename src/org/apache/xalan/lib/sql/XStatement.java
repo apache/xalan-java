@@ -14,8 +14,9 @@ import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * This class represents a JDBC query statement, and also
- * acts as both a NodeIterator and the Document node.
+ * Represents a JDBC query statement. Also acts as both a
+ * NodeIterator and the Document node for the row-set representation 
+ * of the query result set.
  */
 public class XStatement extends StreamableNode 
   implements NodeIterator, ContextNodeList, Cloneable
@@ -54,13 +55,23 @@ public class XStatement extends StreamableNode
   static final String S_ROWNAME = "row";
   static final String S_COLUMNNAME = "col";
   
+ /**
+  * The {@link org.apache.xalan.lib.sql.XConnection#query(java.lang.String) XConnection query()}
+  * method uses this constructor to execute a SQL query statement. When instantiated,
+  * XStatement executes the query and creates a 
+  * {@link org.apache.xalan.lib.sql.RowSet RowSet}, a row-set element associated with the query
+  * result set.
+  * @param connection the XConnection object that calls this constructor.
+  * @param queryString the SQL query.
+  * 
+  */
   public XStatement(XConnection connection, String queryString)
     throws SQLException
   {
     super(null);
     if(DEBUG)
       System.out.println("In XStatement constructor");
-    // The SQL statement which let's us execute commands against the connection.
+    // The SQL statement which lets us execute commands against the connection.
     m_xconnection = connection;
     m_statement = m_xconnection.m_connection.createStatement();
     m_queryString = queryString;
@@ -79,7 +90,8 @@ public class XStatement extends StreamableNode
   // ============== NodeIterator interface =============
   
   /**
-   *  The root node of the Iterator, as specified when it was created.
+   *  The XStatement object is the NodeIterator root.
+   * @return itself.
    */
   public Node getRoot()
   {
@@ -103,6 +115,7 @@ public class XStatement extends StreamableNode
 
   /**
    *  The filter used to screen nodes.
+   * @return null.
    */
   public NodeFilter getFilter()
   {
@@ -122,6 +135,7 @@ public class XStatement extends StreamableNode
    * a view of the document that has entity reference nodes but no entity 
    * expansion, use the whatToShow flags to show the entity reference node 
    * and set expandEntityReferences to false.
+   * @return true.
    */
   public boolean getExpandEntityReferences()
   {
@@ -131,7 +145,9 @@ public class XStatement extends StreamableNode
   }
     
   /**
-   * Return the document node.
+   * Return the #Document node (one role the XStatement plays) the first time called; 
+   * return null thereafter.
+   * @return this or null.
    */
   public Node nextNode()
     throws DOMException
@@ -214,7 +230,7 @@ public class XStatement extends StreamableNode
   }
   
   /**
-   * Return the document element node.
+   * Return the row-set node.
    */
   public Node               getFirstChild()
   {
@@ -323,6 +339,4 @@ public class XStatement extends StreamableNode
     XStatement clone = (XStatement)super.clone();
     return clone;
   }
-
-
 }
