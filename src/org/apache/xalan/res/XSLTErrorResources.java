@@ -86,7 +86,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 215;          
+  public static final int MAX_CODE = 216;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 26;
@@ -2050,6 +2050,15 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[ER_XMLRDR_NOT_BEFORE_STARTPARSE][1] =
      "XMLReader not before startParse request";
   }
+  
+  /** Attempting to generate a namespace prefix with a null URI   */
+  public static final int ER_NULL_URI_NAMESPACE = 216;
+
+  static
+  {
+    contents[ER_NULL_URI_NAMESPACE][1] =
+     "Attempting to generate a namespace prefix with a null URI";
+  }    
   
   
   /*

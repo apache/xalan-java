@@ -305,9 +305,11 @@ public class ElemElement extends ElemUse
       if (null != m_namespace_avt)
       {
         nodeNamespace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
-        if (null == nodeNamespace)
-          nodeNamespace = "";
-
+        if (null == nodeNamespace || nodeNamespace.length()== 0 )
+          transformer.getMsgMgr().error(
+              this, XSLTErrorResources.ER_NULL_URI_NAMESPACE);
+        else
+        {
         // Determine the actual prefix that we will use for this nodeNamespace
 
         prefix = resolvePrefix(rhandler, prefix, nodeNamespace);
@@ -318,6 +320,7 @@ public class ElemElement extends ElemUse
           nodeName = (prefix + ":" + QName.getLocalPart(nodeName));
         else
           nodeName = QName.getLocalPart(nodeName);
+        }
       }
 
       // No namespace attribute was supplied. Use the namespace declarations
