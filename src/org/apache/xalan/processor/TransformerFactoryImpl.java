@@ -210,12 +210,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
     catch (org.xml.sax.SAXException se)
     {
-
-      // Should remove this later... but right now diagnostics from 
-      // TransformerConfigurationException are not good.
-      // se.printStackTrace();
-      throw new TransformerConfigurationException("processFromNode failed",
-                                                  se);
+      if( m_errorListener != null ) {
+	try {
+	  m_errorListener.fatalError( new TransformerException( se ) );
+	} catch( TransformerException ex ) {
+	  throw new TransformerConfigurationException( ex );
+	}
+	return null;
+      } else
+	// Should remove this later... but right now diagnostics from 
+	// TransformerConfigurationException are not good.
+	// se.printStackTrace();
+	throw new TransformerConfigurationException("processFromNode failed",
+						    se);
     }
   }
 
@@ -495,7 +502,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public XMLFilter newXMLFilter(Templates templates)
           throws TransformerConfigurationException
   {
-    return new TrAXFilter(templates);
+    try {
+      return new TrAXFilter(templates);
+    } catch( TransformerConfigurationException ex ) {
+      if( m_errorListener != null) {
+	try {
+	  m_errorListener.fatalError( ex );
+	  return null;
+	} catch( TransformerException ex1 ) {
+	  new TransformerConfigurationException(ex1);
+	}
+      }
+      throw ex;
+    }
   }
 
   /**
@@ -530,13 +549,25 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public TransformerHandler newTransformerHandler(Templates templates)
           throws TransformerConfigurationException
   {
+    try {
+      TransformerImpl transformer =
+	(TransformerImpl) templates.newTransformer();
+      TransformerHandler th =
+	(TransformerHandler) transformer.getInputContentHandler(true);
 
-    TransformerImpl transformer =
-      (TransformerImpl) templates.newTransformer();
-    TransformerHandler th =
-      (TransformerHandler) transformer.getInputContentHandler(true);
-
-    return th;
+      return th;
+    } catch( TransformerConfigurationException ex ) {
+      if( m_errorListener != null ) {
+	try {
+	  m_errorListener.fatalError( ex );
+	  return null;
+	} catch (TransformerException ex1 ) {
+	  ex=new TransformerConfigurationException(ex1);
+	}
+      }
+      throw ex;
+    }
+    
   }
 
 //  /** The identity transform string, for support of newTransformerHandler()
@@ -597,8 +628,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public Transformer newTransformer(Source source)
           throws TransformerConfigurationException
   {
-
-    return newTemplates(source).newTransformer();
+    try {
+      return newTemplates(source).newTransformer();
+    } catch( TransformerConfigurationException ex ) {
+      if( m_errorListener != null ) {
+	try {
+	  m_errorListener.fatalError( ex );
+	  return null;
+	} catch( TransformerException ex1 ) {
+	  ex=new TransformerConfigurationException( ex1 );
+	}
+      }
+      throw ex;
+    }
   }
 
   /**
@@ -742,11 +784,26 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
     catch (IOException ioe)
     {
-      throw new TransformerConfigurationException(ioe.getMessage(), ioe);
+      if( m_errorListener != null ) {
+	try {
+	  m_errorListener.fatalError( new TransformerException(ioe) );
+	  return null;
+	} catch( TransformerException ex1 ) {
+	  throw new TransformerConfigurationException( ex1 );
+	}
+      } else 
+	throw new TransformerConfigurationException(ioe.getMessage(), ioe);
     }
     catch (org.xml.sax.SAXException se)
     {
-      throw new TransformerConfigurationException(se.getMessage(), se);
+      if( m_errorListener != null ) {
+	try {
+	  m_errorListener.fatalError( new TransformerException(se) );
+	} catch( TransformerException ex1 ) {
+	  throw new TransformerConfigurationException( ex1 );
+	}
+      } else 
+	throw new TransformerConfigurationException(se.getMessage(), se);
     }
 
     return builder.getTemplates();
