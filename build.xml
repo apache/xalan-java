@@ -28,6 +28,7 @@ Build targets
     - dist     creates a complete distribution in ./xalan-j_x_x_x
     - auto*    targets used by automated build programs, without dependencies
     - minitest compile and run the minitest in xml-xalan\test
+    - conftest compile and run the conftest in xml-xalan\test
         
 If you build a target that depends on other targets, those other targets are created in 
 the correct order.
@@ -103,11 +104,12 @@ Copyright:
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.classes}"/>
     <available file="${minitest.dir}" property="minitest-available" />
+    <available file="${conftest.dir}" property="conftest-available" />
   </target>
   <target name="prepare.docs" depends="prepare">
     <gunzip src="${doc.generator.styletargz}"/>
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
-	<delete file="${doc.generator.styletar}"/>
+        <delete file="${doc.generator.styletar}"/>
     <mkdir dir="${build.docs}"/> <!-- transform todo.xml and put the result in build/docs -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
@@ -158,9 +160,9 @@ Copyright:
            includes="**/*.java"
            debug="${debug}"/>
     <copy todir="${build.classes}">
-	  <fileset dir="${src.dir}" excludes="**/classes/**/*,**/msclasses/**/*" 
-	        includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
-	</copy>  
+          <fileset dir="${src.dir}" excludes="**/classes/**/*,**/msclasses/**/*" 
+                includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
+        </copy>  
   </target>
     
   <!-- =================================================================== -->
@@ -265,9 +267,9 @@ Copyright:
            destdir="${build.samples}"
            debug="${debug}"/>
       <copy todir="${build.samples}/servlet">
-	  <fileset dir="${samples.dir}/servlet" 
-	        includes="media.properties,default.xsl,default2.xsl"/>
-	</copy>  		         
+          <fileset dir="${samples.dir}/servlet" 
+                includes="media.properties,default.xsl,default2.xsl"/>
+        </copy>  		         
     <jar jarfile="${build.dir}/xalanservlet.jar" basedir="${build.samples}"
          includes="servlet/**"/>            
  </target>
@@ -284,7 +286,7 @@ Copyright:
     <echo message="autodocs is for automated build process, without dependencies"/>   
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/xalan.jar">
        <arg line="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>
-	</java>	 
+        </java>	 
   </target>
   
   <!-- =================================================================== -->
@@ -375,11 +377,11 @@ Copyright:
     <mkdir dir="${dist.dir}/docs"/>
     <mkdir dir="${dist.dir}/docs/apidocs"/>
     <mkdir dir="${dist.dir}/samples"/>
-	
-	<!-- Copy bin directory -->
+        
+        <!-- Copy bin directory -->
     <copy todir="${dist.dir}/bin">
-	  <fileset dir="${bin.dir}"/>
-	</copy>  
+          <fileset dir="${bin.dir}"/>
+        </copy>  
 
     <!-- Copy sources and source documentation -->
     <copy todir="${dist.dir}/src">
@@ -405,7 +407,7 @@ Copyright:
     <copy todir="${dist.dir}">
       <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
     </copy>
-	  
+          
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
     <tar tarfile="${build.dir}/${dist.file}.tar" basedir="${build.dir}" includes="${dist.file}/**"/>
     <gzip src="${build.dir}/${dist.file}.tar" zipfile="${build.dir}/${dist.file}.tar.gz"/>
@@ -420,11 +422,11 @@ Copyright:
     
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/$xalan.jar"> 
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
-	</java>	<!-- put todo.html in the site directory --> 
+        </java>	<!-- put todo.html in the site directory --> 
     <copy file="${build.docs}/todo.html" todir="${site.dir}"/>
     <copy todir="${site.dir}/apidocs">
-	  <fileset dir="${build.apidocs}"/>
-	</copy>  
+          <fileset dir="${build.apidocs}"/>
+        </copy>  
   </target>
    
   <!-- =================================================================== -->
@@ -440,10 +442,10 @@ Copyright:
   <property name="minitest.backref" value="../../java/"/>
   <property name="minitest.dir" value="../test/java/"/>
 
-  <target name="minitest" depends="jar,minitest-run,minitest-not-available" 
+  <target name="minitest" depends="minitest-run" 
     description="Run the Minitest from xml-xalan/test/java" >
   </target>
-  <target name="minitest-run" if="minitest-available" >
+  <target name="minitest-run" >
     <echo message=" [minitest] Calling ${minitest.dir}build.xml now to run minitest.xalan2" />
     <ant dir="${minitest.dir}" antfile="build.xml" target="minitest.xalan2" >
       <property name="name" value="minitest" /> <!-- Set this so that it will create minitest.jar instead of testxsl.jar -->
@@ -454,13 +456,63 @@ Copyright:
     -->
     </ant>
   </target>
-  <target name="minitest-not-available" unless="minitest-available" >
-    <echo message=" [minitest] The Minitest does not seem to be present!" />
-    <echo message=" [minitest] You must have checked out from CVS to run the minitest," />
-    <echo message=" [minitest]   it is not included in binary distributions." />
-    <echo message=" [minitest] See http://xml.apache.org/xalan-j/test/ for more info." />
+  
+  <!-- =================================================================== -->
+  <!-- Compiles and runs the conformance test from xml-xalan\test, if present      -->
+  <!-- =================================================================== -->
+  <path id="conftest.class.path">
+    <pathelement location="${xerces.jar}" />
+    <pathelement location="${build.dir}/xalan.jar" />
+    <pathelement location="${bsf.jar}" />
+    <pathelement path="${java.class.path}" />
+  </path>
+
+  <property name="conftest.backref" value="../../java/"/>
+  <property name="conftest.dir" value="../test/java/"/>
+
+  <target name="conftest" depends="conftest-run" 
+    description="Run the ConformanceTest from xml-xalan/test/java" >
+  </target>
+  <target name="conftest-run" >
+    <echo message=" [conftest] Calling ${conftest.dir}build.xml now to run conftest.xalan2" />
+    <ant dir="${conftest.dir}" antfile="build.xml" target="conftest.xalan2" >
+      <property name="name" value="conftest" /> <!-- Set this so that it will create conftest.jar instead of testxsl.jar -->
+      <property name="prepend.class.path"
+                value="${conftest.backref}${xerces.jar}:${conftest.backref}${build.dir}/xalan.jar:${conftest.backref}${bsf.jar}" />
+    <!-- Why doesn't the following refid work? I get an error referencing it.
+      <property name="prepend.class.path" refid="conftest.class.path" />
+    -->
+    </ant>
   </target>
   
+  <!-- =================================================================== -->
+  <!-- Compiles and runs the smoke test from xml-xalan\test, if present      -->
+  <!-- =================================================================== -->
+  <path id="smoketest.class.path">
+    <pathelement location="${xerces.jar}" />
+    <pathelement location="${build.dir}/xalan.jar" />
+    <pathelement location="${bsf.jar}" />
+    <pathelement path="${java.class.path}" />
+  </path>
+
+  <property name="smoketest.backref" value="../../java/"/>
+  <property name="smoketest.dir" value="../test/java/"/>
+
+  <target name="smoketest" depends="smoketest-run" 
+    description="Run the smoke test." >
+  </target>
+  <target name="smoketest-run" >
+    <ant dir="${smoketest.dir}" antfile="build.xml" target="smoketest-xalan2" >
+      <property name="prepend.class.path"
+                value="${smoketest.backref}${xerces.jar}:${smoketest.backref}${build.dir}/xalan.jar:${smoketest.backref}${bsf.jar}" />
+    <!-- Why doesn't the following refid work? I get an error referencing it.
+      <property name="prepend.class.path" refid="smoketest.class.path" />
+    -->
+    </ant>
+  </target>
+  
+   <!-- target name="smoketest" depends="conftest, minitest"/ -->
+ 
   <!-- =================================================================== -->
   <!-- Creates the todo list for the org.apache.xml website                -->
   <!-- =================================================================== -->
