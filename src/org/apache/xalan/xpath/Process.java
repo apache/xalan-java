@@ -143,7 +143,7 @@ public class Process
       if(null != inputURI)
       {
         System.out.println("Parsing XML...");
-        java.net.URL url = callbacks.getURLFromString(inputURI, null);
+        String url = callbacks.getAbsoluteURI(inputURI, null);
         // doc = callbacks.parseXML(url, null, null);
         doc = null; // TBD:
       }
