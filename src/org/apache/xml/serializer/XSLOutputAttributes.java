@@ -44,8 +44,12 @@ import java.util.Vector;
  * The one attribute not covered in this interface is <code>method</code> as
  * this value is implicitly chosen by the serializer that is created, for
  * example ToXMLStream vs. ToHTMLStream or another one.
+ * 
+ * This interface is only used internally within Xalan.
+ * 
+ * @xsl.usage internal
  */
-public interface XSLOutputAttributes
+interface XSLOutputAttributes
 {
     /**
      * Returns the previously set value of the value to be used as the public
