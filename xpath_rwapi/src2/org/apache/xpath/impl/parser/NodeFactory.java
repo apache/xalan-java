@@ -69,6 +69,7 @@ import org.apache.xpath.impl.VariableImpl;
 /**
  * Applications which want to generate their own AST need to implement this
  * interface.
+ * <p></p>
  *
  * @see org.apache.xpath.impl.parser.XPathTreeConstants
  */

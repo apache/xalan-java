@@ -31,21 +31,17 @@ package org.apache.xpath.impl.parser;
     /**
      * Node factory for customized parser.  
      */
-    NodeFactory m_nodeFactory;
-
-    /**
-     * Sets the node factory.  
-     * @param nodeFactory to use.
-     */
-    public void setNodeFactory(NodeFactory nodeFactory) {      		
-    	m_nodeFactory = nodeFactory;
-    }
+    private NodeFactory m_nodeFactory;
 
     /**
      * Returns the node factory.  
      * @return NodeFactory
      */
     public NodeFactory getNodeFactory() {
+    	if (m_nodeFactory == null)
+    	{
+    		m_nodeFactory = DefaultNodeFactory.createNodeFactory();
+    	}
     	return m_nodeFactory;
     }
 

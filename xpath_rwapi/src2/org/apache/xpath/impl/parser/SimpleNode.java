@@ -5,7 +5,6 @@ import org.apache.xpath.expression.ExpressionFactory;
 import org.apache.xpath.impl.CastOrTreatAsExprImpl;
 import org.apache.xpath.impl.CastableAsExprImpl;
 import org.apache.xpath.impl.ConditionalExprImpl;
-import org.apache.xpath.impl.DefaultNodeFactory;
 import org.apache.xpath.impl.ExpressionFactoryImpl;
 import org.apache.xpath.impl.ForAndQuantifiedExprImpl;
 import org.apache.xpath.impl.FunctionCallImpl;
@@ -27,14 +26,18 @@ public class SimpleNode implements Node, Cloneable
 {
     public static boolean PRODUCE_RAW_TREE = false;
     
-    final static private NodeFactory DEFAULT_NODE_FACTORY = new DefaultNodeFactory();
-    
-    /**
-     * List of child nodes
-     */
-    protected Node[] m_children; 
+	static ExpressionFactory m_exprFact = new ExpressionFactoryImpl();
+
+    protected Node[] m_children; // to remove
     
     protected int id; // to remove
+
+	protected static ExpressionFactory getExpressionFactory()
+	{
+		return m_exprFact;
+	}
+
+	// Constructors
 
     protected SimpleNode()
     {
@@ -42,8 +45,6 @@ public class SimpleNode implements Node, Cloneable
 
     /**
      * Creates a new SimpleNode object.
-     *
-     * @param i DOCUMENT ME!
      */
     public SimpleNode(int i)
     {
@@ -52,30 +53,12 @@ public class SimpleNode implements Node, Cloneable
 
     /**
      * Creates a new SimpleNode object.
-     *
-     * @param p DOCUMENT ME!
-     * @param i DOCUMENT ME!
      */
     public SimpleNode(XPath p, int i)
     {
         this(i);
     }
 
-	static ExpressionFactory m_exprFact = new ExpressionFactoryImpl();
-
-	protected static ExpressionFactory getExpressionFactory()
-	{
-		return m_exprFact;
-	}
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param p DOCUMENT ME!
-     * @param id DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
     public static Node jjtCreate(XPath p, int id)
     {
         if (PRODUCE_RAW_TREE)
@@ -84,8 +67,7 @@ public class SimpleNode implements Node, Cloneable
         }
 
         Node newNode;
-        NodeFactory nodeFactory = (p.m_nodeFactory == null)
-            ? DEFAULT_NODE_FACTORY : p.m_nodeFactory;
+        NodeFactory nodeFactory = p.getNodeFactory();
 
         switch (id)
         {
