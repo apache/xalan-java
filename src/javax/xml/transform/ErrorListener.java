@@ -103,9 +103,10 @@ public interface ErrorListener {
     /**
      * Receive notification of a recoverable error.
      *
-     * <p>The transformer must continue to provide normal parsing events
+     * <p>The transformer must continue to try and provide normal transformation
      * after invoking this method.  It should still be possible for the
-     * application to process the document through to the end.</p>
+     * application to process the document through to the end if no other errors 
+     * are encountered.</p>
      *
      * @param exception The error information encapsulated in a
      *                  transformer exception.
@@ -121,11 +122,11 @@ public interface ErrorListener {
     /**
      * Receive notification of a non-recoverable error.
      *
-     * <p>The application must assume that the transformation cannot
-     * continue after the Transformer has invoked this method,
-     * and should continue (if at all) only to collect
-     * addition error messages. In fact, Transformers are free
-     * to stop reporting events once this method has been invoked.</p>
+     * <p>The transformer must continue to try and provide normal transformation
+     * after invoking this method.  It should still be possible for the
+     * application to process the document through to the end if no other errors 
+     * are encountered, but there is no guarantee that the output will be 
+     * useable.</p>
      *
      * @param exception The error information encapsulated in a
      *                  transformer exception.
