@@ -456,7 +456,16 @@ public class SerializerToXML
         }
 
         if (null == m_charInfo)
-          m_charInfo = new CharInfo(entitiesFileName);
+        {
+          try
+          {
+            m_charInfo = new CharInfo(entitiesFileName);
+          }
+          catch(Exception e)
+          {
+          	m_charInfo = null;
+          }
+        }
 
         if (null == m_charInfo)
         {
