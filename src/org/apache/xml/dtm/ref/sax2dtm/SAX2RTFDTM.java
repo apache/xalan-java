@@ -156,7 +156,6 @@ public class SAX2RTFDTM extends SAX2DTM
    * construction has ended? I think not, given that it may have been
    * tail-pruned.
    *
-   *  @param nodeHandle the id of the node.
    *  @return int Node handle of Document node, or null if this DTM does not
    *  contain an "active" document.
    * */

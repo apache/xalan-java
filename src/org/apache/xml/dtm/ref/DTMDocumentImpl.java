@@ -291,7 +291,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          /**
           * Set a reference pointer to the content-text repository
           *
-          * @param bufferRef FastStringBuffer reference to an instance of
+          * @param buffer FastStringBuffer reference to an instance of
           * buffer
           */
          void setContentBuffer(FastStringBuffer buffer) {
@@ -615,7 +615,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          *
          * The DTMManager will invoke this method when the dtm is created.
          *
-         * @param docHandle int the handle for the DTM document.
+         * @param documentNumber the handle for the DTM document.
          */
         final void initDocument(int documentNumber)
         {
@@ -787,7 +787,6 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
 // 	 * coordinated access to the DTMDStringPool based symbol tables.</p>
 // 		 *
 // 	 * @param ns the namespace of the element
-// 	 * @param localName The local part of the qualified name of the element
 // 	 * @param name The element name
 // 	 */
 // 	public void endElement(String ns, String name)
@@ -1257,7 +1256,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * If not yet resolved, waits for more nodes to be added to the document and
          * tries again.
          *
-         * @param subtreeRootNodeHandle
+         * @param subtreeRootHandle
          * @param nodeHandle int Handle of the node.
          * @return handle of next descendant,
          * or DTM.NULL to indicate none exists.
@@ -1364,7 +1363,6 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
         /**
                 * Given a node handle, find the owning document node.
                 *
-                * @param nodeHandle the id of the node.
                 * @return int Node handle of document, which should always be valid.
                 */
         public int getDocument() {
@@ -1529,8 +1527,6 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * exist in the internal tables, the entry will be created, and the ID will
          * be returned.  Any additional nodes that are created that have this
          * expanded name will use this ID.
-         *
-         * @param nodeHandle The handle to the node in question.
          *
          * @return the expanded-name id of the node.
          */
@@ -1757,7 +1753,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * that feature is supported by this node.
          *
          * @param feature The name of the feature to test.
-         * @param versionThis is the version number of the feature to test.
+         * @param version This is the version number of the feature to test.
          *   If the version is not
          *   specified, supporting any version of the feature will cause the
          *   method to return <code>true</code>.
@@ -1826,7 +1822,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * beginning of the document entity, and has no value if there is no XML
          * declaration.
          *
-         * @param the document handle
+         * @param documentHandle the document handle
          *
          * @return the document version String object
          */
@@ -1859,8 +1855,6 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * normalized as described in 4.2.2 External Entities [XML]. If there is
          * no external subset or if it has no public identifier, this property
          * has no value.
-         *
-         * @param the document type declaration handle
          *
          * @return the public identifier String object, or null if there is none.
          */
@@ -1944,8 +1938,8 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          *
          * TODO: Make sure this does the right thing with attribute nodes!!!
          *
-         * @param node1 DOM Node to perform position comparison on.
-         * @param node2 DOM Node to perform position comparison on .
+         * @param nodeHandle1 DOM Node to perform position comparison on.
+         * @param nodeHandle2 DOM Node to perform position comparison on .
          *
          * @return false if node2 comes before node1, otherwise return true.
          * You can think of this as
@@ -1979,8 +1973,6 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          *        descriptions below) may be unknown. If it is true, those properties
          *        are never unknown.
          *
-         * @param the document handle
-         *
          * @param documentHandle A node handle that must identify a document.
          * @return <code>true</code> if all declarations were processed;
          *         <code>false</code> otherwise.
@@ -1993,8 +1985,6 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          *        DTD.
          *
          * @param the attribute handle
-         *
-         * NEEDSDOC @param attributeHandle
          * @return <code>true</code> if the attribute was specified;
          *         <code>false</code> if it was defaulted.
          */

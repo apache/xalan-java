@@ -238,9 +238,6 @@ public class SerializerUtils
      * If it's not, it still needs to be declared at this point.
      * TODO: This needs to be done at an earlier stage in the game... -sb
      *
-     * @param ns Namespace URI of the element
-     * @param rawName Raw name of element (with prefix)
-     *
      * NEEDSDOC @param dtm
      * NEEDSDOC @param namespace
      *

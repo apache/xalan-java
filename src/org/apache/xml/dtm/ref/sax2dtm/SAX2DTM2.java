@@ -2064,8 +2064,6 @@ public class SAX2DTM2 extends SAX2DTM
    * each element (such as allocating a new tree node or writing
    * output to a file).</p>
    *
-   * @param name The element type name.
-   *
    * @param uri The Namespace URI, or the empty string if the
    *        element has no Namespace URI or if Namespace
    *        processing is not being performed.
@@ -2210,9 +2208,6 @@ public class SAX2DTM2 extends SAX2DTM
    * method in a subclass to take specific actions at the end of
    * each element (such as finalising a tree node or writing
    * output to a file).</p>
-   *
-   * @param name The element type name.
-   * @param attributes The specified or defaulted attributes.
    *
    * @param uri The Namespace URI, or the empty string if the
    *        element has no Namespace URI or if Namespace

@@ -89,9 +89,7 @@ public class DTMNamedNodeMap implements NamedNodeMap
 
   /**
    * Retrieves a node specified by name.
-   * @param nameThe <code>nodeName</code> of a node to retrieve.
-   *
-   * @param name Name of the item being requested.
+   * @param name The <code>nodeName</code> of a node to retrieve.
    * @return A <code>Node</code> (of any type) with the specified
    *   <code>nodeName</code>, or <code>null</code> if it does not identify
    *   any node in this map.
@@ -113,8 +111,6 @@ public class DTMNamedNodeMap implements NamedNodeMap
    * Returns the <code>index</code>th item in the map. If <code>index</code>
    * is greater than or equal to the number of nodes in this map, this
    * returns <code>null</code>.
-   * @param indexIndex into this map.
-   *
    * @param i The index of the requested item.
    * @return The node at the <code>index</code>th position in the map, or
    *   <code>null</code> if that is not a valid index.

@@ -76,8 +76,6 @@ public class DTMTreeWalker
   
   /**
    * Constructor.
-   * @param   contentHandler The implemention of the
-   * contentHandler operation (toXMLString, digest, ...)
    */
   public DTMTreeWalker()
   {

@@ -38,7 +38,6 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
    * Construct a DTMDefaultBaseTraversers object from a DOM node.
    *
    * @param mgr The DTMManager who owns this DTM.
-   * @param domSource the DOM source that this DTM will wrap.
    * @param source The object that is used to specify the construction source.
    * @param dtmIdentity The DTM identity ID for this DTM.
    * @param whiteSpaceFilter The white space filter for this DTM, which may
@@ -61,7 +60,6 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
    * Construct a DTMDefaultBaseTraversers object from a DOM node.
    *
    * @param mgr The DTMManager who owns this DTM.
-   * @param domSource the DOM source that this DTM will wrap.
    * @param source The object that is used to specify the construction source.
    * @param dtmIdentity The DTM identity ID for this DTM.
    * @param whiteSpaceFilter The white space filter for this DTM, which may

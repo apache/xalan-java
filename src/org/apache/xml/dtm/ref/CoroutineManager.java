@@ -171,7 +171,7 @@ public class CoroutineManager
    * it's a net gain, though it would allow the thread to be its own
    * ID. Ponder.</p>
    *
-   * @param coroutineID: If >=0, requests that we reserve this number.
+   * @param coroutineID  If >=0, requests that we reserve this number.
    * If <0, requests that we find, reserve, and return an available ID
    * number.
    *
@@ -251,7 +251,7 @@ public class CoroutineManager
    * @param arg_object A value to be passed to the other coroutine.
    * @param thisCoroutine Integer identifier for this coroutine. This is the
    * ID we watch for to see if we're the ones being resumed.
-   * @param toCoroutine. Integer identifier for the coroutine we wish to
+   * @param toCoroutine  Integer identifier for the coroutine we wish to
    * invoke. 
    * @exception java.lang.NoSuchMethodException if toCoroutine isn't a
    * registered member of this group. %REVIEW% whether this is the best choice.
@@ -318,9 +318,9 @@ public class CoroutineManager
    * returns immediately rather than waiting for any further coroutine
    * traffic, so the thread can proceed with other shutdown activities.
    *
-   * @param arg_object A value to be passed to the other coroutine.
+   * @param arg_object    A value to be passed to the other coroutine.
    * @param thisCoroutine Integer identifier for the coroutine leaving the set.
-   * @param toCoroutine. Integer identifier for the coroutine we wish to
+   * @param toCoroutine   Integer identifier for the coroutine we wish to
    * invoke. 
    * @exception java.lang.NoSuchMethodException if toCoroutine isn't a
    * registered member of this group. %REVIEW% whether this is the best choice.

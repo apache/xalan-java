@@ -362,7 +362,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @param incrementalSAXSource The parser that we want to recieve events from
    * on demand.
-   * @param appCoRID The CoRoutine ID for the application.
    */
   public void setIncrementalSAXSource(IncrementalSAXSource incrementalSAXSource)
   {
@@ -669,8 +668,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *     5. [specified] A flag indicating whether this attribute was actually
    *        specified in the start-tag of its element, or was defaulted from the
    *        DTD.
-   *
-   * @param the attribute handle
    *
    * @param attributeHandle Must be a valid handle to an attribute node.
    * @return <code>true</code> if the attribute was specified;
@@ -1209,8 +1206,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * no external subset or if it has no public identifier, this property
    * has no value.
    *
-   * @param the document type declaration handle
-   *
    * @return the public identifier String object, or null if there is none.
    */
   public String getDocumentTypeDeclarationPublicIdentifier()
@@ -1472,9 +1467,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     /**
    * Get a prefix either from the qname or from the uri mapping, or just make
    * one up!
-   *
-   * @param qname The qualified name, which may be null.
-   * @param uri The namespace URI, which may be null.
    *
    * @return The prefix if there is one, or null.
    */
@@ -1838,8 +1830,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * each element (such as allocating a new tree node or writing
    * output to a file).</p>
    *
-   * @param name The element type name.
-   *
    * @param uri The Namespace URI, or the empty string if the
    *        element has no Namespace URI or if Namespace
    *        processing is not being performed.
@@ -2009,9 +1999,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * method in a subclass to take specific actions at the end of
    * each element (such as finalising a tree node or writing
    * output to a file).</p>
-   *
-   * @param name The element type name.
-   * @param attributes The specified or defaulted attributes.
    *
    * @param uri The Namespace URI, or the empty string if the
    *        element has no Namespace URI or if Namespace
