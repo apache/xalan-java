@@ -11,7 +11,7 @@
 <Spr>
 <Name>DMAN4QHMD3</Name>
 <DateCreated>10/27/2000</DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID></TestID>
 <TestDesc>Need way to call setFeature() on DTM</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -38,6 +38,22 @@
 <State>Closed</State>
 <TestID>atrs20</TestID>
 <TestDesc>We don't match attributes that have xml namespace prefix.</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SBOG4SPP2F</Name>
+<DateCreated>1/5/2001 9</DateCreated>
+<State>Pending</State>
+<TestID></TestID>
+<TestDesc>disable-output-escaping="no" does not work</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SBOG4SSQZW</Name>
+<DateCreated>1/8/2001 1</DateCreated>
+<State build="2.0D06">Resolved</State>
+<TestID></TestID>
+<TestDesc>Stack Traces to System.err re m_reportInPostExceptionFromThread</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
@@ -163,7 +179,7 @@
 <Spr>
 <Name>SCUU4RXTSQ</Name>
 <DateCreated>12/12/2000</DateCreated>
-<State>Pending</State>
+<State build="2.0D06">Resolved</State>
 <TestID>transformerfactoryapitest.java</TestID>
 <TestDesc>TRAX identity transform of embedded stylesheet has missing linefeed</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -179,7 +195,7 @@
 <Spr>
 <Name>SCUU4S6JZL</Name>
 <DateCreated>12/19/2000</DateCreated>
-<State>Pending</State>
+<State build="2.0D06">Resolved</State>
 <TestID>streamsourceapitest.java</TestID>
 <TestDesc>Intermittent failure of imported template rule using Stream sources</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -187,7 +203,7 @@
 <Spr>
 <Name>SCUU4S6N6Y</Name>
 <DateCreated>12/19/2000</DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>domresultapitest.java</TestID>
 <TestDesc>Various API tests produce different outputs JDK 1.1.8 vs JDK 1.2.2</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -195,7 +211,7 @@
 <Spr>
 <Name>SCUU4S7UJ3</Name>
 <DateCreated>12/20/2000</DateCreated>
-<State>Pending</State>
+<State build="2.0D06">Resolved</State>
 <TestID></TestID>
 <TestDesc>ConformanceTest -flavor trax.s2s hang: expression02.xsl;extend01.xsl;mdocs03;mdocs06.xsl;mdocs15.xsl</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -203,9 +219,57 @@
 <Spr>
 <Name>SCUU4S8PWT</Name>
 <DateCreated>12/21/2000</DateCreated>
-<State>Pending</State>
+<State build="2.0D06">Resolved</State>
 <TestID>transformerapitest.java</TestID>
 <TestDesc>Parameter set on one transformer affects other transformers</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4SPPMV</Name>
+<DateCreated>1/5/2001 1</DateCreated>
+<State build="2.0D06">Resolved</State>
+<TestID></TestID>
+<TestDesc>TRAX: SAXResult.setLexicalHandler() does not work</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4SPUML</Name>
+<DateCreated>1/5/2001 2</DateCreated>
+<State>Pending</State>
+<TestID>position70.xsl</TestID>
+<TestDesc>Crimson: position70 has whitespace differences</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4SPUV3</Name>
+<DateCreated>1/5/2001 2</DateCreated>
+<State>Pending</State>
+<TestID>extend01.xsl</TestID>
+<TestDesc>JDK 1.1.8 only: extend01.xsl throws TransformerException...transformNode()</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4SPUXC</Name>
+<DateCreated>1/5/2001 2</DateCreated>
+<State>Pending</State>
+<TestID>output77.xsl</TestID>
+<TestDesc>JDK 1.1.8 only: output77.xsl throws IllegalArgumentException: sun.io.CharToByteBig-Deal</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4SUQRE</Name>
+<DateCreated>1/10/2001 </DateCreated>
+<State>Open</State>
+<TestID>systemidtest.java</TestID>
+<TestDesc>SystemId: file:tests/api/file.xml not found</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4SUQXU</Name>
+<DateCreated>1/10/2001 </DateCreated>
+<State>Open</State>
+<TestID>systemidtest.java</TestID>
+<TestDesc>SystemId: transform(..."bad name") does not always have a good exception.toString()</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>
