@@ -274,10 +274,22 @@ public class ElemTemplateElement extends UnImplNode
 
     String themsg = XSLMessages.createMessage(msg, args);
 
-    throw new RuntimeException(
+    error(
       XSLMessages.createMessage(
         XSLTErrorResources.ER_ELEMTEMPLATEELEM_ERR, new Object[]{ themsg }));  //"ElemTemplateElement error: "+msg);
   }
+  
+  /**
+   * Throw a template element runtime error.  (Note: should we throw a TransformerException instead?)
+   *
+   * @param msg Description of the error that occured.
+   * @param args Arguments to be used in the message
+   */
+  public void error(String msg)
+  {
+    throw new RuntimeException(msg);
+  }
+  
 
   // Implemented DOM Element methods.
 

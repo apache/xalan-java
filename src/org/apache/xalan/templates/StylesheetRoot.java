@@ -555,7 +555,7 @@ public class StylesheetRoot extends StylesheetComposed
                           new Object[] {dfp.getName()});
       }
 
-      throw new RuntimeException(themsg);   // Should we throw TransformerException instead?
+      error(themsg);   // Should we throw TransformerException instead?
     }
 
   }
