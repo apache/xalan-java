@@ -92,6 +92,12 @@ public class ElemVariable extends ElemTemplateElement
    * global area, it will have to be offset at execution time.
    */
   protected int m_index;
+  
+  // Get the relative index of this variable.
+  public int getIndex()
+  {
+    return m_index;
+  }
 
   /**
    * Constructor ElemVariable
