@@ -567,5 +567,23 @@ public class SuballocatedIntVector
     }
     return -1;
   }
-
+  
+  /**
+   * Return the internal m_map0 array
+   * @return the m_map0 array
+   */
+  public final int[] getMap0()
+  {
+    return m_map0;
+  }
+  
+  /**
+   * Return the m_map double array
+   * @return the internal map of array of arrays 
+   */
+  public final int[][] getMap()
+  {
+    return m_map;
+  }
+  
 }

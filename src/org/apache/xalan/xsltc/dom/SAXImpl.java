@@ -82,14 +82,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
+import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM2;
 
 import org.apache.xalan.xsltc.*;
 import org.apache.xml.dtm.ref.*;
 import org.apache.xml.dtm.*;
 
 
-public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
+public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
 {
     
     /* ------------------------------------------------------------------- */
