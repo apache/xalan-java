@@ -142,5 +142,5 @@ public class XSLProcessorVersion
    *          well as defect fixes. 'D' drops may not be as stable as
    *          the final releases.
    */
-  public static int DEVELOPMENT = 2;
+  public static int DEVELOPMENT = 02;
 }
