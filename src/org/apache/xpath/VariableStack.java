@@ -248,6 +248,18 @@ public class VariableStack implements Cloneable
     _top = _links[--_linksTop];
     _cfb = _links[_linksTop - 1];
   }
+  
+  /**
+   * Free up the stack frame that was last allocated with
+   * {@link link(int size)}.
+   * @param currentFrame The current frame to set to 
+   * after the unlink.
+   */
+  public  void unlink(int currentFrame)
+  {
+    _top = _links[--_linksTop];
+    _cfb = currentFrame; 
+  }
 
   /**
    * Set a local variable or parameter in the current stack frame.
