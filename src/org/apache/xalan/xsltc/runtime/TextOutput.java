@@ -335,12 +335,13 @@ public final class TextOutput implements TransletOutputHandler, Constants {
         }
     }
 
-    /**
-     * Utility method - pass a string to the SAX handler's characters() method
-     */
-    private void characters(String str) throws SAXException {
-	final char[] ch = str.toCharArray();
-	characters(ch, 0, ch.length);
+    public void characters(String str) throws TransletException {
+	try {
+	    characters(str.toCharArray(), 0, str.length());
+	}
+	catch (SAXException e) {
+            throw new TransletException(e);
+	}
     }
 
     /**

@@ -106,6 +106,10 @@ public final class SAXAdapter implements TransletOutputHandler {
 	}
     }
     
+    public void characters(String characters) throws TransletException {
+	characters(characters.toCharArray(), 0, characters.length());
+    }
+
     public void characters(char[] characters, int offset, int length)
 	throws TransletException {
 	try {

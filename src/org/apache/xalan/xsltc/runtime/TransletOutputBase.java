@@ -71,6 +71,7 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 public class TransletOutputBase implements TransletOutputHandler {
     public void startDocument() throws TransletException {}
     public void endDocument() throws TransletException {}
+    public void characters(String characters) throws TransletException {}
     public void characters(char[] characters, int offset, int length)
 	throws TransletException {}
     public void startElement(String elementName) throws TransletException {}

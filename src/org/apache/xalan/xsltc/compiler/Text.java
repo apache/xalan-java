@@ -168,17 +168,12 @@ final class Text extends Instruction {
 		il.append(new INVOKEINTERFACE(esc, 2));
 	    }
 
-	    final int toCharArr = cpg.addMethodref("java/lang/String",
-						  "toCharArray", "()[C");
 	    final int characters = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
 							     "characters",
-							     "([CII)V");
+							     "(" + STRING_SIG + ")V");
 	    il.append(methodGen.loadHandler());
 	    il.append(new PUSH(cpg, _text));
-	    il.append(new INVOKEVIRTUAL(toCharArr));
-	    il.append(new ICONST(0));
-	    il.append(new PUSH(cpg, _text.length()));
-	    il.append(new INVOKEINTERFACE(characters, 4));
+	    il.append(new INVOKEINTERFACE(characters, 2));
 
 	    // Restore character escaping setting to whatever it was.
 	    // Note: setEscaping(bool) returns the original (old) value
