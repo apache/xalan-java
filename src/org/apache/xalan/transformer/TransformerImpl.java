@@ -2323,6 +2323,10 @@ public class TransformerImpl extends Transformer
     for (int i = 0; i < nElems; i++)
     {
       ElemSort sort = foreach.getSortElem(i);
+      
+      if (TransformerImpl.S_DEBUG)
+        getTraceManager().fireTraceEvent(sort);
+     
       String langString =
         (null != sort.getLang())
         ? sort.getLang().evaluate(xctxt, sourceNodeContext, foreach) : null;
@@ -2382,7 +2386,9 @@ public class TransformerImpl extends Transformer
       keys.addElement(new NodeSortKey(this, sort.getSelect(), treatAsNumbers,
                                       descending, langString, caseOrderUpper,
                                       foreach));
-    }
+      if (TransformerImpl.S_DEBUG)
+        getTraceManager().fireTraceEndEvent(sort);
+     }
 
     return keys;
   }
@@ -2390,6 +2396,27 @@ public class TransformerImpl extends Transformer
   //==========================================================
   // SECTION: TransformState implementation
   //==========================================================
+  
+  /**
+   * Get the stack of ElemTemplateElements.
+   * 
+   * @return A copy of stack that contains the xsl element instructions, 
+   * the earliest called in index zero, and the latest called in index size()-1.
+   */
+  public Vector getElementCallstack()
+  {
+  	Vector elems = new Vector();
+  	int nStackSize = m_currentTemplateElementsTop;
+  	for(int i = 0; i < nStackSize; i++)
+  	{
+  		ElemTemplateElement elem = m_currentTemplateElements[i];
+  		if(null != elem)
+  		{
+  			elems.addElement(elem);
+  		}
+  	}
+  	return elems;
+  }
 
   /**
    * Push the current template element.
@@ -2444,6 +2471,29 @@ public class TransformerImpl extends Transformer
   {
     return m_xcontext.getCurrentNode();
   }
+  
+  /**
+   * Get the call stack of xsl:template elements.
+   * 
+   * @return A copy of stack that contains the xsl:template 
+   * (ElemTemplate) instructions, the earliest called in index 
+   * zero, and the latest called in index size()-1.
+   */
+  public Vector getTemplateCallstack()
+  {
+  	Vector elems = new Vector();
+  	int nStackSize = m_currentTemplateElementsTop;
+  	for(int i = 0; i < nStackSize; i++)
+  	{
+  		ElemTemplateElement elem = m_currentTemplateElements[i];
+  		if(null != elem && (elem.getXSLToken() != Constants.ELEMNAME_TEMPLATE))
+  		{
+  			elems.addElement(elem);
+  		}
+  	}
+  	return elems;
+  }
+
 
   /**
    * This method retrieves the xsl:template
