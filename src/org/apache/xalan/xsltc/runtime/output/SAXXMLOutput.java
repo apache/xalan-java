@@ -82,7 +82,6 @@ public class SAXXMLOutput extends SAXOutput {
 	throws IOException 
     {
     	super(handler, encoding);
-System.out.println("GTM>> SAXXMLOutput.<init>");
 	initCDATA();
 	initNamespaces();
     }
@@ -91,7 +90,6 @@ System.out.println("GTM>> SAXXMLOutput.<init>");
         String encoding) throws IOException
     {
         super(handler, lex, encoding);
-System.out.println("GTM>> SAXXMLOutput.<init>");
 	initCDATA();
 	initNamespaces();
     }
@@ -184,7 +182,6 @@ System.out.println("GTM>> SAXXMLOutput.<init>");
     public void characters(char[] ch, int off, int len)
         throws TransletException 
     {
-System.out.println("GTM>> SAXXMLOutput value = " + new String(ch,off,len));
 	try {
             // Close any open start tag
             if (_startTagOpen) {

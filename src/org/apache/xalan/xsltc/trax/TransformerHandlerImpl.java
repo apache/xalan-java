@@ -69,6 +69,7 @@ import javax.xml.transform.sax.*;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
@@ -82,7 +83,7 @@ public class TransformerHandlerImpl implements TransformerHandler {
     private AbstractTranslet _translet = null;
     private String           _systemId;
     private DOMImpl          _dom = null;
-    private ContentHandler   _handler = null;
+    private DOMBuilder       _handler = null;
     private DTDMonitor       _dtd = null;
     private Result           _result = null;
 
@@ -236,31 +237,54 @@ public class TransformerHandlerImpl implements TransformerHandler {
     }
 
     /**
+     * Implements org.xml.sax.ext.LexicalHandler.startCDATA()
+     */
+    public void startCDATA() throws SAXException { 
+	_handler.startCDATA();
+    }
+
+    /**
+     * Implements org.xml.sax.ext.LexicalHandler.endCDATA()
+     */
+    public void endCDATA() throws SAXException { 
+	_handler.endCDATA();
+    }
+
+    /**
+     * Implements org.xml.sax.ext.LexicalHandler.comment()
+     * Receieve notification of a comment
+     */
+    public void comment(char[] ch, int start, int length) 
+	throws SAXException 
+    { 
+	_handler.comment(ch, start, length);
+    }
+
+    /**
      * Implements org.xml.sax.ContentHandler.ignorableWhitespace()
      * Receive notification of ignorable whitespace in element
      * content. Similar to characters(char[], int, int).
      */
     public void ignorableWhitespace(char[] ch, int start, int length)
-	throws SAXException {
+	throws SAXException 
+    {
 	_handler.ignorableWhitespace(ch, start, length);
     }
 
     /**
      * Implements org.xml.sax.ContentHandler.setDocumentLocator()
      * Receive an object for locating the origin of SAX document events. 
-     * We do not handle this method, and the input is quietly ignored
      */
     public void setDocumentLocator(Locator locator) {
-	// Not handled by DOMBuilder - ignored
+	_handler.setDocumentLocator(locator);
     }
 
     /**
      * Implements org.xml.sax.ContentHandler.skippedEntity()
      * Receive notification of a skipped entity.
-     * We do not handle this method, and the input is quietly ignored
      */
-    public void skippedEntity(String name) {
-	// Not handled by DOMBuilder - ignored
+    public void skippedEntity(String name) throws SAXException {
+	_handler.skippedEntity(name);
     }
 
     /**
@@ -295,7 +319,8 @@ public class TransformerHandlerImpl implements TransformerHandler {
      */
     public void unparsedEntityDecl(String name, String publicId,
 				   String systemId, String notationName)
-	throws SAXException {
+	throws SAXException 
+    {
 	// Create new contained for unparsed entities
 	if (_dtd == null) _dtd = new DTDMonitor();
 	_dtd.unparsedEntityDecl(name, publicId, systemId, notationName);
@@ -303,44 +328,32 @@ public class TransformerHandlerImpl implements TransformerHandler {
 
     /**
      * Implements org.xml.sax.ext.LexicalHandler.startDTD()
-     * We do not handle this method, and the input is quietly ignored
      */
-    public void startDTD(String name, String publicId, String systemId) { }
+    public void startDTD(String name, String publicId, String systemId) 
+	throws SAXException
+    { 
+	_handler.startDTD(name, publicId, systemId);
+    }
 
     /**
      * Implements org.xml.sax.ext.LexicalHandler.endDTD()
-     * We do not handle this method, and the input is quietly ignored
      */
-    public void endDTD() { }
+    public void endDTD() throws SAXException {
+	_handler.endDTD();
+    }
 
     /**
      * Implements org.xml.sax.ext.LexicalHandler.startEntity()
-     * We do not handle this method, and the input is quietly ignored
      */
-    public void startEntity(String name) { }
+    public void startEntity(String name) throws SAXException { 
+	_handler.startEntity(name);
+    }
 
     /**
      * Implements org.xml.sax.ext.LexicalHandler.endEntity()
-     * We do not handle this method, and the input is quietly ignored
      */
-    public void endEntity(String name) { }
-
-    /**
-     * Implements org.xml.sax.ext.LexicalHandler.startCDATA()
-     * We do not handle this method, and the input is quietly ignored
-     */
-    public void startCDATA() { }
-
-    /**
-     * Implements org.xml.sax.ext.LexicalHandler.endCDATA()
-     * We do not handle this method, and the input is quietly ignored
-     */
-    public void endCDATA() { }
-
-    /**
-     * Implements org.xml.sax.ext.LexicalHandler.comment()
-     * We do not handle this method, and the input is quietly ignored
-     */
-    public void comment(char[] ch, int start, int length) { }
+    public void endEntity(String name) throws SAXException { 
+	_handler.endEntity(name);
+    }
 
 }

@@ -88,15 +88,11 @@ abstract class SAXOutput extends OutputBase implements Constants {
  
 
     public SAXOutput(ContentHandler handler, String encoding) {
-System.err.println("GTM>> ################");
-System.out.println("GTM>> ################");
 	_saxHandler = handler;
 	_encoding = encoding;	
     } 
 
     public SAXOutput(ContentHandler hdler, LexicalHandler lex, String encoding){
-System.err.println("GTM>> ################");
-System.out.println("GTM>> ################");
 	_saxHandler = hdler;
 	_lexHandler = lex;
 	_encoding = encoding;
@@ -114,7 +110,6 @@ System.out.println("GTM>> ################");
     public void characters(String  characters)
        throws TransletException
     {
-System.out.println("GTM>> SAXOutput value = " + characters);
 	characters(characters.toCharArray(), 0, characters.length());	
     }
 
