@@ -58,9 +58,6 @@ public class XSLProcessorContext
    *
    * @param transformer non-null transformer instance
    * @param stylesheetTree The owning stylesheet
-   * @param sourceTree The source document
-   * @param sourceNode The current source node
-   * @param mode the current mode being executed.
    */
   public XSLProcessorContext(TransformerImpl transformer,
                              Stylesheet stylesheetTree)

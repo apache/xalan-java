@@ -53,7 +53,7 @@ public class ExpressionVisitor extends XPathVisitor
    * If the function is an extension function, register the namespace.
    * 
    * @param owner The current XPath object that owns the expression.
-   * @param function The function currently being visited.
+   * @param func The function currently being visited.
    * 
    * @return true to continue the visit in the subtree, if any.
    */

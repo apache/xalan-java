@@ -119,7 +119,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    * Tests whether a certain element name is known within this namespace.
    * Looks for a method with the appropriate name and signature.
    * This method examines both static and instance methods.
-   * @param function name of the function being tested
+   * @param element name of the element being tested
    * @return true if its known, false if not.
    */
 
@@ -191,7 +191,8 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    *
    * @param funcName Function name.
    * @param args     The arguments of the function call.
-   *
+   * @param methodKey A key that uniquely identifies this class and method call.
+   * @param exprContext The context in which this expression is being executed.
    * @return the return value of the function evaluation.
    *
    * @throws TransformerException          if parsing trouble
@@ -434,11 +435,6 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    * @param element        The extension element being processed.
    * @param transformer      Handle to TransformerImpl.
    * @param stylesheetTree The compiled stylesheet tree.
-   * @param mode           The current mode.
-   * @param sourceTree     The root of the source tree (but don't assume
-   *                       it's a Document).
-   * @param sourceNode     The current context node.
-   * @param mode           The current mode.
    * @param methodKey      A key that uniquely identifies this element call.
    * @throws IOException           if loading trouble
    * @throws TransformerException          if parsing trouble

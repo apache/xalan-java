@@ -104,13 +104,10 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @param namespaceUri the extension namespace URI that I'm implementing
    * @param elemNames Vector of element names
    * @param funcNames    string containing list of functions of extension NS
-   * @param lang         language of code implementing the extension
-   * @param srcURL       value of src attribute (if any) - treated as a URL
-   *                     or a classname depending on the value of lang. If
-   *                     srcURL is not null, then scriptSrc is ignored.
    * @param scriptLang Scripting language of implementation
    * @param scriptSrcURL URL of source script
    * @param scriptSrc    the actual script code (if any)
+   * @param systemId
    *
    * @throws TransformerException
    */
@@ -252,8 +249,6 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
   /**
    * Tests whether a certain element name is known within this namespace.
-   * @param function name of the function being tested
-   *
    * @param element name of the element being tested
    * @return true if its known, false if not.
    */
@@ -357,10 +352,6 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @param element        The extension element being processed.
    * @param transformer      Handle to TransformerImpl.
    * @param stylesheetTree The compiled stylesheet tree.
-   * @param mode           The current mode.
-   * @param sourceTree     The root of the source tree (but don't assume
-   *                       it's a Document).
-   * @param sourceNode     The current context node.
    * @param methodKey A key that uniquely identifies this class and method call.
    *
    * @throws XSLProcessorException thrown if something goes wrong

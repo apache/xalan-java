@@ -86,8 +86,6 @@ public abstract class ExtensionHandler
 
   /**
    * Tests whether a certain element name is known within this namespace.
-   * @param function name of the function being tested
-   *
    * @param element Name of element to check
    * @return true if its known, false if not.
    */
@@ -130,12 +128,8 @@ public abstract class ExtensionHandler
    *
    * @param localPart      Element name's local part.
    * @param element        The extension element being processed.
-   * @param transformer      Handle to TransformerImpl.
+   * @param transformer    Handle to TransformerImpl.
    * @param stylesheetTree The compiled stylesheet tree.
-   * @param mode           The current mode.
-   * @param sourceTree     The root of the source tree (but don't assume
-   *                       it's a Document).
-   * @param sourceNode     The current context node.
    * @param methodKey      A key that uniquely identifies this class and method call.
    *
    * @throws XSLProcessorException thrown if something goes wrong
@@ -143,7 +137,7 @@ public abstract class ExtensionHandler
    * @throws MalformedURLException if loading trouble
    * @throws FileNotFoundException if loading trouble
    * @throws IOException           if loading trouble
-   * @throws TransformerException          if parsing trouble
+   * @throws TransformerException  if parsing trouble
    */
   public abstract void processElement(
     String localPart, ElemTemplateElement element, TransformerImpl transformer,

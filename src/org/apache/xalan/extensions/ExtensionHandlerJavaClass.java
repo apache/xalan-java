@@ -441,10 +441,6 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    * @param element        The extension element being processed.
    * @param transformer      Handle to TransformerImpl.
    * @param stylesheetTree The compiled stylesheet tree.
-   * @param sourceTree     The root of the source tree (but don't assume
-   *                       it's a Document).
-   * @param sourceNode     The current context node.
-   * @param mode           The current mode.
    * @param methodKey      A key that uniquely identifies this element call.
    * @throws IOException           if loading trouble
    * @throws TransformerException          if parsing trouble

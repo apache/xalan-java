@@ -105,7 +105,7 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
    * Note: The EXSLT function element is a template-level element, and 
    * element-available() returns false for it.
    * 
-   * @param Local name of the function.
+   * @param elemName name of the element.
    * @return true if the function is available.
    */
   public boolean isElementAvailable(String elemName)
