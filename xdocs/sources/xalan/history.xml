@@ -1831,7 +1831,6 @@ systemId
   <li>Fixed bug with XSLTProcessor process(xmlIn, null, out) method so that it uses the StylesheetRoot (if one exists) that has been created
    with the processStylesheet() method.</li>
 </ul>
-<p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
 </s2>
 
 <s2 title="Changes for &xslt4j; version 2.0.D07">
