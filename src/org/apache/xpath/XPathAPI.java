@@ -70,12 +70,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.objects.XObject;
-
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
-
 
 /**
  * The methods in this class are convenience methods into the
@@ -132,7 +130,7 @@ public class XPathAPI
   /**
    *  Use an XPath string to select a nodelist.
    *  XPath namespace prefixes are resolved from the contextNode.
-   * 
+   *
    *  @param contextNode The node to start searching from.
    *  @param str A valid XPath string.
    *  @return A NodeIterator, should never be null.
@@ -148,7 +146,7 @@ public class XPathAPI
   /**
    *  Use an XPath string to select a nodelist.
    *  XPath namespace prefixes are resolved from the namespaceNode.
-   * 
+   *
    *  @param contextNode The node to start searching from.
    *  @param str A valid XPath string.
    *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
@@ -164,17 +162,14 @@ public class XPathAPI
     // Execute the XPath, and have it return the result
     XObject list = eval(contextNode, str, namespaceNode);
 
-    // Have the XObject return its result as a NodeSetDTM.
-    // %TBD% Convert to DOM nodeset
-		
-    return new DTMNodeIterator(list.iter());
-    
+    // Have the XObject return its result as a NodeSetDTM.                
+    return list.nodeset();
   }
 
   /**
    *  Use an XPath string to select a nodelist.
    *  XPath namespace prefixes are resolved from the contextNode.
-   * 
+   *
    *  @param contextNode The node to start searching from.
    *  @param str A valid XPath string.
    *  @return A NodeIterator, should never be null.
@@ -190,7 +185,7 @@ public class XPathAPI
   /**
    *  Use an XPath string to select a nodelist.
    *  XPath namespace prefixes are resolved from the namespaceNode.
-   * 
+   *
    *  @param contextNode The node to start searching from.
    *  @param str A valid XPath string.
    *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
@@ -207,7 +202,7 @@ public class XPathAPI
     XObject list = eval(contextNode, str, namespaceNode);
 
     // Return a NodeList.
-    return new DTMNodeList(list.iter());
+    return list.nodelist();
   }
 
   /**
@@ -226,7 +221,8 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static XObject eval(Node contextNode, String str) throws TransformerException
+  public static XObject eval(Node contextNode, String str)
+          throws TransformerException
   {
     return eval(contextNode, str, contextNode);
   }
@@ -237,7 +233,7 @@ public class XPathAPI
    *  The implementation of this is a little slow, since it creates
    *  a number of objects each time it is called.  This could be optimized
    *  to keep the same objects around, but then thread-safety issues would arise.
-   * 
+   *
    *  @param contextNode The node to start searching from.
    *  @param str A valid XPath string.
    *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
@@ -274,10 +270,9 @@ public class XPathAPI
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
-    // %TBD% Need to convert contextNode to a DTM node
-//    return xpath.execute(xpathSupport, contextNode, prefixResolver);
-    int ctxtNode;
-		ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
+    // return xpath.execute(xpathSupport, contextNode, prefixResolver);
+    int ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
+
     return xpath.execute(xpathSupport, ctxtNode, prefixResolver);
   }
 
@@ -287,11 +282,11 @@ public class XPathAPI
    *   The implementation of this is a little slow, since it creates
    *   a number of objects each time it is called.  This could be optimized
    *   to keep the same objects around, but then thread-safety issues would arise.
-   *  
+   *
    *   @param contextNode The node to start searching from.
    *   @param str A valid XPath string.
    *   @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
-   *   @param prefixResolver Will be called if the parser encounters namespace 
+   *   @param prefixResolver Will be called if the parser encounters namespace
    *                         prefixes, to resolve the prefixes to URLs.
    *   @return An XObject, which can be used to obtain a string, number, nodelist, etc, should never be null.
    *   @see org.apache.xpath.objects.XObject
@@ -317,11 +312,9 @@ public class XPathAPI
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
-    // %TBD% Need to convert contextNode to a DTM node
-    // return xpath.execute(new XPathContext(), contextNode, prefixResolver);
-		int ctxtNode;
-		XPathContext xpathSupport = new XPathContext();
-		ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
+    XPathContext xpathSupport = new XPathContext();
+    int ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
+
     return xpath.execute(xpathSupport, ctxtNode, prefixResolver);
   }
 }
