@@ -124,6 +124,11 @@ public final class UnionIterator extends DTMAxisIteratorBase {
     // used to prune duplicates
     private int _returnedLast;
 
+    // cached returned last for use in gotoMark
+    private int _cachedReturnedLast = END;
+    // cached heap size for use in gotoMark
+    private int _cachedHeapSize;
+
     public UnionIterator(DOM dom) {
 	_dom = dom;
     }
@@ -205,6 +210,9 @@ public final class UnionIterator extends DTMAxisIteratorBase {
 	return this;
     }
 	
+    /* Build a heap in document order. put the smallest node on the top. 
+     * "smallest node" means the node before other nodes in document order
+     */
     private void heapify(int i) {
 	for (int r, l, smallest;;) {
 	    r = (i + 1) << 1; l = r - 1;
@@ -229,12 +237,19 @@ public final class UnionIterator extends DTMAxisIteratorBase {
 	for (int i = 0; i < _free; i++) {
 	    _heap[i].setMark();
 	}
+	_cachedReturnedLast = _returnedLast;    
+	_cachedHeapSize = _heapSize;
     }
 
     public void gotoMark() {
 	for (int i = 0; i < _free; i++) {
 	    _heap[i].gotoMark();
 	}
+	// rebuild heap after call last() function. fix for bug 20913
+	for (int i = (_heapSize = _cachedHeapSize)/2; i >= 0; i--) {
+	    heapify(i);
+	}
+    _returnedLast = _cachedReturnedLast;    
     }
 
     public DTMAxisIterator reset() {
