@@ -122,6 +122,7 @@ public class StepPattern extends NodeTest implements SubContextList
       m_targetString = PsuedoNames.PSEUDONAME_ANY;
       break;
     case NodeFilter.SHOW_DOCUMENT :
+    case NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT :
       m_targetString = PsuedoNames.PSEUDONAME_ROOT;
       break;
     case NodeFilter.SHOW_ELEMENT :
@@ -246,7 +247,7 @@ public class StepPattern extends NodeTest implements SubContextList
       score = NodeTest.SCORE_NONE;
     }
     else if ((nodeType == Node.DOCUMENT_NODE || nodeType == Node.DOCUMENT_FRAGMENT_NODE)
-             && m_whatToShow != NodeFilter.SHOW_DOCUMENT)
+             && m_whatToShow != (NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT))
     {
       score = NodeTest.SCORE_NONE;
     }
