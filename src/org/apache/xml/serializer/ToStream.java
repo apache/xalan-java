@@ -295,12 +295,7 @@ abstract public class ToStream extends SerializerBase
                     else
                          ((WriterToUTF8Buffered) writer).flushBuffer();
                 }
-                if (writer instanceof WriterToUTF8)
-                {
-                    if (m_shouldFlush)
-                        writer.flush();
-                }
-                else if (writer instanceof WriterToASCI)
+                if (writer instanceof WriterToASCI)
                 {
                     if (m_shouldFlush)
                         writer.flush();
@@ -331,9 +326,7 @@ abstract public class ToStream extends SerializerBase
 
         if (m_writer instanceof WriterToUTF8Buffered)
             return ((WriterToUTF8Buffered) m_writer).getOutputStream();
-        if (m_writer instanceof WriterToUTF8)
-            return ((WriterToUTF8) m_writer).getOutputStream();
-        else if (m_writer instanceof WriterToASCI)
+        if (m_writer instanceof WriterToASCI)
             return ((WriterToASCI) m_writer).getOutputStream();
         else
             return null;
@@ -623,24 +616,13 @@ abstract public class ToStream extends SerializerBase
             //                init(new WriterToUTF8(output), format, defaultProperties, true);
             //            }
          
-            if (output instanceof java.io.BufferedOutputStream ||
-            	output.getClass().getName().endsWith("BufferedServletOutputStream"))
-            {
-            	/* don't do buffering for 
-            	 *   BufferedOutputStream
-            	 *   BufferedServletOutputStream
-            	 *   ... more ... ?
-            	 */
-                init(new WriterToUTF8(output), format, defaultProperties, true);
-            }
-            else
-            {
+
                 init(
                     new WriterToUTF8Buffered(output),
                     format,
                     defaultProperties,
                     true);
-            }
+
 
         }
         else if (

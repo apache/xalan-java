@@ -72,7 +72,7 @@ public final class WriterToUTF8Buffered extends Writer
 {
     
   /** number of characters that the buffer can hold.
-   * This is a fixed constant is used rather than buf.lenght for performance.
+   * This is a fixed constant is used rather than m_outputBytes.lenght for performance.
    */
   private static final int buf_length=16*1024;
   
@@ -83,12 +83,14 @@ public final class WriterToUTF8Buffered extends Writer
    * The internal buffer where data is stored.
    * (sc & sb remove final to compile in JDK 1.1.8)
    */
-  private final byte buf[];
+  private final byte m_outputBytes[];
+  
+  private final char m_inputChars[];
 
   /**
    * The number of valid bytes in the buffer. This value is always
-   * in the range <tt>0</tt> through <tt>buf.length</tt>; elements
-   * <tt>buf[0]</tt> through <tt>buf[count-1]</tt> contain valid
+   * in the range <tt>0</tt> through <tt>m_outputBytes.length</tt>; elements
+   * <tt>m_outputBytes[0]</tt> through <tt>m_outputBytes[count-1]</tt> contain valid
    * byte data.
    */
   private int count;
@@ -107,7 +109,11 @@ public final class WriterToUTF8Buffered extends Writer
       m_os = out;
       // get 3 extra bytes to make buffer overflow checking simpler and faster
       // we won't have to keep checking for a few extra characters
-      buf = new byte[buf_length + 3];
+      m_outputBytes = new byte[buf_length + 3];
+      
+      // Big enough to hold the input chars that will be transformed
+      // into output bytes in m_ouputBytes.
+      m_inputChars = new char[(buf_length/3) + 1];
       count = 0;
       
 //      the old body of this constructor, before the buffersize was changed to a constant      
@@ -134,7 +140,7 @@ public final class WriterToUTF8Buffered extends Writer
 //        SerializerMessages.createMessage(SerializerErrorResources.ER_BUFFER_SIZE_LESSTHAN_ZERO, null)); //"Buffer size <= 0");
 //    }
 //
-//    buf = new byte[size];
+//    m_outputBytes = new byte[size];
 //    count = 0;
 //  }
 
@@ -160,18 +166,18 @@ public final class WriterToUTF8Buffered extends Writer
 
     if (c < 0x80)
     {
-       buf[count++] = (byte) (c);
+       m_outputBytes[count++] = (byte) (c);
     }
     else if (c < 0x800)
     {
-      buf[count++] = (byte) (0xc0 + (c >> 6));
-      buf[count++] = (byte) (0x80 + (c & 0x3f));
+      m_outputBytes[count++] = (byte) (0xc0 + (c >> 6));
+      m_outputBytes[count++] = (byte) (0x80 + (c & 0x3f));
     }
     else
     {
-      buf[count++] = (byte) (0xe0 + (c >> 12));
-      buf[count++] = (byte) (0x80 + ((c >> 6) & 0x3f));
-      buf[count++] = (byte) (0x80 + (c & 0x3f));
+      m_outputBytes[count++] = (byte) (0xe0 + (c >> 12));
+      m_outputBytes[count++] = (byte) (0x80 + ((c >> 6) & 0x3f));
+      m_outputBytes[count++] = (byte) (0x80 + (c & 0x3f));
     }
   }
 
@@ -186,7 +192,7 @@ public final class WriterToUTF8Buffered extends Writer
    *
    * @throws java.io.IOException
    */
-  private final void writeDirect(
+  private final void writeWithoutBuffering(
           final char chars[], final int start, final int length)
             throws java.io.IOException
   {
@@ -221,7 +227,7 @@ public final class WriterToUTF8Buffered extends Writer
    *
    * @exception  IOException  If an I/O error occurs
    */
-  private final void writeDirect(final String s) throws IOException
+  private final void writeWithoutBuffering(final String s) throws IOException
   {
 
     final int n = s.length();
@@ -281,7 +287,7 @@ public final class WriterToUTF8Buffered extends Writer
          * directly. The buffer is already flushed so this is a 
          * safe thing to do.
          */
-        writeDirect(chars, start, length);
+        writeWithoutBuffering(chars, start, length);
         return;
       }
     }
@@ -289,7 +295,7 @@ public final class WriterToUTF8Buffered extends Writer
 
 
     final int n = length+start;
-    final byte[] buf_loc = buf; // local reference for faster access
+    final byte[] buf_loc = m_outputBytes; // local reference for faster access
     int count_loc = count;      // local integer for faster access
     int i = start;
     {
@@ -336,51 +342,68 @@ public final class WriterToUTF8Buffered extends Writer
   public void write(final String s) throws IOException
   {
 
-    final int length = s.length();
-
     // We multiply the length by three since this is the maximum length
     // of the characters that we can put into the buffer.  It is possible
     // for each Unicode character to expand to three bytes.
-
+    final int length = s.length();
     int lengthx3 = (length << 1) + length;
 
-    if (lengthx3 >= buf_length)
+    if (lengthx3 >= buf_length - count)
     {
-
-      /* If the request length exceeds the size of the output buffer,
-         flush the output buffer and then write the data directly.
-         In this way buffered streams will cascade harmlessly. */
+      // The requested length is greater than the unused part of the buffer
       flushBuffer();
-      writeDirect(s);
 
-      return;
+      if (lengthx3 >= buf_length)
+      {
+        /*
+         * The requested length exceeds the size of the buffer,
+         * so don't bother to buffer this one, just write it out
+         * directly. The buffer is already flushed so this is a 
+         * safe thing to do.
+         */
+        writeWithoutBuffering(s);
+        return;
+      }
     }
 
-    if (lengthx3 > buf_length - count)
+
+    s.getChars(0, length , m_inputChars, 0);
+    final char[] chars = m_inputChars;
+    final int n = length;
+    final byte[] buf_loc = m_outputBytes; // local reference for faster access
+    int count_loc = count;      // local integer for faster access
+    int i = 0;
     {
-      flushBuffer();
+        /* This block could be omitted and the code would produce
+         * the same result. But this block exists to give the JIT
+         * a better chance of optimizing a tight and common loop which
+         * occurs when writing out ASCII characters. 
+         */ 
+        char c;
+        for(; i < n && (c = chars[i])< 0x80 ; i++ )
+            buf_loc[count_loc++] = (byte)c;
     }
-
-    final OutputStream os = m_os;
-
-    for (int i = 0; i < length; i++)
+    for (; i < n; i++)
     {
-      final char c = s.charAt(i);
+
+      final char c = chars[i];
 
       if (c < 0x80)
-        buf[count++] = (byte) (c);
+        buf_loc[count_loc++] = (byte) (c);
       else if (c < 0x800)
       {
-        buf[count++] = (byte) (0xc0 + (c >> 6));
-        buf[count++] = (byte) (0x80 + (c & 0x3f));
+        buf_loc[count_loc++] = (byte) (0xc0 + (c >> 6));
+        buf_loc[count_loc++] = (byte) (0x80 + (c & 0x3f));
       }
       else
       {
-        buf[count++] = (byte) (0xe0 + (c >> 12));
-        buf[count++] = (byte) (0x80 + ((c >> 6) & 0x3f));
-        buf[count++] = (byte) (0x80 + (c & 0x3f));
+        buf_loc[count_loc++] = (byte) (0xe0 + (c >> 12));
+        buf_loc[count_loc++] = (byte) (0x80 + ((c >> 6) & 0x3f));
+        buf_loc[count_loc++] = (byte) (0x80 + (c & 0x3f));
       }
     }
+    // Store the local integer back into the instance variable
+    count = count_loc;
 
   }
 
@@ -394,7 +417,7 @@ public final class WriterToUTF8Buffered extends Writer
 
     if (count > 0)
     {
-      m_os.write(buf, 0, count);
+      m_os.write(m_outputBytes, 0, count);
 
       count = 0;
     }
@@ -441,5 +464,52 @@ public final class WriterToUTF8Buffered extends Writer
   public OutputStream getOutputStream()
   {
     return m_os;
+  }
+  
+  /**
+   * 
+   * @param s A string with only ASCII characters
+   * @throws IOException
+   */
+  public void directWrite(final String s) throws IOException
+  {
+
+    // We multiply the length by three since this is the maximum length
+    // of the characters that we can put into the buffer.  It is possible
+    // for each Unicode character to expand to three bytes.
+    final int length = s.length();
+    int lengthx3 = (length << 1) + length;
+
+    if (lengthx3 >= buf_length - count)
+    {
+      // The requested length is greater than the unused part of the buffer
+      flushBuffer();
+
+      if (lengthx3 >= buf_length)
+      {
+        /*
+         * The requested length exceeds the size of the buffer,
+         * so don't bother to buffer this one, just write it out
+         * directly. The buffer is already flushed so this is a 
+         * safe thing to do.
+         */
+        writeWithoutBuffering(s);
+        return;
+      }
+    }
+
+
+    s.getChars(0, length , m_inputChars, 0);
+    final char[] chars = m_inputChars;
+    final byte[] buf_loc = m_outputBytes; // local reference for faster access
+    int count_loc = count;      // local integer for faster access
+    int i = 0;
+    while( i < length) 
+        buf_loc[count_loc++] = (byte)chars[i++];
+
+ 
+    // Store the local integer back into the instance variable
+    count = count_loc;
+
   }
 }
