@@ -104,6 +104,10 @@
             title="Java Specification Request 63"
             location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
             
+  <resource id="xmlapirepository"
+            title="xml-commons/java/external/src"
+            location="http://cvs.apache.org/viewcvs.cgi/xml-commons/java/external/src/"/>
+            
   <resource id="compatapi"
             title="Xalan-Java 1 compatibility Javadoc"
             location="compat_apidocs/index.html"/>
