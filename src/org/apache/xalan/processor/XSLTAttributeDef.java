@@ -56,10 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xml.utils.StringToIntTable;
-
 import java.lang.IllegalAccessException;
-
 import java.lang.IndexOutOfBoundsException;
 import java.lang.InstantiationException;
 import java.lang.NoSuchMethodException;
@@ -78,6 +75,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.StringVector;
+import org.apache.xml.utils.StringToIntTable;
 import org.apache.xpath.XPath;
 
 import javax.xml.transform.TransformerException;
