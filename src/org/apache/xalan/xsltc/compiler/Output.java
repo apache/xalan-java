@@ -177,7 +177,7 @@ final class Output extends TopLevelElement {
 	if ((attrib != null) && (!attrib.equals(EMPTYSTRING))) {
 	    if (attrib.equals("yes")) _indent = true;
 	}
-	else if (_method.equals("html")) {
+	else if ((_method != null) && (_method.equals("html"))) {
 	    _indent = true;
 	}
 
