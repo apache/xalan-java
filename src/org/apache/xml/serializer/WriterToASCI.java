@@ -93,7 +93,7 @@ class WriterToASCI extends Writer implements WriterChain
   /**
    * Write a string.
    *
-   * @param  str  String to be written
+   * @param  s String to be written
    *
    * @exception  IOException  If an I/O error occurs
    */

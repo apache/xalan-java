@@ -55,7 +55,7 @@ public class NSInfo
    * have been processed for this node 
    * @param hasXMLNSAttrs Flag indicating whether this node
    * has XMLNS attributes. 
-   * @param hasXMLNSAttrs Flag indicating whether one of this node's
+   * @param ancestorHasXMLNSAttrs Flag indicating whether one of this node's
    * ancestor has XMLNS attributes.
    */
   public NSInfo(boolean hasProcessedNS, boolean hasXMLNSAttrs,

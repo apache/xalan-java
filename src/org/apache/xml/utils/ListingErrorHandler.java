@@ -477,7 +477,7 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
      * an exception when we're called for various warning / 
      * error / fatalErrors, or simply log them and continue.</p>
      *
-     * @param t if we should throw an exception on warnings
+     * @param b if we should throw an exception on warnings
      */
     public void setThrowOnWarning(boolean b)
     {
@@ -509,7 +509,7 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
      * <p>Note that the behavior of many parsers/transformers 
      * after an error is not necessarily defined!</p>
      *
-     * @param t if we should throw an exception on errors
+     * @param b if we should throw an exception on errors
      */
     public void setThrowOnError(boolean b)
     {
@@ -542,7 +542,7 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
      * after a fatalError is not necessarily defined, most 
      * products will probably barf if you continue.</p>
      *
-     * @param t if we should throw an exception on fatalErrors
+     * @param b if we should throw an exception on fatalErrors
      */
     public void setThrowOnFatalError(boolean b)
     {

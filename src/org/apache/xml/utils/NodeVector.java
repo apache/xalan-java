@@ -728,10 +728,6 @@ public class NodeVector implements Serializable, Cloneable
   /**
    * Sort an array using a quicksort algorithm.
    *
-   * @param a The array to be sorted.
-   * @param lo0  The low index.
-   * @param hi0  The high index.
-   *
    * @throws Exception
    */
   public void sort() throws Exception

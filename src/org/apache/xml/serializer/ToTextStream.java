@@ -151,7 +151,6 @@ public final class ToTextStream extends ToStream
    *        performed.
    * @param name The qualified name (with prefix), or the
    *        empty string if qualified names are not available.
-   * @param name The element type name
    * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *

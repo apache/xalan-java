@@ -42,9 +42,6 @@ public class PrefixResolverDefault implements PrefixResolver
    * which XPath expression prefixes will be resolved.
    * Warning: This will not work correctly if xpathExpressionContext
    * is an attribute node.
-   * @param xpathExpressionContext Node from which to start searching for a
-   * xmlns attribute that binds a prefix to a namespace (when the namespace
-   * context is not specified in the getNamespaceForPrefix call).
    */
   public PrefixResolverDefault(Node xpathExpressionContext)
   {

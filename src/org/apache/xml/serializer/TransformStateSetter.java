@@ -40,14 +40,14 @@ public interface TransformStateSetter
   /**
    * Set the current node.
    *
-   * @param Node The current node.
+   * @param n The current node.
    */
   void setCurrentNode(Node n);
 
   /**
    * Reset the state on the given transformer object.
    *
-   * @param Transformer
+   * @param transformer
    */
   void resetState(Transformer transformer);
 

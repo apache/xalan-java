@@ -1162,7 +1162,7 @@ public final class TransformerImpl extends Transformer
      * invoking this method. It should still be possible for the application
      * to process the document through to the end.
      *
-     * @param exception The warning information encapsulated in a transformer 
+     * @param e The warning information encapsulated in a transformer 
      * exception.
      * @throws TransformerException if the application chooses to discontinue
      * the transformation (always does in our case).
@@ -1190,7 +1190,7 @@ public final class TransformerImpl extends Transformer
      * Transformers are free to stop reporting events once this method has
      * been invoked.
      *
-     * @param exception The warning information encapsulated in a transformer
+     * @param e The warning information encapsulated in a transformer
      * exception.
      * @throws TransformerException if the application chooses to discontinue
      * the transformation (always does in our case).
@@ -1218,7 +1218,7 @@ public final class TransformerImpl extends Transformer
      * transformation. It should still be possible for the application to
      * process the document through to the end.
      *
-     * @param exception The warning information encapsulated in a transformer
+     * @param e The warning information encapsulated in a transformer
      * exception.
      * @throws TransformerException if the application chooses to discontinue
      * the transformation (never does in our case).

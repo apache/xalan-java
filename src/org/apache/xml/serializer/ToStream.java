@@ -194,8 +194,6 @@ abstract public class ToStream extends SerializerBase
      * Serializes the DOM node. Throws an exception only if an I/O
      * exception occured while serializing.
      *
-     * @param elem The element to serialize
-     *
      * @param node Node to serialize.
      * @throws IOException An I/O exception occured while serializing
      */
@@ -754,7 +752,6 @@ abstract public class ToStream extends SerializerBase
     }
     /**
      * Prints <var>n</var> spaces.
-     * @param pw        The character output stream to use.
      * @param n         Number of spaces to print.
      *
      * @throws org.xml.sax.SAXException if an error occurs when writing.
@@ -1766,13 +1763,13 @@ abstract public class ToStream extends SerializerBase
       * that is associated with this element.
       *
       *
-      * @param namespaceURI The Namespace URI, or the empty string if the
+      * @param elementNamespaceURI The Namespace URI, or the empty string if the
       *        element has no Namespace URI or if Namespace
       *        processing is not being performed.
-      * @param localName The local name (without prefix), or the
+      * @param elementLocalName The local name (without prefix), or the
       *        empty string if Namespace processing is not being
       *        performed.
-      * @param name The element type name.
+      * @param elementName The element type name.
       * @throws org.xml.sax.SAXException Any SAX exception, possibly
       *            wrapping another exception.
       * @see org.xml.sax.ContentHandler#startElement
@@ -2505,7 +2502,7 @@ abstract public class ToStream extends SerializerBase
     /**
      * Adds a URI/LocalName pair of strings to the list.
      *
-     * @param name String of the form "{uri}local" or "local" 
+     * @param URI_and_localName String of the form "{uri}local" or "local" 
      * 
      * @return a QName object
      */
@@ -2536,7 +2533,7 @@ abstract public class ToStream extends SerializerBase
      * The "official way to set URI and localName pairs. 
      * This method should be used by both Xalan and XSLTC.
      * 
-     * @param Vector URI_and_localNames a vector of pairs of Strings (URI/local)
+     * @param URI_and_localNames a vector of pairs of Strings (URI/local)
      */
     public void setCdataSectionElements(Vector URI_and_localNames)
     {

@@ -105,7 +105,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * Turns special character escaping on/off.
      *
      *
-     * @param excape true if escaping is to be set on.
+     * @param escape true if escaping is to be set on.
      *
      * @see org.apache.xml.serializer.SerializationHandler#setEscaping(boolean)
      */
@@ -224,15 +224,14 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * still be attached to the name.</p>
      *
      *
-     * @param namespaceURI The Namespace URI, or the empty string if the
+     * @param uri The Namespace URI, or the empty string if the
      *        element has no Namespace URI or if Namespace
      *        processing is not being performed.
      * @param localName The local name (without prefix), or the
      *        empty string if Namespace processing is not being
      *        performed.
-     * @param name The qualified name (with prefix), or the
+     * @param qName The qualified name (with prefix), or the
      *        empty string if qualified names are not available.
-     * @param name The element type name
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *            wrapping another exception.
      * @see org.xml.sax.ContentHandler#endElement(String, String, String)
@@ -274,12 +273,6 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * <p>A SAX parser should never report an XML declaration (XML 1.0,
      * section 2.8) or a text declaration (XML 1.0, section 4.3.1)
      * using this method.</p>
-     *
-     * @param target The processing instruction target.
-     * @param data The processing instruction data, or null if
-     *        none was supplied.
-     * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
      *
      * @throws org.xml.sax.SAXException
      * @see org.xml.sax.ContentHandler#processingInstruction(String, String)

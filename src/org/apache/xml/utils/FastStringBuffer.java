@@ -66,7 +66,7 @@ public class FastStringBuffer
 	 * This should be used when normalize-to-SAX is called for the first chunk of a
 	 * multi-chunk output, or one following unsuppressed whitespace in a previous
 	 * chunk.
-	 * @see sendNormalizedSAXcharacters(char[],int,int,org.xml.sax.ContentHandler,int)
+	 * @see #sendNormalizedSAXcharacters(org.xml.sax.ContentHandler,int,int)
 	 */
 	public static final int SUPPRESS_LEADING_WS=0x01;
 	
@@ -79,7 +79,7 @@ public class FastStringBuffer
 	/** Manifest constant: Suppress both leading and trailing whitespace.
 	 * This should be used when normalize-to-SAX is called for a complete string.
 	 * (I'm not wild about the name of this one. Ideas welcome.)
-	 * @see sendNormalizedSAXcharacters(char[],int,int,org.xml.sax.ContentHandler,int)
+	 * @see #sendNormalizedSAXcharacters(org.xml.sax.ContentHandler,int,int)
 	 */
 	public static final int SUPPRESS_BOTH
 		= SUPPRESS_LEADING_WS | SUPPRESS_TRAILING_WS;
@@ -236,8 +236,6 @@ public class FastStringBuffer
    * <p>
    * ISSUE: Should this call assert initial size, or fixed size?
    * Now configured as initial, with a default for fixed.
-   *
-   * @param
    *
    * NEEDSDOC @param initChunkBits
    */

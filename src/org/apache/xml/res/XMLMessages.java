@@ -70,7 +70,7 @@ public class XMLMessages
    * Creates a message from the specified key and replacement
    * arguments, localized to the given locale.
    *
-   * @param errorCode The key for the message text.
+   * @param msgKey    The key for the message text.
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
@@ -92,8 +92,6 @@ public class XMLMessages
   /**
    * Creates a message from the specified key and replacement
    * arguments, localized to the given locale.
-   *
-   * @param errorCode The key for the message text.
    *
    * @param fResourceBundle The resource bundle to use.
    * @param msgKey  The message key to use.
@@ -157,9 +155,6 @@ public class XMLMessages
   /**
    * Return a named ResourceBundle for a particular locale.  This method mimics the behavior
    * of ResourceBundle.getBundle().
-   *
-   * @param res the name of the resource to load.
-   * @param locale the locale to prefer when searching for the bundle
    *
    * @param className The class name of the resource bundle.
    * @return the ResourceBundle

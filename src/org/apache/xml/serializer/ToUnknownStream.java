@@ -276,7 +276,7 @@ public final class ToUnknownStream extends SerializerBase
     }
     /**
      * Adds an attribute to the currenly open tag
-     * @param name the attribute name, with prefix (if any)
+     * @param rawName the attribute name, with prefix (if any)
      * @param value the value of the parameter
      * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String)
      */

@@ -109,7 +109,7 @@ public abstract class ToSAXHandler extends SerializerBase
     /**
      * Receive notification of character data.
      *
-     * @param chars The string of characters to process.
+     * @param characters The string of characters to process.
      *
      * @throws org.xml.sax.SAXException
      *
@@ -223,7 +223,7 @@ public abstract class ToSAXHandler extends SerializerBase
 
     /**
      * Sets the SAX ContentHandler.
-     * @param m_saxHandler The ContentHandler to set
+     * @param _saxHandler The ContentHandler to set
      */
     public void setContentHandler(ContentHandler _saxHandler)
     {
@@ -332,7 +332,7 @@ public abstract class ToSAXHandler extends SerializerBase
     /**
      * An element starts, but attributes are not fully known yet.
      *
-     * @param elementName the element name, with prefix (if any).
+     * @param qName the element name, with prefix (if any).
 
      * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(String)
      */

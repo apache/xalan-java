@@ -590,7 +590,7 @@ public class TransformerFactoryImpl
      * Process the Source into a Templates object, which is a a compiled
      * representation of the source.
      *
-     * @param stylesheet The input stylesheet - DOMSource not supported!!!
+     * @param source The input stylesheet - DOMSource not supported!!!
      * @return A Templates object that can be used to create Transformers.
      * @throws TransformerConfigurationException
      */
@@ -866,7 +866,7 @@ public class TransformerFactoryImpl
      * Create an XMLFilter that uses the given source as the
      * transformation instructions.
      *
-     * @param src The source of the transformation instructions.
+     * @param templates The source of the transformation instructions.
      * @return An XMLFilter object, or null if this feature is not supported.
      * @throws TransformerConfigurationException
      */
@@ -896,7 +896,7 @@ public class TransformerFactoryImpl
      * invoking this method. It should still be possible for the application
      * to process the document through to the end.
      *
-     * @param exception The warning information encapsulated in a transformer 
+     * @param e The warning information encapsulated in a transformer 
      * exception.
      * @throws TransformerException if the application chooses to discontinue
      * the transformation (always does in our case).
@@ -924,7 +924,7 @@ public class TransformerFactoryImpl
      * Transformers are free to stop reporting events once this method has
      * been invoked.
      *
-     * @param exception The warning information encapsulated in a transformer
+     * @param e warning information encapsulated in a transformer
      * exception.
      * @throws TransformerException if the application chooses to discontinue
      * the transformation (always does in our case).
@@ -952,7 +952,7 @@ public class TransformerFactoryImpl
      * transformation. It should still be possible for the application to
      * process the document through to the end.
      *
-     * @param exception The warning information encapsulated in a transformer
+     * @param e The warning information encapsulated in a transformer
      * exception.
      * @throws TransformerException if the application chooses to discontinue
      * the transformation (never does in our case).

@@ -90,7 +90,7 @@ public abstract class DTMAxisTraverser
    * context is in the set, you must use the first() method instead.
    *
    * @return the next node in the iteration, or DTM.NULL.
-   * @see first(int)
+   * @see #first(int)
    */
   public abstract int next(int context, int current);
 
@@ -108,7 +108,7 @@ public abstract class DTMAxisTraverser
    * @param extendedTypeID The extended type ID that must match.
    *
    * @return the next node in the iteration, or DTM.NULL.
-   * @see first(int,int)
+   * @see #first(int,int)
    */
   public abstract int next(int context, int current, int extendedTypeID);
 }

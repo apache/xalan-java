@@ -59,8 +59,6 @@ public class DTMConfigurationException extends DTMException {
      * Create a new <code>DTMConfigurationException</code> with the
      * given <code>Exception</code> base cause and detail message.
      *
-     * @param e The exception to be encapsulated in a
-     * DTMConfigurationException
      * @param msg The detail message.
      * @param e The exception to be wrapped in a DTMConfigurationException
      */
