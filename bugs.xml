@@ -59,7 +59,7 @@
 <Spr>
 <Name>DMAN4TATWT</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>conditionalerr06, conditionalerr07, conditionalerr08; matcherr05, matcherr07; namespaceerr01; numberformaterr04; sorterr04</TestID>
 <TestDesc>Need more checks for incorrect attributes in various XSL instructions</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -75,7 +75,7 @@
 <Spr>
 <Name>DMAN4TAU39</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>conditionalerr16</TestID>
 <TestDesc>Need to catch reference to undefined variable in certain expressions</TestDesc>
 <Subsystem>XPath</Subsystem>
@@ -131,7 +131,7 @@
 <Spr>
 <Name>DMAN4TAUHU</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>lreerr05,lreerr06,mdocserr04</TestID>
 <TestDesc>Need an error for top-level elements that have no namespace</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -147,7 +147,7 @@
 <Spr>
 <Name>DMAN4TAULK</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>mdocserr01</TestID>
 <TestDesc>Should raise "file not found" error from first argument to document(), when detectable</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -227,7 +227,7 @@
 <Spr>
 <Name>DMAN4TAVAL</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>processorinfoerr02</TestID>
 <TestDesc>The system-property function should raise error when argument is not namespaced</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -235,7 +235,7 @@
 <Spr>
 <Name>DMAN4TAVCL</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>selecterr10, selecterr11, selecterr12, selecterr13, selecterr14, selecterr15, selecterr16</TestID>
 <TestDesc>Need to catch various illegal conversions to node-set in xsl:for-each</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -275,7 +275,7 @@
 <Spr>
 <Name>DMAN4TBURA</Name>
 <DateCreated>1/25/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>prod/spr/spr02</TestID>
 <TestDesc>Need an error message for bad juxtaposition of number and /</TestDesc>
 <Subsystem>XPath</Subsystem>
@@ -499,7 +499,7 @@
 <Spr>
 <Name>SCUU4SPUV3</Name>
 <DateCreated>1/5/2001 5</DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>extend01.xsl</TestID>
 <TestDesc>JDK 1.1.8 only: extend01.xsl throws TransformerException...transformNode()</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -507,7 +507,7 @@
 <Spr>
 <Name>SCUU4SPUXC</Name>
 <DateCreated>1/5/2001 5</DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>output77.xsl</TestID>
 <TestDesc>JDK 1.1.8 only: output77.xsl throws IllegalArgumentException: sun.io.CharToByteBig-Deal</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -531,7 +531,7 @@
 <Spr>
 <Name>SCUU4T5Q3W</Name>
 <DateCreated>1/19/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>paramtest.java</TestID>
 <TestDesc>compat.jar: setStylesheetParam evaluates expression differently 1.x/2.x</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -539,7 +539,7 @@
 <Spr>
 <Name>SCUU4T5QEC</Name>
 <DateCreated>1/19/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>paramtest.java</TestID>
 <TestDesc>xalanj1compat.jar: resetting of parameters works differently 1.x/2.x</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -547,7 +547,7 @@
 <Spr>
 <Name>SCUU4T5QMH</Name>
 <DateCreated>1/19/2001 </DateCreated>
-<State>Open</State>
+<State build="2.0D07">Resolved</State>
 <TestID>problemlistenertest.java</TestID>
 <TestDesc>xalanj1compat.jar: setProblemListeners are never (sometimes) used</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -555,7 +555,7 @@
 <Spr>
 <Name>SCUU4T5UQX</Name>
 <DateCreated>1/19/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>conformancetest.java</TestID>
 <TestDesc>compat.jar: process() after setDiagnosticsOutput throws ClassCastException: java.lang.Long</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -563,7 +563,7 @@
 <Spr>
 <Name>SCUU4T8PSH</Name>
 <DateCreated>1/22/2001 </DateCreated>
-<State>Open</State>
+<State build="2.0D07">Resolved</State>
 <TestID>threadtest.java</TestID>
 <TestDesc>xalanj1compat.jar: TestThreadsX1 throws SAXExceptions (XSLTEngineImpl.java:479)</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -571,7 +571,7 @@
 <Spr>
 <Name>SCUU4T9L4D</Name>
 <DateCreated>1/23/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>problemlistenertest.java</TestID>
 <TestDesc>xalanj1compat.jar: XSLTProcessorImpl.getProblemListener() throws npe</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -579,7 +579,7 @@
 <Spr>
 <Name>SCUU4T9V7F</Name>
 <DateCreated>1/23/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>stylesheetreusetest.java</TestID>
 <TestDesc>xalanj1compat.jar: processStylesheet() does not set that stylesheet into processor</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -587,9 +587,25 @@
 <Spr>
 <Name>SCUU4TBSTG</Name>
 <DateCreated>1/25/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>paramtest.java</TestID>
 <TestDesc>compat.jar: setParam... then multiple processes throws ClassCastException:XString</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4TCJG9</Name>
+<DateCreated>1/26/2001 </DateCreated>
+<State>Pending</State>
+<TestID>transformerhandlerapitest.java</TestID>
+<TestDesc>TransformerIdentityImpl.setResult(null) does not throw exception</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4TCNLH</Name>
+<DateCreated>1/26/2001 </DateCreated>
+<State>Open</State>
+<TestID>stylesheetreusetest.java</TestID>
+<TestDesc>xalanj1compat.jar: setStylesheet(s1); process(xml, s2, target); uses s1 instead of s2</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>
