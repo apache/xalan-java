@@ -560,9 +560,15 @@ public class DOM2DTM extends DTMDefaultBaseIterators
 
                     // If the xml: prefix is explicitly declared
                     // we don't need to synthesize one.
+		    //
+		    // NOTE that XML Namespaces were not originally
+		    // defined as being namespace-aware (grrr), and
+		    // while the W3C is planning to fix this it's
+		    // safer for now to test the QName and trust the
+		    // parsers to prevent anyone from redefining the
+		    // reserved xmlns: prefix
                     if(!m_processedFirstElement
-                       && NAMESPACE_DECL_NS.equals(attrs.item(i).getNamespaceURI())
-                       && "xml".equals(attrs.item(i).getLocalName()))
+                       && "xmlns:xml".equals(attrs.item(i).getNodeName()))
                       m_processedFirstElement=true; 
                   }
                 // Terminate list of attrs, and make sure they aren't
@@ -570,7 +576,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
               } // if attrs exist
             if(!m_processedFirstElement)
             {
-              // The DOM may not have an explicit declartion for the
+              // The DOM might not have an explicit declaration for the
               // implicit "xml:" prefix, but the XPath data model
               // requires that this appear as a Namespace Node so we
               // have to synthesize one. You can think of this as
