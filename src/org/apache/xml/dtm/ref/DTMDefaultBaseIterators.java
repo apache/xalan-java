@@ -1402,6 +1402,20 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
          new org.apache.xml.utils.NodeVector();
          
     int m_ancestorsPos;
+    
+    /** The real start node for this axes, since _startNode will be adjusted. */
+    int m_realStartNode;
+    
+    /**
+     * Get start to END should 'close' the iterator,
+     * i.e. subsequent call to next() should return END.
+     *
+     * @return The root node of the iteration.
+     */
+    public int getStartNode()
+    {
+      return m_realStartNode;
+    }
 
     /**
      * True if this iterator has a reversed axis.
@@ -1462,6 +1476,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     public DTMAxisIterator setStartNode(int node)
     {
+      m_realStartNode = node;
 
       if (_isRestartable)
       {

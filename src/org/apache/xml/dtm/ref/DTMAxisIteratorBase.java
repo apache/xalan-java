@@ -96,6 +96,17 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
    * the iterator was produced by cloning another iterator.)
    */
   protected boolean _isRestartable = true;
+  
+  /**
+   * Get start to END should 'close' the iterator,
+   * i.e. subsequent call to next() should return END.
+   *
+   * @return The root node of the iteration.
+   */
+  public int getStartNode()
+  {
+    return _startNode;
+  }
 
   /**
    * @return A DTMAxisIterator which has been reset to the start node,
