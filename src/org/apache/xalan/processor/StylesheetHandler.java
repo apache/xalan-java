@@ -101,8 +101,6 @@ public class StylesheetHandler
   ContentHandler, ErrorHandler, TemplatesBuilder, PrefixResolver,
   NodeConsumer
 {
-  static boolean m_xpathFunctionsInited = false;
-  
   /**
    * Create a StylesheetHandler object, creating a root stylesheet 
    * as the target.
@@ -116,7 +114,13 @@ public class StylesheetHandler
     
     init(processor);
   }
-  
+
+  /**
+   * Static flag to let us know if the XPath functions table
+   * has been initialized.
+   */
+  private static boolean m_xpathFunctionsInited = false;
+    
   /**
    * Do common initialization.
    */
@@ -250,9 +254,8 @@ public class StylesheetHandler
    * @param baseID Base URL for this stylesheet.
    */
   public void setBaseID(String baseID)
-  {
-    m_baseIdentifiers.push(baseID);
-    
+  {    
+    pushBaseIndentifier(baseID);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -399,11 +402,16 @@ public class StylesheetHandler
   public void endDocument ()
     throws SAXException
   {
-    if(0 == m_stylesheetLevel)
-      getStylesheetRoot().recompose();
-    
-    // Resolve the result prefix tables in the elements.
-    getStylesheet().resolvePrefixTables();
+    if(null != getStylesheetRoot())
+    {
+      if(0 == m_stylesheetLevel)
+        getStylesheetRoot().recompose();
+      
+      // Resolve the result prefix tables in the elements.
+      getStylesheet().resolvePrefixTables();
+    }
+    else
+      throw new SAXException("Did not find the stylesheet root!");
 
     XSLTElementProcessor elemProcessor = getCurrentProcessor();
     if(null != elemProcessor)
@@ -464,8 +472,7 @@ public class StylesheetHandler
     if(null != elemProcessor)
       elemProcessor.startNonText(this);
   }
-  
-  
+    
   /**
    * Receive notification of the start of an element.
    *
@@ -479,6 +486,11 @@ public class StylesheetHandler
                             String rawName, Attributes attributes)
     throws SAXException
   {
+    m_elementID++;
+    checkForFragmentID(attributes);
+    
+    if(!m_shouldProcess)
+      return;
     flushCharacters();   
     XSLTElementProcessor elemProcessor = getProcessorFor( uri, localName,  rawName );
     this.pushProcessor(elemProcessor);
@@ -499,8 +511,14 @@ public class StylesheetHandler
   public void endElement (String uri, String localName, String rawName)
     throws SAXException
   {
+    m_elementID--;
+    if(!m_shouldProcess)
+      return;
+    if((m_elementID+1) == m_fragmentID)
+      m_shouldProcess = false;
     flushCharacters();
-    getCurrentProcessor().endElement (this, uri, localName, rawName);
+    XSLTElementProcessor p = getCurrentProcessor();
+    p.endElement (this, uri, localName, rawName);
     this.popProcessor();
     m_nsSupport.popContext();
   }
@@ -533,6 +551,8 @@ public class StylesheetHandler
   public void characters (char ch[], int start, int length)
     throws SAXException
   {
+    if(!m_shouldProcess)
+      return;
     XSLTElementProcessor elemProcessor = getCurrentProcessor();
     XSLTElementDef def = elemProcessor.getElemDef();
     if(def.getType() != XSLTElementDef.T_PCDATA)
@@ -562,6 +582,8 @@ public class StylesheetHandler
   public void ignorableWhitespace (char ch[], int start, int length)
     throws SAXException
   {
+    if(!m_shouldProcess)
+      return;
     getCurrentProcessor().ignorableWhitespace (this, ch, start, length);
   }
   
@@ -584,6 +606,8 @@ public class StylesheetHandler
   public void processingInstruction (String target, String data)
     throws SAXException
   {
+    if(!m_shouldProcess)
+      return;
     flushCharacters();
     getCurrentProcessor().processingInstruction (this, target, data);
   }
@@ -605,6 +629,8 @@ public class StylesheetHandler
   public void skippedEntity (String name)
     throws SAXException
   {
+    if(!m_shouldProcess)
+      return;
     getCurrentProcessor().skippedEntity (this, name);
   }
   
@@ -739,6 +765,64 @@ public class StylesheetHandler
     throw e;
   }
   
+  /**
+   * If we have a URL to a XML fragment, this is set 
+   * to false until the ID is found.
+   * (warning: I worry that this should be in a stack).
+   */
+  private boolean m_shouldProcess = true;
+  
+  /**
+   * If we have a URL to a XML fragment, the value is stored 
+   * in this string, and the m_shouldProcess flag is set to 
+   * false until we match an ID with this string.
+   * (warning: I worry that this should be in a stack).
+   */
+  private String m_fragmentIDString;
+  
+    /**
+   * Keep track of the elementID, so we can tell when 
+   * is has completed.  This isn't a real ID, but rather 
+   * a nesting level.  However, it's good enough for 
+   * our purposes.
+   * (warning: I worry that this should be in a stack).
+   */
+  private int m_elementID = 0;
+  
+  /**
+   * The ID of the fragment that has been found
+   * (warning: I worry that this should be in a stack).
+   */
+  private int m_fragmentID = 0;
+  
+  /**
+   * Check to see if an ID attribute matched the #id, called 
+   * from startElement.
+   */
+  private void checkForFragmentID(Attributes attributes)
+  {
+    if(!m_shouldProcess)
+    {
+      if((null != attributes) && (null != m_fragmentIDString))
+      {
+        int n = attributes.getLength();
+        for(int i = 0; i < n; i++)
+        {
+          String type = attributes.getType(i);
+          if(type.equalsIgnoreCase("ID"))
+          {
+            String val = attributes.getValue(i);
+            if(val.equalsIgnoreCase(m_fragmentIDString))
+            {
+              m_shouldProcess = true;
+              m_fragmentID = m_elementID;
+            }
+          }
+        }
+      }
+    }
+  }
+  
  /**
    * The XSLT Processor for needed services.
    */
@@ -794,7 +878,8 @@ public class StylesheetHandler
    */
   public StylesheetRoot getStylesheetRoot()
   {
-    return (StylesheetRoot)m_stylesheets.elementAt(0);
+    return (m_stylesheets.size() > 0) 
+           ? (StylesheetRoot)m_stylesheets.elementAt(0) : null;
   }
 
   /**
@@ -930,9 +1015,22 @@ public class StylesheetHandler
   /**
    * Push a base identifier onto the base URI stack.
    */
-  void pushBaseIndentifier(String base)
+  void pushBaseIndentifier(String baseID)
   {
-    m_baseIdentifiers.push(base);
+    if(null != baseID)
+    {
+      int posOfHash = baseID.indexOf('#');
+      if(posOfHash > -1)
+      {
+        m_fragmentIDString = baseID.substring(posOfHash+1);
+        m_shouldProcess = false;
+      }
+      else
+        m_shouldProcess = true;
+    }
+    else
+      m_shouldProcess = true;
+    m_baseIdentifiers.push(baseID);
   }
   
   /**

@@ -69,6 +69,8 @@ import org.xml.sax.SAXParseException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
+import org.xml.sax.helpers.AttributesImpl;
+
 import java.util.Vector;
 
 /**
@@ -292,7 +294,30 @@ public class XSLTElementProcessor
                                    Object target)
     throws SAXException
   {
+    setPropertiesFromAttributes(handler, rawName, attributes, target, true);
+  }
+  
+  /**
+   * Set the properties of an object from the given attribute list.
+   * @param handler The stylesheet's Content handler, needed for 
+   *                error reporting.
+   * @param rawName The raw name of the owner element, needed for 
+   *                error reporting.
+   * @param attributes The list of attributes.
+   * @param target The target element where the properties will be set.
+   * @param throwError True if it should throw an error if an 
+   * attribute is not defined.
+   * @return the attributes not allowed on this element.
+   */
+  Attributes setPropertiesFromAttributes(StylesheetHandler handler,
+                                   String rawName,
+                                   Attributes attributes, 
+                                   Object target,
+                                   boolean throwError)
+    throws SAXException
+  {
     XSLTElementDef def = getElemDef();
+    AttributesImpl undefines = throwError ? null : new AttributesImpl();
 
     // Keep track of which XSLTAttributeDefs have been processed, so 
     // I can see which default values need to be set.
@@ -306,10 +331,20 @@ public class XSLTElementProcessor
       
       if(null == attrDef)
       {
-        // Then barf, because this element does not allow this attribute.
-        handler.error(attributes.getQName(i)+
-                      "attribute is not allowed on the "+
-              rawName+" element!", null);
+        if(throwError)
+        {
+          // Then barf, because this element does not allow this attribute.
+          handler.error(attributes.getQName(i)+
+                        "attribute is not allowed on the "+
+                        rawName+" element!", null);
+        }
+        else
+        {
+          undefines.addAttribute(attrUri, attrLocalName, 
+                                 attributes.getQName(i), 
+                                 attributes.getType(i), 
+                                 attributes.getValue(i));
+        }
       }
       else
       {
@@ -340,7 +375,7 @@ public class XSLTElementProcessor
           handler.error(XSLMessages.createMessage(XSLTErrorResources.ER_REQUIRES_ATTRIB, new Object[]{rawName, attrDef.getName()}) , null);    
       }    
     }
-
+    return undefines;
   }
   
 }

@@ -56,7 +56,6 @@
  */
 package org.apache.xalan.processor;
 
-import java.io.IOException;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
@@ -67,6 +66,7 @@ import org.xml.sax.SAXNotSupportedException;
 import org.w3c.dom.Node;
 
 import org.apache.xalan.utils.TreeWalker;
+import org.apache.xalan.utils.SystemIDResolver;
 
 import trax.Processor;
 import trax.ProcessorException;
@@ -76,6 +76,9 @@ import trax.TemplatesBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedInputStream;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.io.StringReader;
 import java.util.Properties;
 import java.util.Enumeration;
 
@@ -164,7 +167,7 @@ public class StylesheetProcessor extends Processor
     reader.parse(source);
     return builder.getTemplates();
   }
-
+  
   /**
    * Process the stylesheet from a DOM tree, if the 
    * processor supports the "http://xml.org/trax/features/dom/input" 
@@ -234,7 +237,33 @@ public class StylesheetProcessor extends Processor
   public Templates processMultiple(InputSource[] source)
     throws ProcessorException
   {
-    return null;
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    pw.println("<?xml version='1.0'?>");
+    pw.println("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">");
+    int n = source.length;
+    for(int i = 0; i < n; i++)
+    {
+      pw.print("<xsl:import href=\"");
+      pw.print(source[i].getSystemId());
+      pw.println("\"/>");
+    }
+    pw.println("</xsl:stylesheet>");
+    pw.close();
+    String stylesheetString = sw.toString();
+    StringReader reader = new StringReader(stylesheetString);
+    try
+    {
+      return this.process(new InputSource(reader));
+    }
+    catch(ProcessorException e)
+    {
+      throw e;
+    }
+    catch(Exception e)
+    {
+      throw new ProcessorException("processMultiple failed", e);
+    }
   }
 
   /**
@@ -272,20 +301,22 @@ public class StylesheetProcessor extends Processor
       {
         reader = XMLReaderFactory.createXMLReader();
       }
+      
+      // Need to set options!
       reader.setContentHandler(handler);
       reader.parse(source);
+    }
+    catch(StopParseException spe)
+    {
+      // OK, good.
+    }
+    catch(SAXException se)
+    {
+      throw new ProcessorException("getAssociatedStylesheets failed", se);
     }
     catch(IOException ioe)
     {
       throw new ProcessorException("getAssociatedStylesheets failed", ioe);
-    }
-    catch(SAXException se)
-    {
-      String msg = se.getMessage();
-      if((null == msg) || !msg.equals(StylesheetPIHandler.STARTELEM_FOUND_MSG))
-      {
-        throw new ProcessorException("getAssociatedStylesheets failed", se);
-      }
     }
     return handler.getAssociatedStylesheets();
   }

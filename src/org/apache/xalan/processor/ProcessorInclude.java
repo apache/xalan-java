@@ -206,7 +206,16 @@ class ProcessorInclude extends XSLTElementProcessor
         if(null != entityResolver)
           reader.setEntityResolver(entityResolver);
         reader.setContentHandler(handler);
-        reader.parse(inputSource);
+        reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
+        handler.pushBaseIndentifier(inputSource.getSystemId());
+        try
+        {
+          reader.parse(inputSource);
+        }
+        finally
+        {
+          handler.popBaseIndentifier();
+        }
       }
     }
     catch(InstantiationException ie)

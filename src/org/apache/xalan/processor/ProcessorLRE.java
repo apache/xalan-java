@@ -66,9 +66,11 @@ import org.apache.xpath.XPath;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+import org.xml.sax.helpers.AttributesImpl;
 
 public class ProcessorLRE extends ProcessorTemplateElem
 {
+  
   /**
    * Receive notification of the start of an element.
    *
@@ -84,17 +86,63 @@ public class ProcessorLRE extends ProcessorTemplateElem
     throws SAXException
   {
     ElemTemplateElement p = handler.getElemTemplateElement();
+    boolean excludeXSLDecl = false;
+    
     if(null == p)
     {
       // Literal Result Template as stylesheet.
+
+      XSLTElementProcessor lreProcessor = handler.popProcessor();
+      XSLTElementProcessor stylesheetProcessor 
+        = handler.getProcessorFor( Constants.S_XSLNAMESPACEURL, "stylesheet",  "xsl:stylesheet" );
+      handler.pushProcessor(lreProcessor);
+      
       Stylesheet stylesheet = new StylesheetRoot();
+      
       // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
       stylesheet.setLocaterInfo(new org.xml.sax.helpers.LocatorImpl());
       stylesheet.setPrefixes(handler.getNamespaceSupport());
 
       handler.pushStylesheet(stylesheet);
       
-      setPropertiesFromAttributes(handler, "stylesheet", attributes, stylesheet);
+      AttributesImpl stylesheetAttrs = new AttributesImpl();
+      AttributesImpl lreAttrs = new AttributesImpl();
+      int n = attributes.getLength();
+      for(int i = 0; i < n; i++)
+      {
+        String attrLocalName = attributes.getLocalName(i);
+        String attrUri = attributes.getURI(i);
+        String value = attributes.getValue(i);
+
+        if((null != attrUri) && attrUri.equals(Constants.S_XSLNAMESPACEURL))
+        {
+          stylesheetAttrs.addAttribute(null, attrLocalName, 
+                                       attrLocalName, 
+                                       attributes.getType(i), 
+                                       attributes.getValue(i));
+        }
+        else if((attrLocalName.startsWith("xmlns:") || 
+                 attrLocalName.equals("xmlns")) && 
+                value.equals(Constants.S_XSLNAMESPACEURL))
+        {
+          // ignore
+        }
+        else
+        {
+          lreAttrs.addAttribute(attrUri, attrLocalName, 
+                                attributes.getQName(i), 
+                                attributes.getType(i), 
+                                attributes.getValue(i));
+        }
+      }
+      attributes = lreAttrs;
+      
+      // Set properties from the attributes, but don't throw 
+      // an error if there is an attribute defined that is not 
+      // allowed on a stylesheet.
+      stylesheetProcessor.setPropertiesFromAttributes(handler, "stylesheet", 
+                                                      stylesheetAttrs, 
+                                                      stylesheet);
 
       handler.pushElemTemplateElement(stylesheet);
       
@@ -106,6 +154,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
       // template.setDOMBackPointer(handler.getOriginatingNode());
       stylesheet.setTemplate(template);
       p = handler.getElemTemplateElement();
+      excludeXSLDecl = true;
     }
 
     XSLTElementDef def = getElemDef();
@@ -163,7 +212,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
       }
       elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
-      elem.setPrefixes(handler.getNamespaceSupport());
+      elem.setPrefixes(handler.getNamespaceSupport(), excludeXSLDecl);
       if(elem instanceof ElemLiteralResult)
       {
         ((ElemLiteralResult)elem).setNamespace(uri);

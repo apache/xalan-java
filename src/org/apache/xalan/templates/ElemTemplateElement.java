@@ -567,6 +567,17 @@ public class ElemTemplateElement extends UnImplNode
   public void setPrefixes(NamespaceSupport nsSupport)
     throws SAXException
   {
+    setPrefixes(nsSupport, false);
+  }
+  
+  /**
+   * From the SAX2 helper class, set the namespace table for 
+   * this element.  Take care to call resolveInheritedNamespaceDecls.
+   * after all namespace declarations have been added.
+   */
+  public void setPrefixes(NamespaceSupport nsSupport, boolean excludeXSLDecl)
+    throws SAXException
+  {
     Enumeration decls = nsSupport.getDeclaredPrefixes ();
     while(decls.hasMoreElements())
     {
@@ -574,6 +585,8 @@ public class ElemTemplateElement extends UnImplNode
       if(null == m_declaredPrefixes)
         m_declaredPrefixes = new Vector();
       String uri = nsSupport.getURI(prefix);
+      if(excludeXSLDecl && uri.equals(Constants.S_XSLNAMESPACEURL))
+        continue;
       // System.out.println("setPrefixes - "+prefix+", "+uri);
       XMLNSDecl decl = new XMLNSDecl(prefix, uri, false);
       m_declaredPrefixes.addElement(decl);

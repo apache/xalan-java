@@ -393,7 +393,9 @@ public class Process
           dumpWriter = new PrintWriter( new FileWriter(dumpFileName) );
         }
 
-        Templates stylesheet = processor.process(new InputSource(xslFileName));
+        Templates stylesheet = (null != xslFileName) 
+                               ? processor.process(new InputSource(xslFileName))
+                                 : null;
 
         PrintWriter resultWriter;
 
@@ -405,12 +407,18 @@ public class Process
         // document?
         if(null == stylesheet)
         {
-          InputSource[] sources = processor.getAssociatedStylesheets(new InputSource(inFileName),
-                                                                     media, null, null);
-          if(null != sources)
+          InputSource[] sources 
+            = processor.getAssociatedStylesheets(new InputSource(inFileName),
+                                                 media, null, null);
+          if((null != sources) && (sources.length > 0))
             stylesheet = processor.processMultiple(sources);
           else
-            throw new SAXException("No stylesheet found for media: "+media);
+          {
+            if(null != media)
+              throw new SAXException("No stylesheet found in: "+inFileName+", media="+media);
+            else
+              throw new SAXException("No xml-stylesheet PI found in: "+inFileName);
+          }
         }
 
         if(null != stylesheet)
@@ -501,13 +509,14 @@ public class Process
            )
           doStackDumpOnError = true;
         
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
-                                  +" ("+throwable.getClass().getName()+"): " 
-                                  + throwable.getMessage());        
         if(doStackDumpOnError)
           throwable.printStackTrace(dumpWriter);
+        else
+          diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
+                                    +" ("+throwable.getClass().getName()+"): " 
+                                    + throwable.getMessage());        
         
-        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
+        // diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
         if(null != dumpFileName)
         {
           dumpWriter.close();
