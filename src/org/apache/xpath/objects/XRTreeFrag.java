@@ -56,17 +56,15 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.NodeList;
-
+import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMFilter;
-
+import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
-
-import org.apache.xpath.DOMHelper;
-import org.apache.xpath.XPathContext;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.XPathContext;
+import org.w3c.dom.NodeList;
 
 /**
  * <meta name="usage" content="general"/>
@@ -98,6 +96,22 @@ public class XRTreeFrag extends XObject implements Cloneable
    *
    * @param frag Document fragment this will wrap
    */
+  public XRTreeFrag(int root, XPathContext xctxt, ExpressionNode parent)
+  {
+    super(null);
+    
+    // Obviously, this constructor should be avoided when possible.
+    exprSetParent(parent);
+    m_dtmRoot = root;
+    m_xctxt = xctxt;
+    m_dtm = xctxt.getDTM(root);
+  }
+  
+  /**
+   * Create an XRTreeFrag Object.
+   *
+   * @param frag Document fragment this will wrap
+   */
   public XRTreeFrag(int root, XPathContext xctxt)
   {
     super(null);
@@ -107,6 +121,7 @@ public class XRTreeFrag extends XObject implements Cloneable
     m_xctxt = xctxt;
     m_dtm = xctxt.getDTM(root);
   }
+
   
   /**
    * Return a java object that's closest to the representation
