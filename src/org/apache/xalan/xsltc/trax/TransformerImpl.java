@@ -139,6 +139,8 @@ public final class TransformerImpl extends Transformer
 	"The Source object passed to transform() has no contents.";
     private static final String OUTPUT_RESULT_EMPTY =
 	"The Result object passed to transform() is invalid.";
+    private static final String NO_SUCH_PROPERTY =
+	"Attempting to access invalid Transformer property: ";
 
     private final static String LEXICAL_HANDLER_PROPERTY =
 	"http://xml.org/sax/properties/lexical-handler";
@@ -565,6 +567,8 @@ public final class TransformerImpl extends Transformer
      */
     public String getOutputProperty(String name)
 	throws IllegalArgumentException {
+	if (!validOutputProperty(name))
+	    throw new IllegalArgumentException(NO_SUCH_PROPERTY+name);
 	return(_properties.getProperty(name));
     }
 
@@ -594,6 +598,8 @@ public final class TransformerImpl extends Transformer
      */
     public void setOutputProperty(String name, String value)
 	throws IllegalArgumentException {
+	if (!validOutputProperty(name))
+	    throw new IllegalArgumentException(NO_SUCH_PROPERTY+name);
 	_properties.setProperty(name, value);
     }
 
