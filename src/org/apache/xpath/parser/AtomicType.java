@@ -89,6 +89,7 @@ public class AtomicType extends NonExecutableExpression
   /**
    * @see org.apache.xpath.parser.Node#jjtSetParent(Node)
    */
+/*  JKESS: Commented out on a hunch, since it causes a parser crash.
   public void jjtSetParent(Node n)
   {
     QName qname = (QName)jjtGetChild(0);
@@ -96,5 +97,5 @@ public class AtomicType extends NonExecutableExpression
     ((ItemType)n).setAtomicTypeID(id);
     super.jjtSetParent(n);
   }
-
+*/
 }
