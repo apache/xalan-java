@@ -360,6 +360,16 @@ public class XNodeSet extends XObject
 //  {
 //    return new org.apache.xml.dtm.ref.DTMNodeList(iter());
 //  }
+
+  /**
+   * Return the iterator without cloning, etc.
+   */
+  public DTMIterator iterRaw()
+  {
+
+    // System.out.println("In XNodeSet.iter()");
+    return (DTMIterator) m_obj;
+  }
   
   /**
    * Cast result object to a nodelist.
@@ -584,7 +594,6 @@ public class XNodeSet extends XObject
       while (DTM.NULL != (node = list1.nextNode()))
       {
         XMLString s1 = getStringFromNode(node);
-
         if (comparator.compareStrings(s1, s2))
         {
           result = true;
