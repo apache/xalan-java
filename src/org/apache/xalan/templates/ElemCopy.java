@@ -135,6 +135,7 @@ public class ElemCopy extends ElemUse
   {
     try
     {
+      transformer.getXPathContext().pushCurrentNode(sourceNode);
       short nodeType = sourceNode.getNodeType();
 
       if ((Node.DOCUMENT_NODE != nodeType) && (Node.DOCUMENT_FRAGMENT_NODE != nodeType))
@@ -175,6 +176,10 @@ public class ElemCopy extends ElemUse
     catch(org.xml.sax.SAXException se)
     {
       throw new TransformerException(se);
+    }
+    finally
+    {
+      transformer.getXPathContext().popCurrentNode();
     }
   }
 }

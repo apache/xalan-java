@@ -93,7 +93,7 @@ public class FuncLast extends Function
     // assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
     // If we're in a predicate, then this will return non-null.
     SubContextList iter = xctxt.getSubContextList();
-
+    // System.out.println("iter: "+iter);
     if (null != iter)
       return iter.getLastPos(xctxt);
 
@@ -145,6 +145,8 @@ public class FuncLast extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XNumber((double) getCountOfContextNodeList(xctxt));
+    XNumber xnum = new XNumber((double) getCountOfContextNodeList(xctxt));
+    // System.out.println("last: "+xnum.num());
+    return xnum;
   }
 }

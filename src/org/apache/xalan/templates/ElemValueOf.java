@@ -230,14 +230,15 @@ public class ElemValueOf extends ElemTemplateElement
           TransformerImpl transformer, Node sourceNode, QName mode)
             throws TransformerException
   {
+    boolean didPushCurrent = false;
 
     try
     {
       if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-      Node child;
       XObject value;
+      Node child;
       
       // Optimize for "."
       if(m_isDot && !TransformerImpl.S_DEBUG)
@@ -266,6 +267,8 @@ public class ElemValueOf extends ElemTemplateElement
       String s;                                                                                             
       if(null != child)
       {
+        transformer.getXPathContext().pushCurrentNode(child);
+        didPushCurrent = true;
         if (child.isSupported(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
         {
           if (m_disableOutputEscaping)
@@ -285,7 +288,9 @@ public class ElemValueOf extends ElemTemplateElement
         }
       }
       else
+      {
         s = value.str();
+      }
 
       
       int len = (null != s) ? s.length() : 0;
@@ -306,6 +311,13 @@ public class ElemValueOf extends ElemTemplateElement
     catch(SAXException se)
     {
       throw new TransformerException(se);
+    }
+    finally
+    {
+      if(didPushCurrent)
+      {
+        transformer.getXPathContext().popCurrentNode();
+      }
     }
   }
 
