@@ -934,8 +934,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
   public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
 
   
-   /** Priority value does not contain a parsable number   */
-  public static final int ER_PRIORITY_NOT_PARSABLE = 204;
+   /** Value for {0} should contain a parsable number   */
+  public static final int ER_VALUE_SHOULD_BE_NUMBER = 204;
+
 
   
    /**  Value for {0} should equal 'yes' or 'no'   */
@@ -1016,6 +1017,61 @@ public class XSLTErrorResources extends PropertyResourceBundle
 // ListingErrorHandler created with null PrintWriter!
   public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
 
+  // {0}is not allowed in this position in the stylesheet!
+  public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
+
+  // Non-whitespace text is not allowed in this position in the stylesheet!
+  public static final int ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 238;
+  
+  // This code is shared with warning codes.
+  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
+  public static final int INVALID_TCHAR = 239;
+  
+  // SystemId Unknown
+  public static final int ER_SYSTEMID_UNKNOWN = 240;
+    
+  // Location of error unknown  
+  public static final int ER_LOCATION_UNKNOWN = 241;
+  
+  //The following codes are shared with the warning codes... 
+  // Illegal value: {1} used for QNAME attribute: {0}
+  public static final int INVALID_QNAME = 242;   
+   
+  // Illegal value\u003a {1} used for ENUM attribute\u003a {0}.  Valid values are\u003a {2}.
+  public static final int INVALID_ENUM = 243;
+   
+  // Illegal value\u003a {1} used for NMTOKEN attribute\u003a {0}. 
+  public static final int INVALID_NMTOKEN = 244;
+      
+  // Illegal value\u003a {1} used for NCNAME attribute\u003a {0}. 
+  public static final int INVALID_NCNAME = 245;  
+   
+  // Illegal value\u003a {1} used for boolean attribute\u003a {0}. 
+  public static final int INVALID_BOOLEAN = 246;  
+
+  // Illegal value\u003a {1} used for number attribute\u003a {0}. 
+  public static final int INVALID_NUMBER = 247;
+
+  
+  // End of shared codes...
+  
+  // Argument to {0} in match pattern must be a literal.
+  public static final int ER_ARG_LITERAL             = 248;
+  
+  // Duplicate global variable declaration.
+  public static final int ER_DUPLICATE_GLOBAL_VAR    = 249;
+  
+  // Duplicate variable declaration.
+  public static final int ER_DUPLICATE_VAR           = 250;
+  
+  // xsl:template must have a name or match attribute (or both)
+  public static final int ER_TEMPLATE_NAME_MATCH     = 251;    
+  
+  // Prefix in exclude-result-prefixes is not valid\u003a {0}
+  public static final int ER_INVALID_PREFIX          = 252;
+  
+  // attribute-set named {0} does not exist
+  public static final int ER_NO_ATTRIB_SET           = 253;
   /*
     /**  Cannot find SAX1 driver class    *
   public static final int ER_CANNOT_FIND_SAX1_DRIVER = 190;
@@ -1166,6 +1222,44 @@ public class XSLTErrorResources extends PropertyResourceBundle
   /** WG_EMPTY_SECOND_ARG          */
   public static final int WG_EMPTY_SECOND_ARG = 26;
 
+  /** WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML          */
+  public static final int WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML = 27;
+  
+  /** WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
+  public static final int WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME = 28;  
+  
+  /** WG_ILLEGAL_ATTRIBUTE_POSITION         */
+  public static final int WG_ILLEGAL_ATTRIBUTE_POSITION = 29;
+  
+  
+  //The following warning codes are shared with the error codes ... 
+  // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!
+  public static final int WG_INVALID_TCHAR = 239;
+  
+  
+  // Illegal value: {1} used for QNAME attribute: {0}
+  public static final int WG_INVALID_QNAME = 242;
+  
+   
+  // Illegal value\u003a {1} used for ENUM attribute\u003a {0}.  Valid values are\u003a {2}.
+  public static final int WG_INVALID_ENUM = 243;
+  
+   
+  // Illegal value\u003a {1} used for NMTOKEN attribute\u003a {0}. 
+  public static final int WG_INVALID_NMTOKEN = 244;
+  
+      
+  // Illegal value\u003a {1} used for NCNAME attribute\u003a {0}. 
+  public static final int WG_INVALID_NCNAME = 245;
+  
+   
+  // Illegal value\u003a {1} used for boolean attribute\u003a {0}. 
+  public static final int WG_INVALID_BOOLEAN = 246;
+  
+
+  // Illegal value\u003a {1} used for number attribute\u003a {0}. 
+  public static final int WG_INVALID_NUMBER = 247;
+  // End of codes that are shared...
 
   // Other miscellaneous text used inside the code...
 

@@ -493,6 +493,8 @@ public class Constants
   /** For Stylesheet-prefix and result-prefix in xsl:namespace-alias          */
   public static final String ATTRVAL_DEFAULT_PREFIX = "#default";
 
+ /** Integer equivalents for above        */
+  public static final int NUMBERLETTER_ALPHABETIC = 1, NUMBERLETTER_TRADITIONAL = 2;
   
   /** Integer equivelents for above        */
   public static final int NUMBERLEVEL_SINGLE = 1, NUMBERLEVEL_MULTI = 2,
@@ -512,6 +514,14 @@ public class Constants
                              ATTRVAL_CASEORDER_UPPER = "upper-first",
                              ATTRVAL_CASEORDER_LOWER = "lower-first";
 
+ /** Integer equivelents for DATATYPE attribute */
+  public static final int SORTDATATYPE_TEXT = 1, SORTDATATYPE_NUMBER = 2;
+
+  /** Integer equivelents for ORDER attribute */
+  public static final int SORTORDER_ASCENDING = 1, SORTORDER_DESCENDING = 2;
+  
+  /** Integer equivelents for CASE-ORDER attribute */
+  public static final int SORTCASEORDER_UPPERFIRST = 1, SORTCASEORDER_LOWERFIRST = 2;
   
   /** some stuff for Decimal-format       */
   public static final String ATTRVAL_INFINITY = "Infinity",

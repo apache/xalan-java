@@ -464,15 +464,114 @@ public class XPATHErrorResources extends PropertyResourceBundle
   
 // Variable accessed before it is bound!
   public static final int ER_VARIABLE_ACCESSED_BEFORE_BIND = 85;
+  // XStringForFSB can not take a string for an argument!
+  public static final int ER_FSB_CANNOT_TAKE_STRING = 86;
+  
+  // Error! Setting the root of a walker to null!
+  public static final int ER_SETTING_WALKER_ROOT_TO_NULL = 87;
+  
+  // This NodeSetDTM can not iterate to a previous node!
+  public static final int ER_NODESETDTM_CANNOT_ITERATE = 88;
+  
+  // This NodeSet can not iterate to a previous node!
+  public static final int ER_NODESET_CANNOT_ITERATE = 89;
+
+  // This NodeSetDTM can not do indexing or counting functions!
+  public static final int ER_NODESETDTM_CANNOT_INDEX = 90;
+  
+  // This NodeSet can not do indexing or counting functions!
+  public static final int ER_NODESET_CANNOT_INDEX = 91;
+
+  // Can not call setShouldCacheNodes after nextNode has been called!
+  public static final int ER_CANNOT_CALL_SETSHOULDCACHENODE = 92;
+  
+  // {0} only allows {1} arguments
+  public static final int ER_ONLY_ALLOWS = 93;
+  
+  // Programmer's assertion in getNextStepPos: unknown stepType: {0}
+  public static final int ER_UNKNOWN_STEP = 94;
+  
+  /** Problem with RelativeLocationPath */
+  public static final int ER_EXPECTED_REL_LOC_PATH = 95;
+
+
+   /** Problem with LocationPath */
+  public static final int ER_EXPECTED_LOC_PATH = 96;
+
+
+   /** Problem with Step */
+  public static final int ER_EXPECTED_LOC_STEP = 97;
+
+
+   /** Problem with NodeTest */
+  public static final int ER_EXPECTED_NODE_TEST = 98;
+
+
+   /** Expected step pattern */
+  public static final int ER_EXPECTED_STEP_PATTERN = 99;
+
+  
+   /** Expected relative path pattern */
+  public static final int ER_EXPECTED_REL_PATH_PATTERN = 100;
+  
+  /** localname in QNAME should be a valid NCName */  
+  public static final int ER_ARG_LOCALNAME_INVALID = 101;
+
+  /** prefix in QNAME should be a valid NCName */
+  public static final int ER_ARG_PREFIX_INVALID = 102;
+
+ 
+/** Field ER_CANT_CONVERT_TO_BOOLEAN          */
+  public static final int ER_CANT_CONVERT_TO_BOOLEAN = 103;
+  
+  
+/** Field ER_CANT_CONVERT_TO_SINGLENODE       */
+  public static final int ER_CANT_CONVERT_TO_SINGLENODE = 104;  
+
+/** Field ER_CANT_GET_SNAPSHOT_LENGTH         */
+  public static final int ER_CANT_GET_SNAPSHOT_LENGTH = 105;
+  
+/** Field ER_NON_ITERATOR_TYPE                */
+  public static final int ER_NON_ITERATOR_TYPE        = 106;
+
+/** Field ER_DOC_MUTATED                      */
+  public static final int ER_DOC_MUTATED              = 107;
+  
+/** Field ER_INVALID_XPATH_TYPE               */
+  public static final int ER_INVALID_XPATH_TYPE       = 108;
+  
+/** Field ER_EMPTY_XPATH_RESULT                */
+  public static final int ER_EMPTY_XPATH_RESULT       = 109;
+
+/** Field ER_INCOMPATIBLE_TYPES                */
+  public static final int ER_INCOMPATIBLE_TYPES       = 110;  
+  
+/** Field ER_NULL_RESOLVER                     */
+  public static final int ER_NULL_RESOLVER            = 111;
+
+/** Field ER_CANT_CONVERT_TO_STRING            */
+  public static final int ER_CANT_CONVERT_TO_STRING   = 112;
+  
+/** Field ER_NON_SNAPSHOT_TYPE                 */
+  public static final int ER_NON_SNAPSHOT_TYPE       = 113;
+
+/** Field ER_WRONG_DOCUMENT                    */
+  public static final int ER_WRONG_DOCUMENT          = 114;
+ 
+/** Field ER_WRONG_NODETYPE                    */
+  public static final int ER_WRONG_NODETYPE          = 115; 
+  
+/** Field ER_XPATH_ERROR                       */  
+  public static final int ER_XPATH_ERROR             = 116;
   
   /** ER_CANNOT_FIND_COLLATOR          */
-  public static final int ER_CANNOT_FIND_COLLATOR = 86;
+  public static final int ER_CANNOT_FIND_COLLATOR = 117;
   
   /** ER_INVALID_ARG_TO_COLLECTION          */
-  public static final int ER_INVALID_ARG_TO_COLLECTION = 87;
+  public static final int ER_INVALID_ARG_TO_COLLECTION = 118;
   
   /** ER_CONTEXT_NOT_NODE              */
-  public static final int ER_CONTEXT_NOT_NODE = 88;
+  public static final int ER_CONTEXT_NOT_NODE = 119;
    
   // Warnings...
 

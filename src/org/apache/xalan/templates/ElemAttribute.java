@@ -293,4 +293,18 @@ public class ElemAttribute extends ElemElement
 
     return super.appendChild(newChild);
   }
+	/**
+	 * @see ElemElement#setName(AVT)
+	 */
+	public void setName(AVT v) {
+        if (v.isSimple())
+        {
+            if (v.getSimpleString().equals("xmlns"))
+            {
+                throw new IllegalArgumentException();
+            }
+        }
+		super.setName(v);
+	}
+
 }

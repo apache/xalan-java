@@ -338,6 +338,8 @@ public class XSLTElementProcessor extends ElemTemplateElement
     // Keep track of which XSLTAttributeDefs have been processed, so 
     // I can see which default values need to be set.
     Vector processedDefs = new Vector();
+    // Keep track of XSLTAttributeDefs that were invalid
+    Vector errorDefs = new Vector();    
     int nAttrs = attributes.getLength();
 
     for (int i = 0; i < nAttrs; i++)
@@ -373,10 +375,17 @@ public class XSLTElementProcessor extends ElemTemplateElement
       }
       else
       {
-        processedDefs.addElement(attrDef);
-        attrDef.setAttrValue(handler, attrUri, attrLocalName,
+        // Can we switch the order here:
+
+        boolean success = attrDef.setAttrValue(handler, attrUri, attrLocalName,
                              attributes.getQName(i), attributes.getValue(i),
                              target);
+                             
+        // Now we only add the element if it passed a validation check
+        if (success)
+            processedDefs.addElement(attrDef);
+        else
+            errorDefs.addElement(attrDef);
       }
     }
 
@@ -398,7 +407,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
 
       if (attrDef.getRequired())
       {
-        if (!processedDefs.contains(attrDef))
+        if ((!processedDefs.contains(attrDef)) && (!errorDefs.contains(attrDef)))
           handler.error(
             XSLMessages.createMessage(
               XSLTErrorResources.ER_REQUIRES_ATTRIB, new Object[]{ rawName,

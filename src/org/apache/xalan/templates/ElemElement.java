@@ -284,12 +284,15 @@ public class ElemElement extends ElemUse
  	ResultTreeHandler rhandler = transformer.getResultTreeHandler();
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
-    String nodeName = m_name_avt.evaluate(xctxt, sourceNode, this);
+    
+    
+    String nodeName = m_name_avt == null ? null : m_name_avt.evaluate(xctxt, sourceNode, this);
 
     String prefix = null;
     String nodeNamespace = "";
 
-    if (!validateNodeName(nodeName))
+    // Only validate if an AVT was used.
+    if ((nodeName != null) && (!m_name_avt.isSimple()) && (!validateNodeName(nodeName)))
     {
       transformer.getMsgMgr().warn(
         this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
@@ -298,7 +301,7 @@ public class ElemElement extends ElemUse
       nodeName = null;
     }
 
-    else
+    else if (nodeName != null)
     {
       prefix = QName.getPrefixPart(nodeName);
 

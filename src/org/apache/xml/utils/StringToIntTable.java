@@ -64,6 +64,7 @@ package org.apache.xml.utils;
 public class StringToIntTable
 {
 
+  public static final int INVALID_KEY = -10000;
   /** Block size to allocate          */
   private int m_blocksize;
 
@@ -166,7 +167,7 @@ public class StringToIntTable
         return m_values[i];
     }
 
-    return -10000;  // Bogus value, needs to throw exception.
+	return INVALID_KEY;
   }
 
   /**
@@ -180,7 +181,7 @@ public class StringToIntTable
   {
 
     if (null == key)
-      return -10000;  // Bogus value, needs to throw exception.
+        return INVALID_KEY;
 
     for (int i = 0; i < m_firstFree; i++)
     {
@@ -188,7 +189,7 @@ public class StringToIntTable
         return m_values[i];
     }
 
-    return -10000;  // Bogus value, needs to throw exception.
+    return INVALID_KEY;
   }
 
   /**
@@ -209,4 +210,20 @@ public class StringToIntTable
 
     return false;
   }
+  /**
+   * Return array of keys in the table.
+   * 
+   * @return Array of strings
+   */
+  public final String[] keys()
+  {
+    String [] keysArr = new String[m_firstFree];
+
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      keysArr[i] = m_map[i];
+    }
+
+    return keysArr;
+  }  
 }

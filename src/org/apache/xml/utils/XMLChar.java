@@ -78,7 +78,7 @@ package org.apache.xml.utils;
  * @author Arnaud  Le Hors, IBM
  * @author Rahul Srivastava, Sun Microsystems Inc.
  *
- * @version $Id: XMLChar.java,v 1.7 2002/01/29 01:15:18 lehors Exp $
+ * @version $Id: XMLChar.java,v 1.1 2002/07/10 17:09:23 mmidy Exp $
  */
 public class XMLChar {
 
