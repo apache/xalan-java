@@ -94,6 +94,7 @@ Refer to the subsection 'Bundled System Classpath' below.
 To use this newer approach, simply put xsltc.jar in your classpath.
 No need to mention the others (BCEL.jar, JLex.jar, regexp.jar, java_cup.jar,
 runtime.jar). 
+<note>Be sure to also a JAXP XML parser, such as xercesImpl.jar and xml-apis.jar, which are in our distribution.</note>
 </p>
 </s3>
 
