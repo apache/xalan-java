@@ -375,6 +375,21 @@ m_builtInFunctions.put(
 m_builtInFunctions.put(
       new QName("item-at"),
       new FuncItemAt());
+m_builtInFunctions.put(
+      new QName("insert"),
+      new FuncInsert());
+m_builtInFunctions.put(
+      new QName("remove"),
+      new FuncRemove());
+m_builtInFunctions.put(
+      new QName("subsequence"),
+      new FuncSubsequence());
+m_builtInFunctions.put(
+      new QName("distinct-nodes"),
+      new FuncDistinctNodes());
+m_builtInFunctions.put(
+      new QName("distinct-values"),
+      new FuncDistinctValues());
   }
 
   /**

@@ -79,7 +79,7 @@ import java.net.URL;
  * <meta name="usage" content="advanced"/>
  * Execute the xs:matches() function.
  */
-public class FuncIndexOf extends Function3Args
+public class FuncInsert extends Function3Args
 {
 
   /**
@@ -92,102 +92,42 @@ public class FuncIndexOf extends Function3Args
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-  	XSequence seqParam = m_arg0.execute(xctxt).xseq();
-  	if (seqParam == XSequence.EMPTY)
-  	  return XSequence.EMPTY;
+  	XSequence target = m_arg0.execute(xctxt).xseq();
+  	double position = m_arg1.execute(xctxt).num();
+  	XSequence insert = m_arg2.execute(xctxt).xseq();
   	
-  	XObject srchParam = m_arg1.execute(xctxt);  	
-  	
-    Comparator comparator = null;
-  	if (m_arg2 != null)
-  	{
-  	  String collation = m_arg2.execute(xctxt).str();
-  	  try{
-  	    URL uri = new URL(collation);
-  	    comparator = Collator.getInstance();
-  	  }
-  	  catch(java.net.MalformedURLException mue)
-  	  {
-  	    comparator = null;
-  	  }
-  	}
-  	
+  	if (target == XSequence.EMPTY)
+  	  return (XObject)insert;
+  	if (insert == XSequence.EMPTY)
+  	  return (XObject)target;  	
+  	      	
   	XSequenceImpl seq = new XSequenceImpl();  	
   	
-  	int pos = 0;
-  	XObject item;
-  	  
-  	while((item = seqParam.next()) != null)  	
-  	{
-  	  int type = seqParam.getType();
-  	  if (type != srchParam.getType())
-  	  	this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
+  	int i, pos;
+  	int targetlen = target.getLength();
+  	int insertlen = insert.getLength();
   	
-  	  if (type == XObject.CLASS_STRING)
-  	  {
-  	    if (comparator == null)
-  	    {
-  	      if (item.equals(srchParam))
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
-  	    }
-  	    else
-  	    {
-  	      if (comparator.compare(item.str(), srchParam.str()) == 0)
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
-  	    }  	      
-  	    
-  	  }
-  	  else if(type == XType.NODE)
-  	  {
-  	    if(item instanceof XNodeSequenceSingleton)
-        {
-          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-          if (comparator == null)
-          {
-            if (xnss.equalsExistential(srchParam))
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-          }
-          else
-          {
-            if (comparator.compare(xnss.str(), srchParam.str()) == 0)
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-          }
-  	    }
-  	  }
-  	  else
-  	  {
-  	    if (item.equals(srchParam))
-  	    seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-  	  }
+  	pos = new Double(Math.floor(position)).intValue();
+  	pos = (pos < 0) ? 0 : pos;
+  	pos = pos > targetlen ? targetlen : pos;
+  	
+  	for (i=0; i<pos; i++)
+  	{
+  	  seq.insertItemAt(target.next(), i);
   	}
+  	for (; i<pos+insertlen; i++)
+  	{
+  	  seq.insertItemAt(insert.next(), i);
+  	}  
+  	for (; i<insertlen+targetlen; i++)
+  	{
+  	  seq.insertItemAt(target.next(), i);
+  	}	
+
   	
   	if (seq.getLength() == 0)
   	    return XSequence.EMPTY;
   	    else return seq; 
     
-  }
-  
-  /**
-   * Check that the number of arguments passed to this function is correct. 
-   *
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-    if (argNum < 2 || argNum > 3)
-      reportWrongNumberArgs();
-  }
-
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("twoorthree", null));
   }
 }

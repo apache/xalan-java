@@ -79,7 +79,7 @@ import java.net.URL;
  * <meta name="usage" content="advanced"/>
  * Execute the xs:matches() function.
  */
-public class FuncIndexOf extends Function3Args
+public class FuncSubsequence extends Function3Args
 {
 
   /**
@@ -92,74 +92,31 @@ public class FuncIndexOf extends Function3Args
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-  	XSequence seqParam = m_arg0.execute(xctxt).xseq();
-  	if (seqParam == XSequence.EMPTY)
-  	  return XSequence.EMPTY;
-  	
-  	XObject srchParam = m_arg1.execute(xctxt);  	
-  	
-    Comparator comparator = null;
+  	XSequence target = m_arg0.execute(xctxt).xseq();
+  	int startloc = m_arg1.execute(xctxt).integer();
+  	int len;
   	if (m_arg2 != null)
-  	{
-  	  String collation = m_arg2.execute(xctxt).str();
-  	  try{
-  	    URL uri = new URL(collation);
-  	    comparator = Collator.getInstance();
-  	  }
-  	  catch(java.net.MalformedURLException mue)
-  	  {
-  	    comparator = null;
-  	  }
-  	}
+  	  len = m_arg1.execute(xctxt).integer();
+  	else
+  	  len = target.getLength() - 1;
   	
+  	if (target == XSequence.EMPTY)
+  	  return (XObject)target;	
+  	      	
   	XSequenceImpl seq = new XSequenceImpl();  	
   	
-  	int pos = 0;
-  	XObject item;
-  	  
-  	while((item = seqParam.next()) != null)  	
-  	{
-  	  int type = seqParam.getType();
-  	  if (type != srchParam.getType())
-  	  	this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
+  	int i=0;
+  	int targetlen = target.getLength();
+  	// Need to adjust position because: 
+  	// 1- First item here means item at position 1, not 0
+  	// 2- next returns ++pos   
+  	target.setCurrentPos(startloc-2);
   	
-  	  if (type == XObject.CLASS_STRING)
-  	  {
-  	    if (comparator == null)
-  	    {
-  	      if (item.equals(srchParam))
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
-  	    }
-  	    else
-  	    {
-  	      if (comparator.compare(item.str(), srchParam.str()) == 0)
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
-  	    }  	      
-  	    
-  	  }
-  	  else if(type == XType.NODE)
-  	  {
-  	    if(item instanceof XNodeSequenceSingleton)
-        {
-          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-          if (comparator == null)
-          {
-            if (xnss.equalsExistential(srchParam))
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-          }
-          else
-          {
-            if (comparator.compare(xnss.str(), srchParam.str()) == 0)
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-          }
-  	    }
-  	  }
-  	  else
-  	  {
-  	    if (item.equals(srchParam))
-  	    seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-  	  }
-  	}
+  	while (i<len && startloc <= targetlen)
+  	{
+  	  seq.insertItemAt(target.next(), i++);
+  	  startloc++;
+  	}	
   	
   	if (seq.getLength() == 0)
   	    return XSequence.EMPTY;

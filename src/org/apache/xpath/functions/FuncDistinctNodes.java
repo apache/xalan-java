@@ -79,7 +79,7 @@ import java.net.URL;
  * <meta name="usage" content="advanced"/>
  * Execute the xs:matches() function.
  */
-public class FuncIndexOf extends Function3Args
+public class FuncDistinctNodes extends FunctionOneArg
 {
 
   /**
@@ -95,23 +95,7 @@ public class FuncIndexOf extends Function3Args
   	XSequence seqParam = m_arg0.execute(xctxt).xseq();
   	if (seqParam == XSequence.EMPTY)
   	  return XSequence.EMPTY;
-  	
-  	XObject srchParam = m_arg1.execute(xctxt);  	
-  	
-    Comparator comparator = null;
-  	if (m_arg2 != null)
-  	{
-  	  String collation = m_arg2.execute(xctxt).str();
-  	  try{
-  	    URL uri = new URL(collation);
-  	    comparator = Collator.getInstance();
-  	  }
-  	  catch(java.net.MalformedURLException mue)
-  	  {
-  	    comparator = null;
-  	  }
-  	}
-  	
+  	  	
   	XSequenceImpl seq = new XSequenceImpl();  	
   	
   	int pos = 0;
@@ -119,45 +103,27 @@ public class FuncIndexOf extends Function3Args
   	  
   	while((item = seqParam.next()) != null)  	
   	{
-  	  int type = seqParam.getType();
-  	  if (type != srchParam.getType())
-  	  	this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
-  	
-  	  if (type == XObject.CLASS_STRING)
-  	  {
-  	    if (comparator == null)
-  	    {
-  	      if (item.equals(srchParam))
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
-  	    }
-  	    else
-  	    {
-  	      if (comparator.compare(item.str(), srchParam.str()) == 0)
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
-  	    }  	      
-  	    
-  	  }
-  	  else if(type == XType.NODE)
+  	  boolean found = false;
+  	  int type = item.getType();
+  	  
+  	  if(type == XType.NODE)
   	  {
   	    if(item instanceof XNodeSequenceSingleton)
         {
           XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-          if (comparator == null)
+          XObject obj;
+         while((obj = seq.next()) != null)
           {
-            if (xnss.equalsExistential(srchParam))
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+            // is this correct, or is it just plain equals??
+           if (xnss.equalsExistential(obj))
+            {
+              found = true;
+              break;
+            }
           }
-          else
-          {
-            if (comparator.compare(xnss.str(), srchParam.str()) == 0)
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-          }
+          if (!found)             
+              seq.insertItemAt(item, pos++);
   	    }
-  	  }
-  	  else
-  	  {
-  	    if (item.equals(srchParam))
-  	    seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
   	  }
   	}
   	
@@ -165,29 +131,5 @@ public class FuncIndexOf extends Function3Args
   	    return XSequence.EMPTY;
   	    else return seq; 
     
-  }
-  
-  /**
-   * Check that the number of arguments passed to this function is correct. 
-   *
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-    if (argNum < 2 || argNum > 3)
-      reportWrongNumberArgs();
-  }
-
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("twoorthree", null));
   }
 }

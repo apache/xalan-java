@@ -79,7 +79,7 @@ import java.net.URL;
  * <meta name="usage" content="advanced"/>
  * Execute the xs:matches() function.
  */
-public class FuncIndexOf extends Function3Args
+public class FuncDistinctValues extends Function2Args
 {
 
   /**
@@ -96,12 +96,10 @@ public class FuncIndexOf extends Function3Args
   	if (seqParam == XSequence.EMPTY)
   	  return XSequence.EMPTY;
   	
-  	XObject srchParam = m_arg1.execute(xctxt);  	
-  	
-    Comparator comparator = null;
-  	if (m_arg2 != null)
+  	Comparator comparator = null;
+  	if (m_arg1 != null)
   	{
-  	  String collation = m_arg2.execute(xctxt).str();
+  	  String collation = m_arg1.execute(xctxt).str();
   	  try{
   	    URL uri = new URL(collation);
   	    comparator = Collator.getInstance();
@@ -119,21 +117,41 @@ public class FuncIndexOf extends Function3Args
   	  
   	while((item = seqParam.next()) != null)  	
   	{
-  	  int type = seqParam.getType();
-  	  if (type != srchParam.getType())
+  	  boolean found = false;
+  	  int type = item.getType();
+  	  if (XType.NOTHOMOGENOUS == seqParam.getTypes())
   	  	this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
   	
   	  if (type == XObject.CLASS_STRING)
-  	  {
+  	  {  
+  	    XObject obj;	    
   	    if (comparator == null)
   	    {
-  	      if (item.equals(srchParam))
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
-  	    }
+  	      while((obj = seq.next()) != null)
+           {
+            if (item.equals(obj))
+             {
+               found = true;
+              break;              
+             }
+           }
+           if (!found)
+              seq.insertItemAt(item, pos++);
+           seq.reset();  	      
+  	    } 
   	    else
   	    {
-  	      if (comparator.compare(item.str(), srchParam.str()) == 0)
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
+  	      while((obj = seq.next()) != null)
+  	      {
+  	        if (comparator.compare(item.str(), obj.str()) == 0)
+  	         {
+                found = true;
+              break;              
+             }
+  	      }
+  	      if (!found)
+  	         seq.insertItemAt(item, pos++);
+  	      seq.reset();     	      
   	    }  	      
   	    
   	  }
@@ -142,22 +160,34 @@ public class FuncIndexOf extends Function3Args
   	    if(item instanceof XNodeSequenceSingleton)
         {
           XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-          if (comparator == null)
+          XObject obj;
+         while((obj = seq.next()) != null)
           {
-            if (xnss.equalsExistential(srchParam))
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+           if (xnss.deepEquals(obj))
+            {
+              found = true;
+              break;
+            }
           }
-          else
-          {
-            if (comparator.compare(xnss.str(), srchParam.str()) == 0)
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
-          }
+          if (!found)             
+            seq.insertItemAt(item, pos++);
+          seq.reset();    
   	    }
   	  }
   	  else
   	  {
-  	    if (item.equals(srchParam))
-  	    seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+  	    XObject obj;
+  	    while((obj = seq.next()) != null)
+  	    {
+  	      if (item.equals(obj))
+  	      {
+  	        found = true;
+  	        break;
+  	      }
+  	    }
+  	    if (!found)
+  	      seq.insertItemAt(item, pos++);
+  	    seq.reset();   
   	  }
   	}
   	
@@ -177,7 +207,7 @@ public class FuncIndexOf extends Function3Args
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if (argNum < 2 || argNum > 3)
+    if (argNum < 1 || argNum > 2)
       reportWrongNumberArgs();
   }
 
@@ -188,6 +218,12 @@ public class FuncIndexOf extends Function3Args
    * @throws WrongNumberArgsException
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("twoorthree", null));
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("oneortwo", null));
+  }
+  
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return (m_arg1 == null) ?  1 :  2;
   }
 }
