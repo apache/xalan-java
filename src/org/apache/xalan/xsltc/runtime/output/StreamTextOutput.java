@@ -62,80 +62,37 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
+import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.TransletException;
 
-public class TransletOutputHandlerFactory {
+public class StreamTextOutput extends StreamOutput {
 
-    public static final int STREAM = 0;
-    public static final int SAX    = 1;
-    public static final int DOM    = 2;
-
-    private String _encoding       = "utf-8";
-    private String _method         = null;
-    private int    _outputType     = STREAM;
-    private OutputStream _ostream  = System.out;
-
-    static public TransletOutputHandlerFactory newInstance() {
-	return new TransletOutputHandlerFactory();
+    public StreamTextOutput(Writer writer, String encoding) {
+	super(writer, encoding);
     }
 
-    public void setOutputType(int outputType) {
-	_outputType = outputType;
+    public StreamTextOutput(OutputStream out, String encoding) 
+	throws IOException
+    {
+	super(out, encoding);
     }
 
-    public void setEncoding(String encoding) {
-	if (encoding != null) {
-	    _encoding = encoding;
-	}
+    public void endDocument() throws TransletException { 
+	outputBuffer();
     }
 
-    public void setOutputMethod(String method) {
-	_method = method;
+    public void characters(String characters) 
+	throws TransletException 
+    { 
+	_buffer.append(characters);
     }
 
-    public void setOutputStream(OutputStream ostream) {
-	_ostream = ostream;
-    }
-
-    public TransletOutputHandler getTransletOutputHandler() throws IOException {
-	switch (_outputType) {
-	    case STREAM:
-		if (_method == null) {
-		    return new StreamUnknownOutput(_ostream, _encoding);
-		}
-
-		if (_method.equalsIgnoreCase("xml")) {
-		    return new StreamXMLOutput(_ostream, _encoding);
-		}
-		else if (_method.equalsIgnoreCase("html")) {
-		    return new StreamHTMLOutput(_ostream, _encoding);
-		}
-		else if (_method.equalsIgnoreCase("text")) {
-		    return new StreamTextOutput(_ostream, _encoding);
-		}
-	    break;
-	    case SAX:
-		// TODO
-	    break;
-	    case DOM:
-		// TODO
-	    break;
-	}
-	return null;
-    }
-
-    // Temporary - returns an instance of TextOutput
-    public TransletOutputHandler getOldTransletOutputHandler() throws IOException {
-	DefaultSAXOutputHandler saxHandler =
-	    new DefaultSAXOutputHandler(_ostream, _encoding);
-	return new TextOutput((ContentHandler)saxHandler,
-			      (LexicalHandler)saxHandler, _encoding);
+    public void characters(char[] characters, int offset, int length)
+	throws TransletException 
+    { 
+	_buffer.append(characters, offset, length);
     }
 }
