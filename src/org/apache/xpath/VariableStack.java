@@ -121,9 +121,17 @@ public class VariableStack extends Stack
   /**
    * NEEDSDOC
    */
-  public int getSearchStart()
+  public int getSearchStartOrTop()
   {
     return (-1 == m_searchStart) ? this.size() : m_searchStart;
+  }
+  
+  /**
+   * NEEDSDOC
+   */
+  public int getSearchStart()
+  {
+    return m_searchStart;
   }
 
   /**

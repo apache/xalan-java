@@ -114,7 +114,15 @@ public class Compiler extends OpMap
   public Compiler(ErrorHandler errorHandler, SourceLocator locator)
   {
     m_errorHandler = errorHandler;
-    m_locator = locator;
+    if(null != locator)
+    {
+      SAXSourceLocator ssl = new SAXSourceLocator();
+      ssl.setColumnNumber(locator.getColumnNumber());
+      ssl.setLineNumber(locator.getLineNumber());
+      ssl.setPublicId(locator.getPublicId());
+      ssl.setSystemId(locator.getSystemId());
+      m_locator = ssl;
+    }
   }
 
   /**
@@ -144,77 +152,80 @@ public class Compiler extends OpMap
 
     int op = m_opMap[opPos];
 
+    Expression expr = null;
     // System.out.println(getPatternString()+"op: "+op);
     switch (op)
     {
     case OpCodes.OP_XPATH :
-      return compile(opPos + 2);
+      expr = compile(opPos + 2); break;
     case OpCodes.OP_OR :
-      return or(opPos);
+      expr = or(opPos); break;
     case OpCodes.OP_AND :
-      return and(opPos);
+      expr = and(opPos); break;
     case OpCodes.OP_NOTEQUALS :
-      return notequals(opPos);
+      expr = notequals(opPos); break;
     case OpCodes.OP_EQUALS :
-      return equals(opPos);
+      expr = equals(opPos); break;
     case OpCodes.OP_LTE :
-      return lte(opPos);
+      expr = lte(opPos); break;
     case OpCodes.OP_LT :
-      return lt(opPos);
+      expr = lt(opPos); break;
     case OpCodes.OP_GTE :
-      return gte(opPos);
+      expr = gte(opPos); break;
     case OpCodes.OP_GT :
-      return gt(opPos);
+      expr = gt(opPos); break;
     case OpCodes.OP_PLUS :
-      return plus(opPos);
+      expr = plus(opPos); break;
     case OpCodes.OP_MINUS :
-      return minus(opPos);
+      expr = minus(opPos); break;
     case OpCodes.OP_MULT :
-      return mult(opPos);
+      expr = mult(opPos); break;
     case OpCodes.OP_DIV :
-      return div(opPos);
+      expr = div(opPos); break;
     case OpCodes.OP_MOD :
-      return mod(opPos);
+      expr = mod(opPos); break;
     case OpCodes.OP_QUO :
-      return quo(opPos);
+      expr = quo(opPos); break;
     case OpCodes.OP_NEG :
-      return neg(opPos);
+      expr = neg(opPos); break;
     case OpCodes.OP_STRING :
-      return string(opPos);
+      expr = string(opPos); break;
     case OpCodes.OP_BOOL :
-      return bool(opPos);
+      expr = bool(opPos); break;
     case OpCodes.OP_NUMBER :
-      return number(opPos);
+      expr = number(opPos); break;
     case OpCodes.OP_UNION :
-      return union(opPos);
+      expr = union(opPos); break;
     case OpCodes.OP_LITERAL :
-      return literal(opPos);
+      expr = literal(opPos); break;
     case OpCodes.OP_VARIABLE :
-      return variable(opPos);
+      expr = variable(opPos); break;
     case OpCodes.OP_GROUP :
-      return group(opPos);
+      expr = group(opPos); break;
     case OpCodes.OP_NUMBERLIT :
-      return numberlit(opPos);
+      expr = numberlit(opPos); break;
     case OpCodes.OP_ARGUMENT :
-      return arg(opPos);
+      expr = arg(opPos); break;
     case OpCodes.OP_EXTFUNCTION :
-      return compileExtension(opPos);
+      expr = compileExtension(opPos); break;
     case OpCodes.OP_FUNCTION :
-      return compileFunction(opPos);
+      expr = compileFunction(opPos); break;
     case OpCodes.OP_LOCATIONPATH :
-      return locationPath(opPos);
+      expr = locationPath(opPos); break;
     case OpCodes.OP_PREDICATE :
-      return null;  // should never hit this here.
+      expr = null; break;  // should never hit this here.
     case OpCodes.OP_MATCHPATTERN :
-      return matchPattern(opPos + 2);
+      expr = matchPattern(opPos + 2); break;
     case OpCodes.OP_LOCATIONPATHPATTERN :
-      return locationPathPattern(opPos);
+      expr = locationPathPattern(opPos); break;
     default :
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
             new Object[]{ Integer.toString(m_opMap[opPos]) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
     }
+    if(null != expr)
+      expr.setSourceLocator(m_locator);
 
-    return null;
+    return expr;
   }
 
   /**
@@ -639,6 +650,8 @@ public class Compiler extends OpMap
   {
     return new UnionPathIterator(this, opPos);
   }
+  
+  private int locPathDepth = -1;
 
   /**
    * <meta name="usage" content="advanced"/>
@@ -655,7 +668,12 @@ public class Compiler extends OpMap
    */
   public Expression locationPath(int opPos) throws org.xml.sax.SAXException
   {
-    return WalkerFactory.newLocPathIterator(this, opPos);
+    locPathDepth++;
+    LocPathIterator iter = WalkerFactory.newLocPathIterator(this, opPos);
+    if(locPathDepth == 0)
+      iter.setIsTopLevel(true);
+    locPathDepth--;
+    return iter;
   }
 
   /**

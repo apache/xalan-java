@@ -222,11 +222,26 @@ public class LocPathIterator extends Expression
   }
   
   /** NEEDSDOC Method initContext **/
-  private int m_varStackPos;
+  int m_varStackPos = -1;
 
   /** NEEDSDOC Method initContext **/
-  private int m_varStackContext;
-
+  int m_varStackContext;
+  
+  /**
+   * Value determined at compile time.
+   */
+  private boolean m_isTopLevel = false;
+  
+  /**
+   * <meta name="usage" content="internal"/>
+   * Set if this is an iterator at the upper level of 
+   * the XPath.
+   */
+  public void setIsTopLevel(boolean b)
+  {
+    m_isTopLevel = b;
+  }
+  
   /**
    * NEEDSDOC Method initContext 
    *
@@ -241,9 +256,12 @@ public class LocPathIterator extends Expression
     this.m_execContext = execContext;
     this.m_prefixResolver = execContext.getNamespaceContext();
     this.m_dhelper = execContext.getDOMHelper();
-    VariableStack vars = execContext.getVarStack();
-    this.m_varStackPos = vars.getSearchStart();
-    this.m_varStackContext = vars.getContextPos();
+    if(m_isTopLevel)
+    {
+      VariableStack vars = execContext.getVarStack();
+      this.m_varStackPos = vars.getSearchStartOrTop();
+      this.m_varStackContext = vars.getContextPos();
+    }
   }
 
   /**
@@ -477,6 +495,8 @@ public class LocPathIterator extends Expression
     this.m_execContext = null;
     this.m_prefixResolver = null;
     this.m_dhelper = null;
+    this.m_varStackPos = -1;
+    this.m_varStackContext = 0;
 
     m_pool.freeInstance(this);
   }
@@ -509,6 +529,8 @@ public class LocPathIterator extends Expression
   {
 
     LocPathIterator clone = (LocPathIterator) super.clone();
+    clone.m_varStackPos = this.m_varStackPos;
+    clone.m_varStackContext = this.m_varStackContext;
 
     if (null != m_firstWalker)
     {
@@ -588,26 +610,40 @@ public class LocPathIterator extends Expression
 
       return next;
     }
-
-    VariableStack vars = m_execContext.getVarStack();
-    int savedStart = vars.getSearchStart();
-    vars.setSearchStart(m_varStackPos);
-    vars.pushContextPosition(m_varStackContext);
     
-    if (null == m_firstWalker.getRoot())
+    if(-1 == m_varStackPos)
     {
-      this.setNextPosition(0);
-      m_firstWalker.setRoot(m_context);
+      if (null == m_firstWalker.getRoot())
+      {
+        this.setNextPosition(0);
+        m_firstWalker.setRoot(m_context);
 
-      m_lastUsedWalker = m_firstWalker;
+        m_lastUsedWalker = m_firstWalker;
+      }
+      return returnNextNode(m_firstWalker.nextNode());
     }
-    
-    Node n = returnNextNode(m_firstWalker.nextNode());
-    
-    vars.setSearchStart(savedStart);
-    vars.popContextPosition();
+    else
+    {
+      VariableStack vars = m_execContext.getVarStack();
+      int savedStart = vars.getSearchStart();
+      vars.setSearchStart(m_varStackPos);
+      vars.pushContextPosition(m_varStackContext);
+      
+      if (null == m_firstWalker.getRoot())
+      {
+        this.setNextPosition(0);
+        m_firstWalker.setRoot(m_context);
 
-    return n;
+        m_lastUsedWalker = m_firstWalker;
+      }
+
+      Node n = returnNextNode(m_firstWalker.nextNode());
+      
+      vars.setSearchStart(savedStart);
+      vars.popContextPosition();
+
+      return n;
+    }
   }
 
   /**

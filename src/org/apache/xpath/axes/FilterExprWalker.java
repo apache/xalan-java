@@ -139,9 +139,10 @@ public class FilterExprWalker extends AxesWalker
 
       // System.out.println("calling m_expr.execute(m_lpi.getXPathContext())");
       XObject obj = m_expr.execute(m_lpi.getXPathContext());
-
+      
       // System.out.println("Back from m_expr.execute(m_lpi.getXPathContext()): "+obj);
       m_nodeSet = (null != obj) ? obj.nodeset() : null;
+      
       m_peek = null;
     }
     catch (org.xml.sax.SAXException se)

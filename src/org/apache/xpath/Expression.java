@@ -79,7 +79,12 @@ public abstract class Expression
 {
 
   /** NEEDSDOC Field m_xpath          */
-  protected XPath m_xpath;
+  protected SourceLocator m_slocator;
+  
+  public void setSourceLocator(SourceLocator locator)
+  {
+    m_slocator = locator;
+  }
 
   /**
    * NEEDSDOC Method execute 
@@ -120,9 +125,9 @@ public abstract class Expression
     else
     {
       // Where to send diagnostics in this case?
-      if(null != m_xpath)
+      if(null != m_slocator)
       {
-        SourceLocator slocator = m_xpath.getLocator();
+        SourceLocator slocator = m_slocator;
         System.out.println(fmsg + "; file " + slocator.getSystemId()
                            + "; line " + slocator.getLineNumber() + "; column "
                            + slocator.getColumnNumber()); 
@@ -178,14 +183,14 @@ public abstract class Expression
       ErrorHandler eh = reader.getErrorHandler();
 
       SAXParseException te = new SAXParseException(fmsg,
-                                                   (SAXSourceLocator)m_xpath.getLocator());
+                                                   (SAXSourceLocator)m_slocator);
       eh.fatalError(te);
     }
     else
     {
-      if(null != m_xpath)
+      if(null != m_slocator)
       {
-        SourceLocator slocator = m_xpath.getLocator();
+        SourceLocator slocator = m_slocator;
         System.out.println(fmsg + "; file " + slocator.getSystemId()
                            + "; line " + slocator.getLineNumber() + "; column "
                            + slocator.getColumnNumber());

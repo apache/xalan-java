@@ -1254,7 +1254,8 @@ public class StylesheetHandler extends DefaultHandler
       SAXSourceLocator locator = new SAXSourceLocator();
 
       locator.setSystemId(this.getStylesheetProcessor().getDOMsystemID());
-      m_stylesheetLocatorStack.push(locator);
+      return locator;
+      // m_stylesheetLocatorStack.push(locator);
     }
 
     return ((SAXSourceLocator) m_stylesheetLocatorStack.peek());

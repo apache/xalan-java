@@ -67,6 +67,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.transform.TransformerConfigurationException;
@@ -127,7 +128,16 @@ public class ProcessorLRE extends ProcessorTemplateElem
 
       // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
 	  // ***** Note that we're assigning an empty locator. Is this necessary?
-      stylesheet.setLocaterInfo(new SAXSourceLocator());
+      SAXSourceLocator slocator = new SAXSourceLocator();
+      Locator locator = handler.getLocator();
+      if(null != locator)
+      {
+        slocator.setLineNumber(locator.getLineNumber());
+        slocator.setColumnNumber(locator.getColumnNumber());
+        slocator.setPublicId(locator.getPublicId());
+        slocator.setSystemId(locator.getSystemId());
+      }
+      stylesheet.setLocaterInfo(slocator);
       stylesheet.setPrefixes(handler.getNamespaceSupport());
       handler.pushStylesheet(stylesheet);
 
