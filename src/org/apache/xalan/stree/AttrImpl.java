@@ -292,6 +292,7 @@ public class AttrImpl extends Child implements Attr
    */
   public Node getNextSibling()
   {
-    return m_parent.m_first;
+    // return m_parent.m_first;
+    return null;
   }
 }
