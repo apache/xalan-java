@@ -619,11 +619,17 @@ Copyright:
   </target>
 
   <!-- =================================================================== -->
-  <!-- Compiles all samples that require extra components in order to      -->
-  <!-- compile.                                                            -->
+  <!-- Compiles all samples that require extra standard components in      -->
+  <!-- order to compile.                                                   -->
   <!-- =================================================================== -->
-  <target name="extra.samples"
-          depends="servlet,xsltc.applet,xsltc.brazil,xsltc.ejb,xsltc.servlet"/>
+  <target name="extra.std.samples"
+          depends="servlet,xsltc.applet,xsltc.ejb,xsltc.servlet"/>
+
+  <!-- =================================================================== -->
+  <!-- Compiles all samples that require extra non-standard components in  -->
+  <!-- order to compile.                                                   -->
+  <!-- =================================================================== -->
+  <target name="extra.nonstd.samples" depends="xsltc.brazil"/>
 
   <!-- =================================================================== -->
   <!-- Compiles the sample servlet and jars the class files.               --> 
@@ -859,12 +865,36 @@ Copyright:
   </target>
 
   <!-- =================================================================== -->
-  <!-- Creates the distribution                                            -->
+  <!-- Creates a distribution that depends only on standard pieces         -->
   <!-- =================================================================== -->
-  <target name="dist" depends="jar,docs,javadocs,samples,extra.samples,xsltc.docs,autodist"
-    description="Create a .zip/.tar.gz distribution module" >
-    <echo message="dist is human-useable target for distribution, with all dependencies"/>
+  <target name="dist" depends="build.std.dist,autodist"
+              description="Create a .zip/.tar.gz distribution module containing
+                           all components without dependencies on non-standard
+                           jars that are not part of the build system." >
+    <echo message="dist is human-useable target for distribution, with only standard dependencies"/>
   </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates a complete distribution                                     -->
+  <!-- =================================================================== -->
+  <target name="fulldist" depends="build.nonstd.dist,autodist"
+          description="Create a .zip/.tar.gz distribution module containing
+                       all components.">
+    <echo message="fulldist is human-useable target for distribution, with all dependencies"/>
+  </target>
+
+  <target name="build.std.dist" depends="build.std.parts">
+    <property name="has.nonstd.parts" value="false"/>
+  </target>
+
+  <target name="build.nonstd.dist" depends="build.std.parts,build.nonstd.parts">
+    <property name="has.nonstd.parts" value="true"/>
+  </target>
+
+  <target name="build.std.parts"
+          depends="jar,docs,javadocs,samples,extra.std.samples,xsltc.docs"/>
+  <target name="build.nonstd.parts" depends="extra.nonstd.samples"/>
+
   <target name="autodist">
     <echo message="autodist is for automated build processes, without dependencies"/>
     <mkdir dir="${dist.dir}"/>
@@ -899,7 +929,8 @@ Copyright:
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xalanservlet.war" todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xsltcapplet.jar"  todir="${dist.dir}/bin"/>
-    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/bin"
+          failonerror="${has.nonstd.parts}"/>
     <copy file="${build.dir}/xsltcejb.jar"     todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xsltcservlet.jar" todir="${dist.dir}/bin"/>
 
