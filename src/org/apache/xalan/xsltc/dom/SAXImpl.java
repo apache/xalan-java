@@ -346,8 +346,8 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
      * model for a given node, filtered by extended type ID.
      */
     public class TypedNamespaceIterator extends NamespaceIterator {
-        /** The extended type ID that was requested. */
-        private final int _nodeType;
+        
+        private  String _nsPrefix;
 
         /**
          * Constructor TypedChildrenIterator
@@ -355,9 +355,14 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
          *
          * @param nodeType The extended type ID being requested.
          */
-        public TypedNamespaceIterator(int nodeType) {
+        public TypedNamespaceIterator(int nodeType) { 
             super();
-            _nodeType = nodeType;
+            if(m_expandedNameTable != null){
+                final String prefix = m_expandedNameTable.getLocalName(nodeType);
+                if((prefix != null) &&  (prefix.charAt(0) == '?') ) {
+                  _nsPrefix = prefix.substring(1);
+                }
+            }
         }
 
        /**
@@ -366,20 +371,19 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
         * @return The next node handle in the iteration, or END.
         */
         public int next() {
-            int node;
-
+             if((_nsPrefix == null) ||(_nsPrefix.length() == 0) ){
+                 return (END);
+             }          
+            int node = END;
             for (node = super.next(); node != END; node = super.next()) {
-                if (getExpandedTypeID(node) == _nodeType
-                      || getNodeType(node) == _nodeType
-                      || getIdForNamespace(getStringValueX(node))
-                             == _nodeType) {
+                if (_nsPrefix.compareTo(getLocalName(node))== 0) {
                     return returnNode(node);
                 }
             }
-
             return (END);
         }
     }  // end of TypedNamespaceIterator
+
 
 
     /**************************************************************
@@ -1194,9 +1198,7 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
             case Axis.PRECEDINGSIBLING:
                 return new TypedPrecedingSiblingIterator(type);
             case Axis.NAMESPACE:
-                return (type == DTM.ELEMENT_NODE)
-                       ? new NamespaceIterator()
-                       : new TypedNamespaceIterator(type);
+                return  new TypedNamespaceIterator(type);
             default:
                 BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR, Axis.names[axis]);
         }

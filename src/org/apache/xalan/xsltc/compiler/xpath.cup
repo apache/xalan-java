@@ -165,7 +165,7 @@ parser code {:
 
 	    if (axis == Axis.NAMESPACE) {
 		nodeType = (name.toString().equals("*")) ? -1
-				: _xsltc.registerNamespace(name);
+				: _xsltc.registerNamespacePrefix(name);
             }
 	    else {
 		final String uri = name.getNamespace();
@@ -227,7 +227,7 @@ parser code {:
 
 	    if (axis == Axis.NAMESPACE) {
 		return (name.toString().equals("*")) ? -1
-		    : _xsltc.registerNamespace(name);
+		    : _xsltc.registerNamespacePrefix(name);
             }
 
 	    if (name.getNamespace() == null) {
