@@ -172,27 +172,25 @@ public class SAX2RTFDTM extends SAX2DTM
   }
 
   /**
-   * Given a node handle, find the owning document node.  This has the exact
-   * same semantics as the DOM Document method of the same name, in that if
-   * the nodeHandle is a document node, it will return NULL.
+   * Given a node handle, find the owning document node, using DTM semantics
+   * (Document owns itself) rather than DOM semantics (Document has no owner).
    *
-   * <p>%REVIEW% Since this is DOM-specific, it may belong at the DOM
-   * binding layer. Included here as a convenience function and to
-   * aid porting of DOM code to DTM.</p>
+   * (I'm counting on the fact that getOwnerDocument() is implemented on top
+   * of this call, in the superclass, to avoid having to rewrite that one.
+   * Be careful if that code changes!)
    *
    * @param nodeHandle the id of the node.
-   * @return int Node handle of owning document, or -1 if the nodeHandle is
-   *             a document.
+   * @return int Node handle of owning document
    */
-  public int getOwnerDocument(int nodeHandle)
+  public int getDocumentRoot(int nodeHandle)
   {
     for(int id=makeNodeIdentity(nodeHandle);
-	id!=NULL;
-	id=_parent(id))
-      if(_type(id)==DTM.DOCUMENT_NODE)
-	return id;
+		id!=NULL;
+		id=_parent(id))
+		if(_type(id)==DTM.DOCUMENT_NODE)
+  			return makeNodeHandle(id);
 
-    return DTM.NULL;
+    return DTM.NULL; // Safety net; should never happen
   }
   
   /**

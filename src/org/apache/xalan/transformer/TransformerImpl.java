@@ -628,6 +628,9 @@ public class TransformerImpl extends Transformer
 
       try
       {
+      	// NOTE: This will work because this is _NOT_ a shared DTM, and thus has
+      	// only a single Document node. If it could ever be an RTF or other
+      	// shared DTM, look at dtm.getDocumentRoot(nodeHandle).
         this.transformNode(dtm.getDocument());
       }
       finally
@@ -1773,10 +1776,11 @@ public class TransformerImpl extends Transformer
         rth.flushPending();
         
         // Get the document ID. May not exist until the RTH has not only
-        // recieved, but flushed, the startDocument... so waiting until
-        // just before the end seems simplest/safest.
-	    resultFragment = dtmFrag.getDocument();      
-	  }
+        // received, but flushed, the startDocument, and may be invalid
+        // again after the document has been closed (still debating that)
+        // ... so waiting until just before the end seems simplest/safest. 
+	resultFragment = dtmFrag.getDocument();      
+      }
       finally
       {
         rth.endDocument();

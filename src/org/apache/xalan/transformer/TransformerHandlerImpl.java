@@ -429,6 +429,9 @@ public class TransformerHandlerImpl
     }
     else
     {
+      // %REVIEW% If this could ever be a shared DTM, we might need to
+      // retrieve the Document node _before_ issuing endDocument(), or
+      // use the getDocumentRoot(nodeHandle) method.
       m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
       m_transformer.run();
     }

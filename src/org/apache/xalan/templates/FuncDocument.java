@@ -124,7 +124,7 @@ public class FuncDocument extends Function2Args
     int context = xctxt.getCurrentNode();
     DTM dtm = xctxt.getDTM(context);
     
-    int docContext = dtm.getDocument();
+    int docContext = dtm.getDocumentRoot(context);
     XObject arg = (XObject) this.getArg0().execute(xctxt);
 
     String base = "";

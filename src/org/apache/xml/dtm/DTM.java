@@ -375,25 +375,40 @@ public interface DTM
   public int getParent(int nodeHandle);
 
   /**
-   * Given a node handle, find the owning document node. Note that
-   * the reason this can't just return 0 is that it needs to include the
-   * document number portion of the node handle.
+   * Given a DTM which contains only a single document, 
+   * find the Node Handle of the  Document node. Note 
+   * that if the DTM is configured so it can contain multiple
+   * documents, this call will return the Document currently
+   * under construction -- but may return null if it's between
+   * documents. Generally, you should use getOwnerDocument(nodeHandle)
+   * or getDocumentRoot(nodeHandle) instead.
    *
-   * @param nodeHandle the id of the node.
-   * @return int Node handle of document, which should always be valid.
+   * @return int Node handle of document, or DTM.NULL if a shared DTM
+   * can not tell us which Document is currently active.
    */
   public int getDocument();
 
   /**
-   * Given a node handle, find the owning document node.  This has the exact
-   * same semantics as the DOM Document method of the same name, in that if
-   * the nodeHandle is a document node, it will return NULL.
+   * Given a node handle, find the owning document node. This version mimics
+   * the behavior of the DOM call by the same name.
    *
    * @param nodeHandle the id of the node.
-   * @return int Node handle of owning document,
-   * or DTM.NULL if the nodeHandle is a document.
+   * @return int Node handle of owning document, or DTM.NULL if the node was
+   * a Document.
+   * @see getDocumentRoot(int nodeHandle)
    */
   public int getOwnerDocument(int nodeHandle);
+
+  /**
+   * Given a node handle, find the owning document node.
+   *
+   * @param nodeHandle the id of the node.
+   * @return int Node handle of owning document, or the node itself if it was
+   * a Document. (Note difference from DOM, where getOwnerDocument returns
+   * null for the Document node.)
+   * @see getOwnerDocument(int nodeHandle)
+   */
+  public int getDocumentRoot(int nodeHandle);
 
   /**
    * Get the string-value of a node as a String object

@@ -180,7 +180,7 @@ public class KeyIterator extends WalkingIterator
 
     int context = getContext();
     DTM dtm = this.getDTM(context);
-    m_firstWalker.setRoot(dtm.getDocument());
+    m_firstWalker.setRoot(dtm.getDocumentRoot(context));
     this.setLastUsedWalker(m_firstWalker);
     this.setNextPosition(0);
   }

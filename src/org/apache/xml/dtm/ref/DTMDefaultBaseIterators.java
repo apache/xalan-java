@@ -677,7 +677,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       if (_isRestartable)
       {
-        _startNode = getDocument();
+        _startNode = getDocumentRoot(node);
         _currentNode = NULL;
 
         return resetPosition();
@@ -1489,7 +1489,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         else
           _startNode = getParent(node);
 
-        _currentNode = getDocument();
+        _currentNode = getDocumentRoot(node);
         
         node = _startNode;
         while (node != END)
@@ -1514,7 +1514,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     public DTMAxisIterator reset()
     {
 
-      _currentNode = getDocument();
+      _currentNode = getDocumentRoot(_startNode);
             
       m_ancestorsPos = m_ancestors.size()-1;
 
@@ -1533,9 +1533,9 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       
       int pos = m_ancestorsPos--;
       if(pos < 0)
-        _currentNode = DTM.NULL;
+         _currentNode = DTM.NULL;
       else
-        _currentNode = m_ancestors.elementAt(pos);
+     	 _currentNode = m_ancestors.elementAt(pos);
       
       return returnNode(next);
     }

@@ -453,6 +453,9 @@ public class ElemForEach extends ElemTemplateElement
 	  if(DEBUG)
 	    System.out.println("JJK***** CACHE RELEASE *****\n"+
 			       "\tdtm="+dtm.getDocumentBaseURI());
+ 	// NOTE: This will work because this is _NOT_ a shared DTM, and thus has
+ 	// only a single Document node. If it could ever be an RTF or other
+	// shared DTM, this would require substantial rework.
 	  xctxt.getSourceTreeManager().removeDocumentFromCache(dtm.getDocument());
 	  xctxt.release(dtm,false);
 	}

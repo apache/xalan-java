@@ -475,8 +475,8 @@ public class DTMNodeProxy
    */
   public final Document getOwnerDocument()
   {
-		return (Document)(dtm.getNode(dtm.getDocument()));
-    //return new DTMNodeProxy(dtm, dtm.getDocument());
+  	// Note that this uses the DOM-compatable version of the call
+	return (Document)(dtm.getNode(dtm.getOwnerDocument(node)));
   }
 
   /**

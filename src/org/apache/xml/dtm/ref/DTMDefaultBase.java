@@ -1412,19 +1412,27 @@ public abstract class DTMDefaultBase implements DTM
    * aid porting of DOM code to DTM.</p>
    *
    * @param nodeHandle the id of the node.
-   * @return int Node handle of owning document, or -1 if the nodeHandle is
-   *             a document.
+   * @return int Node handle of owning document, or -1 if the node was a Docment
    */
   public int getOwnerDocument(int nodeHandle)
   {
 
-    int type = getNodeType(nodeHandle);
+    if (DTM.DOCUMENT_NODE == getNodeType(nodeHandle))
+  	    return DTM.NULL;
 
-    if (DTM.DOCUMENT_NODE == type)
-    {
-      return DTM.NULL;
-    }
+    return getDocumentRoot(nodeHandle);
+  }
 
+  /**
+   * Given a node handle, find the owning document node.  Unlike the DOM,
+   * this considers the owningDocument of a Document to be itself.
+   *
+   * @param nodeHandle the id of the node.
+   * @return int Node handle of owning document, or the nodeHandle if it is
+   *             a Document.
+   */
+  public int getDocumentRoot(int nodeHandle)
+  {
     return getDocument();
   }
 
