@@ -1273,7 +1273,11 @@ public class XSLTAttributeDef
       String prefix = tokenizer.nextToken();
       String url = handler.getNamespaceForPrefix(prefix);
 
-      strings.addElement(url);
+      if (url != null)
+        strings.addElement(url);
+      else
+        throw new org.xml.sax.SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_CANT_RESOLVE_NSPREFIX, new Object[] {prefix}));
+    
     }
 
     return strings;

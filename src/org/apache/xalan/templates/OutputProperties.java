@@ -909,6 +909,10 @@ public class OutputProperties extends ElemTemplateElement
     while (enum.hasMoreElements())
     {
       String key = (String) enum.nextElement();
+    
+      if (!isLegalPropertyKey(key))
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{key})); //"output property not recognized: "
+      
       Object oldValue = m_properties.get(key);
       if (null == oldValue)
       {
