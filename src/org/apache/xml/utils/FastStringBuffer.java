@@ -966,7 +966,7 @@ public class FastStringBuffer
 
     return sb;
   }
-
+  
   /**
    * Get a single character from the string buffer.
    *
@@ -1372,5 +1372,126 @@ public class FastStringBuffer
     source.m_chunkBits += m_rebundleBits;
     source.m_chunkSize = 1 << (source.m_chunkBits);
     source.m_chunkMask = source.m_chunkSize - 1;
+  }
+
+  /** Yield substring value as a sequence of Character Blocks
+	* @return a CharacterBlockEnumeration displaying the contents of
+	* this object's string value (as in str()). May be empty, may
+	* yield multiple blocks depending on the FSB's contents. (The latter
+	* case is why we need to enumerate, of course!)
+	* 
+	* @param start Offset of first character to be delivered
+	* @param length Number of contiguous characters to be delivered
+	* */
+  public org.apache.xml.utils.CharacterBlockEnumeration enumerateCharacterBlocks(int start,int length)
+  {
+  	// %REVIEW% %OPT% I'm not sure this is an optimization. Depends on
+  	// how retrieval of char[] from String works in any given JVM.
+  	// See comments in CharacterBlockEnumeration, and run some tests.
+	return new FSBCharacterBlockEnumeration(start,length);
+  }
+  
+  /** FSB-specific implementation of CharacterBlockEnumeration.
+   * 
+   * NOTE: This is _NOT_ guaranteed to tolerate attempts to modify the
+   * FSB's contents while it is executing!
+   * 
+   * Inner class, since it's accessing FSB's implementation details
+   * and might as well leverage its ability to access the associated FSB.
+   * */
+  protected class FSBCharacterBlockEnumeration
+  extends org.apache.xml.utils.CharacterBlockEnumeration
+  {
+  	int e_chunk; // Current enumeration position
+  	int e_toBeDelivered; // Current enumeration status
+  	
+	/** Construct this enumeration 
+	 * 
+	 * %BUG% Does not currently support m_innerFSB. (I'm still deciding
+	 * whether to rip out the innerFSB support entirely, or to fix it.)
+	 * 
+	 * @param start Starting offset, in characters. If past available data,
+	 *   we return a single empty block.
+	 * @param length Number of characters to deliver. If start+length is
+	 *   past available data, length will be truncated to fit.
+	 * */  	
+  	public FSBCharacterBlockEnumeration(int start,int length)
+  	{
+  		if(m_innerFSB!=null)
+		 throw new java.lang.UnsupportedOperationException("Inner FSB not yet implemented. Oops.");   			
+  		
+  		int fsblength=length();
+  		if (start<=fsblength)
+  		{ 
+ 			int max=fsblength-start;
+ 			e_toBeDelivered=(length<max) ? length : max;
+  
+  			// Set up to display first chunk		
+	  		e_chunk=start>>m_chunkBits;
+	  		_chars=m_array[e_chunk];
+ 	 		_start=start&m_chunkBits;
+ 	 		max=m_chunkSize-_start;
+ 	 		_length=(max<=e_toBeDelivered) ? max : e_toBeDelivered;
+ 	 		// and decrement what's left to go
+ 	 		e_toBeDelivered -= _length;
+  		}
+  		else
+  		{
+  			// Off the end. We can just leave it empty.
+  		}
+  	}
+
+	/** Disable superclass's ctor
+	 * @throws java.lang.UnsupportedOperationException since not appropriate here.
+	 * */
+	public FSBCharacterBlockEnumeration(String s)
+	{ throw new java.lang.UnsupportedOperationException("Inappropriate ctor for this subclass"); 
+	}
+	/** Disable superclass's ctor
+	 * @throws java.lang.UnsupportedOperationException since not appropriate here.
+	 * */
+	public FSBCharacterBlockEnumeration(String s, int start, int length)
+	{ throw new java.lang.UnsupportedOperationException("Inappropriate ctor for this subclass"); 
+	}
+	/** Disable superclass's ctor
+	 * @throws java.lang.UnsupportedOperationException since not appropriate here.
+	 * */
+	public FSBCharacterBlockEnumeration(char[] ch)
+	{ throw new java.lang.UnsupportedOperationException("Inappropriate ctor for this subclass"); 
+	}
+	/** Disable superclass's ctor
+	 * @throws java.lang.UnsupportedOperationException since not appropriate here.
+	 * */
+	public FSBCharacterBlockEnumeration(char[] ch, int start, int length)
+	{ throw new java.lang.UnsupportedOperationException("Inappropriate ctor for this subclass"); 
+	}
+  		
+	/** @return true if another character block can be accessed by calling
+	 * nextElement()
+	 */
+	public boolean hasMoreElements()
+  	{ 
+  		return e_toBeDelivered > 0; 
+  	}
+  	
+  	/** Advance to the next character block. 
+	 * 
+	 * @returns either this CharacterBlockEnumeration object (as a
+	 * transient accessor to the "element") or null if no more elements are available.
+	 * This is a bit of a kluge, but it allows us to claim that we
+	 * implement the Java Enumeration interface if we want to do so, and
+	 * it seems to be as good or bad as any other return value.
+	 * */
+	public Object nextElement()
+	{
+		// Set up to display next chunk		
+  		_chars=m_array[++e_chunk];
+ 		_start=0;
+ 		_length=(m_chunkSize<=e_toBeDelivered) ? m_chunkSize : e_toBeDelivered;
+ 		// and decrement what's left to go
+ 		e_toBeDelivered -= _length;
+ 		
+ 		return (e_toBeDelivered>0) ? this : null;
+  	}  
   }
 }
