@@ -101,7 +101,7 @@ public interface Result {
      * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
      */
     public static final String PI_ENABLE_OUTPUT_ESCAPING =
-        "javax.xml.transform.disable-output-escaping";
+        "javax.xml.transform.enable-output-escaping";
 
     /**
      * Set the system identifier for this Result.
