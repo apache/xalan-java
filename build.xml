@@ -111,6 +111,21 @@ Copyright:
   <property name="dist.file" value="${name}-j_${version}"/><!-- GUMP: actual path/name of dist target .tar.gz/.zip-->
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   
+  <!-- xml-commons and xml-apis.jar information -->
+  <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-src.tar.gz"/>
+  <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-src.tar"/>
+  <property name="build.xml-apis.jar" value="${build.dir}/xml-apis.jar"/>
+
+  <!-- Set of files in the xml-commons that go in xml-apis.jar -->
+  <patternset id="api-patternset">
+    <!-- Should be DOM L2 -->
+    <include name="org/w3c/dom/"/>
+    <!-- Should be SAX 2.0 -->
+    <include name="org/xml/sax/"/>
+    <!-- Should be JAXP 1.1.x -->
+    <include name="javax/xml/"/>
+  </patternset>
+
   <!-- Xalan-J1 compatability stuff.  -->
   <property name="compat.jar" value="xalanj1compat.jar"/>
   <property name="compat.src.dir" value="./compat_src"/>
@@ -151,30 +166,6 @@ Copyright:
     <pathelement path="${sun.boot.class.path}" />
   </path>
 
-  <!-- Points to tree containing common XML APIs shared between various
-       Apache XML projects.  The base directory refers to the sub directory
-       that contains the build.xml file that can be used to build the
-       xml-commons jar file.  Note that you *can* rebuild Xalan from the 
-       local copy of sources that are checked in directly to xml-xalan, 
-       (this is for convenience of developers who don't want to 
-       also checkout xml-commons)
-       but you should not ship a public distribution build this way.
-  -->
-  <property name="xml-commons.basedir"
-    value="../../xml-commons/java/external"/>
-
-  <!-- Patternset to specify which xml-commons java files belong to the API -->
-  <patternset id="api-patternset">
-    <!-- Include DOM L2 core, ranges, traversal, which is what xalan had previously -->
-    <include name="org/w3c/dom/*"/>
-    <include name="org/w3c/dom/ranges/*"/>
-    <include name="org/w3c/dom/traversal/*"/>
-    <!-- Include SAX 2.0 -->
-    <include name="org/xml/sax/**"/>
-    <!-- Include only transformation APIs from JAXP -->
-    <include name="javax/xml/transform/**"/>
-  </patternset>
-
   <!-- =================================================================== -->
   <!-- Creates output build directories and doc prerequistes               -->
   <!-- =================================================================== -->
@@ -189,10 +180,6 @@ Copyright:
     <available file="${test.relpath}" property="tests-available" />
     <available property="xerces.present" 
       classname="org.apache.xerces.parsers.SAXParser"/>
-
-    <available file="${xml-commons.basedir}/build.xml"
-      property="xml-commons.present"/>
-      <echo message="xml-commons code is: ${xml-commons.present}"/>
   </target>
 
   <!-- Must depend on jar since we use Xalan to process xml files -->
@@ -225,47 +212,10 @@ Copyright:
     </java>
   </target>
 
-
-  <!-- =================================================================== -->
-  <!-- Copy one set of DOM/SAX/JAXP files for compilation use              -->
-  <!-- =================================================================== -->
-  <target name="copy-commons-src-from-xml-commons" if="xml-commons.present"
-    depends="prepare">
-    <echo message="*** Copying API src from ${xml-commons.basedir}"/>
-    <copy todir="${build.api.src}" includeemptydirs="no">
-      <fileset dir="${xml-commons.basedir}/src">
-        <patternset refid="api-patternset"/>
-      </fileset>
-    </copy>
-  </target>
-
-  <target name="copy-commons-src-from-local" unless="xml-commons.present"
-    depends="prepare">
-    <echo message="*** Copying API src from local tree..."/>
-    <echo message="*** WARNING: you should not ship a dist from this build!"/>
-    <!-- Before shipping a public distribution of xalan on 
-         xml.apache.org, you really must checkout xml-commons 
-         and use those DOM/SAX/JAXP sources!
-    -->
-    <copy todir="${build.api.src}" includeemptydirs="no">
-      <fileset dir="src">
-        <patternset refid="api-patternset"/>
-      </fileset>
-    </copy>
-  </target>
-
-  <!-- This target copies either the 'official' set of DOM/SAX/JAXP 
-       files from the sister xml-commons directory, or the 'fallback' 
-       set of DOM/SAX/JAXP files that are checked into xml-xalan as 
-       a convenience for developers.
-  -->
-  <target name="copy-commons-src"
-    depends="copy-commons-src-from-xml-commons,copy-commons-src-from-local"/>
-
   <!-- =================================================================== -->
   <!-- Compile entire source tree - except Xalan-J 1 compatability classes -->
   <!-- =================================================================== -->
-  <target name="compile" depends="prepare,copy-commons-src"
+  <target name="compile" depends="prepare"
     description="Compile Xalan-J 2.x (skips 1.x compat and XSLTC)" >
     <echo message="compile entire source tree and copy .properties and .res files to build tree."/>
     <!-- Note: split compile into separate javac steps to avoid JDK 1.1.8 bug reported at:
@@ -273,12 +223,14 @@ Copyright:
          which causes an error like:
          [javac] E:\builds\xml-xalan\java\src\org\apache\xalan\templates\ElemTemplate.java:108: Cyclic class inheritance or scoping.
     --> 
-    <!-- Compile our temp copy of DOM/SAX/JAXP xml-commons classes -->
-    <javac srcdir="${build.api.src}"
+    <!-- Compile the xml-commons stuff, after expanding sources -->
+    <gunzip src="${xml-commons-srcs.tar.gz}" dest="${build.dir}" />
+    <untar src="${xml-commons-srcs.tar}" dest="${src.dir}" /><!-- Note this is into the src area... -->
+    <delete file="${xml-commons-srcs.tar}"/>
+    <javac srcdir="${src.dir}"
            destdir="${build.classes}"
            debug="${build.debug}"
-           optimize="${optimize}"
-           deprecation="off">
+           optimize="${optimize}">
       <bootclasspath refid="xslt.boot.class.path" />
       <classpath>
         <pathelement location="${build.classes}"/>
@@ -398,14 +350,23 @@ Copyright:
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile"
-    description="Jar up xalan.jar" >
+    description="Jar up xalan.jar, plus the xml-apis.jar" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     <jar jarfile="${build.xalan.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
+        <exclude name="org/w3c/dom/"/>
+        <exclude name="org/xml/sax/"/>
+        <exclude name="javax/xml/"/>
         <exclude name="${xsltc.reldir}/**/*" />
-        <exclude name="javax/xml/parsers/**" />
+      </patternset>
+    </jar>
+    <jar jarfile="${build.xml-apis.jar}" basedir="${build.classes}" >
+      <patternset><!-- relative to jar/@basedir -->
+        <include name="org/w3c/dom/"/>
+        <include name="org/xml/sax/"/>
+        <include name="javax/xml/"/>
       </patternset>
     </jar>
   </target>
