@@ -81,7 +81,7 @@ public final class MultiDOM implements DOM {
     private static final int INITIAL_SIZE = 4;
     private static final int CLR = 0x00FFFFFF;
     private static final int SET = 0xFF000000;
-    
+
     private DOM[] _adapters;
     private int _free;
     private int _size;
@@ -94,19 +94,19 @@ public final class MultiDOM implements DOM {
 
 	private int _mask;
 	private NodeIterator _source = null;
-	
+
 	public AxisIterator(final int axis, final int type) {
 	    _axis = axis;
 	    _type = type;
 	}
-	
+
 	public int next() {
 	    if (_source == null) return(END);
 	    if (_mask == 0) return _source.next();
 	    final int node = _source.next();
 	    return node != END ? (node | _mask) : END;
 	}
-	
+
 	public void setRestartable(boolean flag) {
 	    _source.setRestartable(flag);
 	}
@@ -137,27 +137,27 @@ public final class MultiDOM implements DOM {
 	    if (_source != null) _source.reset();
 	    return this;
 	}
-    
+
 	public int getLast() {
 	    return _source.getLast();
 	}
-    
+
 	public int getPosition() {
 	    return _source.getPosition();
 	}
-    
+
 	public boolean isReverse() {
 	    return Axis.isReverse[_axis];
 	}
-    
+
 	public void setMark() {
 	    _source.setMark();
 	}
-    
+
 	public void gotoMark() {
 	    _source.gotoMark();
 	}
-    
+
 	public NodeIterator cloneIterator() {
 	    final AxisIterator clone = new AxisIterator(_axis, _type);
 	    clone._source = _source.cloneIterator();
@@ -192,7 +192,7 @@ public final class MultiDOM implements DOM {
 	public boolean isReverse() {
 	    return _isReverse;
 	}
-    
+
 	public NodeIterator cloneIterator() {
 	    try {
 		NodeValueIterator clone = (NodeValueIterator)super.clone();
@@ -234,7 +234,7 @@ public final class MultiDOM implements DOM {
 
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		_source.setStartNode(_startNode = node); 
+		_source.setStartNode(_startNode = node);
 		return resetPosition();
 	    }
 	    return this;
@@ -247,7 +247,7 @@ public final class MultiDOM implements DOM {
 	public void gotoMark() {
 	    _source.gotoMark();
 	}
-    }                       
+    }
 
     public MultiDOM(DOM main) {
 	_size = INITIAL_SIZE;
@@ -277,12 +277,12 @@ public final class MultiDOM implements DOM {
 	// Store reference to document (URI) in hashtable
 	String uri = dom.getDocumentURI(0);
 	_documents.put(uri, new Integer(domNo));
-	
+
 	// Store mask in DOMAdapter
 	dom.setMultiDOMMask(domNo << 24);
 	return (domNo << 24);
     }
-    
+
     public int getDocumentMask(String uri) {
 	Integer domIdx = (Integer)_documents.get(uri);
 	if (domIdx == null)
@@ -291,36 +291,32 @@ public final class MultiDOM implements DOM {
 	    return((domIdx.intValue() << 24));
     }
 
-    /** 
-      * Returns singleton iterator containg the document root 
+    /**
+      * Returns singleton iterator containg the document root
       */
     public NodeIterator getIterator() {
 	// main source document @ 0
 	return _adapters[0].getIterator();
     }
-    
+
     public String getStringValue() {
 	return _adapters[0].getStringValue();
     }
 
-    public String getTreeString() {
-	return _adapters[0].getTreeString();
-    }
-    
     public NodeIterator getChildren(final int node) {
 	return (node & SET) == 0
 	    ? _adapters[0].getChildren(node)
 	    : getAxisIterator(Axis.CHILD).setStartNode(node);
     }
-    
+
     public NodeIterator getTypedChildren(final int type) {
 	return new AxisIterator(Axis.CHILD, type);
     }
-    
+
     public NodeIterator getAxisIterator(final int axis) {
 	return new AxisIterator(axis, NO_TYPE);
     }
-    
+
     public NodeIterator getTypedAxisIterator(final int axis, final int type) {
 	return new AxisIterator(axis, type);
     }
@@ -336,7 +332,7 @@ public final class MultiDOM implements DOM {
 
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
 	NodeIterator iterator = _adapters[0].getNamespaceAxisIterator(axis,ns);
-	return(iterator);	
+	return(iterator);
     }
 
     public NodeIterator orderNodes(NodeIterator source, int node) {
@@ -350,15 +346,15 @@ public final class MultiDOM implements DOM {
     public int getNamespaceType(final int node) {
 	return _adapters[node>>>24].getNamespaceType(node & CLR);
     }
-    
+
     public int getParent(final int node) {
 	return _adapters[node>>>24].getParent(node & CLR) | node&SET;
     }
-    
+
     public int getAttributeNode(final int type, final int el) {
 	return _adapters[el>>>24].getAttributeNode(type, el&CLR) | el&SET;
     }
-    
+
     public String getNodeName(final int node) {
 	return _adapters[node>>>24].getNodeName(node & CLR);
     }
@@ -366,16 +362,16 @@ public final class MultiDOM implements DOM {
     public String getNamespaceName(final int node) {
 	return _adapters[node>>>24].getNamespaceName(node & CLR);
     }
-    
+
     public String getNodeValue(final int node) {
 	return _adapters[node>>>24].getNodeValue(node & CLR);
     }
-    
+
     public void copy(final int node, TransletOutputHandler handler)
 	throws TransletException {
 	_adapters[node>>>24].copy(node & CLR, handler);
     }
-    
+
     public void copy(NodeIterator nodes, TransletOutputHandler handler)
 	throws TransletException {
 	int node;
@@ -389,7 +385,7 @@ public final class MultiDOM implements DOM {
 	throws TransletException {
 	return _adapters[node>>>24].shallowCopy(node & CLR, handler);
     }
-    
+
     public boolean lessThan(final int node1, final int node2) {
 	final int dom1 = node1>>>24;
 	final int dom2 = node2>>>24;
@@ -397,7 +393,7 @@ public final class MultiDOM implements DOM {
 	    ? _adapters[dom1].lessThan(node1 & CLR, node2 & CLR)
 	    : dom1 < dom2;
     }
-    
+
     public void characters(final int textNode, TransletOutputHandler handler)
 	throws TransletException {
 	    _adapters[textNode>>>24].characters(textNode & CLR, handler);
@@ -450,7 +446,7 @@ public final class MultiDOM implements DOM {
 	return(_adapters[node>>>24].isAttribute(node & CLR));
     }
 
-    public String lookupNamespace(int node, String prefix) 
+    public String lookupNamespace(int node, String prefix)
 	throws TransletException
     {
 	return _adapters[node>>>24].lookupNamespace(node & CLR, prefix);

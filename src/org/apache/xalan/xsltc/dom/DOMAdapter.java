@@ -87,10 +87,10 @@ public final class DOMAdapter implements DOM {
     private StripFilter _filter = null;
 
     private int _multiDOMMask;
-    
+
     public DOMAdapter(DOMImpl dom,
 		      String[] namesArray,
-		      String[] namespaceArray) 
+		      String[] namespaceArray)
     {
 	_domImpl = dom;
 	_namesArray = namesArray;
@@ -130,21 +130,17 @@ public final class DOMAdapter implements DOM {
 	return _NSreverse;
     }
 
-    /** 
-      * Returns singleton iterator containg the document root 
+    /**
+      * Returns singleton iterator containg the document root
       */
     public NodeIterator getIterator() {
 	return _domImpl.getIterator();
     }
-    
+
     public String getStringValue() {
 	return _domImpl.getStringValue();
     }
 
-    public String getTreeString() {
-	return _domImpl.getTreeString();
-    }
-    
     public int getMultiDOMMask() {
 	return _multiDOMMask;
     }
@@ -159,7 +155,7 @@ public final class DOMAdapter implements DOM {
 	    return iterator.setStartNode(node);
 	}
 	else {
-	    iterator = _domImpl.strippingIterator(iterator, getMapping(), 
+	    iterator = _domImpl.strippingIterator(iterator, getMapping(),
 		_filter);
 	    return iterator.setStartNode(node);
 	}
@@ -168,7 +164,7 @@ public final class DOMAdapter implements DOM {
     public void setFilter(StripFilter filter) {
 	_filter = filter;
     }
-    
+
     public NodeIterator getTypedChildren(final int type) {
 	final short[] reverse = getReverse();
 
@@ -190,7 +186,7 @@ public final class DOMAdapter implements DOM {
 	}
 	return iterator;
     }
-    
+
     public NodeIterator getTypedAxisIterator(final int axis, final int type) {
 	NodeIterator iterator;
 	final short[] reverse = getReverse();
@@ -204,7 +200,7 @@ public final class DOMAdapter implements DOM {
 	else {
 	    iterator = _domImpl.getTypedAxisIterator(axis, reverse[type]);
 	}
-	
+
 	if (reverse[type] == DOM.TEXT && _filter != null) {
 	    iterator = _domImpl.strippingIterator(iterator, getMapping(), _filter);
 	}
@@ -216,7 +212,7 @@ public final class DOMAdapter implements DOM {
     }
 
     public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
-					     String value, boolean op) 
+					     String value, boolean op)
     {
 	return _domImpl.getNodeValueIterator(iterator, type, value, op);
     }
@@ -224,7 +220,7 @@ public final class DOMAdapter implements DOM {
     public NodeIterator orderNodes(NodeIterator source, int node) {
 	return _domImpl.orderNodes(source, node);
     }
-        
+
     public int getType(final int node) {
 	return getMapping()[_domImpl.getType(node)];
     }
@@ -232,7 +228,7 @@ public final class DOMAdapter implements DOM {
     public int getNamespaceType(final int node) {
 	return getNSMapping()[_domImpl.getNamespaceType(node)];
     }
-    
+
     public int getParent(final int node) {
 	return _domImpl.getParent(node);
     }
@@ -240,7 +236,7 @@ public final class DOMAdapter implements DOM {
     public int getAttributeNode(final int type, final int element) {
 	return _domImpl.getAttributeNode(getReverse()[type], element);
     }
-    
+
     public String getNodeName(final int node) {
 	return _domImpl.getNodeName(node);
     }
@@ -248,16 +244,16 @@ public final class DOMAdapter implements DOM {
     public String getNamespaceName(final int node) {
 	return _domImpl.getNamespaceName(node);
     }
-    
+
     public String getNodeValue(final int node) {
 	return _domImpl.getNodeValue(node);
     }
-    
+
     public void copy(final int node, TransletOutputHandler handler)
 	throws TransletException {
 	    _domImpl.copy(node, handler);
     }
-    
+
     public void copy(NodeIterator nodes, TransletOutputHandler handler)
 	throws TransletException {
 	    _domImpl.copy(nodes, handler);
@@ -267,11 +263,11 @@ public final class DOMAdapter implements DOM {
 	throws TransletException {
 	    return _domImpl.shallowCopy(node, handler);
     }
-    
+
     public boolean lessThan(final int node1, final int node2) {
 	return _domImpl.lessThan(node1, node2);
     }
-    
+
     public void characters(final int textNode, TransletOutputHandler handler)
 	throws TransletException {
 	_domImpl.characters(textNode, handler);
@@ -321,8 +317,8 @@ public final class DOMAdapter implements DOM {
 	return(_domImpl.isAttribute(node));
     }
 
-    public String lookupNamespace(int node, String prefix) 
-	throws TransletException 
+    public String lookupNamespace(int node, String prefix)
+	throws TransletException
     {
 	return _domImpl.lookupNamespace(node, prefix);
     }

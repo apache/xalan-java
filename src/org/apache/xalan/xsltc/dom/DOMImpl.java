@@ -147,7 +147,7 @@ public final class DOMImpl implements DOM, Externalizable {
     private BitArray  _whitespace; // takes xml:space into acc.
 
     // Tracks which textnodes are not escaped
-    private BitArray  _dontEscape = null; 
+    private BitArray  _dontEscape = null;
 
     // The URI to this document
     private String    _documentURI = null;
@@ -178,7 +178,7 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public String getDocumentURI() {
 	synchronized (getClass()) {	// synchornize access to static
-	    return (_documentURI != null) ? _documentURI : 
+	    return (_documentURI != null) ? _documentURI :
 					    "rtf" + _documentURIIndex++;
 	}
     }
@@ -192,23 +192,23 @@ public final class DOMImpl implements DOM, Externalizable {
     }
 
     /**
-     * Lookup a namespace URI from a prefix starting at node. This method 
-     * is used in the execution of xsl:element when the prefix is not known 
+     * Lookup a namespace URI from a prefix starting at node. This method
+     * is used in the execution of xsl:element when the prefix is not known
      * at compile time.
      */
-    public String lookupNamespace(int node, String prefix) 
-	throws TransletException 
+    public String lookupNamespace(int node, String prefix)
+	throws TransletException
     {
 	int anode, nsnode;
 	final AncestorIterator ancestors = new AncestorIterator();
-	
+
 	if (isElement(node)) {
 	    ancestors.includeSelf();
 	}
 
 	ancestors.setStartNode(node);
 	while ((anode = ancestors.next()) != NULL) {
-	    final NodeIterator namespaces = 
+	    final NodeIterator namespaces =
 		new NamespaceIterator().setStartNode(anode);
 
 	    while ((nsnode = namespaces.next()) != NULL) {
@@ -339,41 +339,41 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NodeListImpl(int[] nodes) {
 	    _nodes = nodes;
 	}
-                  
+
 	public NodeListImpl(NodeIterator iter) {
 	    final IntegerArray list = new IntegerArray();
 	    int node;
 	    while ((node = iter.next()) != NodeIterator.END) {
 		list.add(node);
-	    }         
-	    _nodes = list.toIntArray();         
+	    }
+	    _nodes = list.toIntArray();
 	}
 
 	public int getLength() {
 	    return _nodes.length;
 	}
-                  
+
 	public Node item(int index) {
 	    return makeNode(_nodes[index]);
 	}
     }
 
-                  
+
     /**************************************************************
      * Implementation of org.w3c.dom.NamedNodeMap
      */
     private final class NamedNodeMapImpl implements NamedNodeMap {
 
 	private final int[] _nodes;
-		
+
 	public NamedNodeMapImpl(int[] nodes) {
 	    _nodes = nodes;
 	}
-		
+
 	public int getLength() {
 	    return _nodes.length;
 	}
-		
+
 	public Node getNamedItem(String name) {
 	    for (int i = 0; i < _nodes.length; i++) {
 		if (name.equals(getNodeName(_nodes[i]))) {
@@ -382,15 +382,15 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return null;
 	}
-		
+
 	public Node item(int index) {
 	    return makeNode(_nodes[index]);
 	}
-		
+
 	public Node removeNamedItem(String name) {
 	    throw new NotSupportedException();
 	}
-		
+
 	public Node setNamedItem(Node node) {
 	    throw new NotSupportedException();
 	}
@@ -425,35 +425,35 @@ public final class DOMImpl implements DOM, Externalizable {
 	    switch (_type[_index]) {
 	    case ROOT:
 		return Node.DOCUMENT_NODE;
-		
+
 	    case TEXT:
 		return Node.TEXT_NODE;
-		
+
 	    case PROCESSING_INSTRUCTION:
 		return Node.PROCESSING_INSTRUCTION_NODE;
-		
+
 	    case COMMENT:
 		return Node.COMMENT_NODE;
-		
+
 	    default:
 		return _index < _firstAttributeNode
 		    ? Node.ELEMENT_NODE : Node.ATTRIBUTE_NODE;
 	    }
 	}
-		
+
 	public Node getParentNode() {
 	    final int parent = getParent(_index);
 	    return parent > NULL ? makeNode(parent) : null;
 	}
-		
+
 	public Node appendChild(Node node) throws DOMException {
 	    throw new NotSupportedException();
 	}
-		
+
 	public Node cloneNode(boolean deep) {
 	    throw new NotSupportedException();
 	}
-		
+
 	public NamedNodeMap getAttributes() {
 	    if (getNodeType() == Node.ELEMENT_NODE) {
 		int attribute = _lengthOrAttr[_index];
@@ -492,24 +492,24 @@ public final class DOMImpl implements DOM, Externalizable {
 		return getEmptyNodeList();
 	    }
 	}
-		
+
 	public Node getFirstChild() {
 	    return hasChildNodes()
 		? makeNode(_offsetOrChild[_index])
 		: null;
 	}
-		
+
 	public Node getLastChild() {
 	    return hasChildNodes()
 		? makeNode(lastChild(_index))
 		: null;
 	}
-		
+
 	public Node getNextSibling() {
 	    final int next = _nextSibling[_index];
 	    return next != 0 ? makeNode(next) : null;
 	}
-		
+
 	public String getNodeName() {
 	    switch (_type[_index]) {
 	    case ROOT:
@@ -524,15 +524,15 @@ public final class DOMImpl implements DOM, Externalizable {
 		return DOMImpl.this.getNodeName(_index);
 	    }
 	}
-		
+
 	public String getNodeValue() throws DOMException {
 	    return DOMImpl.this.getNodeValue(_index);
 	}
-		
+
 	public Document getOwnerDocument() {
 	    return null;
 	}
-		
+
 	//??? how does it work with attributes
 	public Node getPreviousSibling() {
 	    int node = _parent[_index];
@@ -548,7 +548,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return null;
 	}
-		
+
 	public boolean hasChildNodes() {
 	    switch (getNodeType()) {
 	    case Node.ELEMENT_NODE:
@@ -559,19 +559,19 @@ public final class DOMImpl implements DOM, Externalizable {
 		return false;
 	    }
 	}
-		
+
 	public Node insertBefore(Node n1, Node n2) throws DOMException {
 	    throw new NotSupportedException();
 	}
-		
+
 	public Node removeChild(Node n) throws DOMException {
 	    throw new NotSupportedException();
 	}
-		
+
 	public Node replaceChild(Node n1, Node n2) throws DOMException {
 	    throw new NotSupportedException();
 	}
-		
+
 	public void setNodeValue(String s) throws DOMException {
 	    throw new NotSupportedException();
 	}
@@ -633,11 +633,11 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     private final class TypeFilter implements Filter {
 	private final int _nodeType;
-                  
+
 	public TypeFilter(int type) {
 	    _nodeType = type;
 	}
-                  
+
 	public boolean test(int node) {
 	    return _type[node] == _nodeType;
 	}
@@ -669,7 +669,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		    _currentChild = -1;
 		}
 		else {
-		    _currentChild = hasChildren(node) ? _offsetOrChild[node] 
+		    _currentChild = hasChildren(node) ? _offsetOrChild[node]
 			: END;
 		}
 		return resetPosition();
@@ -682,7 +682,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (_includeSelf) {
 		if (node == -1) {
 		    node = _startNode;
-		    _currentChild = hasChildren(node) ? _offsetOrChild[node] 
+		    _currentChild = hasChildren(node) ? _offsetOrChild[node]
 			: END;
 
 		    // IMPORTANT: The start node (parent of all children) is
@@ -727,7 +727,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	// candidate parent node
 	private int _node;
 	private int _nodeType = -1;
-         
+
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		_node = _parent[_startNode = node];
@@ -735,7 +735,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return this;
 	}
-             
+
 	public NodeIterator setNodeType(final int type) {
 	    _nodeType = type;
 	    return this;
@@ -771,7 +771,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int _nodeType;
 	// node to consider next
 	private int _currentChild;
-         
+
 	public TypedChildrenIterator(int nodeType) {
 	    _nodeType = nodeType;
 	}
@@ -802,7 +802,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public NodeIterator reset() {
-	    _currentChild = hasChildren(_startNode) ? 
+	    _currentChild = hasChildren(_startNode) ?
 			    _offsetOrChild[_startNode] : END;
 	    return resetPosition();
 	}
@@ -840,7 +840,7 @@ public final class DOMImpl implements DOM, Externalizable {
     private final class NamespaceChildrenIterator extends NodeIteratorBase {
 	private final int _nsType;
 	private int _currentChild;
-         
+
 	public NamespaceChildrenIterator(final int type) {
 	    _nsType = type;
 	}
@@ -856,7 +856,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public int next() {
-	    for (int node = _currentChild; node != END; 
+	    for (int node = _currentChild; node != END;
 		 node = _nextSibling[node]) {
 		if (getNamespaceType(node) == _nsType) {
 		    _currentChild = _nextSibling[node];
@@ -884,12 +884,12 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	private final int _nsType;
 	private int _attribute;
-         
+
 	public NamespaceAttributeIterator(int nsType) {
 	    super();
 	    _nsType = nsType;
 	}
-                  
+
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		for (node = _lengthOrAttr[_startNode = node];
@@ -900,14 +900,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return this;
 	}
-                  
+
 	public int next() {
 	    final int save = _attribute;
 	    int node = save;
 	    do {
 		_attribute = _nextSibling[_attribute];
 	    } while(_type[_attribute] == NAMESPACE);
-	    
+
 	    for (node = _lengthOrAttr[_startNode = node];
 		 node != NULL && getNamespaceType(node) != _nsType;
 		 node = _nextSibling[node]);
@@ -923,7 +923,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public void gotoMark() {
 	    _attribute = _markedNode;
 	}
-         
+
     } // end of TypedChildrenIterator
 
 
@@ -932,7 +932,7 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     private class FollowingSiblingIterator extends NodeIteratorBase {
 	private int _node;
-         
+
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		if (node >= _firstAttributeNode) node = NULL;
@@ -941,7 +941,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return this;
 	}
-                  
+
 	public int next() {
 	    return returnNode(_node = _nextSibling[_node]);
 	}
@@ -966,7 +966,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public TypedFollowingSiblingIterator(int type) {
 	    _nodeType = type;
 	}
-         
+
 	public int next() {
 	    int node;
 	    while ((node = super.next()) != NULL) {
@@ -984,7 +984,7 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     private final class AttributeIterator extends NodeIteratorBase {
 	private int _attribute;
-         
+
 	// assumes caller will pass element nodes
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
@@ -1002,7 +1002,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return this;
 	}
-                  
+
 	public int next() {
 	    final int node = _attribute;
 	    _attribute = _nextSibling[_attribute];
@@ -1025,11 +1025,11 @@ public final class DOMImpl implements DOM, Externalizable {
     private final class TypedAttributeIterator extends NodeIteratorBase {
 	private final int _nodeType;
 	private int _attribute;
-         
+
 	public TypedAttributeIterator(int nodeType) {
 	    _nodeType = nodeType;
 	}
-                  
+
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		// If not an element node, then set iterator at END
@@ -1055,7 +1055,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _attribute = node;
 	    return resetPosition();
 	}
-                  
+
 	public int next() {
 	    final int node = _attribute;
 	    _attribute = NULL;         // singleton iterator
@@ -1076,10 +1076,10 @@ public final class DOMImpl implements DOM, Externalizable {
      * Iterator that returns namespace nodes
      */
     private class NamespaceIterator extends NodeIteratorBase {
-	
+
 	protected int _node;
 	protected int _ns;
-         
+
 	// assumes caller will pass element nodes
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
@@ -1097,7 +1097,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return this;
 	}
-                  
+
 	public int next() {
 	    while (_node != NULL) {
 		final int node = _ns;
@@ -1124,7 +1124,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public void gotoMark() {
 	    _ns = _markedNode;
 	}
-	
+
     } // end of NamespaceIterator
 
 
@@ -1155,7 +1155,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return DOM.NULL;
 	}
-         
+
     } // end of AttributeIterator
 
 
@@ -1163,18 +1163,18 @@ public final class DOMImpl implements DOM, Externalizable {
      * Iterator that returns preceding siblings of a given node
      */
     private class PrecedingSiblingIterator extends NodeIteratorBase {
- 
+
 	private int _node;
 	private int _sibling;
 
 	public boolean isReverse() {
 	    return true;
 	}
-         
+
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		_node = node;
-		_sibling = _startNode = (node >= _firstAttributeNode) ? 
+		_sibling = _startNode = (node >= _firstAttributeNode) ?
 		    NULL : _offsetOrChild[_parent[node]];
 		_last = -1;
 		return resetPosition();
@@ -1218,14 +1218,14 @@ public final class DOMImpl implements DOM, Externalizable {
      * a given node
      */
     private final class TypedPrecedingSiblingIterator
-	extends PrecedingSiblingIterator 
+	extends PrecedingSiblingIterator
     {
 	private final int _nodeType;
 
 	public TypedPrecedingSiblingIterator(int type) {
 	    _nodeType = type;
 	}
-         
+
 	public int next() {
 	    int node;
 	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
@@ -1252,10 +1252,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	public boolean isReverse() {
 	    return true;
 	}
-         
+
 	public NodeIterator cloneIterator() {
 	    try {
-		final PrecedingIterator clone = 
+		final PrecedingIterator clone =
 		    (PrecedingIterator) super.clone();
 		clone.setRestartable(false);
 		clone._ancestorOrSelf = (IntegerArray) _ancestorOrSelf.clone();
@@ -1267,7 +1267,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		return null;
 	    }
 	}
-         
+
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		_ancestorOrSelf.clear();
@@ -1281,7 +1281,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 		_index = _ancestorOrSelf.cardinality() - 1;
 		_node = _ancestorOrSelf.at(_index) + 1;
-		_ancestor = (_index > 0) ? _ancestorOrSelf.at(--_index) 
+		_ancestor = (_index > 0) ? _ancestorOrSelf.at(--_index)
 		    : ROOTNODE;
 
 		_last = -1;
@@ -1290,7 +1290,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	    return this;
 	}
-	    
+
 	public int next() {
 	    while (true) {
 		if (_node < _ancestor) {
@@ -1334,11 +1334,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	public TypedPrecedingIterator(int type) {
 	    _nodeType = type;
 	}
-         
+
 	public int next() {
 	    int node;
 	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
-		_position--; 
+		_position--;
 	    }
 	    return node;
 	}
@@ -1352,7 +1352,7 @@ public final class DOMImpl implements DOM, Externalizable {
     private class FollowingIterator extends NodeIteratorBase {
 	//  _node precedes search for next
 	protected int _node;
-                  
+
 	public NodeIterator setStartNode(int node) {
 	    int skip = 0;
 	    if (_isRestartable) {
@@ -1374,7 +1374,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return this;
 	}
-                      
+
 	public int next() {
 	    final int node = _node + 1;
 	    return node < _firstAttributeNode ? returnNode(_node = node) : NULL;
@@ -1399,7 +1399,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public TypedFollowingIterator(int type) {
 	    _nodeType = type;
 	}
-                  
+
 	public int next() {
 	    int node;
 	    while ((node = super.next()) != NULL) {
@@ -1416,12 +1416,12 @@ public final class DOMImpl implements DOM, Externalizable {
      * The nodes are returned in reverse document order, so you
      * get the context node (or its parent node) first, and the
      * root node in the very, very end.
-     */         
+     */
     private class AncestorIterator extends NodeIteratorBase {
 
 	protected int _index;
 	protected IntegerArray _cache = new IntegerArray();
-         
+
 	public NodeIterator cloneIterator() {
 	    try {
 		final AncestorIterator clone = (AncestorIterator)super.clone();
@@ -1435,7 +1435,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		return null;
 	    }
 	}
-                  
+
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		_cache.clear();
@@ -1466,9 +1466,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _index = _startNode;
 	    return resetPosition();
 	}
-                  
+
 	public int next() {
-	    return (_index >= 0) ? 
+	    return (_index >= 0) ?
 		returnNode(_cache.at(_index--)) : END;
 	}
 
@@ -1484,11 +1484,11 @@ public final class DOMImpl implements DOM, Externalizable {
 
     /**************************************************************
      * Typed iterator that returns the ancestors of a given node.
-     */             
+     */
     private final class TypedAncestorIterator extends AncestorIterator {
 
 	private final int _nodeType;
-                  
+
 	public TypedAncestorIterator(int type) {
 	    _nodeType = type;
 	}
@@ -1517,7 +1517,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
     /**************************************************************
      * Iterator that returns the descendants of a given node.
-     */             
+     */
     private class DescendantIterator extends NodeIteratorBase {
 	//  _node precedes search for next
 	protected int _node;
@@ -1555,7 +1555,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		if (_type[_node] > TEXT) {
 		    return(returnNode(_node));
 		}
-	    } 
+	    }
 	    return(NULL);
 	}
 
@@ -1572,14 +1572,14 @@ public final class DOMImpl implements DOM, Externalizable {
 
     /**************************************************************
      * Typed iterator that returns the descendants of a given node.
-     */             
+     */
     private final class TypedDescendantIterator extends DescendantIterator {
 	private final int _nodeType;
-                  
+
 	public TypedDescendantIterator(int nodeType) {
 	    _nodeType = nodeType;
 	}
-                  
+
 	public int next() {
 	    final int limit = _limit;
 	    final int type = _nodeType;
@@ -1597,7 +1597,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
     /**************************************************************
      * Iterator that returns the descendants of a given node.
-     */             
+     */
     private class NthDescendantIterator extends DescendantIterator {
 
 	final NodeIterator _source;
@@ -1639,7 +1639,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		    } while ((pos<_pos) && (child = _nextSibling[child]) != 0);
 		}
 
-		if (node == child) return node; 
+		if (node == child) return node;
 	    }
 	    return(END);
 	}
@@ -1655,14 +1655,14 @@ public final class DOMImpl implements DOM, Externalizable {
 
     /**************************************************************
      * Iterator that returns a given node only if it is of a given type.
-     */             
+     */
     private final class TypedSingletonIterator extends SingletonIterator {
 	private final int _nodeType;
 
 	public TypedSingletonIterator(int nodeType) {
 	    _nodeType = nodeType;
 	}
-         
+
 	public int next() {
 	    final int result = super.next();
 	    return _type[result] == _nodeType ? result : NULL;
@@ -1675,7 +1675,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * nodes from the underlaying iterator and return all but
      * whitespace text nodes. The iterator needs to be a supplied
      * with a filter that tells it what nodes are WS text.
-     */             
+     */
     private final class StrippingIterator extends NodeIteratorBase {
 
 	private static final int USE_PREDICATE  = 0;
@@ -1721,7 +1721,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    //return resetPosition();
 	    return(this);
 	}
-    
+
 	public int next() {
 	    int node;
 	    while ((node = _source.next()) != END) {
@@ -1821,7 +1821,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public boolean isReverse() {
 	    return _isReverse;
 	}
-    
+
 	public void setRestartable(boolean isRestartable) {
 	    _isRestartable = isRestartable;
 	    _source.setRestartable(isRestartable);
@@ -1840,7 +1840,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		return null;
 	    }
 	}
-    
+
 	public NodeIterator reset() {
 	    _source.reset();
 	    return resetPosition();
@@ -1863,7 +1863,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		_source.setStartNode(_startNode = node); 
+		_source.setStartNode(_startNode = node);
 		return resetPosition();
 	    }
 	    return this;
@@ -1878,7 +1878,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _source.gotoMark();
 	    _position = _pos;
 	}
-    }                       
+    }
 
     public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
 					     String value, boolean op) {
@@ -1928,13 +1928,13 @@ public final class DOMImpl implements DOM, Externalizable {
     public int getType(final int node) {
 	return (node >= _type.length) ? 0 : _type[node];
     }
-    
+
     /**
      * Returns the namespace type of a specific node
      */
     public int getNamespaceType(final int node) {
 	final int type = _type[node];
-	return (type >= NTYPES) ? _namespace[type-NTYPES] 
+	return (type >= NTYPES) ? _namespace[type-NTYPES]
 	    : 0; 	// default namespace
     }
 
@@ -1999,7 +1999,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	Integer type = (Integer)_types.get(name);
 	if (type == null) {
 	    // memorize default type
-	    _types.put(name, 
+	    _types.put(name,
 		type = (name.charAt(0) == '@') ? attributeInt : elementInt);
 	}
 	return type.intValue();
@@ -2169,7 +2169,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * These init sizes have been tuned for the average case. Do not
      * change these values unless you know exactly what you're doing.
      */
-    static private final int SMALL_TEXT_SIZE   = 1024; 
+    static private final int SMALL_TEXT_SIZE   = 1024;
     static private final int DEFAULT_INIT_SIZE = 1024;
     static private final int DEFAULT_TEXT_FACTOR = 10;
 
@@ -2178,10 +2178,10 @@ public final class DOMImpl implements DOM, Externalizable {
     }
 
     public DOMImpl(int size) {
-	initialize(size, size < 128 ? SMALL_TEXT_SIZE : 
+	initialize(size, size < 128 ? SMALL_TEXT_SIZE :
 	    size * DEFAULT_TEXT_FACTOR);
     }
-         
+
     private void initialize(int size, int textsize) {
 	_type          = new short[size];
 	_parent        = new int[size];
@@ -2317,7 +2317,7 @@ public final class DOMImpl implements DOM, Externalizable {
     public String getAttributeValue(final String name, final int element) {
 	return getAttributeValue(getGeneralizedType(name), element);
     }
-    
+
     /**
      * Returns true if the given element has any children
      */
@@ -2446,7 +2446,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    case Axis.PRECEDINGSIBLING:
 		return new TypedPrecedingSiblingIterator(type);
 	    case Axis.NAMESPACE:
-		return (type == ELEMENT) ?  
+		return (type == ELEMENT) ?
 		    (NodeIterator) new NamespaceIterator() :
 		    (NodeIterator) new TypedNamespaceIterator(type);
 	    default:
@@ -2534,7 +2534,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	copy(ROOTNODE, handler);
     }
 
-    /** 
+    /**
      * Performs a deep copy (ref. XSLs copy-of())
      *
      * TODO: Copy namespace declarations. Can't be done until we
@@ -2563,11 +2563,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	    boolean last = false;
 	    boolean escapeBit = false;
 
-	    if (_dontEscape != null) {	
+	    if (_dontEscape != null) {
 		escapeBit = _dontEscape.getBit(node);
 		if (escapeBit) {
 		    last = handler.setEscaping(false);
-		}	
+		}
 	    }
 
 	    handler.characters(_text,
@@ -2576,7 +2576,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
             if (_dontEscape != null && escapeBit) {
 		handler.setEscaping(last);
-	    }	
+	    }
 	    break;
 	case ATTRIBUTE:
 	    shallowCopy(node, handler);
@@ -2625,7 +2625,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
     /**
      * Copies a processing instruction node to an output handler
-     */ 
+     */
     private void copyPI(final int node, TransletOutputHandler handler)
 	throws TransletException {
 	final char[] text = _text;
@@ -2647,7 +2647,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Performs a shallow copy (ref. XSLs copy())
      */
     public String shallowCopy(final int node, TransletOutputHandler handler)
-	throws TransletException 
+	throws TransletException
     {
 	final int type = _type[node];
 
@@ -2692,7 +2692,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
     private String copyElement(int node, int type,
 			       TransletOutputHandler handler)
-	throws TransletException 
+	throws TransletException
     {
 	type = type - NTYPES;
 	String name = _namesArray[type];
@@ -2779,79 +2779,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	return buffer;
     }
 
-    public String getTreeString() {
-	StringBuffer buf = new StringBuffer();
-	buf = getElementString(buf, ROOTNODE);
-	return buf.toString();
-    }
-
-    /**
-     * Helper to getTreeString() above
-     */
-    private StringBuffer getElementString(StringBuffer buffer, int element) {
-	String name = null;
-
-	if (isElement(element)) {
-	    if ((name = getNodeName(element)) != null) {
-		buffer.append('<');
-		buffer.append(name);
-
-		int attribute = _lengthOrAttr[element];
-		while (attribute != NULL) {
-		    // Skip namespace nodes
-		    if (_type[attribute] != NAMESPACE) {
-			buffer.append(' ').append(getNodeName(attribute))
-			      .append("=\"").append(getNodeValue(attribute))
-			      .append('"');
-		    }
-		    attribute = _nextSibling[attribute];
-		}
-
-		if (_offsetOrChild[element] == NULL) {
-		    buffer.append("/>");
-		    return buffer;
-		}
-		buffer.append('>');
-	    }
-	}
-
-	for (int child = _offsetOrChild[element];
-	     child != NULL;
-	     child = _nextSibling[child]) {
-	    switch (_type[child]) {
-	    case COMMENT:
-		buffer.append("<!--");
-		buffer.append(_text,
-			      _offsetOrChild[child],
-			      _lengthOrAttr[child]);
-		buffer.append("-->");
-		break;
-	    case TEXT:
-		buffer.append(_text,
-			      _offsetOrChild[child],
-			      _lengthOrAttr[child]);
-		break;
-	    case PROCESSING_INSTRUCTION:
-		buffer.append("<?");
-		buffer.append(_text,
-			      _offsetOrChild[child],
-			      _lengthOrAttr[child]);
-		buffer.append("?>");
-		break;
-	    default:
-		getElementString(buffer, child);
-	    }
-	}
-
-	if (isElement(element) && name != null) {
-	    buffer.append("</");
-	    buffer.append(name);
-	    buffer.append(">");
-	}
-
-	return buffer;
-    }
-
     /**
      * Returns a node' defined language for a node (if any)
      */
@@ -2935,7 +2862,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	private int       _lastNamespace = DOM.NULL;
 	private int       _nextNamespace = DOM.NULL;
-	
+
 	// Stack used to keep track of what whitespace text nodes are protected
 	// by xml:space="preserve" attributes and which nodes that are not.
 	private int[]   _xmlSpaceStack = new int[64];
@@ -3024,7 +2951,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    System.arraycopy(_text, 0, newText, 0, _currentOffset);
 	    _text = newText;
 	}
-	
+
 	/**
 	 * Links together the children of a node. Child nodes are linked
 	 * through the _nextSibling array
@@ -3151,7 +3078,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _offsetOrChild[node] = maybeReuseText(length);
 	    _lengthOrAttr[node]  = length;
 	}
-	
+
 	/**
 	 * Creates a text-node and checks if it is a whitespace node.
 	 */
@@ -3206,21 +3133,21 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _type2[node] = NAMESPACE;
 	    characters(uri);
 	    storeAttrValRef(node);
-	    return node;	    
+	    return node;
 	}
 
 	/**
 	 * Creates an attribute node
 	 */
 	private int makeAttributeNode(int parent, Attributes attList, int i)
-	    throws SAXException 
+	    throws SAXException
 	{
     	    final int node = nextAttributeNode();
 	    final String qname = attList.getQName(i);
 	    String localName = attList.getLocalName(i);
 	    final String value = attList.getValue(i);
 	    StringBuffer namebuf = new StringBuffer(EMPTYSTRING);
-	    
+
 	    if (qname.startsWith(XMLSPACE_STRING)) {
 		xmlSpaceDefine(attList.getValue(i), parent);
 	    }
@@ -3260,7 +3187,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    storeAttrValRef(node);
 	    return node;
 	}
-	
+
 	/****************************************************************/
 	/*               SAX Interface Starts Here                      */
 	/****************************************************************/
@@ -3276,7 +3203,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
 
-	    _disableEscaping = !_escaping;	
+	    _disableEscaping = !_escaping;
 	}
 
 	/**
@@ -3322,7 +3249,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	    // trim arrays' sizes
 	    resizeTextArray(_currentOffset);
-	    
+
 	    _firstAttributeNode = _currentNode;
 	    shiftAttributes(_currentNode);
 	    resizeArrays(_currentNode + _currentAttributeNode, _currentNode);
@@ -3355,13 +3282,13 @@ public final class DOMImpl implements DOM, Externalizable {
 		_prefixArray[I.shortValue()] = prefix;
 	    }
 	}
-	
+
 	/**
 	 * SAX2: Receive notification of the beginning of an element.
 	 */
 	public void startElement(String uri, String localName,
 				 String qname, Attributes attributes)
-	    throws SAXException 
+	    throws SAXException
 	{
 // System.out.println("DOMImpl.startElement() qname = " + qname);
 	    makeTextNode(false);
@@ -3425,7 +3352,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		_prefix[node] = registerPrefix(qname.substring(0, col));
 	    }
 	}
-	
+
 	/**
 	 * SAX2: Receive notification of the end of an element.
 	 */
@@ -3471,7 +3398,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	/**
 	 * SAX2: Receive an object for locating the origin of SAX document
-	 * events. 
+	 * events.
 	 */
 	public void setDocumentLocator(Locator locator) {
 	    // Not handled
@@ -3481,14 +3408,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	 * SAX2: Receive notification of a skipped entity.
 	 */
 	public void skippedEntity(String name) {
-	    // Not handled 
+	    // Not handled
 	}
 
 	/**
 	 * SAX2: Begin the scope of a prefix-URI Namespace mapping.
 	 */
-	public void startPrefixMapping(String prefix, String uri) 
-	    throws SAXException 
+	public void startPrefixMapping(String prefix, String uri)
+	    throws SAXException
 	{
 	    final Stack stack = definePrefixAndUri(prefix, uri);
 
@@ -3504,8 +3431,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _prefix2[attr] = ((Integer) stack.elementAt(0)).shortValue();
 	}
 
-	private Stack definePrefixAndUri(String prefix, String uri) 
-	    throws SAXException 
+	private Stack definePrefixAndUri(String prefix, String uri)
+	    throws SAXException
 	{
 	    // Get the stack associated with this namespace prefix
 	    Stack stack = (Stack)_nsPrefixes.get(prefix);
@@ -3615,7 +3542,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    System.arraycopy(_prefix, 0, newPrefix, 0, length);
 	    _prefix = newPrefix;
 	}
-	
+
 	private void resizeArrays2(final int newSize, final int length) {
 	    if (newSize > length) {
 		// Resize the '_type2' array (attribute types)
@@ -3649,7 +3576,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		_prefix2 = newPrefix;
 	    }
 	}
-	
+
 	private void shiftAttributes(final int shift) {
 	    int i = 0;
 	    int next = 0;
@@ -3665,7 +3592,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		_nextSibling2[i] = next != 0 ? next + shift : 0;
 	    }
 	}
-	
+
 	private void appendAttributes() {
 	    final int len = _currentAttributeNode;
 	    if (len > 0) {
@@ -3681,7 +3608,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
  	public boolean setEscaping(boolean value) {
 	    final boolean temp = _escaping;
-	    _escaping = value; 
+	    _escaping = value;
 	    return temp;
     	}
 
