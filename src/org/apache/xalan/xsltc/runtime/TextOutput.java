@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Seth Ford <seth.ford@fmr.com> 
  *
  */
 
@@ -513,8 +514,12 @@ public final class TextOutput implements TransletOutputHandler {
 
 	    _qnameStack.push(elementName);
 
-	    if ((_cdata != null) && (_cdata.get(elementName) != null))
-		_cdataStack.push(new Integer(_depth));
+	    // bug fix 2807, <seth.ford@fmr.com>
+	    if (_cdata != null) {
+		if (_cdata.get(elementName) != null) {
+		    _cdataStack.push(new Integer(_depth));
+		}
+	    }
 
 	    // Insert <META> tag directly after <HEAD> element in HTML doc
 	    if (_outputType == HTML)
