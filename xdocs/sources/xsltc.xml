@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE book SYSTEM "sbk:/style/dtd/book.dtd">
+
+<book title="XSLTC Design" copyright="2001 The Apache Software Foundation">
+ 
+  <document id="index"
+            label="Overview"
+            source="xsltc/index.xml"/>
+
+ <separator/>
+
+  <document id="xsltc_compiler"
+            label="Compiler design"
+            source="xsltc/xsltc_compiler.xml"/>
+
+ <separator/>
+ 
+   <document id="xsl_whitespace_design"
+            label="Whitespace"
+            source="xsltc/xsl_whitespace_design.xml"/>
+
+  <document id="xsl_sort_design"
+            label="xsl:sort"
+            source="xsltc/xsl_sort_design.xml"/> 
+
+  <document id="xsl_key_design"
+            label="Keys"
+            source="xsltc/xsl_key_design.xml"/> 
+
+  <document id="xsl_comment_design"
+            label="Comment design"
+            source="xsltc/xsl_comment_design.xml"/>
+ 
+  <separator/>
+
+  <document id="xsl_lang_design"
+            label="lang()"
+            source="xsltc/xsl_lang_design.xml"/> 
+
+  <document id="xsl_unparsed_design"
+            label="Unparsed entities"
+            source="xsltc/xsl_unparsed_design.xml"/> 
+  
+ <separator/>
+   
+  <document id="xsltc_runtime"
+            label="Runtime"
+            source="xsltc/xsltc_runtime.xml"/> 
+            
+ <separator/>
+
+  <document id="xsltc_dom"
+            label="Internal DOM"
+            source="xsltc/xsltc_dom.xml"/>            
+            
+  <document id="xsltc_namespace"
+            label="Namespaces"
+            source="xsltc/xsltc_namespace.xml"/>             
+            
+ <separator/>
+ 
+ <external href="todo.html" label="To-do list"/>
+            
+</book>
+  
