@@ -227,7 +227,7 @@
       <a>
         <p><anchor name='tomcat'/></p>
         <p><jump href="http://jakarta.apache.org/tomcat/index.html">jakarta-tomcat 4.1.*</jump> is packed
-           with an old version xercesImpl.jar. Based on the <resource-ref idref='endorsed' />, you should
+           with an old version of xercesImpl.jar. Based on the <resource-ref idref='endorsed' />, you should
            replace it with the newer xercesImpl.jar. You should add a newer xalan.jar to Tomcat as well.  
            Read the FAQ about <link anchor='jdk14'>Issues running &xslt4j; on JDK 1.4</link>. Place the 
            xalan.jar and xercesImpl.jar in the &lt;Tomcat_Home&gt;\common\endorsed directory, where 
@@ -355,7 +355,7 @@
           <code>xmlns:foo="http://my-namespace"</code>
         </p>
         <p>Then you can use foo: in your XPath expression.</p>
-        <p>Hint: Don't use default namespaces, and the problem doesn't arise.</p>
+        <p>Hint: Avoiding the use of default namespaces will prevent this problem from occuring.</p>
       </a>
     </faq>
     <faq title='Setting the parser to be namespace aware'>
@@ -467,7 +467,7 @@ spFactory.setNamespaceAware(true);</source>
         <ol>
           <li>Using the wrong URI for the xsl: prefix will cause this message. URIs, and namespace 
               URIs in particular, are case sensitive. Ensure the URI for the xsl namespace is 
-              "http://www.w3.org/1999/XSL/Transform".</li>
+              "http://www.w3.org/1999/XSL/Transform".<br/><br/></li>
           <li>The parser you are using to process a stylesheet Source and generate a Transformer 
               does not have the namespaceAware property set to true.<br/>
           When you create a Transformer, you must use a <link anchor='namespace-aware'>namespace-aware</link> parser to parse the stylesheet.</li>
@@ -649,13 +649,13 @@ file:///
       <q>How do I get line numbers for errors in the XML or XSL input when I am performing a 
          transformation?</q>
       <a>
-        <p>Use or mimic the command-line processor (
-          <jump href='apidocs/org/apache/xalan/xslt/Process.html'>org.apache.xalan.xslt.Process</jump>).
+        <p>Use or mimic the command-line processor (<jump 
+                       href='apidocs/org/apache/xalan/xslt/Process.html'>org.apache.xalan.xslt.Process</jump>).
         </p>
         <p>A
           <jump href='apidocs/javax/xml/transform/TransformerException.html'>TransformerException</jump> generally wraps another exception, often a SAXParseException. The command-line processor uses the static
           <jump href='apidocs/org/apache/xml/utils/DefaultErrorHandler.html'>org.apache.xml.utils.DefaultErrorHandler</jump> printLocation() method to chase down the exception cause and get a
-          <jump href='apidocs/javax/xml/transform/SourceLocator.html'>SourceLocator</jump>that can usually report line and column number.
+          <jump href='apidocs/javax/xml/transform/SourceLocator.html'>SourceLocator</jump> that can usually report line and column number.
         </p>
         <p>Suppose you wanted to modify the ValidateXMLInput sample in the samples/Validate 
            subdirectory to include line and column numbers . All you need to do is call 
@@ -743,12 +743,12 @@ public static SourceLocator getRootSourceLocator(Throwable exception)
       <q>My servlet cannot find classes that implement extension functions or elements. What can I do?</q>
       <a>
         <p>If you install xalan.jar in the servlet engine's lib directory (e.g., tomcat/lib), as 
-           opposed to the servlet's lib directory, then the &xslt4j; classes 
-           are loaded by a classloader that does not see the classes in the servlet's classloader 
+           opposed to the servlet application's lib directory, then the &xslt4j; classes 
+           are loaded by a classloader that does not see the classes in the application's classloader 
            (i.e., the extension classes, if you placed them there). The &xslt4j;
            classes try to load the extension classes using their own classloader, and that attempt 
            fails.</p>
-        <p>Workaround: place xalan.jar in the servlet's lib directory and NOT in the servlet engine's 
+        <p>Workaround: place xalan.jar in the servlet application's lib directory and NOT in the servlet engine's 
            lib directory. Another workaround is to place the extension classes also in the servlet 
            engine's lib directory, but you generally want to avoid cluttering that directory.</p>
         <p>Thanks to Gunnlauger Thor Briem (gthb@dimon.is) for providing this information.</p>

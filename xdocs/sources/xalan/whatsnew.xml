@@ -70,8 +70,8 @@ had different underlying models for the input xml document. Xalan Interpretive u
 the <link idref="dtm">Document Table Model (DTM)</link> to model the input xml, while 
 XSLTC used its own DOMImpl implementation. The serializers used by the processors were 
 also different.  As the project matures sharing more components between the processors 
-becomes increasingly important. This makes the code more maintainable in the future and 
-also eliminates some subtle behavioral differences between the Interpretive and the 
+becomes increasingly important. This will make the code more maintainable in the future and 
+also eliminate some subtle behavioral differences between the Interpretive and the 
 Compiled processors.</p>
 
 <p>In addition to these design benefits, the integration of DTM with XSLTC and the common
@@ -108,8 +108,8 @@ reduced.</p>
 <p>During the merge of the Xalan Interpretive and XSLTC serializers, an
 effort was made to use the best performing features from each serializer.
 The new class hierarchy is similar to the one used by XSLTC.  At the highest
-level the serializer classes split based on whether the output handler type
-("Stream" or "SAX"). At the next level, the hierarchy branches based on
+level the serializer classes split based on the output handler type
+("Stream" or "SAX"). At the next level, the hierarchy branches are based on
 the output type (XML, HTML or TEXT).  This allows each flavor of serializer
 to do optimizations based on the output type and whether that output is going 
 to a "Stream" or a "SAX" handler.</p>

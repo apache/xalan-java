@@ -87,8 +87,8 @@ higher.</note>
 
 <p>
 The jar file structure of the &xslt4jc-short; component has changed again.  In the
-original structure, the xsltc.jar file contained only &xslt4jc-short; classes, and the
-other support jar files needed to be in your class path.
+original structure, the xsltc.jar file contained only &xslt4jc-short; classes, so 
+other support jar files needed to be added to the classpath.
 In a subsequent model, all of the support classes were bundled with the &xslt4jc-short;
 classes into one xsltc.jar file. 
 Now, a single xalan.jar contains the code for both &xslt4j; processors.  You
