@@ -101,5 +101,18 @@ public class AttributeIterator extends ChildTestIterator
                      : m_cdtm.getNextAttribute(m_lastFetched);
     return m_lastFetched;
   }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return org.apache.xml.dtm.Axis.ATTRIBUTE;
+  }
+
+
 
 }

@@ -304,5 +304,17 @@ public class ChildTestIterator extends LocPathIterator
 //    }
     
   }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return org.apache.xml.dtm.Axis.CHILD;
+  }
+
 
 }

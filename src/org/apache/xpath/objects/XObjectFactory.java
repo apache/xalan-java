@@ -86,7 +86,7 @@ public class XObjectFactory
         int dtmRoot = dtm.getDocument();
         DTMAxisIterator iter = dtm.getAxisIterator(Axis.SELF);
         iter.setStartNode(dtmRoot);
-        DTMIterator iterator = new OneStepIterator(iter);
+        DTMIterator iterator = new OneStepIterator(iter, Axis.SELF);
         iterator.setRoot(dtmRoot, xctxt);
         result = new XNodeSet(iterator);
       }
@@ -100,7 +100,7 @@ public class XObjectFactory
       DTMAxisIterator iter = (DTMAxisIterator)val;
       try
       {
-        DTMIterator iterator = new OneStepIterator(iter);
+        DTMIterator iterator = new OneStepIterator(iter, Axis.SELF);
         iterator.setRoot(iter.getStartNode(), xctxt);
         result = new XNodeSet(iterator);
       }

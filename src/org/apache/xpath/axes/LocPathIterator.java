@@ -1050,6 +1050,29 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    * NodeList.
    */
   transient protected int m_next;
+  
+  /**
+   * Returns true if all the nodes in the iteration well be returned in document 
+   * order.
+   * 
+   * @return true as a default.
+   */
+  public boolean isDocOrdered()
+  {
+    return true;
+  }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return -1;
+  }
+
 
 //  /**
 //   * The analysis pattern built by the WalkerFactory.

@@ -265,4 +265,27 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
 
     return this;
   }
+  
+  /**
+   * Returns true if all the nodes in the iteration well be returned in document 
+   * order.
+   * 
+   * @return true as a default.
+   */
+  public boolean isDocOrdered()
+  {
+    return true;
+  }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return -1;
+  }
+
 }

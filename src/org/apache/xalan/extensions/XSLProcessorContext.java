@@ -241,7 +241,7 @@ public class XSLProcessorContext
       else if (obj instanceof DTMAxisIterator)
       {
         DTMAxisIterator iter = (DTMAxisIterator)obj;
-        DTMIterator iterator = new OneStepIterator(iter);
+        DTMIterator iterator = new OneStepIterator(iter, -1);
         value = new XNodeSet(iterator);
       }
       else if (obj instanceof DTMIterator)

@@ -518,6 +518,30 @@ public class AxesWalker extends PredicatedNodeTest
     //
     return wi().getXPathContext().getDTM(node);
   }
+  
+  /**
+   * Returns true if all the nodes in the iteration well be returned in document 
+   * order.
+   * Warning: This can only be called after setRoot has been called!
+   * 
+   * @return true as a default.
+   */
+  public boolean isDocOrdered()
+  {
+    return true;
+  }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return m_axis;
+  }
+
 
   /**
    *  The root node of the TreeWalker, as specified when it was created.

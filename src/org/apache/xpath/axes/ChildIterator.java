@@ -164,4 +164,17 @@ public class ChildIterator extends LocPathIterator
       return DTM.NULL;
     }
   }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return org.apache.xml.dtm.Axis.CHILD;
+  }
+
+
 }

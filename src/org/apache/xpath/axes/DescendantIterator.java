@@ -399,6 +399,17 @@ public class DescendantIterator extends LocPathIterator
     // Always call the superclass detach last!
     super.detach();
   }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return m_axis;
+  }
 
   
   /** The traverser to use to navigate over the descendants. */

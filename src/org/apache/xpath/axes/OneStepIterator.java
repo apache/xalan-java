@@ -49,18 +49,18 @@ public class OneStepIterator extends ChildTestIterator
   /**
    * Create a OneStepIterator object.
    *
-   * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the
-   * location path expression for this itterator.
+   * @param iterator The DTM iterator which this iterator will use.
+   * @param axis One of Axis.Child, etc., or -1 if the axis is unknown.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public OneStepIterator(DTMAxisIterator iterator)
+  public OneStepIterator(DTMAxisIterator iterator, int axis)
           throws javax.xml.transform.TransformerException
   {
     super(null);
     
     m_iterator = iterator;
+    m_axis = axis;
     int whatToShow = DTMFilter.SHOW_ALL;
     initNodeTest(whatToShow);
   }
@@ -252,5 +252,17 @@ public class OneStepIterator extends ChildTestIterator
     if(null != m_iterator)
       m_iterator.reset();
   }
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis()
+  {
+    return m_axis;
+  }
+
 
 }

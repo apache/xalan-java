@@ -359,5 +359,22 @@ public interface DTMIterator
    * @throws CloneNotSupportedException
    */
   public Object clone() throws CloneNotSupportedException;
+  
+  /**
+   * Returns true if all the nodes in the iteration well be returned in document 
+   * order.
+   * 
+   * @return true if all the nodes in the iteration well be returned in document 
+   * order.
+   */
+  public boolean isDocOrdered();
+  
+  /**
+   * Returns the axis being iterated, if it is known.
+   * 
+   * @return Axis.CHILD, etc., or -1 if the axis is not known or is of multiple 
+   * types.
+   */
+  public int getAxis();
 
 }
