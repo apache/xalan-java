@@ -105,8 +105,8 @@
             title="Java API for XML Parsing 1.0" 
             location="http://java.sun.com/xml/docs/api/index.html"/>
   <resource id="jaxp11" 
-            title="Java API for XML Processing 1.1 Public Review 2" 
-            location="http://java.sun.com/aboutJava/communityprocess/review/jsr063/jaxp-pd2.pdf"/>
+            title="Java API for XML Processing 1.1" 
+            location="http://java.sun.com/xml/jaxp/dist/1.1/jaxp-1_1-spec.pdf"/>
   <resource id="jsr063"
             title="Java Specification Request 63"
             location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
