@@ -2252,7 +2252,7 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public String getNamespaceName(final int node) {
 	if (_type[node] == NAMESPACE) {
-	    return getNodeValue(node);
+	    return(EMPTYSTRING); //return getNodeValue(node);
 	}
 	else {
 	    final int type = getNamespaceType(node);
