@@ -61,8 +61,8 @@ import java.io.Serializable;
 import org.apache.xml.dtm.DTM;
 
 /**
- * <meta name="usage" content="internal"/>
  * A very simple table that stores a list of Nodes.
+ * @xsl.usage internal
  */
 public class NodeVector implements Serializable, Cloneable
 {

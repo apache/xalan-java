@@ -71,7 +71,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * <meta name="usage" content="general"/>
  * This class contains EXSLT strings extension functions.
  *
  * It is accessed by specifying a namespace URI as follows:
@@ -83,6 +82,7 @@ import org.w3c.dom.Text;
  * 
  * @see <a href="http://www.exslt.org/">EXSLT</a>
 
+ * @xsl.usage general
  */
 public class ExsltStrings extends ExsltBase
 {

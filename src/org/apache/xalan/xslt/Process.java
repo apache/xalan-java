@@ -102,8 +102,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * <meta name="usage" content="general"/>
  * The main() method handles the Xalan command-line interface.
+ * @xsl.usage general
  */
 public class Process
 {

@@ -92,11 +92,11 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Initializes and processes a stylesheet via SAX events.
  * This class acts as essentially a state machine, maintaining
  * a ContentHandler stack, and pushing appropriate content
  * handlers as parse events occur.
+ * @xsl.usage advanced
  */
 public class StylesheetHandler extends DefaultHandler
         implements TemplatesHandler, PrefixResolver, NodeConsumer
@@ -849,7 +849,6 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Warn the user of an problem.
    *
    * @param msg An key into the {@link org.apache.xalan.res.XSLTErrorResources}
@@ -860,6 +859,7 @@ public class StylesheetHandler extends DefaultHandler
    * {@link javax.xml.transform.TransformerException} if the current
    * {@link javax.xml.transform.ErrorListener#warning}
    * method chooses to flag this condition as an error.
+   * @xsl.usage internal
    */
   public void warn(String msg, Object args[]) throws org.xml.sax.SAXException
   {
@@ -880,13 +880,13 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Assert that a condition is true.  If it is not true, throw an error.
    *
    * @param condition false if an error should not be thrown, otherwise true.
    * @param msg Error message to be passed to the RuntimeException as an
    * argument.
    * @throws RuntimeException if the condition is not true.
+   * @xsl.usage internal
    */
   private void assertion(boolean condition, String msg) throws RuntimeException
   {
@@ -895,7 +895,6 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -906,6 +905,7 @@ public class StylesheetHandler extends DefaultHandler
    * {@link javax.xml.transform.TransformerException} if the current
    * {@link javax.xml.transform.ErrorListener#error}
    * method chooses to flag this condition as an error.
+   * @xsl.usage internal
    */
   protected void error(String msg, Exception e)
           throws org.xml.sax.SAXException
@@ -940,7 +940,6 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -953,6 +952,7 @@ public class StylesheetHandler extends DefaultHandler
    * {@link javax.xml.transform.TransformerException} if the current
    * {@link javax.xml.transform.ErrorListener#error}
    * method chooses to flag this condition as an error.
+   * @xsl.usage internal
    */
   protected void error(String msg, Object args[], Exception e)
           throws org.xml.sax.SAXException

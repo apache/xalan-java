@@ -57,7 +57,6 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="internal"/>
  * A very simple table that stores a list of int. Very similar API to our
  * IntVector class (same API); different internal storage.
  * 
@@ -102,6 +101,7 @@ public class SuballocatedIntVector
 
   /** "Shortcut" handle to most recently added row of m_map.
    * Very helpful during construction.
+   * @xsl.usage internal
    */
   protected int m_buildCache[];
   protected int m_buildCacheStartIndex;

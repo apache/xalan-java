@@ -66,7 +66,6 @@ import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:element
  * <pre>
  * <!ELEMENT xsl:element %template;>
@@ -78,6 +77,7 @@ import org.xml.sax.SAXException;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Elements-with-xsl:element">XXX in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemElement extends ElemUse
 {

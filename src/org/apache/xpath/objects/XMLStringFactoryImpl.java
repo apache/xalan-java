@@ -61,8 +61,8 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class XMLStringFactoryImpl creates XString versions of XMLStrings.
+ * @xsl.usage internal
  */
 public class XMLStringFactoryImpl extends XMLStringFactory
 {

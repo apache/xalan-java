@@ -63,9 +63,9 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class represents a union pattern, which can have multiple individual 
  * StepPattern patterns.
+ * @xsl.usage advanced
  */
 public class UnionPattern extends Expression
 {

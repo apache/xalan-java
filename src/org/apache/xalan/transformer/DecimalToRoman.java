@@ -57,8 +57,8 @@
 package org.apache.xalan.transformer;
 
 /**
- * <meta name="usage" content="internal"/>
  * Structure to help in converting integers to roman numerals
+ * @xsl.usage internal
  */
 public class DecimalToRoman
 {

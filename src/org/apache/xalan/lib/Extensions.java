@@ -81,12 +81,12 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.SAXNotSupportedException;
 
 /**
- * <meta name="usage" content="general"/>
  * This class contains many of the Xalan-supplied extensions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
  *    xmlns:xalan="http://xml.apache.org/xalan"
  * </pre>
+ * @xsl.usage general
  */
 public class Extensions
 {

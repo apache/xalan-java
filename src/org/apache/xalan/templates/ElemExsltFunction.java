@@ -69,8 +69,8 @@ import org.w3c.dom.NodeList;
 
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement func:function.
+ * @xsl.usage advanced
  */
 public class ElemExsltFunction extends ElemTemplate
 {

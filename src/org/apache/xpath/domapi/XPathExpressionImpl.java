@@ -114,7 +114,6 @@ public class XPathExpressionImpl implements XPathExpression {
     }
 
     /**
-     * <meta name="usage" content="experimental"/>
      *
      * This method provides an implementation XPathResult.evaluate according 
      * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
@@ -156,6 +155,7 @@ public class XPathExpressionImpl implements XPathExpression {
      *   context node.   
      * 
      * @see org.w3c.dom.xpath.XPathExpression#evaluate(Node, short, XPathResult)
+     * @xsl.usage experimental
      */
     public Object evaluate(
         Node contextNode,

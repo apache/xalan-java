@@ -63,9 +63,9 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Base class for functions that accept an undetermined number of multiple
  * arguments.
+ * @xsl.usage advanced
  */
 public class FunctionMultiArgs extends Function3Args
 {

@@ -71,7 +71,6 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class extends NodeSetDTM, which implements NodeIterator,
  * and fetches nodes one at a time in document order based on a XPath
  * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a>.
@@ -81,6 +80,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * in the NodeVector, so that previousNode() can easily be done, except in
  * the case where the LocPathIterator is "owned" by a UnionPathIterator,
  * in which case the UnionPathIterator will cache the nodes.</p>
+ * @xsl.usage advanced
  */
 public abstract class LocPathIterator extends PredicatedNodeTest
         implements Cloneable, DTMIterator, java.io.Serializable, PathComponent
@@ -286,7 +286,6 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   }
   
   /**
-   * <meta name="usage" content="experimental"/>
    * Given an select expression and a context, evaluate the XPath
    * and return the resulting iterator.
    * 
@@ -299,6 +298,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage experimental
    */
   public DTMIterator asIterator(
           XPathContext xctxt, int contextNode)
@@ -362,12 +362,12 @@ public abstract class LocPathIterator extends PredicatedNodeTest
 
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Set if this is an iterator at the upper level of
    * the XPath.
    *
    * @param b true if this location path is at the top level of the
    *          expression.
+   * @xsl.usage advanced
    */
   public void setIsTopLevel(boolean b)
   {
@@ -375,12 +375,12 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Get if this is an iterator at the upper level of
    * the XPath.
    *
    * @return true if this location path is at the top level of the
    *          expression.
+   * @xsl.usage advanced
    */
   public boolean getIsTopLevel()
   {

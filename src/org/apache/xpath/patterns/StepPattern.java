@@ -69,8 +69,8 @@ import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class represents a single pattern match step.
+ * @xsl.usage advanced
  */
 public class StepPattern extends NodeTest implements SubContextList, ExpressionOwner
 {

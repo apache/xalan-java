@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Ceiling() function.
+ * @xsl.usage advanced
  */
 public class FuncCeiling extends FunctionOneArg
 {

@@ -59,7 +59,6 @@ package org.apache.xalan.templates;
 import org.apache.xpath.XPath;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:when.
  * <pre>
  * <!ELEMENT xsl:when %template;>
@@ -69,6 +68,7 @@ import org.apache.xpath.XPath;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemWhen extends ElemTemplateElement
 {

@@ -62,8 +62,8 @@ package org.apache.xml.utils.res;
 //
 
 /**
- * <meta name="usage" content="internal"/>
  * The Italian resource bundle.
+ * @xsl.usage internal
  */
 public class XResources_it extends XResourceBundle
 {

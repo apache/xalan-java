@@ -66,8 +66,8 @@ package org.apache.xml.utils.synthetic;
 import org.apache.xml.utils.synthetic.reflection.Method;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class TestDriver <needs-comment/>
+ * @xsl.usage internal
  */
 public class TestDriver
 {
@@ -171,8 +171,8 @@ public class TestDriver
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Class Inner <needs-comment/>
+   * @xsl.usage internal
    */
   private class Inner
   {

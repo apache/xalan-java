@@ -81,8 +81,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="general"/>
  * This class represents the root object of the stylesheet tree.
+ * @xsl.usage general
  */
 public class StylesheetRoot extends StylesheetComposed
         implements java.io.Serializable, Templates
@@ -523,10 +523,10 @@ public class StylesheetRoot extends StylesheetComposed
   private boolean m_outputMethodSet = false;
 
   /**
-   * <meta name="usage" content="internal"/>
    * Find out if an output method has been set by the user.
    *
    * @return Value indicating whether an output method has been set by the user
+   * @xsl.usage internal
    */
   public boolean isOutputMethodSet()
   {
@@ -970,18 +970,18 @@ public class StylesheetRoot extends StylesheetComposed
 
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The default template to use for text nodes if we don't find
    * anything else.  This is initialized in initDefaultRule().
    * @serial
+   * @xsl.usage advanced
    */
   private ElemTemplate m_defaultTextRule;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Get the default template for text.
    *
    * @return the default template for text.
+   * @xsl.usage advanced
    */
   public final ElemTemplate getDefaultTextRule()
   {
@@ -989,18 +989,18 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The default template to use if we don't find anything
    * else.  This is initialized in initDefaultRule().
    * @serial
+   * @xsl.usage advanced
    */
   private ElemTemplate m_defaultRule;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Get the default template for elements.
    *
    * @return the default template for elements.
+   * @xsl.usage advanced
    */
   public final ElemTemplate getDefaultRule()
   {
@@ -1008,7 +1008,6 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The default template to use for the root if we don't find
    * anything else.  This is initialized in initDefaultRule().
    * We kind of need this because the defaultRule isn't good
@@ -1017,14 +1016,15 @@ public class StylesheetRoot extends StylesheetComposed
    * Don't know if this is really a good idea or not.
    * I suspect it is not.
    * @serial
+   * @xsl.usage advanced
    */
   private ElemTemplate m_defaultRootRule;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Get the default template for a root node.
    *
    * @return The default template for a root node.
+   * @xsl.usage advanced
    */
   public final ElemTemplate getDefaultRootRule()
   {
@@ -1032,17 +1032,17 @@ public class StylesheetRoot extends StylesheetComposed
   }
   
   /**
-   * <meta name="usage" content="advanced"/>
    * The start rule to kick off the transformation.
    * @serial
+   * @xsl.usage advanced
    */
   private ElemTemplate m_startRule;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Get the default template for a root node.
    *
    * @return The default template for a root node.
+   * @xsl.usage advanced
    */
   public final ElemTemplate getStartRule()
   {

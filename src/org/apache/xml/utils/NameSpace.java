@@ -59,10 +59,10 @@ package org.apache.xml.utils;
 import java.io.Serializable;
 
 /**
- * <meta name="usage" content="advanced"/>
  * A representation of a namespace.  One of these will
  * be pushed on the namespace stack for each
  * element.
+ * @xsl.usage advanced
  */
 public class NameSpace implements Serializable
 {

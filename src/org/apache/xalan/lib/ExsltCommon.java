@@ -62,7 +62,6 @@ import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xpath.NodeSet;
 
 /**
- * <meta name="usage" content="general"/>
  * This class contains EXSLT common extension functions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
@@ -73,6 +72,7 @@ import org.apache.xpath.NodeSet;
  * EXSLT Implementer page.
  * 
  * @see <a href="http://www.exslt.org/">EXSLT</a>
+ * @xsl.usage general
  */
 public class ExsltCommon
 {

@@ -59,7 +59,6 @@ package org.apache.xalan.templates;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:template.
  * This primarily acts as a marker on the element
  * stack to signal that whitespace should be preserved.
@@ -70,6 +69,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemText extends ElemTemplateElement
 {

@@ -56,10 +56,10 @@
  */
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements an RTF Iterator. Currently exists for sole
  * purpose of enabling EXSLT object-type function to return "RTF".
  * 
+  * @xsl.usage advanced
   */
 package org.apache.xpath.axes;
 

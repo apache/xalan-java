@@ -62,8 +62,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Lang() function.
+ * @xsl.usage advanced
  */
 public class FuncLang extends FunctionOneArg
 {

@@ -61,8 +61,8 @@ import java.util.ListResourceBundle;
 import org.apache.xml.res.XMLMessages;
 
 /**
- * <meta name="usage" content="internal"/>
  * A utility class for issuing XPath error messages.
+ * @xsl.usage internal
  */
 public class XPATHMessages extends XMLMessages
 {

@@ -1883,12 +1883,12 @@ public abstract class DTMDefaultBase implements DTM
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Get the depth level of this node in the tree (equals 1 for
    * a parentless node).
    *
    * @param nodeHandle The node id.
    * @return the number of ancestors, plus one
+   * @xsl.usage internal
    */
   public short getLevel(int nodeHandle)
   {
@@ -1898,11 +1898,11 @@ public abstract class DTMDefaultBase implements DTM
   }
   
   /**
-   * <meta name="usage" content="internal"/>
    * Get the identity of this node in the tree 
    *
    * @param nodeHandle The node handle.
    * @return the node identity
+   * @xsl.usage internal
    */
   public int getNodeIdent(int nodeHandle)
   {
@@ -1915,11 +1915,11 @@ public abstract class DTMDefaultBase implements DTM
   }
   
   /**
-   * <meta name="usage" content="internal"/>
    * Get the handle of this node in the tree 
    *
    * @param nodeId The node identity.
    * @return the node handle
+   * @xsl.usage internal
    */
   public int getNodeHandle(int nodeId)
   {
@@ -1990,12 +1990,12 @@ public abstract class DTMDefaultBase implements DTM
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Return the name of the character encoding scheme
    *        in which the document entity is expressed.
    *
    * @param nodeHandle The node id, which can be any valid node handle.
    * @return the document encoding String object.
+   * @xsl.usage internal
    */
   public String getDocumentEncoding(int nodeHandle)
   {

@@ -57,9 +57,9 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="advanced"/>
  * An interface that a Serializer/ContentHandler/ContentHandler must
  * implement in order for disable-output-escaping to work.
+ * @xsl.usage advanced
  */
 public interface RawCharacterHandler
 {

@@ -80,7 +80,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
- * <meta name="usage" content="advanced"/>
  * An instance of this class represents an element inside
  * an xsl:template class.  It has a single "execute" method
  * which is expected to perform the given action on the
@@ -91,6 +90,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * basic traversal of the tree.
  *
  * @see Stylesheet
+ * @xsl.usage advanced
  */
 public class ElemTemplateElement extends UnImplNode
         implements PrefixResolver, Serializable, ExpressionNode, 

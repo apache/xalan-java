@@ -64,8 +64,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Sum() function.
+ * @xsl.usage advanced
  */
 public class FuncSum extends FunctionOneArg
 {

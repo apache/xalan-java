@@ -67,12 +67,12 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class that contains only static methods that are used to "serialize",
  * these methods are used by Xalan and are not in org.apache.xml.serializer
  * because they have dependancies on the packages org.apache.xpath or org.
  * apache.xml.dtm or org.apache.xalan.transformer. The package org.apache.xml.
  * serializer should not depend on Xalan or XSLTC.
+ * @xsl.usage internal
  */
 public class SerializerUtils
 {

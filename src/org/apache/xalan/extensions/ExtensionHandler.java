@@ -68,13 +68,13 @@ import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xml.utils.ObjectFactory;
 
 /**
- * <meta name="usage" content="internal"/>
  * Abstract base class for handling an extension namespace for XPath.
  * Provides functions to test a function's existence and call a function.
  * Also provides functions for calling an element and testing for
  * an element's existence.
  *
  * @author Sanjiva Weerawarana (sanjiva@watson.ibm.com)
+ * @xsl.usage internal
  */
 public abstract class ExtensionHandler
 {

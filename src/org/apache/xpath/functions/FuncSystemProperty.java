@@ -69,8 +69,8 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the SystemProperty() function.
+ * @xsl.usage advanced
  */
 public class FuncSystemProperty extends FunctionOneArg
 {

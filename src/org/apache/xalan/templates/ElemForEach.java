@@ -72,7 +72,6 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:for-each.
  * <pre>
  * <!ELEMENT xsl:for-each
@@ -88,6 +87,7 @@ import org.apache.xpath.XPathContext;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#for-each">for-each in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 {
@@ -338,13 +338,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Perform a query if needed, and call transformNode for each child.
    *
    * @param transformer non-null reference to the the current transform-time state.
    * @param template The owning template context.
    *
    * @throws TransformerException Thrown in a variety of circumstances.
+   * @xsl.usage advanced
    */
   public void transformSelectedNodes(TransformerImpl transformer)
           throws TransformerException

@@ -69,9 +69,9 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class filters nodes from a key iterator, according to 
  * whether or not the use value matches the ref value.  
+ * @xsl.usage internal
  */
 public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
 {

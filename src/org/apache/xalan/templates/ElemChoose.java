@@ -64,13 +64,13 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:choose.
  * <pre>
  * <!ELEMENT xsl:choose (xsl:when+, xsl:otherwise?)>
  * <!ATTLIST xsl:choose %space-att;>
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemChoose extends ElemTemplateElement
 {

@@ -64,12 +64,12 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:use.
  * This acts as a superclass for ElemCopy, ElemAttributeSet,
  * ElemElement, and ElemLiteralResult, on order to implement
  * shared behavior the use-attribute-sets attribute.
  * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemUse extends ElemTemplateElement
 {

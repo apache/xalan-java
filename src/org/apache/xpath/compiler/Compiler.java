@@ -99,11 +99,11 @@ import org.apache.xpath.patterns.UnionPattern;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * An instance of this class compiles an XPath string expression into 
  * a Expression object.  This class compiles the string into a sequence 
  * of operation codes (op map) and then builds from that into an Expression 
  * tree.
+ * @xsl.usage advanced
  */
 public class Compiler extends OpMap
 {
@@ -135,7 +135,6 @@ public class Compiler extends OpMap
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Execute the XPath object from a given opcode position.
    * @param xctxt The execution context.
    * @param context The current source tree context node.
@@ -145,6 +144,7 @@ public class Compiler extends OpMap
    * @return The result of the XPath.
    *
    * @throws TransformerException if there is a syntax or other error.
+   * @xsl.usage advanced
    */
   public Expression compile(int opPos) throws TransformerException
   {

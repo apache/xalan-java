@@ -79,7 +79,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * <meta name="usage" content="internal"/>
  * Processes an XSLT literal-result-element, or something that looks 
  * like one.  The actual {@link org.apache.xalan.templates.ElemTemplateElement}
  * produced may be a {@link org.apache.xalan.templates.ElemLiteralResult}, 
@@ -88,6 +87,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
  * @see org.apache.xalan.templates.ElemLiteralResult
+ * @xsl.usage internal
  */
 public class ProcessorLRE extends ProcessorTemplateElem
 {

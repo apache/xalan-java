@@ -57,7 +57,6 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="internal"/>
  * A very simple table that stores a list of int.
  *
  * This version is based on a "realloc" strategy -- a simle array is
@@ -65,6 +64,7 @@ package org.apache.xml.utils;
  * and all existing data is recopied into it. As a result, read/write
  * access to existing nodes is O(1) fast but appending may be O(N**2)
  * slow. See also SuballocatedIntVector.
+ * @xsl.usage internal
  */
 public class IntVector implements Cloneable
 {

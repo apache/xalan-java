@@ -63,7 +63,6 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:processing-instruction.
  * <pre>
  * <!ELEMENT xsl:processing-instruction %char-template;>
@@ -73,6 +72,7 @@ import org.apache.xpath.XPathContext;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Processing-Instructions">section-Creating-Processing-Instructions in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemPI extends ElemTemplateElement
 {

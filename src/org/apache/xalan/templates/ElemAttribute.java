@@ -67,7 +67,6 @@ import org.apache.xml.utils.QName;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:attribute.
  * <pre>
  * &amp;!ELEMENT xsl:attribute %char-template;>
@@ -78,6 +77,7 @@ import org.xml.sax.SAXException;
  * &amp;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#creating-attributes">creating-attributes in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemAttribute extends ElemElement
 {

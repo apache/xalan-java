@@ -70,8 +70,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Class to hold an Attribute Value Template.
+ * @xsl.usage advanced
  */
 public class AVT implements java.io.Serializable, XSLTVisitable
 {

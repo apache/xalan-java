@@ -74,7 +74,6 @@ import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
  * Represents an extension namespace for XPath that handles java classes.
  * It is recommended that the class URI be of the form:
  * <pre>
@@ -88,6 +87,7 @@ import org.apache.xpath.objects.XObject;
  * element.
  *
  * @author <a href="mailto:garyp@firstech.com">Gary L Peskin</a>
+ * @xsl.usage internal
  */
 
 public class ExtensionHandlerJavaClass extends ExtensionHandlerJava

@@ -64,8 +64,8 @@ import org.apache.xpath.XPathContext;
 
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement an unknown element
+ * @xsl.usage advanced
  */
 public class ElemUnknown extends ElemLiteralResult
 {

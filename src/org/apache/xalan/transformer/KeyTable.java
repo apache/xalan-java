@@ -73,10 +73,10 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Table of element keys, keyed by document node.  An instance of this
  * class is keyed by a Document node that should be matched with the
  * root of the current context.
+ * @xsl.usage advanced
  */
 public class KeyTable
 {

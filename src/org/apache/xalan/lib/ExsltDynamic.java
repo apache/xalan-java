@@ -81,7 +81,6 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXNotSupportedException;
 
 /**
- * <meta name="usage" content="general"/>
  * This class contains EXSLT dynamic extension functions.
  *
  * It is accessed by specifying a namespace URI as follows:
@@ -93,6 +92,7 @@ import org.xml.sax.SAXNotSupportedException;
  * 
  * @see <a href="http://www.exslt.org/">EXSLT</a>
 
+ * @xsl.usage general
  */
 public class ExsltDynamic extends ExsltBase
 {

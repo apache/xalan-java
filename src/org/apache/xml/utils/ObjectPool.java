@@ -63,8 +63,8 @@ import org.apache.xml.res.XMLMessages;
 
 
 /**
- * <meta name="usage" content="internal"/>
  * Pool of object of a given type to pick from to help memory usage
+ * @xsl.usage internal
  */
 public class ObjectPool implements java.io.Serializable
 {

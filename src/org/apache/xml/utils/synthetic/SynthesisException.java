@@ -57,8 +57,8 @@
 package org.apache.xml.utils.synthetic;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class SynthesisException <needs-comment/>
+ * @xsl.usage internal
  */
 public class SynthesisException extends Exception
 {

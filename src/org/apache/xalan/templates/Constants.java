@@ -58,8 +58,8 @@ package org.apache.xalan.templates;
 
 
 /**
- * <meta name="usage" content="advanced"/>
  * Primary constants used in the TransformerImpl classes.
+ * @xsl.usage advanced
  */
 public class Constants extends org.apache.xml.utils.Constants
 {

@@ -60,9 +60,9 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="general"/>
  * This class represents an XPath null object, and is capable of
  * converting the null to other types, such as a string.
+ * @xsl.usage general
  */
 public class XNull extends XNodeSet
 {

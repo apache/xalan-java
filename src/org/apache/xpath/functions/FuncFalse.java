@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the False() function.
+ * @xsl.usage advanced
  */
 public class FuncFalse extends Function
 {

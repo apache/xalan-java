@@ -58,11 +58,11 @@
 package org.apache.xpath.compiler;
 
 /**
- * <meta name="usage" content="internal"/>
  * 
  * Like IntVector, but used only for the OpMap array.  Length of array
  * is kept in the m_lengthPos position of the array.  Only the required methods 
  * are in included here.
+ * @xsl.usage internal
  */
 public class OpMapVector {
     

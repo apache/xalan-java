@@ -72,8 +72,8 @@ import org.xml.sax.SAXParseException;
 
 
 /**
- * <meta name="usage" content="general"/>
  * Implement SAX error handler for default reporting.
+ * @xsl.usage general
  */
 public class DefaultErrorHandler implements ErrorHandler, ErrorListener
 {

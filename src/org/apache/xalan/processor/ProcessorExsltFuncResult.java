@@ -66,8 +66,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class processes parse events for an exslt func:result element.
+ * @xsl.usage internal
  */
 public class ProcessorExsltFuncResult extends ProcessorTemplateElem
 {

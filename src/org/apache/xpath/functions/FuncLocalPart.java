@@ -63,7 +63,7 @@ import org.apache.xpath.objects.XString;
 
 /**
  * Execute the LocalPart() function.
- * <meta name="usage" content="advanced"/>
+ * @xsl.usage advanced
  */
 public class FuncLocalPart extends FunctionDef1Arg
 {

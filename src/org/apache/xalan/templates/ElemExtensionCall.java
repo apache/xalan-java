@@ -67,9 +67,9 @@ import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement an extension element.
  * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemExtensionCall extends ElemLiteralResult
 {

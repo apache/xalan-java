@@ -62,8 +62,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * <meta name="usage" content="internal"/>
  * A utility class for issuing XML error messages.
+ * @xsl.usage internal
  */
 public class XMLMessages
 {

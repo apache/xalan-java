@@ -78,9 +78,9 @@ public class OpCodes
 {
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [ENDOP]
    * Some operators may like to have a terminator.
+   * @xsl.usage advanced
    */
   public static final int ENDOP = -1;
 
@@ -91,15 +91,14 @@ public class OpCodes
   public static final int EMPTY = -2;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [ELEMWILDCARD]
    * Means ELEMWILDCARD ("*"), used instead
    * of string index in some places.
+   * @xsl.usage advanced
    */
   public static final int ELEMWILDCARD = -3;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_XPATH]
    * [length]
    *  {expression}
@@ -111,11 +110,11 @@ public class OpCodes
    *  XBoolean
    *  XRTree
    *  XObject
+   * @xsl.usage advanced
    */
   public static final int OP_XPATH = 1;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_OR]
    * [length]
    *  {boolean expression}
@@ -123,11 +122,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_OR = 2;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_AND]
    * [length]
    *  {boolean expression}
@@ -135,11 +134,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_AND = 3;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_NOTEQUALS]
    * [length]
    *  {expression}
@@ -147,11 +146,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_NOTEQUALS = 4;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_EQUALS]
    * [length]
    *  {expression}
@@ -159,11 +158,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_EQUALS = 5;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_LTE] (less-than-or-equals)
    * [length]
    *  {number expression}
@@ -171,11 +170,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_LTE = 6;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_LT] (less-than)
    * [length]
    *  {number expression}
@@ -183,11 +182,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_LT = 7;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_GTE] (greater-than-or-equals)
    * [length]
    *  {number expression}
@@ -195,11 +194,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_GTE = 8;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_GT] (greater-than)
    * [length]
    *  {number expression}
@@ -207,11 +206,11 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_GT = 9;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_PLUS]
    * [length]
    *  {number expression}
@@ -219,11 +218,11 @@ public class OpCodes
    *
    * returns:
    *  XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_PLUS = 10;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_MINUS]
    * [length]
    *  {number expression}
@@ -231,11 +230,11 @@ public class OpCodes
    *
    * returns:
    *  XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_MINUS = 11;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_MULT]
    * [length]
    *  {number expression}
@@ -243,11 +242,11 @@ public class OpCodes
    *
    * returns:
    *  XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_MULT = 12;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_DIV]
    * [length]
    *  {number expression}
@@ -255,11 +254,11 @@ public class OpCodes
    *
    * returns:
    *  XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_DIV = 13;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_MOD]
    * [length]
    *  {number expression}
@@ -267,11 +266,11 @@ public class OpCodes
    *
    * returns:
    *  XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_MOD = 14;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_QUO]
    * [length]
    *  {number expression}
@@ -279,72 +278,73 @@ public class OpCodes
    *
    * returns:
    *  XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_QUO = 15;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_NEG]
    * [length]
    *  {number expression}
    *
    * returns:
    *  XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_NEG = 16;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_STRING] (cast operation)
    * [length]
    *  {expression}
    *
    * returns:
    *  XString
+   * @xsl.usage advanced
    */
   public static final int OP_STRING = 17;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_BOOL] (cast operation)
    * [length]
    *  {expression}
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_BOOL = 18;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_NUMBER] (cast operation)
    * [length]
    *  {expression}
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int OP_NUMBER = 19;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_UNION]
    * [length]
    *  {PathExpr}+
    *
    * returns:
    *  XNodeSet
+   * @xsl.usage advanced
    */
   public static final int OP_UNION = 20;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_LITERAL]
    * [3]
    * [index to token]
    *
    * returns:
    *  XString
+   * @xsl.usage advanced
    */
   public static final int OP_LITERAL = 21;
 
@@ -353,7 +353,6 @@ public class OpCodes
   static final int FIRST_NODESET_OP = 22;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_VARIABLE]
    * [4]
    * [index to namespace token, or EMPTY]
@@ -361,11 +360,11 @@ public class OpCodes
    *
    * returns:
    *  XString
+   * @xsl.usage advanced
    */
   public static final int OP_VARIABLE = 22;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_GROUP]
    * [length]
    *  {expression}
@@ -377,11 +376,11 @@ public class OpCodes
    *  XBoolean
    *  XRTree
    *  XObject
+   * @xsl.usage advanced
    */
   public static final int OP_GROUP = 23;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_EXTFUNCTION] (Extension function.)
    * [length]
    * [index to namespace token]
@@ -395,11 +394,11 @@ public class OpCodes
    *  XBoolean
    *  XRTree
    *  XObject
+   * @xsl.usage advanced
    */
   public static final int OP_EXTFUNCTION = 24;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_FUNCTION]
    * [length]
    * [FUNC_name]
@@ -413,6 +412,7 @@ public class OpCodes
    *  XBoolean
    *  XRTree
    *  XObject
+   * @xsl.usage advanced
    */
   public static final int OP_FUNCTION = 25;
 
@@ -420,7 +420,6 @@ public class OpCodes
   static final int LAST_NODESET_OP = 25;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_ARGUMENT] (Function argument.)
    * [length]
    *  {expression}
@@ -432,22 +431,22 @@ public class OpCodes
    *  XBoolean
    *  XRTree
    *  XObject
+   * @xsl.usage advanced
    */
   public static final int OP_ARGUMENT = 26;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_NUMBERLIT] (Number literal.)
    * [3]
    * [index to token]
    *
    * returns:
    *  XString
+   * @xsl.usage advanced
    */
   public static final int OP_NUMBERLIT = 27;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_LOCATIONPATH]
    * [length]
    *   {FROM_stepType}
@@ -460,6 +459,7 @@ public class OpCodes
    *
    * returns:
    *  XNodeSet
+   * @xsl.usage advanced
    */
   public static final int OP_LOCATIONPATH = 28;
 
@@ -468,7 +468,6 @@ public class OpCodes
   // public static final int OP_LOCATIONPATH_EX = (28 | 0x00010000);
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_PREDICATE]
    * [length]
    *  {expression}
@@ -476,22 +475,22 @@ public class OpCodes
    *
    * returns:
    *  XBoolean or XNumber
+   * @xsl.usage advanced
    */
   public static final int OP_PREDICATE = 29;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_MATCHPATTERN]
    * [length]
    *  {PathExpr}+
    *
    * returns:
    *  XNodeSet
+   * @xsl.usage advanced
    */
   public static final int OP_MATCHPATTERN = 30;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [OP_LOCATIONPATHPATTERN]
    * [length]
    *   {FROM_stepType}
@@ -499,96 +498,96 @@ public class OpCodes
    * [ENDOP]
    * returns:
    *  XNodeSet
+   * @xsl.usage advanced
    */
   public static final int OP_LOCATIONPATHPATTERN = 31;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODETYPE_COMMENT]
    * No size or arguments.
    * Note: must not overlap function OP number!
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODETYPE_COMMENT = 1030;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODETYPE_TEXT]
    * No size or arguments.
    * Note: must not overlap function OP number!
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODETYPE_TEXT = 1031;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODETYPE_PI]
    * [index to token]
    * Note: must not overlap function OP number!
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODETYPE_PI = 1032;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODETYPE_NODE]
    * No size or arguments.
    * Note: must not overlap function OP number!
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODETYPE_NODE = 1033;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODENAME]
    * [index to ns token or EMPTY]
    * [index to name token]
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODENAME = 34;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODETYPE_ROOT]
    * No size or arguments.
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODETYPE_ROOT = 35;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODETYPE_ANY]
    * No size or arguments.
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODETYPE_ANYELEMENT = 36;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [NODETYPE_ANY]
    * No size or arguments.
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int NODETYPE_FUNCTEST = 1034;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * [FROM_stepType]
    * [length, including predicates]
    * [length of just the step, without the predicates]
@@ -597,6 +596,7 @@ public class OpCodes
    *
    * returns:
    *  XBoolean
+   * @xsl.usage advanced
    */
   public static final int AXES_START_TYPES = 37;
 
@@ -643,20 +643,20 @@ public class OpCodes
   public static final int FROM_ROOT = 50;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * For match patterns.
+   * @xsl.usage advanced
    */
   public static final int MATCH_ATTRIBUTE = 51;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * For match patterns.
+   * @xsl.usage advanced
    */
   public static final int MATCH_ANY_ANCESTOR = 52;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * For match patterns.
+   * @xsl.usage advanced
    */
   public static final int MATCH_IMMEDIATE_ANCESTOR = 53;
 

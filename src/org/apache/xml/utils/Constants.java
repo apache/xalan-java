@@ -57,8 +57,8 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Primary constants used by the XSLT Processor
+ * @xsl.usage advanced
  */
 public class Constants
 {

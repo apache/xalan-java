@@ -63,12 +63,12 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="internal"/>
  * Defines a class to keep track of a stack for
  * template arguments and variables.
  *
  * <p>This has been changed from the previous incarnations of this
  * class to be fairly low level.</p>
+ * @xsl.usage internal
  */
 public class VariableStack implements Cloneable
 {

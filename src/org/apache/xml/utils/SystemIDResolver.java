@@ -63,13 +63,13 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.utils.URI.MalformedURIException;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class is used to resolve relative URIs and SystemID 
  * strings into absolute URIs.
  *
  * <p>This is a generic utility for resolving URIs, other than the 
  * fact that it's declared to throw TransformerException.  Please 
  * see code comments for details on how resolution is performed.</p>
+ * @xsl.usage internal
  */
 public class SystemIDResolver
 {

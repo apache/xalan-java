@@ -62,8 +62,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Mutable version of AttributesImpl.
+ * @xsl.usage advanced
  */
 public class MutableAttrListImpl extends AttributesImpl
         implements Serializable

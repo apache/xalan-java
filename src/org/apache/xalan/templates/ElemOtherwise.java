@@ -58,13 +58,13 @@ package org.apache.xalan.templates;
 
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:otherwise.
  * <pre>
  * <!ELEMENT xsl:otherwise %template;>
  * <!ATTLIST xsl:otherwise %space-att;>
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemOtherwise extends ElemTemplateElement
 {

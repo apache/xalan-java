@@ -57,7 +57,6 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="internal"/>
  * A very simple table that stores a list of byte. Very similar API to our
  * IntVector class (same API); different internal storage.
  * 
@@ -76,6 +75,7 @@ package org.apache.xml.utils;
  * then skip values and setElementAt a higher index again, you may see old data
  * reappear in the truncated-and-restored section. Doing anything else would
  * have performance costs.
+ * @xsl.usage internal
  */
 public class SuballocatedByteVector
 {

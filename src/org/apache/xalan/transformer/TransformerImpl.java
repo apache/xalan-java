@@ -132,10 +132,10 @@ import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements the
  * {@link javax.xml.transform.Transformer} interface, and is the core
  * representation of the transformation execution.</p>
+ * @xsl.usage advanced
  */
 public class TransformerImpl extends Transformer
         implements Runnable, DTMWSFilter, ExtensionsProvider, org.apache.xml.serializer.SerializerTrace
@@ -550,12 +550,12 @@ public class TransformerImpl extends Transformer
   // ========= Transformer Interface Implementation ==========
 
   /**
-   * <meta name="usage" content="experimental"/>
    * Get true if the parser events should be on the main thread,
    * false if not.  Experimental.  Can not be set right now.
    *
    * @return true if the parser events should be on the main thread,
    * false if not.
+   * @xsl.usage experimental
    */
   public boolean isParserEventsOnMain()
   {
@@ -563,10 +563,10 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Get the thread that the transform process is on.
    *
    * @return The thread that the transform process is on, or null.
+   * @xsl.usage internal
    */
   public Thread getTransformThread()
   {
@@ -574,10 +574,10 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Get the thread that the transform process is on.
    *
    * @param t The transform thread, may be null.
+   * @xsl.usage internal
    */
   public void setTransformThread(Thread t)
   {
@@ -1809,7 +1809,6 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Given a stylesheet element, create a result tree fragment from it's
    * contents. The fragment will be built within the shared RTF DTM system
    * used as a variable stack.
@@ -1817,6 +1816,7 @@ public class TransformerImpl extends Transformer
    * @return the NodeHandle for the root node of the resulting RTF.
    *
    * @throws TransformerException
+   * @xsl.usage advanced
    */
   public int transformToRTF(ElemTemplateElement templateParent)
           throws TransformerException
@@ -1828,7 +1828,6 @@ public class TransformerImpl extends Transformer
   }
   
   /**
-   * <meta name="usage" content="advanced"/>
    * Given a stylesheet element, create a result tree fragment from it's
    * contents. The fragment will also use the shared DTM system, but will
    * obtain its space from the global variable pool rather than the dynamic
@@ -1840,6 +1839,7 @@ public class TransformerImpl extends Transformer
    * @return the NodeHandle for the root node of the resulting RTF.
    *
    * @throws TransformerException
+   * @xsl.usage advanced
    */
   public int transformToGlobalRTF(ElemTemplateElement templateParent)
           throws TransformerException
@@ -1851,7 +1851,6 @@ public class TransformerImpl extends Transformer
   }
   
   /**
-   * <meta name="usage" content="advanced"/>
    * Given a stylesheet element, create a result tree fragment from it's
    * contents.
    * @param templateParent The template element that holds the fragment.
@@ -1859,6 +1858,7 @@ public class TransformerImpl extends Transformer
    * @return the NodeHandle for the root node of the resulting RTF.
    *
    * @throws TransformerException
+   * @xsl.usage advanced
    */
   private int transformToRTF(ElemTemplateElement templateParent,DTM dtmFrag)
           throws TransformerException
@@ -1933,11 +1933,11 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Get the StringWriter pool, so that StringWriter
    * objects may be reused.
    *
    * @return The string writer pool, not null.
+   * @xsl.usage internal
    */
   public ObjectPool getStringWriterPool()
   {
@@ -1945,7 +1945,6 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Take the contents of a template element, process it, and
    * convert it to a string.
    *
@@ -1958,6 +1957,7 @@ public class TransformerImpl extends Transformer
    * @return The stringized result of executing the elements children.
    *
    * @throws TransformerException
+   * @xsl.usage advanced
    */
   public String transformToString(ElemTemplateElement elem)
           throws TransformerException
@@ -2035,7 +2035,6 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Given an element and mode, find the corresponding
    * template and process the contents.
    *
@@ -2045,6 +2044,7 @@ public class TransformerImpl extends Transformer
    * @param mode The current mode, may be null.
    * @throws TransformerException
    * @return true if applied a template, false if not.
+   * @xsl.usage advanced
    */
   public boolean applyTemplateToNode(ElemTemplateElement xslInstruction,  // xsl:apply-templates or xsl:for-each
                                      ElemTemplate template, int child)
@@ -2214,7 +2214,6 @@ public class TransformerImpl extends Transformer
   
   
   /**
-   * <meta name="usage" content="advanced"/>
    * Execute each of the children of a template element.  This method
    * is only for extension use.
    *
@@ -2227,6 +2226,7 @@ public class TransformerImpl extends Transformer
    * should be fed.
    *
    * @throws TransformerException
+   * @xsl.usage advanced
    */
   public void executeChildTemplates(
           ElemTemplateElement elem, org.w3c.dom.Node context, QName mode, ContentHandler handler)
@@ -2254,7 +2254,6 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Execute each of the children of a template element.
    *
    * @param transformer The XSLT transformer instance.
@@ -2266,6 +2265,7 @@ public class TransformerImpl extends Transformer
    * @param shouldAddAttrs true if xsl:attributes should be executed.
    *
    * @throws TransformerException
+   * @xsl.usage advanced
    */
   public void executeChildTemplates(
           ElemTemplateElement elem, boolean shouldAddAttrs)
@@ -2341,7 +2341,6 @@ public class TransformerImpl extends Transformer
 //      getStackGuard().pop();
   }
     /**
-      * <meta name="usage" content="advanced"/>
       * Execute each of the children of a template element.
       *
       * @param elem The ElemTemplateElement that contains the children
@@ -2350,6 +2349,7 @@ public class TransformerImpl extends Transformer
       * should be fed.
       *
       * @throws TransformerException
+      * @xsl.usage advanced
       */
      public void executeChildTemplates(
              ElemTemplateElement elem, ContentHandler handler)
@@ -2390,7 +2390,6 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Get the keys for the xsl:sort elements.
    * Note: Should this go into ElemForEach?
    *
@@ -2401,6 +2400,7 @@ public class TransformerImpl extends Transformer
    * @return A Vector of NodeSortKeys, or null.
    *
    * @throws TransformerException
+   * @xsl.usage advanced
    */
   public Vector processSortKeys(ElemForEach foreach, int sourceNodeContext)
           throws TransformerException
@@ -2777,11 +2777,11 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Set the execution context for XPath.
    *
    * @param xcontext A non-null reference to the XPathContext
    * associated with this transformer.
+   * @xsl.usage internal
    */
   public void setXPathContext(XPathContext xcontext)
   {
@@ -2799,11 +2799,11 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Get the object used to guard the stack from
    * recursion.
    *
    * @return The StackGuard object, which should never be null.
+   * @xsl.usage internal
    */
   public StackGuard getStackGuard()
   {

@@ -63,12 +63,12 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:apply-imports.
  * <pre>
  * <!ELEMENT xsl:apply-imports EMPTY>
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#apply-imports">apply-imports in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemApplyImport extends ElemTemplateElement
 {

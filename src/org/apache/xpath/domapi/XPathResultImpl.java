@@ -75,7 +75,6 @@ import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathResult;
 
 /**
- * <meta name="usage" content="experimental"/>
  *
  * The class provides an implementation XPathResult according 
  * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
@@ -93,6 +92,7 @@ import org.w3c.dom.xpath.XPathResult;
  * @see org.apache.xpath.objects.XObject
  * @see org.w3c.dom.xpath.XPathResult
  * 
+ * @xsl.usage experimental
  */
 public class XPathResultImpl implements XPathResult, EventListener {
 

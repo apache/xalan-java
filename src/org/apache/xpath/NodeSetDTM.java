@@ -70,7 +70,6 @@ import org.w3c.dom.traversal.NodeIterator;
 
 
 /**
- * <meta name="usage" content="advanced"/>
  * <p>The NodeSetDTM class can act as either a NodeVector,
  * NodeList, or NodeIterator.  However, in order for it to
  * act as a NodeVector or NodeList, it's required that
@@ -92,6 +91,7 @@ import org.w3c.dom.traversal.NodeIterator;
  * advantage of doing it all here is that all NodeSetDTMs will respond
  * to the same calls; the disadvantage is that some of them may return
  * less-than-enlightening results when you do so.</p>
+ * @xsl.usage advanced
  */
 public class NodeSetDTM extends NodeVector
         implements /* NodeList, NodeIterator, */ DTMIterator, 

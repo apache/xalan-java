@@ -60,8 +60,8 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="internal"/>
  * Simple string part of a complex AVT.
+ * @xsl.usage internal
  */
 public class AVTPartSimple extends AVTPart
 {

@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Boolean() function.
+ * @xsl.usage advanced
  */
 public class FuncBoolean extends FunctionOneArg
 {

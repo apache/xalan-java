@@ -62,9 +62,9 @@ import java.util.NoSuchElementException;
 import org.w3c.dom.Element;
 
 /**
- * <meta name="usage" content="internal"/>
  * Converts enumerated numbers into strings, using the XSL conversion attributes.
  * Having this in a class helps avoid being forced to extract the attributes repeatedly.
+ * @xsl.usage internal
  */
 class NumeratorFormatter
 {

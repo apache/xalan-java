@@ -66,8 +66,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Match pattern step that contains a function.
+ * @xsl.usage advanced
  */
 public class FunctionPattern extends StepPattern
 {

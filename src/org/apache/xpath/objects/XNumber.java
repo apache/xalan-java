@@ -61,9 +61,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 
 /**
- * <meta name="usage" content="general"/>
  * This class represents an XPath number, and is capable of
  * converting the number to other types, such as a string.
+ * @xsl.usage general
  */
 public class XNumber extends XObject
 {

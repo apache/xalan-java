@@ -64,13 +64,13 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class does a pre-order walk of the DTM tree, calling a ContentHandler
  * interface as it goes. As such, it's more like the Visitor design pattern
  * than like the DOM's TreeWalker.
  *
  * I think normally this class should not be needed, because 
  * of DTM#dispatchToEvents.
+ * @xsl.usage advanced
  */
 public class DTMTreeWalker
 {

@@ -61,9 +61,9 @@ import java.util.ListResourceBundle;
 import org.apache.xpath.res.XPATHMessages;
 
 /**
- * <meta name="usage" content="internal"/>
  * Sets things up for issuing error messages.  This class is misnamed, and
  * should be called XalanMessages, or some such.
+ * @xsl.usage internal
  */
 public class XSLMessages extends XPATHMessages
 {

@@ -63,8 +63,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPath;
 
 /**
- * <meta name="usage" content="internal"/>
  * Data structure for use by the NodeSorter class.
+ * @xsl.usage internal
  */
 class NodeSortKey
 {

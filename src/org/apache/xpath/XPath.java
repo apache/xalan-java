@@ -74,9 +74,9 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * The XPath class wraps an expression object and provides general services 
  * for execution of that expression.
+ * @xsl.usage advanced
  */
 public class XPath implements Serializable, ExpressionOwner
 {
@@ -249,7 +249,6 @@ public class XPath implements Serializable, ExpressionOwner
   }
   
   /**
-   * <meta name="usage" content="experimental"/>
    * Given an expression and a context, evaluate the XPath
    * and return the result.
    * 
@@ -263,6 +262,7 @@ public class XPath implements Serializable, ExpressionOwner
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage experimental
    */
   public XObject execute(
           XPathContext xctxt, org.w3c.dom.Node contextNode, 
@@ -276,7 +276,6 @@ public class XPath implements Serializable, ExpressionOwner
   
 
   /**
-   * <meta name="usage" content="experimental"/>
    * Given an expression and a context, evaluate the XPath
    * and return the result.
    * 
@@ -289,6 +288,7 @@ public class XPath implements Serializable, ExpressionOwner
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage experimental
    */
   public XObject execute(
           XPathContext xctxt, int contextNode, PrefixResolver namespaceContext)
@@ -353,7 +353,6 @@ public class XPath implements Serializable, ExpressionOwner
   }
   
   /**
-   * <meta name="usage" content="experimental"/>
    * Given an expression and a context, evaluate the XPath
    * and return the result.
    * 
@@ -366,6 +365,7 @@ public class XPath implements Serializable, ExpressionOwner
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage experimental
    */
   public boolean bool(
           XPathContext xctxt, int contextNode, PrefixResolver namespaceContext)
@@ -590,34 +590,34 @@ public class XPath implements Serializable, ExpressionOwner
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The match score if no match is made.
+   * @xsl.usage advanced
    */
   public static final double MATCH_SCORE_NONE = Double.NEGATIVE_INFINITY;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The match score if the pattern has the form
    * of a QName optionally preceded by an @ character.
+   * @xsl.usage advanced
    */
   public static final double MATCH_SCORE_QNAME = 0.0;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The match score if the pattern pattern has the form NCName:*.
+   * @xsl.usage advanced
    */
   public static final double MATCH_SCORE_NSWILD = -0.25;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The match score if the pattern consists of just a NodeTest.
+   * @xsl.usage advanced
    */
   public static final double MATCH_SCORE_NODETEST = -0.5;
 
   /**
-   * <meta name="usage" content="advanced"/>
    * The match score if the pattern consists of something
    * other than just a NodeTest or just a qname.
+   * @xsl.usage advanced
    */
   public static final double MATCH_SCORE_OTHER = 0.5;
 }

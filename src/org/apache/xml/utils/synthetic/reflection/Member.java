@@ -59,7 +59,6 @@ package org.apache.xml.utils.synthetic.reflection;
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**
- * <meta name="usage" content="internal"/>
  * Member is an interface that reflects identifying
  * information about a single member (a field or a method)
  * or a constructor.
@@ -69,6 +68,7 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  * declarignClass.
  *
  * @see org.apache.xml.utils.synthetic.Class
+ * @xsl.usage internal
  */
 public interface Member
 {

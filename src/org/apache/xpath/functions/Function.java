@@ -65,7 +65,6 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This is a superclass of all XPath functions.  This allows two
  * ways for the class to be called. One method is that the
  * super class processes the arguments and hands the results to
@@ -73,6 +72,7 @@ import org.apache.xpath.objects.XObject;
  * class may process it's own arguments, which is faster since
  * the arguments don't have to be added to an array, but causes
  * a larger code footprint.
+ * @xsl.usage advanced
  */
 public abstract class Function extends Expression
 {

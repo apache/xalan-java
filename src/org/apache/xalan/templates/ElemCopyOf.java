@@ -71,13 +71,13 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:copy-of.
  * <pre>
  * <!ELEMENT xsl:copy-of EMPTY>
  * <!ATTLIST xsl:copy-of select %expr; #REQUIRED>
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#copy-of">copy-of in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemCopyOf extends ElemTemplateElement
 {

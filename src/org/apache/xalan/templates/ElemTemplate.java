@@ -65,7 +65,6 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:template.
  * <pre>
  * <!ELEMENT xsl:template
@@ -84,6 +83,7 @@ import org.apache.xpath.XPathContext;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemTemplate extends ElemTemplateElement
 {

@@ -76,8 +76,8 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 /**
- * <meta name="usage" content="internal"/>
  * To be subclassed by classes that wish to fake being nodes.
+ * @xsl.usage internal
  */
 public class UnImplNode implements Node, Element, NodeList, Document
 {

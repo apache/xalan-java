@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the StringLength() function.
+ * @xsl.usage advanced
  */
 public class FuncStringLength extends FunctionDef1Arg
 {

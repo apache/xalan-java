@@ -60,7 +60,6 @@ import org.apache.xml.utils.synthetic.Class;
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**
- * <meta name="usage" content="internal"/>
  * A Field provides information about, and dynamic access
  * to, a single field of a class or an interface. The reflected
  * field may be a class (static) field or an instance field.
@@ -70,6 +69,7 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  * IllegalArgumentException if a narrowing conversion
  * would occur.
  *
+ * @xsl.usage internal
  */
 public class Field extends Object implements Member
 {

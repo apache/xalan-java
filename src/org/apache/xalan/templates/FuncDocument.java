@@ -80,7 +80,6 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Doc() function.
  *
  * When the document function has exactly one argument and the argument
@@ -93,6 +92,7 @@ import org.apache.xpath.objects.XObject;
  * of the result of calling the document function with the first argument
  * being the string-value of the node, and with the second argument being
  * the second argument passed to the document function.
+ * @xsl.usage advanced
  */
 public class FuncDocument extends Function2Args
 {

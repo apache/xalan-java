@@ -59,9 +59,9 @@ package org.apache.xml.utils;
 import java.util.Hashtable;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class is in support of SerializerToHTML, and acts as a sort
  * of element representative for HTML elements.
+ * @xsl.usage internal
  */
 class ElemDesc
 {

@@ -61,8 +61,8 @@ package org.apache.xml.utils.res;
 //
 
 /**
- * <meta name="usage" content="internal"/>
  * The Chinese resource bundle.
+ * @xsl.usage internal
  */
 public class XResources_zh_CN extends XResourceBundle
 {

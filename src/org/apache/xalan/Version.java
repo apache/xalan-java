@@ -57,7 +57,6 @@
 package org.apache.xalan;
 
 /**
- * <meta name="usage" content="general"/>
  * Administrative class to keep track of the version number of
  * the Xalan release.
  * <P>This class implements the upcoming standard of having
@@ -66,6 +65,7 @@ package org.apache.xalan;
  * org.apache.xalan.processor.Version class.</P>
  * <P>See also: org/apache/xalan/res/XSLTInfo.properties for 
  * information about the version of the XSLT spec we support.</P>
+ * @xsl.usage general
  */
 public class Version
 {

@@ -66,7 +66,6 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:copy.
  * <pre>
  * <!ELEMENT xsl:copy %template;>
@@ -76,6 +75,7 @@ import org.apache.xpath.XPathContext;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#copying">copying in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemCopy extends ElemUse
 {

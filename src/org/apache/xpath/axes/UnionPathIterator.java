@@ -66,12 +66,12 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class extends NodeSetDTM, which implements DTMIterator,
  * and fetches nodes one at a time in document order based on a XPath
  * <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
  * As each node is iterated via nextNode(), the node is also stored
  * in the NodeVector, so that previousNode() can easily be done.
+ * @xsl.usage advanced
  */
 public class UnionPathIterator extends LocPathIterator
         implements Cloneable, DTMIterator, java.io.Serializable, PathComponent

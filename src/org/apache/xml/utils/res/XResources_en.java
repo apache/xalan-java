@@ -61,8 +61,8 @@ package org.apache.xml.utils.res;
 //
 
 /**
- * <meta name="usage" content="internal"/>
  * The English resource bundle.
+ * @xsl.usage internal
  */
 public class XResources_en extends XResourceBundle
 {

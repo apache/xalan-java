@@ -57,22 +57,22 @@
 package org.apache.xpath.objects;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class represents an XPath boolean object, and is capable of
  * converting the boolean to other types, such as a string.
+ * @xsl.usage advanced
  */
 public class XBoolean extends XObject
 {
 
   /**
-   * <meta name="usage" content="internal"/>
    * A true boolean object so we don't have to keep creating them.
+   * @xsl.usage internal
    */
   public static XBoolean S_TRUE = new XBooleanStatic(true);
 
   /**
-   * <meta name="usage" content="internal"/>
    * A true boolean object so we don't have to keep creating them.
+   * @xsl.usage internal
    */
   public static XBoolean S_FALSE = new XBooleanStatic(false);
 

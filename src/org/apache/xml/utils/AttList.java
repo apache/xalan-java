@@ -63,8 +63,8 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 
 /**
- * <meta name="usage" content="internal"/>
  * Wraps a DOM attribute list in a SAX Attributes.
+ * @xsl.usage internal
  */
 public class AttList implements Attributes
 {

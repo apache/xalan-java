@@ -57,11 +57,11 @@
 package org.apache.xalan.processor;
 
 /**
- * <meta name="usage" content="general"/>
  * Administrative class to keep track of the version number of
  * the Xalan release.
  * <P>See also: org/apache/xalan/res/XSLTInfo.properties</P>
  * @deprecated To be replaced by org.apache.xalan.Version.getVersion()
+ * @xsl.usage general
  */
 public class XSLProcessorVersion
 {

@@ -61,7 +61,6 @@ import java.text.DecimalFormatSymbols;
 import org.apache.xml.utils.QName;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:decimal-format.
  * <pre>
  * <!ELEMENT xsl:decimal-format EMPTY>
@@ -80,6 +79,7 @@ import org.apache.xml.utils.QName;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class DecimalFormatProperties extends ElemTemplateElement
 {

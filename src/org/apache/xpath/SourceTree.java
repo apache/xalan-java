@@ -58,9 +58,9 @@ package org.apache.xpath;
 
 
 /**
- * <meta name="usage" content="internal"/>
  * This object represents a Source Tree, and any associated
  * information.
+ * @xsl.usage internal
  */
 public class SourceTree
 {

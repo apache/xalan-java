@@ -84,7 +84,6 @@ public class DOM2Helper extends DOMHelper
   public DOM2Helper(){}
 
   /**
-   * <meta name="usage" content="internal"/>
    * Check node to see if it was created by a DOM implementation
    * that this helper is intended to support. This is currently
    * disabled, and assumes all nodes are acceptable rather than checking
@@ -95,6 +94,7 @@ public class DOM2Helper extends DOMHelper
    * @throws TransformerException if the node is not one which this
    * DOM2Helper can support. If we return without throwing the exception,
    * the node is compatable.
+   * @xsl.usage internal
    */
   public void checkNode(Node node) throws TransformerException
   {
@@ -145,7 +145,6 @@ public class DOM2Helper extends DOMHelper
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Parse an XML document.
    *
    * <p>Right now the Xerces DOMParser class is used.  This needs
@@ -165,6 +164,7 @@ public class DOM2Helper extends DOMHelper
    *        XML document.
    *
    * @throws TransformerException if any checked exception is thrown.
+   * @xsl.usage internal
    */
   public void parse(InputSource source) throws TransformerException
   {

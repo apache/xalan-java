@@ -237,11 +237,11 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 
   
   /**
-   * <meta name="usage" content="advanced"/>
    * Get the head of the walker list.
    *
    * @return The head of the walker list, or null
    * if this iterator does not implement walkers.
+   * @xsl.usage advanced
    */
   public final AxesWalker getFirstWalker()
   {
@@ -249,10 +249,10 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
   }
   
   /**
-   * <meta name="usage" content="advanced"/>
    * Set the head of the walker list.
    * 
    * @param walker Should be a valid AxesWalker.
+   * @xsl.usage advanced
    */
   public final void setFirstWalker(AxesWalker walker)
   {
@@ -261,10 +261,10 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Set the last used walker.
    *
    * @param walker The last used walker, or null.
+   * @xsl.usage advanced
    */
   public final void setLastUsedWalker(AxesWalker walker)
   {
@@ -272,10 +272,10 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Get the last used walker.
    *
    * @return The last used walker, or null.
+   * @xsl.usage advanced
    */
   public final AxesWalker getLastUsedWalker()
   {

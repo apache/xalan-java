@@ -62,13 +62,13 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:comment.
  * <pre>
  * <!ELEMENT xsl:comment %char-template;>
  * <!ATTLIST xsl:comment %space-att;>
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Comments">section-Creating-Comments in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemComment extends ElemTemplateElement
 {

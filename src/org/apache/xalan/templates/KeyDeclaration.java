@@ -60,13 +60,13 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 
 /**
- * <meta name="usage" content="internal"/>
  * Holds the attribute declarations for the xsl:keys element.
  * A stylesheet declares a set of keys for each document using
  * the xsl:key element. When this set of keys contains a member
  * with node x, name y and value z, we say that node x has a key
  * with name y and value z.
  * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
+ * @xsl.usage internal
  */
 public class KeyDeclaration extends ElemTemplateElement
 {

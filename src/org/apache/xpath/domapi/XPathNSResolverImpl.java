@@ -62,7 +62,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.xpath.XPathNSResolver;
 
 /**
- * <meta name="usage" content="experimental"/>
  *
  * The class provides an implementation XPathNSResolver according 
  * to the DOM L3 XPath API Specification, Working Draft 28, March 2002.
@@ -76,6 +75,7 @@ import org.w3c.dom.xpath.XPathNSResolver;
  * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
  * 
  * @see org.w3c.dom.xpath.XPathNSResolver
+ * @xsl.usage experimental
  */
 public class XPathNSResolverImpl extends PrefixResolverDefault implements XPathNSResolver {
 

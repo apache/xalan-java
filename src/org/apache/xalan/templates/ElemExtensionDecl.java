@@ -66,8 +66,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.StringVector;
 
 /**
- * <meta name="usage" content="internal"/>
  * Implement the declaration of an extension element 
+ * @xsl.usage internal
  */
 public class ElemExtensionDecl extends ElemTemplateElement
 {

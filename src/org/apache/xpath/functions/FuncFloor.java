@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Floor() function.
+ * @xsl.usage advanced
  */
 public class FuncFloor extends FunctionOneArg
 {

@@ -63,9 +63,9 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="internal"/>
  * Handle a walk of a tree, but screen out attributes for
  * the result tree.
+ * @xsl.usage internal
  */
 public class TreeWalker2Result extends DTMTreeWalker
 {

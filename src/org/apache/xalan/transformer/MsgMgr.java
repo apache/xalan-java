@@ -114,7 +114,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Warn the user of a problem.
    *
    * @param msg Message text to issue
@@ -122,6 +121,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void warn(SourceLocator srcLctr, String msg) throws TransformerException
   {
@@ -129,7 +129,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Warn the user of a problem.
    *
    * @param msg Message text to issue
@@ -138,6 +137,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void warn(SourceLocator srcLctr, String msg, Object[] args) throws TransformerException
   {
@@ -145,7 +145,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Warn the user of a problem.
    *
    * 
@@ -156,6 +155,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void warn(SourceLocator srcLctr, Node styleNode, Node sourceNode, String msg)
           throws TransformerException
@@ -164,7 +164,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Warn the user of a problem.
    *
    * @param styleNode Stylesheet node
@@ -175,6 +174,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void warn(SourceLocator srcLctr, Node styleNode, Node sourceNode, String msg, Object args[])
           throws TransformerException
@@ -190,7 +190,6 @@ public class MsgMgr
   }
 
   /* This method is not properly i18nized. We need to use the following method
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -215,10 +214,10 @@ public class MsgMgr
       throw new TransformerException(msg, srcLctr);
   }
 
+ * @xsl.usage internal
  */
 
   /**
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -227,6 +226,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void error(SourceLocator srcLctr, String msg) throws TransformerException
   {
@@ -234,7 +234,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -244,6 +243,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void error(SourceLocator srcLctr, String msg, Object[] args) throws TransformerException
   {
@@ -251,7 +251,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -261,6 +260,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void error(SourceLocator srcLctr, String msg, Exception e) throws TransformerException
   {
@@ -268,7 +268,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -279,6 +278,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void error(SourceLocator srcLctr, String msg, Object args[], Exception e) throws TransformerException
   {
@@ -299,7 +299,6 @@ public class MsgMgr
   }
 
   /**
-   *  <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -310,6 +309,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void error(SourceLocator srcLctr, Node styleNode, Node sourceNode, String msg)
           throws TransformerException
@@ -318,7 +318,6 @@ public class MsgMgr
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Tell the user of an error, and probably throw an
    * exception.
    *
@@ -330,6 +329,7 @@ public class MsgMgr
    * the error condition is severe enough to halt processing.
    *
    * @throws TransformerException
+   * @xsl.usage internal
    */
   public void error(SourceLocator srcLctr, Node styleNode, Node sourceNode, String msg, Object args[])
           throws TransformerException

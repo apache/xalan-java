@@ -57,11 +57,11 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="internal"/>
  * A digital search trie for 7-bit ASCII text
  * The API is a subset of java.util.Hashtable
  * The key must be a 7-bit ASCII string
  * The value may be any Java Object
+ * @xsl.usage internal
  */
 public class Trie
 {
@@ -217,8 +217,8 @@ public Object get(final String key)
 }
 
   /**
-   * <meta name="usage" content="internal"/>
    * The node representation for the trie.
+   * @xsl.usage internal
    */
   class Node
   {

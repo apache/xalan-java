@@ -62,8 +62,8 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Base class for functions that accept three arguments.
+ * @xsl.usage advanced
  */
 public class Function3Args extends Function2Args
 {

@@ -67,9 +67,9 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This is the basic node test class for both match patterns and location path
  * steps.
+ * @xsl.usage advanced
  */
 public class NodeTest extends Expression
 {

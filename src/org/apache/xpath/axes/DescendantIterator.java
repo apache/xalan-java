@@ -68,10 +68,10 @@ import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
  * descendant, descendant-or-self, or "//foo" patterns.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @xsl.usage advanced
  */
 public class DescendantIterator extends LocPathIterator
 {

@@ -64,11 +64,11 @@ import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="internal"/>
  * A class that does incremental counting for support of xsl:number.
  * This class stores a cache of counted nodes (m_countNodes).
  * It tries to cache the counted nodes in document order...
  * the node count is based on its position in the cache list
+ * @xsl.usage internal
  */
 public class Counter
 {

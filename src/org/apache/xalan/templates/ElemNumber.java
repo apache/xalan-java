@@ -86,7 +86,6 @@ import org.xml.sax.SAXException;
 // import org.apache.xalan.dtm.*;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:number.
  * <pre>
  * <!ELEMENT xsl:number EMPTY>
@@ -103,6 +102,7 @@ import org.xml.sax.SAXException;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#number">number in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemNumber extends ElemTemplateElement 
 {

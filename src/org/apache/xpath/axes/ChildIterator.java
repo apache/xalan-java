@@ -61,11 +61,11 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
  * "node()" patterns, that is, any children of the
  * context node.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @xsl.usage advanced
  */
 public class ChildIterator extends LocPathIterator
 {

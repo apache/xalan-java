@@ -71,8 +71,8 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Key() function.
+ * @xsl.usage advanced
  */
 public class FuncKey extends Function2Args
 {

@@ -59,7 +59,6 @@ package org.apache.xml.utils.synthetic.reflection;
 import org.apache.xml.utils.synthetic.SynthesisException;
 
 /**
- * <meta name="usage" content="internal"/>
  * A Method provides information about, and access to, a
  * single method on a class or interface. The reflected
  * method may be a class method or an instance method
@@ -75,6 +74,7 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  * That may or may not imply retaining the final return value
  * separately and passing in a how-to-use-it mechanism...?
  *
+ * @xsl.usage internal
  */
 public class Method extends EntryPoint implements Member
 {

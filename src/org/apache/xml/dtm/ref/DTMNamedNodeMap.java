@@ -63,7 +63,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="internal"/>
  * DTMNamedNodeMap is a quickie (as opposed to quick) implementation of the DOM's
  * NamedNodeMap interface, intended to support DTMProxy's getAttributes()
  * call.
@@ -76,6 +75,7 @@ import org.w3c.dom.Node;
  * ***** Also note that there's no fastpath for the by-name query; we search
  * linearly until we find it or fail to find it. Again, that could be
  * optimized at some cost in object creation/storage.
+ * @xsl.usage internal
  */
 public class DTMNamedNodeMap implements NamedNodeMap
 {
@@ -294,8 +294,8 @@ public class DTMNamedNodeMap implements NamedNodeMap
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Simple implementation of DOMException.
+   * @xsl.usage internal
    */
   public class DTMException extends org.w3c.dom.DOMException
   {

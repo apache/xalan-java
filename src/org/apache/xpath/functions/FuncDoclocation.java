@@ -62,9 +62,9 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the proprietary document-location() function, which returns
  * a node set of documents.
+ * @xsl.usage advanced
  */
 public class FuncDoclocation extends FunctionDef1Arg
 {

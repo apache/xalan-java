@@ -61,13 +61,13 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="general"/>
  * This class implements an exception object that all
  * XPath classes will throw in case of an error.  This class
  * extends TransformerException, and may hold other exceptions. In the
  * case of nested exceptions, printStackTrace will dump
  * all the traces of the nested exceptions, not just the trace
  * of this object.
+ * @xsl.usage general
  */
 public class XPathException extends TransformerException
 {

@@ -70,10 +70,10 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.axes.OneStepIteratorForward;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class implements an optimized iterator for 
  * "key()" patterns, matching each node to the 
  * match attribute in one or more xsl:key declarations.
+ * @xsl.usage internal
  */
 public class KeyIterator extends OneStepIteratorForward
 {

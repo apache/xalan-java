@@ -64,8 +64,8 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Event triggered by selection of a node in the style stree.
+ * @xsl.usage advanced
  */
 public class SelectionEvent implements java.util.EventListener
 {

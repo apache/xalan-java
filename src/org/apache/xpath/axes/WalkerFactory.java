@@ -80,7 +80,6 @@ public class WalkerFactory
 {
 
   /**
-   * <meta name="usage" content="advanced"/>
    * This method is for building an array of possible levels
    * where the target element(s) could be found for a match.
    * @param xpath The xpath that is executing.
@@ -94,6 +93,7 @@ public class WalkerFactory
    * @return non-null AxesWalker derivative.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage advanced
    */
   static AxesWalker loadOneWalker(
           WalkingIterator lpi, Compiler compiler, int stepOpCodePos)
@@ -117,7 +117,6 @@ public class WalkerFactory
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * This method is for building an array of possible levels
    * where the target element(s) could be found for a match.
    * @param xpath The xpath that is executing.
@@ -132,6 +131,7 @@ public class WalkerFactory
    * @return non-null AxesWalker derivative.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage advanced
    */
   static AxesWalker loadWalkers(
           WalkingIterator lpi, Compiler compiler, int stepOpCodePos, int stepIndex)

@@ -57,9 +57,9 @@
 package org.apache.xpath;
 
 /**
- * <meta name="usage" content="general"/>
  * Derived from XPathException in order that XPath processor
  * exceptions may be specifically caught.
+ * @xsl.usage general
  */
 public class XPathProcessorException extends XPathException
 {

@@ -63,7 +63,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:sort.
  * <pre>
  * <!ELEMENT xsl:sort EMPTY>
@@ -78,6 +77,7 @@ import org.w3c.dom.Node;
  * any non-whitespace character -->
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#sorting">sorting in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemSort extends ElemTemplateElement
 {

@@ -82,10 +82,10 @@ import org.w3c.dom.traversal.NodeIterator;
 // import org.apache.xalan.xslt.*;
 
 /**
- * <meta name="usage" content="general"/>
  * Provides transformer context to be passed to an extension element.
  *
  * @author Sanjiva Weerawarana (sanjiva@watson.ibm.com)
+ * @xsl.usage general
  */
 public class XSLProcessorContext
 {

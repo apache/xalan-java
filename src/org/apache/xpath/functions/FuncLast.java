@@ -65,8 +65,8 @@ import org.apache.xpath.objects.XObject;
 
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Last() function.
+ * @xsl.usage advanced
  */
 public class FuncLast extends Function
 {

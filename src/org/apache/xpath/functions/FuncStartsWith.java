@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the StartsWith() function.
+ * @xsl.usage advanced
  */
 public class FuncStartsWith extends Function2Args
 {

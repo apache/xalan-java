@@ -60,10 +60,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="general"/>
  * This class implements a generic PrefixResolver that
  * can be used to perform prefix-to-namespace lookup
  * for the XPath object.
+ * @xsl.usage general
  */
 public class PrefixResolverDefault implements PrefixResolver
 {

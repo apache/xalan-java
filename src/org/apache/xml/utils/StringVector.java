@@ -57,9 +57,9 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="internal"/>
  * A very simple table that stores a list of strings, optimized
  * for small lists.
+ * @xsl.usage internal
  */
 public class StringVector implements java.io.Serializable
 {

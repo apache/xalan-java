@@ -75,7 +75,6 @@ import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
  * Represents an extension namespace for XPath that handles java packages
  * that may be fully or partially specified.
  * It is recommended that the class URI be of one of the following forms:
@@ -93,6 +92,7 @@ import org.apache.xpath.objects.XObject;
  *
  * @author <a href="mailto:garyp@firstech.com">Gary L Peskin</a>
  *
+ * @xsl.usage internal
  */
 
 

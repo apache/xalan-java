@@ -60,13 +60,13 @@ import org.apache.xalan.templates.DecimalFormatProperties;
 import org.xml.sax.Attributes;
 
 /**
- * <meta name="usage" content="internal"/>
  * Process xsl:decimal-format by creating a DecimalFormatProperties 
  * object and passing it to the stylesheet.
  * 
  * @see org.apache.xalan.templates.Stylesheet#setDecimalFormat
  * @see org.apache.xalan.templates.DecimalFormatProperties
  * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
+ * @xsl.usage internal
  */
 class ProcessorDecimalFormat extends XSLTElementProcessor
 {

@@ -69,7 +69,6 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:value-of.
  * <pre>
  * <!ELEMENT xsl:value-of EMPTY>
@@ -79,6 +78,7 @@ import org.xml.sax.SAXException;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#value-of">value-of in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemValueOf extends ElemTemplateElement
 {

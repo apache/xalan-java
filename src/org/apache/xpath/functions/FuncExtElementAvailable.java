@@ -65,8 +65,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the ExtElementAvailable() function.
+ * @xsl.usage advanced
  */
 public class FuncExtElementAvailable extends FunctionOneArg
 {

@@ -59,13 +59,13 @@ package org.apache.xml.utils;
 import java.util.EmptyStackException;
 
 /**
- * <meta name="usage" content="internal"/>
  * Implement a stack of simple integers.
  *
  * %OPT%
  * This is currently based on IntVector, which permits fast acess but pays a
  * heavy recopying penalty if/when its size is increased. If we expect deep
  * stacks, we should consider a version based on ChunkedIntVector.
+ * @xsl.usage internal
  */
 public class IntStack extends IntVector
 {

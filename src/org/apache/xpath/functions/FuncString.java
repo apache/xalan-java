@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the String() function.
+ * @xsl.usage advanced
  */
 public class FuncString extends FunctionDef1Arg
 {

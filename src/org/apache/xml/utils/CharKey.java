@@ -57,9 +57,9 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="internal"/>
  * Simple class for fast lookup of char values, when used with
  * hashtables.  You can set the char, then use it as a key.
+ * @xsl.usage internal
  */
 public class CharKey extends Object
 {

@@ -66,16 +66,16 @@ import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.functions.FuncExtFunction;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class holding a table registered extension namespace handlers
+ * @xsl.usage internal
  */
 public class ExtensionsTable
 {  
   /**
-   * <meta name="usage" content="internal"/>
    * Table of extensions that may be called from the expression language
    * via the call(name, ...) function.  Objects are keyed on the call
    * name.
+   * @xsl.usage internal
    */
   public Hashtable m_extensionFunctionNamespaces = new Hashtable();
   
@@ -85,10 +85,10 @@ public class ExtensionsTable
   private StylesheetRoot m_sroot;
   
   /**
-   * <meta name="usage" content="advanced"/>
    * The constructor (called from TransformerImpl) registers the
    * StylesheetRoot for the transformation and instantiates an
    * ExtensionHandler for each extension namespace.
+   * @xsl.usage advanced
    */
   public ExtensionsTable(StylesheetRoot sroot)
     throws javax.xml.transform.TransformerException
@@ -119,13 +119,13 @@ public class ExtensionsTable
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Register an extension namespace handler. This handler provides
    * functions for testing whether a function is known within the
    * namespace and also for invoking the functions.
    *
    * @param uri the URI for the extension.
    * @param extNS the extension handler.
+   * @xsl.usage advanced
    */
   public void addExtensionNamespace(String uri, ExtensionHandler extNS)
   {

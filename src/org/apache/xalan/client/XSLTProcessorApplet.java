@@ -77,7 +77,6 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * <meta name="usage" content="general"/>
  * Provides applet host for the XSLT processor. To perform transformations on an HTML client:
  * <ol>
  * <li>Use an &lt;applet&gt; tag to embed this applet in the HTML client.</li>
@@ -86,6 +85,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  * <li>Call the {@link #getHtmlText} method (or one of the transformToHtml() methods)
  * to perform the transformation and return the result as a String.</li>
  * </ol>
+ * @xsl.usage general
  */
 public class XSLTProcessorApplet extends Applet
 {

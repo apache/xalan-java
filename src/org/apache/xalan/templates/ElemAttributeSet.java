@@ -64,7 +64,6 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:attribute-set.
  * <pre>
  * &amp;!ELEMENT xsl:attribute-set (xsl:attribute)*>
@@ -74,6 +73,7 @@ import org.apache.xml.utils.QName;
  * &amp;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemAttributeSet extends ElemUse
 {

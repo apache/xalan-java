@@ -68,8 +68,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Id() function.
+ * @xsl.usage advanced
  */
 public class FuncId extends FunctionOneArg
 {

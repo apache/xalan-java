@@ -64,8 +64,8 @@ import org.apache.xpath.objects.XString;
 import org.xml.sax.ContentHandler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the normalize-space() function.
+ * @xsl.usage advanced
  */
 public class FuncNormalizeSpace extends FunctionDef1Arg
 {

@@ -68,8 +68,8 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class can sort vectors of DOM nodes according to a select pattern.
+ * @xsl.usage internal
  */
 public class NodeSorter
 {
@@ -490,9 +490,9 @@ public class NodeSorter
 //  }
 
   /**
-   * <meta name="usage" content="internal"/>
    * This class holds the value(s) from executing the given
    * node against the sort key(s). 
+   * @xsl.usage internal
    */
   class NodeCompareElem
   {

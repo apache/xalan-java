@@ -57,10 +57,10 @@
 package org.apache.xalan.transformer;
 
 /**
- * <meta name="usage" content="internal"/>
  * A representation of a result namespace.  One of these will
  * be pushed on the result tree namespace stack for each
  * result tree element.
+ * @xsl.usage internal
  */
 public class ResultNameSpace
 {

@@ -57,8 +57,8 @@
 package org.apache.xalan.templates;
 
 /**
- * <meta name="usage" content="internal"/>
  * Implement Script extension element
+ * @xsl.usage internal
  */
 public class ElemExtensionScript extends ElemTemplateElement
 {

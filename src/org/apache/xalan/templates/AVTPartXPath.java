@@ -64,8 +64,8 @@ import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
  * Simple string part of a complex AVT.
+ * @xsl.usage internal
  */
 public class AVTPartXPath extends AVTPart
 {

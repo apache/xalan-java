@@ -64,8 +64,8 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Substring() function.
+ * @xsl.usage advanced
  */
 public class FuncSubstring extends Function3Args
 {

@@ -67,7 +67,6 @@ import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:with-param.  xsl:with-param is allowed within
  * both xsl:call-template and xsl:apply-templates.
  * <pre>
@@ -78,6 +77,7 @@ import org.apache.xpath.objects.XString;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#element-with-param">element-with-param in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemWithParam extends ElemTemplateElement
 {

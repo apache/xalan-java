@@ -57,9 +57,9 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="general"/>
  * Certain functions may throw this error if they are paired with
  * the incorrect parser.
+ * @xsl.usage general
  */
 public class WrongParserException extends RuntimeException
 {

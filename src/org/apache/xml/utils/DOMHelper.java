@@ -137,7 +137,6 @@ public class DOMHelper
   }
 
   /**
-   * <meta name="usage" content="advanced"/>
    * Tells, through the combination of the default-space attribute
    * on xsl:stylesheet, xsl:strip-space, xsl:preserve-space, and the
    * xml:space attribute, whether or not extra whitespace should be stripped
@@ -147,6 +146,7 @@ public class DOMHelper
    * @return true if the text node should be stripped of extra whitespace.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage advanced
    */
   public boolean shouldStripSourceNode(Node textNode)
           throws javax.xml.transform.TransformerException
@@ -473,12 +473,12 @@ public class DOMHelper
   //==========================================================
 
   /**
-   * <meta name="usage" content="internal"/>
    * Get the depth level of this node in the tree (equals 1 for
    * a parentless node).
    *
    * @param n Node to be examined.
    * @return the number of ancestors, plus one
+   * @xsl.usage internal
    */
   public short getLevel(Node n)
   {

@@ -63,9 +63,9 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement a text literal.
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemTextLiteral extends ElemTemplateElement
 {

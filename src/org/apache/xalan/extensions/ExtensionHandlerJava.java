@@ -59,11 +59,11 @@ package org.apache.xalan.extensions;
 import java.util.Hashtable;
 
 /**
- * <meta name="usage" content="internal"/>
  * Abstract base class handling the java language extensions for XPath.
  * This base class provides cache management shared by all of the
  * various java extension handlers.
  *
+ * @xsl.usage internal
  */
 public abstract class ExtensionHandlerJava extends ExtensionHandler
 {

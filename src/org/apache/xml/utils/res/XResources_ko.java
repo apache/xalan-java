@@ -63,8 +63,8 @@ package org.apache.xml.utils.res;
 //
 
 /**
- * <meta name="usage" content="internal"/>
  * The Korean resource bundle.
+ * @xsl.usage internal
  */
 public class XResources_ko extends XResourceBundle
 {

@@ -61,8 +61,8 @@ package org.apache.xml.utils.res;
 //
 
 /**
- * <meta name="usage" content="internal"/>
  * The Georgian resource bundle.
+ * @xsl.usage internal
  */
 public class XResources_ka extends XResourceBundle
 {

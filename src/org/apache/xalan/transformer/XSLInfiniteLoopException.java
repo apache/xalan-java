@@ -57,8 +57,8 @@
 package org.apache.xalan.transformer;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class used to create an Infinite Loop Exception 
+ * @xsl.usage internal
  */
 class XSLInfiniteLoopException
 {

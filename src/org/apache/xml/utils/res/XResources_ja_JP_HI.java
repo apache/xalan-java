@@ -61,8 +61,8 @@ package org.apache.xml.utils.res;
 //
 
 /**
- * <meta name="usage" content="internal"/>
  * The Japanese (Hiragana) resource bundle.
+ * @xsl.usage internal
  */
 public class XResources_ja_JP_HI extends XResourceBundle
 {

@@ -61,7 +61,6 @@ package org.apache.xml.utils.synthetic;
 import java.io.IOException;
 
 /** 
- * <meta name="usage" content="internal"/>
  * This class supports invoking Java compilation from within
  * a Java program. Recent versions of the Java environment have
  * provided such an API (in tools.jar). But that isn't available
@@ -73,6 +72,7 @@ import java.io.IOException;
  * such as Microsoft's VJ++ -- where the classpath as seen in
  * the System Properties may not be the one the user expects.
  * The code here is parameterized to try to deal with that.
+ * @xsl.usage internal
  */
 public class JavaUtils
 {

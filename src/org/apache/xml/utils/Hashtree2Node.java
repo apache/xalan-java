@@ -66,7 +66,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="general"/>
  * Simple static utility to convert Hashtable to a Node.  
  *
  * Please maintain JDK 1.1.x compatibility; no Collections!
@@ -75,6 +74,7 @@ import org.w3c.dom.Node;
  * @see org.apache.xalan.lib.Extensions
  * @author shane_curcuru@us.ibm.com
  * @version $Id$
+ * @xsl.usage general
  */
 public abstract class Hashtree2Node
 {

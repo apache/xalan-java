@@ -68,7 +68,6 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:call-template.
  * <pre>
  * &amp;!ELEMENT xsl:call-template (xsl:with-param)*>
@@ -77,6 +76,7 @@ import org.apache.xpath.objects.XObject;
  * &amp;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemCallTemplate extends ElemForEach
 {

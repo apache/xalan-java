@@ -59,9 +59,9 @@ package org.apache.xml.utils.res;
 import java.util.ListResourceBundle;
 
 /**
- * <meta name="usage" content="internal"/>
  * This is an interface for error messages.  This class is misnamed,
  * and should be called XalanResourceBundle, or some such.
+ * @xsl.usage internal
  */
 abstract public class XResourceBundleBase extends ListResourceBundle
 {

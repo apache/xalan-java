@@ -57,11 +57,11 @@
 package org.apache.xml.dtm;
 
 /**
- * <meta name="usage" content="internal"/>
  * Simple implementation of DOMException.
  *
  * %REVIEW% Several classes were implementing this internally;
  * it makes more sense to have one shared version.
+ * @xsl.usage internal
  */
 public class DTMDOMException extends org.w3c.dom.DOMException
 {

@@ -57,9 +57,9 @@
 package org.apache.xpath.functions;
 
 /**
- * <meta name="usage" content="advanced"/>
  * An exception that is thrown if the wrong number of arguments to an exception 
  * are specified by the stylesheet.
+ * @xsl.usage advanced
  */
 public class WrongNumberArgsException extends Exception
 {

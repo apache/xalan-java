@@ -65,10 +65,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements a general iterator for
  * those LocationSteps with only one step, and perhaps a predicate.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @xsl.usage advanced
  */
 public class OneStepIterator extends ChildTestIterator
 {

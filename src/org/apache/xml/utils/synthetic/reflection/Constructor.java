@@ -58,7 +58,6 @@ package org.apache.xml.utils.synthetic.reflection;
 
 
 /**
- * <meta name="usage" content="internal"/>
  * Constructor provides information about, and access to, a
  * single constructor for a class.
  *
@@ -68,6 +67,7 @@ package org.apache.xml.utils.synthetic.reflection;
  * throws an IllegalArgumentException if a narrowing
  * conversion would occur.
  *
+ * @xsl.usage internal
  */
 public class Constructor extends EntryPoint implements Member
 {

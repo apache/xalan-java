@@ -62,7 +62,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * <meta name="usage" content="general"/>
  * This class contains EXSLT math extension functions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
@@ -74,6 +73,7 @@ import org.w3c.dom.NodeList;
  * 
  * @see <a href="http://www.exslt.org/">EXSLT</a>
 
+ * @xsl.usage general
  */
 public class ExsltMath extends ExsltBase
 {

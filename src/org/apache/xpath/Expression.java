@@ -263,7 +263,6 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   }
 
   /**
-   * <meta name="usage" content="experimental"/>
    * Given an select expression and a context, evaluate the XPath
    * and return the resulting iterator.
    *
@@ -276,6 +275,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage experimental
    */
   public DTMIterator asIterator(XPathContext xctxt, int contextNode)
           throws javax.xml.transform.TransformerException
@@ -294,7 +294,6 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   }
   
   /**
-   * <meta name="usage" content="experimental"/>
    * Given an select expression and a context, evaluate the XPath
    * and return the resulting iterator, but do not clone.
    *
@@ -307,6 +306,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
+   * @xsl.usage experimental
    */
   public DTMIterator asIteratorRaw(XPathContext xctxt, int contextNode)
           throws javax.xml.transform.TransformerException

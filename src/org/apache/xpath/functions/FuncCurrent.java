@@ -70,8 +70,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the current() function.
+ * @xsl.usage advanced
  */
 public class FuncCurrent extends Function
 {

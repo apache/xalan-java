@@ -81,11 +81,11 @@ import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class handling an extension namespace for XPath. Provides functions
  * to test a function's existence and call a function
  *
  * @author Sanjiva Weerawarana (sanjiva@watson.ibm.com)
+ * @xsl.usage internal
  */
 public class ExtensionHandlerGeneral extends ExtensionHandler
 {

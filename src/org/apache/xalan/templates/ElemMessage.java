@@ -63,7 +63,6 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:message.
  * <pre>
  * <!ELEMENT xsl:message %template;>
@@ -73,6 +72,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#message">message in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemMessage extends ElemTemplateElement
 {

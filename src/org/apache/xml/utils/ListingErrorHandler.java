@@ -77,7 +77,6 @@ import org.xml.sax.SAXParseException;
 
 
 /**
- * <meta name="usage" content="general"/>
  * Sample implementation of similar SAX ErrorHandler and JAXP ErrorListener.  
  *
  * <p>This implementation is suitable for various use cases, and 
@@ -86,6 +85,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author shane_curcuru@us.ibm.com
  * @version $Id$
+ * @xsl.usage general
  */
 public class ListingErrorHandler implements ErrorHandler, ErrorListener
 {

@@ -61,9 +61,9 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xml.utils.PrefixResolver;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Factory class for creating an XPath.  Implementors of XPath derivatives
  * will need to make a derived class of this.
+ * @xsl.usage advanced
  */
 public interface XPathFactory
 {

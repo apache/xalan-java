@@ -72,10 +72,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.ext.LexicalHandler;
 /**
- * <meta name="usage" content="general"/>
  * This class takes SAX events (in addition to some extra events
  * that SAX doesn't handle yet) and adds the result to a document
  * or document fragment.
+ * @xsl.usage general
  */
 public class DOMBuilder
         implements ContentHandler, LexicalHandler

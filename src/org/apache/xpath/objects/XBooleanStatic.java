@@ -57,9 +57,9 @@
 package org.apache.xpath.objects;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class doesn't have any XPathContext, so override
  * whatever to ensure it works OK.
+ * @xsl.usage internal
  */
 public class XBooleanStatic extends XBoolean
 {

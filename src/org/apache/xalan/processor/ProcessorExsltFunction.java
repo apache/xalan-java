@@ -86,8 +86,8 @@ import org.xml.sax.SAXException;
 
 
 /**
- * <meta name="usage" content="internal"/>
  * This class processes parse events for an exslt func:function element.
+ * @xsl.usage internal
  */
 public class ProcessorExsltFunction extends ProcessorTemplateElem
 {

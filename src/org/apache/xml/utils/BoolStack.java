@@ -58,8 +58,8 @@ package org.apache.xml.utils;
 
 
 /**
- * <meta name="usage" content="internal"/>
  * Simple stack for boolean values.
+ * @xsl.usage internal
  */
 public final class BoolStack implements Cloneable
 {

@@ -70,10 +70,10 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * An object of this class represents an extension call expression.  When
  * the expression executes, it calls ExtensionsTable#extFunction, and then
  * converts the result to the appropriate XObject.
+ * @xsl.usage advanced
  */
 public class FuncExtFunction extends Function
 {

@@ -62,7 +62,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Set up error messages.
  * We build a two dimensional array of message keys and
  * message strings. In order to add a new message here,
@@ -70,6 +69,7 @@ import java.util.ResourceBundle;
  * Key and update the contents array with Key, Value pair
   * Also you need to  update the count of messages(MAX_CODE)or
  * the count of warnings(MAX_WARNING) [ Information purpose only]
+ * @xsl.usage advanced
  */
 public class XPATHErrorResources_tr extends ListResourceBundle
 {

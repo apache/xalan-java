@@ -57,10 +57,10 @@
 package org.apache.xml.utils;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class pools string buffers, since they are reused so often.
  * String buffers are good candidates for pooling, because of 
  * their supporting character arrays.
+ * @xsl.usage internal
  */
 public class StringBufferPool
 {

@@ -67,9 +67,9 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="general"/>
  * Tokenizes and parses XPath expressions. This should really be named
  * XPathParserImpl, and may be renamed in the future.
+ * @xsl.usage general
  */
 public class XPathParser
 {

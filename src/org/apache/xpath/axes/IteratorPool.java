@@ -62,8 +62,8 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.WrappedRuntimeException;
 
 /**
- * <meta name="usage" content="internal"/>
  * Pool of object of a given type to pick from to help memory usage
+ * @xsl.usage internal
  */
 public class IteratorPool implements java.io.Serializable
 {

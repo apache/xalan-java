@@ -63,10 +63,10 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.compiler.Compiler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
  * children patterns that have a node test, and possibly a predicate.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @xsl.usage advanced
  */
 public class ChildTestIterator extends BasicTestIterator
 {

@@ -64,9 +64,9 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.XMLString;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class used to clone a node, possibly including its children to 
  * a result tree.
+ * @xsl.usage internal
  */
 public class ClonerToResultTree
 {

@@ -62,8 +62,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the Concat() function.
+ * @xsl.usage advanced
  */
 public class FuncConcat extends FunctionMultiArgs
 {

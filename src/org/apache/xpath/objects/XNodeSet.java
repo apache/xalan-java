@@ -67,9 +67,9 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
 /**
- * <meta name="usage" content="general"/>
  * This class represents an XPath nodeset object, and is capable of
  * converting the nodeset to other types, such as a string.
+ * @xsl.usage general
  */
 public class XNodeSet extends NodeSequence
 {  

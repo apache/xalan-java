@@ -64,9 +64,9 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Base class for functions that accept one argument that can be defaulted if
  * not specified.
+ * @xsl.usage advanced
  */
 public class FunctionDef1Arg extends FunctionOneArg
 {

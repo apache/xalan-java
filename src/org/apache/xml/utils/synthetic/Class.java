@@ -76,7 +76,6 @@ import org.apache.xml.utils.synthetic.reflection.Method;
 */
 
 /**
- * <meta name="usage" content="internal"/>
  * org.apache.xml.utils.synthetic.Class is a mutable equivalent of java.lang.Class.
  * Instances represent classes and interfaces in a running Java
  * application, or class descriptions under construction. In the
@@ -108,6 +107,7 @@ import org.apache.xml.utils.synthetic.reflection.Method;
  *   (Java source, NetRexx source, etc.)
  *
  * @since  2000/2/10
+ * @xsl.usage internal
  */
 public class Class extends Object implements java.io.Serializable
 {

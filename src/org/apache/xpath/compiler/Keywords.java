@@ -59,8 +59,8 @@ package org.apache.xpath.compiler;
 import java.util.Hashtable;
 
 /**
- * <meta name="usage" content="internal"/>
  * Table of strings to operation code lookups.
+ * @xsl.usage internal
  */
 public class Keywords
 {

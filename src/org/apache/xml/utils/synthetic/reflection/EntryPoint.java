@@ -66,10 +66,10 @@ import org.apache.xml.utils.synthetic.SynthesisException;
  */
 
 /**
- * <meta name="usage" content="internal"/>
  * API/behaviors shared between Constructors and Methods.
  * They're mostly similar, except for what they proxy and
  * a few specific calls (name, invoke/getInstance).
+ * @xsl.usage internal
  */
 abstract public class EntryPoint implements Member
 {

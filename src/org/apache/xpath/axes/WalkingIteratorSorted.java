@@ -61,8 +61,8 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.compiler.Compiler;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class iterates over set of nodes that needs to be sorted.
+ * @xsl.usage internal
  */
 public class WalkingIteratorSorted extends WalkingIterator
 {

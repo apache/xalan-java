@@ -62,9 +62,9 @@ import org.apache.xml.utils.ObjectFactory;
 import org.apache.xpath.functions.Function;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Lazy load of functions into the function table as needed, so we don't 
  * have to load all the functions allowed in XPath and XSLT on startup.
+ * @xsl.usage advanced
  */
 public class FuncLoader
 {

@@ -74,8 +74,8 @@ import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Encapsulates a template list, and helps locate individual templates.
+ * @xsl.usage advanced
  */
 public class TemplateList implements java.io.Serializable
 {

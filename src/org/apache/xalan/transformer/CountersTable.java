@@ -67,11 +67,11 @@ import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="internal"/>
  * This is a table of counters, keyed by ElemNumber objects, each
  * of which has a list of Counter objects.  This really isn't a true
  * table, it is more like a list of lists (there must be a technical
  * term for that...).
+ * @xsl.usage internal
  */
 public class CountersTable extends Hashtable
 {

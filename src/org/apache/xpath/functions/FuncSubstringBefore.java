@@ -61,8 +61,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Execute the SubstringBefore() function.
+ * @xsl.usage advanced
  */
 public class FuncSubstringBefore extends Function2Args
 {

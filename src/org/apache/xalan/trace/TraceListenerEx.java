@@ -57,8 +57,8 @@
 package org.apache.xalan.trace;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Extends TraceListener but adds a SelectEnd event.
+ * @xsl.usage advanced
  */
 public interface TraceListenerEx extends TraceListener
 {

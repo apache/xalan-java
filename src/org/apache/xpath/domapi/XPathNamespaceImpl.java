@@ -69,7 +69,6 @@ import org.w3c.dom.xpath.XPathNamespace;
 
 /**
  * 
- *  <meta name="usage" content="experimental"/>
  * 
  * The <code>XPathNamespace</code> interface is returned by 
  * <code>XPathResult</code> interfaces to represent the XPath namespace node 
@@ -103,6 +102,7 @@ import org.w3c.dom.xpath.XPathNamespace;
  * 
  * This implementation wraps the DOM attribute node that contained the 
  * namespace declaration.
+ * @xsl.usage experimental
  */
 
 public class XPathNamespaceImpl implements XPathNamespace {

@@ -68,7 +68,6 @@ import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:variable.
  * <pre>
  * <!ELEMENT xsl:variable %template;>
@@ -78,6 +77,7 @@ import org.apache.xpath.objects.XString;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemVariable extends ElemTemplateElement
 {

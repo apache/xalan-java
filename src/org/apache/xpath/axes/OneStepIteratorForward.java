@@ -62,12 +62,12 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.compiler.Compiler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements a general iterator for
  * those LocationSteps with only one step, and perhaps a predicate, 
  * that only go forward (i.e. it can not be used with ancestors, 
  * preceding, etc.)
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @xsl.usage advanced
  */
 public class OneStepIteratorForward extends ChildTestIterator
 {

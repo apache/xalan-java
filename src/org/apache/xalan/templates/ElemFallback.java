@@ -61,13 +61,13 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:fallback.
  * <pre>
  * <!ELEMENT xsl:fallback %template;>
  * <!ATTLIST xsl:fallback %space-att;>
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#fallback">fallback in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemFallback extends ElemTemplateElement
 {

@@ -65,7 +65,6 @@ import org.apache.xml.res.XMLMessages;
 import org.w3c.dom.Element;
 
 /**
- * <meta name="usage" content="general"/>
  * Class to represent a qualified name: "The name of an internal XSLT object,
  * specifically a named template (see [7 Named Templates]), a mode (see [6.7 Modes]),
  * an attribute set (see [8.1.4 Named Attribute Sets]), a key (see [14.2 Keys]),
@@ -76,6 +75,7 @@ import org.w3c.dom.Element;
  * consisting of the local part of the name and the possibly null URI reference
  * is used as the name of the object. The default namespace is not used for
  * unprefixed names."
+ * @xsl.usage general
  */
 public class QName implements java.io.Serializable
 {

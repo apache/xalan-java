@@ -68,9 +68,9 @@ import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement a Literal Result Element.
  * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemLiteralResult extends ElemUse
 {

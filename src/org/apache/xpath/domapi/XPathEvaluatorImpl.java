@@ -73,7 +73,6 @@ import org.w3c.dom.xpath.XPathExpression;
 import org.w3c.dom.xpath.XPathNSResolver;
 
 /**
- * <meta name="usage" content="experimental"/>
  *
  * The class provides an implementation of XPathEvaluator according 
  * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
@@ -92,6 +91,7 @@ import org.w3c.dom.xpath.XPathNSResolver;
  * 
  * @see org.w3c.dom.xpath.XPathEvaluator
  * 
+ * @xsl.usage experimental
  */
 public class XPathEvaluatorImpl implements XPathEvaluator {
 

@@ -67,9 +67,9 @@ import org.apache.xpath.axes.RTFIterator;
 import org.w3c.dom.NodeList;
 
 /**
- * <meta name="usage" content="general"/>
  * This class represents an XPath result tree fragment object, and is capable of
  * converting the RTF to other types, such as a string.
+ * @xsl.usage general
  */
 public class XRTreeFrag extends XObject implements Cloneable
 {

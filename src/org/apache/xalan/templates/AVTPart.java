@@ -60,9 +60,9 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xpath.XPathContext;
 
 /**
- * <meta name="usage" content="internal"/>
  * Class to hold a part, either a string or XPath,
  * of an Attribute Value Template.
+ * @xsl.usage internal
  */
 public abstract class AVTPart implements java.io.Serializable, XSLTVisitable
 {

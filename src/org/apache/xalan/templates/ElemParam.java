@@ -63,7 +63,6 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implement xsl:param.
  * <pre>
  * <!ELEMENT xsl:param %template;>
@@ -73,6 +72,7 @@ import org.apache.xpath.objects.XObject;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
+ * @xsl.usage advanced
  */
 public class ElemParam extends ElemVariable
 {

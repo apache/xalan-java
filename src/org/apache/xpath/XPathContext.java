@@ -88,10 +88,10 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.XMLReader;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Default class for the runtime execution context for XPath.
  * 
  * <p>This class extends DTMManager but does not directly implement it.</p>
+ * @xsl.usage advanced
  */
 public class XPathContext extends DTMManager // implements ExpressionContext
 {
@@ -669,11 +669,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Set the current context node list.
    *
    * @param nl the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
    * also refered to here as a <term>context node list</term>.
+   * @xsl.usage internal
    */
   public final void pushContextNodeList(DTMIterator nl)
   {
@@ -681,8 +681,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Pop the current context node list.
+   * @xsl.usage internal
    */
   public final void popContextNodeList()
   {
@@ -957,10 +957,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   public void setAxesIteratorStackStacks(Stack s) { m_axesIteratorStack = s; }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Push a TreeWalker on the stack.
    *
    * @param iter A sub-context AxesWalker.
+   * @xsl.usage internal
    */
   public final void pushSubContextList(SubContextList iter)
   {
@@ -968,8 +968,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Pop the last pushed axes iterator.
+   * @xsl.usage internal
    */
   public final void popSubContextList()
   {
@@ -977,10 +977,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
 
   /**
-   * <meta name="usage" content="internal"/>
    * Get the current axes iterator, or return null if none.
    *
    * @return the sub-context node list.
+   * @xsl.usage internal
    */
   public SubContextList getSubContextList()
   {
@@ -989,11 +989,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
   
   /**
-   * <meta name="usage" content="internal"/>
    * Get the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a> 
    * as defined by the XSLT spec.
    *
    * @return the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>.
+   * @xsl.usage internal
    */
 
   public org.apache.xpath.axes.SubContextList getCurrentNodeList()

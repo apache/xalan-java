@@ -60,10 +60,10 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
  * This class holds an instance of an argument on
  * the stack. The value of the argument can be either an
  * XObject or a String containing an expression.
+ * @xsl.usage internal
  */
 public class Arg
 {

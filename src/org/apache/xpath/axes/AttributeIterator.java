@@ -60,10 +60,10 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xpath.compiler.Compiler;
 
 /**
- * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
  * attribute axes patterns.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @xsl.usage advanced
  */
 public class AttributeIterator extends ChildTestIterator
 {
