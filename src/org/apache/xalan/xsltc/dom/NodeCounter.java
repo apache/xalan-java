@@ -289,8 +289,8 @@ public abstract class NodeCounter implements Axis {
      * lang="en".
      */
     private void formatValue(int value, String format, StringBuffer buffer) {
-
         char c = format.charAt(0);
+
         if (Character.isDigit(c)) {
             char zero = (char)(c - Character.getNumericValue(c));
 
@@ -326,10 +326,18 @@ public abstract class NodeCounter implements Axis {
             buffer.append(romanValue(value).toUpperCase());
         } 
 	else {
-            int min = (int) c;
-            int max = (int) c;
-            while (Character.isLetterOrDigit((char) (max+1))) {
-		max++;
+	    int min = (int) c;
+	    int max = (int) c;
+
+	    // Special case for Greek alphabet 
+	    if (c >= 0x3b1 && c <= 0x3c9) {
+		max = 0x3c9;	// omega
+	    }
+	    else {
+		// General case: search for end of group
+		while (Character.isLetterOrDigit((char) (max + 1))) {
+		    max++;
+		}
 	    }
             buffer.append(alphaValue(value, min, max));
         }
