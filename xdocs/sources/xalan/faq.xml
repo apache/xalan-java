@@ -82,6 +82,7 @@
     <faq title='TrAX and JAXP'>
       <q>What are TrAX and JAXP, and are they related?</q>
       <a>
+      	<p><anchor name="trax"/></p>
         <p>TrAX is the Transformation API for XML. In November 2000, TrAX was revised and incorporated into JAXP, the JAVA API for XML
     Processing. JAXP (including TrAX) provides users a standard, vendor-neutral API for working with (and transforming) XML documents. 
     You can use this API to build applications that are not bound to the particular implementation details of a given XML parser or XSL
@@ -146,12 +147,13 @@
       <q>How do I run applications that use the Xalan-Java version 1 API with Xalan-Java 2</q>
       <a>
         <p>The Xalan-Java 1 compatibility API has been deprecated and now purged, so you must use the Xalan-Java 2 API. We strongly encourage you to
-   use the JAVAX 1.1/TrAX API. For more information ,see the next FAQ.</p>
+   use the JAVAX 1.1/TrAX API. For more information ,see the FAQ on <link anchor='trax'>TrAX and JAXP.</link></p>
       </a>
     </faq>
     <faq title='Issues running Xalan-Java on JDK 1.3'>
       <q>I'm having a problem building or running Xalan-Java on the JDK 1.3.</q>
       <a>
+        <p><anchor name='jdk13'/></p>
         <p>The JDK 1.3 automatically places everything in the lib/ext directory in front of everything you place on the classpath. If this directory contains a version of DOM, JAXP, or Xerces that predates the Xalan-Java distribution you are using, you may have problems!</p>
         <p>The IBM JDK 1.3 includes an earlier version of xerces.jar in the lib/ext directory, a version that does not implement the JAXP 1.1 interfaces and therefore does not work with the current Xalan-Java release. Accordingly, you must either purge the xerces.jar that is in that directory or replace it with the xercesImpl.jar that is included with the Xalan-Java distribution.</p>
         <p>The SUN JDK 1.3 includes a pre-1.1 version of the JAXP in crimson.jar. Either purge the crimson.jar in that directory or overwrite it with a newer crimson.jar that includes and implements the JAXP 1.1 interfaces.</p>
@@ -160,6 +162,7 @@
     <faq title='Issues running Xalan-Java on JDK 1.4'>
       <q>I'm having a problem running Xalan-Java on the JDK 1.4.</q>
       <a>
+        <p><anchor name='jdk14'/></p>      
         <p>The Sun JDK 1.4 is packaged with an old version (2.2D11) of Xalan-Java. The JDK 1.4 will attempt to use this version instead of any on the classpath. Unfortunately, this causes problems when attempting to use a newer version of Xalan-Java with the Sun JDK 1.4.</p>
         <p>You can always determine which version of Xalan-Java you are running by using the
           <link anchor='environmentcheck'>EnvironmentCheck</link> class or by using the xalan:checkEnvironment extension function. It is highly recommended that you use this method to verify the version of Xalan-Java you are running, especially before opening a bug report.
@@ -205,6 +208,7 @@
         the pgp.com site. Once you have a version of PGP installed, you
         should be able to 'verify the signature' of the .sig file, which basically verifies that the corresponding 
         .zip or tar.gz file has not been changed since we signed it.</p>
+        <p>The PGP key can be found in <jump href='http://cvs.apache.org/viewcvs.cgi/xml-xalan/java/KEYS'>CVS.</jump></p>
       </a>
     </faq>
   </group>
@@ -269,6 +273,21 @@
             <link anchor='get-todo-list' idref='samples'>get-todo-list</link>.
           </li>
         </ul>
+      </a>
+    </faq>
+    <faq title="JAXP factory lookup procedure">
+      <q>What is the JAXP factory lookup procedure and does it affect performance?</q>
+      <a>
+      <p>JAXP uses an ordered lookup procedure to find factory implementations, such as
+         an implementation of javax.xml.transform.TransformerFactory.  For information
+         on this procedure, refer to Section 3 Plugability in <resource-ref idref='jaxp11'/>.  
+       </p>
+       <p>In most cases, Factory classes need only be looked up once for an application, so
+          performance is not an issue.  However, there may be scenarios where the lookup
+          procedure executes multiple times which could impact performance.  In these cases,
+          users may want to set system properties or populate the jaxp.properties file in order
+          to shorten the time spent in the lookup procedure.
+       </p>   
       </a>
     </faq>
   </group>
@@ -460,6 +479,16 @@ file:///
         <p>For a slightly more detailed example, see org.apache.xml.utils.SystemIDResolver.</p>
       </a>
     </faq>
+    <faq title="No more DTM IDs are available">
+       <q>What does: "XSLT Error (javax.xml.transform.TransformerException): org.apache.xml.dtm.DTMException: No more DTM IDs are available" mean?</q>
+       <a>
+         <p>It means you are probably using a very old version of Xalan, likely the version 2.2D11 which
+            was packaged in JDK1.4.  Architectural changes made in early 2002 should have eliminated this issue
+            for almost all cases.</p>
+         <p>You should verify the version of Xalan you are using by running the <link anchor='environmentcheck'>EnvironmentCheck</link> utility, 
+            and read the FAQ about <link anchor='jdk14'>Issues running Xalan-Java on JDK 1.4</link>.</p>
+        </a>        
+    </faq>
   </group>
   <group title='Miscellaneous'>
     <faq title='Chaining transformations'>
@@ -478,7 +507,6 @@ file:///
         <p>For the details and links to examples, see
           <link anchor='outasin' idref='usagepatterns'>Using transformation output as input for 
     another transformation</link>.
-          <anchor name='jdk13' />
         </p>
       </a>
     </faq>
