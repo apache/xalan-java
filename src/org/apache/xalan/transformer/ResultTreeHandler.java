@@ -58,6 +58,8 @@ package org.apache.xalan.transformer;
 
 import java.util.Enumeration;
 
+import org.apache.xalan.processor.StylesheetHandler;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.ElemTemplate;
@@ -1429,34 +1431,42 @@ public class ResultTreeHandler extends QueuedEvents
     // an error? Technically, this can't happen unless the stylesheet
     // is unreasonable... but it's unclear whether silent or noisy
     // failure is called for.
+    // Will add an "else" and emit a warning message.  This should
+    // cover testcases such as copyerr04-07, attribset19,34,35, 
+    // attribseterr08...(is)
     if (m_elemIsPending)
     {
-      // %REVIEW% %OPT% Is this ever needed?????
-      // The check is not needed. See Bugzilla 10306. 
-      // if (!m_nsDeclsHaveBeenAdded)
-	addNSDeclsToAttrs();
+        // %REVIEW% %OPT% Is this ever needed?????
+        // The check is not needed. See Bugzilla 10306. 
+        // if (!m_nsDeclsHaveBeenAdded)
+        addNSDeclsToAttrs();
 
-      if (null == uri)  // defensive, should not really need this.
-	uri = "";
+        if (null == uri) { // defensive, should not really need this.
+            uri = "";
+        }
 
-      try
-      {
-	if (!rawName.equals("xmlns"))  // don't handle xmlns default namespace.
-	  ensurePrefixIsDeclared(uri, rawName);
-      }
-      catch (org.xml.sax.SAXException se)
-      {
-	throw new TransformerException(se);
-      }
+        try {
+            if (!rawName.equals("xmlns")) { // don't handle xmlns default namespace.
+                ensurePrefixIsDeclared(uri, rawName);
+            }    
+        } catch (org.xml.sax.SAXException se) {
+            throw new TransformerException(se);
+        }
       
-      if (DEBUG)
-	System.out.println("ResultTreeHandler#addAttribute Adding attr: "
+        if (DEBUG) {
+            System.out.println("ResultTreeHandler#addAttribute Adding attr: "
 			   + localName + ", " + uri);
-
-      if (!isDefinedNSDecl(rawName, value))
-	m_attributes.addAttribute(uri, localName, rawName, type, value);
+        }
+        
+        if (!isDefinedNSDecl(rawName, value)) {
+            m_attributes.addAttribute(uri, localName, rawName, type, value);
+        }
+    } else {
+        m_transformer.getMsgMgr().warn(m_stylesheetRoot,
+                                   XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_POSITION,
+                                   new Object[]{ localName });
     }
-  }
+}
 
   /**
    * Return whether or not a namespace declaration is defined
