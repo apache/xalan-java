@@ -115,8 +115,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * pending reduction in number of RTFs.
    * However, I've got a bug in whitespace normalization to fix first.
    */
-  private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
-  //private FastStringBuffer m_chars = new FastStringBuffer(5, 13);
+  //private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
+  private FastStringBuffer m_chars = new FastStringBuffer(5, 13);
 
   /** This vector holds offset and length data. */
   protected SuballocatedIntVector m_data;
