@@ -292,9 +292,9 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       License</jump>.</note>
       <p>Run this sample from the extensions subdirectory with (adjust the Windows CLASSPATH setting 
       below for your operating environment):</p>
-      <p><code>java org.apache.xalan.xslt.Process</code> 
-      <br/>&nbsp;&nbsp;<code>-cp instantdb/idb.jar;%CLASSPATH%</code>
-      <br/>&nbsp;&nbsp;<code>-xsl 6-sqllib-instantdb -out import1.html</code></p>
+      <p><code>java -cp instantdb/idb.jar;%CLASSPATH%</code> 
+      <br/>&nbsp;&nbsp;org.apache.xalan.xslt.Process<code></code>
+      <br/>&nbsp;&nbsp;<code>-xsl 6-sqllib-instantdb.xsl -out import1.html</code></p>
       </s3>
     </s2><anchor name="trace"/>
     <s2 title="Trace">
