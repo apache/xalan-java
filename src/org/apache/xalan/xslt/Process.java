@@ -86,9 +86,9 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.xalan.Version;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.trace.PrintTraceListener;
-import org.apache.xalan.trace.TraceManager;
-import org.apache.xalan.transformer.XalanProperties;
+//import org.apache.xalan.trace.PrintTraceListener;
+//import org.apache.xalan.trace.TraceManager;
+//import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.ObjectFactory;
 
@@ -207,13 +207,13 @@ public class Process
     }
     else
     {
-      boolean useXSLTC = false;
+      boolean useXSLTC = true;
       for (int i = 0; i < argv.length; i++)
       {
-        if ("-XSLTC".equalsIgnoreCase(argv[i]))
-        {
-          useXSLTC = true;
-        }
+//        if ("-XSLTC".equalsIgnoreCase(argv[i]))
+//        {
+//          useXSLTC = true;
+//        }
       }
         
       TransformerFactory tfactory;
@@ -249,7 +249,7 @@ public class Process
       String dumpFileName = null;
       String xslFileName = null;
       String treedumpFileName = null;
-      PrintTraceListener tracer = null;
+//      PrintTraceListener tracer = null;
       String outputType = null;
       String media = null;
       Vector params = new Vector();
@@ -269,10 +269,11 @@ public class Process
         {
           if (!useXSLTC)
           {
-            if (null == tracer)
-              tracer = new PrintTraceListener(diagnosticsWriter);
-
-            tracer.m_traceTemplates = true;
+// %TODO%:  Add support for trace listeners to XSLTC
+//            if (null == tracer)
+//              tracer = new PrintTraceListener(diagnosticsWriter);
+//
+//            tracer.m_traceTemplates = true;
           }
           else
             printInvalidXSLTCOption("-TT");
@@ -283,10 +284,11 @@ public class Process
         {
           if (!useXSLTC)
           {
-            if (null == tracer)
-              tracer = new PrintTraceListener(diagnosticsWriter);
-
-            tracer.m_traceGeneration = true;
+// %TODO%:  Add support for trace listeners to XSLTC
+//            if (null == tracer)
+//              tracer = new PrintTraceListener(diagnosticsWriter);
+//
+//            tracer.m_traceGeneration = true;
           }
           else
             printInvalidXSLTCOption("-TG");
@@ -297,10 +299,11 @@ public class Process
         {
           if (!useXSLTC)
           {
-            if (null == tracer)
-              tracer = new PrintTraceListener(diagnosticsWriter);
-
-            tracer.m_traceSelection = true;
+// %TODO%:  Add support for trace listeners to XSLTC
+//            if (null == tracer)
+//              tracer = new PrintTraceListener(diagnosticsWriter);
+//
+//            tracer.m_traceSelection = true;
           }
           else
             printInvalidXSLTCOption("-TS");
@@ -311,10 +314,11 @@ public class Process
         {
           if (!useXSLTC)
           {
-            if (null == tracer)
-              tracer = new PrintTraceListener(diagnosticsWriter);
-
-            tracer.m_traceElements = true;
+// %TODO%:  Add support for trace listeners to XSLTC
+//            if (null == tracer)
+//              tracer = new PrintTraceListener(diagnosticsWriter);
+//
+//            tracer.m_traceElements = true;
           }
           else
             printInvalidXSLTCOption("-TTC");
@@ -542,6 +546,7 @@ public class Process
         }
         else if ("-L".equalsIgnoreCase(argv[i]))
         {
+// %TODO%:  Add support for input source location to XSLTC
           if (!useXSLTC)
             useSourceLocation = true;
           else
@@ -549,6 +554,7 @@ public class Process
         }
         else if ("-INCREMENTAL".equalsIgnoreCase(argv[i]))
         {
+// %TODO%:  Incremental support for input source location to XSLTC
           if (!useXSLTC)
             tfactory.setAttribute
               ("http://xml.apache.org/xalan/features/incremental", 
@@ -563,6 +569,7 @@ public class Process
           // %REVIEW% We should have a generalized syntax for negative
           // switches...  and probably should accept the inverse even
           // if it is the default.
+// %TODO%:  Add support for turning on and off optimization in XSLTC
           if (!useXSLTC)
             tfactory.setAttribute
               ("http://xml.apache.org/xalan/features/optimize", 
@@ -572,6 +579,7 @@ public class Process
 	}
         else if ("-RL".equalsIgnoreCase(argv[i]))
         {
+// %TODO%:  Add support for recursion limit to XSLTC
           if (!useXSLTC)
           {
             if (i + 1 < argv.length)
@@ -785,9 +793,10 @@ public class Process
 
         SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;
         
-		// This is currently controlled via TransformerFactoryImpl.
-        if (!useXSLTC && useSourceLocation)
-           stf.setAttribute(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);        
+// %TODO%:  Add support for source location to XSLTC
+//		// This is currently controlled via TransformerFactoryImpl.
+//        if (!useXSLTC && useSourceLocation)
+//           stf.setAttribute(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);        
 
         // Did they pass in a stylesheet, or should we get it from the 
         // document?
@@ -821,26 +830,27 @@ public class Process
             transformer.setOutputProperty(OutputKeys.METHOD, outputType);
           }
 
-          if (transformer instanceof org.apache.xalan.transformer.TransformerImpl)
-          {
-            org.apache.xalan.transformer.TransformerImpl impl = (org.apache.xalan.transformer.TransformerImpl)transformer;
-            TraceManager tm = impl.getTraceManager();
-
-            if (null != tracer)
-              tm.addTraceListener(tracer);
-
-            impl.setQuietConflictWarnings(quietConflictWarnings);
-
-			// This is currently controlled via TransformerFactoryImpl.
-            if (useSourceLocation)
-              impl.setProperty(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);
-
-	    if(recursionLimit>0)
-	      impl.setRecursionLimit(recursionLimit);
-
-            // sc 28-Feb-01 if we re-implement this, please uncomment helpmsg in printArgOptions
-            // impl.setDiagnosticsOutput( setQuietMode ? null : diagnosticsWriter );
-          }
+// %TODO%:  Add support for source location to XSLTC
+//          if (transformer instanceof org.apache.xalan.transformer.TransformerImpl)
+//          {
+//            org.apache.xalan.transformer.TransformerImpl impl = (org.apache.xalan.transformer.TransformerImpl)transformer;
+//            TraceManager tm = impl.getTraceManager();
+//
+//            if (null != tracer)
+//              tm.addTraceListener(tracer);
+//
+//            impl.setQuietConflictWarnings(quietConflictWarnings);
+//
+//			// This is currently controlled via TransformerFactoryImpl.
+//            if (useSourceLocation)
+//              impl.setProperty(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);
+//
+//	    if(recursionLimit>0)
+//	      impl.setRecursionLimit(recursionLimit);
+//
+//            // sc 28-Feb-01 if we re-implement this, please uncomment helpmsg in printArgOptions
+//            // impl.setDiagnosticsOutput( setQuietMode ? null : diagnosticsWriter );
+//          }
 
           int nParams = params.size();
 
@@ -932,9 +942,10 @@ public class Process
                 reader = XMLReaderFactory.createXMLReader();
               }
               
-              if (!useXSLTC)
-                stf.setAttribute(org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL, 
-                   Boolean.TRUE);
+// %TODO%:  Add support for incremental transformation to XSLTC
+//              if (!useXSLTC)
+//                stf.setAttribute(org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL, 
+//                   Boolean.TRUE);
                  
               TransformerHandler th = stf.newTransformerHandler(stylesheet);
               
