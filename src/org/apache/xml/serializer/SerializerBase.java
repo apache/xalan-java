@@ -19,8 +19,6 @@
 package org.apache.xml.serializer;
 
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Stack;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -28,7 +26,6 @@ import javax.xml.transform.Transformer;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.BoolStack;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;

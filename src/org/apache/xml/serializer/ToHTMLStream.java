@@ -27,7 +27,6 @@ import javax.xml.transform.Result;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.Trie;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

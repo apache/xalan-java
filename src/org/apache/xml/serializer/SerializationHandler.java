@@ -19,14 +19,9 @@
 package org.apache.xml.serializer;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.util.Properties;
-import java.util.Vector;
 
 import javax.xml.transform.Transformer;
 
-import org.apache.xml.serializer.Serializer;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;

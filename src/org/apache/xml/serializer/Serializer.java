@@ -17,12 +17,10 @@
  * $Id$
  */
 package org.apache.xml.serializer;
-import java.io.Writer;
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Properties;
-
-import org.apache.xml.serializer.DOMSerializer; 
 
 import org.xml.sax.ContentHandler;
 
