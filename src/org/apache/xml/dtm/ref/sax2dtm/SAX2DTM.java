@@ -837,7 +837,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     ensureSize(nodeIndex);
 
     // Do the hard casts here, so we localize changes that may have to be made.
-    m_level[nodeIndex] = (byte) level;
+    m_level.addElement((byte)level); // %REVIEW% setElementAt(level,nodeIndex)?
     m_firstch.setElementAt(canHaveFirstChild ? NOTPROCESSED : DTM.NULL,nodeIndex);
     m_nextsib.setElementAt(NOTPROCESSED,nodeIndex);
     m_prevsib.setElementAt(previousSibling,nodeIndex);

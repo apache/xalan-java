@@ -58,6 +58,7 @@ package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.utils.SuballocatedIntVector;
+import org.apache.xml.utils.SuballocatedByteVector;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.StringBufferPool;
@@ -95,8 +96,18 @@ public abstract class DTMDefaultBase implements DTM
   /** The expanded names, one array element for each node. */
   protected SuballocatedIntVector m_exptype;
 
-  /** levels deep, one array element for each node. */
-  protected byte[] m_level;
+  /** levels deep, one array element for each node.
+   *
+   * %REVIEW% Are 256 levels really enough? (Yes for most docs, but maybe not
+   * for something deeply structured.) Should this be shorts instead? Or give up
+   * and go back to int?
+   *
+   * %REVIEW% We may be concluding that, given some of the other changes DTM
+   * and the new traversal code have bought us, level no longer needs to be
+   * tracked at all. Keep it for now because it's useful as a DTM diagnostic,
+   * but consider phasing it out.
+   */
+  protected SuballocatedByteVector m_level;
 
   /** First child values, one array element for each node. */
   protected SuballocatedIntVector m_firstch;
@@ -206,7 +217,7 @@ public abstract class DTMDefaultBase implements DTM
     }
 
     m_exptype = new SuballocatedIntVector(m_initialblocksize);
-    m_level = new byte[m_initialblocksize];
+    m_level = new SuballocatedByteVector(m_initialblocksize);
     m_firstch = new SuballocatedIntVector(m_initialblocksize);
     m_nextsib = new SuballocatedIntVector(m_initialblocksize);
     m_prevsib = new SuballocatedIntVector(m_initialblocksize);
@@ -439,26 +450,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   protected void ensureSize(int index)
   {
-
-    int capacity = m_level.length;
-
-    if (capacity <= index)
-    {
-      int newcapacity = capacity + m_blocksize;
-      // ps.println("resizing to new capacity: "+newcapacity);
-
-      // We've cut over to SuballocatedIntVector, which is self-
-	  // sizing. 
-	  // %OPT% May want to define a ByteVector as well, though for now we can
-	  // handle m_level the old way...
-      byte[] level = m_level;
-      m_level = new byte[newcapacity];
-      System.arraycopy(level, 0, m_level, 0, capacity);
-      // %REVIEW%
-      m_blocksize = m_blocksize + m_blocksize;
-      if(m_blocksize >= (1024*8))
-        m_blocksize = 1024*8;
-    }
+      // We've cut over to Suballocated*Vector, which are self-sizing. 
   }
 
   /**
@@ -517,7 +509,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     if (identity < m_size)
-      return m_level[identity];
+      return m_level.elementAt(identity);
 
     // Check to see if the information requested has been processed, and, 
     // if not, advance the iterator until we the information has been 
@@ -529,7 +521,7 @@ public abstract class DTMDefaultBase implements DTM
       if (!isMore)
         return NULL;
       else if (identity < m_size)
-        return m_level[identity];
+        return m_level.elementAt(identity);
     }
   }
 

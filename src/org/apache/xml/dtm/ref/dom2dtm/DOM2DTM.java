@@ -183,7 +183,8 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     // Do casts here so that if we change the sizes, the changes are localized.
     // %REVIEW% Remember to change this cast if we change
     // m_level's type, or we may truncate values without warning!
-    m_level[nodeIndex] = (byte)level;
+    //m_level[nodeIndex] = (byte)level;
+    m_level.addElement((byte)level); // setElementAt(level,nodeIndex)?
 
     // %REVIEW% The Namespace Spec currently says that Namespaces are
     // processed in a non-namespace-aware manner, by matching the
@@ -483,7 +484,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
         // Inserting next. NOTE that we force the node type; for
         // coalesced Text, this records CDATASections adjacent to
         // ordinary Text as Text.
-        int level=m_level[m_last_parent]+1;
+        int level=m_level.elementAt(m_last_parent)+1;
         int nextindex=addNode(next,level,m_last_parent,m_last_kid,
                               nexttype);
         m_last_kid=nextindex;
