@@ -539,7 +539,9 @@ public class NodeSequence extends XObject
    */
   public Object clone() throws CloneNotSupportedException
   {
-  	return super.clone();
+          NodeSequence clone = (NodeSequence) super.clone();
+          if (null != m_iter) clone.m_iter = (DTMIterator) m_iter.clone();
+          return clone;
   }
 
 
