@@ -277,7 +277,13 @@ public class XSLTSchema extends XSLTElementDef
                                             XSLTAttributeDef.T_EXPR, false);
     XSLTAttributeDef groupEndWithAttr = new XSLTAttributeDef(null,
                                             "group-ending-with",
-                                            XSLTAttributeDef.T_EXPR, false);                                                                                                                                        
+                                            XSLTAttributeDef.T_EXPR, false);
+    XSLTAttributeDef regexAttrRequired = new XSLTAttributeDef(null,
+                                            "regex",
+                                            XSLTAttributeDef.T_AVT, true);                           
+    XSLTAttributeDef flagsAttr = new XSLTAttributeDef(null,
+                                            "flags",
+                                            XSLTAttributeDef.T_AVT, false);                                                                                                                                   
 		XSLTElementDef charData = new XSLTElementDef(this, null, "text()",
                                 null /*alias */, null /* elements */, null,  /* attributes */
                                 new ProcessorCharacters(),
@@ -298,11 +304,11 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslResultAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false);
-    XSLTElementDef[] templateElements = new XSLTElementDef[26];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[27];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[27];
+    XSLTElementDef[] templateElements = new XSLTElementDef[27];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[28];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[28];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[27];// although should exclude some template elements.
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[28];// although should exclude some template elements.
     
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[16];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -406,14 +412,33 @@ public class XSLTSchema extends XSLTElementDef
                                   new XSLTAttributeDef[]{ selectAttrRequired,
                                                           spaceAttr }, 
                                                new ProcessorTemplateElem(),
-                                  ElemForEach.class /* class object */, true, false, true, 20, true);
-		XSLTElementDef xslForEachGroup = new XSLTElementDef(this,
+                                  ElemForEach.class /* class object */, true, false, true, 20, true);		
+    XSLTElementDef xslMatchingSubstring = new XSLTElementDef(this,
+                                  Constants.S_XSLNAMESPACEURL, "matching-substring",
+                                  null /*alias */, templateElements,  // (#PCDATA %instructions; %result-elements;)*
+                                  new XSLTAttributeDef[]{}, 
+                                               new ProcessorTemplateElem(),
+                                  ElemMatchingSubstring.class /* class object */, false, false, true, 19, false);                                                                                              
+    XSLTElementDef xslNonMatchingSubstring = new XSLTElementDef(this,
+                                  Constants.S_XSLNAMESPACEURL, "non-matching-substring",
+                                  null /*alias */, templateElements,  // (#PCDATA %instructions; %result-elements;)*
+                                  new XSLTAttributeDef[]{}, 
+                                               new ProcessorTemplateElem(),
+                                  ElemNonMatchingSubstring.class /* class object */, false, false, true, 19, false);                                                                                                  
+    XSLTElementDef xslAnalyzeString = new XSLTElementDef(this,
+                                  Constants.S_XSLNAMESPACEURL, "analyze-string",
+                                  null /*alias */, new XSLTElementDef[]{xslMatchingSubstring, xslNonMatchingSubstring},  // (#PCDATA %instructions; %result-elements; | xsl:sort)*
+                                  new XSLTAttributeDef[]{ selectAttrRequired,
+                                                          regexAttrRequired, flagsAttr }, 
+                                               new ProcessorTemplateElem(),
+                                  ElemAnalyzeString.class /* class object */, true, false, false, 20, true);                                  
+    XSLTElementDef xslForEachGroup = new XSLTElementDef(this,
                                   Constants.S_XSLNAMESPACEURL, "for-each-group",
                                   null /*alias */, templateElementsAndSort,  // (#PCDATA %instructions; %result-elements; | xsl:sort)*
                                   new XSLTAttributeDef[]{ selectAttrRequired,
                                                           groupByAttr, groupAdjAttr, groupStartWithAttr, groupEndWithAttr }, 
                                                new ProcessorTemplateElem(),
-                                  ElemForEachGroup.class /* class object */, true, false, true, 20, true);                                  
+                                  ElemForEachGroup.class /* class object */, true, false, true, 20, true);                                                                
     XSLTElementDef xslIf = new XSLTElementDef(this,
                                               Constants.S_XSLNAMESPACEURL,
                                               "if", null /*alias */,
@@ -610,7 +635,8 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslCallTemplate;
     templateElements[i++] = xslApplyImports;
     templateElements[i++] = xslForEach;
-		templateElements[i++] = xslForEachGroup;
+	templateElements[i++] = xslForEachGroup;
+	templateElements[i++] = xslAnalyzeString;
     templateElements[i++] = xslValueOf;
     templateElements[i++] = xslCopyOf;
     templateElements[i++] = xslNumber;

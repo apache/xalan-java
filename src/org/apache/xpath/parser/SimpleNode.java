@@ -320,6 +320,15 @@ m_builtInFunctions.put(
 m_builtInFunctions.put(
       new QName("base-uri"),
       new FuncBaseURI());
+m_builtInFunctions.put(
+      new QName("matches"),
+      new FuncMatches());
+m_builtInFunctions.put(
+      new QName("replace"),
+      new FuncReplace());
+m_builtInFunctions.put(
+      new QName("tokenize"),
+      new FuncTokenize());    
   }
 
   /**

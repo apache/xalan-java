@@ -197,7 +197,7 @@ public class Constants
   ELEMNAME_EXTENSIONSCRIPT = 86, ELEMNAME_OUTPUT = 80,
   ELEMNAME_COMPONENT = 81, ELEMNAME_SCRIPT = 82;
 
-  // Next free number: 96 (88-93 used for XSLT2.0 and EXSLT elements);
+  // Next free number: 99 (88-93 used for XSLT2.0 and EXSLT elements);
 
   /**
    * Literals for XSL element names.  Note that there are more
@@ -282,13 +282,19 @@ public class Constants
     ELEMNAME_FUNCRESULT_STRING = "result",
     ELEMNAME_PRINCIPALRESULTDOCUMENT_STRING = "principal-result-document",
     ELEMNAME_RESULTDOCUMENT_STRING = "result-document",
-    ELEMNAME_NAMESPACE_STRING = "namespace";
+    ELEMNAME_NAMESPACE_STRING = "namespace",
+    ELEMNAME_ANALYZESTRING_STRING = "analyze-string",
+    ELEMNAME_MATCHINGSUBSTRING_STRING = "matching-substring",
+    ELEMNAME_NONMATCHINGSUBSTRING_STRING = "non-matching-substring";
   public static final int
     ELEMNAME_FUNCTION = 88,
     ELEMNAME_FUNCRESULT = 89,
     ELEMNAME_PRINCIPALRESULTDOCUMENT = 90,
     ELEMNAME_RESULTDOCUMENT = 91,
-    ELEMNAME_NAMESPACE = 95;
+    ELEMNAME_NAMESPACE = 95,
+    ELEMNAME_ANALYZESTRING = 96,
+    ELEMNAME_MATCHINGSUBSTRING = 97,
+    ELEMNAME_NONMATCHINGSUBSTRING = 98;
   
   /**
    * Literals for EXSLT function elements.
@@ -331,6 +337,7 @@ public class Constants
       ATTRNAME_EXCLUDE_RESULT_PREFIXES ="exclude-result-prefixes",
       ATTRNAME_EXPR = "expr",
       ATTRNAME_EXTENSIONELEMENTPREFIXES = "extension-element-prefixes",
+      ATTRNAME_FLAGS = "flags",
       ATTRNAME_FORMAT = "format",
       ATTRNAME_FROM = "from",
       ATTRNAME_GROUPINGSEPARATOR = "grouping-separator",
@@ -373,6 +380,7 @@ public class Constants
       ATTRNAME_PERMILLE = "per-mille",
       ATTRNAME_PRIORITY = "priority",
       ATTRNAME_REFID = "refID",
+      ATTRNAME_REGEX = "regex",
       ATTRNAME_RESULTNS = "result-ns",
       ATTRNAME_RESULT_PREFIX = "result-prefix",
       ATTRNAME_SELECT = "select",

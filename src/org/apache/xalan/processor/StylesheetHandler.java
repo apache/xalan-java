@@ -158,6 +158,10 @@ public class StylesheetHandler extends DefaultHandler
           func = new org.apache.xalan.templates.FuncCurrentGroup();
 
           SimpleNode.m_builtInFunctions.put(new QName("current-group"), func);
+          
+          func = new org.apache.xalan.templates.FuncRegexGroup();
+
+          SimpleNode.m_builtInFunctions.put(new QName("regex-group"), func);
         }
       }
     }
