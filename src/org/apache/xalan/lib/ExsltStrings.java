@@ -57,14 +57,9 @@
 package org.apache.xalan.lib;
 
 import org.w3c.dom.*;
-
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSet;
-import org.apache.xml.dtm.ref.DTMNodeProxy;
-
-import java.util.StringTokenizer;
 import javax.xml.parsers.*;
+import org.apache.xpath.NodeSet;
+import java.util.StringTokenizer;
 
 /**
  * <meta name="usage" content="general"/>
@@ -81,7 +76,7 @@ import javax.xml.parsers.*;
  * @see <a href="http://www.exslt.org/">EXSLT</a>
 
  */
-public class ExsltStrings
+public class ExsltStrings extends ExsltBase
 {
   // Reuse the Document object to reduce memory usage.
   private static Document lDoc = null;
@@ -152,11 +147,7 @@ public class ExsltStrings
     for (int i = 0; i < nl.getLength(); i++)
     {
       Node node = nl.item(i);
-      String value = null;
-      if (node instanceof DTMNodeProxy)
-        value = ((DTMNodeProxy)node).getStringValue();
-      else
-        value = node.getNodeValue();
+      String value = toString(node);
       
       if (value != null && value.length() > 0)
         sb.append(value);

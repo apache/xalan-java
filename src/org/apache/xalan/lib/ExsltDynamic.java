@@ -92,7 +92,7 @@ import javax.xml.parsers.*;
  * @see <a href="http://www.exslt.org/">EXSLT</a>
 
  */
-public class ExsltDynamic
+public class ExsltDynamic extends ExsltBase
 {
 
    public static final String EXSL_URI = "http://exslt.org/common";
