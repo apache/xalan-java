@@ -70,6 +70,7 @@ import org.xml.sax.*;
 
 import java.util.*;
 
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
 
@@ -84,6 +85,7 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.CountersTable;
+import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.NodeVector;
 
@@ -596,7 +598,7 @@ public class ElemNumber extends ElemTemplateElement
             throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
+     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
@@ -1129,31 +1131,47 @@ public class ElemNumber extends ElemTemplateElement
     Locale locale = (Locale)getLocale(transformer, contextNode).clone();
 
     // Helper to format local specific numbers to strings.
-    DecimalFormat formatter;
+    DecimalFormat formatter = null;
 
     //synchronized (locale)
     //{
-      formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+    //     formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
     //}
 
     String digitGroupSepValue =
       (null != m_groupingSeparator_avt)
       ? m_groupingSeparator_avt.evaluate(
       transformer.getXPathContext(), contextNode, this) : null;
+      
+      
+    // Validate grouping separator
+    if ((digitGroupSepValue != null) && (digitGroupSepValue.length() != 1))
+    {
+        transformer.getMsgMgr().warn(
+           this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
+           new Object[]{ Constants.ATTRNAME_NAME, m_groupingSeparator_avt.getName() });   
+    }              
+      
+      
     String nDigitsPerGroupValue =
       (null != m_groupingSize_avt)
       ? m_groupingSize_avt.evaluate(
       transformer.getXPathContext(), contextNode, this) : null;
 
     // TODO: Handle digit-group attributes
-    if ((null != digitGroupSepValue) && (null != nDigitsPerGroupValue))
+    if ((null != digitGroupSepValue) && (null != nDigitsPerGroupValue) &&
+        // Ignore if separation value is empty string
+        (digitGroupSepValue.length() > 0))
     {
       try
       {
+        formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
         formatter.setGroupingSize(
           Integer.valueOf(nDigitsPerGroupValue).intValue());
-        formatter.getDecimalFormatSymbols().setGroupingSeparator(
-          digitGroupSepValue.charAt(0));
+        
+        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+        symbols.setGroupingSeparator(digitGroupSepValue.charAt(0));
+        formatter.setDecimalFormatSymbols(symbols);
         formatter.setGroupingUsed(true);
       }
       catch (NumberFormatException ex)
@@ -1343,8 +1361,7 @@ public class ElemNumber extends ElemTemplateElement
             throws javax.xml.transform.TransformerException
   {
 
-    DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
-    String padString = formatter.format(0);
+
     String letterVal =
       (m_lettervalue_avt != null)
       ? m_lettervalue_avt.evaluate(
@@ -1600,7 +1617,9 @@ public class ElemNumber extends ElemTemplateElement
       break;
     }
     default :  // "1"
-      String numString = formatter.format(listElement);
+      DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
+      String padString = formatter == null ? String.valueOf(0) : formatter.format(0);    
+      String numString = formatter == null ? String.valueOf(listElement) : formatter.format(listElement);
       int nPadding = numberWidth - numString.length();
 
       for (int k = 0; k < nPadding; k++)
