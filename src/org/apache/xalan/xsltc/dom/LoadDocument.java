@@ -76,6 +76,7 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
+import org.apache.xml.dtm.ref.EmptyIterator;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -83,15 +84,80 @@ import org.xml.sax.XMLReader;
 public final class LoadDocument {
 
     private static final String NAMESPACE_FEATURE =
-	"http://xml.org/sax/features/namespaces";
+       "http://xml.org/sax/features/namespaces";
 
     /**
-     * Returns an iterator containing a set of nodes from an XML document
-     * loaded by the document() function.
+     * Interprets the arguments passed from the document() function (see
+     * org/apache/xalan/xsltc/compiler/DocumentCall.java) and returns an
+     * iterator containing the requested nodes. Builds a union-iterator if
+     * several documents are requested.
+     * 2 arguments arg1 and arg2.  document(Obj, node-set) call 
      */
-    public static DTMAxisIterator document(String uri, String base,
-					AbstractTranslet translet, DOM dom)
-	throws Exception 
+    public static DTMAxisIterator documentF(Object arg1, DTMAxisIterator arg2,
+                            String xslURI, AbstractTranslet translet, DOM dom)
+    throws TransletException {
+        String baseURI = null;
+        final int arg2FirstNode = arg2.next();
+        if (arg2FirstNode == DTMAxisIterator.END) {
+            //  the second argument node-set is empty
+            return EmptyIterator.getInstance();
+        } else {
+            //System.err.println("arg2FirstNode name: "
+            //                   + dom.getNodeName(arg2FirstNode )+"["
+            //                   +Integer.toHexString(arg2FirstNode )+"]");
+            baseURI = getBaseFromURI(dom.getDocumentURI(arg2FirstNode)); 
+        }
+      
+        try {
+            if (arg1 instanceof String) {
+                if (((String)arg1).length() == 0) {
+                    return document(xslURI, "", translet, dom);
+                } else {
+                    return document((String)arg1, baseURI, translet, dom);
+                }
+            } else if (arg1 instanceof DTMAxisIterator) {
+                return document((DTMAxisIterator)arg1, baseURI, translet, dom);
+            } else {
+                final String err = "document("+arg1.toString()+")";
+                throw new IllegalArgumentException(err);
+            }      
+        } catch (Exception e) {
+            throw new TransletException(e);
+        }
+    }
+    /**
+     * Interprets the arguments passed from the document() function (see
+     * org/apache/xalan/xsltc/compiler/DocumentCall.java) and returns an
+     * iterator containing the requested nodes. Builds a union-iterator if
+     * several documents are requested.
+     * 1 arguments arg.  document(Obj) call
+     */
+    public static DTMAxisIterator documentF(Object arg, String xslURI,
+                    AbstractTranslet translet, DOM dom)
+    throws TransletException {
+        try {
+            if (arg instanceof String) {
+                if (((String)arg).length() == 0) {
+                    return document(xslURI, "", translet, dom);
+                } else {
+                    return document((String)arg, getBaseFromURI(xslURI),
+                                    translet, dom);
+                }
+            } else if (arg instanceof DTMAxisIterator) {
+                return document((DTMAxisIterator)arg, null, translet, dom);
+            } else {
+                final String err = "document("+arg.toString()+")";
+                throw new IllegalArgumentException(err);
+            }      
+        } catch (Exception e) {
+            throw new TransletException(e);
+        }
+    }
+ 
+ 
+    private static DTMAxisIterator document(String uri, String base,
+                    AbstractTranslet translet, DOM dom)
+    throws Exception 
     {
         final String originalUri = uri;
         MultiDOM multiplexer = (MultiDOM)dom;
@@ -99,7 +165,7 @@ public final class LoadDocument {
         // Return an empty iterator if the URI is clearly invalid
         // (to prevent some unncessary MalformedURL exceptions).
         if (uri == null || uri.equals("")) {
-            return(new SingletonIterator(DTM.NULL,true));
+            return(EmptyIterator.getInstance());
         }
 
         // Prepend URI base to URI (from context)
@@ -117,7 +183,7 @@ public final class LoadDocument {
         if (file.exists()) {
             uri = file.toURL().toExternalForm();
         }
-	
+    
         // Check if this DOM has already been added to the multiplexer
         int mask = multiplexer.getDocumentMask(uri);
         if (mask != -1) {
@@ -160,8 +226,8 @@ public final class LoadDocument {
                         ((DTMDefaultBase)((DOMAdapter)multiplexer.getMain())
                                                .getDOMImpl()).m_mgr;
             newdom = (SAXImpl)dtmManager.getDTM(
-                                 new SAXSource(reader, new InputSource(uri)),
-                                 false, null, true, false, translet.hasIdCall());
+                                new SAXSource(reader, new InputSource(uri)),
+                                false, null, true, false, translet.hasIdCall());
 
             translet.prepassDocument(newdom);
 
@@ -173,102 +239,38 @@ public final class LoadDocument {
         multiplexer.addDOMAdapter(domAdapter);
 
         // Create index for any key elements
-        translet.buildKeys(domAdapter, null, null, ((SAXImpl)newdom).getDocument());
+        translet.buildKeys(domAdapter, null, null,
+                           ((SAXImpl)newdom).getDocument());
 
         // Return a singleton iterator containing the root node
         return new SingletonIterator(((SAXImpl)newdom).getDocument(), true);
     }
 
-    /**
-     * Interprets the arguments passed from the document() function (see
-     * org/apache/xalan/xsltc/compiler/DocumentCall.java) and returns an
-     * iterator containing the requested nodes. Builds a union-iterator if
-     * several documents are requested.
-     */
-    public static DTMAxisIterator document(Object arg,String xmlURI,String xslURI,
-					AbstractTranslet translet, DOM dom)
-	throws TransletException {
-	try {
 
-	    // Get the base of the current DOM's URI
-	    if (xmlURI != null) {
-		int sep = xmlURI.lastIndexOf('\\') + 1;
-		if (sep <= 0) {
-		    sep = xmlURI.lastIndexOf('/') + 1;
-	        }
-		xmlURI = xmlURI.substring(0, sep); // could be empty string
-	    }
-	    else {
-		xmlURI = "";
-	    }
+    private static DTMAxisIterator document(DTMAxisIterator arg1,
+                                            String baseURI,
+                                            AbstractTranslet translet, DOM dom)
+    throws Exception
+    {
+        UnionIterator union = new UnionIterator(dom);
+        int node = DTM.NULL;
 
-	    // Get the base of the current stylesheet's URI
-	    if (xslURI != null) {
-		int sep = xslURI.lastIndexOf('\\') + 1;
-		if (sep <= 0) {
-		    sep = xslURI.lastIndexOf('/') + 1;
-	        }
-		xslURI = xslURI.substring(0, sep); // could be empty string
-	    }
-	    else {
-		xslURI = "";
-	    }
+        while ((node = arg1.next()) != DTM.NULL) {
+            String uri = dom.getStringValueX(node);
+            //document(node-set) if true;  document(node-set,node-set) if false
+            if (baseURI  == null) {
+                baseURI = getBaseFromURI(dom.getDocumentURI(node));
+            }
+            union.addIterator(document(uri, baseURI, translet, dom));
+        }
+        return(union);
+    }
+ 
+    private static String getBaseFromURI( String uri){
+        final int backwardSep = uri.lastIndexOf('\\') + 1;
+        final int forwardSep = uri.lastIndexOf('/') + 1;
 
-	    // If the argument is just a single string (an URI) we just return
-	    // the nodes from the one document this URI points to.
-	    if (arg instanceof String) {
-		// First try to load doc relative to current DOM
-		try {
-		    return document((String)arg, xmlURI, translet, dom);
-		}
-		// Then try to load doc relative to original stylesheet
-		catch (java.io.FileNotFoundException e) {
-		    return document((String)arg, xslURI, translet, dom);
-		}
-		catch (org.xml.sax.SAXParseException e) {
-		    return document((String)arg, xslURI, translet, dom);
-		}
-	    }
-	    // Otherwise we must create a union iterator, add the nodes from
-	    // all the DOMs to this iterator, and return the union in the end.
-	    else if (arg instanceof DTMAxisIterator) {
-		UnionIterator union = new UnionIterator(dom);
-		DTMAxisIterator iterator = (DTMAxisIterator)arg;
-		int node;
-
-		while ((node = iterator.next()) != DTM.NULL) {
-		    String uri = dom.getStringValueX(node);
-		    // Get the URI from this node if no xml URI base is set
-		    if ((xmlURI == null) || xmlURI.equals("")) {
-			xmlURI = dom.getDocumentURI(node);
-			int sep = xmlURI.lastIndexOf('\\') + 1;
-			if (sep <= 0) {
-			    sep = xmlURI.lastIndexOf('/') + 1;
-		        }
-			xmlURI = xmlURI.substring(0, sep);
-		    }
-		    // First try to load doc relative to current DOM
-		    try {
-			union.addIterator(document(uri, xmlURI, translet, dom));
-		    }
-		    // Then try to load doc relative to original stylesheet
-		    catch (java.io.FileNotFoundException e) {
-			union.addIterator(document(uri, xslURI, translet, dom));
-		    }
-		}
-		return(union);
-	    }
-	    else {
-		final String err = "document("+arg.toString()+")";
-		throw new IllegalArgumentException(err);
-	    }
-	}
-	catch (TransletException e) {
-	    throw e;
-	}
-	catch (Exception e) {
-	    throw new TransletException(e);
-	}
+        return uri.substring(0, Math.max(backwardSep, forwardSep));
     }
 
 }

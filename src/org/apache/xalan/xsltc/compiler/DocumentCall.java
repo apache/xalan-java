@@ -79,15 +79,15 @@ import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
 final class DocumentCall extends FunctionCall {
 
-    private Expression _uri = null;
-    private Expression _base = null;
-    private Type       _uriType;
+    private Expression _arg1 = null;
+    private Expression _arg2 = null;
+    private Type       _arg1Type;
 
     /**
      * Default function call constructor
      */
     public DocumentCall(QName fname, Vector arguments) {
-	super(fname, arguments);
+        super(fname, arguments);
     }
 
     /**
@@ -96,115 +96,99 @@ final class DocumentCall extends FunctionCall {
      * URI of the document
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	// At least one argument - two at most
-	final int ac = argumentCount();
-	if ((ac < 1) || (ac > 2)) {
-	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
-	    throw new TypeCheckError(msg);
-	}
+        // At least one argument - two at most
+        final int ac = argumentCount();
+        if ((ac < 1) || (ac > 2)) {
+            ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
+            throw new TypeCheckError(msg);
+        }
+        if (getStylesheet() == null) {
+            ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
+            throw new TypeCheckError(msg);
+        }
 
-	// Parse the first argument - the document URI
-	_uri = argument(0);
-	if (_uri instanceof LiteralExpr) {
-	    LiteralExpr expr = (LiteralExpr)_uri;
-	    if (expr.getValue().equals(EMPTYSTRING)) {
-		Stylesheet stylesheet = getStylesheet();
-		if (stylesheet == null) {
-		    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
-		    throw new TypeCheckError(msg);
-		}
-		_uri = new LiteralExpr(stylesheet.getSystemId(), EMPTYSTRING);
-	    }
-	}
+        // Parse the first argument 
+        _arg1 = argument(0);
 
-	_uriType = _uri.typeCheck(stable);
-	if ((_uriType != Type.NodeSet) && (_uriType != Type.String)) {
-	    _uri = new CastExpr(_uri, Type.String);
-	}
+        if (_arg1 == null) {// should not happened 
+            ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMENT_ARG_ERR, this);
+            throw new TypeCheckError(msg);
+        }
 
-	// Parse the second argument - the document URI base
-	if (ac == 2) {
-	    _base = argument(1);
-	    final Type baseType = _base.typeCheck(stable);
-	    
-	    if (baseType.identicalTo(Type.Node)) {
-		_base = new CastExpr(_base, Type.NodeSet);
-	    }
-	    else if (baseType.identicalTo(Type.NodeSet)) {
-		// falls through
-	    }
-	    else {
-		ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMENT_ARG_ERR, this);
-		throw new TypeCheckError(msg);
-	    }
-	}
+        _arg1Type = _arg1.typeCheck(stable);
+        if ((_arg1Type != Type.NodeSet) && (_arg1Type != Type.String)) {
+            _arg1 = new CastExpr(_arg1, Type.String);
+        }
 
-	return _type = Type.NodeSet;
+        // Parse the second argument 
+        if (ac == 2) {
+            _arg2 = argument(1);
+
+            if (_arg2 == null) {// should not happened 
+                ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMENT_ARG_ERR, this);
+                throw new TypeCheckError(msg);
+            }
+
+            final Type arg2Type = _arg2.typeCheck(stable);
+
+            if (arg2Type.identicalTo(Type.Node)) {
+                _arg2 = new CastExpr(_arg2, Type.NodeSet);
+            } else if (arg2Type.identicalTo(Type.NodeSet)) {
+                // falls through
+            } else {
+                ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMENT_ARG_ERR, this);
+                throw new TypeCheckError(msg);
+            }
+        }
+
+        return _type = Type.NodeSet;
     }
-	
+    
     /**
      * Translates the document() function call to a call to LoadDocument()'s
      * static method document().
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
+        final ConstantPoolGen cpg = classGen.getConstantPool();
+        final InstructionList il = methodGen.getInstructionList();
+        final int ac = argumentCount();
 
-	final int domField = cpg.addFieldref(classGen.getClassName(),
-					     DOM_FIELD,
-					     DOM_INTF_SIG);
-	final String docParamList =
-	    "("+OBJECT_SIG+STRING_SIG+STRING_SIG+TRANSLET_SIG+DOM_INTF_SIG+")"+
-	    NODE_ITERATOR_SIG;
-	final int docIdx = cpg.addMethodref(LOAD_DOCUMENT_CLASS,
-					    "document", docParamList);
+        final int domField = cpg.addFieldref(classGen.getClassName(),
+                                             DOM_FIELD,
+                                             DOM_INTF_SIG);
+          
+        String docParamList = null;
+        if (ac == 1) {
+           // documentF(Object,String,AbstractTranslet,DOM)
+           docParamList = "("+OBJECT_SIG+STRING_SIG+TRANSLET_SIG+DOM_INTF_SIG
+                         +")"+NODE_ITERATOR_SIG;
+        } else { //ac == 2; ac < 1 or as >2  was tested in typeChec()
+           // documentF(Object,DTMAxisIterator,String,AbstractTranslet,DOM)
+           docParamList = "("+OBJECT_SIG+NODE_ITERATOR_SIG+STRING_SIG
+                         +TRANSLET_SIG+DOM_INTF_SIG+")"+NODE_ITERATOR_SIG;  
+        }
+        final int docIdx = cpg.addMethodref(LOAD_DOCUMENT_CLASS, "documentF",
+                                            docParamList);
 
-	final int uriIdx = cpg.addInterfaceMethodref(DOM_INTF,
-						     "getDocumentURI",
-						     "(I)"+STRING_SIG);
 
-	final int nextIdx = cpg.addInterfaceMethodref(NODE_ITERATOR,
-						      NEXT, NEXT_SIG);
+        // The URI can be either a node-set or something else cast to a string
+        _arg1.translate(classGen, methodGen);
+        if (_arg1Type == Type.NodeSet) {
+            _arg1.startResetIterator(classGen, methodGen);
+        }
 
-	// The URI can be either a node-set or something else cast to a string
-	_uri.translate(classGen, methodGen);
-	if (_uriType == Type.NodeSet)
-	    _uri.startResetIterator(classGen, methodGen);
-
-	// The base of the URI may be given as a second argument (a node-set)
-	//il.append(methodGen.loadDOM());
-	if (_base != null) {
-		il.append(methodGen.loadDOM());
-	    _base.translate(classGen, methodGen);
-	    il.append(new INVOKEINTERFACE(nextIdx, 1));
-	    il.append(new INVOKEINTERFACE(uriIdx, 2));
-	}
-	else {
-		//TODO: (MM) Need someone to double check me on this
-		// but I think this code was wrong because it would
-		// resolve document() relative to the input xml
-		// rather than relative to the input xsl when there
-		// is no second argument!!!
-		// The context node here would be at runtime in the xml
-		// I think the reason this worked was because if the
-		// xml fails, then the xsl is tried in the current code. 
-	     //il.append(methodGen.loadContextNode());
-	     // Instead just pass in the current stylesheet
-	     // I think this get the stylesheet associated with the
-	     // context node, but...
-	     if (_uriType == Type.NodeSet)
-	     il.append(new PUSH(cpg,""));
-	     else
-	     il.append(new PUSH(cpg, getStylesheet().getSystemId())); 	     
-	}
-	//il.append(new INVOKEINTERFACE(uriIdx, 2));
-	il.append(new PUSH(cpg, getStylesheet().getSystemId()));
-
-	// Feck the rest of the parameters on the stack
-	il.append(classGen.loadTranslet());
-	il.append(DUP);
-	il.append(new GETFIELD(domField));
-	il.append(new INVOKESTATIC(docIdx));
+        if (ac == 2) {
+            //_arg2 == null was tested in typeChec()
+            _arg2.translate(classGen, methodGen);
+            _arg2.startResetIterator(classGen, methodGen);       
+        }
+    
+        // Feck the rest of the parameters on the stack
+        il.append(new PUSH(cpg, getStylesheet().getSystemId()));
+        il.append(classGen.loadTranslet());
+        il.append(DUP);
+        il.append(new GETFIELD(domField));
+        il.append(new INVOKESTATIC(docIdx));
     }
 
 }
