@@ -291,6 +291,7 @@ class ObjectFactory {
 
             synchronized (ObjectFactory.class) {
                 boolean loadProperties = false;
+                FileInputStream fis = null;
                 try {
                     // file existed last time
                     if(fLastModified >= 0) {
@@ -315,35 +316,52 @@ class ObjectFactory {
                         // must never have attempted to read xalan.properties
                         // before (or it's outdeated)
                         fXalanProperties = new Properties();
-                        FileInputStream fis =
-                                         ss.getFileInputStream(propertiesFile);
+                        fis = ss.getFileInputStream(propertiesFile);
                         fXalanProperties.load(fis);
-                        fis.close();
                     }
-	            } catch (Exception x) {
-	                fXalanProperties = null;
-	                fLastModified = -1;
-                        // assert(x instanceof FileNotFoundException
-	                //        || x instanceof SecurityException)
-	                // In both cases, ignore and continue w/ next location
-	            }
+	        } catch (Exception x) {
+	            fXalanProperties = null;
+	            fLastModified = -1;
+                    // assert(x instanceof FileNotFoundException
+	            //        || x instanceof SecurityException)
+	            // In both cases, ignore and continue w/ next location
+	        }
+                finally {
+                    // try to close the input stream if one was opened.
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        }
+                        // Ignore the exception.
+                        catch (IOException exc) {}
+                    }
+                }	            
             }
             if(fXalanProperties != null) {
                 factoryClassName = fXalanProperties.getProperty(factoryId);
             }
         } else {
+            FileInputStream fis = null;
             try {
-                FileInputStream fis =
-                           ss.getFileInputStream(new File(propertiesFilename));
+                fis = ss.getFileInputStream(new File(propertiesFilename));
                 Properties props = new Properties();
                 props.load(fis);
-                fis.close();
                 factoryClassName = props.getProperty(factoryId);
             } catch (Exception x) {
                 // assert(x instanceof FileNotFoundException
                 //        || x instanceof SecurityException)
                 // In both cases, ignore and continue w/ next location
             }
+            finally {
+                // try to close the input stream if one was opened.
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    }
+                    // Ignore the exception.
+                    catch (IOException exc) {}
+                }
+            }               
         }
         if (factoryClassName != null) {
             debugPrintln("found in " + propertiesFilename + ", value="
@@ -568,11 +586,18 @@ class ObjectFactory {
             // XXX Does not handle all possible input as specified by the
             // Jar Service Provider specification
             factoryClassName = rd.readLine();
-            rd.close();
         } catch (IOException x) {
             // No provider found
             return null;
         }
+        finally {
+            try {
+                // try to close the reader.
+                rd.close();
+            }
+            // Ignore the exception.
+            catch (IOException exc) {}
+        }          
 
         if (factoryClassName != null &&
             ! "".equals(factoryClassName)) {
