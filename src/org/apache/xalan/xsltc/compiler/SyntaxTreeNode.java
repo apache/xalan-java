@@ -233,7 +233,9 @@ public abstract class SyntaxTreeNode implements Constants {
     }
 
     public int getImportPrecedence() {
-	return getStylesheet().getImportPrecedence();
+	Stylesheet stylesheet = getStylesheet();
+	if (stylesheet == null) return -666;
+	return stylesheet.getImportPrecedence();
     }
 
     protected Template getTemplate() {

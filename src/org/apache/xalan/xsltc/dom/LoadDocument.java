@@ -178,45 +178,72 @@ public final class LoadDocument {
      * iterator containing the requested nodes. Builds a union-iterator if
      * several documents are requested.
      */
-    public static NodeIterator document(Object arg, String contextURI,
+    public static NodeIterator document(Object arg,String xmlURI,String xslURI,
 					AbstractTranslet translet, DOM dom)
 	throws TransletException {
 	try {
 
-	    String baseURI = "";
+	    // Get the base of the current DOM's URI
+	    if (xmlURI != null) {
+		final int sep = xmlURI.lastIndexOf('/') + 1;
+		xmlURI = xmlURI.substring(0, sep); // could be empty string
+	    }
+	    else {
+		xmlURI = "";
+	    }
 
-	    // Get the base of the conext URI (if any)
-	    if (contextURI != null) {
-		final int sep = contextURI.lastIndexOf('/') + 1;
-		baseURI = contextURI.substring(0, sep); // could be empty string
+	    // Get the base of the current stylesheet's URI
+	    if (xslURI != null) {
+		final int sep = xslURI.lastIndexOf('/') + 1;
+		xslURI = xslURI.substring(0, sep); // could be empty string
+	    }
+	    else {
+		xslURI = "";
 	    }
 
 	    // If the argument is just a single string (an URI) we just return
 	    // the nodes from the one document this URI points to.
 	    if (arg instanceof String) {
-		return document((String)arg, baseURI, translet, dom);
+		// First try to load doc relative to current DOM
+		try {
+		    return document((String)arg, xmlURI, translet, dom);
+		}
+		// Then try to load doc relative to original stylesheet
+		catch (java.io.FileNotFoundException e) {
+		    return document((String)arg, xslURI, translet, dom);
+		}
 	    }
 	    // Otherwise we must create a union iterator, add the nodes from
 	    // all the DOMs to this iterator, and return the union in the end.
-	    else {
+	    else if (arg instanceof NodeIterator) {
 		UnionIterator union = new UnionIterator(dom);
 		NodeIterator iterator = (NodeIterator)arg;
 		int node;
 
 		while ((node = iterator.next()) != DOM.NULL) {
 		    String uri = dom.getNodeValue(node);
-		    if ((baseURI == null) || baseURI.equals("")) {
-			String base = dom.getDocumentURI(node);
-			final int sep = base.lastIndexOf('/') + 1;
-			baseURI = base.substring(0, sep);
+		    // Get the URI from this node if no xml URI base is set
+		    if ((xmlURI == null) || xmlURI.equals("")) {
+			xmlURI = dom.getDocumentURI(node);
+			final int sep = xmlURI.lastIndexOf('/') + 1;
+			xmlURI = xmlURI.substring(0, sep);
 		    }
-		    union.addIterator(document(uri, baseURI, translet, dom));
+		    // First try to load doc relative to current DOM
+		    try {
+			union.addIterator(document(uri, xmlURI, translet, dom));
+		    }
+		    // Then try to load doc relative to original stylesheet
+		    catch (java.io.FileNotFoundException e) {
+			union.addIterator(document(uri, xslURI, translet, dom));
+		    }
 		}
 		return(union);
 	    }
+	    else {
+		throw new IllegalArgumentException("Illegal argument to document() function");
+	    }
 	}
 	catch (Exception e) {
-	    e.printStackTrace();
 	    throw new TransletException(e);
 	}
     }

@@ -173,7 +173,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 		_importedFrom.setImportPrecedence(nextPrecedence);
 	    }
 	}
-	// Set import precedence for the stylesheet that imported this one
+	// Set import precedence for the stylesheet that included this one
 	else if (_includedFrom != null) {
 	    if (_includedFrom.getImportPrecedence() != precedence)
 		_includedFrom.setImportPrecedence(precedence);

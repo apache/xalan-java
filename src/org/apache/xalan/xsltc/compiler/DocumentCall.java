@@ -145,7 +145,7 @@ final class DocumentCall extends FunctionCall {
 					     DOM_FIELD,
 					     DOM_INTF_SIG);
 	final String docParamList =
-	    "("+OBJECT_SIG+STRING_SIG+TRANSLET_SIG+DOM_INTF_SIG+")"+
+	    "("+OBJECT_SIG+STRING_SIG+STRING_SIG+TRANSLET_SIG+DOM_INTF_SIG+")"+
 	    NODE_ITERATOR_SIG;
 	final int docIdx = cpg.addMethodref(LOAD_DOCUMENT_CLASS,
 					    "document", docParamList);
@@ -172,6 +172,7 @@ final class DocumentCall extends FunctionCall {
 	     il.append(methodGen.loadContextNode());
 	}
 	il.append(new INVOKEINTERFACE(uriIdx, 2));
+	il.append(new PUSH(cpg, getStylesheet().getSystemId()));
 
 	// Feck the rest of the parameters on the stack
 	il.append(classGen.loadTranslet());
@@ -179,4 +180,5 @@ final class DocumentCall extends FunctionCall {
 	il.append(new GETFIELD(domField));
 	il.append(new INVOKESTATIC(docIdx));
     }
+
 }

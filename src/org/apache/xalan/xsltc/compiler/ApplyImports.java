@@ -103,15 +103,17 @@ final class ApplyImports extends Instruction {
      * Parse the attributes and contents of an <xsl:apply-imports/> element.
      */
     public void parseContents(Parser parser) {
-	// Indi
+	// Indicate to the top-level stylesheet that all templates must be
+	// compiled into separate methods.
 	Stylesheet stylesheet = getStylesheet();
 	stylesheet.compileTemplatesAsMethods();
 
+	// Get the mode we are currently in (might not be any)
 	Template template = getTemplate();
 	_modeName = template.getModeName();
 	_precedence = template.getImportPrecedence();
 
-	// instantiate Mode if needed, cache (apply temp) function name
+	// Get the method name for <xsl:apply-imports/> in this mode
 	stylesheet = parser.getTopLevelStylesheet();
 	_functionName = stylesheet.getMode(_modeName).functionName(_precedence);
 
@@ -139,15 +141,7 @@ final class ApplyImports extends Instruction {
 	// Push the arguments that are passed to applyTemplates()
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
-
-	/*
-	il.append(methodGen.loadIterator());
-	// Make a clone of the current iterator (this also resets)
-	final int clone = cpg.addInterfaceMethodref(NODE_ITERATOR,
-						    "cloneIterator",
-						    "()"+NODE_ITERATOR_SIG);
-	il.append(new INVOKEINTERFACE(clone, 1));
-	*/
+	// Wrap the current node inside an iterator
 	int init = cpg.addMethodref(SINGLETON_ITERATOR,
 				    "<init>", "("+NODE_SIG+")V");
 	il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
