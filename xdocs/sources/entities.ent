@@ -30,8 +30,8 @@
                  source tree, and we have begun the process of merging XSLTC into Xalan. XSLTC provides a compiler for compiling
                  stylesheets into translets, and a streamlined runtime environment for using translets to transform XML input. 
                  In the near term, XSLTC will appear in a separate JAR file (xsltc.jar) with its own API and command-line
-                 utilities. Over time, we plan to merge the two codebases so that you can use the same JAXP interfaces to perform
-                 transformations with the Xalan transformer and with translets. 
-                 <ref>Requirements and design documents to be written.</ref></p>'>
+                 utilities. You can already use the same JAXP interfaces to perform
+                 transformations with the Xalan transformer and with translets. Over time, we plan to merge the two codebases.
+                 <ref>See <jump href="xsltc/index.html">XSLTC Design Documents</jump>.</ref></p>'>
                 
                 
