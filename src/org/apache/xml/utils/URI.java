@@ -57,6 +57,7 @@ import org.apache.xml.res.XMLMessages;
  */
 public class URI implements Serializable
 {
+    static final long serialVersionUID = 7096266377907081897L;
 
   /**
    * MalformedURIExceptions are thrown in the process of building a URI

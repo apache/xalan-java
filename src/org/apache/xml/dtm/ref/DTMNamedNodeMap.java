@@ -261,7 +261,7 @@ public class DTMNamedNodeMap implements NamedNodeMap
    */
   public class DTMException extends org.w3c.dom.DOMException
   {
-
+          static final long serialVersionUID = -8290238117162437678L;
     /**
      * Constructs a DOM/DTM exception.
      *

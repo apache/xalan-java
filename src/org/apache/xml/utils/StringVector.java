@@ -25,6 +25,7 @@ package org.apache.xml.utils;
  */
 public class StringVector implements java.io.Serializable
 {
+    static final long serialVersionUID = 4995234972032919748L;
 
   /** @serial Size of blocks to allocate           */
   protected int m_blocksize;

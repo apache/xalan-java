@@ -27,6 +27,7 @@ package org.apache.xml.dtm;
  */
 public class DTMDOMException extends org.w3c.dom.DOMException
 {
+    static final long serialVersionUID = 1895654266613192414L;
   /**
    * Constructs a DOM/DTM exception.
    *

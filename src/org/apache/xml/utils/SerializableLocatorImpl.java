@@ -42,6 +42,7 @@ public class SerializableLocatorImpl
 implements org.xml.sax.Locator, java.io.Serializable
 
 {
+    static final long serialVersionUID = -2660312888446371460L;
     /**
      * Zero-argument constructor.
      *

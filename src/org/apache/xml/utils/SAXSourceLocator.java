@@ -34,6 +34,7 @@ import org.xml.sax.helpers.LocatorImpl;
 public class SAXSourceLocator extends LocatorImpl
         implements SourceLocator, Serializable
 {
+    static final long serialVersionUID = 3181680946321164112L;
   /** The SAX Locator object.
    *  @serial
    */

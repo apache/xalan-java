@@ -28,6 +28,7 @@ import org.apache.xml.dtm.DTM;
  */
 public class NodeVector implements Serializable, Cloneable
 {
+    static final long serialVersionUID = -713473092200731870L;
 
   /**
    * Size of blocks to allocate.

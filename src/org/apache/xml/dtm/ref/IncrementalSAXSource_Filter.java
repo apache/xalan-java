@@ -683,6 +683,7 @@ implements IncrementalSAXSource, ContentHandler, DTDHandler, LexicalHandler, Err
       startParse() thread. Only its type is important. */
   class StopException extends RuntimeException
   {
+          static final long serialVersionUID = -1129245796185754956L;
   }
 
   /** deliverMoreNodes() is a simple API which tells the coroutine

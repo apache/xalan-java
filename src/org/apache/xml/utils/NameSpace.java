@@ -28,6 +28,7 @@ import java.io.Serializable;
  */
 public class NameSpace implements Serializable
 {
+    static final long serialVersionUID = 1471232939184881839L;
 
   /** Next NameSpace element on the stack.
    *  @serial             */
