@@ -62,6 +62,8 @@ import java.io.IOException;
 
 import java.util.Stack;
 
+import java.lang.reflect.Method;
+
 // Xalan imports
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.NSInfo;
@@ -121,6 +123,10 @@ public class XPathContext implements ExpressionContext
   public XPathContext(Object owner)
   {
     m_owner = owner;
+    try {
+      m_ownerGetErrorListener = m_owner.getClass().getMethod("getErrorListener", new Class[] {});
+    }
+    catch (NoSuchMethodException nsme) {}
   }
 
   /**
@@ -162,8 +168,15 @@ public class XPathContext implements ExpressionContext
     return m_saxLocation;
   }
 
-  /** NEEDSDOC Field m_owner          */
+  /** The owner context of this XPathContext.  In the case of XSLT, this will be a
+   *  Transformer object.
+   */
   private Object m_owner;
+
+  /** The owner context of this XPathContext.  In the case of XSLT, this will be a
+   *  Transformer object.
+   */
+  private Method m_ownerGetErrorListener;
 
   /**
    * Get the "owner" context of this context, which should be,
@@ -316,6 +329,11 @@ public class XPathContext implements ExpressionContext
   /** The ErrorListener where errors and warnings are to be reported.   */
   private ErrorListener m_errorListener;
 
+  /** A default ErrorListener in case our m_errorListener was not specified and our
+   *  owner either does not have an ErrorListener or has a null one.
+   */
+  private ErrorListener m_defaultErrorListener;
+
   /**
    * Get the ErrorListener where errors and warnings are to be reported.
    *
@@ -323,7 +341,26 @@ public class XPathContext implements ExpressionContext
    */
   public final ErrorListener getErrorListener()
   {
-    return m_errorListener;
+
+    if (null != m_errorListener)
+        return m_errorListener;
+
+    ErrorListener retval = null;
+
+    try {
+      if (null != m_ownerGetErrorListener)
+        retval = (ErrorListener) m_ownerGetErrorListener.invoke(m_owner, new Object[] {});
+    }
+    catch (Exception e) {}
+
+    if (null == retval)
+    {
+      if (null == m_defaultErrorListener) 
+        m_defaultErrorListener = new org.apache.xml.utils.DefaultErrorHandler();
+      retval = m_defaultErrorListener;
+    }
+
+    return retval;
   }
 
   /**
@@ -331,8 +368,10 @@ public class XPathContext implements ExpressionContext
    *
    * @param listener A non-null ErrorListener reference.
    */
-  public void setErrorListener(ErrorListener listener)
+  public void setErrorListener(ErrorListener listener) throws IllegalArgumentException
   {
+    if (listener == null) 
+      throw new IllegalArgumentException("Null error handler");
     m_errorListener = listener;
   }
 
