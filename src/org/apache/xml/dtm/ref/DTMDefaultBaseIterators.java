@@ -1157,6 +1157,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     /** (not sure yet... -sb) */
     protected int _sp, _oldsp;
 
+    protected int _markedsp, _markedNode, _markedDescendant;
+
     /* _currentNode precedes candidates.  This is the identity, not the handle! */
 
     /**
@@ -1287,6 +1289,24 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       _sp = _oldsp;
 
       return resetPosition();
+    }
+
+    public void setMark() {
+        _markedsp = _sp;
+        _markedNode = _currentNode;
+        _markedDescendant = _stack[0];
+    }
+
+    public void gotoMark() {
+        _sp = _markedsp;
+        _currentNode = _markedNode;
+        _stack[0] = _markedDescendant;
+        int parent = _parent(_currentNode);
+        for (int index = 1; index < _sp-1; index++) {
+             _stack[index] = parent;
+             parent = _parent(parent);
+        }
+       _stack[_sp] = _currentNode;
     }
   }  // end of PrecedingIterator
 
@@ -1454,6 +1474,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
          new org.apache.xml.utils.NodeVector();
          
     int m_ancestorsPos;
+
+    int m_markedPos;
     
     /** The real start node for this axes, since _startNode will be adjusted. */
     int m_realStartNode;
@@ -1576,6 +1598,16 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
                                 : DTM.NULL;
       
       return returnNode(next);
+    }
+
+    public void setMark() {
+        m_markedPos = m_ancestorsPos;
+    }
+
+    public void gotoMark() {
+        m_ancestorsPos = m_markedPos;
+        _currentNode = m_ancestorsPos>=0 ? m_ancestors.elementAt(m_ancestorsPos)
+                                         : DTM.NULL;
     }
   }  // end of AncestorIterator
 
