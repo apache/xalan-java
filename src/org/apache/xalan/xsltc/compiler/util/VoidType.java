@@ -63,6 +63,7 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.Constants;
@@ -86,6 +87,10 @@ public final class VoidType extends Type {
 	return null;	// should never be called
     }
 
+    public Instruction POP() {
+        return NOP;
+    }
+
     /**
      * Translates a void into an object of internal type <code>type</code>.
      * This translation is needed when calling external functions
@@ -93,7 +98,7 @@ public final class VoidType extends Type {
      *
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
-    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
 			    Type type) {
 	if (type == Type.String) {
 	    translateTo(classGen, methodGen, (StringType) type);
@@ -110,7 +115,7 @@ public final class VoidType extends Type {
      *
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
-    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
 			    StringType type) {
 	final InstructionList il = methodGen.getInstructionList();
 	il.append(new PUSH(classGen.getConstantPool(), ""));
@@ -120,7 +125,7 @@ public final class VoidType extends Type {
      * Translates an external (primitive) Java type into a void.
      * Only an external "void" can be converted to this class.
      */
-    public void translateFrom(ClassGenerator classGen, MethodGenerator methodGen, 
+    public void translateFrom(ClassGenerator classGen, MethodGenerator methodGen,
 			      Class clazz) {
 	if (!clazz.getName().equals("void")) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
