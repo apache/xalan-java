@@ -99,7 +99,21 @@ import org.apache.xalan.res.XSLMessages;
 
 /**
  * The default implementation for the DTMManager.
- */
+ *
+ * %REVIEW% There is currently a reentrancy issue, since the finalizer
+ * for XRTreeFrag (which runs in the GC thread) wants to call
+ * DTMManager.release(), and may do so at the same time that the main
+ * transformation thread is accessing the manager. Our current solution is
+ * to make most of the manager's methods <code>synchronized</code>.
+ * Early tests suggest that doing so is not causing a significant
+ * performance hit in Xalan. However, it should be noted that there
+ * is a possible alternative solution: rewrite release() so it merely
+ * posts a request for release onto a threadsafe queue, and explicitly
+ * process that queue on an infrequent basis during main-thread
+ * activity (eg, when getDTM() is invoked). The downside of that solution
+ * would be a greater delay before the DTM's storage is actually released
+ * for reuse.
+ * */
 public class DTMManagerDefault extends DTMManager
 {
 
@@ -139,7 +153,7 @@ public class DTMManagerDefault extends DTMManager
    * @param dtm Should be a valid reference to a DTM.
    * @param id Integer DTM ID to be bound to this DTM
    */
-  public void addDTM(DTM dtm, int id) {	addDTM(dtm,id,0); }
+  synchronized public void addDTM(DTM dtm, int id) {	addDTM(dtm,id,0); }
 
 	
   /**
@@ -152,7 +166,7 @@ public class DTMManagerDefault extends DTMManager
    * public DTM Handle. For the first DTM ID accessing each DTM, this is 0;
    * for overflow addressing it will be a multiple of 1<<IDENT_DTM_NODE_BITS.
    */
-  public void addDTM(DTM dtm, int id, int offset)
+  synchronized public void addDTM(DTM dtm, int id, int offset)
   {
 		if(id>=IDENT_MAX_DTMS)
 		{
@@ -193,7 +207,7 @@ public class DTMManagerDefault extends DTMManager
   /**
    * Get the first free DTM ID available. %OPT% Linear search is inefficient!
    */
-  public int getFirstFreeDTMID()
+  synchronized public int getFirstFreeDTMID()
   {
     int n = m_dtms.length;
     for (int i = 1; i < n; i++)
@@ -250,7 +264,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * @return a non-null DTM reference.
    */
-  public DTM getDTM(Source source, boolean unique,
+  synchronized public DTM getDTM(Source source, boolean unique,
                     DTMWSFilter whiteSpaceFilter, boolean incremental,
                     boolean doIndexing)
   {
@@ -491,7 +505,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * @return a valid DTM handle.
    */
-  public int getDTMHandleFromNode(org.w3c.dom.Node node)
+  synchronized public int getDTMHandleFromNode(org.w3c.dom.Node node)
   {
     if(null == node)
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NODE_NON_NULL, null)); //"node must be non-null for getDTMHandleFromNode!");
@@ -595,7 +609,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * @return non-null XMLReader reference ready to parse.
    */
-  public XMLReader getXMLReader(Source inputSource)
+  synchronized public XMLReader getXMLReader(Source inputSource)
   {
 
     try
@@ -677,7 +691,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * @return a reference to the DTM object containing this node.
    */
-  public DTM getDTM(int nodeHandle)
+  synchronized public DTM getDTM(int nodeHandle)
   {
     try
     {
@@ -702,7 +716,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * @return The ID, or -1 if the DTM doesn't belong to this manager.
    */
-  public int getDTMIdentity(DTM dtm)
+  synchronized public int getDTMIdentity(DTM dtm)
   {
 		// Shortcut using DTMDefaultBase's extension hooks
 		// %REVIEW% Should the lookup be part of the basic DTM API?
@@ -743,7 +757,7 @@ public class DTMManagerDefault extends DTMManager
    * @return true if the DTM was released, false if shouldHardDelete was set
    * and we decided not to.
    */
-  public boolean release(DTM dtm, boolean shouldHardDelete)
+  synchronized public boolean release(DTM dtm, boolean shouldHardDelete)
   {
     if(DEBUG)
     {
@@ -794,7 +808,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDocumentFragment) @return
    */
-  public DTM createDocumentFragment()
+  synchronized public DTM createDocumentFragment()
   {
 
     try
@@ -825,7 +839,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  public DTMIterator createDTMIterator(int whatToShow, DTMFilter filter,
+  synchronized public DTMIterator createDTMIterator(int whatToShow, DTMFilter filter,
                                        boolean entityReferenceExpansion)
   {
 
@@ -842,7 +856,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  public DTMIterator createDTMIterator(String xpathString,
+  synchronized public DTMIterator createDTMIterator(String xpathString,
                                        PrefixResolver presolver)
   {
 
@@ -858,7 +872,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  public DTMIterator createDTMIterator(int node)
+  synchronized public DTMIterator createDTMIterator(int node)
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMManager abstract method */
@@ -874,7 +888,7 @@ public class DTMManagerDefault extends DTMManager
    *
    * NEEDSDOC (createDTMIterator) @return
    */
-  public DTMIterator createDTMIterator(Object xpathCompiler, int pos)
+  synchronized public DTMIterator createDTMIterator(Object xpathCompiler, int pos)
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMManager abstract method */
