@@ -67,6 +67,8 @@ public class NamespaceAlias extends ElemTemplateElement
   
   /**
    * Constructor NamespaceAlias
+   * 
+   * @param docOrderNumber The document order number
    *
    */
   public NamespaceAlias(int docOrderNumber)
@@ -158,7 +160,7 @@ public class NamespaceAlias extends ElemTemplateElement
   /**
    * Set the result namespace.
    *
-   * @param v non
+   * @param v non-null namespace value
    */
   public void setResultNamespace(String v)
   {
@@ -177,6 +179,8 @@ public class NamespaceAlias extends ElemTemplateElement
 
   /**
    * This function is called to recompose() all of the namespace alias properties elements.
+   * 
+   * @param root The owning root stylesheet
    */
   public void recompose(StylesheetRoot root)
   {

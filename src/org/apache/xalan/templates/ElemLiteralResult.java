@@ -94,10 +94,12 @@ public class ElemLiteralResult extends ElemUse
   private boolean isLiteralResultAsStylesheet = false;
 
   /**
-   * NEEDSDOC Method setIsLiteralResultAsStylesheet 
+   * Set whether this element represents a root element
+   * that is also the stylesheet element.
    *
    *
-   * NEEDSDOC @param b
+   * @param b boolean flag indicating whether this element 
+   * represents a root element that is also the stylesheet element.
    */
   public void setIsLiteralResultAsStylesheet(boolean b)
   {
@@ -105,10 +107,12 @@ public class ElemLiteralResult extends ElemUse
   }
 
   /**
-   * NEEDSDOC Method getIsLiteralResultAsStylesheet 
+   * Return whether this element represents a root element
+   * that is also the stylesheet element. 
    *
    *
-   * NEEDSDOC (getIsLiteralResultAsStylesheet) @return
+   * @return boolean flag indicating whether this element 
+   * represents a root element that is also the stylesheet element.
    */
   public boolean getIsLiteralResultAsStylesheet()
   {
@@ -128,7 +132,7 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Set a literal result attribute (AVTs only).
    *
-   * NEEDSDOC @param avt
+   * @param avt literal result attribute to add (AVT only)
    */
   public void addLiteralResultAttribute(AVT avt)
   {
@@ -142,7 +146,7 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Set a literal result attribute (used for xsl attributes).
    *
-   * NEEDSDOC @param att
+   * @param att literal result attribute to add
    */
   public void addLiteralResultAttribute(String att)
   {
@@ -156,9 +160,9 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Get a literal result attribute by name.
    *
-   * NEEDSDOC @param name
+   * @param name Name of literal result attribute to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return literal result attribute (AVT) 
    */
   public AVT getLiteralResultAttribute(String name)
   {
@@ -288,7 +292,7 @@ public class ElemLiteralResult extends ElemUse
   }
   
   /**
-   * The raw name of the element to be created.
+   * The local name of the element to be created.
    */
   private String m_localName;
 
@@ -353,7 +357,7 @@ public class ElemLiteralResult extends ElemUse
    * Set the "extension-element-prefixes" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Vector of URI to set as the "extension-element-prefixes" property
    */
   public void setExtensionElementPrefixes(StringVector v)
   {
@@ -361,12 +365,12 @@ public class ElemLiteralResult extends ElemUse
   }
 
   /**
-   * Get and "extension-element-prefix" property.
+   * Get an "extension-element-prefix" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of URI ("extension-element-prefix" property) to get 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return URI at given index ("extension-element-prefix" property)
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -384,7 +388,7 @@ public class ElemLiteralResult extends ElemUse
    * Get the number of "extension-element-prefixes" Strings.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "extension-element-prefixes" Strings
    */
   public int getExtensionElementPrefixCount()
   {
@@ -393,12 +397,12 @@ public class ElemLiteralResult extends ElemUse
   }
 
   /**
-   * Get and "extension-element-prefix" property.
+   * Find out if the given "extension-element-prefix" property is defined.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param uri
+   * @param uri The URI to find
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given URI is found
    */
   public boolean containsExtensionElementURI(String uri)
   {
@@ -413,7 +417,7 @@ public class ElemLiteralResult extends ElemUse
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The token ID for this element
    */
   public int getXSLToken()
   {
@@ -423,7 +427,7 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -441,7 +445,7 @@ public class ElemLiteralResult extends ElemUse
    * Set the "version" property.
    * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Version property value to set
    */
   public void setVersion(String v)
   {
@@ -469,6 +473,133 @@ public class ElemLiteralResult extends ElemUse
   {
     m_excludeResultPrefixes = v;
   }
+
+  /**
+   * Tell if the result namespace decl should be excluded.  Should be called before
+   * namespace aliasing (I think).
+   *
+   * @param prefix Prefix of namespace to check
+   * @param uri URI of namespace to check 
+   *
+   * @return True if the given namespace should be excluded
+   *
+   * @throws TransformerException
+   */
+  private boolean excludeResultNSDecl(String prefix, String uri)
+          throws TransformerException
+  {
+
+    if (null != m_excludeResultPrefixes)
+    {
+      if (m_excludeResultPrefixes.contains(prefix))
+        return true;
+    }
+
+    return false;
+  }
+
+  /*
+   * Combine the parent's namespaces with this namespace
+   * for fast processing, taking care to reference the
+   * parent's namespace if this namespace adds nothing new.
+   * (Recursive method, walking the elements depth-first,
+   * processing parents before children).
+   * Overide super method to handle exclude-result-prefix attribute.
+   *
+   * @throws TransformerException
+   *
+  public void resolvePrefixTables() throws TransformerException
+  {
+
+    // Always start with a fresh prefix table!
+    m_prefixTable = null;
+
+    Vector m_declaredPrefixes = getDeclaredPrefixes();
+
+    // If we have declared declarations, then we look for 
+    // a parent that has namespace decls, and add them 
+    // to this element's decls.  Otherwise we just point 
+    // to the parent that has decls.
+    if (null != m_declaredPrefixes)
+    {
+
+      // Add this element's declared prefixes to the 
+      // prefix table.
+      int n = m_declaredPrefixes.size();
+
+      for (int i = 0; i < n; i++)
+      {
+        XMLNSDecl decl = (XMLNSDecl) m_declaredPrefixes.elementAt(i);
+        String prefix = decl.getPrefix();
+        String uri = decl.getURI();
+        boolean shouldExclude = excludeResultNSDecl(prefix, uri);
+
+        // Create a new prefix table if one has not already been created.
+        if (null == m_prefixTable)
+          m_prefixTable = new Vector();
+
+        m_prefixTable.addElement(new XMLNSDecl(prefix, uri, shouldExclude));
+      }
+    }
+
+    ElemTemplateElement parent = (ElemTemplateElement) this.getParentNode();
+
+    if (null != parent)
+    {
+
+      // The prefix table of the parent should never be null!
+      Vector prefixes = parent.m_prefixTable;
+
+      if (null == m_excludeResultPrefixes && null == m_prefixTable)
+      {
+
+        // Nothing to combine, so just use parent's table!
+        this.m_prefixTable = parent.m_prefixTable;
+      }
+      else
+      {
+        if (null == m_prefixTable)
+          m_prefixTable = new Vector();
+
+        // Add the prefixes from the parent's prefix table.
+        int n = prefixes.size();
+
+        for (int i = 0; i < n; i++)
+        {
+          XMLNSDecl decl = (XMLNSDecl) prefixes.elementAt(i);
+          boolean isexcluded = decl.getIsExcluded();
+
+          if (!isexcluded)
+          {
+            boolean shouldExclude = excludeResultNSDecl(decl.getPrefix(),
+                                                        decl.getURI());
+
+            if (shouldExclude != isexcluded)
+            {
+              decl = new XMLNSDecl(decl.getPrefix(), decl.getURI(),
+                                   shouldExclude);
+            }
+          }
+
+          m_prefixTable.addElement(decl);
+        }
+      }
+    }
+    else if (null == m_prefixTable)
+    {
+
+      // Must be stylesheet element without any result prefixes!
+      m_prefixTable = new Vector();
+    }
+
+    // Resolve the children's prefix tables.
+    for (ElemTemplateElement child = m_firstChild; child != null;
+            child = child.m_nextSibling)
+    {
+      child.resolvePrefixTables();
+    }
+  }
+  */
 
   /**
    * Copy a Literal Result Element into the Result tree, copy the
@@ -539,7 +670,8 @@ public class ElemLiteralResult extends ElemUse
    * Compiling templates requires that we be able to list the AVTs
    * ADDED 9/5/2000 to support compilation experiment
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return an Enumeration of the literal result attributes associated
+   * with this element. 
    */
   public Enumeration enumerateLiteralResultAttributes()
   {

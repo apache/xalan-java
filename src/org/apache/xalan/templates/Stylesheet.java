@@ -149,7 +149,7 @@ public class Stylesheet extends ElemTemplateElement
    * inheritance chain until it calls getStylesheet
    * on a Stylesheet object, which will return itself.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The owning stylesheet, itself.
    */
   public Stylesheet getStylesheet()
   {
@@ -160,7 +160,7 @@ public class Stylesheet extends ElemTemplateElement
    * Tell if this can be cast to a StylesheetComposed, meaning, you
    * can ask questions from getXXXComposed functions.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return False if this is not a StylesheetComposed
    */
   public boolean isAggregatedType()
   {
@@ -170,7 +170,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * Tell if this is the root of the stylesheet tree.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return False is this is not the root of the stylesheet tree.
    */
   public boolean isRoot()
   {
@@ -185,7 +185,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * Read the stylesheet from a serialization stream.
    *
-   * NEEDSDOC @param stream
+   * @param stream Input stream to read from
    *
    * @throws IOException
    * @throws TransformerException
@@ -208,10 +208,10 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * NEEDSDOC Method writeObject 
+   * Write out the given output stream 
    *
    *
-   * NEEDSDOC @param stream
+   * @param stream The output stream to write out
    *
    * @throws IOException
    */
@@ -235,7 +235,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xmlns:xsl" property.
    * @see <a href="http://www.w3.org/TR/xslt#xslt-namespace">xslt-namespace in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v The value to be set for the "xmlns:xsl" property.
    */
   public void setXmlnsXsl(String v)
   {
@@ -246,7 +246,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the "xmlns:xsl" property.
    * @see <a href="http://www.w3.org/TR/xslt#xslt-namespace">xslt-namespace in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "xmlns:xsl" property.
    */
   public String getXmlnsXsl()
   {
@@ -262,7 +262,8 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "extension-element-prefixes" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v The value to be set for the "extension-element-prefixes" 
+   * property: a vector of extension element URIs.
    */
   public void setExtensionElementPrefixes(StringVector v)
   {
@@ -273,9 +274,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get and "extension-element-prefix" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of extension element URI in list 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The extension element URI at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -293,7 +294,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "extension-element-prefixes" Strings.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Number of URIs in the list
    */
   public int getExtensionElementPrefixCount()
   {
@@ -302,12 +303,12 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * Get and "extension-element-prefix" property.
+   * Find out if this contains a given "extension-element-prefix" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param uri
+   * @param uri URI of extension element to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given URI was found in the list 
    */
   public boolean containsExtensionElementURI(String uri)
   {
@@ -333,7 +334,7 @@ public class Stylesheet extends ElemTemplateElement
    * imported or included by children of that xsl:stylesheet element.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v A StringVector of prefixes to exclude 
    */
   public void setExcludeResultPrefixes(StringVector v)
   {
@@ -350,9 +351,9 @@ public class Stylesheet extends ElemTemplateElement
    * imported or included by children of that xsl:stylesheet element.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of prefix to get in list 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Prefix to be excluded at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -367,10 +368,10 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * Get the number of "extension-element-prefixes" Strings.
-   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   * Get the number of "exclude-result-prefixes" Strings.
+   * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The number of prefix strings to be excluded. 
    */
   public int getExcludeResultPrefixCount()
   {
@@ -379,13 +380,13 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * Get whether or not the passed URL is contained flagged by
-   * the "extension-element-prefixes" property.
-   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   * Get whether or not the passed prefix is contained flagged by
+   * the "exclude-result-prefixes" property.
+   * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
    * @param prefix non-null reference to prefix that might be excluded.
    *
-   * @return true if the prefix should normally be excluded.
+   * @return true if the prefix should normally be excluded.>
    */
   public boolean containsExcludeResultPrefix(String prefix)
   {
@@ -408,7 +409,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "id" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Embedding-Stylesheets">section-Embedding-Stylesheets in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value for the "id" property.
    */
   public void setId(String v)
   {
@@ -419,7 +420,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the "id" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Embedding-Stylesheets">section-Embedding-Stylesheets in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "id" property.
    */
   public String getId()
   {
@@ -435,7 +436,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "version" property.
    * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Value for the "version" property.
    */
   public void setVersion(String v)
   {
@@ -446,7 +447,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the "version" property.
    * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The value of the "version" property.
    */
   public String getVersion()
   {
@@ -462,7 +463,7 @@ public class Stylesheet extends ElemTemplateElement
    * Add a stylesheet to the "import" list.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Stylesheet to add to the import list
    */
   public void setImport(StylesheetComposed v)
   {
@@ -479,9 +480,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get a stylesheet from the "import" list.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of the stylesheet to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The stylesheet at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -499,7 +500,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of imported stylesheets.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of imported stylesheets.
    */
   public int getImportCount()
   {
@@ -512,10 +513,10 @@ public class Stylesheet extends ElemTemplateElement
   private Vector m_includes;
 
   /**
-   * Set a "xsl:include" property.
+   * Add a stylesheet to the "include" list.
    * @see <a href="http://www.w3.org/TR/xslt#include">include in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v Stylesheet to add to the "include" list  
    */
   public void setInclude(Stylesheet v)
   {
@@ -527,12 +528,12 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * Get an "xsl:include" property.
+   * Get the stylesheet at the given in index in "include" list
    * @see <a href="http://www.w3.org/TR/xslt#include">include in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of stylesheet to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Stylesheet at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -549,7 +550,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of included stylesheets.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of included stylesheets.
    */
   public int getIncludeCount()
   {
@@ -565,7 +566,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * Process the xsl:decimal-format element.
    *
-   * NEEDSDOC @param edf
+   * @param edf Decimal-format element to push into stack  
    */
   public void setDecimalFormat(DecimalFormatProperties edf)
   {
@@ -612,9 +613,9 @@ public class Stylesheet extends ElemTemplateElement
    * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
    * @see ElemDecimalFormat.
    *
-   * NEEDSDOC @param i
+   * @param i Index of decimal-format property in stack
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The decimal-format property at the given index 
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -632,7 +633,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of xsl:decimal-format declarations.
    * @see ElemDecimalFormat.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of xsl:decimal-format declarations.
    */
   public int getDecimalFormatCount()
   {
@@ -650,7 +651,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:strip-space" properties.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param wsi WhiteSpaceInfo element to add to list 
    */
   public void setStripSpaces(WhiteSpaceInfo wsi)
   {
@@ -667,9 +668,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:strip-space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of WhiteSpaceInfo to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return WhiteSpaceInfo at given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -686,7 +687,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "xsl:strip-space" properties.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:strip-space" properties.
    */
   public int getStripSpaceCount()
   {
@@ -704,7 +705,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:preserve-space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param wsi WhiteSpaceInfo element to add to list
    */
   public void setPreserveSpaces(WhiteSpaceInfo wsi)
   {
@@ -721,9 +722,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get a "xsl:preserve-space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of WhiteSpaceInfo to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return WhiteSpaceInfo at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -740,7 +741,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "xsl:preserve-space" properties.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:preserve-space" properties.
    */
   public int getPreserveSpaceCount()
   {
@@ -757,7 +758,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:output" property.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v OutputFormatExtended element to add to the list
    */
   public void setOutput(OutputFormatExtended v)
   {
@@ -773,9 +774,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:output" property.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of OutputFormatExtended to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return OutputFormatExtended at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -792,7 +793,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "xsl:output" properties.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:output" properties.
    */
   public int getOutputCount()
   {
@@ -809,7 +810,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:key" property.
    * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v KeyDeclaration element to add to the list of key declarations 
    */
   public void setKey(KeyDeclaration v)
   {
@@ -824,9 +825,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:key" property.
    * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of KeyDeclaration element to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return KeyDeclaration element at given index in list 
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -843,7 +844,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "xsl:key" properties.
    * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:key" properties.
    */
   public int getKeyCount()
   {
@@ -859,7 +860,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:attribute-set" property.
    * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
    *
-   * NEEDSDOC @param attrSet
+   * @param attrSet ElemAttributeSet to add to the list of attribute sets
    */
   public void setAttributeSet(ElemAttributeSet attrSet)
   {
@@ -876,9 +877,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:attribute-set" property.
    * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of ElemAttributeSet to get in list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ElemAttributeSet at the given index
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -896,7 +897,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "xsl:attribute-set" properties.
    * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:attribute-set" properties.
    */
   public int getAttributeSetCount()
   {
@@ -912,7 +913,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v ElemVariable object to add to list of top level variables
    */
   public void setVariable(ElemVariable v)
   {
@@ -927,9 +928,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:variable" or "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param qname
+   * @param qname Qualified name of variable or param to get 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The ElemVariable with the given name in the list or null
    */
   public ElemVariable getVariableOrParam(QName qname)
   {
@@ -955,9 +956,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param qname
+   * @param qname Qualified name of the xsl:variable to get 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ElemVariable with the given name in the list or null
    */
   public ElemVariable getVariable(QName qname)
   {
@@ -982,9 +983,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of variable to get in the list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ElemVariable at the given index in the list 
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -1001,7 +1002,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "xsl:variable" properties.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:variable" properties.
    */
   public int getVariableOrParamCount()
   {
@@ -1023,9 +1024,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param qname
+   * @param qname The qualified name of the param to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ElemParam with the given name in the list or null
    */
   public ElemParam getParam(QName qname)
   {
@@ -1055,7 +1056,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set an "xsl:template" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v ElemTemplate to add to list of templates
    */
   public void setTemplate(ElemTemplate v)
   {
@@ -1071,9 +1072,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get an "xsl:template" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of ElemTemplate in the list to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ElemTemplate at the given index in the list
    *
    * @throws TransformerException
    */
@@ -1090,7 +1091,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the number of "xsl:template" properties.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:template" properties.
    */
   public int getTemplateCount()
   {
@@ -1106,7 +1107,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the "xsl:namespace-alias" property.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param na
+   * @param na NamespaceAlias elemeent to add to the list
    */
   public void setNamespaceAlias(NamespaceAlias na)
   {
@@ -1118,12 +1119,12 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * Get an "xsl:variable" property.
-   * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   * Get an "xsl:namespace-alias" property.
+   * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param i
+   * @param i Index of NamespaceAlias element to get from the list 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return NamespaceAlias element at the given index in the list
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -1138,10 +1139,10 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * Get the number of "xsl:variable" properties.
+   * Get the number of "xsl:namespace-alias" properties.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of "xsl:namespace-alias" properties.
    */
   public int getNamespaceAliasCount()
   {
@@ -1154,11 +1155,11 @@ public class Stylesheet extends ElemTemplateElement
   private Hashtable m_NonXslTopLevel;
 
   /**
-   * Set a found non-xslt element.
+   * Set found a non-xslt element.
    * @see <a href="http://www.w3.org/TR/xslt#stylesheet-element">stylesheet-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param obj
+   * @param name Qualified name of the element
+   * @param obj The element object
    */
   public void setNonXslTopLevel(QName name, Object obj)
   {
@@ -1173,9 +1174,9 @@ public class Stylesheet extends ElemTemplateElement
    * Get a non-xslt element.
    * @see <a href="http://www.w3.org/TR/xslt#stylesheet-element">stylesheet-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param name
+   * @param name Qualified name of the element to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The object associate with the given name 
    */
   public Object getNonXslTopLevel(QName name)
   {
@@ -1190,16 +1191,16 @@ public class Stylesheet extends ElemTemplateElement
    */
   private String m_href = null;
 
-  /** NEEDSDOC Field m_publicId          */
+  /** The doctype-public element           */
   private String m_publicId;
 
-  /** NEEDSDOC Field m_systemId          */
+  /** The doctype-system element          */
   private String m_systemId;
 
   /**
    * Get the base identifier with which this stylesheet is associated.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the base identifier with which this stylesheet is associated.
    */
   public String getHref()
   {
@@ -1207,9 +1208,9 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * Get the base identifier with which this stylesheet is associated.
+   * Set the base identifier with which this stylesheet is associated.
    *
-   * NEEDSDOC @param baseIdent
+   * @param baseIdent the base identifier with which this stylesheet is associated.
    */
   public void setHref(String baseIdent)
   {
@@ -1219,7 +1220,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * Set the location information for this element.
    *
-   * NEEDSDOC @param locator
+   * @param locator SourceLocator object with location information  
    */
   public void setLocaterInfo(SourceLocator locator)
   {
@@ -1257,7 +1258,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the root of the stylesheet, where all the tables common
    * to all stylesheets are kept.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the root of the stylesheet
    */
   public StylesheetRoot getStylesheetRoot()
   {
@@ -1268,7 +1269,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the root of the stylesheet, where all the tables common
    * to all stylesheets are kept.
    *
-   * NEEDSDOC @param v
+   * @param v the root of the stylesheet
    */
   public void setStylesheetRoot(StylesheetRoot v)
   {
@@ -1286,7 +1287,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the parent of the stylesheet.  This will be null if this
    * is the root stylesheet.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the parent of the stylesheet.
    */
   public Stylesheet getStylesheetParent()
   {
@@ -1297,7 +1298,7 @@ public class Stylesheet extends ElemTemplateElement
    * Set the parent of the stylesheet.  This should be null if this
    * is the root stylesheet.
    *
-   * NEEDSDOC @param v
+   * @param v the parent of the stylesheet.
    */
   public void setStylesheetParent(Stylesheet v)
   {
@@ -1308,7 +1309,7 @@ public class Stylesheet extends ElemTemplateElement
    * Get the owning aggregated stylesheet, or this
    * stylesheet if it is aggregated.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the owning aggregated stylesheet or itself
    */
   public StylesheetComposed getStylesheetComposed()
   {
@@ -1326,7 +1327,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * Get the type of the node.  We'll pretend we're a Document.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the type of the node: document node.
    */
   public short getNodeType()
   {
@@ -1348,7 +1349,7 @@ public class Stylesheet extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node name
    */
   public String getNodeName()
   {
@@ -1362,8 +1363,8 @@ public class Stylesheet extends ElemTemplateElement
    * and replace the original with the compiled instance.
    * ADDED 9/5/2000 to support compilation experiment
    *
-   * NEEDSDOC @param v
-   * NEEDSDOC @param i
+   * @param v Compiled template to replace with
+   * @param i Index of template to be replaced
    *
    * @throws TransformerException
    */

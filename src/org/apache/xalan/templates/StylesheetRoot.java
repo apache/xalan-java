@@ -125,6 +125,8 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Creates a StylesheetRoot and retains a pointer to the schema used to create this
    * StylesheetRoot.  The schema may be needed later for an element-available() function call.
+   * 
+   * @param schema The schema used to create this stylesheet
    * @exception TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
    */
   public StylesheetRoot(XSLTSchema schema) throws TransformerConfigurationException
@@ -138,7 +140,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Tell if this is the root of the stylesheet tree.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True since this is the root of the stylesheet tree.
    */
   public boolean isRoot()
   {
@@ -342,7 +344,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Call the compose function for each ElemTemplateElement.
    *
-   * NEEDSDOC @param templ
+   * @param templ ElemTemplateElement to compose
    */
   static void composeTemplates(ElemTemplateElement templ)
   {
@@ -420,9 +422,9 @@ public class StylesheetRoot extends StylesheetComposed
    * Get a stylesheet from the global import list. 
    * TODO: JKESS PROPOSES SPECIAL-CASE FOR NO IMPORT LIST, TO MATCH COUNT.
    * 
-   * NEEDSDOC @param i 
+   * @param i Index of stylesheet to get from global import list 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The stylesheet at the given index 
    */
   public StylesheetComposed getGlobalImport(int i)
   {
@@ -431,6 +433,7 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Get the total number of imports in the global import list.
+   * 
    * @return The total number of imported stylesheets, including
    * the root stylesheet, thus the number will always be 1 or
    * greater.
@@ -477,7 +480,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Recompose the output format object from the included elements.
    *
-   * NEEDSDOC @param stylesheet
+   * @param of OutputFormatExtended to recompose 
    */
   void recomposeOutput(OutputFormatExtended of)
   {
@@ -493,7 +496,8 @@ public class StylesheetRoot extends StylesheetComposed
    * object, not a cloned object, like getOutputFormat does.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the combined "xsl:output" property with the properties
+   * combined from the included stylesheets.
    */
   public OutputFormat getOutputComposed()
   {
@@ -503,14 +507,14 @@ public class StylesheetRoot extends StylesheetComposed
     return m_outputFormatComposed;
   }
 
-  /** NEEDSDOC Field m_outputMethodSet          */
+  /** Flag indicating whether an output method has been set by the user           */
   private boolean m_outputMethodSet = false;
 
   /**
    * <meta name="usage" content="internal"/>
    * Find out if an output method has been set by the user.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Value indicating whether an output method has been set by the user
    */
   public boolean isOutputMethodSet()
   {
@@ -546,9 +550,9 @@ public class StylesheetRoot extends StylesheetComposed
    * Get a list "xsl:attribute-set" properties that match the qname.
    * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
    *
-   * NEEDSDOC @param name
+   * @param name Qualified name of attribute set properties to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A vector of attribute sets matching the given name
    *
    * @throws ArrayIndexOutOfBoundsException
    */
@@ -610,8 +614,9 @@ public class StylesheetRoot extends StylesheetComposed
    * <p>Which means, as far as I can tell, the decimal-format
    * properties are not additive.</p>
    *
-   * NEEDSDOC @param name
-   * @return null if name is not found.
+   * @param name Qualified name of the decimal format to find 
+   * @return DecimalFormatSymbols object matching the given name or
+   * null if name is not found.
    */
   public DecimalFormatSymbols getDecimalFormatComposed(QName name)
   {
@@ -638,7 +643,7 @@ public class StylesheetRoot extends StylesheetComposed
    * Get the composed "xsl:key" properties.
    * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A vector of the composed "xsl:key" properties.
    */
   public Vector getKeysComposed()
   {
@@ -694,6 +699,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Accessor method to retrieve the <code>TemplateList</code> associated with
    * this StylesheetRoot.
+   * 
    * @return The composed <code>TemplateList</code>.
    */
   public final TemplateList getTemplateListComposed()
@@ -718,12 +724,13 @@ public class StylesheetRoot extends StylesheetComposed
    * well as this stylesheet.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * NEEDSDOC @param support
-   * NEEDSDOC @param targetNode
-   * NEEDSDOC @param mode
-   * NEEDSDOC @param quietConflictWarnings
+   * @param support The XPath runtime state.
+   * @param targetNode Node to match
+   * @param mode Template mode
+   * @param quietConflictWarnings Flag for conflict warnings 
    *
-   * NEEDSDOC ($objectName$) @return
+   * 
+   * @return The ElemTemplate matching the target node 
    *
    * @throws TransformerException
    */
