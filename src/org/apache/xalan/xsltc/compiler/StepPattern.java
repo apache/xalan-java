@@ -204,13 +204,13 @@ final class StepPattern extends RelativePathPattern {
 				 MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 	
 	// context node is on the stack
+	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getType", "(I)I");
 	il.append(methodGen.loadDOM());
 	il.append(SWAP);
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						     "getType", "(I)I")));
+	il.append(new INVOKEINTERFACE(getType, 2));
 	il.append(new PUSH(cpg, _nodeType));
 	
 	// Need to allow for long jumps here - don't know if 100% correct
@@ -299,9 +299,8 @@ final class StepPattern extends RelativePathPattern {
 	// Get the parent of the matching node
 	il.append(methodGen.loadDOM());
 	il.append(new ILOAD(match.getIndex()));
-	final String DOM_CLASS = classGen.getDOMClass();
-	index = cpg.addMethodref(DOM_CLASS, GET_PARENT, GET_PARENT_SIG);
-	il.append(new INVOKEVIRTUAL(index));
+	index = cpg.addInterfaceMethodref(DOM_INTF, GET_PARENT, GET_PARENT_SIG);
+	il.append(new INVOKEINTERFACE(index, 2));
 
 	// Start the iterator with the parent 
 	il.append(methodGen.setStartNode());
@@ -337,7 +336,6 @@ final class StepPattern extends RelativePathPattern {
 					 MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	int iteratorIndex = 0;
 	BranchHandle ifBlock = null;
@@ -389,8 +387,9 @@ final class StepPattern extends RelativePathPattern {
 	// Get the parent of the node on the stack
 	il.append(methodGen.loadDOM());
 	il.append(new ILOAD(node.getIndex()));
-	int index = cpg.addMethodref(DOM_CLASS, GET_PARENT, GET_PARENT_SIG);
-	il.append(new INVOKEVIRTUAL(index));
+	int index = cpg.addInterfaceMethodref(DOM_INTF,
+					      GET_PARENT, GET_PARENT_SIG);
+	il.append(new INVOKEINTERFACE(index, 2));
 
 	// Initialize the iterator with the parent
 	il.append(new ALOAD(iter.getIndex()));

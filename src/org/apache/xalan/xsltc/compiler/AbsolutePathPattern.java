@@ -105,7 +105,6 @@ final class AbsolutePathPattern extends LocationPathPattern {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	if (_left != null) {
 	    if (_left instanceof StepPattern) {
@@ -127,17 +126,19 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	    _trueList.append(_left._trueList);
 	    _falseList.append(_left._falseList);
 	}
+	final int getParent = cpg.addInterfaceMethodref(DOM_INTF,
+							GET_PARENT,
+							GET_PARENT_SIG);
+	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getType", "(I)I");
 	il.append(methodGen.loadDOM());
 	il.append(SWAP);
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						     GET_PARENT,
-						     GET_PARENT_SIG)));
+	il.append(new INVOKEINTERFACE(getParent, 2));
 	if (_left instanceof AncestorPattern) {
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
 	}
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						     "getType", "(I)I")));
+	il.append(new INVOKEINTERFACE(getType, 2));
 	il.append(new PUSH(cpg, DOM.ROOT));
 	_falseList.add(il.append(new IF_ICMPNE(null)));
     }

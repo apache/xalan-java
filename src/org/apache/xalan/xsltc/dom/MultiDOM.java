@@ -68,6 +68,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
@@ -79,7 +80,7 @@ public final class MultiDOM implements DOM {
     private static final int CLR = 0x00FFFFFF;
     private static final int SET = 0xFF000000;
     
-    private DOMAdapter[] _adapters;
+    private DOM[] _adapters;
     private int _free;
     private int _size;
 
@@ -160,10 +161,10 @@ public final class MultiDOM implements DOM {
     } // end of AxisIterator
 
 
-    public MultiDOM(DOMAdapter main) {
+    public MultiDOM(DOM main) {
 	_size = INITIAL_SIZE;
 	_free = 1;
-	_adapters = new DOMAdapter[INITIAL_SIZE];
+	_adapters = new DOM[INITIAL_SIZE];
 	_adapters[0] = main;
     }
 
@@ -171,7 +172,11 @@ public final class MultiDOM implements DOM {
 	return(_free << 24);
     }
 
-    public int addDOMAdapter(DOMAdapter dom) {
+    public void setupMapping(String[] names, String[] namespaces) {
+	// This method only has a function in DOM adapters
+    }
+
+    public int addDOMAdapter(DOM dom) {
 
 	// Add the DOM adapter to the array of DOMs
 	final int domNo = _free++;
@@ -183,7 +188,7 @@ public final class MultiDOM implements DOM {
 	_adapters[domNo] = dom;
 
 	// Store reference to document (URI) in hashtable
-	String uri = dom.getDocumentURI();
+	String uri = dom.getDocumentURI(0);
 	_documents.put(uri,new Integer(domNo));
 	
 	return domNo << 24;
@@ -311,7 +316,7 @@ public final class MultiDOM implements DOM {
 	    _adapters[textNode>>>24].characters(textNode & CLR, handler);
     }
 
-    public void setFilter(StripWhitespaceFilter filter) {
+    public void setFilter(StripFilter filter) {
 	for (int dom=0; dom<_free; dom++) {
 	    _adapters[dom].setFilter(filter);
 	}
@@ -346,7 +351,7 @@ public final class MultiDOM implements DOM {
 	return(size);
     }
 
-    public String getNodeURI(int node) {
-	return _adapters[node>>24].getDocumentURI();
+    public String getDocumentURI(int node) {
+	return _adapters[node>>24].getDocumentURI(0);
     }
 }

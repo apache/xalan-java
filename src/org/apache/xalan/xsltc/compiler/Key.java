@@ -164,9 +164,9 @@ final class Key extends TopLevelElement {
 	final InstructionList il = methodGen.getInstructionList();
 
 	// DOM.getNodeValue(nodeIndex) => String
-	final int getNodeValue = cpg.addMethodref(classGen.getDOMClass(),
-						  "getNodeValue",
-						  "(I)"+STRING_SIG);
+	final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
+							   "getNodeValue",
+							   "(I)"+STRING_SIG);
 
 	// This variable holds the id of the node we found with the "match"
 	// attribute of xsl:key. This is the id we store, with the value we
@@ -199,7 +199,7 @@ final class Key extends TopLevelElement {
 	// Now get the node value and feck it on the parameter stack
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadCurrentNode());
-	il.append(new INVOKEVIRTUAL(getNodeValue));
+	il.append(new INVOKEINTERFACE(getNodeValue, 2));
 
 	// Finally do the call to add an entry in the index for this key.
 	il.append(new INVOKEVIRTUAL(buildKeyIndex));
@@ -234,9 +234,9 @@ final class Key extends TopLevelElement {
 					 "("+STRING_SIG+"I"+OBJECT_SIG+")V");
 
 	// DOM.getAxisIterator(root) => NodeIterator
-	final int git = cpg.addMethodref(classGen.getDOMClass(),
-					 "getAxisIterator",
-					 "(I)"+NODE_ITERATOR_SIG);
+	final int git = cpg.addInterfaceMethodref(DOM_INTF,
+						  "getAxisIterator",
+						  "(I)"+NODE_ITERATOR_SIG);
 
 	il.append(methodGen.loadCurrentNode());
 	il.append(methodGen.loadIterator());
@@ -244,7 +244,7 @@ final class Key extends TopLevelElement {
 	// Get an iterator for all nodes in the DOM
 	il.append(methodGen.loadDOM());	
 	il.append(new PUSH(cpg,Axis.DESCENDANT));
-	il.append(new INVOKEVIRTUAL(git));
+	il.append(new INVOKEINTERFACE(git, 2));
 
 	// Reset the iterator to start with the root node
 	il.append(methodGen.loadCurrentNode());

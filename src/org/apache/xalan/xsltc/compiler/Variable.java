@@ -80,24 +80,11 @@ final class Variable extends VariableBase {
     // Index of this variable in the variable stack relative to base ptr
     private int _stackIndex = -1;
 
-    private boolean _escapes;
-
-    // If the variable is of result tree type, and this result tree 
-    // is implemented as a method, this is the name of the method.
-    private String _methodName = null;
+    private boolean _escapes; // 'true' if the variable's value can change
 
     /**
-     * Returns the method name for this variable. Used if the value of the
-     * variable is a result tree and a separate method is used to build it.
-     * The method name is generate in typeCheck(), so this method should never
-     * be called before that.
-     */
-    public String getMethodName() {
-	return _methodName;
-    }
-
-    /**
-     *
+     * This method returns 'true' if the variable value can change over time,
+     * such as with varibles inside a for-each loop.
      */
     public void setEscapes() {
 	_escapes = true;
@@ -185,54 +172,13 @@ final class Variable extends VariableBase {
 	// Type check the element contents otherwise
 	else {
 	    typeCheckContents(stable);
-	    // Compile into a method if variable value is not context dependant
-	    if (dependentContents() == false) {
-		_methodName = "__rt_" + getXSLTC().nextVariableSerial();
-		_type = new ResultTreeType(_methodName);
-	    }
-	    else {
-		_type = Type.ResultTree;
-	    }
+	    _type = Type.ResultTree;
 	}
 
 	// The return type is void as the variable element does not leave
 	// anything on the JVM's stack. The '_type' global will be returned
 	// by the references to this variable, and not by the variable itself.
 	return Type.Void;
-    }
-
-    /**
-     * Compiles a method that generates the value of the variable
-     */
-    private void compileResultTreeMethod(ClassGenerator classGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = new InstructionList();
-	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
-	
-	final RtMethodGenerator methodGen =
-	    new RtMethodGenerator(ACC_PROTECTED,
-				  de.fub.bytecode.generic.Type.VOID, 
-				  new de.fub.bytecode.generic.Type[] {
-				      Util.getJCRefType(DOM_CLASS_SIG),
-				      Util.getJCRefType(TRANSLET_OUTPUT_SIG)
-				  },
-				  new String[] {
-				      DOCUMENT_PNAME,
-				      TRANSLET_OUTPUT_PNAME
-				  },
-				  _methodName,
-				  classGen.getClassName(),
-				  il, cpg);
-	methodGen.addException("org.apache.xalan.xsltc.TransletException");
-
-	translateContents(classGen, methodGen);
-	il.append(RETURN);
-
-	methodGen.stripAttributes(true);
-	methodGen.setMaxLocals();
-	methodGen.setMaxStack();
-	methodGen.removeNOPs();
-	classGen.addMethod(methodGen.getMethod());
     }
 
     /**
@@ -302,12 +248,6 @@ final class Variable extends VariableBase {
 	if (_compiled) return;
 	_compiled = true;
 
-	// If a result tree is implemented as method then compile and return
-	if ((_select == null) && (_type != Type.ResultTree)) {
-	    compileResultTreeMethod(classGen);
-	    return;
-	}
-
 	if (isLocal()) {
 	    // Push args to call addVariable()
 	    if (_escapes) {
@@ -343,8 +283,6 @@ final class Variable extends VariableBase {
 	}
 	else {
 	    String signature = _type.toSignature();
-	    if (signature.equals(DOM_IMPL_SIG))
-		signature = classGen.getDOMClassSig();
 
 	    // Global variables are store in class fields
 	    if (classGen.containsField(name) == null) {

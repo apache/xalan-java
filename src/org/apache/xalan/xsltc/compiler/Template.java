@@ -311,7 +311,6 @@ public final class Template extends TopLevelElement {
 	if (_disabled) return;
 	// bug fix #4433133, add a call to named template from applyTemplates 
 	String className = classGen.getClassName();
-	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
 
 	if (_compiled && isNamed()){
 
@@ -327,7 +326,7 @@ public final class Template extends TopLevelElement {
 	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(className,
 							 methodName,
 							 "("
-							 + DOM_CLASS_SIG
+							 + DOM_INTF_SIG
 							 + NODE_ITERATOR_SIG
 							 + TRANSLET_OUTPUT_SIG
 							 + "I)V")));

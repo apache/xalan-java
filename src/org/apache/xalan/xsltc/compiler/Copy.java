@@ -104,7 +104,6 @@ final class Copy extends Instruction {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	final LocalVariableGen name =
 	    methodGen.addLocalVariable2("name",
@@ -119,13 +118,13 @@ final class Copy extends Instruction {
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadCurrentNode());
 	il.append(methodGen.loadHandler());
-	final int shallowCopy = cpg.addMethodref(DOM_CLASS,
-						 "shallowCopy",
-						 "("
-						 + NODE_SIG
-						 + TRANSLET_OUTPUT_SIG
-						 + ")" + STRING_SIG); 
-	il.append(new INVOKEVIRTUAL(shallowCopy));
+	final int cpy = cpg.addInterfaceMethodref(DOM_INTF,
+						  "shallowCopy",
+						  "("
+						  + NODE_SIG
+						  + TRANSLET_OUTPUT_SIG
+						  + ")" + STRING_SIG); 
+	il.append(new INVOKEINTERFACE(cpy, 3));
 	il.append(DUP);
 	il.append(new ASTORE(name.getIndex()));
 	final BranchHandle ifBlock1 = il.append(new IFNULL(null));

@@ -148,7 +148,6 @@ class FilterExpr extends Expression {
 				    MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	if (_predicates.size() == 0) {
 	    translate(classGen, methodGen);

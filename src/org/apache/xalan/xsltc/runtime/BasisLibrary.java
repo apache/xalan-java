@@ -800,7 +800,12 @@ public final class BasisLibrary implements Operators {
      * Utility function: used in StringType to convert a string to an int.
      */
     public static int stringToInt(String s) {
-	return Integer.valueOf(s).intValue();
+	try {
+	    return Integer.valueOf(s).intValue();
+	}
+	catch (NumberFormatException e) {
+	    return(-1); // ???
+	}
     }
 
     /**
@@ -852,9 +857,23 @@ public final class BasisLibrary implements Operators {
      */
     public static NodeIterator referenceToNodeSet(Object obj) {
 	try {
-	    return (obj instanceof Node == false)
-		? (NodeIterator) obj 
-		: (NodeIterator) new SingletonIterator(((Node) obj).node);
+	    // Convert var/param -> node
+	    if (obj instanceof Node) {
+		return(new SingletonIterator(((Node)obj).node));
+	    }
+	    // Convert var/param -> node-set
+	    else if (obj instanceof NodeIterator) {
+		return((NodeIterator)obj);
+	    }
+	    // Convert var/param -> result-tree fragment
+	    else if (obj instanceof DOM) {
+		DOM dom = (DOM)obj;
+		return(dom.getIterator());
+	    }
+	    else {
+		runTimeTypeError("reference", "node-set");
+		return null;
+	    }
 	}
 	catch (ClassCastException e) {
 	    runTimeTypeError("reference", "node-set");

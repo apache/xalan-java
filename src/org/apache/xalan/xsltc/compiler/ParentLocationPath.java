@@ -161,15 +161,14 @@ final class ParentLocationPath extends RelativeLocationPath {
 	 * and prevent returning a single node multiple times.
 	 */
 	if (_orderNodes) {
-	    final String DOM_CLASS = classGen.getDOMClass();
-	    final int order = cpg.addMethodref(DOM_CLASS,
-					       "orderNodes",
-					       "("+NODE_ITERATOR_SIG+"I)"+
-					       NODE_ITERATOR_SIG);
+	    final String params = "("+NODE_ITERATOR_SIG+"I)"+NODE_ITERATOR_SIG;
+	    final int order = cpg.addInterfaceMethodref(DOM_INTF,
+							"orderNodes",
+							params);
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
 	    il.append(methodGen.loadContextNode());
-	    il.append(new INVOKEVIRTUAL(order));
+	    il.append(new INVOKEINTERFACE(order, 3));
 	}
     }
 }

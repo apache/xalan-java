@@ -88,11 +88,11 @@ public final class LoadDocument {
      * Returns an iterator containing a set of nodes from an XML document
      * loaded by the document() function.
      */
-    public static NodeIterator document(String uri,
-					String base,
-					AbstractTranslet translet,
-					MultiDOM multiplexer)
+    public static NodeIterator document(String uri, String base,
+					AbstractTranslet translet, DOM dom)
 	throws Exception {
+
+	MultiDOM multiplexer = (MultiDOM)dom;
 
 	// Return an empty iterator if the URI is clearly invalid
 	// (to prevent some unncessary MalformedURL exceptions).
@@ -122,12 +122,12 @@ public final class LoadDocument {
 
 	// Check if we can get the DOM from a DOMCache
 	DOMCache cache = translet.getDOMCache();
-	DOMImpl dom;
+	DOMImpl newdom;
 
 	mask = multiplexer.nextMask(); // peek
 
 	if (cache != null) {
-	    dom = cache.retrieveDocument(uri, mask, translet);
+	    newdom = cache.retrieveDocument(uri, mask, translet);
 	}
 	else {
 	    // Parse the input document and construct DOM object
@@ -143,29 +143,29 @@ public final class LoadDocument {
 	    final XMLReader reader = parser.getXMLReader();
 
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-	    dom = new DOMImpl();
-	    reader.setContentHandler(dom.getBuilder());
+	    newdom = new DOMImpl();
+	    reader.setContentHandler(newdom.getBuilder());
 	    // Create a DTD monitor and pass it to the XMLReader object
 	    DTDMonitor dtdMonitor = new DTDMonitor();
 	    dtdMonitor.handleDTD(reader);
 
-	    dom.setDocumentURI(uri);
+	    newdom.setDocumentURI(uri);
 	    reader.parse(uri);
 
 	    // Set size of key/id indices
-	    translet.setIndexSize(dom.getSize());
+	    translet.setIndexSize(newdom.getSize());
 	    // Create index for any ID attributes defined in the document DTD
-	    dtdMonitor.buildIdIndex(dom, mask, translet);
+	    dtdMonitor.buildIdIndex(newdom, mask, translet);
 	    // Pass any unparsed URI elements to the translet
 	    translet.setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
 	}
 
 	// Wrap the DOM object in a DOM adapter and add to multiplexer
-	final DOMAdapter domAdapter = translet.makeDOMAdapter(dom);
+	final DOMAdapter domAdapter = translet.makeDOMAdapter(newdom);
 	mask = multiplexer.addDOMAdapter(domAdapter);
 
 	// Create index for any key elements
-	translet.buildKeys((DOM)multiplexer, null, null, DOM.ROOTNODE | mask);
+	translet.buildKeys((DOM)newdom, null, null, DOM.ROOTNODE | mask);
 
 	// Return a singleton iterator containing the root node
 	return new SingletonIterator(DOM.ROOTNODE | mask, true);
@@ -178,8 +178,7 @@ public final class LoadDocument {
      * several documents are requested.
      */
     public static NodeIterator document(Object arg, String contextURI,
-					AbstractTranslet translet,
-					MultiDOM multiplexer)
+					AbstractTranslet translet, DOM dom)
 	throws TransletException {
 	try {
 
@@ -194,19 +193,18 @@ public final class LoadDocument {
 	    // If the argument is just a single string (an URI) we just return
 	    // the nodes from the one document this URI points to.
 	    if (arg instanceof String) {
-		return document((String)arg, baseURI, translet, multiplexer);
+		return document((String)arg, baseURI, translet, dom);
 	    }
 	    // Otherwise we must create a union iterator, add the nodes from
 	    // all the DOMs to this iterator, and return the union in the end.
 	    else {
-		UnionIterator union = new UnionIterator(multiplexer);
+		UnionIterator union = new UnionIterator(dom);
 		NodeIterator iterator = (NodeIterator)arg;
 		int node;
 
 		while ((node = iterator.next()) != DOM.NULL) {
-		    String uri = multiplexer.getNodeValue(node);
-		    union.addIterator(document(uri, baseURI, 
-					       translet, multiplexer));
+		    String uri = dom.getNodeValue(node);
+		    union.addIterator(document(uri, baseURI, translet, dom));
 		}
 		return(union);
 	    }

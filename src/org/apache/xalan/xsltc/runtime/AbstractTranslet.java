@@ -68,14 +68,13 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import org.apache.xalan.xsltc.*;
 
-import org.apache.xalan.xsltc.util.IntegerArray;
+import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.StripWhitespaceFilter;
 import org.apache.xalan.xsltc.dom.KeyIndex;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.util.IntegerArray;
 
 public abstract class AbstractTranslet implements Translet {
 
@@ -459,17 +458,11 @@ public abstract class AbstractTranslet implements Translet {
      * See compiler/TransletOutput for actual implementation.
      ************************************************************************/
 
-    protected TransletOutputHandler[] _handlers;
+    public TransletOutputHandler openOutputHandler(String filename) {
+	return(null);
+    }
 
-    protected final TransletOutputHandler getOutputHandler(double port) {
-	try {
-	    return _handlers[(int) port];
-	}
-	catch (IndexOutOfBoundsException e) {
-	    BasisLibrary.runTimeError("Output port " + (int)port 
-				      + " out of range.");     
-	    return null;
-	}
+    public void closeOutputHandler(TransletOutputHandler handler) {
     }
 
     /************************************************************************
@@ -488,7 +481,6 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void transform(DOM document, TransletOutputHandler handler) 
 	throws TransletException {
-	_handlers = new TransletOutputHandler[] { handler };
 	transform(document, document.getIterator(), handler);
     }
 	
@@ -498,7 +490,6 @@ public abstract class AbstractTranslet implements Translet {
     public final void transform(DOM document,
 				TransletOutputHandler[] handlers) 
 	throws TransletException {
-	_handlers = handlers;
 	transform(document, document.getIterator(), handlers[0]);
     }
 

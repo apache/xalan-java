@@ -307,8 +307,6 @@ final class Number extends Instruction {
 
 	ConstantPoolGen cpg = nodeCounterGen.getConstantPool();
 	final String className = matchGen.getClassName();
-	final String DOM_SIG = nodeCounterGen.getDOMClassSig();
-	final String DOM_CLASS = nodeCounterGen.getDOMClass();
 
 	LocalVariableGen local;
 	int field;
@@ -337,13 +335,12 @@ final class Number extends Instruction {
 
 	// Get NodeCounter._document and store locally
 	local = matchGen.addLocalVariable("document", 
-					  Util.getJCRefType(DOM_SIG),
+					  Util.getJCRefType(DOM_INTF_SIG),
 					  null, null);
 	field = cpg.addFieldref(className, "_document", DOM_INTF_SIG);
 	il.append(ALOAD_0); // 'this' pointer on stack
 	il.append(new GETFIELD(field));
 	// Make sure we have the correct DOM type on the stack!!!
-	il.append(new CHECKCAST(cpg.addClass(DOM_CLASS)));
 	il.append(new ASTORE(local.getIndex()));
 	matchGen.setDomIndex(local.getIndex());
     }

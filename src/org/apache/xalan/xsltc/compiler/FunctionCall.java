@@ -74,10 +74,11 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 class FunctionCall extends Expression {
-    private final static Vector EmptyArgs = new Vector(0);
-    private final static String ExtPrefix = TRANSLET_URI + "/java";
+
+    private final static Vector _emptyArgs = new Vector(0);
+    private final static String _javaExtPrefix = TRANSLET_URI + "/java";
     
-    private final QName  _fname;
+    private QName  _fname;
     private final Vector _arguments;
     
     private String     _className;
@@ -88,10 +89,10 @@ class FunctionCall extends Expression {
     private boolean    unresolvedExternal;
 
     // Legal conversions between internal and Java types.
-    private static final MultiHashtable InternalToJava = new MultiHashtable();
+    private static final MultiHashtable _internal2Java = new MultiHashtable();
 
     // Legal conversions between Java and internal types.
-    private static final Hashtable JavaToInternal = new Hashtable();
+    private static final Hashtable _java2Internal = new Hashtable();
 	
     /**
      * Defines 2 conversion tables:
@@ -106,53 +107,54 @@ class FunctionCall extends Expression {
 	    final Class nodeListClass = Class.forName("org.w3c.dom.NodeList");
 
 	    // Possible conversions between internal and Java types
-	    InternalToJava.put(Type.Boolean, Boolean.TYPE);
+	    _internal2Java.put(Type.Boolean, Boolean.TYPE);
 
-	    InternalToJava.put(Type.Int, Character.TYPE);
-	    InternalToJava.put(Type.Int, Byte.TYPE);
-	    InternalToJava.put(Type.Int, Short.TYPE);
-	    InternalToJava.put(Type.Int, Integer.TYPE);
-	    InternalToJava.put(Type.Int, Long.TYPE);
-	    InternalToJava.put(Type.Int, Float.TYPE);
-	    InternalToJava.put(Type.Int, Double.TYPE);
+	    _internal2Java.put(Type.Int, Character.TYPE);
+	    _internal2Java.put(Type.Int, Byte.TYPE);
+	    _internal2Java.put(Type.Int, Short.TYPE);
+	    _internal2Java.put(Type.Int, Integer.TYPE);
+	    _internal2Java.put(Type.Int, Long.TYPE);
+	    _internal2Java.put(Type.Int, Float.TYPE);
+	    _internal2Java.put(Type.Int, Double.TYPE);
 
-	    InternalToJava.put(Type.Real, Character.TYPE);
-	    InternalToJava.put(Type.Real, Byte.TYPE);
-	    InternalToJava.put(Type.Real, Short.TYPE);
-	    InternalToJava.put(Type.Real, Integer.TYPE);
-	    InternalToJava.put(Type.Real, Long.TYPE);
-	    InternalToJava.put(Type.Real, Float.TYPE);
-	    InternalToJava.put(Type.Real, Double.TYPE);
+	    _internal2Java.put(Type.Real, Character.TYPE);
+	    _internal2Java.put(Type.Real, Byte.TYPE);
+	    _internal2Java.put(Type.Real, Short.TYPE);
+	    _internal2Java.put(Type.Real, Integer.TYPE);
+	    _internal2Java.put(Type.Real, Long.TYPE);
+	    _internal2Java.put(Type.Real, Float.TYPE);
+	    _internal2Java.put(Type.Real, Double.TYPE);
 
-	    InternalToJava.put(Type.String, stringClass);
+	    _internal2Java.put(Type.String, stringClass);
 
-	    InternalToJava.put(Type.Node, nodeClass);
-	    InternalToJava.put(Type.Node, nodeListClass);
+	    _internal2Java.put(Type.Node, nodeClass);
+	    _internal2Java.put(Type.Node, nodeListClass);
 
-	    InternalToJava.put(Type.NodeSet, nodeClass);
-	    InternalToJava.put(Type.NodeSet, nodeListClass);
+	    _internal2Java.put(Type.NodeSet, Integer.TYPE);
+	    _internal2Java.put(Type.NodeSet, nodeClass);
+	    _internal2Java.put(Type.NodeSet, nodeListClass);
 
-	    InternalToJava.put(Type.ResultTree, nodeClass);
-	    InternalToJava.put(Type.ResultTree, nodeListClass);
+	    _internal2Java.put(Type.ResultTree, nodeClass);
+	    _internal2Java.put(Type.ResultTree, nodeListClass);
 
 	    // Possible conversions between Java and internal types
-	    JavaToInternal.put(Boolean.TYPE, Type.Boolean);
+	    _java2Internal.put(Boolean.TYPE, Type.Boolean);
 
-	    JavaToInternal.put(Character.TYPE, Type.Real);
-	    JavaToInternal.put(Byte.TYPE, Type.Real);
-	    JavaToInternal.put(Short.TYPE, Type.Real);
-	    JavaToInternal.put(Integer.TYPE, Type.Real);
-	    JavaToInternal.put(Long.TYPE, Type.Real);
-	    JavaToInternal.put(Float.TYPE, Type.Real);
-	    JavaToInternal.put(Double.TYPE, Type.Real);
+	    _java2Internal.put(Character.TYPE, Type.Real);
+	    _java2Internal.put(Byte.TYPE, Type.Real);
+	    _java2Internal.put(Short.TYPE, Type.Real);
+	    _java2Internal.put(Integer.TYPE, Type.Real);
+	    _java2Internal.put(Long.TYPE, Type.Real);
+	    _java2Internal.put(Float.TYPE, Type.Real);
+	    _java2Internal.put(Double.TYPE, Type.Real);
 
-	    JavaToInternal.put(stringClass, Type.String);
+	    _java2Internal.put(stringClass, Type.String);
 
 	    // Conversions from org.w3c.dom.Node/NodeList are not supported
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println(e);
-	    System.exit(1);
+	    //System.exit(1);
 	}
     }
 		
@@ -162,7 +164,7 @@ class FunctionCall extends Expression {
     }
 
     public FunctionCall(QName fname) {
-	this(fname, EmptyArgs);
+	this(fname, _emptyArgs);
     }
 
     public String getName() {
@@ -186,7 +188,9 @@ class FunctionCall extends Expression {
      * type checking is different for standard and external (Java) functions.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
 	final String namespace = _fname.getNamespace();
+	final String local = _fname.getLocalPart();
 
 	// XPath functions have no namespace
 	if (isStandard()) {
@@ -194,11 +198,16 @@ class FunctionCall extends Expression {
 	}
 	// Handle extension functions (they all have a namespace)
 	else {
-	    final int len = ExtPrefix.length();
-	    if (namespace.length() >= len &&
-		namespace.substring(0, len).equals(ExtPrefix)) {
+	    final int len = _javaExtPrefix.length();
+	    if (namespace.equals(_javaExtPrefix)) {
+		final int pos = local.indexOf('.');
+		_className = local.substring(0, pos);
+		_fname = new QName(namespace, null, local.substring(pos+1));
+	    }
+	    else if (namespace.length() >= len &&
+		namespace.substring(0, len).equals(_javaExtPrefix)) {
 		_className = namespace.substring(len + 1);
-	    }			
+	    }
 	    else {
 		/*
 		 * Warn user if external function could not be resolved.
@@ -261,7 +270,7 @@ class FunctionCall extends Expression {
      */
     public Type typeCheckExternal(SymbolTable stable) throws TypeCheckError {
 	final Vector methods = findMethods();
-
+	
 	if (methods == null) {
 	    // Method not found in this class
 	    throw new TypeCheckError(ErrorMsg.METUNDEF_ERR, 
@@ -272,30 +281,47 @@ class FunctionCall extends Expression {
 	final int nArgs = _arguments.size();
 	final Vector argsType = typeCheckArgs(stable);
 
+	// Try all methods with the same name as this function
 	for (int j, i = 0; i < nMethods; i++) {
+
+	    // Check if all paramteters to this method can be converted
 	    final Method method = (Method)methods.elementAt(i);
 	    final Class[] paramTypes = method.getParameterTypes();
-	    // Can all arg types be converted ?
 	    for (j = 0; j < nArgs; j++) {
-		if (!InternalToJava.maps((Type)argsType.elementAt(j),
-					 paramTypes[j])) {
-		    break;
-		}
+		// Convert from internal (translet) type to external (Java) type
+		final Type intType = (Type)argsType.elementAt(j);
+		final Class extType = paramTypes[j];
+		if (!_internal2Java.maps(intType, extType)) break;
 	    }
 
 	    if (j == nArgs) {
-		final Class retType = method.getReturnType();
-		_type = retType.getName().equals("void")
-		    ? Type.Void 
-		    : (Type)JavaToInternal.get(retType);
-
-				// Return type legal ?
+		// Check if the return type can be converted
+		final Class extType = method.getReturnType();
+		if (extType.getName().equals("void"))
+		    _type = Type.Void;
+		else
+		    _type = (Type)_java2Internal.get(extType);
+		// Use this method if all parameters & return type match
 		if (_type != null) {
 		    _chosenMethod = method;
 		    return _type;
 		}
 	    }
 	}
+
+	StringBuffer buf = new StringBuffer("Attempted to call method ");
+	buf.append(_className);
+	buf.append('.');
+	buf.append(_fname.getLocalPart());
+	buf.append('(');
+	for (int a=0; a<nArgs; a++) {
+	    final Type intType = (Type)argsType.elementAt(a);
+	    buf.append(intType.toString());
+	    if (a < (nArgs-1)) buf.append(", ");
+	}
+	buf.append(");");
+	getParser().reportError(Constants.WARNING,new ErrorMsg(buf.toString()));
+
 	throw new TypeCheckError(ErrorMsg.CANNOTCV_ERR, 
 				 _fname.getLocalPart(),
 				 _className);
@@ -453,7 +479,7 @@ class FunctionCall extends Expression {
 	Vector result = null;
 	final String namespace = _fname.getNamespace();
 
-	if (namespace.startsWith(ExtPrefix)) {
+	if (namespace.startsWith(_javaExtPrefix)) {
 	    final int nArgs = _arguments.size();
 	    try {
 		final Class clazz = Class.forName(_className);

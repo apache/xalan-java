@@ -78,6 +78,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ApplyTemplates extends Instruction {
     private Expression _select;
+    private Type       _type = null;
     private QName      _modeName;
     private String     _functionName;
 	
@@ -116,17 +117,18 @@ final class ApplyTemplates extends Instruction {
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_select != null) {
-	    Type tselect = _select.typeCheck(stable);
-	    if (tselect instanceof NodeType ||
-		tselect instanceof ReferenceType) {
+	    _type = _select.typeCheck(stable);
+	    if (_type instanceof NodeType || _type instanceof ReferenceType) {
 		_select = new CastExpr(_select, Type.NodeSet);
-		tselect = Type.NodeSet;
+		_type = Type.NodeSet;
 	    }
-	    if (tselect instanceof NodeSetType) {
-		typeCheckContents(stable);		// with-params
+	    if (_type instanceof NodeSetType||_type instanceof ResultTreeType) {
+		typeCheckContents(stable); // with-params
 		return Type.Void;
-	    } 
-	    throw new TypeCheckError(this);
+	    }
+	    String msg = "Unsupported type for <xsl:apply-templates select='"+
+		_type+"'/>";
+	    throw new TypeCheckError(new ErrorMsg(msg));
 	}
 	else {
 	    typeCheckContents(stable);		// with-params
@@ -165,23 +167,36 @@ final class ApplyTemplates extends Instruction {
 	    translateContents(classGen, methodGen);
 	}
 
-	// push arguments for final call to applyTemplates
 	il.append(classGen.loadTranslet());
-	il.append(methodGen.loadDOM());
-		
-	// compute node iterator for applyTemplates
-	if (sortObjects.size() > 0) {
-	    Sort.translateSortIterator(classGen, methodGen,
-				       _select, sortObjects);
+
+	// The 'select' expression is a result-tree
+	if ((_type != null) && (_type instanceof ResultTreeType)) {
+	    // <xsl:sort> cannot be applied to a result tree - issue warning
+	    if (sortObjects.size() > 0) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.TREESORT_ERR);
+		getParser().reportError(WARNING, msg);
+	    }
+	    // Put the result tree (a DOM adapter) on the stack
+	    _select.translate(classGen, methodGen);	
+	    // Get back the DOM and iterator (not just iterator!!!)
+	    _type.translateTo(classGen, methodGen, Type.NodeSet);
 	}
 	else {
-	    if (_select == null) {
-		Mode.compileGetChildren(classGen, methodGen, current);
+	    il.append(methodGen.loadDOM());
+
+	    // compute node iterator for applyTemplates
+	    if (sortObjects.size() > 0) {
+		Sort.translateSortIterator(classGen, methodGen,
+					   _select, sortObjects);
 	    }
 	    else {
-		_select.translate(classGen, methodGen);
+		if (_select == null)
+		    Mode.compileGetChildren(classGen, methodGen, current);
+		else
+		    _select.translate(classGen, methodGen);
 	    }
 	}
+
 	if (_select != null) {
 	    _select.startResetIterator(classGen, methodGen);
 	}

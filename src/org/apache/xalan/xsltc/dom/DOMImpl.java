@@ -160,6 +160,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	return(_documentURI);
     }
 
+    public String getDocumentURI(int node) {
+	return(_documentURI);
+    }
+
+    public void setupMapping(String[] names, String[] namespaces) {
+	// This method only has a function in DOM adapters
+    }
+
     /**
      * Returns 'true' if a specific node is an element (of any type)
      */
@@ -173,6 +181,12 @@ public final class DOMImpl implements DOM, Externalizable {
     public int getSize() {
 	return(_type.length);
     }
+
+    /**
+     * Part of the DOM interface - no function here.
+     */
+    public void setFilter(StripFilter filter) { }
+
 
     /**
      * Returns true if node1 comes before node2 in document order
@@ -1370,7 +1384,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	private static final int STRIP_SPACE    = 1;
 	private static final int PRESERVE_SPACE = 2;
 
-	private StripWhitespaceFilter _filter = null;
+	private StripFilter _filter = null;
 	private short[] _mapping = null;
 	private final NodeIterator _source;
 	private boolean _children = false;
@@ -1379,7 +1393,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public StrippingIterator(NodeIterator source,
 				 short[] mapping,
-				 StripWhitespaceFilter filter) {
+				 StripFilter filter) {
 
 	    _filter = filter;
 	    _mapping = mapping;
@@ -1467,7 +1481,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
     public NodeIterator strippingIterator(NodeIterator iterator,
 					  short[] mapping,
-					  StripWhitespaceFilter filter) {
+					  StripFilter filter) {
 	return(new StrippingIterator(iterator, mapping, filter));
     }
 
@@ -1658,7 +1672,6 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	// Just return the basic position if no type is specified
 	if (type == -1) type = _type[node];
-	//if (type == -1) return(iterator.getPosition()); DEAD WRONG!!!!
 
 	int match = 1;
 	int curr  = 0;

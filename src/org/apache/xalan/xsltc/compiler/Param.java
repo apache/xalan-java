@@ -141,15 +141,12 @@ final class Param extends VariableBase {
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_select != null) {
-	    final Type tselect = _select.typeCheck(stable); 
-	    if (tselect instanceof ReferenceType == false) {
-		_select = new CastExpr(_select, Type.Reference);
-	    }
+	    _type = _select.typeCheck(stable); 
 	}
 	else {
 	    typeCheckContents(stable);
+	    _type = Type.ResultTree;
 	}
-	_type = Type.Reference;
 	return Type.Void;
     }
 
@@ -217,8 +214,6 @@ final class Param extends VariableBase {
 	}
 	else {
 	    String signature = _type.toSignature();
-	    if (signature.equals(DOM_IMPL_SIG))
-		signature = classGen.getDOMClassSig();
 	    classGen.addField(new Field(ACC_PUBLIC, cpg.addUtf8(name),
 					cpg.addUtf8(signature),
 					null, cpg.getConstantPool()));

@@ -314,8 +314,6 @@ final class Mode implements Constants {
 				      ClassGenerator classGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
-	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
-
 	String methodName = template.getName().toString();
 	methodName = methodName.replace('.', '$');
 	methodName = methodName.replace('-', '$');
@@ -324,7 +322,7 @@ final class Mode implements Constants {
 	    new NamedMethodGenerator(ACC_PUBLIC,
 				     de.fub.bytecode.generic.Type.VOID,
 				     new de.fub.bytecode.generic.Type[] {
-					 Util.getJCRefType(DOM_CLASS_SIG),
+					 Util.getJCRefType(DOM_INTF_SIG),
 					 Util.getJCRefType(NODE_ITERATOR_SIG),
 					 Util.getJCRefType(TRANSLET_OUTPUT_SIG),
 					 de.fub.bytecode.generic.Type.INT
@@ -404,12 +402,12 @@ final class Mode implements Constants {
 					  int node) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
+	final int git = cpg.addInterfaceMethodref(DOM_INTF,
+						  GET_CHILDREN,
+						  GET_CHILDREN_SIG);
 	il.append(methodGen.loadDOM());
 	il.append(new ILOAD(node));
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						     GET_CHILDREN,
-						     GET_CHILDREN_SIG)));
+	il.append(new INVOKEINTERFACE(git, 2));
     }
 
     /**
@@ -420,11 +418,10 @@ final class Mode implements Constants {
 						    InstructionHandle next) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 	final String applyTemplatesSig = classGen.getApplyTemplatesSig();
-	final int getChildren = cpg.addMethodref(DOM_CLASS,
-						 GET_CHILDREN,
-						 GET_CHILDREN_SIG);
+	final int git = cpg.addInterfaceMethodref(DOM_INTF,
+						  GET_CHILDREN,
+						  GET_CHILDREN_SIG);
 	final int applyTemplates = cpg.addMethodref(getClassName(),
 						    functionName(),
 						    applyTemplatesSig);
@@ -433,7 +430,7 @@ final class Mode implements Constants {
 	
 	il.append(methodGen.loadDOM());
 	il.append(new ILOAD(_currentIndex));
-	il.append(new INVOKEVIRTUAL(getChildren));
+	il.append(new INVOKEINTERFACE(git, 2));
 	il.append(methodGen.loadHandler());
 	il.append(new INVOKEVIRTUAL(applyTemplates));
 	il.append(new GOTO_W(next));
@@ -449,13 +446,14 @@ final class Mode implements Constants {
 					       InstructionHandle next) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
+
+	final int chars = cpg.addInterfaceMethodref(DOM_INTF,
+						    CHARACTERS,
+						    CHARACTERS_SIG);
 	il.append(methodGen.loadDOM());
 	il.append(new ILOAD(_currentIndex));
 	il.append(methodGen.loadHandler());
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						     CHARACTERS,
-						     CHARACTERS_SIG)));
+	il.append(new INVOKEINTERFACE(chars, 3));
 	il.append(new GOTO_W(next));
 	return il;
     }
@@ -468,7 +466,6 @@ final class Mode implements Constants {
 					      InstructionHandle defaultTarget) {
 	final XSLTC xsltc = classGen.getParser().getXSLTC();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	// Append switch() statement - namespace test dispatch loop
 	final Vector namespaces = xsltc.getNamespaceIndex();
@@ -511,11 +508,12 @@ final class Mode implements Constants {
 	    if (!compiled) return(null);
 		
 	    // Append first code in applyTemplates() - get type of current node
+	    final int getNS = cpg.addInterfaceMethodref(DOM_INTF,
+							"getNamespaceType",
+							"(I)I");
 	    il.append(methodGen.loadDOM());
 	    il.append(new ILOAD(_currentIndex));
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-							     "getNamespaceType",
-							     "(I)I")));
+	    il.append(new INVOKEINTERFACE(getNS, 2));
 	    il.append(new SWITCH(types, targets, defaultTarget));
 	    return(il);
 	}
@@ -551,12 +549,11 @@ final class Mode implements Constants {
 	final XSLTC xsltc = classGen.getParser().getXSLTC();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final Vector names      = xsltc.getNamesIndex();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	// (*) Create the applyTemplates() method
 	final de.fub.bytecode.generic.Type[] argTypes =
 	    new de.fub.bytecode.generic.Type[3];
-	argTypes[0] = Util.getJCRefType(classGen.getDOMClassSig());
+	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
 
@@ -651,13 +648,16 @@ final class Mode implements Constants {
 	// (*) If there is a match on node() we need to replace ihElem
 	//     and ihText (default behaviour for elements & text).
 	if (_nodeTestSeq != null) {
-	    double nodePrio = -0.5;// _nodeTestSeq.getPriority();
+	    double nodePrio = -0.5; //_nodeTestSeq.getPriority();
 	    int    nodePos  = _nodeTestSeq.getPosition();
-	    if ((elemTest == null) ||
-		(elemTest.getPriority() == Double.NaN) ||
-		(elemTest.getPriority() < nodePrio) ||
-		((elemTest.getPriority() == nodePrio) &&
-		 (elemTest.getPosition() < nodePos))) {
+	    double elemPrio = (0 - Double.MAX_VALUE);
+	    int    elemPos  = Integer.MIN_VALUE;
+	    if (elemTest != null) {
+		elemPrio = elemTest.getPriority();
+		elemPos  = elemTest.getPosition();
+	    }
+	    if ((elemPrio == Double.NaN) || (elemPrio < nodePrio) ||
+		((elemPrio == nodePrio) && (elemPos < nodePos))) {
 		ihElem = _nodeTestSeq.compile(classGen, methodGen, ihLoop);
 		ihText = ihElem;
 	    }
@@ -757,10 +757,11 @@ final class Mode implements Constants {
 	if (ilKey != null) body.insert(ilKey);
 
 	// Append first code in applyTemplates() - get type of current node
+	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getType", "(I)I");
 	body.append(methodGen.loadDOM());
 	body.append(new ILOAD(_currentIndex));
-	body.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						       "getType", "(I)I")));
+	body.append(new INVOKEINTERFACE(getType, 2));
 
 	// Append switch() statement - main dispatch loop in applyTemplates()
 	InstructionHandle disp = body.append(new SWITCH(types, targets, ihLoop));

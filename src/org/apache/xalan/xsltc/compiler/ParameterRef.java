@@ -79,7 +79,6 @@ final class ParameterRef extends VariableRefBase {
 	return "parameter-ref(" + _variable.getName() + ')';
     }
 
-
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -105,17 +104,14 @@ final class ParameterRef extends VariableRefBase {
 	}
 	else {
 	    final String className = classGen.getClassName();
-		String signature = parType.toSignature();
-		if (signature.equals(DOM_IMPL_SIG))
-		    signature = classGen.getDOMClassSig();
-
 	    il.append(classGen.loadTranslet());
 	    // If inside a predicate we must cast this ref down
 	    if (classGen.isExternal()) {
 		il.append(new CHECKCAST(cpg.addClass(className)));
 	    }
 	    il.append(new GETFIELD(cpg.addFieldref(className,
-						   parName, signature)));
+						   parName,
+						   parType.toSignature())));
 	}
     }
 }

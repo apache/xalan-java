@@ -56,8 +56,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author Jacek Ambroziak
- * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -68,27 +67,55 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class TransletOutput extends Instruction {
-    private Expression _port; // port treated as AVT (7.1.3)
-	
+
+    private Expression _filename;
+
+    private final static String MISSING_FILE_ATTR =
+	"The <xsltc:output> element requires a 'file' attribute.";
+
+    /**
+     * Displays the contents of this <xsltc:output> element.
+     */
     public void display(int indent) {
 	indent(indent);
-	Util.println("TransletOutput " + _port);
+	Util.println("TransletOutput: " + _filename);
     }
 		
+    /**
+     * Parse the contents of this <xsltc:output> element. The only attribute
+     * we recognise is the 'file' attribute that contains teh output filename.
+     */
     public void parseContents(Parser parser) {
-	_port = AttributeValue.create(this, getAttribute("port"), parser);
+	// Get the output filename from the 'file' attribute
+	String filename = getAttribute("file");
+
+	// Verify that the filename is in fact set
+	if ((filename == null) || (filename.equals(EMPTYSTRING))) {
+	    final ErrorMsg msg = new ErrorMsg(MISSING_FILE_ATTR);
+	    parser.reportError(Constants.ERROR, msg);
+	}
+
+	// Save filename as an attribute value template
+	_filename = AttributeValue.create(this, filename, parser);
 	parseChildren(parser);
     }
     
+    /**
+     * Type checks the 'file' attribute (must be able to convert it to a str).
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type ptype = _port.typeCheck(stable);
-	if (ptype instanceof RealType == false) {
-	    _port = new CastExpr(_port, Type.Real);
+	final Type type = _filename.typeCheck(stable);
+	if (type instanceof StringType == false) {
+	    _filename = new CastExpr(_filename, Type.String);
 	}
 	typeCheckContents(stable);
 	return Type.Void;
     }
     
+    /**
+     * Compile code that opens the give file for output, dumps the contents of
+     * the element to the file, then closes the file.
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -96,20 +123,30 @@ final class TransletOutput extends Instruction {
 	// Save the current output handler on the stack
 	il.append(methodGen.loadHandler());
 	
-	// retrieve selected output port
-	final int getOutputHandler =
-	    cpg.addMethodref(TRANSLET_CLASS,
-			     "getOutputHandler",
-			     "(D)" + TRANSLET_OUTPUT_SIG);
-	il.append(classGen.loadTranslet());
-	_port.translate(classGen, methodGen);
-	il.append(new INVOKEVIRTUAL(getOutputHandler));
+	final int open =  cpg.addMethodref(TRANSLET_CLASS,
+					   "openOutputHandler",
+					   "("+STRING_SIG+")"+
+					   TRANSLET_OUTPUT_SIG);
 
-	// overwrite current handler
+	final int close =  cpg.addMethodref(TRANSLET_CLASS,
+					    "closeOutputHandler",
+					    "("+TRANSLET_OUTPUT_SIG+")V");
+
+	// Create the new output handler (leave it on stack)
+	il.append(classGen.loadTranslet());
+	_filename.translate(classGen, methodGen);
+	il.append(new INVOKEVIRTUAL(open));
+
+	// Overwrite current handler
 	il.append(methodGen.storeHandler());
 	
-	// translate contents with substituted handler
+	// Translate contents with substituted handler
 	translateContents(classGen, methodGen);
+
+	// Close the output handler (close file)
+	il.append(classGen.loadTranslet());
+	il.append(methodGen.storeHandler());
+	il.append(new INVOKEVIRTUAL(close));
 
 	// Restore old output handler from stack
 	il.append(methodGen.storeHandler());

@@ -142,17 +142,16 @@ public final class NodeType extends Type {
 			    StringType type) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	switch (_type) {
 	case NodeTest.ROOT:
 	case NodeTest.ELEMENT:
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP); // dom ref must be below node index
-	    int index = cpg.addMethodref(DOM_CLASS,
-					 GET_ELEMENT_VALUE,
-					 GET_ELEMENT_VALUE_SIG);
-	    il.append(new INVOKEVIRTUAL(index));
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  GET_ELEMENT_VALUE,
+						  GET_ELEMENT_VALUE_SIG);
+	    il.append(new INVOKEINTERFACE(index, 2));
 	    break;
 
 	case NodeTest.ANODE:
@@ -161,10 +160,10 @@ public final class NodeType extends Type {
 	case NodeTest.PI:
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP); // dom ref must be below node index
-	    index = cpg.addMethodref(DOM_CLASS,
-				     GET_NODE_VALUE,
-				     GET_NODE_VALUE_SIG);
-	    il.append(new INVOKEVIRTUAL(index));
+	    index = cpg.addInterfaceMethodref(DOM_INTF,
+					      GET_NODE_VALUE,
+					      GET_NODE_VALUE_SIG);
+	    il.append(new INVOKEINTERFACE(index, 2));
 	    break;
 	    
 	default:
@@ -264,21 +263,22 @@ public final class NodeType extends Type {
 			    Class clazz) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	il.append(methodGen.loadDOM());
 	il.append(SWAP);		// dom ref must be below node index
 
 	String className = clazz.getName();
 	if (className.equals("org.w3c.dom.Node")) {
-	    int index = cpg.addMethodref(DOM_CLASS, MAKE_NODE, MAKE_NODE_SIG);
-	    il.append(new INVOKEVIRTUAL(index));
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  MAKE_NODE,
+						  MAKE_NODE_SIG);
+	    il.append(new INVOKEINTERFACE(index, 2));
 	}
 	else if (className.equals("org.w3c.dom.NodeList")) {
-	    int index = cpg.addMethodref(DOM_CLASS,
-					 MAKE_NODE_LIST,
-					 MAKE_NODE_LIST_SIG);
-	    il.append(new INVOKEVIRTUAL(index));
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  MAKE_NODE_LIST,
+						  MAKE_NODE_LIST_SIG);
+	    il.append(new INVOKEINTERFACE(index, 2));
 	}
 	else {
 	    classGen.getParser().internalError();

@@ -140,21 +140,19 @@ final class DocumentCall extends FunctionCall {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	final int domField = cpg.addFieldref(classGen.getClassName(),
 					     DOM_FIELD,
-					     classGen.getDOMClassSig());
-
+					     DOM_INTF_SIG);
 	final String docParamList =
-	    "("+OBJECT_SIG+STRING_SIG+TRANSLET_SIG+MULTI_DOM_SIG+")"+
+	    "("+OBJECT_SIG+STRING_SIG+TRANSLET_SIG+DOM_INTF_SIG+")"+
 	    NODE_ITERATOR_SIG;
 	final int docIdx = cpg.addMethodref(LOAD_DOCUMENT_CLASS,
 					    "document", docParamList);
 
-	final int uriIdx = cpg.addMethodref(DOM_CLASS,
-					    "getNodeURI",
-					    "(I)"+STRING_SIG);
+	final int uriIdx = cpg.addInterfaceMethodref(DOM_INTF,
+						     "getDocumentURI",
+						     "(I)"+STRING_SIG);
 
 	final int nextIdx = cpg.addInterfaceMethodref(NODE_ITERATOR,
 						      NEXT, NEXT_SIG);
@@ -173,7 +171,7 @@ final class DocumentCall extends FunctionCall {
 	else {
 	     il.append(methodGen.loadContextNode());
 	}
-	il.append(new INVOKEVIRTUAL(uriIdx));
+	il.append(new INVOKEINTERFACE(uriIdx, 2));
 
 	// Feck the rest of the parameters on the stack
 	il.append(classGen.loadTranslet());

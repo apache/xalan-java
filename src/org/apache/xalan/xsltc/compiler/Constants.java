@@ -454,6 +454,15 @@ public interface Constants extends InstructionConstants {
     public static final String GET_VARIABLE_SIG
 	= "(I)" + OBJECT_SIG;
 
+    public static final String STRIP_SPACE
+	= "stripSpace";
+    public static final String STRIP_SPACE_INTF
+	= "org/apache/xalan/xsltc/StripFilter";
+    public static final String STRIP_SPACE_SIG
+	= "Lorg/apache/xalan/xsltc/StripFilter;";
+    public static final String STRIP_SPACE_PARAMS
+	= "(Lorg/apache/xalan/xsltc/DOM;II)Z";
+
     public static final String GET_NODE_VALUE_ITERATOR
 	= "getNodeValueIterator";
     public static final String GET_NODE_VALUE_ITERATOR_SIG

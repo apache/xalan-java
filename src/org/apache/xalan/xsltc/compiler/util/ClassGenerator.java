@@ -113,7 +113,7 @@ public class ClassGenerator extends ClassGen {
 	    _domClassSig = "Lorg/apache/xalan/xsltc/dom/DOMAdapter;";
 	}
 	_applyTemplatesSig = "(" 
-	    + _domClassSig
+	    + Constants.DOM_INTF_SIG
 	    + Constants.NODE_ITERATOR_SIG
 	    + Constants.TRANSLET_OUTPUT_SIG
 	    + ")V"; 

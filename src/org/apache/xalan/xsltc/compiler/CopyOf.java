@@ -108,8 +108,13 @@ final class CopyOf extends Instruction {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 	final Type tselect = _select.getType();
+
+	final String CPY1_SIG = "("+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V";
+	final int cpy1 = cpg.addInterfaceMethodref(DOM_INTF, "copy", CPY1_SIG);
+
+	final String CPY2_SIG = "("+NODE_SIG+TRANSLET_OUTPUT_SIG+")V";
+	final int cpy2 = cpg.addInterfaceMethodref(DOM_INTF, "copy", CPY2_SIG);
 
 	if (tselect instanceof NodeSetType) {
 	    il.append(methodGen.loadDOM());
@@ -120,56 +125,20 @@ final class CopyOf extends Instruction {
 
 	    // call copy from the DOM 'library'
 	    il.append(methodGen.loadHandler());
-	    final int copy = cpg.addMethodref(DOM_CLASS,
-					      "copy",
-					      "("
-					      + NODE_ITERATOR_SIG
-					      + TRANSLET_OUTPUT_SIG
-					      + ")V"); 
-	    il.append(new INVOKEVIRTUAL(copy));
+	    il.append(new INVOKEINTERFACE(cpy1, 3));
 	}
 	else if (tselect instanceof NodeType) {
 	    il.append(methodGen.loadDOM());
 	    _select.translate(classGen, methodGen);	
 	    il.append(methodGen.loadHandler());
-	    final int copy = cpg.addMethodref(DOM_CLASS,
-					      "copy",
-					      "("
-					      + NODE_SIG
-					      + TRANSLET_OUTPUT_SIG
-					      + ")V"); 
-	    il.append(new INVOKEVIRTUAL(copy));
+	    il.append(new INVOKEINTERFACE(cpy2, 3));
 	}
 	else if (tselect instanceof ResultTreeType) {
-	    if (tselect.implementedAsMethod()) {
-		final ResultTreeType type = (ResultTreeType) tselect;
-		final String DOM_CLASS_SIG = classGen.getDOMClassSig();
-		final int index = cpg.addMethodref(classGen.getClassName(),
-						   type.getMethodName(),
-						   "("
-						   + DOM_CLASS_SIG
-						   + TRANSLET_OUTPUT_SIG
-						   + ")V");
-		il.append(classGen.loadTranslet());
-		il.append(methodGen.loadDOM());
-		il.append(methodGen.loadHandler());
-		il.append(new INVOKEVIRTUAL(index));
-	    }
-	    else {
-		_select.translate(classGen, methodGen);	
-		// We want the whole result tree here, not just from the
-		// current node and onwards!!!!!!!
-		//il.append(methodGen.loadCurrentNode());
-		il.append(ICONST_1);
-		il.append(methodGen.loadHandler());
-		final int copy = cpg.addMethodref(DOM_CLASS,
-						  "copy",
-						  "("
-						  + NODE_SIG
-						  + TRANSLET_OUTPUT_SIG
-						  + ")V");
-		il.append(new INVOKEVIRTUAL(copy));
-	    }
+	    _select.translate(classGen, methodGen);	
+	    // We want the whole tree, so we start with the root node
+	    il.append(ICONST_1);
+	    il.append(methodGen.loadHandler());
+	    il.append(new INVOKEINTERFACE(cpy2, 3));
 	}
 	else if (tselect instanceof ReferenceType) {
 	    _select.translate(classGen, methodGen);

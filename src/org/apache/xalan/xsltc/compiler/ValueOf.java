@@ -89,7 +89,6 @@ final class ValueOf extends Instruction {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "select");
 	    return;
         }
-
         final String str = getAttribute("disable-output-escaping");
 	if ((str != null) && (str.equals("yes"))) _escaping = false;
     }

@@ -67,18 +67,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
 
 public final class DOMAdapter implements DOM {
     private final DOMImpl _domImpl;
-    private final short[] _mapping;
-    private final short[] _reverse;
-    private final short[] _NSmapping;
-    private final short[] _NSreverse;
+    private short[] _mapping;
+    private short[] _reverse;
+    private short[] _NSmapping;
+    private short[] _NSreverse;
 
-    private StripWhitespaceFilter _filter = null;
+    private StripFilter _filter = null;
     
     public DOMAdapter(DOMImpl dom,
 		      String[] namesArray,
@@ -88,6 +89,13 @@ public final class DOMAdapter implements DOM {
 	_reverse = dom.getReverseMapping(namesArray);
 	_NSmapping = dom.getNamespaceMapping(namespaceArray);
 	_NSreverse = dom.getReverseNamespaceMapping(namespaceArray);
+    }
+
+    public void setupMapping(String[] names, String[] namespaces) {
+	_mapping = _domImpl.getMapping(names);
+	_reverse = _domImpl.getReverseMapping(names);
+	_NSmapping = _domImpl.getNamespaceMapping(namespaces);
+	_NSreverse = _domImpl.getReverseNamespaceMapping(namespaces);
     }
 
     /** returns singleton iterator containg the document root */
@@ -110,7 +118,7 @@ public final class DOMAdapter implements DOM {
 	}
     }
 
-    public void setFilter(StripWhitespaceFilter filter) {
+    public void setFilter(StripFilter filter) {
 	_filter = filter;
     }
     
@@ -242,6 +250,10 @@ public final class DOMAdapter implements DOM {
     }
 
     public String getDocumentURI() {
+	return(_domImpl.getDocumentURI());
+    }
+
+    public String getDocumentURI(int node) {
 	return(_domImpl.getDocumentURI());
     }
 

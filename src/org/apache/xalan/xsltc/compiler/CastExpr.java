@@ -199,13 +199,13 @@ final class CastExpr extends Expression {
 	if (_typeTest) {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
 	    final InstructionList il = methodGen.getInstructionList();
-	    final String DOM_CLASS = classGen.getDOMClass();
 
-	    final int idx = cpg.addMethodref(DOM_CLASS, "getType","(I)I");
+	    final int idx = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getType", "(I)I");
 	    il.append(new SIPUSH((short)((Step)_left).getNodeType()));
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadContextNode());
-	    il.append(new INVOKEVIRTUAL(idx));
+	    il.append(new INVOKEINTERFACE(idx, 2));
 	    _falseList.add(il.append(new IF_ICMPNE(null)));
 	}
 	else {

@@ -86,7 +86,6 @@ final class LastCall extends FunctionCall {
 
 	final InstructionList il = methodGen.getInstructionList();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	boolean lastChild = false;
 
@@ -118,9 +117,9 @@ final class LastCall extends FunctionCall {
 	    final int last = cpg.addInterfaceMethodref(NODE_ITERATOR,
 						       "getLast", 
 						       "()I");
-	    final int children = cpg.addMethodref(DOM_CLASS,
-						  "getTypedAxisIterator", 
-						  "(II)"+NODE_ITERATOR_SIG);
+	    final int git = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getTypedAxisIterator", 
+						      "(II)"+NODE_ITERATOR_SIG);
 	    final int start = cpg.addInterfaceMethodref(NODE_ITERATOR,
 							"setStartNode", 
 							"(I)"+
@@ -129,7 +128,7 @@ final class LastCall extends FunctionCall {
 		il.append(methodGen.loadDOM());
 		il.append(new PUSH(cpg, Axis.CHILD));
 		il.append(new PUSH(cpg, DOM.ELEMENT));
-		il.append(new INVOKEVIRTUAL(children));
+		il.append(new INVOKEINTERFACE(git, 3));
 		il.append(methodGen.loadCurrentNode());
 		il.append(new INVOKEINTERFACE(start, 2));
 	    }
@@ -140,14 +139,16 @@ final class LastCall extends FunctionCall {
 	}
 	else {
 	    // public int getTypedPosition(NodeIterator iterator, int type) {
-	    final int last = cpg.addMethodref(DOM_CLASS,
-					     "getTypedLast",
-					     "("+NODE_ITERATOR_SIG+"II)I");
+	    final int last = cpg.addInterfaceMethodref(DOM_INTF,
+						       "getTypedLast",
+						       "("+
+						       NODE_ITERATOR_SIG+
+						       "II)I");
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadIterator());
 	    il.append(new PUSH(cpg, _type));
 	    il.append(methodGen.loadCurrentNode());
-	    il.append(new INVOKEVIRTUAL(last));
+	    il.append(new INVOKEINTERFACE(last, 4));
 
 	}
     }

@@ -243,7 +243,6 @@ final class Predicate extends Expression {
 
 	final InstructionList il = new InstructionList();
 	final ConstantPoolGen cpg = filterGen.getConstantPool();
-	final String DOM_SIG = classGen.getDOMClassSig();
 
 	testGen = new TestGenerator(ACC_PUBLIC | ACC_FINAL,
 				    de.fub.bytecode.generic.Type.BOOLEAN, 
@@ -267,13 +266,13 @@ final class Predicate extends Expression {
 		
 	// Store the dom in a local variable
 	local = testGen.addLocalVariable("document",
-					 Util.getJCRefType(DOM_SIG),
+					 Util.getJCRefType(DOM_INTF_SIG),
 					 null, null);
 	final String className = classGen.getClassName();
 	il.append(filterGen.loadTranslet());
 	il.append(new CHECKCAST(cpg.addClass(className)));
 	il.append(new GETFIELD(cpg.addFieldref(className,
-					       DOM_FIELD, DOM_SIG)));
+					       DOM_FIELD, DOM_INTF_SIG)));
 	il.append(new ASTORE(local.getIndex()));
 
 	// Store the dom index in the test generator
@@ -291,6 +290,15 @@ final class Predicate extends Expression {
 	filterGen.addMethod(testGen.getMethod());
 		
 	getXSLTC().dumpClass(filterGen.getJavaClass());
+    }
+
+    /**
+     * Returns true if the predicate is a test for the existance of an
+     * element or attribute. All we have to do is to get the first node
+     * from the step, check if it is there, and then return true/false.
+     */
+    public boolean isBooleanTest() {
+	return (_exp instanceof BooleanExpr);
     }
 
     /**

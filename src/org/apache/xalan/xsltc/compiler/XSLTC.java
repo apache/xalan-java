@@ -103,7 +103,7 @@ public final class XSLTC {
     private Stylesheet _stylesheet = null;
 
     // Counters used by various classes to generate unique names.
-    private int _variableSerial     = 1;
+    // private int _variableSerial     = 1;
     private int _modeSerial         = 1;
     private int _stylesheetSerial   = 1;
     private int _stepPatternSerial  = 1;
@@ -182,7 +182,7 @@ public final class XSLTC {
 	_namesIndex     = new Vector(128);
 	_namespaceIndex = new Vector(32);
 	_parser.init();
-	_variableSerial     = 1;
+	//_variableSerial     = 1;
 	_modeSerial         = 1;
 	_stylesheetSerial   = 1;
 	_stepPatternSerial  = 1;
@@ -591,10 +591,12 @@ public final class XSLTC {
 	return code.intValue();
     }
     
+    /*
     public int nextVariableSerial() {
 	return _variableSerial++;
     }
-    
+    */
+
     public int nextModeSerial() {
 	return _modeSerial++;
     }

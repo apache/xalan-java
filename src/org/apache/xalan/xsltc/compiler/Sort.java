@@ -410,7 +410,6 @@ final class Sort extends Instruction {
 					 ConstantPoolGen cpg,
 					 String className) {
 	final InstructionList il = new InstructionList();
-	final String DOM_CLASS = sortRecord.getDOMClass();
 	
 	// String NodeSortRecord.extractValueFromDOM(dom,node,level);
 	final CompareGenerator extractMethod =
@@ -431,18 +430,11 @@ final class Sort extends Instruction {
 				 },
 				 "extractValueFromDOM", className, il, cpg);
 
-	// String DOM.getNodeValue(int node);
-	final int getNodeValue = cpg.addMethodref(DOM_CLASS, "getNodeValue",
-						  "(I)" + STRING_SIG);
 	// Values needed for the switch statement
 	final int levels = sortObjects.size();
 	final int match[] = new int[levels];
 	final InstructionHandle target[] = new InstructionHandle[levels];
 	InstructionHandle tblswitch = null;
-
-	il.append(ALOAD_1);	// DOM arg
-	il.append(new CHECKCAST(cpg.addClass(DOM_CLASS)));
-	il.append(ASTORE_1);
 
 	// Compile switch statement only if the key has multiple levels
 	if (levels > 1) {

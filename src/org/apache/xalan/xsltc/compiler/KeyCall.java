@@ -181,9 +181,9 @@ final class KeyCall extends FunctionCall {
 	final InstructionList il = methodGen.getInstructionList();
 
 	// Returns the string value for a node in the DOM
-	final int getNodeValue = cpg.addMethodref(classGen.getDOMClass(),
-						  "getNodeValue",
-						  "(I)Ljava/lang/String;");
+	final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
+							   "getNodeValue",
+							   "(I)"+STRING_SIG);
 
 	// Returns the KeyIndex object of a given name
 	final int getKeyIndex = cpg.addMethodref(TRANSLET_CLASS,
@@ -264,7 +264,7 @@ final class KeyCall extends FunctionCall {
 	    il.append(DUP);
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadCurrentNode());
-	    il.append(new INVOKEVIRTUAL(getNodeValue));
+	    il.append(new INVOKEINTERFACE(getNodeValue, 2));
 	    if (_name == null)
 		il.append(new INVOKEVIRTUAL(lookupId));
 	    else

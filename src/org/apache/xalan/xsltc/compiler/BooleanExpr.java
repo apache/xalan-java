@@ -87,6 +87,10 @@ final class BooleanExpr extends Expression {
 	return _value ? "true()" : "false()";
     }
 
+    public boolean getValue() {
+	return _value;
+    }
+
     public boolean contextDependent() {
 	return false;
     }

@@ -103,6 +103,7 @@ final class Text extends Instruction {
 	if ((str != null) && (str.equals("yes"))) {
 	    _escaping = false;
 	}
+	parseChildren(parser);
     }
 	
     public boolean contextDependent() {

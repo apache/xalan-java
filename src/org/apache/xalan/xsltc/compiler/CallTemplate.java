@@ -116,7 +116,6 @@ final class CallTemplate extends Instruction {
 	final Stylesheet stylesheet = classGen.getStylesheet();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
 
 	// Push a new parameter frame
 	if (stylesheet.hasLocalParams() || hasContents()) {
@@ -144,7 +143,7 @@ final class CallTemplate extends Instruction {
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(className,
 						     methodName,
 						     "("
-						     + DOM_CLASS_SIG
+						     + DOM_INTF_SIG
 						     + NODE_ITERATOR_SIG
 						     + TRANSLET_OUTPUT_SIG
 						     + NODE_SIG

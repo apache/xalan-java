@@ -127,12 +127,11 @@ final class AbsoluteLocationPath extends Expression {
 	    il.append(new INVOKESPECIAL(initAI));
 	}
 	else {
-	    final String DOM_CLASS = classGen.getDOMClass();
+	    final int gitr = cpg.addInterfaceMethodref(DOM_INTF,
+						       "getIterator",
+						       "()"+NODE_ITERATOR_SIG);
 	    il.append(methodGen.loadDOM());
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-							 "getIterator",
-							 "()"
-							 +NODE_ITERATOR_SIG)));
+	    il.append(new INVOKEINTERFACE(gitr, 1));
 	}
     }
 }

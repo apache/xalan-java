@@ -114,7 +114,6 @@ final class AncestorPattern extends RelativePathPattern {
 	InstructionHandle loop, eloop;
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 	final LocalVariableGen local =
 	    methodGen.addLocalVariable2("app", 
 					Util.getJCRefType(NODE_SIG),
@@ -137,10 +136,10 @@ final class AncestorPattern extends RelativePathPattern {
 	}
 
 	if (_left != null) {
-	    final int getParent = cpg.addMethodref(DOM_CLASS,
-						   GET_PARENT,
-						   GET_PARENT_SIG);
-	    loop = il.append(new INVOKEVIRTUAL(getParent));
+	    final int getParent = cpg.addInterfaceMethodref(DOM_INTF,
+							    GET_PARENT,
+							    GET_PARENT_SIG);
+	    loop = il.append(new INVOKEINTERFACE(getParent, 2));
 	    
 	    il.append(DUP);
 	    il.append(storeLocal);

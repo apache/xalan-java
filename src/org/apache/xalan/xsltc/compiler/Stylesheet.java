@@ -88,8 +88,8 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.DOM;
 
 public final class Stylesheet extends SyntaxTreeNode {
-    private String       _version;
 
+    private String       _version;
     private QName        _name;
     private String       _systemId;
     private Stylesheet   _parentStylesheet;
@@ -396,12 +396,10 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     private void addDOMField(ClassGenerator classGen) {
-	final FieldGen fgen =
-	    new FieldGen(ACC_PUBLIC,
-			 Util.getJCRefType(classGen.getDOMClassSig()),
-			 DOM_FIELD,
-			 classGen.getConstantPool());
-	
+	final FieldGen fgen = new FieldGen(ACC_PUBLIC,
+					   Util.getJCRefType(DOM_INTF_SIG),
+					   DOM_FIELD,
+					   classGen.getConstantPool());
 	classGen.addField(fgen.getField());
     }
 
@@ -544,9 +542,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
-	// The signature of this method depends on the type of DOM we're using
 	final de.fub.bytecode.generic.Type[] argTypes = {
-	    Util.getJCRefType(classGen.getDOMClassSig()),
+	    Util.getJCRefType(DOM_INTF_SIG),
 	    Util.getJCRefType(NODE_ITERATOR_SIG),
 	    Util.getJCRefType(TRANSLET_OUTPUT_SIG)
 	};
@@ -572,9 +569,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 				    de.fub.bytecode.generic.Type.INT,
 				    il.getEnd(), null);
 
-	final int setFilter = cpg.addMethodref(classGen.getDOMClass(),
+	final int setFilter = cpg.addInterfaceMethodref(DOM_INTF,
 			       "setFilter",
-			       "(Lorg/apache/xalan/xsltc/dom/StripWhitespaceFilter;)V");
+			       "(Lorg/apache/xalan/xsltc/StripFilter;)V");
 
 	il.append(new PUSH(cpg, DOM.ROOTNODE));
 	il.append(new ISTORE(current.getIndex()));
@@ -621,11 +618,10 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    Whitespace.translateRules(whitespaceRules,classGen);
 	}
 
-	if (classGen.containsMethod("stripSpace",
-				    "(Lorg/apache/xalan/xsltc/DOM;II)Z") != null) {
+	if (classGen.containsMethod(STRIP_SPACE, STRIP_SPACE_PARAMS) != null) {
 	    il.append(toplevel.loadDOM());
 	    il.append(classGen.loadTranslet());
-	    il.append(new INVOKEVIRTUAL(setFilter));
+	    il.append(new INVOKEINTERFACE(setFilter, 2));
 	}
 
 	il.append(RETURN);
@@ -638,8 +634,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	classGen.addMethod(toplevel.getMethod());
 	
-	return("("+ classGen.getDOMClassSig()+
-	       NODE_ITERATOR_SIG + TRANSLET_OUTPUT_SIG + ")V");
+	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V");
     }
 
 
@@ -651,7 +646,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
-	// The signature of this method depends on the type of DOM we're using
 	final de.fub.bytecode.generic.Type[] argTypes = {
 	    Util.getJCRefType(DOM_INTF_SIG),
 	    Util.getJCRefType(NODE_ITERATOR_SIG),
@@ -674,7 +668,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final int domField = cpg.addFieldref(getClassName(),
 					     DOM_FIELD,
-					     classGen.getDOMClassSig());
+					     DOM_INTF_SIG);
 
 	buildKeys.addException("org.apache.xalan.xsltc.TransletException");
 
@@ -752,7 +746,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 						    applyTemplatesSig);
 	final int domField = cpg.addFieldref(getClassName(),
 					     DOM_FIELD,
-					     classGen.getDOMClassSig());
+					     DOM_INTF_SIG);
 
 	// push translet for PUTFIELD
 	il.append(classGen.loadTranslet());
@@ -767,16 +761,14 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(transf.loadDOM());
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
 						     "makeDOMAdapter",
-						     "("
-						     + DOM_INTF_SIG
-						     + ")"
-						     + DOM_ADAPTER_SIG)));
+						     "("+DOM_INTF_SIG+")"+
+						     DOM_ADAPTER_SIG)));
 	// DOMAdapter is on the stack
 
 	if (isMultiDOM()) {
 	    final int init = cpg.addMethodref(MULTI_DOM_CLASS,
 					      "<init>",
-					      "(" + DOM_ADAPTER_SIG + ")V");
+					      "("+DOM_INTF_SIG+")V");
 	    il.append(new INVOKESPECIAL(init));
 	    // MultiDOM is on the stack
 	}

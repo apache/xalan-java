@@ -102,7 +102,6 @@ final class ParentPattern extends RelativePathPattern {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 	final LocalVariableGen local =
 	    methodGen.addLocalVariable2("ppt", 
 					Util.getJCRefType(NODE_SIG),
@@ -132,9 +131,10 @@ final class ParentPattern extends RelativePathPattern {
 	    _right.translate(classGen, methodGen);
 	}
 
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						     GET_PARENT,
-						     GET_PARENT_SIG)));
+	final int getParent = cpg.addInterfaceMethodref(DOM_INTF,
+							GET_PARENT,
+							GET_PARENT_SIG);
+	il.append(new INVOKEINTERFACE(getParent, 2));
 
 	final SyntaxTreeNode p = getParent();
 	if ((p == null) ||

@@ -408,6 +408,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	index = cpg.addMethodref(DOM_IMPL,
 				 "getOutputDomBuilder",
 				 "()" + TRANSLET_OUTPUT_SIG);
+
 	il.append(new INVOKEVIRTUAL(index));
 	il.append(DUP);
 	il.append(methodGen.storeHandler());
@@ -425,28 +426,35 @@ public abstract class SyntaxTreeNode implements Constants {
 	// Check if we need to wrap the DOMImpl object in a DOMAdapter object
 	if (!DOM_CLASS.equals(DOM_IMPL_CLASS)) {
 	    // new org.apache.xalan.xsltc.dom.DOMAdapter(DOMImpl,String[]);
-	    index = cpg.addMethodref(DOM_ADAPTER_CLASS, "<init>",
+	    index = cpg.addMethodref(DOM_ADAPTER_CLASS,
+				     "<init>",
 				     "("+DOM_IMPL_SIG+
 				     "["+STRING_SIG+
 				     "["+STRING_SIG+")V");
 	    il.append(new NEW(cpg.addClass(DOM_ADAPTER_CLASS)));
 	    il.append(new DUP_X1());
 	    il.append(SWAP);
+	    // Give the DOM adapter an empty type mapping to start with.
+	    // Type mapping is expensive and will only be done when casting
+	    // a result tree fragment to a node-set.
 	    il.append(new ICONST(0));
 	    il.append(new ANEWARRAY(cpg.addClass(STRING)));
 	    il.append(DUP);
 	    il.append(new INVOKESPECIAL(index)); // leave DOMAdapter on stack
 	    
-	    // Must we wrap the DOMAdapter object in an MultiDOM object?
-	    if (DOM_CLASS.equals("org.apache.xalan.xsltc.dom.MultiDOM")) {
+	    // Must we wrap the DOMAdapter object in a MultiDOM object?
+	    /* Not needed with new design using DOM interface instead of
+	       referencing DOM classes directly
+	    if (DOM_CLASS.equals(MULTI_DOM_CLASS)) {
 		// new org.apache.xalan.xsltc.dom.MultiDOM(DOMAdapter);
 		index = cpg.addMethodref(MULTI_DOM_CLASS, "<init>",
-					 "("+DOM_ADAPTER_SIG+")V");
+					 "("+DOM_INTF_SIG+")V");
 		il.append(new NEW(cpg.addClass(MULTI_DOM_CLASS)));
 		il.append(new DUP_X1());
 		il.append(SWAP);
 		il.append(new INVOKESPECIAL(index)); // leave MultiDOM on stack
 	    }
+	    */
 	}
 
 	// Restore old handler base from stack

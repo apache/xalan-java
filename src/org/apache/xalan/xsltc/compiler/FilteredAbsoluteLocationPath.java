@@ -126,12 +126,11 @@ final class FilteredAbsoluteLocationPath extends Expression {
 	    il.append(new INVOKESPECIAL(initDFI));
 	}
 	else {
-	    final String DOM_CLASS = classGen.getDOMClass();
+	    final int git = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getIterator",
+						      "()"+NODE_ITERATOR_SIG);
 	    il.append(methodGen.loadDOM());
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-					     "getIterator",
-					     "()"
-					     +NODE_ITERATOR_SIG)));
+	    il.append(new INVOKEINTERFACE(git, 1));
 	}
     }
 }

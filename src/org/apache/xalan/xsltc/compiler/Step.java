@@ -203,7 +203,6 @@ final class Step extends RelativeLocationPath {
      * have type node-set.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-
 	_hadPredicates = hasPredicates();
 
 	if (isAbbreviatedDot()) {
@@ -244,7 +243,6 @@ final class Step extends RelativeLocationPath {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	if (hasPredicates()) {
 	    translatePredicates(classGen, methodGen);
@@ -253,17 +251,24 @@ final class Step extends RelativeLocationPath {
 	    // If it is an attribute but not '@*' or '@attr' with a parent
 	    if ((_axis == Axis.ATTRIBUTE) &&
 		(_nodeType != NodeTest.ATTRIBUTE) && (!hasParent())) {
-		final int gattr = cpg.addMethodref(DOM_CLASS,
-						   "getAttributeNode",
-						   "(II)I");
-		il.append(methodGen.loadDOM());
-		il.append(new PUSH(cpg, _nodeType));
-		il.append(methodGen.loadContextNode());
-		il.append(new INVOKEVIRTUAL(gattr));
-
+		int node = cpg.addInterfaceMethodref(DOM_INTF,
+						     "getAttributeNode",
+						     "(II)I");
+		int iter = cpg.addInterfaceMethodref(DOM_INTF,
+						     "getTypedAxisIterator",
+						     "(II)"+NODE_ITERATOR_SIG);
+		if (_type instanceof NodeType) {
+		    il.append(methodGen.loadDOM());
+		    il.append(new PUSH(cpg, _nodeType));
+		    il.append(methodGen.loadContextNode());
+		    il.append(new INVOKEINTERFACE(node, 3));
+		}
 		// If it is the case '@attr[P_1]...[P_k]'
-		if (_type instanceof NodeSetType) {
-		    Type.Node.translateTo(classGen, methodGen, _type);
+		else if (_type instanceof NodeSetType) {
+		    il.append(methodGen.loadDOM());
+		    il.append(new PUSH(cpg, Axis.ATTRIBUTE));
+		    il.append(new PUSH(cpg, _nodeType));
+		    il.append(new INVOKEINTERFACE(iter, 3));
 		}
 		return;
 	    }
@@ -280,12 +285,12 @@ final class Step extends RelativeLocationPath {
 		_axis = Axis.ATTRIBUTE;
 	    case NodeTest.ANODE:
 		// DOM.getAxisIterator(int axis);
-		final int it = cpg.addMethodref(DOM_CLASS,
-						"getAxisIterator",
-						"(I)"+NODE_ITERATOR_SIG);
+		int git = cpg.addInterfaceMethodref(DOM_INTF,
+						    "getAxisIterator",
+						    "(I)"+NODE_ITERATOR_SIG);
 		il.append(methodGen.loadDOM());
 		il.append(new PUSH(cpg, _axis));
-		il.append(new INVOKEVIRTUAL(it));
+		il.append(new INVOKEINTERFACE(git, 2));
 		break;
 	    default:
 		final XSLTC xsltc = getParser().getXSLTC();
@@ -306,25 +311,25 @@ final class Step extends RelativeLocationPath {
 			namespace = name.substring(0,star-1);
 
 		    final int nsType = xsltc.registerNamespace(namespace);
-		    final int ns = cpg.addMethodref(DOM_CLASS,
+		    final int ns = cpg.addInterfaceMethodref(DOM_INTF,
 						    "getNamespaceAxisIterator",
 						    "(II)"+NODE_ITERATOR_SIG);
 		    il.append(methodGen.loadDOM());
 		    il.append(new PUSH(cpg, _axis));
 		    il.append(new PUSH(cpg, nsType));
-		    il.append(new INVOKEVIRTUAL(ns));
+		    il.append(new INVOKEINTERFACE(ns, 3));
 		    break;
 		}
 	    case NodeTest.ELEMENT:
 		// DOM.getTypedAxisIterator(int axis, int type);
-		final int ty = cpg.addMethodref(DOM_CLASS,
+		final int ty = cpg.addInterfaceMethodref(DOM_INTF,
 						"getTypedAxisIterator",
 						"(II)"+NODE_ITERATOR_SIG);
 		// Get the typed iterator we're after
 		il.append(methodGen.loadDOM());
 		il.append(new PUSH(cpg, _axis));
 		il.append(new PUSH(cpg, _nodeType));
-		il.append(new INVOKEVIRTUAL(ty));
+		il.append(new INVOKEINTERFACE(ty, 3));
 		    
 		// Now, for reverse iterators we may need to re-arrange the
 		// node ordering (ancestor-type iterators).
@@ -348,7 +353,6 @@ final class Step extends RelativeLocationPath {
 				    MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
 
 	if (_predicates.size() == 0) {
 	    translate(classGen, methodGen);
@@ -384,20 +388,20 @@ final class Step extends RelativeLocationPath {
 		    path.translate(classGen, methodGen);
 		}
 		predicate.translate(classGen, methodGen);
-		final int iter = cpg.addMethodref(DOM_CLASS,
-						  GET_NODE_VALUE_ITERATOR,
-						  GET_NODE_VALUE_ITERATOR_SIG);
-		il.append(new INVOKEVIRTUAL(iter));
+		int iter = cpg.addInterfaceMethodref(DOM_INTF,
+					     GET_NODE_VALUE_ITERATOR,
+					     GET_NODE_VALUE_ITERATOR_SIG);
+		il.append(new INVOKEINTERFACE(iter, 4));
 	    }
 	    // Handle '//*[n]' expression
 	    else if (predicate.isNthDescendant()) {
 		il.append(methodGen.loadDOM());
 		il.append(methodGen.loadContextNode());
 		predicate.translate(classGen, methodGen);
-		final int nth = cpg.addMethodref(DOM_CLASS,
-						 "getNthDescendant",
-						 "(II)"+NODE_ITERATOR_SIG);
-		il.append(new INVOKEVIRTUAL(nth));
+		int iter = cpg.addInterfaceMethodref(DOM_INTF,
+						     "getNthDescendant",
+						     "(II)"+NODE_ITERATOR_SIG);
+		il.append(new INVOKEINTERFACE(iter, 3));
 	    }
 	    // Handle 'elem[n]' expression
 	    else if (predicate.isNthPositionFilter()) {

@@ -111,16 +111,16 @@ final class PositionCall extends FunctionCall {
 	}
 	else {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
-	    final String DOM_CLASS = classGen.getDOMClass();
 	    // public int getTypedPosition(NodeIterator iterator, int type) {
-	    final int pos = cpg.addMethodref(DOM_CLASS,
-					     "getTypedPosition",
-					     "("+NODE_ITERATOR_SIG+"II)I");
+	    final String params = "("+NODE_ITERATOR_SIG+"II)I";
+	    final int pos = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getTypedPosition",
+						      params);
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadIterator());
 	    il.append(new PUSH(cpg, _type));
 	    il.append(methodGen.loadCurrentNode());
-	    il.append(new INVOKEVIRTUAL(pos));
+	    il.append(new INVOKEINTERFACE(pos, 4));
 	}
     }
 }

@@ -99,6 +99,7 @@ public final class ErrorMsg {
     public static final int ATTROUTS_ERR = 19;
     public static final int ILL_ATTR_ERR = 20;
     public static final int CIRCULAR_INC = 21;
+    public static final int TREESORT_ERR = 22;
 
     static final String messages_d[] = { 
 	"More than one stylesheet defined in the same file.",
@@ -122,7 +123,10 @@ public final class ErrorMsg {
 	"Illegal name ''{0}'' for processing instruction.",
 	"Attribute ''{0}'' outside of element.",
 	"Illegal attribute name ''{0}''.",
-	"Circular import/include. Stylesheet ''{0}'' already loaded."
+	"Circular import/include. Stylesheet ''{0}'' already loaded.",
+	"Applying <xsl:sort> to a result tree is not supported (<xsl:sort> "+
+	"elements are ignored). You can, and should, sort the nodes when "+
+	"creating the result tree."
     };
 
     public ErrorMsg(int code) {

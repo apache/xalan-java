@@ -92,10 +92,10 @@ final class NameCall extends NameBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	final String DOM_CLASS = classGen.getDOMClass();
+	final int getName = cpg.addInterfaceMethodref(DOM_INTF,
+						      GET_NODE_NAME,
+						      GET_NODE_NAME_SIG);
 	super.translate(classGen, methodGen);
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-						     GET_NODE_NAME,
-						     GET_NODE_NAME_SIG)));
+	il.append(new INVOKEINTERFACE(getName, 2));
     }
 }

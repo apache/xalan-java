@@ -211,22 +211,39 @@ public final class NodeSetType extends Type {
 			    Class clazz) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
-	
-	il.append(methodGen.loadDOM());
-	il.append(SWAP);	// dom ref must be below node index
-
 	final String className = clazz.getName();
+
+	il.append(methodGen.loadDOM());
+	il.append(SWAP);
+
 	if (className.equals("org.w3c.dom.Node")) {
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
-							 MAKE_NODE,
-							 MAKE_NODE_SIG2)));
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  MAKE_NODE,
+						  MAKE_NODE_SIG2);
+	    il.append(new INVOKEINTERFACE(index, 2));
 	}
 	else if (className.equals("org.w3c.dom.NodeList")) {
-	    final int mkList = cpg.addMethodref(DOM_CLASS,
-						MAKE_NODE_LIST,
-						MAKE_NODE_LIST_SIG2);
-	    il.append(new INVOKEVIRTUAL(mkList));
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  MAKE_NODE_LIST,
+						  MAKE_NODE_LIST_SIG2);
+	    il.append(new INVOKEINTERFACE(index, 2));
+	}
+	else if (className.equals("int")) {
+	    int next = cpg.addInterfaceMethodref(NODE_ITERATOR,
+						  "next", "()I");
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  GET_NODE_VALUE,
+						  "(I)"+STRING_SIG);
+	    int str = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+					STRING_TO_INT,
+					STRING_TO_INT_SIG);
+
+	    // Get next node from the iterator
+	    il.append(new INVOKEINTERFACE(next, 1));
+	    // Get the node's string value (from the DOM)
+	    il.append(new INVOKEINTERFACE(index, 2));
+	    // Create a new Integer object from the string value
+	    il.append(new INVOKESTATIC(str));
 	}
 	else {
 	    classGen.getParser().internalError(); // undefined

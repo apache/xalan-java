@@ -79,7 +79,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class ForEach extends Instruction {
 
     private Expression _select;
-    private Type       _tselect;
+    private Type       _type;
 
     public void display(int indent) {
 	indent(indent);
@@ -102,18 +102,19 @@ final class ForEach extends Instruction {
     }
 	
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_tselect = _select.typeCheck(stable);
+	_type = _select.typeCheck(stable);
 
-	if (_tselect instanceof ReferenceType || _tselect instanceof NodeType) {
+	if (_type instanceof ReferenceType || _type instanceof NodeType) {
 	    _select = new CastExpr(_select, Type.NodeSet);
 	    typeCheckContents(stable);
 	    return Type.Void;
 	}
-	else if (_tselect instanceof NodeSetType) {
+	if (_type instanceof NodeSetType||_type instanceof ResultTreeType) {
 	    typeCheckContents(stable);
 	    return Type.Void;
-	} 
-	throw new TypeCheckError(this);
+	}
+	String msg = "Unsupported type for <xsl:for-each select='"+_type+"'/>";
+	throw new TypeCheckError(new ErrorMsg(msg));
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
@@ -134,20 +135,41 @@ final class ForEach extends Instruction {
 	    }
 	}
 
-	// Compile node iterator
-	if (sortObjects.size() > 0) {
-	    Sort.translateSortIterator(classGen, methodGen,
-				       _select, sortObjects);
+	if ((_type != null) && (_type instanceof ResultTreeType)) {
+	    // Store existing DOM on stack - must be restored when loop is done
+	    il.append(methodGen.loadDOM());
+
+	    // <xsl:sort> cannot be applied to a result tree - issue warning
+	    if (sortObjects.size() > 0) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.TREESORT_ERR);
+		getParser().reportError(WARNING, msg);
+	    }
+
+	    // Put the result tree on the stack (DOM)
+	    _select.translate(classGen, methodGen);
+	    // Get an iterator for the whole DOM - excluding the root node
+	    _type.translateTo(classGen, methodGen, Type.NodeSet);
+	    // Store the result tree as the default DOM
+	    il.append(SWAP);
+	    il.append(methodGen.storeDOM());
 	}
 	else {
-	    _select.translate(classGen, methodGen);
-	    if (_select instanceof Step) {
-		((Step)_select).orderIterator(classGen, methodGen);
+	    // Compile node iterator
+	    if (sortObjects.size() > 0) {
+		Sort.translateSortIterator(classGen, methodGen,
+					   _select, sortObjects);
+	    }
+	    else {
+		_select.translate(classGen, methodGen);
+		if (_select instanceof Step) {
+		    ((Step)_select).orderIterator(classGen, methodGen);
+		}
+	    }
+	    if (!(_type instanceof ReferenceType)) {
+		_select.startResetIterator(classGen, methodGen);
 	    }
 	}
-	if (!(_tselect instanceof ReferenceType)) {
-	    _select.startResetIterator(classGen, methodGen);
-	}
+
 
 	// Overwrite current iterator
 	il.append(methodGen.storeIterator());
@@ -165,6 +187,11 @@ final class ForEach extends Instruction {
 	il.append(DUP);
 	il.append(methodGen.storeCurrentNode());
 	il.append(new IFNE(loop));
+
+	// Restore current DOM (if result tree was used instead for this loop)
+	if ((_type != null) && (_type instanceof ResultTreeType)) {
+	    il.append(methodGen.storeDOM());	    
+	}
 
 	// Restore current node and current iterator from the stack
 	il.append(methodGen.storeIterator());

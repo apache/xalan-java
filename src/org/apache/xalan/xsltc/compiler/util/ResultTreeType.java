@@ -64,6 +64,8 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.xalan.xsltc.DOM;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
@@ -85,12 +87,11 @@ public final class ResultTreeType extends Type {
     }
 
     public boolean identicalTo(Type other) {
-	return other instanceof ResultTreeType;
+	return (other instanceof ResultTreeType);
     }
 
     public String toSignature() {
-	// caller will have to get the real signature from XSLTC in this case!
-	return DOM_IMPL_SIG;
+	return DOM_INTF_SIG;
     }
 
     public de.fub.bytecode.generic.Type toJCType() {
@@ -110,7 +111,10 @@ public final class ResultTreeType extends Type {
      * The translation to int is undefined since result trees
      * are always converted to reals in arithmetic expressions.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An instance of the type to translate the result tree to
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Type type) {
@@ -138,7 +142,10 @@ public final class ResultTreeType extends Type {
      * Expects an result tree on the stack and pushes a boolean.
      * Translates a result tree to a boolean by first converting it to string.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An instance of BooleanType (any)
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    BooleanType type) {
@@ -149,20 +156,21 @@ public final class ResultTreeType extends Type {
     /**
      * Expects an result tree on the stack and pushes a string.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An instance of StringType (any)
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    StringType type) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String DOM_CLASS = classGen.getDOMClass();
-	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
 	
 	if (_methodName == null) {
-	    int index = cpg.addMethodref(DOM_CLASS,
-					 "getStringValue", 
-					 "()" + STRING_SIG);
-	    il.append(new INVOKEVIRTUAL(index));
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  "getStringValue", 
+						  "()"+STRING_SIG);
+	    il.append(new INVOKEINTERFACE(index, 1));
 	}
 	else {
 	    final String className = classGen.getClassName();
@@ -174,14 +182,8 @@ public final class ResultTreeType extends Type {
 		il.append(new CHECKCAST(cpg.addClass(className)));
 	    }
 	    il.append(DUP);
-	    /*
-	    il.append(classGen.loadTranslet());
-	    if (classGen.isExternal()) {
-		il.append(new CHECKCAST(cpg.addClass(className)));
-	    }
-	    */
 	    il.append(new GETFIELD(cpg.addFieldref(className, "_dom",
-						   classGen.getDOMClassSig())));
+						   DOM_INTF_SIG)));
 
 	    // Create a new instance of a StringValueHandler
 	    int index = cpg.addMethodref(STRING_VALUE_HANDLER, "<init>", "()V");
@@ -199,7 +201,7 @@ public final class ResultTreeType extends Type {
 
 	    // Call the method that implements this result tree
 	    index = cpg.addMethodref(className, _methodName,
-				     "("+ DOM_CLASS_SIG+ TRANSLET_OUTPUT_SIG+")V");
+				     "("+DOM_INTF_SIG+TRANSLET_OUTPUT_SIG+")V");
 	    il.append(new INVOKEVIRTUAL(index));
 	    
 	    // Restore new handler and call getValue()
@@ -215,7 +217,10 @@ public final class ResultTreeType extends Type {
      * Expects an result tree on the stack and pushes a real.
      * Translates a result tree into a real by first converting it to string.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An instance of RealType (any)
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    RealType type) {
@@ -227,7 +232,10 @@ public final class ResultTreeType extends Type {
      * Expects a result tree on the stack and pushes a boxed result tree.
      * Result trees are already boxed so the translation is just a NOP.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An instance of ReferenceType (any)
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    ReferenceType type) {
@@ -258,11 +266,10 @@ public final class ResultTreeType extends Type {
 	    il.append(new INVOKESPECIAL(index));
 	    
 	    // Store new DOM into a local variable
-	    newDom =
-		methodGen.addLocalVariable("rt_to_reference_dom", 
-					   //!!??
-					   Util.getJCRefType(DOM_IMPL_SIG),
-					   null, null);
+	    newDom = methodGen.addLocalVariable("rt_to_reference_dom", 
+						Util.getJCRefType(DOM_INTF_SIG),
+						null, null);
+	    il.append(new CHECKCAST(cpg.addClass(DOM_INTF_SIG)));
 	    il.append(new ASTORE(newDom.getIndex()));
 
 	    // Overwrite old handler with DOM handler
@@ -286,11 +293,10 @@ public final class ResultTreeType extends Type {
 	    il.append(new INVOKEINTERFACE(index, 1));
 
 	    // Call the method that implements this result tree
-	    final String DOM_CLASS_SIG = classGen.getDOMClassSig();
 	    index = cpg.addMethodref(className,
 				     _methodName,
 				     "("
-				     + DOM_CLASS_SIG
+				     + DOM_INTF_SIG
 				     + TRANSLET_OUTPUT_SIG
 				     +")V");
 	    il.append(new INVOKEVIRTUAL(index));
@@ -308,12 +314,50 @@ public final class ResultTreeType extends Type {
 
     /**
      * Expects a result tree on the stack and pushes a node-set (iterator).
+     * Note that the produced iterator is an iterator for the DOM that
+     * contains the result tree, and not the DOM that is currently in use.
+     * This conversion here will therefore not directly work with elements
+     * such as <xsl:apply-templates> and <xsl:for-each> without the DOM
+     * parameter/variable being updates as well.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An instance of NodeSetType (any)
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    NodeSetType type) {
-	classGen.getParser().notYetImplemented("result-tree -> node-set conversion");
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	// Put an extra copy of the result tree (DOM) on the stack
+	il.append(DUP);
+
+	// DOM adapters containing a result tree are not initialised with
+	// translet-type to DOM-type mapping. This must be done now for
+	// XPath expressions and patterns to work for the iterator we create.
+	il.append(classGen.loadTranslet()); // get names array
+	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					       NAMES_INDEX,
+					       NAMES_INDEX_SIG)));
+	il.append(classGen.loadTranslet()); // get namespaces array
+	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					       NAMESPACE_INDEX,
+					       NAMESPACE_INDEX_SIG)));
+	// Pass the type mappings to the DOM adapter
+	final int mapping = cpg.addInterfaceMethodref(DOM_INTF,
+						      "setupMapping",
+						      "(["+STRING_SIG+
+						      "["+STRING_SIG+")V");
+	il.append(new INVOKEINTERFACE(mapping, 3));
+	il.append(DUP);
+
+	// Create an iterator with all the nodes in the DOM adapter
+	final int iter = cpg.addInterfaceMethodref(DOM_INTF,
+						   "getChildren",
+						   "(I)"+NODE_ITERATOR_SIG);
+	il.append(new PUSH(cpg, DOM.ROOTNODE));
+	il.append(new INVOKEINTERFACE(iter, 2));
     }
 
     /**
@@ -321,7 +365,10 @@ public final class ResultTreeType extends Type {
      * It does not push a 0 or a 1 but instead returns branchhandle list
      * to be appended to the false list.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateToDesynthesized
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An instance of BooleanType (any)
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateToDesynthesized
      */
     public FlowList translateToDesynthesized(ClassGenerator classGen, 
 					     MethodGenerator methodGen, 
@@ -337,6 +384,11 @@ public final class ResultTreeType extends Type {
      * of the appropriate type after coercion. Result trees are translated
      * to W3C Node or W3C NodeList and the translation is done
      * via node-set type.
+     *
+     * @param classGen A BCEL class generator
+     * @param methodGen A BCEL method generator
+     * @param type An reference to the Class to translate to
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Class clazz) {

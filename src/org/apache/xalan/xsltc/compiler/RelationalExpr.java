@@ -110,6 +110,7 @@ final class RelationalExpr extends Expression implements Operators {
 	    _right = new CastExpr(_right, Type.Real);
 	    _left = new CastExpr(_left, Type.Real);
 	}
+
 	// If one is of reference type, then convert the other too
 	if (hasReferenceArgs()) {
 	    if (tleft instanceof ReferenceType) {

@@ -105,12 +105,16 @@ final class TestSeq {
      * other templates that make up the test sequence.
      */
     public double getPriority() {
-	double prio = Double.MIN_VALUE;
+	double prio = (0 - Double.MAX_VALUE);
 	final int count = _patterns.size();
 	for (int i = 0; i < count; i++) {
 	    final Pattern pattern = (Pattern)_patterns.elementAt(i);
 	    final Template template = pattern.getTemplate();
 	    final double tp = template.getPriority();
+	    if (tp > prio) prio = tp;
+	}
+	if (_default != null) {
+	    final double tp = _default.getPriority();
 	    if (tp > prio) prio = tp;
 	}
 	return prio;
@@ -127,6 +131,10 @@ final class TestSeq {
 	    final Pattern pattern = (Pattern)_patterns.elementAt(i);
 	    final Template template = pattern.getTemplate();
 	    final int tp = template.getPosition();
+	    if (tp > pos) pos = tp;
+	}
+	if (_default != null) {
+	    final int tp = _default.getPosition();
 	    if (tp > pos) pos = tp;
 	}
 	return pos;

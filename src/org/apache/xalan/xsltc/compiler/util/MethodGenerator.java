@@ -89,6 +89,7 @@ public class MethodGenerator extends MethodGen
     private final Instruction _astoreIterator;
     private final Instruction _aloadIterator;
     private final Instruction _aloadDom;
+    private final Instruction _astoreDom;
     
     private final Instruction _startElement;
     private final Instruction _endElement;
@@ -114,6 +115,7 @@ public class MethodGenerator extends MethodGen
 	_astoreIterator = new ASTORE(ITERATOR_INDEX);
 	_aloadIterator  = new ALOAD(ITERATOR_INDEX);
 	_aloadDom       = new ALOAD(DOM_INDEX);
+	_astoreDom      = new ASTORE(DOM_INDEX);
 	
 	final int startElement =
 	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
@@ -187,72 +189,12 @@ public class MethodGenerator extends MethodGen
 	super.removeLocalVariable(lvg);
     }
 
-    /**
-     * Returns an instruction list that defines the map type subroutine. 
-     * This subroutine is added to a method only when needed.
-     */
-    /*
-    private InstructionList compileMapTypeSub(ClassGenerator classGen) {
-	final InstructionList il = new InstructionList();
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-
-	final LocalVariableGen returnAddress = 
-	    addLocalVariable2("returnAddress", 
-			      de.fub.bytecode.generic.Type.OBJECT,
-			      il.getEnd());
-	final LocalVariableGen node = 
-	    addLocalVariable2("node",
-			      de.fub.bytecode.generic.Type.INT,
-			      il.getEnd());
-	il.append(new ASTORE(returnAddress.getIndex()));
-	il.append(new ISTORE(node.getIndex()));
-	il.append(classGen.aloadTranslet());
-	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-					       MAP_FIELD,
-					       MAP_FIELD_SIG)));
-	il.append(classGen.aloadTranslet());
-	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-					       TYPE_FIELD,
-					       TYPE_FIELD_SIG)));
-	il.append(new ILOAD(node.getIndex()));
-	il.append(InstructionConstants.SALOAD);
-	il.append(InstructionConstants.SALOAD);
-	il.append(new RET(returnAddress.getIndex()));
-	//!!! until more sophisticated allocator
-	//removeLocalVariable(returnAddress);
-	//removeLocalVariable(node);
-	return il;
-    }
-    */
-
-    /**
-     * Add a map type subroutine if needed. Must be called before
-     * adding this method to a class.
-     */
-    /*
-    public void addMapTypeSub() {
-	if (_mapTypeSub != null) {
-	    getInstructionList().append(_mapTypeSub);
-	}
-    }
-    */
-
-    /**
-     * Returns a JSR instruction that jumps to the map type subroutine. 
-     * This subroutine is compiled if needed but not added to the inst 
-     * stream until addMapTypeSub() is called.
-     */
-    /*
-    public JSR getMapTypeSub(ClassGenerator classGen) {
-	if (_mapTypeSub == null) {
-	    _mapTypeSub = compileMapTypeSub(classGen);
-	}
-	return new JSR(_mapTypeSub.getStart());
-    }
-    */
-
     public Instruction loadDOM() {
 	return _aloadDom;
+    }
+
+    public Instruction storeDOM() {
+	return _astoreDom;
     }
     
     public Instruction storeHandler() {
