@@ -81,7 +81,7 @@ public class XSLTErrorResources extends XSLResourceBundle
 public static final String ERROR_SUFFIX = "ER";  
 public static final String WARNING_SUFFIX = "WR";
 
-public static final int MAX_CODE = 104;                  // this is needed to keep track of the number of messages          
+public static final int MAX_CODE = 105;                  // this is needed to keep track of the number of messages          
 public static final int MAX_WARNING = 26;             // this is needed to keep track of the number of warnings
 public static final int MAX_OTHERS = 41;
 public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING +1;
@@ -640,6 +640,11 @@ static {contents[ER_TOO_MANY_LISTENERS][1]
 public static final int ER_IN_ELEMTEMPLATEELEM_READOBJECT = 104;
 static {contents[ER_IN_ELEMTEMPLATEELEM_READOBJECT][1] 
           = "In ElemTemplateElement.readObject: {0}";      
+}
+
+public static final int ER_DUPLICATE_NAMED_TEMPLATE = 105;
+static {contents[ER_DUPLICATE_NAMED_TEMPLATE][1] 
+          = "Found more than one template named: {0}";      
 }
 
 // Warnings...
