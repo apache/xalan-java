@@ -356,10 +356,19 @@ public class OpMap
   {
     int argLenOfStep = getArgLengthOfStep(opPosOfStep);
     // System.out.println("getStepLocalName.argLenOfStep: "+argLenOfStep);
-    int index = (argLenOfStep == 3) ? m_opMap[opPosOfStep+5] 
-                                      : ((argLenOfStep == 1) ? -3 : -2);
+    int index;
+    switch(argLenOfStep)
+    {
+    case 0: index = OpCodes.EMPTY; break;
+    case 1: index = OpCodes.ELEMWILDCARD; break;
+    case 2: index = m_opMap[opPosOfStep+4]; break;
+    case 3: index = m_opMap[opPosOfStep+5]; break;
+    default: index = OpCodes.EMPTY; break; // Should assert error
+    }
+    // int index = (argLenOfStep == 3) ? m_opMap[opPosOfStep+5] 
+    //                                  : ((argLenOfStep == 1) ? -3 : -2);
     if(index >= 0)
-      return (String)m_tokenQueue[index];
+      return (String)m_tokenQueue[index].toString();
     else if(OpCodes.ELEMWILDCARD == index)
       return NodeTest.WILD;
     else

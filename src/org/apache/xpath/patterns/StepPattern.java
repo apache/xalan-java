@@ -6,6 +6,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xpath.axes.SubContextList;
 
+import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -65,7 +66,16 @@ public class StepPattern extends NodeTest implements SubContextList
   public XObject executeStep(XPathContext xctxt)
     throws org.xml.sax.SAXException
   {
-    XObject score = super.execute(xctxt);
+    XObject score;
+    Node context = xctxt.getCurrentNode();
+    int nodeType = context.getNodeType();
+    int whatToShow = getWhatToShow();
+    if(nodeType == Node.ATTRIBUTE_NODE &&
+       whatToShow != NodeFilter.SHOW_ATTRIBUTE)
+      score = NodeTest.SCORE_NONE;
+    else
+      score = super.execute(xctxt);
+    
     if(score == NodeTest.SCORE_NONE)
     {
       // System.out.println("executeStep: "+this.m_name+" = "+score);
