@@ -81,10 +81,9 @@ import javax.xml.transform.Result;
 
 /**
  * <meta name="usage" content="general"/>
- * FormatterToHTML formats SAX-style events into XML.
- * Warning: this class will be replaced by the Xerces Serializer classes.
+ * SerializerToHTML formats SAX-style events into XML.
  */
-public class FormatterToHTML extends FormatterToXML
+public class SerializerToHTML extends SerializerToXML
 {
 
   /** State stack to keep track of if the current element has output 
@@ -447,7 +446,7 @@ public class FormatterToHTML extends FormatterToXML
   /**
    * Default constructor.
    */
-  public FormatterToHTML()
+  public SerializerToHTML()
   {
 
     super();
@@ -460,7 +459,7 @@ public class FormatterToHTML extends FormatterToXML
   /**
    * Receive notification of the beginning of a document.
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -521,7 +520,7 @@ public class FormatterToHTML extends FormatterToXML
           String namespaceURI, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
-    // System.out.println("FormatterToHTML#startElement("+namespaceURI+", "+localName+", "+name+", ...);");
+    // System.out.println("SerializerToHTML#startElement("+namespaceURI+", "+localName+", "+name+", ...);");
 
     if (null != namespaceURI && namespaceURI.length() > 0)
     {
@@ -615,7 +614,7 @@ public class FormatterToHTML extends FormatterToXML
   public void endElement(String namespaceURI, String localName, String name)
           throws org.xml.sax.SAXException
   {
-    // System.out.println("FormatterToHTML#endElement("+namespaceURI+", "+localName+", "+name+");");
+    // System.out.println("SerializerToHTML#endElement("+namespaceURI+", "+localName+", "+name+");");
     if (null != namespaceURI && namespaceURI.length() > 0)
     {
       super.endElement(namespaceURI, localName, name);
@@ -768,7 +767,6 @@ public class FormatterToHTML extends FormatterToXML
    * @param   string      String to convert to XML format.
    * @param doURLEscaping True if we should try to encode as 
    *                      per http://www.ietf.org/rfc/rfc2396.txt.
-   * @see #backReference
    *
    * @throws org.xml.sax.SAXException if a bad surrogate pair is detected.
    */
@@ -943,7 +941,6 @@ public class FormatterToHTML extends FormatterToXML
    *
    * @param   string      String to convert to XML format.
    * @param   encoding    CURRENTLY NOT IMPLEMENTED.
-   * @see #backReference
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1085,7 +1082,7 @@ public class FormatterToHTML extends FormatterToXML
    * @param chars The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
@@ -1147,7 +1144,7 @@ public class FormatterToHTML extends FormatterToXML
    *  @param ch The characters from the XML document.
    *  @param start The start position in the array.
    *  @param length The number of characters to read from the array.
-   *  @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *  @throws org.xml.sax.SAXException Any SAX exception, possibly
    *             wrapping another exception.
    *  @see #ignorableWhitespace
    *  @see org.xml.sax.Locator
@@ -1213,7 +1210,7 @@ public class FormatterToHTML extends FormatterToXML
    *  @param target The processing instruction target.
    *  @param data The processing instruction data, or null if
    *         none was supplied.
-   *  @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *  @throws org.xml.sax.SAXException Any SAX exception, possibly
    *             wrapping another exception.
    *
    * @throws org.xml.sax.SAXException

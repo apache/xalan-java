@@ -60,7 +60,7 @@ import org.apache.xml.utils.StringToIntTable;
 
 /**
  * <meta name="usage" content="internal"/>
- * This class is in support of FormatterToHTML, and acts as a sort
+ * This class is in support of SerializerToHTML, and acts as a sort
  * of element representative for HTML elements.
  */
 class ElemDesc

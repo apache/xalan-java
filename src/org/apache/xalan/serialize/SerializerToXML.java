@@ -90,10 +90,9 @@ import javax.xml.transform.OutputKeys;
 
 /**
  * <meta name="usage" content="general"/>
- * FormatterToXML formats SAX-style events into XML.
- * Warning: this class will be replaced by the Xerces Serializer classes.
+ * SerializerToXML formats SAX-style events into XML.
  */
-public class FormatterToXML
+public class SerializerToXML
         implements ContentHandler, LexicalHandler, Serializer, DOMSerializer
 {
 
@@ -317,17 +316,17 @@ public class FormatterToXML
   /**
    * Default constructor.
    */
-  public FormatterToXML()
+  public SerializerToXML()
   {
     m_charInfo = m_xmlcharInfo;
   }
 
   /**
-   * Copy properties from another FormatterToXML.
+   * Copy properties from another SerializerToXML.
    *
-   * @param xmlListener non-null reference to a FormatterToXML object.
+   * @param xmlListener non-null reference to a SerializerToXML object.
    */
-  public void CopyFrom(FormatterToXML xmlListener)
+  public void CopyFrom(SerializerToXML xmlListener)
   {
 
     m_writer = xmlListener.m_writer;
@@ -575,7 +574,7 @@ public class FormatterToXML
   /**
    * Receive notification of the beginning of a document.
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -613,7 +612,7 @@ public class FormatterToXML
   /**
    * Receive notification of the end of a document.
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -641,7 +640,7 @@ public class FormatterToXML
    *        external DTD subset, or null if none was declared.
    * @param systemId The declared system identifier for the
    *        external DTD subset, or null if none was declared.
-   * @exception org.xml.sax.SAXException The application may raise an
+   * @throws org.xml.sax.SAXException The application may raise an
    *            exception.
    * @see #endDTD
    * @see #startEntity
@@ -656,7 +655,7 @@ public class FormatterToXML
   /**
    * Report the end of DTD declarations.
    *
-   * @exception org.xml.sax.SAXException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #startDTD
    */
   public void endDTD() throws org.xml.sax.SAXException
@@ -667,11 +666,11 @@ public class FormatterToXML
 
   /**
    * Begin the scope of a prefix-URI Namespace mapping.
-   * @see {@line org.xml.sax.ContentHandler#startPrefixMapping}.
+   * @see org.xml.sax.ContentHandler#startPrefixMapping
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI the prefix is mapped to.
-   * @exception org.xml.sax.SAXException The client may throw
+   * @throws org.xml.sax.SAXException The client may throw
    *            an exception during processing.
    */
   public void startPrefixMapping(String prefix, String uri)
@@ -679,10 +678,10 @@ public class FormatterToXML
 
   /**
    * End the scope of a prefix-URI Namespace mapping.
-   * @see {@line org.xml.sax.ContentHandler#endPrefixMapping}.
+   * @see org.xml.sax.ContentHandler#endPrefixMapping
    *
    * @param prefix The prefix that was being mapping.
-   * @exception org.xml.sax.SAXException The client may throw
+   * @throws org.xml.sax.SAXException The client may throw
    *            an exception during processing.
    */
   public void endPrefixMapping(String prefix)
@@ -761,7 +760,7 @@ public class FormatterToXML
    *        performed.
    * @param name The element type name.
    * @param atts The attributes attached to the element, if any.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
@@ -775,7 +774,7 @@ public class FormatterToXML
   {
     if(DEBUG)
     {
-      System.out.println("FormatterToXML - startElement: "+namespaceURI+", "+localName);
+      System.out.println("SerializerToXML - startElement: "+namespaceURI+", "+localName);
       int n = atts.getLength();
       for (int i = 0; i < n; i++) 
       {
@@ -889,7 +888,7 @@ public class FormatterToXML
    *        empty string if Namespace processing is not being
    *        performed.
    * @param name The element type name
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -1021,7 +1020,7 @@ public class FormatterToXML
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *        none was supplied.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -1097,7 +1096,7 @@ public class FormatterToXML
    * @param ch An array holding the characters in the comment.
    * @param start The starting position in the array.
    * @param length The number of characters to use from the array.
-   * @exception org.xml.sax.SAXException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    */
   public void comment(char ch[], int start, int length)
           throws org.xml.sax.SAXException
@@ -1121,7 +1120,7 @@ public class FormatterToXML
   /**
    * Report the start of a CDATA section.
    *
-   * @exception org.xml.sax.SAXException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #endCDATA
    */
   public void startCDATA() throws org.xml.sax.SAXException
@@ -1132,7 +1131,7 @@ public class FormatterToXML
   /**
    * Report the end of a CDATA section.
    *
-   * @exception org.xml.sax.SAXException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #startCDATA
    */
   public void endCDATA() throws org.xml.sax.SAXException
@@ -1160,7 +1159,7 @@ public class FormatterToXML
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
@@ -1489,7 +1488,7 @@ public class FormatterToXML
    * @param chars The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
@@ -1767,7 +1766,7 @@ public class FormatterToXML
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #characters
    *
@@ -1785,7 +1784,7 @@ public class FormatterToXML
 
   /**
    * Receive notification of a skipped entity.
-   * @see {@link org.xml.sax.ContentHandler#skippedEntity}.
+   * @see org.xml.sax.ContentHandler#skippedEntity
    *
    * @param name The name of the skipped entity.  If it is a
    *        parameter entity, the name will begin with '%', and if
@@ -1810,10 +1809,10 @@ public class FormatterToXML
    *
    * @param name The name of the entity.  If it is a parameter
    *        entity, the name will begin with '%'.
-   * @exception org.xml.sax.SAXException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #endEntity
-   * @see org.xml.sax.misc.DeclHandler#internalEntityDecl
-   * @see org.xml.sax.misc.DeclHandler#externalEntityDecl
+   * @see org.xml.sax.ext.DeclHandler#internalEntityDecl
+   * @see org.xml.sax.ext.DeclHandler#externalEntityDecl
    */
   public void startEntity(String name) throws org.xml.sax.SAXException
   {
@@ -1827,7 +1826,7 @@ public class FormatterToXML
    * Report the end of an entity.
    *
    * @param name The name of the entity that is ending.
-   * @exception org.xml.sax.SAXException The application may raise an exception.
+   * @throws org.xml.sax.SAXException The application may raise an exception.
    * @see #startEntity
    */
   public void endEntity(String name) throws org.xml.sax.SAXException
@@ -1988,7 +1987,6 @@ public class FormatterToXML
    *
    * @param   string      String to convert to XML format.
    * @param   encoding    CURRENTLY NOT IMPLEMENTED.
-   * @see #backReference
    *
    * @throws org.xml.sax.SAXException
    */
@@ -2036,9 +2034,8 @@ public class FormatterToXML
    * Prints <var>n</var> spaces.
    * @param pw        The character output stream to use.
    * @param n         Number of spaces to print.
-   * @exception IOException   Thrown if <var>pw</var> is invalid.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if an error occurs when writing.
    */
   public void printSpace(int n) throws org.xml.sax.SAXException
   {
@@ -2053,9 +2050,8 @@ public class FormatterToXML
    * Prints a newline character and <var>n</var> spaces.
    * @param pw        The character output stream to use.
    * @param n         Number of spaces to print.
-   * @exception IOException   Thrown if <var>pw</var> is invalid.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if an error occurs during writing.
    */
   public void indent(int n) throws org.xml.sax.SAXException
   {

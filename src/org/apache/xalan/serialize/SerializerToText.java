@@ -72,15 +72,14 @@ import javax.xml.transform.OutputKeys;
  * <meta name="usage" content="general"/>
  * This class takes SAX events (in addition to some extra events
  * that SAX doesn't handle yet) and produces simple text only.
- * Warning: this class will be replaced by the Xerces Serializer classes.
  */
-public class FormatterToText extends FormatterToXML
+public class SerializerToText extends SerializerToXML
 {
 
   /**
    * Default constructor.
    */
-  public FormatterToText()
+  public SerializerToText()
   {
     super();
   }
@@ -123,7 +122,7 @@ public class FormatterToText extends FormatterToXML
    * other methods in this interface or in DTDHandler (except for
    * setDocumentLocator).</p>
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -143,7 +142,7 @@ public class FormatterToText extends FormatterToXML
    * (because of an unrecoverable error) or reached the end of
    * input.</p>
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -179,7 +178,7 @@ public class FormatterToText extends FormatterToXML
    * @param name The qualified name (with prefix), or the
    *        empty string if qualified names are not available.
    * @param atts The attributes attached to the element, if any.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #endElement
    * @see org.xml.sax.AttributeList
@@ -215,7 +214,7 @@ public class FormatterToText extends FormatterToXML
    * @param name The qualified name (with prefix), or the
    *        empty string if qualified names are not available.
    * @param name The element type name
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -362,7 +361,7 @@ public class FormatterToText extends FormatterToXML
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #characters
    *
@@ -397,7 +396,7 @@ public class FormatterToText extends FormatterToXML
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *        none was supplied.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException
@@ -412,7 +411,7 @@ public class FormatterToText extends FormatterToXML
   /**
    * Called when a Comment is to be constructed.
    * @param   data  The comment data.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
    * @throws org.xml.sax.SAXException

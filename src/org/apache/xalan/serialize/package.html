@@ -1,136 +1,20 @@
-<!-- CVS $Revision$ $Date$ -->
 <html>
-  <title>Interfaces for SAX and DOM serializers.</title>
+  <title>Xalan Serialize Package.</title>
   <body>
-    <p>Defines an interface for SAX and DOM serializers, a serializer
-       factory and its configuration, the output format properties,
-       and related interfaces.<p>
-
-    <dl>
-      <dt><b>Version: </b></dt><dd>Alpha  $Revision$ $Date$</dd>
-      <dt><b>Author: </b></dt><dd><a href="mailto:arkin@exoffice.com">Assaf Arkin</a></dd>
-      <dt><b>Goals: </b></dt><dd>
-        <ul>
-          <li>Define an interface for serializers that will allow an application
-              to use any implementation.</li>
-          <li>Support SAX 1, SAX 2, DOM Level 1, DOM Level 2 serialization</li>
-          <li>Allow implementations to extend the interfaces and provide additional
-              functionality, and support implementations for any output method.</li>
-          <li>Provide a factory for the default output methods (XML, HTML, Text).</li>
-        </ul>
-      </dd>
-    </dl>
-
-    <h3>The Serializer Interfaces</h3>
-
-    <p>{@link serialize.Serializer} defines the interface supported by
-       a serializer. A serializer implements a mechanism for producing output from
-       a series of SAX events or a DOM document, in a given format (aka the output
-       method). A serializer can be constructed directly, or obtained from some
-       factory, it may implement the base functionality or provide additional
-       functionality suitable for the given output method (e.g. indentation in
-       XML, page control in PDF, etc).</p>
-
-    <p>A serializer is not thread safe and may not be used concurrently, however,
-       a serializer may be recyclable and used to serialize any number of documents
-       with the same output method.</p>
-
-    <p>Before serializing a document, the serializer must be set with the output
-       stream or writer, and optionally with an {@link serialize.OutputFormat}
-       specifying the output properties. Serializer implementations may support
-       additional methods to control the way in which documents are serialized,
-       or extend {@link serialize.OutputFormat} and offer additional
-       output properties.</p>
-
-    <p>{@link serialize.Serializer} and {@link serialize.OutputFormat}
-       provides the minimum functionality that all serializers must support
-       and that an application may depend on, and are based on the XSLT 1.0
-       specification.</p>
-
-    <p>For the purpose of serializing, a handle to the serializer is obtained
-       that can be either a SAX 1 <tt>DocumentHandler</tt>, a SAX 2 <tt>ContentHandler</tt>
-       or a DOM Level 1/2 {@link serialize.DOMSerializer}. The application
-       should obtain and use only one handle at any given time and may not reuse
-       the handle to serialize multiple documents. It is illegal for the application
-       to call two different handle returning methods without resetting the serializer,
-       or two use the same handle after resetting the serializer.</p>
-
-    <p>{@link serialize.SerializerFactory} provides a means of obtaining
-       the default serializers available from a given implementation. At the minimum
-       an implementation should support XML, HTML and Text serializers. When additional
-       serializers are available, the application may obtain them through the {@link
-       serialize.SerializerFactory} or construct them directly.</p>
-
-    <p>Non-escaping and whitespace preserving output control is offered for
-       XML, HTML and similar output methods, but it is not mandatory that a
-       serializer support these output control methods. Non-escaping and whitespace
-       preserving can be set globally through {@link serialize.OutputFormat},
-       or directly when serializing SAX events through {@link serialize.SerializerHandler}.
-       Serializers are not required to implement the {@link serialize.SerializerHandler}
-       interface.</p>
-
-    <h3>Usage Examples</h3>
-
-    <p>Serialize a DOM document as XML:</p>
-
-    <pre>
-  void printXML( Document doc, OutputStream stream, String encoding )
-  {
-      OutputFormat format;
-      Serializer   ser;
-
-      // Obtain a suitable output format for the XML method and
-      // set the encoding.
-      format = SerializerFactory.getOutputFormat( Method.XML );
-      format.setEncoding( encoding );
-
-      // Obtain a suitable serializer for the XML method and
-      // set the output stream.
-      ser = SerializerFactory.getSerializer( format );
-      ser.setOutputStream( stream );
-
-      // Use DOMSerializer to serialize the document
-      ser.asDOMSerializer().serialize( doc );
-  }
-    </pre>
-
-    <p>Serialize an empty HTML document using SAX events, reuse the serializer:</p>
-
-    <pre>
-  Serializer ser;
-
-  // Obtain an HTML serializer once, use it multiple times.
-  ser = SerializerFactory.getSerializer( Method.HTML );
-  printEmptyHTML( ser, System.out );
-  printEmptyHTML( ser, System.err );
-  . . . 
-
-  void printEmptyHTML( Serializer ser, OutputStream os )
-  {
-      ser.setOutputStream( os );
-      ser.asDocumentHandler().startDocument();
-      ser.asDocumentHandler().startElement( "html", new AttributeListImpl() );
-      ser.asDocumentHandler().endElement( "html" );
-      ser.asDocumentHandler().endDocument();
-      ser.reset();
-  }
-    </pre>
-
-    <h3>The Properties File</h3>
-
-    <p>An implementation will include a serializer properties file called
-       <tt>serializer.properties</tt> located in the <tt>serialize</tt>
-       package. The properties file lists all the default serializers supported
-       by that implementation. Serializers that are not listed in the properties
-       file may be constructed directly by the application.</p>
-
-    <p>The properties file contains a property <tt>serialize.methods</tt>
-       listing all the output methods supported by the implementation (comma
-       separated list). For each method a property <tt>serialize.[method]</tt>
-       names the class of the {@link serialize.Serializer} implementation.
-       The optional property <tt>serialize.format.[method]</tt> names the
-       class of a suitable {@link serialize.OutputFormat} implementation.</p>
-
+    <p>Processes SAX events into streams.</p>
+    
+    <p>The {@link org.apache.xalan.serialize.SerializerFactory} is used to 
+    create a {@link org.apache.xalan.serialize.Serializer} from a set of 
+    output properties (see {@link javax.xml.transform.OutputKeys}).</p>
+    <p>{@link org.apache.xalan.serialize.SerializerToXML} acts as the main 
+    baseclass for the Xalan serializer implementations.  
+    {@link org.apache.xalan.serialize.SerializerToHTML} derives from this 
+    to implement HTML serialization.  {@link org.apache.xalan.serialize.SerializerToText}
+    implements plain text serialization.</p>
+    <p>XML mapping from characters to entity references is defined in 
+    XMLEntities.res.  HTML entity reference mapping is defined in HTMLEntities.res.
+    </p>
+    <p>Encoding information is defined in {@link org.apache.xalan.serialize.Encodings}.</p>
  </body>
 </html>
 

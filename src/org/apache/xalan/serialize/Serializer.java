@@ -64,53 +64,9 @@ import java.util.Properties;
 import org.xml.sax.ContentHandler;
 
 /**
- * A serializer is used for serializing a document with a given output
- * method. The {@link Serializer} object serves as an anchor point for
- * setting the output stream and output format, for obtaining objects
- * for serializing the document, and for resetting the serializer.
- * <p>
- * Prior to using the serializer, the output format and output stream
- * or writer should be set. The serializer is then used in one of
- * three ways:
- * <ul>
- * <li>To serialize SAX 1 events call {@link #asDocumentHandler}
- * <li>To serialize SAX 2 events call {@link #asContentHandler}
- * <li>To serialize a DOM document call {@link #asDOMSerializer}
- * </ul>
- * <p>
- * The application may call one of these methods to obtain a way to
- * serialize the document. It may not attempt to use two different
- * handlers at the same time, nor should it use the same handler to
- * serialize two documents.
- * <p>
- * The serializer may be recycled and used with a different or the
- * same output format and output stream, by calling the {@link #reset}
- * method after completing serialization.
- * <p>
- * A serializer is not thread safe. Only one thread should call the
- * <tt>asXXX</tt> methods and use the returned handler.
- * <p>
- * Example:
- * <pre>
- * ser = SerializerFactory.getSerializer( Method.XML );
- * emptyDoc( ser, System.out );
- * emptyDoc( ser, System.err );
- * . . .
- *
- * void emptyDoc( Serializer ser, OutputStream os )
- * {
- *     ser.setOutputStream( os );
- *     ser.asDocumentHandler().startDocument();
- *     ser.asDocumentHandler().startElement( "empty", new AttributeListImpl() );
- *     ser.asDocumentHandler().endElement( "empty" );
- *     ser.asDocumentHandler().endDocument();
- *     ser.reset();
- * }
- * </pre>
- *
- * @version Alpha
- * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
- * @author <a href="mailto:Scott_Boag/CAM/Lotus@lotus.com">Scott Boag</a>
+ * The Serializer interface is implemented by Serializers to publish methods 
+ * to get and set streams and writers, to set the output properties, and 
+ * get the Serializer as a ContentHandler or DOMSerializer.
  */
 public interface Serializer
 {
