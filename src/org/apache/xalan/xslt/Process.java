@@ -165,7 +165,7 @@ public class Process
    */
   public static void main( String argv[] )
   {
-    Runtime.getRuntime().traceMethodCalls(false); // turns Java tracing off
+    // Runtime.getRuntime().traceMethodCalls(false); // turns Java tracing off
     boolean doStackDumpOnError = false;
     boolean setQuietMode = false;
     boolean doDiag = false;
@@ -272,7 +272,6 @@ public class Process
             System.err.println(XSLMessages.createMessage(XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION, new Object[] {"-MEDIA"})); //"Missing argument for);
 
         }
-
         else if ("-OUT".equalsIgnoreCase(argv[i]))
         {
           if ( i+1 < argv.length)
