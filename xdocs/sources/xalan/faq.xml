@@ -13,7 +13,7 @@
 
   <faq title="Which version of Xerces should I be using?">  
     <q>Which version of Xerces should I be using?</q>    
-    <a><p>&xslt4j-current; has been tested with &xml4j-used;. See <link idref="readme" anchor="status">Status</link></p></a>
+    <a><p>&xslt4j-current; has been tested with &xml4j-used;. See <link idref="readme" anchor="status">Status</link>.</p></a>
   </faq>
   
   <faq title="Compatibility with &xslt4j; version 1">
@@ -76,22 +76,22 @@
 
   <faq title="NoClassDefFound errors">
   
-    <q>I'm getting a NoClassDefFound error. What has to be on the class path?</q>
+    <q>I'm getting a NoClassDefFound error. What has to be on the classpath?</q>
     
     <a><ol>
-    <li>xalan.jar and xerces.jar (or the XML parser you are using) must always be on the class path.<br/><br/></li>
-    <li>To run the samples in the samples subdirectories, xalansamples.jar must be on the class path. To run the servlet (in
+    <li>xalan.jar and xerces.jar (or the XML parser you are using) must always be on the classpath.<br/><br/></li>
+    <li>To run the samples in the samples subdirectories, xalansamples.jar must be on the classpath. To run the servlet (in
     samples/servlet), xalanservlet.jar must be on the classpath along with the javax.servlet and javax.servlet.http packages. Sun distributes
     the javax.servlet packages in the JSWDK servlet.jar file.<br/><br/></li>
     <li>To run extensions (including the samples in samples/extensions), bsf.jar, and bsfengines.jar must be on the 
-    class path. To run extensions implemented in JavaScript, js.jar must also be on the class path. For information on what 
+    classpath. To run extensions implemented in JavaScript, js.jar must also be on the classpath. For information on what 
     you need to run extensions implemented in other scripting languages, see <link idref="extensions"
     anchor="supported-lang">Supported languages</link>.<br/><br/></li>
     <li>To run applications that use the &xslt4j; version 1 API, you must put xalanj1compat.jar on the classpath, recompile the application,
     and be sure xalanj1compat.jar is on the classpath at run time (see <link idref="usagepatterns" anchor="compat">Using the &xslt4j; version 1
     API)</link>.</li>
     </ol>
-    <p>For more information, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p></a>
+    <p>For more information, see <link idref="getstarted" anchor="classpath">Setting up the system classpath</link>.</p></a>
    </faq>
  
 

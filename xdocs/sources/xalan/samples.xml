@@ -85,7 +85,7 @@
      <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
      <li>Run the sample from the command line (as indicated below)</li>
     <li>Examine the application source files. You may also want to modify the source files. Remember that if you
-     modify a java file, you must recompile the class and place it on the class path before you can run the
+     modify a java file, you must recompile the class and place it on the classpath before you can run the
      modified application.</li>
      </ol>      
     <p>The basic command line for running most of the samples is </p> 
@@ -103,7 +103,7 @@
     <p><code>java SimpleTransform</code></p>
     </s2><anchor name="usestylesheetpi"/>
     <s2 title="UseStylesheetPI">
-    <p>What it does: The UseStylesheetPI class uses the styesheet processing instruction in the XML source document to determine
+    <p>What it does: The UseStylesheetPI class uses the stylesheet processing instruction in the XML source document to determine
      which stylesheet to use to perform the transformation.</p>
      <p>You can run it from the UseStylesheetPI subdirectory with</p>
      <p><code>java UseStylesheetPI</code></p>
@@ -124,7 +124,7 @@
     <s2 title="DOM2DOM">
     <p>What it does: the DOM2DOM class uses the birds.xsl stylesheet to transform a DOM Document generated from birds.xml,
      produces an output DOM, and traverses the DOM, printing the traversal to System.out. In contrast to SimpleTransform,
-      DomToDom illustrates the procedure for processing an input DOM and creating an output DOM that is available for
+      DOM2DOM illustrates the procedure for processing an input DOM and creating an output DOM that is available for
       further processing.</p>
    <p>You can run it from the DOM2DOM subdirectory with</p>
     <p><code>java DOM2DOM</code></p>
@@ -231,8 +231,8 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
      extensions implemented in JavaScript, and four of the samples use extensions implemented in Java.</p>
      <p>To run these examples, you must place bsf.jar (distributed with &xslt4j;), and js.jar
       (version 1.5, available from 
-      <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the class path. 
-     You do not need js.jar on the class path for the samples that use Java extensions. </p>
+      <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the classpath. 
+     You do not need js.jar on the classpath for the samples that use Java extensions. </p>
      <p>Use java.org.apache.xalan.xslt.Process, the &xslt4j; command-line utility, to run most of these samples from
       the <link idref="commandline">command line</link>. The command line must include an -in flag with the 
       XML source and an -xsl flag with the XSL stylesheet. If you want the output to be written to a file, rather
@@ -290,9 +290,9 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <jump href="http://instantdb.enhydra.org/software/documentation/index.html">InstantDB</jump>
       and the <jump href="http://instantdb.enhydra.org/software/license/index.html">Enydra Public
       License</jump>.</note>
-      <p>Run this sample from the extensions subdirectory with (adjust the Windows CLASSPATH setting 
+      <p>Run this sample from the extensions subdirectory with (adjust the Windows classpath setting 
       below for your operating environment):</p>
-      <p><code>java -cp instantdb/idb.jar;%CLASSPATH%</code> 
+      <p><code>java -cp instantdb/idb.jar;%classpath%</code> 
       <br/>&nbsp;&nbsp;org.apache.xalan.xslt.Process<code></code>
       <br/>&nbsp;&nbsp;<code>-xsl 6-sqllib-instantdb.xsl -out import1.html</code></p>
       </s3>

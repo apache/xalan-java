@@ -4,7 +4,7 @@
 <s1 title="Getting Started">
 <ul>
 <li><link anchor="download">Downloading what you need</link></li>
-<li><link anchor="classpath">Setting up the system class path</link></li>
+<li><link anchor="classpath">Setting up the system classpath</link></li>
 <li><link anchor="samples">Trying out the samples</link></li>
 <li><link anchor="commandline">Performing your own transformations from the command line</link></li>
 <li><link anchor="java-apps">Setting up your own XSLT applications</link></li>
@@ -22,16 +22,16 @@
 
 <p>If you plan to run <link idref="extensions">XSLT extensions</link>, you need bsf.jar, which is included in the &xslt4j; distribution. If you plan to run XSLT extensions implemented in Javascript or another scripting language, you will need one or more additional files as indicated in <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.</p>
 </s2><anchor name="classpath"/>
-<s2 title="Setting up the system class path">
-<p>At the very minimum, you must include xalan.jar and xerces.jar (or another conformant XML parser -- see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>) on the system class path. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the class path and where you can get them.</p>
-<p>If you are using JDK or JRE 1.1.8, also include classes.zip on the class path.</p>
+<s2 title="Setting up the system classpath">
+<p>At the very minimum, you must include xalan.jar and xerces.jar (or another conformant XML parser -- see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>) on the system classpath. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the classpath and where you can get them.</p>
+<p>If you are using JDK or JRE 1.1.8, also include classes.zip on the classpath.</p>
 <note>If you are using xerces.jar from a Xerces release that is more recent than &xml4j-used;, you may need to put xerces.jar before xalan.jar on the classpath. Both JAR files include the org.w3c.dom packages. The Xerces team is tracking updates to DOM level 2, and the Xerces parser may require access to updates in these packages.</note>
 </s2><anchor name="samples"/>
 <s2 title="Trying out the samples">
 <p>The &xslt4j; distribution includes a number of basic sample applications. These samples are easy to run, and you can review the source files -- all of which are brief -- to see just how they work.</p>
 <p>To run the samples, do the following:</p>
 <ol>
-<li>Set up your class path (see above), including xalansamples.jar and (for the servlet) xalanservlet.jar.</li>
+<li>Set up your classpath (see above), including xalansamples.jar and (for the servlet) xalanservlet.jar.</li>
 <li>Be sure the java executable is on your path.</li>
 <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
 <li>Use the java executable to run the sample from the command line.</li>
@@ -40,7 +40,7 @@
 <p>For example, go to the SimpleTransform subdirectory and issue the following command:</p>
 <p><code>java SimpleTransform</code></p>
 <p>The sample writes the transformation result  to a file (birds.out). To see how the example works, examine the source files: birds.xml, birds.xsl, and SimpleTransform.java.</p>
-<p>The extensions examples require additional JAR files on the class path, and the procedure for running the sample applet and sample servlet is different. For more information about all the samples, see <link idref="samples">&xslt4j; Samples</link>.</p>
+<p>The extensions examples require additional JAR files on the classpath, and the procedure for running the sample applet and sample servlet is different. For more information about all the samples, see <link idref="samples">&xslt4j; Samples</link>.</p>
 </s2><anchor name="commandline"/>
 <s2 title="Performing your own transformations from the command line">
 <p>java.org.apache.xalan.xslt.Process provides a basic utility for performing transformations from the command line. You use this utility, for example, to run several of the extensions samples. The command line for most standard transformations is as follows:</p>

@@ -29,7 +29,7 @@
 </s2><anchor name="supported-lang"/>
 <s2 title="Supported languages">
 <p>Extensions written in Java are directly supported by &xslt4j;.  For extensions written in languages other than Java, &xslt4j; uses the <jump href="http://www.alphaworks.ibm.com/tech/bsf">Bean Scripting Framework (BSF)</jump>, an architecture for incorporating scripting into Java applications and applets. BSF allows an application to take advantage of scripting while being independent of any specific scripting language. To date, we have tested extensions implemented in JavaScript. Other languages with BSF support appear in the table below.</p>
-<p>BSF requires bsf.jar on the class path. This JAR file is shipped with &xslt4j; and is required only if you have extensions written in languages other than Java. The additional JAR files or DLLs required to support extensions written in other languages are listed in the table below. These files are available from the sources indicated and are not shipped with &xslt4j;.</p>
+<p>BSF requires bsf.jar on the classpath. This JAR file is shipped with &xslt4j; and is required only if you have extensions written in languages other than Java. The additional JAR files or DLLs required to support extensions written in other languages are listed in the table below. These files are available from the sources indicated and are not shipped with &xslt4j;.</p>
 <table>
   <tr>
     <td><em>Language</em></td>
@@ -138,7 +138,7 @@
 </source>
 </s2><anchor name="setup-runtime"/>
 <s2 title="Setting up the runtime environment">
-<p>To run the preceding example, bsf.jar and js.jar must be on the class path. Remember that bsf.jar must be on the class path to run any extension written in a language other than Java. For extensions implemented in a scripting language, see the additional requirements in <link anchor="supported-lang">Supported languages</link>.</p>
+<p>To run the preceding example, bsf.jar and js.jar must be on the classpath. Remember that bsf.jar must be on the classpath to run any extension written in a language other than Java. For extensions implemented in a scripting language, see the additional requirements in <link anchor="supported-lang">Supported languages</link>.</p>
 </s2><anchor name="basic-syntax"/>
 <s2 title="Syntax">
 <p>You can always use the pattern illustrated above to set up and use extension elements and extension functions. For extension elements and functions implemented in Java, you can also use an abbreviated syntax, described in <link anchor="java-namespace">Alternative: using the abbreviated syntax for extensions implemented in Java</link>. Unless you are using the abbreviated syntax, do the following:</p>

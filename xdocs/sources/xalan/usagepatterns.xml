@@ -60,7 +60,7 @@
 <ul>
 <li><link anchor="basic">Basic steps</link></li>
 <li><link anchor="plug">Plugging in the Transformer and XML parser</link></li>
-<li><link anchor="outputprops">Setting output properties in your styleshets</link></li>
+<li><link anchor="outputprops">Setting output properties in your stylesheets</link></li>
 <li><link anchor="embed">Working with embedded stylesheets</link></li>
 <li><link anchor="params">Setting stylesheet parameters</link></li>
 <li><link anchor="serialize">Serializing output</link></li>
@@ -133,7 +133,7 @@ transformer.transform
   <li>Set the system property in jaxp.properties in the JAVA_HOME/lib directory, where JAVA_HOME is the root of the JDK.<br/><br/></li>
   <li>Revise the entry in src/META-INF/services and rebuild xalan.jar.<br/><br/></li>
 </ol>
-<p>For more information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Pluggability Layer" in the <ref>Java API for XML Processing</ref> at 
+<p>For more information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Plugability Layer" in the <ref>Java API for XML Processing</ref> at 
 <jump href="http://java.sun.com/aboutJava/communityprocess/review/jsr063/index.html">JSR-000063 1.1</jump>.</p> 
 </s2><anchor name="outputprops"/>
 <s2 title="Setting output properties in your stylesheets">
@@ -368,7 +368,7 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 <s2 title="Multithreading">
 <p>A given Templates object may be used repeatedly and even in multiple threads running concurrently for the transformation of XML input, but you should use the Templates object to instantiate a separate Transformer for each transformation you perform. The Templates object is an immutable runtime representation of the structure and content of a stylesheet (which may include and import multiple stylesheet sources). A Transformer, on the other hand, is a lightweight object that tracks state information during the transformation, and should only be used to perform a single transformation.</p>
 
-<p>If you want to perform multiple transformations (sequentialy or concurrently) with the same stylesheet instructions, do the following:</p>
+<p>If you want to perform multiple transformations (sequentially or concurrently) with the same stylesheet instructions, do the following:</p>
 <ol>
   <li>Use the TransformerFactory <jump href="apidocs/javax/xml/transform/TransformerFactory.html#newTemplates(javax.xml.transform.Source)">newTemplates(Source xslSource)</jump> method to create a Templates object.<br/><br/></li>
 <li>For each transformation, use the Templates object <jump href="apidocs/javax/xml/transform/Templates.html#newTransformer()">newTransformer()</jump> method to create a Transformer, and use that Transformer's <jump href="apidocs/javax/xml/transform/Transformer.html#transform(javax.xml.transform.Source, javax.xml.transform.Result)">transform(Source xmlSource, Result transformResult)</jump> method to perform the transformation.</li>
@@ -449,6 +449,6 @@ fw.close();</source>
 <li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatibility layer does not support. <br/><br/></li>
 <li>Run the recompiled application with xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar.</li>
 </ol>
-<p>We want our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <jump href="compat_apidocs/index.html">Xalan-Java 1 compatibility Javadoc</jump>. For example, the compatibility layer does not support the use of Xalan-Java 1.x extensions. If you feel that we should extend our compatibility JAR to support additional Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
+<p>We urge our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <jump href="compat_apidocs/index.html">Xalan-Java 1 compatibility Javadoc</jump>. For example, the compatibility layer does not support the use of Xalan-Java 1.x extensions. If you feel that we should extend our compatibility JAR to support additional Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
 </s2>
 </s1>
