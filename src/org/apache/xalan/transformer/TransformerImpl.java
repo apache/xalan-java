@@ -386,6 +386,7 @@ public class TransformerImpl extends Transformer
     m_stackGuard = new StackGuard();
 
     getXPathContext().reset();
+    getXPathContext().getVarStack().setSize(1);
     m_currentTemplateElements.removeAllElements();
     m_currentMatchTemplates.removeAllElements();
 
@@ -1299,11 +1300,11 @@ public class TransformerImpl extends Transformer
         Arg arg = (Arg)m_userParams.elementAt(i);
         if(arg.getQName().equals(qname))
         {
-          m_userParams.setElementAt(new Arg(qname, xval), i);
+          m_userParams.setElementAt(new Arg(qname, xval, true), i);
           return;
         }
       }
-      m_userParams.addElement(new Arg(qname, xval));
+      m_userParams.addElement(new Arg(qname, xval, true));
   }
   
   /**
