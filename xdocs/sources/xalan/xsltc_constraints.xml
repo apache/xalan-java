@@ -132,7 +132,7 @@ tfac.setAttribute(&quot;disable-inlining&quot;, new Boolean(true))</source><br/>
 processors within your application. It uses Xalan to create your 
  <code>Transformer</code> objects, and uses XSLTC to create your <code>Templates</code> objects.</p>
 <p>To use the switch, you set the TrAX system property,
-<code>javax.xml.transform.TransformerFactory</code>, to <code>org.apache.xalan.xsltc.trax.SmartTransformerImpl</code>. 
+<code>javax.xml.transform.TransformerFactory</code>, to <code>org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl</code>. 
 For one-time transformations or transformations that require extensions supported by Xalan, and not XSLTC,
 you would use Transformer objects. For a repeated transformation where performance is critical, you would 
 use Templates objects.</p> 
