@@ -2832,7 +2832,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	 * SAX2: Receive notification of the end of a document.
 	 */
 	public void endDocument() {
-
 	    _shortTexts = null;
 	    final int namesSize = _nextNameCode - NTYPES;
 
@@ -2879,7 +2878,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	public void startElement(String uri, String localName,
 				 String qname, Attributes attributes)
 	    throws SAXException {
-
 	    // Get node index and setup parent/child references
 	    final int node = nextNode();
 	    linkChildren(node);

@@ -87,6 +87,9 @@ public class TransformerHandlerImpl implements TransformerHandler {
 
     private boolean          _done = false; // Set in endDocument()
 
+    private final static String NULL_RESULT_ERROR =
+	"setResult() must be called prior to startDocument().";
+
     /**
      * Cosntructor - pass in reference to a TransformerImpl object
      */
@@ -172,6 +175,9 @@ public class TransformerHandlerImpl implements TransformerHandler {
      * Receive notification of the beginning of a document.
      */
     public void startDocument() throws SAXException {
+	if (_result == null) {
+	    throw new SAXException(NULL_RESULT_ERROR);
+	}
 	_handler.startDocument();
     }
 

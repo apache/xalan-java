@@ -261,7 +261,10 @@ public class TransformerFactoryImpl
     public Source getAssociatedStylesheet(Source source, String media,
 					  String title, String charset)
 	throws TransformerConfigurationException {
-        throw new TransformerConfigurationException(NYI);
+	// The org.apache.xalan.xsltc.copiler.Parser will locate the first
+	// <?xml-stylesheeet ?> PI in the Source document and use that.
+	// For now we'll leave it at that.
+	return(source); // TODO - pass media/title/charset to Parser
     }
 
     /**
