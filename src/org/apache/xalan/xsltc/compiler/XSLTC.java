@@ -254,8 +254,8 @@ public final class XSLTC {
 	    final SyntaxTreeNode element = _parser.parse(url);
 
 	    // Process any error and/or warning messages found so far...
-	    _parser.printWarnings();
 	    if ((_parser.errorsFound()) || (element == null)) {
+		_parser.printWarnings();
 		_parser.printErrors();
 		return false;
 	    }
@@ -268,8 +268,8 @@ public final class XSLTC {
 	    _parser.createAST(_stylesheet);
 
 	    // Process any error and/or warning messages found so far...
-	    _parser.printWarnings();
 	    if ((_parser.errorsFound()) || (_stylesheet == null)) {
+		_parser.printWarnings();
 		_parser.printErrors();
 		return false;
 	    }
@@ -279,12 +279,13 @@ public final class XSLTC {
 	    _stylesheet.translate();
 
 	    // Process any error and/or warning messages found so far...
-	    _parser.printWarnings();
 	    if ((_parser.errorsFound()) || (_stylesheet == null)) {
+		_parser.printWarnings();
 		_parser.printErrors();
 		return false;
 	    }
 
+	    _parser.printWarnings();
 	    return true;
 	}
 	catch (CompilerException e) {

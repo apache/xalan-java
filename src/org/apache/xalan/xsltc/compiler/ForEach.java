@@ -89,6 +89,7 @@ final class ForEach extends Instruction {
 		
     public void parseContents(Parser parser) {
 	_select = parser.parseExpression(this, "select", null);
+
 	parseChildren(parser);
 
         // make sure required attribute(s) have been set
