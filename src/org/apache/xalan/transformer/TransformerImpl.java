@@ -66,6 +66,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -77,6 +78,7 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.res.XSLMessages;
@@ -623,16 +625,16 @@ public class TransformerImpl extends Transformer
 
     try
     {
-        
+
       // Patch for bugzilla #13863.  If we don't reset the namespaceContext
-      // then we will get a NullPointerException if transformer is reused 
-      // (for stylesheets that use xsl:key).  Not sure if this should go 
-      // here or in reset(). -is  
+      // then we will get a NullPointerException if transformer is reused
+      // (for stylesheets that use xsl:key).  Not sure if this should go
+      // here or in reset(). -is
       if(getXPathContext().getNamespaceContext() == null){
          getXPathContext().setNamespaceContext(getStylesheet());
       }
       String base = source.getSystemId();
-      
+
       // If no systemID of the source, use the base of the stylesheet.
       if(null == base)
       {
@@ -647,15 +649,31 @@ public class TransformerImpl extends Transformer
           currentDir = System.getProperty("user.dir");
         }
         catch (SecurityException se) {}// user.dir not accessible from applet
-              
+
         if (currentDir.startsWith(java.io.File.separator))
           base = "file://" + currentDir;
         else
           base = "file:///" + currentDir;
-        
+
         base = base + java.io.File.separatorChar
                + source.getClass().getName();
       }
+      
+      // As per JAXP1.2 spec if Zero-argument default constructor DOMSource()
+      // is used, and no DOM source is set, then the Transformer will create
+      // an empty source Document using newDocument().
+      if(source instanceof DOMSource ){
+          DOMSource dSource = (DOMSource)source;
+          if(dSource.getSystemId() == null && dSource.getNode()== null){
+              try{
+                  dSource.setNode(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+                  source = dSource;
+              }
+              catch(Exception e){
+              }
+          }
+      }    
+            
       setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
       DTM dtm = mgr.getDTM(source, false, this, true, true);
@@ -918,6 +936,11 @@ public class TransformerImpl extends Transformer
 
     synchronized (m_reentryGuard)
     {
+		if(oformat == null){
+       		 m_outputFormat =
+			 	(OutputProperties) getStylesheet().getOutputComposed().clone();
+			return ;
+		}
       if (null != oformat)
       {
 
