@@ -100,8 +100,14 @@ public class FuncLast extends Function
       return iter.getLastPos(xctxt);
 
     DTMIterator cnl = xctxt.getContextNodeList();
-    int count = cnl.getLength();
-    // System.out.println("count: "+count);    
+    int count;
+    if(null != cnl)
+    {
+      count = cnl.getLength();
+      // System.out.println("count: "+count); 
+    }
+    else
+      count = 0;   
     return count;
   }
 
