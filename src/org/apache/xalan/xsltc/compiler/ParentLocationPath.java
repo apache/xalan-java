@@ -115,10 +115,10 @@ final class ParentLocationPath extends RelativeLocationPath {
 
     public boolean descendantAxis() {
 	if (_step instanceof Step) {
-	    int axis = ((Step)_step).getAxis();
-	    if ((axis == Axis.DESCENDANT) ||
-		(axis == Axis.DESCENDANTORSELF))
-		return(true);
+	    return ((Step)_step).descendantAxis();
+	}
+	else if (_step instanceof ParentLocationPath) {
+	    return ((ParentLocationPath)_step).descendantAxis();
 	}
 	return(false);
     }
