@@ -185,26 +185,29 @@ public class StylesheetPIHandler extends DefaultHandler
                (token.equals(" " ) || token.equals("\t") || token.equals("=")))
             token = tokenizer.nextToken();
           href = token;
-          token = tokenizer.nextToken();
-          // If the href value has parameters to be passed to a 
-          // servlet(something like "foobar?id=12..."), 
-          // we want to make sure we get them added to
-          // the href value. Without this check, we would move on 
-          // to try to process another attribute and that would be
-          // wrong.
-          // We need to set lookedAhead here to flag that we
-          // already have the next token. 
-          while ( token.equals("="))
-          {  
-            href = href + token + tokenizer.nextToken();
-            if (tokenizer.hasMoreTokens())
+          if (tokenizer.hasMoreTokens())
+          {
+            token = tokenizer.nextToken();
+            // If the href value has parameters to be passed to a 
+            // servlet(something like "foobar?id=12..."), 
+            // we want to make sure we get them added to
+            // the href value. Without this check, we would move on 
+            // to try to process another attribute and that would be
+            // wrong.
+            // We need to set lookedAhead here to flag that we
+            // already have the next token. 
+            while ( token.equals("=") && tokenizer.hasMoreTokens())
             {  
-              token = tokenizer.nextToken();
-              lookedAhead = true;
-            }
-            else
-            {
-              break;
+              href = href + token + tokenizer.nextToken();
+              if (tokenizer.hasMoreTokens())
+              {  
+                token = tokenizer.nextToken();
+                lookedAhead = true;
+              }
+              else
+              {
+                break;
+              }
             }
           }
           href = href.substring(1, href.length() - 1);
