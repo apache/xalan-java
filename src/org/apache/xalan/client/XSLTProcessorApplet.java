@@ -408,7 +408,7 @@ public class XSLTProcessorApplet extends Applet
       this.showStatus("Causing Xalan and Xerces to Load and JIT...");
       // Prime the pump so that subsequent transforms don't look so slow.
       StringReader xmlbuf = new StringReader("<?xml version='1.0'?><foo/>");
-      StringReader xslbuf = new StringReader("<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
+      StringReader xslbuf = new StringReader("<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
       PrintWriter pw = new PrintWriter(new StringWriter());
 	  
       m_processor = newProcessorInstance();
@@ -421,14 +421,12 @@ public class XSLTProcessorApplet extends Applet
         m_reader.parse(new InputSource(xslbuf));
 	    Templates templates = m_templatesBuilder.getTemplates();
 	    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
-      
-      // Result result = new Result(pw);
-      serialize.Serializer serializer 
-        = serialize.SerializerFactory.getSerializer( "HTML" );
+		// Result result = new Result(pw);
+        serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
+        // serialize.Serializer serializer = serialize.SerializerFactory.getSerializer( "HTML" );
       serializer.setWriter(pw);
       org.xml.sax.ContentHandler handler = serializer.asContentHandler();
        // new org.apache.xml.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
-                                       
         transformer.setContentHandler(handler);
 	    transformer.setParent(m_reader);
         transform(transformer, new InputSource(xmlbuf));
@@ -728,8 +726,8 @@ public class XSLTProcessorApplet extends Applet
       if(null != m_key)
         transformer.setParameter(m_key, null, m_expression);
       // Result result = new Result(pw);
-      serialize.Serializer serializer 
-        = serialize.SerializerFactory.getSerializer( "HTML" );
+      serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
+      //serialize.Serializer serializer = serialize.SerializerFactory.getSerializer( "HTML" );
       serializer.setWriter(pw);
       org.xml.sax.ContentHandler handler = serializer.asContentHandler();
 	  
@@ -774,7 +772,7 @@ public class XSLTProcessorApplet extends Applet
       }
       else
       {
-          System.out.println("XSLTProcessorApplet only works with Xerces at the moment!");
+          System.out.println("Problem with XML parser!");
       }
     }
     catch(NoClassDefFoundError e)
