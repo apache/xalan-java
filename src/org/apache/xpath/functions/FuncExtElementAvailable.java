@@ -117,7 +117,7 @@ public class FuncExtElementAvailable extends FunctionOneArg
       try
       {
         TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();
-        return transformer.getStylesheet().getSchema().elementAvailable(
+        return transformer.getStylesheet().getAvailableElements().containsKey(
                                                             new QName(namespace, methName))
                ? XBoolean.S_TRUE : XBoolean.S_FALSE;
       }
