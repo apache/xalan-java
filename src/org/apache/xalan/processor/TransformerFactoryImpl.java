@@ -561,7 +561,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
       {
         // Accept a Boolean object..
         m_source_location = ((Boolean)value).booleanValue();
-        // Pass the source localtion property to SAX2DTM, where it actually gets used.
+        // Pass the source location property to SAX2DTM, where it actually gets used.
         SAX2DTM.setUseSourceLocation(m_source_location);
       }
       else if(value instanceof String)

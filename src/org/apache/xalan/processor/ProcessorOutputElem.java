@@ -61,6 +61,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SystemIDResolver;
 import org.xml.sax.Attributes;
@@ -231,7 +232,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
     // Access this only from the Hashtable level... we don't want to 
     // get default properties.
     String entitiesFileName =
-      (String) m_outputProperties.getProperties().get(OutputProperties.S_KEY_ENTITIES);
+      (String) m_outputProperties.getProperties().get(OutputPropertiesFactory.S_KEY_ENTITIES);
 
     if (null != entitiesFileName)
     {
@@ -239,7 +240,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
       {
         String absURL = SystemIDResolver.getAbsoluteURI(entitiesFileName,
                     handler.getBaseIdentifier());
-        m_outputProperties.getProperties().put(OutputProperties.S_KEY_ENTITIES, absURL);
+        m_outputProperties.getProperties().put(OutputPropertiesFactory.S_KEY_ENTITIES, absURL);
       }
       catch(TransformerException te)
       {
