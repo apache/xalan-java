@@ -221,4 +221,72 @@ spFactory.setNamespaceAware(true);</source>
 <note>For more information about setting the namespaceAware property, and SAX2 vs. JAXP default settings, see <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#nsDefaults">JAXP FAQ: Warning about namespace processing defaults</jump>.</note>
 </a>
 </faq>
+<faq title="Getting line and column numbers for errors in XML input documents and XSL stylesheets">
+<q>How do I get line numbers for errors in the XML or XSL input when I am performing a transformation?</q>
+<a>
+<p>Use or mimic the command-line processor (<jump href="apidocs/org/apache/xalan/xslt/Process.html">org.apache.xalan.xslt.Process</jump>).</p>
+<p>A <jump href="apidocs/javax/xml/transform/TransformerException.html">TransformerException</jump> generally wraps another exception, often a SAXParseException. The command-line processor uses the static <jump href="apidocs/org/apache/xml/utils/DefaultErrorHandler.html">org.apache.xml.utils.DefaultErrorHandler</jump> printLocation() method to chase down the exception cause and get a <jump href="apidocs/javax/xml/transform/SourceLocator.html">SourceLocator</jump> that can usually report line and column number.</p>
+<p>Suppose you wanted to modify the ValidateXMLInput sample in the samples/Validate subdirectory to include line and column numbers . All you
+need to do is call DefaultErrorHandler.printLocation() in the the Handler internal class error() and warning() methods. For example, replace</p>
+<source>public void error (SAXParseException spe)
+  throws SAXException
+{
+  System.out.println("SAXParseException error: " + spe.getMessage());
+}</source>
+<p>with</p>
+<source>public void error (SAXParseException spe)
+  throws SAXException
+{
+  PrintWriter pw = new PrintWriter(System.out, true);
+  org.apache.xml.utils.DefaultErrorHandler.printLocation(pw, spe);
+  pw.println("SAXParseException error: " + spe.getMessage());
+}</source>
+<p>You can also replicate code from the printLocation() method to obtain a SourceLocator, and then use the SourceLocator getLineNumber() and getColumnNumber() methods. The getRootSourceLocator() method below returns a SourceLocator.</p>
+<source>
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xml.utils.WrappedRuntimeException;
+....
+public static SourceLocator getRootSourceLocator(Throwable exception)
+{
+  SourceLocator locator = null;
+  Throwable cause = exception;
+    
+  // Try to find the locator closest to the cause.
+  do
+  {
+    if(cause instanceof SAXParseException)
+    {
+      locator = new SAXSourceLocator((SAXParseException)cause);
+    }
+    else if (cause instanceof TransformerException)
+    {
+      SourceLocator causeLocator = 
+                    ((TransformerException)cause).getLocator();
+      if(null != causeLocator)
+        locator = causeLocator;
+    }
+    if(cause instanceof TransformerException)
+      cause = ((TransformerException)cause).getCause();
+    else if(cause instanceof WrappedRuntimeException)
+      cause = ((WrappedRuntimeException)cause).getException();
+    else if(cause instanceof SAXException)
+      cause = ((SAXException)cause).getException();
+    else
+      cause = null;
+  }
+  while(null != cause);
+        
+  return locator;
+}</source>
+
+<note><em>Xalan exception handling:</em>  The exception architecture in Xalan and with transforms in general is tricky because of multiple layers of exception handling, involving movement back and forth between SAX and Transformer exceptions and across pipes. Xalan often uses a WrappedRuntimeException to throw over many layers of checked exceptions, in order not to have every possible checked exception be declared for every function in the stack, which means it has to catch this exception at the upper levels and unwrap the exception to pass it on as a TransformerException.
+<br/><br/>
+A JAXP 1.1 TransformerException often wraps another exception. Two of the TransformerException structures that are frequently used to construct contained exceptions in JAXP 1.1 do not set the locator.  The locator is not set because we don't know the type of exception that the Throwable argument represents.  The solution is to chase up the contained exceptions to find the root cause, which will usually have a location set for you.  This can be somewhat tricky, as not all the exceptions may be TransformerExceptions.  A good sample is in the DefaultHandler static printLocation() method, which the Xalan command-line processor uses to report errors. You can also roll your own functions along the lines of the getRootSourceLocator() example above.</note>
+</a>
+
+</faq>
 </faqs>
