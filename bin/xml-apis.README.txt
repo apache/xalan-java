@@ -1,0 +1,6 @@
+xml-apis.jar - Xerces-Java 2 XML Parser.
+
+Source:	  http://xml.apache.org
+Used by: 	Xalan-Java 2 and release copy of Xerces-Java 2
+
+See xml-apis.LICENSE.txt for the Apache Software license that applies to xml-apis.jar.
