@@ -91,8 +91,9 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	super.setXSLTC(xsltc);
-	xsltc.setParser(this);
 	xsltc.init();
+	super.init();
+	xsltc.setParser(this);
 	xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
     }
 
@@ -126,10 +127,7 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
      *         process, or null if no Templates object has been created.
      */
     public Templates getTemplates() {
-
 	try {
-	    // Create a placeholder for the translet bytecodes
-	    byte[][] bytecodes = null;
 
 	    final XSLTC xsltc = getXSLTC();
 
@@ -137,6 +135,8 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 	    String transletName = TransformerFactoryImpl._defaultTransletName;
 	    if (_systemId != null) transletName = Util.baseName(_systemId);
 	    xsltc.setClassName(transletName);
+	    // get java-legal class name from XSLTC module
+	    transletName = xsltc.getClassName();
 
 	    Stylesheet stylesheet = null;
 	    SyntaxTreeNode root = getDocumentRoot();
@@ -161,6 +161,7 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 	    xsltc.printWarnings();
 
 	    // Check that the transformation went well before returning
+	    final byte[][] bytecodes = xsltc.getBytecodes();
 	    if (bytecodes == null) {
 		xsltc.printErrors();
 		return null;

@@ -59,6 +59,7 @@
  * @author Morten Jorgensen
  * @author G. Todd Millerj
  * @author Jochen Cordes <Jochen.Cordes@t-online.de>
+ * @author Santiago Pericas-Geertsen 
  *
  */
 
@@ -176,8 +177,13 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    (TransletClassLoader) AccessController.doPrivileged(
 		new PrivilegedAction() {
 			public Object run() {
-			    ClassLoader current = getClass().getClassLoader();
-			    return new TransletClassLoader(current);
+			    /* 
+			     * Get the loader from the current thread instead of
+			     * the class. This is important for translets that load
+			     * external Java classes and run in multi-threaded envs.
+			     */
+			    return new TransletClassLoader(
+				Thread.currentThread().getContextClassLoader());
 			}
 		    }
 		);

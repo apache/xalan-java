@@ -262,11 +262,10 @@ final class SymbolTable {
      * Check if a namespace should not be declared in the output (unless used)
      */
     public boolean isExcludedNamespace(String uri) {
-	if (uri == null) return false;
-	if (_excludedURI == null) return false;
-	final Integer refcnt = (Integer)_excludedURI.get(uri);
-	if (refcnt == null) return false;
-	if (refcnt.intValue() > 0) return true;
+	if (uri != null && _excludedURI != null) {
+	    final Integer refcnt = (Integer)_excludedURI.get(uri);
+	    return (refcnt != null && refcnt.intValue() > 0);
+	}
 	return false;
     }
 

@@ -361,7 +361,7 @@ Copyright:
     </javac>
   </target>
 
-  <target name="xsltc.jar" depends="xsltc.compile"
+  <target name="xsltc.unbundledjar" depends="xsltc.compile"
     description="Jar just the xsltc.jar file" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
@@ -374,7 +374,7 @@ Copyright:
   </target>
 
 
-  <target name="xsltc.bundledjar" depends="xsltc.compile"
+  <target name="xsltc.jar" depends="xsltc.compile"
      description="Jar xsltc, BCEL,JLex,java_cup,runtime and jakarta regexp">
     <!-- make a tmp directory to work in -->
     <delete dir="${build.dir}/xsltctmp" includeEmptyDirs="true" quiet="true"/>
@@ -449,11 +449,14 @@ Copyright:
         includeEmptyDirs="true" quiet="true"/>
 
     <!-- create new META-INF dir w/ transformer factory default -->
+    <!-- GTM: comment this out so that bundled xsltc.jar does not have
+	 service provider default until further notice 2/20/2002
     <mkdir dir="${build.dir}/xsltctmp/META-INF"/>
     <mkdir dir="${build.dir}/xsltctmp/META-INF/services"/>
     <copy todir="${build.dir}/xsltctmp/META-INF/services"
       file="${src.dir}/${xsltc.reldir}/javax.xml.transform.TransformerFactory"
     />
+    -->
 
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>

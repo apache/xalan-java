@@ -427,7 +427,7 @@ public final class BasisLibrary implements Operators {
 	if (name.equals("xsl:version"))
 	    return("1.0");
 	if (name.equals("xsl:vendor"))
-	    return("Apache Xalan XSLTC");
+	    return("Apache Software Foundation");
 	if (name.equals("xsl:vendor-url"))
 	    return("http://xml.apache.org/xalan-j");
 	
@@ -960,6 +960,29 @@ public final class BasisLibrary implements Operators {
 	}
     }
     
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    public static String getPrefix(String qname) {
+	final int index = qname.indexOf(':');
+	return (index > 0) ? qname.substring(0, index) : null;
+    }
+
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    private static int prefixIndex = 0;
+    public static String generatePrefix() {
+	return ("ns" + prefixIndex++);
+    }
+
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    public static String makeQName(String localName, String prefix) {
+	return (new StringBuffer(prefix).append(':').append(localName).toString());
+    }
+
     public static final int RUN_TIME_INTERNAL_ERR   = 0;
     public static final int RUN_TIME_COPY_ERR       = 1;
     public static final int DATA_CONVERSION_ERR     = 2;

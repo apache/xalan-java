@@ -193,18 +193,16 @@ public abstract class SyntaxTreeNode implements Constants {
      * @return The value of the attribute of name 'qname'.
      */
     protected String getAttribute(String qname) {
-	if (_attributes == null)
-	    return(Constants.EMPTYSTRING);
+	if (_attributes == null) {
+	    return EMPTYSTRING;
+	}
 	final String value = _attributes.getValue(qname);
-	if (value == null)
-	    return(Constants.EMPTYSTRING);
-	else
-	    return(value);
+	return (value == null || value.equals(EMPTYSTRING)) ? 
+	    EMPTYSTRING : value;
     }
 
     protected boolean hasAttribute(String qname) {
-	if (_attributes == null) return false;
-	return (_attributes.getValue(qname) != null);
+	return (_attributes != null && _attributes.getValue(qname) != null);
     }
 
     /**

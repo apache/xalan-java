@@ -278,4 +278,9 @@ public final class DOMAdapter implements DOM {
 	return(_domImpl.isAttribute(node));
     }
 
+    public String lookupNamespace(int node, String prefix) 
+	throws TransletException 
+    {
+	return _domImpl.lookupNamespace(node, prefix);
+    }
 }
