@@ -65,9 +65,11 @@ import java.util.Properties;
  * <p>An instance of this class can be obtained with the <code>
  * TransformerFactory.newTransformer</code> method. This instance may
  * then be used to process XML from a variety of sources and write
- * the transformation output to a variety of sink.</p>
+ * the transformation output to a variety of sinks.</p>
+ * 
  * <p>An object of this class may not be used in multiple threads
  * running concurrently.</p>
+ * 
  * <p>A Transformer may be used multiple times.  Parameters and 
  * output properties are preserved across transformations.</p>
  */

@@ -70,7 +70,13 @@ public class OutputKeys
    * method = "xml" | "html" | "text" | <var>qname-but-not-ncname</var>.
    *
    * <p>The method attribute identifies the overall method that
-   * should be used for outputting the result tree.</p>
+   * should be used for outputting the result tree.  Other non-namespaced 
+   * values may be used, such as "xhtml", but, if accepted, the handling 
+   * of such values is implementation defined.  If any of the method values
+   * are not accepted and are not namespace qualified, 
+   * then {@link javax.xml.transform.Transformer#setOutputProperty} 
+   * or {@link javax.xml.transform.Transformer#setOutputProperties} will 
+   * throw an {@link java.lang.IllegalArgumentException}.</p>
    * 
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
    * XSL Transformations (XSLT) W3C Recommendation</a>
