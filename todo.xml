@@ -52,10 +52,6 @@
     Fill in all NEEDSDOC sections.
   </action>
 
-  <action context="code" who="SB" packages="xpath.axes" category="performance" priority="high">
-    implement fast iterator for "//foo" pattern.
-  </action>
-
   <action context="code"  category="conformance" priority="high">
     Check relative URL resolution with notations and unparsed entities.
     Not sure if there is a bug here.  See note from Thomal Maesing on
@@ -289,6 +285,10 @@
   
   <action context="code" who="SB" packages="xpath.axes" category="performance" priority="high" completed="12/13/00">
     implement fast iterator for "@foo" pattern.
+  </action>
+
+  <action context="code" who="SB" packages="xpath.axes" category="performance" priority="high" completed="12/14/00">
+    implement fast iterator for "//foo" pattern.
   </action>
 
  </completed>
