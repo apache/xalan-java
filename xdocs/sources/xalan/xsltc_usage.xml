@@ -336,7 +336,8 @@ import javax.xml.transform.stream.StreamResult;
 String key = "javax.xml.transformer.TransformerFactory";
 String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
 Properties props = new Properties(System.getProperties());
-Object o = props.put(key, value);
+props.put(key, value);
+System.setProperties(props);
 ...
 String xslInURI;
 // Instantiate the TransformerFactory, and use it along with a SteamSource
@@ -365,7 +366,8 @@ import javax.xml.transform.stream.StreamResult;
 String key = "javax.xml.transformer.TransformerFactory";
 String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
 Properties props = new Properties(System.getProperties());
-Object o = props.put(key, value);
+props.put(key, value);
+System.setProperties(props);
 ...
 String xslInURI;
 String xmlInURI;

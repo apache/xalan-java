@@ -101,7 +101,8 @@ public class JAXPTransletMultipleTransformations
     String key = "javax.xml.transformer.TransformerFactory";
     String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
     Properties props = new Properties(System.getProperties());
-    Object o = props.put(key, value);
+    props.put(key, value);
+    System.setProperties(props);
 
     String xslInURI = "../../todo.xsl";
     // Instantiate the TransformerFactory, and use it along with a SteamSource

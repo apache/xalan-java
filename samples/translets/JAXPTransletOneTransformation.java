@@ -90,7 +90,8 @@ public class JAXPTransletOneTransformation
     String key = "javax.xml.transformer.TransformerFactory";
     String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
     Properties props = new Properties(System.getProperties());
-    Object o = props.put(key, value);
+    props.put(key, value);
+    System.setProperties(props);    
 
     String xslInURI = "../../todo.xsl";
     String xmlInURI = "../../xsltc_todo.xml";
