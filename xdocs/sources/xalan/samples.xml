@@ -142,8 +142,9 @@
     </s2><anchor name="usexmlfilters"/>
     <s2 title="UseXMLFilters">
     <p>What it does: Chains together the same transformations as the preceding Pipe sample. Using each Transformer
-     object as an extension of the SAX XMLFilter interface, sets the XMLReader as the parent of Transformer1,
-     Transformer1 as the parent of Transformer2, and Transformer2 as the parent of of Transformer3.</p>
+     object as an extension of the SAX XMLFilter interface, sets the XMLReader as the parent of filter1,
+     filter1 as the parent of filter2, and filter2 as the parent of of filter3.</p>
+     <p><img src="xmlfilters.gif" alt="xmlfilters.gif"/></p>
       <p>Run this sample from the UseXMLFilters subdirectory with</p>
    <p><code>java UseXMLFilters</code></p>
     </s2><anchor name="applyxpath"/>
