@@ -413,8 +413,8 @@
    <p>If you modify a sample and want to recompile it, you can run the Java compiler in the directory containing the
    example. Be sure xalan.jar, xml-apis.jar, and &xml4j-jar; are on the classpath. </p>
    <p>To recompile and run the class files in the servlet subdirectory, the javax.servlet and 
-   javax.servlet.http packages must also be on the classpath. Sun distributes these packages in 
-   the JSWDK 1.0.1 servlet.jar file.</p>
+   javax.servlet.http packages must also be on the classpath. These packages are available via
+   the servlet.jar file found in Apache Tomcat ( see <resource-ref idref="tomcat"/> ).</p>
    <p>After recompiling a sample, you can use the Sun jar utility to place your new .class files in
     xalansamples.jar.</p>
     <p>You can use Ant with the samples target to recompile the samples and place the unpackaged class files in xalansamples.jar.

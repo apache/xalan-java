@@ -116,6 +116,10 @@
             title="Java Specification Request 63"
             location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
 
+  <resource id="tomcat" 
+            title="The Jakarta Site - Apache Tomcat"
+            location="http://jakarta.apache.org/tomcat/"/>
+
   <resource id="xmlapirepository"
             title="xml-commons/java/external/src"
             location="http://cvs.apache.org/viewcvs.cgi/xml-commons/java/external/src/"/>

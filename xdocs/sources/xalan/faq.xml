@@ -373,9 +373,11 @@ spFactory.setNamespaceAware(true);</source>
             <br />
           </li>
           <li>To run the samples in the samples subdirectories, xalansamples.jar must be on the 
-              classpath. To run the servlet (in samples/servlet), xalanservlet.jar must be on the 
-              classpath along with the javax.servlet and javax.servlet.http packages. Sun distributes
-              the javax.servlet packages in the JSWDK servlet.jar file. 
+              classpath. To run the servlet samples, you must place xalanservlet.war 
+              on a web server with a servlet engine and you must put the javax.servlet and
+              javax.servlet.http packages on the classpath.  These packages 
+              are available via the servlet.jar file found in Apache Tomcat ( see <resource-ref 
+              idref="tomcat"/> ).
             <br />
             <br />
           </li>
