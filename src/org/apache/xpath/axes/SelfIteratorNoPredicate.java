@@ -35,6 +35,23 @@ public class SelfIteratorNoPredicate extends LocPathIterator
   {
     super(compiler, opPos, analysis, false);
   }
+  
+  /**
+   * Create a SelfIteratorNoPredicate object.
+   *
+   * @param compiler A reference to the Compiler that contains the op map.
+   * @param opPos The position within the op map, which contains the
+   * location path expression for this itterator.
+   * @param analysis Analysis bits.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public SelfIteratorNoPredicate()
+          throws javax.xml.transform.TransformerException
+  {
+    super(null);
+  }
+
 
   /**
    *  Returns the next node in the set and advances the position of the
