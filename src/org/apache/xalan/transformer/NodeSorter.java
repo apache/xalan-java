@@ -526,9 +526,6 @@ public class NodeSorter
      */
     NodeCompareElem(int node) throws javax.xml.transform.TransformerException
     {
-
-      boolean tryNextKey = true;
-
       m_node = node;
 
       if (!m_keys.isEmpty())
@@ -536,9 +533,6 @@ public class NodeSorter
         NodeSortKey k1 = (NodeSortKey) m_keys.elementAt(0);
         XObject r = k1.m_selectPat.execute(m_execContext, node,
                                            k1.m_namespaceContext);
-
-        if (r == null)
-          tryNextKey = false;
 
         double d;
 
@@ -563,7 +557,7 @@ public class NodeSorter
             current = ni.nextNode();
 
           // if (ni instanceof ContextNodeList) // %REVIEW%
-          tryNextKey = (DTM.NULL != current);
+          // tryNextKey = (DTM.NULL != current);
 
           // else abdicate... should never happen, but... -sb
         }
@@ -572,25 +566,14 @@ public class NodeSorter
         {
           NodeSortKey k2 = (NodeSortKey) m_keys.elementAt(1);
 
-          if (!tryNextKey)
-          {
-            if (k2.m_treatAsNumbers)
-              m_key2Value = new Double(0.0);
-            else
-              m_key2Value = k2.m_col.getCollationKey("");
-          }
-          else
-          {
-            XObject r2 = k2.m_selectPat.execute(m_execContext, node,
-                                                k2.m_namespaceContext);
+          XObject r2 = k2.m_selectPat.execute(m_execContext, node,
+                                              k2.m_namespaceContext);
 
-            if (k2.m_treatAsNumbers)
-            {
-              d = r2.num();
-              m_key2Value = new Double(d);
-            }
-            else
-              m_key2Value = k2.m_col.getCollationKey(r2.str());
+          if (k2.m_treatAsNumbers) {
+            d = r2.num();
+            m_key2Value = new Double(d);
+          } else {
+            m_key2Value = k2.m_col.getCollationKey(r2.str());
           }
         }
 
