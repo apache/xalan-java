@@ -131,7 +131,7 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
    * @param xmlSource  The XML input source tree.
    * @param outputTarget The output result tree.
    * @exception SAXException
-   * @see org.apache.xalan.xslt.XSLTProcessor#process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)
+   * @see org.apache.xalan.xslt.XSLTProcessor#process(org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTResultTarget)
    */
   public void process( XSLTInputSource xmlSource,
                        XSLTResultTarget outputTarget)
@@ -157,7 +157,7 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
    * @param xmlSource  The XML input source tree.
    * @param outputTarget The output result tree.
    * @exception SAXException
-   * @see org.apache.xalan.xslt.XSLTProcessor#process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)
+   * @see org.apache.xalan.xslt.XSLTProcessor#process(org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTResultTarget)
    */
   public void process( XSLTProcessor iprocessor, XSLTInputSource xmlSource,
                        XSLTResultTarget outputTarget)
@@ -172,8 +172,8 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
   /**
    * Transform the XML source tree (a DOM Node) and place the output in the result tree target.
    * This is a convenience method. You can also use a DOM Node to instantiate an XSLTInputSource object,
-   * and call {@link #process(XSLTProcessor, XSLTInputSource, XSLTResultTarget)} or
-   * {@link org.apache.xalan.xslt.XSLTProcessor#process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)}.
+   * and call {@link #process(org.apache.xalan.xslt.XSLTProcessor, org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTResultTarget)} or
+   * {@link org.apache.xalan.xslt.XSLTProcessor#process(org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTResultTarget)}.
    * @param iprocessor  The processor that will track the running state.
    * @param sourceTree  The input source tree in the form of a DOM Node.
    * @param outputTarget The output result tree.

@@ -127,7 +127,7 @@ import org.apache.xalan.stree.SourceTreeHandler;
  *
  * <p>The methods <code>process(...)</code> are the primary public entry points.
  * The best way to perform transformations is to use the
- * {@link XSLTProcessor#process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)} method,
+ * {@link org.apache.xalan.xslt.XSLTProcessor#process(org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTResultTarget)} method,
  * but you may use any of process methods defined in XSLTEngineImpl.</p>
  * 
  * <p>Please note that this class is not safe per instance over multiple 
@@ -382,7 +382,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
   /**
    * Transform the source tree to the output in the given
    * result tree target. As a general rule, we recommend you use the
-   * {@link XSLTProcessor#Process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)} method.
+   * {@link org.apache.xalan.xslt.XSLTProcessor#process(org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTInputSource, org.apache.xalan.xslt.XSLTResultTarget)} method.
    * @param inputSource  The input source.
    * @param stylesheetSource  The stylesheet source.  May be null if source has a xml-stylesheet PI.
    * @param outputTarget The output source tree.
