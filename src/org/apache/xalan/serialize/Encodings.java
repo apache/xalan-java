@@ -241,6 +241,28 @@ public class Encodings extends Object
 
     return encoding;
   }
+  
+  /**
+   * Try the best we can to convert a Java encoding to a XML-style encoding.
+   *
+   * @param encoding non-null reference to encoding string, java style.
+   *
+   * @return ISO-style encoding string.
+   */
+  public static String convertMime2JavaEncoding(String encoding)
+  {
+
+    for (int i = 0; i < _encodings.length; ++i)
+    {
+      if (_encodings[i].name.equalsIgnoreCase(encoding))
+      {
+        return _encodings[i].javaName;
+      }
+    }
+
+    return encoding;
+  }
+
 
   /**
    * Constructs a list of all the supported encodings.
