@@ -70,7 +70,7 @@
 </ul>  
 	  <s2 title="Samples to help you get started">
     <p>Each of the subdirectories in the &xslt4j; java/samples directory contains the source files for one or more
-     sample applications. The class files for the samples are in xalansamples.jar (everything except the servlet) and xalanservlet.jar, so to run the samples, you should place these JAR files on the system class path.</p>
+     sample applications. The class files for the samples are in xalansamples.jar (everything except the servlet) and xalanservlet.jar, so to run the samples, you should place these JAR files on the system classpath.</p>
      <p>With most of the samples, you can use the following procedure:</p>
      <ol>
      <li>Be sure xalan.jar, xalansamples.jar (xalanservlet.jar for the servlet), and xerces.jar are on the system class
@@ -146,8 +146,8 @@
       <li><link anchor="ext4">4-numlistJava</link></li>
       <li><link anchor="ext5">5-numlistJScript</link></li>                        
     </ul>
-    <p>The extensions subdirectory contains 5 samples with &xslt4j; extensions. Two of the samples use
-     extensions implemented in JavaScript, and thre of the samples use extensions implemented in Java.</p>
+    <p>The extensions subdirectory contains five samples with &xslt4j; extensions. Two of the samples use
+     extensions implemented in JavaScript, and three of the samples use extensions implemented in Java.</p>
      <p>To run these examples, you must place bsf.jar and bsfengines.jar (distributed with &xslt4j;), and js.jar
       (version 1.4 release 3, available from 
       <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the class path. 
