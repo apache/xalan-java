@@ -87,7 +87,7 @@ public class TemplateList implements java.io.Serializable
   /**
    * Construct a TemplateList object.
    */
-  TemplateList()
+  public TemplateList()
   {
     super();
   }
