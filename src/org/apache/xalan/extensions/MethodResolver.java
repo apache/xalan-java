@@ -320,7 +320,7 @@ public class MethodResolver
   
   /**
    * Given the name of a method, figure out the resolution of 
-   * the Java Method
+   * the Java Method.
    * @param classObj The Class of the object that should have the method.
    * @param name The name of the method to be invoked.
    * @return A method that will work to be called as an element.
@@ -338,7 +338,6 @@ public class MethodResolver
     Method bestMethod = null;
     Method[] methods = classObj.getMethods();
     int nMethods = methods.length;
-    int bestScore = Integer.MAX_VALUE;
     int bestScoreCount = 0;
     for(int i = 0; i < nMethods; i++)
     {
@@ -348,33 +347,13 @@ public class MethodResolver
       {
         Class[] paramTypes = method.getParameterTypes();
         if ( (paramTypes.length == 2)
-           && paramTypes[1].isAssignableFrom(org.apache.xalan.templates.ElemExtensionCall.class) )
+        && paramTypes[1].isAssignableFrom(org.apache.xalan.templates.ElemExtensionCall.class)
+        && paramTypes[0].isAssignableFrom(org.apache.xalan.extensions.XSLProcessorContext.class) )
         {
-          int score = -1;
-          if (paramTypes[0].isAssignableFrom(
-                                      org.apache.xalan.extensions.XSLProcessorContext.class))
-          {
-            score = 10;
-          }
-          /*******
-          else if (paramTypes[0].isAssignableFrom(
-                                      org.apace.xalan.xslt.XSLProcessorContext.class))
-          {
-            score = 5;
-          }
-          ********/
-          else 
-            continue;
-
-          if (score < bestScore)
-          {
-            // System.out.println("Assigning best method: "+method);
+          if ( ++bestScoreCount == 1 )
             bestMethod = method;
-            bestScore = score;
-            bestScoreCount = 1;
-          }
-          else if (score == bestScore)
-            bestScoreCount++;
+          else
+            break;
         }
       }
     }
