@@ -99,6 +99,10 @@ public class DOM2DTM extends DTMDefaultBaseIterators
 {
   static final boolean JJK_DEBUG=false;
   
+  /** Manefest constant
+   */
+  static final String NAMESPACE_DECL_NS="http://www.w3.org/XML/1998/namespace";
+  
   /** The current position in the DOM tree. Last node examined for
    * possible copying to DTM. */
   transient private Node m_pos;
@@ -539,15 +543,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
         if(ELEMENT_NODE == nexttype)
           {
             int attrIndex=NULL; // start with no previous sib
-					  if(!m_processedFirstElement)
-						{
-							String declURI = "http://www.w3.org/XML/1998/namespace";
-							attrIndex=addNode(
-								new defaultNamespaceDeclarationNode((Element)next,"xml",declURI),
-								nextindex,attrIndex,NULL);	
-              m_firstch.setElementAt(DTM.NULL,attrIndex);
-							m_processedFirstElement=true;
-						}
             // Process attributes _now_, rather than waiting.
             // Simpler control flow, makes NS cache available immediately.
             NamedNodeMap attrs=next.getAttributes();
@@ -562,12 +557,32 @@ public class DOM2DTM extends DTMDefaultBaseIterators
                     attrIndex=addNode(attrs.item(i),
                                       nextindex,attrIndex,NULL);
                     m_firstch.setElementAt(DTM.NULL,attrIndex);
+
+                    // If the xml: prefix is explicitly declared
+                    // we don't need to synthesize one.
+                    if(!m_processedFirstElement
+                       && NAMESPACE_DECL_NS.equals(attrs.item(i).getNamespaceURI())
+                       && "xml".equals(attrs.item(i).getLocalName()))
+                      m_processedFirstElement=true; 
                   }
                 // Terminate list of attrs, and make sure they aren't
                 // considered children of the element
               } // if attrs exist
-						if(attrIndex!=NULL)
-               m_nextsib.setElementAt(DTM.NULL,attrIndex);
+            if(!m_processedFirstElement)
+            {
+              // The DOM may not have an explicit declartion for the
+              // implicit "xml:" prefix, but the XPath data model
+              // requires that this appear as a Namespace Node so we
+              // have to synthesize one. You can think of this as
+              // being a default attribute defined by the XML
+              // Namespaces spec rather than by the DTD.
+              attrIndex=addNode(new defaultNamespaceDeclarationNode((Element)next,"xml",NAMESPACE_DECL_NS),
+                                nextindex,attrIndex,NULL);      
+              m_firstch.setElementAt(DTM.NULL,attrIndex);
+              m_processedFirstElement=true;
+            }
+            if(attrIndex!=NULL)
+              m_nextsib.setElementAt(DTM.NULL,attrIndex);
           } //if(ELEMENT_NODE)
       } // (if !suppressNode)
 
