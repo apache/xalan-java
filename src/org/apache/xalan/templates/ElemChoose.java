@@ -152,15 +152,12 @@ public class ElemChoose extends ElemTemplateElement
 
           if (test.bool())
           {
+            transformer.getTraceManager().fireTraceEvent(when);
             transformer.executeChildTemplates(when, true);
 
             return;
           }
 
-          // I don't think we want this.  -sb
-          //  if (TransformerImpl.S_DEBUG)
-          //    transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
-          //            "endTest", when.getTest(), test);
         }
         else if (when.getTest().bool(xctxt, sourceNode, when))
         {
@@ -172,6 +169,9 @@ public class ElemChoose extends ElemTemplateElement
       else if (Constants.ELEMNAME_OTHERWISE == type)
       {
         found = true;
+
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireTraceEvent(childElem);
 
         // xsl:otherwise                
         transformer.executeChildTemplates(childElem, true);

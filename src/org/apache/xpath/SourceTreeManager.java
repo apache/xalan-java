@@ -383,6 +383,8 @@ public class SourceTreeManager
     {
       XMLReader reader = (inputSource instanceof SAXSource)
                          ? ((SAXSource) inputSource).getXMLReader() : null;
+                         
+      boolean isUserReader = (reader != null);
 
       if (null == reader)
       {
@@ -409,8 +411,9 @@ public class SourceTreeManager
       {
         reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
                           true);
-        reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                          true);
+        if(!isUserReader)
+          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+                            true);
       }
       catch (org.xml.sax.SAXException se)
       {

@@ -829,6 +829,8 @@ public javax.xml.transform.Templates processFromNode(Node node)
 
       if (source instanceof SAXSource)
         reader = ((SAXSource) source).getXMLReader();
+        
+      boolean isUserReader = (reader != null);
 
       if (null == reader)
       {
@@ -865,8 +867,9 @@ public javax.xml.transform.Templates processFromNode(Node node)
       // reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
       try
       {
-        reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                          true);
+        if(!isUserReader)
+          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+                            true);
       }
       catch (org.xml.sax.SAXException ex)
       {

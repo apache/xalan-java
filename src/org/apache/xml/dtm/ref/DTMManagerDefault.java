@@ -475,6 +475,8 @@ public class DTMManagerDefault extends DTMManager
     {
       XMLReader reader = (inputSource instanceof SAXSource)
                          ? ((SAXSource) inputSource).getXMLReader() : null;
+                         
+      boolean isUserReader = (reader != null);
 
       if (null == reader)
       {
@@ -516,16 +518,19 @@ public class DTMManagerDefault extends DTMManager
         // TODO: User diagnostics.
       }
 
-      try
+      if(!isUserReader)
       {
-        reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                          true);
-      }
-      catch (org.xml.sax.SAXException se)
-      {
-
-        // What can we do?
-        // TODO: User diagnostics.
+        try
+        {
+          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+                            true);
+        }
+        catch (org.xml.sax.SAXException se)
+        {
+  
+          // What can we do?
+          // TODO: User diagnostics.
+        }
       }
 
       return reader;
