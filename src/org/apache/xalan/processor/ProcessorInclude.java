@@ -64,6 +64,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import java.net.URL;
 import java.io.IOException;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Processor class for xsl:include markup.
@@ -76,12 +77,12 @@ class ProcessorInclude extends XSLTElementProcessor
    * The base URL of the XSL document.
    * @serial
    */
-  private URL m_href = null;
+  private String m_href = null;
 
   /**
    * Get the base identifier with which this stylesheet is associated.
    */
-  URL getHref()
+  public String getHref()
   {
     return m_href;
   }
@@ -89,7 +90,7 @@ class ProcessorInclude extends XSLTElementProcessor
   /**
    * Get the base identifier with which this stylesheet is associated.
    */
-  void setHref(URL baseIdent)
+  public void setHref(String baseIdent)
   {
     m_href = baseIdent;
   }
@@ -130,12 +131,19 @@ class ProcessorInclude extends XSLTElementProcessor
     try
     {
       XMLReader reader = handler.getStylesheetProcessor().getXMLReader();
+
+      if(null == reader)
+      {
+        reader = XMLReaderFactory.createXMLReader();
+      }
+      else
+      {
+        Class readerClass = ((Object)reader).getClass();
+        reader = (XMLReader)readerClass.newInstance();
+      }
       
-      Class readerClass = ((Object)reader).getClass();
-      XMLReader clonedReader = (XMLReader)readerClass.newInstance();
-      
-      clonedReader.setContentHandler(handler);
-      clonedReader.parse(getHref().toExternalForm());
+      reader.setContentHandler(handler);
+      reader.parse(getHref());
     }
     catch(InstantiationException ie)
     {

@@ -146,7 +146,7 @@ public class StylesheetHandler
     // Set the initial content handler.
     m_processors.push(m_schema.getElementProcessor());
     
-    // m_includeStack.push(SystemIDResolver.getURLFromString(this.getBaseIdentifier(), null));
+    // m_includeStack.push(SystemIDResolver.getAbsoluteURI(this.getBaseIdentifier(), null));
     // initXPath(processor, null);
   }
 
@@ -211,14 +211,14 @@ public class StylesheetHandler
   /**
    * Test to see if the stack contains the given URL.
    */
-  private boolean stackContains(Stack stack, URL url)
+  private boolean stackContains(Stack stack, String url)
   {
     int n = stack.size();
     boolean contains = false;
     for(int i = 0; i < n; i++)
     {
-      URL url2 = (URL)stack.elementAt(i);
-      if(url2.toString().equals(url.toString()))
+      String url2 = (String)stack.elementAt(i);
+      if(url2.equals(url))
       {
         contains = true;
         break;
@@ -955,7 +955,7 @@ public class StylesheetHandler
   /**
    * Push an import href onto the stylesheet stack.
    */
-  void pushImportURL(URL hrefUrl)
+  void pushImportURL(String hrefUrl)
   {
     m_importStack.push(hrefUrl);
   }
@@ -964,7 +964,7 @@ public class StylesheetHandler
    * See if the imported stylesheet stack already contains 
    * the given URL.
    */
-  boolean importStackContains(URL hrefUrl)
+  boolean importStackContains(String hrefUrl)
   {
     return stackContains(m_importStack, hrefUrl);
   }
@@ -972,9 +972,9 @@ public class StylesheetHandler
   /**
    * Pop an import href from the stylesheet stack.
    */
-  URL popImportURL()
+  String popImportURL()
   {
-    return (URL)m_importStack.pop();
+    return (String)m_importStack.pop();
   }
 
   

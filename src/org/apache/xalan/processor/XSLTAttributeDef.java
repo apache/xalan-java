@@ -64,7 +64,6 @@ import java.lang.NoSuchMethodException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.StringBuffer;
-import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import org.apache.xalan.templates.AVT;
@@ -504,12 +503,12 @@ public class XSLTAttributeDef
    * Process an attribute string of type T_URL into 
    * a URL value.
    */
-  URL processURL(StylesheetHandler handler,
+  String processURL(StylesheetHandler handler,
                     String uri, String name,
                     String rawName, String value)
     throws SAXException
   {
-    return SystemIDResolver.getURLFromString(value, 
+    return SystemIDResolver.getAbsoluteURI(value, 
                                              handler.getBaseIdentifier());
   }
   

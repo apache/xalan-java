@@ -63,6 +63,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 import java.net.URL;
 import java.io.IOException;
 
@@ -103,7 +104,7 @@ class ProcessorImport extends ProcessorInclude
   {
     setPropertiesFromAttributes(handler, rawName, attributes, this);
 
-    URL hrefUrl = getHref();
+    String hrefUrl = getHref();
     if(handler.importStackContains(hrefUrl))
     {
       throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_IMPORTING_ITSELF, new Object[] {hrefUrl})); //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
@@ -116,12 +117,18 @@ class ProcessorImport extends ProcessorInclude
     try
     {
       XMLReader reader = handler.getStylesheetProcessor().getXMLReader();
-      
-      Class readerClass = ((Object)reader).getClass();
-      XMLReader clonedReader = (XMLReader)readerClass.newInstance();
-      
-      clonedReader.setContentHandler(handler);
-      clonedReader.parse(getHref().toExternalForm());
+      if(null == reader)
+      {
+        reader = XMLReaderFactory.createXMLReader();
+      }
+      else
+      {
+        Class readerClass = ((Object)reader).getClass();
+        reader = (XMLReader)readerClass.newInstance();
+      }
+            
+      reader.setContentHandler(handler);
+      reader.parse(getHref());
 
     }
     catch(InstantiationException ie)
