@@ -735,17 +735,29 @@ public class TransformerFactoryImpl
 	}
 
 	// Check that the transformation went well before returning
-	if (bytecodes == null) {
-	    // Pass compiler errors to the error listener
-	    if (_errorListener != null) {
-		passErrorsToListener(xsltc.getErrors());
-	    }
-	    else {
-		xsltc.printErrors();
-	    }
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
-	    throw new TransformerConfigurationException(err.toString());
-	}
+    if (bytecodes == null) {
+        
+        ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
+        TransformerConfigurationException exc =  new TransformerConfigurationException(err.toString());
+        
+        // Pass compiler errors to the error listener
+        if (_errorListener != null) {
+            passErrorsToListener(xsltc.getErrors());
+            
+            // As required by TCK 1.2, send a fatalError to the
+            // error listener because compilation of the stylesheet
+            // failed and no further processing will be possible.
+            try {
+                _errorListener.fatalError(exc);
+            } catch (TransformerException te) {
+                // well, we tried.
+            }    
+        }
+        else {
+            xsltc.printErrors();
+        }
+        throw exc;
+    }
 
 	return new TemplatesImpl(bytecodes, transletName, 
 	    xsltc.getOutputProperties(), _indentNumber, this);
