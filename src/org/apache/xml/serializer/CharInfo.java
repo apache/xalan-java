@@ -447,10 +447,7 @@ class CharInfo
      */
     public final boolean isTextASCIIClean(int value)
     {
-        boolean ret = isCleanTextASCII[value];
-        if (ret == false)
-        System.out.flush();
-        return ret;
+        return isCleanTextASCII[value];
     }
     
 //  In the future one might want to use the array directly and avoid
