@@ -84,7 +84,7 @@ import org.apache.xpath.XPathException;
  *      </li>
  *    </ul>
  *  </li>
- *  <li><strong>Arithmetic expressions</strong>:
+ *  <li><strong>Arithmetic expression</strong>:
  *    <ul>
  *      <li><strong>Unary expression</strong>:
  * 		  <ul>
@@ -112,7 +112,7 @@ import org.apache.xpath.XPathException;
  *      </li>
  * 	  </ul>
  *  </li>
- *  <li><strong>Comparison expressions</strong>:
+ *  <li><strong>Comparison expression</strong>:
  * 	  <ul>
  *      <li>Expression type: {@link Expr#COMPARISON_EXPR}</li>
  * 	    <li>Operator type: XXX_COMPARISON</li>
@@ -127,7 +127,8 @@ import org.apache.xpath.XPathException;
  *      <li>Example: <code>1 eq 1 and 2 eq 2</code></li>
  *    </ul>
  *  </li>
- *  <li><strong>Path expressions</strong>: see {@link PathExpr}</li>
+ *  <li><strong>Path expression</strong>: see {@link PathExpr}</li>
+ *  <li><strong>Function call</strong>: see {@link FunctionCall}</li>
  * </ul>
  * @see <a href="http://www.w3.org/TR/xpath20">XPath 2.0 Specification</href>
  */
@@ -319,6 +320,10 @@ public interface OperatorExpr extends Expr
      * Remove an operand
      */
     void removeOperand(Expr operand) throws XPathException;
+
+	// TODO
+	// void setOperand(Expr operand)
+	// void insertOperand(Expr operant, int i)	
     
     /**
      * Append the specified expr at the end of this expression. 
