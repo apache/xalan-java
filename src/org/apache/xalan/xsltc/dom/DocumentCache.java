@@ -78,6 +78,7 @@ import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
@@ -115,7 +116,7 @@ public final class DocumentCache implements DOMCache {
 	private long _buildTime;
 
 	// DOM and DTD handler references
-	private SAXImpl    _dom = null;
+	private DOMEnhancedForDTM _dom = null;
 	
 	/**
 	 * Constructor - load document and initialise statistics
@@ -138,7 +139,7 @@ public final class DocumentCache implements DOMCache {
 
 	    try {
 		final long stamp = System.currentTimeMillis();
-                _dom = (SAXImpl)_dtmManager.getDTM(
+                _dom = (DOMEnhancedForDTM)_dtmManager.getDTM(
                                  new SAXSource(_reader, new InputSource(uri)),
                                  false, null, true, false);
 		_dom.setDocumentURI(uri);

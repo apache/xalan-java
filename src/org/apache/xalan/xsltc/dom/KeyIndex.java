@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.dom;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xml.dtm.DTM;
@@ -91,7 +92,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      */
     private DOM        _dom;
     
-    private SAXImpl    _saxImpl;
+    private DOMEnhancedForDTM    _enhancedDOM;
 
     /**
      * Store position after call to setMark()
@@ -148,7 +149,8 @@ public class KeyIndex extends DTMAxisIteratorBase {
             final String token = (String) values.nextElement();
 	    IntegerArray nodes = (IntegerArray) _index.get(token);
 
-            if (nodes == null && _saxImpl != null && _saxImpl.hasDOMSource()) {
+            if (nodes == null && _enhancedDOM != null
+                && _enhancedDOM.hasDOMSource()) {
                 nodes = getDOMNodeById(token);
             }
 
@@ -171,8 +173,8 @@ public class KeyIndex extends DTMAxisIteratorBase {
      */
     public IntegerArray getDOMNodeById(String id) {
         IntegerArray nodes = null;
-        if (_saxImpl != null) {
-            int ident = _saxImpl.getElementById(id);
+        if (_enhancedDOM != null) {
+            int ident = _enhancedDOM.getElementById(id);
             if (ident != DTM.NULL) {
 	        nodes = new IntegerArray();
 	    	_index.put(id, nodes);
@@ -210,7 +212,8 @@ public class KeyIndex extends DTMAxisIteratorBase {
                 final String token = (String) values.nextElement();
 		IntegerArray nodes = (IntegerArray) _index.get(token);
 
-		if (nodes == null && _saxImpl != null && _saxImpl.hasDOMSource()) {
+		if (nodes == null && _enhancedDOM != null
+                    && _enhancedDOM.hasDOMSource()) {
 		    nodes = getDOMNodeById(token);	
 		}
 		if (nodes != null && nodes.indexOf(node) >= 0) {
@@ -221,7 +224,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
 	}
 	else {
 	    IntegerArray nodes = (IntegerArray) _index.get(value);
-            if (nodes == null && _saxImpl != null && _saxImpl.hasDOMSource()) {
+            if (nodes == null && _enhancedDOM != null && _enhancedDOM.hasDOMSource()) {
                 nodes = getDOMNodeById(string);
             }
 	    return (nodes != null && nodes.indexOf(node) >= 0) ? 1 : 0;
@@ -311,13 +314,13 @@ public class KeyIndex extends DTMAxisIteratorBase {
     
     public void setDom(DOM dom) {
     	_dom = dom;
-    	if (dom instanceof SAXImpl) {
-    	    _saxImpl = (SAXImpl)dom;
+    	if (dom instanceof DOMEnhancedForDTM) {
+    	    _enhancedDOM = (DOMEnhancedForDTM)dom;
     	}
     	else if (dom instanceof DOMAdapter) {
     	    DOM idom = ((DOMAdapter)dom).getDOMImpl();
-    	    if (idom instanceof SAXImpl) {
-    	        _saxImpl = (SAXImpl)idom;
+    	    if (idom instanceof DOMEnhancedForDTM) {
+    	        _enhancedDOM = (DOMEnhancedForDTM)idom;
     	    }
     	}
     }

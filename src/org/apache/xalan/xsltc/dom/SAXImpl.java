@@ -73,6 +73,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
@@ -113,7 +114,8 @@ import org.xml.sax.SAXException;
  *
  * <p>SAXImpl extends SAX2DTM2 instead of SAX2DTM for better performance.
  */
-public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
+public final class SAXImpl extends SAX2DTM2
+                           implements DOMEnhancedForDTM, DOMBuilder
 {
     
     /* ------------------------------------------------------------------- */

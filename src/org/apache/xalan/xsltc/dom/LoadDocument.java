@@ -68,6 +68,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.trax.TemplatesImpl;
@@ -211,20 +212,21 @@ public final class LoadDocument {
         if (mask != -1) {
             DOM newDom = ((DOMAdapter)multiplexer.getDOMAdapter(uri))
                                        .getDOMImpl();
-            if (newDom instanceof SAXImpl) {
-                return new SingletonIterator(((SAXImpl)newDom).getDocument(),
+            if (newDom instanceof DOMEnhancedForDTM) {
+                return new SingletonIterator(((DOMEnhancedForDTM)newDom)
+                                                               .getDocument(),
                                              true);
             } 
         }
 
         // Check if we can get the DOM from a DOMCache
         DOMCache cache = translet.getDOMCache();
-        SAXImpl newdom;
+        DOM newdom;
 
         mask = multiplexer.nextMask(); // peek
 
         if (cache != null) {
-            newdom = (SAXImpl)cache.retrieveDocument(base, originalUri, translet);
+            newdom = cache.retrieveDocument(base, originalUri, translet);
             if (newdom == null) {
                 final Exception e = new FileNotFoundException(originalUri);
                 throw new TransletException(e);
@@ -233,21 +235,24 @@ public final class LoadDocument {
             // Parse the input document and construct DOM object
             // Trust the DTMManager to pick the right parser and
             // set up the DOM correctly.
-            XSLTCDTMManager dtmManager = (XSLTCDTMManager)multiplexer.getDTMManager();
-            newdom = (SAXImpl)dtmManager.getDTM(new StreamSource(uri),
-                                       false, null, true, false,
-                                       translet.hasIdCall(), cacheDOM);
-                                
+            XSLTCDTMManager dtmManager = (XSLTCDTMManager)multiplexer
+                                                              .getDTMManager();
+            DOMEnhancedForDTM enhancedDOM =
+                    (DOMEnhancedForDTM) dtmManager.getDTM(new StreamSource(uri),
+                                            false, null, true, false,
+                                            translet.hasIdCall(), cacheDOM);
+            newdom = enhancedDOM;
+
             // Cache the stylesheet DOM in the Templates object
             if (cacheDOM) {
                 TemplatesImpl templates = (TemplatesImpl)translet.getTemplates();
                 if (templates != null) {
-                    templates.setStylesheetDOM(newdom);
+                    templates.setStylesheetDOM(enhancedDOM);
                 }
             }
             
-            translet.prepassDocument(newdom);
-            newdom.setDocumentURI(uri);
+            translet.prepassDocument(enhancedDOM);
+            enhancedDOM.setDocumentURI(uri);
         }
 
         // Wrap the DOM object in a DOM adapter and add to multiplexer

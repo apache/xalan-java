@@ -64,6 +64,7 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.Hashtable;
@@ -77,7 +78,7 @@ import org.w3c.dom.NodeList;
 public final class DOMAdapter implements DOM {
 
     // Mutually exclusive casting of DOM interface to known implementations
-    private SAXImpl _saxImpl;
+    private DOMEnhancedForDTM _enhancedDOM;
 
     private DOM _dom;
 
@@ -101,8 +102,8 @@ public final class DOMAdapter implements DOM {
                       String[] urisArray,
                       int[] typesArray,
                       String[] namespaceArray) {
-        if (dom instanceof SAXImpl){
-            _saxImpl = (SAXImpl) dom;
+        if (dom instanceof DOMEnhancedForDTM){
+            _enhancedDOM = (DOMEnhancedForDTM) dom;
         }
 
         _dom = dom;
@@ -142,8 +143,9 @@ public final class DOMAdapter implements DOM {
 
     private short[] getMapping() {
         if (_mapping == null) {
-            if (_saxImpl != null) {
-                _mapping = _saxImpl.getMapping(_namesArray, _urisArray, _typesArray);
+            if (_enhancedDOM != null) {
+                _mapping = _enhancedDOM.getMapping(_namesArray, _urisArray,
+                                                   _typesArray);
             } 
         }
         return _mapping;
@@ -151,8 +153,10 @@ public final class DOMAdapter implements DOM {
 
     private int[] getReverse() {
 	if (_reverse == null) {
-            if (_saxImpl != null) {
-	        _reverse = _saxImpl.getReverseMapping(_namesArray, _urisArray, _typesArray);
+            if (_enhancedDOM != null) {
+	        _reverse = _enhancedDOM.getReverseMapping(_namesArray,
+                                                          _urisArray,
+                                                          _typesArray);
             }
 	}
 	return _reverse;
@@ -160,8 +164,8 @@ public final class DOMAdapter implements DOM {
 
     private short[] getNSMapping() {
 	if (_NSmapping == null) {
-            if (_saxImpl != null) {
-	        _NSmapping = _saxImpl.getNamespaceMapping(_namespaceArray);
+            if (_enhancedDOM != null) {
+	        _NSmapping = _enhancedDOM.getNamespaceMapping(_namespaceArray);
             }
 	}
 	return _NSmapping;
@@ -169,8 +173,9 @@ public final class DOMAdapter implements DOM {
 
     private short[] getNSReverse() {
 	if (_NSreverse == null) {
-            if (_saxImpl != null) {
-	        _NSreverse = _saxImpl.getReverseNamespaceMapping(_namespaceArray);
+            if (_enhancedDOM != null) {
+	        _NSreverse = _enhancedDOM
+                                  .getReverseNamespaceMapping(_namespaceArray);
             }
 	}
 	return _NSreverse;
@@ -188,8 +193,8 @@ public final class DOMAdapter implements DOM {
     }
     
     public DTMAxisIterator getChildren(final int node) {
-        if (_saxImpl != null) {
-            return _saxImpl.getChildren(node);
+        if (_enhancedDOM != null) {
+            return _enhancedDOM.getChildren(node);
         }
         else {
             DTMAxisIterator iterator = _dom.getChildren(node);
@@ -204,8 +209,8 @@ public final class DOMAdapter implements DOM {
     public DTMAxisIterator getTypedChildren(final int type) {
         final int[] reverse = getReverse();
 
-        if (_saxImpl != null) {
-            return _saxImpl.getTypedChildren(reverse[type]);
+        if (_enhancedDOM != null) {
+            return _enhancedDOM.getTypedChildren(reverse[type]);
         }
         else {
             return _dom.getTypedChildren(type);
@@ -218,8 +223,8 @@ public final class DOMAdapter implements DOM {
     }
 
     public DTMAxisIterator getAxisIterator(final int axis) {
-        if (_saxImpl != null) {
-            return _saxImpl.getAxisIterator(axis);
+        if (_enhancedDOM != null) {
+            return _enhancedDOM.getAxisIterator(axis);
         }
         else {
             return _dom.getAxisIterator(axis);
@@ -229,8 +234,8 @@ public final class DOMAdapter implements DOM {
     public DTMAxisIterator getTypedAxisIterator(final int axis,
                                                 final int type) {
         final int[] reverse = getReverse();
-        if (_saxImpl != null) {
-            return _saxImpl.getTypedAxisIterator(axis, reverse[type]);
+        if (_enhancedDOM != null) {
+            return _enhancedDOM.getTypedAxisIterator(axis, reverse[type]);
         } else {
             return _dom.getTypedAxisIterator(axis, type);
         }      
@@ -260,8 +265,8 @@ public final class DOMAdapter implements DOM {
     }
     
     public int getExpandedTypeID(final int node) {
-        if (_saxImpl != null) {
-            return getMapping()[_saxImpl.getExpandedTypeID2(node)];
+        if (_enhancedDOM != null) {
+            return getMapping()[_enhancedDOM.getExpandedTypeID2(node)];
         }
         else {
             return getMapping()[_dom.getExpandedTypeID(node)];
@@ -309,8 +314,8 @@ public final class DOMAdapter implements DOM {
     
     public String getStringValueX(final int node) 
     {    	
-    	if (_saxImpl != null) {
-            return _saxImpl.getStringValueX(node);
+    	if (_enhancedDOM != null) {
+            return _enhancedDOM.getStringValueX(node);
         }
         else {
             if (node == DTM.NULL) {
@@ -335,8 +340,8 @@ public final class DOMAdapter implements DOM {
     public String shallowCopy(final int node, SerializationHandler handler)
 	throws TransletException 
     {
-        if (_saxImpl != null) {
-            return _saxImpl.shallowCopy(node, handler);
+        if (_enhancedDOM != null) {
+            return _enhancedDOM.shallowCopy(node, handler);
         }
         else {
             return _dom.shallowCopy(node, handler);
@@ -351,8 +356,8 @@ public final class DOMAdapter implements DOM {
     public void characters(final int textNode, SerializationHandler handler)
       throws TransletException 
     {
-        if (_saxImpl != null) {
-            _saxImpl.characters(textNode, handler);
+        if (_enhancedDOM != null) {
+            _enhancedDOM.characters(textNode, handler);
         }
         else {
             _dom.characters(textNode, handler);
@@ -391,15 +396,15 @@ public final class DOMAdapter implements DOM {
 
     public void setDocumentURI(String uri) 
     {
-        if (_saxImpl != null) {
-            _saxImpl.setDocumentURI(uri);
+        if (_enhancedDOM != null) {
+            _enhancedDOM.setDocumentURI(uri);
         }
     }
 
     public String getDocumentURI()
     {
-        if (_saxImpl != null) {
-            return _saxImpl.getDocumentURI();
+        if (_enhancedDOM != null) {
+            return _enhancedDOM.getDocumentURI();
         }
         else {
             return "";
@@ -441,8 +446,8 @@ public final class DOMAdapter implements DOM {
      */ 
     public DOM getResultTreeFrag(int initSize, int rtfType)
     {
-    	if (_saxImpl != null) {
-    	    return _saxImpl.getResultTreeFrag(initSize, rtfType);
+    	if (_enhancedDOM != null) {
+    	    return _enhancedDOM.getResultTreeFrag(initSize, rtfType);
     	}
     	else {
     	    return _dom.getResultTreeFrag(initSize, rtfType);
@@ -452,10 +457,12 @@ public final class DOMAdapter implements DOM {
     /**
      * Return a instance of a DOM class to be used as an RTF
      */ 
-    public DOM getResultTreeFrag(int initSize, int rtfType, boolean addToManager)
+    public DOM getResultTreeFrag(int initSize, int rtfType,
+                                 boolean addToManager)
     {
-    	if (_saxImpl != null) {
-    	    return _saxImpl.getResultTreeFrag(initSize, rtfType, addToManager);
+    	if (_enhancedDOM != null) {
+    	    return _enhancedDOM.getResultTreeFrag(initSize, rtfType,
+                                                  addToManager);
     	}
     	else {
 	    return _dom.getResultTreeFrag(initSize, rtfType, addToManager);
