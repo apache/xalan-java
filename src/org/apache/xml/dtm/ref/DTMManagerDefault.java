@@ -110,23 +110,25 @@ public class DTMManagerDefault extends DTMManager
    * 
    * This array grows as necessary; see addDTM().
    * 
-   * %REVIEW% Could use a Fast...Vector approach. Growth is uncommon,
-   * so I'm not worrying about it.
+   * This array grows as necessary; see addDTM(). Growth is uncommon... but
+   * access needs to be blindingly fast since it's used in node addressing.
    */
   protected DTM m_dtms[] = new DTM[256];
 	
-	/** Map from DTM identifier numbers to offsets. For small DTMs with a 
-	 * single identifier, this will always be 0. In overflow addressing, where
-	 * additional identifiers are allocated to access nodes beyond the range of
-	 * a single Node Handle, this table is used to map the handle's node field
-	 * into the actual node identifier.
+  /** Map from DTM identifier numbers to offsets. For small DTMs with a 
+   * single identifier, this will always be 0. In overflow addressing, where
+   * additional identifiers are allocated to access nodes beyond the range of
+   * a single Node Handle, this table is used to map the handle's node field
+   * into the actual node identifier.
    * 
    * This array grows as necessary; see addDTM().
    * 
-   * %REVIEW% Could use a FastIntVector approach. Growth is uncommon,
-   * so I'm not worrying about it.
-	 */
-	protected int m_dtm_offsets[] = new int[256];
+   * This array grows as necessary; see addDTM(). Growth is uncommon... but
+   * access needs to be blindingly fast since it's used in node addressing.
+   * (And at the moment, that includes accessing it from DTMDefaultBase,
+   * which is why this is not Protected or Private.)
+   */
+  int m_dtm_offsets[] = new int[256];
 
   /**
    * Add a DTM to the DTM table. This convenience call adds it as the 
@@ -738,7 +740,7 @@ public class DTMManagerDefault extends DTMManager
       ((SAX2DTM) dtm).clearCoRoutine();
     }
 
-		// Multiple DTM IDs maybe assigned to a single DTM. 
+		// Multiple DTM IDs may be assigned to a single DTM. 
 		// The Right Answer is to ask which (if it supports
 		// extension, the DTM will need a list anyway). The 
 		// Wrong Answer, applied if the DTM can't help us,
@@ -750,7 +752,7 @@ public class DTMManagerDefault extends DTMManager
 		{
 			org.apache.xml.utils.SuballocatedIntVector ids=((DTMDefaultBase)dtm).getDTMIDs();
 			for(int i=ids.size()-1;i>=0;--i)
-				m_dtms[ids.elementAt(i)>>DTMManager.IDENT_DTM_NODE_BITS]=null;
+				m_dtms[ids.elementAt(i)>>>DTMManager.IDENT_DTM_NODE_BITS]=null;
 		}
 		else
 		{

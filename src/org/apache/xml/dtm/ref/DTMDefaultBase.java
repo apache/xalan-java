@@ -144,6 +144,11 @@ public abstract class DTMDefaultBase implements DTM
    * The DTM manager who "owns" this DTM.
    */
   protected DTMManager m_mgr;
+  /**
+   * m_mgr cast to DTMManagerDefault, or null if it isn't an instance
+   * (Efficiency hook)
+   */
+  protected DTMManagerDefault m_mgrDefault=null;
 
   /** The document identity number(s). If we have overflowed the addressing
    * range of the first that was assigned to us, we may add others. */
@@ -213,6 +218,9 @@ public abstract class DTMDefaultBase implements DTM
     m_parent = new SuballocatedIntVector(m_initialblocksize);
 
     m_mgr = mgr;
+    if(mgr instanceof DTMManagerDefault)
+      m_mgrDefault=(DTMManagerDefault)mgr;
+    
     m_documentBaseURI = (null != source) ? source.getSystemId() : null;
     m_dtmIdent.setElementAt(dtmIdentity,0);
     m_wsfilter = whiteSpaceFilter;
@@ -225,11 +233,9 @@ public abstract class DTMDefaultBase implements DTM
     }
     else
     {
-
-      // %REVIEW% Is there a better way to do this?
-      DTMManagerDefault dmd = (DTMManagerDefault) m_mgr;
-
-      m_expandedNameTable = dmd.getExpandedNameTable(this);
+      // Note that this fails if we aren't talking to an instance of
+      // DTMManagerDefault
+      m_expandedNameTable = m_mgrDefault.getExpandedNameTable(this);
     }
 
     if (null != whiteSpaceFilter)
@@ -903,6 +909,8 @@ public abstract class DTMDefaultBase implements DTM
    * any subclass of DTMDefaultBase to ever change the algorithm. (I don't
    * really like doing so, and would love to have an excuse not to...)
    * 
+   * %OPT% Performance is critical for this operation.
+   *
    * %REVIEW% Should this be exposed at the package/public layers?
    * 
    * @param NodeHandle (external representation of node)
@@ -911,11 +919,27 @@ public abstract class DTMDefaultBase implements DTM
   final protected int makeNodeIdentity(int nodeHandle)
   {
     if(NULL==nodeHandle) return NULL;
+
+    if(m_mgrDefault!=null)
+    {
+      // Optimization: use the DTMManagerDefault's fast DTMID-to-offsets
+      // table.  I'm not wild about this solution but this operation
+      // needs need extreme speed.
+
+      int whichDTMindex=nodeHandle>>>DTMManager.IDENT_DTM_NODE_BITS;
+
+      // %REVIEW% Wish I didn't have to perform the pre-test, but
+      // someone is apparently asking DTMs whether they contain nodes
+      // which really don't belong to them. That's probably a bug
+      // which should be fixed, but until it is:
+      if(m_mgrDefault.m_dtms[whichDTMindex]!=this)
+	return NULL;
+      else
+	return
+	  m_mgrDefault.m_dtm_offsets[whichDTMindex]
+	  | (nodeHandle & DTMManager.IDENT_NODE_DEFAULT);
+    }
 	  
-    if(JJK_DEBUG && nodeHandle<DTMManager.IDENT_NODE_DEFAULT)
-      System.err.println("GONK! (only useful in limited situations)");
-	  
-		/**JJK*/int jjk=DTMManager.IDENT_DTM_DEFAULT;
     int whichDTMid=m_dtmIdent.indexOf(nodeHandle & DTMManager.IDENT_DTM_DEFAULT);
     return (whichDTMid==NULL) 
       ? NULL
@@ -1467,7 +1491,12 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getExpandedTypeID(int nodeHandle)
   {
-    return _exptype(makeNodeIdentity(nodeHandle));
+    // %REVIEW% This _should_ only be null if someone asked the wrong DTM about the node...
+    // which one would hope would never happen...
+    int id=makeNodeIdentity(nodeHandle);
+    if(id==NULL)
+      return NULL;
+    return _exptype(id);
   }
 
   /**
