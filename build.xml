@@ -809,9 +809,10 @@ Copyright:
 
   <target name="xsltc.prepare.docs" depends="prepare.docs">
       <echo message="Transform xsltc_todo.xml and put the result in ${build.docs}/xsltc"/>
+   <mkdir dir="${build.docs}/xsltc"/>
     <java fork="yes" classname="${xalan.cmdline.class}">
       <classpath refid="docs.class.path" />
-      <arg line="-in xsltc_todo.xml -xsl todo.xsl -out ${build.docs}/xsltc/todo.html"/>
+      <arg line="-in xsltc_todo.xml -xsl todo.xsl -out build/docs/xsltc/todo.html"/>
     </java>
   </target>  
  
