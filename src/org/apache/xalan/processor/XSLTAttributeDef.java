@@ -533,8 +533,9 @@ public class XSLTAttributeDef
                     String rawName, String value)
     throws SAXException
   {
-    return SystemIDResolver.getAbsoluteURI(value, 
-                                             handler.getBaseIdentifier());
+    // return SystemIDResolver.getAbsoluteURI(value, 
+    //                                         handler.getBaseIdentifier());
+    return value;
   }
   
   /**
