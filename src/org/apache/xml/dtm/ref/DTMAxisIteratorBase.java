@@ -59,7 +59,8 @@ package org.apache.xml.dtm.ref;
 import org.apache.xml.dtm.DTMAxisIterator;
 
 /**
- * This class serves as a default base for implementations of DTMAxisIterators.
+ * This class serves as a default base for implementations of mutable
+ * DTMAxisIterators.
  */
 public abstract class DTMAxisIteratorBase implements DTMAxisIterator
 {

@@ -82,6 +82,7 @@ import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.DTMAxisIterNodeList;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
+import org.apache.xml.dtm.ref.EmptyIterator;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM2;
 import org.apache.xml.serializer.SerializationHandler;
@@ -146,19 +147,7 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
     private final static String EMPTYSTRING = "";
 
     // empty iterator to be returned when there are no children
-    private final static DTMAxisIterator EMPTYITERATOR =
-        new DTMAxisIteratorBase() {
-            public DTMAxisIterator reset() { return this; }
-            public DTMAxisIterator setStartNode(int node) { return this; }
-            public int next() { return DTM.NULL; }
-            public void setMark() {}
-            public void gotoMark() {}
-            public int getLast() { return 0; }
-            public int getPosition() { return 0; }
-            public DTMAxisIterator cloneIterator() { return this; }
-            public void setRestartable(boolean isRestartable) { }
-        };
-    
+    private final static DTMAxisIterator EMPTYITERATOR = EmptyIterator.getInstance();
     // The number of expanded names
     private int _namesSize = 0;
 
