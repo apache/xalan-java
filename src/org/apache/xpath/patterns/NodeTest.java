@@ -233,10 +233,11 @@ public class NodeTest extends Expression
         int isNamespace = (whatToShow & SHOW_NAMESPACE);
         if(0 == isNamespace)
         {
-          if(!xctxt.getDOMHelper().isNamespaceNode(context))
+          DOMHelper dh = xctxt.getDOMHelper();
+          if(!dh.isNamespaceNode(context))
             return (m_isTotallyWild ||
-                    (subPartMatch(context.getNamespaceURI(), m_namespace) 
-                    && subPartMatch(context.getLocalName(), m_name))) ?
+                    (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
+                     && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
                    m_score : SCORE_NONE;
           else
             return SCORE_NONE;
@@ -256,9 +257,10 @@ public class NodeTest extends Expression
       
     case NodeFilter.SHOW_ELEMENT:
       {
+        DOMHelper dh = xctxt.getDOMHelper();
         return (m_isTotallyWild ||
-                (subPartMatch(context.getNamespaceURI(), m_namespace) 
-                && subPartMatch(context.getLocalName(), m_name))) ?
+                (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
+                && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
                m_score : SCORE_NONE;
       }
       
