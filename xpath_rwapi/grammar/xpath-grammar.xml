@@ -1375,7 +1375,7 @@ apply.
 				<ref name="IdKeyPattern"/>
 				<optional>
 					<choice>
-						<ref name="Slash"/>
+						<ref name="Slash" node-type="void"/>
 						<ref name="SlashSlash"/>
 					</choice>
 					<ref name="RelativePathPattern"/>
@@ -1390,7 +1390,7 @@ apply.
 		<ref name="PatternStep"/>
 		<optional>
 			<choice>
-				<ref name="Slash"/>
+				<ref name="Slash" node-type="void"/>
 				<ref name="SlashSlash"/>
 			</choice>
 			<ref name="RelativePathPattern"/>
@@ -1617,11 +1617,11 @@ apply.
         </choice>
       </binary>
     </level>
-    <level node-type="UnaryExpr">
-      <prefix name="UnaryExpr" if="xquery xpath pathx1">
+    <level node-type="UnaryExpr" level-user-action="boolean keepUnary=false;">
+      <prefix name="UnaryExpr" if="xquery xpath pathx1" condition="keepUnary">
         <choice>
-          <ref name="Minus"/>
-          <ref name="Plus" if="xquery xpath core"/>
+          <ref name="Minus" token-user-action="keepUnary=true;"/>
+          <ref name="Plus" if="xquery xpath core" token-user-action="keepUnary=true;"/>
         </choice>
       </prefix>
     </level>
@@ -1654,7 +1654,7 @@ apply.
     </level>
   </exprProduction>
 
-	<production name="PathExpr">
+	<production name="PathExpr" condition=">0">
 		<choice>
 			<sequence>
 				<ref name="Root"/>
@@ -1685,17 +1685,18 @@ apply.
 		<ref name="StepExpr"/>
 		<zeroOrMore>
 			<choice>
-			  <ref name="Slash"/>
+			  <ref name="Slash" node-type="void"/>
 		    <ref name="SlashSlash"/>
 	    </choice>
 		  <ref name="StepExpr"/>
 		</zeroOrMore>
 	</production>
 	
-	<production name="StepExpr" node-type="StepExpr" condition="> 1">
+	<production name="StepExpr" node-type="StepExpr" condition=">1 || isStep" 
+			    prod-user-action="boolean isStep=false;">
 		<choice>
-			<ref name="ForwardStep"/>
-			<ref name="ReverseStep"/>
+			<ref name="ForwardStep" nt-user-action-end="isStep=true;"/>
+			<ref name="ReverseStep" nt-user-action-end="isStep=true;"/>
 			<ref name="PrimaryExpr" if="xpath xquery core"/>	
 		</choice>
 		<ref name="Predicates"/>
@@ -2002,7 +2003,7 @@ apply.
     </choice>
   </production>
 
-  <production name="KindTest">
+  <production name="KindTest" node-type="void">
     <choice break="true">
       <ref name="ProcessingInstructionTest"/>
       <ref name="CommentTest"/>
@@ -2095,13 +2096,13 @@ apply.
 	  <ref name="DotDot"/>
   </production>
 
-  <production name="Predicates" if="xquery xpath pathx1 core" condition="> 1">
+  <production name="Predicates" if="xquery xpath pathx1 core" condition="> 0">
     <zeroOrMore name="PredicatesList">
       <choice>
         <sequence>
-          <ref name="Lbrack"/>
+          <ref name="Lbrack" node-type="void"/>
           <ref name="Expr"/>
-          <ref name="Rbrack"/>
+          <ref name="Rbrack" node-type="void"/>
         </sequence>
         <!-- Decision of Oracle F2F to remove -->
         <!-- sequence if="xpath xquery core">

@@ -174,6 +174,14 @@
 <xsl:template name="action-token-ref">
 </xsl:template>
 
+<!-- Begin LV -->
+<xsl:template name="user-action-ref-start">
+</xsl:template>
+
+<xsl:template name="user-action-ref-end">
+</xsl:template>
+<!-- End LV -->
+
 <xsl:template name="javacc-options">
   STATIC = false;
   LOOKAHEAD = 1;
@@ -554,6 +562,14 @@ we use ]]> as a single token. -->
         <xsl:with-param name="condition" select="@condition"/>
       </xsl:call-template>
     </xsl:when>
+    <!-- Begin LV -->
+    <xsl:when test="@condition">    
+      <xsl:call-template name="action-level-jjtree-label">
+	    <xsl:with-param name="label" select="@name"/>
+        <xsl:with-param name="condition" select="@condition"/>
+      </xsl:call-template>
+   	</xsl:when>
+     <!-- End LV -->
     <xsl:otherwise>
     </xsl:otherwise>
   </xsl:choose>
@@ -612,7 +628,7 @@ we use ]]> as a single token. -->
 				<!-- Begin SMPG -->
         <xsl:with-param name="condition">
 					<xsl:choose>
-						<xsl:when test="g:binary or */g:sequence">
+						<xsl:when test="g:binary or */g:sequence or */g:choice">
 							<xsl:value-of select="*/@condition"/>
 						</xsl:when>
 						<xsl:otherwise/>
@@ -844,8 +860,16 @@ we use ]]> as a single token. -->
 	  </xsl:if>
     </xsl:when>
     <xsl:otherwise>
+    	<!-- Begin LV -->
+      <xsl:call-template name="user-action-ref-start"/>
+      <!-- End LV -->
+    
       <xsl:value-of select="@name"/>
       <xsl:text>()</xsl:text>
+      
+      <!-- Begin LV -->
+      <xsl:call-template name="user-action-ref-end"/>
+      <!-- End LV -->
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>

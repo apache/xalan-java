@@ -83,6 +83,7 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
 
     /**
      * Constructor for PathExprImpl.
+     *
      * @param i
      */
     public PathExprImpl(int i)
@@ -94,6 +95,7 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
 
     /**
      * Constructor for PathExprImpl.
+     *
      * @param p
      * @param i
      */
@@ -113,8 +115,8 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
     }
 
     /**
-      * @see org.apache.xpath.rwapi.expression.Visitable#visit(Visitor)
-      */
+     * @see org.apache.xpath.rwapi.expression.Visitable#visit(Visitor)
+     */
     public void visit(Visitor visitor)
     {
         visitor.visitPath(this);
@@ -124,8 +126,9 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
     }
 
     /**
-              * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
-      */
+     * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer,
+     *      boolean)
+     */
     protected void getString(StringBuffer expr, boolean abbreviate)
     {
         if (m_isAbsolute)
@@ -150,21 +153,16 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
             m_isAbsolute = true;
             super.jjtAddChild(Singletons.SLASHSLASH, i);
         }
-
-        //  else if (n.getId() == XPathTreeConstants.JJTSLASHSLASH)
-        // {
-        // expand to /descendant-or-self::node()/
-        //     super.jjtAddChild(Singletons.SLASHSLASH, i);
-        //}
-        else if (n.getId() == XPathTreeConstants.JJTSLASH)
-        {
-            // filtered
-        }
         else
         {
             if (((SimpleNode) n).canBeReduced())
             {
-                if (n.jjtGetNumChildren() > 0)
+                if ((m_exprType == PATH_EXPR) && (n.jjtGetNumChildren() > 0)
+                        && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTPATHEXPR))
+                {
+                    super.jjtInsertNodeChildren(n.jjtGetChild(0));
+                }
+                else
                 {
                     super.jjtInsertChild(n.jjtGetChild(0));
                 }

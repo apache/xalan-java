@@ -12,49 +12,49 @@ public interface XPathTreeConstants
   public int JJTPATHPATTERN = 5;
   public int JJTROOT = 6;
   public int JJTROOTDESCENDANTS = 7;
-  public int JJTSLASH = 8;
-  public int JJTSLASHSLASH = 9;
-  public int JJTVOID = 10;
-  public int JJTPATTERNSTEP = 11;
-  public int JJTAXISCHILD = 12;
-  public int JJTAXISATTRIBUTE = 13;
-  public int JJTAT = 14;
-  public int JJTIDKEYPATTERN = 15;
-  public int JJTQNAMELPAR = 16;
-  public int JJTSTRINGLITERAL = 17;
-  public int JJTVARNAME = 18;
-  public int JJTOREXPR = 19;
-  public int JJTANDEXPR = 20;
-  public int JJTFLWREXPR = 21;
-  public int JJTRETURN = 22;
-  public int JJTQUANTIFIEDEXPR = 23;
-  public int JJTSOME = 24;
-  public int JJTEVERY = 25;
-  public int JJTIN = 26;
-  public int JJTSATISFIES = 27;
-  public int JJTIFEXPR = 28;
-  public int JJTIFLPAR = 29;
-  public int JJTTHEN = 30;
-  public int JJTELSE = 31;
-  public int JJTINSTANCEOFEXPR = 32;
-  public int JJTINSTANCEOF = 33;
-  public int JJTCASTABLEEXPR = 34;
-  public int JJTCASTABLE = 35;
-  public int JJTCOMPARISONEXPR = 36;
-  public int JJTRANGEEXPR = 37;
-  public int JJTADDITIVEEXPR = 38;
-  public int JJTMULTIPLICATIVEEXPR = 39;
-  public int JJTUNARYEXPR = 40;
-  public int JJTMINUS = 41;
-  public int JJTPLUS = 42;
-  public int JJTUNIONEXPR = 43;
-  public int JJTINTERSECTEXCEPTEXPR = 44;
-  public int JJTPATHEXPR = 45;
-  public int JJTSTEPEXPR = 46;
-  public int JJTSIMPLEFORCLAUSE = 47;
-  public int JJTVALIDATEEXPR = 48;
-  public int JJTVALIDATELBRACE = 49;
-  public int JJTVALIDATECONTEXT = 50;
+  public int JJTSLASHSLASH = 8;
+  public int JJTVOID = 9;
+  public int JJTPATTERNSTEP = 10;
+  public int JJTAXISCHILD = 11;
+  public int JJTAXISATTRIBUTE = 12;
+  public int JJTAT = 13;
+  public int JJTIDKEYPATTERN = 14;
+  public int JJTQNAMELPAR = 15;
+  public int JJTSTRINGLITERAL = 16;
+  public int JJTVARNAME = 17;
+  public int JJTOREXPR = 18;
+  public int JJTANDEXPR = 19;
+  public int JJTFLWREXPR = 20;
+  public int JJTRETURN = 21;
+  public int JJTQUANTIFIEDEXPR = 22;
+  public int JJTSOME = 23;
+  public int JJTEVERY = 24;
+  public int JJTIN = 25;
+  public int JJTSATISFIES = 26;
+  public int JJTIFEXPR = 27;
+  public int JJTIFLPAR = 28;
+  public int JJTTHEN = 29;
+  public int JJTELSE = 30;
+  public int JJTINSTANCEOFEXPR = 31;
+  public int JJTINSTANCEOF = 32;
+  public int JJTCASTABLEEXPR = 33;
+  public int JJTCASTABLE = 34;
+  public int JJTCOMPARISONEXPR = 35;
+  public int JJTRANGEEXPR = 36;
+  public int JJTADDITIVEEXPR = 37;
+  public int JJTMULTIPLICATIVEEXPR = 38;
+  public int JJTUNARYEXPR = 39;
+  public int JJTMINUS = 40;
+  public int JJTPLUS = 41;
+  public int JJTUNIONEXPR = 42;
+  public int JJTINTERSECTEXCEPTEXPR = 43;
+  public int JJTPATHEXPR = 44;
+  public int JJTSTEPEXPR = 45;
+  public int JJTSIMPLEFORCLAUSE = 46;
+  public int JJTVALIDATEEXPR = 47;
+  public int JJTVALIDATELBRACE = 48;
+  public int JJTVALIDATECONTEXT = 49;
+  public int JJTSLASH = 50;
   public int JJTLBRACEEXPRENCLOSURE = 51;
   public int JJTRBRACE = 52;
   public int JJTCASTEXPR = 53;
@@ -78,46 +78,43 @@ public interface XPathTreeConstants
   public int JJTSTAR = 71;
   public int JJTNCNAMECOLONSTAR = 72;
   public int JJTSTARCOLONNCNAME = 73;
-  public int JJTKINDTEST = 74;
-  public int JJTPROCESSINGINSTRUCTIONTEST = 75;
-  public int JJTCOMMENTTEST = 76;
-  public int JJTTEXTTEST = 77;
-  public int JJTANYKINDTEST = 78;
-  public int JJTDOT = 79;
-  public int JJTDOTDOT = 80;
-  public int JJTPREDICATES = 81;
-  public int JJTLBRACK = 82;
-  public int JJTRBRACK = 83;
-  public int JJTINTEGERLITERAL = 84;
-  public int JJTDECIMALLITERAL = 85;
-  public int JJTDOUBLELITERAL = 86;
-  public int JJTFUNCTIONCALL = 87;
-  public int JJTSCHEMACONTEXT = 88;
-  public int JJTINCONTEXT = 89;
-  public int JJTSCHEMAGLOBALCONTEXT = 90;
-  public int JJTTYPEQNAME = 91;
-  public int JJTSCHEMACONTEXTSTEP = 92;
-  public int JJTSINGLETYPE = 93;
-  public int JJTQMARK = 94;
-  public int JJTSEQUENCETYPE = 95;
-  public int JJTEMPTY = 96;
-  public int JJTITEMTYPE = 97;
-  public int JJTELEMENTTYPE = 98;
-  public int JJTATTRIBUTETYPE = 99;
-  public int JJTNODE = 100;
-  public int JJTPROCESSINGINSTRUCTION = 101;
-  public int JJTCOMMENT = 102;
-  public int JJTTEXT = 103;
-  public int JJTDOCUMENT = 104;
-  public int JJTITEM = 105;
-  public int JJTUNTYPED = 106;
-  public int JJTATOMICVALUE = 107;
-  public int JJTELEMORATTRTYPE = 108;
-  public int JJTSCHEMATYPE = 109;
-  public int JJTOFTYPE = 110;
-  public int JJTATOMICTYPE = 111;
-  public int JJTOCCURRENCEINDICATOR = 112;
-  public int JJTMULTIPLY = 113;
+  public int JJTPROCESSINGINSTRUCTIONTEST = 74;
+  public int JJTCOMMENTTEST = 75;
+  public int JJTTEXTTEST = 76;
+  public int JJTANYKINDTEST = 77;
+  public int JJTDOT = 78;
+  public int JJTDOTDOT = 79;
+  public int JJTPREDICATES = 80;
+  public int JJTINTEGERLITERAL = 81;
+  public int JJTDECIMALLITERAL = 82;
+  public int JJTDOUBLELITERAL = 83;
+  public int JJTFUNCTIONCALL = 84;
+  public int JJTSCHEMACONTEXT = 85;
+  public int JJTINCONTEXT = 86;
+  public int JJTSCHEMAGLOBALCONTEXT = 87;
+  public int JJTTYPEQNAME = 88;
+  public int JJTSCHEMACONTEXTSTEP = 89;
+  public int JJTSINGLETYPE = 90;
+  public int JJTQMARK = 91;
+  public int JJTSEQUENCETYPE = 92;
+  public int JJTEMPTY = 93;
+  public int JJTITEMTYPE = 94;
+  public int JJTELEMENTTYPE = 95;
+  public int JJTATTRIBUTETYPE = 96;
+  public int JJTNODE = 97;
+  public int JJTPROCESSINGINSTRUCTION = 98;
+  public int JJTCOMMENT = 99;
+  public int JJTTEXT = 100;
+  public int JJTDOCUMENT = 101;
+  public int JJTITEM = 102;
+  public int JJTUNTYPED = 103;
+  public int JJTATOMICVALUE = 104;
+  public int JJTELEMORATTRTYPE = 105;
+  public int JJTSCHEMATYPE = 106;
+  public int JJTOFTYPE = 107;
+  public int JJTATOMICTYPE = 108;
+  public int JJTOCCURRENCEINDICATOR = 109;
+  public int JJTMULTIPLY = 110;
 
 
   public String[] jjtNodeName = {
@@ -129,7 +126,6 @@ public interface XPathTreeConstants
     "PathPattern",
     "Root",
     "RootDescendants",
-    "Slash",
     "SlashSlash",
     "void",
     "PatternStep",
@@ -172,6 +168,7 @@ public interface XPathTreeConstants
     "ValidateExpr",
     "ValidateLbrace",
     "ValidateContext",
+    "Slash",
     "LbraceExprEnclosure",
     "Rbrace",
     "CastExpr",
@@ -195,7 +192,6 @@ public interface XPathTreeConstants
     "Star",
     "NCNameColonStar",
     "StarColonNCName",
-    "KindTest",
     "ProcessingInstructionTest",
     "CommentTest",
     "TextTest",
@@ -203,8 +199,6 @@ public interface XPathTreeConstants
     "Dot",
     "DotDot",
     "Predicates",
-    "Lbrack",
-    "Rbrack",
     "IntegerLiteral",
     "DecimalLiteral",
     "DoubleLiteral",

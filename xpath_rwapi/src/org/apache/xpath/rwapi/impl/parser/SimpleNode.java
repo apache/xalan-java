@@ -19,14 +19,17 @@ import org.apache.xpath.rwapi.impl.VariableImpl;
 /**
  *
  */
-public class SimpleNode implements Node, NodeFactory
+public class SimpleNode implements Node
 {
-    static public final boolean PRODUCE_RAW_TREE = false;
+    static public boolean PRODUCE_RAW_TREE = false;
+    final static private NodeFactory DEFAULT_NODE_FACTORY = new DefaultNodeFactory();
     protected Node parent; // to remove
     protected Node[] children; // to remove
     protected int id; // to remove
 
-    protected SimpleNode() {}
+    protected SimpleNode()
+    {
+    }
 
     public SimpleNode(int i)
     {
@@ -46,35 +49,25 @@ public class SimpleNode implements Node, NodeFactory
         }
 
         Node newNode;
-		NodeFactory nodeFactory = (p.m_nodeFactory == null) ? p : p.m_nodeFactory;      
+        NodeFactory nodeFactory = (p.m_nodeFactory == null) ? DEFAULT_NODE_FACTORY : p.m_nodeFactory;
 
         switch (id)
         {
             case XPathTreeConstants.JJTNAMETEST:
-            	newNode = (NameTestImpl) nodeFactory.createNode(id);
+                newNode = nodeFactory.createNameTestNode(id);
 
                 if (newNode == null)
                 {
                     newNode = new NameTestImpl(id);
-                }            	
-                break;
-
-            case XPathTreeConstants.JJTQNAME:
-            case XPathTreeConstants.JJTQNAMELPAR:
-            case XPathTreeConstants.JJTSTAR:
-            case XPathTreeConstants.JJTNCNAMECOLONSTAR:
-            case XPathTreeConstants.JJTSTARCOLONNCNAME:
-                newNode = (QName) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = new QName(id);
                 }
 
                 break;
 
-            case XPathTreeConstants.JJTKINDTEST:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
+            case XPathTreeConstants.JJTPROCESSINGINSTRUCTIONTEST:			
+            case XPathTreeConstants.JJTCOMMENTTEST:
+            case XPathTreeConstants.JJTTEXTTEST:
+            case XPathTreeConstants.JJTANYKINDTEST:
+                newNode = nodeFactory.createKindTestNode(id);
 
                 if (newNode == null)
                 {
@@ -83,21 +76,8 @@ public class SimpleNode implements Node, NodeFactory
 
                 break;
 
-            case XPathTreeConstants.JJTPROCESSINGINSTRUCTIONTEST:
-            case XPathTreeConstants.JJTCOMMENTTEST:
-            case XPathTreeConstants.JJTTEXTTEST:
-            case XPathTreeConstants.JJTANYKINDTEST:
-                newNode = (KindTest) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = new KindTest(id);
-                }
-
-                break;
-
             case XPathTreeConstants.JJTSTEPEXPR:
-                newNode = (StepExprImpl) nodeFactory.createNode(id);
+                newNode = nodeFactory.createStepNode(id);
 
                 if (newNode == null)
                 {
@@ -106,153 +86,13 @@ public class SimpleNode implements Node, NodeFactory
 
                 break;
 
-            case XPathTreeConstants.JJTAXISCHILD:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_CHILD;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISATTRIBUTE:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_ATTRIBUTE;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISDESCENDANT:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_DESCENDANT;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISSELF:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_SELF;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISDESCENDANTORSELF:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_DESCENDANTORSELF;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISFOLLOWINGSIBLING:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_FOLLOWINGSIBLING;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISFOLLOWING:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_FOLLOWING;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISNAMESPACE:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_NAMESPACE;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISPARENT:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_PARENT;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISANCESTOR:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_ANCESTOR;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISPRECEDINGSIBLING:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_PRECEDINGSIBLING;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISPRECEDING:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_PRECEDING;
-                }
-
-                break;
-
-            case XPathTreeConstants.JJTAXISANCESTORORSELF:
-                newNode = (Axis) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Axis.AXIS_ANCESTORORSELF;
-                }
-
-                break;
-
             
-
-            case XPathTreeConstants.JJTUNARYEXPR:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = new OperatorImpl(id);
-                }
-
-                break;
 
             case XPathTreeConstants.JJTINTEGERLITERAL:
             case XPathTreeConstants.JJTDOUBLELITERAL:
             case XPathTreeConstants.JJTSTRINGLITERAL:
             case XPathTreeConstants.JJTDECIMALLITERAL:
-                newNode = (LiteralImpl) nodeFactory.createNode(id);
+                newNode = (LiteralImpl) nodeFactory.createLiteralNode(id);
 
                 if (newNode == null)
                 {
@@ -312,18 +152,11 @@ public class SimpleNode implements Node, NodeFactory
 
                 break;
 
-            case XPathTreeConstants.JJTEXPRSEQUENCE:
-                newNode = (OperatorImpl) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = new OperatorImpl(id);
-                }
-
-                break;
+          
+        
 
             case XPathTreeConstants.JJTPATHEXPR:
-                newNode = (PathExprImpl) nodeFactory.createNode(id);
+                newNode = nodeFactory.createPathNode(id);
 
                 if (newNode == null)
                 {
@@ -332,16 +165,8 @@ public class SimpleNode implements Node, NodeFactory
 
                 break;
 
-            case XPathTreeConstants.JJTNODETEST:
-                newNode = (SimpleNode) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = new SimpleNode(id); //Singletons.NODETEST; 
-                }
-
-                break;
-
+			case XPathTreeConstants.JJTEXPRSEQUENCE:
+			case XPathTreeConstants.JJTUNARYEXPR:
             case XPathTreeConstants.JJTADDITIVEEXPR:
             case XPathTreeConstants.JJTMULTIPLICATIVEEXPR:
             case XPathTreeConstants.JJTUNIONEXPR:
@@ -349,7 +174,7 @@ public class SimpleNode implements Node, NodeFactory
             case XPathTreeConstants.JJTOREXPR:
             case XPathTreeConstants.JJTANDEXPR:
             case XPathTreeConstants.JJTCOMPARISONEXPR:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
+                newNode = nodeFactory.createOperatorNode(id);
 
                 if (newNode == null)
                 {
@@ -359,7 +184,7 @@ public class SimpleNode implements Node, NodeFactory
                 break;
 
             case XPathTreeConstants.JJTFUNCTIONCALL:
-                newNode = (FunctionCallImpl) nodeFactory.createNode(id);
+                newNode = nodeFactory.createFunctionCallNode(id);
 
                 if (newNode == null)
                 {
@@ -369,7 +194,7 @@ public class SimpleNode implements Node, NodeFactory
                 break;
 
             case XPathTreeConstants.JJTVARNAME:
-                newNode = (VariableImpl) nodeFactory.createNode(id);
+                newNode = nodeFactory.createVarNameNode(id);
 
                 if (newNode == null)
                 {
@@ -379,6 +204,15 @@ public class SimpleNode implements Node, NodeFactory
                 break;
 
             // The nodes belows are filtered: no customisation possible
+            case XPathTreeConstants.JJTQNAME:
+            case XPathTreeConstants.JJTQNAMELPAR:
+            case XPathTreeConstants.JJTSTAR:
+            case XPathTreeConstants.JJTNCNAMECOLONSTAR:
+            case XPathTreeConstants.JJTSTARCOLONNCNAME:
+                newNode = new QName(id);
+
+                break;
+
             case XPathTreeConstants.JJTDOTDOT:
                 newNode = Singletons.DOTDOT;
 
@@ -408,57 +242,106 @@ public class SimpleNode implements Node, NodeFactory
                 newNode = XPath2Node.m_singleton;
 
                 break;
-			case XPathTreeConstants.JJTDOT:						   
-				newNode = Singletons.DOT;
-				break;    
+
+            case XPathTreeConstants.JJTDOT:
+                newNode = Singletons.DOT;
+
+                break;
 
             case XPathTreeConstants.JJTSLASH:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Singletons.SLASH;
-                }
+                newNode = Singletons.SLASH;
 
                 break;
 
             case XPathTreeConstants.JJTPREDICATES:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
+                newNode = new Predicates(id);
 
-                if (newNode == null)
-                {
-                    newNode = new Predicates(id); // can use a singleton
-                }
+                // can use a singleton (but children need to be reinitialized)
+                break;
 
+            case XPathTreeConstants.JJTNODETEST:
+                newNode = new SimpleNode(id); //Singletons.NODETEST; 
+
+                // can use a singleton (but children need to be reinitialized)
                 break;
 
             case XPathTreeConstants.JJTROOT:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Singletons.ROOT;
-                }
+                newNode = Singletons.ROOT;
 
                 break;
 
             case XPathTreeConstants.JJTROOTDESCENDANTS:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
-
-                if (newNode == null)
-                {
-                    newNode = Singletons.ROOTDESCENDANT;
-                }
+                newNode = Singletons.ROOTDESCENDANT;
 
                 break;
 
             case XPathTreeConstants.JJTSLASHSLASH:
-                newNode = (KindTestImpl) nodeFactory.createNode(id);
+                newNode = Singletons.SLASHSLASH;
 
-                if (newNode == null)
-                {
-                    newNode = Singletons.SLASHSLASH;
-                }
+                break;
+
+            case XPathTreeConstants.JJTAXISCHILD:
+                newNode = Axis.AXIS_CHILD;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISATTRIBUTE:
+                newNode = Axis.AXIS_ATTRIBUTE;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISDESCENDANT:
+                newNode = Axis.AXIS_DESCENDANT;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISSELF:
+                newNode = Axis.AXIS_SELF;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISDESCENDANTORSELF:
+                newNode = Axis.AXIS_DESCENDANTORSELF;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISFOLLOWINGSIBLING:
+                newNode = Axis.AXIS_FOLLOWINGSIBLING;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISFOLLOWING:
+                newNode = Axis.AXIS_FOLLOWING;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISNAMESPACE:
+                newNode = Axis.AXIS_NAMESPACE;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISPARENT:
+                newNode = Axis.AXIS_PARENT;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISANCESTOR:
+                newNode = Axis.AXIS_ANCESTOR;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISPRECEDINGSIBLING:
+                newNode = Axis.AXIS_PRECEDINGSIBLING;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISPRECEDING:
+                newNode = Axis.AXIS_PRECEDING;
+
+                break;
+
+            case XPathTreeConstants.JJTAXISANCESTORORSELF:
+                newNode = Axis.AXIS_ANCESTORORSELF;
 
                 break;
 
@@ -482,8 +365,6 @@ public class SimpleNode implements Node, NodeFactory
             case XPathTreeConstants.JJTRBRACE: //47;
             case XPathTreeConstants.JJTCASTAS: //49;
             case XPathTreeConstants.JJTTREATAS: //50;
-            case XPathTreeConstants.JJTLBRACK: //78;
-            case XPathTreeConstants.JJTRBRACK: //79;
             case XPathTreeConstants.JJTSCHEMACONTEXT: //84;
             case XPathTreeConstants.JJTSCHEMAGLOBALCONTEXT: //85;
             case XPathTreeConstants.JJTSCHEMACONTEXTSTEP: //87;
@@ -523,9 +404,13 @@ public class SimpleNode implements Node, NodeFactory
         return new SimpleNode(id);
     }
 
-    public void jjtOpen() {}
+    public void jjtOpen()
+    {
+    }
 
-    public void jjtClose() {}
+    public void jjtClose()
+    {
+    }
 
     public void jjtSetParent(Node n)
     {
@@ -572,6 +457,30 @@ public class SimpleNode implements Node, NodeFactory
         children[0] = n;
     }
 
+    /**
+     * Insert children of the given node at the first position
+     */
+    public void jjtInsertNodeChildren(Node sn)
+    {
+        Node[] n = ((SimpleNode) sn).children;
+
+        if (n != null)
+        {
+            if (children == null)
+            {
+                children = new Node[n.length];
+            }
+            else
+            {
+                Node[] c = new Node[children.length + n.length];
+                System.arraycopy(children, 0, c, n.length, children.length);
+                children = c;
+            }
+
+            System.arraycopy(n, 0, children, 0, n.length);
+        }
+    }
+
     public Node jjtGetChild(int i)
     {
         return children[i];
@@ -614,7 +523,9 @@ public class SimpleNode implements Node, NodeFactory
          * Method processToken.
          * @param token
          */
-    public void processToken(Token token) {}
+    public void processToken(Token token)
+    {
+    }
 
     /**
      *
@@ -658,14 +569,7 @@ public class SimpleNode implements Node, NodeFactory
             }
         }
     }
-    
-  
-	/**
-	 * Default implementation: no customization
-	 * @see org.apache.xpath.rwapi.impl.parser.NodeFactory#createNode(int)
-	 */
-	public Node createNode(int id) {
-		return null;
-	}
+
+   
 
 }

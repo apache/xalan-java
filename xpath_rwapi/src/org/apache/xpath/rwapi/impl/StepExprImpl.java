@@ -63,6 +63,7 @@ import org.apache.xpath.rwapi.expression.Visitor;
 import org.apache.xpath.rwapi.impl.parser.Axis;
 import org.apache.xpath.rwapi.impl.parser.Node;
 import org.apache.xpath.rwapi.impl.parser.SimpleNode;
+import org.apache.xpath.rwapi.impl.parser.Singletons;
 import org.apache.xpath.rwapi.impl.parser.XPath;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
 
@@ -271,7 +272,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
      */
-    public void jjtAddChild(Node n, int i)
+    final public void jjtAddChild(Node n, int i)
     {
         switch (n.getId())
         {
@@ -279,7 +280,10 @@ public class StepExprImpl extends ExprImpl implements StepExpr
                 m_axisType = AXIS_ATTRIBUTE;
 
                 break;
-
+			case XPathTreeConstants.JJTDOT:
+				m_axisType = AXIS_SELF;
+				super.jjtAddChild(Singletons.DOT_KIND_TEST, 0);
+			break;
             case XPathTreeConstants.JJTAXISCHILD:
             case XPathTreeConstants.JJTAXISDESCENDANT:
             case XPathTreeConstants.JJTAXISANCESTOR:
@@ -296,12 +300,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
 
                 break;
 
-            case XPathTreeConstants.JJTNAMETEST:
-			case XPathTreeConstants.JJTDOT:
-                // At and Dot production: just add child since reduction has been done in SimpleNode
-                super.jjtAddChild(n, 0);
-
-                break;
+          
 
             case XPathTreeConstants.JJTNODETEST:
 
@@ -342,6 +341,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
             case XPathTreeConstants.JJTEXPRSEQUENCE:
                 m_axisType = -1;
 
+			
                 if (((SimpleNode) n).canBeReduced())
                 {
                     super.jjtAddChild(n.jjtGetChild(0), 0);
@@ -353,8 +353,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
 
                 break;
 
-            case XPathTreeConstants.JJTPREDICATES:
-
+            case XPathTreeConstants.JJTPREDICATES:				
                 int size = n.jjtGetNumChildren();
 
                 for (int j = 0; j < size; j++)
@@ -363,9 +362,11 @@ public class StepExprImpl extends ExprImpl implements StepExpr
                 }
 
                 break;
-
+                
+			case XPathTreeConstants.JJTNAMETEST:				
             default:
-                System.out.println("not implemented yet " + n.getId());
+				super.jjtAddChild(n, 0);
+                //System.out.println("not implemented yet " + n.getId());
         }
     }
 
@@ -439,17 +440,5 @@ public class StepExprImpl extends ExprImpl implements StepExpr
         }
     }
 
-    /**
-     * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#canBeReduced()
-     */
-    public boolean canBeReduced()
-    {
-        // StepExpr can be reduce whenever it's a primary expression and
-        // there is no predicate
-        int et = ((Expr) children[0]).getExprType();
-
-        return ((getPredicateCount() == 0) && (et == LITERAL_EXPR))
-               || (et == FUNCTION_CALL_EXPR) || (et == SEQUENCE_EXPR)
-               || (et == VARIABLE_REF_EXPR) || (et == ARITHMETIC_EXPR);
-    }
+   
 }

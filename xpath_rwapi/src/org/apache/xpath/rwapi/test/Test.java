@@ -137,57 +137,94 @@ public class Test
                     String xpathString = ((Element) node).getAttribute("value");
                     System.out.println("Test[" + testid + "]: " + xpathString);
 
-                    XPath parser = new XPath(new StringReader(xpathString));
-                    SimpleNode tree = parser.XPath2();
+                    SimpleNode tree = null;
+                    XPath parser;
 
-                    if (SimpleNode.PRODUCE_RAW_TREE)
+                    try
                     {
-                      //  if (dumpTree)
-                        //{
-                            tree.dump("|");
-                     //   }
-                    }
-                    else
-                    {
-                        Expr expr = (Expr) tree.jjtGetChild(0);
+                        parser = new XPath(new StringReader(xpathString));
+                        tree = parser.XPath2();
 
-                        // Gets the reference AST to compare with
-                        NodeList astNodes = ((Element) node)
-                            .getElementsByTagName("ast");
-
-                        if ((astNodes != null) && (astNodes.getLength() >= 1))
+                        if (SimpleNode.PRODUCE_RAW_TREE)
                         {
-                            Node astNode = astNodes.item(0);
+                            //  if (dumpTree)
+                            //{
+                            tree.dump("|");
 
-                            if (!checkAST((SimpleNode) expr,
-                                        (Element) ((Element) astNode).getElementsByTagName(
-                                            "node").item(0)))
-                            {
-                                System.err.println(
-                                    "Generated AST doesn't match the reference one");
-
-                                tree.dump("|");
-                            }
+                            //   }
                         }
                         else
                         {
-                            System.err.println("No reference AST provided");
-                        }
+                            Expr expr = (Expr) tree.jjtGetChild(0);
 
-                        String ab = expr.getString(true);
+                            // Gets the reference AST to compare with
+                            NodeList astNodes = ((Element) node)
+                                .getElementsByTagName("ast");
 
-                        //System.out.println(
-                        //	"Parsed expr (abbreviate form):" + ab);
-                        //System.out.println(
-                        //	"Parsed expr (non-abbreviate form):"
-                        //		+ expr.getString(false));
-                        if (!ab.equals(xpathString))
-                        {
-                            System.err.print(
-                                "Bad external or internal representation: ");
-                            System.err.println(ab + "  !=  " + xpathString);
-                            testSuccess = false;
+                            if ((astNodes != null)
+                                    && (astNodes.getLength() >= 1))
+                            {
+                                Node astNode = astNodes.item(0);
+
+                                if (!checkAST((SimpleNode) expr,
+                                            (Element) ((Element) astNode).getElementsByTagName(
+                                                "node").item(0)))
+                                {
+                                    System.err.println(
+                                        "Generated AST doesn't match the reference one");
+
+                                    tree.dump("|");
+
+                                    // Produce the raw tree
+                                    System.err.println("Raw tree is");
+
+                                    SimpleNode.PRODUCE_RAW_TREE = true;
+
+                                    parser = new XPath(new StringReader(
+                                                xpathString));
+                                    tree = parser.XPath2();
+                                    tree.dump("|");
+
+                                    SimpleNode.PRODUCE_RAW_TREE = false;
+                                }
+                            }
+                            else
+                            {
+                                System.err.println("No reference AST provided");
+                            }
+
+                            String ab = expr.getString(true);
+
+                            String norm = ((Element) node).getAttribute(
+                                    "normalized-round-trip");
+
+                            if ("".equals(norm))
+                            {
+                                norm = xpathString;
+                            }
+
+                            if (!ab.equals(norm))
+                            {
+                                System.err.print(
+                                    "Bad external or internal representation: ");
+                                System.err.println(ab + "  !=  " + xpathString);
+                                testSuccess = false;
+                            }
                         }
+                    }
+                    catch (RuntimeException e)
+                    {
+                        e.printStackTrace(System.err);
+
+                        System.err.println("Raw tree is");
+
+                        SimpleNode.PRODUCE_RAW_TREE = true;
+
+                        parser = new XPath(new StringReader(xpathString));
+                        tree = parser.XPath2();
+                        tree.dump("|");
+
+                        SimpleNode.PRODUCE_RAW_TREE = false;
                     }
                 }
             }

@@ -63,6 +63,7 @@ import org.apache.xpath.rwapi.impl.parser.Node;
 import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.Token;
 import org.apache.xpath.rwapi.impl.parser.XPath;
+import org.apache.xpath.rwapi.impl.parser.XPathConstants;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
 
 
@@ -95,6 +96,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
     /**
      * Constructor for OperatorImpl.
+     *
      * @param i
      */
     public OperatorImpl(int i)
@@ -103,67 +105,68 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
         switch (i)
         {
-        case XPathTreeConstants.JJTEXPRSEQUENCE:
-            m_exprType = SEQUENCE_EXPR;
-            m_opType = COMMA;
+            case XPathTreeConstants.JJTEXPRSEQUENCE:
+                m_exprType = SEQUENCE_EXPR;
+                m_opType = COMMA;
 
-            break;
+                break;
 
-        case XPathTreeConstants.JJTUNARYEXPR:
-            m_exprType = UNARY_EXPR;
+            case XPathTreeConstants.JJTUNARYEXPR:
+                m_exprType = UNARY_EXPR;
 
-            break;
+                break;
 
-        case XPathTreeConstants.JJTPATHEXPR:
-            m_exprType = PATH_EXPR;
-            m_opType = SLASH_STEP;
+            case XPathTreeConstants.JJTPATHEXPR:
+                m_exprType = PATH_EXPR;
+                m_opType = SLASH_STEP;
 
-            break;
+                break;
 
-        case XPathTreeConstants.JJTUNIONEXPR:
-            m_exprType = COMBINE_EXPR;
+            case XPathTreeConstants.JJTUNIONEXPR:
+                m_exprType = COMBINE_EXPR;
 
-            // opType is not known yet
-            break;
+                // opType is not known yet
+                break;
 
-        case XPathTreeConstants.JJTFUNCTIONCALL:
+            case XPathTreeConstants.JJTFUNCTIONCALL:
 
-            // ignore : see FunctionCallImpl subclass
-            break;
+                // ignore : see FunctionCallImpl subclass
+                break;
 
-        case XPathTreeConstants.JJTADDITIVEEXPR:
-        case XPathTreeConstants.JJTMULTIPLICATIVEEXPR:
-            m_exprType = ARITHMETIC_EXPR;
+            case XPathTreeConstants.JJTADDITIVEEXPR:
+            case XPathTreeConstants.JJTMULTIPLICATIVEEXPR:
+                m_exprType = ARITHMETIC_EXPR;
 
-            // opType is not known yet
-            break;
+                // opType is not known yet
+                break;
 
-        case XPathTreeConstants.JJTOREXPR:
-        case XPathTreeConstants.JJTANDEXPR:
-            m_exprType = LOGICAL_EXPR;
+            case XPathTreeConstants.JJTOREXPR:
+            case XPathTreeConstants.JJTANDEXPR:
+                m_exprType = LOGICAL_EXPR;
 
-            //	opType is not known yet
-            break;
+                //	opType is not known yet
+                break;
 
-        case XPathTreeConstants.JJTCOMPARISONEXPR:
-            m_exprType = COMPARISON_EXPR;
+            case XPathTreeConstants.JJTCOMPARISONEXPR:
+                m_exprType = COMPARISON_EXPR;
 
-            //			opType is not known yet
-            break;
+                //			opType is not known yet
+                break;
 
-        case XPathTreeConstants.JJTRANGEEXPR:
-            m_exprType = RANGE_EXPR;
-            m_opType = RANGE;
+            case XPathTreeConstants.JJTRANGEEXPR:
+                m_exprType = RANGE_EXPR;
+                m_opType = RANGE;
 
-            break;
+                break;
 
-        default:
-            System.out.println("not implemented yet:" + i);
+            default:
+                System.out.println("OperatorImpl: not implemented yet:" + i);
         }
     }
 
     /**
      * Constructor for OperatorImpl.
+     *
      * @param p
      * @param i
      */
@@ -252,11 +255,12 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     public void jjtAddChild(Node n, int i)
     {
         // Filter operator
-        if (n.getId() == XPathTreeConstants.JJTSLASH)
-        {
-            // Filter
-        }
-        else if (n.getId() == XPathTreeConstants.JJTMINUS)
+        // if (n.getId() == XPathTreeConstants.JJTSLASH)
+        // {
+        // Filter
+        // }
+        //else 
+        if (n.getId() == XPathTreeConstants.JJTMINUS)
         {
             // Minus expression            
             m_opType = MINUS_UNARY;
@@ -268,10 +272,18 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         }
         else
         {
-            //int last = (children == null) ? 0 : children.length;
             if (((SimpleNode) n).canBeReduced())
             {
-                super.jjtInsertChild(n.jjtGetChild(0));
+                if ((m_exprType == SEQUENCE_EXPR)
+                        && (n.jjtGetNumChildren() > 0)
+                        && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTEXPRSEQUENCE))
+                {
+                    super.jjtInsertNodeChildren(n.jjtGetChild(0));
+                }
+                else
+                {
+                    super.jjtInsertChild(n.jjtGetChild(0));
+                }
             }
             else
             {
@@ -285,16 +297,8 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public boolean canBeReduced()
     {
-    	switch (m_exprType)
+        if (m_exprType == SEQUENCE_EXPR)
         {
-        case UNARY_EXPR:
-
-            if ((m_opType != MINUS_UNARY) && (m_opType != PLUS_UNARY))
-            {
-                return true;
-            }
-			break;
-        case SEQUENCE_EXPR:
             return (children == null) || (children.length <= 1);
         }
 
@@ -303,6 +307,8 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
     /**
      * Gets operator as a char
+     *
+     * @return DOCUMENT ME!
      */
     protected String getOperatorChar()
     {
@@ -311,6 +317,8 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
     /**
      * Tell is spaces are needed around the operator
+     *
+     * @return DOCUMENT ME!
      */
     protected boolean isSpaceNeeded()
     {
@@ -319,13 +327,16 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
     /**
      * Gets expression as external string representation
+     *
+     * @param expr DOCUMENT ME!
+     * @param abbreviate DOCUMENT ME!
      */
     protected void getString(StringBuffer expr, boolean abbreviate)
     {
         int size = getOperandCount();
         String oper = getOperatorChar();
         ExprImpl op;
-
+        
         if ((m_opType == MINUS_UNARY) || (m_opType == PLUS_UNARY))
         {
             expr.append(oper);
@@ -335,14 +346,14 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         {
             op = (ExprImpl) getOperand(i);
 
-            if (op.getExprType() == ARITHMETIC_EXPR)
+            if (op.getExprType() == ARITHMETIC_EXPR || op.getExprType() == COMBINE_EXPR)
             {
                 expr.append('(');
             }
 
             op.getString(expr, abbreviate);
 
-            if (op.getExprType() == ARITHMETIC_EXPR)
+            if (op.getExprType() == ARITHMETIC_EXPR || op.getExprType() == COMBINE_EXPR)
             {
                 expr.append(')');
             }
@@ -369,143 +380,146 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public void processToken(Token token)
     {
-    	// @TODO: optimization here: use a hashmap
-        if (m_exprType == ARITHMETIC_EXPR)
+        switch (token.kind)
         {
-            String op = token.image.trim();
-
-            if (op.equals("+"))
-            {
+            case XPathConstants.Plus:
                 m_opType = PLUS_ADDITIVE;
-            }
-            else if (op.equals("-"))
-            {
+
+                break;
+
+            case XPathConstants.Minus:
                 m_opType = MINUS_ADDITIVE;
-            }
-            else if (op.equals("*"))
-            {
+
+                break;
+
+            case XPathConstants.Multiply:
                 m_opType = MULT_PRODUCT;
-            }
-            else if (op.equals("div"))
-            {
+
+                break;
+
+            case XPathConstants.Div:
                 m_opType = MULT_DIV;
-            }
-            else if (op.equals("idiv"))
-            {
+
+                break;
+
+            case XPathConstants.Idiv:
                 m_opType = MULT_IDIV;
-            }
-            else if (op.equals("mod"))
-            {
+
+                break;
+
+            case XPathConstants.Mod:
                 m_opType = MULT_MOD;
-            }
-            else
-            {
-                // Case not recognized yet
-            }
-        }
-        else if (m_exprType == COMBINE_EXPR)
-        {
-            String op = token.image.trim();
 
-            if (op.equals("|") || op.equals("union"))
-            {
+                break;
+
+            case XPathConstants.Union:
+            case XPathConstants.Vbar:
                 m_opType = UNION_COMBINE;
-            }
-            else if (op.equals("intersect"))
-            {
+
+                break;
+
+            case XPathConstants.Intersect:
                 m_opType = INTERSECT_COMBINE;
-            }
-            else if (op.equals("except"))
-            {
+
+                break;
+
+            case XPathConstants.Except:
                 m_opType = EXCEPT_COMBINE;
-            }
-            else
-            {
-                // Case not recognized yet
-            }
-        }
-        else if (m_exprType == LOGICAL_EXPR)
-        {
-            String op = token.image.trim();
 
-            if (op.equals("and"))
-            {
+                break;
+
+            case XPathConstants.And:
                 m_opType = AND_LOGICAL;
-            }
-            else
-            {
-                m_opType = OR_LOGICAL;
-            }
-        }
-        else if (m_exprType == COMPARISON_EXPR)
-        {
-            String op = token.image.trim();
 
-            if (op.equals("="))
-            {
+                break;
+
+            case XPathConstants.Or:
+                m_opType = OR_LOGICAL;
+
+                break;
+
+            case XPathConstants.Equals:
                 m_opType = EQUAL_GENERAL_COMPARISON;
-            }
-            else if (op.equals("!="))
-            {
+
+                break;
+
+            case XPathConstants.NotEquals:
                 m_opType = NOTEQUAL_GENERAL_COMPARISON;
-            }
-            else if (op.equals("<"))
-            {
+
+                break;
+
+            case XPathConstants.Lt:
                 m_opType = LESSTHAN_GENERAL_COMPARISON;
-            }
-            else if (op.equals("<="))
-            {
+
+                break;
+
+            case XPathConstants.LtEquals:
                 m_opType = LESSOREQUALTHAN_GENERAL_COMPARISON;
-            }
-            else if (op.equals(">"))
-            {
+
+                break;
+
+            case XPathConstants.Gt:
                 m_opType = GREATTHAN_GENERAL_COMPARISON;
-            }
-            else if (op.equals(">="))
-            {
+
+                break;
+
+            case XPathConstants.GtEquals:
                 m_opType = GREATOREQUALTHAN_GENERAL_COMPARISON;
-            }
-            else if (op.equals("eq"))
-            {
+
+                break;
+
+            case XPathConstants.FortranEq:
                 m_opType = EQUAL_VALUE_COMPARISON;
-            }
-            else if (op.equals("ne"))
-            {
+
+                break;
+
+            case XPathConstants.FortranNe:
                 m_opType = NOTEQUAL_VALUE_COMPARISON;
-            }
-            else if (op.equals("lt"))
-            {
+
+                break;
+
+            case XPathConstants.FortranLt:
                 m_opType = LESSTHAN_VALUE_COMPARISON;
-            }
-            else if (op.equals("le"))
-            {
+
+                break;
+
+            case XPathConstants.FortranLe:
                 m_opType = LESSOREQUALTHAN_VALUE_COMPARISON;
-            }
-            else if (op.equals("gt"))
-            {
+
+                break;
+
+            case XPathConstants.FortranGt:
                 m_opType = GREATTHAN_VALUE_COMPARISON;
-            }
-            else if (op.equals("ge"))
-            {
+
+                break;
+
+            case XPathConstants.FortranGe:
                 m_opType = GREATOREQUALTHAN_VALUE_COMPARISON;
-            }
-            else if (op.equals("is"))
-            {
+
+                break;
+
+            case XPathConstants.Is:
                 m_opType = IS_NODE_COMPARISON;
-            }
-            else if (op.equals("isnot"))
-            {
+
+                break;
+
+            case XPathConstants.IsNot:
                 m_opType = ISNOT_NODE_COMPARISON;
-            }
-            else if (op.equals("<<"))
-            {
-                m_opType = EARLIERTHAN_ORDER_COMPARISON;
-            }
-            else // if (op.equals(">>")) 
-            {
+
+                break;
+
+            case XPathConstants.GtGt:
                 m_opType = LATERTHAN_ORDER_COMPARISON;
-            }
+
+                break;
+
+            case XPathConstants.LtLt:
+                m_opType = EARLIERTHAN_ORDER_COMPARISON;
+
+                break;
+
+            default:
+            // Bug.. report
         }
-        
     }
 }

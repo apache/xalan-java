@@ -4,7 +4,7 @@ package org.apache.xpath.rwapi.impl.parser;
 
 import java.util.Stack;
 
-public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, XPathConstants {/*@bgen(jjtree)*/
+public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants {/*@bgen(jjtree)*/
   protected JJTXPathState jjtree = new JJTXPathState();
       org.apache.xml.utils.PrefixResolver m_prefixResolver;
       org.apache.xpath.patterns.FunctionPattern m_matchFunc = null; // short lived.
@@ -398,17 +398,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Root:
         jj_consume_token(Root);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOT);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOT);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case AxisChild:
@@ -431,17 +431,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         break;
       case RootDescendants:
         jj_consume_token(RootDescendants);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOTDESCENDANTS);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                                    SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOTDESCENDANTS);
+                                                                                                    boolean jjtc002 = true;
+                                                                                                    jjtree.openNodeScope(jjtn002);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                                    jjtree.closeNodeScope(jjtn002,  true);
+                                                                                                    jjtc002 = false;
+                                                                                       jjtn002.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                                    if (jjtc002) {
+                                                                                                      jjtree.closeNodeScope(jjtn002,  true);
+                                                                                                    }
         }
         RelativePathPattern();
         break;
@@ -453,32 +453,20 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case Slash:
             jj_consume_token(Slash);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
-            try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
-            } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
-            }
             break;
           case SlashSlash:
             jj_consume_token(SlashSlash);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASHSLASH);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                                                                           SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASHSLASH);
+                                                                                                                                                                                                                           boolean jjtc003 = true;
+                                                                                                                                                                                                                           jjtree.openNodeScope(jjtn003);
             try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                                                                           jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                                                                           jjtc003 = false;
+                                                                                                                                                                                       jjtn003.processToken(token);
             } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                                                                           if (jjtc003) {
+                                                                                                                                                                                                                             jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                                                                           }
             }
             break;
           default:
@@ -540,32 +528,20 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Slash:
         jj_consume_token(Slash);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
-        try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
-        } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
-        }
         break;
       case SlashSlash:
         jj_consume_token(SlashSlash);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASHSLASH);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                          SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASHSLASH);
+                                          boolean jjtc001 = true;
+                                          jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                          jjtree.closeNodeScope(jjtn001,  true);
+                                          jjtc001 = false;
+                                         jjtn001.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                          if (jjtc001) {
+                                            jjtree.closeNodeScope(jjtn001,  true);
+                                          }
         }
         break;
       default:
@@ -639,32 +615,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       break;
     case AxisAttribute:
       jj_consume_token(AxisAttribute);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISATTRIBUTE);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                 SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISATTRIBUTE);
+                                                                                 boolean jjtc002 = true;
+                                                                                 jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                 jjtree.closeNodeScope(jjtn002,  true);
+                                                                                 jjtc002 = false;
+                                                               jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                 if (jjtc002) {
+                                                                                   jjtree.closeNodeScope(jjtn002,  true);
+                                                                                 }
       }
       break;
     case At:
       jj_consume_token(At);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAT);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                           SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAT);
+                                                                                                                                           boolean jjtc003 = true;
+                                                                                                                                           jjtree.openNodeScope(jjtn003);
       try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                           jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                           jjtc003 = false;
+                                                                                                    jjtn003.processToken(token);
       } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                           if (jjtc003) {
+                                                                                                                                             jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                           }
       }
       break;
     default:
@@ -681,17 +657,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(QNameLpar);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAMELPAR);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+               SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAMELPAR);
+               boolean jjtc001 = true;
+               jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+               jjtree.closeNodeScope(jjtn001,  true);
+               jjtc001 = false;
+              jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+               if (jjtc001) {
+                 jjtree.closeNodeScope(jjtn001,  true);
+               }
       }
       IdKeyValue();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -729,33 +705,33 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case StringLiteral:
       jj_consume_token(StringLiteral);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTRINGLITERAL);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                    SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTRINGLITERAL);
+                    boolean jjtc001 = true;
+                    jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                    jjtree.closeNodeScope(jjtn001,  true);
+                    jjtc001 = false;
+                   jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                    if (jjtc001) {
+                      jjtree.closeNodeScope(jjtn001,  true);
+                    }
       }
       break;
     case VariableIndicator:
       jj_consume_token(VariableIndicator);
       jj_consume_token(VarName);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                                        SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+                                                                                                        boolean jjtc002 = true;
+                                                                                                        jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                                        jjtree.closeNodeScope(jjtn002,  true);
+                                                                                                        jjtc002 = false;
+                                                                                  jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                                        if (jjtc002) {
+                                                                                                          jjtree.closeNodeScope(jjtn002,  true);
+                                                                                                        }
       }
       break;
     default:
@@ -913,17 +889,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         }
         SimpleForClause();
         jj_consume_token(Return);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRETURN);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                               SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRETURN);
+                               boolean jjtc001 = true;
+                               jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                               jjtree.closeNodeScope(jjtn001,  true);
+                               jjtc001 = false;
+                              jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                               if (jjtc001) {
+                                 jjtree.closeNodeScope(jjtn001,  true);
+                               }
         }
       }
       QuantifiedExpr();
@@ -968,32 +944,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Some:
           jj_consume_token(Some);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSOME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSOME);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
           try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
           } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
           }
           break;
         case Every:
           jj_consume_token(Every);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTEVERY);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTEVERY);
+                                                                boolean jjtc002 = true;
+                                                                jjtree.openNodeScope(jjtn002);
           try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                jjtree.closeNodeScope(jjtn002,  true);
+                                                                jjtc002 = false;
+                                                   jjtn002.processToken(token);
           } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                if (jjtc002) {
+                                                                  jjtree.closeNodeScope(jjtn002,  true);
+                                                                }
           }
           break;
         default:
@@ -1002,30 +978,30 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
           throw new ParseException();
         }
         jj_consume_token(VarName);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                      SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+                                                                                                                      boolean jjtc003 = true;
+                                                                                                                      jjtree.openNodeScope(jjtn003);
         try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                      jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                      jjtc003 = false;
+                                                                                            jjtn003.processToken(token);
         } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                      if (jjtc003) {
+                                                                                                                        jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                      }
         }
         jj_consume_token(In);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                         SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
+                                                                                                                                                                         boolean jjtc004 = true;
+                                                                                                                                                                         jjtree.openNodeScope(jjtn004);
         try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                         jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                         jjtc004 = false;
+                                                                                                                                jjtn004.processToken(token);
         } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                         if (jjtc004) {
+                                                                                                                                                                           jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                         }
         }
         Expr();
         label_6:
@@ -1041,45 +1017,45 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
           jj_consume_token(Comma);
           jj_consume_token(VariableIndicator);
           jj_consume_token(VarName);
-                SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
-                boolean jjtc005 = true;
-                jjtree.openNodeScope(jjtn005);
+                                                                                                                                                                                                                                                                SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+                                                                                                                                                                                                                                                                boolean jjtc005 = true;
+                                                                                                                                                                                                                                                                jjtree.openNodeScope(jjtn005);
           try {
-                jjtree.closeNodeScope(jjtn005,  true);
-                jjtc005 = false;
-               jjtn005.processToken(token);
+                                                                                                                                                                                                                                                                jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                jjtc005 = false;
+                                                                                                                                                                                                             jjtn005.processToken(token);
           } finally {
-                if (jjtc005) {
-                  jjtree.closeNodeScope(jjtn005,  true);
-                }
+                                                                                                                                                                                                                                                                if (jjtc005) {
+                                                                                                                                                                                                                                                                  jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                }
           }
           jj_consume_token(In);
-                SimpleNode jjtn006 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
-                boolean jjtc006 = true;
-                jjtree.openNodeScope(jjtn006);
+                                                                                                                                                                                                                                                                                                                    SimpleNode jjtn006 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
+                                                                                                                                                                                                                                                                                                                    boolean jjtc006 = true;
+                                                                                                                                                                                                                                                                                                                    jjtree.openNodeScope(jjtn006);
           try {
-                jjtree.closeNodeScope(jjtn006,  true);
-                jjtc006 = false;
-               jjtn006.processToken(token);
+                                                                                                                                                                                                                                                                                                                    jjtree.closeNodeScope(jjtn006,  true);
+                                                                                                                                                                                                                                                                                                                    jjtc006 = false;
+                                                                                                                                                                                                                                                  jjtn006.processToken(token);
           } finally {
-                if (jjtc006) {
-                  jjtree.closeNodeScope(jjtn006,  true);
-                }
+                                                                                                                                                                                                                                                                                                                    if (jjtc006) {
+                                                                                                                                                                                                                                                                                                                      jjtree.closeNodeScope(jjtn006,  true);
+                                                                                                                                                                                                                                                                                                                    }
           }
           Expr();
         }
         jj_consume_token(Satisfies);
-                SimpleNode jjtn007 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSATISFIES);
-                boolean jjtc007 = true;
-                jjtree.openNodeScope(jjtn007);
+                                                                                                                                                                                                                                                                                                                                                                                 SimpleNode jjtn007 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSATISFIES);
+                                                                                                                                                                                                                                                                                                                                                                                 boolean jjtc007 = true;
+                                                                                                                                                                                                                                                                                                                                                                                 jjtree.openNodeScope(jjtn007);
         try {
-                jjtree.closeNodeScope(jjtn007,  true);
-                jjtc007 = false;
-               jjtn007.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                 jjtree.closeNodeScope(jjtn007,  true);
+                                                                                                                                                                                                                                                                                                                                                                                 jjtc007 = false;
+                                                                                                                                                                                                                                                                                                     jjtn007.processToken(token);
         } finally {
-                if (jjtc007) {
-                  jjtree.closeNodeScope(jjtn007,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                 if (jjtc007) {
+                                                                                                                                                                                                                                                                                                                                                                                   jjtree.closeNodeScope(jjtn007,  true);
+                                                                                                                                                                                                                                                                                                                                                                                 }
         }
       }
       IfExpr();
@@ -1121,46 +1097,46 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
           break label_7;
         }
         jj_consume_token(IfLpar);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIFLPAR);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+             SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIFLPAR);
+             boolean jjtc001 = true;
+             jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+             jjtree.closeNodeScope(jjtn001,  true);
+             jjtc001 = false;
+            jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+             if (jjtc001) {
+               jjtree.closeNodeScope(jjtn001,  true);
+             }
         }
         Expr();
         jj_consume_token(Rpar);
         jj_consume_token(Then);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTHEN);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                              SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTHEN);
+                                                                              boolean jjtc002 = true;
+                                                                              jjtree.openNodeScope(jjtn002);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                              jjtree.closeNodeScope(jjtn002,  true);
+                                                                              jjtc002 = false;
+                                                               jjtn002.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                              if (jjtc002) {
+                                                                                jjtree.closeNodeScope(jjtn002,  true);
+                                                                              }
         }
         Expr();
         jj_consume_token(Else);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTELSE);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                      SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTELSE);
+                                                                                                                                      boolean jjtc003 = true;
+                                                                                                                                      jjtree.openNodeScope(jjtn003);
         try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                      jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                      jjtc003 = false;
+                                                                                                           jjtn003.processToken(token);
         } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                      if (jjtc003) {
+                                                                                                                                        jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                      }
         }
       }
       InstanceofExpr();
@@ -1195,17 +1171,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Instanceof:
         jj_consume_token(Instanceof);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINSTANCEOF);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINSTANCEOF);
+                                boolean jjtc001 = true;
+                                jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                                jjtree.closeNodeScope(jjtn001,  true);
+                                jjtc001 = false;
+                               jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                                if (jjtc001) {
+                                  jjtree.closeNodeScope(jjtn001,  true);
+                                }
         }
         SequenceType();
         break;
@@ -1244,17 +1220,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Castable:
         jj_consume_token(Castable);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTABLE);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTABLE);
+                                boolean jjtc001 = true;
+                                jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                                jjtree.closeNodeScope(jjtn001,  true);
+                                jjtc001 = false;
+                               jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                                if (jjtc001) {
+                                  jjtree.closeNodeScope(jjtn001,  true);
+                                }
         }
         SingleType();
         break;
@@ -1611,10 +1587,10 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   }
 
   final public void UnaryExpr() throws ParseException {
- /*@bgen(jjtree) UnaryExpr */
-  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNARYEXPR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ /*@bgen(jjtree) #UnaryExpr( keepUnary) */
+ SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNARYEXPR);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);boolean keepUnary=false;
     try {
       label_11:
       while (true) {
@@ -1630,32 +1606,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Minus:
           jj_consume_token(Minus);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMINUS);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMINUS);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
           try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           keepUnary=true;jjtn001.processToken(token);
           } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
           }
           break;
         case Plus:
           jj_consume_token(Plus);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPLUS);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                               SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPLUS);
+                                                                               boolean jjtc002 = true;
+                                                                               jjtree.openNodeScope(jjtn002);
           try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                               jjtree.closeNodeScope(jjtn002,  true);
+                                                                               jjtc002 = false;
+                                                                 keepUnary=true;jjtn002.processToken(token);
           } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                               if (jjtc002) {
+                                                                                 jjtree.closeNodeScope(jjtn002,  true);
+                                                                               }
           }
           break;
         default:
@@ -1681,7 +1657,7 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000,  keepUnary);
     }
     }
   }
@@ -1893,7 +1869,7 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   }
 
   final public void PathExpr() throws ParseException {
- /*@bgen(jjtree) PathExpr */
+ /*@bgen(jjtree) #PathExpr(> 0) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPATHEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1901,17 +1877,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Root:
         jj_consume_token(Root);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOT);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOT);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IntegerLiteral:
@@ -1954,17 +1930,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         break;
       case RootDescendants:
         jj_consume_token(RootDescendants);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOTDESCENDANTS);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                                 SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTROOTDESCENDANTS);
+                                                                                                 boolean jjtc002 = true;
+                                                                                                 jjtree.openNodeScope(jjtn002);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                                 jjtree.closeNodeScope(jjtn002,  true);
+                                                                                                 jjtc002 = false;
+                                                                                    jjtn002.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                                 if (jjtc002) {
+                                                                                                   jjtree.closeNodeScope(jjtn002,  true);
+                                                                                                 }
         }
         RelativePathExpr();
         break;
@@ -2022,7 +1998,7 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 0);
     }
     }
   }
@@ -2043,32 +2019,20 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Slash:
         jj_consume_token(Slash);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
-        try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
-        } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
-        }
         break;
       case SlashSlash:
         jj_consume_token(SlashSlash);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASHSLASH);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                       SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASHSLASH);
+                                       boolean jjtc001 = true;
+                                       jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                       jjtree.closeNodeScope(jjtn001,  true);
+                                       jjtc001 = false;
+                                      jjtn001.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                       if (jjtc001) {
+                                         jjtree.closeNodeScope(jjtn001,  true);
+                                       }
         }
         break;
       default:
@@ -2081,10 +2045,10 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   }
 
   final public void StepExpr() throws ParseException {
- /*@bgen(jjtree) #StepExpr(> 1) */
-  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTEPEXPR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ /*@bgen(jjtree) #StepExpr(> 1 || isStep) */
+ SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTEPEXPR);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);boolean isStep=false;
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AxisChild:
@@ -2106,6 +2070,7 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       case Dot:
       case QName:
         ForwardStep();
+                 isStep=true;
         break;
       case AxisParent:
       case AxisAncestor:
@@ -2114,6 +2079,7 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       case AxisAncestorOrSelf:
       case DotDot:
         ReverseStep();
+                                               isStep=true;
         break;
       case IntegerLiteral:
       case DecimalLiteral:
@@ -2146,7 +2112,7 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1 || isStep);
     }
     }
   }
@@ -2159,30 +2125,30 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     try {
       jj_consume_token(ForVariable);
       jj_consume_token(VarName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                           SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+                           boolean jjtc001 = true;
+                           jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                           jjtree.closeNodeScope(jjtn001,  true);
+                           jjtc001 = false;
+                          jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                           if (jjtc001) {
+                             jjtree.closeNodeScope(jjtn001,  true);
+                           }
       }
       jj_consume_token(In);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                             SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
+                                                                             boolean jjtc002 = true;
+                                                                             jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                             jjtree.closeNodeScope(jjtn002,  true);
+                                                                             jjtc002 = false;
+                                                             jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                             if (jjtc002) {
+                                                                               jjtree.closeNodeScope(jjtn002,  true);
+                                                                             }
       }
       Expr();
       label_15:
@@ -2198,30 +2164,30 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         jj_consume_token(Comma);
         jj_consume_token(VariableIndicator);
         jj_consume_token(VarName);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                                                    SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+                                                                                                                                                                    boolean jjtc003 = true;
+                                                                                                                                                                    jjtree.openNodeScope(jjtn003);
         try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                                                    jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                    jjtc003 = false;
+                                                                                                                                          jjtn003.processToken(token);
         } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                                                    if (jjtc003) {
+                                                                                                                                                                      jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                    }
         }
         jj_consume_token(In);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                                                                       SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIN);
+                                                                                                                                                                                                                       boolean jjtc004 = true;
+                                                                                                                                                                                                                       jjtree.openNodeScope(jjtn004);
         try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                                                                       jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                       jjtc004 = false;
+                                                                                                                                                                              jjtn004.processToken(token);
         } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                                                                       if (jjtc004) {
+                                                                                                                                                                                                                         jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                       }
         }
         Expr();
       }
@@ -2255,32 +2221,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ValidateLbrace:
         jj_consume_token(ValidateLbrace);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVALIDATELBRACE);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                     SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVALIDATELBRACE);
+                     boolean jjtc001 = true;
+                     jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                     jjtree.closeNodeScope(jjtn001,  true);
+                     jjtc001 = false;
+                    jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                     if (jjtc001) {
+                       jjtree.closeNodeScope(jjtn001,  true);
+                     }
         }
         break;
       case ValidateContext:
         jj_consume_token(ValidateContext);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVALIDATECONTEXT);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                              SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVALIDATECONTEXT);
+                                                                                              boolean jjtc002 = true;
+                                                                                              jjtree.openNodeScope(jjtn002);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                              jjtree.closeNodeScope(jjtn002,  true);
+                                                                                              jjtc002 = false;
+                                                                       jjtn002.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                              if (jjtc002) {
+                                                                                                jjtree.closeNodeScope(jjtn002,  true);
+                                                                                              }
         }
         SchemaGlobalContext();
         label_16:
@@ -2294,32 +2260,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
             break label_16;
           }
           jj_consume_token(Slash);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                                                                  SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
+                                                                                                                                                                                  boolean jjtc003 = true;
+                                                                                                                                                                                  jjtree.openNodeScope(jjtn003);
           try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                                                                  jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                                  jjtc003 = false;
+                                                                                                                                    jjtn003.processToken(token);
           } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                                                                  if (jjtc003) {
+                                                                                                                                                                                    jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                                  }
           }
           SchemaContextStep();
         }
         jj_consume_token(LbraceExprEnclosure);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTLBRACEEXPRENCLOSURE);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                                                                                                                         SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTLBRACEEXPRENCLOSURE);
+                                                                                                                                                                                                                                                                         boolean jjtc004 = true;
+                                                                                                                                                                                                                                                                         jjtree.openNodeScope(jjtn004);
         try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                                                                                                                         jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                                                                         jjtc004 = false;
+                                                                                                                                                                                                              jjtn004.processToken(token);
         } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                                                                                                                         if (jjtc004) {
+                                                                                                                                                                                                                                                                           jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                                                                         }
         }
         break;
       default:
@@ -2329,17 +2295,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       }
       Expr();
       jj_consume_token(Rbrace);
-                SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRBRACE);
-                boolean jjtc005 = true;
-                jjtree.openNodeScope(jjtn005);
+                                                                                                                                                                                                                                                                                                                                                    SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRBRACE);
+                                                                                                                                                                                                                                                                                                                                                    boolean jjtc005 = true;
+                                                                                                                                                                                                                                                                                                                                                    jjtree.openNodeScope(jjtn005);
       try {
-                jjtree.closeNodeScope(jjtn005,  true);
-                jjtc005 = false;
-               jjtn005.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                    jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                                                                                    jjtc005 = false;
+                                                                                                                                                                                                                                                              jjtn005.processToken(token);
       } finally {
-                if (jjtc005) {
-                  jjtree.closeNodeScope(jjtn005,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                    if (jjtc005) {
+                                                                                                                                                                                                                                                                                                                                                      jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                                                                                    }
       }
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -2369,17 +2335,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(CastAs);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTAS);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+             SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTAS);
+             boolean jjtc001 = true;
+             jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+             jjtree.closeNodeScope(jjtn001,  true);
+             jjtc001 = false;
+            jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+             if (jjtc001) {
+               jjtree.closeNodeScope(jjtn001,  true);
+             }
       }
       SingleType();
       ParenthesizedExpr();
@@ -2411,17 +2377,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(TreatAs);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTREATAS);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+              SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTREATAS);
+              boolean jjtc001 = true;
+              jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+              jjtree.closeNodeScope(jjtn001,  true);
+              jjtc001 = false;
+             jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+              if (jjtc001) {
+                jjtree.closeNodeScope(jjtn001,  true);
+              }
       }
       SequenceType();
       ParenthesizedExpr();
@@ -2560,17 +2526,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     case VariableIndicator:
       jj_consume_token(VariableIndicator);
       jj_consume_token(VarName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                                                                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTVARNAME);
+                                                                boolean jjtc001 = true;
+                                                                jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                                                                jjtree.closeNodeScope(jjtn001,  true);
+                                                                jjtc001 = false;
+                                                               jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                                                                if (jjtc001) {
+                                                                  jjtree.closeNodeScope(jjtn001,  true);
+                                                                }
       }
       break;
     case Lpar:
@@ -2602,107 +2568,107 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       break;
     case AxisDescendant:
       jj_consume_token(AxisDescendant);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISDESCENDANT);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                  SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISDESCENDANT);
+                                                                                  boolean jjtc002 = true;
+                                                                                  jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                  jjtree.closeNodeScope(jjtn002,  true);
+                                                                                  jjtc002 = false;
+                                                                jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                  if (jjtc002) {
+                                                                                    jjtree.closeNodeScope(jjtn002,  true);
+                                                                                  }
       }
       break;
     case AxisAttribute:
       jj_consume_token(AxisAttribute);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISATTRIBUTE);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                                        SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISATTRIBUTE);
+                                                                                                                                                        boolean jjtc003 = true;
+                                                                                                                                                        jjtree.openNodeScope(jjtn003);
       try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                                        jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                        jjtc003 = false;
+                                                                                                                jjtn003.processToken(token);
       } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                                        if (jjtc003) {
+                                                                                                                                                          jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                        }
       }
       break;
     case AxisSelf:
       jj_consume_token(AxisSelf);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISSELF);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                                                                        SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISSELF);
+                                                                                                                                                                                                                        boolean jjtc004 = true;
+                                                                                                                                                                                                                        jjtree.openNodeScope(jjtn004);
       try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                                                                        jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                        jjtc004 = false;
+                                                                                                                                                           jjtn004.processToken(token);
       } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                                                                        if (jjtc004) {
+                                                                                                                                                                                                                          jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                        }
       }
       break;
     case AxisDescendantOrSelf:
       jj_consume_token(AxisDescendantOrSelf);
-                SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISDESCENDANTORSELF);
-                boolean jjtc005 = true;
-                jjtree.openNodeScope(jjtn005);
+                                                                                                                                                                                                                                                                                               SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISDESCENDANTORSELF);
+                                                                                                                                                                                                                                                                                               boolean jjtc005 = true;
+                                                                                                                                                                                                                                                                                               jjtree.openNodeScope(jjtn005);
       try {
-                jjtree.closeNodeScope(jjtn005,  true);
-                jjtc005 = false;
-               jjtn005.processToken(token);
+                                                                                                                                                                                                                                                                                               jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                               jjtc005 = false;
+                                                                                                                                                                                                                  jjtn005.processToken(token);
       } finally {
-                if (jjtc005) {
-                  jjtree.closeNodeScope(jjtn005,  true);
-                }
+                                                                                                                                                                                                                                                                                               if (jjtc005) {
+                                                                                                                                                                                                                                                                                                 jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                               }
       }
       break;
     case AxisFollowingSibling:
       jj_consume_token(AxisFollowingSibling);
-                SimpleNode jjtn006 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISFOLLOWINGSIBLING);
-                boolean jjtc006 = true;
-                jjtree.openNodeScope(jjtn006);
+                                                                                                                                                                                                                                                                                                                                                                                  SimpleNode jjtn006 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISFOLLOWINGSIBLING);
+                                                                                                                                                                                                                                                                                                                                                                                  boolean jjtc006 = true;
+                                                                                                                                                                                                                                                                                                                                                                                  jjtree.openNodeScope(jjtn006);
       try {
-                jjtree.closeNodeScope(jjtn006,  true);
-                jjtc006 = false;
-               jjtn006.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                  jjtree.closeNodeScope(jjtn006,  true);
+                                                                                                                                                                                                                                                                                                                                                                                  jjtc006 = false;
+                                                                                                                                                                                                                                                                         jjtn006.processToken(token);
       } finally {
-                if (jjtc006) {
-                  jjtree.closeNodeScope(jjtn006,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                  if (jjtc006) {
+                                                                                                                                                                                                                                                                                                                                                                                    jjtree.closeNodeScope(jjtn006,  true);
+                                                                                                                                                                                                                                                                                                                                                                                  }
       }
       break;
     case AxisFollowing:
       jj_consume_token(AxisFollowing);
-                SimpleNode jjtn007 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISFOLLOWING);
-                boolean jjtc007 = true;
-                jjtree.openNodeScope(jjtn007);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              SimpleNode jjtn007 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISFOLLOWING);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              boolean jjtc007 = true;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              jjtree.openNodeScope(jjtn007);
       try {
-                jjtree.closeNodeScope(jjtn007,  true);
-                jjtc007 = false;
-               jjtn007.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              jjtree.closeNodeScope(jjtn007,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              jjtc007 = false;
+                                                                                                                                                                                                                                                                                                                         jjtn007.processToken(token);
       } finally {
-                if (jjtc007) {
-                  jjtree.closeNodeScope(jjtn007,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              if (jjtc007) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                jjtree.closeNodeScope(jjtn007,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              }
       }
       break;
     case AxisNamespace:
       jj_consume_token(AxisNamespace);
-                SimpleNode jjtn008 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISNAMESPACE);
-                boolean jjtc008 = true;
-                jjtree.openNodeScope(jjtn008);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   SimpleNode jjtn008 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISNAMESPACE);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   boolean jjtc008 = true;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   jjtree.openNodeScope(jjtn008);
       try {
-                jjtree.closeNodeScope(jjtn008,  true);
-                jjtc008 = false;
-               jjtn008.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   jjtree.closeNodeScope(jjtn008,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   jjtc008 = false;
+                                                                                                                                                                                                                                                                                                                                                                         jjtn008.processToken(token);
       } finally {
-                if (jjtc008) {
-                  jjtree.closeNodeScope(jjtn008,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   if (jjtc008) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     jjtree.closeNodeScope(jjtn008,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
       }
       break;
     default:
@@ -2716,77 +2682,77 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case AxisParent:
       jj_consume_token(AxisParent);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISPARENT);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                 SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISPARENT);
+                 boolean jjtc001 = true;
+                 jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                 jjtree.closeNodeScope(jjtn001,  true);
+                 jjtc001 = false;
+                jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                 if (jjtc001) {
+                   jjtree.closeNodeScope(jjtn001,  true);
+                 }
       }
       break;
     case AxisAncestor:
       jj_consume_token(AxisAncestor);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISANCESTOR);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                  SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISANCESTOR);
+                                                                                  boolean jjtc002 = true;
+                                                                                  jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                  jjtree.closeNodeScope(jjtn002,  true);
+                                                                                  jjtc002 = false;
+                                                               jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                  if (jjtc002) {
+                                                                                    jjtree.closeNodeScope(jjtn002,  true);
+                                                                                  }
       }
       break;
     case AxisPrecedingSibling:
       jj_consume_token(AxisPrecedingSibling);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISPRECEDINGSIBLING);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                                             SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISPRECEDINGSIBLING);
+                                                                                                                                                             boolean jjtc003 = true;
+                                                                                                                                                             jjtree.openNodeScope(jjtn003);
       try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                                             jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                             jjtc003 = false;
+                                                                                                                      jjtn003.processToken(token);
       } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                                             if (jjtc003) {
+                                                                                                                                                               jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                             }
       }
       break;
     case AxisPreceding:
       jj_consume_token(AxisPreceding);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISPRECEDING);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                                                                                         SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISPRECEDING);
+                                                                                                                                                                                                                                         boolean jjtc004 = true;
+                                                                                                                                                                                                                                         jjtree.openNodeScope(jjtn004);
       try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                                                                                         jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                                         jjtc004 = false;
+                                                                                                                                                                      jjtn004.processToken(token);
       } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                                                                                         if (jjtc004) {
+                                                                                                                                                                                                                                           jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                                         }
       }
       break;
     case AxisAncestorOrSelf:
       jj_consume_token(AxisAncestorOrSelf);
-                SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISANCESTORORSELF);
-                boolean jjtc005 = true;
-                jjtree.openNodeScope(jjtn005);
+                                                                                                                                                                                                                                                                                                                   SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAXISANCESTORORSELF);
+                                                                                                                                                                                                                                                                                                                   boolean jjtc005 = true;
+                                                                                                                                                                                                                                                                                                                   jjtree.openNodeScope(jjtn005);
       try {
-                jjtree.closeNodeScope(jjtn005,  true);
-                jjtc005 = false;
-               jjtn005.processToken(token);
+                                                                                                                                                                                                                                                                                                                   jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                                                   jjtc005 = false;
+                                                                                                                                                                                                                           jjtn005.processToken(token);
       } finally {
-                if (jjtc005) {
-                  jjtree.closeNodeScope(jjtn005,  true);
-                }
+                                                                                                                                                                                                                                                                                                                   if (jjtc005) {
+                                                                                                                                                                                                                                                                                                                     jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                                                   }
       }
       break;
     default:
@@ -2850,17 +2816,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case QName:
         jj_consume_token(QName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
         }
         break;
       case Star:
@@ -2898,47 +2864,47 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Star:
       jj_consume_token(Star);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTAR);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+           SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTAR);
+           boolean jjtc001 = true;
+           jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+           jjtree.closeNodeScope(jjtn001,  true);
+           jjtc001 = false;
+          jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+           if (jjtc001) {
+             jjtree.closeNodeScope(jjtn001,  true);
+           }
       }
       break;
     case NCNameColonStar:
       jj_consume_token(NCNameColonStar);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTNCNAMECOLONSTAR);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                         SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTNCNAMECOLONSTAR);
+                                                                         boolean jjtc002 = true;
+                                                                         jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                         jjtree.closeNodeScope(jjtn002,  true);
+                                                                         jjtc002 = false;
+                                                            jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                         if (jjtc002) {
+                                                                           jjtree.closeNodeScope(jjtn002,  true);
+                                                                         }
       }
       break;
     case StarColonNCName:
       jj_consume_token(StarColonNCName);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTARCOLONNCNAME);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                                  SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTARCOLONNCNAME);
+                                                                                                                                                  boolean jjtc003 = true;
+                                                                                                                                                  jjtree.openNodeScope(jjtn003);
       try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                                  jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                  jjtc003 = false;
+                                                                                                              jjtn003.processToken(token);
       } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                                  if (jjtc003) {
+                                                                                                                                                    jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                  }
       }
       break;
     default:
@@ -2949,47 +2915,23 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   }
 
   final public void KindTest() throws ParseException {
- /*@bgen(jjtree) KindTest */
-  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTKINDTEST);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case ProcessingInstructionLpar:
-        ProcessingInstructionTest();
-        break;
-      case CommentLpar:
-        CommentTest();
-        break;
-      case TextLpar:
-        TextTest();
-        break;
-      case NodeLpar:
-        AnyKindTest();
-        break;
-      default:
-        jj_la1[55] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      {if (true) throw (RuntimeException)jjte000;}
-    }
-    if (jjte000 instanceof ParseException) {
-      {if (true) throw (ParseException)jjte000;}
-    }
-    {if (true) throw (Error)jjte000;}
-    } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ProcessingInstructionLpar:
+      ProcessingInstructionTest();
+      break;
+    case CommentLpar:
+      CommentTest();
+      break;
+    case TextLpar:
+      TextTest();
+      break;
+    case NodeLpar:
+      AnyKindTest();
+      break;
+    default:
+      jj_la1[55] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
@@ -3003,17 +2945,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case StringLiteral:
         jj_consume_token(StringLiteral);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTRINGLITERAL);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                                                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTRINGLITERAL);
+                                                boolean jjtc001 = true;
+                                                jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                                                jjtree.closeNodeScope(jjtn001,  true);
+                                                jjtc001 = false;
+                                               jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                                                if (jjtc001) {
+                                                  jjtree.closeNodeScope(jjtn001,  true);
+                                                }
         }
         break;
       default:
@@ -3129,32 +3071,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Dot:
       jj_consume_token(Dot);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOT);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+          SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOT);
+          boolean jjtc001 = true;
+          jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+          jjtree.closeNodeScope(jjtn001,  true);
+          jjtc001 = false;
+         jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+          if (jjtc001) {
+            jjtree.closeNodeScope(jjtn001,  true);
+          }
       }
       break;
     case At:
       jj_consume_token(At);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAT);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                           SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTAT);
+                                                           boolean jjtc002 = true;
+                                                           jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                           jjtree.closeNodeScope(jjtn002,  true);
+                                                           jjtc002 = false;
+                                               jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                           if (jjtc002) {
+                                                             jjtree.closeNodeScope(jjtn002,  true);
+                                                           }
       }
       NameTest();
       break;
@@ -3177,22 +3119,22 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
 
   final public void AbbreviatedReverseStep() throws ParseException {
     jj_consume_token(DotDot);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOTDOT);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOTDOT);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
     try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
     } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
     }
   }
 
   final public void Predicates() throws ParseException {
- /*@bgen(jjtree) Predicates */
+ /*@bgen(jjtree) #Predicates(> 0) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPREDICATES);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -3208,32 +3150,8 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
           break label_17;
         }
         jj_consume_token(Lbrack);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTLBRACK);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
-        try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
-        } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
-        }
         Expr();
         jj_consume_token(Rbrack);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRBRACK);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
-        try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
-        } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
-        }
       }
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -3251,7 +3169,7 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 0);
     }
     }
   }
@@ -3260,47 +3178,47 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IntegerLiteral:
       jj_consume_token(IntegerLiteral);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTEGERLITERAL);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                     SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTEGERLITERAL);
+                     boolean jjtc001 = true;
+                     jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                     jjtree.closeNodeScope(jjtn001,  true);
+                     jjtc001 = false;
+                    jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                     if (jjtc001) {
+                       jjtree.closeNodeScope(jjtn001,  true);
+                     }
       }
       break;
     case DecimalLiteral:
       jj_consume_token(DecimalLiteral);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDECIMALLITERAL);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                            SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDECIMALLITERAL);
+                                                                                            boolean jjtc002 = true;
+                                                                                            jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                            jjtree.closeNodeScope(jjtn002,  true);
+                                                                                            jjtc002 = false;
+                                                                     jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                            if (jjtc002) {
+                                                                                              jjtree.closeNodeScope(jjtn002,  true);
+                                                                                            }
       }
       break;
     case DoubleLiteral:
       jj_consume_token(DoubleLiteral);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOUBLELITERAL);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                                                  SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOUBLELITERAL);
+                                                                                                                                                                  boolean jjtc003 = true;
+                                                                                                                                                                  jjtree.openNodeScope(jjtn003);
       try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                                                  jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                  jjtc003 = false;
+                                                                                                                     jjtn003.processToken(token);
       } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                                                  if (jjtc003) {
+                                                                                                                                                                    jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                  }
       }
       break;
     default:
@@ -3319,17 +3237,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       break;
     case StringLiteral:
       jj_consume_token(StringLiteral);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTRINGLITERAL);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                                       SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTRINGLITERAL);
+                                       boolean jjtc001 = true;
+                                       jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                                       jjtree.closeNodeScope(jjtn001,  true);
+                                       jjtc001 = false;
+                                      jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                                       if (jjtc001) {
+                                         jjtree.closeNodeScope(jjtn001,  true);
+                                       }
       }
       break;
     default:
@@ -3401,17 +3319,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(QNameLpar);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAMELPAR);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+               SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAMELPAR);
+               boolean jjtc001 = true;
+               jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+               jjtree.closeNodeScope(jjtn001,  true);
+               jjtc001 = false;
+              jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+               if (jjtc001) {
+                 jjtree.closeNodeScope(jjtn001,  true);
+               }
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IntegerLiteral:
@@ -3505,17 +3423,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(InContext);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINCONTEXT);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+               SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINCONTEXT);
+               boolean jjtc001 = true;
+               jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+               jjtree.closeNodeScope(jjtn001,  true);
+               jjtc001 = false;
+              jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+               if (jjtc001) {
+                 jjtree.closeNodeScope(jjtn001,  true);
+               }
       }
       SchemaGlobalContext();
       label_19:
@@ -3529,17 +3447,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
           break label_19;
         }
         jj_consume_token(Slash);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                             SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSLASH);
+                                                                                             boolean jjtc002 = true;
+                                                                                             jjtree.openNodeScope(jjtn002);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                             jjtree.closeNodeScope(jjtn002,  true);
+                                                                                             jjtc002 = false;
+                                                                           jjtn002.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                             if (jjtc002) {
+                                                                                               jjtree.closeNodeScope(jjtn002,  true);
+                                                                                             }
         }
         SchemaContextStep();
       }
@@ -3573,32 +3491,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case QName:
         jj_consume_token(QName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
         }
         break;
       case TypeQName:
         jj_consume_token(TypeQName);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTYPEQNAME);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                     SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTYPEQNAME);
+                                                                     boolean jjtc002 = true;
+                                                                     jjtree.openNodeScope(jjtn002);
         try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                     jjtree.closeNodeScope(jjtn002,  true);
+                                                                     jjtc002 = false;
+                                                       jjtn002.processToken(token);
         } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                     if (jjtc002) {
+                                                                       jjtree.closeNodeScope(jjtn002,  true);
+                                                                     }
         }
         break;
       default:
@@ -3620,17 +3538,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(QName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+           SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
+           boolean jjtc001 = true;
+           jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+           jjtree.closeNodeScope(jjtn001,  true);
+           jjtc001 = false;
+          jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+           if (jjtc001) {
+             jjtree.closeNodeScope(jjtn001,  true);
+           }
       }
     } finally {
     if (jjtc000) {
@@ -3649,17 +3567,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case QMark:
         jj_consume_token(QMark);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQMARK);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                         SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQMARK);
+                         boolean jjtc001 = true;
+                         jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                         jjtree.closeNodeScope(jjtn001,  true);
+                         jjtc001 = false;
+                        jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                         if (jjtc001) {
+                           jjtree.closeNodeScope(jjtn001,  true);
+                         }
         }
         break;
       default:
@@ -3710,17 +3628,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         break;
       case Empty:
         jj_consume_token(Empty);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTEMPTY);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                                                 SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTEMPTY);
+                                                 boolean jjtc001 = true;
+                                                 jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                                                 jjtree.closeNodeScope(jjtn001,  true);
+                                                 jjtc001 = false;
+                                                jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                                                 if (jjtc001) {
+                                                   jjtree.closeNodeScope(jjtn001,  true);
+                                                 }
         }
         break;
       default:
@@ -3761,32 +3679,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ElementType:
           jj_consume_token(ElementType);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTELEMENTTYPE);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+                    SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTELEMENTTYPE);
+                    boolean jjtc001 = true;
+                    jjtree.openNodeScope(jjtn001);
           try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+                    jjtree.closeNodeScope(jjtn001,  true);
+                    jjtc001 = false;
+                   jjtn001.processToken(token);
           } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+                    if (jjtc001) {
+                      jjtree.closeNodeScope(jjtn001,  true);
+                    }
           }
           break;
         case AttributeType:
           jj_consume_token(AttributeType);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTATTRIBUTETYPE);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                                       SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTATTRIBUTETYPE);
+                                                                                       boolean jjtc002 = true;
+                                                                                       jjtree.openNodeScope(jjtn002);
           try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                                       jjtree.closeNodeScope(jjtn002,  true);
+                                                                                       jjtc002 = false;
+                                                                   jjtn002.processToken(token);
           } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                                       if (jjtc002) {
+                                                                                         jjtree.closeNodeScope(jjtn002,  true);
+                                                                                       }
           }
           break;
         default:
@@ -3806,92 +3724,92 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         break;
       case Node:
         jj_consume_token(Node);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTNODE);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                                                                        SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTNODE);
+                                                                                                                                                                        boolean jjtc003 = true;
+                                                                                                                                                                        jjtree.openNodeScope(jjtn003);
         try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                                                                        jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                        jjtc003 = false;
+                                                                                                                               jjtn003.processToken(token);
         } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                                                                        if (jjtc003) {
+                                                                                                                                                                          jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                                                                        }
         }
         break;
       case ProcessingInstruction:
         jj_consume_token(ProcessingInstruction);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPROCESSINGINSTRUCTION);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                                                                                            SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPROCESSINGINSTRUCTION);
+                                                                                                                                                                                                                                            boolean jjtc004 = true;
+                                                                                                                                                                                                                                            jjtree.openNodeScope(jjtn004);
         try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                                                                                            jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                                            jjtc004 = false;
+                                                                                                                                                                                       jjtn004.processToken(token);
         } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                                                                                            if (jjtc004) {
+                                                                                                                                                                                                                                              jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                                                                                            }
         }
         break;
       case Comment:
         jj_consume_token(Comment);
-                SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCOMMENT);
-                boolean jjtc005 = true;
-                jjtree.openNodeScope(jjtn005);
+                                                                                                                                                                                                                                                                                                                   SimpleNode jjtn005 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCOMMENT);
+                                                                                                                                                                                                                                                                                                                   boolean jjtc005 = true;
+                                                                                                                                                                                                                                                                                                                   jjtree.openNodeScope(jjtn005);
         try {
-                jjtree.closeNodeScope(jjtn005,  true);
-                jjtc005 = false;
-               jjtn005.processToken(token);
+                                                                                                                                                                                                                                                                                                                   jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                                                   jjtc005 = false;
+                                                                                                                                                                                                                                 jjtn005.processToken(token);
         } finally {
-                if (jjtc005) {
-                  jjtree.closeNodeScope(jjtn005,  true);
-                }
+                                                                                                                                                                                                                                                                                                                   if (jjtc005) {
+                                                                                                                                                                                                                                                                                                                     jjtree.closeNodeScope(jjtn005,  true);
+                                                                                                                                                                                                                                                                                                                   }
         }
         break;
       case Text:
         jj_consume_token(Text);
-                SimpleNode jjtn006 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTEXT);
-                boolean jjtc006 = true;
-                jjtree.openNodeScope(jjtn006);
+                                                                                                                                                                                                                                                                                                                                                                         SimpleNode jjtn006 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTEXT);
+                                                                                                                                                                                                                                                                                                                                                                         boolean jjtc006 = true;
+                                                                                                                                                                                                                                                                                                                                                                         jjtree.openNodeScope(jjtn006);
         try {
-                jjtree.closeNodeScope(jjtn006,  true);
-                jjtc006 = false;
-               jjtn006.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                         jjtree.closeNodeScope(jjtn006,  true);
+                                                                                                                                                                                                                                                                                                                                                                         jjtc006 = false;
+                                                                                                                                                                                                                                                                        jjtn006.processToken(token);
         } finally {
-                if (jjtc006) {
-                  jjtree.closeNodeScope(jjtn006,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                         if (jjtc006) {
+                                                                                                                                                                                                                                                                                                                                                                           jjtree.closeNodeScope(jjtn006,  true);
+                                                                                                                                                                                                                                                                                                                                                                         }
         }
         break;
       case Document:
         jj_consume_token(Document);
-                SimpleNode jjtn007 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOCUMENT);
-                boolean jjtc007 = true;
-                jjtree.openNodeScope(jjtn007);
+                                                                                                                                                                                                                                                                                                                                                                                                                                 SimpleNode jjtn007 = (SimpleNode)SimpleNode.jjtCreate(this, JJTDOCUMENT);
+                                                                                                                                                                                                                                                                                                                                                                                                                                 boolean jjtc007 = true;
+                                                                                                                                                                                                                                                                                                                                                                                                                                 jjtree.openNodeScope(jjtn007);
         try {
-                jjtree.closeNodeScope(jjtn007,  true);
-                jjtc007 = false;
-               jjtn007.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                 jjtree.closeNodeScope(jjtn007,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                 jjtc007 = false;
+                                                                                                                                                                                                                                                                                                                    jjtn007.processToken(token);
         } finally {
-                if (jjtc007) {
-                  jjtree.closeNodeScope(jjtn007,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                 if (jjtc007) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                   jjtree.closeNodeScope(jjtn007,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                 }
         }
         break;
       case Item:
         jj_consume_token(Item);
-                SimpleNode jjtn008 = (SimpleNode)SimpleNode.jjtCreate(this, JJTITEM);
-                boolean jjtc008 = true;
-                jjtree.openNodeScope(jjtn008);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         SimpleNode jjtn008 = (SimpleNode)SimpleNode.jjtCreate(this, JJTITEM);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         boolean jjtc008 = true;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         jjtree.openNodeScope(jjtn008);
         try {
-                jjtree.closeNodeScope(jjtn008,  true);
-                jjtc008 = false;
-               jjtn008.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         jjtree.closeNodeScope(jjtn008,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         jjtc008 = false;
+                                                                                                                                                                                                                                                                                                                                                            jjtn008.processToken(token);
         } finally {
-                if (jjtc008) {
-                  jjtree.closeNodeScope(jjtn008,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         if (jjtc008) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           jjtree.closeNodeScope(jjtn008,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         }
         }
         break;
       case QName:
@@ -3899,32 +3817,32 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         break;
       case Untyped:
         jj_consume_token(Untyped);
-                SimpleNode jjtn009 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNTYPED);
-                boolean jjtc009 = true;
-                jjtree.openNodeScope(jjtn009);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              SimpleNode jjtn009 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNTYPED);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              boolean jjtc009 = true;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              jjtree.openNodeScope(jjtn009);
         try {
-                jjtree.closeNodeScope(jjtn009,  true);
-                jjtc009 = false;
-               jjtn009.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              jjtree.closeNodeScope(jjtn009,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              jjtc009 = false;
+                                                                                                                                                                                                                                                                                                                                                                                                                     jjtn009.processToken(token);
         } finally {
-                if (jjtc009) {
-                  jjtree.closeNodeScope(jjtn009,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              if (jjtc009) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                jjtree.closeNodeScope(jjtn009,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              }
         }
         break;
       case AtomicValue:
         jj_consume_token(AtomicValue);
-                SimpleNode jjtn010 = (SimpleNode)SimpleNode.jjtCreate(this, JJTATOMICVALUE);
-                boolean jjtc010 = true;
-                jjtree.openNodeScope(jjtn010);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           SimpleNode jjtn010 = (SimpleNode)SimpleNode.jjtCreate(this, JJTATOMICVALUE);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           boolean jjtc010 = true;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           jjtree.openNodeScope(jjtn010);
         try {
-                jjtree.closeNodeScope(jjtn010,  true);
-                jjtc010 = false;
-               jjtn010.processToken(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           jjtree.closeNodeScope(jjtn010,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           jjtc010 = false;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                   jjtn010.processToken(token);
         } finally {
-                if (jjtc010) {
-                  jjtree.closeNodeScope(jjtn010,  true);
-                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           if (jjtc010) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             jjtree.closeNodeScope(jjtn010,  true);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           }
         }
         break;
       default:
@@ -3962,17 +3880,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case QName:
         jj_consume_token(QName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+             SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
+             boolean jjtc001 = true;
+             jjtree.openNodeScope(jjtn001);
         try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+             jjtree.closeNodeScope(jjtn001,  true);
+             jjtc001 = false;
+            jjtn001.processToken(token);
         } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+             if (jjtc001) {
+               jjtree.closeNodeScope(jjtn001,  true);
+             }
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case OfType:
@@ -4026,30 +3944,30 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(OfType);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTOFTYPE);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTOFTYPE);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
       }
       jj_consume_token(QName);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
+                                                                boolean jjtc002 = true;
+                                                                jjtree.openNodeScope(jjtn002);
       try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                jjtree.closeNodeScope(jjtn002,  true);
+                                                                jjtc002 = false;
+                                                 jjtn002.processToken(token);
       } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                if (jjtc002) {
+                                                                  jjtree.closeNodeScope(jjtn002,  true);
+                                                                }
       }
     } finally {
     if (jjtc000) {
@@ -4065,17 +3983,17 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(QName);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+           SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQNAME);
+           boolean jjtc001 = true;
+           jjtree.openNodeScope(jjtn001);
       try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+           jjtree.closeNodeScope(jjtn001,  true);
+           jjtc001 = false;
+          jjtn001.processToken(token);
       } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+           if (jjtc001) {
+             jjtree.closeNodeScope(jjtn001,  true);
+           }
       }
     } finally {
     if (jjtc000) {
@@ -4098,62 +4016,62 @@ public class XPath implements/*@bgen(jjtree)*/ XPathTreeConstants,NodeFactory, X
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case Star:
           jj_consume_token(Star);
-                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTAR);
-                boolean jjtc001 = true;
-                jjtree.openNodeScope(jjtn001);
+            SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTAR);
+            boolean jjtc001 = true;
+            jjtree.openNodeScope(jjtn001);
           try {
-                jjtree.closeNodeScope(jjtn001,  true);
-                jjtc001 = false;
-               jjtn001.processToken(token);
+            jjtree.closeNodeScope(jjtn001,  true);
+            jjtc001 = false;
+           jjtn001.processToken(token);
           } finally {
-                if (jjtc001) {
-                  jjtree.closeNodeScope(jjtn001,  true);
-                }
+            if (jjtc001) {
+              jjtree.closeNodeScope(jjtn001,  true);
+            }
           }
           break;
         case Multiply:
           jj_consume_token(Multiply);
-                SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLY);
-                boolean jjtc002 = true;
-                jjtree.openNodeScope(jjtn002);
+                                                                   SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLY);
+                                                                   boolean jjtc002 = true;
+                                                                   jjtree.openNodeScope(jjtn002);
           try {
-                jjtree.closeNodeScope(jjtn002,  true);
-                jjtc002 = false;
-               jjtn002.processToken(token);
+                                                                   jjtree.closeNodeScope(jjtn002,  true);
+                                                                   jjtc002 = false;
+                                                      jjtn002.processToken(token);
           } finally {
-                if (jjtc002) {
-                  jjtree.closeNodeScope(jjtn002,  true);
-                }
+                                                                   if (jjtc002) {
+                                                                     jjtree.closeNodeScope(jjtn002,  true);
+                                                                   }
           }
           break;
         case Plus:
           jj_consume_token(Plus);
-                SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPLUS);
-                boolean jjtc003 = true;
-                jjtree.openNodeScope(jjtn003);
+                                                                                                                          SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTPLUS);
+                                                                                                                          boolean jjtc003 = true;
+                                                                                                                          jjtree.openNodeScope(jjtn003);
           try {
-                jjtree.closeNodeScope(jjtn003,  true);
-                jjtc003 = false;
-               jjtn003.processToken(token);
+                                                                                                                          jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                          jjtc003 = false;
+                                                                                             jjtn003.processToken(token);
           } finally {
-                if (jjtc003) {
-                  jjtree.closeNodeScope(jjtn003,  true);
-                }
+                                                                                                                          if (jjtc003) {
+                                                                                                                            jjtree.closeNodeScope(jjtn003,  true);
+                                                                                                                          }
           }
           break;
         case QMark:
           jj_consume_token(QMark);
-                SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQMARK);
-                boolean jjtc004 = true;
-                jjtree.openNodeScope(jjtn004);
+                                                                                                                                                                              SimpleNode jjtn004 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQMARK);
+                                                                                                                                                                              boolean jjtc004 = true;
+                                                                                                                                                                              jjtree.openNodeScope(jjtn004);
           try {
-                jjtree.closeNodeScope(jjtn004,  true);
-                jjtc004 = false;
-               jjtn004.processToken(token);
+                                                                                                                                                                              jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                              jjtc004 = false;
+                                                                                                                                     jjtn004.processToken(token);
           } finally {
-                if (jjtc004) {
-                  jjtree.closeNodeScope(jjtn004,  true);
-                }
+                                                                                                                                                                              if (jjtc004) {
+                                                                                                                                                                                jjtree.closeNodeScope(jjtn004,  true);
+                                                                                                                                                                              }
           }
           break;
         default:

@@ -105,7 +105,7 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	/**
 	 * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
 	 */
-	public void jjtAddChild(Node n, int i) {
+	final public void jjtAddChild(Node n, int i) {
 		
 		if (n.getId() == XPathTreeConstants.JJTQNAMELPAR) {
 				m_localPart = ((QName) n).getLocalPart();

@@ -67,7 +67,7 @@
 		
 import java.util.Stack;
 
-public class <xsl:value-of select="$parser-class"/> implements NodeFactory {
+public class <xsl:value-of select="$parser-class"/> {
       <xsl:call-template name="extra-parser-code"/>
 
       boolean m_isMatchPattern = false;
@@ -182,6 +182,11 @@ public class <xsl:value-of select="$parser-class"/> implements NodeFactory {
 	</xsl:template>
 	
 	<xsl:template name="action-production">
+		<!-- Begin LV -->
+		<xsl:if test="@prod-user-action">
+				<xsl:value-of select="@prod-user-action"/>
+		</xsl:if>
+		<!-- End LV -->
 	</xsl:template>
 	
 	<xsl:template name="action-production-end">
@@ -195,6 +200,7 @@ public class <xsl:value-of select="$parser-class"/> implements NodeFactory {
 	
 	
 	<xsl:template name="action-exprProduction">
+	
 	</xsl:template>
 	
 	<xsl:template name="action-exprProduction-end">
@@ -203,7 +209,10 @@ public class <xsl:value-of select="$parser-class"/> implements NodeFactory {
 	<xsl:template name="action-level">
 		<xsl:param name="thisProd"/>
 		<xsl:param name="nextProd"/>
-		 
+		
+		<xsl:if test="@level-user-action">
+				<xsl:value-of select="@level-user-action"/>
+		</xsl:if>
 		<!-- xsl:text>
 printIndent(); System.err.println("</xsl:text>
 	   <xsl:value-of select="$thisProd"/>
@@ -270,6 +279,9 @@ printIndent(); System.err.println("</xsl:text>
 	</xsl:template>
 	
 	<xsl:template name="action-token-ref">
+	<!--xsl:message>
+	   <xsl:value-of select="name()"/>
+	</xsl:message-->
 		<!-- xsl:if test="ancestor::g:binary">
 		<xsl:text> #</xsl:text><xsl:value-of select="@name"/>
 		</xsl:if -->
@@ -283,9 +295,11 @@ printIndent(); System.err.println("</xsl:text>
             <!-- Don't produce a node.  #void doesn't seem to work here, for some reason. -->
           </xsl:when>
           <xsl:when test="key('ref',@name)/self::g:token/@node-type">
-            <xsl:text>
-              {jjtThis.processToken(token);}
-            </xsl:text>
+            <xsl:text>{</xsl:text>
+						<xsl:if test="@token-user-action">
+							<xsl:value-of select="@token-user-action"/>
+						</xsl:if>
+						<xsl:text>jjtThis.processToken(token);}</xsl:text>
             <xsl:text> #</xsl:text>
             <xsl:value-of select="key('ref',@name)/self::g:token/@node-type"/>
             <!-- See JTree doc for why I do the following... -->
@@ -294,9 +308,11 @@ printIndent(); System.err.println("</xsl:text>
             </xsl:if>
           </xsl:when>
           <xsl:when test="@node-type">
-            <xsl:text>
-              {jjtThis.processToken(token);}
-            </xsl:text>
+            <xsl:text>{</xsl:text>
+						<xsl:if test="@token-user-action">
+							<xsl:value-of select="@token-user-action"/>
+						</xsl:if>
+						<xsl:text>jjtThis.processToken(token);}</xsl:text>
             <xsl:text> #</xsl:text>
             <xsl:value-of select="@node-type"/>
             <!-- See JTree doc for why I do the following... -->
@@ -305,9 +321,11 @@ printIndent(); System.err.println("</xsl:text>
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>
-              {jjtThis.processToken(token);}
-            </xsl:text>
+            <xsl:text>{</xsl:text>
+						<xsl:if test="@token-user-action">
+							<xsl:value-of select="@token-user-action"/>
+						</xsl:if>
+						<xsl:text>jjtThis.processToken(token);}</xsl:text>
             <xsl:text> #</xsl:text>
             <xsl:value-of select="@name"/>
             <!-- See JTree doc for why I do the following... -->
@@ -328,4 +346,15 @@ printIndent(); System.err.println("</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>		
 	</xsl:template>
+	
+	<!-- Begin LV -->
+<xsl:template name="user-action-ref-start">
+<xsl:if test="@nt-user-action-start">{<xsl:value-of select="@nt-user-action-start"/>}</xsl:if>
+</xsl:template>
+
+<xsl:template name="user-action-ref-end">
+<xsl:if test="@nt-user-action-end">{<xsl:value-of select="@nt-user-action-end"/>}</xsl:if>
+</xsl:template>
+<!-- End LV -->
+	
 </xsl:stylesheet>

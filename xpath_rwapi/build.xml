@@ -43,7 +43,7 @@ Copyright:
   <property name="test.expr" value="a/b/c"/>
   
   <path id="classpath">
-    <fileset dir="bin" includes="*.jar"/>
+    <fileset dir="../bin" includes="*.jar"/>
   </path>
 
   <path id="test.classpath">
@@ -54,7 +54,7 @@ Copyright:
   <target name="gen-grammar">
       <mkdir dir="${target.parser}"/>
     
-		<!-- first customized from original xpath-grammar -->
+		<!-- first customize from original xpath-grammar -->
       <style style="grammar/customize.xsl" in="grammar/xpath-grammar.xml" 
 	    out="grammar/custom-xpath-grammar.xml" force="yes" extension=".xml" destdir="grammar"/>
     

@@ -124,7 +124,7 @@ public class QName extends SimpleNode {
              
                    
            default:
-           throw new RuntimeException( "Invalid jjtree id: don't correspond to a QName id=" + id);
+           throw new RuntimeException( "Invalid jjtree id: doesn't match a QName id=" + id);
 		}
 	}
 
