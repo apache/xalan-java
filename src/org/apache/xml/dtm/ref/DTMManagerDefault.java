@@ -187,10 +187,10 @@ public class DTMManagerDefault extends DTMManager
 
       addDTM(dtm, dtmPos);
 
-      if (DUMPTREE)
-      {
-        dtm.dumpDTM();
-      }
+//      if (DUMPTREE)
+//      {
+//        dtm.dumpDTM();
+//      }
 
       return dtm;
     }
@@ -518,20 +518,22 @@ public class DTMManagerDefault extends DTMManager
         // TODO: User diagnostics.
       }
 
-      if(!isUserReader)
-      {
-        try
-        {
-          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                            true);
-        }
-        catch (org.xml.sax.SAXException se)
-        {
-  
-          // What can we do?
-          // TODO: User diagnostics.
-        }
-      }
+        // Commented out as per discussion with Thomas2.Maesing@bgs-ag.de 
+        // about bug 2124.
+//      if(!isUserReader)
+//      {
+//        try
+//        {
+//          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+//                            true);
+//        }
+//        catch (org.xml.sax.SAXException se)
+//        {
+//  
+//          // What can we do?
+//          // TODO: User diagnostics.
+//        }
+//      }
 
       return reader;
     }

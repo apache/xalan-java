@@ -411,9 +411,11 @@ public class SourceTreeManager
       {
         reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
                           true);
-        if(!isUserReader)
-          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                            true);
+        // Commented out as per discussion with Thomas2.Maesing@bgs-ag.de 
+        // about bug 2124.
+//        if(!isUserReader)
+//          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+//                            true);
       }
       catch (org.xml.sax.SAXException se)
       {
