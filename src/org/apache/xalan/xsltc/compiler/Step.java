@@ -269,6 +269,7 @@ final class Step extends RelativeLocationPath {
 		if (parent instanceof ApplyTemplates) return true;
 		if (parent instanceof ForEach) return true;
 		if (parent instanceof FilterParentPath) return true;
+		if (parent instanceof WithParam) return true;
 
 		// No not order node set if descendant of these elements:
 		if (parent instanceof ValueOf) return false;
