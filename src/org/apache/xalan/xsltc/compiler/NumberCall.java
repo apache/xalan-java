@@ -95,7 +95,7 @@ final class NumberCall extends FunctionCall {
 	else {
 	    final Expression arg = argument();
 	    arg.translate(classGen, methodGen);
-	    arg.startResetIterator(classGen, methodGen);
+	    arg.startIterator(classGen, methodGen);
 	    targ = arg.getType();
 	}
 

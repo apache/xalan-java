@@ -132,7 +132,7 @@ final class CopyOf extends Instruction {
 
 	    // push NodeIterator
 	    _select.translate(classGen, methodGen);	
-	    _select.startResetIterator(classGen, methodGen);
+	    _select.startIterator(classGen, methodGen);
 
 	    // call copy from the DOM 'library'
 	    il.append(methodGen.loadHandler());

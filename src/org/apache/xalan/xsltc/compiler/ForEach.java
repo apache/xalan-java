@@ -177,7 +177,7 @@ final class ForEach extends Instruction {
 	    }
 
 	    if (_type instanceof ReferenceType == false) {
-		_select.startResetIterator(classGen, methodGen);
+		_select.startIterator(classGen, methodGen);
 	    }
 	}
 

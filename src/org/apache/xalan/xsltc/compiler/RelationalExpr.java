@@ -241,9 +241,9 @@ final class RelationalExpr extends Expression implements Operators {
 
 	    // Call compare() from the BasisLibrary
 	    _left.translate(classGen, methodGen);
-	    _left.startResetIterator(classGen, methodGen);
+	    _left.startIterator(classGen, methodGen);
 	    _right.translate(classGen, methodGen);
-	    _right.startResetIterator(classGen, methodGen);
+	    _right.startIterator(classGen, methodGen);
 
 	    il.append(new PUSH(cpg, _op));
 	    il.append(methodGen.loadDOM());

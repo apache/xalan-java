@@ -164,7 +164,7 @@ final class WithParam extends Instruction {
 	// Compile expression is 'select' attribute if present
 	if (_select != null) {
 	    _select.translate(classGen, methodGen);
-	    _select.startResetIterator(classGen, methodGen);
+	    _select.startIterator(classGen, methodGen);
 	}
 	// If not, compile result tree from parameter body if present.
 	else if (hasContents()) {

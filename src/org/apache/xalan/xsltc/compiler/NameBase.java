@@ -159,7 +159,7 @@ class NameBase extends FunctionCall {
 	// Function was called with node-set parameter
 	else {
 	    _param.translate(classGen, methodGen);
-	    _param.startResetIterator(classGen, methodGen);
+	    _param.startIterator(classGen, methodGen);
 	    il.append(methodGen.nextNode());
 	}
     }

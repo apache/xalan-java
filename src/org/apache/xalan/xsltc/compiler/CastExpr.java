@@ -251,7 +251,7 @@ final class CastExpr extends Expression {
 
 	    _left.translate(classGen, methodGen);
 	    if (_type != ltype) {
-		_left.startResetIterator(classGen, methodGen);
+		_left.startIterator(classGen, methodGen);
 		if (_type instanceof BooleanType) {
 		    fl = ltype.translateToDesynthesized(classGen, methodGen,
 							_type);
@@ -270,7 +270,7 @@ final class CastExpr extends Expression {
 	final Type ltype = _left.getType();
 	_left.translate(classGen, methodGen);
 	if (_type.identicalTo(ltype) == false) {
-	    _left.startResetIterator(classGen, methodGen);
+	    _left.startIterator(classGen, methodGen);
 	    ltype.translateTo(classGen, methodGen, _type);
 	}
     }

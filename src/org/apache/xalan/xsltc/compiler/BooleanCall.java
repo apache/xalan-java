@@ -88,7 +88,7 @@ final class BooleanCall extends FunctionCall {
 	_arg.translate(classGen, methodGen);
 	final Type targ = _arg.getType();
 	if (!targ.identicalTo(Type.Boolean)) {
-	    _arg.startResetIterator(classGen, methodGen);
+	    _arg.startIterator(classGen, methodGen);
 	    targ.translateTo(classGen, methodGen, Type.Boolean);
 	}
     }

@@ -216,7 +216,7 @@ final class ApplyTemplates extends Instruction {
 	}
 
 	if (_select != null && !setStartNodeCalled) {
-	    _select.startResetIterator(classGen, methodGen);
+	    _select.startIterator(classGen, methodGen);
 	}
 
 	//!!! need to instantiate all needed modes

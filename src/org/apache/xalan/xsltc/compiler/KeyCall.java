@@ -280,7 +280,7 @@ final class KeyCall extends FunctionCall {
 
 	    // Get new iterator from 2nd parameter node-set & store in variable
 	    _value.translate(classGen, methodGen);
-	    _value.startResetIterator(classGen, methodGen);
+	    _value.startIterator(classGen, methodGen);
 	    il.append(methodGen.storeIterator());
 
 	    // Create the KeyIndex object (the iterator) we'll return

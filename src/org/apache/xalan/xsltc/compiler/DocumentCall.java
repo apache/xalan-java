@@ -174,13 +174,13 @@ final class DocumentCall extends FunctionCall {
         // The URI can be either a node-set or something else cast to a string
         _arg1.translate(classGen, methodGen);
         if (_arg1Type == Type.NodeSet) {
-            _arg1.startResetIterator(classGen, methodGen);
+            _arg1.startIterator(classGen, methodGen);
         }
 
         if (ac == 2) {
             //_arg2 == null was tested in typeChec()
             _arg2.translate(classGen, methodGen);
-            _arg2.startResetIterator(classGen, methodGen);       
+            _arg2.startIterator(classGen, methodGen);       
         }
     
         // Feck the rest of the parameters on the stack

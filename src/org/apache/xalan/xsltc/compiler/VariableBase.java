@@ -306,7 +306,7 @@ class VariableBase extends TopLevelElement {
 
 	        il.append(new INVOKESPECIAL(initCNI));
 	    }
-	    _select.startResetIterator(classGen, methodGen);
+	    _select.startIterator(classGen, methodGen);
 	}
 	// If not, compile result tree from parameter body if present.
 	else if (hasContents()) {

@@ -148,7 +148,7 @@ class FilterExpr extends Expression {
 	}
 	else {
 	    _primary.translate(classGen, methodGen);
-	    _primary.startResetIterator(classGen, methodGen);
+	    _primary.startIterator(classGen, methodGen);
 	}
     }
 

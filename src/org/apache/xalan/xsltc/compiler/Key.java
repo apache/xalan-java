@@ -205,7 +205,7 @@ final class Key extends TopLevelElement {
 
 	// Overwrite current iterator with one that gives us only what we want
 	_use.translate(classGen, methodGen);
-	_use.startResetIterator(classGen, methodGen);
+	_use.startIterator(classGen, methodGen);
 	il.append(methodGen.storeIterator());
 
 	final BranchHandle nextNode = il.append(new GOTO(null));

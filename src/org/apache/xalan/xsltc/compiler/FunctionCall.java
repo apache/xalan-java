@@ -741,7 +741,7 @@ class FunctionCall extends Expression {
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
 		exp.translate(classGen, methodGen);
-		exp.startResetIterator(classGen, methodGen);
+		exp.startIterator(classGen, methodGen);
 	    }
 
 	    // append "F" to the function's name
@@ -788,7 +788,7 @@ class FunctionCall extends Expression {
 		final Expression exp = argument(i);
 		exp.translate(classGen, methodGen);
 		// Convert the argument to its Java type
-		exp.startResetIterator(classGen, methodGen);
+		exp.startIterator(classGen, methodGen);
 		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
 	    }
 
@@ -824,7 +824,7 @@ class FunctionCall extends Expression {
 		final Expression exp = argument(i);
 		exp.translate(classGen, methodGen);
 		// Convert the argument to its Java type
-		exp.startResetIterator(classGen, methodGen);
+		exp.startIterator(classGen, methodGen);
 		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
 	    }
 

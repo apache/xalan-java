@@ -337,7 +337,7 @@ final class EqualityExpr extends Expression implements Operators {
 
 	if (tleft instanceof NodeSetType && tright instanceof BooleanType) {
 	    _left.translate(classGen, methodGen);
-	    _left.startResetIterator(classGen, methodGen);
+	    _left.startIterator(classGen, methodGen);
 	    Type.NodeSet.translateTo(classGen, methodGen, Type.Boolean);
 	    _right.translate(classGen, methodGen);
 
@@ -351,7 +351,7 @@ final class EqualityExpr extends Expression implements Operators {
 
 	if (tleft instanceof NodeSetType && tright instanceof StringType) {
 	    _left.translate(classGen, methodGen);
-	    _left.startResetIterator(classGen, methodGen); // needed ?
+	    _left.startIterator(classGen, methodGen); // needed ?
 	    _right.translate(classGen, methodGen);
 	    il.append(new PUSH(cpg, _op));
 	    il.append(methodGen.loadDOM());
@@ -369,9 +369,9 @@ final class EqualityExpr extends Expression implements Operators {
 
 	// Next, node-set/t for t in {real, string, node-set, result-tree}
 	_left.translate(classGen, methodGen);
-	_left.startResetIterator(classGen, methodGen);
+	_left.startIterator(classGen, methodGen);
 	_right.translate(classGen, methodGen);
-	_right.startResetIterator(classGen, methodGen);
+	_right.startIterator(classGen, methodGen);
 
 	// Cast a result tree to a string to use an existing compare
 	if (tright instanceof ResultTreeType) {

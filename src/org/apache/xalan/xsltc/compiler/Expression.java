@@ -90,12 +90,6 @@ abstract class Expression extends SyntaxTreeNode {
     protected Type _type;
 
     /**
-     * True if this expression is of node-set type and its corresponding
-     * iterator has been started or reset.
-     */
-    protected boolean _startReset = false;
-
-    /**
      * Instruction handles that comprise the true list.
      */
     protected FlowList _trueList = new FlowList();
@@ -169,30 +163,23 @@ abstract class Expression extends SyntaxTreeNode {
     }
 
     /**
-     * Expects an object on the stack and if this object can be proven
-     * to be a node iterator then the iterator is reset or started
-     * depending on the type of this expression.
-     * If this expression is a var reference then the iterator 
-     * is reset, otherwise it is started.
+     * If this expression is of type node-set and it is not a variable
+     * reference, then call setStartNode() passing the context node.
      */
-    public void startResetIterator(ClassGenerator classGen,
+    public void startIterator(ClassGenerator classGen,
 				   MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-
-	if (_startReset) {
-	    return;			// already started
-	}
-	_startReset = true;
-
+	// Ignore if type is not node-set
 	if (_type instanceof NodeSetType == false) {
-	    return;		// nothing to do
+	    return;
 	}
 
+	// setStartNode() should not be called if expr is a variable ref
 	Expression expr = this;
-	if (expr instanceof CastExpr)
-	    expr = ((CastExpr)expr).getExpr();
-	if ( (expr instanceof VariableRefBase) == false ) {
+	if (expr instanceof CastExpr) {
+	    expr = ((CastExpr) expr).getExpr();
+	}
+	if (expr instanceof VariableRefBase == false) {
+	    final InstructionList il = methodGen.getInstructionList();
 	    il.append(methodGen.loadContextNode());
 	    il.append(methodGen.setStartNode());
 	}
