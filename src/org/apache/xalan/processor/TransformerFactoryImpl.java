@@ -689,28 +689,31 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       if (source instanceof SAXSource)
         reader = ((SAXSource) source).getXMLReader();
 
-      // Use JAXP1.1 ( if possible )
-      try
-      {
-        javax.xml.parsers.SAXParserFactory factory =
-          javax.xml.parsers.SAXParserFactory.newInstance();
+      if (null == reader)
+      {  
+        // Use JAXP1.1 ( if possible )
+        try
+        {
+          javax.xml.parsers.SAXParserFactory factory =
+                                                      javax.xml.parsers.SAXParserFactory.newInstance();
 
-        factory.setNamespaceAware(true);
+          factory.setNamespaceAware(true);
 
-        javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
+          javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
-        reader = jaxpParser.getXMLReader();
+          reader = jaxpParser.getXMLReader();
+        }
+        catch (javax.xml.parsers.ParserConfigurationException ex)
+        {
+          throw new org.xml.sax.SAXException(ex);
+        }
+        catch (javax.xml.parsers.FactoryConfigurationError ex1)
+        {
+          throw new org.xml.sax.SAXException(ex1.toString());
+        }
+        catch (NoSuchMethodError ex2){}
       }
-      catch (javax.xml.parsers.ParserConfigurationException ex)
-      {
-        throw new org.xml.sax.SAXException(ex);
-      }
-      catch (javax.xml.parsers.FactoryConfigurationError ex1)
-      {
-        throw new org.xml.sax.SAXException(ex1.toString());
-      }
-      catch (NoSuchMethodError ex2){}
-
+      
       if (null == reader)
         reader = XMLReaderFactory.createXMLReader();
 
