@@ -170,7 +170,7 @@ public class KeyWalker extends DescendantOrSelfWalker
     KeyIterator ki = (KeyIterator) m_lpi;
     Vector keys = ki.getKeyDeclarations();
 
-    // QName name = ki.getName();
+    QName name = ki.getName();
     try
     {
       String lookupKey = m_lookupKey;
@@ -183,8 +183,9 @@ public class KeyWalker extends DescendantOrSelfWalker
       {
         KeyDeclaration kd = (KeyDeclaration) keys.elementAt(i);
 
-        //if(!kd.getName().equals(name)) 
-        //  continue;
+        if(!kd.getName().equals(name)) 
+          continue;
+        
         ki.getXPathContext().setNamespaceContext(ki.getPrefixResolver());
 
         // See if our node matches the given key declaration according to 
