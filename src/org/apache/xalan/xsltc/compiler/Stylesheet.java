@@ -352,9 +352,10 @@ public final class Stylesheet extends SyntaxTreeNode {
      */
     public boolean hasLocalParams() {
 	if (_hasLocalParams == null) {
-	    final int n = _templates.size();
+	    Vector templates = getAllValidTemplates();
+	    final int n = templates.size();
 	    for (int i = 0; i < n; i++) {
-		final Template template = (Template)_templates.elementAt(i);
+		final Template template = (Template)templates.elementAt(i);
 		if (template.hasParams()) {
 		    _hasLocalParams = new Boolean(true);
 		    return true;
