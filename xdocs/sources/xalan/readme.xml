@@ -71,9 +71,10 @@
  </ul>
   <s2 title="Status">
    <ul>
-    <!--li><link anchor="done">Changes since version 2.0.D01</link></li-->    
+    <!--li><link anchor="done">Changes since version 2.0.D01</link></li-->
     <li><link anchor="bugs">Open bugs and bug reporting</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
+    <li><link anchor="notes">Other release notes</link></li>    
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <!--anchor name="done"/>
@@ -82,6 +83,13 @@
      &bugs-j;
      <anchor name="status"/>
      &status-j;
+     <anchor name="notes"/>
+     <s3 title="Other Release Notes">
+     <ul>
+       <li>Indenting in the output is turned off for a significant performance gain. To enable indenting, you must reset
+        _indentAmount from 0 to the value you want in org.apache.serialize.OutputFormat and rebuild xalan.jar.</li>
+       </ul>
+     </s3>
   </s2>
   <anchor name="build"/>
   
