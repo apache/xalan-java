@@ -61,7 +61,7 @@ import org.apache.xml.utils.StringToIntTable;
 /**
  * This class has a series of flags (bit values) that describe an HTML element
  */
-public class ElemDesc
+public final class ElemDesc
 {
     /** Bit flags to tell about this element type. */
     int m_flags;
@@ -168,6 +168,10 @@ public class ElemDesc
 
         // int which = (m_flags & flags);
         return (m_flags & flags) != 0;
+    }
+
+    public int getFlags() {
+        return m_flags;
     }
 
     /**
