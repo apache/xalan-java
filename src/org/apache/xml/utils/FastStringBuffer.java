@@ -74,19 +74,12 @@ package org.apache.xml.utils;
  * flow across to it. (The array of chunks may need to grow,
  * admittedly, but that's a much smaller object.) Some excess
  * recopying may arise when we extract Strings which cross chunk
- * boundaries; larger chunks make that less frequent.  <p> The size
- * values are parameterized, to allow tuning this code. In theory,
- * RTFs might want to be tuned differently from the main document's
- * text.
+ * boundaries; larger chunks make that less frequent.
  * <p>
- * STATUS: We've reworked the algorithm again. The fixed-chunk-size mode
- * (initial and max. chunk sizes equal) runs essentially unchanged, though 
- * with a few cycles less overhead. The variable-chunk-size mode now uses a
- * recursive-encapsulation scheme, where the first chunk may itself be
- * a FastStringBuffer whose total length equals one chunk; every so often we 
- * push the existing data down one level and restart with a larger chunk
- * size. THE VARIABLE-SIZE MODE HAS NOT BEEN ADEQUATELY TESTED AT THIS TIME,
- * either for function or performance, but it should be a better solution.
+ * The size values are parameterized, to allow tuning this code. In
+ * theory, RTFs might want to be tuned differently from the main
+ * document's text.
+ * <p>
  * */
 public class FastStringBuffer
 {
@@ -249,13 +242,23 @@ public class FastStringBuffer
   }
 
   /**
-   * Discard the content of the FastStringBuffer. Does _not_ release
-   * any of the storage space.
+   * Discard the content of the FastStringBuffer. 
    */
   public final void reset()
   {
     m_lastChunk = 0;
     m_firstFree = 0;
+	
+	// Recover the original chunk size
+	FastStringBuffer innermost=this;
+	while(innermost.m_innerFSB!=null)
+		innermost=innermost.m_innerFSB;
+	m_chunkBits=innermost.m_chunkBits;
+	m_chunkSize=innermost.m_chunkSize;
+	m_chunkMask=innermost.m_chunkMask;
+	 
+	// Discard the hierarchy
+	m_innerFSB  = null;
   }
 
   /**
@@ -266,17 +269,48 @@ public class FastStringBuffer
    * if additional storage does exist, its contents are unpredictable.
    * The only safe use for our setLength() is to truncate the FastStringBuffer
    * to a shorter string.
-   * <p>
-   * QUERY: Given that this operation will be used relatively rarely,
-   * does it really need to be so highly optimized?
    *
    * @param l New length. If l<0 or l>=getLength(), this operation will
    * not report an error but future operations will almost certainly fail.
    */
   public final void setLength(int l)
   {
-    m_lastChunk = l >>> m_chunkBits;
-    m_firstFree = l  &  m_chunkMask;
+	m_lastChunk = l >>> m_chunkBits;
+	if(m_lastChunk==0 && m_innerFSB!=null)
+	{
+		m_innerFSB.setLength(l,this);
+	}
+	else
+	{
+		m_firstFree = l  &  m_chunkMask;
+	}
+  }
+  
+  /** Subroutine for the public setLength() method. Deals with the fact
+   * that truncation may require restoring one of the innerFSBs
+   */
+  final void setLength(int l, FastStringBuffer rootFSB)
+  {
+	m_lastChunk = l >>> m_chunkBits;
+	if(m_lastChunk==0 && m_innerFSB!=null)
+	{
+		m_innerFSB.setLength(l,rootFSB);
+	}
+	else
+	{
+		// Undo encapsulation -- pop the innerFSB data back up to root.
+		rootFSB.m_chunkBits   =m_chunkBits;
+        rootFSB.m_maxChunkBits=m_maxChunkBits;
+        rootFSB.m_rebundleBits=m_rebundleBits;
+        rootFSB.m_chunkSize   =m_chunkSize;
+        rootFSB.m_chunkMask   =m_chunkMask;
+        rootFSB.m_array       =m_array; 
+		rootFSB.m_innerFSB    =m_innerFSB;
+		rootFSB.m_lastChunk   =m_lastChunk; 
+		
+		// Finally, truncate this sucker.
+		rootFSB.m_firstFree = l  &  m_chunkMask;
+	}
   }
 
   /**
@@ -404,7 +438,7 @@ public class FastStringBuffer
                   m_innerFSB=new FastStringBuffer(this);
                 }
 
-                // Add a chunk. ***** Encapsulate-and-enlarge goes here
+                // Add a chunk. 
                 chunk=m_array[m_lastChunk]=new char[m_chunkSize];
               }
             available=m_chunkSize;
@@ -467,7 +501,7 @@ public class FastStringBuffer
                   // existing data and establishing new sizes/offsets
                   m_innerFSB=new FastStringBuffer(this);
                 }
-                // Add a chunk. ***** Encapsulate-and-enlarge goes here
+                // Add a chunk.
                 chunk=m_array[m_lastChunk]=new char[m_chunkSize];
               }
             available=m_chunkSize;
@@ -533,11 +567,11 @@ public class FastStringBuffer
                   // existing data and establishing new sizes/offsets
                   m_innerFSB=new FastStringBuffer(this);
                 }
-                // Add a chunk. ***** Encapsulate-and-enlarge goes here
+                // Add a chunk.
                 chunk=m_array[m_lastChunk]=new char[m_chunkSize];
               }
             available=m_chunkSize;
-                          
+
             m_firstFree=0;
           }
       }
@@ -611,7 +645,7 @@ public class FastStringBuffer
                   // existing data and establishing new sizes/offsets
                   m_innerFSB=new FastStringBuffer(this);
                 }
-                // Add a chunk. ***** Encapsulate-and-enlarge goes here
+                // Add a chunk. 
                 chunk=m_array[m_lastChunk]=new char[m_chunkSize];
               }
             available=m_chunkSize;
@@ -717,13 +751,12 @@ public class FastStringBuffer
         startColumn=0; // after first chunk
       }
 
-    // Last, or only, chunk
 	if(stopChunk==0 && m_innerFSB!=null)
 		m_innerFSB.getString(sb,startColumn,stopColumn-startColumn);
-	else
+	else if(stopColumn>startColumn)
 		sb.append(m_array[stopChunk],startColumn,stopColumn-startColumn);
 
-    return sb;
+	return sb;
   }
   
   /** Sends the specified range of characters as one or more SAX characters()
@@ -764,8 +797,8 @@ public class FastStringBuffer
 
     // Last, or only, chunk
 	if(stopChunk==0 && m_innerFSB!=null)
-		m_innerFSB.sendSAXcharacters(ch,startColumn,m_chunkSize-startColumn);
-	else
+		m_innerFSB.sendSAXcharacters(ch,startColumn,stopColumn-startColumn);
+	else if(stopColumn>startColumn)
 	    ch.characters(m_array[stopChunk],startColumn,stopColumn-startColumn);
   }
 
@@ -776,28 +809,29 @@ public class FastStringBuffer
    */
   private FastStringBuffer(FastStringBuffer source)
   {
-        // Copy existing information
-        m_chunkBits=source.m_chunkBits;
+        // Copy existing information into new encapsulation
+        m_chunkBits   =source.m_chunkBits;
         m_maxChunkBits=source.m_maxChunkBits;
         m_rebundleBits=source.m_rebundleBits;
-        m_chunkSize=source.m_chunkSize;
-        m_chunkMask=source.m_chunkMask;
-        m_firstFree=source.m_firstFree;
-        m_array=source.m_array; 
-        m_lastChunk=source.m_lastChunk; 
+        m_chunkSize   =source.m_chunkSize;
+        m_chunkMask   =source.m_chunkMask;
+        m_array       =source.m_array; 
+		m_innerFSB    =source.m_innerFSB;
+		// These have to be adjusted because we're calling just at the time
+		// when we would be about to allocate another chunk
+        m_lastChunk   =source.m_lastChunk-1; 
+        m_firstFree   =source.m_chunkSize;
         
-        // Encapsulate it as the Inner FSB, reset chunk sizes/addressing
+        // Establish capsule as the Inner FSB, reset chunk sizes/addressing
 		source.m_array = new char[16][];
         source.m_innerFSB=this; 
-        source.m_lastChunk=0;
-        source.m_firstFree=this.length();
-        
+		// Since we encapsulated just as we were about to append another
+		// chunk, return ready to create the chunk after the innerFSB
+		// -- 1, not 0.
+        source.m_lastChunk=1;
+        source.m_firstFree=0;
         source.m_chunkBits+=m_rebundleBits;
         source.m_chunkSize=1<<(source.m_chunkBits); 
-        
-        if(source.m_chunkSize!=source.m_firstFree)
-                throw new ExceptionInInitializerError("FastStringBuffer rechunk failure");
-
         source.m_chunkMask=source.m_chunkSize-1;
   }
 }
