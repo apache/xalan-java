@@ -147,7 +147,7 @@ public final class MultiDOM implements DOM {
 	}
     
 	public boolean isReverse() {
-	    return (_source == null) ? false : _source.isReverse();
+	    return Axis.isReverse[_axis];
 	}
     
 	public void setMark() {
