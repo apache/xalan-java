@@ -1010,7 +1010,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		_startNode = node;
 		_node = ROOTNODE;
 		int parent = node;
-		while ((parent = _parent[parent]) >= ROOTNODE) {
+		while ((parent = _parent[parent]) > ROOTNODE) {
 		    if (_sp == _stack.length) {
 			final int[] stack = new int[_sp + 4];
 			System.arraycopy(_stack, 0, stack, 0, _sp);
