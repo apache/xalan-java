@@ -62,7 +62,7 @@
   <resources source="sbk:/sources/xalan/resources.xml"/>
   <external href="../index.html" label="Home"/>
   <separator/>
-  <document id="index" label="Xalan-J 2.5.1" source="xalan/index.xml"/>
+  <document id="index" label="Xalan-J 2.5.2" source="xalan/index.xml"/>
   <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/>
   <separator/>
   <document id="overview" label="Overview" source="xalan/overview.xml"/>

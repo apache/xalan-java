@@ -162,6 +162,9 @@
                   mailto="igorh@ca.ibm.com"/>                  
   <human-resource id="jycli"
                   name="Christine Li"
-                  mailto="jycli@ca.ibm.com"/>                                                      
+                  mailto="jycli@ca.ibm.com"/>
+  <human-resource id="jtong"
+                  name="Joanne Tong"
+                  mailto="joannet@ca.ibm.com"/>                                                                       
 
 </resources>

@@ -8,8 +8,8 @@
 <!ENTITY xslt4jc-long  "&xslt4j; Compiled">
 <!ENTITY xslt4j-dist-bin "&xslt4j-dist;-bin">
 <!ENTITY xslt4j-dist-src "&xslt4j-dist;-src">
-<!ENTITY xslt4j-dist "xalan-j_2_5_1">
-<!ENTITY xslt4j-current "&xslt4j; version 2.5.1">
+<!ENTITY xslt4j-dist "xalan-j_2_5_2">
+<!ENTITY xslt4j-current "&xslt4j; version 2.5.2">
 <!ENTITY xslt4j-distdir "http://www.apache.org/dyn/closer.cgi/xml/xalan-j/">
 <!ENTITY xslt4j_longname "Apache Xalan Java">
 <!ENTITY xml4j "Xerces-Java">
