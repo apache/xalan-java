@@ -450,6 +450,8 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
       
       try
       {
+        // System.out.println("createResultContentHandler -- format.getIndenting: "
+        //                   +format.getIndenting());
         Serializer serializer 
           = (null != outputTarget.getCharacterStream()) ?
             sfactory.makeSerializer(outputTarget.getCharacterStream(), format) :

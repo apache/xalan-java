@@ -217,8 +217,8 @@ public class StylesheetRoot
    */
   public OutputFormat getOutputComposed()
   {
-    System.out.println("getOutputComposed.getIndent: "+m_outputFormatComposed.getIndent());
-    System.out.println("getOutputComposed.getIndenting: "+m_outputFormatComposed.getIndenting());
+    // System.out.println("getOutputComposed.getIndent: "+m_outputFormatComposed.getIndent());
+    // System.out.println("getOutputComposed.getIndenting: "+m_outputFormatComposed.getIndenting());
     return m_outputFormatComposed;
   }
   
@@ -227,6 +227,7 @@ public class StylesheetRoot
    */
   public void recomposeOutput()
   {
+    // System.out.println("Recomposing output...");
     m_outputFormatComposed = new OutputFormat();
     m_outputFormatComposed.setPreserveSpace(true);
     recomposeOutput(this);
@@ -262,6 +263,9 @@ public class StylesheetRoot
     OutputFormatExtended of = getOutput();
     if(null != of)
     {
+      // System.out.println("Composing output - of.indentHasBeenSet(): " 
+      //                   + of.indentHasBeenSet()+", of.indentingHasBeenSet(): "
+      //                   + of.indentingHasBeenSet());
       if(of.cdataElementsHasBeenSet())
         m_outputFormatComposed.setCDataElements(of.getCDataElements());
       if(of.doctypePublicHasBeenSet())
@@ -275,7 +279,11 @@ public class StylesheetRoot
       if(of.indentHasBeenSet())
         m_outputFormatComposed.setIndent(of.getIndent());
       if(of.indentingHasBeenSet())
-        m_outputFormatComposed.setIndenting(of.getIndenting());
+      {
+        boolean indent = of.getIndenting();
+        m_outputFormatComposed.setIndenting(indent);
+        m_outputFormatComposed.setPreserveSpace(!indent);
+      }
       if(of.mediaTypeHasBeenSet())
         m_outputFormatComposed.setMediaType(of.getMediaType());
       if(of.methodHasBeenSet())

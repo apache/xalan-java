@@ -73,7 +73,7 @@ public class OutputFormatExtended extends OutputFormat
 {
   // Flag to tell us when to record that an attribute 
   // has been set.
-  private boolean m_shouldRecordHasBeenSet = false;
+  private boolean m_shouldRecordHasBeenSet;
   
   private boolean m_methodHasBeenSet = false;
   public boolean methodHasBeenSet() { return m_methodHasBeenSet; }
@@ -99,7 +99,7 @@ public class OutputFormatExtended extends OutputFormat
   public boolean cdataElementsHasBeenSet() { return m_cdataElementsHasBeenSet; }
   private boolean m_nonEscapingElementsHasBeenSet = false;
   public boolean nonEscapingElementsHasBeenSet() { return m_nonEscapingElementsHasBeenSet; }
-  
+
   /**
    * Constructs a new output format with the default values.
    */
@@ -269,8 +269,9 @@ public class OutputFormatExtended extends OutputFormat
    */
   public void setIndent( boolean indent )
   {
-    System.out.println("setIndent( "+indent+" )");
-    super.setIndenting(indent);
+    // System.out.println("setIndent( "+indent+" )");
+    setPreserveSpace(false);
+    setIndenting(indent);
   }
 
   /**
@@ -283,7 +284,7 @@ public class OutputFormatExtended extends OutputFormat
    */
   public void setIndent( int indent )
   {
-    System.out.println("setIndent( int indent )");
+    // System.out.println("setIndent( int indent )");
     if(m_shouldRecordHasBeenSet)
       m_indentHasBeenSet = true;
     super.setIndent(indent);
@@ -300,6 +301,7 @@ public class OutputFormatExtended extends OutputFormat
    */
   public void setIndenting( boolean on )
   {
+    // System.out.println("setIndenting( "+on+" ), m_shouldRecordHasBeenSet: "+m_shouldRecordHasBeenSet);
     if(m_shouldRecordHasBeenSet)
       m_indentingHasBeenSet = true;
     super.setIndenting(on);
