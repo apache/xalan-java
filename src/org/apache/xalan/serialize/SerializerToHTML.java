@@ -759,7 +759,23 @@ public class SerializerToHTML extends SerializerToXML
     return s;
   }
     
-
+  /**
+  * Dmitri Ilyin: Makes sure if the String is HH encoded sign.
+  * @param str must be 2 characters long
+  *
+  * @return true or false
+  */
+  private boolean isHHSign(String str) 
+  {
+    boolean sign = true;  
+    try {
+      char r = (char)Integer.parseInt(str,16);
+    } catch (NumberFormatException e) {
+      sign = false;  
+    }
+    return sign;
+  }
+  
   /**
    * Write the specified <var>string</var> after substituting non ASCII characters,
    * with <CODE>%HH</CODE>, where HH is the hex of the byte value.
@@ -899,10 +915,14 @@ public class SerializerToHTML extends SerializerToXML
       {
         // If the character is a '%' number number, try to avoid double-escaping.
         // There is a question if this is legal behavior.
-        if(((i+2) < len) && isASCIIDigit(stringArray[i+1])
-            && isASCIIDigit(stringArray[i+2]))
+          
+// Dmitri Ilyin: to check if '%' number number is invalid. It must be checked if %xx is a sign, that would be encoded
+// The encoded signes are in Hex form. So %xx my be in form %3C that is "<" sign. I will try to change here a little.
+          
+//        if( ((i+2) < len) && isASCIIDigit(stringArray[i+1]) && isASCIIDigit(stringArray[i+2]) )
+        if ( ((i+2) < len) && isHHSign(new String(stringArray,i+1,2)) )
         {
-         accum(ch);
+          accum(ch);
         }
         else
         {
@@ -1268,3 +1288,4 @@ public class SerializerToHTML extends SerializerToXML
     this.accum(";");
   }
 }
+
