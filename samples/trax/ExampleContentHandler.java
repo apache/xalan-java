@@ -61,7 +61,7 @@ public class ExampleContentHandler implements ContentHandler
                             String qName, Attributes atts)
     throws SAXException
   {
-    System.out.print("startElement: "+namespaceURI+", "+namespaceURI+
+    System.out.print("startElement: "+namespaceURI+", "+localName+
                        ", "+qName);
     int n = atts.getLength();
     for(int i = 0; i < n; i++)
@@ -76,7 +76,7 @@ public class ExampleContentHandler implements ContentHandler
                           String qName)
     throws SAXException
   {
-    System.out.println("endElement: "+namespaceURI+", "+namespaceURI+
+    System.out.println("endElement: "+namespaceURI+", "+localName+
                        ", "+qName);
   }
 
