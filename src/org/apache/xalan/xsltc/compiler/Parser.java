@@ -800,12 +800,16 @@ public class Parser implements Constants, ContentHandler {
 		    element.setErrorMessage(INVALID_EXT_ERROR+local);
 		}
 		// Check if this is an extension of some other XSLT processor
-		else if ((_xsltc.getStylesheet() != null) &&
-			 (_xsltc.getStylesheet().isExtension(uri))) {
-		    node = new UnsupportedElement(uri, prefix, local);
-		    UnsupportedElement element = (UnsupportedElement)node;
-		    element.setErrorMessage(UNSUPPORTED_EXT_ERROR+
-					    prefix+":"+local);
+		else {
+		    Stylesheet sheet = _xsltc.getStylesheet();
+		    if ((sheet != null) && (sheet.isExtension(uri))) {
+			if (sheet != (SyntaxTreeNode)_parentStack.peek()) {
+			    node = new UnsupportedElement(uri, prefix, local);
+			    UnsupportedElement elem = (UnsupportedElement)node;
+			    elem.setErrorMessage(UNSUPPORTED_EXT_ERROR+
+						 prefix+":"+local);
+			}
+		    }
 		}
 	    }
 	    if (node == null) node = new LiteralElement();
