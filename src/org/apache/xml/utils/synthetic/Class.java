@@ -131,31 +131,80 @@ public class Class extends Object implements java.io.Serializable
    */
   private java.lang.Class realclass = null;
 
-  /** NEEDSDOC Field modifiers          */
+  /** Field modifiers: Java language modifiers for this class 
+   * or interface, encoded in an integer.
+   * @see getModifiers
+   * @see setModifiers
+   */
   private int modifiers;
 
-  /** NEEDSDOC Field isInterface          */
+  /** Field isInterface: True if the Class object represents
+   *  an interface type.
+   * @see isInterface */
   private boolean isInterface = false;
 
-  /** NEEDSDOC Field superclass          */
+  /** Field superclass:  If this object represents the class
+   * Object, this is null. Otherwise, the Class object that 
+   * represents the superclass of that class. In proxy mode this
+   * is determined when needed. In synthesis mode it's explicitly
+   * set by the user, and if null the superclass will be assumed
+   * to be Object.
+   * @see getSuperclass
+   * @see setSuperclass */
   private Class superclass = null;
 
-  /** NEEDSDOC Field declaringclass          */
+  /** Field declaringclass: If this object represents an inner class,
+   * the Class object that represents the class that declared it.
+   * Otherwise null.
+   * @see addInnerClass
+   * @see getDeclaringClass 
+   * */
   private Class declaringclass = null;
 
-  /** NEEDSDOC Field interfaces          */
+  /** Field interfaces: A list of all interfaces implemented by the class 
+   * or interface represented by this object.
+   * @see getInterfaces
+   * @see declareInterface
+   * @see getClasses
+   * @see getDeclaredClasses
+   * @see addExtends
+   *  */
   private Class[] interfaces = new Class[0];
 
-  /** NEEDSDOC Field allclasses          */
+  /** Field allclasses:  an array containing Class objects representing all 
+   * the public classes and interfaces that are members of the class 
+   * represented by this Class object. 
+   * @see getClasses
+   * @see addExtends
+   */
   private Class[] allclasses = new Class[0];
 
-  /** NEEDSDOC Field declaredclasses          */
+  /** Field declaredclasses: an array of Class objects reflecting all the 
+   * classes and interfaces declared as members of the class represented 
+   * by this Class object. Excludes inherited classes and interfaces.
+   * @see getDeclaredClasses
+   * @see addExtends
+   */
   private Class[] declaredclasses = new Class[0];
 
-  /** NEEDSDOC Field allconstructors          */
+  /** Field allconstructors: an array containing Constructor objects
+   * reflecting all the constructors of the class represented 
+   * by this Class object. An array of length 0 is returned if the
+   * class has no public constructors. In proxy mode only public
+   * constructors will be displayed; in synthesis mode, all declared
+   * constructors will be displayed.
+   * @see getConstructors
+   * @see declareConstructor
+   * */
   private Constructor[] allconstructors = new Constructor[0];
 
-  /** NEEDSDOC Field declaredconstructors          */
+  /** Field declaredconstructors: an array of Constructor objects 
+   * reflecting all the constructors declared by the class 
+   * represented by this Class object. Includes non-public
+   * constructors, but excludes inherited ones.
+   * @see getDeclaredConstructors
+   * @see declareConstructor
+   *  */
   private Constructor[] declaredconstructors = new Constructor[0];
 
   /** NEEDSDOC Field allmethods          */
