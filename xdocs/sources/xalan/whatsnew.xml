@@ -58,7 +58,7 @@
  -->
 <s1 title="What's new in &xslt4j2;">
 <ul>
-     <li><link anchor="design">New design</link></li>&xsltcwhatsnewhead;
+     <li><link anchor="design">New design</link></li>
      <li><link anchor="dtm">Document Table Model (DTM)</link></li>
   </ul><anchor name="design"/>
   <s2 title="New Design">
@@ -77,5 +77,5 @@
 <p>For more information, see <link idref="readme" anchor="dtm">DTM Release Notes</link>.</p>
 </s2>
 
-&xsltcwhatsnew;
+
 </s1>
