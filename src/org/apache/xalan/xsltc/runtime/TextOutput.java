@@ -527,7 +527,10 @@ public final class TextOutput implements TransletOutputHandler {
 		    namespace(name.substring(6),value);
 	    }
 	    else {
-		_attributes.add(name,escapeChars(value));
+		if (_outputType == HTML)
+		    _attributes.add(name,value);
+		else
+		    _attributes.add(name,escapeChars(value));
 	    }
 	}
 	else {
