@@ -345,7 +345,7 @@ public class VariableStack extends Stack
    *
    * @throws TransformerException
    */
-  public Object getVariable(XPathContext xctxt, QName name) throws TransformerException
+  public XObject getVariable(XPathContext xctxt, QName name) throws TransformerException
   {
 
     int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;

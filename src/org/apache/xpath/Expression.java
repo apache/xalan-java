@@ -66,35 +66,53 @@ import org.xml.sax.XMLReader;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.apache.xml.utils.SAXSourceLocator;
+
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Expression <needs-comment/>
+ * This abstract class serves as the base for all expression objects.  An
+ * Expression can be executed to return a {@link org.apache.xpath.objects.XObject},
+ * normally has a location within a document or DOM, can send error and warning
+ * events, and normally do not hold state and are meant to be immutable once
+ * construction has completed.  An exception to the immutibility rule is iterators
+ * and walkers, which must be cloned in order to be used -- the original must
+ * still be immutable.
  */
-public abstract class Expression
-	implements java.io.Serializable
+public abstract class Expression implements java.io.Serializable
 {
 
-  /** NEEDSDOC Field m_xpath          */
+  /**
+   * The location where this expression was built from.  Need for diagnostic
+   *  messages. May be null.
+   */
   protected SourceLocator m_slocator;
-  
+
+  /**
+   * Set the location where this expression was built from.
+   *
+   *
+   * @param locator the location where this expression was built from, may be 
+   *                null.
+   */
   public void setSourceLocator(SourceLocator locator)
   {
     m_slocator = locator;
   }
 
   /**
-   * NEEDSDOC Method execute 
+   * Execute an expression in the XPath runtime context, and return the 
+   * result of the expression.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC (execute) @return
+   * @return The result of the expression in the form of a <code>XObject</code>.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   *         occurs.
    */
   public abstract XObject execute(XPathContext xctxt)
     throws javax.xml.transform.TransformerException;
@@ -102,18 +120,23 @@ public abstract class Expression
   /**
    * Warn the user of an problem.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param xctxt The XPath runtime context.
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   public void warn(XPathContext xctxt, int msg, Object[] args)
-    throws javax.xml.transform.TransformerException
+          throws javax.xml.transform.TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHWarning(msg, args);
-    if(null != xctxt)
+
+    if (null != xctxt)
     {
       ErrorListener eh = xctxt.getErrorListener();
 
@@ -126,10 +149,10 @@ public abstract class Expression
    * Tell the user of an assertion error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param b
-   * NEEDSDOC @param msg
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @param b  If false, a runtime exception will be thrown.
+   * @param msg The assertion message, which should be informative.
+   * 
+   * @throws RuntimeException if the b argument is false.
    */
   public void assert(boolean b, java.lang.String msg)
           throws javax.xml.transform.TransformerException
@@ -149,24 +172,28 @@ public abstract class Expression
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param xctxt The XPath runtime context.
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   public void error(XPathContext xctxt, int msg, Object[] args)
           throws javax.xml.transform.TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    if(null != xctxt)
+
+    if (null != xctxt)
     {
       ErrorListener eh = xctxt.getErrorListener();
-
       TransformerException te = new TransformerException(fmsg, m_slocator);
+
       eh.fatalError(te);
     }
-    
   }
 }

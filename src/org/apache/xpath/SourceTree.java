@@ -70,8 +70,9 @@ public class SourceTree
    * Constructor SourceTree
    *
    *
-   * NEEDSDOC @param root
-   * NEEDSDOC @param url
+   * @param root The root of the source tree, which may or may not be a 
+   * {@link org.w3c.dom.Document} node.
+   * @param url The URI of the source tree.
    */
   public SourceTree(Node root, String url)
   {
@@ -79,9 +80,10 @@ public class SourceTree
     m_url = url;
   }
 
-  /** NEEDSDOC Field m_url          */
+  /** The URI of the source tree.   */
   public String m_url;
 
-  /** NEEDSDOC Field m_root          */
+  /** The root of the source tree, which may or may not be a 
+   * {@link org.w3c.dom.Document} node.  */
   public Node m_root;
 }

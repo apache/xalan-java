@@ -207,9 +207,9 @@ public class DOMHelper
     if (node1 == node2)
       return true;
 
-	// Default return value, if there is no defined ordering
+        // Default return value, if there is no defined ordering
     boolean isNodeAfter = true;
-	
+        
     Node parent1 = getParentOfNode(node1);
     Node parent2 = getParentOfNode(node2);
 
@@ -220,13 +220,13 @@ public class DOMHelper
         isNodeAfter = isNodeAfterSibling(parent1, node1, node2);
       else
       {
-		  // If both parents are null, ordering is not defined.
-		  // We're returning a value in lieu of throwing an exception.
-		  // Not a case we expect to arise in XPath, but beware if you
-		  // try to reuse this method.
-		  
-		  // We can just fall through in this case, which allows us
-		  // to hit the debugging code at the end of the function.
+                  // If both parents are null, ordering is not defined.
+                  // We're returning a value in lieu of throwing an exception.
+                  // Not a case we expect to arise in XPath, but beware if you
+                  // try to reuse this method.
+                  
+                  // We can just fall through in this case, which allows us
+                  // to hit the debugging code at the end of the function.
           //return isNodeAfter;
       }
     }
@@ -235,13 +235,13 @@ public class DOMHelper
 
       // General strategy: Figure out the lengths of the two 
       // ancestor chains, reconcile the lengths, and look for
-	  // the lowest common ancestor. If that ancestor is one of
-	  // the nodes being compared, it comes before the other.
+          // the lowest common ancestor. If that ancestor is one of
+          // the nodes being compared, it comes before the other.
       // Otherwise perform a sibling compare. 
-		//
-		// NOTE: If no common ancestor is found, ordering is undefined
-		// and we return the default value of isNodeAfter.
-		
+                //
+                // NOTE: If no common ancestor is found, ordering is undefined
+                // and we return the default value of isNodeAfter.
+                
       // Count parents in each ancestor chain
       int nParents1 = 2, nParents2 = 2;  // include node & parent obtained above
 
@@ -259,12 +259,12 @@ public class DOMHelper
         parent2 = getParentOfNode(parent2);
       }
 
-	  // Initially assume scan for common ancestor starts with
-	  // the input nodes.
+          // Initially assume scan for common ancestor starts with
+          // the input nodes.
       Node startNode1 = node1, startNode2 = node2;
 
       // If one ancestor chain is longer, adjust its start point
-	  // so we're comparing at the same depths
+          // so we're comparing at the same depths
       if (nParents1 < nParents2)
       {
         // Adjust startNode2 to depth of startNode1
@@ -303,7 +303,7 @@ public class DOMHelper
           }
           else 
           {
-			// Compare ancestors below lowest-common as siblings
+                        // Compare ancestors below lowest-common as siblings
             isNodeAfter = isNodeAfterSibling(startNode1, prevChild1,
                                              prevChild2);
 
@@ -311,17 +311,17 @@ public class DOMHelper
           }
         }  // end if(startNode1 == startNode2)
 
-		// Move up one level and try again
+                // Move up one level and try again
         prevChild1 = startNode1;
         startNode1 = getParentOfNode(startNode1);
         prevChild2 = startNode2;
         startNode2 = getParentOfNode(startNode2);
       }  // end while(parents exist to examine)
     }  // end big else (not immediate siblings)
-	
-	// WARNING: The following diagnostic won't report the early
-	// "same node" case. Fix if/when needed.
-	
+        
+        // WARNING: The following diagnostic won't report the early
+        // "same node" case. Fix if/when needed.
+        
     /* -- please do not remove... very useful for diagnostics --
     System.out.println("node1 = "+node1.getNodeName()+"("+node1.getNodeType()+")"+
     ", node2 = "+node2.getNodeName()
@@ -372,7 +372,7 @@ public class DOMHelper
       int nNodes = children.getLength();
       boolean found1 = false, found2 = false;
 
-	  // Count from the start until we find one or the other.
+          // Count from the start until we find one or the other.
       for (int i = 0; i < nNodes; i++)
       {
         Node child = children.item(i);
@@ -403,17 +403,17 @@ public class DOMHelper
     }
     else
     {
-		// TODO: Check performance of alternate solution:
-		// There are two choices here: Count from the start of
-		// the document until we find one or the other, or count
-		// from one until we find or fail to find the other.
-		// Either can wind up scanning all the siblings in the worst
-		// case, which on a wide document can be a lot of work but
-		// is more typically is a short list. 
-		// Scanning from the start involves two tests per iteration,
-		// but it isn't clear that scanning from the middle doesn't
-		// yield more iterations on average. 
-		// We should run some testcases.
+                // TODO: Check performance of alternate solution:
+                // There are two choices here: Count from the start of
+                // the document until we find one or the other, or count
+                // from one until we find or fail to find the other.
+                // Either can wind up scanning all the siblings in the worst
+                // case, which on a wide document can be a lot of work but
+                // is more typically is a short list. 
+                // Scanning from the start involves two tests per iteration,
+                // but it isn't clear that scanning from the middle doesn't
+                // yield more iterations on average. 
+                // We should run some testcases.
       Node child = parent.getFirstChild();
       boolean found1 = false, found2 = false;
 
@@ -506,45 +506,45 @@ public class DOMHelper
     {
       namespace = QName.S_XMLNAMESPACEURI; // Hardcoded, per Namespace spec
     }
-	else if(prefix.equals("xmlns"))
+        else if(prefix.equals("xmlns"))
     {
-	  // Hardcoded in the DOM spec, expected to be adopted by
-	  // Namespace spec. NOTE: Namespace declarations _must_ use
-	  // the xmlns: prefix; other prefixes declared as belonging
-	  // to this namespace will not be recognized and should
-	  // probably be rejected by parsers as erroneous declarations.
+          // Hardcoded in the DOM spec, expected to be adopted by
+          // Namespace spec. NOTE: Namespace declarations _must_ use
+          // the xmlns: prefix; other prefixes declared as belonging
+          // to this namespace will not be recognized and should
+          // probably be rejected by parsers as erroneous declarations.
       namespace = "http://www.w3.org/2000/xmlns/"; 
     }
     else
     {
-	  // Attribute name for this prefix's declaration
-	  String declname=(prefix=="")
-			? "xmlns"
-			: "xmlns:"+prefix;
-					   
-	  // Scan until we run out of Elements or have resolved the namespace
+          // Attribute name for this prefix's declaration
+          String declname=(prefix=="")
+                        ? "xmlns"
+                        : "xmlns:"+prefix;
+                                           
+          // Scan until we run out of Elements or have resolved the namespace
       while ((null != parent) && (null == namespace)
              && (((type = parent.getNodeType()) == Node.ELEMENT_NODE)
                  || (type == Node.ENTITY_REFERENCE_NODE)))
       {
         if (type == Node.ELEMENT_NODE)
         {
-			
-			// Look for the appropriate Namespace Declaration attribute,
-			// either "xmlns:prefix" or (if prefix is "") "xmlns".
-			// TODO: This does not handle "implicit declarations"
-			// which may be created when the DOM is edited. DOM Level
-			// 3 will define how those should be interpreted. But
-			// this issue won't arise in freshly-parsed DOMs.
-			
-	        // NOTE: declname is set earlier, outside the loop.
-			Attr attr=((Element)parent).getAttributeNode(declname);
-			if(attr!=null)
-			{
+                        
+                        // Look for the appropriate Namespace Declaration attribute,
+                        // either "xmlns:prefix" or (if prefix is "") "xmlns".
+                        // TODO: This does not handle "implicit declarations"
+                        // which may be created when the DOM is edited. DOM Level
+                        // 3 will define how those should be interpreted. But
+                        // this issue won't arise in freshly-parsed DOMs.
+                        
+                // NOTE: declname is set earlier, outside the loop.
+                        Attr attr=((Element)parent).getAttributeNode(declname);
+                        if(attr!=null)
+                        {
                 namespace = attr.getNodeValue();
                 break;
-			}
-		}
+                        }
+                }
 
         parent = getParentOfNode(parent);
       }
@@ -558,31 +558,38 @@ public class DOMHelper
    */
   Hashtable m_NSInfos = new Hashtable();
 
-  /** NEEDSDOC Field m_NSInfoUnProcWithXMLNS          */
+  /** Object to put into the m_NSInfos table that tells that a node has not been 
+   *  processed, but has xmlns namespace decls.  */
   protected static final NSInfo m_NSInfoUnProcWithXMLNS = new NSInfo(false,
                                                             true);
 
-  /** NEEDSDOC Field m_NSInfoUnProcWithoutXMLNS          */
+  /** Object to put into the m_NSInfos table that tells that a node has not been 
+   *  processed, but has no xmlns namespace decls.  */
   protected static final NSInfo m_NSInfoUnProcWithoutXMLNS = new NSInfo(false,
                                                                false);
 
-  /** NEEDSDOC Field m_NSInfoUnProcNoAncestorXMLNS          */
+  /** Object to put into the m_NSInfos table that tells that a node has not been 
+   *  processed, and has no xmlns namespace decls, and has no ancestor decls.  */
   protected static final NSInfo m_NSInfoUnProcNoAncestorXMLNS =
     new NSInfo(false, false, NSInfo.ANCESTORNOXMLNS);
 
-  /** NEEDSDOC Field m_NSInfoNullWithXMLNS          */
+  /** Object to put into the m_NSInfos table that tells that a node has been 
+   *  processed, and has xmlns namespace decls.  */
   protected static final NSInfo m_NSInfoNullWithXMLNS = new NSInfo(true,
                                                           true);
 
-  /** NEEDSDOC Field m_NSInfoNullWithoutXMLNS          */
+  /** Object to put into the m_NSInfos table that tells that a node has been 
+   *  processed, and has no xmlns namespace decls.  */
   protected static final NSInfo m_NSInfoNullWithoutXMLNS = new NSInfo(true,
                                                              false);
 
-  /** NEEDSDOC Field m_NSInfoNullNoAncestorXMLNS          */
+  /** Object to put into the m_NSInfos table that tells that a node has been 
+   *  processed, and has no xmlns namespace decls. and has no ancestor decls.  */
   protected static final NSInfo m_NSInfoNullNoAncestorXMLNS =
     new NSInfo(true, false, NSInfo.ANCESTORNOXMLNS);
 
-  /** NEEDSDOC Field m_candidateNoAncestorXMLNS          */
+  /** Vector of node (odd indexes) and NSInfos (even indexes) that tell if 
+   *  the given node is a candidate for ancestor namespace processing.  */
   protected Vector m_candidateNoAncestorXMLNS = new Vector();
 
   /**
@@ -884,9 +891,9 @@ public class DOMHelper
     // TODO: I can probably do something to figure out if this 
     // space is ignorable from just the information in
     // the DOM tree.
-	// -- You need to be able to distinguish whitespace
-	// that is #PCDATA from whitespace that isn't.  That requires
-	// DTD support, which won't be standardized until DOM Level 3.
+        // -- You need to be able to distinguish whitespace
+        // that is #PCDATA from whitespace that isn't.  That requires
+        // DTD support, which won't be standardized until DOM Level 3.
     return isIgnorable;
   }
 
@@ -994,7 +1001,7 @@ public class DOMHelper
     if (Node.ATTRIBUTE_NODE == nodeType)
     {
       Document doc = node.getOwnerDocument();
-	  /*
+          /*
       TBD:
       if(null == doc)
       {
@@ -1002,23 +1009,23 @@ public class DOMHelper
       }
       */
 
-	  // Given how expensive the tree walk may be, we should first ask 
-	  // whether this DOM can answer the question for us. The additional
-	  // test does slow down Level 1 DOMs slightly. DOMHelper2, which
-	  // is currently specialized for Xerces, assumes it can use the
-	  // Level 2 solution. We might want to have an intermediate stage,
-	  // which would assume DOM Level 2 but not assume Xerces.
-	  //
-	  // (Shouldn't have to check whether impl is null in a compliant DOM,
-	  // but let's be paranoid for a moment...)
-	  DOMImplementation impl=doc.getImplementation();
-	  if(impl!=null && impl.hasFeature("Core","2.0"))
-	  {
-		  parent=((Attr)node).getOwnerElement();
-		  return parent;
-	  }
+          // Given how expensive the tree walk may be, we should first ask 
+          // whether this DOM can answer the question for us. The additional
+          // test does slow down Level 1 DOMs slightly. DOMHelper2, which
+          // is currently specialized for Xerces, assumes it can use the
+          // Level 2 solution. We might want to have an intermediate stage,
+          // which would assume DOM Level 2 but not assume Xerces.
+          //
+          // (Shouldn't have to check whether impl is null in a compliant DOM,
+          // but let's be paranoid for a moment...)
+          DOMImplementation impl=doc.getImplementation();
+          if(impl!=null && impl.hasFeature("Core","2.0"))
+          {
+                  parent=((Attr)node).getOwnerElement();
+                  return parent;
+          }
 
-	  // DOM Level 1 solution, as fallback. Hugely expensive. 
+          // DOM Level 1 solution, as fallback. Hugely expensive. 
 
       Element rootElem = doc.getDocumentElement();
 
@@ -1032,7 +1039,7 @@ public class DOMHelper
 
       parent = locateAttrParent(rootElem, node);
 
-	}
+        }
     else
     {
       parent = node.getParentNode();
@@ -1170,14 +1177,14 @@ public class DOMHelper
 
     Node parent = null;
 
-	// This should only be called for Level 1 DOMs, so we don't have to
-	// worry about namespace issues. In later levels, it's possible
-	// for a DOM to have two Attrs with the same NodeName but
-	// different namespaces, and we'd need to get getAttributeNodeNS...
-	// but later levels also have Attr.getOwnerElement.
-	Attr check=elem.getAttributeNode(attr.getNodeName());
-	if(check==attr)
-		parent = elem;
+        // This should only be called for Level 1 DOMs, so we don't have to
+        // worry about namespace issues. In later levels, it's possible
+        // for a DOM to have two Attrs with the same NodeName but
+        // different namespaces, and we'd need to get getAttributeNodeNS...
+        // but later levels also have Attr.getOwnerElement.
+        Attr check=elem.getAttributeNode(attr.getNodeName());
+        if(check==attr)
+                parent = elem;
 
     if (null == parent)
     {

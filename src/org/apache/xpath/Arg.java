@@ -153,9 +153,10 @@ public class Arg
     m_expression = expr;
   }
 
-  /** NEEDSDOC Field m_isParamVar
+  /** 
+   * True if this is a parameter variable. 
    * Set at the time the object is constructed.
-   * */
+   */
   private boolean m_isParamVar;
 
   /**
@@ -178,7 +179,7 @@ public class Arg
    *
    * @param qname Name of the argument, expressed as a QName object.
    * @param expression String to be stored as this argument's value expression.
-   * NEEDSDOC @param isParamVar
+   * @param isParamVar True if this is a parameter variable.
    */
   public Arg(QName qname, String expression, boolean isParamVar)
   {
@@ -228,7 +229,7 @@ public class Arg
    *
    * @param qname Name of the argument, expressed as a QName object.
    * @param val Value of the argument, expressed as an XObject
-   * NEEDSDOC @param isParamVar
+   * @param isParamVar True if this is a parameter variable.
    */
   public Arg(QName qname, XObject val, boolean isParamVar)
   {

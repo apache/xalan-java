@@ -90,27 +90,21 @@ import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
- * <meta name="usage" content="general"/>
- * The XPath class represents the semantic parse tree of the XPath pattern.
- * It is the representation of the grammar which filters out
- * the choice for replacement order of the production rules.
- * In order to conserve memory and reduce object creation, the
- * tree is represented as an array of integers:
- *    [op code][length][...]
- * where strings are represented within the array as
- * indexes into the token tree.
+ * <meta name="usage" content="advanced"/>
+ * The XPath class wraps an expression object and provides general services 
+ * for execution of that expression.
  */
 public class XPath implements Serializable
 {
 
-  /** NEEDSDOC Field m_mainExp          */
+  /** The top of the expression tree.  */
   private Expression m_mainExp;
 
   /**
-   * NEEDSDOC Method getExpression 
+   * Get the raw Expression object that this class wraps.
    *
    *
-   * NEEDSDOC (getExpression) @return
+   * @return the raw Expression object, which should not normally be null.
    */
   public Expression getExpression()
   {
@@ -118,80 +112,76 @@ public class XPath implements Serializable
   }
 
   /**
-   * NEEDSDOC Method setExpression 
+   * Set the raw expression object for this object.
    *
    *
-   * NEEDSDOC @param exp
+   * @param exp the raw Expression object, which should not normally be null.
    */
   public void setExpression(Expression exp)
   {
     m_mainExp = exp;
   }
 
-  /** NEEDSDOC Field m_locator          */
-  private SourceLocator m_locator;
-
   /**
-   * NEEDSDOC Method getLocator 
+   * Get the SourceLocator on the expression object.
    *
    *
-   * NEEDSDOC (getLocator) @return
+   * @return the SourceLocator on the expression object, which may be null.
    */
   public SourceLocator getLocator()
   {
-    return m_locator;
+    return m_mainExp.m_slocator;
   }
 
   /**
-   * NEEDSDOC Method setLocator 
+   * Set the SourceLocator on the expression object.
    *
    *
-   * NEEDSDOC @param l
+   * @param l the SourceLocator on the expression object, which may be null.
    */
   public void setLocator(SourceLocator l)
   {
-	// Note potential hazards -- l may not be serializable, or may be changed
-	  // after being assigned here.
-	m_locator = l;
+    // Note potential hazards -- l may not be serializable, or may be changed
+      // after being assigned here.
+    m_mainExp.setSourceLocator(l);
   }
 
-  /** NEEDSDOC Field m_patternString          */
+  /** The pattern string, mainly kept around for diagnostic purposes.  */
   String m_patternString;
 
   /**
-   * NEEDSDOC Method getPatternString 
+   * Return the XPath string associated with this object.
    *
    *
-   * NEEDSDOC (getPatternString) @return
+   * @return the XPath string associated with this object.
    */
   public String getPatternString()
   {
     return m_patternString;
   }
 
-  /** NEEDSDOC Field SELECT          */
+  /** Represents a select type expression. */
   public static final int SELECT = 0;
 
-  /** NEEDSDOC Field MATCH          */
+  /** Represents a match type expression.  */
   public static final int MATCH = 1;
 
   /**
    * Construct an XPath object.  The object must be initialized by the
    * XPathParser.initXPath method.
    *
-   * NEEDSDOC @param exprString
-   * NEEDSDOC @param locator
-   * NEEDSDOC @param prefixResolver
-   * NEEDSDOC @param type
+   * @param exprString The XPath expression.
+   * @param locator The location of the expression, may be null.
+   * @param prefixResolver A prefix resolver to use to resolve prefixes to 
+   *                       namespace URIs.
+   * @param type one of {@link #SELECT} or {@link #MATCH}.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if syntax or other error.
    */
   public XPath(
           String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type)
             throws javax.xml.transform.TransformerException
-  {
-    m_locator = locator; 
-      
+  {      
     m_patternString = exprString;
 
     XPathParser parser = new XPathParser();
@@ -210,8 +200,6 @@ public class XPath implements Serializable
     // System.out.println("expr: "+expr);
     this.setExpression(expr);
 
-    if (MATCH == type)
-      calcTargetStrings(compiler);
   }
 
   /**
@@ -273,7 +261,7 @@ public class XPath implements Serializable
         String msg = e.getMessage();
         msg = (msg == null || msg.length()== 0)? "Error in XPath" : msg;
         throw new TransformerException(msg,
-                (SAXSourceLocator)m_locator, e);
+                (SAXSourceLocator)getLocator(), e);
       }
     }
     finally
@@ -286,18 +274,19 @@ public class XPath implements Serializable
     return xobj;
   }
 
-  /** NEEDSDOC Field DEBUG_MATCHES          */
+  /** Set to true to get diagnostic messages about the result of 
+   *  match pattern testing.  */
   private static final boolean DEBUG_MATCHES = false;
 
   /**
    * Get the match score of the given node.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    * @param context The current source tree context node.
-   * @returns score, one of MATCH_SCORE_NODETEST,
-   * MATCH_SCORE_NONE, MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
-   *
-   * NEEDSDOC ($objectName$) @return
+   * 
+   * @return score, one of {@link #MATCH_SCORE_NODETEST},
+   * {@link #MATCH_SCORE_NONE}, {@link #MATCH_SCORE_OTHER}, 
+   * or {@link #MATCH_SCORE_QNAME}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -340,139 +329,19 @@ public class XPath implements Serializable
     FunctionTable.installFunction(func, funcIndex);
   }
 
-  /** NEEDSDOC Field m_targetStrings          */
-  private Vector m_targetStrings;
-
-  /**
-   * NEEDSDOC Method calcTargetStrings 
-   *
-   *
-   * NEEDSDOC @param compiler
-   */
-  private void calcTargetStrings(Compiler compiler)
-  {
-
-    Vector targetStrings = new Vector();
-    int opPos = 2;
-
-    while (compiler.getOp(opPos) == OpCodes.OP_LOCATIONPATHPATTERN)
-    {
-      int nextOpPos = compiler.getNextOpPos(opPos);
-
-      opPos = compiler.getFirstChildPos(opPos);
-
-      while (compiler.getOp(opPos) != OpCodes.ENDOP)
-      {
-        int nextStepPos = compiler.getNextOpPos(opPos);
-        int nextOp = compiler.getOp(nextStepPos);
-
-        if ((nextOp == OpCodes.OP_PREDICATE) || (nextOp == OpCodes.ENDOP))
-        {
-          int stepType = compiler.getOp(opPos);
-
-          opPos += 3;
-
-          switch (stepType)
-          {
-          case OpCodes.OP_FUNCTION :
-            targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
-            break;
-          case OpCodes.FROM_ROOT :
-            targetStrings.addElement(PsuedoNames.PSEUDONAME_ROOT);
-            break;
-          case OpCodes.MATCH_ATTRIBUTE :
-          case OpCodes.MATCH_ANY_ANCESTOR :
-          case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
-            int tok = compiler.getOp(opPos);
-
-            opPos++;
-
-            switch (tok)
-            {
-            case OpCodes.NODETYPE_COMMENT :
-              targetStrings.addElement(PsuedoNames.PSEUDONAME_COMMENT);
-              break;
-            case OpCodes.NODETYPE_TEXT :
-              targetStrings.addElement(PsuedoNames.PSEUDONAME_TEXT);
-              break;
-            case OpCodes.NODETYPE_NODE :
-              targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
-              break;
-            case OpCodes.NODETYPE_ROOT :
-              targetStrings.addElement(PsuedoNames.PSEUDONAME_ROOT);
-              break;
-            case OpCodes.NODETYPE_ANYELEMENT :
-              targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
-              break;
-            case OpCodes.NODETYPE_PI :
-              targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
-              break;
-            case OpCodes.NODENAME :
-
-              // Skip the namespace
-              int tokenIndex = compiler.getOp(opPos + 1);
-
-              if (tokenIndex >= 0)
-              {
-                String targetName =
-                  (String) compiler.m_tokenQueue[tokenIndex];
-
-                if (targetName.equals("*"))
-                {
-                  targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
-                }
-                else
-                {
-                  targetStrings.addElement(targetName);
-                }
-              }
-              else
-              {
-                targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
-              }
-              break;
-            default :
-              targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
-              break;
-            }
-            break;
-          }
-        }
-
-        opPos = nextStepPos;
-      }
-
-      opPos = nextOpPos;
-    }
-
-    m_targetStrings = targetStrings;
-
-    // for(int i = 0; i < m_targetStrings.size(); i++)
-    //  System.out.println("targetStrings["+i+"]="+m_targetStrings.elementAt(i));
-  }
-
-  /**
-   * <meta name="usage" content="advanced"/>
-   * This method is for building indexes of match patterns for fast lookup.
-   * This allows a caller to get the name or type of a node, and quickly
-   * find the likely candidates that may match.
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public Vector getTargetElementStrings()
-  {
-    return m_targetStrings;
-  }
-
   /**
    * Warn the user of an problem.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param xctxt The XPath runtime context.
+   * @param sourceNode Not used.
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   public void warn(
           XPathContext xctxt, Node sourceNode, int msg, Object[] args)
@@ -494,12 +363,12 @@ public class XPath implements Serializable
    * Tell the user of an assertion error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param b
-   * NEEDSDOC @param msg
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @param b  If false, a runtime exception will be thrown.
+   * @param msg The assertion message, which should be informative.
+   * 
+   * @throws RuntimeException if the b argument is false.
    */
-  public void assert(boolean b, String msg) throws javax.xml.transform.TransformerException
+  public void assert(boolean b, String msg)
   {
 
     if (!b)
@@ -516,12 +385,16 @@ public class XPath implements Serializable
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param xctxt The XPath runtime context.
+   * @param sourceNode Not used.
+   * @param msg An error number that corresponds to one of the numbers found 
+   *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
+   *            a key for a format string.
+   * @param args An array of arguments represented in the format string, which 
+   *             may be null.
    *
-   * @throws javax.xml.transform.TransformerException
+   * @throws TransformerException if the current ErrorListoner determines to 
+   *                              throw an exception.
    */
   public void error(
           XPathContext xctxt, Node sourceNode, int msg, Object[] args)

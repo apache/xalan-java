@@ -389,7 +389,7 @@ public class NodeSet extends NodeVector
    * <code>index</code> is greater than or equal to the number of nodes in
    * the list, this returns <code>null</code>.
    * 
-   * NEEDSDOC: What happens if index is out of range?
+   * TODO: What happens if index is out of range?
    * 
    * @param index Index into the collection.
    * @return The node at the <code>index</code>th position in the
@@ -561,7 +561,7 @@ public class NodeSet extends NodeVector
    * document order.  If a node is null, don't add it.
    *
    * @param nodelist List of nodes to be added
-   * NEEDSDOC @param support
+   * @param support The XPath runtime context.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -589,7 +589,7 @@ public class NodeSet extends NodeVector
    * document order.  If a node is null, don't add it.
    *
    * @param iterator NodeIterator which yields the nodes to be added.
-   * NEEDSDOC @param support
+   * @param support The XPath runtime context.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -608,16 +608,15 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Not yet ready for prime time.
-   * I can't use recursion in this.
+   * Add the node list to this node set in document order.
    *
-   * NEEDSDOC @param start
-   * NEEDSDOC @param end
-   * NEEDSDOC @param testIndex
-   * NEEDSDOC @param nodelist
-   * NEEDSDOC @param support
+   * @param start index.
+   * @param end index.
+   * @param testIndex index.
+   * @param nodelist The nodelist to add.
+   * @param support The XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false always.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -678,9 +677,9 @@ public class NodeSet extends NodeVector
    * @param v Vector of nodes, presumably containing Nodes
    * @param obj Node object.
    *
-   * NEEDSDOC @param node
+   * @param node The node to be added.
    * @param test true if we should test for doc order
-   * NEEDSDOC @param support
+   * @param support The XPath runtime context.
    * @return insertIndex.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
@@ -755,10 +754,10 @@ public class NodeSet extends NodeVector
    * @param v Vector of nodes, presumably containing Nodes
    * @param obj Node object.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param support
+   * @param node The node to be added.
+   * @param support The XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The index where it was inserted.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -774,7 +773,7 @@ public class NodeSet extends NodeVector
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The size of this node set.
    */
   public int size()
   {
@@ -784,7 +783,7 @@ public class NodeSet extends NodeVector
   /**
    * Append a Node onto the vector.
    *
-   * NEEDSDOC @param value
+   * @param value The node to be added.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -803,8 +802,8 @@ public class NodeSet extends NodeVector
    * the specified index is shifted upward to have an index one greater
    * than the value it had previously.
    *
-   * NEEDSDOC @param value
-   * NEEDSDOC @param at
+   * @param value The node to be inserted.
+   * @param at The index where the insert should occur.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -820,7 +819,7 @@ public class NodeSet extends NodeVector
   /**
    * Append the nodes to the list.
    *
-   * NEEDSDOC @param nodes
+   * @param nodes The nodes to be appended to this node set.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -857,9 +856,9 @@ public class NodeSet extends NodeVector
    * downward to have an index one smaller than the value it had
    * previously.
    *
-   * NEEDSDOC @param s
+   * @param s The node to be removed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the node was successfully removed
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -878,7 +877,7 @@ public class NodeSet extends NodeVector
    * index is shifted downward to have an index one smaller than
    * the value it had previously.
    *
-   * NEEDSDOC @param i
+   * @param i The index of the node to be removed.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -898,8 +897,8 @@ public class NodeSet extends NodeVector
    * The index must be a value greater than or equal to 0 and less
    * than the current size of the vector.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param index
+   * @param node  The node to be set.
+   * @param index The index of the node to be replaced.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
@@ -915,9 +914,9 @@ public class NodeSet extends NodeVector
   /**
    * Get the nth element.
    *
-   * NEEDSDOC @param i
+   * @param i The index of the requested node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node at specified index.
    */
   public Node elementAt(int i)
   {
@@ -930,9 +929,9 @@ public class NodeSet extends NodeVector
   /**
    * Tell if the table contains the given node.
    *
-   * NEEDSDOC @param s
+   * @param s Node to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the given node was found.
    */
   public boolean contains(Node s)
   {
@@ -947,8 +946,8 @@ public class NodeSet extends NodeVector
    * beginning the search at index, and testing for equality
    * using the equals method.
    *
-   * NEEDSDOC @param elem
-   * NEEDSDOC @param index
+   * @param elem Node to look for
+   * @param index Index of where to start the search
    * @return the index of the first occurrence of the object
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.
@@ -966,7 +965,7 @@ public class NodeSet extends NodeVector
    * beginning the search at index, and testing for equality
    * using the equals method.
    *
-   * NEEDSDOC @param elem
+   * @param elem Node to look for 
    * @return the index of the first occurrence of the object
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.
@@ -979,7 +978,8 @@ public class NodeSet extends NodeVector
     return super.indexOf(elem);
   }
 
-  /** NEEDSDOC Field m_next          */
+  /** If this node is being used as an iterator, the next index that nextNode()
+   *  will return.  */
   protected int m_next = 0;
 
   /**
@@ -988,7 +988,7 @@ public class NodeSet extends NodeVector
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The the current position index.
    */
   public int getCurrentPos()
   {
@@ -1014,7 +1014,7 @@ public class NodeSet extends NodeVector
   /**
    * Return the last fetched node.  Needed to support the UnionPathIterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the last fetched node.
    * @exception RuntimeException thrown if this NodeSet is not of 
    * a cached type, and thus doesn't permit indexed access.
    */
@@ -1031,17 +1031,17 @@ public class NodeSet extends NodeVector
     return n;
   }
 
-  /** NEEDSDOC Field m_mutable          */
+  /** True if this list can be mutated.  */
   protected boolean m_mutable = true;
 
-  /** NEEDSDOC Field m_cacheNodes          */
+  /** True if this list is cached.  */
   protected boolean m_cacheNodes = true;
 
   /**
-   * NEEDSDOC Method getShouldCacheNodes 
+   * Get whether or not this is a cached node set.
    *
    *
-   * NEEDSDOC (getShouldCacheNodes) @return
+   * @return True if this list is cached.
    */
   public boolean getShouldCacheNodes()
   {
@@ -1054,7 +1054,7 @@ public class NodeSet extends NodeVector
    * be set before the first call to nextNode is made, to ensure
    * that all nodes are cached.
    *
-   * NEEDSDOC @param b
+   * @param b true if this node set should be cached.
    * @exception RuntimeException thrown if an attempt is made to
    * request caching after we've already begun stepping through the
    * nodes in this set.

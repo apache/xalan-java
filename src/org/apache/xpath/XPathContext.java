@@ -130,27 +130,18 @@ public class XPathContext implements ExpressionContext
   }
 
   /**
-   * Copy attributes from another liaison.
-   *
-   * NEEDSDOC @param from
-   *
-   * @throws TransformerException
-   */
-  public void copyFromOtherLiaison(XPathContext from) throws TransformerException{}
-
-  /**
    * Reset for new run.
    */
   public void reset(){}
 
-  /** NEEDSDOC Field m_saxLocation          */
+  /** The current stylesheet locator. */
   SourceLocator m_saxLocation;
 
   /**
-   * NEEDSDOC Method setSAXLocator 
+   * Set the current locater in the stylesheet.
    *
    *
-   * NEEDSDOC @param location
+   * @param location The location within the stylesheet.
    */
   public void setSAXLocator(SourceLocator location)
   {
@@ -158,10 +149,10 @@ public class XPathContext implements ExpressionContext
   }
 
   /**
-   * NEEDSDOC Method getSAXLocator 
+   * Get the current locater in the stylesheet.
    *
    *
-   * NEEDSDOC (getSAXLocator) @return
+   * @return The location within the stylesheet, or null if not known.
    */
   public SourceLocator getSAXLocator()
   {
@@ -199,7 +190,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the extensions table object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The extensions table.
    */
   public ExtensionsTable getExtensionsTable()
   {
@@ -207,10 +198,10 @@ public class XPathContext implements ExpressionContext
   }
 
   /**
-   * NEEDSDOC Method setExtensionsTable 
+   * Set the extensions table object.
    *
    *
-   * NEEDSDOC @param table
+   * @param table The extensions table object.
    */
   void setExtensionsTable(ExtensionsTable table)
   {
@@ -229,7 +220,7 @@ public class XPathContext implements ExpressionContext
    * Get the variable stack, which is in charge of variables and
    * parameters.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the variable stack, which should not be null.
    */
   public VariableStack getVarStack()
   {
@@ -240,7 +231,7 @@ public class XPathContext implements ExpressionContext
    * Get the variable stack, which is in charge of variables and
    * parameters.
    *
-   * NEEDSDOC @param varStack
+   * @param varStack non-null reference to the variable stack.
    */
   public void setVarStack(VariableStack varStack)
   {
@@ -251,34 +242,31 @@ public class XPathContext implements ExpressionContext
    * Given a name, locate a variable in the current context, and return
    * the Object.
    *
-   * NEEDSDOC @param qname
+   * @param qname The qualified name of a variable.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to variable, or null if not found.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject getVariable(QName qname) throws javax.xml.transform.TransformerException
   {
 
-    Object obj = getVarStack().getVariable(this, qname);
-
-    if ((null != obj) &&!(obj instanceof XObject))
-    {
-      obj = new XObject(obj);
-    }
-
-    return (XObject) obj;
+    return getVarStack().getVariable(this, qname);
   }
 
   // ================ DOMHelper ===================
 
-  /** NEEDSDOC Field m_domHelper          */
+  /** The basic DOM helper for the root source tree.
+   *  Note that I have some worry about different source tree types 
+   *  being mixed, so this may not be a perfect place for this.
+   *  Right now, I think all the DOM helpers can handle a DOM that 
+   *  they don't know about.  */
   private DOMHelper m_domHelper;
 
   /**
    * Get the DOMHelper associated with this execution context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to a DOM helper.
    */
   public final DOMHelper getDOMHelper()
   {
@@ -292,7 +280,8 @@ public class XPathContext implements ExpressionContext
   /**
    * Set the DOMHelper associated with this execution context.
    *
-   * NEEDSDOC @param helper
+   * @param helper reference to a dom helper to be associated with this 
+   *               execution context.
    */
   public void setDOMHelper(DOMHelper helper)
   {
@@ -301,13 +290,14 @@ public class XPathContext implements ExpressionContext
 
   // ================ SourceTreeManager ===================
 
-  /** NEEDSDOC Field m_sourceTreeManager          */
+  /** The source tree manager, which associates Source objects to source 
+   *  tree nodes. */
   private SourceTreeManager m_sourceTreeManager = new SourceTreeManager();
 
   /**
-   * Get the DOMHelper associated with this execution context.
+   * Get the SourceTreeManager associated with this execution context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the SourceTreeManager associated with this execution context.
    */
   public final SourceTreeManager getSourceTreeManager()
   {
@@ -315,9 +305,10 @@ public class XPathContext implements ExpressionContext
   }
 
   /**
-   * Set the DOMHelper associated with this execution context.
+   * Set the SourceTreeManager associated with this execution context.
    *
-   * NEEDSDOC @param mgr
+   * @param mgr the SourceTreeManager to be associated with this 
+   *        execution context.
    */
   public void setSourceTreeManager(SourceTreeManager mgr)
   {
@@ -378,13 +369,14 @@ public class XPathContext implements ExpressionContext
 
   // =================================================
 
-  /** NEEDSDOC Field m_uriResolver          */
+  /** The TrAX URI Resolver for resolving URIs from the document(...)
+   *  function to source tree nodes.  */
   private URIResolver m_uriResolver;
 
   /**
    * Get the URIResolver associated with this execution context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a URI resolver, which may be null.
    */
   public final URIResolver getURIResolver()
   {
@@ -394,7 +386,8 @@ public class XPathContext implements ExpressionContext
   /**
    * Set the URIResolver associated with this execution context.
    *
-   * NEEDSDOC @param resolver
+   * @param resolver the URIResolver to be associated with this 
+   *        execution context, may be null to clear an already set resolver.
    */
   public void setURIResolver(URIResolver resolver)
   {
@@ -403,13 +396,13 @@ public class XPathContext implements ExpressionContext
 
   // =================================================
 
-  /** NEEDSDOC Field m_primaryReader          */
+  /** The reader of the primary source tree.    */
   public XMLReader m_primaryReader;
 
   /**
    * Get primary XMLReader associated with this execution context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The reader of the primary source tree.
    */
   public final XMLReader getPrimaryReader()
   {
@@ -419,7 +412,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Set primary XMLReader associated with this execution context.
    *
-   * NEEDSDOC @param reader
+   * @param reader The reader of the primary source tree.
    */
   public void setPrimaryReader(XMLReader reader)
   {
@@ -428,48 +421,18 @@ public class XPathContext implements ExpressionContext
 
   // =================================================
 
-  /**
-   * Take a user string (system ID) return the url.
-   *
-   * NEEDSDOC @param urlString
-   * NEEDSDOC @param base
-   *
-   * NEEDSDOC ($objectName$) @return
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
-   * the error condition is severe enough to halt processing.
-   *
-   * @throws TransformerException
-   */
-  public final String getAbsoluteURI(String urlString, String base)
-          throws TransformerException
-  {
-    try
-    {
-      Source source = getSourceTreeManager().resolveURI(base, urlString,
-                                                        getSAXLocator());
-      return source.getSystemId();
-    }
-    catch (TransformerException te)
-    {
-      throw new TransformerException(te);
-    }
-    catch (IOException ioe)
-    {
-      throw new TransformerException(ioe);
-    }
-  }
 
-  /** NEEDSDOC Field m_XSLMessages          */
+  /** Misnamed string manager for XPath messages.  */
   private static XSLMessages m_XSLMessages = new XSLMessages();
 
   /**
    * Tell the user of an assertion error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param b
-   * NEEDSDOC @param msg
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @param b  If false, a TransformerException will be thrown.
+   * @param msg The assertion message, which should be informative.
+   * 
+   * @throws javax.xml.transform.TransformerException if b is false.
    */
   private void assert(boolean b, String msg) throws javax.xml.transform.TransformerException
   {
@@ -498,7 +461,8 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the current context node list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return  the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
+   * also refered to here as a <term>context node list</term>.
    */
   public final ContextNodeList getContextNodeList()
   {
@@ -512,10 +476,9 @@ public class XPathContext implements ExpressionContext
   /**
    * <meta name="usage" content="internal"/>
    * Set the current context node list.
-   * @param A nodelist that represents the current context
-   * list as defined by XPath.
    *
-   * NEEDSDOC @param nl
+   * @param nl the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
+   * also refered to here as a <term>context node list</term>.
    */
   public final void pushContextNodeList(ContextNodeList nl)
   {
@@ -538,13 +501,14 @@ public class XPathContext implements ExpressionContext
    */
   PrefixResolver m_currentPrefixResolver = null;
 
-  /** NEEDSDOC Field m_currentNodes          */
+  /** The stack of <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a> objects.
+   *  Not to be confused with the current node list.  */
   private NodeVector m_currentNodes = new NodeVector();
 
   /**
    * Get the current context node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
    */
   public final Node getCurrentNode()
   {
@@ -552,10 +516,10 @@ public class XPathContext implements ExpressionContext
   }
 
   /**
-   * Set the current context node.
+   * Set the current context node and expression node.
    *
-   * NEEDSDOC @param cn
-   * NEEDSDOC @param en
+   * @param cn the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   * @param en the sub-expression context node.
    */
   public final void pushCurrentNodeAndExpression(Node cn, Node en)
   {
@@ -575,7 +539,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Set the current context node.
    *
-   * NEEDSDOC @param n
+   * @param n the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
    */
   public final void pushCurrentNode(Node n)
   {
@@ -590,13 +554,13 @@ public class XPathContext implements ExpressionContext
     m_currentNodes.popQuick();
   }
 
-  /** NEEDSDOC Field m_currentExpressionNodes          */
+  /** A stack of the current sub-expression nodes.  */
   private NodeVector m_currentExpressionNodes = new NodeVector();
 
   /**
    * Get the current node that is the expression's context (i.e. for current() support).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The current sub-expression node.
    */
   public final Node getCurrentExpressionNode()
   {
@@ -606,7 +570,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Set the current node that is the expression's context (i.e. for current() support).
    *
-   * NEEDSDOC @param n
+   * @param n The sub-expression node to be current.
    */
   public final void pushCurrentExpressionNode(Node n)
   {
@@ -624,7 +588,8 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the current namespace context for the xpath.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the current prefix resolver for resolving prefixes to 
+   *         namespace URLs.
    */
   public final PrefixResolver getNamespaceContext()
   {
@@ -634,7 +599,8 @@ public class XPathContext implements ExpressionContext
   /**
    * Get the current namespace context for the xpath.
    *
-   * NEEDSDOC @param pr
+   * @param pr the prefix resolver to be used for resolving prefixes to 
+   *         namespace URLs.
    */
   public final void setNamespaceContext(PrefixResolver pr)
   {
@@ -654,7 +620,7 @@ public class XPathContext implements ExpressionContext
    * <meta name="usage" content="internal"/>
    * Push a TreeWalker on the stack.
    *
-   * NEEDSDOC @param iter
+   * @param iter A sub-context AxesWalker.
    */
   public final void pushSubContextList(SubContextList iter)
   {
@@ -674,7 +640,7 @@ public class XPathContext implements ExpressionContext
    * <meta name="usage" content="internal"/>
    * Get the current axes iterator, or return null if none.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the sub-context node list.
    */
   public SubContextList getSubContextList()
   {

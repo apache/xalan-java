@@ -278,7 +278,8 @@ public class XPathAPI
    *   @param contextNode The node to start searching from.
    *   @param str A valid XPath string.
    *   @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
-   * NEEDSDOC @param prefixResolver
+   *   @param prefixResolver Will be called if the parser encounters namespace 
+   *                         prefixes, to resolve the prefixes to URLs.
    *   @return An XObject, which can be used to obtain a string, number, nodelist, etc, should never be null.
    *   @see org.apache.xpath.objects.XObject
    *   @see org.apache.xpath.objects.XNull

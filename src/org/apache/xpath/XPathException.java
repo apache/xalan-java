@@ -72,7 +72,7 @@ import javax.xml.transform.TransformerException;
 public class XPathException extends TransformerException
 {
 
-  /** NEEDSDOC Field m_styleNode          */
+  /** The home of the expression that caused the error.  */
   Object m_styleNode = null;
 
   /**
@@ -84,7 +84,7 @@ public class XPathException extends TransformerException
     return m_styleNode;
   }
 
-  /** NEEDSDOC Field m_exception          */
+  /** A nested exception.   */
   protected Exception m_exception;
 
   /**
@@ -189,9 +189,8 @@ public class XPathException extends TransformerException
 
   /**
    * Find the most contained message.
-   * @returns The error message of the originating exception.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The error message of the originating exception.
    */
   public String getMessage()
   {
