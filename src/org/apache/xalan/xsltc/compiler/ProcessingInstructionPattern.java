@@ -87,6 +87,9 @@ final class ProcessingInstructionPattern extends StepPattern {
     /**
      *
      */
+     public double getDefaultPriority() {
+        return (_name != null) ? 0.0 : -0.5;       
+     }
     public String toString() {
 	if (_predicates == null)
 	    return "processing-instruction("+_name+")";
