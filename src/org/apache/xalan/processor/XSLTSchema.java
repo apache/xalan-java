@@ -270,7 +270,7 @@ public class XSLTSchema extends XSLTElementDef
                                                    XSLTAttributeDef.T_YESNO,
                                                    false);
     XSLTAttributeDef escapeUriAttributesAttr = new XSLTAttributeDef(null,
-                                                   "excape-uri-asttributes",
+                                                   "escape-uri-attributes",
                                                    XSLTAttributeDef.T_YESNO,
                                                    false);
     
