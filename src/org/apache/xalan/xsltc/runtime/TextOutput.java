@@ -368,8 +368,10 @@ public final class TextOutput implements TransletOutputHandler {
     private void escapeCharacters(char[] ch, int off, int len)
 	throws SAXException {
 
-	final int limit = off + len;
+	int limit = off + len;
 	int offset = off;
+
+	if (limit > ch.length) limit = ch.length;;
 
 	// Step through characters and escape all special characters
 	for (int i = off; i < limit; i++) {
