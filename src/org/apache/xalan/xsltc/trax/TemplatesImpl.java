@@ -37,7 +37,6 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
-import org.apache.xml.utils.ObjectFactory;
 
 /**
  * @author Morten Jorgensen

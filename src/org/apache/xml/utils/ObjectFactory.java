@@ -45,7 +45,7 @@ import java.io.InputStreamReader;
  *
  * @version $Id:  $
  */
-public class ObjectFactory {
+class ObjectFactory {
 
     //
     // Constants
@@ -96,7 +96,7 @@ public class ObjectFactory {
      *
      * @exception ObjectFactory.ConfigurationError
      */
-    public static Object createObject(String factoryId, String fallbackClassName)
+    static Object createObject(String factoryId, String fallbackClassName)
         throws ConfigurationError {
         return createObject(factoryId, null, fallbackClassName);
     } // createObject(String,String):Object
@@ -123,7 +123,7 @@ public class ObjectFactory {
      *
      * @exception ObjectFactory.ConfigurationError
      */
-    public static Object createObject(String factoryId, 
+    static Object createObject(String factoryId, 
                                       String propertiesFilename,
                                       String fallbackClassName)
         throws ConfigurationError
@@ -170,7 +170,7 @@ public class ObjectFactory {
      *
      * @exception ObjectFactory.ConfigurationError
      */
-    public static Class lookUpFactoryClass(String factoryId) 
+    static Class lookUpFactoryClass(String factoryId) 
         throws ConfigurationError
     {
         return lookUpFactoryClass(factoryId, null, null);
@@ -198,7 +198,7 @@ public class ObjectFactory {
      *
      * @exception ObjectFactory.ConfigurationError
      */
-    public static Class lookUpFactoryClass(String factoryId,
+    static Class lookUpFactoryClass(String factoryId,
                                            String propertiesFilename,
                                            String fallbackClassName)
         throws ConfigurationError
@@ -252,7 +252,7 @@ public class ObjectFactory {
      *
      * @exception ObjectFactory.ConfigurationError
      */
-    public static String lookUpFactoryClassName(String factoryId,
+    static String lookUpFactoryClassName(String factoryId,
                                                 String propertiesFilename,
                                                 String fallbackClassName)
     {
@@ -370,7 +370,7 @@ public class ObjectFactory {
      * Figure out which ClassLoader to use.  For JDK 1.2 and later use
      * the context ClassLoader.
      */
-    public static ClassLoader findClassLoader()
+    static ClassLoader findClassLoader()
         throws ConfigurationError
     { 
         SecuritySupport ss = SecuritySupport.getInstance();
@@ -429,7 +429,7 @@ public class ObjectFactory {
     /**
      * Create an instance of a class using the specified ClassLoader
      */ 
-    public static Object newInstance(String className, ClassLoader cl,
+    static Object newInstance(String className, ClassLoader cl,
                                       boolean doFallback)
         throws ConfigurationError
     {
@@ -453,10 +453,21 @@ public class ObjectFactory {
     /**
      * Find a Class using the specified ClassLoader
      */ 
-    public static Class findProviderClass(String className, ClassLoader cl,
+    static Class findProviderClass(String className, ClassLoader cl,
                                            boolean doFallback)
         throws ClassNotFoundException, ConfigurationError
-    {
+    {   
+        //throw security exception if the calling thread is not allowed to access the
+        //class. Restrict the access to the package classes as specified in java.security policy.
+        SecurityManager security = System.getSecurityManager();
+        try{
+            if (security != null){
+                security.checkPackageAccess(className);
+             }   
+        }catch(SecurityException e){
+            throw e;
+        }
+        
         Class providerClass;
         if (cl == null) {
             // XXX Use the bootstrap ClassLoader.  There is no way to
@@ -583,7 +594,7 @@ public class ObjectFactory {
     /**
      * A configuration error.
      */
-    public static class ConfigurationError 
+    static class ConfigurationError 
         extends Error {
 
         //
@@ -601,7 +612,7 @@ public class ObjectFactory {
          * Construct a new instance with the specified detail string and
          * exception.
          */
-        public ConfigurationError(String msg, Exception x) {
+        ConfigurationError(String msg, Exception x) {
             super(msg);
             this.exception = x;
         } // <init>(String,Exception)
@@ -611,7 +622,7 @@ public class ObjectFactory {
         //
 
         /** Returns the exception associated to this error. */
-        public Exception getException() {
+        Exception getException() {
             return exception;
         } // getException():Exception
 

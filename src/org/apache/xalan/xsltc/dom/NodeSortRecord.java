@@ -27,7 +27,6 @@ import org.apache.xalan.xsltc.CollatorFactory;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xml.utils.ObjectFactory;
 import org.apache.xml.utils.StringComparable;
 
 /**

@@ -48,7 +48,6 @@ import org.apache.xalan.xsltc.compiler.util.ObjectType;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.xml.utils.ObjectFactory;
 
 /**
  * @author Jacek Ambroziak

@@ -30,7 +30,6 @@ import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.Constants;
-import org.apache.xml.utils.ObjectFactory;
 
 /**
  * @author Todd Miller

@@ -63,7 +63,6 @@ import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 
-import org.apache.xml.utils.ObjectFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLFilter;

@@ -20,7 +20,6 @@ package org.apache.xml.dtm;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.ObjectFactory;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLStringFactory;
 

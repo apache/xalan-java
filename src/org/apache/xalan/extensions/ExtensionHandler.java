@@ -27,7 +27,6 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.functions.FuncExtFunction;
-import org.apache.xml.utils.ObjectFactory;
 
 /**
  * Abstract base class for handling an extension namespace for XPath.

@@ -32,7 +32,6 @@ import java.util.StringTokenizer;
 import java.security.PrivilegedAction;
 import java.security.AccessController;
 
-import org.apache.xml.utils.ObjectFactory;
 
 /**
  * Provides information about encodings. Depends on the Java runtime

@@ -31,7 +31,6 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xml.utils.ObjectFactory;
 
 /**
  * @author G. Todd Miller 

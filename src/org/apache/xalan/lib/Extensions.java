@@ -31,7 +31,6 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xml.utils.ObjectFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;

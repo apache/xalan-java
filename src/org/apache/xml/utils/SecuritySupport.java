@@ -77,33 +77,33 @@ class SecuritySupport {
      * Return an appropriate instance of this class, depending on whether
      * we're on a JDK 1.1 or J2SE 1.2 (or later) system.
      */
-    public static SecuritySupport getInstance() {
+    static SecuritySupport getInstance() {
 	return (SecuritySupport)securitySupport;
     }
 
-    public ClassLoader getContextClassLoader() {
+    ClassLoader getContextClassLoader() {
 	return null;
     }
 
-    public ClassLoader getSystemClassLoader() {
+    ClassLoader getSystemClassLoader() {
         return null;
     }
 
-    public ClassLoader getParentClassLoader(ClassLoader cl) {
+    ClassLoader getParentClassLoader(ClassLoader cl) {
         return null;
     }
 
-    public String getSystemProperty(String propName) {
+    String getSystemProperty(String propName) {
         return System.getProperty(propName);
     }
 
-    public FileInputStream getFileInputStream(File file)
+    FileInputStream getFileInputStream(File file)
         throws FileNotFoundException
     {
         return new FileInputStream(file);
     }
 
-    public InputStream getResourceAsStream(ClassLoader cl, String name) {
+    InputStream getResourceAsStream(ClassLoader cl, String name) {
         InputStream ris;
         if (cl == null) {
             ris = ClassLoader.getSystemResourceAsStream(name);
@@ -113,11 +113,11 @@ class SecuritySupport {
         return ris;
     }
     
-    public boolean getFileExists(File f) {
+    boolean getFileExists(File f) {
         return f.exists();
     }
     
-    public long getLastModified(File f) {
+    long getLastModified(File f) {
         return f.lastModified();
     }    
 }

@@ -35,7 +35,6 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
-import org.apache.xml.utils.ObjectFactory;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xpath.XPathProcessorException;

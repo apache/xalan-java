@@ -29,7 +29,6 @@ import java.util.Vector;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xml.utils.ObjectFactory;
 
 /**
  * For internal connectiones, i.e. Connection information supplies in the
