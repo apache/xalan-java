@@ -534,7 +534,8 @@ fw.close();</source>
 </s2><anchor name="compat"/>
 <s2 title="Using the &xslt4j; version 1 API">
 <note><em>The compatibility jar (xalanj1compat.jar), which provides support for Xalan-Java 1 API, has been deprecated. All 
-support for this API will be removed in the next releaase. If you have not already done so, we stongly urge you to shift immediately to the Xalan-Java 2/JAXP 1.1 API.</em><br/><br/>
+support for this API will be removed in the next releaase. If you have not already done so, we stongly urge you to shift immediately to the Xalan-Java 2/JAXP 1.1 API.</em><br/><br/> 
+<em>You cannot build or run xalanj1compat.jar with with &xml4j; 2.0.0.beta3.</em><br/><br/>
 <em>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</em></note>
 <p>The bin directory includes a compatibility jar, xalanj1compat.jar, that lets you rebuild your Xalan-Java 1.x applications to run with Xalan-Java 2. As a point of reference, this JAR includes the API required to recompile the Xalan-Java 1.x core sample applications (excluding the sample extensions) and run them with Xalan-Java 2. To use this compatibility layer with an existing Xalan-Java 1.x application, do the following:</p>
 <ol>

@@ -118,5 +118,6 @@
        <jump href="apidocs/org/xml/sax/EntityResolver.html">EntityResolver</jump> SAX interface to handle external entity references.</p>
        <p>Use <code>-CONTENTHANDLER</code> with a fully qualified class name to utilize a custom implementation of the 
        <jump href="apidocs/org/xml/sax/ContentHandler.html">ContentHandler</jump> SAX interface to serialize output.</p>
+       <note>If you want to validate an XML document (verify that it adheres to its DOCTYPE declatation), you can use the <link idref="samples" anchor="validateutility">Validate utility</link> shipped with &xslt4j-current;.</note>
    </s2>
 </s1>

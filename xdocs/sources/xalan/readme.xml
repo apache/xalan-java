@@ -145,7 +145,8 @@
      <anchor name="status"/>
      <s3 title="Version of Xerces to use"> 
        <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including xerces.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
-       <note>You may also use &xslt4j-current; for prototyping or beta testing with &xml4j; 2.0.0.0.beta3.</note>
+       <note>You may also use &xslt4j-current; for prototyping or beta testing with &xml4j; 2.0.0.beta3. <em>You may not use the 
+       <link idref="usagepatterns" anchor="compat">&xslt4j; version 1 API (deprecated)</link> with &xml4j; 2.0.0.beta3.</em></note>
        <p><em>Important</em> You may experience unpredictable anomalies if your Xalan and Xerces builds are not in synch. If you download an update to Xalan, check the release notes to determine which version of Xerces you should use.</p>
        <note>You can use Xalan with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
        <link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>
