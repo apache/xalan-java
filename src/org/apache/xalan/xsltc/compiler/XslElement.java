@@ -107,6 +107,14 @@ final class XslElement extends Instruction {
 
 	// If that is undefied we use the prefix in the supplied QName
 	String name = getAttribute("name");
+	if ((name == null) || (name.equals(Constants.EMPTYSTRING))) {
+	    final ErrorMsg msg = 
+		new ErrorMsg("You can't call an element \"\"");
+	    parser.reportError(Constants.WARNING, msg);
+	    _ignore = true;
+	    return;
+	}
+
 	QName qname = parser.getQNameSafe(name);
 	final String prefix = qname.getPrefix();
 	if ((namespace == null || namespace == Constants.EMPTYSTRING) && 
