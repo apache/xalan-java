@@ -1279,7 +1279,7 @@ public class SerializerToXML
       // Output the remaining characters.
       writer.write(ch, start, limit - start);
       // Protect comment end from a single trailing dash
-      if (ch[limit-1] == '-')
+      if (length > 0 && ch[limit-1] == '-')
         writer.write(' ');
 
       writer.write("-->");
