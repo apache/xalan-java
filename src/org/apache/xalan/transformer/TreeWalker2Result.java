@@ -73,20 +73,20 @@ import org.apache.xpath.DOMHelper;
 public class TreeWalker2Result extends TreeWalker
 {
 
-  /** NEEDSDOC Field m_transformer          */
+  /** The transformer instance          */
   TransformerImpl m_transformer;
 
-  /** NEEDSDOC Field m_handler          */
+  /** The result tree handler          */
   ResultTreeHandler m_handler;
 
-  /** NEEDSDOC Field m_startNode          */
+  /** Node where to start the tree walk           */
   Node m_startNode;
 
   /**
    * Constructor.
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param handler
+   * @param transformer Non-null transformer instance
+   * @param handler The Result tree handler to use
    */
   public TreeWalker2Result(TransformerImpl transformer,
                            ResultTreeHandler handler)
@@ -101,7 +101,7 @@ public class TreeWalker2Result extends TreeWalker
   /**
    * Perform a pre-order traversal non-recursive style.
    *
-   * NEEDSDOC @param pos
+   * @param pos Start node for traversal
    *
    * @throws TransformerException
    */
@@ -114,10 +114,10 @@ public class TreeWalker2Result extends TreeWalker
   }
 
   /**
-   * NEEDSDOC Method startNode 
+   * Start traversal of the tree at the given node
    *
    *
-   * NEEDSDOC @param node
+   * @param node Starting node for traversal
    *
    * @throws TransformerException
    */

@@ -73,42 +73,42 @@ public abstract class QueuedSAXEvent
    * Constructor QueuedSAXEvent
    *
    *
-   * NEEDSDOC @param type
+   * @param type Type of SAX event
    */
   public QueuedSAXEvent(int type)
   {
     m_type = type;
   }
 
-  /** NEEDSDOC Field DOC          */
+  /** Document SAX event          */
   static final int DOC = 1;
 
-  /** NEEDSDOC Field ELEM          */
+  /** Element SAX event          */
   static final int ELEM = 2;
 
-  /** NEEDSDOC Field m_traceManager          */
+  /** Instance of TraceManager           */
   protected TraceManager m_traceManager;
 
-  /** NEEDSDOC Field m_transformer          */
+  /** Instance of Transformer           */
   protected TransformerImpl m_transformer;
 
-  /** NEEDSDOC Field m_contentHandler          */
+  /** Instance of ContentHandler          */
   protected ContentHandler m_contentHandler;
 
-  /** NEEDSDOC Field isPending          */
+  /** Flag indicating that an event is pending          */
   public boolean isPending = false;
 
-  /** NEEDSDOC Field isEnded          */
+  /** Flag indicating that an event is ended          */
   public boolean isEnded = false;
 
-  /** NEEDSDOC Field m_type          */
+  /** Type of SAX event          */
   private int m_type;
 
   /**
-   * NEEDSDOC Method getType 
+   * Get the type of this SAX event 
    *
    *
-   * NEEDSDOC (getType) @return
+   * @return The type of this SAX event
    */
   int getType()
   {
@@ -116,10 +116,10 @@ public abstract class QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method setTraceManager 
+   * Set the Trace Manager 
    *
    *
-   * NEEDSDOC @param traceManager
+   * @param traceManager Trace Manager to set
    */
   void setTraceManager(TraceManager traceManager)
   {
@@ -127,10 +127,10 @@ public abstract class QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method setTransformer 
+   * Set the Transformer 
    *
    *
-   * NEEDSDOC @param transformer
+   * @param transformer Transformer to set
    */
   void setTransformer(TransformerImpl transformer)
   {
@@ -138,12 +138,12 @@ public abstract class QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method fireGenerateEvent 
+   * Fire a Generate Event 
    *
    *
-   * NEEDSDOC @param type
-   * NEEDSDOC @param name
-   * NEEDSDOC @param attrs
+   * @param type Event type
+   * @param name Element name
+   * @param attrs Attributes for the element
    */
   protected void fireGenerateEvent(int type, String name, Attributes attrs)
   {
@@ -155,10 +155,10 @@ public abstract class QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method getContentHandler 
+   * Get the ContentHandler used by this event
    *
    *
-   * NEEDSDOC (getContentHandler) @return
+   * @return The content Handler 
    */
   ContentHandler getContentHandler()
   {
@@ -166,10 +166,10 @@ public abstract class QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method setContentHandler 
+   * Set the ContentHandler this event will use
    *
    *
-   * NEEDSDOC @param ch
+   * @param ch Content Handler to set
    */
   void setContentHandler(ContentHandler ch)
   {
@@ -185,10 +185,10 @@ public abstract class QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method setPending 
+   * Set whether this event is pending
    *
    *
-   * NEEDSDOC @param b
+   * @param b Flag indicating whether this event is pending 
    */
   void setPending(boolean b)
   {
@@ -207,7 +207,7 @@ public abstract class QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method reset 
+   * Reset Pending flag to indicate that this event is not pending 
    *
    */
   void reset()

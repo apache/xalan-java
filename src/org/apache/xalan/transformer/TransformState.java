@@ -90,7 +90,7 @@ public interface TransformState
    * be in a default template, and thus may not be
    * defined in the stylesheet.</p>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the stylesheet element that produced the SAX event.
    */
   ElemTemplateElement getCurrentElement();
 
@@ -98,7 +98,7 @@ public interface TransformState
    * This method retrieves the current context node
    * in the source tree.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the current context node in the source tree.
    */
   Node getCurrentNode();
 
@@ -111,7 +111,7 @@ public interface TransformState
    * be a default template, and thus may not have a template
    * defined in the stylesheet.</p>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the xsl:template that is in effect
    */
   ElemTemplate getCurrentTemplate();
 
@@ -126,7 +126,7 @@ public interface TransformState
    * be a default template, and thus may not have a template
    * defined in the stylesheet.</p>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the xsl:template that was matched.
    */
   ElemTemplate getMatchedTemplate();
 
@@ -134,21 +134,22 @@ public interface TransformState
    * Retrieves the node in the source tree that matched
    * the template obtained via getMatchedTemplate().
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the node in the source tree that matched
+   * the template obtained via getMatchedTemplate().
    */
   Node getMatchedNode();
 
   /**
    * Get the current context node list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the current context node list.
    */
   NodeIterator getContextNodeList();
 
   /**
    * Get the TrAX Transformer object in effect.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the TrAX Transformer object in effect.
    */
   Transformer getTransformer();
 }

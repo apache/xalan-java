@@ -99,7 +99,7 @@ public class ResultTreeHandler extends QueuedEvents
         implements ContentHandler, LexicalHandler
 {
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Indicate whether running in Debug mode        */
   private static final boolean DEBUG = false;
 
   /**
@@ -111,8 +111,8 @@ public class ResultTreeHandler extends QueuedEvents
    * Create a new result tree handler.  The real content
    * handler will be the ContentHandler passed as an argument.
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param realHandler
+   * @param transformer non-null transformer instance
+   * @param realHandler Content Handler instance
    */
   public ResultTreeHandler(TransformerImpl transformer,
                            ContentHandler realHandler)
@@ -123,8 +123,8 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Initializer method.
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param realHandler
+   * @param transformer non-null transformer instance
+   * @param realHandler Content Handler instance
    */
   public void init(TransformerImpl transformer, ContentHandler realHandler)
   {
@@ -197,9 +197,9 @@ public class ResultTreeHandler extends QueuedEvents
    * element, so that attributes can still be added to it before
    * the real "startElement" is called on the result tree listener.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
+   * @param ns Namespace URI of element
+   * @param localName Local part of qname of element
+   * @param name Name of element
    *
    * @throws org.xml.sax.SAXException
    */
@@ -214,10 +214,10 @@ public class ResultTreeHandler extends QueuedEvents
    * element, so that attributes can still be added to it before
    * the real "startElement" is called on the result tree listener.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param ns Namespace URI of element
+   * @param localName Local part of qname of element
+   * @param name Name of element
+   * @param atts List of attributes for the element
    *
    * @throws org.xml.sax.SAXException
    */
@@ -257,9 +257,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Bottleneck the endElement event.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
+   * @param ns Namespace URI of element
+   * @param localName Local part of qname of element
+   * @param name Name of element
    *
    * @throws org.xml.sax.SAXException
    */
@@ -288,7 +288,7 @@ public class ResultTreeHandler extends QueuedEvents
     m_nsSupport.popContext();
   }
 
-  /** NEEDSDOC Field m_nsContextPushed          */
+  /** Indicate whether a namespace context was pushed          */
   boolean m_nsContextPushed = false;
 
   /**
@@ -330,12 +330,13 @@ public class ResultTreeHandler extends QueuedEvents
   }
 
   /**
-   * NEEDSDOC Method startPrefixMapping 
+   * Begin the scope of a prefix-URI Namespace mapping.
    *
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param shouldFlush
+   * @param prefix The Namespace prefix being declared.
+   * @param uri The Namespace URI the prefix is mapped to.
+   * @param shouldFlush Indicate whether pending events needs
+   * to be flushed first  
    *
    * @throws org.xml.sax.SAXException
    */
@@ -394,9 +395,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Bottleneck the characters event.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Array of characters to process
+   * @param start start of characters in the array
+   * @param length Number of characters in the array
    *
    * @throws org.xml.sax.SAXException
    */
@@ -427,9 +428,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Bottleneck the ignorableWhitespace event.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Array of characters to process
+   * @param start start of characters in the array
+   * @param length Number of characters in the array
    *
    * @throws org.xml.sax.SAXException
    */
@@ -460,8 +461,8 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Bottleneck the processingInstruction event.
    *
-   * NEEDSDOC @param target
-   * NEEDSDOC @param data
+   * @param target Processing instruction target name
+   * @param data Processing instruction data
    *
    * @throws org.xml.sax.SAXException
    */
@@ -484,7 +485,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Bottleneck the comment event.
    *
-   * NEEDSDOC @param data
+   * @param data Comment data
    *
    * @throws org.xml.sax.SAXException
    */
@@ -511,9 +512,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Bottleneck the comment event.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Character array with comment data
+   * @param start start of characters in the array
+   * @param length number of characters in the array
    *
    * @throws org.xml.sax.SAXException
    */
@@ -538,9 +539,9 @@ public class ResultTreeHandler extends QueuedEvents
   }
 
   /**
-   * Bottleneck the comment event.
+   * Entity reference event.
    *
-   * NEEDSDOC @param name
+   * @param name Name of entity
    *
    * @throws org.xml.sax.SAXException
    */
@@ -568,7 +569,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Start an entity.
    *
-   * NEEDSDOC @param name
+   * @param name Name of the entity
    *
    * @throws org.xml.sax.SAXException
    */
@@ -586,7 +587,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * End an entity.
    *
-   * NEEDSDOC @param name
+   * @param name Name of the entity
    *
    * @throws org.xml.sax.SAXException
    */
@@ -613,9 +614,11 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Start the DTD.
    *
-   * NEEDSDOC @param s1
-   * NEEDSDOC @param s2
-   * NEEDSDOC @param s3
+   * @param s1 The document type name.
+   * @param s2 The declared public identifier for the
+   *        external DTD subset, or null if none was declared.
+   * @param s3 The declared system identifier for the
+   *        external DTD subset, or null if none was declared.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -712,7 +715,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Flush the pending element.
    *
-   * NEEDSDOC @param type
+   * @param type Event type
    *
    * @throws org.xml.sax.SAXException
    */
@@ -743,8 +746,8 @@ public class ResultTreeHandler extends QueuedEvents
    * Given a result tree fragment, walk the tree and
    * output it to the result stream.
    *
-   * NEEDSDOC @param obj
-   * NEEDSDOC @param support
+   * @param obj Result tree fragment object
+   * @param support XPath context for the result tree fragment
    *
    * @throws org.xml.sax.SAXException
    */
@@ -766,8 +769,8 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Clone an element with or without children.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param shouldCloneAttributes
+   * @param node Element to clone
+   * @param shouldCloneAttributes Whether or not to clone with children
    *
    * @throws org.xml.sax.SAXException
    */
@@ -788,7 +791,7 @@ public class ResultTreeHandler extends QueuedEvents
    * To fullfill the FormatterListener interface... no action
    * for the moment.
    *
-   * NEEDSDOC @param locator
+   * @param locator Document locator
    */
   public void setDocumentLocator(Locator locator){}
 
@@ -798,8 +801,8 @@ public class ResultTreeHandler extends QueuedEvents
    * If it's not, it still needs to be declared at this point.
    * TODO: This needs to be done at an earlier stage in the game... -sb
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param rawName
+   * @param ns Namespace URI of the element 
+   * @param rawName Raw name of element (with prefix)
    *
    * @throws org.xml.sax.SAXException
    */
@@ -866,8 +869,8 @@ public class ResultTreeHandler extends QueuedEvents
    * Check to see if we should switch serializers based on the
    * first output element being an HTML element.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
+   * @param ns Namespace URI of the element
+   * @param localName Local part of name of the element  
    *
    * @throws org.xml.sax.SAXException
    */
@@ -927,7 +930,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Copy <KBD>xmlns:</KBD> attributes in if not already in scope.
    *
-   * NEEDSDOC @param src
+   * @param src Source Node
    *
    * @throws TransformerException
    */
@@ -981,9 +984,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Given a prefix, return the namespace,
    *
-   * NEEDSDOC @param prefix
+   * @param prefix Given prefix name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Namespace associated with the given prefix, or null
    */
   public String getURI(String prefix)
   {
@@ -993,9 +996,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Given a namespace, try and find a prefix.
    *
-   * NEEDSDOC @param namespace
+   * @param namespace Given namespace URI
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Prefix name associated with namespace URI 
    */
   public String getPrefix(String namespace)
   {
@@ -1017,7 +1020,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Get the NamespaceSupport object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return NamespaceSupport object.
    */
   public NamespaceSupport getNamespaceSupport()
   {
@@ -1027,7 +1030,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Override QueuedEvents#initQSE.
    *
-   * NEEDSDOC @param qse
+   * @param qse Give queued Sax event
    */
   protected void initQSE(QueuedSAXEvent qse)
   {
@@ -1053,7 +1056,7 @@ public class ResultTreeHandler extends QueuedEvents
    * Set the current content handler.
    *
    *
-   * NEEDSDOC @param ch
+   * @param ch Content Handler to be set
    * @return The current content handler, or null if none
    *         has been registered.
    * @see #getContentHandler
@@ -1069,7 +1072,8 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Get a unique namespace value.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a unique namespace value to be used with a 
+   * fabricated prefix
    */
   public int getUniqueNSValue()
   {
@@ -1079,7 +1083,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Get new unique namespace prefix.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Unique fabricated prefix.
    */
   public String getNewUniqueNSPrefix()
   {
@@ -1093,7 +1097,7 @@ public class ResultTreeHandler extends QueuedEvents
    * the attributes have to be fully collected before you
    * can call startElement.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the pending attributes. 
    */
   public MutableAttrListImpl getPendingAttributes()
   {
@@ -1148,13 +1152,14 @@ public class ResultTreeHandler extends QueuedEvents
   }
 
   /**
-   * NEEDSDOC Method isDefinedNSDecl 
+   * Return whether or not a namespace declaration is defined
    *
    *
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param value
+   * @param rawName Raw name of namespace element
+   * @param value URI of given namespace
    *
-   * NEEDSDOC (isDefinedNSDecl) @return
+   * @return True if the namespace is already defined in list of 
+   * namespaces 
    */
   public boolean isDefinedNSDecl(String rawName, String value)
   {
@@ -1183,12 +1188,13 @@ public class ResultTreeHandler extends QueuedEvents
   }
 
   /**
-   * NEEDSDOC Method isDefinedNSDecl 
+   * Returns whether a namespace is defined 
    *
    *
-   * NEEDSDOC @param attr
+   * @param attr Namespace attribute node
    *
-   * NEEDSDOC (isDefinedNSDecl) @return
+   * @return True if the namespace is already defined in 
+   * list of namespaces
    */
   public boolean isDefinedNSDecl(Attr attr)
   {
@@ -1214,7 +1220,7 @@ public class ResultTreeHandler extends QueuedEvents
    * attribute templates as need be, and processing the xsl:use
    * attribute.
    *
-   * NEEDSDOC @param attr
+   * @param attr Attribute node to add to result tree
    *
    * @throws TransformerException
    */
@@ -1234,7 +1240,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Copy DOM attributes to the result element.
    *
-   * NEEDSDOC @param src
+   * @param src Source node with the attributes
    *
    * @throws TransformerException
    */
@@ -1255,7 +1261,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Tell if an element is pending, to be output to the result tree.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if an element is pending
    */
   public boolean isElementPending()
   {
@@ -1282,7 +1288,7 @@ public class ResultTreeHandler extends QueuedEvents
    */
   private ContentHandler m_contentHandler;
 
-  /** NEEDSDOC Field m_lexicalHandler          */
+  /** The LexicalHandler          */
   private LexicalHandler m_lexicalHandler;
 
   /**
@@ -1295,7 +1301,7 @@ public class ResultTreeHandler extends QueuedEvents
    */
   private int m_uniqueNSValue = 0;
 
-  /** NEEDSDOC Field S_NAMESPACEPREFIX          */
+  /** Prefix used to create unique prefix names          */
   private static final String S_NAMESPACEPREFIX = "ns";
 
   /**
@@ -1311,63 +1317,63 @@ public class ResultTreeHandler extends QueuedEvents
   // These are passed to flushPending, to help it decide if it 
   // should really flush.
 
-  /** NEEDSDOC Field EVT_SETDOCUMENTLOCATOR          */
+  /** SETDOCUMENTLOCATOR event type          */
   private static final int EVT_SETDOCUMENTLOCATOR = 1;
 
-  /** NEEDSDOC Field EVT_STARTDOCUMENT          */
+  /** STARTDOCUMENT event type          */
   private static final int EVT_STARTDOCUMENT = 2;
 
-  /** NEEDSDOC Field EVT_ENDDOCUMENT          */
+  /** ENDDOCUMENT event type           */
   private static final int EVT_ENDDOCUMENT = 3;
 
-  /** NEEDSDOC Field EVT_STARTPREFIXMAPPING          */
+  /** STARTPREFIXMAPPING event type          */
   private static final int EVT_STARTPREFIXMAPPING = 4;
 
-  /** NEEDSDOC Field EVT_ENDPREFIXMAPPING          */
+  /** ENDPREFIXMAPPING event type          */
   private static final int EVT_ENDPREFIXMAPPING = 5;
 
-  /** NEEDSDOC Field EVT_STARTELEMENT          */
+  /** STARTELEMENT event type          */
   private static final int EVT_STARTELEMENT = 6;
 
-  /** NEEDSDOC Field EVT_ENDELEMENT          */
+  /** ENDELEMENT event type           */
   private static final int EVT_ENDELEMENT = 7;
 
-  /** NEEDSDOC Field EVT_CHARACTERS          */
+  /** CHARACTERS event type          */
   private static final int EVT_CHARACTERS = 8;
 
-  /** NEEDSDOC Field EVT_IGNORABLEWHITESPACE          */
+  /** IGNORABLEWHITESPACE event type           */
   private static final int EVT_IGNORABLEWHITESPACE = 9;
 
-  /** NEEDSDOC Field EVT_PROCESSINGINSTRUCTION          */
+  /** PROCESSINGINSTRUCTION event type          */
   private static final int EVT_PROCESSINGINSTRUCTION = 10;
 
-  /** NEEDSDOC Field EVT_SKIPPEDENTITY          */
+  /** SKIPPEDENTITY event type          */
   private static final int EVT_SKIPPEDENTITY = 11;
 
-  /** NEEDSDOC Field EVT_COMMENT          */
+  /** COMMENT event type          */
   private static final int EVT_COMMENT = 12;
 
-  /** NEEDSDOC Field EVT_ENTITYREF          */
+  /** ENTITYREF event type          */
   private static final int EVT_ENTITYREF = 13;
 
-  /** NEEDSDOC Field EVT_STARTENTITY          */
+  /** STARTENTITY event type          */
   private static final int EVT_STARTENTITY = 14;
 
-  /** NEEDSDOC Field EVT_ENDENTITY          */
+  /** ENDENTITY event type          */
   private static final int EVT_ENDENTITY = 15;
 
-  /** NEEDSDOC Field EVT_STARTDTD          */
+  /** STARTDTD event type          */
   private static final int EVT_STARTDTD = 16;
 
-  /** NEEDSDOC Field EVT_ENDDTD          */
+  /** ENDDTD event type         */
   private static final int EVT_ENDDTD = 17;
 
-  /** NEEDSDOC Field EVT_STARTCDATA          */
+  /** STARTCDATA event type          */
   private static final int EVT_STARTCDATA = 22;
 
-  /** NEEDSDOC Field EVT_ENDCDATA          */
+  /** ENDCDATA event type          */
   private static final int EVT_ENDCDATA = 23;
 
-  /** NEEDSDOC Field EVT_NODE          */
+  /** NODE  event type         */
   private static final int EVT_NODE = 24;
 }

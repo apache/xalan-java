@@ -58,7 +58,7 @@ package org.apache.xalan.transformer;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class XSLInfiniteLoopException <needs-comment/>
+ * Class used to create an Infinite Loop Exception 
  */
 class XSLInfiniteLoopException
 {
@@ -73,10 +73,10 @@ class XSLInfiniteLoopException
   }
 
   /**
-   * NEEDSDOC Method getMessage 
+   * Get Message associated with the exception
    *
    *
-   * NEEDSDOC (getMessage) @return
+   * @return Message associated with the exception
    */
   public String getMessage()
   {

@@ -73,7 +73,7 @@ public interface TransformerClient
    * information about he state of the transformation. This
    * method will be called  before each startDocument event.
    *
-   * NEEDSDOC @param ts
+   * @param ts A reference to a TransformState object
    */
   void setTransformState(TransformState ts);
 }

@@ -94,7 +94,7 @@ public class StackGuard
    * infinite loop situation, when there is none.
    * Post version 1.0.0, we'll make this a runtime feature.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The recursion limit.
    */
   public int getRecursionLimit()
   {
@@ -102,7 +102,7 @@ public class StackGuard
   }
 
   /**
-   * Get the recursion limit.
+   * Set the recursion limit.
    * Used for infinite loop check. If the value is -1, do not
    * check for infinite loops. Anyone who wants to enable that
    * check should change the value of this variable to be the
@@ -111,20 +111,20 @@ public class StackGuard
    * infinite loop situation, when there is none.
    * Post version 1.0.0, we'll make this a runtime feature.
    *
-   * NEEDSDOC @param limit
+   * @param limit The recursion limit.
    */
   public void setRecursionLimit(int limit)
   {
     m_recursionLimit = limit;
   }
 
-  /** NEEDSDOC Field m_xslRule          */
+  /** Stylesheet Template node          */
   Node m_xslRule;
 
-  /** NEEDSDOC Field m_sourceXML          */
+  /** Source node          */
   Node m_sourceXML;
 
-  /** NEEDSDOC Field stack          */
+  /** Stack where ElemTempalteElements will be pushed          */
   java.util.Stack stack = new java.util.Stack();
 
   /**
@@ -137,8 +137,8 @@ public class StackGuard
    * Constructor StackGuard
    *
    *
-   * NEEDSDOC @param xslTemplate
-   * NEEDSDOC @param sourceXML
+   * @param xslTemplate Current template node
+   * @param sourceXML Source Node
    */
   public StackGuard(ElemTemplateElement xslTemplate, Node sourceXML)
   {
@@ -147,12 +147,12 @@ public class StackGuard
   }
 
   /**
-   * NEEDSDOC Method equals 
+   * Overide equal method for StackGuard objects 
    *
    *
-   * NEEDSDOC @param obj
+   * @param obj StackGuard object to compare
    *
-   * NEEDSDOC (equals) @return
+   * @return True if the given object matches this StackGuard object
    */
   public boolean equals(Object obj)
   {
@@ -167,10 +167,10 @@ public class StackGuard
   }
 
   /**
-   * NEEDSDOC Method print 
+   * Output diagnostics if in an infinite loop
    *
    *
-   * NEEDSDOC @param pw
+   * @param pw Non-null PrintWriter instance to use
    */
   public void print(PrintWriter pw)
   {
@@ -191,10 +191,10 @@ public class StackGuard
   }
 
   /**
-   * NEEDSDOC Method checkForInfinateLoop 
+   * Check if we are in an infinite loop
    *
    *
-   * NEEDSDOC @param guard
+   * @param guard Current StackGuard object (matching current template)  
    *
    * @throws TransformerException
    */
@@ -241,11 +241,11 @@ public class StackGuard
   }
 
   /**
-   * NEEDSDOC Method push 
+   * Push in a StackGuard object mathing given template 
    *
    *
-   * NEEDSDOC @param xslTemplate
-   * NEEDSDOC @param sourceXML
+   * @param xslTemplate Current template being processed
+   * @param sourceXML Current Source Node 
    *
    * @throws TransformerException
    */
@@ -260,7 +260,7 @@ public class StackGuard
   }
 
   /**
-   * NEEDSDOC Method pop 
+   * Pop out Stack of StackGuard objects 
    *
    */
   public void pop()

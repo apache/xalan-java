@@ -81,12 +81,12 @@ public class SerializerSwitcher
 {
 
   /**
-   * NEEDSDOC Method switchSerializerIfHTML
+   * Switch to HTML serializer if element is HTML
    *
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
+   * @param transformer Non-null transformer instance
+   * @param ns Namespace URI of the element
+   * @param localName Local part of name of element 
    *
    * @throws TransformerException
    */

@@ -65,21 +65,21 @@ package org.apache.xalan.transformer;
 public class ResultNameSpace
 {
 
-  /** NEEDSDOC Field m_next          */
+  /** Pointer to next ResultNameSpace          */
   public ResultNameSpace m_next = null;
 
-  /** NEEDSDOC Field m_prefix          */
+  /** Prefix of namespace         */
   public String m_prefix;
 
-  /** NEEDSDOC Field m_uri          */
+  /** Namespace URI          */
   public String m_uri;  // if null, then Element namespace is empty.
 
   /**
    * Construct a namespace for placement on the
    * result tree namespace stack.
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
+   * @param prefix of result namespace
+   * @param uri URI of result namespace
    */
   public ResultNameSpace(String prefix, String uri)
   {

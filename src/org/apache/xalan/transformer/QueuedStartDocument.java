@@ -85,10 +85,10 @@ public class QueuedStartDocument extends QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method setPending 
+   * Set Whether this document event is pending
    *
    *
-   * NEEDSDOC @param b
+   * @param b Flag indicating whether this document event is pending
    */
   void setPending(boolean b)
   {
@@ -126,10 +126,11 @@ public class QueuedStartDocument extends QueuedSAXEvent
   private boolean m_isTextEntity = false;
 
   /**
-   * NEEDSDOC Method setIsTextEntity 
+   * Set whether we have some document content since the last
+   * call to startDocument()
    *
-   *
-   * NEEDSDOC @param b
+   * @param b Flag indicating whether we have some document content since the last
+   * call to startDocument()
    */
   void setIsTextEntity(boolean b)
   {
@@ -137,10 +138,11 @@ public class QueuedStartDocument extends QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method getIsTextEntity 
+   * Get whether we have some document content since the last
+   * call to startDocument()
    *
-   *
-   * NEEDSDOC (getIsTextEntity) @return
+   * @return Flag indicating whether we have some document content since the last
+   * call to startDocument()
    */
   boolean getIsTextEntity()
   {
@@ -148,7 +150,7 @@ public class QueuedStartDocument extends QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method reset 
+   * Reset this event's isPending and isTextEntity flags to false 
    *
    */
   void reset()

@@ -101,19 +101,19 @@ public class QueuedStartElement extends QueuedSAXEvent
    */
   private String m_name;
 
-  /** NEEDSDOC Field m_url          */
+  /** Namespace URL of the element          */
   private String m_url;
 
-  /** NEEDSDOC Field m_localName          */
+  /** Local part of qualified name of the element           */
   private String m_localName;
 
   /**
    * Set the pending element names.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param ns Namespace URI of the element
+   * @param localName Local part of qName of element
+   * @param name Name of element
+   * @param atts List of attributes of the element 
    */
   void setPending(String ns, String localName, String name, Attributes atts)
   {
@@ -131,7 +131,7 @@ public class QueuedStartElement extends QueuedSAXEvent
   /**
    * Get the list of pending attributes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the list of pending attributes. 
    */
   MutableAttrListImpl getAttrs()
   {
@@ -141,11 +141,11 @@ public class QueuedStartElement extends QueuedSAXEvent
   /**
    * Set an attribute in the pending attributes list.
    *
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param qName
-   * NEEDSDOC @param type
-   * NEEDSDOC @param value
+   * @param uri Namespace URI of attribute
+   * @param localName Local part of qname of the attribute 
+   * @param qName Qualified name of attribute
+   * @param type The attribute type as a string.
+   * @param value Attribute value 
    */
   void addAttribute(String uri, String localName, String qName, String type,
                     String value)
@@ -154,13 +154,13 @@ public class QueuedStartElement extends QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method isElement 
+   * Return whether the given element matches this pending element' name 
    *
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
+   * @param ns Namespace URI of given element
+   * @param localName Local part of qname of given element 
    *
-   * NEEDSDOC (isElement) @return
+   * @return True if the given element matches this.
    */
   boolean isElement(String ns, String localName)
   {
@@ -180,7 +180,7 @@ public class QueuedStartElement extends QueuedSAXEvent
   /**
    * Get the pending element name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the pending element name.
    */
   String getName()
   {
@@ -188,9 +188,9 @@ public class QueuedStartElement extends QueuedSAXEvent
   }
 
   /**
-   * Get the pending element name.
+   * Get the pending element namespace URI.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the pending element namespace URI.
    */
   String getURL()
   {
@@ -200,7 +200,7 @@ public class QueuedStartElement extends QueuedSAXEvent
   /**
    * Get the the local name.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the pending element local name.
    */
   String getLocalName()
   {
@@ -208,10 +208,12 @@ public class QueuedStartElement extends QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method nsDeclsHaveBeenAdded 
+   * Return whether Namespace declarations have been added to 
+   * this element
    *
    *
-   * NEEDSDOC (nsDeclsHaveBeenAdded) @return
+   * @return whether Namespace declarations have been added to 
+   * this element
    */
   boolean nsDeclsHaveBeenAdded()
   {
@@ -219,10 +221,12 @@ public class QueuedStartElement extends QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method setNSDeclsHaveBeenAdded 
+   * Set whether Namespace declarations have been added to 
+   * this element
    *
    *
-   * NEEDSDOC @param b
+   * @param b Flag indicating whether Namespace declarations 
+   * have been added to this element
    */
   void setNSDeclsHaveBeenAdded(boolean b)
   {
@@ -230,7 +234,7 @@ public class QueuedStartElement extends QueuedSAXEvent
   }
 
   /**
-   * NEEDSDOC Method reset 
+   * Reset this pending element
    *
    */
   void reset()
@@ -246,15 +250,15 @@ public class QueuedStartElement extends QueuedSAXEvent
     m_namespaces = null;
   }
 
-  /** NEEDSDOC Field m_namespaces          */
+  /** Vector of namespaces for this element          */
   Vector m_namespaces = null;
 
   /**
-   * NEEDSDOC Method startPrefixMapping 
+   * Start Prefix mapping for this element
    *
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
+   * @param prefix Prefix to map
+   * @param uri Namespace URI for the given prefix
    */
   void startPrefixMapping(String prefix, String uri)
   {
