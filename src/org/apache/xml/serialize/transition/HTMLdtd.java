@@ -336,7 +336,7 @@ public final class HTMLdtd
     {
         Object    value;
         
-        initialize();
+        // initialize();
         value = _byName.get( name );
         if ( value != null && value instanceof Character )
             return ( (Character) value ).charValue();
@@ -355,9 +355,12 @@ public final class HTMLdtd
      */
     public static String fromChar( char value )
     {
+        if((value < S_NOESCAPETABLESIZE) && ('\0' == m_noEscapeChars[value]))
+            return null;
+
         String    name;
         
-        initialize();
+        // initialize();
         name = (String) _byChar.get( String.valueOf( value ) );
         if ( name == null )
             return null;
@@ -365,6 +368,8 @@ public final class HTMLdtd
             return name;
     }
     
+    private static final int S_NOESCAPETABLESIZE = 256;
+    private static char[] m_noEscapeChars = new char[S_NOESCAPETABLESIZE];
 
     /**
      * Initialize upon first access. Will load all the HTML character references
@@ -386,6 +391,8 @@ public final class HTMLdtd
         if ( _byName != null )
             return;
         try {
+            for(int i = 0; i < S_NOESCAPETABLESIZE; i++)
+              m_noEscapeChars[i] = '\0';
             _byName = new Hashtable();
             _byChar = new Hashtable();
             is = HTMLdtd.class.getResourceAsStream( ENTITIES_RESOURCE );
@@ -408,7 +415,11 @@ public final class HTMLdtd
                         if ( index > 0 )
                             value = value.substring( 0, index );
                         code = Integer.parseInt( value );
-                                        defineEntity( name, (char) code );
+                        if(code < S_NOESCAPETABLESIZE)
+                        {
+                          m_noEscapeChars[code] = 'e';
+                        }
+                        defineEntity( name, (char) code );
                     }
                 }
                 line = reader.readLine();
