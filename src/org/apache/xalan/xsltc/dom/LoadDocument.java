@@ -192,7 +192,10 @@ public final class LoadDocument {
 
 	    // Get the base of the current DOM's URI
 	    if (xmlURI != null) {
-		final int sep = xmlURI.lastIndexOf('/') + 1;
+		int sep = xmlURI.lastIndexOf('\\') + 1;
+		if (sep <= 0) {
+		    sep = xmlURI.lastIndexOf('/') + 1;
+	        }
 		xmlURI = xmlURI.substring(0, sep); // could be empty string
 	    }
 	    else {
@@ -201,7 +204,10 @@ public final class LoadDocument {
 
 	    // Get the base of the current stylesheet's URI
 	    if (xslURI != null) {
-		final int sep = xslURI.lastIndexOf('/') + 1;
+		int sep = xslURI.lastIndexOf('\\') + 1;
+		if (sep <= 0) {
+		    sep = xslURI.lastIndexOf('/') + 1;
+	        }
 		xslURI = xslURI.substring(0, sep); // could be empty string
 	    }
 	    else {
@@ -235,7 +241,10 @@ public final class LoadDocument {
 		    // Get the URI from this node if no xml URI base is set
 		    if ((xmlURI == null) || xmlURI.equals("")) {
 			xmlURI = dom.getDocumentURI(node);
-			final int sep = xmlURI.lastIndexOf('/') + 1;
+			int sep = xmlURI.lastIndexOf('\\') + 1;
+			if (sep <= 0) {
+			    sep = xmlURI.lastIndexOf('/') + 1;
+		        }
 			xmlURI = xmlURI.substring(0, sep);
 		    }
 		    // First try to load doc relative to current DOM
