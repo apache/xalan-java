@@ -663,7 +663,7 @@ public class TransformerImpl extends XMLFilterImpl
         int includedCount = imported.getIncludeCountComposed();
         for (int j = 0; j < includedCount; j++)
         {
-          Stylesheet included = imported.getIncludeComposed(i);
+          Stylesheet included = imported.getIncludeComposed(j);
           included.runtimeInit(this);
           for(ElemTemplateElement child = included.getFirstChildElem();
               child != null; child = child.getNextSiblingElem())
