@@ -173,12 +173,16 @@ public final class ResultTreeType extends Type {
 	    if (classGen.isExternal()) {
 		il.append(new CHECKCAST(cpg.addClass(className)));
 	    }
-
-	    //il.append(methodGen.loadDOM());
+	    il.append(DUP);
+	    /*
 	    il.append(classGen.loadTranslet());
+	    if (classGen.isExternal()) {
+		il.append(new CHECKCAST(cpg.addClass(className)));
+	    }
+	    */
 	    il.append(new GETFIELD(cpg.addFieldref(className, "_dom",
 						   classGen.getDOMClassSig())));
-	    
+
 	    // Create a new instance of a StringValueHandler
 	    int index = cpg.addMethodref(STRING_VALUE_HANDLER, "<init>", "()V");
 	    il.append(new NEW(cpg.addClass(STRING_VALUE_HANDLER)));
@@ -194,12 +198,8 @@ public final class ResultTreeType extends Type {
 	    il.append(new ASTORE(handler.getIndex()));
 
 	    // Call the method that implements this result tree
-	    index = cpg.addMethodref(className,
-				     _methodName,
-				     "("
-				     + DOM_CLASS_SIG
-				     + TRANSLET_OUTPUT_SIG
-				     +")V");
+	    index = cpg.addMethodref(className, _methodName,
+				     "("+ DOM_CLASS_SIG+ TRANSLET_OUTPUT_SIG+")V");
 	    il.append(new INVOKEVIRTUAL(index));
 	    
 	    // Restore new handler and call getValue()

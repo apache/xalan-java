@@ -326,6 +326,10 @@ public class MethodGenerator extends MethodGen
 	return loadCurrentNode();
     }
 
+    public Instruction storeContextNode() {
+	return storeCurrentNode();
+    }
+
     public int getLocalIndex(String name) {
 	return getLocalVariable(name).getIndex();
     }

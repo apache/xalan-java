@@ -390,6 +390,10 @@ final class Step extends RelativeLocationPath {
 		
 		il.append(methodGen.loadCurrentNode());
 		il.append(classGen.loadTranslet());
+		if (classGen.isExternal()) {
+		    final String className = classGen.getClassName();
+		    il.append(new CHECKCAST(cpg.addClass(className)));
+		}
 		il.append(new INVOKESPECIAL(initCNLI));
 	    }
 	}

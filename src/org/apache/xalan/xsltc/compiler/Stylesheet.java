@@ -608,7 +608,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	if (classGen.containsMethod("stripSpace",
 				    "(Lorg/apache/xalan/xsltc/DOM;II)Z") != null) {
 	    il.append(toplevel.loadDOM());
-	    il.append(new ALOAD(0));
+	    il.append(classGen.loadTranslet());
 	    il.append(new INVOKEVIRTUAL(setFilter));
 	}
 

@@ -119,45 +119,39 @@ final class VariableRef extends Expression {
 	final Type varType = _variable.getType();
 	final String varName = _variable.getName().getLocalPart();
 
+	if (varType.implementedAsMethod()) {
+	    // Fall-through for variables that are implemented as methods
+	    return;
+	}
+
 	if (_variable.isLocal()) {
-	    if (varType.implementedAsMethod() == false) {
-		if (classGen.isExternal() || _escaped) {
-		    il.append(classGen.loadTranslet());
-		    il.append(new PUSH(cpg, _variable.getStackIndex()));
-		    final int getVar = cpg.addMethodref(TRANSLET_CLASS, 
-							GET_VARIABLE,
-							GET_VARIABLE_SIG);
-		    il.append(new INVOKEVIRTUAL(getVar));
-		    _type.translateUnBox(classGen, methodGen);
-		}
-		else {
-		     il.append(_variable.loadInstruction());
-		    _variable.removeReference(this, methodGen);
-		}
+	    if (classGen.isExternal() || _escaped) {
+		il.append(classGen.loadTranslet());
+		il.append(new PUSH(cpg, _variable.getStackIndex()));
+		final int getVar = cpg.addMethodref(TRANSLET_CLASS, 
+						    GET_VARIABLE,
+						    GET_VARIABLE_SIG);
+		il.append(new INVOKEVIRTUAL(getVar));
+		_type.translateUnBox(classGen, methodGen);
 	    }
 	    else {
-		// falls through -> result trees + variables
+		il.append(_variable.loadInstruction());
+		_variable.removeReference(this, methodGen);
 	    }
 	}
 	else {
-	    if (varType.implementedAsMethod() == false) {
-		final String className = classGen.getClassName();
-		String signature = varType.toSignature();
-		if (signature.equals(DOM_IMPL_SIG))
-		    signature = classGen.getDOMClassSig();
-		
-		il.append(classGen.loadTranslet());
-		
-		// If inside a predicate we must cast this ref down
-		if (classGen.isExternal()) {
-		    il.append(new CHECKCAST(cpg.addClass(className)));
-		}
-		il.append(new GETFIELD(cpg.addFieldref(className,
-						       varName, signature)));
+	    final String className = classGen.getClassName();
+	    String signature = varType.toSignature();
+	    if (signature.equals(DOM_IMPL_SIG))
+		signature = classGen.getDOMClassSig();
+	    il.append(classGen.loadTranslet());
+
+	    // If inside a predicate we must cast this ref down
+	    if (classGen.isExternal()) {
+		il.append(new CHECKCAST(cpg.addClass(className)));
 	    }
-	    else {
-		// falls through -> result trees + variables
-	    }
+	    il.append(new GETFIELD(cpg.addFieldref(className,
+						   varName, signature)));
 	}
     }
 }

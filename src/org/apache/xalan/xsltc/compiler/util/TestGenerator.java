@@ -77,6 +77,7 @@ public final class TestGenerator extends MethodGenerator {
     private final Instruction _iloadCurrent;
     private final Instruction _iloadContext;
     private final Instruction _istoreCurrent;
+    private final Instruction _istoreContext;
     private final Instruction _astoreIterator;
     private final Instruction _aloadIterator;
 
@@ -90,6 +91,7 @@ public final class TestGenerator extends MethodGenerator {
 	_iloadCurrent  = new ILOAD(CURRENT_NODE_INDEX);
 	_istoreCurrent = new ISTORE(CURRENT_NODE_INDEX);
 	_iloadContext  = new ILOAD(CONTEXT_NODE_INDEX);
+	_istoreContext  = new ILOAD(CONTEXT_NODE_INDEX);
 	_astoreIterator = new ASTORE(ITERATOR_INDEX);
 	_aloadIterator  = new ALOAD(ITERATOR_INDEX);
     }
@@ -117,6 +119,10 @@ public final class TestGenerator extends MethodGenerator {
     /** by default context node is the same as current node. MK437 */
     public Instruction loadContextNode() {
 	return _iloadContext;
+    }
+
+    public Instruction storeContextNode() {
+	return _istoreContext;
     }
 
     public Instruction storeCurrentNode() {

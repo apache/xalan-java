@@ -154,15 +154,16 @@ final class Predicate extends Expression {
 
 	Type texp = _exp.typeCheck(stable);
 
-	// We need explicit type information for reference types
+	// We need explicit type information for reference types - no good!
 	if (texp instanceof ReferenceType) {
 	    throw new TypeCheckError(this);
 	}
 
-	// Result tree fragments need to be type-casted to a numerical type
-	// in cases where they are used in position filters.
+	// A result tree fragment should not be cast directly to a number type,
+	// but rather to a boolean value, and then to a numer (0 or 1).
+	// Ref. section 11.2 of the XSLT 1.0 spec
 	if (texp instanceof ResultTreeType) {
-	    _exp = new CastExpr(_exp, Type.String); // Costly!!!!
+	    _exp = new CastExpr(_exp, Type.Boolean);
 	    _exp = new CastExpr(_exp, Type.Real);
 	    texp = _exp.typeCheck(stable);
 	}
@@ -170,6 +171,7 @@ final class Predicate extends Expression {
 	// Numerical types will be converted to a position filter
 	if (texp instanceof NumberType) {
 
+	    // Cast any numerical types to an integer
 	    if (texp instanceof IntType == false) {
 		_exp = new CastExpr(_exp, Type.Int);
 	    }
@@ -207,6 +209,7 @@ final class Predicate extends Expression {
 		return _type = Type.NodeSet;
 	    }
 	}
+	// All other types will be handled as boolean values
 	else if (texp instanceof BooleanType == false) {
 	    _exp = new CastExpr(_exp, Type.Boolean);
 	}

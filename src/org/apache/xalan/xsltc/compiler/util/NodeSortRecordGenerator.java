@@ -87,7 +87,7 @@ public final class NodeSortRecordGenerator extends ClassGenerator {
      * The index of the translet pointer within the execution of
      * the test method.
      */
-    public Instruction aloadTranslet() {
+    public Instruction loadTranslet() {
 	return _aloadTranslet;
     }
 
@@ -98,4 +98,5 @@ public final class NodeSortRecordGenerator extends ClassGenerator {
     public boolean isExternal() {
 	return true;
     }
+
 }
