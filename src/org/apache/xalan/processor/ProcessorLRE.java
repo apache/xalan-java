@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -64,119 +64,143 @@ import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.Constants;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.StylesheetRoot;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class ProcessorLRE <needs-comment/>
+ */
 public class ProcessorLRE extends ProcessorTemplateElem
 {
-  
+
   /**
    * Receive notification of the start of an element.
    *
    * @param name The element type name.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startElement
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
+
     ElemTemplateElement p = handler.getElemTemplateElement();
     boolean excludeXSLDecl = false;
-    
-    if(null == p)
-    {
-      // Literal Result Template as stylesheet.
+    boolean isLREAsStyleSheet = false;
 
+    if (null == p)
+    {
+
+      // Literal Result Template as stylesheet.
       XSLTElementProcessor lreProcessor = handler.popProcessor();
-      XSLTElementProcessor stylesheetProcessor 
-        = handler.getProcessorFor( Constants.S_XSLNAMESPACEURL, "stylesheet",  "xsl:stylesheet" );
+      XSLTElementProcessor stylesheetProcessor =
+        handler.getProcessorFor(Constants.S_XSLNAMESPACEURL, "stylesheet",
+                                "xsl:stylesheet");
+
       handler.pushProcessor(lreProcessor);
-      
+
       Stylesheet stylesheet = new StylesheetRoot();
-      
+
       // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
 	  // ***** Note that we're assigning an empty locator. Is this necessary?
       stylesheet.setLocaterInfo(new org.xml.sax.helpers.LocatorImpl());
       stylesheet.setPrefixes(handler.getNamespaceSupport());
-
       handler.pushStylesheet(stylesheet);
-      
+
+      isLREAsStyleSheet = true;
+
       AttributesImpl stylesheetAttrs = new AttributesImpl();
       AttributesImpl lreAttrs = new AttributesImpl();
       int n = attributes.getLength();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
         String attrLocalName = attributes.getLocalName(i);
         String attrUri = attributes.getURI(i);
         String value = attributes.getValue(i);
 
-        if((null != attrUri) && attrUri.equals(Constants.S_XSLNAMESPACEURL))
+        if ((null != attrUri) && attrUri.equals(Constants.S_XSLNAMESPACEURL))
         {
-          stylesheetAttrs.addAttribute(null, attrLocalName, 
-                                       attrLocalName, 
-                                       attributes.getType(i), 
+          stylesheetAttrs.addAttribute(null, attrLocalName, attrLocalName,
+                                       attributes.getType(i),
                                        attributes.getValue(i));
         }
-        else if((attrLocalName.startsWith("xmlns:") || 
-                 attrLocalName.equals("xmlns")) && 
-                value.equals(Constants.S_XSLNAMESPACEURL))
+        else if ((attrLocalName.startsWith("xmlns:") || attrLocalName.equals(
+                "xmlns")) && value.equals(Constants.S_XSLNAMESPACEURL))
         {
+
           // ignore
         }
         else
         {
-          lreAttrs.addAttribute(attrUri, attrLocalName, 
-                                attributes.getQName(i), 
-                                attributes.getType(i), 
+          lreAttrs.addAttribute(attrUri, attrLocalName,
+                                attributes.getQName(i),
+                                attributes.getType(i),
                                 attributes.getValue(i));
         }
       }
+
       attributes = lreAttrs;
-      
+
       // Set properties from the attributes, but don't throw 
       // an error if there is an attribute defined that is not 
       // allowed on a stylesheet.
-      stylesheetProcessor.setPropertiesFromAttributes(handler, "stylesheet", 
-                                                      stylesheetAttrs, 
-                                                      stylesheet);
-
+      stylesheetProcessor.setPropertiesFromAttributes(handler, "stylesheet",
+              stylesheetAttrs, stylesheet);
       handler.pushElemTemplateElement(stylesheet);
-      
+
       ElemTemplate template = new ElemTemplate();
+
       appendAndPush(handler, template);
-      
+
       XPath rootMatch = new XPath("/", stylesheet, stylesheet, XPath.MATCH);
-      template.setMatch(rootMatch); 
+
+      template.setMatch(rootMatch);
+
       // template.setDOMBackPointer(handler.getOriginatingNode());
       stylesheet.setTemplate(template);
+
       p = handler.getElemTemplateElement();
       excludeXSLDecl = true;
     }
 
     XSLTElementDef def = getElemDef();
     Class classObject = def.getClassObject();
-    
     boolean isExtension = false;
     boolean isComponentDecl = false;
     boolean isUnknownTopLevel = false;
-    while(null != p)
+
+    while (null != p)
     {
+
       // System.out.println("Checking: "+p);
-      if(p instanceof ElemLiteralResult)
+      if (p instanceof ElemLiteralResult)
       {
-        ElemLiteralResult parentElem = (ElemLiteralResult)p;
+        ElemLiteralResult parentElem = (ElemLiteralResult) p;
+
         isExtension = parentElem.containsExtensionElementURI(uri);
       }
-      else if(p instanceof Stylesheet)
+      else if (p instanceof Stylesheet)
       {
-        Stylesheet parentElem = (Stylesheet)p;
+        Stylesheet parentElem = (Stylesheet) p;
+
         isExtension = parentElem.containsExtensionElementURI(uri);
-        if((false == isExtension) && (null != uri) && uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL))
+
+        if ((false == isExtension) && (null != uri)
+                && uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL))
         {
           isComponentDecl = true;
         }
@@ -185,71 +209,117 @@ public class ProcessorLRE extends ProcessorTemplateElem
           isUnknownTopLevel = true;
         }
       }
-      if(isExtension)
+
+      if (isExtension)
         break;
+
       p = p.getParentElem();
     }
-    
+
     ElemTemplateElement elem = null;
+
     try
     {
-      if(isExtension)
+      if (isExtension)
       {
+
         // System.out.println("Creating extension(1): "+uri);
         elem = new ElemExtensionCall();
       }
-      else if(isComponentDecl)
+      else if (isComponentDecl)
       {
-        elem = (ElemTemplateElement)classObject.newInstance();
+        elem = (ElemTemplateElement) classObject.newInstance();
       }
-      else if(isUnknownTopLevel)
+      else if (isUnknownTopLevel)
       {
+
         // TBD: Investigate, not sure about this.  -sb
-        elem = (ElemTemplateElement)classObject.newInstance();
+        elem = (ElemTemplateElement) classObject.newInstance();
       }
       else
       {
-        elem = (ElemTemplateElement)classObject.newInstance();
+        elem = (ElemTemplateElement) classObject.newInstance();
       }
+
       elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport(), excludeXSLDecl);
-      if(elem instanceof ElemLiteralResult)
+
+      if (elem instanceof ElemLiteralResult)
       {
-        ((ElemLiteralResult)elem).setNamespace(uri);
-        ((ElemLiteralResult)elem).setLocalName(localName);
-        ((ElemLiteralResult)elem).setRawName(rawName);
+        ((ElemLiteralResult) elem).setNamespace(uri);
+        ((ElemLiteralResult) elem).setLocalName(localName);
+        ((ElemLiteralResult) elem).setRawName(rawName);
+        ((ElemLiteralResult) elem).setIsLiteralResultAsStylesheet(
+          isLREAsStyleSheet);
       }
     }
-    catch(InstantiationException ie)
+    catch (InstantiationException ie)
     {
       handler.error("Failed creating ElemLiteralResult instance!", ie);
     }
-    catch(IllegalAccessException iae)
+    catch (IllegalAccessException iae)
     {
       handler.error("Failed creating ElemLiteralResult instance!", iae);
     }
-    
+
     setPropertiesFromAttributes(handler, rawName, attributes, elem);
-    
+
     // bit of a hack here...
-    if(!isExtension  && (elem instanceof ElemLiteralResult))
+    if (!isExtension && (elem instanceof ElemLiteralResult))
     {
-      isExtension = ((ElemLiteralResult)elem).containsExtensionElementURI(uri);
-      if(isExtension)
+      isExtension =
+        ((ElemLiteralResult) elem).containsExtensionElementURI(uri);
+
+      if (isExtension)
       {
+
         // System.out.println("Creating extension(2): "+uri);
         elem = new ElemExtensionCall();
+
         elem.setLocaterInfo(handler.getLocator());
         elem.setPrefixes(handler.getNamespaceSupport());
-        ((ElemLiteralResult)elem).setNamespace(uri);
-        ((ElemLiteralResult)elem).setLocalName(localName);
-        ((ElemLiteralResult)elem).setRawName(rawName);
+        ((ElemLiteralResult) elem).setNamespace(uri);
+        ((ElemLiteralResult) elem).setLocalName(localName);
+        ((ElemLiteralResult) elem).setRawName(rawName);
         setPropertiesFromAttributes(handler, rawName, attributes, elem);
       }
     }
-    
+
     appendAndPush(handler, elem);
   }
 
+  /**
+   * Receive notification of the end of an element.
+   *
+   * @param name The element type name.
+   * @param attributes The specified or defaulted attributes.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
+   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @see org.xml.sax.ContentHandler#endElement
+   *
+   * @throws SAXException
+   */
+  public void endElement(
+          StylesheetHandler handler, String uri, String localName, String rawName)
+            throws SAXException
+  {
+
+    ElemTemplateElement elem = handler.getElemTemplateElement();
+
+    if (elem instanceof ElemLiteralResult)
+    {
+      if (((ElemLiteralResult) elem).getIsLiteralResultAsStylesheet())
+      {
+        handler.popStylesheet();
+      }
+    }
+
+    super.endElement(handler, uri, localName, rawName);
+  }
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,7 +57,9 @@
 package org.apache.xalan.processor;
 
 import java.lang.StringBuffer;
+
 import org.xml.sax.SAXException;
+
 import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -70,44 +72,58 @@ import org.apache.xalan.utils.XMLCharacterRecognizer;
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-the-Result-Tree">section-Creating-the-Result-Tree in XSLT Specification</a>
  */
 public class ProcessorCharacters extends XSLTElementProcessor
-{    
+{
+
   /**
-   * Receive notification of the start of the non-text event.  This 
+   * Receive notification of the start of the non-text event.  This
    * is sent to the current processor when any non-text event occurs.
+   *
+   * NEEDSDOC @param handler
+   *
+   * @throws SAXException
    */
-  public void startNonText(StylesheetHandler handler)
-    throws SAXException
+  public void startNonText(StylesheetHandler handler) throws SAXException
   {
-    if(this == handler.getCurrentProcessor())
+
+    if (this == handler.getCurrentProcessor())
       handler.popProcessor();
 
     int nChars = m_accumulator.length();
-    if((nChars > 0) &&
-       ((null != m_xslTextElement) 
-        || !XMLCharacterRecognizer.isWhiteSpace(m_accumulator)))
+
+    if ((nChars > 0)
+            && ((null != m_xslTextElement)
+                ||!XMLCharacterRecognizer.isWhiteSpace(m_accumulator)))
     {
       ElemTextLiteral elem = new ElemTextLiteral();
+
       elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());
-      boolean doe = (null != m_xslTextElement) 
+
+      boolean doe = (null != m_xslTextElement)
                     ? m_xslTextElement.getDisableOutputEscaping() : false;
+
       elem.setDisableOutputEscaping(doe);
       elem.setPreserveSpace(true);
 
       char[] chars = new char[nChars];
+
       m_accumulator.getChars(0, nChars, chars, 0);
       elem.setChars(chars);
+
       ElemTemplateElement parent = handler.getElemTemplateElement();
+
       parent.appendChild(elem);
     }
+
     m_accumulator.setLength(0);
   }
 
-  
   /**
    * Receive notification of character data inside an element.
    *
+   *
+   * NEEDSDOC @param handler
    * @param ch The characters.
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
@@ -115,18 +131,21 @@ public class ProcessorCharacters extends XSLTElementProcessor
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#characters
+   *
+   * @throws SAXException
    */
-  public void characters (StylesheetHandler handler, 
-                          char ch[], int start, int length)
-    throws SAXException
+  public void characters(
+          StylesheetHandler handler, char ch[], int start, int length)
+            throws SAXException
   {
+
     m_accumulator.append(ch, start, length);
-    
+
     // Catch all events until a non-character event.
-    if(this != handler.getCurrentProcessor())
+    if (this != handler.getCurrentProcessor())
       handler.pushProcessor(this);
-  } 
-  
+  }
+
   /**
    * Receive notification of the end of an element.
    *
@@ -149,37 +168,42 @@ public class ProcessorCharacters extends XSLTElementProcessor
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.Attributes
+   *
+   * @throws SAXException
    */
-  public void endElement (StylesheetHandler handler, String uri, 
-                          String localName, String rawName)
-    throws SAXException
+  public void endElement(
+          StylesheetHandler handler, String uri, String localName, String rawName)
+            throws SAXException
   {
+
     // Since this has been installed as the current processor, we 
     // may get and end element event, in which case, we pop and clear 
     // and then call the real element processor.
     startNonText(handler);
-    handler.getCurrentProcessor().endElement (handler, uri, localName, rawName);
+    handler.getCurrentProcessor().endElement(handler, uri, localName,
+                                             rawName);
     handler.popProcessor();
   }
 
   /**
-   * Accumulate characters, until a non-whitespace event has 
+   * Accumulate characters, until a non-whitespace event has
    * occured.
    */
   private StringBuffer m_accumulator = new StringBuffer();
-  
+
   /**
-   * The xsl:text processor will call this to set a 
+   * The xsl:text processor will call this to set a
    * preserve space state.
    */
   private ElemText m_xslTextElement;
-  
+
   /**
    * Set the current setXslTextElement
+   *
+   * NEEDSDOC @param xslTextElement
    */
   void setXslTextElement(ElemText xslTextElement)
   {
     m_xslTextElement = xslTextElement;
   }
-
 }

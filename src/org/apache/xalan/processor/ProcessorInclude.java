@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -60,16 +60,23 @@ import org.apache.xalan.utils.TreeWalker;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.EntityResolver;
+
 import java.net.URL;
+
 import java.io.IOException;
+
 import org.xml.sax.helpers.XMLReaderFactory;
+
 import org.apache.trax.URIResolver;
+
 import org.w3c.dom.Node;
+
 import org.apache.xalan.utils.SystemIDResolver;
 
 /**
@@ -79,6 +86,7 @@ import org.apache.xalan.utils.SystemIDResolver;
  */
 class ProcessorInclude extends XSLTElementProcessor
 {
+
   /**
    * The base URL of the XSL document.
    * @serial
@@ -87,6 +95,8 @@ class ProcessorInclude extends XSLTElementProcessor
 
   /**
    * Get the base identifier with which this stylesheet is associated.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getHref()
   {
@@ -95,6 +105,8 @@ class ProcessorInclude extends XSLTElementProcessor
 
   /**
    * Get the base identifier with which this stylesheet is associated.
+   *
+   * NEEDSDOC @param baseIdent
    */
   public void setHref(String baseIdent)
   {
@@ -116,6 +128,7 @@ class ProcessorInclude extends XSLTElementProcessor
    * @param atts The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
+   * NEEDSDOC @param attributes
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
@@ -123,91 +136,122 @@ class ProcessorInclude extends XSLTElementProcessor
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.Attributes
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
+
     setPropertiesFromAttributes(handler, rawName, attributes, this);
-    
+
     int savedStylesheetType = handler.getStylesheetType();
+
     handler.setStylesheetType(StylesheetHandler.STYPE_INCLUDE);
+    handler.pushNewNamespaceSupport();
 
     try
     {
-      parse (handler, uri, localName, rawName, attributes);
+      parse(handler, uri, localName, rawName, attributes);
     }
     finally
     {
       handler.setStylesheetType(savedStylesheetType);
-      handler.popStylesheet();
+      handler.popNamespaceSupport();
+
+      // handler.popStylesheet();
     }
   }
-  
-  protected void parse (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+
+  /**
+   * NEEDSDOC Method parse 
+   *
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
+   * NEEDSDOC @param attributes
+   *
+   * @throws SAXException
+   */
+  protected void parse(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
-    URIResolver uriresolver = handler.getStylesheetProcessor().getURIResolver();
+
+    URIResolver uriresolver =
+      handler.getStylesheetProcessor().getURIResolver();
 
     try
     {
       XMLReader reader = null;
       boolean tryCreatingReader = true;
-      EntityResolver entityResolver 
-        = handler.getStylesheetProcessor().getEntityResolver();
-      
+      EntityResolver entityResolver =
+        handler.getStylesheetProcessor().getEntityResolver();
       InputSource inputSource;
-      if(null != entityResolver)
+
+      if (null != entityResolver)
       {
         inputSource = entityResolver.resolveEntity(null, getHref());
+
         // TODO: Check for relative URL, and absolutize it???  Or no?
       }
       else
       {
-        String absURL 
-          = SystemIDResolver.getAbsoluteURI(getHref(), handler.getBaseIdentifier());
+        String absURL = SystemIDResolver.getAbsoluteURI(getHref(),
+                          handler.getBaseIdentifier());
+
         inputSource = new InputSource(absURL);
       }
 
-      if(null != uriresolver)
+      if (null != uriresolver)
       {
         tryCreatingReader = false;
         reader = uriresolver.getXMLReader(inputSource);
-        if(null == reader)
+
+        if (null == reader)
         {
           Node node = uriresolver.getDOMNode(inputSource);
-          if(null != node)
+
+          if (null != node)
           {
             TreeWalker walker = new TreeWalker(handler);
+
             walker.traverse(node);
           }
           else
             tryCreatingReader = true;
         }
       }
-      if(tryCreatingReader)
+
+      if (tryCreatingReader)
       {
         reader = handler.getStylesheetProcessor().getXMLReader();
-        if(null == reader)
+
+        if (null == reader)
         {
           reader = XMLReaderFactory.createXMLReader();
         }
         else
         {
-          Class readerClass = ((Object)reader).getClass();
-          reader = (XMLReader)readerClass.newInstance();
+          Class readerClass = ((Object) reader).getClass();
+
+          reader = (XMLReader) readerClass.newInstance();
         }
       }
-      if(null != reader)
+
+      if (null != reader)
       {
-        if(null != entityResolver)
+        if (null != entityResolver)
           reader.setEntityResolver(entityResolver);
+
         reader.setContentHandler(handler);
-        reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
+        reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+                          true);
         handler.pushBaseIndentifier(inputSource.getSystemId());
+
         try
         {
           reader.parse(inputSource);
@@ -218,23 +262,23 @@ class ProcessorInclude extends XSLTElementProcessor
         }
       }
     }
-    catch(InstantiationException ie)
+    catch (InstantiationException ie)
     {
       handler.error("Could not clone parser!", ie);
     }
-    catch(IllegalAccessException iae)
+    catch (IllegalAccessException iae)
     {
       handler.error("Can not access class!", iae);
     }
-    catch(IOException ioe)
+    catch (IOException ioe)
     {
-      handler.error(XSLTErrorResources.ER_IOEXCEPTION, new Object[] {getHref()}, ioe); 
+      handler.error(XSLTErrorResources.ER_IOEXCEPTION,
+                    new Object[]{ getHref() }, ioe);
     }
-    catch(SAXException ioe)
+    catch (SAXException ioe)
     {
-      handler.error(XSLTErrorResources.ER_IOEXCEPTION, new Object[] {getHref()}, ioe); 
+      handler.error(XSLTErrorResources.ER_IOEXCEPTION,
+                    new Object[]{ getHref() }, ioe);
     }
   }
-
-
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -61,15 +61,20 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.EntityResolver;
+
 import java.net.URL;
+
 import java.io.IOException;
+
 import org.apache.trax.URIResolver;
+
 import org.w3c.dom.Node;
 
 /**
@@ -79,6 +84,7 @@ import org.w3c.dom.Node;
  */
 class ProcessorImport extends ProcessorInclude
 {
+
   /**
    * Receive notification of the start of an xsl:import element.
    *
@@ -94,6 +100,7 @@ class ProcessorImport extends ProcessorInclude
    * @param atts The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
+   * NEEDSDOC @param attributes
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
@@ -101,33 +108,41 @@ class ProcessorImport extends ProcessorInclude
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.Attributes
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
+
     setPropertiesFromAttributes(handler, rawName, attributes, this);
 
     String hrefUrl = getHref();
-    if(handler.importStackContains(hrefUrl))
+
+    if (handler.importStackContains(hrefUrl))
     {
-      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_IMPORTING_ITSELF, new Object[] {hrefUrl})); //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
+      throw new SAXException(
+        XSLMessages.createMessage(
+          XSLTErrorResources.ER_IMPORTING_ITSELF, new Object[]{ hrefUrl }));  //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
     }
 
     handler.pushImportURL(hrefUrl);
+
     int savedStylesheetType = handler.getStylesheetType();
+
     handler.setStylesheetType(StylesheetHandler.STYPE_IMPORT);
-    
+    handler.pushNewNamespaceSupport();
+
     try
     {
-      parse (handler, uri, localName, rawName, attributes);
+      parse(handler, uri, localName, rawName, attributes);
     }
     finally
     {
       handler.setStylesheetType(savedStylesheetType);
       handler.popImportURL();
-      handler.popStylesheet();
+      handler.popNamespaceSupport();
     }
   }
 }

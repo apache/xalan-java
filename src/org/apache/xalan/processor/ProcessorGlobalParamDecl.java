@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -58,6 +58,7 @@ package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemParam;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
@@ -68,33 +69,49 @@ import org.xml.sax.Attributes;
  */
 class ProcessorGlobalParamDecl extends ProcessorTemplateElem
 {
+
   /**
-   * Append the current template element to the current 
-   * template element, and then push it onto the current template 
+   * Append the current template element to the current
+   * template element, and then push it onto the current template
    * element stack.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param elem
+   *
+   * @throws SAXException
    */
-  protected void appendAndPush(StylesheetHandler handler,
-                               ElemTemplateElement elem)
-    throws SAXException
+  protected void appendAndPush(
+          StylesheetHandler handler, ElemTemplateElement elem)
+            throws SAXException
   {
+
     // Just push, but don't append.
     handler.pushElemTemplateElement(elem);
   }
-  
-    /**
+
+  /**
    * Receive notification of the end of an element.
    *
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endElement
+   *
+   * @throws SAXException
    */
-  public void endElement (StylesheetHandler handler, 
-                          String uri, String localName, String rawName)
-    throws SAXException
+  public void endElement(
+          StylesheetHandler handler, String uri, String localName, String rawName)
+            throws SAXException
   {
-    ElemParam v = (ElemParam)handler.getElemTemplateElement();
+
+    ElemParam v = (ElemParam) handler.getElemTemplateElement();
+
     handler.getStylesheet().appendChild(v);
     handler.getStylesheet().setParam(v);
     super.endElement(handler, uri, localName, rawName);

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,13 +57,16 @@
 package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.ElemTemplateElement;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.NoSuchMethodException;
 import java.lang.InstantiationException;
 import java.lang.IllegalAccessException;
+
 import java.util.Vector;
 
 /**
@@ -73,73 +76,94 @@ import java.util.Vector;
  */
 public class ProcessorTemplateElem extends XSLTElementProcessor
 {
+
   /**
    * Receive notification of the start of an element.
    *
    * @param name The element type name.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startElement
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
-    ElemTemplateElement parent = handler.getElemTemplateElement();
 
+    // ElemTemplateElement parent = handler.getElemTemplateElement();
     XSLTElementDef def = getElemDef();
     Class classObject = def.getClassObject();
-    
     ElemTemplateElement elem = null;
+
     try
     {
-      elem = (ElemTemplateElement)classObject.newInstance();
+      elem = (ElemTemplateElement) classObject.newInstance();
+
       elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());
     }
-    catch(InstantiationException ie)
+    catch (InstantiationException ie)
     {
       handler.error("Failed creating ElemTemplateElement instance!", ie);
     }
-    catch(IllegalAccessException iae)
+    catch (IllegalAccessException iae)
     {
       handler.error("Failed creating ElemTemplateElement instance!", iae);
     }
-    
+
     setPropertiesFromAttributes(handler, rawName, attributes, elem);
-    
     appendAndPush(handler, elem);
   }
-  
+
   /**
-   * Append the current template element to the current 
-   * template element, and then push it onto the current template 
+   * Append the current template element to the current
+   * template element, and then push it onto the current template
    * element stack.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param elem
+   *
+   * @throws SAXException
    */
-  protected void appendAndPush(StylesheetHandler handler,
-                               ElemTemplateElement elem)
-    throws SAXException
+  protected void appendAndPush(
+          StylesheetHandler handler, ElemTemplateElement elem)
+            throws SAXException
   {
+
     ElemTemplateElement parent = handler.getElemTemplateElement();
+
     parent.appendChild(elem);
     handler.pushElemTemplateElement(elem);
   }
-  
+
   /**
    * Receive notification of the end of an element.
    *
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endElement
+   *
+   * @throws SAXException
    */
-  public void endElement (StylesheetHandler handler, 
-                          String uri, String localName, String rawName)
-    throws SAXException
+  public void endElement(
+          StylesheetHandler handler, String uri, String localName, String rawName)
+            throws SAXException
   {
     handler.popElemTemplateElement();
   }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,8 +60,10 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.Attributes;
+
 import java.util.Vector;
 import java.util.StringTokenizer;
+
 import org.apache.xalan.utils.SystemIDResolver;
 
 /**
@@ -70,47 +72,68 @@ import org.apache.xalan.utils.SystemIDResolver;
  */
 public class StylesheetPIHandler extends DefaultHandler
 {
+
+  /** NEEDSDOC Field STARTELEM_FOUND_MSG          */
   static final String STARTELEM_FOUND_MSG = "##startElement found";
-  
+
+  /** NEEDSDOC Field m_source          */
   InputSource m_source;
-  String m_media; 
+
+  /** NEEDSDOC Field m_media          */
+  String m_media;
+
+  /** NEEDSDOC Field m_title          */
   String m_title;
+
+  /** NEEDSDOC Field m_charset          */
   String m_charset;
+
+  /** NEEDSDOC Field m_stylesheets          */
   Vector m_stylesheets = new Vector();
-  
+
   /**
    * Construct a StylesheetPIHandler instance.
+   *
+   * NEEDSDOC @param source
+   * NEEDSDOC @param media
+   * NEEDSDOC @param title
+   * NEEDSDOC @param charset
    */
-  public StylesheetPIHandler(InputSource source,
-                             String media, 
-                             String title,
+  public StylesheetPIHandler(InputSource source, String media, String title,
                              String charset)
   {
+
     m_source = source;
     m_media = media;
     m_title = title;
     m_charset = charset;
   }
-  
+
   /**
    * Return all stylesheets found that match the constraints.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public InputSource[] getAssociatedStylesheets()
   {
+
     int sz = m_stylesheets.size();
-    if(sz > 0)
+
+    if (sz > 0)
     {
       InputSource[] inputs = new InputSource[sz];
-      for(int i = 0; i < sz; i++)
+
+      for (int i = 0; i < sz; i++)
       {
-        inputs[i] = (InputSource)m_stylesheets.elementAt(i);
+        inputs[i] = (InputSource) m_stylesheets.elementAt(i);
       }
+
       return inputs;
     }
     else
       return null;
   }
-  
+
   /**
    * Handle the xml-stylesheet processing instruction.
    *
@@ -120,105 +143,121 @@ public class StylesheetPIHandler extends DefaultHandler
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
+   *
+   * @throws SAXException
    * @see <a href="http://www.w3.org/TR/xml-stylesheet/">Associating Style Sheets with XML documents, Version 1.0</a>
    */
-  public void processingInstruction (String target, String data)
-    throws SAXException
+  public void processingInstruction(String target, String data)
+          throws SAXException
   {
-    if(target.equals("xml-stylesheet"))
-    {
-      String href = null; // CDATA #REQUIRED
-      String type = null; // CDATA #REQUIRED
-      String title = null; // CDATA #IMPLIED
-      String media = null; // CDATA #IMPLIED
-      String charset = null; // CDATA #IMPLIED
-      boolean alternate = false; // (yes|no) "no"
 
+    if (target.equals("xml-stylesheet"))
+    {
+      String href = null;  // CDATA #REQUIRED
+      String type = null;  // CDATA #REQUIRED
+      String title = null;  // CDATA #IMPLIED
+      String media = null;  // CDATA #IMPLIED
+      String charset = null;  // CDATA #IMPLIED
+      boolean alternate = false;  // (yes|no) "no"
       StringTokenizer tokenizer = new StringTokenizer(data, " \t=");
-      while(tokenizer.hasMoreTokens())
+
+      while (tokenizer.hasMoreTokens())
       {
         String name = tokenizer.nextToken();
-        if(name.equals("type"))
+
+        if (name.equals("type"))
         {
           String typeVal = tokenizer.nextToken();
-          type = typeVal.substring(1, typeVal.length()-1);
+
+          type = typeVal.substring(1, typeVal.length() - 1);
         }
-        else if(name.equals("href"))
+        else if (name.equals("href"))
         {
           href = tokenizer.nextToken();
-          href = href.substring(1, href.length()-1);
-
-          href = SystemIDResolver.getAbsoluteURI(href, m_source.getSystemId());
+          href = href.substring(1, href.length() - 1);
+          href = SystemIDResolver.getAbsoluteURI(href,
+                                                 m_source.getSystemId());
         }
-        else if(name.equals("title"))
+        else if (name.equals("title"))
         {
           title = tokenizer.nextToken();
-          title = title.substring(1, title.length()-1);
+          title = title.substring(1, title.length() - 1);
         }
-        else if(name.equals("media"))
+        else if (name.equals("media"))
         {
           media = tokenizer.nextToken();
-          media = media.substring(1, media.length()-1);
+          media = media.substring(1, media.length() - 1);
         }
-        else if(name.equals("charset"))
+        else if (name.equals("charset"))
         {
           charset = tokenizer.nextToken();
-          charset = charset.substring(1, charset.length()-1);
+          charset = charset.substring(1, charset.length() - 1);
         }
-        else if(name.equals("alternate"))
+        else if (name.equals("alternate"))
         {
           String alternateStr = tokenizer.nextToken();
-          alternate = alternateStr.substring(1, alternateStr.length()-1).equals("yes");
+
+          alternate = alternateStr.substring(1, alternateStr.length()
+                                             - 1).equals("yes");
         }
       }
 
-      if((null != type) && type.equals("text/xsl") && (null != href))
+      if ((null != type) && type.equals("text/xsl") && (null != href))
       {
-        if(null != m_media)
+        if (null != m_media)
         {
-          if(null != media)
+          if (null != media)
           {
-            if(!media.equals(m_media))
+            if (!media.equals(m_media))
               return;
           }
           else
             return;
         }
-        if(null != m_charset)
+
+        if (null != m_charset)
         {
-          if(null != charset)
+          if (null != charset)
           {
-            if(!charset.equals(m_charset))
+            if (!charset.equals(m_charset))
               return;
           }
           else
             return;
         }
-        if(null != m_title)
+
+        if (null != m_title)
         {
-          if(null != title)
+          if (null != title)
           {
-            if(!title.equals(m_title))
+            if (!title.equals(m_title))
               return;
           }
           else
             return;
         }
+
         m_stylesheets.addElement(new InputSource(href));
       }
     }
   }
-  
+
   /**
    * The spec notes that "The xml-stylesheet processing instruction is allowed only in the prolog of an XML document.",
    * so, at least for right now, I'm going to go ahead an throw a SAXException
    * in order to stop the parse.
+   *
+   * NEEDSDOC @param namespaceURI
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param qName
+   * NEEDSDOC @param atts
+   *
+   * @throws SAXException
    */
-  public void startElement (String namespaceURI, String localName,
-                            String qName, Attributes atts)
-    throws SAXException
+  public void startElement(
+          String namespaceURI, String localName, String qName, Attributes atts)
+            throws SAXException
   {
     throw new StopParseException();
   }
-
 }

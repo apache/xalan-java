@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -64,42 +64,54 @@ import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.Constants;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.StylesheetRoot;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class ProcessorUnknown <needs-comment/>
+ */
 public class ProcessorUnknown extends ProcessorTemplateElem
 {
+
   /**
    * Receive notification of the start of an element.
    *
    * @param name The element type name.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startElement
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
-  {
-    
-  }
-  
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException{}
+
   /**
    * Receive notification of the end of an element.
    *
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endElement
+   *
+   * @throws SAXException
    */
-  public void endElement (StylesheetHandler handler, 
-                          String uri, String localName, String rawName)
-    throws SAXException
-  {
-    
-  }
-
+  public void endElement(
+          StylesheetHandler handler, String uri, String localName, String rawName)
+            throws SAXException{}
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,6 +57,7 @@
 package org.apache.xalan.processor;
 
 import java.io.IOException;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
@@ -70,32 +71,33 @@ import org.apache.trax.Templates;
 import org.apache.trax.TemplatesBuilder;
 
 /**
- * The StylesheetProcessor, which implements the TRaX Processor 
+ * The StylesheetProcessor, which implements the TRaX Processor
  * interface, processes XSLT Stylesheets into a Templates object.
  * This version has been modified to kick off conversion to JAVA,
  * via CompilingStylesheetHandler
  */
 public class CompilingStylesheetProcessor extends StylesheetProcessor
 {
+
   /**
-   * Get a TemplatesBuilder object that can process SAX 
-   * events into a Templates object, if the processor supports the 
+   * Get a TemplatesBuilder object that can process SAX
+   * events into a Templates object, if the processor supports the
    * "http://xml.org/trax/features/sax/input" feature.
-   * 
+   *
    * <h3>Open issues:</h3>
    * <dl>
    *    <dt><h4>Should Processor derive from org.xml.sax.ContentHandler?</h4></dt>
-   *    <dd>Instead of requesting an object from the Processor class, should 
+   *    <dd>Instead of requesting an object from the Processor class, should
    *        the Processor class simply derive from org.xml.sax.ContentHandler?</dd>
    * </dl>
    * @return A TemplatesBuilder object, or null if not supported.
-   * @exception May throw a ProcessorException if a StylesheetHandler can 
+   * @exception May throw a ProcessorException if a StylesheetHandler can
    * not be constructed for some reason.
+   *
+   * @throws ProcessorException
    */
-  public TemplatesBuilder getTemplatesBuilder()
-    throws ProcessorException
+  public TemplatesBuilder getTemplatesBuilder() throws ProcessorException
   {
     return new CompilingStylesheetHandler(this);
   }
-
 }

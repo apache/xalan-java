@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -58,6 +58,7 @@ package org.apache.xalan.processor;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+
 import java.util.Vector;
 
 /**
@@ -69,6 +70,7 @@ import java.util.Vector;
  */
 class ProcessorStripSpace extends ProcessorPreserveSpace
 {
+
   /**
    * Receive notification of the start of an strip-space element.
    *
@@ -84,6 +86,7 @@ class ProcessorStripSpace extends ProcessorPreserveSpace
    * @param atts The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
+   * NEEDSDOC @param attributes
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
@@ -91,14 +94,14 @@ class ProcessorStripSpace extends ProcessorPreserveSpace
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.Attributes
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
     setPropertiesFromAttributes(handler, rawName, attributes, this);
-                                   
     handler.getStylesheet().setStripSpaces(getElements());
   }
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -58,6 +58,7 @@ package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
@@ -66,17 +67,24 @@ import org.xml.sax.Attributes;
  */
 class ProcessorTemplate extends ProcessorTemplateElem
 {
+
   /**
-   * Append the current template element to the current 
-   * template element, and then push it onto the current template 
+   * Append the current template element to the current
+   * template element, and then push it onto the current template
    * element stack.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param elem
+   *
+   * @throws SAXException
    */
-  protected void appendAndPush(StylesheetHandler handler,
-                               ElemTemplateElement elem)
-    throws SAXException
+  protected void appendAndPush(
+          StylesheetHandler handler, ElemTemplateElement elem)
+            throws SAXException
   {
+
     super.appendAndPush(handler, elem);
     elem.setDOMBackPointer(handler.getOriginatingNode());
-    handler.getStylesheet().setTemplate((ElemTemplate)elem);
+    handler.getStylesheet().setTemplate((ElemTemplate) elem);
   }
 }

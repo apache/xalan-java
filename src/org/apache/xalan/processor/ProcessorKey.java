@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -57,8 +57,10 @@
 package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.KeyDeclaration;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
@@ -79,7 +81,10 @@ import java.util.Vector;
  */
 class ProcessorKey extends XSLTElementProcessor
 {
+
+  /** NEEDSDOC Field FUNC_KEY_STRING          */
   static final String FUNC_KEY_STRING = "key";
+
   /**
    * Receive notification of the start of an xsl:key element.
    *
@@ -95,6 +100,7 @@ class ProcessorKey extends XSLTElementProcessor
    * @param atts The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
+   * NEEDSDOC @param attributes
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
@@ -102,87 +108,99 @@ class ProcessorKey extends XSLTElementProcessor
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.Attributes
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
+
     KeyDeclaration kd = new KeyDeclaration();
+
     kd.setDOMBackPointer(handler.getOriginatingNode());
     kd.setLocaterInfo(handler.getLocator());
-    
     setPropertiesFromAttributes(handler, rawName, attributes, kd);
-                                   
     handler.getStylesheet().setKey(kd);
   }
-  
+
   /**
    * Set the properties of an object from the given attribute list.
-   * @param handler The stylesheet's Content handler, needed for 
+   * @param handler The stylesheet's Content handler, needed for
    *                error reporting.
-   * @param rawName The raw name of the owner element, needed for 
+   * @param rawName The raw name of the owner element, needed for
    *                error reporting.
    * @param attributes The list of attributes.
    * @param target The target element where the properties will be set.
+   *
+   * @throws SAXException
    */
-  void setPropertiesFromAttributes(StylesheetHandler handler,
-                                   String rawName,
-                                   Attributes attributes, 
-                                   Object target)
-    throws SAXException
+  void setPropertiesFromAttributes(
+          StylesheetHandler handler, String rawName, Attributes attributes, Object target)
+            throws SAXException
   {
+
     XSLTElementDef def = getElemDef();
 
     // Keep track of which XSLTAttributeDefs have been processed, so 
     // I can see which default values need to be set.
     Vector processedDefs = new Vector();
     int nAttrs = attributes.getLength();
-    for(int i = 0; i < nAttrs; i++)
+
+    for (int i = 0; i < nAttrs; i++)
     {
       String attrUri = attributes.getURI(i);
       String attrLocalName = attributes.getLocalName(i);
-      XSLTAttributeDef attrDef = def.getAttributeDef( attrUri, attrLocalName );
-      
-      if(null == attrDef)
+      XSLTAttributeDef attrDef = def.getAttributeDef(attrUri, attrLocalName);
+
+      if (null == attrDef)
       {
+
         // Then barf, because this element does not allow this attribute.
-        handler.error(attributes.getQName(i)+
-                      "attribute is not allowed on the "+
-              rawName+" element!", null);
+        handler.error(attributes.getQName(i)
+                      + "attribute is not allowed on the " + rawName
+                      + " element!", null);
       }
       else
       {
         String valueString = attributes.getValue(i);
-        if (valueString.indexOf(FUNC_KEY_STRING+"(") >= 0)
-          handler.error(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
+
+        if (valueString.indexOf(FUNC_KEY_STRING + "(") >= 0)
+          handler.error(
+            XSLMessages.createMessage(
+            XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
+
         processedDefs.addElement(attrDef);
         attrDef.setAttrValue(handler, attrUri, attrLocalName,
-                             attributes.getQName(i), 
-                             attributes.getValue(i),
+                             attributes.getQName(i), attributes.getValue(i),
                              target);
       }
     }
-    
+
     XSLTAttributeDef[] attrDefs = def.getAttributes();
     int nAttrDefs = attrDefs.length;
-    for(int i = 0; i < nAttrDefs; i++)
+
+    for (int i = 0; i < nAttrDefs; i++)
     {
       XSLTAttributeDef attrDef = attrDefs[i];
       String defVal = attrDef.getDefault();
-      if(null != defVal)
+
+      if (null != defVal)
       {
-        if(!processedDefs.contains(attrDef))
+        if (!processedDefs.contains(attrDef))
         {
           attrDef.setDefAttrValue(handler, target);
         }
       }
+
       if (attrDef.getRequired())
       {
-        if(!processedDefs.contains(attrDef))
-          handler.error(XSLMessages.createMessage(XSLTErrorResources.ER_REQUIRES_ATTRIB, new Object[]{rawName, attrDef.getName()}) , null);    
-      }    
+        if (!processedDefs.contains(attrDef))
+          handler.error(
+            XSLMessages.createMessage(
+              XSLTErrorResources.ER_REQUIRES_ATTRIB, new Object[]{ rawName,
+                                                                   attrDef.getName() }), null);
+      }
     }
-
   }
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -73,20 +73,19 @@ import org.xml.sax.helpers.AttributesImpl;
 import java.util.Vector;
 
 /**
- * This class acts as the superclass for all stylesheet element 
+ * This class acts as the superclass for all stylesheet element
  * processors, and deals with things that are common to all elements.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  */
 public class XSLTElementProcessor
-{    
+{
+
   /**
    * Construct a processor for top-level elements.
    * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
    */
-  XSLTElementProcessor()
-  {
-  }
-  
+  XSLTElementProcessor(){}
+
   /**
    * The element definition that this processor conforms to.
    */
@@ -94,6 +93,8 @@ public class XSLTElementProcessor
 
   /**
    * Get the element definition that belongs to this element.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   XSLTElementDef getElemDef()
   {
@@ -102,52 +103,61 @@ public class XSLTElementProcessor
 
   /**
    * Set the element definition that belongs to this element.
+   *
+   * NEEDSDOC @param def
    */
   void setElemDef(XSLTElementDef def)
   {
     m_elemDef = def;
   }
-  
+
   /**
    * Resolve an external entity.
    *
+   *
+   * NEEDSDOC @param handler
    * @param publicId The public identifer, or null if none is
    *                 available.
-   * @param systemId The system identifier provided in the XML 
+   * @param systemId The system identifier provided in the XML
    *                 document.
    * @return The new input source, or null to require the
    *         default behaviour.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.EntityResolver#resolveEntity
+   *
+   * @throws SAXException
    */
-  public InputSource resolveEntity (StylesheetHandler handler, 
-                                    String publicId, String systemId)
-    throws SAXException
+  public InputSource resolveEntity(
+          StylesheetHandler handler, String publicId, String systemId)
+            throws SAXException
   {
     return null;
   }
-  
-  
+
   /**
    * Receive notification of a notation declaration.
    *
+   *
+   * NEEDSDOC @param handler
    * @param name The notation name.
    * @param publicId The notation public identifier, or null if not
    *                 available.
    * @param systemId The notation system identifier.
    * @see org.xml.sax.DTDHandler#notationDecl
    */
-  public void notationDecl (StylesheetHandler handler, 
-                            String name, String publicId, String systemId)
+  public void notationDecl(StylesheetHandler handler, String name,
+                           String publicId, String systemId)
   {
+
     // no op
   }
-  
-  
+
   /**
    * Receive notification of an unparsed entity declaration.
    *
+   *
+   * NEEDSDOC @param handler
    * @param name The entity name.
    * @param publicId The entity public identifier, or null if not
    *                 available.
@@ -155,20 +165,25 @@ public class XSLTElementProcessor
    * @param notationName The name of the associated notation.
    * @see org.xml.sax.DTDHandler#unparsedEntityDecl
    */
-  public void unparsedEntityDecl (StylesheetHandler handler, 
-                                  String name, String publicId,
-                                  String systemId, String notationName)
+  public void unparsedEntityDecl(StylesheetHandler handler, String name,
+                                 String publicId, String systemId,
+                                 String notationName)
   {
+
     // no op
   }
-  
+
   /**
-   * Receive notification of the start of the non-text event.  This 
+   * Receive notification of the start of the non-text event.  This
    * is sent to the current processor when any non-text event occurs.
+   *
+   * NEEDSDOC @param handler
+   *
+   * @throws SAXException
    */
-  public void startNonText(StylesheetHandler handler)
-    throws SAXException
+  public void startNonText(StylesheetHandler handler) throws SAXException
   {
+
     // no op
   }
 
@@ -176,40 +191,55 @@ public class XSLTElementProcessor
    * Receive notification of the start of an element.
    *
    * @param name The element type name.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startElement
+   *
+   * @throws SAXException
    */
-  public void startElement (StylesheetHandler handler, 
-                            String uri, String localName,
-                            String rawName, Attributes attributes)
-    throws SAXException
+  public void startElement(
+          StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
+            throws SAXException
   {
+
     // no op
   }
-  
-  
+
   /**
    * Receive notification of the end of an element.
    *
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
+   *
+   * NEEDSDOC @param handler
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param localName
+   * NEEDSDOC @param rawName
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endElement
+   *
+   * @throws SAXException
    */
-  public void endElement (StylesheetHandler handler, 
-                          String uri, String localName, String rawName)
-    throws SAXException
+  public void endElement(
+          StylesheetHandler handler, String uri, String localName, String rawName)
+            throws SAXException
   {
+
     // no op
   }
-  
-  
+
   /**
    * Receive notification of character data inside an element.
    *
+   *
+   * NEEDSDOC @param handler
    * @param ch The characters.
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
@@ -217,18 +247,22 @@ public class XSLTElementProcessor
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#characters
+   *
+   * @throws SAXException
    */
-  public void characters (StylesheetHandler handler, 
-                          char ch[], int start, int length)
-    throws SAXException
+  public void characters(
+          StylesheetHandler handler, char ch[], int start, int length)
+            throws SAXException
   {
-    handler.error("Characters are not allowed at this point in the document!", null);
+    handler.error("Characters are not allowed at this point in the document!",
+                  null);
   }
-  
-  
+
   /**
    * Receive notification of ignorable whitespace in element content.
    *
+   *
+   * NEEDSDOC @param handler
    * @param ch The whitespace characters.
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
@@ -236,85 +270,95 @@ public class XSLTElementProcessor
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#ignorableWhitespace
+   *
+   * @throws SAXException
    */
-  public void ignorableWhitespace (StylesheetHandler handler, 
-                                   char ch[], int start, int length)
-    throws SAXException
+  public void ignorableWhitespace(
+          StylesheetHandler handler, char ch[], int start, int length)
+            throws SAXException
   {
+
     // no op
   }
-  
-  
+
   /**
    * Receive notification of a processing instruction.
    *
+   *
+   * NEEDSDOC @param handler
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
+   *
+   * @throws SAXException
    */
-  public void processingInstruction (StylesheetHandler handler, 
-                                     String target, String data)
-    throws SAXException
+  public void processingInstruction(
+          StylesheetHandler handler, String target, String data)
+            throws SAXException
   {
+
     // no op
   }
-
 
   /**
    * Receive notification of a skipped entity.
    *
+   *
+   * NEEDSDOC @param handler
    * @param name The name of the skipped entity.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
+   *
+   * @throws SAXException
    */
-  public void skippedEntity (StylesheetHandler handler, 
-                             String name)
-    throws SAXException
+  public void skippedEntity(StylesheetHandler handler, String name)
+          throws SAXException
   {
+
     // no op
   }
-  
+
   /**
    * Set the properties of an object from the given attribute list.
-   * @param handler The stylesheet's Content handler, needed for 
+   * @param handler The stylesheet's Content handler, needed for
    *                error reporting.
-   * @param rawName The raw name of the owner element, needed for 
+   * @param rawName The raw name of the owner element, needed for
    *                error reporting.
    * @param attributes The list of attributes.
    * @param target The target element where the properties will be set.
+   *
+   * @throws SAXException
    */
-  void setPropertiesFromAttributes(StylesheetHandler handler,
-                                   String rawName,
-                                   Attributes attributes, 
-                                   Object target)
-    throws SAXException
+  void setPropertiesFromAttributes(
+          StylesheetHandler handler, String rawName, Attributes attributes, Object target)
+            throws SAXException
   {
     setPropertiesFromAttributes(handler, rawName, attributes, target, true);
   }
-  
+
   /**
    * Set the properties of an object from the given attribute list.
-   * @param handler The stylesheet's Content handler, needed for 
+   * @param handler The stylesheet's Content handler, needed for
    *                error reporting.
-   * @param rawName The raw name of the owner element, needed for 
+   * @param rawName The raw name of the owner element, needed for
    *                error reporting.
    * @param attributes The list of attributes.
    * @param target The target element where the properties will be set.
-   * @param throwError True if it should throw an error if an 
+   * @param throwError True if it should throw an error if an
    * attribute is not defined.
    * @return the attributes not allowed on this element.
+   *
+   * @throws SAXException
    */
-  Attributes setPropertiesFromAttributes(StylesheetHandler handler,
-                                   String rawName,
-                                   Attributes attributes, 
-                                   Object target,
-                                   boolean throwError)
-    throws SAXException
+  Attributes setPropertiesFromAttributes(
+          StylesheetHandler handler, String rawName, Attributes attributes, Object target, boolean throwError)
+            throws SAXException
   {
+
     XSLTElementDef def = getElemDef();
     AttributesImpl undefines = throwError ? null : new AttributesImpl();
 
@@ -322,26 +366,28 @@ public class XSLTElementProcessor
     // I can see which default values need to be set.
     Vector processedDefs = new Vector();
     int nAttrs = attributes.getLength();
-    for(int i = 0; i < nAttrs; i++)
+
+    for (int i = 0; i < nAttrs; i++)
     {
       String attrUri = attributes.getURI(i);
       String attrLocalName = attributes.getLocalName(i);
-      XSLTAttributeDef attrDef = def.getAttributeDef( attrUri, attrLocalName );
-      
-      if(null == attrDef)
+      XSLTAttributeDef attrDef = def.getAttributeDef(attrUri, attrLocalName);
+
+      if (null == attrDef)
       {
-        if(throwError)
+        if (throwError)
         {
+
           // Then barf, because this element does not allow this attribute.
-          handler.error(attributes.getQName(i)+
-                        "attribute is not allowed on the "+
-                        rawName+" element!", null);
+          handler.error(attributes.getQName(i)
+                        + "attribute is not allowed on the " + rawName
+                        + " element!", null);
         }
         else
         {
-          undefines.addAttribute(attrUri, attrLocalName, 
-                                 attributes.getQName(i), 
-                                 attributes.getType(i), 
+          undefines.addAttribute(attrUri, attrLocalName,
+                                 attributes.getQName(i),
+                                 attributes.getType(i),
                                  attributes.getValue(i));
         }
       }
@@ -349,32 +395,37 @@ public class XSLTElementProcessor
       {
         processedDefs.addElement(attrDef);
         attrDef.setAttrValue(handler, attrUri, attrLocalName,
-                             attributes.getQName(i), 
-                             attributes.getValue(i),
+                             attributes.getQName(i), attributes.getValue(i),
                              target);
       }
     }
-    
+
     XSLTAttributeDef[] attrDefs = def.getAttributes();
     int nAttrDefs = attrDefs.length;
-    for(int i = 0; i < nAttrDefs; i++)
+
+    for (int i = 0; i < nAttrDefs; i++)
     {
       XSLTAttributeDef attrDef = attrDefs[i];
       String defVal = attrDef.getDefault();
-      if(null != defVal)
+
+      if (null != defVal)
       {
-        if(!processedDefs.contains(attrDef))
+        if (!processedDefs.contains(attrDef))
         {
           attrDef.setDefAttrValue(handler, target);
         }
       }
+
       if (attrDef.getRequired())
       {
-        if(!processedDefs.contains(attrDef))
-          handler.error(XSLMessages.createMessage(XSLTErrorResources.ER_REQUIRES_ATTRIB, new Object[]{rawName, attrDef.getName()}) , null);    
-      }    
+        if (!processedDefs.contains(attrDef))
+          handler.error(
+            XSLMessages.createMessage(
+              XSLTErrorResources.ER_REQUIRES_ATTRIB, new Object[]{ rawName,
+                                                                   attrDef.getName() }), null);
+      }
     }
+
     return undefines;
   }
-  
 }
