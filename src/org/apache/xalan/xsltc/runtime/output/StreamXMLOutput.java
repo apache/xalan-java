@@ -64,6 +64,8 @@
 package org.apache.xalan.xsltc.runtime.output;
 
 import java.util.Stack;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import java.io.Writer;
 import java.io.IOException;
@@ -83,6 +85,22 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     private int _depth = 0;
 
     /**
+     * Each entry (prefix) in this hashtable points to a Stack of URIs
+     */
+    private Hashtable _namespaces;
+
+    /** 
+     * The top of this stack contains an id of the element that last declared
+     * a namespace. Used to ensure prefix/uri map scopes are closed correctly
+     */
+    private Stack _nodeStack;
+
+    /** 
+     * The top of this stack is the prefix that was last mapped to an URI
+     */
+    private Stack _prefixStack;
+
+    /**
      * Contains all elements that should be output as CDATA sections.
      */
     private Hashtable _cdata = null;
@@ -93,21 +111,29 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
      */
     private Stack _cdataStack;
 
-    /** 
-     * Each entry (prefix) in this hashtable points to a Stack of URIs.
-     */
-    private Hashtable _namespaces;
-    
-    /** 
-     * The top of this stack contains an id of the element that last declared
-     * a namespace. Used to ensure prefix/uri map scopes are closed correctly.
-     */
-    private Stack _nodeStack;
+    private HashSet _attributes = new HashSet();
 
-    /** 
-     * The top of this stack is the prefix that was last mapped to an URI.
-     */
-    private Stack _prefixStack;
+    static class Attribute {
+	public String name, value;
+
+	Attribute(String name, String value) {
+	    this.name = name; 
+	    this.value = value;
+	}
+
+	public int hashCode() {
+	    return name.hashCode();
+	}
+
+	public boolean equals(Object obj) {
+	    try {
+		return name.equalsIgnoreCase(((Attribute) obj).name);
+	    }
+	    catch (ClassCastException e) {
+		return false;
+	    }
+	}
+    }
 
     public StreamXMLOutput(Writer writer, String encoding) {
 	_writer = writer;
@@ -122,11 +148,11 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	try {
 	    _writer = new OutputStreamWriter(out, _encoding = encoding);
 	    _is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
-	    init();
 	}
 	catch (UnsupportedEncodingException e) {
 	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
 	}
+	init();
     }
 
     /**
@@ -136,24 +162,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	// CDATA stack
 	_cdataStack = new Stack();
 	_cdataStack.push(new Integer(-1)); 	// push dummy value
-
-	// Initialize namespaces
-	_namespaces = new Hashtable();
-	_nodeStack = new Stack();
-	_prefixStack = new Stack();
-
-	// Define the default namespace (initially maps to "" uri)
-	Stack stack;
-	_namespaces.put(EMPTYSTRING, stack = new Stack());
-	stack.push(EMPTYSTRING);
-	_prefixStack.push(EMPTYSTRING);
-
-	_namespaces.put(XML_PREFIX, stack = new Stack());
-	stack.push("http://www.w3.org/XML/1998/namespace");
-	_prefixStack.push(XML_PREFIX);
-
-	_nodeStack.push(new Integer(-1));
-	_depth = 0;
+	initNamespaces();
     }
 
     public void startDocument() throws TransletException { 
@@ -186,6 +195,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     }
 
     public void startElement(String elementName) throws TransletException { 
+// System.out.println("startElement = " + elementName);
 	if (_startTagOpen) {
 	    _buffer.append('>');
 	}
@@ -206,23 +216,33 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	}
 
 	_buffer.append('<').append(elementName);
+
+	_depth++;
 	_startTagOpen = true;
-	_indentNextEndTag = false;
+	_attributes.clear();
     }
 
     public void endElement(String elementName) throws TransletException { 
+// System.out.println("endElement = " + elementName);
 	if (_startTagOpen) {
 	    _startTagOpen = false;
-	    _buffer.append(">");
+	    _buffer.append("/>");
+	    _indentLevel--;
+	}
+	else {
+	    if (_indent) {
+		_indentLevel--;
+
+		if (_indentNextEndTag) {
+		    indent(_indentNextEndTag);
+		    _indentNextEndTag = true;
+		}
+	    }
+	    _buffer.append("</").append(elementName).append('>');
 	}
 
-	if (_indent) {
-	    _indentLevel --;
-	    if (_indentNextEndTag) {
-		indent(_indentNextEndTag);
-		_indentNextEndTag = true;
-	    }
-	}
+	popNamespaces();
+	_depth--;
     }
 
     public void characters(String characters)
@@ -257,13 +277,18 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	}
     }
 
-    public void attribute(String attributeName, String attributeValue)
+    public void attribute(String name, String value)
 	throws TransletException 
     { 
+// System.out.println("attribute = " + name);
 	if (_startTagOpen) {
-	    _buffer.append(' ').append(attributeName)
-		   .append("=\"").append(attributeValue)
-		   .append('"');
+	    final Attribute attr = new Attribute(name, value);
+
+	    if (!_attributes.contains(attr)) {
+		_buffer.append(' ').append(name).append("=\"")
+		       .append(value).append('"');
+		_attributes.add(attr);
+	    }
 	}
     }
 
@@ -278,11 +303,16 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     public void processingInstruction(String target, String data)
 	throws TransletException 
     { 
+// System.out.println("PI target = " + target + " data = " + data);
 	if (_startTagOpen) {
 	    _buffer.append('>');
 	    _startTagOpen = false;
 	}
-	_buffer.append("<?").append(target).append(data).append("?>");
+	_buffer.append("<?").append(target).append(' ')
+	       .append(data).append("?>");
+	if (_indent) {
+	    _buffer.append('\n');
+	}
     }
 
     public boolean setEscaping(boolean escape) throws TransletException 
@@ -292,15 +322,6 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	return temp; 
     }
 
-    public void close() { 
-	try {
-	    _writer.close();
-	}
-	catch (Exception e) {
-	    // ignore
-	}
-    }
-
     public void setCdataElements(Hashtable elements) { 
 	_cdata = elements;
     }
@@ -308,8 +329,16 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     public void namespace(final String prefix, final String uri)
 	throws TransletException 
     {
+// System.out.println("namespace prefix = " + prefix + " uri = " + uri);
+
 	if (_startTagOpen) {
-	    pushNamespace(prefix, uri);
+	    if (pushNamespace(prefix, uri)) {
+		_buffer.append(' ').append(XMLNS_PREFIX);
+		if (prefix != null && prefix != EMPTYSTRING) {
+		    _buffer.append(':').append(prefix);
+		}
+		_buffer.append("=\"").append(uri).append('"');
+	    }
 	}
 	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
 	    BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
@@ -318,12 +347,34 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     }
 
     /**
+     * Initialize namespace stacks
+     */
+    private void initNamespaces() {
+	_namespaces = new Hashtable();
+	_nodeStack = new Stack();
+	_prefixStack = new Stack();
+
+	// Define the default namespace (initially maps to "" uri)
+	Stack stack;
+	_namespaces.put(EMPTYSTRING, stack = new Stack());
+	stack.push(EMPTYSTRING);
+	_prefixStack.push(EMPTYSTRING);
+
+	_namespaces.put(XML_PREFIX, stack = new Stack());
+	stack.push("http://www.w3.org/XML/1998/namespace");
+	_prefixStack.push(XML_PREFIX);
+
+	_nodeStack.push(new Integer(-1));
+	_depth = 0;
+    }
+
+    /**
      * Declare a prefix to point to a namespace URI
      */
-    private void pushNamespace(String prefix, String uri) {
+    private boolean pushNamespace(String prefix, String uri) {
 	// Prefixes "xml" and "xmlns" cannot be redefined
-	if (prefix.equals(XML_PREFIX)) {
-	    return;
+	if (prefix.startsWith(XML_PREFIX)) {
+	    return false;
 	}
 	
 	Stack stack;
@@ -331,13 +382,16 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
 	    _namespaces.put(prefix, stack = new Stack());
 	}
-	else if (uri.equals(stack.peek())) {
-	    return;	// Ignore
+
+	// Quit now if the URI the prefix currently maps to is the same as this
+	if (!stack.empty() && uri.equals(stack.peek())) {
+	    return false;
 	}
 
 	stack.push(uri);
 	_prefixStack.push(prefix);
 	_nodeStack.push(new Integer(_depth));
+	return true;
     }
 
     /**
@@ -345,7 +399,9 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
      */
     private void popNamespace(String prefix) {
 	// Prefixes "xml" and "xmlns" cannot be redefined
-	if (prefix.equals(XML_PREFIX)) return;
+	if (prefix.startsWith(XML_PREFIX)) {
+	    return;
+	}
 
 	Stack stack;
 	if ((stack = (Stack)_namespaces.get(prefix)) != null) {
@@ -356,7 +412,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     /**
      * Pop all namespace definitions that were delcared by the current element
      */
-    private void popNamespaces() throws TransletException {
+    private void popNamespaces() {
 	while (true) {
 	    if (_nodeStack.isEmpty()) return;
 	    Integer i = (Integer)(_nodeStack.peek());
@@ -365,13 +421,4 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    popNamespace((String)_prefixStack.pop());
 	}
     }
-
-    /**
-     * Use a namespace prefix to lookup a namespace URI
-     */
-    private String lookupNamespace(String prefix) {
-	final Stack stack = (Stack)_namespaces.get(prefix);
-	return stack != null && !stack.isEmpty() ? (String)stack.peek() : null;
-    }
-
 }
