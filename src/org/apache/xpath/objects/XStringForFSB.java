@@ -153,6 +153,17 @@ public class XStringForFSB extends XString
 //  static java.util.Hashtable xtable = new java.util.Hashtable();
 
   /**
+   * Since this object is incomplete without the length and the offset, we 
+   * have to convert to a string when this function is called.
+   *
+   * @return The java String representation of this object.
+   */
+  public Object object()
+  {
+    return str();
+  }
+
+  /**
    * Cast result object to a string.
    *
    * @return The string this wraps or the empty string if null

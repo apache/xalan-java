@@ -94,6 +94,18 @@ public class XStringForChars extends XString
     
     return m_strCache;
   }
+  
+
+  /**
+   * Since this object is incomplete without the length and the offset, we 
+   * have to convert to a string when this function is called.
+   *
+   * @return The java String representation of this object.
+   */
+  public Object object()
+  {
+    return str();
+  }
 
   /**
    * Directly call the
