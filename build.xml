@@ -873,9 +873,9 @@ Copyright:
  
    <!-- pack all doc for transfer to website -->
  <target name="pack.docs">
-    <tar tarfile="./build/xalan-j-docs.tar" basedir="./build/docs" includes="**"/>
+    <tar tarfile="./build/xalan-j-docs.tar" basedir="./xml-site/target/xalan-j" includes="**"/>
     <gzip src="./build/xalan-j-docs.tar" zipfile="./build/xalan-j-docs.tar.gz"/>
-    <!--zip zipfile="./build/xalan-j-docs.zip" basedir="./build/docs" includes="**"/-->
+    <!--zip zipfile="./build/xalan-j-docs.zip" basedir="./xml-site/target/xalan-j" includes="**"/-->
   </target>
 
  
