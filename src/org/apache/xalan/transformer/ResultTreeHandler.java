@@ -491,9 +491,23 @@ public class ResultTreeHandler
       int n = ch.length;
       for(int i = 0; i < n; i++)
       {
+        // todo: isSpaceChar doesn't seem to be recognizing 0x0A.  (??) -sb
         if(!Character.isSpaceChar(ch[i]))
         {
           m_mustFlushStartDoc = true;
+          if(!m_foundStartDoc)
+          {
+            // Then we have a strange case, where non-whitespace text 
+            // is being output before an element.  While this might be 
+            // considered illegal, let's try and be nice and make the 
+            // xml decl be flushed.
+            // (experemental... these same sort of changes will need to be
+            // made to the charactersRaw function, etc.  See Myriam's note to 
+            // Gary Peskin on 9/26/2000.. the right way to fix this is 
+            // probably to supress the xml decl).
+            m_pendingStartDoc = true;
+            
+          }
           break;
         }
       }
