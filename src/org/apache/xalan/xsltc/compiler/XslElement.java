@@ -119,10 +119,8 @@ final class XslElement extends Instruction {
 
 	// First try to get the namespace URI from the "namespace" attribute
 	String namespace = getAttribute("namespace");
-
 	// Then try to get it from the "name" attribute QName prefix
-	if ((namespace == null) || (namespace.equals(EMPTYSTRING))) {
-
+	if (!hasAttribute("namespace")) {
 	    // We are supposed to use the default namespace URI if the QName
 	    // from the "name" attribute is not prefixed, so check that first
 	    if (prefix == null) prefix = EMPTYSTRING;
@@ -142,7 +140,7 @@ final class XslElement extends Instruction {
 	    _prefix = prefix;
 	}
 	// Check if this element belongs in a specific namespace
-	else if (namespace != EMPTYSTRING) {
+	else {
 	    // Get the namespace requested by the xsl:element
 	    _namespace = new AttributeValueTemplate(namespace, parser);
 	    // Get the current prefix for that namespace (if any)

@@ -202,6 +202,11 @@ public abstract class SyntaxTreeNode implements Constants {
 	    return(value);
     }
 
+    protected boolean hasAttribute(String qname) {
+	if (_attributes == null) return false;
+	return (_attributes.getValue(qname) != null);
+    }
+
     /**
      * Returns a list of all attributes declared for the element represented by
      * this syntax tree node.
