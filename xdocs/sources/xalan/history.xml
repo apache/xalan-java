@@ -3,6 +3,126 @@
  <s1 title="History of software changes">
    <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
    &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.3 and 2.3.1">
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql XConnection.java<br/><ref>Committer's log entry: </ref>Fixed second connection problem<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Update for new DTM Model<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql DTMDocument.java<br/><ref>Committer's log entry: </ref>Update for new DTM Model<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java
+ DTMDocument.java<br/><ref>Committer's log entry: </ref>Removed Debug<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/18/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Whups. There's a possible reentrancy problem when data
+ is being serialized from an FSB, thru Sax, back into a new
+ chunk of the same FSB; if the append causes a rechunking,
+ the serialize loop may break.
+
+ TEMPORARY PATCH; permanant fix to follow. See comments.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/18/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SuballocatedIntVector.java<br/><ref>Committer's log entry: </ref>&lt;blush&gt;Wrong side of the fencepost...&lt;/blush&gt;<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/23/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemTemplate.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java
+ java/src/org/apache/xml/dtm DTMManager.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMManagerDefault.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java
+ java/src/org/apache/xpath XPathContext.java<br/><ref>Added: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2RTFDTM.java<br/><ref>Committer's log entry: </ref>These changes allow us to store multiple Result Tree Fragment (RTF)
+ document trees (used when an XSLT variable contains a constructed
+ set of nodes) into a single DTM object rather than using a new DTM
+ for each RTF. They also permit "tail-pruning" this shared DTM to
+ reuse that space as the variables go out of scope.
+
+ The result is a slight performance improvement, and a much more
+ significant improvement in storage efficiency. Stylesheets which
+ use RTFs heavily should now run in much less memory; in
+ one testcase, our "working set" heap size (storage actually in
+ use, not counting objects released but not yet GC'd) dropped
+ from 12-15MB down to 3-6MB, and heap churn (how quickly
+ storage was being allocated and discarded) also reduced
+ substantially.
+
+ The code changes needed to support this new scheme are
+ surprisingly small. And I believe it may be possible to reduce them
+ further, if we're willing to merge the SAX2RTFDTM subclass back
+ into its SAX2DTM superclass. I believe that could be done with
+ very little adverse impact on other uses of SAX2DTM... but I felt it
+ was safer to defer that decision for now.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/25/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bug 5982 and 6022. The variable stack was not being cleared accross 
+transforms so that when the transformer is reused, we were using nodesets from 
+the previous transform which were using a different DTM. Note that we want keep 
+any variables that have been set externally by the user (using 
+Transformer.setParameter()).<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/res XPATHErrorResources.java<br/><ref>Committer's log entry: </ref>bug 4762: Fixed the duplicate error message in XPATH.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bugzilla 4054: Retain previously set output properties when adding new ones.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bug 5872. We were using a constructor of TranformerException without the 
+locator information. Changed to code to use a locator if info is available.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>01/30/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib NodeInfo.java<br/><ref>Committer's log entry: </ref>Changed "system id" to "public identifier" in javadoc
+ comments for publicId() methods.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/30/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Bugzilla 2617, part 1: Construct the data structures and access them 
+correctly.
+ Ignore too-late-to-be-safe requests to enable this feature.
+
+ This doesn't resolve how to rewrite higher-level code so it makes the
+ request early enough to be useful.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/30/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates StylesheetComposed.java
+ StylesheetRoot.java TemplateList.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bug 4987: Changed Apply-imports logic to only apply imports to stylesheets 
+that are direct imports. The logic for includes has not changed, we will 
+apply-imports to any stylesheet that is imported as a result of an inclusion. 
+Note: had to change the order when includes and imports are recomposed!<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/31/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib NodeInfo.java
+ java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java
+ java/src/org/apache/xalan/xslt Process.java
+ java/src/org/apache/xml/dtm/ref DTMManagerDefault.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java
+ SAX2RTFDTM.java
+ java/src/org/apache/xml/utils DefaultErrorHandler.java<br/><ref>Committer's log entry: </ref>Bugzilla 2617: Recreated missing code, changed controls to ensure
+ that this mode gets set early enough to be useful and can't be broken
+ by being turned on and off during execution.
+
+ NOTE: Current implementation relies on a global static flag in
+ TransformerFactoryImpl. We need to rearchitect our APIs slightly
+ so configuration hints of this kind can be passed down from top-level
+ objects to the back-end code more elegantly. Revisit in future
+ releases.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/31/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemApplyTemplates.java<br/><ref>Committer's log entry: </ref>Bug 5505: Need to resolve params before we do anything else, so move code 
+that does that above the code that sets up the different node stacks.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/01/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Bugzilla 6182. Darned fence posts; always either too many or not enough... 
+&lt;grin/&gt;<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>02/01/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java
+ java/src/org/apache/xpath VariableStack.java
+ XPathContext.java<br/><ref>Committer's log entry: </ref>Bug 6156: Change variable stack reset to just get a new object. Also make 
+sure that the stack of result tree fragments is also cleaned ot during a reset.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>02/04/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XBoolean.java
+ XNodeSet.java XNumber.java XObject.java
+ XRTreeFrag.java XString.java
+ java/src/org/apache/xpath/operations Equals.java<br/><ref>Committer's log entry: </ref>Bug 5851: Make sure that the equal operation is evaluated by order of 
+precedence of the operands, as defined by XSLT.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/04/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bugzilla 5346: Prevent mantissa overflow when converting string to double.
+ There is still a possible edge-case, since I detect overflow on decimal digit
+ bounds rather than on bit bounds; I'm not sure what the IEEE spec calls for.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/04/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bugzilla 5346: My first-cut messed up fractional values. This one is
+ somewhat better.
+
+ There's an open issue w/r/t numbers with many digits after the
+ decimal point, regarding limits on how large a power of 10 can
+ be contained in a long. In that one case I'm falling back on successive
+ divisions (though as few as possible), and some loss of precision
+ may result.
+
+ Need to find a better algorithm...<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/04/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bugzilla 5346: Oops. Forgot to take out a debugging printout.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/05/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bugzilla 5346: Responding to the re-open; more direct and reliable
+ edge-case test. This does lose a few low bits on many-digit values,
+ so it is not the best long-term solution.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/05/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bug 5346: One more (last, I hope) edge case.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/05/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForFSB.java<br/><ref>Committer's log entry: </ref>Bug 5346: Gaaah. This regressions was just plain foolish flailing. "Less 
+haste, more speed."<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/05/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize CharInfo.java<br/><ref>Committer's log entry: </ref>Bug 5857: Reusing objects that reuse objects has threading concerns.
+ Three possible solutions: Don't reuse, synchronize reuse, or rewrite
+ to avoid using the objects in the first place. See comments in code.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/06/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java
+ IncrementalSAXSource.java
+ IncrementalSAXSource_Filter.java
+ IncrementalSAXSource_Xerces.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Bug 4244: Incremental wasn't setting up correctly for the
+ DTDHandler stream. It never occurred to me that XSLT would
+ ever have a use for unparsed entities...<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>02/06/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan Version.java
+ java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>Whoops! Never updated release number to 2.3 in these version files!<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>02/06/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>updated version number to 2.3<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>02/07/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath SourceTreeManager.java<br/><ref>Committer's log entry: </ref>Bug 6304: Remove print stacktrace<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/08/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/extensions
+ XSLProcessorContext.java
+ java/src/org/apache/xalan/lib/sql DTMDocument.java
+ java/src/org/apache/xalan/templates ElemForEach.java
+ FuncDocument.java FuncKey.java
+ java/src/org/apache/xalan/transformer KeyIterator.java
+ TransformerHandlerImpl.java TransformerImpl.java
+ java/src/org/apache/xml/dtm DTM.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDefaultBaseIterators.java DTMDocumentImpl.java
+ DTMNodeProxy.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2RTFDTM.java
+ java/src/org/apache/xpath/axes IteratorPool.java<br/><ref>Committer's log entry: </ref>Bugzilla 6314: Additional support changes for multiple RTFs per DTM.
+ Many files affected, but the basic change is that dtm.getDocument()
+ with no arguments is meaningless when there are multiple docs in
+ a single DTM object; instead, folks should use the new getRootNode()
+ method or getOwnerDocument(), both of which take a node as input
+ and thus more clearly identify which document we're referring to.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/12/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Bugzilla 6328, whitespace normalization. Late fix, but it was a genuine 
+regresion.
+ This code could still do with a rationalization pass; I think it can be made 
+slightly
+ a touch faster.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>02/14/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>Update various .jar sizes for recent builds and 2.3.0<br/><br/></li></ul>
+</s2>   
 <s2 title="Changes for &xslt4j; 2.2">
 <p>Following a series of Developer releases, &xslt4j; 2.2 represents a stable, production-quality release with 
 the <link idref="dtm">DTM (Document Table Model)</link>. &xslt4j; uses the DTM to represent the XML source document 

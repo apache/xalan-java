@@ -70,17 +70,20 @@
   <s2 title="Status">
    <ul>
     <li><link anchor="done">Changes since version 2.2</link></li>
+    <li><link anchor="global2.3">Global 2.3 updates</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2">
-     <p>Global updates:</p>
+     <s3 title="Changes since &xslt4j; 2.3.1">
+     &done-j;     
+     </s3><anchor name="global2.3"/>
+    <s3 title="Global 2.3 updates">
      <ul>
-     <li>This release is integrated with release 2 of &xml4j;.</li>
-     <li>This release does not include support for the deprecated &xslt4j; 1 compatability API. The &xslt4j; 1 compatability code does 
+     <li>Release 2.3 is integrated with release 2 of &xml4j;.</li>
+     <li>Release 2.3 does not include support for the deprecated &xslt4j; 1 compatability API. The &xslt4j; 1 compatability code does 
      NOT compile with &xml4j2;.</li>
       </ul>
      <p>Our <link idref="samples" anchor="sql">SQL extension samples</link> continue to use InstantDB, but based on our realization of changes 
@@ -88,8 +91,7 @@
      We do, however, provide information on how to <link idref="samples" anchor="instantdbsetup">set up InstantDB</link> to support our SQL 
      extension samples.</p>
      <p>Documentation updates: We have subdivided the release notes into multiple files to accelerate HTML document loading, and we have added a
-     document on <link idref="features">Transform features</link>.</p>    
-     &done-j;
+     document on <link idref="features">Transform features</link>.</p>         
      </s3>
      <anchor name="other"/>
      <s3 title="Other points of interest">
@@ -142,7 +144,7 @@
      </s3>     
      <anchor name="status"/>
      <s3 title="Version of Xerces to use"> 
-       <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including &xml4j-jar; on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
+       <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including &xml4j-jar; and xml-apis.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
        <p><em>Important</em> You may experience unpredictable anomalies if your &xslt4j; and &xml4j; builds are not in synch. If you download an update to &xslt4j;, check the release notes to determine which version of &xml4j; you should use.</p>
        <note>You can use &xslt4j; with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
        <link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>

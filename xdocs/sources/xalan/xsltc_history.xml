@@ -2,6 +2,66 @@
 <!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
 <s1 title="XSLTC software changes">
 <p>The following sections list <link idref="xsltc_usage">XSLTC</link> changes back to the incorporation of XSLTC into &xslt4j;.</p>
+<s2 title="Changes for &xslt4j; 2.3 and 2.3.1">
+<p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>01/24/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>bug 1520 fix, escape chars over 0080 instead of 00FF<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>01/24/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>bug 1520, adjusted 0080 to 007F in ASCII cutoff<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>02/01/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler
+ AttributeValueTemplate.java
+ AbsoluteLocationPath.java AbsolutePathPattern.java
+ AlternativePattern.java AncestorPattern.java
+ ApplyImports.java ApplyTemplates.java
+ AttributeSet.java BooleanCall.java BinOpExpr.java
+ BooleanExpr.java CallTemplate.java CastExpr.java
+ CeilingCall.java Choose.java Comment.java
+ DecimalFormatting.java ConcatCall.java
+ Constants.java ContainsCall.java Copy.java
+ CopyOf.java CurrentCall.java DocumentCall.java
+ EqualityExpr.java Import.java If.java
+ ElementAvailableCall.java Expression.java
+ Fallback.java FilterExpr.java FilterParentPath.java
+ FloorCall.java FlowList.java ForEach.java
+ FormatNumberCall.java FunctionAvailableCall.java
+ FunctionCall.java GenerateIdCall.java
+ IdKeyPattern.java Include.java IntExpr.java
+ Key.java KeyCall.java LangCall.java LastCall.java
+ LiteralAttribute.java LiteralElement.java
+ LiteralExpr.java LocalNameCall.java
+ NamespaceAlias.java LogicalExpr.java Message.java
+ Mode.java NameBase.java NameCall.java
+ NamespaceUriCall.java NotCall.java Number.java
+ NumberCall.java Output.java Param.java
+ ParentLocationPath.java ParameterRef.java
+ ParentPattern.java PositionCall.java
+ RelationalExpr.java Predicate.java Sort.java
+ ProcessingInstruction.java RealExpr.java
+ VariableRef.java RoundCall.java ValueOf.java
+ SimpleAttributeValue.java StartsWithCall.java
+ Stylesheet.java StringCall.java
+ StringLengthCall.java StepPattern.java
+ Template.java TestSeq.java Text.java
+ TopLevelElement.java TransletOutput.java
+ UnaryOpExpr.java UnionPathExpr.java
+ UnparsedEntityUriCall.java UseAttributeSets.java
+ LongExpr.java Variable.java Whitespace.java
+ XslAttribute.java WithParam.java XSLTC.java
+ XslElement.java UnsupportedElement.java
+ VariableBase.java VariableRefBase.java
+ FilteredAbsoluteLocationPath.java
+ SyntaxTreeNode.java Step.java UnresolvedRef.java
+ ProcessingInstructionPattern.java<br/><ref>Committer's log entry: </ref>changed de.fub.bytecode to org.apache.bcel<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>02/01/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler/util
+ NamedMethodGenerator.java NodeCounterGenerator.java
+ NodeSetType.java NodeSortRecordGenerator.java
+ NodeType.java RealType.java ReferenceType.java
+ ResultTreeType.java RtMethodGenerator.java
+ SlotAllocator.java StringType.java
+ TestGenerator.java Util.java LongType.java<br/><ref>Committer's log entry: </ref>changed de.fub.bytecode to org.apache.bcel<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>02/01/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler/util
+ AttributeSetMethodGenerator.java BooleanType.java
+ ClassGenerator.java CompareGenerator.java
+ FilterGenerator.java IntType.java
+ MatchGenerator.java MethodGenerator.java
+ MethodType.java Type.java VoidType.java<br/><ref>Committer's log entry: </ref>changed de.fub.bytecode to org.apache.bcel<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>02/05/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>bug 1520, spec chars in href attributes<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>02/07/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>bug 1520, updating href attr spec char handling<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>02/13/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DOMImpl.java<br/><ref>Committer's log entry: </ref>bug fix 6189, ArrayIndexOutOfBoundsException, contrib
+ by Mirko Seifert<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>02/14/2002<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc
+ javax.xml.transform.TransformerFactory<br/><ref>Committer's log entry: </ref>added a service provide source file to be copied into
+ xsltc.jar (bundled jar)<br/><br/></li></ul>
+</s2>
 <s2 title="Changes for &xslt4j; 2.2">
 <p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>11/30/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler xpath.cup<br/><ref>Committer's log entry: </ref>A fix to the XPath parser to make sure (again!) that non-prefixed elements
  in XPath expressions/patterns are not assigned the default namespace but
