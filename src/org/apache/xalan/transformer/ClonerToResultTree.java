@@ -139,6 +139,9 @@ public class ClonerToResultTree
       break;
     case Node.ATTRIBUTE_NODE:
       {
+        if(m_rth.isDefinedNSDecl((Attr)node))
+          break; 
+        
         String ns = dhelper.getNamespaceOfNode(node);
         String localName = dhelper.getLocalNameOfNode(node);
         m_rth.addAttribute(ns, localName, node.getNodeName(), "CDATA", 
