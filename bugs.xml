@@ -179,7 +179,7 @@
 <Spr>
 <Name>SCUU4S6JZL</Name>
 <DateCreated>12/19/2000</DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>streamsourceapitest.java</TestID>
 <TestDesc>Intermittent failure of imported template rule using Stream sources</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -195,9 +195,17 @@
 <Spr>
 <Name>SCUU4S7UJ3</Name>
 <DateCreated>12/20/2000</DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID></TestID>
 <TestDesc>ConformanceTest -flavor trax.s2s hang: expression02.xsl;extend01.xsl;mdocs03;mdocs06.xsl;mdocs15.xsl</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4S8PWT</Name>
+<DateCreated>12/21/2000</DateCreated>
+<State>Pending</State>
+<TestID>transformerapitest.java</TestID>
+<TestDesc>Parameter set on one transformer affects other transformers</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>

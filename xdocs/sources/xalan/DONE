@@ -1,36 +1,20 @@
-<s3 title="Changes since &xslt4j; version 2.0.D01">
-<p>All of the bugs reported in &xslt4j; 2.0.D01 have been fixed. For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
-<p>The remainder of this section discusses two changes that we believe are of particular importance:</p>
-<p><em>TrAX</em></p>
-<p>The Transformation API for XML (TrAX) that &xslt4j2; implements has undergone substantial revisions since the release of &xslt4j; 2.0.D01. TrAX has joined the Java API for XML Parsing (JAXP) as part of the Sun&reg; <resource-ref idref="jsr063"/>. Accordingly, the TrAX package names have changed. The conceptual organization has also changed somewhat: The primary transformation interfaces are defined in javax.xml.transform, with concrete classes for managing stream input/output, SAX parsers and ContentHandler, and DOM parsers and DOM trees in javax.xml.transform.stream, javax.xml.transform.sax, and javax.xml.transform.dom. For more information, see <resource-ref idref="trax"/>, and review <link idref="usagepatterns">Usage Patterns</link>.</p>
-<anchor name="outputprops"/><p><em>Output properties</em></p>
-<p>The handling of xsl:output properties has changed: org.apache.xalan.serialize.OutputFormat and apache.xalan.templates.OutputFormatExtended were removed and replaced with org.apache.xalan.templates.OutputProperties. The SerializerFactory getSerializer() method now takes Properties rather than a String indicating the output method. You can replace <code>getSerializer("xml")</code>, for example, with <code>getSerializer(OutputProperties.getDefaultMethodProperties("xml"))</code>.</p>
-<p>HTML, XML, and text xsl:output properties are specified in property files in org.apache.xalan.templates: output_html.properties, output_xml.properties, and output_text.properties.</p>
-<p>You can start using the output properties defined in these files in your stylesheets. For example, you can turn URL escaping off in HTML output with<br/><code>{http\u003a//xml.apache.org/xslt}use-url-escaping=no</code><br/>
-and you can control indenting with<br/>
-<code>{http\u003a//xml.apache.org/xslt}indent-amount=<ref>n</ref></code></p>
-<note>The colon after the "http" protocol must be escaped.</note>
-<p>Character-to-entity mapping is specified in org.apache.xalan.serialize: HTMLEntities.res and XMLEntities.res. You can override entity ref 
-mapping from a stylesheet. For example:</p>
-<source>&lt;?xml version="1.0"?&gt;
-&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-         xmlns:xalan="http://xml.apache.org/xslt" version="1.0"&gt;
-
-  &lt;xsl:output xalan:entities="myentities.ent"/&gt;
-
-  &lt;xsl:template match="/"&gt;
-    &lt;out&gt;&amp;#125;&lt;/out&gt;
-  &lt;/xsl:template&gt;
-
-&lt;/xsl:stylesheet&gt;</source>
-<p>=== myentities.ent ===</p>
-<source>quot 34
-amp 38
-lt 60
-gt 62
-lala 125</source>
-<p>The output is:</p>
-<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;out&gt;&amp;lala;&lt;/out&gt;</source>
-<p>See also <link idref="usagepatterns" anchor="outputprops">Setting output properties in your stylesheets</link>.</p>
+<s3 title="Changes since &xslt4j; version 2.0.D05">
+<p>We have fixed he two bugs reported in &xslt4j; 2.0.D05. Along with several other enhancements, 
+we have also fixed a number of bugs found by our users:</p>
+<ul>
+<li>Fixed some threading problems and improved support for handling Exceptions thrown in a secondary thread. To support incremental output,
+&xslt4j; performs the transformation in a second thread while building the source tree in the main thread.<br/><br/></li>
+<li>Fixed problems utilizing transformation output as input for another transformation.<br/><br/></li>
+<li><br/><br/></li>
+<li><br/><br/></li>
+<li>Fixed problems handling attributes and adding attributes to result tree.<br/><br/></li>
+<li>Added defensive checking for null entities and namespaces.<br/><br/></li>
+<li>Adhere to SAX convention of representing null namespaces with empty strings.<br/><br/></li>
+<li>Improved support for pruning source tree nodes when not required.<br/><br/></li>
+<li>Fixed a bug evaluating a variable in a predicate expression applied to child nodes.<br/><br/></li>
+<li>Changed names of serializers from FormatterTo<ref>Xxx</ref> to SerializerTo<ref>Xxx</ref>. See 
+<jump href="apidocs/org/apache/xalan/serialize/package-summary.html">Package org.apache.xalan.serialize</jump>.<br/><br/></li>
+<li>Improved debugging support in a number of areas.</li>
+</ul>
+<p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
 </s3>

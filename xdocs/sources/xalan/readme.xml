@@ -3,7 +3,7 @@
 <!ENTITY done-j SYSTEM "DONE">
 <!ENTITY status-j SYSTEM "STATUS">
 <!ENTITY bugs-j SYSTEM "BUGS">
-<!ENTITY bugs-open SYSTEM "bugs.out">]>
+<!ENTITY history-j SYSTEM "history.xml">]>
 
 <!--
  * The Apache Software License, Version 1.1
@@ -67,11 +67,11 @@
   <li><link anchor="status">Status</link></li>
   <li><link anchor="build">Build Notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
-  <!--li><link anchor="history">History of software changes</link></li-->
+  <li><link anchor="history">History of software changes</link></li>
  </ul>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.0.D01</link></li>
+    <li><link anchor="done">Changes since version 2.0.D05</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Open bugs and bug reporting</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
@@ -105,7 +105,8 @@
      </ul>
      </s3><anchor name="bugs"/>
      <s3 title="Open bugs and bug reporting">
-     &bugs-j;
+     <!--&bugs-j;-->
+     <p>Currently, there are no open bugs in &xslt4j;.</p>
      <p>Xerces bug in &xml4j-used;:</p>
      <ul>
        <li>&xml4j; 1.2.3 does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16
@@ -269,8 +270,9 @@ javadoc -doclet xalanjdoc.Standard
  <s2 title="Getting in Touch">
   <p>Your feedback is more than welcome. Offers of help are even more so! Perhaps you would like to take on an active role in the ongoing development, testing, and documentation of &xslt4j;?</p> 
 <p>Please email your comments, questions, suggestions, and offers to join the Xalan team to <human-resource-ref idref="xalandev"/>.</p>
- </s2><!--anchor name="history"/>
+ </s2><anchor name="history"/>
  <s2 title="Cumulative history of software changes">
-   <note>We started tracking the changes in earlier releases beginning with &xslt4j; version 1.1.</note>
- </s2-->
+   <p>The following sections list the changes in each release since &xslt4j; version 2.0.D01.</p>
+   &history-j;
+ </s2>
 </s1>
