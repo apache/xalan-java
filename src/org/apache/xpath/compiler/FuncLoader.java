@@ -58,7 +58,7 @@ package org.apache.xpath.compiler;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.utils.ObjectFactory;
+
 import org.apache.xpath.functions.Function;
 
 /**

@@ -53,7 +53,7 @@
  * Foundation, please see <http://www.apache.org/>.
  */
 
-package org.apache.xpath.functions;
+package org.apache.xalan.xsltc.cmdline;
 
 import java.io.File;
 import java.io.FileInputStream;
