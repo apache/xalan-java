@@ -74,14 +74,13 @@
     <li><link anchor="trax">TrAX basics</link></li>
     <li><link anchor="config">TrAX configuration</link></li>
     <li><link anchor="design">XSLTC TrAX architecture</link></li>
-    <li><link anchor="detailed_design">XSLTC TrAX detailed design</link>
+    <li><link anchor="detailed_design">XSLTC TrAX detailed design</link></li>
       <ul>
         <li><link anchor="factory_design">TransformerFactory design</link></li>
         <li><link anchor="templates_design">Templates design</link></li>
         <li><link anchor="transformer_design">Transformer design</link></li>
         <li><link anchor="config_design">TrAX configuration design</link></li>
       </ul>
-    </li>
   </ul>
   </s2>
 
@@ -275,7 +274,7 @@
 
   <p>XSLTC's architecture fits nicely in behind the TrAX interface. XSLTC's
   compiler is put behind the <code>TransformerFactory</code> interface, the
-  translet <i>class definition</i> (either as a set of in-memory
+  translet class definition (either as a set of in-memory
   <code>Class</code> objects or as a two-dimmensional array of bytecodes on
   disk) is encapsulated in the <code>Templates</code> implementation and the
   instanciated translet object is wrapped inside the <code>Transformer</code>
@@ -295,8 +294,8 @@
   up our TrAX implementation resides in this package:</p><source>
     org.apache.xalan.xsltc.trax</source>
 
-  <p>Message to all XSLTC developers: <u><i>Keep it this way! Do not mix TrAX
-  and Native code!</i></u></p>
+  <p>Message to all XSLTC developers: Keep it this way! Do not mix TrAX
+  and Native code!</p>
 
   </s2>
 
@@ -509,7 +508,7 @@
 
     <p>These are the steps that XSLTC will go through to load a class:</p>
 
-    <nl>
+    <ol>
       <li>the application requests an instance of the transformer factory </li>
       <li>the Java extensions mechanism locates XSLTC as the transformer
       factory implementation using the extensions class loader</li>
@@ -520,7 +519,7 @@
       <li>XSLTC attempts to get a reference to the bootstrap class loader, and
       requests it to load the external class</li>
       <li>the bootstrap class loader loads the requested class</li>
-    </nl>
+    </ol>
 
     <p>Step 5) is only allowed if XSLTC has special permissions. But, remember
     that this problem only occurs when XSLTC is put in the
