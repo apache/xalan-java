@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,9 +130,11 @@ public class SerializerUtils
                 n = dtm.getNextSibling(n))
             {
                 handler.flushPending();
+
                 // I think. . . . This used to have a (true) arg
                 // to flush prefixes, will that cause problems ???
-                if (dtm.getNamespaceURI(n) == null)
+                if (dtm.getNodeType(n) == DTM.ELEMENT_NODE
+                        && dtm.getNamespaceURI(n) == null)
                     handler.startPrefixMapping("", "");
                 dtm.dispatchToEvents(n, handler);
             }
