@@ -62,6 +62,7 @@ import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.utils.XMLCharacterRecognizer;
 
 /**
  * This class processes character events for a XSLT template element.
@@ -82,7 +83,8 @@ public class ProcessorCharacters extends XSLTElementProcessor
 
     int nChars = m_accumulator.length();
     if((nChars > 0) &&
-       ((null != m_xslTextElement) || !isWhiteSpace(m_accumulator)))
+       ((null != m_xslTextElement) 
+        || !XMLCharacterRecognizer.isWhiteSpace(m_accumulator)))
     {
       ElemTextLiteral elem = new ElemTextLiteral();
       elem.setDOMBackPointer(handler.getOriginatingNode());
@@ -100,50 +102,6 @@ public class ProcessorCharacters extends XSLTElementProcessor
       parent.appendChild(elem);
     }
     m_accumulator.setLength(0);
-  }
-  
-  /**
-   * Returns whether the specified <var>ch</var> conforms to the XML 1.0 definition
-   * of whitespace.  Refer to <A href="http://www.w3.org/TR/1998/REC-xml-19980210#NT-S">
-   * the definition of <CODE>S</CODE></A> for details.
-   * @param   ch      Character to check as XML whitespace.
-   * @return          =true if <var>ch</var> is XML whitespace; otherwise =false.
-   */
-  public static boolean isSpace(char ch)
-  {
-    return (ch == 0x20) || (ch == 0x09) || (ch == 0xD) || (ch == 0xA);
-  }
-
-  /**
-   * Tell if the string is whitespace.
-   * @param   string      String to be trimmed.
-   * @return              The trimmed string.
-   */
-  public static boolean isWhiteSpace(char ch[], int start, int length)
-  {
-    int end = start+length;
-    for(int s = start;  s < end;  s++)
-    {
-      if (!isSpace(ch[s]))
-        return false;
-    }
-    return true;
-  }
-  
-  /**
-   * Tell if the string is whitespace.
-   * @param   string      String to be trimmed.
-   * @return              The trimmed string.
-   */
-  public static boolean isWhiteSpace(StringBuffer buf)
-  {
-    int n = buf.length();
-    for(int i = 0;  i < n;  i++)
-    {
-      if (!isSpace(buf.charAt(i)))
-        return false;
-    }
-    return true;
   }
 
   

@@ -4,6 +4,7 @@ import java.util.Stack;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.apache.xalan.utils.DOMBuilder;
+import org.apache.xalan.utils.XMLCharacterRecognizer;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -293,23 +294,6 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   }
   
   /**
-   * Tell if the given character array is whitespace.
-   */
-  private boolean isWhitespaceArray(char ch[], int start, int length)
-  {
-    synchronized (getSynchObject())
-    {
-      int n = start+length;
-      for(int i = start; i < n; i++)
-      {
-        if(!Character.isWhitespace(ch[i]))
-          return false;
-      }
-    }
-    return true;
-  }
-
-  /**
    * Implement the characters event.
    */
   public void characters (char ch[], int start, int length)
@@ -317,7 +301,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
     synchronized (getSynchObject())
     {
-      if(isWhitespaceArray(ch, start, length) && getShouldStripWhitespace())
+      if(XMLCharacterRecognizer.isWhiteSpace(ch, start, length) && getShouldStripWhitespace())
         return;
       
       if(m_isCData)

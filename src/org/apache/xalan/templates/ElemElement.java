@@ -239,6 +239,9 @@ public class ElemElement extends ElemUse
         }
       }
 
+      // Add namespace declarations.
+      executeNSDecls(transformer);
+      
       rhandler.startElement(elemNameSpace, QName.getLocalPart(elemName), elemName);
       if(null != prefix)
       {
@@ -250,16 +253,15 @@ public class ElemElement extends ElemUse
     // excluded because transformer.m_pendingElementName will be null.
     super.execute(transformer, sourceNode, mode);
     
-    // Add namespace declarations.
-    executeNSDecls(transformer);
-
     transformer.executeChildTemplates(this, sourceNode, mode);
 
     // Now end the element if name was valid
     if(null != elemName && null != ns)
     {
       rhandler.endElement("", "", elemName);
+      unexecuteNSDecls(transformer);
     }
+    
   }
 
 }

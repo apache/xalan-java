@@ -55,39 +55,40 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.transformer;
-
-import org.w3c.dom.*;
-import java.util.Stack;
+ 
 import java.util.Enumeration;
-import java.io.Writer;
-import java.io.OutputStream;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.NamespaceSupport;
-import org.apache.xalan.utils.DOMBuilder;
-import org.apache.xalan.utils.TreeWalker;
-import org.apache.xalan.utils.MutableAttrListImpl;
-import org.apache.xalan.utils.StringToStringTable;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.templates.Constants;
+
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.OutputFormatExtended;
-import serialize.SerializerFactory;
-import serialize.OutputFormat;
-import serialize.Method;
+
+import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.trace.GenerateEvent;
+
+import org.apache.xalan.utils.MutableAttrListImpl;
+import org.apache.xalan.utils.QName;
+import org.apache.xalan.utils.TreeWalker;
+import org.apache.xalan.utils.ObjectPool;
+import org.apache.xalan.utils.XMLCharacterRecognizer;
+
+import org.apache.xpath.DOMHelper;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.NamespaceSupport;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+
 import serialize.SerializerHandler;
-import serialize.Serializer;
 
 /**
  * This class is a layer between the direct calls to the result 
@@ -98,18 +99,9 @@ import serialize.Serializer;
  * the attributes have to be fully collected before you
  * can call startElement.
  */
-public class ResultTreeHandler 
+public class ResultTreeHandler extends QueuedEvents
   implements ContentHandler, SerializerHandler, LexicalHandler
 {
-  /**
-   * Create a new result tree handler.  The real content 
-   * handler will be the ContentHandler of the transformer.
-   */
-  public ResultTreeHandler(TransformerImpl transformer)
-  {
-    m_transformer = transformer;
-  }
-
   /**
    * Create a new result tree handler.  The real content 
    * handler will be the ContentHandler passed as an argument.
@@ -118,346 +110,36 @@ public class ResultTreeHandler
                            ContentHandler realHandler)
   {
     m_transformer = transformer;
+    m_tracer = transformer.getTraceManager();
     m_contentHandler = realHandler;
-  }
+    m_cloner = new ClonerToResultTree(transformer, this);
     
-  /**
-   * Given a result tree fragment, walk the tree and
-   * output it to the result stream.
-   */
-  public void outputResultTreeFragment(XObject obj, 
-                                       XPathContext support)
-    throws SAXException
-  {
-    DocumentFragment docFrag = obj.rtree(support);
-    NodeList nl = docFrag.getChildNodes();
-    int nChildren = nl.getLength();
-    TreeWalker tw = new TreeWalker(this);
-    for(int i = 0; i < nChildren; i++)
-    {
-      flushPending(); // I think.
-      tw.traverse(nl.item(i));
-    }
-  }
-  
-  /**
-   * Clone an element with or without children.
-   * TODO: Fix or figure out node clone failure!
-   * the error condition is severe enough to halt processing.
-   */
-  public void cloneToResultTree(Stylesheet stylesheetTree, Node node,
-                                boolean shouldCloneWithChildren,
-                                boolean overrideStrip,
-                                boolean shouldCloneAttributes)
-    throws SAXException
-  {
-    boolean stripWhiteSpace = false;
-    XPathContext xctxt = this.m_transformer.getXPathContext();
-    DOMHelper dhelper = xctxt.getDOMHelper();
-
-    switch(node.getNodeType())
-    {
-    case Node.TEXT_NODE:
-      {
-        // If stripWhiteSpace is false, then take this as an override and
-        // just preserve the space, otherwise use the XSL whitespace rules.
-        if(!overrideStrip)
-        {
-          // stripWhiteSpace = isLiteral ? true : shouldStripSourceNode(node);
-          stripWhiteSpace = false;
-        }
-        Text tx = (Text)node;
-        String data = null;
-        // System.out.println("stripWhiteSpace = "+stripWhiteSpace+", "+tx.getData());
-        if(stripWhiteSpace)
-        {
-          if(!dhelper.isIgnorableWhitespace(tx))
-          {
-            data = tx.getData();
-            if((null != data) && (0 == data.trim().length()))
-            {
-              data = null;
-            }
-          }
-        }
-        else
-        {
-          Node parent = node.getParentNode();
-          if(null != parent)
-          {
-            if( Node.DOCUMENT_NODE != parent.getNodeType())
-            {
-              data = tx.getData();
-              if((null != data) && (0 == data.length()))
-              {
-                data = null;
-              }
-            }
-          }
-          else
-          {
-            data = tx.getData();
-            if((null != data) && (0 == data.length()))
-            {
-              data = null;
-            }
-          }
-        }
-
-        if(null != data)
-        {
-          // TODO: Hack around the issue of comments next to literals.
-          // This would be, when a comment is present, the whitespace
-          // after the comment must be added to the literal.  The
-          // parser should do this, but XML4J doesn't seem to.
-          // <foo>some lit text
-          //     <!-- comment -->
-          //     </foo>
-          // Loop through next siblings while they are comments, then,
-          // if the node after that is a ignorable text node, append
-          // it to the text node just added.
-          if(dhelper.isIgnorableWhitespace(tx))
-          {
-            ignorableWhitespace(data.toCharArray(), 0, data.length());
-          }
-          else
-          {
-            characters(data.toCharArray(), 0, data.length());
-          }
-        }
-      }
-      break;
-    case Node.DOCUMENT_NODE:
-      // Can't clone a document, but refrain from throwing an error
-      // so that copy-of will work
-      break;
-    case Node.ELEMENT_NODE:
-      {
-        Attributes atts;
-        if(shouldCloneAttributes)
-        {
-          addAttributes( node );
-          processNSDecls(node);
-        }
-        String ns = dhelper.getNamespaceOfNode(node);
-        String localName = dhelper.getLocalNameOfNode(node);
-        startElement (ns, localName, node.getNodeName());
-      }
-      break;
-    case Node.CDATA_SECTION_NODE:
-      {
-        String data = ((CDATASection)node).getData();
-        cdata(data.toCharArray(), 0, data.length());
-      }
-      break;
-    case Node.ATTRIBUTE_NODE:
-      {
-        String ns = dhelper.getNamespaceOfNode(node);
-        String localName = dhelper.getLocalNameOfNode(node);
-        addAttribute(ns, localName, node.getNodeName(), "CDATA", 
-                     ((Attr)node).getValue());
-      }
-      break;
-    case Node.COMMENT_NODE:
-      {
-        comment(((Comment)node).getData());
-      }
-      break;
-    case Node.DOCUMENT_FRAGMENT_NODE:
-      {
-        
-        m_transformer.getMsgMgr().error(null, node, XSLTErrorResources.ER_NO_CLONE_OF_DOCUMENT_FRAG); //"No clone of a document fragment!");
-      }
-      break;
-    case Node.ENTITY_REFERENCE_NODE:
-      {
-        EntityReference er = (EntityReference)node;
-        entityReference(er.getNodeName());
-      }
-      break;
-    case Node.PROCESSING_INSTRUCTION_NODE:
-      {
-        ProcessingInstruction pi = (ProcessingInstruction)node;
-        processingInstruction(pi.getTarget(), pi.getData());
-      }
-      break;
-    default:
-      m_transformer.getMsgMgr().error(XSLTErrorResources.ER_CANT_CREATE_ITEM, new Object[] {node.getNodeName()}); //"Can not create item in result tree: "+node.getNodeName());
-    }
-
-  } // end cloneToResultTree function
-  
-
-
-  /**
-   * Check to see if the output prefix should be excluded.
-   */
-  private String excludePrefix(String name)
-  {
-    if(null != m_stylesheetRoot) // Just extra defensive
-    {
-      int indexOfNSSep = name.indexOf(':');
-      if(indexOfNSSep > 0)
-      {
-        String prefix = name.substring(0, indexOfNSSep);
-        if(m_stylesheetRoot.containsExcludeResultPrefix(prefix))
-          name = name.substring(indexOfNSSep+1);
-      }
-    }
-    return name;
-  }
-
-
-  /**
-   * Flush the pending element.
-   */
-  public void flushPending()
-    throws SAXException
-  {
     // The stylesheet is set at a rather late stage, so I do 
     // this here, though it would probably be better done elsewhere.
-    if((null == m_stylesheetRoot) && (null != m_transformer))
+    if(null != m_transformer)
       m_stylesheetRoot = m_transformer.getStylesheet();
-    
-    if(!m_foundStartDoc && (null != m_pendingElementName))
-    {
-     if(null != m_stylesheetRoot && !m_stylesheetRoot.isOutputMethodSet())
-      {
-        if(m_pendingElementName.equalsIgnoreCase("html") 
-           && (null == m_nsSupport.getURI("")))
-        {
-          OutputFormat oformat = m_stylesheetRoot.getOutputFormat();
-          oformat.setMethod(Method.HTML);
-          try
-          {
-            Serializer oldSerializer = m_transformer.getSerializer();
-            if(null != oldSerializer)
-            {
-              Serializer serializer = SerializerFactory.getSerializer(oformat);
-              Writer writer = oldSerializer.getWriter();
-              if(null != writer)
-                serializer.setWriter(writer);
-              else
-              {
-                OutputStream os = serializer.getOutputStream();
-                if(null != os)
-                  serializer.setOutputStream(os);
-              }
-              m_transformer.setSerializer(serializer);
-              ContentHandler ch = serializer.asContentHandler();
-              m_transformer.setContentHandler(ch);
-              m_contentHandler = ch;
-            }
-          }
-          catch(java.io.IOException e)
-          {
-            throw new SAXException(e);
-          }
-        }
-      }
-    }
-    // System.out.println("m_pendingStartDoc: "+m_pendingStartDoc);
-    // System.out.println("m_haveDocContent: "+m_haveDocContent);
-    if (!m_foundStartDoc && m_haveDocContent)
-    {
-      startDocument();
-      m_haveDocContent = true;
-    }
 
-    if (m_pendingStartDoc && m_haveDocContent)
-    {
-      m_pendingStartDoc = false;
-      getContentHandler().startDocument();
-      m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                                          GenerateEvent.EVENTTYPE_STARTDOCUMENT));
-    }
-
-//    if((null != m_pendingElementName) && m_haveDocContent)
-    if (null != m_pendingElementName)
-    {
-      /*
-      if(null != m_stylesheetRoot.getCDataSectionElems())
-      {
-      if(isCDataResultElem(m_pendingElementName))
-      {
-      m_cdataStack.push(TRUE);
-      }
-      else
-      {
-      m_cdataStack.push(FALSE);
-      }
-      }
-      */      
-      if(!m_nsDeclsHaveBeenAdded)
-        addNSDeclsToAttrs();
-
-      // System.out.print("Calling start element: "+m_pendingElementName+"... ");
-      // System.out.print(" on: "+getContentHandler()+"... ");
-      // System.out.flush();
-      getContentHandler().startElement(m_pendingElementNS, 
-                                       m_pendingElementLName, 
-                                       m_pendingElementName, 
-                                       m_pendingAttributes);
-      // System.out.println("Done calling start element: "+m_pendingElementLName);
-      // System.out.flush();
-      m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                                          GenerateEvent.EVENTTYPE_STARTELEMENT,
-                                                                          m_pendingElementName, m_pendingAttributes));
-      clearPendingElement();
-    }
+    pushDocumentEvent(); // not pending yet.
   }
   
-  /**
-   * To fullfill the FormatterListener interface... not action
-   * for the moment.
-   */
-  public void setDocumentLocator (Locator locator)
-  {
-  }
-  
-  public boolean getFoundStartDoc() { return m_foundStartDoc; }
-  /**
-   * Flag to indicate whether or not our startDocument() method has been called.
-   */
-  private boolean m_foundStartDoc = false;
-
-  public boolean getFoundEndDoc() { return m_foundEndDoc; }
-  private boolean m_foundEndDoc = false;
-
   /**
    * Bottleneck the startDocument event.
    */
   public void startDocument ()
     throws SAXException
   {
-    // m_uniqueNSValue = 0;
-    m_foundStartDoc = true;
-    m_pendingStartDoc = true;
-    m_haveDocContent = false;
-    // m_flistener.startDocument();
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_STARTDOCUMENT));
-    ContentHandler chandler = getContentHandler();
-    if((null != chandler) 
-       && (chandler instanceof TransformerClient))
-    {
-      ((TransformerClient)chandler).setTransformState(m_transformer);
-    }
   }
 
   /**
-   * Bottleneck the endDocument event.
+   * Bottleneck the endDocument event.  This may be called 
+   * more than once in order to make sure the pending start 
+   * document is called.
    */
   public void endDocument ()
     throws SAXException
   {
-    m_foundEndDoc = true;
-    m_haveDocContent = true;
-    flushPending();
-    getContentHandler().endDocument();
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_ENDDOCUMENT));
-    // m_variableStacks.popCurrentContext();
+    flushPending(EVT_ENDDOCUMENT);
+    getQueuedDocAtBottom().flushEnd();
   }
 
   /**
@@ -468,18 +150,9 @@ public class ResultTreeHandler
   public void startElement (String ns, String localName, String name)
     throws SAXException
   {
-    flushPending();
-    m_nsSupport.pushContext();
-    setPendingElementName (ns, localName, name);
-    m_haveDocContent = true;
-    if (ns != null && ns.length() > 0)
-    { 
-      int index;
-      String prefix = (index = name.indexOf(":"))< 0 ? "" : name.substring(0, index);
-      startPrefixMapping ( prefix, ns);
-    }
+    startElement (ns, localName, name, null);
   }
-
+    
   /**
    * Bottleneck the startElement event.  This is used to "pend" an
    * element, so that attributes can still be added to it before 
@@ -489,18 +162,15 @@ public class ResultTreeHandler
                             Attributes atts)
     throws SAXException
   {
-    flushPending();
-    m_nsSupport.pushContext();
-    m_pendingAttributes.clear(); // Is this needed?? -sb
-    m_pendingAttributes.addAttributes(atts);
-    setPendingElementName (ns, localName, name);
-    m_haveDocContent = true;
-    if (ns != null && ns.length() > 0)
-    { 
-      int index;
-      String prefix = (index = name.indexOf(":"))< 0 ? "" : name.substring(0, index);
-      startPrefixMapping ( prefix, ns);
-    }
+    checkForSerializerSwitch(ns, localName);
+    flushPending(EVT_STARTELEMENT);
+    if(!m_nsContextPushed)
+      m_nsSupport.pushContext();
+
+    ensurePrefixIsDeclared(ns, localName);
+        
+    // getQueuedElem().setPending(ns, localName, name, atts);
+    this.pushElementEvent(ns, localName, name, atts);
   }
 
   /**
@@ -509,45 +179,107 @@ public class ResultTreeHandler
   public void endElement (String ns, String localName, String name)
     throws SAXException
   {
-    // name = excludePrefix(name);
-    flushPending();
-    getContentHandler().endElement(ns, localName, name);
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_ENDELEMENT,
-                                                      name, (Attributes)null));
-    // if(null != m_stylesheetRoot.getCDataSectionElems())
-    //  m_cdataStack.pop();
+    flushPending(EVT_ENDELEMENT);
+    QueuedStartElement qse = getQueuedElem();
+    qse.flushEnd();
+    sendEndPrefixMappings();
+    popEvent();
+    
     m_nsSupport.popContext();
   }
+  
+  boolean m_nsContextPushed = false;
+  
+  /**
+   * Begin the scope of a prefix-URI Namespace mapping.
+   *
+   * <p>The information from this event is not necessary for
+   * normal Namespace processing: the SAX XML reader will 
+   * automatically replace prefixes for element and attribute
+   * names when the http://xml.org/sax/features/namespaces
+   * feature is true (the default).</p>
+   *
+   * <p>There are cases, however, when applications need to
+   * use prefixes in character data or in attribute values,
+   * where they cannot safely be expanded automatically; the
+   * start/endPrefixMapping event supplies the information
+   * to the application to expand prefixes in those contexts
+   * itself, if necessary.</p>
+   *
+   * <p>Note that start/endPrefixMapping events are not
+   * guaranteed to be properly nested relative to each-other:
+   * all startPrefixMapping events will occur before the
+   * corresponding startElement event, and all endPrefixMapping
+   * events will occur after the corresponding endElement event,
+   * but their order is not guaranteed.</p>
+   *
+   * @param prefix The Namespace prefix being declared.
+   * @param uri The Namespace URI the prefix is mapped to.
+   * @exception org.xml.sax.SAXException The client may throw
+   *            an exception during processing.
+   * @see #endPrefixMapping
+   * @see #startElement
+   */
+  public void startPrefixMapping (String prefix, String uri)
+    throws SAXException
+  {    
+    startPrefixMapping (prefix, uri, true);
+  }
+  
+  public void startPrefixMapping (String prefix, String uri, boolean shouldFlush)
+    throws SAXException
+  {    
+    if(shouldFlush)
+      flushPending(EVT_STARTPREFIXMAPPING);
+    if(!m_nsContextPushed)
+    {
+      m_nsSupport.pushContext();
+      m_nsContextPushed = true;
+    }
+    
+    String existingURI = m_nsSupport.getURI(prefix);
+    if((null == existingURI) || !existingURI.equals(uri))
+    {
+      m_nsSupport.declarePrefix(prefix, uri);
+    }
+  }
 
+
+  /**
+   * End the scope of a prefix-URI mapping.
+   *
+   * <p>See startPrefixMapping for details.  This event will
+   * always occur after the corresponding endElement event,
+   * but the order of endPrefixMapping events is not otherwise
+   * guaranteed.</p>
+   *
+   * @param prefix The prefix that was being mapping.
+   * @exception org.xml.sax.SAXException The client may throw
+   *            an exception during processing.
+   * @see #startPrefixMapping
+   * @see #endElement
+   */
+  public void endPrefixMapping (String prefix)
+    throws SAXException
+  {
+  }
+  
   /**
    * Bottleneck the characters event.
    */
   public void characters (char ch[], int start, int length)
     throws SAXException
   {
-    if(!m_haveDocContent)
-    {
-      int n = ch.length;
-      for(int i = 0; i < n; i++)
-      {
-        // todo: isSpaceChar doesn't seem to be recognizing 0x0A.  (??) -sb
-        if(!Character.isSpaceChar(ch[i]))
-        {
-          m_haveDocContent = true;
-          break;
-        }
-      }
-    }
-    if(m_haveDocContent)
-    {
-      flushPending();
-    } 
+    QueuedStartDocument qsd = getQueuedDoc();
+    if((null != qsd) && qsd.isPending() 
+       && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
+      return;
     
+    flushPending(EVT_CHARACTERS);    
     getContentHandler().characters(ch, start, length);
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                                        GenerateEvent.EVENTTYPE_CHARACTERS,
-                                                                        ch, start, length));
+    m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                 GenerateEvent.EVENTTYPE_CHARACTERS,
+                                                 ch, start, length));
   }
 
   /**
@@ -556,14 +288,16 @@ public class ResultTreeHandler
   public void ignorableWhitespace (char ch[], int start, int length)
     throws SAXException
   {
-    if(m_haveDocContent)
-    {
-      flushPending();
-      getContentHandler().ignorableWhitespace(ch, start, length);
-      m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                        GenerateEvent.EVENTTYPE_IGNORABLEWHITESPACE,
-                                                        ch, start, length));
-    }
+    QueuedStartDocument qsd = getQueuedDoc();
+    if((null != qsd) && qsd.isPending() 
+       && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
+      return;
+
+    flushPending(EVT_IGNORABLEWHITESPACE);
+    getContentHandler().ignorableWhitespace(ch, start, length);
+    m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                 GenerateEvent.EVENTTYPE_IGNORABLEWHITESPACE,
+                                                 ch, start, length));
   }
 
   /**
@@ -572,12 +306,11 @@ public class ResultTreeHandler
   public void processingInstruction (String target, String data)
     throws SAXException
   {
-    m_haveDocContent = true;
-    flushPending();
+    flushPending(EVT_PROCESSINGINSTRUCTION);
     getContentHandler().processingInstruction(target, data);
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_PI,
-                                                      target, data));
+    m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                 GenerateEvent.EVENTTYPE_PI,
+                                                 target, data));
   }
 
   /**
@@ -585,15 +318,14 @@ public class ResultTreeHandler
    */
   public void comment(String data) throws SAXException
   {
-    m_haveDocContent = true;
-    flushPending();
+    flushPending(EVT_COMMENT);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).comment(data.toCharArray(), 0, data.length());
     }
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_COMMENT,
-                                                      data));
+    m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                 GenerateEvent.EVENTTYPE_COMMENT,
+                                                 data));
   }
 
   /**
@@ -601,15 +333,14 @@ public class ResultTreeHandler
    */
   public void comment(char ch[], int start, int length) throws SAXException
   {
-    m_haveDocContent = true;
-    flushPending();
+    flushPending(EVT_COMMENT);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).comment(ch, start, length);
     }
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_COMMENT,
-                                                      new String(ch, start, length)));
+    m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                 GenerateEvent.EVENTTYPE_COMMENT,
+                                                 new String(ch, start, length)));
   }
 
 
@@ -618,16 +349,15 @@ public class ResultTreeHandler
    */
   public void entityReference(String name) throws SAXException
   {
-    m_haveDocContent = true;
-    flushPending();
+    flushPending(EVT_ENTITYREF);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).startEntity(name);
       ((LexicalHandler)getContentHandler()).endEntity(name);
     }
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_ENTITYREF,
-                                                      name));
+    m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                 GenerateEvent.EVENTTYPE_ENTITYREF,
+                                                 name));
   }
 
   /**
@@ -635,8 +365,7 @@ public class ResultTreeHandler
    */
   public void startEntity(String name) throws SAXException
   {
-    m_haveDocContent = true;
-    flushPending();
+    flushPending(EVT_STARTENTITY);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).startEntity(name);
@@ -648,15 +377,14 @@ public class ResultTreeHandler
    */
   public void endEntity(String name) throws SAXException
   {
-    m_haveDocContent = true;
-    flushPending();
+    flushPending(EVT_ENDENTITY);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).endEntity(name);
     }
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_ENTITYREF,
-                                                      name));
+    m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                 GenerateEvent.EVENTTYPE_ENTITYREF,
+                                                 name));
   }
 
   /**
@@ -664,7 +392,7 @@ public class ResultTreeHandler
    */
   public void startDTD(String s1, String s2, String s3) throws SAXException
   {
-    flushPending();
+    flushPending(EVT_STARTDTD);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).startDTD(s1, s2, s3);
@@ -676,13 +404,13 @@ public class ResultTreeHandler
    */
   public void endDTD() throws SAXException
   {
-    flushPending();
+    flushPending(EVT_ENDDTD);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).endDTD();
     }
   }
-    
+  
   /**
    * Starts an un-escaping section. All characters printed within an
    * un-escaping section are printed as is, without escaping special
@@ -695,7 +423,7 @@ public class ResultTreeHandler
   public void startNonEscaping()
     throws SAXException
   {
-    flushPending();
+    flushPending(EVT_STARTNONESCAPING);
     if(getContentHandler() instanceof SerializerHandler)
     {
       ((SerializerHandler)getContentHandler()).startNonEscaping();
@@ -710,7 +438,7 @@ public class ResultTreeHandler
   public void endNonEscaping()
     throws SAXException
   {
-    flushPending();
+    flushPending(EVT_ENDNONESCAPING);
     if(getContentHandler() instanceof SerializerHandler)
     {
       ((SerializerHandler)getContentHandler()).endNonEscaping();
@@ -730,7 +458,7 @@ public class ResultTreeHandler
   public void startPreserving()
     throws SAXException
   {
-    flushPending();
+    flushPending(EVT_STARTPRESERVING);
     if(getContentHandler() instanceof SerializerHandler)
     {
       ((SerializerHandler)getContentHandler()).startPreserving();
@@ -746,7 +474,7 @@ public class ResultTreeHandler
   public void endPreserving()
     throws SAXException
   {
-    flushPending();
+    flushPending(EVT_ENDENDPRESERVING);
     if(getContentHandler() instanceof SerializerHandler)
     {
       ((SerializerHandler)getContentHandler()).endPreserving();
@@ -758,7 +486,7 @@ public class ResultTreeHandler
    */
   public void startCDATA() throws SAXException
   {
-    flushPending();
+    flushPending(EVT_STARTCDATA);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).startCDATA();
@@ -770,68 +498,13 @@ public class ResultTreeHandler
    */
   public void endCDATA() throws SAXException
   {
-    flushPending();
+    flushPending(EVT_ENDCDATA);
     if(getContentHandler() instanceof LexicalHandler)
     {
       ((LexicalHandler)getContentHandler()).endCDATA();
     }
   }
-
-  /**
-   * Bottleneck the cdata event.
-   */
-  public void cdata (char ch[], int start, int length)
-    throws SAXException
-  {
-    m_haveDocContent = true;
-    flushPending();
-    /*
-    if((null != m_stylesheetRoot.getCDataSectionElems()) &&
-    !m_cdataStack.isEmpty() && (m_cdataStack.peek() == TRUE))
-    {
-    // boolean isLexH = (getContentHandler() instanceof LexicalHandler);
-
-    if(getContentHandler() instanceof LexicalHandler)
-    ((LexicalHandler)getContentHandler()).startCDATA();
-
-    getContentHandler().characters(ch, start, length);
-
-    if(getContentHandler() instanceof LexicalHandler)
-    ((LexicalHandler)getContentHandler()).endCDATA();
-
-    if(null != m_traceListeners)
-    fireGenerateEvent(new GenerateEvent(m_transformer,
-    GenerateEvent.EVENTTYPE_CDATA,
-    ch, start, length));
-    }
-    else
-    */
-    {
-      getContentHandler().characters(ch, start, length);
-      m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                        GenerateEvent.EVENTTYPE_CHARACTERS,
-                                                        ch, start, length));
-    }
-
-    /*
-    if(getContentHandler() instanceof FormatterListener)
-    {
-    ((FormatterListener)getContentHandler()).cdata(ch, start, length);
-    }
-    else
-    {
-    // Bad but I think it's better than dropping it.
-    getContentHandler().characters(ch, start, length);
-    }
-    ((FormatterListener)getContentHandler()).cdata(ch, start, length);
-    if(null != m_traceListeners)
-    fireGenerateEvent(new GenerateEvent(this,
-    GenerateEvent.EVENTTYPE_CDATA,
-    ch, start, length));
-    }
-    */
-  }
-    
+  
   /**
    * Receive notification of a skipped entity.
    *
@@ -855,12 +528,158 @@ public class ResultTreeHandler
   }
   
   /**
+   * Flush the pending element.
+   */
+  public void flushPending()
+    throws SAXException
+  {    
+    flushPending(EVT_NODE);
+  }
+      
+  /**
+   * Flush the pending element.
+   */
+  public void flushPending(int type)
+    throws SAXException
+  {    
+    QueuedStartElement qe = getQueuedElem();
+    QueuedStartDocument qdab = getQueuedDocAtBottom();
+    
+    if ((type != EVT_STARTPREFIXMAPPING) && qdab.isPending())
+    {
+      qdab.flush();
+    }
+
+    if ((null != qe) && qe.isPending())
+    {
+      if(!qe.nsDeclsHaveBeenAdded())
+        addNSDeclsToAttrs();
+
+      sendStartPrefixMappings();
+      qe.flush();
+      m_nsContextPushed = false;
+    }
+  }
+  
+  /**
+   * Given a result tree fragment, walk the tree and
+   * output it to the result stream.
+   */
+  public void outputResultTreeFragment(XObject obj, 
+                                       XPathContext support)
+    throws SAXException
+  {
+    DocumentFragment docFrag = obj.rtree(support);
+    NodeList nl = docFrag.getChildNodes();
+    int nChildren = nl.getLength();
+    TreeWalker tw = new TreeWalker(this);
+    for(int i = 0; i < nChildren; i++)
+    {
+      flushPending(EVT_NODE); // I think.
+      tw.traverse(nl.item(i));
+    }
+  }
+  
+  /**
+   * Clone an element with or without children.
+   */
+  public void cloneToResultTree(Stylesheet stylesheetTree, Node node,
+                                boolean shouldCloneWithChildren,
+                                boolean overrideStrip,
+                                boolean shouldCloneAttributes)
+    throws SAXException
+  {
+    m_cloner.cloneToResultTree(stylesheetTree, node,
+                               shouldCloneWithChildren,
+                               overrideStrip,
+                               shouldCloneAttributes);
+  } 
+  
+  /**
+   * To fullfill the FormatterListener interface... no action
+   * for the moment.
+   */
+  public void setDocumentLocator (Locator locator)
+  {
+  }
+  
+  /**
+   * This function checks to make sure a given prefix is really 
+   * declared.  It might not be, because it may be an excluded prefix.
+   * If it's not, it still needs to be declared at this point.
+   * TODO: This needs to be done at an earlier stage in the game... -sb
+   */
+  void ensurePrefixIsDeclared(String ns, String localName)
+    throws SAXException
+  {
+    if (ns != null && ns.length() > 0)
+    { 
+      int index;
+      String prefix = (index = localName.indexOf(":"))< 0 ? null : localName.substring(0, index);
+      if(null != prefix)
+      {
+        String foundURI = m_nsSupport.getURI(prefix);
+        if((null == foundURI) || !foundURI.equals(ns))
+          startPrefixMapping ( prefix, ns, false);
+      }
+    }
+  }
+  
+  /**
+   * Add the attributes that have been declared to the attribute list.
+   * (Seems like I shouldn't have to do this...)
+   */
+  protected void sendStartPrefixMappings()
+    throws SAXException
+  {
+    Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
+    ContentHandler handler = getContentHandler();
+    while (prefixes.hasMoreElements())
+    {
+      String prefix = (String)prefixes.nextElement();      
+      handler.startPrefixMapping(prefix, m_nsSupport.getURI(prefix));
+    }
+  }
+  
+  /**
+   * Add the attributes that have been declared to the attribute list.
+   * (Seems like I shouldn't have to do this...)
+   */
+  protected void sendEndPrefixMappings()
+    throws SAXException
+  {
+    Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
+    ContentHandler handler = getContentHandler();
+    
+    while (prefixes.hasMoreElements()) 
+    {
+      String prefix = (String)prefixes.nextElement();
+      handler.endPrefixMapping(prefix);
+    }
+  }
+
+  /**
+   * Check to see if we should switch serializers based on the 
+   * first output element being an HTML element.
+   */
+  private void checkForSerializerSwitch(String ns, String localName)
+    throws SAXException
+  {
+    QueuedStartDocument qdab = getQueuedDocAtBottom();
+    if(qdab.isPending())
+    {
+      SerializerSwitcher.switchSerializerIfHTML(m_transformer, ns, localName);
+    }
+  }
+  
+  /**
    * Add the attributes that have been declared to the attribute list.
    * (Seems like I shouldn't have to do this...)
    */
   protected void addNSDeclsToAttrs()
   {
     Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
+    QueuedStartElement qe = getQueuedElem();
     while (prefixes.hasMoreElements()) 
     {
       String prefix = (String)prefixes.nextElement();
@@ -874,15 +693,11 @@ public class ResultTreeHandler
       else
         name="xmlns:"+prefix;
       
-      // System.out.println("Adding xmlns: "+name);
-        
-      // System.out.println("calling addAttribute(null, null, "+name+", 'CDATA', "+
-      //                   m_nsSupport.getURI(prefix)+");");
-      m_pendingAttributes.addAttribute("http://www.w3.org/2000/xmlns/", 
-                                       prefix, 
-                                       name, "CDATA", m_nsSupport.getURI(prefix));
+      qe.addAttribute("http://www.w3.org/2000/xmlns/", 
+                      prefix, 
+                      name, "CDATA", m_nsSupport.getURI(prefix));
     }
-    m_nsDeclsHaveBeenAdded = true;
+    qe.setNSDeclsHaveBeenAdded(true);
   }
 
   /**
@@ -922,7 +737,7 @@ public class ResultTreeHandler
       }
     }      
   }
-    
+  
   /**
    * Given a prefix, return the namespace,
    */
@@ -946,73 +761,6 @@ public class ResultTreeHandler
     }
     return null;
   }  
-
-  /**
-   * Begin the scope of a prefix-URI Namespace mapping.
-   *
-   * <p>The information from this event is not necessary for
-   * normal Namespace processing: the SAX XML reader will 
-   * automatically replace prefixes for element and attribute
-   * names when the http://xml.org/sax/features/namespaces
-   * feature is true (the default).</p>
-   *
-   * <p>There are cases, however, when applications need to
-   * use prefixes in character data or in attribute values,
-   * where they cannot safely be expanded automatically; the
-   * start/endPrefixMapping event supplies the information
-   * to the application to expand prefixes in those contexts
-   * itself, if necessary.</p>
-   *
-   * <p>Note that start/endPrefixMapping events are not
-   * guaranteed to be properly nested relative to each-other:
-   * all startPrefixMapping events will occur before the
-   * corresponding startElement event, and all endPrefixMapping
-   * events will occur after the corresponding endElement event,
-   * but their order is not guaranteed.</p>
-   *
-   * @param prefix The Namespace prefix being declared.
-   * @param uri The Namespace URI the prefix is mapped to.
-   * @exception org.xml.sax.SAXException The client may throw
-   *            an exception during processing.
-   * @see #endPrefixMapping
-   * @see #startElement
-   */
-  public void startPrefixMapping (String prefix, String uri)
-    throws SAXException
-  {
-    // System.out.println("startPrefixMapping("+prefix+", "+uri+")");
-    String existingURI = m_nsSupport.getURI(prefix);
-    if((null == existingURI) || !existingURI.equals(uri))
-    {
-      m_nsSupport.declarePrefix(prefix, uri);
-      getContentHandler().startPrefixMapping(prefix, uri);
-    }
-  }
-
-  /**
-   * End the scope of a prefix-URI mapping.
-   *
-   * <p>See startPrefixMapping for details.  This event will
-   * always occur after the corresponding endElement event,
-   * but the order of endPrefixMapping events is not otherwise
-   * guaranteed.</p>
-   *
-   * @param prefix The prefix that was being mapping.
-   * @exception org.xml.sax.SAXException The client may throw
-   *            an exception during processing.
-   * @see #startPrefixMapping
-   * @see #endElement
-   */
-  public void endPrefixMapping (String prefix)
-    throws SAXException
-  {
-    getContentHandler().endPrefixMapping(prefix);
-  }
-  
-  /**
-   * Use the SAX2 helper class to track result namespaces.
-   */
-  private NamespaceSupport m_nsSupport = new NamespaceSupport();
   
   /**
    * Get the NamespaceSupport object.
@@ -1023,21 +771,17 @@ public class ResultTreeHandler
   }
   
   /**
-   * The transformer object.
+   * Override QueuedEvents#initQSE.
    */
-  private TransformerImpl m_transformer;
+  protected void initQSE(QueuedSAXEvent qse)
+  {
+    qse.setContentHandler(m_contentHandler);
+    qse.setTransformer(m_transformer);
+    qse.setTraceManager(m_tracer);
+  }
   
   /**
-   * The content handler.  May be null, in which 
-   * case, we'll defer to the content handler in the 
-   * transformer.
-   */
-  private ContentHandler m_contentHandler;
-  
-  /**
-   * Return the current content handler, which may be a content
-   * handler stored in this object, or it may delegate to the 
-   * content handler in the transformer.
+   * Return the current content handler.
    *
    * @return The current content handler, or null if none
    *         has been registered.
@@ -1045,21 +789,22 @@ public class ResultTreeHandler
    */
   public ContentHandler getContentHandler()
   {
-    return (null == m_contentHandler) 
-           ? m_transformer.getContentHandler() : m_contentHandler;
+    return m_contentHandler;
+  }
+  
+  /**
+   * Set the current content handler.
+   *
+   * @return The current content handler, or null if none
+   *         has been registered.
+   * @see #getContentHandler
+   */
+  public void setContentHandler(ContentHandler ch)
+  {
+    m_contentHandler = ch;
+    reInitEvents();
   }
 
-  
-  /**
-   * The root of a linked set of stylesheets.
-   */
-  private StylesheetRoot m_stylesheetRoot = null;
-      
-  /**
-   * This is used whenever a unique namespace is needed.
-   */
-  private int m_uniqueNSValue = 0;
-  
   /**
    * Get a unique namespace value.
    */
@@ -1067,9 +812,7 @@ public class ResultTreeHandler
   {
     return m_uniqueNSValue++;
   }
-  
-  private static final String S_NAMESPACEPREFIX = "ns";
-  
+
   /**
    * Get new unique namespace prefix.
    */
@@ -1077,79 +820,6 @@ public class ResultTreeHandler
   {
     return S_NAMESPACEPREFIX+String.valueOf(getUniqueNSValue());
   }
-
-  /**
-   * Flag to indicate that we have some document content since the last
-   * call to startDocument()
-   */
-  private boolean m_haveDocContent = false;
-  
-  /**
-   * The pending element, namespace, and local name.
-   */
-  private String m_pendingElementName;
-  private String m_pendingElementNS; 
-  private String m_pendingElementLName;
-  
-  /**
-   * Set the pending element name.  We have to delay the call to
-   * m_flistener.startElement(name, atts) because of the
-   * xsl:attribute and xsl:copy calls.  In other words,
-   * the attributes have to be fully collected before you
-   * can call startElement.
-   */
-  private void setPendingElementName (String ns, String localName, String name)
-  {
-    m_pendingElementName = name;
-    m_pendingElementNS = ns; 
-    m_pendingElementLName = localName;
-  }  
-  
-  /**
-   * Get the pending element name.  We have to delay the call to
-   * m_flistener.startElement(name, atts) because of the
-   * xsl:attribute and xsl:copy calls.  In other words,
-   * the attributes have to be fully collected before you
-   * can call startElement.
-   */
-  public String getPendingElementName()
-  {
-    return m_pendingElementName;
-  }
-  
-  /**
-   * Clear the pending element values.  This needs to be called 
-   * after the real startElement event is sent to the listener.
-   */
-  private void clearPendingElement()
-  {
-    m_pendingAttributes.clear();
-    m_nsDeclsHaveBeenAdded = false;
-    m_pendingElementName = null;
-    m_pendingElementNS = null; 
-    m_pendingElementLName = null;
-  }
-
-  /**
-   * Flag to tell if a call to getContentHandler().startDocument is pending.
-   */
-  private boolean m_pendingStartDoc = false;
-
-  /**
-   * The pending attributes.  We have to delay the call to
-   * m_flistener.startElement(name, atts) because of the
-   * xsl:attribute and xsl:copy calls.  In other words,
-   * the attributes have to be fully collected before you
-   * can call startElement.
-   */
-  private MutableAttrListImpl m_pendingAttributes = new MutableAttrListImpl();
-  
-  /**
-   * Flag to try and get the xmlns decls to the attribute list 
-   * before other attributes are added.
-   */
-  private boolean m_nsDeclsHaveBeenAdded = false;
-  
   
   /**
    * Get the pending attributes.  We have to delay the call to
@@ -1160,7 +830,7 @@ public class ResultTreeHandler
    */
   public MutableAttrListImpl getPendingAttributes()
   {
-    return m_pendingAttributes;
+    return getQueuedElem().getAttrs();
   }
   
   /**
@@ -1184,10 +854,14 @@ public class ResultTreeHandler
    */
   public void addAttribute (String uri, String localName, String rawName,
                             String type, String value)
+    throws SAXException
   {
-    if(!m_nsDeclsHaveBeenAdded)
+    QueuedStartElement qe = getQueuedElem();
+    if(!qe.nsDeclsHaveBeenAdded())
       addNSDeclsToAttrs();
-    m_pendingAttributes.addAttribute(uri, localName, rawName, type, value);
+    
+    ensurePrefixIsDeclared(uri, localName);
+    qe.addAttribute(uri, localName, rawName, type, value);
   }
   
   /**
@@ -1219,5 +893,81 @@ public class ResultTreeHandler
       addAttribute((Attr)nnm.item(i));
     }
   }
+  
+  /**
+   * Tell if an element is pending, to be output to the result tree.
+   */
+  public boolean isElementPending()
+  {
+    QueuedStartElement qse = getQueuedElem();
+    return (null != qse) ? qse.isPending() : false;
+  }
+
+  /**
+   * Use the SAX2 helper class to track result namespaces.
+   */
+  private NamespaceSupport m_nsSupport = new NamespaceSupport();
+  
+  /**
+   * The transformer object.
+   */
+  private TransformerImpl m_transformer;
+  
+  /**
+   * The content handler.  May be null, in which 
+   * case, we'll defer to the content handler in the 
+   * transformer.
+   */
+  private ContentHandler m_contentHandler;
+  
+  /**
+   * The root of a linked set of stylesheets.
+   */
+  private StylesheetRoot m_stylesheetRoot = null;
+  
+  /**
+   * This is used whenever a unique namespace is needed.
+   */
+  private int m_uniqueNSValue = 0;
+  
+  private static final String S_NAMESPACEPREFIX = "ns";
+  
+  /**
+   * This class clones nodes to the result tree.
+   */
+  private ClonerToResultTree m_cloner;
+  
+  /**
+   * Trace manager for debug support.
+   */
+  private TraceManager m_tracer;
+  
+  
+  // These are passed to flushPending, to help it decide if it 
+  // should really flush.
+  private static final int EVT_SETDOCUMENTLOCATOR = 1;
+  private static final int EVT_STARTDOCUMENT = 2;
+  private static final int EVT_ENDDOCUMENT = 3;
+  private static final int EVT_STARTPREFIXMAPPING = 4;
+  private static final int EVT_ENDPREFIXMAPPING = 5;
+  private static final int EVT_STARTELEMENT = 6;
+  private static final int EVT_ENDELEMENT = 7;
+  private static final int EVT_CHARACTERS = 8;
+  private static final int EVT_IGNORABLEWHITESPACE = 9;
+  private static final int EVT_PROCESSINGINSTRUCTION = 10;
+  private static final int EVT_SKIPPEDENTITY = 11;
+  private static final int EVT_COMMENT = 12;
+  private static final int EVT_ENTITYREF = 13;
+  private static final int EVT_STARTENTITY = 14;
+  private static final int EVT_ENDENTITY = 15;
+  private static final int EVT_STARTDTD = 16;
+  private static final int EVT_ENDDTD = 17;
+  private static final int EVT_STARTNONESCAPING = 18;
+  private static final int EVT_ENDNONESCAPING = 19;
+  private static final int EVT_STARTPRESERVING = 20;
+  private static final int EVT_ENDENDPRESERVING = 21;
+  private static final int EVT_STARTCDATA = 22;
+  private static final int EVT_ENDCDATA = 23;
+  private static final int EVT_NODE = 24;
 
 }

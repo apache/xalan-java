@@ -407,16 +407,16 @@ public class ElemLiteralResult extends ElemUse
   {
     ResultTreeHandler rhandler = transformer.getResultTreeHandler();
     
+    // Add namespace declarations.
+    executeNSDecls(transformer);
+
     rhandler.startElement(getNamespace(), getLocalName(), getRawName());
     
     // Process any possible attributes from xsl:use-attribute-sets first
     super.execute(transformer, sourceNode, mode);
     
     //xsl:version, excludeResultPrefixes???
-    
-    // Add namespace declarations.
-    executeNSDecls(transformer);
-    
+        
     // Process the list of avts next
     if(null != m_avts)
     {
@@ -444,7 +444,9 @@ public class ElemLiteralResult extends ElemUse
     // Now process all the elements in this subtree
     // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
     transformer.executeChildTemplates(this, sourceNode, mode);
+    
     rhandler.endElement (getNamespace(), getLocalName(), getRawName());
+    unexecuteNSDecls(transformer);
   }
   
   /** Compiling templates requires that we be able to list the AVTs

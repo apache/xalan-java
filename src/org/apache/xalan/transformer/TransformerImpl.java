@@ -204,7 +204,7 @@ public class TransformerImpl extends XMLFilterImpl
     m_currentNodes = new Stack();
     m_currentMatchTemplates = new Stack();
     m_currentMatchNodes = new Stack();
-    m_resultTreeHandler = new ResultTreeHandler(this);
+    m_resultTreeHandler = null;
     m_keyManager = new KeyManager();
     m_attrSetStack = null;
     m_countersTable = null;
@@ -319,6 +319,7 @@ public class TransformerImpl extends XMLFilterImpl
         reader.parse( xmlSource );
       }
       
+      
       // Kick off the parse.  When the ContentHandler gets 
       // the startDocument event, it will call transformNode( node ).
       // reader.parse( xmlSource );
@@ -336,6 +337,11 @@ public class TransformerImpl extends XMLFilterImpl
         else
           throw new trax.TransformException(e);
       }
+      else if(null != m_resultTreeHandler)
+      {
+        m_resultTreeHandler.endDocument();
+      }
+
     }
     catch(org.apache.xalan.utils.WrappedRuntimeException wre)
     {
@@ -658,10 +664,9 @@ public class TransformerImpl extends XMLFilterImpl
       // ===========
       
       this.transformNode(null, null, node, null);
-      if((null != m_resultTreeHandler) && !m_resultTreeHandler.getFoundEndDoc())
+      if(null != m_resultTreeHandler)
       {
         m_resultTreeHandler.endDocument();
-        this.m_resultTreeHandler.flushPending();
       }
     }
     catch(SAXException se)
@@ -1019,6 +1024,7 @@ public class TransformerImpl extends XMLFilterImpl
       //  = SerializerFactory.getSerializerFactory("text");
       sw = new StringWriter();
       OutputFormat format = new OutputFormat();
+      format.setMethod("text");
       format.setPreserveSpace(true);
       Serializer serializer = SerializerFactory.getSerializer(format);
       serializer.setWriter(sw);
@@ -1036,9 +1042,6 @@ public class TransformerImpl extends XMLFilterImpl
 
     // Do the transformation of the child elements.
     executeChildTemplates(elem, sourceNode, mode);
-    
-    // Make sure everything is flushed!
-    this.m_resultTreeHandler.flushPending();
     
     this.m_resultTreeHandler.endDocument();
     
@@ -1744,7 +1747,7 @@ public class TransformerImpl extends XMLFilterImpl
   /**
    * Output handler to bottleneck SAX events.
    */
-  private ResultTreeHandler m_resultTreeHandler = new ResultTreeHandler(this);
+  private ResultTreeHandler m_resultTreeHandler;
   
   /**
    * Get the ResultTreeHandler object.
@@ -1910,6 +1913,31 @@ public class TransformerImpl extends XMLFilterImpl
     parent.setContentHandler(getInputContentHandler());
   }
   
+    /**
+     * Allow an application to register a content event handler.
+     *
+     * <p>If the application does not register a content handler, all
+     * content events reported by the SAX parser will be silently
+     * ignored.</p>
+     *
+     * <p>Applications may register a new or different handler in the
+     * middle of a parse, and the SAX parser must begin using the new
+     * handler immediately.</p>
+     *
+     * @param handler The content handler.
+     * @exception java.lang.NullPointerException If the handler 
+     *            argument is null.
+     * @see #getContentHandler
+     */
+    public void setContentHandler (ContentHandler handler)
+    {
+      super.setContentHandler(handler);
+      if(null == m_resultTreeHandler)
+        m_resultTreeHandler = new ResultTreeHandler(this, handler);
+      else 
+        m_resultTreeHandler.setContentHandler(handler);
+    }
+  
   /**
    * Look up the value of a feature.
    *
@@ -1983,6 +2011,29 @@ public class TransformerImpl extends XMLFilterImpl
   }
   
   /**
+   * From a secondary thread, post the exception, so that 
+   * it can be picked up from the main thread.
+   */
+  private void postExceptionFromThread(Exception e)
+  {
+    m_isTransformDone = true;
+    m_exceptionThrown = e;
+    ; // should have already been reported via the error handler?
+    synchronized (this)
+    {
+      String msg = e.getMessage();
+      // System.out.println(e.getMessage());
+      notifyAll();
+      if(null == msg)
+      {
+        // m_throwNewError = false;
+        e.printStackTrace();
+      }
+      // throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+    }
+  }
+  
+  /**
    * Run the transform thread.
    */
   public void run()
@@ -1997,6 +2048,11 @@ public class TransformerImpl extends XMLFilterImpl
         {
           m_isTransformDone = false;
           transformNode(m_doc);
+        }
+        catch(Exception e)
+        {
+          // Strange that the other catch won't catch this...
+          postExceptionFromThread(e);
         }
         finally
         {
@@ -2014,21 +2070,7 @@ public class TransformerImpl extends XMLFilterImpl
     }
     catch(Exception e)
     {
-      m_isTransformDone = true;
-      m_exceptionThrown = e;
-      ; // should have already been reported via the error handler?
-      synchronized (this)
-      {
-        String msg = e.getMessage();
-        // System.out.println(e.getMessage());
-        notifyAll();
-        if(null == msg)
-        {
-          // m_throwNewError = false;
-          e.printStackTrace();
-        }
-        // throw new org.apache.xalan.utils.WrappedRuntimeException(e);
-      }
+      postExceptionFromThread(e);
     }
   }
 

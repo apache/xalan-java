@@ -199,6 +199,11 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TransformerClient.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TreeWalker2Result.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)XSLInfiniteLoopException.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)QueuedSAXEvent.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)QueuedStartDocument.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)QueuedStartElement.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)QueuedEvents.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)SerializerSwitcher.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)AttList.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)BoolStack.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)DefaultErrorHandler.java \
@@ -229,6 +234,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrongParserException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NodeConsumer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrappedRuntimeException.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)XMLCharacterRecognizer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)StylesheetSpec.java \
   trax$(PATHSEP)Examples.java \

@@ -64,6 +64,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xalan.utils.XMLCharacterRecognizer;
 
 public class FuncNormalizeSpace extends FunctionDef1Arg 
 {
@@ -89,7 +90,7 @@ public class FuncNormalizeSpace extends FunctionDef1Arg
    */
   private static boolean isSpace(char ch) 
   {
-    return Character.isWhitespace(ch); // Take the easy way out for now.
+    return XMLCharacterRecognizer.isWhiteSpace(ch); // Take the easy way out for now.
   }
   
   /**

@@ -165,7 +165,7 @@ public class ElemAttribute extends ElemTemplateElement
 
     // If they are trying to add an attribute when there isn't an 
     // element pending, it is an error.
-    if(null == rhandler.getPendingElementName())
+    if(!rhandler.isElementPending())
     {
       transformer.getMsgMgr().warn(XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME, new Object[]{origAttrName}); 
       return;
@@ -193,7 +193,7 @@ public class ElemAttribute extends ElemTemplateElement
         if(null == prefix)
         {
           prefix = rhandler.getNewUniqueNSPrefix();
-          rhandler.startPrefixMapping(prefix, attrNameSpace);
+          rhandler.startPrefixMapping(prefix, attrNameSpace, false);
         }
         // add the prefix to the attribute name.
         attrName = (prefix + ":"+QName.getLocalPart(attrName));       
@@ -206,7 +206,7 @@ public class ElemAttribute extends ElemTemplateElement
       String prefix = QName.getPrefixFromXMLNSDecl(origAttrName);
       String ns = rhandler.getURI(prefix);
       if(null == ns)
-        rhandler.startPrefixMapping(prefix, val);
+        rhandler.startPrefixMapping(prefix, val, false);
       return;
     }
     // Note we are using original attribute name for these tests. 

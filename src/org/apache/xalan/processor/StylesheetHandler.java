@@ -64,6 +64,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.utils.NodeConsumer;
+import org.apache.xalan.utils.XMLCharacterRecognizer;
 import trax.ProcessorException;
 import trax.TemplatesBuilder;
 import trax.Templates;
@@ -522,21 +523,7 @@ public class StylesheetHandler
     this.popProcessor();
     m_nsSupport.popContext();
   }
-  
-  /**
-   * Tell if the given character array is whitespace.
-   */
-  private boolean isWhitespaceArray(char ch[], int start, int length)
-  {
-    int n = start+length;
-    for(int i = start; i < n; i++)
-    {
-      if(!Character.isWhitespace(ch[i]))
-         return false;
-    }
-    return true;
-  }
-  
+    
   /**
    * Receive notification of character data inside an element.
    *
@@ -561,7 +548,7 @@ public class StylesheetHandler
     if(null == elemProcessor)
     {
       // If it's whitespace, just ignore it, otherwise flag an error.
-      if(!isWhitespaceArray(ch, start, length))
+      if(!XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
         error("Non-whitespace text is not allowed in this position in the stylesheet!", null);
     }
     else

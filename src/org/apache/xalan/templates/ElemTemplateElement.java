@@ -748,7 +748,7 @@ public class ElemTemplateElement extends UnImplNode
       child.resolvePrefixTables();
     }
   }
-  
+    
   /**
    * Send startPrefixMapping events to the result tree handler 
    * for all declared prefix mappings in the stylesheet.
@@ -767,6 +767,26 @@ public class ElemTemplateElement extends UnImplNode
       }
     }    
   }
+  
+  /**
+   * Send startPrefixMapping events to the result tree handler 
+   * for all declared prefix mappings in the stylesheet.
+   */
+  void unexecuteNSDecls(TransformerImpl transformer)
+    throws SAXException
+  {
+    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+    int n = m_prefixTable.size();
+    for(int i = 0; i < n; i++)
+    {
+      XMLNSDecl decl = (XMLNSDecl)m_prefixTable.elementAt(i);
+      if(!decl.getIsExcluded())
+      {
+        rhandler.endPrefixMapping(decl.getPrefix());
+      }
+    }    
+  }
+
     
   /** 
    * Parent node.

@@ -409,10 +409,19 @@ public abstract class BaseMarkupSerializer
         // the writer. It is possible that the serializer has been
         // reused with the same output stream and different encoding.
         if ( _output != null ) {
+          try
+          {
             if ( _format.getEncoding() == null )
-                _writer = new OutputStreamWriter( _output );
+              _writer = new OutputStreamWriter( _output );
             else
-                _writer = Encodings.getWriter( _output, _format.getEncoding() );
+              _writer = Encodings.getWriter( _output, _format.getEncoding() );
+          }
+          catch(UnsupportedEncodingException uee)
+          {
+            System.out.println("Warning - Unsupported Encoding: \""+_format.getEncoding()+"\"");
+            _format.setEncoding("UTF-8");
+            _writer = new OutputStreamWriter( _output );
+          }
         }
         // Determine the last printable character.
         if ( _format.getEncoding() == null )
