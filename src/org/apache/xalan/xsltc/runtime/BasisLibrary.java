@@ -240,7 +240,7 @@ public final class BasisLibrary implements Operators {
     public static String substringF(String value, double start) {
 	try {
 	    final int strlen = value.length();
-	    int istart = (int)Math.round(start);
+	    int istart = (int)Math.round(start) - 1;
 
 	    if (Double.isNaN(start)) return(EMPTYSTRING);
 
