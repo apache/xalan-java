@@ -57,113 +57,78 @@
 package org.apache.xalan.transformer;
 
 // Java imports
-import java.util.Stack;
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
-import java.io.StringWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.Stack;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-// Xalan imports
-import org.apache.xalan.res.XSLTErrorResources;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
+import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.templates.Constants;
-import org.apache.xalan.templates.ElemAttributeSet;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.StylesheetComposed;
-import org.apache.xalan.templates.ElemForEach;
-import org.apache.xalan.templates.ElemApplyTemplates;
-import org.apache.xalan.templates.ElemUse;
-import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.ElemWithParam;
-import org.apache.xalan.templates.ElemSort;
-import org.apache.xalan.templates.AVT;
-import org.apache.xalan.templates.ElemVariable;
-import org.apache.xalan.templates.ElemParam;
-import org.apache.xalan.templates.ElemCallTemplate;
-import org.apache.xalan.templates.ElemTemplate;
-import org.apache.xalan.templates.ElemTextLiteral;
-import org.apache.xalan.templates.TemplateList;
-import org.apache.xalan.templates.XUnresolvedVariable;
-import org.apache.xalan.templates.OutputProperties;
-import org.apache.xalan.trace.TraceManager;
-import org.apache.xalan.transformer.XalanProperties;
-import org.apache.xml.utils.DOMBuilder;
-import org.apache.xml.utils.NodeVector;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.ObjectPool;
-import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XRTreeFrag;
-import org.apache.xpath.Arg;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.VariableStack;
-import org.apache.xpath.SourceTreeManager;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.Expression;
-
-// Serializer Imports
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.serialize.Method;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
-import org.apache.xalan.serialize.Method;
+import org.apache.xalan.templates.AVT;
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemAttributeSet;
+import org.apache.xalan.templates.ElemForEach;
+import org.apache.xalan.templates.ElemSort;
+import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemTextLiteral;
+import org.apache.xalan.templates.ElemVariable;
+import org.apache.xalan.templates.OutputProperties;
+import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.StylesheetComposed;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.WhiteSpaceInfo;
+import org.apache.xalan.templates.XUnresolvedVariable;
+import org.apache.xalan.trace.TraceManager;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
-
-// We have to figure out what to do about this one.
-import org.apache.xml.dtm.ref.ExpandedNameTable;
-
-// SAX2 Imports
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.DOMBuilder;
+import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.ObjectPool;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xpath.Arg;
+import org.apache.xpath.DOMHelper;
+import org.apache.xpath.VariableStack;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.InputSource;
-
-import javax.xml.transform.TransformerException;
-
-import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.Locator;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-
-import javax.xml.transform.ErrorListener;
-
-// TRaX Imports
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.OutputKeys;
-
-// Imported JAVA API for XML Parsing 1.0 classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -2291,6 +2256,12 @@ public class TransformerImpl extends Transformer
         m_currentTemplateElements[currentTemplateElementsTop] = t;
         t.execute(this);
       }
+    }
+    catch(RuntimeException re)
+    {
+    	TransformerException te = new TransformerException(re);
+    	te.setLocator(t);
+    	throw te;
     }
     finally
     {
