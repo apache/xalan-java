@@ -965,14 +965,12 @@ public class Parser implements Constants, ContentHandler {
 	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
 					    expression, parent));
 	}
-	catch (ClassCastException e) {
+	catch (Exception e) {
+	    if (_xsltc.debug()) e.printStackTrace();
 	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
 					    expression, parent));
 	}
-	catch (Exception e) {
-	    if (_xsltc.debug()) e.printStackTrace();
-	    // Intentional fall through
-	}
+
 	// Return a dummy pattern (which is an expression)
 	SyntaxTreeNode.Dummy.setParser(this);
         return SyntaxTreeNode.Dummy; 

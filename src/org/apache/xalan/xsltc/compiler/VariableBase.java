@@ -264,6 +264,10 @@ class VariableBase extends TopLevelElement {
 	select = getAttribute("select");
 	if (select.length() > 0) {
 	    _select = getParser().parseExpression(this, "select", null);
+	    if (_select.isDummy()) {
+		reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "select");
+		return;
+	    }
 	}
 
 	// Children must be parsed first -> static scoping
