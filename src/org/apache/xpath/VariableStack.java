@@ -297,7 +297,8 @@ public class VariableStack extends Stack
     for (int i = (frame.size() - 1); i >= 0; i--)
     {
       Arg arg = (Arg)frame.elementAt(i);
-      arg.setIsVisible(false);
+      if(null != arg)
+        arg.setIsVisible(false);
     }
   }
 
