@@ -323,6 +323,9 @@ public class SerializerToXML
   /** Indicate whether running in Debug mode */
   private static final boolean DEBUG = false;
 
+  /** This flag is set while receiving events from the external DTD */
+  private boolean m_inExternalDTD = false;
+
   /**
    * Default constructor.
    */
@@ -1864,6 +1867,8 @@ public class SerializerToXML
    */
   public void startEntity(String name) throws org.xml.sax.SAXException
   {
+    if (name.equals("[dtd]"))
+      m_inExternalDTD = true;	
     m_inEntityRef = true;
   }
 
@@ -1876,7 +1881,9 @@ public class SerializerToXML
    */
   public void endEntity(String name) throws org.xml.sax.SAXException
   {
-    m_inEntityRef = false;
+    if (name.equals("[dtd]")) 
+      m_inExternalDTD = false;
+     m_inEntityRef = false;
   }
 
   /**
@@ -1925,7 +1932,10 @@ public class SerializerToXML
    */
   public void elementDecl(String name, String model) throws SAXException
   {
-    try
+    // Do not inline external DTD
+    if (m_inExternalDTD) return; 
+
+     try
     {
       final Writer writer = m_writer;
       if (m_inDoctype)
@@ -1975,6 +1985,8 @@ public class SerializerToXML
           String eName, String aName, String type, String valueDefault, String value)
             throws SAXException
   {
+    // Do not inline external DTD
+    if (m_inExternalDTD) return; 
 
     try
     {
@@ -1987,26 +1999,19 @@ public class SerializerToXML
         m_inDoctype = false;
       }
   
-      if (!eName.equals(m_elemName))
-      {
-        writer.write("<!ATTLIST ");
-        writer.write(eName);
-        writer.write(" ");
+      writer.write("<!ATTLIST ");
+      writer.write(eName);
+      writer.write(" ");
   
-        m_elemName = eName;
-      }
-      else
-      {
-        m_pos -= 3;
-  
-        writer.write(m_lineSep, 0, m_lineSepLen);
-      }
   
       writer.write(aName);
       writer.write(" ");
       writer.write(type);
-      writer.write(" ");
-      writer.write(valueDefault);
+      if (valueDefault != null)
+      {
+         writer.write(" ");
+         writer.write(valueDefault);
+      }
   
       //m_writer.write(" ");
       //m_writer.write(value);
@@ -2035,6 +2040,8 @@ public class SerializerToXML
   public void internalEntityDecl(String name, String value)
           throws SAXException
   {
+    // Do not inline external DTD
+    if (m_inExternalDTD) return; 
 
     try
     {

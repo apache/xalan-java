@@ -132,6 +132,11 @@ public final class Template extends TopLevelElement {
 	return _name != null;
     }
 
+    public boolean isRootTemplate() {
+	final String match = getAttribute("match");
+	return (match != null && match.equals("/"));
+    }
+
     public Pattern getPattern() {
 	return _pattern;
     }
