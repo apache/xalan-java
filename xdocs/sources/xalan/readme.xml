@@ -113,6 +113,8 @@
      <li>When you traverse the namespace axis for a collection of element nodes, &xslt4j; includes <em>one</em> namespace node for each namespace in scope 
      for one or more of the nodes in that collection. The XPath expression does not return additional (redundant) namespace nodes for each element
      for which the namespace nodes are in scope.<br/><br/></li>
+     <li>See <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2291">Bugzilla bug 2291</jump> for a discussion of issues surrounding
+     use of the default character encoding to read META-INF/Services.<br/><br/></li>
      <li>As <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1800">Bugzilla bug 1800</jump> reports, the Transformer does not get the 
      setTransformState event until after the startDocument event. This could present a problem for tools developers, and we do intend to fix this 
      bug.</li> 
