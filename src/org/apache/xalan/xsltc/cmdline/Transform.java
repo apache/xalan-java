@@ -135,6 +135,7 @@ final public class Transform {
             final Class clazz = ObjectFactory.findProviderClass(
                 _className, ObjectFactory.findClassLoader(), true);
 	    final AbstractTranslet translet = (AbstractTranslet)clazz.newInstance();
+            translet.postInitialization();
 
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
