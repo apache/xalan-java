@@ -92,9 +92,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.dom.DOMSource;
 
-// Temporary!!!
-import org.apache.xalan.extensions.ExtensionsTable;
-
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Source;
 import javax.xml.transform.ErrorListener;
@@ -110,10 +107,11 @@ import org.apache.xml.dtm.Axis;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.utils.IntStack;
 
 import org.apache.xpath.axes.DescendantIterator;
 
-// For RTF handling.
+// For  handling.
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
 
 /**
@@ -124,6 +122,7 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
  */
 public class XPathContext extends DTMManager // implements ExpressionContext
 {
+	IntStack m_last_pushed_rtfdtm=new IntStack();	
   /**
    * Stack of cached "reusable" DTMs for Result Tree Fragments.
    * This is a kluge to handle the problem of starting an RTF before
@@ -196,7 +195,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
                              
   /**
-   * Get an instance of a DTM that "owns" a node handle.
+   * Get an instance of a DTM that "owns" a node handle. 
    *
    * @param nodeHandle the nodeHandle.
    *
@@ -385,6 +384,26 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   	
     m_dtmManager = DTMManager.newInstance(
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+                   
+    m_saxLocations = new SourceLocator[RECURSIONLIMIT];
+	m_saxLocationsTop = 0;
+    
+	m_axesIteratorStack = new Stack();
+	m_contextNodeLists = new Stack();
+	m_currentExpressionNodes = new int[RECURSIONLIMIT];
+	m_currentExpressionNodesFirstFree = 0;
+	m_currentNodes = new int[RECURSIONLIMIT];
+	m_currentNodesFirstFree = 0;
+	m_iteratorRoots = new NodeVector();
+	m_predicatePos = new IntStack();
+	m_predicateRoots = new NodeVector();
+	m_prefixResolvers = new PrefixResolver[RECURSIONLIMIT];
+	int m_prefixResolversTop = 0;
+	
+	m_prefixResolvers[m_prefixResolversTop++] = null;
+    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
+    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
+    m_saxLocations[m_saxLocationsTop++] = null;
   }
 
   /** The current stylesheet locator. */
@@ -462,34 +481,6 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     return m_owner;
   }
 
-  // ================ extensionsTable ===================
-
-  /**
-   * The table of Extension Handlers.
-   */
-  private ExtensionsTable m_extensionsTable = new ExtensionsTable();
-
-  /**
-   * Get the extensions table object.
-   *
-   * @return The extensions table.
-   */
-  public ExtensionsTable getExtensionsTable()
-  {
-    return m_extensionsTable;
-  }
-
-  /**
-   * Set the extensions table object.
-   *
-   *
-   * @param table The extensions table object.
-   */
-  void setExtensionsTable(ExtensionsTable table)
-  {
-    m_extensionsTable = table;
-  }
-
   // ================ VarStack ===================
 
   /**
@@ -509,7 +500,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     return m_variableStacks;
   }
 
-  /**
+  /** 
    * Get the variable stack, which is in charge of variables and
    * parameters.
    *
@@ -881,13 +872,13 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   /** A stack of the current sub-expression nodes.  */
   private NodeVector m_iteratorRoots = new NodeVector();
 
-  
   /** A stack of the current sub-expression nodes.  */
   private NodeVector m_predicateRoots = new NodeVector();
 
   /** A stack of the current sub-expression nodes.  */
   private int m_currentExpressionNodes[] = new int[RECURSIONLIMIT];
   protected int m_currentExpressionNodesFirstFree = 0;
+  
      
   public int[] getCurrentExpressionNodeStack() { return m_currentExpressionNodes; }
   public void setCurrentExpressionNodeStack(int[] nv) { m_currentExpressionNodes = nv; }
@@ -1270,6 +1261,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     m_rtfdtm_stack.addElement(rtfdtm);
 		++m_which_rtfdtm;
 	}
+	else if(m_which_rtfdtm<0)
+	{
+		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(++m_which_rtfdtm);
+	}
 	else
 	{
 		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
@@ -1277,8 +1272,9 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  	// It might already be under construction -- the classic example would be
  	 	// an xsl:variable which uses xsl:call-template as part of its value. To
   		// handle this recursion, we have to start a new RTF DTM, pushing the old
-  		// one onto a stack so we can return to it. It is hoped that
-	  	// this is an uncommon case!
+  		// one onto a stack so we can return to it. This is not as uncommon a case
+  		// as we might wish, unfortunately, as some folks insist on coding XSLT
+  		// as if it were a procedural language...
   		if(rtfdtm.isTreeIncomplete())
 	  	{
 	  		if(++m_which_rtfdtm < m_rtfdtm_stack.size())
@@ -1290,6 +1286,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  		}
  	 	}
 	}
+		
     return rtfdtm;
   }
   
@@ -1299,6 +1296,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * */
   public void pushRTFContext()
   {
+  	m_last_pushed_rtfdtm.push(m_which_rtfdtm);
   	if(null!=m_rtfdtm_stack)
 	  	((SAX2RTFDTM)(getRTFDTM())).pushRewindMark();
   }
@@ -1321,11 +1319,22 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   {
   	if(null==m_rtfdtm_stack)
   		return;
-  		
-	boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(m_which_rtfdtm))).popRewindMark();
-	if(isEmpty && m_which_rtfdtm>0)
-	{
-		--m_which_rtfdtm;
-	}
+  
+  	int previous=m_last_pushed_rtfdtm.pop();
+  	if(m_which_rtfdtm==previous)
+  	{
+  		if(previous>=0) // guard against none-active
+  		{
+	  		boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(previous))).popRewindMark();
+  		}
+  	}
+  	else while(m_which_rtfdtm!=previous)
+  	{
+  		// Empty each DTM before popping, so it's ready for reuse
+  		// _DON'T_ pop the previous, since it's still open (which is why we
+  		// stacked up more of these) and did not receive a mark.
+  		boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(m_which_rtfdtm))).popRewindMark();
+  		--m_which_rtfdtm; 
+  	}
   }
 }

@@ -63,22 +63,29 @@ import org.apache.xml.utils.res.XResourceBundle;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+//import org.w3c.dom.xpath.XPathResult;
 import org.xml.sax.*;
 
 import java.util.*;
 
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
 
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.XPathParser;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringBufferPool;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.CountersTable;
+import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.NodeVector;
 
@@ -105,9 +112,56 @@ import javax.xml.transform.TransformerException;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#number">number in XSLT Specification</a>
  */
-public class ElemNumber extends ElemTemplateElement
+public class ElemNumber extends ElemTemplateElement 
 {
 
+    private class MyPrefixResolver implements PrefixResolver {
+        
+        DTM dtm;
+        int handle;
+        boolean handleNullPrefix;
+        
+		/**
+		 * Constructor for MyPrefixResolver.
+		 * @param xpathExpressionContext
+		 */
+		public MyPrefixResolver(Node xpathExpressionContext, DTM dtm, int handle, boolean handleNullPrefix) {
+            this.dtm = dtm;
+            this.handle = handle;
+            this.handleNullPrefix = handleNullPrefix;
+		}
+
+    	/**
+		 * @see PrefixResolver#getNamespaceForPrefix(String, Node)
+		 */
+		public String getNamespaceForPrefix(String prefix) {
+            return dtm.getNamespaceURI(handle);
+		}
+        
+        /**
+         * @see PrefixResolver#getNamespaceForPrefix(String, Node)
+         * this shouldn't get called.
+         */
+        public String getNamespaceForPrefix(String prefix, Node context) {
+            return getNamespaceForPrefix(prefix);
+        }
+
+		/**
+		 * @see PrefixResolver#getBaseIdentifier()
+		 */
+		public String getBaseIdentifier() {
+			return ElemNumber.this.getBaseIdentifier();
+		}
+
+		/**
+		 * @see PrefixResolver#handlesNullPrefixes()
+		 */
+		public boolean handlesNullPrefixes() {
+			return handleNullPrefix;
+		}
+
+}
+    
   /**
    * Only nodes are counted that match this pattern.
    * @serial
@@ -544,7 +598,7 @@ public class ElemNumber extends ElemTemplateElement
             throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
+     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
@@ -721,11 +775,18 @@ public class ElemNumber extends ElemTemplateElement
       switch (dtm.getNodeType(contextNode))
       {
       case DTM.ELEMENT_NODE :
+        MyPrefixResolver resolver;
 
-        // countMatchPattern = m_stylesheet.createMatchPattern(contextNode.getNodeName(), this);
-        countMatchPattern = new XPath(dtm.getNodeName(contextNode), this, this,
+        if (dtm.getNamespaceURI(contextNode) == null) {
+             resolver =  new MyPrefixResolver(dtm.getNode(contextNode), dtm,contextNode, false);
+        } else {
+            resolver = new MyPrefixResolver(dtm.getNode(contextNode), dtm,contextNode, true);
+        }
+
+        countMatchPattern = new XPath(dtm.getNodeName(contextNode), this, resolver,
                                       XPath.MATCH, support.getErrorListener());
         break;
+
       case DTM.ATTRIBUTE_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
@@ -1070,31 +1131,49 @@ public class ElemNumber extends ElemTemplateElement
     Locale locale = (Locale)getLocale(transformer, contextNode).clone();
 
     // Helper to format local specific numbers to strings.
-    DecimalFormat formatter;
+    DecimalFormat formatter = null;
 
     //synchronized (locale)
     //{
-      formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+    //     formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
     //}
 
     String digitGroupSepValue =
       (null != m_groupingSeparator_avt)
       ? m_groupingSeparator_avt.evaluate(
       transformer.getXPathContext(), contextNode, this) : null;
+      
+      
+    // Validate grouping separator if an AVT was used; otherwise this was 
+    // validated statically in XSLTAttributeDef.java.
+    if ((digitGroupSepValue != null) && (!m_groupingSeparator_avt.isSimple()) &&
+        (digitGroupSepValue.length() != 1))
+    {
+            transformer.getMsgMgr().warn(
+               this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
+               new Object[]{ Constants.ATTRNAME_NAME, m_groupingSeparator_avt.getName()});   
+    }                  
+      
+      
     String nDigitsPerGroupValue =
       (null != m_groupingSize_avt)
       ? m_groupingSize_avt.evaluate(
       transformer.getXPathContext(), contextNode, this) : null;
 
     // TODO: Handle digit-group attributes
-    if ((null != digitGroupSepValue) && (null != nDigitsPerGroupValue))
+    if ((null != digitGroupSepValue) && (null != nDigitsPerGroupValue) &&
+        // Ignore if separation value is empty string
+        (digitGroupSepValue.length() > 0))
     {
       try
       {
+        formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
         formatter.setGroupingSize(
           Integer.valueOf(nDigitsPerGroupValue).intValue());
-        formatter.getDecimalFormatSymbols().setGroupingSeparator(
-          digitGroupSepValue.charAt(0));
+        
+        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+        symbols.setGroupingSeparator(digitGroupSepValue.charAt(0));
+        formatter.setDecimalFormatSymbols(symbols);
         formatter.setGroupingUsed(true);
       }
       catch (NumberFormatException ex)
@@ -1284,8 +1363,7 @@ public class ElemNumber extends ElemTemplateElement
             throws javax.xml.transform.TransformerException
   {
 
-    DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
-    String padString = formatter.format(0);
+
     String letterVal =
       (m_lettervalue_avt != null)
       ? m_lettervalue_avt.evaluate(
@@ -1541,7 +1619,9 @@ public class ElemNumber extends ElemTemplateElement
       break;
     }
     default :  // "1"
-      String numString = formatter.format(listElement);
+      DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
+      String padString = formatter == null ? String.valueOf(0) : formatter.format(0);    
+      String numString = formatter == null ? String.valueOf(listElement) : formatter.format(listElement);
       int nPadding = numberWidth - numString.length();
 
       for (int k = 0; k < nPadding; k++)
@@ -2137,5 +2217,7 @@ public class ElemNumber extends ElemTemplateElement
       return count;
     }
   }  // end NumberFormatStringTokenizer
+
+
 
 }

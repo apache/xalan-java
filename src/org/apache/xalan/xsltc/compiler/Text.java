@@ -126,7 +126,12 @@ final class Text extends Instruction {
 	parseChildren(parser);
 
 	if (_text == null) {
-	    _ignore = true;
+	    if (_textElement) {
+		_text = EMPTYSTRING;
+	    }
+	    else {
+		_ignore = true;
+	    }
 	}
 	else if (_textElement) {
 	    if (_text.length() == 0) _ignore = true;
@@ -162,35 +167,27 @@ final class Text extends Instruction {
 	    // Turn off character escaping if so is wanted.
 	    final int esc = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
 						      "setEscaping", "(Z)Z");
-	    // set escaping value in output handler 
-	    if (_escaping) {
-		il.append(methodGen.loadHandler());
-		il.append(new PUSH(cpg,true));
-		il.append(new INVOKEINTERFACE(esc, 2));
-	    } else {
+	    if (!_escaping) {
 		il.append(methodGen.loadHandler());
 		il.append(new PUSH(cpg, false));
 		il.append(new INVOKEINTERFACE(esc, 2));
 	    }
 
-	    final int toCharArr = cpg.addMethodref("java/lang/String",
-						  "toCharArray", "()[C");
 	    final int characters = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
 							     "characters",
-							     "([CII)V");
+							     "(" + STRING_SIG + ")V");
 	    il.append(methodGen.loadHandler());
 	    il.append(new PUSH(cpg, _text));
-	    il.append(new INVOKEVIRTUAL(toCharArr));
-	    il.append(new ICONST(0));
-	    il.append(new PUSH(cpg, _text.length()));
-	    il.append(new INVOKEINTERFACE(characters, 4));
+	    il.append(new INVOKEINTERFACE(characters, 2));
 
 	    // Restore character escaping setting to whatever it was.
 	    // Note: setEscaping(bool) returns the original (old) value
-	    il.append(methodGen.loadHandler());
-	    il.append(SWAP);
-	    il.append(new INVOKEINTERFACE(esc, 2));
-	    il.append(POP);
+	    if (!_escaping) {
+		il.append(methodGen.loadHandler());
+		il.append(SWAP);
+		il.append(new INVOKEINTERFACE(esc, 2));
+		il.append(POP);
+	    }
 	}
 	translateContents(classGen, methodGen);
     }

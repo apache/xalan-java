@@ -83,4 +83,6 @@ public interface Translet {
 	throws TransletException;
     public void addAuxiliaryClass(Class auxClass);
     public Class getAuxiliaryClass(String className);
+    public String[] getNamesArray();
+    public String[] getNamespaceArray();
 }

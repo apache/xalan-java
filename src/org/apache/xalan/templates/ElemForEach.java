@@ -80,7 +80,6 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.NodeSorter;
 import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.ClonerToResultTree;
 
 import javax.xml.transform.SourceLocator;

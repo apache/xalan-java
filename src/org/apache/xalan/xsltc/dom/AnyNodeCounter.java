@@ -88,16 +88,21 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	    result = _value;
 	}
 	else {
-		int next = _node; 
+	    int next = _node; 
+            final int root = _document.getDocument();
 	    result = 0;
 	    while (next >=0 && !matchesFrom(next)) {
 		if (matchesCount(next)) {
 		    ++result;	
 		}
-		if (_document.getNodeIdent(next) == DTMDefaultBase.ROOTNODE)
-		break;
-		else
-		--next;		
+//%HZ%:  Is this the best way of finding the root?  Is it better to check
+//%HZ%:  parent(next)?
+		if (next == root) {
+		    break;
+                }
+		else {
+		    --next;		
+                }
 	    }
 	}
 	return formatNumbers(result);
@@ -124,14 +129,19 @@ public abstract class AnyNodeCounter extends NodeCounter {
 		int next = _node;
 		result = 0;
 		final int ntype = _document.getType(_node);
+                final int root = _document.getDocument();
 		while (next >= 0) {
 		    if (ntype == _document.getType(next)) {
 			result++;
 		    }
-		if (_document.getNodeIdent(next) == DTMDefaultBase.ROOTNODE)
-		break;
-		else
-		--next;
+//%HZ%:  Is this the best way of finding the root?  Is it better to check
+//%HZ%:  parent(next)?
+		    if (next == root) {
+		        break;
+                    }
+		    else {
+		        --next;
+                    }
 		}
 	    }
 	    return formatNumbers(result);

@@ -103,8 +103,19 @@ public interface ExpressionContext
    *
    * @throws javax.xml.transform.TransformerException
    */
-
   public XObject getVariableOrParam(org.apache.xml.utils.QName qname)
+            throws javax.xml.transform.TransformerException;
+  
+  /**
+   * Get the XPathContext that owns this ExpressionContext.
+   * 
+   * Note: exslt:function requires the XPathContext to access
+   * the variable stack and TransformerImpl.
+   * 
+   * @return The current XPathContext.
+   * @throws javax.xml.transform.TransformerException
+   */
+  public org.apache.xpath.XPathContext getXPathContext()
             throws javax.xml.transform.TransformerException;
 
 }

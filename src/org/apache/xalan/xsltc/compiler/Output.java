@@ -65,15 +65,16 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
+import java.util.Properties;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.io.OutputStreamWriter;
+import javax.xml.transform.OutputKeys;
 
 import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.runtime.TextOutput;
 
 final class Output extends TopLevelElement {
 
@@ -97,7 +98,8 @@ final class Output extends TopLevelElement {
 
     // Some global constants
     private final static String STRING_SIG = "Ljava/lang/String;";
-    private final static String ONE_DOT_ZERO_STRING = "1.0";
+    private final static String XML_VERSION = "1.0";
+    private final static String HTML_VERSION = "4.0";
 
     /**
      * Displays the contents of this element (for debugging)
@@ -124,6 +126,7 @@ final class Output extends TopLevelElement {
      * Scans the attribute list for the xsl:output instruction
      */
     public void parseContents(Parser parser) {
+	final Properties outputProperties = new Properties();
 
 	// Ask the parser if it wants this <xsl:output> element
 	parser.setOutput(this);
@@ -133,25 +136,30 @@ final class Output extends TopLevelElement {
 
 	String attrib = null;
 
-	// Get the output XML version - only version "1.0" should be used
+	// Get the output version
 	_version = getAttribute("version");
-	if ((_version == null) || (_version.equals(Constants.EMPTYSTRING))) {
-	    _version = ONE_DOT_ZERO_STRING;
+	if (_version == null || _version.equals(Constants.EMPTYSTRING)) {
+	    _version = null;
 	}
-	if (!_version.equals(ONE_DOT_ZERO_STRING)) {
-	    ErrorMsg msg = new ErrorMsg(ErrorMsg.OUTPUT_VERSION_ERR, this);
-	    parser.reportError(Constants.WARNING, msg);
+	else {
+	    outputProperties.setProperty(OutputKeys.VERSION, _version);
 	}
 
 	// Get the output method - "xml", "html", "text" or <qname>
 	_method = getAttribute("method");
-	if (_method.equals(Constants.EMPTYSTRING)) _method = null;
-	if (_method != null) _method = _method.toLowerCase();
+	if (_method.equals(Constants.EMPTYSTRING)) {
+	    _method = null;
+	}
+	if (_method != null) {
+	    _method = _method.toLowerCase();
+	    outputProperties.setProperty(OutputKeys.METHOD, _method);
+	}
 
 	// Get the output encoding - any value accepted here
 	_encoding = getAttribute("encoding");
-	if (_encoding.equals(Constants.EMPTYSTRING))
+	if (_encoding.equals(Constants.EMPTYSTRING)) {
 	    _encoding = null;
+	}
 	else {
 	    try {
 		OutputStreamWriter writer =
@@ -162,42 +170,104 @@ final class Output extends TopLevelElement {
 					    _encoding, this);
 		parser.reportError(Constants.WARNING, msg);
 	    }
+	    outputProperties.setProperty(OutputKeys.ENCODING, _encoding);
 	}
 
 	// Should the XML header be omitted - translate to true/false
 	attrib = getAttribute("omit-xml-declaration");
-	if ((attrib != null) && (attrib.equals("yes"))) _omitHeader = true;
+	if (attrib != null && !attrib.equals(Constants.EMPTYSTRING)) {
+	    if (attrib.equals("yes")) {
+		_omitHeader = true;
+	    }
+	    outputProperties.setProperty(OutputKeys.OMIT_XML_DECLARATION, attrib);
+	}
 
 	// Add 'standalone' decaration to output - use text as is
 	_standalone = getAttribute("standalone");
-	if (_standalone.equals(Constants.EMPTYSTRING)) _standalone = null;
+	if (_standalone.equals(Constants.EMPTYSTRING)) {
+	    _standalone = null;
+	}
+	else {
+	    outputProperties.setProperty(OutputKeys.STANDALONE, _standalone);
+	}
 
 	// Get system/public identifiers for output DOCTYPE declaration
 	_doctypeSystem = getAttribute("doctype-system");
-	if (_doctypeSystem.equals(Constants.EMPTYSTRING)) _doctypeSystem = null;
+	if (_doctypeSystem.equals(Constants.EMPTYSTRING)) {
+	    _doctypeSystem = null;
+	}
+	else {
+	    outputProperties.setProperty(OutputKeys.DOCTYPE_SYSTEM, _doctypeSystem);
+	}
+
+
 	_doctypePublic = getAttribute("doctype-public");
-	if (_doctypePublic.equals(Constants.EMPTYSTRING)) _doctypePublic = null;
+	if (_doctypePublic.equals(Constants.EMPTYSTRING)) {
+	    _doctypePublic = null;
+	}
+	else {
+	    outputProperties.setProperty(OutputKeys.DOCTYPE_PUBLIC, _doctypePublic);
+	}
 
 	// Names the elements of whose text contents should be output as CDATA
 	_cdata = getAttribute("cdata-section-elements");
-	if ((_cdata != null) && (_cdata.equals(Constants.EMPTYSTRING)))
+	if (_cdata != null && _cdata.equals(Constants.EMPTYSTRING)) {
 	    _cdata = null;
+	}
+	else {
+	    StringBuffer expandedNames = new StringBuffer();
+	    StringTokenizer tokens = new StringTokenizer(_cdata);
+
+	    // Make sure to store names in expanded form
+	    while (tokens.hasMoreTokens()) {
+		expandedNames.append(parser.getQName(tokens.nextToken()).toString())
+			     .append(' ');
+	    }
+	    _cdata = expandedNames.toString();
+
+	    outputProperties.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, _cdata);
+	}
 
 	// Get the indent setting - only has effect for xml and html output
 	attrib = getAttribute("indent");
-	if ((attrib != null) && (!attrib.equals(EMPTYSTRING))) {
-	    if (attrib.equals("yes")) _indent = true;
+	if (attrib != null && !attrib.equals(EMPTYSTRING)) {
+	    if (attrib.equals("yes")) {
+		_indent = true;
+	    }
+	    outputProperties.setProperty(OutputKeys.INDENT, attrib);
 	}
-	else if ((_method != null) && (_method.equals("html"))) {
+	else if (_method != null && _method.equals("html")) {
 	    _indent = true;
 	}
 
-	// Get the MIME type for the output file - we don't do anythign with it,
-	// but our client may use it to specify a data transport type, etc.
+	// Get the MIME type for the output file
 	_mediaType = getAttribute("media-type");
-	if (_mediaType.equals(Constants.EMPTYSTRING)) _mediaType = null;
+	if (_mediaType.equals(Constants.EMPTYSTRING)) {
+	    _mediaType = null;
+	}
+	else {
+	    outputProperties.setProperty(OutputKeys.MEDIA_TYPE, _mediaType);
+	}
 
-	// parseChildren(parser); - the element is always empty
+	// Implied properties
+	if (_method != null) {
+	    if (_method.equals("html")) {
+		if (_version == null) {
+		    _version = HTML_VERSION;
+		}
+		if (_mediaType == null) {
+		    _mediaType = "text/html";
+		}
+	    }
+	    else if (_method.equals("text")) {
+		if (_mediaType == null) {
+		    _mediaType = "text/plain";
+		}
+	    }
+	}
+
+	// Set output properties in current stylesheet
+	parser.getCurrentStylesheet().setOutputProperties(outputProperties);
     }
 
     /**
@@ -216,7 +286,7 @@ final class Output extends TopLevelElement {
         il.append(classGen.loadTranslet());
 
 	// Only update _version field if set and different from default
-	if ((_version != null) && (!_version.equals(ONE_DOT_ZERO_STRING))) {
+	if ((_version != null) && (!_version.equals(XML_VERSION))) {
 	    field = cpg.addFieldref(TRANSLET_CLASS, "_version", STRING_SIG);
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, _version));
@@ -274,7 +344,7 @@ final class Output extends TopLevelElement {
 	}
 
 	// Compile code to set output indentation on/off
-	if (_indent ) {
+	if (_indent) {
 	    field = cpg.addFieldref(TRANSLET_CLASS, "_indent", "Z");
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, _indent));
@@ -286,6 +356,7 @@ final class Output extends TopLevelElement {
 	    int index = cpg.addMethodref(TRANSLET_CLASS,
 					 "addCdataElement",
 					 "(Ljava/lang/String;)V");
+
 	    StringTokenizer tokens = new StringTokenizer(_cdata);
 	    while (tokens.hasMoreTokens()) {
 		il.append(DUP);

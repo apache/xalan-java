@@ -73,6 +73,8 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -617,7 +619,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   public int previousNode()
   {
     throw new RuntimeException(
-      "This NodeSetDTM can not iterate to a previous node!");
+      XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_CANNOT_ITERATE, null)); //"This NodeSetDTM can not iterate to a previous node!");
   }
 
   /**

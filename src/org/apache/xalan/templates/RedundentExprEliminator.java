@@ -58,6 +58,8 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xpath.Expression;
@@ -405,7 +407,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   		}
   	}
   	
-  	assert(false, "Could not find common ancestor!!!");
+  	assertion(false, "Could not find common ancestor!!!");
   	return null;
   }
   
@@ -495,7 +497,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	AxesWalker walker = wi.getFirstWalker();
   	for(int i = 0; i < numSteps; i++)
   	{
-  		assert(null != walker, "Walker should not be null!");
+  		assertion(null != walker, "Walker should not be null!");
   		walker = walker.getNextWalker();
   	}
   	
@@ -577,7 +579,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   		aw2 = aw2.getNextWalker();
   	}
   	
-  	assert((null != aw1) || (null != aw2), "Total match is incorrect!");
+  	assertion((null != aw1) || (null != aw2), "Total match is incorrect!");
   	
   	return true;
   }
@@ -1082,7 +1084,8 @@ public class RedundentExprEliminator extends XSLTVisitor
   			return (ElemTemplateElement)parent;
   		parent = parent.exprGetParent();
   	}
-  	throw new RuntimeException("Programmer's error! expr has no ElemTemplateElement parent!");
+  	throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_ASSERT_NO_TEMPLATE_PARENT, null));
+  	// "Programmer's error! expr has no ElemTemplateElement parent!");
   }
       
   /**
@@ -1308,25 +1311,26 @@ public class RedundentExprEliminator extends XSLTVisitor
                                           LocPathIterator path) 
 		throws RuntimeException 
   {
-  	assert(owner.getExpression() == path, "owner.getExpression() != path!!!");
+  	assertion(owner.getExpression() == path, "owner.getExpression() != path!!!");
 	int n = paths.size();
 	// There should never be any duplicates in the list!
 	for(int i = 0; i < n; i++)
 	{
 		ExpressionOwner ew = (ExpressionOwner)paths.elementAt(i);
-		assert(ew != owner, "duplicate owner on the list!!!");
-		assert(ew.getExpression() != path, "duplicate expression on the list!!!");
+		assertion(ew != owner, "duplicate owner on the list!!!");
+		assertion(ew.getExpression() != path, "duplicate expression on the list!!!");
 	}
   }
   
   /**
    * Simple assertion.
    */
-  protected static void assert(boolean b, String msg)
+  protected static void assertion(boolean b, String msg)
   {
   	if(!b)
   	{
-  		throw new RuntimeException("Programmer's assertion in RundundentExprEliminator: "+msg);
+  		throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR, new Object[]{msg}));
+  		// "Programmer's assertion in RundundentExprEliminator: "+msg);
   	}
   }
   
@@ -1359,7 +1363,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	MultistepExprHolder(ExpressionOwner exprOwner, int stepCount, MultistepExprHolder next)
   	{
   		m_exprOwner = exprOwner;
-  		assert(null != m_exprOwner, "exprOwner can not be null!");
+  		assertion(null != m_exprOwner, "exprOwner can not be null!");
   		m_stepCount = stepCount;
   		m_next = next;
   	}
@@ -1429,7 +1433,7 @@ public class RedundentExprEliminator extends XSLTVisitor
 			next = next.m_next;
 		}
 		
-		assert(false, "unlink failed!!!");
+		assertion(false, "unlink failed!!!");
 		return null;
 	}
 		

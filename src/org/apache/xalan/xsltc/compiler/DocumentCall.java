@@ -120,7 +120,15 @@ final class DocumentCall extends FunctionCall {
 	// Parse the second argument - the document URI base
 	if (ac == 2) {
 	    _base = argument(1);
-	    if (!_base.typeCheck(stable).identicalTo(Type.NodeSet)) {
+	    final Type baseType = _base.typeCheck(stable);
+	    
+	    if (baseType.identicalTo(Type.Node)) {
+		_base = new CastExpr(_base, Type.NodeSet);
+	    }
+	    else if (baseType.identicalTo(Type.NodeSet)) {
+		// falls through
+	    }
+	    else {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMENT_ARG_ERR, this);
 		throw new TypeCheckError(msg);
 	    }

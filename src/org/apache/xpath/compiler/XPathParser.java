@@ -110,6 +110,13 @@ public class XPathParser
   int m_queueMark = 0;
 
   /**
+   * Results from checking FilterExpr syntax
+   */
+  protected final static int FILTER_MATCH_FAILED     = 0;
+  protected final static int FILTER_MATCH_PRIMARY    = 1;
+  protected final static int FILTER_MATCH_PREDICATES = 2;
+
+  /**
    * The parser constructor.
    */
   public XPathParser(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
@@ -1256,23 +1263,47 @@ public class XPathParser
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
-    boolean foundLocationPath;
 
-    FilterExpr();
+    int filterExprMatch = FilterExpr();
 
-    if (tokenIs('/'))
+    if (filterExprMatch != FILTER_MATCH_FAILED)
     {
-      nextToken();
+      // If FilterExpr had Predicates, a OP_LOCATIONPATH opcode would already
+      // have been inserted.
+      boolean locationPathStarted = (filterExprMatch==FILTER_MATCH_PREDICATES);
 
-      // int locationPathOpPos = opPos;
-      insertOp(opPos, 2, OpCodes.OP_LOCATIONPATH);
-      RelativeLocationPath();
+      if (tokenIs('/'))
+      {
+        nextToken();
+
+        if (!locationPathStarted)
+        {
+          // int locationPathOpPos = opPos;
+          insertOp(opPos, 2, OpCodes.OP_LOCATIONPATH);
+
+          locationPathStarted = true;
+        }
+
+        if (!RelativeLocationPath())
+        {
+          // "Relative location path expected following '/' or '//'"
+          error(XPATHErrorResources.ER_EXPECTED_REL_LOC_PATH, null);
+        }
+
+      }
 
       // Terminate for safety.
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      if (locationPathStarted)
+      {
+        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
+        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+        m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      }
+    }
+    else
+    {
+      LocationPath();
     }
   }
 
@@ -1285,39 +1316,47 @@ public class XPathParser
    * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
+   * @return  FILTER_MATCH_PREDICATES, if this method successfully matched a
+   *          FilterExpr with one or more Predicates;
+   *          FILTER_MATCH_PRIMARY, if this method successfully matched a
+   *          FilterExpr that was just a PrimaryExpr; or
+   *          FILTER_MATCH_FAILED, if this method did not match a FilterExpr
+   *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void FilterExpr() throws javax.xml.transform.TransformerException
+  protected int FilterExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
 
-    // boolean isFunc = lookahead('(', 1);
-    PrimaryExpr();
+    int filterMatch;
 
-    if (tokenIs('['))
+    if (PrimaryExpr())
     {
-
-      // int locationPathOpPos = opPos;
-      insertOp(opPos, 2, OpCodes.OP_LOCATIONPATH);
-
-      while (tokenIs('['))
+      if (tokenIs('['))
       {
-        Predicate();
-      }
 
-      if (tokenIs('/'))
+        // int locationPathOpPos = opPos;
+        insertOp(opPos, 2, OpCodes.OP_LOCATIONPATH);
+
+        while (tokenIs('['))
+        {
+          Predicate();
+        }
+
+        filterMatch = FILTER_MATCH_PREDICATES;
+      }
+      else
       {
-        nextToken();
-        RelativeLocationPath();
+        filterMatch = FILTER_MATCH_PRIMARY;
       }
-
-      // Terminate for safety.
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
+    else
+    {
+      filterMatch = FILTER_MATCH_FAILED;
+    }
+
+    return filterMatch;
 
     /*
      * if(tokenIs('['))
@@ -1336,12 +1375,15 @@ public class XPathParser
    * | Number
    * | FunctionCall
    *
+   * @return true if this method successfully matched a PrimaryExpr
    *
    * @throws javax.xml.transform.TransformerException
+   *
    */
-  protected void PrimaryExpr() throws javax.xml.transform.TransformerException
+  protected boolean PrimaryExpr() throws javax.xml.transform.TransformerException
   {
 
+    boolean matchFound;
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
 
     if ((m_tokenChar == '\'') || (m_tokenChar == '"'))
@@ -1351,6 +1393,8 @@ public class XPathParser
 
       m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      matchFound = true;
     }
     else if (m_tokenChar == '$')
     {
@@ -1360,6 +1404,8 @@ public class XPathParser
       
       m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      matchFound = true;
     }
     else if (m_tokenChar == '(')
     {
@@ -1370,6 +1416,8 @@ public class XPathParser
 
       m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      matchFound = true;
     }
     else if ((null != m_token) && ((('.' == m_tokenChar) && (m_token.length() > 1) && Character.isDigit(
             m_token.charAt(1))) || Character.isDigit(m_tokenChar)))
@@ -1379,15 +1427,19 @@ public class XPathParser
 
       m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      matchFound = true;
     }
     else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3)))
     {
-      FunctionCall();
+      matchFound = FunctionCall();
     }
     else
     {
-      LocationPath();
+      matchFound = false;
     }
+
+    return matchFound;
   }
 
   /**
@@ -1413,10 +1465,11 @@ public class XPathParser
    *
    * FunctionCall    ::=    FunctionName '(' ( Argument ( ',' Argument)*)? ')'
    *
+   * @return true if, and only if, a FunctionCall was matched
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void FunctionCall() throws javax.xml.transform.TransformerException
+  protected boolean FunctionCall() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1450,9 +1503,8 @@ public class XPathParser
       case OpCodes.NODETYPE_COMMENT :
       case OpCodes.NODETYPE_TEXT :
       case OpCodes.NODETYPE_NODE :
-        LocationPath();
-
-        return;
+        // Node type tests look like function calls, but they're not
+        return false;
       default :
         appendOp(3, OpCodes.OP_FUNCTION);
 
@@ -1492,6 +1544,8 @@ public class XPathParser
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
     m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+    return true;
   }
 
   // ============= GRAMMAR FUNCTIONS =================
@@ -1512,7 +1566,9 @@ public class XPathParser
     // int locationPathOpPos = opPos;
     appendOp(2, OpCodes.OP_LOCATIONPATH);
 
-    if (tokenIs('/'))
+    boolean seenSlash = tokenIs('/');
+
+    if (seenSlash)
     {
       appendOp(4, OpCodes.FROM_ROOT);
 
@@ -1526,7 +1582,13 @@ public class XPathParser
 
     if (m_token != null)
     {
-      RelativeLocationPath();
+      if (!RelativeLocationPath() && !seenSlash)
+      {
+        // Neither a '/' nor a RelativeLocationPath - i.e., matched nothing
+        // "Location path expected, but found "+m_token+" was encountered."
+        error(XPATHErrorResources.ER_EXPECTED_LOC_PATH, 
+              new Object [] {m_token});
+      }
     }
 
     // Terminate for safety.
@@ -1542,19 +1604,31 @@ public class XPathParser
    * | RelativeLocationPath '/' Step
    * | AbbreviatedRelativeLocationPath
    *
+   * @returns true if, and only if, a RelativeLocationPath was matched
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void RelativeLocationPath() throws javax.xml.transform.TransformerException
+  protected boolean RelativeLocationPath()
+               throws javax.xml.transform.TransformerException
   {
-
-    Step();
+    if (!Step())
+    {
+      return false;
+    }
 
     while (tokenIs('/'))
     {
       nextToken();
-      Step();
+
+      if (!Step())
+      {
+        // RelativeLocationPath can't end with a trailing '/'
+        // "Location step expected following '/' or '//'"
+        error(XPATHErrorResources.ER_EXPECTED_LOC_STEP, null);
+      }
     }
+
+    return true;
   }
 
   /**
@@ -1562,12 +1636,46 @@ public class XPathParser
    * Step    ::=    Basis Predicate
    * | AbbreviatedStep
    *
+   * @returns false if step was empty (or only a '/'); true, otherwise
+   *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void Step() throws javax.xml.transform.TransformerException
+  protected boolean Step() throws javax.xml.transform.TransformerException
   {
-
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+
+    boolean doubleSlash = tokenIs('/');
+
+    // At most a single '/' before each Step is consumed by caller; if the
+    // first thing is a '/', that means we had '//' and the Step must not
+    // be empty.
+    if (doubleSlash)
+    {
+      nextToken();
+
+      appendOp(2, OpCodes.FROM_DESCENDANTS_OR_SELF);
+
+      // Have to fix up for patterns such as '//@foo' or '//attribute::foo',
+      // which translate to 'descendant-or-self::node()/attribute::foo'.
+      // notice I leave the '/' on the queue, so the next will be processed
+      // by a regular step pattern.
+
+      // Make room for telling how long the step is without the predicate
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
+        OpCodes.NODETYPE_NODE;
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+
+      // Tell how long the step is without the predicate
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
+          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      // Tell how long the step is with the predicate
+      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
+          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+      opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    }
 
     if (tokenIs("."))
     {
@@ -1599,8 +1707,8 @@ public class XPathParser
     // There is probably a better way to test for this 
     // transition... but it gets real hairy if you try 
     // to do it in basis().
-    else if (tokenIs('*') || tokenIs('@') || tokenIs('/')
-             || tokenIs('_') || (m_token!= null && Character.isLetter(m_token.charAt(0))))
+    else if (tokenIs('*') || tokenIs('@') || tokenIs('_')
+             || (m_token!= null && Character.isLetter(m_token.charAt(0))))
     {
       Basis();
 
@@ -1613,6 +1721,19 @@ public class XPathParser
       m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
+    else
+    {
+      // No Step matched - that's an error if previous thing was a '//'
+      if (doubleSlash)
+      {
+        // "Location step expected following '/' or '//'"
+        error(XPATHErrorResources.ER_EXPECTED_LOC_STEP, null);
+      }
+
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -1642,37 +1763,6 @@ public class XPathParser
 
       appendOp(2, axesType);
       nextToken();
-    }
-    else if (tokenIs('/'))
-    {
-      axesType = OpCodes.FROM_DESCENDANTS_OR_SELF;
-
-      appendOp(2, axesType);
-
-      // Have to fix up for patterns such as '//@foo' or '//attribute::foo',
-      // which translate to 'descendant-or-self::node()/attribute::foo'.
-      // notice I leave the '/' on the queue, so the next will be processed
-      // by a regular step pattern.
-      // if(lookahead('@', 1) || lookahead("::", 2))
-      {
-
-        // Make room for telling how long the step is without the predicate
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
-          OpCodes.NODETYPE_NODE;
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-        // Tell how long the step is without the predicate
-        m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
-          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
-
-        return;  // make a quick exit...
-      }
-
-      // else
-      // {
-      //  nextToken();
-      // }
     }
     else
     {
@@ -1780,6 +1870,14 @@ public class XPathParser
         {
           m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark
                   - 1;
+
+          // Minimalist check for an NCName - just check first character
+          // to distinguish from other possible tokens
+          if (!Character.isLetter(m_tokenChar) && !tokenIs('_'))
+          {
+            // "Node test that matches either NCName:* or QName was expected."
+            error(XPATHErrorResources.ER_EXPECTED_NODE_TEST, null);
+          }
         }
 
         nextToken();
@@ -1810,6 +1908,14 @@ public class XPathParser
         }
 
         m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
+
+        // Minimalist check for an NCName - just check first character
+        // to distinguish from other possible tokens
+        if (!Character.isLetter(m_tokenChar) && !tokenIs('_'))
+        {
+          // "Node test that matches either NCName:* or QName was expected."
+          error(XPATHErrorResources.ER_EXPECTED_NODE_TEST, null);
+        }
       }
 
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
@@ -2025,6 +2131,12 @@ public class XPathParser
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
 
+    final int RELATIVE_PATH_NOT_PERMITTED = 0;
+    final int RELATIVE_PATH_PERMITTED     = 1;
+    final int RELATIVE_PATH_REQUIRED      = 2;
+
+    int relativePathStatus = RELATIVE_PATH_NOT_PERMITTED;
+
     appendOp(2, OpCodes.OP_LOCATIONPATHPATTERN);
 
     if (lookahead('(', 1)
@@ -2033,17 +2145,27 @@ public class XPathParser
     {
       IdKeyPattern();
 
-      if (tokenIs('/') && lookahead('/', 1))
+      if (tokenIs('/'))
       {
-        appendOp(4, OpCodes.MATCH_ANY_ANCESTOR);
+        nextToken();
+
+        if (tokenIs('/'))
+        {
+          appendOp(4, OpCodes.MATCH_ANY_ANCESTOR);
+
+          nextToken();
+        }
+        else
+        {
+          appendOp(4, OpCodes.MATCH_IMMEDIATE_ANCESTOR);
+        }
 
         // Tell how long the step is without the predicate
         m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
         m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
           OpCodes.NODETYPE_FUNCTEST;
 
-        nextToken();
-        nextToken();
+        relativePathStatus = RELATIVE_PATH_REQUIRED;
       }
     }
     else if (tokenIs('/'))
@@ -2057,11 +2179,16 @@ public class XPathParser
         // of a '//' pattern, and so will cause 'a' to be matched when it has
         // any ancestor that is 'x'.
         nextToken();
+
+        relativePathStatus = RELATIVE_PATH_REQUIRED;
       }
       else
       {
         appendOp(4, OpCodes.FROM_ROOT);
+
+        relativePathStatus = RELATIVE_PATH_PERMITTED;
       }
+
 
       // Tell how long the step is without the predicate
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
@@ -2070,10 +2197,22 @@ public class XPathParser
 
       nextToken();
     }
-
-    if (!tokenIs('|') && (null != m_token))
+    else
     {
-      RelativePathPattern();
+      relativePathStatus = RELATIVE_PATH_REQUIRED;
+    }
+
+    if (relativePathStatus != RELATIVE_PATH_NOT_PERMITTED)
+    {
+      if (!tokenIs('|') && (null != m_token))
+      {
+        RelativePathPattern();
+      }
+      else if (relativePathStatus == RELATIVE_PATH_REQUIRED)
+      {
+        // "A relative path pattern was expected."
+        error(XPATHErrorResources.ER_EXPECTED_REL_PATH_PATTERN, null);
+      }
     }
 
     // Terminate for safety.
@@ -2103,18 +2242,24 @@ public class XPathParser
    * | RelativePathPattern '/' StepPattern
    * | RelativePathPattern '//' StepPattern
    *
-   *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void RelativePathPattern() throws javax.xml.transform.TransformerException
+  protected void RelativePathPattern()
+              throws javax.xml.transform.TransformerException
   {
 
-    StepPattern();
+    // Caller will have consumed any '/' or '//' preceding the
+    // RelativePathPattern, so let StepPattern know it can't begin with a '/'
+    boolean trailingSlashConsumed = StepPattern(false);
 
     while (tokenIs('/'))
     {
       nextToken();
-      StepPattern();
+
+      // StepPattern() may consume first slash of pair in "a//b" while
+      // processing StepPattern "a".  On next iteration, let StepPattern know
+      // that happened, so it doesn't match ill-formed patterns like "a///b".
+      trailingSlashConsumed = StepPattern(!trailingSlashConsumed);
     }
   }
 
@@ -2122,22 +2267,32 @@ public class XPathParser
    *
    * StepPattern  ::=  AbbreviatedNodeTestStep
    *
+   * @param isLeadingSlashPermitted a boolean indicating whether a slash can
+   *        appear at the start of this step
+   *
+   * @return boolean indicating whether a slash following the step was consumed
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void StepPattern() throws javax.xml.transform.TransformerException
+  protected boolean StepPattern(boolean isLeadingSlashPermitted)
+            throws javax.xml.transform.TransformerException
   {
-    AbbreviatedNodeTestStep();
+    return AbbreviatedNodeTestStep(isLeadingSlashPermitted);
   }
 
   /**
    *
    * AbbreviatedNodeTestStep    ::=    '@'? NodeTest Predicate
    *
+   * @param isLeadingSlashPermitted a boolean indicating whether a slash can
+   *        appear at the start of this step
+   *
+   * @return boolean indicating whether a slash following the step was consumed
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void AbbreviatedNodeTestStep() throws javax.xml.transform.TransformerException
+  protected boolean AbbreviatedNodeTestStep(boolean isLeadingSlashPermitted)
+            throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -2163,6 +2318,7 @@ public class XPathParser
       }
       else if (tokenIs("child"))
       {
+        matchTypePos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
         axesType = OpCodes.MATCH_IMMEDIATE_ANCESTOR;
 
         appendOp(2, axesType);
@@ -2180,6 +2336,11 @@ public class XPathParser
     }
     else if (tokenIs('/'))
     {
+      if (!isLeadingSlashPermitted)
+      {
+        // "A step was expected in the pattern, but '/' was encountered."
+        error(XPATHErrorResources.ER_EXPECTED_STEP_PATTERN, null);
+      }
       axesType = OpCodes.MATCH_ANY_ANCESTOR;
 
       appendOp(2, axesType);
@@ -2187,11 +2348,6 @@ public class XPathParser
     }
     else
     {
-      if (tokenIs('/'))
-      {
-        nextToken();
-      }
-
       matchTypePos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
       axesType = OpCodes.MATCH_IMMEDIATE_ANCESTOR;
 
@@ -2212,15 +2368,37 @@ public class XPathParser
       Predicate();
     }
 
+    boolean trailingSlashConsumed;
+
+    // For "a//b", where "a" is current step, we need to mark operation of
+    // current step as "MATCH_ANY_ANCESTOR".  Then we'll consume the first
+    // slash and subsequent step will be treated as a MATCH_IMMEDIATE_ANCESTOR
+    // (unless it too is followed by '//'.)
+    //
+    // %REVIEW%  Following is what happens today, but I'm not sure that's
+    // %REVIEW%  correct behaviour.  Perhaps no valid case could be constructed
+    // %REVIEW%  where it would matter?
+    //
+    // If current step is on the attribute axis (e.g., "@x//b"), we won't
+    // change the current step, and let following step be marked as
+    // MATCH_ANY_ANCESTOR on next call instead.
     if ((matchTypePos > -1) && tokenIs('/') && lookahead('/', 1))
     {
       m_ops.m_opMap[matchTypePos] = OpCodes.MATCH_ANY_ANCESTOR;
 
       nextToken();
+
+      trailingSlashConsumed = true;
+    }
+    else
+    {
+      trailingSlashConsumed = false;
     }
 
     // Tell how long the entire step is.
     m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
       m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+
+    return trailingSlashConsumed;
   }
 }

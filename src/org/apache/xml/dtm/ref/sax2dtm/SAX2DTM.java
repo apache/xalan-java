@@ -1078,7 +1078,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     int identity = makeNodeIdentity(nodeHandle);
-    int type = getNodeType(nodeHandle);
+    int type = _type(identity);
 
     if (DTM.ELEMENT_NODE == type)
     {

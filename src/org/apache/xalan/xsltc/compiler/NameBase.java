@@ -72,7 +72,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 class NameBase extends FunctionCall {
 
     private Expression _param = null;
-    private Type       _type = Type.Node;
+    private Type       _paramType = Type.Node;
 
     /**
      * Handles calls with no parameter (current node is implicit parameter).
@@ -99,29 +99,28 @@ class NameBase extends FunctionCall {
 	// Check the argument type (if any)
 	switch(argumentCount()) {
 	case 0:
-	    _type = Type.Node;
+	    _paramType = Type.Node;
 	    break;
 	case 1:
-	    _type = _param.typeCheck(stable);
+	    _paramType = _param.typeCheck(stable);
 	    break;
 	default:
 	    throw new TypeCheckError(this);
 	}
 
 	// The argument has to be a node, a node-set or a node reference
-	if ((_type != Type.NodeSet) &&
-	    (_type != Type.Node) &&
-	    (_type != Type.Reference)) {
+	if ((_paramType != Type.NodeSet) &&
+	    (_paramType != Type.Node) &&
+	    (_paramType != Type.Reference)) {
 	    throw new TypeCheckError(this);
 	}
 
-	return Type.String;
+	return (_type = Type.String);
     }
 
     public Type getType() {
-	return Type.String;
+	return _type;
     }
-
 
     /**
      * Translate the code required for getting the node for which the
@@ -139,10 +138,10 @@ class NameBase extends FunctionCall {
 	    il.append(methodGen.loadContextNode());
 	}
 	// Function was called with node parameter
-	else if (_type == Type.Node) {
+	else if (_paramType == Type.Node) {
 	    _param.translate(classGen, methodGen);
 	}
-	else if (_type == Type.Reference) {
+	else if (_paramType == Type.Reference) {
 	    _param.translate(classGen, methodGen);
 	    il.append(new INVOKESTATIC(cpg.addMethodref
 				       (BASIS_LIBRARY_CLASS,

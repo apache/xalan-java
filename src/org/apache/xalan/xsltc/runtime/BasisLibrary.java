@@ -80,9 +80,26 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xalan.xsltc.dom.DOMAdapter;
+import org.apache.xalan.xsltc.dom.MultiDOM;
+import org.apache.xalan.xsltc.dom.AbsoluteIterator;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
+
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
+import org.apache.xalan.xsltc.dom.StepIterator;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import javax.xml.parsers.DocumentBuilderFactory; 
+import javax.xml.parsers.DocumentBuilder; 
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 
@@ -430,7 +447,7 @@ public final class BasisLibrary implements Operators {
 	if (name.equals("xsl:version"))
 	    return("1.0");
 	if (name.equals("xsl:vendor"))
-	    return("Apache Software Foundation");
+	    return("Apache Software Foundation (Xalan XSLTC)");
 	if (name.equals("xsl:vendor-url"))
 	    return("http://xml.apache.org/xalan-j");
 	
@@ -448,6 +465,24 @@ public final class BasisLibrary implements Operators {
 	    return value.substring(0, colon);
 	else
 	    return EMPTYSTRING;
+    }
+
+    /**
+     * Implements the nodeset() extension function. 
+     */
+    public static DTMAxisIterator nodesetF(Object obj) {
+	if (obj instanceof DOM) {
+	   final DOMAdapter adapter = (DOMAdapter) obj;
+	   return new SingletonIterator(adapter.getDocument(), true);
+	}
+        else if (obj instanceof DTMAxisIterator) {
+	   return (DTMAxisIterator) obj;
+        }
+        else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "node-set", className);
+	    return null;
+        }
     }
 
     //-- Begin utility functions
@@ -801,7 +836,7 @@ public final class BasisLibrary implements Operators {
     private static boolean hasSimpleType(Object obj) {
 	return obj instanceof Boolean || obj instanceof Double ||
 	    obj instanceof Integer || obj instanceof String ||
-	    obj instanceof Node;
+	    obj instanceof Node || obj instanceof DOM; 
     }
 
     /**
@@ -880,6 +915,31 @@ public final class BasisLibrary implements Operators {
 	try {
 	    StringBuffer result = new StringBuffer();
 	    formatter.applyLocalizedPattern(pattern);
+
+	    //------------------------------------------------------
+ 	    // bug fix # 9179 - make sure localized pattern contains
+	    //   a leading zero before decimal, handle cases where  
+	    //   decimal is in position zero, and >= to 1. 
+	    //   localized pattern is ###.### convert to ##0.###
+	    //   localized pattern is .###    convert to 0.###
+	    //------------------------------------------------------
+	    String localizedPattern = formatter.toPattern();
+	    int index = localizedPattern.indexOf('.');
+	    if ( index >= 1  && localizedPattern.charAt(index-1) == '#' ) {
+		//insert a zero before the decimal point in the pattern
+		StringBuffer newpattern = new StringBuffer();
+		newpattern.append(localizedPattern.substring(0, index-1));
+                newpattern.append("0");
+                newpattern.append(localizedPattern.substring(index));
+		formatter.applyLocalizedPattern(newpattern.toString());
+	    } else if (index == 0) {
+                // insert a zero before decimal point in pattern
+                StringBuffer newpattern = new StringBuffer();
+                newpattern.append("0");
+                newpattern.append(localizedPattern);
+		formatter.applyLocalizedPattern(newpattern.toString());
+            }
+
 	    formatter.format(number, result, _fieldPosition);
 	    return(result.toString());
 	}
@@ -894,28 +954,149 @@ public final class BasisLibrary implements Operators {
      * obj is an instanceof Node then create a singleton iterator.
      */
     public static DTMAxisIterator referenceToNodeSet(Object obj) {
+	// Convert var/param -> node
+	if (obj instanceof Node) {
+	    return(new SingletonIterator(((Node)obj).node));
+	}
+	// Convert var/param -> node-set
+	else if (obj instanceof DTMAxisIterator) {
+	    return(((DTMAxisIterator)obj).cloneIterator());
+	}
+	else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    return null;
+	}
+    }
+
+    /**
+     * Utility function used to convert a w3c NodeList into a internal
+     * DOM iterator. 
+     */
+    public static DTMAxisIterator nodeList2Iterator(
+                                        org.w3c.dom.NodeList nodeList,
+                                    	Translet translet, DOM dom) 
+    {
+	int size = nodeList.getLength();
+
+	// w3c NodeList -> w3c DOM
+	DocumentBuilderFactory dfac = DocumentBuilderFactory.newInstance();
+	DocumentBuilder docbldr = null;
 	try {
-	    // Convert var/param -> node
-	    if (obj instanceof Node) {
-		return(new SingletonIterator(((Node)obj).node));
+	    docbldr = dfac.newDocumentBuilder();
+	} catch (javax.xml.parsers.ParserConfigurationException e) {
+	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
+            return null;
+
+	}
+	// create new w3c DOM
+	Document doc = docbldr.newDocument();	
+        org.w3c.dom.Node topElementNode = 
+            doc.appendChild(doc.createElementNS("", "__top__"));
+
+	// copy Nodes from NodeList into new w3c DOM
+	for (int i=0; i<size; i++){
+	    org.w3c.dom.Node curr = nodeList.item(i);
+	    int nodeType = curr.getNodeType();
+	    if (nodeType == org.w3c.dom.Node.DOCUMENT_NODE) {
+		// ignore the root node of node list
+		continue;
 	    }
-	    // Convert var/param -> node-set
-	    else if (obj instanceof DTMAxisIterator) {
-		return(((DTMAxisIterator)obj).cloneIterator());
+	    String value = null;
+	    try {
+	        value = curr.getNodeValue();
+	    } catch (DOMException ex) {
+		runTimeError(RUN_TIME_INTERNAL_ERR, ex.getMessage());
+                return null;
 	    }
-	    // Convert var/param -> result-tree fragment
-	    else if (obj instanceof DOM) {
-		DOM dom = (DOM)obj;
-		return(dom.getIterator());
+	    String namespaceURI = curr.getNamespaceURI();
+	    String nodeName = curr.getNodeName();
+	    org.w3c.dom.Node newNode = null; 
+	    switch (nodeType){
+		case org.w3c.dom.Node.ATTRIBUTE_NODE: 
+		     newNode = doc.createAttributeNS(namespaceURI,
+			nodeName);
+                     break;
+		case org.w3c.dom.Node.CDATA_SECTION_NODE: 
+		     newNode = doc.createCDATASection(value);
+                     break;
+		case org.w3c.dom.Node.COMMENT_NODE: 
+		     newNode = doc.createComment(value);
+                     break;
+		case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE: 
+		     newNode = doc.createDocumentFragment();
+                     break;
+		case org.w3c.dom.Node.DOCUMENT_TYPE_NODE: 
+		     // nothing ?
+                     break;
+		case org.w3c.dom.Node.ELEMENT_NODE: 
+		     newNode = doc.createElementNS(namespaceURI, nodeName);
+		     break;
+		case org.w3c.dom.Node.ENTITY_NODE: 
+		     // nothing ? 
+                     break;
+		case org.w3c.dom.Node.ENTITY_REFERENCE_NODE: 
+		     newNode = doc.createEntityReference(nodeName);
+		     break;
+		case org.w3c.dom.Node.NOTATION_NODE: 
+		     // nothing ? 
+		     break;
+		case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE: 
+		     newNode = doc.createProcessingInstruction(nodeName,
+			value);
+		     break;
+		case org.w3c.dom.Node.TEXT_NODE: 
+		     newNode = doc.createTextNode(value);
+		     break;
 	    }
-	    else {
-		final String className = obj.getClass().getName();
-		runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    try {
+	        topElementNode.appendChild(newNode);
+	    } catch (DOMException e) {
+		runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
 		return null;
 	    }
 	}
-	catch (ClassCastException e) {
-	    runTimeError(DATA_CONVERSION_ERR, "reference", "node-set");
+
+        // w3cDOM -> DTM -> DOMImpl
+	DTMManager dtmManager = XSLTCDTMManager.newInstance(
+	           org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+
+	DOMImpl idom = (DOMImpl)dtmManager.getDTM(new DOMSource(doc), false,
+                                                  null, true, true);
+
+	if (dom instanceof MultiDOM) {
+            final MultiDOM multiDOM = (MultiDOM) dom;
+
+	    // Create DOMAdapter and register with MultiDOM
+	    DOMAdapter domAdapter = new DOMAdapter(idom, 
+                translet.getNamesArray(),
+		translet.getNamespaceArray());
+            multiDOM.addDOMAdapter(domAdapter);
+
+	    DTMAxisIterator iter1 = multiDOM.getAxisIterator(Axis.CHILD);
+	    DTMAxisIterator iter2 = multiDOM.getAxisIterator(Axis.CHILD);
+            DTMAxisIterator iter = new AbsoluteIterator(
+                new StepIterator(iter1, iter2));
+
+ 	    iter.setStartNode(DTMDefaultBase.ROOTNODE);
+	    return iter;
+	}
+        else {
+	    runTimeError(RUN_TIME_INTERNAL_ERR, "nodeList2Iterator()");
+	    return null;
+        }
+    }
+
+    /**
+     * Utility function used to convert references to DOMs. 
+     */
+    public static DOM referenceToResultTree(Object obj) {
+	try {
+	    return ((DOM) obj);
+	}
+	catch (IllegalArgumentException e) {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
 	    return null;
 	}
     }
@@ -964,6 +1145,29 @@ public final class BasisLibrary implements Operators {
 	}
     }
     
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    public static String getPrefix(String qname) {
+	final int index = qname.indexOf(':');
+	return (index > 0) ? qname.substring(0, index) : null;
+    }
+
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    private static int prefixIndex = 0;
+    public static String generatePrefix() {
+	return ("ns" + prefixIndex++);
+    }
+
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    public static String makeQName(String localName, String prefix) {
+	return (new StringBuffer(prefix).append(':').append(localName).toString());
+    }
+
     public static final int RUN_TIME_INTERNAL_ERR   = 0;
     public static final int RUN_TIME_COPY_ERR       = 1;
     public static final int DATA_CONVERSION_ERR     = 2;
@@ -1013,6 +1217,32 @@ public final class BasisLibrary implements Operators {
 
     public static void consoleOutput(String msg) {
 	System.out.println(msg);
+    }
+
+    /**
+     * Replace a certain character in a string with a new substring.
+     */
+    public static String replace(String base, char ch, String str) {
+	return (base.indexOf(ch) < 0) ? base : 
+	    replace(base, String.valueOf(ch), new String[] { str });
+    }
+
+    public static String replace(String base, String delim, String[] str) {
+	final int len = base.length();
+	final StringBuffer result = new StringBuffer();
+
+	for (int i = 0; i < len; i++) {
+	    final char ch = base.charAt(i);
+	    final int k = delim.indexOf(ch);
+
+	    if (k >= 0) {
+		result.append(str[k]);
+	    }
+	    else {
+		result.append(ch);
+	    }
+	}
+	return result.toString();
     }
 
     //-- End utility functions

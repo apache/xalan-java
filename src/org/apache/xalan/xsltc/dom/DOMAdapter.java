@@ -75,8 +75,7 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;
 
-public final class DOMAdapter implements DOM 
-{
+public final class DOMAdapter implements DOM {
     private final DOM _domImpl;
     private short[] _mapping;
     private int[] _reverse;
@@ -84,6 +83,8 @@ public final class DOMAdapter implements DOM
     private short[] _NSreverse;
 
     private StripFilter _filter = null;
+
+    private int _multiDOMMask;
     
     public DOMAdapter(DOM dom,
                       String[] namesArray,
@@ -130,19 +131,18 @@ public final class DOMAdapter implements DOM
     	return _domImpl;
     }
 
-    /** returns singleton iterator containg the document root */
-    public DTMAxisIterator getIterator() 
-    {
+    /** 
+      * Returns singleton iterator containg the document root 
+      */
+    public DTMAxisIterator getIterator() {
       return _domImpl.getIterator();
     }
     
-    public String getStringValue() 
-    {
+    public String getStringValue() {
       return _domImpl.getStringValue();
     }
     
-    public DTMAxisIterator getChildren(final int node) 
-    {
+    public DTMAxisIterator getChildren(final int node) {
       DTMAxisIterator iterator = _domImpl.getChildren(node);
       if (_filter == null) {
         return(iterator.setStartNode(node));
@@ -152,61 +152,55 @@ public final class DOMAdapter implements DOM
           iterator = ((DOMImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
        else
           iterator = ((SAXImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
-        return(iterator.setStartNode(node));
+        return iterator.setStartNode(node);
       }
     }
 
-    public void setFilter(StripFilter filter) 
-    {
+    public void setFilter(StripFilter filter) {
       _filter = filter;
     }
     
-    public DTMAxisIterator getTypedChildren(final int type) 
-    {
+    public DTMAxisIterator getTypedChildren(final int type) {
       DTMAxisIterator iterator = _domImpl.getTypedChildren(_reverse[type]);
-      if ((_reverse[type] == DTM.TEXT_NODE) && (_filter != null))
+      if (_reverse[type] == DTM.TEXT_NODE && _filter != null)
       {
       	if (_domImpl instanceof DOMImpl )
           iterator = ((DOMImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
        else
           iterator = ((SAXImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
       }
-      return(iterator);
+      return iterator;
     }
 
-    public DTMAxisIterator getNamespaceAxisIterator(final int axis, final int ns) 
-    {
+    public DTMAxisIterator getNamespaceAxisIterator(final int axis, final int ns) {
       return _domImpl.getNamespaceAxisIterator(axis,_NSreverse[ns]);
     }
 
-    public DTMAxisIterator getAxisIterator(final int axis) 
-    {
+    public DTMAxisIterator getAxisIterator(final int axis) {
       DTMAxisIterator iterator = _domImpl.getAxisIterator(axis);
       if (_filter != null)
       {
-      	if (_domImpl instanceof DOMImpl )
-          iterator = ((DOMImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
-       else
-          iterator = ((SAXImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
+        return (_domImpl instanceof DOMImpl)
+             ? ((DOMImpl)_domImpl).strippingIterator(iterator,_mapping,_filter)
+             : ((SAXImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
       }
-      return(iterator);
+      return iterator;
     }
     
-    public DTMAxisIterator getTypedAxisIterator(final int axis, final int type) 
-    {
+    public DTMAxisIterator getTypedAxisIterator(final int axis, final int type) {
       DTMAxisIterator iterator;
 
       if (axis == Axis.NAMESPACE) 
       {
-        if ((type == NO_TYPE) || (type > _NSreverse.length))
-          iterator = _domImpl.getAxisIterator(axis);
-        else
-          iterator = _domImpl.getTypedAxisIterator(axis,_NSreverse[type]);
+        iterator = (type == NO_TYPE || type > _NSreverse.length)
+             ? _domImpl.getAxisIterator(axis)
+             : _domImpl.getTypedAxisIterator(axis,_NSreverse[type]);
       }
-      else
+      else {
         iterator = _domImpl.getTypedAxisIterator(axis, _reverse[type]);
+      }
       
-      if ((_reverse[type] == DTM.TEXT_NODE) && (_filter != null))
+      if (_reverse[type] == DTM.TEXT_NODE && _filter != null)
       {
       	if (_domImpl instanceof DOMImpl )
           iterator = ((DOMImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
@@ -214,7 +208,7 @@ public final class DOMAdapter implements DOM
           iterator = ((SAXImpl)_domImpl).strippingIterator(iterator,_mapping,_filter);
         
       }
-      return(iterator);
+      return iterator;
     }
     
 
@@ -222,6 +216,13 @@ public final class DOMAdapter implements DOM
 	return _domImpl.getTreeString();
     }
     
+    public int getMultiDOMMask() {
+	return _multiDOMMask;
+    }
+
+    public void setMultiDOMMask(int mask) {
+	_multiDOMMask = mask;
+    }
 
     public DTMAxisIterator getNthDescendant(int type, int n, boolean includeself) 
     {
@@ -234,6 +235,7 @@ public final class DOMAdapter implements DOM
       return _domImpl.getNodeValueIterator(iterator, type, value, op);
     }
 
+
     public DTMAxisIterator orderNodes(DTMAxisIterator source, int node) 
     {
       return _domImpl.orderNodes(source, node);
@@ -241,7 +243,6 @@ public final class DOMAdapter implements DOM
     
     public int getType(final int node) 
     {
-        //System.out.println("<<<" +_mapping[_domImpl.getType(node)]);
       return _mapping[_domImpl.getType(node)];
     }
 
@@ -249,13 +250,12 @@ public final class DOMAdapter implements DOM
     {
     	
     	return _NSmapping[_domImpl.getNSType(node)];
-      //return _NSmapping[_domImpl.getNamespaceType(node)];
     }
     
     public int getNSType(int node)
-   {
+    {
 	return _domImpl.getNSType(node);
-   }
+    }
     
     public int getParent(final int node) 
     {
@@ -422,4 +422,9 @@ public final class DOMAdapter implements DOM
     	return _domImpl.getOutputDomBuilder();
     }
 
+    public String lookupNamespace(int node, String prefix) 
+	throws TransletException 
+    {
+	return _domImpl.lookupNamespace(node, prefix);
+    }
 }

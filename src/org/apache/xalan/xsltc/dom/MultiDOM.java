@@ -83,6 +83,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMIterator;
 
 public final class MultiDOM implements DOM {
+
     private static final int NO_TYPE = DOM.FIRST_TYPE - 2;
     private static final int INITIAL_SIZE = 4;
     private static final int CLR = 0x00FFFFFF;
@@ -109,9 +110,7 @@ public final class MultiDOM implements DOM {
 	
 	public int next() {
 	    if (_source == null) return(END);
-	    /*if (_mask == 0)*/ return _source.next();
-	  /*  final int node = _source.next();
-	    return node != END ? (node | _mask) : END;*/
+	    return _source.next();
 	}
 	
 
@@ -119,24 +118,27 @@ public final class MultiDOM implements DOM {
 	    _source.setRestartable(flag);
 	}
 
-	
 	public DTMAxisIterator setStartNode(final int node) {
-		if (node == DTM.NULL) return this;
+	    if (node == DTM.NULL) return this;
 		
-		int nodeid = getNodeIdent(node); 
-	    _mask = nodeid & SET;
-	    int dom = getDTMId(node); //nodeid >>> 24;
+	    int nodeid = getNodeIdent(node); 
+	    final int mask = nodeid & SET;
+	    int dom = getDTMId(node);
 
-	    // consider caching these
-	    if ((_type == NO_TYPE) || (_type == DTM.ELEMENT_NODE)) {
-		_source = _adapters[dom].getAxisIterator(_axis);
+            // Get a new source first time and when mask changes
+	    if (_source == null || _mask != mask) {
+	        if (_type == NO_TYPE) {
+		    _source = _adapters[dom].getAxisIterator(_axis);
+	        }
+	        else if (_axis == Axis.CHILD && _type != DTM.ELEMENT_NODE) {
+		    _source = _adapters[dom].getTypedChildren(_type);
+	        }
+	        else {
+		    _source = _adapters[dom].getTypedAxisIterator(_axis, _type);
+		}
 	    }
-	    else if (_axis == Axis.CHILD) {
-		_source = _adapters[dom].getTypedChildren(_type);
-	    }
-	    else {
-		_source = _adapters[dom].getTypedAxisIterator(_axis,_type);
-	    }
+
+	    _mask = mask;
 	    _source.setStartNode(node & CLR);
 	    return this;
 	}
@@ -155,10 +157,7 @@ public final class MultiDOM implements DOM {
 	}
     
 	public boolean isReverse() {
-	    if (_source == null)
-		return(false);
-	    else
-		return _source.isReverse();
+	    return (_source == null) ? false : _source.isReverse();
 	}
     
 	public void setMark() {
@@ -266,7 +265,7 @@ public final class MultiDOM implements DOM {
 	_free = 1;
 	_adapters = new DOM[INITIAL_SIZE];
 	_adapters[0] = main;
-	addDOMAdapter(main);
+	addDOMAdapter((DOMAdapter) main);
     }
 
     public int nextMask() {
@@ -277,8 +276,7 @@ public final class MultiDOM implements DOM {
 	// This method only has a function in DOM adapters
     }
 
-    public int addDOMAdapter(DOM dom) {
-
+    public int addDOMAdapter(DOMAdapter dom) {
 	// Add the DOM adapter to the array of DOMs
 	DTMManager dtmManager = ((DTMDefaultBase)((DOMAdapter)dom).getDOMImpl()).m_mgr;
     final int domNo = dtmManager.getDTMIdentity((DTM)((DOMAdapter)dom).getDOMImpl()) >>> DTMManager.IDENT_DTM_NODE_BITS;
@@ -293,9 +291,11 @@ public final class MultiDOM implements DOM {
 
 	// Store reference to document (URI) in hashtable
 	String uri = dom.getDocumentURI(0);
-	_documents.put(uri,new Integer(domNo));
+	_documents.put(uri, new Integer(domNo));
 	
-	return domNo << 24;
+	// Store mask in DOMAdapter
+	dom.setMultiDOMMask(domNo << 24);
+	return (domNo << 24);
     }
     
     public int getDocumentMask(String uri) {
@@ -319,7 +319,9 @@ public final class MultiDOM implements DOM {
       return _adapters[0].getDocument();
     }
 
-    /** returns singleton iterator containg the document root */
+    /** 
+      * Returns singleton iterator containing the document root 
+      */
     public DTMAxisIterator getIterator() {
 	// main source document @ 0
 	return _adapters[0].getIterator();
@@ -554,4 +556,9 @@ public final class MultiDOM implements DOM {
     	return _adapters[0].getOutputDomBuilder();
     }
 
+    public String lookupNamespace(int node, String prefix) 
+	throws TransletException
+    {
+	return _adapters[node>>>24].lookupNamespace(node, prefix);
+    }
 }

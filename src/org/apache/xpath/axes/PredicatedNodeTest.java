@@ -167,7 +167,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    *
    * @return A predicate expression.
    */
-  Expression getPredicate(int index)
+  public Expression getPredicate(int index)
   {
     return m_predicates[index];
   }

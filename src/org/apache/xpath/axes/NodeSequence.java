@@ -314,7 +314,9 @@ public class NodeSequence extends XObject
     	}
     }
     
-        
+  if (null == m_iter)
+    return DTM.NULL;
+  
  	int next = m_iter.nextNode();
     if(DTM.NULL != next)
     {

@@ -420,7 +420,10 @@ public class ElemTemplate extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    XPathContext xctxt = transformer.getXPathContext();      
+    XPathContext xctxt = transformer.getXPathContext();
+    
+    transformer.getStackGuard().checkForInfinateLoop();
+    
     xctxt.pushRTFContext();
 
     if (TransformerImpl.S_DEBUG)

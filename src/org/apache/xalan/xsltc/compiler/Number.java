@@ -129,23 +129,23 @@ final class Number extends Instruction {
 		}
 	    }
 	    else if (name.equals("format")) {
-		_format = new AttributeValueTemplate(value, parser);
+		_format = new AttributeValueTemplate(value, parser, this);
 		_formatNeeded = true;
 	    }
 	    else if (name.equals("lang")) {
-		_lang = new AttributeValueTemplate(value, parser);
+		_lang = new AttributeValueTemplate(value, parser, this);
 		_formatNeeded = true;
 	    }
 	    else if (name.equals("letter-value")) {
-		_letterValue = new AttributeValueTemplate(value, parser);
+		_letterValue = new AttributeValueTemplate(value, parser, this);
 		_formatNeeded = true;
 	    }
 	    else if (name.equals("grouping-separator")) {
-		_groupingSeparator = new AttributeValueTemplate(value, parser);
+		_groupingSeparator = new AttributeValueTemplate(value, parser, this);
 		_formatNeeded = true;
 	    }
 	    else if (name.equals("grouping-size")) {
-		_groupingSize = new AttributeValueTemplate(value, parser);
+		_groupingSize = new AttributeValueTemplate(value, parser, this);
 		_formatNeeded = true;
 	    }
 	}

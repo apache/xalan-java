@@ -73,6 +73,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xml.utils.XMLString;
 
@@ -132,15 +133,13 @@ public class ExsltCommon
     else if (obj instanceof DTMNodeIterator)
     {
       DTMIterator dtmI = ((DTMNodeIterator)obj).getDTMIterator();
-      // Need to verify that OneStepIteratorForward is consistently the DTM iterator 
-      // for rtfs and only rtfs.
-      if (dtmI.getClass().getName().equals("org.apache.xpath.axes.OneStepIteratorForward"))
-        return "RTF";
+      if (dtmI instanceof org.apache.xpath.axes.RTFIterator)
+      	return "RTF";
       else
         return "node-set";
     }
     else
-      return "external";
+      return "unknown";
   }
     
   /**
@@ -167,28 +166,5 @@ public class ExsltCommon
   {
     return Extensions.nodeset(myProcessor, rtf);
   }
-
-  public static NodeSet intersection(NodeIterator ni1, NodeIterator ni2)
-          throws javax.xml.transform.TransformerException
-  {
-    return Extensions.intersection(ni1, ni2);
-  }
-  
-  public static NodeSet difference(NodeIterator ni1, NodeIterator ni2)
-          throws javax.xml.transform.TransformerException
-  {
-    return Extensions.difference(ni1, ni2);
-  }
-  
-  public static NodeSet distinct(ExpressionContext myContext, NodeIterator ni)
-          throws javax.xml.transform.TransformerException
-  {
-    return Extensions.distinct(myContext, ni);
-  }
-  
-  public static boolean hasSameNodes(NodeIterator ni1, NodeIterator ni2)
-  {
-    return Extensions.hasSameNodes(ni1, ni2);
-  }
-
+ 
 }

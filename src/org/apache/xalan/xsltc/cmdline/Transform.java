@@ -92,9 +92,14 @@ import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
+import org.apache.xalan.xsltc.runtime.output.*;
+
 import org.apache.xml.dtm.DTMManager;
 
 final public class Transform {
+
+    // Temporary
+    static private boolean _useOldOutputSystem = false;
 
     private TransletOutputHandler _handler;
 
@@ -104,15 +109,17 @@ final public class Transform {
     private boolean _isJarFileSpecified = false;
     private Vector  _params = null;
     private boolean _uri, _debug;
+    private int     _iterations;
 
     private static boolean _allowExit = true;
 
     public Transform(String className, String fileName,
-		     boolean uri, boolean debug) {
+		     boolean uri, boolean debug, int iterations) {
 	_fileName = fileName;
 	_className = className;
 	_uri = uri;
 	_debug = debug;
+	_iterations = iterations;
     }
 
     public void setParameters(Vector params) {
@@ -208,18 +215,31 @@ final public class Transform {
 	    }
 
 	    // Transform the document
-	    String encoding = _translet._encoding;
+	    TransletOutputHandlerFactory tohFactory = 
+		TransletOutputHandlerFactory.newInstance();
+	    tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+	    tohFactory.setEncoding(_translet._encoding);
+	    tohFactory.setOutputMethod(_translet._method);
 
-	    // Create our default SAX/DTD handler
-	    DefaultSAXOutputHandler saxHandler =
-		new DefaultSAXOutputHandler(System.out, encoding);
-	    // Create a translet output handler and plug in the SAX/DTD handler
-	    TextOutput textOutput =
-		new TextOutput((ContentHandler)saxHandler,
-			       (LexicalHandler)saxHandler, encoding);
+	    if (_iterations == -1) {
+		translet.transform(dom, _useOldOutputSystem ?
+					tohFactory.getOldTransletOutputHandler() :
+					tohFactory.getTransletOutputHandler());
+	    }
+	    else if (_iterations > 0) {
+		long mm = System.currentTimeMillis();
+		for (int i = 0; i < _iterations; i++) {
+		    translet.transform(dom, _useOldOutputSystem ?
+					    tohFactory.getOldTransletOutputHandler() :
+					    tohFactory.getTransletOutputHandler());
+		}
+		mm = System.currentTimeMillis() - mm;
 
-	    // Transform and pass output to the translet output handler
-	    translet.transform(dom, textOutput);
+		System.err.println("\n<!--");
+		System.err.println("  transform  = " + (mm / _iterations) + " ms");
+		System.err.println("  throughput = " + (1000.0 / (mm / _iterations)) + " tps");
+		System.err.println("-->");
+	    }
 	}
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();
@@ -291,6 +311,7 @@ final public class Transform {
 	try {
 	    if (args.length > 0) {
 		int i;
+		int iterations = -1;
 		boolean uri = false, debug = false;
 		boolean isJarFileSpecified = false;
 		String  jarFile = null;
@@ -310,6 +331,17 @@ final public class Transform {
 			isJarFileSpecified = true;	
 			jarFile = args[++i];
 		    }
+		    else if (args[i].equals("-e")) {
+			_useOldOutputSystem = true;
+		    }
+		    else if (args[i].equals("-n")) {
+			try {
+			    iterations = Integer.parseInt(args[++i]);
+			}
+			catch (NumberFormatException e) {
+			    // ignore
+			}
+		    }
 		    else {
 			printUsage();
 		    }
@@ -319,7 +351,8 @@ final public class Transform {
 		if (args.length - i < 2) printUsage();
 
 		// Get document file and class name
-		Transform handler = new Transform(args[i+1],args[i],uri,debug);
+		Transform handler = new Transform(args[i+1], args[i], uri,
+		    debug, iterations);
 		handler.setJarFileInputSrc(isJarFileSpecified,	jarFile);
 
 		// Parse stylesheet parameters

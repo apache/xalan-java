@@ -125,31 +125,44 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	    else {
 		_left.translate(classGen, methodGen);
 	    }
-	    _trueList.append(_left._trueList);
-	    _falseList.append(_left._falseList);
 	}
+
 	final int getParent = cpg.addInterfaceMethodref(DOM_INTF,
 							GET_PARENT,
 							GET_PARENT_SIG);
 	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
 						      "getType", "(I)I");
-	il.append(methodGen.loadDOM());
+
+	InstructionHandle begin = il.append(methodGen.loadDOM());
 	il.append(SWAP);
 	il.append(new INVOKEINTERFACE(getParent, 2));
-	if (_left instanceof AncestorPattern) {
+	if (_left instanceof AncestorPattern) {	
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
 	}
 	il.append(new INVOKEINTERFACE(getType, 2));
 	il.append(new PUSH(cpg, DTM.DOCUMENT_NODE));
 	
-	// long jump: _falseList.add(il.append(new IF_ICMPNE(null)));
 	final BranchHandle skip = il.append(new IF_ICMPEQ(null));
 	_falseList.add(il.append(new GOTO_W(null)));
 	skip.setTarget(il.append(NOP));
+
+	if (_left != null) {
+	    _left.backPatchTrueList(begin);
+	    
+	    /*
+	     * If _left is an ancestor pattern, backpatch this pattern's false
+	     * list to the loop that searches for more ancestors.
+	     */
+	    if (_left instanceof AncestorPattern) {
+		final AncestorPattern ancestor = (AncestorPattern) _left;
+		_falseList.backPatch(ancestor.getLoopHandle());		// clears list
+	    }
+	    _falseList.append(_left._falseList);
+	}
     }
 	
     public String toString() {
-	return "absolutePathPattern(" + (_left!=null ? _left.toString() : ")");
+	return "absolutePathPattern(" + (_left != null ? _left.toString() : ")");
     }
 }

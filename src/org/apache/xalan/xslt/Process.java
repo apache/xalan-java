@@ -56,73 +56,59 @@
  */
 package org.apache.xalan.xslt;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.BufferedInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.StringReader;
-
-import java.lang.reflect.Constructor;
-
-import java.util.TooManyListenersException;
-import java.util.Vector;
 import java.util.Properties;
-import java.util.Enumeration;
-import java.util.Date;
+import java.util.ResourceBundle;
+import java.util.Vector;
 
-// Needed Xalan classes
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.processor.XSLProcessorVersion;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.templates.Constants;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.XalanProperties;
-import org.apache.xalan.processor.TransformerFactoryImpl;
-import org.apache.xalan.trace.PrintTraceListener;
-import org.apache.xalan.trace.TraceListener;
-import org.apache.xalan.trace.TraceManager;
-import org.apache.xml.utils.DefaultErrorHandler;
-
-// Needed TRaX classes
-import javax.xml.transform.Result;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.Templates;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.sax.*;
-import javax.xml.parsers.*;
-
-import org.w3c.dom.Node;
+import org.apache.xalan.processor.TransformerFactoryImpl;
+import org.apache.xalan.processor.XSLProcessorVersion;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.trace.PrintTraceListener;
+import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xml.utils.DefaultErrorHandler;
+import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.utils.res.XResourceBundle;
 import org.w3c.dom.Document;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.EntityResolver;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-// Needed Serializer classes
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
 
 /**
  * <meta name="usage" content="general"/>
@@ -136,7 +122,7 @@ public class Process
    *
    * @param resbundle Resource bundle
    */
-  protected static void printArgOptions(XSLTErrorResources resbundle)
+  protected static void printArgOptions(ResourceBundle resbundle)
   {
 
     System.out.println(resbundle.getString("xslProc_option"));  //"xslproc options: ");
@@ -163,23 +149,15 @@ public class Process
     System.out.println(resbundle.getString("optionPARAM"));  //"   [-PARAM name expression (Set a stylesheet parameter)]");
     System.out.println(resbundle.getString("optionLINENUMBERS")); //"   [-L use line numbers]"
     
-    // sc 28-Feb-01 these below should really be added as resources
-    System.out.println(
-      "   [-MEDIA mediaType (use media attribute to find stylesheet associated with a document.)]");
-    System.out.println(
-      "   [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)]");  // Added by sboag/scurcuru; experimental
-    System.out.println(
-      "   [-DIAG (Print overall milliseconds transform took.)]");
+    System.out.println(resbundle.getString("optionMEDIA"));
+    System.out.println(resbundle.getString("optionFLAVOR"));
+    System.out.println(resbundle.getString("optionDIAG"));
     System.out.println(resbundle.getString("optionURIRESOLVER"));  //"   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]");
     System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
     System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
-    // jk 11/27/01 these below should really be added as resources
-    System.out.println(
-      "   [-INCREMENTAL (request incremental DTM construction by setting http://xml.apache.org/xalan/features/incremental true.)]");
-    System.out.println(
-      "   [-NOOPTIMIMIZE (request no stylesheet optimization proccessing by setting http://xml.apache.org/xalan/features/optimize false.)]");
-    System.out.println(
-      "   [-RL recursionlimit (assert numeric limit on stylesheet recursion depth.)]");
+    System.out.println(resbundle.getString("optionINCREMENTAL"));
+    System.out.println(resbundle.getString("optionNOOPTIMIMIZE"));
+    System.out.println(resbundle.getString("optionRL"));
   }
   
   /**
@@ -213,8 +191,8 @@ public class Process
      */
     java.io.PrintWriter diagnosticsWriter = new PrintWriter(System.err, true);
     java.io.PrintWriter dumpWriter = diagnosticsWriter;
-    XSLTErrorResources resbundle =
-      (XSLTErrorResources) (XSLMessages.loadResourceBundle(
+    ResourceBundle resbundle =
+      (XSLMessages.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.ERROR_RESOURCES));
     String flavor = "s2s";
 
@@ -938,10 +916,13 @@ public class Process
         long millisecondsDuration = stop - start;
 
         if (doDiag)
-          diagnosticsWriter.println("\n\n========\nTransform of "
-                                    + inFileName + " via " + xslFileName
-                                    + " took " + millisecondsDuration
-                                    + " ms");
+        {
+        	Object[] msgArgs = new Object[]{ inFileName, xslFileName, new Long(millisecondsDuration) };
+        	String msg = XSLMessages.createMessage("diagTiming", msgArgs);
+        	diagnosticsWriter.println('\n');
+          	diagnosticsWriter.println(msg);
+        }
+          
       }
       catch (Throwable throwable)
       {

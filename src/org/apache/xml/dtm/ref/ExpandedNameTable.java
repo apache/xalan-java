@@ -236,12 +236,8 @@ public class ExpandedNameTable
    * @return the expanded-name id of the node.
    */
   public int getExpandedTypeID(int type)
-  {
-    /*int expandedTypeID = (type << (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME));
-
-    return expandedTypeID;
-    */
-    return type;
+  {    
+    return type;    
   }
 
   /**

@@ -105,6 +105,7 @@ public class MethodGenerator extends MethodGen
     private final Instruction _nextNodeId;
 
     private SlotAllocator _slotAllocator;
+    private boolean _allocatorInit = false;
     
     public MethodGenerator(int access_flags, Type return_type,
 			   Type[] arg_types, String[] arg_names,
@@ -178,17 +179,26 @@ public class MethodGenerator extends MethodGen
 	
 	_slotAllocator = new SlotAllocator();
 	_slotAllocator.initialize(getLocalVariables());
+	_allocatorInit = true;
     }
 
+    /**
+     * Allocates a local variable. If the slot allocator has already been
+     * initialized, then call addLocalVariable2() so that the new variable
+     * is known to the allocator. Failing to do this may cause the allocator 
+     * to return a slot that is already in use.
+     */
     public LocalVariableGen addLocalVariable(String name, Type type,
 					     InstructionHandle start,
-					     InstructionHandle end) {
-	
-	return super.addLocalVariable(name, type, start, end);
+					     InstructionHandle end) 
+    {
+	return (_allocatorInit) ? addLocalVariable2(name, type, start) 
+	    : super.addLocalVariable(name, type, start, end);
     }
     
     public LocalVariableGen addLocalVariable2(String name, Type type,
-					      InstructionHandle start) {
+					      InstructionHandle start) 
+    {
 	return super.addLocalVariable(name, type,
 				      _slotAllocator.allocateSlot(type),
 				      start, null);

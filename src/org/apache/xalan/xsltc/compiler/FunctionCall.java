@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
  * @author Erwin Bolwidt <ejb@klomp.org>
+ * @author Todd Miller
  *
  */
 
@@ -71,8 +72,18 @@ import java.util.Hashtable;
 
 import java.lang.reflect.*;
 
+import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.PUSH;
+import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.InstructionConstants;
+import org.apache.bcel.generic.InvokeInstruction;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.runtime.TransletLoader;
 
@@ -86,17 +97,34 @@ class FunctionCall extends Expression {
     private final static Vector EMPTY_ARG_LIST = new Vector(0);
 
     // Valid namespaces for Java function-call extension
-    private final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
-    private final static String JAVA_EXT_XALAN =
+    protected final static String EXT_XSLTC = 
+	TRANSLET_URI;
+
+    protected final static String JAVA_EXT_XSLTC = 
+	EXT_XSLTC + "/java";
+
+    protected final static String EXT_XALAN =
+	"http://xml.apache.org/xalan";
+
+    protected final static String JAVA_EXT_XALAN =
 	"http://xml.apache.org/xslt/java";
 
+    /**
+     * Stores reference to object for non-static Java calls
+     */
+    Expression _thisArgument = null;
+
     // External Java function's class/method/signature
-    private String     _className;
-    private Method     _chosenMethod;
-    private MethodType _chosenMethodType;
+    private String      _className;
+    private Method      _chosenMethod;
+    private Constructor _chosenConstructor;
+    private MethodType  _chosenMethodType;
 
     // Encapsulates all unsupported external function calls
     private boolean    unresolvedExternal;
+
+    // If FunctionCall is a external java constructor 
+    private boolean     _isExtConstructor = false; 
 
     // Legal conversions between internal and Java types.
     private static final MultiHashtable _internal2Java = new MultiHashtable();
@@ -112,6 +140,7 @@ class FunctionCall extends Expression {
      */
     static {
 	try {
+	    final Class objectClass   = Class.forName("java.lang.Object");
 	    final Class stringClass   = Class.forName("java.lang.String");
 	    final Class nodeClass     = Class.forName("org.w3c.dom.Node");
 	    final Class nodeListClass = Class.forName("org.w3c.dom.NodeList");
@@ -147,6 +176,8 @@ class FunctionCall extends Expression {
 	    _internal2Java.put(Type.ResultTree, nodeClass);
 	    _internal2Java.put(Type.ResultTree, nodeListClass);
 
+	    _internal2Java.put(Type.Reference, objectClass);
+
 	    // Possible conversions between Java and internal types
 	    _java2Internal.put(Boolean.TYPE, Type.Boolean);
 
@@ -160,7 +191,11 @@ class FunctionCall extends Expression {
 
 	    _java2Internal.put(stringClass, Type.String);
 
+	    _java2Internal.put(objectClass, Type.Reference);
+
 	    // Conversions from org.w3c.dom.Node/NodeList are not supported
+	    // GTM
+	    _java2Internal.put(nodeListClass, Type.NodeSet);
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println(e);
@@ -197,7 +232,7 @@ class FunctionCall extends Expression {
 	throws TypeCheckError
     {
 	final int length = 
-	    uri.startsWith(JAVA_EXT_PREFIX) ? JAVA_EXT_PREFIX.length() + 1 :
+	    uri.startsWith(JAVA_EXT_XSLTC) ? JAVA_EXT_XSLTC.length() + 1 :
 	    uri.startsWith(JAVA_EXT_XALAN) ? JAVA_EXT_XALAN.length() + 1 : 0;
 
 	if (length == 0) {
@@ -218,43 +253,39 @@ class FunctionCall extends Expression {
 	final String namespace = _fname.getNamespace();
 	final String local = _fname.getLocalPart();
 
-	// XPath functions have no namespace
-	if (isStandard()) {
+	if (isExtension()) {
+	    _fname = new QName(null, null, local);
+	    return typeCheckStandard(stable);
+	}
+	else if (isStandard()) {
 	    return typeCheckStandard(stable);
 	}
 	// Handle extension functions (they all have a namespace)
 	else {
 	    try {
+		// GTM: namespace = http://xml.apache.org/xslt/java
 		_className = getClassNameFromUri(namespace);
 
 		final int pos = local.lastIndexOf('.');
 		if (pos > 0) {
 		    _className = _className + local.substring(0, pos);
-		    _fname = new QName(namespace, null, local.substring(pos + 1));
+		    _fname = new QName(namespace, null, 
+			local.substring(pos + 1));
 		}
 		else {
 		    _fname = new QName(namespace, null, local);
 		}
-		if (_className.length() > 0) {
-		    return typeCheckExternal(stable);
+		return typeCheckExternal(stable);
+	    } 
+	    catch (TypeCheckError e) {
+		ErrorMsg errorMsg = e.getErrorMsg();
+		if (errorMsg == null) {
+		    final String name = _fname.getLocalPart();
+		    errorMsg = new ErrorMsg(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
 		}
-	    } catch (TypeCheckError e) {
-		// Falls through
+		getParser().reportError(ERROR, errorMsg);
+		return _type = Type.Void;
 	    }
-
-	    /*
-	     * Warn user if external function could not be resolved.
-	     * Warning will _NOT_ be issued is the call is properly
-	     * wrapped in an <xsl:if> or <xsl:when> element. For details
-	     * see If.parserContents() and When.parserContents()
-	     */
-	    final Parser parser = getParser();
-	    if (parser != null) {
-		reportWarning(this, parser, ErrorMsg.FUNCTION_RESOLVE_ERR,
-			      _fname.toString());
-	    }
-	    unresolvedExternal = true;
-	    return _type = Type.Void;
 	}
     }
 
@@ -264,8 +295,7 @@ class FunctionCall extends Expression {
      * thrown, then catch it and re-throw it with a new "this".
      */
     public Type typeCheckStandard(SymbolTable stable) throws TypeCheckError {
-
-	_fname.clearNamespace(); // HACK!!!
+	_fname.clearNamespace(); 	// HACK!!!
 
 	final int n = _arguments.size();
 	final Vector argsType = typeCheckArgs(stable);
@@ -292,6 +322,56 @@ class FunctionCall extends Expression {
 	throw new TypeCheckError(this);
     }
 
+   
+
+    public Type typeCheckConstructor(SymbolTable stable) throws TypeCheckError{
+        final Vector constructors = findConstructors();
+	if (constructors == null) {
+            // Constructor not found in this class
+            throw new TypeCheckError(ErrorMsg.CONSTRUCTOR_NOT_FOUND, 
+		_className);
+        
+	}
+
+	final int nConstructors = constructors.size();
+	final int nArgs = _arguments.size();
+	final Vector argsType = typeCheckArgs(stable);
+
+	// Try all constructors 
+	for (int j, i = 0; i < nConstructors; i++) {
+	    // Check if all parameters to this constructor can be converted
+	    final Constructor constructor = 
+		(Constructor)constructors.elementAt(i);
+	    final Class[] paramTypes = constructor.getParameterTypes();
+
+	    Class extType = null;
+	    for (j = 0; j < nArgs; j++) {
+		// Convert from internal (translet) type to external (Java) type
+		extType = paramTypes[j];
+		final Type intType = (Type)argsType.elementAt(j);
+		if (!_internal2Java.maps(intType, extType)) break;
+	    }
+
+	    if (j == nArgs) {
+	        _chosenConstructor = constructor;
+	        _isExtConstructor = true;
+		return _type = new ObjectType(_className);
+	    }
+	}
+
+	final StringBuffer buf = new StringBuffer(_className);
+	buf.append('.').append(_fname.getLocalPart()).append('(');
+	for (int i = 0; i < nArgs; i++) {
+	    final Type intType = (Type)argsType.elementAt(i);
+	    buf.append(intType.toString());
+	    if (i < nArgs - 1) buf.append(", ");
+	}
+	buf.append(')');
+	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, 
+	    buf.toString());
+    }
+
+
     /**
      * Type check a call to an external (Java) method.
      * The method must be static an public, and a legal type conversion
@@ -300,16 +380,54 @@ class FunctionCall extends Expression {
      * as a possible candidate.
      */
     public Type typeCheckExternal(SymbolTable stable) throws TypeCheckError {
+	int nArgs = _arguments.size();
+	final String name = _fname.getLocalPart();
+
+	// check if we are calling an instance method
+	if (_className.length() == 0) {
+	    if (nArgs > 0) {
+		_thisArgument = (Expression) _arguments.elementAt(0);
+		_arguments.remove(0); nArgs--;  
+		Type type = _thisArgument.typeCheck(stable);	
+		if (type instanceof ObjectType) {
+		    _className = ((ObjectType) type).getJavaClassName();
+		}
+		else {
+		    // TODO: define a new error message
+                    throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, 
+			name);
+		}
+            }
+            else {
+		/*
+		 * Warn user if external function could not be resolved.
+		 * Warning will _NOT_ be issued is the call is properly
+		 * wrapped in an <xsl:if> or <xsl:when> element. For details
+		 * see If.parserContents() and When.parserContents()
+		 */
+		final Parser parser = getParser();
+		if (parser != null) {
+		    reportWarning(this, parser, ErrorMsg.FUNCTION_RESOLVE_ERR,
+				  _fname.toString());
+		}
+		unresolvedExternal = true;
+		return _type = Type.Int;	// use "Int" as "unknown"
+            }	     
+	}
+ 	// check if function is a contructor 'new'
+	else if (_fname.getLocalPart().equals("new")) {
+	    return typeCheckConstructor(stable);
+	}
+
 	final Vector methods = findMethods();
 	
 	if (methods == null) {
 	    // Method not found in this class
-	    final String name = _fname.getLocalPart();
 	    throw new TypeCheckError(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
 	}
 
+	Class extType = null;
 	final int nMethods = methods.size();
-	final int nArgs = _arguments.size();
 	final Vector argsType = typeCheckArgs(stable);
 
 	// Try all methods with the same name as this function
@@ -318,40 +436,41 @@ class FunctionCall extends Expression {
 	    // Check if all paramteters to this method can be converted
 	    final Method method = (Method)methods.elementAt(i);
 	    final Class[] paramTypes = method.getParameterTypes();
+
 	    for (j = 0; j < nArgs; j++) {
 		// Convert from internal (translet) type to external (Java) type
+		extType = paramTypes[j];
 		final Type intType = (Type)argsType.elementAt(j);
-		final Class extType = paramTypes[j];
 		if (!_internal2Java.maps(intType, extType)) break;
 	    }
 
 	    if (j == nArgs) {
 		// Check if the return type can be converted
-		final Class extType = method.getReturnType();
-		if (extType.getName().equals("void"))
-		    _type = Type.Void;
-		else
-		    _type = (Type)_java2Internal.get(extType);
+		extType = method.getReturnType();
+		_type = extType.getName().equals("void") ? Type.Void
+		    : (Type) _java2Internal.get(extType);
+
 		// Use this method if all parameters & return type match
 		if (_type != null) {
 		    _chosenMethod = method;
+		    if (_type == Type.NodeSet){
+		        getXSLTC().setMultiDocument(true);
+		    }
 		    return _type;
 		}
 	    }
 	}
 
 	final StringBuffer buf = new StringBuffer(_className);
-	buf.append('.');
-	buf.append(_fname.getLocalPart());
-	buf.append('(');
-	for (int a=0; a<nArgs; a++) {
-	    final Type intType = (Type)argsType.elementAt(a);
+	buf.append('.').append(_fname.getLocalPart()).append('(');
+	for (int i = 0; i < nArgs; i++) {
+	    final Type intType = (Type)argsType.elementAt(i);
 	    buf.append(intType.toString());
-	    if (a < (nArgs-1)) buf.append(", ");
+	    if (i < nArgs - 1) buf.append(", ");
 	}
-	buf.append(");");
-	final String args = buf.toString();
-	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, args);
+	buf.append(')');
+	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, 
+	    buf.toString());
     }
 
     /**
@@ -388,8 +507,8 @@ class FunctionCall extends Expression {
      * Update true/false-lists.
      */
     public void translateDesynthesized(ClassGenerator classGen,
-				       MethodGenerator methodGen) {
-
+				       MethodGenerator methodGen) 
+    {
 	Type type = Type.Boolean;
 	if (_chosenMethodType != null)
 	    type = _chosenMethodType.resultType();
@@ -414,7 +533,7 @@ class FunctionCall extends Expression {
 	int index;
 
 	// Translate calls to methods in the BasisLibrary
-	if (isStandard()) {
+	if (isStandard() || isExtension()) {
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
 		exp.translate(classGen, methodGen);
@@ -453,17 +572,56 @@ class FunctionCall extends Expression {
 	    il.append(new PUSH(cpg, _fname.toString()));
 	    il.append(new INVOKESTATIC(index));
 	}
-	// Invoke function calls that are handled in separate classes
-	else {
-	    final String clazz = _chosenMethod.getDeclaringClass().getName();
-	    Class[] paramTypes = _chosenMethod.getParameterTypes();
+	else if (_isExtConstructor) {
+	    final String clazz = 
+		_chosenConstructor.getDeclaringClass().getName();
+	    Class[] paramTypes = _chosenConstructor.getParameterTypes();
+	    
+	    il.append(new NEW(cpg.addClass(_className)));
+	    il.append(InstructionConstants.DUP);
 
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
 		exp.translate(classGen, methodGen);
 		// Convert the argument to its Java type
 		exp.startResetIterator(classGen, methodGen);
-		exp._type.translateTo(classGen, methodGen, paramTypes[i]);
+		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
+	    }
+
+	    final StringBuffer buffer = new StringBuffer();
+	    buffer.append('(');
+	    for (int i = 0; i < paramTypes.length; i++) {
+		buffer.append(getSignature(paramTypes[i]));
+	    }
+	    buffer.append(')');
+	    buffer.append("V");
+
+	    index = cpg.addMethodref(clazz,
+				     "<init>", 
+				     buffer.toString());
+	    il.append(new INVOKESPECIAL(index));
+
+	    // Convert the return type back to our internal type
+	    (Type.Object).translateFrom(classGen, methodGen, 
+				_chosenConstructor.getDeclaringClass());
+	    
+	}
+	// Invoke function calls that are handled in separate classes
+	else {
+	    final String clazz = _chosenMethod.getDeclaringClass().getName();
+	    Class[] paramTypes = _chosenMethod.getParameterTypes();
+
+	    // Push "this" if it is an instance method
+	    if (_thisArgument != null) {
+		_thisArgument.translate(classGen, methodGen);
+	    }
+
+	    for (int i = 0; i < n; i++) {
+		final Expression exp = argument(i);
+		exp.translate(classGen, methodGen);
+		// Convert the argument to its Java type
+		exp.startResetIterator(classGen, methodGen);
+		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
 	    }
 
 	    final StringBuffer buffer = new StringBuffer();
@@ -477,7 +635,9 @@ class FunctionCall extends Expression {
 	    index = cpg.addMethodref(clazz,
 				     _fname.getLocalPart(),
 				     buffer.toString());
-	    il.append(new INVOKESTATIC(index));
+	    il.append(_thisArgument != null ?
+		(InvokeInstruction) new INVOKEVIRTUAL(index) : 
+                (InvokeInstruction) new INVOKESTATIC(index));
 
 	    // Convert the return type back to our internal type
 	    _type.translateFrom(classGen, methodGen,
@@ -491,10 +651,13 @@ class FunctionCall extends Expression {
 
     public boolean isStandard() {
 	final String namespace = _fname.getNamespace();
-	if ((namespace == null) || (namespace.equals(Constants.EMPTYSTRING)))
-	    return true;
-	else
-	    return false;
+	return (namespace == null) || (namespace.equals(Constants.EMPTYSTRING));
+    }
+
+    public boolean isExtension() {
+	final String namespace = _fname.getNamespace();
+	return (namespace != null) && (namespace.equals(EXT_XSLTC) 
+	    || namespace.equals(EXT_XALAN));
     }
 
     /**
@@ -506,7 +669,7 @@ class FunctionCall extends Expression {
 	Vector result = null;
 	final String namespace = _fname.getNamespace();
 
-	if (namespace.startsWith(JAVA_EXT_PREFIX) ||
+	if (namespace.startsWith(JAVA_EXT_XSLTC) ||
 	    namespace.startsWith(JAVA_EXT_XALAN)) {
 	    final int nArgs = _arguments.size();
 	    try {
@@ -524,10 +687,8 @@ class FunctionCall extends Expression {
 
 		    for (int i = 0; i < methods.length; i++) {
 			final int mods = methods[i].getModifiers();
-
-			// Is it public, static and same number of args ?
+			// Is it public and same number of args ?
 			if (Modifier.isPublic(mods)
-			    && Modifier.isStatic(mods)
 			    && methods[i].getName().equals(methodName)
 			    && methods[i].getParameterTypes().length == nArgs)
 			    {
@@ -547,6 +708,54 @@ class FunctionCall extends Expression {
 	}
 	return result;
     }
+
+    /**
+     * Returns a vector with all constructors named <code>_fname</code>
+     * after stripping its namespace or <code>null</code>
+     * if no such methods exist.
+     */
+    private Vector findConstructors() {
+        Vector result = null;
+        final String namespace = _fname.getNamespace();
+
+        if (namespace.startsWith(JAVA_EXT_XSLTC) ||
+            namespace.startsWith(JAVA_EXT_XALAN)) {
+            final int nArgs = _arguments.size();
+            try {
+                TransletLoader loader = new TransletLoader();
+                final Class clazz = loader.loadClass(_className);
+
+                if (clazz == null) {
+                    final ErrorMsg msg =
+                        new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
+                    getParser().reportError(Constants.ERROR, msg);
+                }
+                else {
+                    final Constructor[] constructors = clazz.getConstructors();
+
+                    for (int i = 0; i < constructors.length; i++) {
+                        final int mods = constructors[i].getModifiers();
+                        // Is it public, static and same number of args ?
+                        if (Modifier.isPublic(mods) &&
+                           constructors[i].getParameterTypes().length == nArgs)
+                        {
+                            if (result == null) {
+                                result = new Vector();
+                            }
+                            result.addElement(constructors[i]);
+                        }
+                    }
+                }
+            }
+            catch (ClassNotFoundException e) {
+                final ErrorMsg msg =
+                    new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
+                getParser().reportError(Constants.ERROR, msg);
+            }
+        }
+        return result;
+    }
+
 
     /**
      * Compute the JVM signature for the class.

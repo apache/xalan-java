@@ -71,7 +71,9 @@ public final class StringValueHandler extends TransletOutputBase {
     private char[] _buffer = new char[32];
     private int _free = 0;
 	
-    public void characters(char[] ch, int off, int len) {
+    public void characters(char[] ch, int off, int len) 
+	throws TransletException 
+    {
 	if (_free + len >= _buffer.length) {
 	    char[] newBuffer = new char[_free + len + 32];
 	    System.arraycopy(_buffer, 0, newBuffer, 0, _free);
@@ -85,6 +87,10 @@ public final class StringValueHandler extends TransletOutputBase {
 	final int length = _free;
 	_free = 0;		// getValue resets
 	return new String(_buffer, 0, length);
+    }
+
+    public void characters(String characters) throws TransletException {
+	characters(characters.toCharArray(), 0, characters.length());
     }
 
     /**

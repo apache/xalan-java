@@ -76,23 +76,28 @@ import org.apache.xml.dtm.DTM;
 
 final class Step extends RelativeLocationPath {
 
-    // This step's axis as defined in class Axis.
+    /**
+     * This step's axis as defined in class Axis.
+     */
     private int _axis;
 
-    // A vector of predicates (filters) defined on this step - may be null
+    /**
+     * A vector of predicates (filters) defined on this step - may be null
+     */
     private Vector _predicates;
 
-    // Some simple predicates can be handled by this class (and not by the
-    // Predicate class) and will be removed from the above vector as they are
-    // handled. We use this boolean to remember if we did have any predicates.
+    /**
+     * Some simple predicates can be handled by this class (and not by the
+     * Predicate class) and will be removed from the above vector as they are
+     * handled. We use this boolean to remember if we did have any predicates.
+     */
     private boolean _hadPredicates = false;
 
-    // Type of the node test.
+    /**
+     * Type of the node test.
+     */
     private int _nodeType;
 
-    /**
-     * Constructor
-     */
     public Step(int axis, int nodeType, Vector predicates) {
 	_axis = axis;
 	_nodeType = nodeType;
@@ -158,16 +163,12 @@ final class Step extends RelativeLocationPath {
      * an element like <xsl:for-each> or <xsl:apply-templates>.
      */
     private boolean hasParentPattern() {
-	SyntaxTreeNode parent = getParent();
-	if ((parent instanceof ParentPattern) ||
-	    (parent instanceof ParentLocationPath) ||
-	    (parent instanceof UnionPathExpr) ||
-	    (parent instanceof FilterParentPath))
-	    return(true);
-	else
-	    return(false);
+	final SyntaxTreeNode parent = getParent();
+	return (parent instanceof ParentPattern ||
+		parent instanceof ParentLocationPath ||
+		parent instanceof UnionPathExpr ||
+		parent instanceof FilterParentPath);
     }
-
     
     /**
      * Returns 'true' if this step has any predicates
@@ -216,24 +217,10 @@ final class Step extends RelativeLocationPath {
 
 	// Special case for '.' 
 	if (isAbbreviatedDot()) {
-	    if (hasParentPattern())
-		_type = Type.NodeSet;
-	    else
-		_type = Type.Node;
-	}
-	// Special case for '..'
-	else if (isAbbreviatedDDot()) {
-	    _type = Type.NodeSet;
+	    _type =  (hasParentPattern()) ? Type.NodeSet : Type.Node;
 	}
 	else {
-	    // Special case for '@attr' with no parent or predicates
-	    if ((_axis == Axis.ATTRIBUTE) && (_nodeType!=NodeTest.ATTRIBUTE) &&
-		(!hasParentPattern()) && (!_hadPredicates) && (!isPredicate())) {
-		_type = Type.Node;
-	    }
-	    else {
-		_type = Type.NodeSet;
-	    }
+	    _type = Type.NodeSet;
 	}
 
 	// Type check all predicates (expressions applied to the step)
@@ -258,31 +245,39 @@ final class Step extends RelativeLocationPath {
      */
     private boolean reverseNodeSet() {
 	// Check if axis returned nodes in reverse document order
+        // The sense of the following might appear to be reversed, but in
+        // fact, the DTM ancestor and preceding iterators return nodes in
+        // document order, rather than reverse document order.  In
+        // cases where we want the nodes returned in document order from
+        // those iterators, this method must return false.
 	if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
 	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
 
-	    // Do not reverse nodes if we have a parent step that will reverse
-	    // the nodes for us.
-	   // if (hasParentPattern()) return false;
-	    if (hasPredicates()) return true; //false;
-	    if (_hadPredicates) return true; //false;
+	    // If there were any predicates, put nodes in reverse document order
+	    if (hasPredicates()) return true;
+	    if (_hadPredicates) return true;
 	    
 	    // Check if this step occured under an <xsl:apply-templates> element
 	    SyntaxTreeNode parent = this;
-	   // do {
-		// Get the next ancestor element and check its type
-		parent = parent.getParent();
+	    // Get the next ancestor element and check its type
+	    parent = parent.getParent();
 
-		// Order node set if descendant of these elements:
-		if (parent instanceof ApplyImports) return false; //true;
-		if (parent instanceof ApplyTemplates) return false; //true;
-		if (parent instanceof ForEach) return false; //true;
-		if (parent instanceof FilterExpr/*FilterParentPath*/) return false; //true;
+	    // Order node set if descendant of these elements:
+	    if (parent instanceof ApplyImports) return false;
+	    if (parent instanceof ApplyTemplates) return false;
+	    if (parent instanceof ForEach) return false;
+	    if (parent instanceof FilterExpr) return false;
+/*
+ * %HZ%  Not sure about following three lines.  Myriam had changed
+ * %HZ%  FilterParentPath to FilterExpr in XSLTC_DTM branch, but FilterExpr
+ * %HZ%  was subsequently added on MAIN branch.  Also, XSLTC_DTM had action
+ * %HZ%  for ValueOf commented out, but in MAIN branch the result for ValueOf
+ * %HZ%  changed.
+ */
+	    if (parent instanceof FilterParentPath) return false;
+	    if (parent instanceof WithParam) return false;
+	    if (parent instanceof ValueOf) return false;
 
-		// No not order node set if descendant of these elements:
-		//if (parent instanceof ValueOf) return false;
-
-	  //  } while (parent != null);
 	    return true;
 	}
 	return false;
@@ -301,30 +296,21 @@ final class Step extends RelativeLocationPath {
 
 	if (hasPredicates()) {
 	    translatePredicates(classGen, methodGen);
+
+	    // If needed, create a reverse iterator after compiling preds
+	    orderIterator(classGen, methodGen);
 	}
 	else {
 	    // If it is an attribute but not '@*' or '@attr' with a parent
 	    if ((_axis == Axis.ATTRIBUTE) &&
 		(_nodeType != NodeTest.ATTRIBUTE) && (!hasParentPattern())) {
-		int node = cpg.addInterfaceMethodref(DOM_INTF,
-						     "getAttributeNode",
-						     "(II)I");
 		int iter = cpg.addInterfaceMethodref(DOM_INTF,
 						     "getTypedAxisIterator",
 						     "(II)"+NODE_ITERATOR_SIG);
-		if (_type instanceof NodeType) {
-		    il.append(methodGen.loadDOM());
-		    il.append(new PUSH(cpg, _nodeType));
-		    il.append(methodGen.loadContextNode());
-		    il.append(new INVOKEINTERFACE(node, 3));
-		}
-		// If it is the case '@attr[P_1]...[P_k]'
-		else if (_type instanceof NodeSetType) {
-		    il.append(methodGen.loadDOM());
-		    il.append(new PUSH(cpg, Axis.ATTRIBUTE));
-		    il.append(new PUSH(cpg, _nodeType));
-		    il.append(new INVOKEINTERFACE(iter, 3));
-		}
+		il.append(methodGen.loadDOM());
+		il.append(new PUSH(cpg, Axis.ATTRIBUTE));
+		il.append(new PUSH(cpg, _nodeType));
+		il.append(new INVOKEINTERFACE(iter, 3));
 		return;
 	    }
 
@@ -406,9 +392,12 @@ final class Step extends RelativeLocationPath {
 		il.append(new PUSH(cpg, _axis));
 		il.append(new PUSH(cpg, _nodeType));
 		il.append(new INVOKEINTERFACE(ty, 3));
-		orderIterator(classGen, methodGen);
+
 		break;
 	    }
+
+	    // If needed, create a reverse iterator
+	    orderIterator(classGen, methodGen);
 	}
     }
 

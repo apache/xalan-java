@@ -74,6 +74,7 @@ final class FormatNumberCall extends FunctionCall {
     private Expression _value;
     private Expression _format;
     private Expression _name;
+    private QName      _resolvedQName = null;
 
     public FormatNumberCall(QName fname, Vector arguments) {
 	super(fname, arguments);
@@ -83,9 +84,8 @@ final class FormatNumberCall extends FunctionCall {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	// The stylesheet element only adds code to instanciate the
-	// default DecimalFormat object if at least one format-number()
-	// call exists in the stylesheet. We must signal this call...
+
+	// Inform stylesheet to instantiate a DecimalFormat object
 	getStylesheet().numberFormattingUsed();
 
 	final Type tvalue = _value.typeCheck(stable);
@@ -98,7 +98,13 @@ final class FormatNumberCall extends FunctionCall {
 	}
 	if (argumentCount() == 3) {
 	    final Type tname = _name.typeCheck(stable);
-	    if (tname instanceof StringType == false) {
+
+	    if (_name instanceof LiteralExpr) {
+		final LiteralExpr literal = (LiteralExpr) _name;
+		_resolvedQName = 
+		    getParser().getQNameIgnoreDefaultNs(literal.getValue());
+	    }
+	    else if (tname instanceof StringType == false) {
 		_name = new CastExpr(_name, Type.String);
 	    }
 	}
@@ -125,6 +131,9 @@ final class FormatNumberCall extends FunctionCall {
 	il.append(classGen.loadTranslet());
 	if (_name == null) {
 	    il.append(new PUSH(cpg, EMPTYSTRING));
+	}
+	else if (_resolvedQName != null) {
+	    il.append(new PUSH(cpg, _resolvedQName.toString()));
 	}
 	else {
 	    _name.translate(classGen, methodGen);

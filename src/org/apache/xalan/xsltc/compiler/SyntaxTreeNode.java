@@ -552,10 +552,11 @@ public abstract class SyntaxTreeNode implements Constants {
      * @param methodGen BCEL Java method generator
      */
     protected void compileResultTree(ClassGenerator classGen,
-				     MethodGenerator methodGen) {
-
+				     MethodGenerator methodGen) 
+    {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
+	final Stylesheet stylesheet = classGen.getStylesheet();
 
 	// Save the current handler base on the stack
 	il.append(methodGen.loadHandler());
@@ -608,13 +609,42 @@ public abstract class SyntaxTreeNode implements Constants {
 	    il.append(new NEW(cpg.addClass(DOM_ADAPTER_CLASS)));
 	    il.append(new DUP_X1());
 	    il.append(SWAP);
-	    // Give the DOM adapter an empty type mapping to start with.
-	    // Type mapping is expensive and will only be done when casting
-	    // a result tree fragment to a node-set.
-	    il.append(new ICONST(0));
-	    il.append(new ANEWARRAY(cpg.addClass(STRING)));
-	    il.append(DUP);
-	    il.append(new INVOKESPECIAL(index)); // leave DOMAdapter on stack
+
+	    /*
+	     * Give the DOM adapter an empty type mapping if the nodeset
+	     * extension function is never called.
+	     */
+	    if (!stylesheet.callsNodeset()) {
+		il.append(new ICONST(0));
+		il.append(new ANEWARRAY(cpg.addClass(STRING)));
+		il.append(DUP);
+		il.append(new INVOKESPECIAL(index));
+	    }
+	    else {
+		// Push name arrays on the stack
+		il.append(ALOAD_0);
+		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					   NAMES_INDEX,
+					   NAMES_INDEX_SIG))); 
+		il.append(ALOAD_0);
+		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					   NAMESPACE_INDEX,
+					   NAMESPACE_INDEX_SIG)));
+
+		// Initialized DOM adapter
+		il.append(new INVOKESPECIAL(index));
+
+		// Add DOM adapter to MultiDOM class by calling addDOMAdapter()
+		il.append(DUP);
+		il.append(methodGen.loadDOM());
+		il.append(new CHECKCAST(cpg.addClass(classGen.getDOMClass())));
+		il.append(SWAP);
+		index = cpg.addMethodref(MULTI_DOM_CLASS,
+					 "addDOMAdapter",
+					 "(" + DOM_ADAPTER_SIG + ")I");
+		il.append(new INVOKEVIRTUAL(index));
+		il.append(POP);		// ignore mask returned by addDOMAdapter
+	    }
 	}
 
 	// Restore old handler base from stack

@@ -84,13 +84,14 @@ final class Include extends TopLevelElement {
     private Stylesheet _included = null;
 
     public Stylesheet getIncludedStylesheet() {
-	return(_included);
+	return _included;
     }
 
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
+
+	String docToLoad = getAttribute("href");
 	try {
-	    String docToLoad = getAttribute("href");
 	    if (context.checkForLoop(docToLoad)) {
 		final int errno = ErrorMsg.CIRCULAR_INCLUDE_ERR;
 		final ErrorMsg msg = new ErrorMsg(errno, docToLoad, this);
@@ -107,45 +108,53 @@ final class Include extends TopLevelElement {
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
 	    }
 	    else {
-                // bug 7835, patch by Stefan Kost (s.kost@webmacher.de)
-                if ((currLoadedDoc != null) && (currLoadedDoc.length() > 0)) {
-                    File file = new File(currLoadedDoc);
-                    if (file.exists()) {
-                        currLoadedDoc = "file:" + file.getCanonicalPath();
-                    }
-                    final URL url = new URL(new URL(currLoadedDoc), docToLoad);
-                    docToLoad = url.toString();
-                    input = new InputSource(docToLoad);
-                }
-                else {
-                    File file = new File(System.getProperty("user.dir"),
-                        docToLoad);
-                    if (file.exists()) {
-                        docToLoad = "file:" + file.getCanonicalPath();
-                    }
-                    else {
-                        throw new FileNotFoundException(
-                          "Could not load file " + docToLoad);
-                    }
-                    input = new InputSource(docToLoad);
-                }
+		// bug 7835, patch by Stefan Kost (s.kost@webmacher.de)
+		if ((currLoadedDoc != null) && (currLoadedDoc.length() > 0)) {
+		    File file = new File(currLoadedDoc);
+		    if (file.exists()) {
+		        currLoadedDoc = "file:" + file.getCanonicalPath();
+		    }
+		    final URL url = new URL(new URL(currLoadedDoc), docToLoad);
+		    docToLoad = url.toString();
+		    input = new InputSource(docToLoad);
+		}
+		else {
+		    File file = new File(System.getProperty("user.dir"),
+			docToLoad);
+		    if (file.exists()) {
+			docToLoad = "file:" + file.getCanonicalPath();
+		    }
+		    else {
+			throw new FileNotFoundException(
+			  "Could not load file " + docToLoad);
+		    }
+		    input = new InputSource(docToLoad);
+		}
+	    }
+
+	    // Return if we could not resolve the URL
+	    if (input == null) {
+		final ErrorMsg msg = 
+		    new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
+		parser.reportError(Constants.FATAL, msg);
+		return;
 	    }
 
 	    final SyntaxTreeNode root = parser.parse(input);
 	    if (root == null) return;
-	    final Stylesheet _included = parser.makeStylesheet(root);
+	    _included = parser.makeStylesheet(root);
 	    if (_included == null) return;
 
 	    _included.setSourceLoader(loader);
 	    _included.setSystemId(docToLoad);
 	    _included.setParentStylesheet(context);
 	    _included.setIncludingStylesheet(context);
+	    _included.setTemplateInlining(context.getTemplateInlining());
 
 	    // An included stylesheet gets the same import precedence
 	    // as the stylesheet that included it.
 	    final int precedence = context.getImportPrecedence();
 	    _included.setImportPrecedence(precedence);
-
 	    parser.setCurrentStylesheet(_included);
 	    _included.parseContents(parser);
 
@@ -154,14 +163,33 @@ final class Include extends TopLevelElement {
 	    while (elements.hasMoreElements()) {
 		final Object element = elements.nextElement();
 		if (element instanceof TopLevelElement) {
-		    if (element instanceof Variable)
-			topStylesheet.addVariable((Variable)element);
-		    else if (element instanceof Param)
-			topStylesheet.addParam((Param)element);
-		    else
-			topStylesheet.addElement((TopLevelElement)element);
+		    if (element instanceof Variable) {
+			topStylesheet.addVariable((Variable) element);
+		    }
+		    else if (element instanceof Param) {
+			topStylesheet.addParam((Param) element);
+		    }
+		    else {
+			topStylesheet.addElement((TopLevelElement) element);
+		    }
 		}
 	    }
+	}
+	catch (FileNotFoundException e) {
+	    // Update systemId in parent stylesheet for error reporting
+	    context.setSystemId(getAttribute("href"));
+
+	    final ErrorMsg msg = 
+		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
+	    parser.reportError(Constants.FATAL, msg);
+	}
+	catch (MalformedURLException e) {
+	    // Update systemId in parent stylesheet for error reporting
+	    context.setSystemId(getAttribute("href"));
+
+	    final ErrorMsg msg = 
+		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
+	    parser.reportError(Constants.FATAL, msg);
 	}
 	catch (Exception e) {
 	    e.printStackTrace();

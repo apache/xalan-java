@@ -57,32 +57,21 @@
 package org.apache.xalan.templates;
 
 //import org.w3c.dom.*;
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
-import org.apache.xpath.objects.XObject;
-
 import java.util.Vector;
 
-import org.apache.xalan.trace.TracerEvent;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xpath.VariableStack;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xalan.transformer.ClonerToResultTree;
-import org.apache.xml.dtm.DTMAxisTraverser;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.Axis;
-
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.SourceLocator;
-
-import org.apache.xml.dtm.DTMManager;
-
-// Experemental
-import org.apache.xml.dtm.ref.ExpandedNameTable;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.StackGuard;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.VariableStack;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -257,6 +246,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
     VariableStack vars = xctxt.getVarStack();
     int nParams = getParamElemCount();
     int thisframe = vars.getStackFrame();
+    StackGuard guard = transformer.getStackGuard();
+    boolean check = (guard.getRecursionLimit() > -1) ? true : false;
       
     try
     {
@@ -368,8 +359,14 @@ public class ElemApplyTemplates extends ElemCallTemplate
             continue;
           }
         }
-        
+        else
+        {
+        	transformer.setCurrentElement(template);
+        }
+                
         transformer.pushPairCurrentMatched(template, child);
+        if (check)
+	        guard.checkForInfinateLoop();
 
         int currentFrameBottom;  // See comment with unlink, below
         if(template.m_frameSize > 0)
@@ -413,9 +410,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
         else
         	currentFrameBottom = 0;
 
-        // if (check)
-        //  guard.push(this, child);
-
         // Fire a trace event for the template.
         if (TransformerImpl.S_DEBUG)
           transformer.getTraceManager().fireTraceEvent(template);
@@ -427,8 +421,15 @@ public class ElemApplyTemplates extends ElemCallTemplate
              t != null; t = t.m_nextSibling)
         {
           xctxt.setSAXLocator(t);
-          transformer.setCurrentElement(t);
-          t.execute(transformer);
+          try
+          {
+          	transformer.pushElemTemplateElement(t);
+          	t.execute(transformer);
+          }
+          finally
+          {
+          	transformer.popElemTemplateElement();
+          }
         }
         
         if (TransformerImpl.S_DEBUG)

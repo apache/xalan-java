@@ -113,6 +113,10 @@ public final class SAXAdapter implements TransletOutputHandler {
 	}
     }
     
+    public void characters(String characters) throws TransletException {
+	characters(characters.toCharArray(), 0, characters.length());
+    }
+
     public void characters(char[] characters, int offset, int length)
 	throws TransletException {
 	try {
@@ -193,7 +197,11 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void setHeader(String header) {}
     public void setIndent(boolean indent) {}
     public void omitHeader(boolean value) {}
-    public void setCdataElements(Hashtable elements) { }
+    public void setCdataElements(Hashtable elements) {}
+    public void setDoctype(String system, String pub) {}
+    public void setMediaType(String mediaType) {}
+    public void setStandalone(String standalone) {}
+    public void setVersion(String version) {}
     public void close() {}
     public String getPrefix(String uri) { return(""); }
 }

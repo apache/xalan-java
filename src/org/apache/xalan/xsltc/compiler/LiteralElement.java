@@ -292,10 +292,12 @@ final class LiteralElement extends Instruction {
 		stable.excludeNamespaces(val);
 	    }
 	    else {
-		// Ignore special attributes
+		// Ignore special attributes (e.g. xmlns:prefix and xmlns)
 		final String prefix = qname.getPrefix();
-		if (uri != null && uri.equals(XSLT_URI) ||
-		    prefix != null && prefix.equals(XMLNS_STRING)) {
+		if (prefix != null && prefix.equals(XMLNS_PREFIX) ||
+		    prefix == null && qname.getLocalPart().equals("xmlns") ||
+		    uri != null && uri.equals(XSLT_URI))
+		{
 		    continue;	
 		}
 

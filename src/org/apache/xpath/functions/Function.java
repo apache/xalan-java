@@ -59,10 +59,12 @@ package org.apache.xpath.functions;
 //import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -91,7 +93,8 @@ public abstract class Function extends Expression
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
   {
-    throw new WrongNumberArgsException("0");
+			// throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
+      reportWrongNumberArgs();
   }
 
   /**
@@ -107,7 +110,18 @@ public abstract class Function extends Expression
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum != 0)
-      throw new WrongNumberArgsException("0");
+      reportWrongNumberArgs();
+  }
+
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.  This method is meant to be overloaded
+   * by derived classes so that the message will be as specific as possible.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
   }
 
   /**
@@ -157,5 +171,12 @@ public abstract class Function extends Expression
   	return true;
   }
 
-
+  /**
+   * This function is currently only being used by Position()
+   * and Last(). See respective functions for more detail.
+   */
+  public void postCompileStep(Compiler compiler)
+  {
+    // no default action
+  }
 }

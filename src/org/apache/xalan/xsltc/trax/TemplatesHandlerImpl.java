@@ -57,6 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
@@ -65,23 +66,44 @@ package org.apache.xalan.xsltc.trax;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
 
+import org.xml.sax.Locator;
+import org.xml.sax.InputSource;
+
+import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.compiler.*;
-import org.apache.xalan.xsltc.compiler.util.Util;
 
 /**
  * Implementation of a JAXP1.1 TemplatesHandler
  */
-public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
-
+public class TemplatesHandlerImpl extends Parser 
+    implements TemplatesHandler, SourceLoader 
+{
+    /**
+     * System ID for this stylesheet.
+     */
     private String _systemId;
+
+    /**
+     * Number of spaces to add for output indentation.
+     */
+    private int _indentNumber;
+
+    /**
+     * This URIResolver is passed to all Transformers.
+     */
+    private URIResolver _uriResolver = null;
+
+    // Temporary
+    private boolean _oldOutputSystem;
 
     /**
      * Default constructor
      */
-    protected TemplatesHandlerImpl() {
+    protected TemplatesHandlerImpl(int indentNumber, boolean oldOutputSystem) {
 	super(null);
+	_indentNumber = indentNumber;
+	_oldOutputSystem = oldOutputSystem;
     }
 
     /**
@@ -118,6 +140,13 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
     }
 
     /**
+     * Store URIResolver needed for Transformers.
+     */
+    public void setURIResolver(URIResolver resolver) {
+	_uriResolver = resolver;
+    }
+
+    /**
      * Implements javax.xml.transform.sax.TemplatesHandler.getTemplates()
      * When a TemplatesHandler object is used as a ContentHandler or
      * DocumentHandler for the parsing of transformation instructions, it
@@ -128,51 +157,96 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
      */
     public Templates getTemplates() {
 	try {
-
 	    final XSLTC xsltc = getXSLTC();
+
+	    // Set a document loader (for xsl:include/import) if defined
+	    if (_uriResolver != null) {
+		xsltc.setSourceLoader(this);
+	    }
 
 	    // Set the translet class name if not already set
 	    String transletName = TransformerFactoryImpl._defaultTransletName;
-	    if (_systemId != null) transletName = Util.baseName(_systemId);
+	    if (_systemId != null) {
+		transletName = Util.baseName(_systemId);
+	    }
 	    xsltc.setClassName(transletName);
-	    // get java-legal class name from XSLTC module
-            transletName = xsltc.getClassName();
 
+	    // Get java-legal class name from XSLTC module
+	    transletName = xsltc.getClassName();
 
 	    Stylesheet stylesheet = null;
 	    SyntaxTreeNode root = getDocumentRoot();
 
 	    // Compile the translet - this is where the work is done!
-	    if ((!errorsFound()) && (root != null)) {
+	    if (!errorsFound() && root != null) {
 		// Create a Stylesheet element from the root node
 		stylesheet = makeStylesheet(root);
 		stylesheet.setSystemId(_systemId);
 		stylesheet.setParentStylesheet(null);
 		setCurrentStylesheet(stylesheet);
-		// Create AST under the Stylesheet element (parse & type-check)
+		// Create AST under the Stylesheet element 
 		createAST(stylesheet);
 	    }
 
 	    // Generate the bytecodes and output the translet class(es)
-	    if ((!errorsFound()) && (stylesheet != null)) {
+	    if (!errorsFound() && stylesheet != null) {
 		stylesheet.setMultiDocument(xsltc.isMultiDocument());
 		stylesheet.translate();
 	    }
 
-	    xsltc.printWarnings();
+	    if (!errorsFound()) {
+		// Check that the transformation went well before returning
+		final byte[][] bytecodes = xsltc.getBytecodes();
+		if (bytecodes != null) {
+		    final TemplatesImpl templates = 
+			new TemplatesImpl(xsltc.getBytecodes(), transletName, 
+			    getOutputProperties(), _indentNumber, 
+			    _oldOutputSystem);
 
-	    // Check that the transformation went well before returning
-	    final byte[][] bytecodes = xsltc.getBytecodes();
-	    if (bytecodes == null) {
-		xsltc.printErrors();
-		return null;
+		    // Set URIResolver on templates object
+		    if (_uriResolver != null) {
+			templates.setURIResolver(_uriResolver);
+		    }
+		    return templates;
+		}
 	    }
-
-	    return(new TemplatesImpl(bytecodes, transletName));
 	}
 	catch (CompilerException e) {
-	    return null;
+	    // falls through
 	}
+	return null;
+    }
+
+    /**
+     * Recieve an object for locating the origin of SAX document events.
+     * Most SAX parsers will use this method to inform content handler
+     * of the location of the parsed document. 
+     */
+    public void setDocumentLocator(Locator locator) {
+  	setSystemId(locator.getSystemId());
+    }
+
+    /**
+     * This method implements XSLTC's SourceLoader interface. It is used to
+     * glue a TrAX URIResolver to the XSLTC compiler's Input and Import classes.
+     *
+     * @param href The URI of the document to load
+     * @param context The URI of the currently loaded document
+     * @param xsltc The compiler that resuests the document
+     * @return An InputSource with the loaded document
+     */
+    public InputSource loadSource(String href, String context, XSLTC xsltc) {
+	try {
+	    // A _uriResolver must be set if this method is called
+	    final Source source = _uriResolver.resolve(href, context);
+	    if (source != null) {
+		return Util.getInputSource(xsltc, source);
+	    }
+	}
+	catch (TransformerException e) {
+	    // Falls through
+	}
+	return null;
     }
 }
 

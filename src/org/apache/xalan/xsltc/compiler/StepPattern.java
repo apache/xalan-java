@@ -135,14 +135,11 @@ class StepPattern extends RelativePathPattern {
 	else {
 	    switch(_nodeType) {
 	    case -1:
-		return(-0.25);
+		return -0.5;	// node()
 	    case 0:
-		return(0.0);
+		return 0.0;
 	    default:
-		if (_nodeType >= NodeTest.GTYPE)
-		    return(0.0);
-		else
-		    return(-0.5);
+		return (_nodeType >= NodeTest.GTYPE) ? 0.0 : -0.5;
 	    }
 	}
     }

@@ -96,10 +96,17 @@ public class ElemVariable extends ElemTemplateElement
   public ElemVariable(){}
 
   /**
-   * This is the index into the stack frame.  If the index is above the 
-   * global area, it will have to be offset at execution time.
+   * This is the index into the stack frame.
    */
   protected int m_index;
+  
+  /**
+   * The stack frame size for this variable if it is a global variable 
+   * that declares an RTF, which is equal to the maximum number 
+   * of variables that can be declared in the variable at one time.
+   */
+  int m_frameSize = -1;
+
   
   /**
    * Sets the relative position of this variable within the stack frame (if local)
@@ -280,6 +287,7 @@ public class ElemVariable extends ElemTemplateElement
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
+  
     XObject var = getValue(transformer, sourceNode);
 
     // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
@@ -307,7 +315,7 @@ public class ElemVariable extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
 
     xctxt.pushCurrentNode(sourceNode);
-
+ 
     try
     {
       if (null != m_selectPattern)
@@ -333,16 +341,28 @@ public class ElemVariable extends ElemTemplateElement
         // so they aren't popped off the stack on return from a template.
         int df;
 
-	    if(m_parentNode instanceof Stylesheet) // Global variable
-	        df = transformer.transformToGlobalRTF(this);
-	    else        
-	        df = transformer.transformToRTF(this);
+		// Bugzilla 7118: A variable set via an RTF may create local
+		// variables during that computation. To keep them from overwriting
+		// variables at this level, push a new variable stack.
+		////// PROBLEM: This is provoking a variable-used-before-set
+		////// problem in parameters. Needs more study.
+		try
+		{
+			//////////xctxt.getVarStack().link(0);
+			if(m_parentNode instanceof Stylesheet) // Global variable
+				df = transformer.transformToGlobalRTF(this);
+			else
+				df = transformer.transformToRTF(this);
+    	}
+		finally{ 
+			//////////////xctxt.getVarStack().unlink(); 
+			}
 
         var = new XRTreeFrag(df, xctxt, this);
       }
     }
     finally
-    {
+    {      
       xctxt.popCurrentNode();
     }
 
@@ -378,12 +398,38 @@ public class ElemVariable extends ElemTemplateElement
     // Only add the variable if this is not a global.  If it is a global, 
     // it was already added by stylesheet root.
     if(!(m_parentNode instanceof Stylesheet))
+    {
       m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
+    }
+    else
+    {
+    	// If this is a global, then we need to treat it as if it's a xsl:template, 
+    	// and count the number of variables it contains.  So we set the count to 
+    	// zero here.
+		cstate.resetStackFrameSize();
+    }
     
     // This has to be done after the addVariableName, so that the variable 
     // pushed won't be immediately popped again in endCompose.
     super.compose(sroot);
   }
+  
+  /**
+   * This after the template's children have been composed.  We have to get 
+   * the count of how many variables have been declared, so we can do a link 
+   * and unlink.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+    super.endCompose(sroot);
+    if(m_parentNode instanceof Stylesheet)
+    {
+    	StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+    	m_frameSize = cstate.getFrameSize();
+    	cstate.resetStackFrameSize();
+    }
+  }
+
   
   
 //  /**

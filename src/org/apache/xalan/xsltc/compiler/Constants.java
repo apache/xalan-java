@@ -131,6 +131,8 @@ public interface Constants extends InstructionConstants {
 	= org.apache.bcel.Constants.ACC_PRIVATE;
     public static final int ACC_PROTECTED 
 	= org.apache.bcel.Constants.ACC_PROTECTED;
+    public static final int ACC_STATIC
+	= org.apache.bcel.Constants.ACC_STATIC;
 
     public static final String STRING_SIG         
 	= "Ljava/lang/String;";
@@ -150,7 +152,9 @@ public interface Constants extends InstructionConstants {
     public static final String NODE               
 	= "int";
     public static final String NODE_ITERATOR      
-	= "org.apache.xml.dtm.DTMAxisIterator"; //xalan.xsltc.NodeIterator";
+	= "org.apache.xml.dtm.DTMAxisIterator";
+    public static final String NODE_ITERATOR_BASE
+	= "org.apache.xml.dtm.ref.DTMAxisIteratorBase";
     public static final String SORT_ITERATOR      
 	= "org.apache.xalan.xsltc.dom.SortingIterator";
     public static final String SORT_ITERATOR_SIG     
@@ -173,10 +177,6 @@ public interface Constants extends InstructionConstants {
 	= "org/apache/xalan/xsltc/TransletOutputHandler";
     public static final String OUTPUT_HANDLER_SIG
 	= "Lorg/apache/xalan/xsltc/TransletOutputHandler;";
-    public static final String TEXT_OUTPUT
-	= "org/apache/xalan/xsltc/runtime/TextOutput";
-    public static final String TEXT_OUTPUT_SIG
-	= "Lorg/apache/xalan/xsltc/runtime/TextOutput;";
     public static final String FILTER_INTERFACE   
 	= "org.apache.xalan.xsltc.dom.Filter";
     public static final String FILTER_INTERFACE_SIG   
@@ -294,8 +294,6 @@ public interface Constants extends InstructionConstants {
 	= "java.lang.Double";
     public static final String INTEGER_CLASS      
 	= "java.lang.Integer";
-    public static final String LONG_CLASS      
-	= "java.lang.Long";
     public static final String RUNTIME_NODE_CLASS 
 	= "org.apache.xalan.xsltc.runtime.Node";
     public static final String MATH_CLASS         
@@ -309,10 +307,6 @@ public interface Constants extends InstructionConstants {
 	= "intValue";
     public static final String INT_VALUE_SIG      
 	= "()I";
-    public static final String LONG_VALUE          
-	= "longValue";
-    public static final String LONG_VALUE_SIG      
-	= "()J";
     public static final String DOUBLE_VALUE       
 	= "doubleValue";
     public static final String DOUBLE_VALUE_SIG   

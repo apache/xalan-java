@@ -92,6 +92,11 @@ parser code {:
     private XSLTC  _xsltc;
 
     /**
+     * String representation of the expression being parsed.
+     */
+    private String _expression;
+
+    /**
      * Line number where this expression/pattern was declared.
      */
     private int _lineNumber = 0;
@@ -115,8 +120,16 @@ parser code {:
           return _parser.getQName(name);
     }    
 
+    public QName getQNameIgnoreDefaultNs(String name) {
+          return _parser.getQNameIgnoreDefaultNs(name);
+    }    
+
     public void setMultiDocument(boolean flag) {
           _xsltc.setMultiDocument(flag);
+    }
+
+    public void setCallsNodeset(boolean flag) {
+          _xsltc.setCallsNodeset(flag);
     }
 
     public int findNodeType(int axis, Object test) {
@@ -174,8 +187,9 @@ parser code {:
      *                   compiled in a separate module.
      * 
      */
-    public Symbol parse(int lineNumber) throws Exception {
+    public Symbol parse(String expression, int lineNumber) throws Exception {
         try {
+	    _expression = expression;
 	    _lineNumber = lineNumber;
 	    return super.parse();
         }
@@ -206,11 +220,28 @@ parser code {:
     } 
            
     public void report_error(String message, Object info) {
-        // empty
+	final ErrorMsg err = new ErrorMsg(ErrorMsg.SYNTAX_ERR, _lineNumber, 
+	    _expression);
+	_parser.reportError(Constants.FATAL, err);
     }
 
     public void report_fatal_error(String message, Object info) {
         // empty
+    }
+    
+    public RelativeLocationPath insertStep(Step step, RelativeLocationPath rlp) {
+	if (rlp instanceof Step) {
+	    return new ParentLocationPath(step, (Step) rlp);
+	}
+	else if (rlp instanceof ParentLocationPath) {
+	    final ParentLocationPath plp = (ParentLocationPath) rlp;
+	    final RelativeLocationPath newrlp = insertStep(step, plp.getPath());
+	    return new ParentLocationPath(newrlp, plp.getStep());
+	}
+	else {
+	    addError(new ErrorMsg(ErrorMsg.INTERNAL_ERR, "XPathParser.insertStep"));
+	    return rlp;
+	}
     }
 :}
 
@@ -290,12 +321,6 @@ LocationPathPattern ::= SLASH
             | SLASH RelativePathPattern:rpp
             {: RESULT = new AbsolutePathPattern(rpp); :}
 
-            | ProcessingInstructionPattern:pip
-            {: RESULT = pip; :}
-
-	    | ProcessingInstructionPattern:pip Predicates:pp
-            {: RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); :}
-
             | IdKeyPattern:ikp
             {: RESULT = ikp; :}
 
@@ -341,6 +366,12 @@ StepPattern ::= NodeTestPattern:nt
                                         pp);
             :}
 
+            | ProcessingInstructionPattern:pip
+            {: RESULT = pip; :}
+
+	    | ProcessingInstructionPattern:pip Predicates:pp
+            {: RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); :}
+
             | ChildOrAttributeAxisSpecifier:axis NodeTestPattern:nt
             {: RESULT=new StepPattern(axis.intValue(),
                                       parser.findNodeType(axis.intValue(), nt),
@@ -352,7 +383,19 @@ StepPattern ::= NodeTestPattern:nt
             {: RESULT = new StepPattern(axis.intValue(),
                                         parser.findNodeType(axis.intValue(),nt),
                                         pp);
-            :};
+            :}
+
+            | ChildOrAttributeAxisSpecifier:axis ProcessingInstructionPattern:pip
+            {: 
+	       RESULT = pip; 	// TODO: report error if axis is attribute
+	    :}
+
+	    | ChildOrAttributeAxisSpecifier:axis ProcessingInstructionPattern:pip 
+		Predicates:pp
+            {: 
+	       // TODO: report error if axis is attribute	
+	       RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); 
+	    :};
 
 NodeTestPattern ::= NameTestPattern:nt
             {: RESULT = nt; :}
@@ -582,29 +625,12 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 
 AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
         {:
+	    final Step step = new Step(Axis.DESCENDANTORSELF, -1, null);
 
-	AbsoluteLocationPath alp = null;
-
-        Step left = new Step(Axis.DESCENDANTORSELF, -1, null);
-
-	if (rlp instanceof ParentLocationPath) {
-	    ParentLocationPath plp = new ParentLocationPath(left, rlp);
-	    alp = new AbsoluteLocationPath(plp);
-	}
-	else if (rlp instanceof Step) {
-            Step right = (Step)rlp;
-            alp = new AbsoluteLocationPath(new ParentLocationPath(left, right));
-	}
-	else {
-            // Don't think we'll ever get here...
-            Step right = new Step(Axis.CHILD, NodeTest.ELEMENT, null);
-	    alp = new AbsoluteLocationPath(new ParentLocationPath(left, right));
-        }
-
-	RESULT = new FilteredAbsoluteLocationPath(alp);
+	    RESULT = new FilteredAbsoluteLocationPath(
+			new AbsoluteLocationPath(parser.insertStep(step, 
+				(RelativeLocationPath) rlp)));
 	:};
-
-
 
 Step ::= NodeTest:ntest
         {:
@@ -714,25 +740,25 @@ PrimaryExpr ::= VariableReference:vr
 	/*
 	* If the string appears to have the syntax of a QName, store 
 	* namespace info in the literal expression. This is used for
-	* element-available and function-available functions.
+	* element-available and function-available functions, among
+	* others. Also, the default namespace must be ignored.
 	*/
+	String namespace = null;
 	final int index = string.lastIndexOf(':');
-	final String prefix = index >= 0
-                                     ? string.substring(0, index)
-                                     : Constants.EMPTYSTRING;
-	String namespace = parser._symbolTable.lookupNamespace(prefix);
-	RESULT = namespace == null
-                         ? new LiteralExpr(string)
-                         : new LiteralExpr(string, namespace); 
+
+	if (index > 0) {
+	    final String prefix = string.substring(0, index);
+	    namespace = parser._symbolTable.lookupNamespace(prefix);
+	}
+	RESULT = (namespace == null) ? new LiteralExpr(string)
+		     : new LiteralExpr(string, namespace); 
 	:}
 
         | INT:num
         {: 
-	   // bug fix 3592, num comes in as a Long rather than an Integer
-	   //               see xpath.lex, {Digit}+ rule. 
 	   long value = num.longValue();
-	   if ((value < Integer.MIN_VALUE) || (value > Integer.MAX_VALUE)) {
-		RESULT = new LongExpr(num.longValue());
+	   if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+		RESULT = new RealExpr(value);
 	   }
 	   else {
                if (num.doubleValue() == -0)
@@ -741,7 +767,7 @@ PrimaryExpr ::= VariableReference:vr
                    RESULT = new IntExpr(num.intValue());
                else if (num.doubleValue() == 0.0)
                    RESULT = new RealExpr(num.doubleValue());
-               else
+               else 
                    RESULT = new IntExpr(num.intValue());
 	   }
         :}
@@ -773,49 +799,48 @@ VariableReference ::= DOLLAR VariableName:varName
             if (node == null) {
                 RESULT = new UnresolvedRef(varName);
             }
-
         :};
 
 FunctionCall ::= FunctionName:fname LPAREN RPAREN
         {: 
 
-          if (fname == parser.getQName("current")) {
+          if (fname == parser.getQNameIgnoreDefaultNs("current")) {
             RESULT = new CurrentCall(fname);
 	  }
-          else if (fname == parser.getQName("number")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("number")) {
             RESULT = new NumberCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQName("string")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("string")) {
             RESULT = new StringCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQName("concat")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("concat")) {
             RESULT = new ConcatCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQName("true")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("true")) {
             RESULT = new BooleanExpr(true);
 	  }
-          else if (fname == parser.getQName("false")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("false")) {
             RESULT = new BooleanExpr(false);
 	  }
-          else if (fname == parser.getQName("name")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("name")) {
             RESULT = new NameCall(fname);
 	  }
-          else if (fname == parser.getQName("generate-id")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("generate-id")) {
             RESULT = new GenerateIdCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQName("string-length")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("string-length")) {
             RESULT = new StringLengthCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQName("position")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("position")) {
             RESULT = new PositionCall(fname);
 	  }
-          else if (fname == parser.getQName("last")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("last")) {
             RESULT = new LastCall(fname);
 	  }
-          else if (fname == parser.getQName("local-name")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("local-name")) {
             RESULT = new LocalNameCall(fname);
 	  }
-          else if (fname == parser.getQName("namespace-uri")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("namespace-uri")) {
             RESULT = new NamespaceUriCall(fname);
 	  }
           else {
@@ -825,75 +850,80 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
 
         | FunctionName:fname LPAREN NonemptyArgumentList:argl RPAREN
         {:
-          if (fname == parser.getQName("concat")) {
+          if (fname == parser.getQNameIgnoreDefaultNs("concat")) {
             RESULT = new ConcatCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("number")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("number")) {
             RESULT = new NumberCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("document")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("document")) {
 	    parser.setMultiDocument(true);
             RESULT = new DocumentCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("string")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("string")) {
             RESULT = new StringCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("boolean")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("boolean")) {
             RESULT = new BooleanCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("name")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("name")) {
             RESULT = new NameCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("generate-id")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("generate-id")) {
             RESULT = new GenerateIdCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("not")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("not")) {
             RESULT = new NotCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("format-number")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("format-number")) {
             RESULT = new FormatNumberCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("unparsed-entity-uri")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("unparsed-entity-uri")) {
             RESULT = new UnparsedEntityUriCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("key")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("key")) {
             RESULT = new KeyCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("id")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("id")) {
             RESULT = new KeyCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("ceiling")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("ceiling")) {
             RESULT = new CeilingCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("round")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("round")) {
             RESULT = new RoundCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("floor")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("floor")) {
             RESULT = new FloorCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("contains")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("contains")) {
             RESULT = new ContainsCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("string-length")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("string-length")) {
             RESULT = new StringLengthCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("starts-with")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("starts-with")) {
             RESULT = new StartsWithCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("function-available")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("function-available")) {
             RESULT = new FunctionAvailableCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("element-available")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("element-available")) {
             RESULT = new ElementAvailableCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("local-name")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("local-name")) {
             RESULT = new LocalNameCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("lang")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("lang")) {
             RESULT = new LangCall(fname, argl);
 	  }
-          else if (fname == parser.getQName("namespace-uri")) {
+          else if (fname == parser.getQNameIgnoreDefaultNs("namespace-uri")) {
             RESULT = new NamespaceUriCall(fname, argl);
+	  }
+	  // Special case for extension function nodeset()
+          else if (fname.getLocalPart().equals("nodeset")) {
+	    parser.setCallsNodeset(true);  // implies MultiDOM
+            RESULT = new FunctionCall(fname, argl);
 	  }
           else {
             RESULT = new FunctionCall(fname, argl);
@@ -911,18 +941,24 @@ NonemptyArgumentList ::= Argument:arg
         {: argl.insertElementAt(arg, 0); RESULT = argl; :};
 
 FunctionName ::= QName:fname
-        {:
-            fname.clearDefaultNamespace();
-            RESULT = fname; 
-        :};
+        {: 
+	    final String prefix = fname.getPrefix();
+	    if (prefix == null || prefix.equals(Constants.EMPTYSTRING)) {
+		fname = parser.getQNameIgnoreDefaultNs(fname.getLocalPart());
+	    }
+	    RESULT = fname; 
+	:};
 
 VariableName ::= QName:vname
-        {:
-            vname.clearDefaultNamespace();
-            RESULT = vname; 
-        :};
+        {: 
+	    final String prefix = vname.getPrefix();
+	    if (prefix == null || prefix.equals(Constants.EMPTYSTRING)) {
+		vname = parser.getQNameIgnoreDefaultNs(vname.getLocalPart());
+	    }
+	    RESULT = vname; 
+	:};
 
-Argument ::=    Expr:ex
+Argument ::= Expr:ex
         {: RESULT = ex; :};
 
 NodeTest ::= NameTest:nt
@@ -939,14 +975,13 @@ NodeTest ::= NameTest:nt
 
         | PIPARAM LPAREN Literal:l RPAREN
         {:
-           QName name = parser.getQName("name");
+           QName name = parser.getQNameIgnoreDefaultNs("name");
            Expression exp = new EqualityExpr(Operators.EQ,
                                              new NameCall(name),
                                              new LiteralExpr(l));
            Vector predicates = new Vector();
            predicates.addElement(new Predicate(exp));
            RESULT = new Step(Axis.CHILD, NodeTest.PI, predicates);
-	           //RESULT = new Integer(NodeTest.PI);
         :}
 
         | PI
@@ -961,54 +996,54 @@ NameTest ::= STAR
 QName ::= QNAME:qname
         {: RESULT = parser.getQName(qname); :}
 
-        | DIV
-        {: RESULT = parser.getQName("div"); :}
+	| DIV
+        {: RESULT = parser.getQNameIgnoreDefaultNs("div"); :}
 
         | MOD
-        {: RESULT = parser.getQName("mod"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("mod"); :}
 
         | KEY
-        {: RESULT = parser.getQName("key"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("key"); :}
 
         | ANCESTOR
-        {: RESULT = parser.getQName("child"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("child"); :}
 
         | ANCESTORORSELF
-        {: RESULT = parser.getQName("ancestor-or-self"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("ancestor-or-self"); :}
 
         | ATTRIBUTE
-        {: RESULT = parser.getQName("attribute"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("attribute"); :}
 
         | CHILD
-        {: RESULT = parser.getQName("child"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("child"); :}
 
         | DESCENDANT
-        {: RESULT = parser.getQName("decendant"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("decendant"); :}
 
         | DESCENDANTORSELF
-        {: RESULT = parser.getQName("decendant-or-self"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("decendant-or-self"); :}
 
         | FOLLOWING
-        {: RESULT = parser.getQName("following"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("following"); :}
 
         | FOLLOWINGSIBLING
-        {: RESULT = parser.getQName("following-sibling"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("following-sibling"); :}
 
         | NAMESPACE
-        {: RESULT = parser.getQName("namespace"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("namespace"); :}
 
         | PARENT
-        {: RESULT = parser.getQName("parent"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("parent"); :}
 
         | PRECEDING
-        {: RESULT = parser.getQName("preceding"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("preceding"); :}
 
         | PRECEDINGSIBLING
-        {: RESULT = parser.getQName("preceding-sibling"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("preceding-sibling"); :}
 
         | SELF
-        {: RESULT = parser.getQName("self"); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs("self"); :}
 
         | ID
-        {: RESULT = parser.getQName("id"); :};
+        {: RESULT = parser.getQNameIgnoreDefaultNs("id"); :};
 

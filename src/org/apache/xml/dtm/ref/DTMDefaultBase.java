@@ -92,6 +92,11 @@ public abstract class DTMDefaultBase implements DTM
 {
 	static boolean JJK_DEBUG=false;
 
+// %HZ%:  Added following back in temporarily only - must remove!!!
+  /** The identity of the root node. */
+  public static final int ROOTNODE = 0;
+// %HZ%:  Added preceding back in temporarily only - must remove!!!
+
 	
   /**
    * The number of nodes, which is also used to determine the next
@@ -178,9 +183,6 @@ public abstract class DTMDefaultBase implements DTM
 
   /** The XMLString factory for creating XMLStrings. */
   protected XMLStringFactory m_xstrf;
-
-  /** The identity of the root node. */
-  public static final int ROOTNODE = 0;
 
   /**
    * The table for exandedNameID lookups.  This may or may not be the same

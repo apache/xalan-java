@@ -73,20 +73,9 @@ public interface DOM {
     public final static int  FIRST_TYPE             = 0;
 
     public final static int  NO_TYPE                = -1;
-    //public final static int  ROOT                   = 0;
-    //public final static int  TEXT                   = 1;
-    //public final static int  NAMESPACE              = 2;
-   // public final static int  ELEMENT                = 3;
-   // public final static int  ATTRIBUTE              = 4;
-   // public final static int  PROCESSING_INSTRUCTION = 5;
-   // public final static int  COMMENT                = 6;
-	
-    //public final static int  NTYPES                 = 7;
     
     // 0 is reserved for NodeIterator.END
     public final static int NULL     = 0;
-    // index of root node
-    //public final static int ROOTNODE = 1;
 
     // used by some node iterators to know which node to return
     public final static int RETURN_CURRENT = 0;
@@ -135,6 +124,8 @@ public interface DOM {
     public void setupMapping(String[] names, String[] namespaces);
     public boolean isElement(final int node);
     public boolean isAttribute(final int node);
+    public String lookupNamespace(int node, String prefix)
+	throws TransletException;
     public int getNodeIdent(final int nodehandle);
     public int getNodeHandle(final int nodeId);
     public DOM getResultTreeFrag();

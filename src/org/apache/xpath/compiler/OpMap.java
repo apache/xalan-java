@@ -60,6 +60,8 @@ import java.util.Vector;
 
 import org.apache.xml.utils.QName;
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
 
 /**
  * This class represents the data structure basics of the XPath
@@ -275,8 +277,8 @@ public class OpMap
     else
     {
       throw new RuntimeException(
-        "Programmer's assertion in getNextStepPos: unknown stepType: "
-        + stepType);
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_UNKNOWN_STEP, new Object[]{new Integer(stepType).toString()})); 
+      //"Programmer's assertion in getNextStepPos: unknown stepType: " + stepType);
     }
   }
 

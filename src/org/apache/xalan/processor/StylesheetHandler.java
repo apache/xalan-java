@@ -85,6 +85,8 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.XPath;
 
+import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xalan.extensions.ExpressionVisitor;
 import org.w3c.dom.Node;
 
 import org.xml.sax.Attributes;
@@ -194,7 +196,10 @@ public class StylesheetHandler extends DefaultHandler
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    return new XPath(str, owningTemplate, this, XPath.SELECT, handler);
+    XPath xpath = new XPath(str, owningTemplate, this, XPath.SELECT, handler);
+    // Visit the expression, registering namespaces for any extension functions it includes.
+    xpath.callVisitors(xpath, new ExpressionVisitor(getStylesheetRoot()));
+    return xpath;
   }
 
   /**
@@ -417,8 +422,8 @@ public class StylesheetHandler extends DefaultHandler
     }
 
     if (null == elemProcessor)
-      error(rawName + " is not allowed in this position in the stylesheet!",
-            null);
+      error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[]{rawName}),null);//rawName + " is not allowed in this position in the stylesheet!",
+            
                 
     return elemProcessor;
   }
@@ -735,8 +740,8 @@ public class StylesheetHandler extends DefaultHandler
       // If it's whitespace, just ignore it, otherwise flag an error.
       if (!XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
         error(
-          "Non-whitespace text is not allowed in this position in the stylesheet!",
-          null);
+          XSLMessages.createMessage(XSLTErrorResources.ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION, null),null);//"Non-whitespace text is not allowed in this position in the stylesheet!",
+          
     }
     else
       elemProcessor.characters(this, ch, start, length);
@@ -1700,6 +1705,13 @@ public class StylesheetHandler extends DefaultHandler
       }
     return (version == -1)? Constants.XSLTVERSUPPORTED : version;
   }
+	/**
+	 * @see PrefixResolver#handlesNullPrefixes()
+	 */
+	public boolean handlesNullPrefixes() {
+		return false;
+	}
+
 }
 
 

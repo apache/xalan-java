@@ -701,32 +701,39 @@ public class Compiler extends OpMap
    */
   protected Expression matchPattern(int opPos) throws TransformerException
   {
-
-    // First, count...
-    int nextOpPos = opPos;
-    int i;
-
-    for (i = 0; m_opMap[nextOpPos] == OpCodes.OP_LOCATIONPATHPATTERN; i++)
+    locPathDepth++;
+    try
     {
-      nextOpPos = getNextOpPos(nextOpPos);
+      // First, count...
+      int nextOpPos = opPos;
+      int i;
+
+      for (i = 0; m_opMap[nextOpPos] == OpCodes.OP_LOCATIONPATHPATTERN; i++)
+      {
+        nextOpPos = getNextOpPos(nextOpPos);
+      }
+
+      if (i == 1)
+        return compile(opPos);
+
+      UnionPattern up = new UnionPattern();
+      StepPattern[] patterns = new StepPattern[i];
+
+      for (i = 0; m_opMap[opPos] == OpCodes.OP_LOCATIONPATHPATTERN; i++)
+      {
+        nextOpPos = getNextOpPos(opPos);
+        patterns[i] = (StepPattern) compile(opPos);
+        opPos = nextOpPos;
+      }
+
+      up.setPatterns(patterns);
+
+      return up;
     }
-
-    if (i == 1)
-      return compile(opPos);
-
-    UnionPattern up = new UnionPattern();
-    StepPattern[] patterns = new StepPattern[i];
-
-    for (i = 0; m_opMap[opPos] == OpCodes.OP_LOCATIONPATHPATTERN; i++)
+    finally
     {
-      nextOpPos = getNextOpPos(opPos);
-      patterns[i] = (StepPattern) compile(opPos);
-      opPos = nextOpPos;
+      locPathDepth--;
     }
-
-    up.setPatterns(patterns);
-
-    return up;
   }
 
   /**
@@ -1047,6 +1054,8 @@ private static final boolean DEBUG = false;
     {
       Function func = FunctionTable.getFunction(funcID);
 
+      func.postCompileStep(this);
+      
       try
       {
         int i = 0;
@@ -1065,8 +1074,10 @@ private static final boolean DEBUG = false;
       {
         java.lang.String name = FunctionTable.m_functions[funcID].getName();
 
-        m_errorHandler.fatalError( new TransformerException(name + " only allows " + wnae.getMessage()
-                               + " arguments", m_locator));
+        m_errorHandler.fatalError( new TransformerException(
+                  XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
+                      new Object[]{name, wnae.getMessage()}), m_locator)); 
+              //"name + " only allows " + wnae.getMessage() + " arguments", m_locator));
       }
 
       return func;

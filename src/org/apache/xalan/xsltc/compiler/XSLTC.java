@@ -67,9 +67,10 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.io.*;
+import java.util.Set;
 import java.util.Vector;
 import java.util.Hashtable;
-import java.util.Set;
+import java.util.Properties;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Enumeration;
@@ -141,7 +142,9 @@ public final class XSLTC {
     private int     _outputType = FILE_OUTPUT; // by default
 
     private Vector  _classes;
+    private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
+    private boolean _templateInlining = true;
 
     /**
      * XSLTC compiler constructor
@@ -162,6 +165,13 @@ public final class XSLTC {
      */
     public void setOutputType(int type) {
 	_outputType = type;
+    }
+
+    /**
+     * Only for user by the internal TrAX implementation.
+     */
+    public Properties getOutputProperties() {
+	return _parser.getOutputProperties();
     }
 
     /**
@@ -206,6 +216,16 @@ public final class XSLTC {
      */    
     public void setSourceLoader(SourceLoader loader) {
 	_loader = loader;
+    }
+
+    /**
+     * Set a flag indicating if templates are to be inlined or not. The
+     * default is to do inlining, but this causes problems when the
+     * stylesheets have a large number of templates (e.g. branch targets
+     * exceeding 64K or a length of a method exceeding 64K).
+     */
+    public void setTemplateInlining(boolean templateInlining) {
+	_templateInlining = templateInlining;
     }
 
     /**
@@ -313,14 +333,21 @@ public final class XSLTC {
 		_stylesheet.setSourceLoader(_loader);
 		_stylesheet.setSystemId(systemId);
 		_stylesheet.setParentStylesheet(null);
+		_stylesheet.setTemplateInlining(_templateInlining);
 		_parser.setCurrentStylesheet(_stylesheet);
+
 		// Create AST under the Stylesheet element (parse & type-check)
 		_parser.createAST(_stylesheet);
 	    }
 	    // Generate the bytecodes and output the translet class(es)
 	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
+		_stylesheet.setCallsNodeset(_callsNodeset);
 		_stylesheet.setMultiDocument(_multiDocument);
-		_stylesheet.translate();
+
+		// Class synchronization is needed for BCEL
+		synchronized (getClass()) {
+		    _stylesheet.translate();
+		}
 	    }
 	}
 	catch (Exception e) {
@@ -437,7 +464,6 @@ public final class XSLTC {
 	_parser.printWarnings();
     }
 
-
     /**
      * This method is called by the XPathParser when it encounters a call
      * to the document() function. Affects the DOM used by the translet.
@@ -448,6 +474,19 @@ public final class XSLTC {
 
     public boolean isMultiDocument() {
 	return _multiDocument;
+    }
+
+    /**
+     * This method is called by the XPathParser when it encounters a call
+     * to the nodeset() extension function. Implies multi document.
+     */
+    protected void setCallsNodeset(boolean flag) {
+	if (flag) setMultiDocument(flag);
+	_callsNodeset = flag;
+    }
+
+    public boolean callsNodeset() {
+	return _callsNodeset;
     }
 
     /**
@@ -655,7 +694,10 @@ public final class XSLTC {
 	try {
 	    switch (_outputType) {
 	    case FILE_OUTPUT:
-		clazz.dump(getOutputFile(clazz.getClassName()));
+		clazz.dump(
+		    new BufferedOutputStream(
+			new FileOutputStream(
+			    getOutputFile(clazz.getClassName()))));
 		break;
 	    case JAR_OUTPUT:
 		_classes.addElement(clazz);	 
@@ -687,7 +729,7 @@ public final class XSLTC {
 	// create the manifest
 	final Manifest manifest = new Manifest();
 	final java.util.jar.Attributes atrs = manifest.getMainAttributes();
-	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.0");
+	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.1");
 
 	final Map map = manifest.getEntries();
 	// create manifest

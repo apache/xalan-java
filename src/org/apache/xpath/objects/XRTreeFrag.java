@@ -66,6 +66,9 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.w3c.dom.NodeList;
 
+import org.apache.xml.dtm.Axis;
+import org.apache.xpath.axes.RTFIterator;
+
 /**
  * <meta name="usage" content="general"/>
  * This class represents an XPath result tree fragment object, and is capable of
@@ -187,6 +190,8 @@ public class XRTreeFrag extends XObject implements Cloneable
   {
     if(m_allowRelease)
     {
+    	// %REVIEW% Do we actually _need_ detach, now that DTM RTF
+    	// storage is managed as a stack?
       // See #destruct() for a comment about this next check.
       int ident = m_xctxt.getDTMIdentity(m_dtm);
       DTM foundDTM = m_xctxt.getDTM(ident);      
@@ -335,12 +340,16 @@ public class XRTreeFrag extends XObject implements Cloneable
 
   /**
    * Cast result object to a DTMIterator.
-   *
+   * dml - modified to return an RTFIterator for
+   * benefit of EXSLT object-type function in 
+   * {@link org.apache.xalan.lib.ExsltCommon}.
    * @return The document fragment as a DTMIterator
    */
   public DTMIterator asNodeIterator()
   {
-    return m_xctxt.createDTMIterator(m_dtmRoot);
+    DTMIterator iter = new RTFIterator(Axis.SELF);
+    iter.setRoot(m_dtmRoot, m_xctxt);    
+    return iter;
   }
 
   /**

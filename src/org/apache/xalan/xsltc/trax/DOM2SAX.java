@@ -69,6 +69,7 @@ import java.util.Hashtable;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.ErrorHandler;
@@ -88,15 +89,14 @@ import java.io.IOException;
 import org.w3c.dom.Entity;
 import org.w3c.dom.Notation;
 
-// import org.apache.xalan.xsltc.runtime.AttributeList;
-
-class DOM2SAX implements XMLReader, Locator {
+public class DOM2SAX implements XMLReader, Locator {
 
     private final static String EMPTYSTRING = "";
     private static final String XMLNS_PREFIX = "xmlns";
 
     private Node _dom = null;
     private ContentHandler _sax = null;
+    private LexicalHandler _lex = null;
     private Hashtable _nsPrefixes = new Hashtable();
 
     public DOM2SAX(Node root) {
@@ -110,8 +110,10 @@ class DOM2SAX implements XMLReader, Locator {
     public void setContentHandler(ContentHandler handler) throws 
 	NullPointerException 
     {
-	if (handler == null) throw new NullPointerException();
 	_sax = handler;
+	if (handler instanceof LexicalHandler) {
+	    _lex = (LexicalHandler) handler;
+	}
     }
 
     /**
@@ -184,6 +186,12 @@ class DOM2SAX implements XMLReader, Locator {
         parse(_dom);
     }
 
+    public void parse() throws IOException, SAXException {
+	if (_dom != null) {
+	    parse(_dom);
+	}
+    }
+
     /**
      * Traverse the DOM and generate SAX events for a handler. A 
      * startElement() event passes all attributes, including namespace 
@@ -195,8 +203,6 @@ class DOM2SAX implements XMLReader, Locator {
 
         switch (node.getNodeType()) {
 	case Node.ATTRIBUTE_NODE:         // handled by ELEMENT_NODE
-	case Node.COMMENT_NODE:           // should be handled!!!
-	case Node.CDATA_SECTION_NODE:
 	case Node.DOCUMENT_FRAGMENT_NODE:
 	case Node.DOCUMENT_TYPE_NODE :
 	case Node.ENTITY_NODE :
@@ -204,7 +210,26 @@ class DOM2SAX implements XMLReader, Locator {
 	case Node.NOTATION_NODE :
 	    // These node types are ignored!!!
 	    break;
+	case Node.CDATA_SECTION_NODE:
+	    final String cdata = node.getNodeValue();
+	    if (_lex != null) {
+		_lex.startCDATA();
+	        _sax.characters(cdata.toCharArray(), 0, cdata.length());
+		_lex.endCDATA();
+ 	    } 
+	    else {
+		// in the case where there is no lex handler, we still
+		// want the text of the cdate to make its way through.
+	        _sax.characters(cdata.toCharArray(), 0, cdata.length());
+	    }	
+	    break;
 
+	case Node.COMMENT_NODE:           // should be handled!!!
+	    if (_lex != null) {
+		final String value = node.getNodeValue();
+		_lex.comment(value.toCharArray(), 0, value.length());
+	    }
+	    break;
 	case Node.DOCUMENT_NODE:
 	    _sax.setDocumentLocator(this);
 
