@@ -55,7 +55,7 @@ For version information about the contents of xml-apis.jar, see the JAR manifest
                  the translet to transform the &xslt4jc-short; to-do list from XML into HTML.</p>
                  <p>Run this sample from the translets subdirectory with</p>
                  <p><code>java JAXPTransletOneTransformation</code></p>
-                 <p>View the result in todo-xsltc.html.</p>
+                 <p>View the result in todo.html.</p>
                  </s3><anchor name="xsltc2"/>
                  <s3 title="JAXPTransletMultipleTransformations">
                  <p>What it does: Uses the &xslt4jc-short; TransformerFactory to compile a translet and use
@@ -63,7 +63,7 @@ For version information about the contents of xml-apis.jar, see the JAR manifest
                  into HTML.</p>
                  <p>Run this sample from the translets subdirectory with</p>
                  <p><code>java JAXPTransletMultipleTransformations</code></p>
-                 <p>View the results in todo-xsltc.html and todo-xalan.html.</p>                
+                 <p>View the results in todo.html and todotoo.html.</p>                
                  </s3><anchor name="xsltcother"/>
                  <s3 title="Other &xslt4jc-short; samples">
                  <p>Other &xslt4jc-short; samples are located in the following samples subdirectories:</p>
