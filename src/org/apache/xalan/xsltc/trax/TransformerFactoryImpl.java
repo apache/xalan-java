@@ -71,6 +71,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Vector;
+import java.util.Hashtable;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
@@ -123,6 +124,24 @@ public class TransformerFactoryImpl
 	"Cannot access file or URL ";
     private static final String COMPILE_ERR =
 	"Could not compile stylesheet";
+
+    // This Hashtable is used to store parameters for locating
+    // <?xml-stylesheet ...?> processing instructions in XML documents.
+    private Hashtable _piParams = null;
+
+    // The above hashtable stores objects of this class only:
+    private class PIParamWrapper {
+	public String _media = null;
+	public String _title = null;
+	public String _charset = null;
+	
+	public PIParamWrapper(String media, String title, String charset) {
+	    _media = media;
+	    _title = title;
+	    _charset = charset;
+	}
+    }
+
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -261,10 +280,12 @@ public class TransformerFactoryImpl
     public Source getAssociatedStylesheet(Source source, String media,
 					  String title, String charset)
 	throws TransformerConfigurationException {
-	// The org.apache.xalan.xsltc.copiler.Parser will locate the first
-	// <?xml-stylesheeet ?> PI in the Source document and use that.
-	// For now we'll leave it at that.
-	return(source); // TODO - pass media/title/charset to Parser
+	// First create a hashtable that maps Source refs. to parameters
+	if (_piParams == null) _piParams = new Hashtable();
+	// Store the parameters for this Source in the Hashtable
+	_piParams.put(source, new PIParamWrapper(media, title, charset));
+	// Return the same Source - we'll locate the stylesheet later
+	return(source);
     }
 
     /**
@@ -283,8 +304,6 @@ public class TransformerFactoryImpl
 	    return _copyTransformer;
 	}
 
-	byte[][] bytecodes = null; // The translet classes go in here
-
 	XSLTC xsltc = new XSLTC();
 	xsltc.init();
 
@@ -293,7 +312,7 @@ public class TransformerFactoryImpl
 	ByteArrayInputStream bytestream = new ByteArrayInputStream(bytes);
 	InputSource input = new InputSource(bytestream);
 	input.setSystemId(_defaultTransletName);
-	bytecodes = xsltc.compile(_defaultTransletName, input);
+	byte[][] bytecodes = xsltc.compile(_defaultTransletName, input);
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
@@ -442,21 +461,26 @@ public class TransformerFactoryImpl
     public Templates newTemplates(Source source)
 	throws TransformerConfigurationException {
 
-	// Create a placeholder for the translet bytecodes
-	byte[][] bytecodes = null;
-
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined
-	if (_uriResolver != null)
-	    xsltc.setSourceLoader(this);
+	if (_uriResolver != null) xsltc.setSourceLoader(this);
+
+	// Pass parameters to the Parser to make sure it locates the correct
+	// <?xml-stylesheet ...?> PI in an XML input document
+	if ((_piParams != null) && (_piParams.get(source) != null)) {
+	    // Get the parameters for this Source object
+	    PIParamWrapper p = (PIParamWrapper)_piParams.get(source);
+	    // Pass them on to the compiler (which will pass then to the parser)
+	    if (p != null) 
+		xsltc.setPIParameters(p._media, p._title, p._charset);
+	}
 
 	// Compile the stylesheet
 	final InputSource input = getInputSource(xsltc, source);
-	bytecodes = xsltc.compile(null, input);
-
+	byte[][] bytecodes = xsltc.compile(null, input);
 	final String transletName = xsltc.getClassName();
 
 	// Pass compiler warnings to the error listener

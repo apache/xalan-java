@@ -419,6 +419,25 @@ public class Parser implements Constants, ContentHandler {
 	return _root;
     }
 
+    private String _PImedia = null;
+    private String _PItitle = null;
+    private String _PIcharset = null;
+
+    /**
+     * Set the parameters to use to locate the correct <?xml-stylesheet ...?>
+     * processing instruction in the case where the input document is an
+     * XML document with one or more references to a stylesheet.
+     * @param media The media attribute to be matched. May be null, in which
+     * case the prefered templates will be used (i.e. alternate = no).
+     * @param title The value of the title attribute to match. May be null.
+     * @param charset The value of the charset attribute to match. May be null.
+     */
+    protected void setPIParameters(String media, String title, String charset) {
+	_PImedia = media;
+	_PItitle = title;
+	_PIcharset = charset;
+    }
+
     /**
      * Extracts the DOM for the stylesheet. In the case of an embedded
      * stylesheet, it extracts the DOM subtree corresponding to the 
@@ -1075,22 +1094,45 @@ public class Parser implements Constants, ContentHandler {
 	}
     }
 
+    private String getTokenValue(String token) {
+	final int start = token.indexOf('"');
+	final int stop = token.lastIndexOf('"');
+	return token.substring(start+1, stop);
+    }
+
     /**
      * SAX2: Receive notification of a processing instruction.
      *       These require special handling for stylesheet PIs.
      */
     public void processingInstruction(String name, String value) {
+	// We only handle the <?xml-stylesheet ...?> PI
 	if ((_target == null) && (name.equals("xml-stylesheet"))) {
+
+	    String href = null;    // URI of stylesheet found
+	    String media = null;   // Media of stylesheet found
+	    String title = null;   // Title of stylesheet found
+	    String charset = null; // Charset of stylesheet found
+
+	    // Get the attributes from the processing instruction
 	    StringTokenizer tokens = new StringTokenizer(value);
 	    while (tokens.hasMoreElements()) {
 		String token = (String)tokens.nextElement();
-		if (token.startsWith("href=")) {
-		    _target = token.substring(5);
-		    final int start = _target.indexOf('"');
-		    final int stop = _target.lastIndexOf('"');
-		    _target = _target.substring(start+1,stop);
-		    return;
-		}
+		if (token.startsWith("href"))
+		    href = getTokenValue(token);
+		else if (token.startsWith("media"))
+		    media = getTokenValue(token);
+		else if (token.startsWith("title"))
+		    title = getTokenValue(token);
+		else if (token.startsWith("charset"))
+		    charset = getTokenValue(token);
+	    }
+
+	    // Set the target to this PI's href if the parameters are
+	    // null or match the corresponding attributes of this PI.
+	    if ( ((_PImedia == null) || (_PImedia.equals(media))) &&
+		 ((_PItitle == null) || (_PImedia.equals(title))) &&
+		 ((_PIcharset == null) || (_PImedia.equals(charset))) ) {
+		_target = href;
 	    }
 	}
     }

@@ -204,6 +204,19 @@ public final class XSLTC {
     public void setSourceLoader(SourceLoader loader) {
 	_loader = loader;
     }
+
+    /**
+     * Set the parameters to use to locate the correct <?xml-stylesheet ...?>
+     * processing instruction in the case where the input document to the
+     * compiler (and parser) is an XML document.
+     * @param media The media attribute to be matched. May be null, in which
+     * case the prefered templates will be used (i.e. alternate = no).
+     * @param title The value of the title attribute to match. May be null.
+     * @param charset The value of the charset attribute to match. May be null.
+     */
+    public void setPIParameters(String media, String title, String charset) {
+	_parser.setPIParameters(media, title, charset);
+    }
     
     /**
      * Compiles an XSL stylesheet pointed to by a URL
