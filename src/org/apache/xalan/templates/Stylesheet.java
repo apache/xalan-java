@@ -580,10 +580,11 @@ public class Stylesheet extends ElemTemplateElement
 
   /**
    * Get an "xsl:decimal-format" property.
-   * @see ElemDecimalFormat.
+   * 
+   * @see DecimalFormatProperties
    * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
    *
-   * NEEDSDOC @param name
+   * @param name The qualified name of the decimal format property.
    * @return null if not found, otherwise a DecimalFormatProperties
    * object, from which you can get a DecimalFormatSymbols object.
    */
