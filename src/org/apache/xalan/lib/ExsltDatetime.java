@@ -849,13 +849,11 @@ public class ExsltDatetime
     private static int getZoneStart (String datetime)
     {
       if (datetime.indexOf("Z") == datetime.length()-1)
-        return datetime.indexOf("Z");
-      else if (
-               (datetime.lastIndexOf("-") == datetime.length()-6 &&
-                datetime.charAt(datetime.length()-3) == ':')               
-                || 
-                (datetime.indexOf("+") == datetime.length() -6)
-              )
+        return datetime.length()-1;
+      else if (datetime.length() >=6 
+      		&& datetime.charAt(datetime.length()-3) == ':'
+      		&& (datetime.charAt(datetime.length()-6) == '+' 
+      		    || datetime.charAt(datetime.length()-6) == '-'))      		    
       {
         try
         {
