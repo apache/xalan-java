@@ -2233,20 +2233,11 @@ abstract public class ToStream extends SerializerBase
     {
         try
         {
-            if (m_needToOutputDocTypeDecl)
-            {
-                outputDocTypeDecl(m_elemContext.m_elementName, false);
-                m_needToOutputDocTypeDecl = false;
-            }
             final java.io.Writer writer = m_writer;
-            if (!m_inDoctype)
-                writer.write("]>");
-            else
-            {
-                writer.write('>');
+            if (!m_inDoctype){
+              writer.write("]>");
+              writer.write(m_lineSep, 0, m_lineSepLen);
             }
-
-            writer.write(m_lineSep, 0, m_lineSepLen);
         }
         catch (IOException e)
         {
