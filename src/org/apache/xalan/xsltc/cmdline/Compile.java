@@ -88,7 +88,7 @@ public final class Compile {
     private final static String USAGE_STRING =
 	"Usage:\n" + 
 	"   xsltc [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
-	"         [-p <package name>] [-x] [-s] [-u] <stylesheet>... \n\n"+
+	"         [-p <package name>] [-x] [-s] [-u] <stylesheet>|-i\n\n"+
 	"   Where <output> is the name to give the the generated translet.\n"+
 	"         <stylesheet> is one or more stylesheet file names, or if,\n"+
 	"         the -u options is specified, one or more stylesheet URLs.\n"+
@@ -96,8 +96,9 @@ public final class Compile {
 	"         <jarfile> is the name of a JAR-file to put all generated classes in.\n"+
 	"         <package-name> is a package name to prefix all class names with.\n\n"+
 	"   Notes:\n"+
+	"         The -i options forces the compiler to read the stylsheet from stdin\n"+
 	"         The -o option is ignored when multiple stylesheets are specified.\n"+
-	"         The -x option switched on debug messages."+
+	"         The -x option switched on debug messages.\n"+
 	"         The -s option disables calling System.exit.";
     
     public static void printUsage() {
@@ -115,8 +116,10 @@ public final class Compile {
     public static void main(String[] args) {
 	try {
 	    boolean inputIsURL = false;
+	    boolean useStdIn = false;
+	    boolean classNameSet = false;
 
-	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhs");
+	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhsi");
 	    if (args.length < 1) printUsage();
 
 	    final XSLTC xsltc = new XSLTC();
@@ -125,8 +128,12 @@ public final class Compile {
 	    int c;
 	    while ((c = getopt.getNextOption()) != -1) {
 		switch(c) {
+		case 'i':
+		    useStdIn = true;
+		    break;
 		case 'o':
 		    xsltc.setClassName(getopt.getOptionArg());
+		    classNameSet = true;
 		    break;
 		case 'd':
 		    xsltc.setDestDirectory(getopt.getOptionArg());
@@ -153,21 +160,33 @@ public final class Compile {
 		}
 	    }
 
-	    // Generate a vector containg URLs for all stylesheets specified
-	    final String[] stylesheetNames = getopt.getCmdArgs();
-	    final Vector   stylesheetVector = new Vector();
-	    for (int i = 0; i < stylesheetNames.length; i++) {
-		final String name = stylesheetNames[i];
-		URL url;
-		if (inputIsURL)
-		    url = new URL(name);
-		else
-		    url = (new File(name)).toURL();
-		stylesheetVector.addElement(url);
+	    boolean compileOK;
+
+	    if (useStdIn) {
+		if (!classNameSet) {
+		    System.err.println("The -i option must be used with the -o option.");
+		    if (_allowExit) System.exit(-1);
+		}
+		compileOK = xsltc.compile(System.in, xsltc.getClassName());
+	    }
+	    else {
+		// Generate a vector containg URLs for all stylesheets specified
+		final String[] stylesheetNames = getopt.getCmdArgs();
+		final Vector   stylesheetVector = new Vector();
+		for (int i = 0; i < stylesheetNames.length; i++) {
+		    final String name = stylesheetNames[i];
+		    URL url;
+		    if (inputIsURL)
+			url = new URL(name);
+		    else
+			url = (new File(name)).toURL();
+		    stylesheetVector.addElement(url);
+		}
+		compileOK = xsltc.compile(stylesheetVector);
 	    }
 
 	    // Compile the stylesheet and output class/jar file(s)
-	    if (xsltc.compile(stylesheetVector)) {
+	    if (compileOK) {
 		xsltc.printWarnings();
 		if (xsltc.getJarFileName() != null) xsltc.outputToJar();
 		if (_allowExit) System.exit(0);
