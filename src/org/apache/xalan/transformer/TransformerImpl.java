@@ -2927,7 +2927,10 @@ public class TransformerImpl extends Transformer
           Exception e = this.getExceptionThrown();
 
           if (null != e)
+          {
+            e.printStackTrace();
             throw new org.xml.sax.SAXException(e);
+          }
         }
 
         this.setTransformThread(null);
@@ -3081,6 +3084,12 @@ public class TransformerImpl extends Transformer
       try
       {
         m_isTransformDone = false;
+        
+        if(m_inputContentHandler instanceof TransformerHandlerImpl)
+        {
+          TransformerHandlerImpl thi = (TransformerHandlerImpl)m_inputContentHandler;
+          thi.waitForInitialEvents();
+        }
 
         transformNode(m_doc);
         
