@@ -146,10 +146,10 @@ final class UnsupportedElement extends SyntaxTreeNode {
      * Run type check on the fallback element (if any).
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_fallback == null) {
-	    throw new TypeCheckError(_message);
-	}
-	return(_fallback.typeCheck(stable));
+		if (_fallback != null) {
+			_fallback.typeCheck(stable);
+		}
+		return Type.Void;
     }
 
     /**

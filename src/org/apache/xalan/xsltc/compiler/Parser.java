@@ -975,9 +975,11 @@ public class Parser implements Constants, ContentHandler {
 		if (uri.equals(XSLT_URI)) {
 		    node = new UnsupportedElement(uri, prefix, local);
 		    UnsupportedElement element = (UnsupportedElement)node;
-		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
+		    if (versionIsOne) {
+		    	ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
 						_locator.getLineNumber(),local);
-		    element.setErrorMessage(msg);
+		    	element.setErrorMessage(msg);
+		    }
 		}
 		// Check if this is an XSLTC extension element
 		else if (uri.equals(TRANSLET_URI)) {
