@@ -320,7 +320,7 @@ public class Process
         }
         else if ("-FLAVOR".equalsIgnoreCase(argv[i]))
         {
-          if (i + 2 < argv.length)
+          if (i + 1 < argv.length)
           {
             flavor = argv[++i];
           }
@@ -441,10 +441,24 @@ public class Process
         {
           dumpWriter = new PrintWriter(new FileWriter(dumpFileName));
         }
-
-        Templates stylesheet =
-          (null != xslFileName)
-          ? tfactory.newTemplates(new StreamSource(xslFileName)) : null;
+        Templates stylesheet = null;
+        if(null != xslFileName)
+        {
+          if(flavor.equals("d2d"))
+          {
+            // Parse in the xml data into a DOM
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            dfactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+            Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
+            stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
+          }
+          else
+          { 
+            stylesheet = tfactory.newTemplates(new StreamSource(xslFileName));
+          }
+        }
+          
         PrintWriter resultWriter;
         OutputStream outputStream = (null != outFileName)
                                     ? new FileOutputStream(outFileName)
@@ -515,11 +529,13 @@ public class Process
               DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
               Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
               Document outNode = docBuilder.newDocument();
-              transformer.transform(new DOMSource(xmlDoc), 
+              transformer.transform(new DOMSource(xmlDoc, inFileName), 
                                     new DOMResult(outNode));
                                     
               // Now serialize output to disk with identity transformer
               Transformer serializer = stf.newTransformer();
+              Properties serializationProps = stylesheet.getOutputProperties();
+              serializer.setOutputProperties(serializationProps);
               serializer.transform(new DOMSource(outNode), 
                                    new StreamResult(outputStream));
            }
