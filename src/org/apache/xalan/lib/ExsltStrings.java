@@ -109,23 +109,20 @@ public class ExsltStrings extends ExsltBase
     if (targetStr.length() >= paddingStr.length())
       return targetStr.substring(0, paddingStr.length());
     
-    StringBuffer sb = new StringBuffer(paddingStr);
     if (type.equals("right"))
     {
-      sb.replace(paddingStr.length() - targetStr.length(), paddingStr.length(), targetStr);
+      return paddingStr.substring(0, paddingStr.length() - targetStr.length()) + targetStr;
     }
     else if (type.equals("center"))
     {
       int startIndex = (paddingStr.length() - targetStr.length()) / 2;
-      sb.replace(startIndex, startIndex + targetStr.length(), targetStr);
+      return paddingStr.substring(0, startIndex) + targetStr + paddingStr.substring(startIndex + targetStr.length());
     }
     // Default is left
     else
     {
-      sb.replace(0, targetStr.length(), targetStr);
-    }
-    
-    return sb.toString();
+      return targetStr + paddingStr.substring(paddingStr.length() - targetStr.length());
+    }    
   }
 
   /**

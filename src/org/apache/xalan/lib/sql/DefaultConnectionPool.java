@@ -64,6 +64,7 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
+import java.lang.reflect.Method;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -476,9 +477,22 @@ public class DefaultConnectionPool implements ConnectionPool
 
      try
      {
-// We need to implement the context classloader
-//       Class.forName( m_driver );
-        Class cls = Thread.currentThread().getContextClassLoader().loadClass(m_driver);
+        // We need to implement the context classloader
+        Class cls = null;
+        try 
+        {
+          Method m = Thread.class.getMethod("getContextClassLoader", null);
+          ClassLoader classLoader = (ClassLoader) m.invoke(Thread.currentThread(), null);
+          cls = classLoader.loadClass(m_driver);
+        } 
+        catch (Exception e) 
+        {
+          cls = Class.forName(m_driver);  
+        }
+        
+        if (cls == null)
+          cls = Class.forName(m_driver);
+
         // We have also had problems with drivers unloading
         // load an instance that will get freed with the class.
         m_Driver = cls.newInstance();

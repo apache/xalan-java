@@ -108,7 +108,7 @@ public abstract class ExsltBase
     String str = toString(n);
     try
     {
-      d = Double.parseDouble(str);
+      d = Double.valueOf(str).doubleValue();
     }
     catch (NumberFormatException e)
     {
