@@ -445,10 +445,14 @@ public final class TransformerImpl extends Transformer
                  org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
 
 		InputSource input;
-		if (streamInput != null)
+		if (streamInput != null) {
 		    input = new InputSource(streamInput);
-		else if (streamReader != null)
+		    input.setSystemId(_sourceSystemId);
+		}
+		else if (streamReader != null) {
 		    input = new InputSource(streamReader);
+		    input.setSystemId(_sourceSystemId);
+		}
 		else if (_sourceSystemId != null)
 		    input = new InputSource(_sourceSystemId);
 		else {
