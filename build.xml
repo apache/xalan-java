@@ -172,6 +172,9 @@ Copyright:
     <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${xalanjar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
+    <javac srcdir="${samples.dir}/SimpleSAX2SAX" classpath="${java.class.path}:${xalanjar}" 
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>           
     <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${xalanjar}"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
@@ -208,7 +211,7 @@ Copyright:
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
   <target name="docs" depends="prepare.docs">
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalanjar}" 
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalan1jar}" 
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
   </target>
   
@@ -222,8 +225,8 @@ Copyright:
          doclet="xalanjdoc.Standard"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
-         packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,serialize,serialize.helpers,trax"
-         group="Xalan_Core org.apache.xalan*,XPath org.apache.xpath*,TRaX trax*,Serializers serialize*"
+         packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.lib.sql,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xpath,org.apache.xalan.xpath.xml,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,org.w3c.xslt,serialize,serialize.helpers,trax"
+         group="TrAX trax,Xalan_Core org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer,XPath org.apache.xpath*:org.w3c.xslt,Xalan_Other org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.lib*:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils, Serializers serialize*, Xalan_1_Compatability org.apache.xalan.xslt:org.apache.xalan.xpath*"
          destdir="${build.apidocs}"
          author="true"
          version="true"
