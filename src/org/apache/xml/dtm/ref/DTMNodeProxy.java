@@ -75,7 +75,7 @@ import org.apache.xml.dtm.Axis;
  * @see org.w3c.dom
  */
 public class DTMNodeProxy
-        implements Node, Document, Text, Element, Attr,
+  implements Node, Document, Text, Element, Attr,
                    ProcessingInstruction, Comment, DocumentFragment
 {
 
@@ -84,6 +84,9 @@ public class DTMNodeProxy
 
   /** The DTM node handle. */
   int node;
+        
+  /** The DOMImplementation object */
+  static final DOMImplementation implementation=new DTMNodeProxyImplementation();
 
   /**
    * Create a DTMNodeProxy Node representing a specific Node in a DTM
@@ -252,30 +255,42 @@ public class DTMNodeProxy
     return dtm.getNamespaceURI(node);
   }
 
-  /**
+  /** Ask whether we support a given DOM feature.
+   * In fact, we do not _fully_ support any DOM feature -- we're a
+   * read-only subset -- so arguably we should always return false.
+   * Or we could say that we support DOM Core Level 2 but all nodes
+   * are read-only. Unclear which answer is least misleading.
+   * 
+   * NON-DOM method. This was present in early drafts of DOM Level 2,
+   * but was renamed isSupported. It's present here only because it's
+   * cheap, harmless, and might help some poor fool who is still trying
+   * to use an early Working Draft of the DOM.
    *
    * @param feature
    * @param version
    *
-   * @return
-   * @see org.w3c.dom.Node as of DOM Level 2
+   * @return false
    */
   public final boolean supports(String feature, String version)
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    return implementation.hasFeature(feature,version);
+    //throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
 
-  /**
+  /** Ask whether we support a given DOM feature.
+   * In fact, we do not _fully_ support any DOM feature -- we're a
+   * read-only subset -- so arguably we should always return false.
    *
    * @param feature
    * @param version
    *
-   * @return
+   * @return false
    * @see org.w3c.dom.Node as of DOM Level 2
    */
   public final boolean isSupported(String feature, String version)
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    return implementation.hasFeature(feature,version);
+    // throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
 
   /**
@@ -287,13 +302,6 @@ public class DTMNodeProxy
    */
   public final String getNodeValue() throws DOMException
   {
-
-//    // ***** ASSUMPTION: ATTRIBUTES HAVE SINGLE TEXT-NODE CHILD.
-//    // (SIMILAR ASSUMPTION CURRENTLY MADE IN DTM; BE SURE TO
-//    // REVISIT THIS IF THAT CHANGES!)
-//    if (getNodeType() == Node.ATTRIBUTE_NODE)
-//      return dtm.getNodeValue(node + 1);
-
     return dtm.getNodeValue(node);
   }
 
@@ -332,7 +340,7 @@ public class DTMNodeProxy
 
     int newnode = dtm.getParent(node);
 
-    return (newnode == -1) ? null : dtm.getNode(newnode);
+    return (newnode == DTM.NULL) ? null : dtm.getNode(newnode);
   }
 
   /**
@@ -345,7 +353,7 @@ public class DTMNodeProxy
 
     int newnode = dtm.getParent(node);
 
-    return (newnode == -1) ? null : dtm.getNode(newnode);
+    return (newnode == DTM.NULL) ? null : dtm.getNode(newnode);
   }
 
   /**
@@ -374,7 +382,7 @@ public class DTMNodeProxy
 
     int newnode = dtm.getFirstChild(node);
 
-    return (newnode == -1) ? null : dtm.getNode(newnode);
+    return (newnode == DTM.NULL) ? null : dtm.getNode(newnode);
   }
 
   /**
@@ -387,7 +395,7 @@ public class DTMNodeProxy
 
     int newnode = dtm.getLastChild(node);
 
-    return (newnode == -1) ? null : dtm.getNode(newnode);
+    return (newnode == DTM.NULL) ? null : dtm.getNode(newnode);
   }
 
   /**
@@ -400,7 +408,7 @@ public class DTMNodeProxy
 
     int newnode = dtm.getPreviousSibling(node);
 
-    return (newnode == -1) ? null : dtm.getNode(newnode);
+    return (newnode == DTM.NULL) ? null : dtm.getNode(newnode);
   }
 
   /**
@@ -417,7 +425,7 @@ public class DTMNodeProxy
 
     int newnode = dtm.getNextSibling(node);
 
-    return (newnode == -1) ? null : dtm.getNode(newnode);
+    return (newnode == DTM.NULL) ? null : dtm.getNode(newnode);
   }
 
   // DTMNamedNodeMap m_attrs;
@@ -443,10 +451,7 @@ public class DTMNodeProxy
    */
   public boolean hasAttribute(String name)
   {
-
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-
-    // return false;
+    return DTM.NULL != dtm.getAttributeNode(node,null,name);
   }
 
   /**
@@ -460,10 +465,7 @@ public class DTMNodeProxy
    */
   public boolean hasAttributeNS(String name, String x)
   {
-
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-
-    // return false;
+    return DTM.NULL != dtm.getAttributeNode(node,x,name);
   }
 
   /**
@@ -487,7 +489,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Node -- DTMNodeProxy is read-only
    */
   public final Node insertBefore(Node newChild, Node refChild)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR);
   }
@@ -503,7 +505,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Node -- DTMNodeProxy is read-only
    */
   public final Node replaceChild(Node newChild, Node oldChild)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR);
   }
@@ -543,7 +545,7 @@ public class DTMNodeProxy
    */
   public final boolean hasChildNodes()
   {
-    return (-1 != dtm.getFirstChild(node));
+    return (DTM.NULL != dtm.getFirstChild(node));
   }
 
   /**
@@ -575,7 +577,7 @@ public class DTMNodeProxy
    */
   public final DOMImplementation getImplementation()
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    return implementation;
   }
 
   /**
@@ -646,7 +648,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Document
    */
   public final CDATASection createCDATASection(String data)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -662,7 +664,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Document
    */
   public final ProcessingInstruction createProcessingInstruction(
-          String target, String data) throws DOMException
+                                                                 String target, String data) throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -691,7 +693,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Document
    */
   public final EntityReference createEntityReference(String name)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -719,7 +721,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Document as of DOM Level 2 -- DTMNodeProxy is read-only
    */
   public final Node importNode(Node importedNode, boolean deep)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR);
   }
@@ -735,7 +737,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Document as of DOM Level 2
    */
   public final Element createElementNS(
-          String namespaceURI, String qualifiedName) throws DOMException
+                                       String namespaceURI, String qualifiedName) throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -751,7 +753,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Document as of DOM Level 2
    */
   public final Attr createAttributeNS(
-          String namespaceURI, String qualifiedName) throws DOMException
+                                      String namespaceURI, String qualifiedName) throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -765,7 +767,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Document as of DOM Level 2
    */
   public final NodeList getElementsByTagNameNS(String namespaceURI,
-          String localName)
+                                               String localName)
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -827,8 +829,7 @@ public class DTMNodeProxy
    */
   public final int getLength()
   {
-
-    // %%FIX: This should do something smarter?
+    // %OPT% This should do something smarter?
     return dtm.getNodeValue(node).length();
   }
 
@@ -844,7 +845,7 @@ public class DTMNodeProxy
    */
   public final String substringData(int offset, int count) throws DOMException
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    return getData().substring(offset,offset+count);
   }
 
   /**
@@ -895,7 +896,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.CharacterData
    */
   public final void replaceData(int offset, int count, String arg)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -934,7 +935,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Element
    */
   public final void setAttribute(String name, String value)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -1000,7 +1001,7 @@ public class DTMNodeProxy
    */
   public boolean hasAttributes()
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    return DTM.NULL != dtm.getFirstAttribute(node);
   }
 
   /** @see org.w3c.dom.Element */
@@ -1019,7 +1020,9 @@ public class DTMNodeProxy
    */
   public final String getAttributeNS(String namespaceURI, String localName)
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    DTMNamedNodeMap  map = new DTMNamedNodeMap(dtm, node);
+    Node node = map.getNamedItemNS(namespaceURI,localName);
+    return (null == node) ? null : node.getNodeValue();
   }
 
   /**
@@ -1032,8 +1035,8 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Element
    */
   public final void setAttributeNS(
-          String namespaceURI, String qualifiedName, String value)
-            throws DOMException
+                                   String namespaceURI, String qualifiedName, String value)
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -1047,7 +1050,7 @@ public class DTMNodeProxy
    * @see org.w3c.dom.Element
    */
   public final void removeAttributeNS(String namespaceURI, String localName)
-          throws DOMException
+    throws DOMException
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
@@ -1096,8 +1099,10 @@ public class DTMNodeProxy
    */
   public final boolean getSpecified()
   {
-
-    // %%FIX
+    // We really don't know which attributes might have come from the
+    // source document versus from the DTD. Treat them all as having
+    // been provided by the user.
+    // %REVIEW% if/when we become aware of DTDs/schemae.
     return true;
   }
 
@@ -1134,7 +1139,7 @@ public class DTMNodeProxy
     // In XPath and DTM data models, unlike DOM, an Attr's parent is its
     // owner element.
     int newnode = dtm.getParent(node);
-    return (newnode == -1) ? null : (Element)(dtm.getNode(newnode));
+    return (newnode == DTM.NULL) ? null : (Element)(dtm.getNode(newnode));
   }
 
   /**
@@ -1291,5 +1296,38 @@ public class DTMNodeProxy
   public void setVersion(String version)
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+        
+        
+  /** Inner class to support getDOMImplementation.
+   */
+  static class DTMNodeProxyImplementation implements DOMImplementation
+  {
+    public DocumentType createDocumentType(String qualifiedName,String publicId, String systemId)
+    {
+      throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    }
+    public Document createDocument(String namespaceURI,String qualfiedName,DocumentType doctype)                        
+    {
+      // Could create a DTM... but why, when it'd have to be permanantly empty?
+      throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);        
+    }
+    /** Ask whether we support a given DOM feature.
+     * 
+     * In fact, we do not _fully_ support any DOM feature -- we're a
+     * read-only subset -- so arguably we should always return false.
+     * On the other hand, it may be more practically useful to return
+     * true and simply treat the whole DOM as read-only, failing on the
+     * methods we can't support. I'm not sure which would be more useful
+     * to the caller.
+     */
+    public boolean hasFeature(String feature,String version)
+    {
+      if( ("core".equals(feature) || "xml".equals(feature)) && 
+          ("1.0".equals(version) || "2.0".equals(version))
+          )
+        return true;
+      return false;
+    }
   }
 }
