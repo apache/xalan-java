@@ -78,6 +78,8 @@ Copyright:
   <property name="jlex.jar" value="${bin.dir}/${jlex.jar.name}"/>
   <property name="runtime.jar.name" value="runtime.jar"/>
   <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
+  <property name="regexp.jar.name" value="regexp.jar"/>
+  <property name="regexp.jar" value="${bin.dir}/${regexp.jar.name}"/>
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
@@ -845,6 +847,7 @@ Copyright:
       <include name="${dist.file}/bin/${java_cup.jar.name}"/>
       <include name="${dist.file}/bin/${jlex.jar.name}"/>
       <include name="${dist.file}/bin/${runtime.jar.name}"/>
+      <include name="${dist.file}/bin/${regexp.jar.name}"/>
     </patternset>
 
     <tar tarfile="${build.dir}/${dist.file}-bin.tar" >
