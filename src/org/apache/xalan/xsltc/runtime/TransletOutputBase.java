@@ -64,7 +64,9 @@
 
 package org.apache.xalan.xsltc.runtime;
 
+
 import org.apache.xalan.xsltc.*;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public class TransletOutputBase implements TransletOutputHandler {
     public void startDocument() throws TransletException {}
@@ -80,12 +82,12 @@ public class TransletOutputBase implements TransletOutputHandler {
     public void comment(String comment) throws TransletException {}
     public void processingInstruction(String target, String data)
 	throws TransletException {}
+    public boolean setEscaping(boolean escape) 
+	throws TransletException { return true; }
+    public String expandQName(String withPrefix) { return(withPrefix); }
+
     public void setType(int type) {}
     public void setIndent(boolean indent) {}
-    public void omitXmlDecl(boolean value) {}
-    public void insertCdataElement(String elementName) {}
-    public boolean setEscaping(boolean escape) throws TransletException {
-        return true;
-    }
-    public String expandQName(String withPrefix) { return(withPrefix); }
+    public void omitHeader(boolean value) {}
+    public void setCdataElements(Hashtable elements) {}
 }

@@ -170,13 +170,12 @@ final public class Transform {
 	    }
 
 	    // Transform the document
-	    String encoding = translet.getOutputEncoding();
-	    if (encoding == null) encoding = "UTF-8";
+	    String encoding = _translet._encoding;
 
 	    //TextOutput textOutput = new TextOutput(System.out, encoding);
 	    DefaultSAXOutputHandler saxHandler = new 
 		DefaultSAXOutputHandler(System.out, encoding);
-	    TextOutput textOutput = new TextOutput(saxHandler, encoding);
+	    TextOutput textOutput = new TextOutput(saxHandler);
 	    translet.transform(dom, textOutput);
 
 	    if (_debug) {

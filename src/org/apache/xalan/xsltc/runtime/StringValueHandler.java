@@ -67,6 +67,7 @@ package org.apache.xalan.xsltc.runtime;
 import org.apache.xalan.xsltc.*;
 
 public final class StringValueHandler extends TransletOutputBase {
+
     private char[] _buffer = new char[32];
     private int _free = 0;
 	

@@ -79,6 +79,19 @@ import org.apache.xalan.xsltc.dom.DTDMonitor;
 
 public abstract class AbstractTranslet implements Translet {
 
+    // These attributes are extracted from the xsl:output element. They also
+    // appear as fields (with the same type, only public) in Output.java
+    public String  _version = "1.0";
+    public String  _method = null;
+    public String  _encoding = "utf-8";
+    public boolean _omitHeader = false;
+    public String  _standalone = null;
+    public String  _doctypePublic = null;
+    public String  _doctypeSystem = null;
+    public boolean _indent = false;
+    public String  _mediaType = null;
+    public Hashtable _cdata = null;
+
     // DOM/translet handshaking - the arrays are set by the compiled translet
     protected String[] namesArray;
     protected String[] namespaceArray;
@@ -498,31 +511,75 @@ public abstract class AbstractTranslet implements Translet {
 	handler.characters(string.toCharArray(), 0, length);
     }
 
-    // Holds output encoding - set by code compiled by compiler/Output
-    protected String _encoding = "utf-8";
+    /**
+     * Add's a name of an element whose text contents should be output as CDATA
+     */
+    public void addCdataElement(String name) {
+	if (_cdata == null) _cdata = new Hashtable();
+	_cdata.put(name, name);
+    }
 
     /**
-     * Pass the output encoding setting to the output handler.
+     * Transfer the output settings to the output post-processor
      */
-    public String getOutputEncoding() {
-      	return _encoding; 
-    } 
+    protected void transferOutputSettings(TransletOutputHandler output) {
 
+	// It is an error if this method is called with anything else than
+	// the translet post-processor (TextOutput)
+	if (!(output instanceof TextOutput)) {
+	    System.err.println("output is "+output);
+	    return;
+	}
+
+	TextOutput handler = (TextOutput)output;
+
+	// Transfer the output method setting
+	if (_method != null) {
+	    // Transfer all settings relevant to XML output
+	    if (_method.equals("xml")) {
+		handler.setType(TextOutput.XML);
+		handler.setCdataElements(_cdata);
+		if (_version != null) handler.setVersion(_version);
+		if (_standalone != null) handler.setStandalone(_standalone);
+		if (_omitHeader) handler.omitHeader(true);
+		if (_indent) handler.setIndent(_indent);
+		if ((_doctypePublic != null) && (_doctypeSystem != null))
+		    handler.setDoctype(_doctypeSystem, _doctypePublic);
+	    }
+	    // Transfer all output settings relevant to HTML output
+	    else if (_method.equals("html")) {
+		handler.setType(TextOutput.HTML);
+		if (_indent)
+		    handler.setIndent(_indent);
+		else
+		    handler.setIndent(true);
+		if ((_doctypePublic != null) && (_doctypeSystem != null))
+		    handler.setDoctype(_doctypeSystem, _doctypePublic);
+		if (_mediaType != null) handler.setMediaType(_mediaType);
+	    }
+	    else if (_method.equals("text")) {
+		handler.setType(TextOutput.TEXT);
+	    }
+	    else {
+		handler.setType(TextOutput.QNAME);
+	    }
+	}
+	else {
+	    handler.setCdataElements(_cdata);
+	    if (_version != null) handler.setVersion(_version);
+	    if (_standalone != null) handler.setStandalone(_standalone);
+	    if (_omitHeader) handler.omitHeader(true);
+	    if (_indent) handler.setIndent(_indent);
+	    if ((_doctypePublic != null) && (_doctypeSystem != null))
+		handler.setDoctype(_doctypeSystem, _doctypePublic);
+	}
+    }
+
+    /*
     // Holds the translet's name - God only knows what it is used for
     private String _transletName;
-
-    /**
-     * Set the translet's name (default is class name)
-     */
-    public void setTransletName(String name) {
-	_transletName = name;
-    }
-
-    /**
-     * Get the translet's name (default is class name)
-     */
-    public String getTransletName() {
-	return _transletName;
-    }
+    public void setTransletName(String name) { _transletName = name; }
+    public String getTransletName() { return _transletName; }
+    */
 
 }

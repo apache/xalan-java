@@ -73,23 +73,26 @@ import org.xml.sax.SAXException;
 
 public final class TextOutput implements TransletOutputHandler {
 
-    public static final int UNKNOWN = -1;
+    // These are the various output types we handle
+    public static final int UNKNOWN = -1; // determine type from output contents
     public static final int TEXT    = 0;
     public static final int XML     = 1;
     public static final int HTML    = 2;
-    public static final int QNAME   = 3;
+    public static final int QNAME   = 3;  // no special handling
 
-    private int	      _outputType;
+    // These parameters are set by the <xsl:output> element, or by the
+    // get/setOutputProperty() methods in TrAX
+    private int	   _outputType = UNKNOWN;
+    private String _encoding;
+    private String _mediaType = "text/html";
 
     private boolean   _escapeChars = false;
     private boolean   _startTagOpen = false;
     private boolean   _cdataTagOpen = false;
     private boolean   _headTagOpen = false;
 
-    // Contains commonly used attributes (for speeding up output)
-    private Hashtable _attributeTemplates = new Hashtable();
     // Contains all elements that should be output as CDATA sections
-    private Hashtable _cdataElements = new Hashtable();
+    private Hashtable _cdata = null;
 
     private static final String XML_PREFIX = "xml";
 
@@ -117,7 +120,6 @@ public final class TextOutput implements TransletOutputHandler {
 
     private AttributeList _attributes = new AttributeList();
     private String        _elementName = null;
-    private String        _header;
 
     private Hashtable _namespaces;
     private Stack     _nodeStack;
@@ -127,12 +129,14 @@ public final class TextOutput implements TransletOutputHandler {
     // Holds the current tree depth (see startElement() and endElement()).
     private int _depth = 0;
 
-    private String _encoding;
-
+    // Reference to the SAX2 handler that consumes this handler's output
     private ContentHandler _saxHandler;
 
     /**
-     * Constructor
+     * Creates a new translet output post-processor
+     *
+     * @param handler A SAX2 handler to consume the generated SAX events 
+     * @throws IOException
      */
     public TextOutput(ContentHandler handler) throws IOException {
         _saxHandler = handler;
@@ -140,7 +144,11 @@ public final class TextOutput implements TransletOutputHandler {
     }
 
     /**
-     * Constructor
+     * Creates a new translet output post-processor
+     *
+     * @param handler A SAX2 handler to consume the generated SAX events 
+     * @param encoding The default encoding to use (set in <xsl:output>)
+     * @throws IOException
      */
     public TextOutput(ContentHandler handler, String encoding)
 	throws IOException {
@@ -153,36 +161,26 @@ public final class TextOutput implements TransletOutputHandler {
      * Initialise global variables
      */
     private void init() throws IOException {
+	// Reset all output configuration from <xsl:output>
+	_outputType = UNKNOWN;
+	_encoding = "utf-8";
+	_mediaType = "text/html";
+
+	// Reset all internal variables and tables
 	_escapeChars  = false;
 	_startTagOpen = false;
 	_cdataTagOpen = false;
-	_outputType   = UNKNOWN;
-	_header       = null;
-	_encoding     = "utf-8";
+	_qnameStack = new Stack();
 
-	_qnameStack   = new Stack();
-
-	// Empty all our hashtables
-	_attributeTemplates.clear();
-	_cdataElements.clear();
+	// Reset our internal namespace handling
 	initNamespaces();
     }
 
     /**
-     * Set the output type. The type must be wither TEXT, XML or HTML.
+     * This method is used internally when the output type was initially
+     * undefined and the type is set (by this handler) based on the contents
+     * of the output. Set the default values for some output paramters.
      */
-    public void setType(int type)  {
-	try {
-	    _outputType = type;
-	    if (_encoding == null) _encoding = "utf-8";
-	    if (_saxHandler instanceof DefaultSAXOutputHandler)
-		((DefaultSAXOutputHandler)_saxHandler).setOutputType(type);
-	}
-	catch (SAXException e) {
-
-	}
-    }
-
     private void setTypeInternal(int type) {
 	if (type == XML) {
 	    _escapeChars = true;
@@ -198,38 +196,15 @@ public final class TextOutput implements TransletOutputHandler {
      * Emit header through the SAX handler
      */
     private void emitHeader() throws SAXException {
-	// Make sure the _encoding string contains something
-	if ((_encoding == null) || (_encoding == EMPTYSTRING))
-	    _encoding = "utf-8";
-
 	// Output HTML header as META element
 	if (_outputType == HTML) {
 	    AttributeList attrs = new AttributeList();
-	    attrs.add("http-equiv","Content-Type");
-	    attrs.add("content","text/html; charset="+_encoding);
+	    attrs.add("http-equiv", "Content-Type");
+	    attrs.add("content", _mediaType+"; charset="+_encoding);
 	    _saxHandler.startElement(null, null, "meta", attrs);
 	    _saxHandler.endElement(null, null, "meta");
 	}
     }
-
-    /**
-     * Turns output indentation on/off. Should only be set to on
-     * if the output type is XML or HTML.
-     */
-    public void setIndent(boolean indent) {
-	if (_saxHandler instanceof DefaultSAXOutputHandler) {
-            ((DefaultSAXOutputHandler)_saxHandler).setIndent(indent);
-	}
-    } 
-
-    /**
-     * Directive to turn xml header declaration  on/off. 
-     */
-    public void omitXmlDecl(boolean value) {
-	if (_saxHandler instanceof DefaultSAXOutputHandler) {
-            ((DefaultSAXOutputHandler)_saxHandler).omitXmlDecl(value);
-	}
-    } 
 
     /**
      * This method is called when all the data needed for a call to the
@@ -240,7 +215,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    _startTagOpen = false;
 	    
 	    // Output current element, either as element or CDATA section
-	    if (_cdataElements.containsKey(_elementName)) {
+	    if ((_cdata != null) && (_cdata.containsKey(_elementName))) {
 		characters(BEGCDATA);
 		_cdataTagOpen = true;
 	    }
@@ -298,44 +273,14 @@ public final class TextOutput implements TransletOutputHandler {
     }
 
     /**
-     * Output document stream flush
-     */ 
-    /*
-    public void flush() throws IOException {
-	//_saxHandler.flush();
-    }
-    */
-
-    /**
-     * Output document stream close
-     */ 
-    /*
-    public void close() throws IOException {
-	//_saxHandler.close();
-    }
-    */
-
-    /**
-     * The <xsl:output method="xml"/> instruction can specify that certain
-     * XML elements should be output as CDATA sections. This methods allows
-     * the translet to insert these elements into a hashtable of strings.
-     * Every output element is looked up in this hashtable before it is
-     * output.
-     */ 
-    public void insertCdataElement(String elementName) {
-	_cdataElements.put(elementName,EMPTYSTRING);
-    }
-
-    /**
      * Starts the output document. Outputs the document header if the
      * output type is set to XML.
      */
     public void startDocument() throws TransletException {
         try {
             _saxHandler.startDocument();
-            if (_outputType == XML) {
-                _escapeChars = true;
-            }
+	    // Output escaping is _ALWAYS_ enabled for XML output
+            if (_outputType == XML) _escapeChars = true;
         } catch (SAXException e) {
             throw new TransletException(e);
         }
@@ -387,14 +332,8 @@ public final class TextOutput implements TransletOutputHandler {
 	throws TransletException {
         try {
 	    // Close any open start tag
-	    if (_startTagOpen) {
-		closeStartTag();
-	    }
-            else if (_cdataTagOpen) {
-                characters(ENDCDATA);
-                _cdataTagOpen = false;
-            }
-
+	    if (_startTagOpen) closeStartTag();
+	    
             // Set output type to XML (the default) if still unknown.
             if (_outputType == UNKNOWN) setTypeInternal(XML);
 
@@ -597,6 +536,8 @@ public final class TextOutput implements TransletOutputHandler {
 	if (_outputType == TEXT) return;
  
 	try {
+	    boolean closeElement = true;
+
 	    // Close any open element
 	    if (_startTagOpen) {
 		closeStartTag();
@@ -604,10 +545,11 @@ public final class TextOutput implements TransletOutputHandler {
 	    else if (_cdataTagOpen) {
 		characters(ENDCDATA);
 		_cdataTagOpen = false;
+		closeElement = false;
 	    }
 
 	    final String qname = (String)(_qnameStack.pop());
-            _saxHandler.endElement(null, null, qname);
+            if (closeElement) _saxHandler.endElement(null, null, qname);
 
             popNamespaces();
             _depth--;
@@ -785,5 +727,86 @@ public final class TextOutput implements TransletOutputHandler {
 	else
 	    return(uri+":"+local);
     }
-    
+
+    /************************************************************************
+     * The following are all methods for configuring the output settings
+     ************************************************************************/
+    /**
+     * Set the output type. The type must be wither TEXT, XML or HTML.
+     */
+    public void setType(int type)  {
+	try {
+	    _outputType = type;
+	    if (_encoding == null) _encoding = "utf-8";
+	    if (_saxHandler instanceof DefaultSAXOutputHandler)
+		((DefaultSAXOutputHandler)_saxHandler).setOutputType(type);
+	}
+	catch (SAXException e) { }
+    }
+
+    /**
+     * Turns output indentation on/off. Should only be set to on
+     * if the output type is XML or HTML.
+     */
+    public void setIndent(boolean indent) {
+	if (_saxHandler instanceof DefaultSAXOutputHandler) {
+            ((DefaultSAXOutputHandler)_saxHandler).setIndent(indent);
+	}
+    } 
+
+    /**
+     * Directive to turn xml header declaration  on/off. 
+     */
+    public void omitHeader(boolean value) {
+	if (_saxHandler instanceof DefaultSAXOutputHandler) {
+            ((DefaultSAXOutputHandler)_saxHandler).omitHeader(value);
+	}
+    }
+
+    /**
+     * Set the XML output document version - should be 1.0
+     */
+    public void setVersion(String version) {
+	if (_saxHandler instanceof DefaultSAXOutputHandler) {
+            ((DefaultSAXOutputHandler)_saxHandler).setVersion(version);
+	}
+    }
+
+    /**
+     * Set the XML standalone attribute - must be "yes" or "no"
+     */
+    public void setStandalone(String standalone) {
+	if (_saxHandler instanceof DefaultSAXOutputHandler) {
+            ((DefaultSAXOutputHandler)_saxHandler).setStandalone(standalone);
+	}
+    }
+
+    /**
+     * Set the output document system/public identifiers
+     */
+    public void setDoctype(String system, String pub) {
+	// TODO - pass these to the SAX output handler - how?
+    }
+
+    /**
+     * Set the output media type - only relevant for HTML output
+     */
+    public void setMediaType(String mediaType) {
+	// This value does not have to be passed to the SAX handler. This
+	// handler creates the HTML <meta> tag in which the media-type
+	// (MIME-type) will be used.
+	_mediaType = mediaType;
+    }
+
+    /**
+     * The <xsl:output method="xml"/> instruction can specify that certain
+     * XML elements should be output as CDATA sections. This methods allows
+     * the translet to insert these elements into a hashtable of strings.
+     * Every output element is looked up in this hashtable before it is
+     * output.
+     */ 
+    public void setCdataElements(Hashtable elements) {
+	_cdata = elements;
+    }
+
 }

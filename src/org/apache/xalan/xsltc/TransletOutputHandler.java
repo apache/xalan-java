@@ -65,8 +65,10 @@
 package org.apache.xalan.xsltc;
 
 import java.io.*;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public interface TransletOutputHandler {
+
     public void startDocument() throws TransletException;
     public void endDocument() throws TransletException;
     public void characters(char[] characters, int offset, int length)
@@ -81,7 +83,7 @@ public interface TransletOutputHandler {
 	throws TransletException;
     public void setType(int type);
     public void setIndent(boolean indent);
-    public void omitXmlDecl(boolean value);
+    public void omitHeader(boolean value);
     public boolean setEscaping(boolean escape) throws TransletException;
-    public void insertCdataElement(String elementName);
+    public void setCdataElements(Hashtable elements);
 }

@@ -405,9 +405,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	
 	addDOMField(classGen);
 
-	// Compile a default constructor to init the namesIndex table
-	//compileConstructor(classGen);
-
 	// Compile transform() to initialize parameters, globals & output
 	// and run the transformation
 	compileTransform(classGen);
@@ -447,15 +444,27 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    getXSLTC().dumpClass(classGen.getJavaClass());
 	}
     }
-	
+
+    /**
+     * Compile the translet's constructor
+     */
     private void compileConstructor(ClassGenerator classGen, Output output) {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
+
+	final MethodGenerator constructor =
+	    new MethodGenerator(ACC_PUBLIC,
+				de.fub.bytecode.generic.Type.VOID, 
+				null, null, "<init>", 
+				_className, il, cpg);
+
+	// Call the constructor in the AbstractTranslet superclass
 	il.append(classGen.loadTranslet());
 	il.append(new INVOKESPECIAL(cpg.addMethodref(TRANSLET_CLASS,
 						     "<init>", "()V")));
 
+	// Put the names array into the translet - used for dom/translet mapping
 	final Vector names = getXSLTC().getNamesIndex();
 	il.append(classGen.loadTranslet());
 	il.append(new PUSH(cpg, names.size()));
@@ -472,6 +481,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 					       NAMES_INDEX,
 					       NAMES_INDEX_SIG)));
 
+	// Put the namespace names array into the translet
 	final Vector namespaces = getXSLTC().getNamespaceIndex();
 	il.append(classGen.loadTranslet());
 	il.append(new PUSH(cpg, namespaces.size()));
@@ -488,17 +498,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 					       NAMESPACE_INDEX,
 					       NAMESPACE_INDEX_SIG)));
 
-	// Introduces bytecodes to set encoding from <xsl:output> if exists. 
+	// Compile in code to set the output configuration from <xsl:output>
 	if (output != null) {
-	    output.translateEncoding(classGen, il);
+	    // Set all the output settings files in the translet
+	    output.translate(classGen, constructor);
 	}
 
-	final MethodGenerator constructor =
-	    new MethodGenerator(ACC_PUBLIC,
-				de.fub.bytecode.generic.Type.VOID, 
-				null, null, "<init>", 
-				_className, il, cpg);
-	
 	// Compile default decimal formatting symbols.
 	// This is an implicit, nameless xsl:decimal-format top-level element.
 	if (_numberFormattingUsed)
@@ -510,9 +515,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	constructor.setMaxLocals();
 	constructor.setMaxStack();
 	classGen.addMethod(constructor.getMethod());
-
     }
-
 
     /**
      * Compile a topLevel() method into the output class. This method is 
@@ -571,12 +574,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Compile code for other top-level elements
 	while (elements.hasMoreElements()) {
 	    final Object element = elements.nextElement();
+	    /*
 	    // xsl:output
 	    if (element instanceof Output) {
 		((Output)element).translate(classGen, toplevel);
 	    }
 	    // xsl:key
-	    /*
 	    else if (element instanceof Key) {
 		final Key key = (Key)element;
 		key.translate(classGen, toplevel);
@@ -584,7 +587,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	    */
 	    // xsl:decimal-format
-	    else if (element instanceof DecimalFormatting) {
+	    if (element instanceof DecimalFormatting) {
 		((DecimalFormatting)element).translate(classGen,toplevel);
 	    }
 	    // xsl:strip/preserve-space
@@ -771,7 +774,15 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// continue with globals initialization
 	il.append(new PUSH(cpg, DOM.ROOTNODE));
 	il.append(new ISTORE(current.getIndex()));
-	
+
+	// Transfer the output settings to the output post-processor
+	il.append(classGen.loadTranslet());
+	il.append(transf.loadHandler());
+	final int index = cpg.addMethodref(TRANSLET_CLASS,
+					   "transferOutputSettings",
+					   "("+OUTPUT_HANDLER_SIG+")V");
+	il.append(new INVOKEVIRTUAL(index));
+
 	// Look for top-level elements that need handling
 	final Enumeration toplevel = elements();
 	if ((_globals.size() > 0) || (toplevel.hasMoreElements())) {

@@ -76,22 +76,27 @@ import org.apache.xalan.xsltc.runtime.TextOutput;
 
 final class Output extends TopLevelElement {
 
-    // These attributes are extracted from the xsl:output element
-    private String  _method;
+    // These attributes are extracted from the xsl:output element. They also
+    // appear as fields (with the same type, only public) in the translet
     private String  _version;
+    private String  _method;
     private String  _encoding;
-    private boolean _omitXmlDeclaration = false;
+    private boolean _omitHeader = false;
     private String  _standalone;
-    private String  _doctypePublic;	// IGNORED!!!
-    private String  _doctypeSystem;	// IGNORED!!!
-    private String  _cdataElements;
+    private String  _doctypePublic;
+    private String  _doctypeSystem;
+    private String  _cdata;
     private boolean _indent = false;
     private String  _mediaType;
 
+    // Disables this output element (when other element has higher precedence)
     private boolean _disabled = false;
 
-    // This is generated from the above data.
-    private String _header;
+    // Some global constants
+    private final static String STRING_SIG = "Ljava/lang/String;";
+    private final static String ONE_DOT_ZERO_STRING = "1.0";
+    private final static String OUTPUT_VERSION_ERROR =
+	"Output XML document type should be 1.0";
 
     /**
      * Displays the contents of this element (for debugging)
@@ -101,36 +106,13 @@ final class Output extends TopLevelElement {
 	Util.println("Output " + _method);
     }
 
+    /**
+     * Disables this <xsl:output> element in case where there are some other
+     * <xsl:output> element (from a different imported/included stylesheet)
+     * with higher precedence.
+     */
     public void disable() {
 	_disabled = true;
-    }
-
-    /**
-     * Generates the XML output document header
-     */
-    private String generateXmlHeader() {
-        // No header if user doesn't want one.
-        if (_omitXmlDeclaration) return(Constants.EMPTYSTRING);
-
-	// Start off XML header
-        final StringBuffer hdr = new StringBuffer("<?xml ");
-	
-	if ((_version != null) && (_version !=Constants.EMPTYSTRING))
-	    hdr.append("version=\"" + _version + "\" ");
-	else
-	    hdr.append("version=\"1.0\" ");
-
-	if ((_encoding != null) && (_encoding !=Constants.EMPTYSTRING))
-	    hdr.append("encoding=\"" + _encoding + "\" ");
-	else
-	    hdr.append("encoding=\"utf-8\" ");
-
-	if ((_standalone != null) && (_standalone != Constants.EMPTYSTRING))
-	    hdr.append("standalone=\"" + _standalone + "\" ");
-
-	// Finish off XML header and return string.
-	hdr.append("?>");
-	return(hdr.toString());
     }
 
     /**
@@ -138,114 +120,159 @@ final class Output extends TopLevelElement {
      */
     public void parseContents(Parser parser) {
 
-	_method        = getAttribute("method");
-	_version       = getAttribute("version");
-	_encoding      = getAttribute("encoding");
-	_doctypeSystem = getAttribute("doctype-system");
-	_doctypePublic = getAttribute("doctype-public");
-	_cdataElements = getAttribute("cdata-section-elements");
-	_mediaType     = getAttribute("media-type");
-	_standalone    = getAttribute("standalone");
+	// Do nothing if other <xsl:output> element has higher precedence
+	if (_disabled) return;
 
-	if ((_method == null) || (_method == Constants.EMPTYSTRING))
-	    _method = "xml";
+	String attrib = null;
 
-	String attrib = getAttribute("omit-xml-declaration");
-	if ((attrib != null) && (attrib.equals("yes")))
-	    _omitXmlDeclaration = true;
-
-	if (_method.equals("xml") || _method.equals("html")) {
-	    attrib = getAttribute("indent");
-	    if ((attrib != null) && (attrib.equals("yes")))
-	        _indent = true;
+	// Get the output XML version - only version "1.0" should be used
+	_version = getAttribute("version");
+	if ((_version == null) || (_version.equals(Constants.EMPTYSTRING))) {
+	    _version = ONE_DOT_ZERO_STRING;
+	}
+	if (!_version.equals(ONE_DOT_ZERO_STRING)) {
+	    ErrorMsg msg = new ErrorMsg(OUTPUT_VERSION_ERROR);
+	    parser.reportError(Constants.WARNING, msg);
 	}
 
-	if (_method.equals("xml"))
-	    _header = generateXmlHeader();
-	else
-	    _header = null;
+	// Get the output method - "xml", "html", "text" or <qname>
+	_method = getAttribute("method");
+	if (_method.equals(Constants.EMPTYSTRING)) _method = null;
+	if (_method != null) _method = _method.toLowerCase();
 
-	parseChildren(parser);
+	// Get the output encoding - any value accepted here
+	_encoding = getAttribute("encoding");
+	if (_encoding.equals(Constants.EMPTYSTRING)) _encoding = null;
+
+	// Should the XML header be omitted - translate to true/false
+	attrib = getAttribute("omit-xml-declaration");
+	if ((attrib != null) && (attrib.equals("yes"))) _omitHeader = true;
+
+	// Add 'standalone' decaration to output - use text as is
+	_standalone = getAttribute("standalone");
+	if (_standalone.equals(Constants.EMPTYSTRING)) _standalone = null;
+
+	// Get system/public identifiers for output DOCTYPE declaration
+	_doctypeSystem = getAttribute("doctype-system");
+	if (_doctypeSystem.equals(Constants.EMPTYSTRING)) _doctypeSystem = null;
+	_doctypePublic = getAttribute("doctype-public");
+	if (_doctypePublic.equals(Constants.EMPTYSTRING)) _doctypePublic = null;
+
+	// Names the elements of whose text contents should be output as CDATA
+	_cdata = getAttribute("cdata-section-elements");
+	if ((_cdata != null) && (_cdata.equals(Constants.EMPTYSTRING)))
+	    _cdata = null;
+
+	// Get the indent setting - only has effect for xml and html output
+	attrib = getAttribute("indent");
+	if ((attrib != null) && (attrib.equals("yes"))) _indent = true;
+
+	// Get the MIME type for the output file - we don't do anythign with it,
+	// but our client may use it to specify a data transport type, etc.
+	_mediaType = getAttribute("media-type");
+	if (_mediaType.equals(Constants.EMPTYSTRING)) _mediaType = null;
+
+	// parseChildren(parser); - the element is always empty
 
 	parser.setOutput(this);
     }
 
     /**
-     * Compile code to set the appropriate output type and 
-     * output header (if any).
+     * Compile code that passes the information in this <xsl:output> element
+     * to the appropriate fields in the translet
      */
-    public void translate(ClassGenerator classGen,
-			  MethodGenerator methodGen) {
-	
+    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+
+	// Do nothing if other <xsl:output> element has higher precedence
 	if (_disabled) return;
 
 	ConstantPoolGen cpg = classGen.getConstantPool();
 	InstructionList il = methodGen.getInstructionList();
 
-	// bug fix # 1406, Compile code to set xml header on/off
-	if ( _omitXmlDeclaration ) {
-	    final int omitXmlDecl = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
-						 "omitXmlDecl","(Z)V");
-	    il.append(methodGen.loadHandler());
-	    il.append(new PUSH(cpg, true));
-	    il.append(new INVOKEINTERFACE(omitXmlDecl,2));
+	int field = 0;
+        il.append(classGen.loadTranslet());
+
+	// Only update _version field if set and different from default
+	if ((_version != null) && (!_version.equals(ONE_DOT_ZERO_STRING))) {
+	    field = cpg.addFieldref(TRANSLET_CLASS, "_version", STRING_SIG);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _version));
+	    il.append(new PUTFIELD(field));
 	}
 
-	// Compile code to set the appropriate output type.
-	final int type = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
-						   "setType", "(I)V");
-	il.append(methodGen.loadHandler());
-	if (_method.equals("text")) {
-  	    il.append(new PUSH(cpg, TextOutput.TEXT));
+	// Only update _method field if "method" attribute used
+	if (_method != null) {
+	    field = cpg.addFieldref(TRANSLET_CLASS, "_method", STRING_SIG);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _method));
+	    il.append(new PUTFIELD(field));
 	}
-	else if (_method.equals("xml")) {
-	    // Handle any XML elements that should be turned into
-	    // CDATA elements in the XML output document.
-	    if ((_cdataElements != null) && 
-		(_cdataElements != Constants.EMPTYSTRING)) {
-	        StringTokenizer st = new StringTokenizer(_cdataElements,",");
-		final int cdata = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
-						   "insertCdataElement",
-						   "("+STRING_SIG+")V");
-		while (st.hasMoreElements()) {
-		    il.append(DUP); // Reference to handler on stack
-		    il.append(new PUSH(cpg,st.nextToken()));
-		    il.append(new INVOKEINTERFACE(cdata,2));
-		}
-	    }
-	    il.append(new PUSH(cpg, TextOutput.XML));
+
+	// Only update if _encoding field is "encoding" attribute used
+	if (_encoding != null) {
+	    field = cpg.addFieldref(TRANSLET_CLASS, "_encoding", STRING_SIG);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _encoding));
+	    il.append(new PUTFIELD(field));
 	}
-	else if (_method.equals("html")) {
-	    il.append(new PUSH(cpg, TextOutput.HTML));
+
+	// Only update if "omit-xml-declaration" used and set to 'yes'
+	if (_omitHeader) {
+	    field = cpg.addFieldref(TRANSLET_CLASS, "_omitHeader", "Z");
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _omitHeader));
+	    il.append(new PUTFIELD(field));
 	}
-	else {
-	    il.append(new PUSH(cpg, TextOutput.QNAME));
+
+	// Add 'standalone' decaration to output - use text as is
+	if (_standalone != null) {
+	    field = cpg.addFieldref(TRANSLET_CLASS, "_standalone", STRING_SIG);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _standalone));
+	    il.append(new PUTFIELD(field));
 	}
-	il.append(new INVOKEINTERFACE(type,2));
+
+	// Set system/public doctype only if both are set
+	if ((_doctypePublic != null) && (_doctypeSystem != null)) {
+	    field = cpg.addFieldref(TRANSLET_CLASS,"_doctypeSystem",STRING_SIG);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _doctypeSystem));
+	    il.append(new PUTFIELD(field));
+	    field = cpg.addFieldref(TRANSLET_CLASS,"_doctypePublic",STRING_SIG);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _doctypePublic));
+	    il.append(new PUTFIELD(field));
+	}
+	
+	// Add 'medye-type' decaration to output - if used
+	if (_mediaType != null) {
+	    field = cpg.addFieldref(TRANSLET_CLASS, "_mediaType", STRING_SIG);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _mediaType));
+	    il.append(new PUTFIELD(field));
+	}
 
 	// Compile code to set output indentation on/off
-	if ( _indent ) {
-	    final int indent = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
-							 "setIndent","(Z)V");
-	    il.append(methodGen.loadHandler());
-	    il.append(new PUSH(cpg, true));
-	    il.append(new INVOKEINTERFACE(indent,2));
+	if (_indent ) {
+	    field = cpg.addFieldref(TRANSLET_CLASS, "_indent", "Z");
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, _indent));
+	    il.append(new PUTFIELD(field));
 	}
+
+	// Forward to the translet any elements that should be output as CDATA
+	if (_cdata != null) {
+	    int index = cpg.addMethodref(TRANSLET_CLASS,
+					 "addCdataElement",
+					 "(Ljava/lang/String;)V");
+	    StringTokenizer tokens = new StringTokenizer(_cdata);
+	    while (tokens.hasMoreTokens()) {
+		il.append(DUP);
+		il.append(new PUSH(cpg, tokens.nextToken()));
+		il.append(new INVOKEVIRTUAL(index));
+	    }
+	}
+	il.append(POP); // Cleanup - pop last translet reference off stack
     }
 
-    /**
-     *  Sets the character encoding in the translet. This method is   
-     *  called from org.apache.xalan.xsltc.compiler.Stylesheet in order to
-     *  have the value of the encoding  that was specified in the
-     *  stylesheet (<xsl:output> element) available in the translets
-     *  constructor.  
-     */
-    public void translateEncoding(ClassGenerator classGen, InstructionList il) {
-	ConstantPoolGen cpg = classGen.getConstantPool();
-        il.append(classGen.loadTranslet());
-        il.append(new PUSH(cpg, _encoding));
-        il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
-					       "_encoding",
-					       "Ljava/lang/String;")));
-    }
 }

@@ -89,18 +89,16 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     // Contains the name of the last opened element (set in startElement())
     private String _element = null;
 
-    // Contains the output document type (XML, HTML or TEXT).
-    private int	_outputType = TextOutput.UNKNOWN;
-    // Contains the name of the output encoding (default is utf-8).
-    private String _encoding = "utf-8";
+    // Settings passed on from TextOutput
+    private int	    _outputType = TextOutput.UNKNOWN;
+    private String  _encoding   = "utf-8";
+    private String  _version    = "1.0";
+    private String  _standalone = null;
+    private boolean _indent = false;
+    private boolean _omitHeader = false;
 
     // This variable is set to 'true' when a start tag is left open
     private boolean _startTagOpen = false;
-
-    // XML output header (used only for XML output).
-    private static final String XML_HEADER_BEG  =
-	"<?xml version=\"1.0\" encoding=\"";
-    private static final String XML_HEADER_END  = "\" ?>\n";
 
     // Commonly used strings are stored as char arrays for speed
     private static final char[] BEGPI    = "<?".toCharArray();
@@ -117,8 +115,6 @@ public class DefaultSAXOutputHandler implements ContentHandler {
 
     private static final String EMPTYSTRING = "";
 
-    private boolean   _indent = false;
-    private boolean   _omitXmlDecl = false;
     private boolean   _indentNextEndTag = false;
     private boolean   _linefeedNextStartTag = false;
     private int       _indentLevel = 0;
@@ -186,14 +182,22 @@ public class DefaultSAXOutputHandler implements ContentHandler {
      * Utility method - outputs an XML header
      */
     private void emitHeader() throws SAXException {
-	if (_omitXmlDecl) {
-	    // if true then stylesheet contained an xsl:output element
-	    // with the omit-xml-declaration attribute set to "yes". 
-	    return;
+	// First check if the 'omit-xml-declaration' was set to yes in the
+	// stylesheet's <xsl:output> element (if any)
+	if (_omitHeader) return;
+
+	// If not go ahead and output the XML header
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("<?xml version=\"");
+	buffer.append(_version);
+	buffer.append("\" encoding=\"");
+	buffer.append(_encoding);
+	if (_standalone != null) {
+	    buffer.append("\" standalone=\"");
+	    buffer.append(_standalone);
 	}
-	characters(XML_HEADER_BEG);
-	characters(_encoding);
-	characters(XML_HEADER_END);
+	buffer.append("\" ?>\n");
+	characters(buffer.toString());
     }
 
     /**
@@ -464,13 +468,28 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     }
 
     /**
+     * Sets the version number that will be output in the XML header.
+     */
+    public void setVersion(String version) {
+	_version = version;
+    }
+
+    /**
+     * Sets the 'standalone' attribute that will be output in the XML header.
+     * The attribute will be omitted unless this method is called.
+     */
+    public void setStandalone(String standalone) {
+	_standalone = standalone;
+    }
+
+    /**
      * Turns xml declaration generation on/off, dependent on the attribute
      * omit-xml-declaration in any xsl:output element. 
      * Breaks the SAX HandlerBase interface, but TextOutput will only call
      * this method of the SAX handler is an instance of this class.
      */
-    public void omitXmlDecl(boolean value) {
-        _omitXmlDecl = value;
+    public void omitHeader(boolean value) {
+        _omitHeader = value;
     }
 
     /**
