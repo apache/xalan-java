@@ -115,7 +115,7 @@ public class QNameWrapper extends SimpleNode {
                 if ( colonIdx == -1 ) {
 					m_qname = new QName(qname);
                 } else {
-                	// TODO: Need a prefix resolver 
+                	// TODO: Need to use qname factory
                 m_qname = new QName("defaultns", qname.substring(colonIdx + 1), qname.substring(0, colonIdx ) );                
                 }
 				break;

@@ -23,6 +23,7 @@ import org.apache.xpath.impl.VariableImpl;
 public class SimpleNode implements Node
 {
     public static boolean PRODUCE_RAW_TREE = false;
+    
     final static private NodeFactory DEFAULT_NODE_FACTORY = new DefaultNodeFactory();
     
     /**

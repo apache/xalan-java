@@ -86,15 +86,12 @@ public class NameTestImpl extends SimpleNode implements NodeTest
 
     /**
      * Constructor for NodeTestImpl. Internal uses only
-     *
-     * @param namespace DOCUMENT ME!
-     * @param localpart DOCUMENT ME!
      */
-    public NameTestImpl(String namespace, String localpart)
+    public NameTestImpl(QName qname)
     {
         super(XPathTreeConstants.JJTNAMETEST);
 
-        m_qname = new QName(namespace, localpart);
+        m_qname = qname;
     }
     	
     /**

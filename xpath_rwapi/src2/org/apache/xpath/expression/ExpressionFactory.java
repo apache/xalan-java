@@ -55,13 +55,12 @@
  */
 package org.apache.xpath.expression;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.xml.QName;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.datamodel.SequenceType;
-import org.apache.xpath.impl.parser.NodeFactory;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 
 /**
@@ -75,11 +74,26 @@ import java.math.BigInteger;
 public interface ExpressionFactory
 {
     /**
-     * Creates a new XPath expression from a string representation
+     * Creates a new XPath/XQuery expression from a string representation.
+     * <p>For XPath expression, default element and function namespace are
+     * used to resolve prefixes.
+     * Moreover, various checking are not performed, like the existence test
+     * of variable declaration</p>
      * @return A XPath expression
-     * @throws XPathException whenever the specified expression is not valid syntaxically or semantically.
+     * @throws XPathException whenever the specified expression is not valid 
+     * syntaxically or semantically.
      */
     public Expr createExpr(String expr) throws XPathException;
+    
+	/**
+     * Creates a new XPath expression from a string representation.
+	 * Use the specified static context to resolve namespaces and perform
+	 * various static type checking.
+	 * @return A XPath expression
+	 * @throws XPathException whenever the specified expression is not valid 
+	 * syntaxically or semantically.
+	 */
+	public Expr createExpr(StaticContext ctx, String expr) throws XPathException;
 
 	/**
 	 * Creates a new empty {@link OperatorExpr expression sequence}
@@ -104,7 +118,7 @@ public interface ExpressionFactory
      * Creates a name test.
      * @return A name test
      */
-    public NodeTest createNameTest(String namespace, String name);
+    public NodeTest createNameTest(QName qname);
 
     /**
      * Creates a new {@link OperatorExpr combining expression} of the specified type
@@ -226,9 +240,17 @@ public interface ExpressionFactory
      * @return
      */
     public FunctionCall createFunctionCall(QName name);
+  
+  
+  	/**
+  	 * Creates a {@link QName qname} with the specified prefix, namespace 
+  	 * and local part.
+  	 * @param ns or null
+  	 * @param localPart
+  	 * @param prefix or null
+  	 * @return
+  	 */
+  	public QName createQName(String ns, String localPart, String prefix);
     
-    /**
-     * Sets the node factory to use for creating AST nodes
-     */
-    void setNodeFactory(NodeFactory factory);
+
 }

@@ -72,42 +72,34 @@ import org.apache.xpath.expression.Literal;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.expression.OperatorExpr;
 import org.apache.xpath.expression.PathExpr;
+import org.apache.xpath.expression.StaticContext;
 import org.apache.xpath.expression.StepExpr;
-import org.apache.xpath.impl.parser.NodeFactory;
 import org.apache.xpath.impl.parser.ParseException;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 /**
  * Default implementation expression factory to create XPath AST nodes.
- * //@TODO not fully implemented! 13-Mar-03 -sc
  */
 public class ExpressionFactoryImpl implements ExpressionFactory {
 
-	/**
-	 * Node factory
-	 */
-	protected NodeFactory m_nodeFactory = null;
-
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.expression.ExpressionFactory#setNodeFactory(org.apache.xpath.impl.parser.NodeFactory)
-	 */
-	public void setNodeFactory(NodeFactory factory) {
-		m_nodeFactory = factory;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createExpr(java.lang.String)
-	 */
 	public Expr createExpr(String expr) throws XPathException {
 		XPath parser = new XPath(new StringReader(expr));
-		if ( m_nodeFactory != null )  {
-			parser.setNodeFactory(m_nodeFactory);
-		}
 		try {
 			return (Expr) parser.XPath2().jjtGetChild(0);
 		} catch (ParseException e) {
             throw new XPathException(e);
+		}
+	}
+
+	public Expr createExpr(StaticContext ctx, String expr)
+		throws XPathException
+	{
+		XPath parser = new XPath(new StringReader(expr));
+		try {
+			return (Expr) parser.XPath2().jjtGetChild(0);
+		} catch (ParseException e) {
+			throw new XPathException(e);
 		}
 	}
 
@@ -130,8 +122,8 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createNameTest(java.lang.String, java.lang.String)
 	 */
-	public NodeTest createNameTest(String namespace, String name) {
-		return new NameTestImpl(namespace, name);
+	public NodeTest createNameTest(QName qname) {
+		return new NameTestImpl(qname);
 	}
 
 	/**
@@ -234,31 +226,21 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 
 	}
 
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createStringLiteralExpr(java.lang.String)
-	 */
 	public Literal createStringLiteralExpr(String value) {
 		LiteralImpl lit = new LiteralImpl();
 		lit.setStringValue(value);
 		return lit;
 	}
 
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createDoubleLiteralExpr(double)
-	 */
 	public Literal createDoubleLiteralExpr(double value) {
 		LiteralImpl lit = new LiteralImpl();
 		lit.setDoubleValue(value);
 		return lit;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.expression.ExpressionFactory#createSequence()
-	 */
 	public OperatorExpr createSequence() {
 		return new OperatorImpl(XPathTreeConstants.JJTEXPRSEQUENCE);
 	}
-
 	
 	public FunctionCall createFunctionCall(QName name)
 	{
@@ -266,5 +248,9 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	}
 
 
+	public QName createQName(String ns, String localPart, String prefix)
+	{
+		return new QName(ns, localPart, prefix);
+	}
 
 }

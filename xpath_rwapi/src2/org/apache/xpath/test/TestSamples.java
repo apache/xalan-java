@@ -142,12 +142,12 @@ public class TestSamples
             PathExpr pathExpr = exprFct.createPathExpr(true);
             System.out.println("/ =? " + pathExpr.getString(true));
 
-            NodeTest nt = exprFct.createNameTest(null, "toto");
+            NodeTest nt = exprFct.createNameTest(null);
             pathExpr.addOperand(exprFct.createStepExpr(StepExpr.AXIS_CHILD, nt));
             System.out.println("/toto =? " + pathExpr.getString(true));
             System.out.println("/child::toto =? " + pathExpr.getString(false));
 
-            nt = exprFct.createNameTest(null, "titi");
+            nt = exprFct.createNameTest(null);
             pathExpr.addOperand(exprFct.createStepExpr(
                     StepExpr.AXIS_DESCENDANT, nt));
 

@@ -60,7 +60,7 @@ import java.util.Set;
 import org.apache.xml.NamespaceContext;
 
 /**
- * Represents the static context of an expression.
+ * Static context of expression. 
  * @see <a href="http://www.w3.org/TR/xpath20/#static_context">XPath 2.0 specification</a>
  */
 public interface StaticContext {
@@ -69,22 +69,25 @@ public interface StaticContext {
     short FLEXIBLE_POLICY = 1;
 
     /**
-     * One of STRICT_POLICY or FLEXIBLE_POLICY
+     * Gets the exception policy to apply.
+     * @return short {@link #STRICT_POLICY} or {@link #FLEXIBLE_POLICY}
      */
     short getExceptionPolicy();
 
     /**
-     * In-scope namespaces. This is a set of (prefix, URI) pairs. 
+     * Gets in-scope namespaces.  
      */
     NamespaceContext getNamespaces();
 
     /**
-     * Default namespace for element and type names. 
+     * Gets the default namespace for element and type names.
+     * @return namespace 
      */
     String getDefaultNamepaceForElement();
 
     /**
-     * Default namespace for function names. 
+     * Gets the default namespace for function names.
+     * @return namespace 
      */
     String getDefaultNamepaceforFunction();
 

@@ -887,6 +887,8 @@
 	
 	<!-- Constructor functions -->
 	
+	<expr value="(1 to 100)[(5 mod 5) eq 0]" valid="false"/>
+	
 	<expr value="xs:date('2000-01-01')">
 		<ast>
 			<node name="ExprSequence">
@@ -1014,7 +1016,7 @@
 	
 	<expr value="toto/(45+23)" valid="false"/>
 	<expr value="a/(b,c)/d" valid="false"/>
-	<expr value="(1 to 100)[(5 mod 5) eq 0]" valid="false"/>
+	
 	
 	
 	<!-- Expressions for which no common AST has been decided yet -->
