@@ -309,8 +309,74 @@ Arguments wirhout flags:
 </s3>
 </s2><anchor name="api"/>
 <s2 title="Calling XSLTC with the TrAX/JAXP API">
-<p>G. Todd Miller has begun integrating the translet with the TrAX/JAXP API. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet. He plans to add support soon for wrapping a translet with the Templates interface, which may then be used for repeated transformations.</p>
-<p><ref>Details coming soon!</ref></p>
+<p>G. Todd Miller has begun integrating the translet with the TrAX/JAXP API. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
+
+
+<p>When you use the JAXP 1.1 API to run &xslt4j;, the <code>javax.xml.transformer.TransformerFactory</code> system property is set to <code>org.apache.xalan.Processor.TransformerFactoryImpl</code>. As it currently stands, this Xalan implementation of TransformerFactory always uses the Xalan Transformer to perform transformations. To use translets to perform transformations, set this system property to <code>org.apache.xalan.xsltc.runtime.TransformerFactoryImpl</code>. For information on setting this and related system properties, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
+<p>To Use the JAXP 1.1 API to perform transformations with translets do the following:</p>
+<ol>
+  <li>Set the <code>javax.xml.transformer.TransformerFactory</code> system property as indicated above.<br/><br/></li>
+  <li>Instantiate a TransformerFactory.<br/><br/></li>
+  <li>Assuming you want to perform a series of transformations with the same translet, use the TransformerFactory and a
+   StreamSource XSL stylesheet to generate a Templates object (the translet). If you are performing a single
+   transformation, use the TransformerFactory and the StreamSource object to instantiate a Transformer.<br/><br/></li>
+  <li>Perform the transformation, using a StreamSource object for the XML input and a StreamResult object to hold the
+   transformation output.</li>
+</ol>
+<s3 title="Examples">
+<p><em>Example 1:</em> Using a transler/Templates object for multiple transformations</p>
+<source>java.util.Properties;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Templates;
+import javax.xml.transform.StreamSource;
+import javax.xml.transform.StreamResult;
+...
+// Set the TransformerFactory system property.
+String key = "javax.xml.transformer.TransformerFactory";
+String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
+Properties props = new Properties(System.getProperties());
+props.put(key, value);
+...
+String xslInURI;
+// Instantiate the TransformerFactory, and use it along with a SteamSource
+// XSL stylesheet to create a translet as a Templates object.
+TransformerFactory tFactory = TransformerFactory.newInstance()
+Templates translet = tFactory.newTemplates(new StreamSource(xslInURI);
+...
+String xmlInURI;
+String htmlOutURI;
+...
+// For each transformation, instantiate a new Transformer, and perform
+// the transformation from a StreamSource to a StreamResult;
+Transformer transformer = translet.newTransformer();
+transformer.Transform(new StreamSource(xmlInURI),
+                      new StreamResult(htmlOutURI));
+...</source>
+<p><em>Example 2:</em> Compiling a translet/Templates object for a single transformation</p>
+<source>java.util.Properties;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.StreamSource;
+import javax.xml.transform.StreamResult;
+...
+// Set the TransformerFactory system property.
+String key = "javax.xml.transformer.TransformerFactory";
+String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
+Properties props = new Properties(System.getProperties());
+props.put(key, value);
+...
+String xslInURI;
+String xmlInURI;
+String htmlOutURI;
+// Instantiate the TransformerFactory, and use it along with a SteamSource
+// XSL stylesheet to create a Transformer.
+TransformerFactory tFactory = TransformerFactory.newInstance()
+Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI);
+// Perform the transformation from a StreamSource to a StreamResult;
+transformer.Transform(new StreamSource(xmlInURI),
+                      new StreamResult(htmlOutURI));</source>
+</s3>
 </s2><anchor name="constraints"/>
 &xsltc_constraints;
 </s1>
