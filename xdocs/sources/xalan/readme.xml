@@ -63,14 +63,13 @@
 
  <ul>
   <li><link anchor="status0">Status</link></li>&xsltcreleasenotesentry;
-  <li><link anchor="build">Build Notes</link></li>
+  <li><link anchor="build">Build distributions and notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
   <li><link idref="history">History of software changes</link></li>
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
     <li><link anchor="done">Changes since version 2.3.1</link></li>
-    <li><link anchor="global2.3">Global 2.3 updates</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
@@ -78,10 +77,60 @@
    </ul>
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.3.1">
-     <note>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.</note>
      <ul>
-     <li>Bug fixes, including variable-handling bugs.</li>
+     <li>Fixes for the following bugzilla defects: 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3238">3238</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=4603">4603</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5013">5013</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5016">5016</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5941">5941</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6071">6071</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6268">6268</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6284">6284</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6356">6356</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6547">6547</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6798">6798</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6833">6833</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6925">6925</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6972">6972</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7023">7023</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7118">7118</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7123">7123</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7157">7157</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7410">7410</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7776">7776</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=8324">8324</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=8358">8358</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=8551">8551</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=8894">8894</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9068">9068</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9137">9137</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9146">9146</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9171">9171</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9174">9174</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9179">9179</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9572">9572</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9575">9575</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9683">9683</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9753">9753</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10137">10137</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10306">10306</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10323">10323</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10625">10625</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10715">10715</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10832">10832</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10837">10837</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10839">10839</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10914">10914</jump>, 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10945">10945</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11123">11123</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11166">11166</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11221">11221</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11345">11345</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11704">11704</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11987">11987</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11828">11828</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12075">12075</jump></li>. 
      <li>&xslt4j; now uses a list of supported encodings in a properties file 
      (org.apache.xalan.serialize.Encodings.properties). Fixes Bugzilla 6356. Patch from Sergey Ushakov. </li>     
      <li>Support for the <jump href="http://www.exslt.org/">EXSLT</jump> function and result elements, and EXSLT 
@@ -89,24 +138,28 @@
      <li>Improvements to the extensions mechanism to more efficiently handle the detection and analysis of extensions 
      during the stylesheet "composition" process, and the generation of the required extension handlers during 
      initialization of the transformation process.</li>
+     <li>Performance improvement.  Instead of looping through the ExtendedType objects, use a hashtable and go
+     directly to the correct object.</li>
+     <li>Separation of source and messages.  Messages have been moved into property files for easier localization.</li>
+     <li>XSLTC version upgraded from 1.0 to 1.2.</li>
+     <li>Support for and bundling of Xerces Java 2.1.</li>
+     <li>Support for and bundling of xml-apis.jar from the RIVERCOURT1 branch of xml-commons.  This version of the Java
+     APIs for XML Processing successfully passes the JAXP 1.1 and JAXP 1.2 TCKs.</li>
+     <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.</li>
      </ul>
-     </s3><anchor name="global2.3"/>
-    <s3 title="Global 2.3 updates">
-     <ul>
-     <li>Release 2.3 is integrated with release 2 of &xml4j;.</li>
-     <li>Release 2.3 does not include support for the deprecated &xslt4j; 1 compatability API. The &xslt4j; 1 compatability code does 
-     NOT compile with &xml4j2;.</li>
-      </ul>
-     <p>Our <link idref="samples" anchor="sql">SQL extension samples</link> continue to use InstantDB, but based on our realization of changes 
-     that have occurred in the licensing of InstantDB, we no longer include InstantDB and the associated sample database with our distibution.
-     We do, however, provide information on how to <link idref="samples" anchor="instantdbsetup">set up InstantDB</link> to support our SQL 
-     extension samples.</p>
-     <p>Documentation updates: We have subdivided the release notes into multiple files to accelerate HTML document loading, and we have added a
-     document on <link idref="features">Transform features</link>.</p>         
      </s3>
      <anchor name="other"/>
      <s3 title="Other points of interest">
      <ul>
+     <li>Xalan Java 2 is integrated with release 2 of &xml4j;. &xslt4j-current; does not include support for the deprecated &xslt4j; 1 compatability API. 
+     The &xslt4j; 1 compatability code does NOT compile with &xml4j2;.<br/><br/></li>
+     <li>The <link idref="samples" anchor="sql">SQL extension samples</link> continue to use InstantDB, but based on our realization of changes 
+     that have occurred in the licensing of InstantDB, we no longer include InstantDB and the associated sample database with our distibution.
+     We do, however, provide information on how to <link idref="samples" anchor="instantdbsetup">set up InstantDB</link> to support our SQL 
+     extension samples.<br/><br/></li>
+     <li>Documentation updates: We have subdivided the release notes into multiple files to accelerate HTML document loading, and we have added a
+     document on <link idref="features">Transform features</link>.<br/><br/></li>
      <li>If an attempt is made to coerce a different namespace onto a prefix already in use in xsl:attribute, the attribute will come out 
      in the wrong namespace. Workaround: either provide an NCName instead of a QName for the attribute, or provide a QName with a prefix not
      used elsewhere.<br/><br/></li>
@@ -326,19 +379,28 @@ javadoc -doclet xalanjdoc.Standard
     <br/>Xalan-J and -C documentation, servlets, applets, and samples.
   </li>
   <li><human-resource-ref idref="cmanolache"/>
-    <br/>Xalan-Jdeveloper and JAXP expert.
+    <br/>Xalan-J developer and JAXP expert.
   </li>
   <li><human-resource-ref idref="dmarston"/>
     <br/>Lead tester for XSLT Conformance stylesheet issues.
   </li>
   <li><human-resource-ref idref="mmidy"/>
-    <br/>Xalan-J  developer.
+    <br/>Xalan-J developer.
   </li>
   <li><human-resource-ref idref="gpeskin"/>
     <br/>Xalan-J developer, especially extension mechanisim.
   </li>
   <li><human-resource-ref idref="jgentilin"/>
     <br/>Major work on the SQL extensions library.
+  </li>
+  <li><human-resource-ref idref="mkwan"/>
+    <br/>Xalan-J developer.
+  </li>
+  <li><human-resource-ref idref="ilene"/>
+    <br/>Xalan-J developer.
+  </li>
+  <li><human-resource-ref idref="zongaro"/>
+    <br/>Xalan-J developer.
   </li>
  </ul>
  </s2>
