@@ -630,11 +630,10 @@ public class ExtensionFunctionHandler
               cname = scriptSrcURL;
               // isClass = true;
             }
-            classObject = Class.forName (cname);
-            // System.out.println("classObject: "+classObject);
             
             if (isClass) 
             {
+              // System.out.println("cname: "+cname);
               if(null == classObject)
                 classObject = Class.forName(cname);
               javaObject = classObject;
@@ -650,6 +649,7 @@ public class ExtensionFunctionHandler
           catch (Exception e) 
           {
             // Should be diagnostics.
+            // e.printStackTrace();
             System.out.println("Extension error: "+e.getMessage ());
             return;
             // throw new SAXException (e.getMessage (), e);
