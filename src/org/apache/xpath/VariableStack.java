@@ -106,6 +106,25 @@ public class VariableStack extends Stack
 
   /** NEEDSDOC Field m_globalStackFrameIndex          */
   private int m_globalStackFrameIndex = -1;
+  
+  /** NEEDSDOC  */
+  private int m_searchStart = -1;
+  
+  /**
+   * NEEDSDOC
+   */
+  public void setSearchStart(int startPos)
+  {
+    m_searchStart = startPos;
+  }
+  
+  /**
+   * NEEDSDOC
+   */
+  public int getSearchStart()
+  {
+    return (-1 == m_searchStart) ? this.size() : m_searchStart;
+  }
 
   /**
    * Hold the position of the start of the current element frame.
@@ -122,7 +141,31 @@ public class VariableStack extends Stack
 
   // Push a context marker onto the stack to let us know when
   // to stop searching for a var.
-
+  
+  /**
+   * NEEDSDOC Method pushContextPosition 
+   */
+  public void pushContextPosition(int pos)
+  {
+    m_contextPositions.push(pos);
+  }
+  
+  /**
+   * NEEDSDOC Method popContextPosition 
+   */
+  public void popContextPosition()
+  {
+    m_contextPositions.pop();
+  }
+  
+  /**
+   * NEEDSDOC Method pushContextMarker 
+   */
+  public int getContextPos()
+  {
+    return m_contextPositions.peek();
+  }
+  
   /**
    * NEEDSDOC Method pushContextMarker 
    *
@@ -170,7 +213,7 @@ public class VariableStack extends Stack
   {
 
     XObject val = null;
-    int nElems = this.size();
+    int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
     int endContextPos = m_contextPositions.peek();
 
     for (int i = (nElems - 1); i >= endContextPos; i--)
@@ -201,7 +244,7 @@ public class VariableStack extends Stack
   public Object getVariable(QName name) throws SAXException
   {
 
-    int nElems = this.size();
+    int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
     int endContextPos = m_contextPositions.peek();
 
     for (int i = (nElems - 1); i >= endContextPos; i--)
