@@ -35,19 +35,19 @@ and new support for the TrAX API.</p>
 <ul>
   <li><em>Calling external Java methods from a Translet.</em><br/>
     At the time of writing, only static methods are supported. A call to a function 
-    whose namespace is either <code>&lt;http://xml.apache.org/xslt/Java</code> 
-    or <code>&lt;http://xml.apache.org/xalan/xsltc/Java</code> 
+    whose namespace is either <code>&lt;http://xml.apache.org/xslt/java</code> 
+    or <code>&lt;http://xml.apache.org/xalan/xsltc/java</code> 
     is resolved by loading the appropriate class and calling a static method that 
     matches the signature of the function. The class can be specified as part 
     of the namespace URI or as part of the function call as shown in the following 
     example:<br/> 
     <source> &lt;xsl:stylesheet version=&quot;1.0&quot;
    xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;
-   xmlns:Java=&quot;http://xml.apache.org/xslt/Java&quot;
-   xmlns:Java-system=&quot;http://xml.apache.org/xslt/Java/java.lang.System&quot;&gt;
+   xmlns:java=&quot;http://xml.apache.org/xslt/java&quot;
+   xmlns:java-system=&quot;http://xml.apache.org/xslt/java/java.lang.System&quot;&gt;
    &lt;xsl:template match=&quot;/&quot;&gt;
-     &lt;xsl:value-of select=&quot;Java:java.lang.System.currentTimeMillis()&quot;/&gt;
-     &lt;xsl:value-of select=&quot;Java-system:currentTimeMillis()&quot;/&gt;
+     &lt;xsl:value-of select=&quot;java:java.lang.System.currentTimeMillis()&quot;/&gt;
+     &lt;xsl:value-of select=&quot;java-system:currentTimeMillis()&quot;/&gt;
   &lt;/xsl:template&gt;
 &lt;/xsl:stylesheet&gt;</source><br/></li>
   <li><em>Result Tree Fragments as Node Sets</em><br/>
