@@ -305,7 +305,7 @@ public class TransformerImpl extends XMLFilterImpl
                 
         // Set the reader for cloning purposes.
         getXPathContext().setPrimaryReader(reader);
-        
+        this.m_exceptionThrown = null;
         if(inputHandler instanceof org.apache.xalan.stree.SourceTreeHandler)
         {
           ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setInputSource(xmlSource);
@@ -339,9 +339,16 @@ public class TransformerImpl extends XMLFilterImpl
         {
           if(e instanceof trax.TransformException)
             throw (trax.TransformException)e;
-          else
+          else if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+            throw new trax.TransformException(
+              ((org.apache.xalan.utils.WrappedRuntimeException)e).getException());
+         else
             throw new trax.TransformException(e);
         }
+      }
+      catch(org.apache.xalan.utils.WrappedRuntimeException wre)
+      {
+        throw new TransformException(wre.getException());
       }
       catch(SAXException se)
       {
@@ -1872,7 +1879,7 @@ public class TransformerImpl extends XMLFilterImpl
   // Implement Runnable //  
   ////////////////////////
   
-  private Exception m_exceptionThrown;
+  private Exception m_exceptionThrown = null;
   
   public Exception getExceptionThrown()
   {
@@ -1894,9 +1901,20 @@ public class TransformerImpl extends XMLFilterImpl
     }
     catch(Exception e)
     {
-      // e.printStackTrace();
       m_exceptionThrown = e;
       ; // should have already been reported via the error handler?
+      synchronized (this)
+      {
+        String msg = e.getMessage();
+        // System.out.println(e.getMessage());
+        notifyAll();
+        if(null == msg)
+        {
+          // m_throwNewError = false;
+          e.printStackTrace();
+        }
+        // throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+      }
     }
   }
 
