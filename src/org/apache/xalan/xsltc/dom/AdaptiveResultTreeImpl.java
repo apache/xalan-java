@@ -73,6 +73,7 @@ import org.apache.xml.serializer.SerializationHandler;
 import javax.xml.transform.SourceLocator;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
@@ -688,10 +689,28 @@ public class AdaptiveResultTreeImpl extends SimpleResultTreeImpl
 	_attributes.clear();
     }
 
+    public void startElement(String uri, String localName, String qName)
+        throws SAXException
+    {
+        startElement(qName);
+    }
+
+    public void startElement(String uri, String localName, String qName, Attributes attributes)
+        throws SAXException
+    {
+        startElement(qName);
+    }
+    
     public void endElement(String elementName) throws SAXException
     {    
 	maybeEmitStartElement();
 	_dom.endElement(null, null, elementName);
+    }
+
+    public void endElement(String uri, String localName, String qName)
+        throws SAXException
+    {
+        endElement(qName);
     }
 
     public void addAttribute(String name, String value)
