@@ -45,25 +45,25 @@ import org.xml.sax.helpers.LocatorImpl;
  * @xsl.usage internal
  */
 
-final class TreeWalker
+public final class TreeWalker
 {
 
   /** Local reference to a ContentHandler          */
-  private ContentHandler m_contentHandler = null;
+  final private ContentHandler m_contentHandler;
   /** 
    * If m_contentHandler is a SerializationHandler, then this is 
    * a reference to the same object. 
    */
-  private SerializationHandler m_Serializer = null;
+  final private SerializationHandler m_Serializer;
 
   // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
   // DOM2Helper m_dh = new DOM2Helper();
 
   /** DomHelper for this TreeWalker          */
-  protected DOM2Helper m_dh;
+  final protected DOM2Helper m_dh;
         
-        /** Locator object for this TreeWalker          */
-        private LocatorImpl m_locator = new LocatorImpl();
+  /** Locator object for this TreeWalker          */
+  final private LocatorImpl m_locator = new LocatorImpl();
 
   /**
    * Get the ContentHandler used for the tree walk.
@@ -74,71 +74,39 @@ final class TreeWalker
   {
     return m_contentHandler;
   }
-
-  /**
-   * Get the ContentHandler used for the tree walk.
-   *
-   * @return the ContentHandler used for the tree walk
-   */
-  public void setContentHandler(ContentHandler ch)
-  {
-    m_contentHandler = ch;
-    if (m_contentHandler instanceof SerializationHandler) {
-        m_Serializer = (SerializationHandler) m_contentHandler;
-    }
-    else
-        m_Serializer = null;
-  }
-        
-        /**
-   * Constructor.
-   * @param   contentHandler The implemention of the
-   * @param   systemId System identifier for the document.
-   * contentHandler operation (toXMLString, digest, ...)
-   */
-  public TreeWalker(ContentHandler contentHandler, DOM2Helper dh, String systemId)
-  {
-    this.setContentHandler(contentHandler);
-    m_contentHandler.setDocumentLocator(m_locator);
-    if (systemId != null)
-        m_locator.setSystemId(systemId);
-    else {
-        try {
-          // Bug see Bugzilla  26741
-          m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
-         }
-         catch (SecurityException se) {// user.dir not accessible from applet             
-         }
-    }
-    m_dh = dh;
-  }
-
-  /**
-   * Constructor.
-   * @param   contentHandler The implemention of the
-   * contentHandler operation (toXMLString, digest, ...)
-   */
-  public TreeWalker(ContentHandler contentHandler, DOM2Helper dh)
-  {
-    this.setContentHandler(contentHandler);
-    m_contentHandler.setDocumentLocator(m_locator);
-    try {
-       // Bug see Bugzilla  26741
-      m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
-    } 
-    catch (SecurityException se){// user.dir not accessible from applet      
-    }
-    m_dh = dh;
-  }
   
+  public TreeWalker(ContentHandler ch) {
+      this(ch,null);
+  }
   /**
    * Constructor.
    * @param   contentHandler The implemention of the
    * contentHandler operation (toXMLString, digest, ...)
    */
-  public TreeWalker(ContentHandler contentHandler)
+  public TreeWalker(ContentHandler contentHandler, String systemId)
   {
-    this.setContentHandler(contentHandler);
+      // Set the content handler
+      m_contentHandler = contentHandler;
+      if (m_contentHandler instanceof SerializationHandler) {
+          m_Serializer = (SerializationHandler) m_contentHandler;
+      }
+      else
+          m_Serializer = null;
+          
+      // Set the system ID, if it is given
+      m_contentHandler.setDocumentLocator(m_locator);
+      if (systemId != null)
+          m_locator.setSystemId(systemId);
+      else {
+          try {
+            // Bug see Bugzilla  26741
+            m_locator.setSystemId(System.getProperty("user.dir") + File.separator + "dummy.xsl");
+           }
+           catch (SecurityException se) {// user.dir not accessible from applet             
+           }
+      }
+          
+      // Set the document locator  
                 if (m_contentHandler != null)
                         m_contentHandler.setDocumentLocator(m_locator);
                 try {
@@ -334,34 +302,55 @@ final class TreeWalker
     
       break;
     case Node.ELEMENT_NODE :
-      NamedNodeMap atts = ((Element) node).getAttributes();
+      Element elem_node = (Element) node;
+      {
+          // Make sure the namespace node
+          // for the element itself is declared
+          // to the ContentHandler
+          String uri = elem_node.getNamespaceURI();
+          if (uri != null) {
+              String prefix = elem_node.getPrefix();
+              if (prefix==null)
+                prefix="";
+              this.m_contentHandler.startPrefixMapping(prefix,uri);              
+          }
+      }
+      NamedNodeMap atts = elem_node.getAttributes();
       int nAttrs = atts.getLength();
       // System.out.println("TreeWalker#startNode: "+node.getNodeName());
 
+      
+      // Make sure the namespace node of
+      // each attribute is declared to the ContentHandler
       for (int i = 0; i < nAttrs; i++)
       {
-        Node attr = atts.item(i);
-        String attrName = attr.getNodeName();
+        final Node attr = atts.item(i);
+        final String attrName = attr.getNodeName();
+        final int colon = attrName.indexOf(':');
+        final String prefix;
 
         // System.out.println("TreeWalker#startNode: attr["+i+"] = "+attrName+", "+attr.getNodeValue());
         if (attrName.equals("xmlns") || attrName.startsWith("xmlns:"))
         {
-          // System.out.println("TreeWalker#startNode: attr["+i+"] = "+attrName+", "+attr.getNodeValue());
-          int index;
           // Use "" instead of null, as Xerces likes "" for the 
           // name of the default namespace.  Fix attributed 
           // to "Steven Murray" <smurray@ebt.com>.
-          String prefix = (index = attrName.indexOf(":")) < 0
-                          ? "" : attrName.substring(index + 1);
+          if (colon < 0)
+            prefix = "";
+          else
+            prefix = attrName.substring(colon + 1);
 
           this.m_contentHandler.startPrefixMapping(prefix,
                                                    attr.getNodeValue());
         }
-        
+        else if (colon > 0) {
+            prefix = attrName.substring(0,colon);
+            String uri = attr.getNamespaceURI();
+            if (uri != null)
+                this.m_contentHandler.startPrefixMapping(prefix,uri);
+        }        
       }
 
-      // System.out.println("m_dh.getNamespaceOfNode(node): "+m_dh.getNamespaceOfNode(node));
-      // System.out.println("m_dh.getLocalNameOfNode(node): "+m_dh.getLocalNameOfNode(node));
       String ns = m_dh.getNamespaceOfNode(node);
       if(null == ns)
         ns = "";
@@ -470,25 +459,49 @@ final class TreeWalker
                                          m_dh.getLocalNameOfNode(node),
                                          node.getNodeName());
 
-      NamedNodeMap atts = ((Element) node).getAttributes();
+      if (m_Serializer == null) {
+      // Don't bother with endPrefixMapping calls if the ContentHandler is a
+      // SerializationHandler because SerializationHandler's ignore the
+      // endPrefixMapping() calls anyways. . . .  This is an optimization.    
+      Element elem_node = (Element) node;    
+      NamedNodeMap atts = elem_node.getAttributes();
       int nAttrs = atts.getLength();
 
-      for (int i = 0; i < nAttrs; i++)
+      // do the endPrefixMapping calls in reverse order 
+      // of the startPrefixMapping calls
+      for (int i = (nAttrs-1); 0 <= i; i--)
       {
-        Node attr = atts.item(i);
-        String attrName = attr.getNodeName();
+        final Node attr = atts.item(i);
+        final String attrName = attr.getNodeName();
+        final int colon = attrName.indexOf(':');
+        final String prefix;
 
         if (attrName.equals("xmlns") || attrName.startsWith("xmlns:"))
         {
-          int index;
           // Use "" instead of null, as Xerces likes "" for the 
           // name of the default namespace.  Fix attributed 
           // to "Steven Murray" <smurray@ebt.com>.
-          String prefix = (index = attrName.indexOf(":")) < 0
-                          ? "" : attrName.substring(index + 1);
+          if (colon < 0)
+            prefix = "";
+          else
+            prefix = attrName.substring(colon + 1);
 
           this.m_contentHandler.endPrefixMapping(prefix);
         }
+        else if (colon > 0) {
+            prefix = attrName.substring(0, colon);
+            this.m_contentHandler.endPrefixMapping(prefix);
+        }
+      }
+      {
+          String uri = elem_node.getNamespaceURI();
+          if (uri != null) {
+              String prefix = elem_node.getPrefix();
+              if (prefix==null)
+                prefix="";
+              this.m_contentHandler.endPrefixMapping(prefix);              
+          }
+      }
       }
       break;
     case Node.CDATA_SECTION_NODE :

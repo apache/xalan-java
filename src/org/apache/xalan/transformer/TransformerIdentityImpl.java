@@ -47,7 +47,6 @@ import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.SerializerFactory;
 import org.apache.xml.serializer.Method;
 import org.apache.xml.utils.DOMBuilder;
-import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.XMLReaderManager;
 
 import org.w3c.dom.Document;
@@ -332,8 +331,9 @@ public class TransformerIdentityImpl extends Transformer
                 characters(chars, 0, chars.length);
               }
               else
-              {
-                TreeWalker walker = new TreeWalker(this, new org.apache.xml.utils.DOM2Helper(), m_systemID);
+              { 
+                org.apache.xml.serializer.TreeWalker walker;
+                walker = new org.apache.xml.serializer.TreeWalker(this, m_systemID);
                 walker.traverse(dNode);
               }
             }
