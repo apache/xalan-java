@@ -64,6 +64,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.IOException;
 import java.io.File;
+import java.io.OutputStreamWriter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.BufferedInputStream;
@@ -251,7 +252,7 @@ public class Examples
     
     // Transform the source XML to System.out.
     transformer.transform( new StreamSource(sourceID),
-                           new StreamResult(System.out));
+                           new StreamResult(new OutputStreamWriter(System.out)));
   }
   
   /**
@@ -298,7 +299,7 @@ public class Examples
     xmlSource.setSystemId(sourceID);
     
     // Transform the source XML to System.out.
-    transformer.transform( xmlSource, new StreamResult(System.out));
+    transformer.transform( xmlSource, new StreamResult(new OutputStreamWriter(System.out)));
   }
   
   /**
@@ -329,7 +330,7 @@ public class Examples
     xmlSource.setSystemId(sourceID);
     
     // Transform the source XML to System.out.
-    transformer.transform( xmlSource, new StreamResult(System.out));
+    transformer.transform( xmlSource, new StreamResult(new OutputStreamWriter(System.out)));
   }
 
 
@@ -357,12 +358,12 @@ public class Examples
     System.out.println("\n\n----- transform of "+sourceID1+" -----");
     
     transformer1.transform(new StreamSource(sourceID1),
-                          new StreamResult(System.out));
+                          new StreamResult(new OutputStreamWriter(System.out)));
     
     System.out.println("\n\n----- transform of "+sourceID2+" -----");
     
     transformer2.transform(new StreamSource(sourceID2),
-                          new StreamResult(System.out));
+                          new StreamResult(new OutputStreamWriter(System.out)));
   }
   
 
@@ -627,7 +628,7 @@ public class Examples
       transformer.transform(new DOMSource(doc), new DOMResult(outNode));
       
       Transformer serializer = tfactory.newTransformer();
-      serializer.transform(new DOMSource(outNode), new StreamResult(System.out));
+      serializer.transform(new DOMSource(outNode), new StreamResult(new OutputStreamWriter(System.out)));
 
       return outNode;
     }
@@ -655,13 +656,13 @@ public class Examples
     transformer1.setParameter("a-param",
                               "hello to you!");
     transformer1.transform(new StreamSource(sourceID),
-                           new StreamResult(System.out));
+                           new StreamResult(new OutputStreamWriter(System.out)));
     
     System.out.println("\n=========");
     
     transformer2.setOutputProperty(OutputKeys.INDENT, "yes");
     transformer2.transform(new StreamSource(sourceID),
-                           new StreamResult(System.out));
+                           new StreamResult(new OutputStreamWriter(System.out)));
   }
   
   /**
@@ -683,7 +684,7 @@ public class Examples
     
     // Transform the source XML to System.out.
     transformer.transform( new StreamSource(sourceID),
-                           new StreamResult(System.out));
+                           new StreamResult(new OutputStreamWriter(System.out)));
 
     System.out.println("\n=========\n");
 
@@ -693,7 +694,7 @@ public class Examples
 
     // Transform the source XML to System.out.
     transformer.transform( new StreamSource(sourceID),
-                           new StreamResult(System.out));
+                           new StreamResult(new OutputStreamWriter(System.out)));
   }
 
   /**
@@ -713,7 +714,7 @@ public class Examples
 
     transformer.setOutputProperties(oprops);
     transformer.transform(new StreamSource(sourceID),
-                          new StreamResult(System.out));
+                          new StreamResult(new OutputStreamWriter(System.out)));
   }
 
   /**
@@ -739,7 +740,7 @@ public class Examples
         Transformer transformer = tfactory.newTransformer(sources);
 
         transformer.transform(new StreamSource(sourceID),
-                              new StreamResult(System.out));
+                              new StreamResult(new OutputStreamWriter(System.out)));
       }
       else
       {
@@ -830,7 +831,7 @@ public class Examples
     serializer.setOutputProperty(OutputKeys.INDENT, "yes");
     serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
     serializer.transform(new DOMSource(node), 
-                         new StreamResult(System.out));
+                         new StreamResult(new OutputStreamWriter(System.out)));
   }  
   
   /**
@@ -854,10 +855,9 @@ public class Examples
     
     Properties oprops = new Properties();
     oprops.put("method", "html");
-    oprops.put("indent-amount", "2");
     serializer.setOutputProperties(oprops);
     serializer.transform(new DOMSource(doc), 
-                         new StreamResult(System.out));
+                         new StreamResult(new OutputStreamWriter(System.out)));
   }
   
 

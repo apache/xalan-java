@@ -57,6 +57,7 @@
 // This file uses 4 space indents, no tabs.
 
 import java.io.FileInputStream;
+import java.io.OutputStreamWriter;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.apache.xerces.parsers.DOMParser;
@@ -148,7 +149,7 @@ public class ApplyXPath
 	    System.out.print(sb);
 	}
 	else {
-	  serializer.transform(new DOMSource(n), new StreamResult(System.out));
+         serializer.transform(new DOMSource(n), new StreamResult(new OutputStreamWriter(System.out)));
 	}
         System.out.println();
       }

@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.OutputStreamWriter;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
@@ -28,7 +29,7 @@ public class Transform {
 
         try {
 	    StreamSource document = new StreamSource(xml);
-	    StreamResult result = new StreamResult(System.out);
+           StreamResult result = new StreamResult(new OutputStreamWriter(System.out));
 	    Templates templates = readTemplates(translet);
 	    Transformer transformer = templates.newTransformer();
             transformer.transform(document, result);

@@ -71,6 +71,7 @@ import org.xml.sax.SAXException;
 
 // Imported java classes
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
   /**
    * Use command-line input as a stylesheet parameter.
@@ -97,6 +98,6 @@ public class UseStylesheetParam
     transformer.setParameter("param1",	/* parameter name */
                							 paramValue /* parameter value */ );
     
-    transformer.transform(new StreamSource("foo.xml"), new StreamResult(System.out));
+    transformer.transform(new StreamSource("foo.xml"), new StreamResult(new OutputStreamWriter(System.out)));
   }   
 }
