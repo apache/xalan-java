@@ -846,12 +846,14 @@ Copyright:
     </patternset>
     <patternset id="src-distro" >
       <include name="${dist.file}/*"/>
-      <include name="${dist.file}/bin/ant*"/>
+      <include name="${dist.file}/bin/ant.jar"/>
       <include name="${dist.file}/bin/xercesImpl.jar"/>
       <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
       <include name="${dist.file}/bin/${stylebook.jar.name}"/>
       <include name="${dist.file}/bin/${doclet.jar.name}"/>
+      <include name="${dist.file}/bin/*.LICENSE.txt"/>
+      <include name="${dist.file}/bin/*.README.txt"/>
       <include name="${dist.file}/samples/"/>
       <include name="${dist.file}/src/"/>
       <include name="${dist.file}/xdocs/"/>
