@@ -656,6 +656,47 @@ Copyright:
       classpath="${java.class.path}:${build.dir}/xalan.jar:${bin.dir}/fop.jar:${bin.dir}/w3c.jar">
       <arg line="${build.docs}/xalan-collate.fo build/docs/xalan.pdf"/>
     </java>
-  </target>    
-  
+  </target>
+
+  <!-- =================================================================== -->  
+   <!-- for developers only; compiles xalan-j1 samples with compat jar and xalan-j2 xalan.jar-->
+   <target name="compat.samples" description="Compile XalanJ1 samples" >
+     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
+     <property name="samplesj1.dir" value="/xml-xalan/samples"/>
+     <property name="build.compat.samples" value="./build/compat_samples"/>
+     <mkdir dir="${build.compat.samples}"/>     
+
+    <!--need to use the XalanJ2 XPathAPI, so cannot compile ApplyXPath as is -->   
+    <javac srcdir="${samplesj1.dir}/Pipe" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
+           destdir="${build.compat.samples}"  excludes="${exclude}"
+           debug="${debug}"/> 
+    <javac srcdir="${samplesj1.dir}/SimpleTransform" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
+           destdir="${build.compat.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
+    <javac srcdir="${samplesj1.dir}/TransformToDom" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
+           destdir="${build.compat.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
+    <javac srcdir="${samplesj1.dir}/PureSAX" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
+           destdir="${build.compat.samples}"  excludes="${exclude}"
+           debug="${debug}"/>          
+    <javac srcdir="${samplesj1.dir}/UseStylesheetParam" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
+           destdir="${build.compat.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
+    <javac srcdir="${samplesj1.dir}/Servlet" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
+           destdir="${build.compat.samples}" excludes="${exclude}"
+           debug="${debug}"/>
+    <jar   jarfile="${build.compat.samples}/xalanjcompatsamples.jar" basedir="${build.compat.samples}"
+            includes="*.class"/> 
+     <!--put the servlet in a separate jar -->
+     <javac srcdir="${samplesj1.dir}/Servlet" classpath="${build.compat.jar}:${build.xalan.jar}:${java.class.path}" 
+           destdir="${build.compat.samples}"
+           debug="${debug}"/>
+      <copy todir="${build.compat.samples}/servlet">
+          <fileset dir="${samplesj1.dir}/Servlet" 
+                includes="media.properties,default.xsl,default2.xsl"/>
+        </copy>  		         
+    <jar jarfile="${build.compat.samples}/xalancompatservlet.jar" basedir="${build.compat.samples}"
+         includes="servlet/**"/>            
+ </target>
+      
 </project>
