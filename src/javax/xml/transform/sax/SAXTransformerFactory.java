@@ -66,21 +66,20 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.XMLFilter;
 
 /**
- * This class extends TransformerFactory to provide SAX specific 
+ * This class extends TransformerFactory to provide SAX-specific 
  * factory methods.  It provides two types of ContentHandlers, 
  * one for creating Transformers, the other for creating Templates 
  * objects.
  * 
- * <p>If applications need to set the ErrorHandler or EntityResolver 
- * for XMLReaders created during the course of a transform, it can 
- * do so by setting a URIResolver that returns  SAXSource that holds 
- * an application created XMLReader, which the user can customize 
- * by setting an error handler and entity resolver.</p>
+ * <p>If an application wants to set the ErrorHandler or EntityResolver 
+ * for an XMLReader used during a transformation, it should use a URIResolver
+ * to return the SAXSource which provides (with getXMLReader) a reference to 
+ * the XMLReader.</p>
  */
 public abstract class SAXTransformerFactory extends TransformerFactory
 {
   /**
-   * Default constructor is protected on purpose.
+   * The default constructor is protected on purpose.
    */
   protected SAXTransformerFactory(){}
 
@@ -89,7 +88,7 @@ public abstract class SAXTransformerFactory extends TransformerFactory
    * ContentHandler events into a Result, based on the transformation
    * instructions specified by the argument.
    *
-   * @param src The source of the transformation instructions.
+   * @param src The Source of the transformation instructions.
    *
    * @return TransformerHandler ready to transform SAX events.
    * 
@@ -103,7 +102,7 @@ public abstract class SAXTransformerFactory extends TransformerFactory
    * Get a TransformerHandler object that can process SAX
    * ContentHandler events into a Result, based on the Templates argument.
    *
-   * @param templates The source of the transformation instructions.
+   * @param templates The compiled transformation instructions.
    *
    * @return TransformerHandler ready to transform SAX events.
    * 
@@ -116,13 +115,14 @@ public abstract class SAXTransformerFactory extends TransformerFactory
   /**
    * Get a TransformerHandler object that can process SAX
    * ContentHandler events into a Result. The transformation 
-   * is defined as an identity (or copy) transformation.
+   * is defined as an identity (or copy) transformation, for example
+   * to copy a series of SAX parse events into a DOM tree.
    *
    * @return A non-null reference to a TransformerHandler, that may 
    * be used as a ContentHandler for SAX parse events.
    * 
    * @throws TransformerConfigurationException If for some reason the 
-   * TransformerHandler can not be created.
+   * TransformerHandler cannot be created.
    */
   public abstract TransformerHandler newTransformerHandler()
     throws TransformerConfigurationException;
@@ -135,21 +135,21 @@ public abstract class SAXTransformerFactory extends TransformerFactory
    * be used as a ContentHandler for SAX parse events.
    * 
    * @throws TransformerConfigurationException If for some reason the 
-   * TemplatesHandler can not be created.
+   * TemplatesHandler cannot be created.
    */
   public abstract TemplatesHandler newTemplatesHandler()
     throws TransformerConfigurationException;
 
   /**
-   * Create an XMLFilter that uses the given source as the
+   * Create an XMLFilter that uses the given Source as the
    * transformation instructions.
    *
-   * @param src The source of the transformation instructions.
+   * @param src The Source of the transformation instructions.
    *
    * @return An XMLFilter object, or null if this feature is not supported.
    * 
    * @throws TransformerConfigurationException If for some reason the 
-   * TemplatesHandler can not be created.
+   * TemplatesHandler cannot be created.
    */
   public abstract XMLFilter newXMLFilter(Source src)
     throws TransformerConfigurationException;
@@ -157,12 +157,12 @@ public abstract class SAXTransformerFactory extends TransformerFactory
   /**
    * Create an XMLFilter, based on the Templates argument..
    *
-   * @param templates The source of the transformation instructions.
+   * @param templates The compiled transformation instructions.
    *
    * @return An XMLFilter object, or null if this feature is not supported.
    * 
    * @throws TransformerConfigurationException If for some reason the 
-   * TemplatesHandler can not be created.
+   * TemplatesHandler cannot be created.
    */
   public abstract XMLFilter newXMLFilter(Templates templates)
     throws TransformerConfigurationException;

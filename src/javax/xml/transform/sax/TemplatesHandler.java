@@ -62,32 +62,31 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * This is a SAX ContentHandler that may be used to process SAX
- * parse events into an Templates objects.
+ * A SAX ContentHandler that may be used to process SAX
+ * parse events (parsing transformation instructions) into a Templates object.
  * 
- * <p>Note that TemplatesHandler doesn't need to implement LexicalHandler.</p>
+ * <p>Note that TemplatesHandler does not need to implement LexicalHandler.</p>
  */
 public interface TemplatesHandler extends ContentHandler
 {
   /**
-   * When this object is used as a ContentHandler or DocumentHandler, it
-   * creates a Templates object, which the caller can get once
-   * the SAX events have been completed.
+   * When a TemplatesHandler object is used as a ContentHandler or DocumentHandler
+   * for the parsing of transformation instructions, it creates a Templates object, 
+   * which the caller can get once the SAX events have been completed.
    * 
-   * @return The stylesheet object that was created during
-   * the SAX event process, or null if no stylesheet has
+   * @return The Templates object that was created during
+   * the SAX event process, or null if no Templates object has
    * been created.
    *
-   * @version Alpha
    * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
    */
   public Templates getTemplates();
   
   /**
-   * Set the base ID (URL or system ID) for the stylesheet
+   * Set the base ID (URI or system ID) for the Templates object
    * created by this builder.  This must be set in order to
-   * resolve relative URLs in the stylesheet.
-   * @param baseID Base URL for this stylesheet.
+   * resolve relative URIs in the stylesheet.
+   * @param baseID Base URI for this stylesheet.
    */
   public void setSystemID(String systemID);
 }

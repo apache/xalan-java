@@ -12,16 +12,16 @@ import org.xml.sax.ext.LexicalHandler;
 
 /**
  * The SAXTransformerFactory provides a reference to an 
- * object, which implements this interface, and which can 
- * listen to SAX ContentHandler parse events, and transform 
+ * object that implements this interface, and that can 
+ * listen to SAX ContentHandler parse events and transform 
  * them to a Result.
  */
 public interface TransformerHandler 
   extends ContentHandler, LexicalHandler
 {  
   /**
-   * Method setResult allows the user of the TransformerHandler
-   * to set the result of the transform.
+   * Enables the user of the TransformerHandler to set the
+   * to set the Result for the transformation.
    *
    * @param result A Result instance, should not be null.
    * 
@@ -31,9 +31,9 @@ public interface TransformerHandler
     throws IllegalArgumentException;
     
   /**
-   * Set the base ID (URL or system ID) from where relative 
+   * Set the base ID (URI or system ID) from where relative 
    * URLs will be resolved.
-   * @param baseID Base URL for the source tree.
+   * @param baseID Base URI for the source tree.
    */
   public void setBaseID(String baseID);
   

@@ -68,7 +68,7 @@ import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * Acts as an holder for a transformation result tree.
+ * Acts as an holder for a transformation Result.
  */
 public class SAXResult implements Result
 {
@@ -99,9 +99,9 @@ public class SAXResult implements Result
   }
 
   /**
-   * Get the ContentHandler that is the result target.
+   * Get the ContentHandler that is the Result.
    *
-   * @return The content handler that is to be target of the result output.
+   * @return The ContentHandler that is to be transformation output.
    */
   public ContentHandler getHandler()
   {
@@ -137,7 +137,7 @@ public class SAXResult implements Result
    * Method setSystemId Set the systemID that may be used in association
    * with the ContentHandler.
    *
-   * @param systemId The system identifier as a URL string.
+   * @param systemId The system identifier as a URI string.
    */
   public void setSystemId(String systemId)
   {
