@@ -587,7 +587,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
 
     // In case we have a fragment identifier, go ahead and
     // try and parse the XML here.
-    StylesheetRoot m_stylesheetRoot = null;
+    m_stylesheetRoot = null;
     try
     {
       m_stylesheetRoot = createStylesheetRoot(stylesheetSource.getSystemId());
