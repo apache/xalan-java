@@ -467,7 +467,10 @@ public class TransformerImpl extends Transformer
       m_stackGuard = new StackGuard();
 
       m_xcontext.reset();
+      m_xcontext.getVarStack().clearLocalSlots(0, m_xcontext.getVarStack().size());
+      resetUserParameters();
       m_xcontext.getVarStack().reset();
+      
 
       int n = m_currentTemplateElements.length;
       for (int i = 0; i < n; i++) 
@@ -1509,6 +1512,43 @@ public class TransformerImpl extends Transformer
 
       // Should throw some sort of an error.
       return null;
+    }
+  }
+  
+  /**
+   * Reset parameters that the user specified for the transformation.
+   * Called during transformer.reset() after we have cleared the 
+   * variable stack. We need to make sure that user params are
+   * reset so that the transformer object can be reused. 
+   */
+  private void resetUserParameters()
+  {
+
+    try
+    {
+      
+      if (null == m_userParams)
+        return;
+
+      int n = m_userParams.size();
+      for (int i = n - 1; i >= 0; i--)
+      {
+        Arg arg = (Arg) m_userParams.elementAt(i);
+        QName name = arg.getQName();
+        // The first string might be the namespace, or it might be 
+        // the local name, if the namespace is null.
+        String s1 = name.getNamespace();
+        String s2 = name.getLocalPart();
+
+        setParameter(s2, s1, arg.getVal().object());
+        
+      }
+      
+    }
+    catch (java.util.NoSuchElementException nsee)
+    {
+      // Should throw some sort of an error.
+      
     }
   }
 
