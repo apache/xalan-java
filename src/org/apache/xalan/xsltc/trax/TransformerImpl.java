@@ -729,7 +729,7 @@ public final class TransformerImpl extends Transformer
      *
      * @return Properties in effect for this Transformer
      */
-    public Properties getOutputProperties() {
+    public Properties getOutputProperties() { 
 	return (Properties) _properties.clone();
     }
 
@@ -761,7 +761,7 @@ public final class TransformerImpl extends Transformer
      * @param properties The properties to use for the Transformer
      * @throws IllegalArgumentException Never, errors are ignored
      */
-    public void setOutputProperties(Properties properties)
+    public void setOutputProperties(Properties properties) 
 	throws IllegalArgumentException 
     {
 	if (properties != null) {
@@ -929,7 +929,7 @@ public final class TransformerImpl extends Transformer
 
 	// Call setDoctype() if needed
 	if (doctypePublic != null || doctypeSystem != null) {
-	    handler.setDoctype(doctypePublic, doctypeSystem);
+	    handler.setDoctype(doctypeSystem, doctypePublic);
 	}
     }
 
