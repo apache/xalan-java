@@ -81,6 +81,7 @@ import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 final class Param extends VariableBase {
 
     // True if this Param is declared in a simple named template.
@@ -204,7 +205,16 @@ final class Param extends VariableBase {
 	if (_ignore) return;
 	// _ignore = true;
 
-	final String name = getVariable();
+        /*
+         * To fix bug 24518 related to setting parameters of the form
+         * {namespaceuri}localName
+         * which will get mapped to an instance variable in the class
+         * Hence  a parameter of the form "{http://foo.bar}xyz"
+         * will be replaced with the corresponding values
+         * by the BasisLibrary's utility method mapQNametoJavaName
+         * and thus get mapped to legal java variable names
+         */
+	final String name = BasisLibrary.mapQNameToJavaName(_name.toString());
 	final String signature = _type.toSignature();
 	final String className = _type.getClassName();
 

@@ -176,10 +176,14 @@ public abstract class AbstractTranslet implements Translet {
 
     /**
      * Add a new global parameter if not already in the current frame.
+     * To setParameters of the form {http://foo.bar}xyz
+     * This needs to get mapped to an instance variable in the class
+     * The mapping  created so that 
+     * the global variables in the generated class become 
+     * http$colon$$flash$$flash$foo$dot$bar$colon$xyz
      */
     public final Object addParameter(String name, Object value) {
-	name = BasisLibrary.replace(name, ".-", 
-				    new String[] { "$dot$", "$dash$" });
+        name = BasisLibrary.mapQNameToJavaName (name);
 	return addParameter(name, value, false);
     }
 
@@ -226,6 +230,9 @@ public abstract class AbstractTranslet implements Translet {
      * <tt>null</tt> if undefined.
      */
     public final Object getParameter(String name) {
+
+        name = BasisLibrary.mapQNameToJavaName (name);
+
 	for (int i = pframe - 1; i >= pbase; i--) {
 	    final Parameter param = (Parameter)paramsStack.get(i);
 	    if (param._name.equals(name)) return param._value;

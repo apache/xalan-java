@@ -1432,5 +1432,20 @@ public final class BasisLibrary implements Operators {
 	return result.toString();
     }
 
+
+    /**
+     * Utility method to allow setting parameters of the form
+     * {namespaceuri}localName
+     * which get mapped to an instance variable in the class
+     * Hence  a parameter of the form "{http://foo.bar}xyz"
+     * will be replaced with the corresponding values  
+     * by the BasisLibrary's utility method mapQNametoJavaName
+     * and thus get mapped to legal java variable names 
+     */
+    public static String mapQNameToJavaName (String base ) {
+       return replace(base, ".-:/{}?#%*", new String[] { "$dot$", "$dash$" ,"$colon$", "$flash$","","$colon$","$ques$","$hash$","$per$","$aster$"});
+
+    }
+
     //-- End utility functions
 }
