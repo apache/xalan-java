@@ -69,6 +69,7 @@ import org.apache.xpath.DOMOrder;
 import org.apache.xpath.axes.AxesWalker;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * This is the superclass for all nodes in the org.apache.xalan.lib.sql package.
  */
 public class StreamableNode extends UnImplNode

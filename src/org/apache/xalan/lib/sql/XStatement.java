@@ -70,6 +70,7 @@ import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * Represents a JDBC query statement. Also acts as both a
  * NodeIterator and the Document node for the row-set representation
  * of the query result set.

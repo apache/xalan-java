@@ -68,6 +68,7 @@ import java.sql.SQLException;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * Represents the col element text node, i.e., the column value.
  */
 public class ColumnData extends StreamableNode implements Text

@@ -65,6 +65,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * This class represents the row-set StreamableNode, a "streamable" holder
  * for the JDBC query result set.
  */

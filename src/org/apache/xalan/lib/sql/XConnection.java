@@ -70,6 +70,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.traversal.NodeIterator;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * An XSLT extension that allows a stylesheet to
  * access JDBC data. From the stylesheet perspective,
  * XConnection provides 3 extension functions: new(),

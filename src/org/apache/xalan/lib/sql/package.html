@@ -1,8 +1,11 @@
 <html>
-  <title>Xalan SQL Extension.</title>
+  <title>Xalan SQL Extension</title>
   <body>
-    <p>Provides extension functions for connecting to a JDBC data source, executing a query,
+    <p><em>**Experimental**</em> Provides extension functions for connecting to a JDBC data source, executing a query,
     and working incrementally through "streamable" result set.<p>
+   <p><em>The SQL extension use of a single row-set node to incrementally return a query result set is experimental. Keep in mind that you
+   can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for
+   example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>    
     <p>XConnection provides three extension functions that you can use in your stylesheet.</p>
     <ol>
       <li><p>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection

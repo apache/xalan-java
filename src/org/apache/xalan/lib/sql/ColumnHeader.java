@@ -67,6 +67,7 @@ import java.sql.SQLException;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * This class represents a column-header Node, which contains the metadata
  * for a column.
  */

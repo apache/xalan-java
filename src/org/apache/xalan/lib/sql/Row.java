@@ -68,6 +68,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * This class represents a row from a query result set.  It is used
  * over and over, and so is certainly not fully DOM complient,
  * and will result in strange results in the stylesheet if the

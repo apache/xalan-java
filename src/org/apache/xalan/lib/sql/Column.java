@@ -65,6 +65,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * Represents a col node from a row node.
  */
 public class Column extends StreamableNode

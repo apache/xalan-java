@@ -70,6 +70,7 @@ import java.sql.ResultSet;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
+ * <meta name="usage" content="experimental"/>
  * Represents a column attribute on a column-header element.
  * Each column-header element can contain any of the following
  * attributes, depending on the ResultSetMetadata object returned with
