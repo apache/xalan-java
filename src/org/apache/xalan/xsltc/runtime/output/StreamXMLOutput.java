@@ -185,17 +185,22 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     }
 
     public void startDocument() throws TransletException { 
+// System.out.println("startDocument");
 	if (!_omitHeader) {
-	    _buffer.append("<?xml version=\"").append(_version)
-	           .append("\" encoding=\"").append(_encoding);
+	    final StringBuffer header = new StringBuffer("<?xml version=\"");
+	    header.append(_version).append("\" encoding=\"").append(_encoding);
 	    if (_standalone != null) {
-		_buffer.append("\" standalone=\"").append(_standalone);
+		header.append("\" standalone=\"").append(_standalone);
 	    }
-	    _buffer.append("\"?>\n");
+	    header.append("\"?>\n");
+
+	    // Always insert header at the beginning 
+	    _buffer.insert(0, header.toString());
 	}
     }
 
     public void endDocument() throws TransletException { 
+// System.out.println("endDocument");
 	if (_startTagOpen) {
 	    _buffer.append("/>");
 	}
@@ -272,6 +277,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     }
 
     public void characters(String characters) throws TransletException { 
+// System.out.println("characters() '" + characters + "'");
 	if (_startTagOpen) {
 	    _buffer.append('>');
 	    _startTagOpen = false;
