@@ -59,12 +59,12 @@ package org.apache.xalan.xslt;
 import org.apache.xpath.*;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XNull;
+import org.apache.xalan.xpath.XObject;
+import org.apache.xalan.xpath.XString;
+import org.apache.xalan.xpath.XNodeSet;
+import org.apache.xalan.xpath.XBoolean;
+import org.apache.xalan.xpath.XNumber;
+import org.apache.xalan.xpath.XNull;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
@@ -832,7 +832,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
       Compiler compiler = new Compiler();
       // Parse the xpath
       parser.initXPath(compiler, "id("+fragID+")", nsNode);
-      XObject xobj = xpath.execute(xpathContext, fragBase, nsNode);
+      org.apache.xpath.objects.XObject xobj = xpath.execute(xpathContext, fragBase, nsNode);
 
       nl = xobj.nodeset();
       if(nl.nextNode() == null)
@@ -2131,7 +2131,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */
   public XNodeSet createXNodeSet(NodeList nl)
   {
-    return new XNodeSet((NodeIterator)nl);
+    return new XNodeSet(nl);
   }
 
   /**

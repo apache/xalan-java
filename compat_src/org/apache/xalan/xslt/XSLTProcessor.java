@@ -59,12 +59,12 @@ package org.apache.xalan.xslt;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XNull;
+import org.apache.xalan.xpath.XObject;
+import org.apache.xalan.xpath.XNodeSet;
+import org.apache.xalan.xpath.XBoolean;
+import org.apache.xalan.xpath.XNumber;
+import org.apache.xalan.xpath.XNull;
+import org.apache.xalan.xpath.XString;
 import org.apache.xalan.xpath.xml.XMLParserLiaison;
 import org.apache.xalan.xpath.xml.ProblemListener;
 
