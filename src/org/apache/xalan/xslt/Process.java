@@ -375,7 +375,7 @@ public class Process
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-PARAM" }));  //"Missing argument for);
         }
-        else if ("-treedump".equalsIgnoreCase(argv[i]))  // sc 28-Feb-01 appears to be unused; can we remove?
+        else if ("-TREEDUMP".equalsIgnoreCase(argv[i]))  // sc 28-Feb-01 appears to be unused; can we remove?
         {
           if (i + 1 < argv.length)
             treedumpFileName = argv[++i];
@@ -538,6 +538,23 @@ public class Process
         }
         else if ("-L".equalsIgnoreCase(argv[i]))
           useSourceLocation = true;
+        else if ("-INCREMENTAL".equalsIgnoreCase(argv[i]))
+        {
+          tfactory.setAttribute
+            ("http://xml.apache.org/xalan/features/incremental", 
+             java.lang.Boolean.TRUE);
+        }
+        else if ("-NOOPTIMIZE".equalsIgnoreCase(argv[i]))
+        {
+          // Default is true.
+          //
+          // %REVIEW% We should have a generalized syntax for negative
+          // switches...  and probably should accept the inverse even
+          // if it is the default.
+          tfactory.setAttribute
+            ("http://xml.apache.org/xalan/features/optimize", 
+             java.lang.Boolean.FALSE);
+	}
         else
           System.err.println(
             XSLMessages.createMessage(
