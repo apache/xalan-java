@@ -269,8 +269,6 @@ class ProcessorInclude extends XSLTElementProcessor
         reader = saxSource.getXMLReader(); // may be null
       }
       
-      boolean isUserReader = (reader != null);
-      
       InputSource inputSource = SAXSource.sourceToInputSource(source);
 
       if (null == reader)
@@ -300,14 +298,6 @@ class ProcessorInclude extends XSLTElementProcessor
       if (null != reader)
       {
         reader.setContentHandler(handler);
-        try
-        {
-          if(!isUserReader)
-            reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                              true);
-        }
-        catch(org.xml.sax.SAXException se) {}
-        
         handler.pushBaseIndentifier(inputSource.getSystemId());
 
         try

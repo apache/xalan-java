@@ -165,10 +165,6 @@ public class TrAXFilter extends XMLFilterImpl
       {
         parent.setFeature("http://xml.org/sax/features/namespace-prefixes",
                           true);
-        // Commented out as per discussion with Thomas2.Maesing@bgs-ag.de 
-        // about bug 2124.
-//        parent.setFeature("http://apache.org/xml/features/validation/dynamic",
-//                          true);
       }
       catch (org.xml.sax.SAXException se){}
       // setParent calls setupParse...
