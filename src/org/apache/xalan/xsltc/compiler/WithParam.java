@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author John Howard <JohnH@schemasoft.com>
  *
  */
 
@@ -157,11 +158,17 @@ final class WithParam extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+	// Make name acceptable for use as field name in class
+	// TODO: convert to escape sequence like $dot$ and $dash$
+	String name = _name.getLocalPart(); // TODO: namespace ?
+	name = name.replace('.', '_');
+	name = name.replace('-', '_');
+
 	// Load reference to the translet (method is in AbstractTranslet)
 	il.append(classGen.loadTranslet());
 
 	// Load the name of the parameter
-	il.append(new PUSH(cpg, _name.getLocalPart()));	// TODO: namespace ?
+	il.append(new PUSH(cpg, name)); // TODO: namespace ?
 	// Generete the value of the parameter (use value in 'select' by def.)
 	translateValue(classGen, methodGen);
 	// Mark this parameter value is not being the default value

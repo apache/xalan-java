@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
  * @author Erwin Bolwidt <ejb@klomp.org>
+ * @author John Howard <JohnH@schemasoft.com>
  *
  */
 
@@ -74,45 +75,30 @@ import de.fub.bytecode.classfile.Field;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.dom.Axis;
 
-final class Variable extends TopLevelElement {
+final class Variable extends VariableBase {
 
-    // The name of the variable.
-    private QName _name;
-
-    // The type of this variable.
-    private Type _type;
-
-    // True if the variable is local.
-    private boolean _isLocal;
-    
-    private LocalVariableGen _local;
-    private Instruction _loadInstruction;
-    
-    // A reference to the select expression.
-    private Expression _select;
-	
     // Index of this variable in the variable stack relative to base ptr
     private int _stackIndex = -1;
 
     private boolean _escapes;
-    private boolean _usedLocally;
+
+    // If the variable is of result tree type, and this result tree 
+    // is implemented as a method, this is the name of the method.
+    private String _methodName = null;
 
     /**
-     * If the variable is of result tree type, and this result tree 
-     * is implemented as a method, this is the name of the method.
+     * Returns the method name for this variable. Used if the value of the
+     * variable is a result tree and a separate method is used to build it.
+     * The method name is generate in typeCheck(), so this method should never
+     * be called before that.
      */
-    private String _methodName;
-
-    // references to this variable (when local)
-    private Vector _refs = new Vector(2);
-
-    // to make sure parameter field is not added twice
-    private boolean    _compiled = false;
-
-    public void addReference(VariableRef vref) {
-	_refs.addElement(vref);
+    public String getMethodName() {
+	return _methodName;
     }
 
+    /**
+     *
+     */
     public void setEscapes() {
 	_escapes = true;
 	if (_stackIndex == -1) { // unassigned
@@ -123,60 +109,9 @@ final class Variable extends TopLevelElement {
 	}
     }
 
-    public Expression getExpression() {
-	return(_select);
-    }
-
-    public String toString() {
-	return("variable("+_name+")");
-    }
-
-    public void setUsedLocally() {
-	_usedLocally = true;
-    }
-
-    public void removeReference(VariableRef vref, MethodGenerator methodGen) {
-	_refs.remove(vref);
-	if (_refs.isEmpty()) {
-	    _local.setEnd(methodGen.getInstructionList().getEnd());
-	    methodGen.removeLocalVariable(_local);
-	    _refs = null;
-	    _local = null;
-	}
-    }
-    
-    public Instruction loadInstruction() {
-	final Instruction instr = _loadInstruction;
-	return instr != null
-	    ? instr : (_loadInstruction = _type.LOAD(_local.getIndex()));
-    }
-    
-    public void display(int indent) {
-	indent(indent);
-	System.out.println("Variable " + _name);
-	if (_select != null) { 
-	    indent(indent + IndentIncrement);
-	    System.out.println("select " + _select.toString());
-	}
-	displayContents(indent + IndentIncrement);
-    }
-
-    public String getMethodName() {
-	return _methodName;
-    }
-
-    public Type getType() {
-	return _type;
-    }
-
-    public boolean isLocal() {
-	return _isLocal;
-    }
-
-    public QName getName() {
-	return _name;
-    }
-
+    /**
+     *
+     */
     public int getStackIndex() {
 	return _stackIndex;
     }
@@ -385,16 +320,12 @@ final class Variable extends TopLevelElement {
 	    }
 
 	    // Add a new local variable and store value
-	    if (_refs.isEmpty()) { // nobody uses the value
+	    if (_refs.isEmpty()) { // Remove it if nobody uses the value
 		il.append(_type.POP());
 		_local = null;
 	    }
-	    else {		// normal case
-		if (_local == null) {
-		    _local = methodGen.addLocalVariable2(name,
-							 _type.toJCType(),
-							 il.getEnd());
-		}
+	    else {		   // Store in local var slot if referenced
+		if (_local == null) mapRegister(methodGen);
 		il.append(_type.STORE(_local.getIndex()));
 	    }
 

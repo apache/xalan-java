@@ -114,9 +114,10 @@ final class Predicate extends Expression {
 		    _ptype = ((Step)exp).getNodeType();
 		}
 	    }
-	    else if (parent instanceof VariableRef) {
-		Variable var = ((VariableRef)parent).getVariable();
-		Expression exp = var.getExpression();
+	    else if (parent instanceof VariableRefBase) {
+		final VariableRefBase ref = (VariableRefBase)parent;
+		final VariableBase var = ref.getVariable();
+		final Expression exp = var.getExpression();
 		if (exp instanceof Step) {
 		    _ptype = ((Step)exp).getNodeType();
 		}
@@ -329,8 +330,7 @@ final class Predicate extends Expression {
 	    try {
 		if ((tleft == Type.String) && (!(left instanceof Step)))
 		    _value = exp.getLeft();
-		if ((left instanceof VariableRef) ||
-		    (left instanceof ParameterRef))
+		if (left instanceof VariableRefBase)
 		    _value = new CastExpr(left, Type.String);
 	    }
 	    catch (TypeCheckError e) { }
@@ -338,8 +338,7 @@ final class Predicate extends Expression {
 	    try {
 		if ((tright == Type.String) && (!(right instanceof Step)))
 		    _value = exp.getRight();
-		if ((right instanceof VariableRef) || 
-		    (right instanceof ParameterRef))
+		if (right instanceof VariableRefBase)
 		    _value = new CastExpr(right, Type.String);
 	    }
 	    catch (TypeCheckError e) { }

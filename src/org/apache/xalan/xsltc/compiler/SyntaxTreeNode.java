@@ -61,6 +61,7 @@
  * @author G. Todd Miller
  * @author Morten Jorensen
  * @author Erwin Bolwidt <ejb@klomp.org>
+ * @author John Howard <JohnH@schemasoft.com>
  *
  */
 
@@ -364,6 +365,20 @@ public abstract class SyntaxTreeNode implements Constants {
 	for (int i = 0; i < n; i++) {
 	    final SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
 	    item.translate(classGen, methodGen);
+	}
+
+	/**
+	 * After translation, unmap any registers for any variables/parameters
+	 * that were declared in this scope. Performing this unmapping in the
+	 * same AST scope as the declaration deals with the problems of
+	 * references falling out-of-scope inside the for-each element.
+	 * (the cause of which being 'lazy' register allocation for references)
+	 */
+	for (int i = 0; i < n; i++) {
+	    if( _contents.elementAt(i) instanceof VariableBase) {
+		final VariableBase var = (VariableBase)_contents.elementAt(i);
+		var.unmapRegister(methodGen);
+	    }
 	}
     }
 

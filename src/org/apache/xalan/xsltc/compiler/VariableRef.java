@@ -69,31 +69,18 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
-final class VariableRef extends Expression {
-    private final Variable _variable;
+final class VariableRef extends VariableRefBase {
+
     private boolean _escaped;
 	
     public VariableRef(Variable variable) {
-	_variable = variable;
-	variable.addReference(this);
-    }
-
-    public Variable getVariable() {
-	return(_variable);
-    }
-
-    public String toString() {
-	return "variable-ref(" + _variable.getName() + ')';
+	super(variable);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_variable.isLocal()) {
-	    if (_escaped = isEscaped()) {
-		_variable.setEscapes();
-	    }
-	    else {
-		_variable.setUsedLocally();
-	    }
+	    if (_escaped = isEscaped())
+		((Variable)_variable).setEscapes();
 	}
 	return _type = _variable.getType();
     }
@@ -130,7 +117,8 @@ final class VariableRef extends Expression {
 	if (_variable.isLocal()) {
 	    if (classGen.isExternal() || _escaped) {
 		il.append(classGen.loadTranslet());
-		il.append(new PUSH(cpg, _variable.getStackIndex()));
+		final int sindex = ((Variable)_variable).getStackIndex();
+		il.append(new PUSH(cpg, sindex));
 		final int getVar = cpg.addMethodref(TRANSLET_CLASS, 
 						    GET_VARIABLE,
 						    GET_VARIABLE_SIG);
@@ -139,7 +127,7 @@ final class VariableRef extends Expression {
 	    }
 	    else {
 		il.append(_variable.loadInstruction());
-		_variable.removeReference(this, methodGen);
+		_variable.removeReference(this);
 	    }
 	}
 	else {

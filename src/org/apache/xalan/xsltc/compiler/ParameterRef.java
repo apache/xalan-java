@@ -69,16 +69,14 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
-final class ParameterRef extends Expression {
-    private final Param _param;
-	
+final class ParameterRef extends VariableRefBase {
+
     public ParameterRef(Param param) {
-	_param = param;
-	param.addReference(this);
+	super(param);
     }
 
     public String toString() {
-	return "parameter-ref(" + _param.getName() + ')';
+	return "parameter-ref(" + _variable.getName() + ')';
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -89,12 +87,12 @@ final class ParameterRef extends Expression {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 		
-	final Type parType = _param.getType();
-	String parName = _param.getName().getLocalPart();
+	final Type parType = _variable.getType();
+	String parName = _variable.getName().getLocalPart();
 	parName = parName.replace('.', '_');
 	parName = parName.replace('-', '_');
 
-	if (_param.isLocal()) {
+	if (_variable.isLocal()) {
 	    if (classGen.isExternal()) {
 		il.append(classGen.loadTranslet());
 		il.append(new PUSH(cpg, parName));
@@ -104,8 +102,8 @@ final class ParameterRef extends Expression {
 		il.append(new INVOKEVIRTUAL(index));
 	    }
 	    else {
-		il.append(_param.loadInstruction());
-		_param.removeReference(this, methodGen);
+		il.append(_variable.loadInstruction());
+		_variable.removeReference(this);
 	    }
 	}
 	else {

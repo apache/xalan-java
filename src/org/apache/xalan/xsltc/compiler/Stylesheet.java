@@ -328,7 +328,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// variables and/or parameters before we parse the other elements...
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if ((child instanceof Param) || (child instanceof Variable)) {
+	    if (child instanceof VariableBase) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
@@ -337,7 +337,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Now go through all the other top-level elements...
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if (!((child instanceof Param) || (child instanceof Variable))) {
+	    if (!(child instanceof VariableBase)) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
@@ -611,12 +611,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    else if (element instanceof Whitespace) {
 		whitespaceRules.addAll(((Whitespace)element).getRules());
 	    }
-	    // xsl:param
-	    else if (element instanceof Param) {
-		((Param)element).translate(classGen,toplevel);
-	    }
-	    // xsl:variable
-	    else if (element instanceof Variable) {
+	    // xsl:variable or xsl:param
+	    else if (element instanceof VariableBase) {
 		((Variable)element).translate(classGen,toplevel);
 	    }
 	}

@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
  * @author Erwin Bolwidt <ejb@klomp.org>
+ * @author John Howard <JohnH@schemasoft.com>
  *
  */
 
@@ -76,22 +77,18 @@ import de.fub.bytecode.classfile.Field;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 
-final class Param extends TopLevelElement {
+final class Param extends VariableBase {
 
-    private QName      _name;
-    private boolean    _isLocal;	// true if the param is local
-    private Expression _select;
-    private Type       _type;
+    /**
+     * Display variable as single string
+     */
+    public String toString() {
+	return("param("+_name+")");
+    }
 
-    // a JavaClass construct to refer to a JVM var
-    private LocalVariableGen _local;
-    // cached JavaClass instruction to push the contents of this var
-    private Instruction _loadInstruction;
-    // references to this variable (when local)
-    private Vector     _refs = new Vector(2);
-    // to make sure parameter field is not added twice
-    private boolean    _compiled = false;
-
+    /**
+     * Display variable in a full AST dump
+     */
     public void display(int indent) {
 	indent(indent);
 	System.out.println("param " + _name);
@@ -100,46 +97,6 @@ final class Param extends TopLevelElement {
 	    System.out.println("select " + _select.toString());
 	}
 	displayContents(indent + IndentIncrement);
-    }
-
-    public String toString() {
-	return("param("+_name+")");
-    }
-
-    public void addReference(ParameterRef pref) {
-	_refs.addElement(pref);
-    }
-
-    public void removeReference(ParameterRef pref) {
-	_refs.remove(pref);
-    }
-    
-    public void removeReference(ParameterRef pref, MethodGenerator methodGen) {
-	_refs.remove(pref);
-	if (_refs.isEmpty()) {
-	    _local.setEnd(methodGen.getInstructionList().getEnd());
-	    methodGen.removeLocalVariable(_local);
-	    _refs = null;
-	    _local = null;
-	}
-    }
-
-    public Instruction loadInstruction() {
-	final Instruction instr = _loadInstruction;
-	return instr != null
-	    ? instr : (_loadInstruction = _type.LOAD(_local.getIndex()));
-    }
-    
-    public Type getType() {
-	return _type;
-    }
-
-    public boolean isLocal() {
-	return _isLocal;
-    }
-
-    public QName getName() {
-	return _name;
     }
 
     public void parseContents(Parser parser) {

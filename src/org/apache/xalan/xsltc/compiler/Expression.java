@@ -161,7 +161,7 @@ abstract class Expression extends SyntaxTreeNode {
 	    return;		// nothing to do
 	}
 
-	if (this instanceof VariableRef) {
+	if (this instanceof VariableRefBase) {
 	    // The method cloneIterator() also does resetting
 	    final int clone =
 		cpg.addInterfaceMethodref(NODE_ITERATOR,
