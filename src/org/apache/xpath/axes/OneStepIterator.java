@@ -196,6 +196,63 @@ public class OneStepIterator extends ChildTestIterator
   }
 
   /**
+   *  The number of nodes in the list. The range of valid child node indices
+   * is 0 to <code>length-1</code> inclusive.
+   *
+   * @return The number of nodes in the list, always greater or equal to zero.
+   */
+  public int getLength()
+  {
+    if(!isReverseAxes())
+      return super.getLength();
+      
+    // Tell if this is being called from within a predicate.
+    boolean isPredicateTest = (this == m_execContext.getSubContextList());
+
+    // And get how many total predicates are part of this step.
+    int predCount = getPredicateCount();
+   
+    // If we have already calculated the length, and the current predicate 
+    // is the first predicate, then return the length.  We don't cache 
+    // the anything but the length of the list to the first predicate.
+    if (-1 != m_length && isPredicateTest && m_predicateIndex < 1)
+       return m_length;      
+
+    int count = 0;
+    
+    XPathContext xctxt = getXPathContext();
+    try
+    {
+      OneStepIterator clone = (OneStepIterator) this.cloneWithReset();
+      
+      int root = getRoot();
+      xctxt.pushCurrentNode(root);
+      clone.setRoot(root, xctxt);
+ 
+      clone.m_predCount = m_predicateIndex;
+
+      int next;
+
+      while (DTM.NULL != (next = clone.nextNode()))
+      {
+        count++;
+      }
+    }
+    catch (CloneNotSupportedException cnse)
+    {
+       // can't happen
+    }
+    finally
+    {
+      xctxt.popCurrentNode();
+    }
+    if (isPredicateTest && m_predicateIndex < 1)
+      m_length = count;    
+      
+    return count;
+  }
+
+  /**
    * Count backwards one proximity position.
    *
    * @param i The predicate index.
