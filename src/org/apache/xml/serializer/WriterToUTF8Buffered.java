@@ -29,8 +29,12 @@ import java.io.Writer;
  * as quickly as possible. It buffers the output in an internal
  * buffer which must be flushed to the OutputStream when done. This flushing
  * is done via the close() flush() or flushBuffer() method. 
+ * 
+ * This class is only used internally within Xalan.
+ * 
+ * @xsl.usage internal
  */
-public final class WriterToUTF8Buffered extends Writer
+final class WriterToUTF8Buffered extends Writer
 {
     
   /** number of bytes that the byte buffer can hold.
@@ -426,57 +430,5 @@ public final class WriterToUTF8Buffered extends Writer
   public OutputStream getOutputStream()
   {
     return m_os;
-  }
-  
-  /**
-   * 
-   * @param s A string with only ASCII characters
-   * @throws IOException
-   */
-  public void directWrite(final String s) throws IOException
-  {
-
-    final int length = s.length();
-    
-    if (length >= BYTES_MAX - count)
-    {
-      // The requested length is greater than the unused part of the buffer
-      flushBuffer();
-
-      if (length >= BYTES_MAX)
-      {
-        /*
-         * The requested length exceeds the size of the buffer,
-         * so don't bother to buffer this one, just write it out
-         * directly. The buffer is already flushed so this is a 
-         * safe thing to do.
-         */
-         final int start = 0;
-         int chunks = 1 + length/CHARS_MAX;
-         for (int chunk =0 ; chunk < chunks; chunk++)
-         {
-             int start_chunk = start + ((length*chunk)/chunks);
-             int end_chunk   = start + ((length*(chunk+1))/chunks);
-             int len_chunk = (end_chunk - start_chunk);
-             s.getChars(start_chunk,end_chunk, m_inputChars,0);
-             this.directWrite(m_inputChars,0, len_chunk);
-         }
-        return;
-      }
-    }
-
-
-    s.getChars(0, length , m_inputChars, 0);
-    final char[] chars = m_inputChars;
-    final byte[] buf_loc = m_outputBytes; // local reference for faster access
-    int count_loc = count;      // local integer for faster access
-    int i = 0;
-    while( i < length) 
-        buf_loc[count_loc++] = (byte)chars[i++];
-
- 
-    // Store the local integer back into the instance variable
-    count = count_loc;
-
   }
 }
