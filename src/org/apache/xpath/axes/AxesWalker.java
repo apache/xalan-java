@@ -1291,7 +1291,11 @@ public abstract class AxesWalker extends NodeTest
       } // while(null != walker)
       
     }
+      // Not sure what is going on here, but we were loosing
+      // the next node in the nodeset because it's coming from a 
+      // different document. 
       while((null != nextNode) && (null != m_prevReturned)
+            && nextNode.getOwnerDocument() == m_prevReturned.getOwnerDocument()                   
             && m_lpi.getDOMHelper().isNodeAfter(nextNode, m_prevReturned));
     
     m_prevReturned = nextNode;
