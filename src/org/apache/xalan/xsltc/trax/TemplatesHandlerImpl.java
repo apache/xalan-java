@@ -123,11 +123,8 @@ public class TemplatesHandlerImpl
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
 
-        // Initialize a parser object
-        XSLTC xsltc = new XSLTC();
-        xsltc.init();
-        xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
-        _parser = xsltc.getParser();
+        // Instantiate XSLTC and get reference to parser object
+        _parser = new XSLTC().getParser();
     }
 
     /**
@@ -269,7 +266,9 @@ public class TemplatesHandlerImpl
      * Re-initialize parser and forward SAX2 event.
      */
     public void startDocument() {
-        _parser.init();
+        XSLTC xsltc = _parser.getXSLTC();
+        xsltc.init();   // calls _parser.init()
+        xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
         _parser.startDocument();
     }
 
