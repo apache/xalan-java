@@ -131,10 +131,12 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
   throws org.xml.sax.SAXException   
   {
     if (m_problemListener != null)
-      m_problemListener.problem(where, classification, styleNode, sourceNode, msg, id, lineNo, charOffset);
+      return m_problemListener.problem(where, classification, styleNode, sourceNode, msg, id, lineNo, charOffset);
     else
+    {  
       this.error(new SAXParseException(msg, null, id, lineNo, charOffset));
-    return false;   
+      return false;   
+    }
   } 
   
   public void warning(SAXParseException exception) throws SAXException
@@ -145,12 +147,14 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
     }
     else
     {
-      m_problemListener.problem(XSLPROCESSOR, WARNING,
+      boolean shouldthrow = m_problemListener.problem(XSLPROCESSOR, WARNING,
                                 null, null,
                                 exception.getMessage(),
                                 exception.getSystemId(),
                                 exception.getLineNumber(),  
                                 exception.getColumnNumber()); 
+      if (shouldthrow)
+        throw new SAXException(exception);
     }
   }
   
@@ -162,12 +166,14 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
     }
     else
     {
-      m_problemListener.problem(XSLPROCESSOR, ERROR,
+      boolean shouldthrow = m_problemListener.problem(XSLPROCESSOR, ERROR,
                                 null, null,
                                 exception.getMessage(),
                                 exception.getSystemId(),
                                 exception.getLineNumber(),  
                                 exception.getColumnNumber()); 
+      if (shouldthrow)
+        throw new SAXException(exception);
     }
   }
   
@@ -179,12 +185,14 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
     }
     else
     {
-      m_problemListener.problem(XSLPROCESSOR, ERROR,
+      boolean shouldthrow = m_problemListener.problem(XSLPROCESSOR, ERROR,
                                 null, null,
                                 exception.getMessage(),
                                 exception.getSystemId(),
                                 exception.getLineNumber(),  
                                 exception.getColumnNumber()); 
+      if (shouldthrow)
+        throw new SAXException(exception);
     }
   }
   
@@ -196,31 +204,34 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
     }
     else
     {
+      boolean shouldthrow = true;
       try{
-      javax.xml.transform.SourceLocator locator = exception.getLocator();
-      if (locator != null)
-      {
-        m_problemListener.problem(XSLPROCESSOR, WARNING,
-                                  null, null,
-                                  exception.getMessage(),
-                                  locator.getSystemId(),
-                                  locator.getLineNumber(),  
-                                  locator.getColumnNumber());
-      }
-      else 
-      {
-        m_problemListener.problem(XSLPROCESSOR, MESSAGE,
-                                  null, null,
-                                  exception.getMessage(),
-                                  null,
-                                  0,  
-                                  0);
-      }
+        javax.xml.transform.SourceLocator locator = exception.getLocator();
+        if (locator != null)
+        {
+          shouldthrow = m_problemListener.problem(XSLPROCESSOR, WARNING,
+                                                  null, null,
+                                                  exception.getMessage(),
+                                                  locator.getSystemId(),
+                                                  locator.getLineNumber(),  
+                                                  locator.getColumnNumber());
+        }
+        else 
+        {
+          shouldthrow = m_problemListener.problem(XSLPROCESSOR, MESSAGE,
+                                                  null, null,
+                                                  exception.getMessage(),
+                                                  null,
+                                                  0,  
+                                                  0);
+        }
       }
       catch (SAXException se)
       {
         throw new TransformerException(se);
       }
+      if (shouldthrow)
+        throw new TransformerException(exception);
     }
   }
   
@@ -232,31 +243,34 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
     }
     else
     {
+      boolean shouldthrow = true;
       try{
-      javax.xml.transform.SourceLocator locator = exception.getLocator();
-      if (locator != null)
-      {
-        m_problemListener.problem(XSLPROCESSOR, ERROR,
-                                  null, null,
-                                  exception.getMessage(),
-                                  locator.getSystemId(),
-                                  locator.getLineNumber(),  
-                                  locator.getColumnNumber());
-      }
-      else 
-      {
-        m_problemListener.problem(XSLPROCESSOR, ERROR,
-                                  null, null,
-                                  exception.getMessage(),
-                                  null,
-                                  0,  
-                                  0);
-      }
+        javax.xml.transform.SourceLocator locator = exception.getLocator();
+        if (locator != null)
+        {
+          shouldthrow = m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                                  null, null,
+                                                  exception.getMessage(),
+                                                  locator.getSystemId(),
+                                                  locator.getLineNumber(),  
+                                                  locator.getColumnNumber());
+        }
+        else 
+        {
+          shouldthrow = m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                                  null, null,
+                                                  exception.getMessage(),
+                                                  null,
+                                                  0,  
+                                                  0);
+        }
       }
       catch (SAXException se)
       {
         throw new TransformerException(se);
       }
+      if (shouldthrow)
+        throw new TransformerException(exception);
     }
   }
   
@@ -268,31 +282,34 @@ public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHan
     }
     else
     {
+      boolean shouldthrow = true;
       try{
-      javax.xml.transform.SourceLocator locator = exception.getLocator();
-      if (locator != null)
-      {
-        m_problemListener.problem(XSLPROCESSOR, ERROR,
-                                  null, null,
-                                  exception.getMessage(),
-                                  locator.getSystemId(),
-                                  locator.getLineNumber(),  
-                                  locator.getColumnNumber());
-      }
-      else 
-      {
-        m_problemListener.problem(XSLPROCESSOR, ERROR,
-                                  null, null,
-                                  exception.getMessage(),
-                                  null,
-                                  0,  
-                                  0);
-      }
+        javax.xml.transform.SourceLocator locator = exception.getLocator();
+        if (locator != null)
+        {
+          shouldthrow = m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                                  null, null,
+                                                  exception.getMessage(),
+                                                  locator.getSystemId(),
+                                                  locator.getLineNumber(),  
+                                                  locator.getColumnNumber());
+        }
+        else 
+        {
+          shouldthrow = m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                                  null, null,
+                                                  exception.getMessage(),
+                                                  null,
+                                                  0,  
+                                                  0);
+        }
       }
       catch (SAXException se)
       {
         throw new TransformerException(se);
       }
+      if (shouldthrow)
+        throw new TransformerException(exception);
     }
   }
   /*

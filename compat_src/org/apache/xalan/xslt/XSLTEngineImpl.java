@@ -446,7 +446,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         error(XSLTErrorResources.ER_FAILED_PROCESS_STYLESHEET); //"Failed to process stylesheet!");
       }
 
-      if(null != sourceTree)
+      else if(null != sourceTree)
       {
         try{
           m_transformerImpl = (TransformerImpl)templates.newTransformer(); 
