@@ -233,7 +233,11 @@ public class ElemAttribute extends ElemElement
       String localName = QName.getLocalPart(nodeName);
       try 
       {
-        rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val);
+        if(prefix != null && prefix.length() > 0){
+            rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val);
+        }else{
+            rhandler.addAttribute("", localName, nodeName, "CDATA", val);
+        }
       }
       catch (SAXException e)
       {
