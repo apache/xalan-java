@@ -1122,7 +1122,12 @@ public class DTMNodeProxy
    */
   public final Element getOwnerElement()
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+    if (getNodeType() != Node.ATTRIBUTE_NODE)
+      return null;
+    // In XPath and DTM data models, unlike DOM, an Attr's parent is its
+    // owner element.
+    int newnode = dtm.getParent(node);
+    return (newnode == -1) ? null : (Element)(dtm.getNode(newnode));
   }
 
   /**
