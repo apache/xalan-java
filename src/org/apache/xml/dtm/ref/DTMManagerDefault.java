@@ -327,12 +327,17 @@ public class DTMManagerDefault extends DTMManager
 		  // It should actually still work for other uses,
 		  // but may be slightly deoptimized relative to the base
 		  // to allow it to deal with carrying multiple documents.
+		  //
+		  // %REVIEW% This is a sloppy way to request this mode;
+		  // we need to consider architectural improvements.
 		  dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
 				       xstringFactory, doIndexing);
 		}
 		else // Create the basic SAX2DTM.
+		{
 		  dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
 				    xstringFactory, doIndexing);
+		}
 
         // Go ahead and add the DTM to the lookup table.  This needs to be
         // done before any parsing occurs.

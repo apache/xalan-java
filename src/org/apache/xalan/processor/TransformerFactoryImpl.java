@@ -104,6 +104,8 @@ import java.io.StringReader;
 import java.util.Properties;
 import java.util.Enumeration;
 
+import org.apache.xalan.transformer.XalanProperties;
+
 /**
  * The TransformerFactoryImpl, which implements the TRaX TransformerFactory
  * interface, processes XSLT stylesheets into a Templates object
@@ -143,6 +145,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   /** Static string to be used for optimize feature */
   public static final String FEATURE_OPTIMIZE = "http://xml.apache.org/xalan/features/optimize";
 
+  /** Static string to be used for source_location feature */
+  public static final String FEATURE_SOURCE_LOCATION = XalanProperties.SOURCE_LOCATION;
 
   /**
    * Retrieve a propery bundle from a specified file and load it
@@ -504,6 +508,22 @@ public javax.xml.transform.Templates processFromNode(Node node)
   
   public static boolean m_optimize = true;
   
+  /** Flag set by FEATURE_SOURCE_LOCATION.
+   * This feature specifies whether the transformation phase should
+   * keep track of line and column numbers for the input source
+   * document. Note that this works only when that
+   * information is available from the source -- in other words, if you
+   * pass in a DOM, there's little we can do for you.
+   * 
+   * The default is false. Setting it true may significantly
+   * increase storage cost per node. 
+   * 
+   * %REVIEW% SAX2DTM is explicitly reaching up to retrieve this global field.
+   * We should instead have an architected pathway for passing hints of this
+   * sort down from TransformerFactory to Transformer to DTMManager to DTM.
+   * */
+  public static boolean m_source_location = false;
+  
   /**
    * Allows the user to set specific attributes on the underlying
    * implementation.
@@ -553,6 +573,31 @@ public javax.xml.transform.Templates processFromNode(Node node)
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_BAD_VALUE, new Object[]{name, value})); //name + " bad value " + value);
       }
     }
+    
+    // Custom Xalan feature: annotate DTM with SAX source locator fields.
+    // This gets used during SAX2DTM instantiation. 
+    //
+    // %REVIEW% Should the name of this field really be in XalanProperties?
+    // %REVIEW% I hate that it's a global static, but didn't want to change APIs yet.
+    else if(name.equals(FEATURE_SOURCE_LOCATION))
+    {
+      if(value instanceof Boolean)
+      {
+        // Accept a Boolean object..
+        m_source_location = ((Boolean)value).booleanValue();
+      }
+      else if(value instanceof String)
+      {
+        // .. or a String object
+        m_source_location = (new Boolean((String)value)).booleanValue();
+      }
+      else
+      {
+        // Give a more meaningful error message
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_BAD_VALUE, new Object[]{name, value})); //name + " bad value " + value);
+      }
+    }
+    
     else
     {
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{name})); //name + "not supported");
@@ -578,6 +623,10 @@ public javax.xml.transform.Templates processFromNode(Node node)
     else if (name.equals(FEATURE_OPTIMIZE))
     {
       return new Boolean(m_optimize);
+    }
+    else if (name.equals(FEATURE_SOURCE_LOCATION))
+    {
+      return new Boolean(m_source_location);
     }
     else
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name})); //name + " attribute not recognized");

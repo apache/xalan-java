@@ -640,6 +640,10 @@ public class Process
         }
 
         SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;
+        
+		// This is currently controlled via TransformerFactoryImpl.
+        if (useSourceLocation)
+           stf.setAttribute(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);        
 
         // Did they pass in a stylesheet, or should we get it from the 
         // document?
@@ -683,6 +687,7 @@ public class Process
 
             impl.setQuietConflictWarnings(quietConflictWarnings);
 
+			// This is currently controlled via TransformerFactoryImpl.
             if (useSourceLocation)
               impl.setProperty(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);
 

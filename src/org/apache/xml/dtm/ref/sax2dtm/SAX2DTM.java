@@ -222,12 +222,20 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /**
    * Describes whether information about document source location
    * should be maintained or not.
+   * 
+   * Made protected for access by SAX2RTFDTM.
    */
-  private boolean m_useSourceLocationProperty = false;
+  protected boolean m_useSourceLocationProperty = false;
 
-  private StringVector m_sourceSystemId;
-  private IntVector m_sourceLine;
-  private IntVector m_sourceColumn;
+   /** Made protected for access by SAX2RTFDTM.
+   */
+  protected StringVector m_sourceSystemId;
+   /** Made protected for access by SAX2RTFDTM.
+   */
+  protected IntVector m_sourceLine;
+   /** Made protected for access by SAX2RTFDTM.
+   */
+  protected IntVector m_sourceColumn;
   
   /**
    * Construct a SAX2DTM object ready to be constructed from SAX2
@@ -259,6 +267,15 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_data.addElement(0);   // Need placeholder in case index into here must be <0.
 
     m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
+    
+    // %REVIEW% 
+    // A public static is not a good way to retrieve the system-level
+    // FEATURE_SOURCE_LOCATION flag, but we didn't want to deal with
+    // changing APIs at this time. MUST reconsider.
+    m_useSourceLocationProperty=org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
+    m_sourceSystemId = (m_useSourceLocationProperty) ? new StringVector() : null;
+ 	m_sourceLine = (m_useSourceLocationProperty) ?  new IntVector() : null;
+    m_sourceColumn = (m_useSourceLocationProperty) ?  new IntVector() : null; 
   }
 
   /**
@@ -2299,40 +2316,24 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
   /**
    * Set a run time property for this DTM instance.
+   * 
+   * %REVIEW% Now that we no longer use this method to support
+   * getSourceLocatorFor, can we remove it?
    *
    * @param property a <code>String</code> value
    * @param value an <code>Object</code> value
    */
   public void setProperty(String property, Object value)
   {
-    if (property.equals(XalanProperties.SOURCE_LOCATION)) 
-    {
-      if (!(value instanceof Boolean))
-        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROPERTY_VALUE_BOOLEAN, new Object[]{XalanProperties.SOURCE_LOCATION})); //"Value for property "
-                                  // + XalanProperties.SOURCE_LOCATION
-                                  // + " should be a Boolean instance");
-      // %REVIEW%
-      // This MUST NOT be set true after document construction has begun,
-      // since that will leave us with incomplete data structures and cause
-      // malfunctions. Easier to just say "don't change at all once in progress"
-      if(m_size<=0)
-      {
-		m_useSourceLocationProperty = ((Boolean)value).booleanValue();
-		if(m_useSourceLocationProperty)
-  	    {
-	  	  m_sourceSystemId = new StringVector();
- 	  	  m_sourceLine = new IntVector();
-  	  	  m_sourceColumn = new IntVector();
-      	}
-      }
-     }
   }
 
   /** Retrieve the SourceLocator associated with a specific node.
    * This is only meaningful if the XalanProperties.SOURCE_LOCATION flag was
    * set True using setProperty; if it was never set, or was set false, we
-   * will return null. (We _could_ return a locator with the document's
-   * base URI and bogus line/column information. Should we?)
+   * will return null. 
+   * 
+   * (We _could_ return a locator with the document's base URI and bogus 
+   * line/column information. Trying that; see the else clause.)
    * */
   public SourceLocator getSourceLocatorFor(int node)
   {
@@ -2344,6 +2345,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
                              m_sourceSystemId.elementAt(node),
                              m_sourceLine.elementAt(node),
                              m_sourceColumn.elementAt(node));
+    }
+    else if(m_locator!=null)
+    {
+    	return new NodeLocator(null,m_locator.getSystemId(),-1,-1);
     }
     return null;
   }

@@ -356,12 +356,6 @@ public class TransformerImpl extends Transformer
   public static boolean S_DEBUG = false;
 
   /**
-   * This property specifies whether the transformation phase should
-   * keep track of line and column numbers for the input source
-   * document. By default is false. */
-  protected boolean m_useSourceLocationProperty = false;
-  
-  /**
    * The SAX error handler, where errors and warnings are sent.
    */
   private ErrorListener m_errorHandler =
@@ -505,32 +499,26 @@ public class TransformerImpl extends Transformer
    * <code>getProperty</code> returns the current setting of the
    * property described by the <code>property</code> argument.
    *
+   * %REVIEW% Obsolete now that source_location is handled in the TransformerFactory?
+   *
    * @param property a <code>String</code> value
    * @return a <code>boolean</code> value
    */
   public boolean getProperty(String property)
   {
-    if (property.equals(XalanProperties.SOURCE_LOCATION))
-      return m_useSourceLocationProperty;
-
     return false;
   }
 
   /**
    * Set a runtime property for this <code>TransformerImpl</code>.
    *
+   * %REVIEW% Obsolete now that source_location is handled in the TransformerFactory?
+   *
    * @param property a <code>String</code> value
    * @param value an <code>Object</code> value
    */
   public void setProperty(String property, Object value)
   {
-    if (property.equals(XalanProperties.SOURCE_LOCATION)) {
-      if (!(value instanceof Boolean))
-        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROPERTY_VALUE_BOOLEAN, new Object[]{XalanProperties.SOURCE_LOCATION})); //"Value for property "
-                                   //+ XalanProperties.SOURCE_LOCATION
-                                   //+ " should be a Boolean instance");
-      m_useSourceLocationProperty = ((Boolean)value).booleanValue();
-    }
   }
 
   // ========= Transformer Interface Implementation ==========
@@ -635,8 +623,6 @@ public class TransformerImpl extends Transformer
       setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
       DTM dtm = mgr.getDTM(source, false, this, true, true);
-      dtm.setProperty(XalanProperties.SOURCE_LOCATION,
-                      new Boolean(m_useSourceLocationProperty));
       
       boolean hardDelete = true;  // %REVIEW% I have to think about this. -sb
 

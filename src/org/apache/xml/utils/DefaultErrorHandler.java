@@ -142,7 +142,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void error(SAXParseException exception) throws SAXException
   {
-    // printLocation(exception);
+    //printLocation(exception);
     // m_pw.println(exception.getMessage());
 
     throw exception;
@@ -290,6 +290,11 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   }
   
   public static void printLocation(PrintStream pw, TransformerException exception)
+  {
+    printLocation(new PrintWriter(pw), exception);
+  }
+  
+  public static void printLocation(java.io.PrintStream pw, org.xml.sax.SAXParseException exception)
   {
     printLocation(new PrintWriter(pw), exception);
   }

@@ -142,6 +142,14 @@ public class SAX2RTFDTM extends SAX2DTM
   {
     super(mgr, source, dtmIdentity, whiteSpaceFilter, 
           xstringfactory, doIndexing);
+          
+    // NEVER track source locators for RTFs; they aren't meaningful. I think.
+    // (If we did track them, we'd need to tail-prune these too.)
+    m_useSourceLocationProperty=false; //org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
+    m_sourceSystemId = (m_useSourceLocationProperty) ? new StringVector() : null;
+ 	m_sourceLine = (m_useSourceLocationProperty) ?  new IntVector() : null;
+    m_sourceColumn = (m_useSourceLocationProperty) ?  new IntVector() : null;
+    
   }
   
   /**
