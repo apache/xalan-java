@@ -440,5 +440,14 @@ public class StepExprImpl extends ExprImpl implements StepExpr
         }
     }
 
-   
+    /**
+     * Override to print out useful instance data.  
+     * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#toString()
+     */
+    public String toString()
+    {
+        return XPathTreeConstants.jjtNodeName[id] + " " 
+                + getClass() + " " 
+                + ((m_axisType == -1) ? "InvalidAxis" : StepExprImpl.FULL_AXIS_NAME[m_axisType]);
+    }
 }

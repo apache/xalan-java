@@ -228,4 +228,15 @@ public class KindTestImpl extends ExprImpl implements NodeTest
     {
         m_kindTest = kindTest;
     }
+
+    /**
+     * Override to print out useful instance data.  
+     * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#toString()
+     */
+    public String toString()
+    {
+        return XPathTreeConstants.jjtNodeName[id] + " " 
+                + getClass() + " " 
+                + getString(false);
+    }
 }
