@@ -361,6 +361,18 @@ Copyright:
     </javac>
   </target>
 
+  <target name="xsltc.fcompile" 
+    description="Compile just the XSLTC classes w/o JLex, JCup recompilation" >
+    <echo message="Compiling remaining XSLTC classes"/>
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="${xsltc.reldir}/**/*.java"
+           debug="${build.debug}">
+      <classpath refid="xsltc.class.path" />
+      <bootclasspath refid="xslt.boot.class.path" />
+    </javac>
+  </target>
+
   <target name="xsltc.unbundledjar" depends="xsltc.compile"
     description="Jar just the xsltc.jar file" >
     <!-- Copy over the manifest, with filtering (for version number) -->
@@ -521,7 +533,8 @@ Copyright:
     unless="skipcompat" >
     <mkdir dir="${build.compat.apidocs}"/>
     <javadoc
-         public="true"
+         private="true"
+	 maxmemory="128m"
          sourcepath="${compat.src.dir}"
          overview="${compat.src.dir}/compatOverview.html"         
          packagenames="org.apache.xalan.xslt,org.apache.xalan.xpath,org.apache.xalan.xpath.xml"
@@ -686,7 +699,8 @@ Copyright:
       
     <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
-         public="true"
+         private="true"
+	 maxmemory="128m"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
          packagenames="org.apache.*,org.xml.*,org.w3c.*,javax.xml.*"
