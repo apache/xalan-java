@@ -30,7 +30,7 @@ import org.apache.xml.serializer.SerializationHandler;
 
 import javax.xml.transform.Source;
 import java.util.Vector;
-import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.SuballocatedIntVector;
 import org.xml.sax.*;
 
 /**
@@ -3233,7 +3233,7 @@ public class SAX2DTM2 extends SAX2DTM
              
     }
     
-     /**
+    /**
      * Copy  namespace nodes.
      *
      * @param nodeID The Element node identity
@@ -3241,15 +3241,82 @@ public class SAX2DTM2 extends SAX2DTM
      * @param inScope  true if all namespaces in scope should be copied,
      *  false if only the namespace declarations should be copied.
      */
+    protected final void copyNS(final int nodeID, SerializationHandler handler, boolean inScope)
+        throws SAXException
+    {
+        // %OPT% Optimization for documents which does not have any explicit
+        // namespace nodes. For these documents, there is an implicit
+        // namespace node (xmlns:xml="http://www.w3.org/XML/1998/namespace") 
+        // declared on the root element node. In this case, there is no 
+        // need to do namespace copying. We can safely return without 
+        // doing anything.
+        if (m_namespaceDeclSetElements != null &&
+            m_namespaceDeclSetElements.size() == 1 &&
+            m_namespaceDeclSets != null &&
+            ((SuballocatedIntVector)m_namespaceDeclSets.elementAt(0))
+            .size() == 1)
+            return;
+        
+        SuballocatedIntVector nsContext = null;
+        int nextNSNode;
+        
+        // Find the first namespace node
+        if (inScope) {
+            nsContext = findNamespaceContext(nodeID);
+            if (nsContext == null || nsContext.size() < 1)
+                return;
+            else
+                nextNSNode = makeNodeIdentity(nsContext.elementAt(0));
+        }
+        else
+            nextNSNode = getNextNamespaceNode2(nodeID);
+        
+        int nsIndex = 1;
+        while (nextNSNode != DTM.NULL) {
+            // Retrieve the name of the namespace node
+            int eType = _exptype2(nextNSNode);
+            String nodeName = m_extendedTypes[eType].getLocalName();
+            
+            // Retrieve the node value of the namespace node
+            int dataIndex = m_dataOrQName.elementAt(nextNSNode);
 
-  protected final void copyNS(final int nodeID, SerializationHandler handler, boolean inScope)
-        throws SAXException{
-       final int node = makeNodeHandle(nodeID);
-       for(int current = getFirstNamespaceNode(node, inScope); current != DTM.NULL; 
-           current = getNextNamespaceNode(node, current, inScope)){               
-                handler.namespaceAfterStartElement(getNodeNameX(current), getNodeValue(current));                             
-       }
-      
+            if (dataIndex < 0) {
+                dataIndex = -dataIndex;
+                dataIndex = m_data.elementAt(dataIndex + 1);
+            }
+
+            String nodeValue = (String)m_values.elementAt(dataIndex);
+
+            handler.namespaceAfterStartElement(nodeName, nodeValue);
+            
+            if (inScope) {
+                if (nsIndex < nsContext.size()) {
+                    nextNSNode = makeNodeIdentity(nsContext.elementAt(nsIndex));
+                    nsIndex++;
+                }
+                else
+                    return;
+            }
+            else 
+                nextNSNode = getNextNamespaceNode2(nextNSNode);
+        }
+    }
+    
+    /**
+     * Return the next namespace node following the given base node.
+     * 
+     * @baseID The node identity of the base node, which can be an 
+     * element, attribute or namespace node.
+     * @return The namespace node immediately following the base node.
+     */
+    protected final int getNextNamespaceNode2(int baseID) {
+        int type;
+        while ((type = _type2(++baseID)) == DTM.ATTRIBUTE_NODE);
+        
+        if (type == DTM.NAMESPACE_NODE)
+            return baseID;
+        else
+            return NULL;
     }
    
     /**
@@ -3258,7 +3325,7 @@ public class SAX2DTM2 extends SAX2DTM
      * @param nodeID The Element node identity
      * @param handler The SerializationHandler
      */
-protected final void copyAttributes(final int nodeID, SerializationHandler handler)
+    protected final void copyAttributes(final int nodeID, SerializationHandler handler)
         throws SAXException{      
        
        for(int current = getFirstAttributeIdentity(nodeID); current != DTM.NULL; current = getNextAttributeIdentity(current)){               
