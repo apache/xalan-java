@@ -194,13 +194,14 @@ $Id$
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
     <pathelement location="${taglet.jar}" />
-    <pathelement location="${build.serializer.jar}" />
+    <pathelement location="${serializer.jar}" />
     <pathelement location="${build.xalan.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
   <path id="samples.class.path">
     <pathelement location="${xmlapis.jar}" />
-    <pathelement location="${parser.jar}" />
+    <pathelement location="${serializer.jar}" />    
+    <pathelement location="${parser.jar}" />  
     <pathelement location="${build.xalan.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
