@@ -48,4 +48,10 @@ interface SerializerConstants
     static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
    
     public static final String DEFAULT_SAX_SERIALIZER="org.apache.xml.serializer.ToXMLSAXHandler";
+    
+    /**
+     * Define the XML version.
+     */
+    static final String XMLVERSION11 = "1.1";
+    static final String XMLVERSION10 = "1.0";
 }

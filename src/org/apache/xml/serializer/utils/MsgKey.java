@@ -91,4 +91,5 @@ public class MsgKey {
     public static final String ER_NO_USERINFO_IF_NO_HOST =
         "ER_NO_USERINFO_IF_NO_HOST";
     public static final String ER_SCHEME_REQUIRED = "ER_SCHEME_REQUIRED";
+    public static final String ER_XML_VERSION_NOT_SUPPORTED = "ER_XML_VERSION_NOT_SUPPORTED";
 }

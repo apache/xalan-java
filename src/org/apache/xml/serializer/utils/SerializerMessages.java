@@ -179,6 +179,9 @@ public class SerializerMessages extends ListResourceBundle {
             {   MsgKey.ER_NO_USERINFO_IF_NO_HOST,
                 "Userinfo may not be specified if host is not specified" },
 
+            {   MsgKey.ER_XML_VERSION_NOT_SUPPORTED,
+                "Warning:  The version of the output document is requested to be ''{0}''.  This version of XML is not supported.  The version of the output document will be ''1.0''." },
+
             {   MsgKey.ER_SCHEME_REQUIRED, 
                 "Scheme is required!" }
 

@@ -480,6 +480,16 @@ abstract public class ToStream extends SerializerBase
                 m_spaceBeforeClose = true;
         }
 
+        /* 
+         * This code is added for XML 1.1 Version output.
+         */
+        String version = getVersion();
+        if (null == version)
+        {
+            version = format.getProperty(OutputKeys.VERSION);
+            setVersion(version);
+        }
+
         // initCharsMap();
         String encoding = getEncoding();
         if (null == encoding)
@@ -1445,6 +1455,7 @@ abstract public class ToStream extends SerializerBase
 //            int lengthClean;    // number of clean characters in a row
 //            final boolean[] isAsciiClean = m_charInfo.getASCIIClean();
             
+            final boolean isXML10 = XMLVERSION10.equals(getVersion());
             // we've skipped the leading whitespace, now deal with the rest
             for (; i < end; i++)
             {                      
@@ -1462,8 +1473,12 @@ abstract public class ToStream extends SerializerBase
                 }  
                    
                 final char ch = chars[i];
-                if (
-                
+                /*  The check for isCharacterInC0orC1Ranger and 
+                 *  isNELorLSEPCharacter has been added
+                 *  to support Control Characters in XML 1.1
+                 */     
+                if (!isCharacterInC0orC1Range(ch) && 
+                    (isXML10 || !isNELorLSEPCharacter(ch)) &&
                     (escapingNotNeeded(ch) && (!m_charInfo.isSpecialTextChar(ch)))
                         || ('"' == ch))
                 {
@@ -1496,6 +1511,35 @@ abstract public class ToStream extends SerializerBase
         // time to fire off characters generation event
         if (m_tracer != null)
             super.fireCharEvent(chars, start, length);
+    }     
+    /**
+     * This method checks if a given character is between C0 or C1 range
+     * of Control characters.
+     * This method is added to support Control Characters for XML 1.1
+     * If a given character is TAB (0x09), LF (0x0A) or CR (0x0D), this method
+     * return false. Since they are whitespace characters, no special processing is needed.
+     * 
+     * @param ch
+     * @return boolean
+     */
+    private static boolean isCharacterInC0orC1Range(char ch)
+    {
+        if(ch == 0x09 || ch == 0x0A || ch == 0x0D)
+        	return false;
+        else        	    	
+        	return (ch >= 0x7F && ch <= 0x9F)|| (ch >= 0x01 && ch <= 0x1F);
+    }
+    /**
+     * This method checks if a given character either NEL (0x85) or LSEP (0x2028)
+     * These are new end of line charcters added in XML 1.1.  These characters must be
+     * written as Numeric Character References (NCR) in XML 1.1 output document.
+     * 
+     * @param ch
+     * @return boolean
+     */
+    private static boolean isNELorLSEPCharacter(char ch)
+    {
+        return (ch == 0x85 || ch == 0x2028);
     }
     /**
      * Process a dirty character and any preeceding clean characters
@@ -1644,7 +1688,19 @@ abstract public class ToStream extends SerializerBase
             }
             else
             {
-                if ((!escapingNotNeeded(ch) || 
+                /*  This if check is added to support control characters in XML 1.1.
+                 *  If a character is a Control Character within C0 and C1 range, it is desirable
+                 *  to write it out as Numeric Character Reference(NCR) regardless of XML Version
+                 *  being used for output document.
+                 */ 
+                if (isCharacterInC0orC1Range(ch) || 
+                        (XMLVERSION11.equals(getVersion()) && isNELorLSEPCharacter(ch)))
+                {
+                    writer.write("&#");
+                    writer.write(Integer.toString(ch));
+                    writer.write(';');
+                }
+                else if ((!escapingNotNeeded(ch) || 
                     (  (fromTextNode && m_charInfo.isSpecialTextChar(ch))
                      || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch)))) 
                 && m_elemContext.m_currentElemDepth > 0)
