@@ -49,27 +49,32 @@ public class MethodResolver
       int numberMethodParams = paramTypes.length;
       int paramStart = 0;
       boolean isFirstExpressionContext = false;
-      int scoreStart = 0;
+      int scoreStart;
       // System.out.println("numberMethodParams: "+numberMethodParams);
       // System.out.println("argsIn.length: "+argsIn.length);
       // System.out.println("exprContext: "+exprContext);
       if(numberMethodParams == (argsIn.length+1))
       {
         Class javaClass = paramTypes[0];
-      // System.out.println("first javaClass: "+javaClass.getName());
+        // System.out.println("first javaClass: "+javaClass.getName());
         if(javaClass.isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
         {
           isFirstExpressionContext = true;
-          scoreStart = 5;
+          scoreStart = 0;
           paramStart++;
-      // System.out.println("Incrementing paramStart: "+paramStart);
+          // System.out.println("Incrementing paramStart: "+paramStart);
         }
+        else
+          scoreStart = 100;
       }
+      else
+          scoreStart = 100;
+      
       if(argsIn.length == (numberMethodParams - paramStart))
       {
         // then we have our candidate.
         int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
-      // System.out.println("score: "+score);
+        // System.out.println("score: "+score);
         if(-1 == score)
           continue;
         if(score < bestScore)
@@ -112,8 +117,8 @@ public class MethodResolver
            SecurityException,
            org.xml.sax.SAXException
   {
-    System.out.println("---> Looking for method: "+name);
-    System.out.println("---> classObj: "+classObj);
+    // System.out.println("---> Looking for method: "+name);
+    // System.out.println("---> classObj: "+classObj);
     Method bestMethod = null;
     Class[] bestParamTypes = null;
     Method[] methods = classObj.getMethods();
@@ -129,30 +134,37 @@ public class MethodResolver
         int numberMethodParams = paramTypes.length;
         int paramStart = 0;
         boolean isFirstExpressionContext = false;
-        int scoreStart = 0;
-      System.out.println("numberMethodParams: "+numberMethodParams);
-      System.out.println("argsIn.length: "+argsIn.length);
-      System.out.println("exprContext: "+exprContext);
+        int scoreStart;
+        // System.out.println("numberMethodParams: "+numberMethodParams);
+        // System.out.println("argsIn.length: "+argsIn.length);
+        // System.out.println("exprContext: "+exprContext);
         if(numberMethodParams == (argsIn.length+1))
         {
           Class javaClass = paramTypes[0];
           if(javaClass.isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
           {
             isFirstExpressionContext = true;
-            scoreStart = 5;
+            scoreStart = 0;
             paramStart++;
           }
+          else
+          {
+            scoreStart = 100;
+          }
         }
+        else
+            scoreStart = 100;
+        
         if(argsIn.length == (numberMethodParams - paramStart))
         {
           // then we have our candidate.
           int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
-          System.out.println("score: "+score);
+          // System.out.println("score: "+score);
           if(-1 == score)
             continue;
           if(score < bestScore)
           {
-            System.out.println("Assigning best method: "+method);
+            // System.out.println("Assigning best method: "+method);
             bestMethod = method;
             bestParamTypes = paramTypes;
             bestScore = score;
@@ -184,7 +196,7 @@ public class MethodResolver
                                    ExpressionContext exprContext)
     throws org.xml.sax.SAXException
   {
-    System.out.println("In convertParams");
+    // System.out.println("In convertParams");
     int nMethods = argsIn.length;
     int paramIndex = 0;
     if((paramTypes.length > 0) 
@@ -192,7 +204,7 @@ public class MethodResolver
     {
       argsOut[0] = new Object[nMethods+1];
       argsOut[0][0] = exprContext;
-      System.out.println("Incrementing paramIndex in convertParams: "+paramIndex);
+      // System.out.println("Incrementing paramIndex in convertParams: "+paramIndex);
       paramIndex++;
     }
     else
@@ -200,8 +212,9 @@ public class MethodResolver
       argsOut[0] = (nMethods > 0) ? new Object[nMethods] : null;
     }
 
-    for(int i = 0; paramIndex < nMethods; i++, paramIndex++)
+    for(int i = 0; i < nMethods; i++, paramIndex++)
     {
+      // System.out.println("paramTypes[i]: "+paramTypes[i]);
       argsOut[0][paramIndex] = convert(argsIn[i], paramTypes[paramIndex]);
     }
   }
@@ -222,6 +235,8 @@ public class MethodResolver
     int m_score; // Match score, closer to zero is more matched.
   }
   
+  private static final int SCOREBASE=1;
+  
   /**
    * Specification of conversions from XSLT type CLASS_UNKNOWN
    * (i.e. some unknown Java object) to allowed Java types.
@@ -237,7 +252,7 @@ public class MethodResolver
     new ConversionInfo(Byte.TYPE, 7),
     new ConversionInfo(java.lang.String.class, 8)
   };
-    
+  
   /**
    * Specification of conversions from XSLT type CLASS_BOOLEAN
    * to allowed Java types.
@@ -247,7 +262,7 @@ public class MethodResolver
     new ConversionInfo(java.lang.Boolean.class, 1),
     new ConversionInfo(java.lang.Object.class, 1),
     new ConversionInfo(java.lang.String.class, 2)
-    };
+  };
 
   /**
    * Specification of conversions from XSLT type CLASS_NUMBER
@@ -357,7 +372,7 @@ public class MethodResolver
   {
     int nParams = xsltArgs.length;
     for(int i = 0, paramTypesIndex = paramTypesStart; 
-        paramTypesIndex < nParams; 
+        i < nParams; 
         i++, paramTypesIndex++)
     {
       Object xsltObj = xsltArgs[i];
@@ -365,6 +380,9 @@ public class MethodResolver
                           ? ((XObject)xsltObj).getType() 
                             : XObject.CLASS_UNKNOWN;
       Class javaClass = javeParamTypes[paramTypesIndex];
+      
+      // System.out.println("Checking xslt: "+xsltObj.getClass().getName()+
+      //                   " against java: "+javaClass.getName());
       
       if(xsltClassType == XObject.CLASS_NULL)
       {
@@ -386,7 +404,7 @@ public class MethodResolver
       for(k = 0; k < nConversions; k++)
       {
         ConversionInfo cinfo = convInfo[k];
-        if(javaClass.isAssignableFrom(cinfo.m_class))
+        if(cinfo.m_class.isAssignableFrom(javaClass))
         {
           score += cinfo.m_score;
           break; // from k loop
@@ -520,7 +538,7 @@ public class MethodResolver
           }
         }
         // break; Unreachable
-      
+        
         // No default:, fall-through on purpose
       } // end switch
       xsltObj = xobj.object();

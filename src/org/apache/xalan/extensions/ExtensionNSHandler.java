@@ -89,7 +89,6 @@ import org.apache.xpath.XPathProcessorException;
 public class ExtensionNSHandler extends ExtensionFunctionHandler
 {
   TransformerImpl xslp;        // xsl transformer for whom I'm working
-  Hashtable elements = new Hashtable (); // ext. elements of this namespace
   boolean componentDescLoaded; // true when info from the component desc
   // has been loaded. This gets set as soon
   // as any of the info has been specified.
@@ -186,17 +185,9 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
    */
   public void setElements (String elemNames)
   {
-    if (elemNames == null)
-    {
+    if (elemNames == null) 
       return;
-    }
-    StringTokenizer st = new StringTokenizer (elemNames, " \t\n\r", false);
-    Object junk = new Object ();
-    while (st.hasMoreTokens ())
-    {
-      String tok = st.nextToken ();
-      elements.put (tok, junk); // just stick it in there basically
-    }
+    super.setElements(elemNames);
     componentDescLoaded = true;
   }
 
@@ -498,7 +489,8 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
     public void error (SAXParseException exception)
       throws SAXException
     {
-      System.out.println("Parser error: "+exception.getMessage());
+      throw exception;
+      // System.out.println("Parser error: "+exception.getMessage());
     }
 
     /**

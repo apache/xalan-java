@@ -171,9 +171,8 @@ public class ExtensionFunctionHandler
   public void setElements (String elemNames) 
   {
     if (elemNames == null) 
-    {
       return;
-    }
+
     StringTokenizer st = new StringTokenizer (elemNames, " \t\n\r", false);
     Object junk = new Object ();
     while (st.hasMoreTokens ()) 
@@ -342,6 +341,7 @@ public class ExtensionFunctionHandler
     }
     catch (Exception e) 
     {
+      e.printStackTrace();
       throw new SAXException(e);
       /*
       Throwable t = (e instanceof InvocationTargetException) ?
@@ -417,69 +417,78 @@ public class ExtensionFunctionHandler
           }
           javaObject = null;
           hasCalledCTor = true;
+          
+          for (int i = 0; i < argArray.length; i++) 
+          {
+            Object o = args.elementAt (i);
+            argArray[i] = o;
+          }
+
         }
         else
         {
           if(!hasCalledCTor)
           {
+            // System.out.println("this.classObject: "+this.classObject);
             if(null == javaObject)
             {
-              javaObject = this.classObject.newInstance();
+              if(null != this.classObject)
+                javaObject = this.classObject.newInstance();
+              else
+                javaObject = this.classObject;
             }
             
             argArray = new Object[args.size () + 1];
             
             argArray[0] = javaObject;
-            argStart = 1;
-            // argArray = new Object[args.size ()];
-            // argStart = 0;
+            
+            for (int i = 0; i < args.size(); i++) 
+            {
+              Object o = args.elementAt (i);
+              argArray[i+1] = o;
+            }
           }
           else
           {
-            argArray = new Object[args.size ()];
             if(args.size() > 0)
             {
+              argArray = new Object[args.size ()];
               Object o = args.elementAt (0);
               argArray[0] = (o instanceof XObject) ? ((XObject)o).object () : o;
-              argStart = 1;
+              for (int i = 1; i < args.size(); i++) 
+              {
+                o = args.elementAt (i);
+                argArray[i] = o;
+              }
             }
             else
-              argStart = 0;
+            {
+              argArray = new Object[1];
+              Object o = args.elementAt (0);
+              argArray[0] = (o instanceof XObject) ? ((XObject)o).object () : o;
+            }
           }
         }
+        return callJava(javaObject, funcName, argArray, methodKey, exprContext);
       }
       else 
       {
         e = ((com.ibm.bsf.BSFManager)mgr).loadScriptingEngine (scriptLang);
         argArray = new Object[args.size ()];
-        argStart = 0;
-      }
-
-      if(isJava)
-      {
-        // TODO: Fix all this.
-        for (int i = argStart; i < args.size (); i++) 
-        {
-          Object o = args.elementAt (i);
-          argArray[i] = o;
-        }
-        return callJava(javaObject, funcName, argArray, methodKey, exprContext);
-      }
-      else
-      {
-        // convert the xobject args to their object forms
+        
         for (int i = 0; i < args.size (); i++) 
         {
           Object o = args.elementAt (i);
-          argArray[i+argStart] = 
-                                (o instanceof XObject) ? ((XObject)o).object () : o;
+          argArray[i] = (o instanceof XObject) ? ((XObject)o).object () : o;
         }
         
         return e.call (null, funcName, argArray);
       }
+
     }
     catch (Exception e) 
     {
+      e.printStackTrace();
       String msg = e.getMessage();
       if(null != msg)
       {
@@ -544,8 +553,11 @@ public class ExtensionFunctionHandler
       }
       return;
     }
-    else
+    else // classObj = null
     {
+      if(null == scriptSrcURL)
+        scriptSrcURL = namespaceUri; // Use the namespace URL
+
       if (scriptLang.equals ("javaclass") && (scriptSrcURL != null)) 
       {
         try 
@@ -557,7 +569,15 @@ public class ExtensionFunctionHandler
             cname = scriptSrcURL.substring (6);
             isClass = true;
           }
+          else
+          {
+            // ?? -sb
+            cname = scriptSrcURL;
+            isClass = true;
+          }
           classObject = Class.forName (cname);
+          // System.out.println("classObject: "+classObject);
+          
           if (isClass) 
           {
             javaObject = classObject;
@@ -579,9 +599,10 @@ public class ExtensionFunctionHandler
     }
 
     // if scriptSrcURL is specified read it off
-    if (scriptSrcURL != null) 
+    if ((scriptSrcURL != null) && !(scriptLang.equals ("javaclass") 
+                                    || scriptLang.equals ("xslt-javaclass"))) 
     {
-      throw new SAXException ("src attr not supported (yet)");
+      throw new SAXException ("src attr not supported (yet) for: "+scriptLang);
     }
 
     if (scriptSrc == null) 

@@ -234,7 +234,7 @@ public class ExtensionsTable
         }
         catch (Exception e)
         {
-          // e.printStackTrace();
+          e.printStackTrace();
           // throw new XPathProcessorException ("Extension function '" + ns +
           //  ":" + funcName +
           //  "', threw exception: " + e, e);
