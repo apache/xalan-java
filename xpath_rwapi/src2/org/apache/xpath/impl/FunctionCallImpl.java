@@ -75,6 +75,8 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	 */
 	QName m_qname;
 
+	// Constructors
+
 	/**
 	 * Constructor for FunctionCallImpl.
 	 * @param i
@@ -91,6 +93,18 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	public FunctionCallImpl(XPath p, int i) {
 		super(p, i);
 	}
+
+	/**
+	 * Clone FunctionCall
+	 */
+	private FunctionCallImpl(FunctionCallImpl original)
+	{
+		super(original);
+		
+		m_qname = original.m_qname;		
+	}
+
+	// Implements FunctionCall
 
 	/**
 	 * @see org.apache.xpath.expression.FunctionCall#getFunctionName()
@@ -167,6 +181,10 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	 */
 	public short getOperatorType() {
 		return COMMA;
+	}
+
+	public Expr cloneExpression() {				
+		return new FunctionCallImpl(this);
 	}
 
 }

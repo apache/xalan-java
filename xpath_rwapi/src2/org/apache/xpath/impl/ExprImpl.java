@@ -132,18 +132,25 @@ public abstract class ExprImpl extends SimpleNode implements Expr
      */
     protected Node[] cloneChildren()
     {
-        Node[] clone = new Node[m_children.length];
+		Node[] clone;
+    	if (m_children != null)
+    	{
+        	 clone = new Node[m_children.length];
 
-        for (int i = 0; i < m_children.length; i++)
-        {
-        	Node child = m_children[i];
-        	if (child instanceof Expr) {
-            	clone[i] = (Node) ((Expr) child).cloneExpression();
-        	} else {
-        		// immutable object, just copy reference
-        		clone[i] = child;
+        	for (int i = 0; i < m_children.length; i++)
+        	{
+        		Node child = m_children[i];
+        		if (child instanceof Expr) {
+            		clone[i] = (Node) ((Expr) child).cloneExpression();
+        		} else {
+        			// immutable object, just copy reference
+        			clone[i] = child;
+        		}
         	}
-        }
+    	} else 
+    	{
+    		clone = null;
+    	}
 
         return clone;
     }

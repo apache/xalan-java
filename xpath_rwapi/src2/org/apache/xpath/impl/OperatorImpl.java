@@ -193,9 +193,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     }
 
     /**
-     * Constructor for cloning
-     *
-     * @param expr DOCUMENT ME!
+     * Create a clone     
      */
     protected OperatorImpl(OperatorImpl expr)
     {
@@ -206,6 +204,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
         m_children = expr.cloneChildren();
     }
+    
 
     /**
      * Constructor for OperatorImpl.
