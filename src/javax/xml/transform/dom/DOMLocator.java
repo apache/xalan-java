@@ -61,19 +61,17 @@ import javax.xml.transform.SourceLocator;
 import org.w3c.dom.Node;
 
 /**
- * Interface DOMLocator is used to indicate the position of a 
- * node in a source DOM.  This is to be used primarily for 
- * error reporting.  In order to use this, the receiver of an 
- * error will need to downcast the SourceLocator object returned 
- * by an exception.  Some transformers may use this object for 
- * purposes other than error reporting, for instance, to indicate 
- * a source node that originated a result node.
+ * Indicates the position of a node in a source DOM, intended  
+ * primarily for error reporting.  To use a SourceLocator, the receiver of an 
+ * error must downcast the SourceLocator object returned by an exception.
+ * A Transformer may use this object for  purposes other than error reporting, 
+ * for instance, to indicate the source node that originated a result node.
  */
 public interface DOMLocator extends SourceLocator
 {
 
   /**
-   * Method getOriginatingNode
+   * Return the node where the event occurred.
    *
    * @return The node that is the location for the event.
    */

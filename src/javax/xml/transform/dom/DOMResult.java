@@ -66,11 +66,11 @@ import java.io.Writer;
 import org.w3c.dom.Node;
 
 /**
- * Acts as an holder for a transformation result tree, in the 
- * form of a Document Object Model (DOM).  If no node is set, 
+ * Acts as a holder for a transformation result tree, in the 
+ * form of a Document Object Model (DOM) tree. If no output DOM source is set, 
  * the transformation will create a Document node as the holder 
  * for the result of the transformation, which may be retrieved 
- * via getNode.
+ * wiht getNode.
  */
 public class DOMResult implements Result
 {
@@ -84,7 +84,7 @@ public class DOMResult implements Result
   public DOMResult(){}
 
   /**
-   * Create a new output target with a DOM node.
+   * Use a DOM node to create a new output target.
    *
    * @param n The DOM node that will contain the result tree.
    */
@@ -135,7 +135,7 @@ public class DOMResult implements Result
    * Method setSystemId Set the systemID that may be used in association
    * with the node.
    *
-   * @param systemId The system identifier as a URL string.
+   * @param systemId The system identifier as a URI string.
    */
   public void setSystemId(String systemId)
   {

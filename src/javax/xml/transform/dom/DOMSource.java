@@ -66,8 +66,8 @@ import java.io.Writer;
 import org.w3c.dom.Node;
 
 /**
- * Acts as an holder for a transformation Source tree in the 
- * form of a Document Object Model.
+ * Acts as a holder for a transformation Source tree in the 
+ * form of a Document Object Model (DOM) tree.
  *
  * @see <a href="http://www.w3.org/TR/DOM-Level-2">Document Object Model (DOM) Level 2 Specification</a>
  */
