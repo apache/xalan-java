@@ -247,6 +247,8 @@ public class ResultTreeHandler extends QueuedEvents
           "ResultTreeHandler#startElement - push(startElement)");
 
       m_nsSupport.pushContext();
+
+      m_nsContextPushed = true;
     }
     
     if (ns != null)

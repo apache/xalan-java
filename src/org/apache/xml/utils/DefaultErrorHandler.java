@@ -85,7 +85,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public DefaultErrorHandler(PrintStream pw)
   {
-    m_pw = new PrintWriter(pw);
+    m_pw = new PrintWriter(pw, true);
   }
   
   /**
@@ -93,7 +93,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public DefaultErrorHandler()
   {
-    m_pw = new PrintWriter(System.err);
+    m_pw = new PrintWriter(System.err, true);
   }
 
 

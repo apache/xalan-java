@@ -208,13 +208,14 @@ public class ElemElement extends ElemUse
    {
     if(nodeName == null)
       return false;
-      
-    int indexOfNSSep = nodeName.indexOf(':');
+
     int len = nodeName.length();
     
     if(len == 0)
       return false;
       
+    int indexOfNSSep = nodeName.indexOf(':');
+
     if(indexOfNSSep + 1 == len)
       return false;
       
@@ -285,91 +286,73 @@ public class ElemElement extends ElemUse
     int sourceNode = xctxt.getCurrentNode();
     String nodeName = m_name_avt.evaluate(xctxt, sourceNode, this);
 
-    // make sure that if a prefix is specified on the attribute name, it is valid
-    int indexOfNSSep = nodeName.indexOf(':');
     String prefix = null;
-    String nodeNamespace = null;
+    String nodeNamespace = "";
 
-    if (nodeName.length() == 0)
-      nodeName = null;
-
-    if ((null != nodeName) /* && (indexOfNSSep >= 0) */)
-    {
-      prefix = (indexOfNSSep > 0) ? nodeName.substring(0, indexOfNSSep) : "";
-      
-      // Catch the exception this may cause. We don't want to stop processing.
-      try
-      {
-        // Maybe temporary, until I get this worked out.  test: axes59
-        nodeNamespace = getNamespaceForPrefix(prefix);
-
-        if (null == nodeNamespace && indexOfNSSep <= 0)
-          nodeNamespace = "";
-
-        // Check if valid QName. Assuming that if the prefix is defined,
-        // it is valid.
-        if (!validateNodeName(nodeName))
-        {
-          transformer.getMsgMgr().warn(
-            this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
-            new Object[]{ nodeName });
-
-          nodeName = null;
-        }
-      }
-      catch (Exception ex)
-      {
-        transformer.getMsgMgr().warn(
-          this, XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-          new Object[]{ prefix });
-
-        nodeName = null;
-      }
-    }
-
-    // Check if valid QName
-    else if (null == nodeName)
+    if (!validateNodeName(nodeName))
     {
       transformer.getMsgMgr().warn(
-        this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
-        new Object[]{ nodeName });
-
-      nodeName = null;
-    }
-    else if (nodeName.length() == 0 ||!isValidNCName(nodeName))
-    {
-      transformer.getMsgMgr().warn(
-        this, XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-        new Object[]{ nodeName });
+        this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
+        new Object[]{ Constants.ATTRNAME_NAME, nodeName });
 
       nodeName = null;
     }
 
-    if (null != nodeName)
+    else
     {
+      prefix = QName.getPrefixPart(nodeName);
+
       if (null != m_namespace_avt)
       {
         nodeNamespace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
-
-        // System.out.println("nodeNamespace: "+nodeNamespace);
         if (null == nodeNamespace)
           nodeNamespace = "";
 
+        // Determine the actual prefix that we will use for this nodeNamespace
+
         prefix = resolvePrefix(rhandler, prefix, nodeNamespace);
-        
         if (null == prefix)
           prefix = "";
 
         if (prefix.length() > 0)
           nodeName = (prefix + ":" + QName.getLocalPart(nodeName));
+        else
+          nodeName = QName.getLocalPart(nodeName);
       }
-      else if (null != prefix && null == nodeNamespace)
-      {
-        transformer.getMsgMgr().warn(
-          this, XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-          new Object[]{ prefix });
 
-        nodeName = null;
+      // No namespace attribute was supplied. Use the namespace declarations
+      // currently in effect for the xsl:element element.
+      else    
+      {
+        try
+        {
+          // Maybe temporary, until I get this worked out.  test: axes59
+          nodeNamespace = getNamespaceForPrefix(prefix);
+
+          // If we get back a null nodeNamespace, that means that this prefix could
+          // not be found in the table.  This is okay only for a default namespace
+          // that has never been declared.
+
+          if ( (null == nodeNamespace) && (prefix.length() == 0) )
+            nodeNamespace = "";
+          else if (null == nodeNamespace)
+          {
+            transformer.getMsgMgr().warn(
+              this, XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
+              new Object[]{ prefix });
+
+            nodeName = null;
+          }
+
+        }
+        catch (Exception ex)
+        {
+          transformer.getMsgMgr().warn(
+            this, XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
+            new Object[]{ prefix });
+
+          nodeName = null;
+        }
       }
     }
 
@@ -379,13 +362,15 @@ public class ElemElement extends ElemUse
   /**
    * Construct a node in the result tree.  This method is overloaded by 
    * xsl:attribute. At this class level, this method creates an element.
+   * If the node is null, we instantiate only the content of the node in accordance
+   * with section 7.1.2 of the XSLT 1.0 Recommendation.
    *
-   * @param nodeName The name of the node, which may be null.
-   * @param prefix The prefix for the namespace, which may be null.
-   * @param nodeNamespace The namespace of the node, which may be null.
+   * @param nodeName The name of the node, which may be <code>null</code>.  If <code>null</code>,
+   *                 only the non-attribute children of this node will be processed.
+   * @param prefix The prefix for the namespace, which may be <code>null</code>.
+   *               If not <code>null</code>, this prefix will be mapped and unmapped.
+   * @param nodeNamespace The namespace of the node, which may be not be <code>null</code>.
    * @param transformer non-null reference to the the current transform-time state.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -394,13 +379,18 @@ public class ElemElement extends ElemUse
             throws TransformerException
   {
 
+    boolean shouldAddAttrs;
+
     try
     {
       ResultTreeHandler rhandler = transformer.getResultTreeHandler();
 
-      if (null != nodeName)
+      if (null == nodeName)
       {
-
+        shouldAddAttrs = false;
+      }
+      else
+      {
         // Add namespace declarations.
         executeNSDecls(transformer);
 
@@ -411,12 +401,11 @@ public class ElemElement extends ElemUse
 
         rhandler.startElement(nodeNamespace, QName.getLocalPart(nodeName),
                               nodeName, null);
-      }
 
-      boolean shouldAddAttrs = (null != nodeName);
-
-      if (shouldAddAttrs)
         super.execute(transformer);
+
+        shouldAddAttrs = true;
+      }
 
       transformer.executeChildTemplates(this, shouldAddAttrs);
 
@@ -425,6 +414,10 @@ public class ElemElement extends ElemUse
       {
         rhandler.endElement(nodeNamespace, QName.getLocalPart(nodeName),
                             nodeName);
+        if (null != prefix)
+        {
+          rhandler.endPrefixMapping(prefix);
+        }
         unexecuteNSDecls(transformer);
       }
     }
