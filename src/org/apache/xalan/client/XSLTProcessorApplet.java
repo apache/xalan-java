@@ -159,10 +159,10 @@ public class XSLTProcessorApplet extends Applet
    */
   private URL m_codeBase = null;
 
-  /** NEEDSDOC Field m_documentBase          */
+  /** The base document URL, to resolve relative URLs.     */
   private URL m_documentBase = null;
 
-  /** NEEDSDOC Field m_styleTree          */
+  /** The stylesheet object.  */
   private Templates m_styleTree = null;
 
   /**
@@ -362,9 +362,8 @@ public class XSLTProcessorApplet extends Applet
   /**
    * Set the URL to the XSL stylesheet that will be used
    * to transform the input XML.  No processing is done yet.
-   * @param valid URL string.
    *
-   * NEEDSDOC @param urlString
+   * @param urlString The URL string for the styelsheet.
    */
   public void setStyleURL(String urlString)
   {
@@ -374,9 +373,8 @@ public class XSLTProcessorApplet extends Applet
   /**
    * Set the URL to the XML document that will be transformed
    * with the XSL stylesheet.  No processing is done yet.
-   * @param valid URL string.
    *
-   * NEEDSDOC @param urlString
+   * @param urlString The URL string for the source tree.
    */
   public void setDocumentURL(String urlString)
   {
@@ -413,16 +411,16 @@ public class XSLTProcessorApplet extends Applet
     m_attrValueToSet = value;
   }
 
-  /** NEEDSDOC Field m_key          */
+  /** The local name of a parameter to set a param in the stylesheet.   */
   transient String m_key;
 
-  /** NEEDSDOC Field m_expression          */
+  /** The string value for the parameter. */
   transient String m_expression;
 
   /**
    * Submit a stylesheet parameter.
    *
-   * NEEDSDOC @param key
+   * @param key The local name of a parameter to set a param in the stylesheet.
    * @param expr The parameter expression to be submitted.
    * @see org.apache.xalan.xslt.TransformerFactory#setStylesheetParam(String, String)
    */
@@ -436,9 +434,9 @@ public class XSLTProcessorApplet extends Applet
    * Given a String containing markup, escape the markup so it
    * can be displayed in the browser.
    *
-   * NEEDSDOC @param s
+   * @param s The string to be escaped.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The escaped string.
    */
   public String escapeString(String s)
   {
@@ -510,7 +508,7 @@ public class XSLTProcessorApplet extends Applet
    * Assuming the stylesheet URL and the input XML URL have been set,
    * perform the transformation and return the result as a String.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A string that contains the HTML result of the transformation.
    */
   public String getHtmlText()
   {
@@ -534,12 +532,11 @@ public class XSLTProcessorApplet extends Applet
   }
 
   /**
-   * Get a DOM tree as escaped text, suitable for display
-   * in the browser.
+   * Open a URL and return the contents as a string.
    *
-   * NEEDSDOC @param treeURL
+   * @param The target URL.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A string that contains the contents pointed at by the URL.
    *
    * @throws IOException
    */
@@ -581,7 +578,7 @@ public class XSLTProcessorApplet extends Applet
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the source tree as a string.
    * @exception Exception thrown if tree can not be converted.
    */
   public String getSourceTreeAsText() throws Exception
@@ -594,7 +591,7 @@ public class XSLTProcessorApplet extends Applet
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the stylesheet as a string.
    * @exception Exception thrown if tree can not be converted.
    */
   public String getStyleTreeAsText() throws Exception
@@ -607,7 +604,7 @@ public class XSLTProcessorApplet extends Applet
    * for display in a browser.  Note that this is for display of the
    * XML itself, not for rendering of HTML by the browser.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The result tree as a string.
    * @exception Exception thrown if tree can not be converted.
    */
   public String getResultTreeAsText() throws Exception
@@ -620,10 +617,10 @@ public class XSLTProcessorApplet extends Applet
    * the transformation result.  If one of these is null, the
    * existing value (of a previous transformation) is not affected.
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param style
+   * @param doc The document string.
+   * @param style The stylesheet string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The document transformed via the stylesheet.
    */
   public String transformToHtml(String doc, String style)
   {
@@ -646,9 +643,9 @@ public class XSLTProcessorApplet extends Applet
    * the transformation result. Use the xsl:stylesheet PI to find the
    * document, if one exists.
    *
-   * NEEDSDOC @param doc
+   * @param doc The document string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The document transformed via the stylesheet.
    */
   public String transformToHtml(String doc)
   {
@@ -667,9 +664,7 @@ public class XSLTProcessorApplet extends Applet
    * Do the real transformation after the right XML processor
    * liason has been found.
    *
-   * NEEDSDOC @param processor
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @return The transformed document as a string.
    *
    * @throws TransformerException
    */
@@ -724,7 +719,7 @@ public class XSLTProcessorApplet extends Applet
   /**
    * Process the transformation.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The transformed document as a string.
    *
    * @throws TransformerException
    */
@@ -749,11 +744,12 @@ public class XSLTProcessorApplet extends Applet
   class TrustedAgent implements Runnable
   {
 
-    /** NEEDSDOC Field m_getData          */
+    /** Flag set to true when it's time to do the transformation.   */
     public boolean m_getData = false;
 
     /**
-     * NEEDSDOC Method run 
+     * Run the trusted agent, waiting for a flag to tell it that it's time 
+     * to do the transformation.
      *
      */
     public void run()

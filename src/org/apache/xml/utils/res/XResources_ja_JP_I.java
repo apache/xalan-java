@@ -72,17 +72,17 @@ public class XResources_ja_JP_I extends XResourceBundle
 {
 
   /**
-   * NEEDSDOC Method getContents 
+   * Get the association table for this resource.
    *
    *
-   * NEEDSDOC (getContents) @return
+   * @return the association table for this resource.
    */
   public Object[][] getContents()
   {
     return contents;
   }
 
-  /** NEEDSDOC Field contents          */
+  /** The association table for this resource.  */
   static final Object[][] contents =
   {
     { "ui_language", "ja" }, { "help_language", "ja" }, { "language", "ja" },
