@@ -273,7 +273,7 @@ public class VariableStack extends Stack
     {
       Object obj = elementAt(i);
 
-      if (((Arg) obj).equals(qname))
+      if (((Arg) obj).getQName().equals(qname))
       {
         return true;
       }
@@ -287,7 +287,7 @@ public class VariableStack extends Stack
     {
       Object obj = elementAt(i);
 
-      if (((Arg) obj).equals(qname))
+      if (((Arg) obj).getQName().equals(qname))
       {
         return true;
       }
@@ -318,7 +318,7 @@ public class VariableStack extends Stack
     {
       Arg arg = (Arg)elementAt(i);
 
-      if (arg.equals(qname))
+      if (arg.getQName().equals(qname))
       {
         val = arg.getVal();
         
@@ -375,7 +375,7 @@ public class VariableStack extends Stack
     {
       Arg arg = (Arg)elementAt(i);
 
-      if (arg.equals(name))
+      if (arg.getQName().equals(name))
       {
         XObject val = arg.getVal();
         if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
