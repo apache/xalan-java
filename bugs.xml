@@ -33,6 +33,246 @@
 <Subsystem>Other</Subsystem>
 </Spr>
 <Spr>
+<Name>DMAN4TATNH</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>attribseterr02</TestID>
+<TestDesc>Need to catch circular use of attribute-sets</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TATQP</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>attribseterr07</TestID>
+<TestDesc>No error raised for use-attribute-sets referring to non-existent set</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TATTY</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>conditionalerr01, conditionalerr02, conditionalerr04, conditionalerr05</TestID>
+<TestDesc>Must enforce correct structure of xsl:choose</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TATWT</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>conditionalerr06, conditionalerr07, conditionalerr08; matcherr05, matcherr07; namespaceerr01; numberformaterr04; sorterr04</TestID>
+<TestDesc>Need more checks for incorrect attributes in various XSL instructions</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TATYP</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>conditionalerr15</TestID>
+<TestDesc>Need to catch use of | as or operator in boolean expression</TestDesc>
+<Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAU39</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>conditionalerr16</TestID>
+<TestDesc>Need to catch reference to undefined variable in certain expressions</TestDesc>
+<Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAU4Z</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>entreferr02, entref04; idkeyerr07; outputerr04</TestID>
+<TestDesc>Need better catching of invalid characters in element/attribute/PI names</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAU7L</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>idkeyerr08</TestID>
+<TestDesc>Need to enforce match-pattern syntax where used in xsl:key</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUA4</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>idkeyerr10</TestID>
+<TestDesc>Use of undefined key name as first arg to key() should raise error</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUBY</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>impinclerr02</TestID>
+<TestDesc>Must catch use of xsl:apply-imports when current template rule is null</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUDP</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>impinclerr03</TestID>
+<TestDesc>Must raise error when other top-level elements precede xsl:import</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUFF</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>lreerr01, lreerr02</TestID>
+<TestDesc>If a namespace prefix is referenced, it's an error for it to be unmapped</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUHU</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>lreerr05,lreerr06,mdocserr04</TestID>
+<TestDesc>Need an error for top-level elements that have no namespace</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUJX</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>matcherr01, matcherr08</TestID>
+<TestDesc>Must raise error when xsl:template has neither name nor match</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAULK</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>mdocserr01</TestID>
+<TestDesc>Should raise "file not found" error from first argument to document(), when detectable</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUNL</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>mdocserr02</TestID>
+<TestDesc>Need to raise error when document() has zero arguments</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUPZ</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>messageerr03</TestID>
+<TestDesc>No message from xsl:message with terminate="yes"</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAURH</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>namedtemplateerr12; variableerr09, variableerr10, variableerr11, variableerr12, variableerr13, variableerr14, variableerr15, variableerr16, variableerr20</TestID>
+<TestDesc>Need to catch duplicate-named templates, variables, params</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAUU5</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>numberformaterr06, numberformaterr08, numberformaterr09, numberformaterr10, numberformaterr20, numberformaterr21, numberformaterr22, numberformaterr23, numberformaterr24, numberformaterr25, numberformaterr26, numberformaterr27</TestID>
+<TestDesc>Need to report syntax errors with decimal-format pattern</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAV25</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>numberingerr01</TestID>
+<TestDesc>Must detect grouping-separator being longer than one character in xsl:number</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAV3U</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>numberingerr02, numberingerr03; sorterr01, sorterr02, sorterr03</TestID>
+<TestDesc>Where attribute can only take a keyword from a list, must raise error for other values</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAV5S</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>numberingerr06</TestID>
+<TestDesc>Should raise error when xsl:number tries to generate out-of-range Roman numerals</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAV77</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>outputerr03</TestID>
+<TestDesc>Need special error check for "xml" names in xsl:processing-instruction</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAV8P</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>outputerr14</TestID>
+<TestDesc>Need to raise error when attempting to output out-of-range character (based on the encoding)</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAVAL</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>processorinfoerr02</TestID>
+<TestDesc>The system-property function should raise error when argument is not namespaced</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAVCL</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>selecterr10, selecterr11, selecterr12, selecterr13, selecterr14, selecterr15, selecterr16</TestID>
+<TestDesc>Need to catch various illegal conversions to node-set in xsl:for-each</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAVEE</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>sorterr08</TestID>
+<TestDesc>Should have a message about QName as data-type in xsl:sort</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAVG5</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>sorterr10</TestID>
+<TestDesc>In multi-level sort, must raise error if any level is bad</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAVHR</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>variableerr05, variableerr06</TestID>
+<TestDesc>Should raise error in xsl:param or xsl:variable if value set two ways</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>DMAN4TAVKC</Name>
+<DateCreated>1/24/2001 </DateCreated>
+<State>Open</State>
+<TestID>variableerr08</TestID>
+<TestDesc>Need to report when xsl:param is not first child inside xsl:template</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
 <Name>PDIK4HUPLA</Name>
 <DateCreated>3/28/2000 </DateCreated>
 <State>Closed</State>
@@ -293,7 +533,7 @@
 <DateCreated>1/19/2001 </DateCreated>
 <State>Open</State>
 <TestID>paramtest.java</TestID>
-<TestDesc>compat.jar: resetting of parameters works differently 1.x/2.x</TestDesc>
+<TestDesc>xalanj1compat.jar: resetting of parameters works differently 1.x/2.x</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
@@ -301,7 +541,7 @@
 <DateCreated>1/19/2001 </DateCreated>
 <State>Open</State>
 <TestID>problemlistenertest.java</TestID>
-<TestDesc>compat.jar: setProblemListeners are never used</TestDesc>
+<TestDesc>xalanj1compat.jar: setProblemListeners are never used</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
@@ -317,7 +557,7 @@
 <DateCreated>1/22/2001 </DateCreated>
 <State>Open</State>
 <TestID>threadtest.java</TestID>
-<TestDesc>compat.jar: TestThreadsX1 throws SAXExceptions (XSLTEngineImpl.java:479)</TestDesc>
+<TestDesc>xalanj1compat.jar: TestThreadsX1 throws SAXExceptions (XSLTEngineImpl.java:479)</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
@@ -325,7 +565,7 @@
 <DateCreated>1/23/2001 </DateCreated>
 <State>Open</State>
 <TestID>problemlistenertest.java</TestID>
-<TestDesc>compat.jar: XSLTProcessorImpl.getProblemListener() throws npe</TestDesc>
+<TestDesc>xalanj1compat.jar: XSLTProcessorImpl.getProblemListener() throws npe</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
@@ -333,7 +573,7 @@
 <DateCreated>1/23/2001 </DateCreated>
 <State>Open</State>
 <TestID>stylesheetreusetest.java</TestID>
-<TestDesc>compat.jar: processStylesheet() does not set that stylesheet into processor</TestDesc>
+<TestDesc>xalanj1compat.jar: processStylesheet() does not set that stylesheet into processor</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>
