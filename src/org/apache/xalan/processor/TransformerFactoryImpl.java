@@ -207,7 +207,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     {
       // Should remove this later... but right now diagnostics from 
       // TransformerConfigurationException are not good.
-      se.printStackTrace();
+      // se.printStackTrace();
       throw new TransformerConfigurationException("processFromNode failed", se);
     }
   }
