@@ -78,6 +78,4 @@ public interface Translet {
     public void buildKeys(DOM document, NodeIterator iterator,
 			  TransletOutputHandler handler, int root)
 	throws TransletException;
-
-    public String getOutputEncoding();
 }

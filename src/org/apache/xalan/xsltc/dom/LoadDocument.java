@@ -83,7 +83,7 @@ public final class LoadDocument {
 
     /**
      * Returns an iterator containing a set of nodes from an XML document
-     * loaded by the document() function. Loads the 
+     * loaded by the document() function.
      */
     public static NodeIterator document(String uri,
 					String base,

@@ -73,6 +73,7 @@ import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.lang.IllegalArgumentException;
 import java.util.Enumeration;
+import java.util.StringTokenizer;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
@@ -150,7 +151,7 @@ public final class TransformerImpl extends Transformer {
     private ContentHandler getOutputHandler(Result result) 
 	throws TransformerException {
 	// Try to get the encoding from Translet (may not be set)
-	_encoding = _translet.getOutputEncoding();
+	_encoding = _translet._encoding;
 	if (_encoding == null) _encoding = "UTF-8";
 
 	StreamResult target   = (StreamResult)result;
@@ -329,6 +330,31 @@ public final class TransformerImpl extends Transformer {
     }
 
     /**
+     * The translet stores all CDATA sections set in the <xsl:output> element
+     * in a Hashtable. This method will re-construct the whitespace separated
+     * list of elements given in the <xsl:output> element.
+     */
+    private String makeCDATAString(Hashtable cdata) {
+	// Return a 'null' string if no CDATA section elements were specified
+	if (cdata == null) return null;
+
+	StringBuffer result = new StringBuffer();
+
+	// Get an enumeration of all the elements in the hashtable
+	Enumeration elements = cdata.keys();
+	if (elements.hasMoreElements()) {
+	    result.append((String)elements.nextElement());
+	    while (elements.hasMoreElements()) {
+		String element = (String)elements.nextElement();
+		result.append(' ');
+		result.append(element);
+	    }
+	}
+	
+	return(result.toString());
+    }
+
+    /**
      * Implements JAXP's Transformer.getOutputProperty().
      * Get an output property that is in effect for the transformation. The
      * property specified may be a property that was set with setOutputProperty,
@@ -340,48 +366,61 @@ public final class TransformerImpl extends Transformer {
     public String getOutputProperty(String name)
 	throws IllegalArgumentException {
 
+	String value = null;
+
 	// First check if the property is overridden in this Transformer
-	if (_properties != null) {
-	    String value = _properties.getProperty(name);
-	    if (value != null) return value;
-	}
+	if (_properties != null) value = _properties.getProperty(name);
 
 	// Then check if it is set in the translet
-	if (_translet != null) {
+	if ((value == null) && (_translet != null)) {
 	    // TODO: get propertie value from translet
-	    if (name.equals(OutputKeys.ENCODING)) {
-		return _encoding;
-	    }
-	    else if (name.equals(OutputKeys.METHOD)) {
-
-	    }
-	    
+	    if (name.equals(OutputKeys.ENCODING))
+		value = _translet._encoding;
+	    else if (name.equals(OutputKeys.METHOD))
+		value = _translet._method;
+	    else if (name.equals(OutputKeys.INDENT))
+		value = (new Boolean(_translet._indent)).toString();
+	    else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
+		value = _translet._doctypePublic;
+	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
+		value = _translet._doctypeSystem;
+	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
+		value = makeCDATAString(_translet._cdata);
+	    else if (name.equals(OutputKeys.MEDIA_TYPE))
+		value = _translet._mediaType;
+	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION))
+		value = (new Boolean(_translet._omitHeader)).toString();
+	    else if (name.equals(OutputKeys.STANDALONE))
+		value = _translet._standalone;
+	    else if (name.equals(OutputKeys.VERSION))
+		value = _translet._version;
 	}
 
 	// Then return the default values
-	if (name.equals(OutputKeys.ENCODING))
-	    return _encoding;
-	else if (name.equals(OutputKeys.METHOD))
-	    return XML_STRING;
-	else if (name.equals(OutputKeys.INDENT))
-	    return NO_STRING;
-	else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
-	    return EMPTY_STRING;
-	else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
-	    return EMPTY_STRING;
-	else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
-	    return EMPTY_STRING;
-	else if (name.equals(OutputKeys.MEDIA_TYPE))
-	    return "text/xml";
-	else if (name.equals(OutputKeys.OMIT_XML_DECLARATION))
-	    return NO_STRING;
-	else if (name.equals(OutputKeys.STANDALONE))
-	    return NO_STRING;
-	else if (name.equals(OutputKeys.VERSION))
-	    return "1.0";
+	if (value == null) {
+	    if (name.equals(OutputKeys.ENCODING))
+		value = "utf-8";
+	    else if (name.equals(OutputKeys.METHOD))
+		value = XML_STRING;
+	    else if (name.equals(OutputKeys.INDENT))
+		value = NO_STRING;
+	    else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
+		value = EMPTY_STRING;
+	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
+		value = EMPTY_STRING;
+	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
+		value = EMPTY_STRING;
+	    else if (name.equals(OutputKeys.MEDIA_TYPE))
+		value = "text/xml";
+	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION))
+		value = NO_STRING;
+	    else if (name.equals(OutputKeys.STANDALONE))
+		value = NO_STRING;
+	    else if (name.equals(OutputKeys.VERSION))
+		value = "1.0";
+	}
 
-
-	return null;
+	return value;
     }
 
     /**
@@ -420,19 +459,46 @@ public final class TransformerImpl extends Transformer {
      */
     private void setOutputProperties(AbstractTranslet translet,
 				     Properties properties) {
-	// TODO - pass properties to the translet
+	// Get a list of all the defined properties
 	Enumeration names = properties.propertyNames();
 	while (names.hasMoreElements()) {
+	    // Get the next property name and value
 	    String name = (String)names.nextElement();
-	    if (name.equals(OutputKeys.ENCODING)) {
-		_encoding = (String)properties.getProperty(name);
+	    String value = properties.getProperty(name);
+
+	    // Pass property value to translet - override previous setting
+	    if (name.equals(OutputKeys.ENCODING))
+		translet._encoding = value;
+	    else if (name.equals(OutputKeys.METHOD))
+		translet._method = value;
+	    else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
+		translet._doctypePublic = value;
+	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
+		translet._doctypeSystem = value;
+	    else if (name.equals(OutputKeys.MEDIA_TYPE))
+		translet._mediaType = value;
+	    else if (name.equals(OutputKeys.STANDALONE))
+		translet._standalone = value;
+	    else if (name.equals(OutputKeys.VERSION))
+		translet._version = value;
+	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) {
+		if ((value != null) == (value.toLowerCase().equals("true"))) {
+		    translet._omitHeader = true;
+		}
+	    }
+	    else if (name.equals(OutputKeys.INDENT)) {
+		if ((value != null) == (value.toLowerCase().equals("true"))) {
+		    translet._indent = true;
+		}
 	    }
 	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) {
-		// ignored - too late now, translet is already compiled
+		translet._cdata = null; // Important - clear previous setting
+		StringTokenizer e = new StringTokenizer(value);
+		while (e.hasMoreTokens()) {
+		    translet.addCdataElement(e.nextToken());
+		}
 	    }
-	    else if (name.equals(OutputKeys.METHOD)) {
 
-	    }
 	}
     }
 

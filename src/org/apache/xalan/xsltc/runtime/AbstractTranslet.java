@@ -575,11 +575,4 @@ public abstract class AbstractTranslet implements Translet {
 	}
     }
 
-    /*
-    // Holds the translet's name - God only knows what it is used for
-    private String _transletName;
-    public void setTransletName(String name) { _transletName = name; }
-    public String getTransletName() { return _transletName; }
-    */
-
 }
