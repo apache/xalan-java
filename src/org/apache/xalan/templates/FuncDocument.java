@@ -447,7 +447,7 @@ public class FuncDocument extends Function2Args
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if (argNum < 1 && argNum > 2)
+    if ((argNum < 1) || (argNum > 2))
       throw new WrongNumberArgsException("2");
   }
 }
