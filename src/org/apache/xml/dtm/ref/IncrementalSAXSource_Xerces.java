@@ -67,7 +67,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
 
-/** <p>IncrementalSAXSource_Xerces takes advantage of the fact that Xerces
+/** <p>IncrementalSAXSource_Xerces takes advantage of the fact that Xerces1
  * incremental mode is already a coroutine of sorts, and just wraps our
  * IncrementalSAXSource API around it.</p>
  *
@@ -78,12 +78,19 @@ import org.apache.xalan.res.XSLMessages;
 public class IncrementalSAXSource_Xerces
   implements IncrementalSAXSource
 {
-  SAXParser fIncrementalParser;
+	//
+	// Reflection. To allow this to compile with Xerces2, which doesn't support
+	// the old parseSome() incremental API, we need to avoid static references 
+	// to those. Until Xerces2 is pervasive and we're willing to make it a
+	// prerequisite, we will support it only via the filtering solution.
+	//
+	java.lang.reflect.Method fParseSomeSetup=null;
+	java.lang.reflect.Method fParseSome=null;
 
   //
   // Data
   //
-
+  SAXParser fIncrementalParser;
   private boolean fParseInProgress=false;
 
   //
@@ -93,26 +100,54 @@ public class IncrementalSAXSource_Xerces
   /** Create a IncrementalSAXSource_Xerces, and create a SAXParsre
    * to go with it
    * */
-  public IncrementalSAXSource_Xerces() {
-    fIncrementalParser=new SAXParser();
+  public IncrementalSAXSource_Xerces() 
+		throws NoSuchMethodException
+	{
+		this(new SAXParser());
   }
 
   /** Create a IncrementalSAXSource_Xerces wrapped around
-   * an existing SAXParser
+   * an existing SAXParser. Currently this works only for recent
+   * releases of Xerces-1. At some point we expect to cut over
+   * and make it work only for Xerces-2, but that involves some
+   * compile-time inheritance dependencies which we aren't yet
+   * ready to buy into.
+   * 
+   * @exception if the SAXParser class doesn't support the Xerces
+   * incremental parse operations. In that case, caller should
+   * fall back upon the IncrementalSAXSource_Filter approach.
    * */
-  public IncrementalSAXSource_Xerces(SAXParser parser) {
+  public IncrementalSAXSource_Xerces(SAXParser parser) 
+		throws NoSuchMethodException  
+	{
     fIncrementalParser=parser;
+		Class[] parms={InputSource.class};
+		fParseSomeSetup=parser.getClass().getMethod("parseSomeSetup",parms);
+		parms=new Class[0];
+		fParseSome=parser.getClass().getMethod("parseSome",parms);
   }
 
   //
   // Factories
   //
-  static public IncrementalSAXSource createIncrementalSAXSource() {
-    return new IncrementalSAXSource_Xerces();
+  static public IncrementalSAXSource createIncrementalSAXSource() 
+	{
+			return createIncrementalSAXSource(new SAXParser());
   }
+	
   static public IncrementalSAXSource
   createIncrementalSAXSource(SAXParser parser) {
-    return new IncrementalSAXSource_Xerces(parser);
+		try
+		{
+			return new IncrementalSAXSource_Xerces(parser);
+		}
+		catch(NoSuchMethodException e)
+		{
+			// Xerces version mismatch. Fall back on the filtering solution
+			IncrementalSAXSource_Filter iss=new IncrementalSAXSource_Filter();
+			iss.setXMLReader(parser);
+			return iss;
+		}
   }
 
   //
@@ -163,7 +198,7 @@ public class IncrementalSAXSource_Xerces
 
     try
     {
-      ok = fIncrementalParser.parseSomeSetup(source);
+      ok = parseSomeSetup(source);
     }
     catch(Exception ex)
     {
@@ -197,7 +232,7 @@ public class IncrementalSAXSource_Xerces
 
     Object arg;
     try {
-      boolean keepgoing = fIncrementalParser.parseSome();
+      boolean keepgoing = parseSome();
       arg = keepgoing ? Boolean.TRUE : Boolean.FALSE;
     } catch (SAXException ex) {
       arg = ex;
@@ -208,6 +243,25 @@ public class IncrementalSAXSource_Xerces
     }
     return arg;
   }
+	
+	// Private methods -- conveniences to hide the reflection details
+	private boolean parseSomeSetup(InputSource source) 
+		throws SAXException, IOException, IllegalAccessException, 
+					 java.lang.reflect.InvocationTargetException
+	{
+		Object[] parm={source};
+		Object ret=fParseSomeSetup.invoke(fIncrementalParser,parm);
+		return ((Boolean)ret).booleanValue();
+	}
+	static final Object[] noparms=new Object[0]; // Would null work???
+	private boolean parseSome()
+		throws SAXException, IOException, IllegalAccessException,
+					 java.lang.reflect.InvocationTargetException
+	{
+		Object ret=fParseSome.invoke(fIncrementalParser,noparms);
+		return ((Boolean)ret).booleanValue();
+	}
+	
 
   //================================================================
   /** Simple unit test. Attempt coroutine parsing of document indicated
@@ -224,8 +278,8 @@ public class IncrementalSAXSource_Xerces
       System.out.println("ERROR: Couldn't allocate coroutine number.\n");
       return;
     }
-    IncrementalSAXSource_Xerces parser=
-      new IncrementalSAXSource_Xerces();
+    IncrementalSAXSource parser=
+      createIncrementalSAXSource();
 
     // Use a serializer as our sample output
     org.apache.xml.serialize.XMLSerializer trace;

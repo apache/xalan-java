@@ -258,6 +258,14 @@ public class DTMManagerDefault extends DTMManager
         if (haveXercesParser)
           incremental = true;  // No matter what.  %REVIEW%
 
+				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
+				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
+				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
+				m_incremental=true;			
+				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
+				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
+				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
+				
         // If the reader is null, but they still requested an incremental build,
         // then we still want to set up the IncrementalSAXSource stuff.
         if (this.m_incremental && incremental /* || ((null == reader) && incremental) */)
@@ -269,9 +277,11 @@ public class DTMManagerDefault extends DTMManager
             // IncrementalSAXSource_Xerces to avoid threading.
             // System.out.println("Using IncrementalSAXSource_Xerces to avoid threading");
             try {
-              // should be ok, it's in the same package - no need for thread class loader
-              Class c=Class.forName( "org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces" );
-              coParser=(IncrementalSAXSource)c.newInstance();
+              // should be ok, it's in the same package - no need for thread class loader,
+							// AND theoretically no need for reflection...
+              // Class c=Class.forName( "org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces" );
+              // coParser=(IncrementalSAXSource)c.newInstance();
+							coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces.createIncrementalSAXSource();
             }  catch( Exception ex ) {
               ex.printStackTrace();
               coParser=null;
