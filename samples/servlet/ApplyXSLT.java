@@ -15,10 +15,10 @@ import javax.servlet.http.*;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.net.URLConnection;
+import javax.xml.transform.OutputKeys;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.OutputFormatExtended;
 // SAX2 Imports
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -475,28 +475,25 @@ public class ApplyXSLT extends HttpServlet
    */
   public String getContentType(Templates templates)
   {
-	StylesheetRoot xslSourceRoot = (StylesheetRoot)templates;
-	OutputFormatExtended of = xslSourceRoot.getOutput();
-  if (null==of)
-    of = new OutputFormatExtended();
-	String encoding = of.getEncoding();
-	String media = of.getMediaType();
-	if (media != null)
-	{
+    Properties oprops = templates.getOutputProperties();
+    String encoding = oprops.getProperty(OutputKeys.ENCODING);  
+	  String media = oprops.getProperty(OutputKeys.MEDIA_TYPE);
+	  if (media != null)
+	  {
       if (encoding != null)
         return media + "; charset=" + encoding;
       return media;
-	}
-	else
-	{
-	  String method = of.getMethod();
-	  if (method.equals("html"))
-		  return "text/html";
-	  else if (method.equals("text"))
-		  return "text/plain";
-	  else 
-		  return "text/xml";
-	}
+	  }
+	  else
+	  {
+	    String method = oprops.getProperty(OutputKeys.METHOD);
+	    if (method.equals("html"))
+		    return "text/html";
+	    else if (method.equals("text"))
+		    return "text/plain";
+	    else 
+		    return "text/xml";
+	  }
   }
 
   /**

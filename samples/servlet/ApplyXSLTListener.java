@@ -10,7 +10,7 @@ package servlet;
 
 import java.io.*;
 import org.xml.sax.*;
-import org.apache.xalan.utils.DefaultErrorHandler;
+import org.apache.xml.utils.DefaultErrorHandler;
 
 /*****************************************************************************************************
  * ApplyXSLTListener provides a buffered listener essential for capturing, and then subsequently
