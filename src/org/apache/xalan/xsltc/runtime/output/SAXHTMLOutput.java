@@ -160,11 +160,11 @@ public class SAXHTMLOutput extends SAXOutput {
         }
 
         if (index >= 0) {
-            _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING,
+            _attributes.setAttribute(index, EMPTYSTRING, localName,
                     name, "CDATA", value);
         }
         else {
-            _attributes.addAttribute(EMPTYSTRING, EMPTYSTRING,
+            _attributes.addAttribute(EMPTYSTRING, localName,
                 name, "CDATA", value);
         }
     }
