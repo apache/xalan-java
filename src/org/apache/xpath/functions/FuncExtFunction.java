@@ -75,13 +75,13 @@ public class FuncExtFunction extends Function
       {
         result = new XRTreeFrag((DocumentFragment)val);
       }
-      else if(val instanceof Node)
-      {
-        result = new XNodeSet((Node)val);
-      }
       else if(val instanceof NodeIterator)
       {
         result = new XNodeSet((NodeIterator)val);
+      }
+      else if(val instanceof Node)
+      {
+        result = new XNodeSet((Node)val);
       }
       else
       {
