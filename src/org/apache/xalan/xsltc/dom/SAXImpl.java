@@ -1929,7 +1929,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     {
 
 	private final static int ATTR_ARRAY_SIZE = 32;
-	private final static int REUSABLE_TEXT_SIZE = 32;
+	private final static int REUSABLE_TEXT_SIZE = 0;  // turned off
 	private final static int INIT_STACK_LENGTH = 64;
 
 	private Hashtable _shortTexts           = null;
