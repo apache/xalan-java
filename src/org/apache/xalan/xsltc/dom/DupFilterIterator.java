@@ -183,4 +183,9 @@ public final class DupFilterIterator extends NodeIteratorBase {
 	_current = _markedNode;
     }
 
+    public NodeIterator reset() {
+	_current = 0;
+	return(this);
+    }
+
 }

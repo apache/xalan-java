@@ -95,6 +95,13 @@ public class BitArray {
 	_bits = new int[_intSize + 1];
     }
 
+    public BitArray(int size, int[] bits) {
+	if (size < 32) size = 32;
+	_bitSize = size;
+	_intSize = (_bitSize >>> 5) + 1;
+	_bits = bits;
+    }
+
     /**
      * Set the mask for this bit array. The upper 8 bits of this mask
      * indicate the DOM in which the nodes in this array belong.
@@ -247,7 +254,9 @@ public class BitArray {
 	}
     }
 
-
+    public BitArray cloneArray() {
+	return(new BitArray(_intSize, _bits));
+    }
 }
 
 

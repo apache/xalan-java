@@ -259,7 +259,15 @@ public class KeyIndex implements NodeIterator {
      * Returns a deep copy of this iterator.
      */
     public NodeIterator cloneIterator() {
-	return((NodeIterator)this);
+	KeyIndex other = new KeyIndex(_arraySize);
+
+	other._index = _index;
+	other._nodes = _nodes.cloneArray();
+	other._pos   = _pos;
+	other._start = _start;
+	other._node  = _node;
+
+	return(other);
     }
 
 }
