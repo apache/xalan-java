@@ -66,7 +66,7 @@ package org.apache.xalan.xsltc.compiler;
 
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.ILOAD;
-import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.CompareGenerator;
@@ -94,12 +94,12 @@ final class PositionCall extends FunctionCall {
 	}
 	else {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
-            final int index =
-                    cpg.addMethodref(BASIS_LIBRARY_CLASS, "positionF",
-                                     "("+NODE_ITERATOR_SIG+")I");
+            final int index = cpg.addInterfaceMethodref(NODE_ITERATOR,
+                                                       "getPosition",
+                                                       "()I");
 
 	    il.append(methodGen.loadIterator());
-            il.append(new INVOKESTATIC(index));
+            il.append(new INVOKEINTERFACE(index,1));
 	}
     }
 }

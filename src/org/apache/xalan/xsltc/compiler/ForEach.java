@@ -106,13 +106,6 @@ final class ForEach extends Instruction {
         if (_select.isDummy()) {
 	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "select");
         }
-	else {
-	    // Wrap _select in a ForwardPositionExpr
-	    final Expression fpe = new ForwardPositionExpr(_select);
-	    _select.setParent(fpe);
-	    fpe.setParser(_select.getParser());
-	    _select = fpe;
-	}
     }
 	
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -177,7 +170,8 @@ final class ForEach extends Instruction {
 	    }
 
 	    if (_type instanceof ReferenceType == false) {
-		_select.startIterator(classGen, methodGen);
+                il.append(methodGen.loadContextNode());
+                il.append(methodGen.setStartNode());
 	    }
 	}
 
