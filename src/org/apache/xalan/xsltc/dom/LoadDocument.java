@@ -101,91 +101,92 @@ public final class LoadDocument {
 					AbstractTranslet translet, DOM dom)
 	throws Exception 
     {
-	final String originalUri = uri;
-	MultiDOM multiplexer = (MultiDOM)dom;
+        final String originalUri = uri;
+        MultiDOM multiplexer = (MultiDOM)dom;
 
-	// Return an empty iterator if the URI is clearly invalid
-	// (to prevent some unncessary MalformedURL exceptions).
-	if (uri == null || uri.equals("")) {
-	    return(new SingletonIterator(DTM.NULL,true));
-	}
+        // Return an empty iterator if the URI is clearly invalid
+        // (to prevent some unncessary MalformedURL exceptions).
+        if (uri == null || uri.equals("")) {
+            return(new SingletonIterator(DTM.NULL,true));
+        }
 
-	// Prepend URI base to URI (from context)
-	if (base != null && !base.equals("")) {
-	    if (!uri.startsWith(base)     &&   // unless URI contains base
-		!uri.startsWith("/")      &&   // unless URI is abs. file path
-		!uri.startsWith("http:/") &&   // unless URI is abs. http URL
-		!uri.startsWith("file:/")) {   // unless URI is abs. file URL
-		uri = base + uri;
-	    }
-	}
+        // Prepend URI base to URI (from context)
+        if (base != null && !base.equals("")) {
+            if (!uri.startsWith(base)     &&   // unless URI contains base
+                !uri.startsWith("/")      &&   // unless URI is abs. file path
+                !uri.startsWith("http:/") &&   // unless URI is abs. http URL
+                !uri.startsWith("file:/")) {   // unless URI is abs. file URL
+                uri = base + uri;
+            }
+        }
 
-	// Check if this is a local file name
-	final File file = new File(uri);
-	if (file.exists()) {
-	    uri = file.toURL().toExternalForm();
-	}
+        // Check if this is a local file name
+        final File file = new File(uri);
+        if (file.exists()) {
+            uri = file.toURL().toExternalForm();
+        }
 	
-	// Check if this DOM has already been added to the multiplexer
-	int mask = multiplexer.getDocumentMask(uri);
-	if (mask != -1) {
-	    DOM newDom = ((DOMAdapter)multiplexer.getDOMAdapter(uri))
+        // Check if this DOM has already been added to the multiplexer
+        int mask = multiplexer.getDocumentMask(uri);
+        if (mask != -1) {
+            DOM newDom = ((DOMAdapter)multiplexer.getDOMAdapter(uri))
                                        .getDOMImpl();
             if (newDom instanceof SAXImpl) {
-	        return new SingletonIterator(((SAXImpl)newDom).getDocument(),
+                return new SingletonIterator(((SAXImpl)newDom).getDocument(),
                                              true);
             } else {
-	        return new SingletonIterator(((DOMImpl)newDom).getDocument(),
+                return new SingletonIterator(((DOMImpl)newDom).getDocument(),
                                              true);
             }
-	}
+        }
 
-	// Check if we can get the DOM from a DOMCache
-	DOMCache cache = translet.getDOMCache();
-	DOM newdom;
+        // Check if we can get the DOM from a DOMCache
+        DOMCache cache = translet.getDOMCache();
+        DOM newdom;
 
-	mask = multiplexer.nextMask(); // peek
+        mask = multiplexer.nextMask(); // peek
 
-	if (cache != null) {
-	    newdom = cache.retrieveDocument(originalUri, mask, translet);
-	    if (newdom == null) {
-		final Exception e = new FileNotFoundException(originalUri);
-		throw new TransletException(e);
-	    }
-	}
-	else {
-	    // Parse the input document and construct DOM object
-	    // Create a SAX parser and get the XMLReader object it uses
-	    final SAXParserFactory factory = SAXParserFactory.newInstance();
-	    try {
-		factory.setFeature(NAMESPACE_FEATURE,true);
-	    }
-	    catch (Exception e) {
-		factory.setNamespaceAware(true);
-	    }
-	    final SAXParser parser = factory.newSAXParser();
-	    final XMLReader reader = parser.getXMLReader();
+        if (cache != null) {
+            newdom = cache.retrieveDocument(originalUri, mask, translet);
+            if (newdom == null) {
+                final Exception e = new FileNotFoundException(originalUri);
+                throw new TransletException(e);
+            }
+        } else {
+            // Parse the input document and construct DOM object
+            // Create a SAX parser and get the XMLReader object it uses
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
+            try {
+                factory.setFeature(NAMESPACE_FEATURE,true);
+            }
+            catch (Exception e) {
+                factory.setNamespaceAware(true);
+            }
+            final SAXParser parser = factory.newSAXParser();
+            final XMLReader reader = parser.getXMLReader();
 
-	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-	    DTMManager dtmManager =
-                     ((DTMDefaultBase)((DOMAdapter)multiplexer.getMain())
+            // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
+            DTMManager dtmManager =
+                        ((DTMDefaultBase)((DOMAdapter)multiplexer.getMain())
                                                .getDOMImpl()).m_mgr;
             newdom = (SAXImpl)dtmManager.getDTM(
                                  new SAXSource(reader, new InputSource(uri)),
                                  false, null, true, true);
 
-	    ((SAXImpl)newdom).setDocumentURI(uri);
-	}
+            translet.prepassDocument(newdom);
 
-	// Wrap the DOM object in a DOM adapter and add to multiplexer
-	final DOMAdapter domAdapter = translet.makeDOMAdapter(newdom);
-	mask = multiplexer.addDOMAdapter(domAdapter);
+            ((SAXImpl)newdom).setDocumentURI(uri);
+        }
 
-	// Create index for any key elements
-	translet.buildKeys(newdom, null, null, ((SAXImpl)newdom).getDocument());
+        // Wrap the DOM object in a DOM adapter and add to multiplexer
+        final DOMAdapter domAdapter = translet.makeDOMAdapter(newdom);
+        mask = multiplexer.addDOMAdapter(domAdapter);
 
-	// Return a singleton iterator containing the root node
-	return new SingletonIterator(((SAXImpl)newdom).getDocument(), true);
+        // Create index for any key elements
+        translet.buildKeys(newdom, null, null, ((SAXImpl)newdom).getDocument());
+
+        // Return a singleton iterator containing the root node
+        return new SingletonIterator(((SAXImpl)newdom).getDocument(), true);
     }
 
     /**
