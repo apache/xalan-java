@@ -640,7 +640,8 @@ public class ElemTemplateElement extends UnImplNode
    * this element.  Take care to call resolveInheritedNamespaceDecls.
    * after all namespace declarations have been added.
    *
-   * NEEDSDOC @param nsSupport
+   * @param nsSupport non-null reference to NamespaceSupport from 
+   * the ContentHandler.
    *
    * @throws TransformerException
    */
@@ -650,12 +651,13 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * From the SAX2 helper class, set the namespace table for
-   * this element.  Take care to call resolveInheritedNamespaceDecls.
+   * Copy the namespace declarations from the NamespaceSupport object.  
+   * Take care to call resolveInheritedNamespaceDecls.
    * after all namespace declarations have been added.
    *
-   * NEEDSDOC @param nsSupport
-   * NEEDSDOC @param excludeXSLDecl
+   * @param nsSupport non-null reference to NamespaceSupport from 
+   * the ContentHandler.
+   * @param excludeXSLDecl true if XSLT namespaces should be ignored.
    *
    * @throws TransformerException
    */
@@ -685,12 +687,14 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Fullfill the PrefixResolver interface.  Calling this will throw an error.
+   * Fullfill the PrefixResolver interface.  Calling this for this class 
+   * will throw an error.
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param context
+   * @param prefix The prefix to look up, which may be an empty string ("") 
+   *               for the default Namespace.
+   * @param context The node context from which to look up the URI.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null if the error listener does not choose to throw an exception.
    */
   public String getNamespaceForPrefix(String prefix, org.w3c.dom.Node context)
   {
@@ -708,9 +712,11 @@ public class ElemTemplateElement extends UnImplNode
    * local declarations. Replaced a recursive solution, which permits
    * easier subclassing/overriding.
    *
-   * NEEDSDOC @param prefix
+   * @param prefix non-null reference to prefix string, which should map 
+   *               to a namespace URL.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The namespace URL that the prefix maps to, or null if no 
+   *         mapping can be found.
    */
   public String getNamespaceForPrefix(String prefix)
   {
@@ -739,7 +745,7 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * The table of namespace declarations for this element
+   * The table of {@link XMLNSDecl}s for this element
    * and all parent elements, screened for excluded prefixes.
    * @serial
    */
@@ -749,7 +755,7 @@ public class ElemTemplateElement extends UnImplNode
    * Return a table that contains all prefixes available
    * within this element context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return reference to vector of {@link XMLNSDecl}s, which may be null.
    */
   public Vector getPrefixes()
   {
@@ -760,10 +766,11 @@ public class ElemTemplateElement extends UnImplNode
    * Tell if the result namespace decl should be excluded.  Should be called before
    * namespace aliasing (I think).
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
+   * @param prefix non-null reference to prefix.
+   * @param uri reference to namespace that prefix maps to, which is protected 
+   *            for null, but should really never be passed as null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the given namespace should be excluded.
    *
    * @throws TransformerException
    */
@@ -793,12 +800,13 @@ public class ElemTemplateElement extends UnImplNode
    * parent's namespace if this namespace adds nothing new.
    * (Recursive method, walking the elements depth-first,
    * processing parents before children).
+   * Note that this method builds m_prefixTable with aliased 
+   * namespaces, *not* the original namespaces.
    *
    * @throws TransformerException
    */
   public void resolvePrefixTables() throws TransformerException
   {
-
     // Always start with a fresh prefix table!
     m_prefixTable = null;
 
@@ -808,7 +816,8 @@ public class ElemTemplateElement extends UnImplNode
     // to the parent that has decls.
     if (null != this.m_declaredPrefixes)
     {
-
+      StylesheetRoot stylesheet = this.getStylesheetRoot();
+      
       // Add this element's declared prefixes to the 
       // prefix table.
       int n = m_declaredPrefixes.size();
@@ -824,7 +833,21 @@ public class ElemTemplateElement extends UnImplNode
         if (null == m_prefixTable)
           m_prefixTable = new Vector();
 
-        m_prefixTable.addElement(new XMLNSDecl(prefix, uri, shouldExclude));
+        NamespaceAlias nsAlias = stylesheet.getNamespaceAliasComposed(uri);
+        if(null != nsAlias)
+        {
+          // Should I leave the non-aliased element in the table as 
+          // an excluded element?
+          
+          // The exclusion should apply to the non-aliased prefix, so 
+          // we don't calculate it here.  -sb
+          decl = new XMLNSDecl(nsAlias.getResultPrefix(), 
+                              nsAlias.getResultNamespace(), shouldExclude);
+        }
+        else
+          decl = new XMLNSDecl(prefix, uri, shouldExclude);
+
+        m_prefixTable.addElement(decl);
       }
     }
 
@@ -847,7 +870,7 @@ public class ElemTemplateElement extends UnImplNode
 
         // Add the prefixes from the parent's prefix table.
         int n = prefixes.size();
-
+        
         for (int i = 0; i < n; i++)
         {
           XMLNSDecl decl = (XMLNSDecl) prefixes.elementAt(i);
@@ -859,7 +882,7 @@ public class ElemTemplateElement extends UnImplNode
             decl = new XMLNSDecl(decl.getPrefix(), decl.getURI(),
                                  shouldExclude);
           }
-
+          
           m_prefixTable.addElement(decl);
         }
       }
@@ -883,7 +906,7 @@ public class ElemTemplateElement extends UnImplNode
    * Send startPrefixMapping events to the result tree handler
    * for all declared prefix mappings in the stylesheet.
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    *
    * @throws TransformerException
    */
@@ -918,7 +941,7 @@ public class ElemTemplateElement extends UnImplNode
    * Send startPrefixMapping events to the result tree handler
    * for all declared prefix mappings in the stylesheet.
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    *
    * @throws TransformerException
    */

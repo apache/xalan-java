@@ -123,9 +123,9 @@ public class ElemCopy extends ElemUse
    * root node, xsl:copy will not create a root node, but will just use
    * the content template.</p>
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */

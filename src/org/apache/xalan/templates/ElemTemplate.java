@@ -354,9 +354,9 @@ public class ElemTemplate extends ElemTemplateElement
    * The content of the xsl:template element is the template
    * that is instantiated when the template rule is applied.
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */

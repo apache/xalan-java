@@ -493,9 +493,9 @@ public class ElemNumber extends ElemTemplateElement
    * Execute an xsl:number instruction. The xsl:number element is
    * used to insert a formatted number into the result tree.
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -866,7 +866,7 @@ public class ElemNumber extends ElemTemplateElement
    * Get the target node that will be counted..
    *
    * NEEDSDOC @param xctxt
-   * NEEDSDOC @param sourceNode
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    *
    * NEEDSDOC ($objectName$) @return
    *
@@ -954,7 +954,7 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Get the locale we should be using.
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    * NEEDSDOC @param contextNode
    *
    * NEEDSDOC ($objectName$) @return
@@ -1002,7 +1002,7 @@ public class ElemNumber extends ElemTemplateElement
   /**
    *
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    * NEEDSDOC @param contextNode
    *
    * NEEDSDOC ($objectName$) @return
@@ -1056,7 +1056,7 @@ public class ElemNumber extends ElemTemplateElement
    * Format a vector of numbers into a formatted string.
    * @param xslNumberElement Element that takes %conversion-atts; attributes.
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    * @param list Array of one or more integer numbers.
    * NEEDSDOC @param contextNode
    * @return String that represents list according to
@@ -1214,7 +1214,7 @@ public class ElemNumber extends ElemTemplateElement
    * NEEDSDOC Method getFormattedNumber 
    *
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    * NEEDSDOC @param contextNode
    * NEEDSDOC @param numberType
    * NEEDSDOC @param numberWidth

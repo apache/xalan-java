@@ -180,7 +180,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    *
    * NEEDSDOC @param xctxt
    * NEEDSDOC @param targetNode
-   * NEEDSDOC @param mode
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    * @return The mode associated with the template.
    *
    * @throws TransformerException

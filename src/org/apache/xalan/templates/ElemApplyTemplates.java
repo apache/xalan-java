@@ -98,7 +98,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
   /**
    * Set the mode attribute for this element.
    *
-   * NEEDSDOC @param mode
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    */
   public void setMode(QName mode)
   {
@@ -161,9 +161,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * Apply the context node to the matching templates.
    * @see <a href="http://www.w3.org/TR/xslt#section-Applying-Template-Rules">section-Applying-Template-Rules in XSLT Specification</a>
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -217,10 +217,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * NEEDSDOC Method pushParams 
    *
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    * NEEDSDOC @param xctxt
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */

@@ -145,9 +145,9 @@ public class ElemCallTemplate extends ElemForEach
    * Invoke a named template.
    * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */

@@ -102,6 +102,22 @@ class ProcessorNamespaceAlias extends XSLTElementProcessor
     NamespaceAlias na = new NamespaceAlias(handler.nextUid());
 
     setPropertiesFromAttributes(handler, rawName, attributes, na);
+    String prefix = na.getStylesheetPrefix();
+    if(prefix.equals("#default"))
+    {
+      prefix = "";
+      na.setStylesheetPrefix(prefix);
+    }
+    String stylesheetNS = handler.getNamespaceForPrefix(prefix);
+    na.setStylesheetNamespace(stylesheetNS);
+    prefix = na.getResultPrefix();
+    if(prefix.equals("#default"))
+    {
+      prefix = "";
+      na.setResultPrefix(prefix);
+    }
+    String resultNS = handler.getNamespaceForPrefix(prefix);
+    na.setResultNamespace(resultNS);
     handler.getStylesheet().setNamespaceAlias(na);
   }
 }

@@ -558,7 +558,7 @@ public class TemplateList implements java.io.Serializable
    * NEEDSDOC @param head
    * NEEDSDOC @param xctxt
    * NEEDSDOC @param targetNode
-   * NEEDSDOC @param mode
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    */
   private void checkConflicts(TemplateSubPatternAssociation head,
                               XPathContext xctxt, Node targetNode, QName mode)

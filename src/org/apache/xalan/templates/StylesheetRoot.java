@@ -438,9 +438,9 @@ public class StylesheetRoot extends StylesheetComposed
    */
   public int getGlobalImportCount()
   {
-	  return (m_globalImportList!=null)
-			? m_globalImportList.length 
-			  : 1;
+          return (m_globalImportList!=null)
+                        ? m_globalImportList.length 
+                          : 1;
   }
 
   /**
@@ -657,22 +657,23 @@ public class StylesheetRoot extends StylesheetComposed
    */
   void recomposeNamespaceAliases(NamespaceAlias nsAlias)
   {
-    m_namespaceAliasComposed.put(nsAlias.getStylesheetPrefix(),
-                                 nsAlias.getResultPrefix());
+    m_namespaceAliasComposed.put(nsAlias.getStylesheetNamespace(),
+                                 nsAlias);
   }
 
   /**
    * Get the "xsl:namespace-alias" property.
-   * Return the alias namespace uri for a given namespace uri if one is found.
+   * Return the NamespaceAlias for a given namespace uri.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param uri
+   * @param uri non-null reference to namespace that is to be aliased.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return NamespaceAlias that matches uri, or null if no match.
    */
-  public String getNamespaceAliasComposed(String uri)
+  public NamespaceAlias getNamespaceAliasComposed(String uri)
   {
-    return (String) m_namespaceAliasComposed.get(uri);
+    return (NamespaceAlias) ((null == m_namespaceAliasComposed) 
+                    ? null : m_namespaceAliasComposed.get(uri));
   }
 
   /**

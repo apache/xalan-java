@@ -204,9 +204,9 @@ public class ElemForEach extends ElemTemplateElement
    * NEEDSDOC Method execute 
    *
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -306,10 +306,10 @@ public class ElemForEach extends ElemTemplateElement
    * NEEDSDOC Method pushParams 
    *
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    * NEEDSDOC @param xctxt
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -342,8 +342,8 @@ public class ElemForEach extends ElemTemplateElement
    * Perform a query if needed, and call transformNode for each child.
    *
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @exception TransformerException Thrown in a variety of circumstances.
    * @param stylesheetTree The owning stylesheet tree.
    * @param xslInstruction The stylesheet element context (depricated -- I do

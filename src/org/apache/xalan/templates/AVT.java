@@ -98,13 +98,22 @@ public class AVT implements java.io.Serializable
 
   /**
    * Get the raw name of the attribute, with the prefix unprocessed.
-   * MADE PUBLIC 9/5/2000 to support compilation experiment
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to prefixed name.
    */
   public String getRawName()
   {
     return m_rawName;
+  }
+  
+  /**
+   * Get the raw name of the attribute, with the prefix unprocessed.
+   *
+   * @param rawName non-null reference to prefixed name.
+   */
+  public void setRawName(String rawName)
+  {
+    m_rawName = rawName;
   }
 
   /**
@@ -114,13 +123,22 @@ public class AVT implements java.io.Serializable
 
   /**
    * Get the local name of the attribute.
-   * MADE PUBLIC 9/5/2000 to support compilation experiment
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to name string.
    */
   public String getName()
   {
     return m_name;
+  }
+  
+  /**
+   * Set the local name of the attribute.
+   *
+   * @param name non-null reference to name string.
+   */
+  public void setName(String name)
+  {
+    m_name = name;
   }
 
   /**
@@ -130,13 +148,22 @@ public class AVT implements java.io.Serializable
 
   /**
    * Get the namespace URI of the attribute.
-   * MADE PUBLIC 9/5/2000 to support compilation experiment
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to URI, "" if null namespace.
    */
   public String getURI()
   {
     return m_uri;
+  }
+  
+  /**
+   * Get the namespace URI of the attribute.
+   *
+   * @param uri non-null reference to URI, "" if null namespace.
+   */
+  public void setURI(String uri)
+  {
+    m_uri = uri;
   }
 
   /**
@@ -144,11 +171,11 @@ public class AVT implements java.io.Serializable
    * constructing a vector of AVTParts, or simply hold
    * on to the string if the AVT is simple.
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param rawName
-   * NEEDSDOC @param stringedValue
+   * @param handler non-null reference to StylesheetHandler that is constructing.
+   * @param uri non-null reference to URI, "" if null namespace.
+   * @param name  non-null reference to name string.
+   * @param rawName prefixed name.
+   * @param stringedValue non-null raw string value.
    *
    * @throws javax.xml.transform.TransformerException
    */

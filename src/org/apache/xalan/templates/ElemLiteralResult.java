@@ -122,7 +122,7 @@ public class ElemLiteralResult extends ElemUse
    */
   private Vector m_avts = null;
 
-  /** NEEDSDOC Field m_xslAttr          */
+  /** List of attributes with the XSLT namespace.   */
   private Vector m_xslAttr = null;
 
   /**
@@ -180,6 +180,57 @@ public class ElemLiteralResult extends ElemUse
 
     return null;
   }
+  
+  /**
+   * Augment resolvePrefixTables, resolving the namespace aliases once 
+   * the superclass has resolved the tables.
+   */
+  public void resolvePrefixTables() throws TransformerException
+  {
+    super.resolvePrefixTables();
+    StylesheetRoot stylesheet = getStylesheetRoot();
+    if((null != m_namespace) && (m_namespace.length() > 0))
+    {
+      NamespaceAlias nsa = stylesheet.getNamespaceAliasComposed(m_namespace);
+      if(null != nsa)
+      {
+        m_namespace = nsa.getResultNamespace();
+        
+        String resultPrefix = nsa.getResultPrefix();
+        if((null != resultPrefix) && (resultPrefix.length() > 0))
+          m_rawName = resultPrefix+":"+m_localName;
+        else
+          m_rawName = m_localName;
+      }
+    }
+    
+    if(null != m_avts)
+    {
+      int n = m_avts.size();
+      for(int i = 0; i < n; i++)
+      {
+        AVT avt = (AVT)m_avts.elementAt(i);
+        
+        // Should this stuff be a method on AVT?
+        String ns = avt.getURI();
+        if((null != ns) && (ns.length() > 0))
+        {
+          NamespaceAlias nsa = stylesheet.getNamespaceAliasComposed(m_namespace);
+          if(null != nsa)
+          {
+            String namespace = nsa.getResultNamespace();
+            
+            String resultPrefix = nsa.getResultPrefix();
+            String rawName = avt.getName();
+            if((null != resultPrefix) && (resultPrefix.length() > 0))
+              rawName = resultPrefix+":"+rawName;
+            avt.setURI(namespace);
+            avt.setRawName(rawName);
+          }
+        }
+      }
+    }
+  }
 
   /**
    * The namespace of the element to be created.
@@ -187,9 +238,13 @@ public class ElemLiteralResult extends ElemUse
   private String m_namespace;
 
   /**
-   * Set the m_namespace of the LRE.
+   * Set the namespace URI of the result element to be created.
+   * Note that after resolvePrefixTables has been called, this will 
+   * return the aliased result namespace, not the original stylesheet 
+   * namespace.
    *
-   * NEEDSDOC @param ns
+   * @param ns The Namespace URI, or the empty string if the
+   *        element has no Namespace URI.
    */
   public void setNamespace(String ns)
   {
@@ -197,15 +252,16 @@ public class ElemLiteralResult extends ElemUse
   }
 
   /**
-   * Get the m_namespace of the Literal Result Element.
+   * Get the original namespace of the Literal Result Element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The Namespace URI, or the empty string if the
+   *        element has no Namespace URI.
    */
   public String getNamespace()
   {
     return m_namespace;
   }
-
+  
   /**
    * The raw name of the element to be created.
    */
@@ -214,7 +270,8 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Set the local name of the LRE.
    *
-   * NEEDSDOC @param localName
+   * @param localName The local name (without prefix) of the result element 
+   *                  to be created.
    */
   public void setLocalName(String localName)
   {
@@ -223,8 +280,12 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * Get the local name of the Literal Result Element.
+   * Note that after resolvePrefixTables has been called, this will 
+   * return the aliased name prefix, not the original stylesheet 
+   * namespace prefix.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The local name (without prefix) of the result element 
+   *                  to be created.
    */
   public String getLocalName()
   {
@@ -235,11 +296,12 @@ public class ElemLiteralResult extends ElemUse
    * The raw name of the element to be created.
    */
   private String m_rawName;
-
+  
   /**
    * Set the raw name of the LRE.
    *
-   * NEEDSDOC @param rawName
+   * @param rawName The qualified name (with prefix), or the
+   *        empty string if qualified names are not available.
    */
   public void setRawName(String rawName)
   {
@@ -249,7 +311,8 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Get the raw name of the Literal Result Element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return  The qualified name (with prefix), or the
+   *        empty string if qualified names are not available.
    */
   public String getRawName()
   {
@@ -406,7 +469,7 @@ public class ElemLiteralResult extends ElemUse
     return false;
   }
 
-  /**
+  /*
    * Combine the parent's namespaces with this namespace
    * for fast processing, taking care to reference the
    * parent's namespace if this namespace adds nothing new.
@@ -415,7 +478,7 @@ public class ElemLiteralResult extends ElemUse
    * Overide super method to handle exclude-result-prefix attribute.
    *
    * @throws TransformerException
-   */
+   *
   public void resolvePrefixTables() throws TransformerException
   {
 
@@ -507,6 +570,7 @@ public class ElemLiteralResult extends ElemUse
       child.resolvePrefixTables();
     }
   }
+  */
 
   /**
    * Copy a Literal Result Element into the Result tree, copy the
@@ -514,9 +578,9 @@ public class ElemLiteralResult extends ElemUse
    * of the XSLT namespace, and execute the children of the LRE.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */

@@ -62,7 +62,7 @@ package org.apache.xalan.templates;
  * that one namespace URI is an alias for another namespace URI.
  * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
  */
-public class NamespaceAlias implements RecomposableBase
+public class NamespaceAlias extends ElemTemplateElement
 {
   
   /**
@@ -83,7 +83,7 @@ public class NamespaceAlias implements RecomposableBase
   /**
    * Set the "stylesheet-prefix" attribute.
    *
-   * NEEDSDOC @param v
+   * @param v non-null prefix value.
    */
   public void setStylesheetPrefix(String v)
   {
@@ -93,11 +93,36 @@ public class NamespaceAlias implements RecomposableBase
   /**
    * Get the "stylesheet-prefix" attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null prefix value.
    */
   public String getStylesheetPrefix()
   {
     return m_StylesheetPrefix;
+  }
+  
+  /**
+   * The namespace in the stylesheet space.
+   */
+  private String m_StylesheetNamespace;
+
+  /**
+   * Set the value for the stylesheet namespace.
+   *
+   * @param v non-null prefix value.
+   */
+  public void setStylesheetNamespace(String v)
+  {
+    m_StylesheetNamespace = v;
+  }
+
+  /**
+   * Get the value for the stylesheet namespace.
+   *
+   * @return non-null prefix value.
+   */
+  public String getStylesheetNamespace()
+  {
+    return m_StylesheetNamespace;
   }
 
   /**
@@ -108,7 +133,7 @@ public class NamespaceAlias implements RecomposableBase
   /**
    * Set the "result-prefix" attribute.
    *
-   * NEEDSDOC @param v
+   * @param v non-null prefix value.
    */
   public void setResultPrefix(String v)
   {
@@ -118,11 +143,36 @@ public class NamespaceAlias implements RecomposableBase
   /**
    * Get the "result-prefix" attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null prefix value.
    */
   public String getResultPrefix()
   {
     return m_ResultPrefix;
+  }
+  
+  /**
+   * The result namespace.
+   */
+  private String m_ResultNamespace;
+
+  /**
+   * Set the result namespace.
+   *
+   * @param v non
+   */
+  public void setResultNamespace(String v)
+  {
+    m_ResultNamespace = v;
+  }
+
+  /**
+   * Get the result namespace value.
+   *
+   * @return non-null namespace value.
+   */
+  public String getResultNamespace()
+  {
+    return m_ResultNamespace;
   }
 
   /**

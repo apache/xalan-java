@@ -150,11 +150,11 @@ public class ElemUse extends ElemTemplateElement
    * contain the same attribute unless there is a definition of the attribute
    * set with higher import precedence that also contains the attribute."
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non-null reference to the the current transform-time state.
    * NEEDSDOC @param stylesheet
    * NEEDSDOC @param attributeSetsNames
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -199,9 +199,9 @@ public class ElemUse extends ElemTemplateElement
    * on xsl:attribute-set elements causes an attribute set to directly
    * or indirectly use itself.
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param mode
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
