@@ -800,9 +800,7 @@ public class ElemTemplateElement extends UnImplNode
     {
       if (uri.equals(Constants.S_XSLNAMESPACEURL)
               || getStylesheet().containsExtensionElementURI(uri)
-              || uri.equals("http://xml.apache.org/xslt")
-              || uri.equals("http://xsl.lotus.com/")
-              || uri.equals("http://xsl.lotus.com"))
+              || uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL))
         return true;
 
       if (containsExcludeResultPrefix(prefix))
