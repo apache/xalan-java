@@ -155,6 +155,8 @@ Copyright:
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
     <pathelement location="${bsf.jar}" />
+    <pathelement location="${bcel.jar}" />
+    <pathelement location="${runtime.jar}" />
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
     <pathelement location="${build.xalan.jar}" />
