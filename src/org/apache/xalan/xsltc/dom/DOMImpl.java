@@ -2767,12 +2767,15 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	private final static int ATTR_ARRAY_SIZE = 32;
 	private final static int REUSABLE_TEXT_SIZE = 32;
+	private final static int INIT_STACK_LENGTH = 64;
+
 	private Hashtable _shortTexts           = null;
 
 	private Hashtable _names                = null;
 	private int       _nextNameCode         = NTYPES;
-	private int[]     _parentStack          = new int[64];
-	private int[]     _previousSiblingStack = new int[64];
+	private int       _parentStackLength    = INIT_STACK_LENGTH;
+	private int[]     _parentStack          = new int[INIT_STACK_LENGTH];
+	private int[]     _previousSiblingStack = new int[INIT_STACK_LENGTH];
 	private int       _sp;
 	private int       _baseOffset           = 0;
 	private int       _currentOffset        = 0;
@@ -2895,6 +2898,25 @@ public final class DOMImpl implements DOM, Externalizable {
 		_offsetOrChild[_parentStack[_sp]] = node;
 	    }
 	    _previousSiblingStack[_sp] = node;
+	}
+
+	/**
+	 * Sets the current parent
+	 */
+	private void linkParent(final int node) {
+	    if (++_sp >= _parentStackLength) {
+		int length = _parentStackLength;
+		_parentStackLength = length + INIT_STACK_LENGTH;
+
+		final int newParent[] = new int[_parentStackLength];
+		System.arraycopy(_parentStack,0,newParent,0,length);
+		_parentStack = newParent;
+
+		final int newSibling[] = new int[_parentStackLength];
+		System.arraycopy(_previousSiblingStack,0,newSibling,0,length);
+		_previousSiblingStack = newSibling;
+	    }
+	    _parentStack[_sp] = node;
 	}
 
 	/**
@@ -3196,7 +3218,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    // Get node index and setup parent/child references
 	    final int node = nextNode();
 	    linkChildren(node);
-	    _parentStack[++_sp] = node;
+	    linkParent(node);
 
 	    _lengthOrAttr[node] = DOM.NULL;
 
