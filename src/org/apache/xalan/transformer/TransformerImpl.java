@@ -681,13 +681,14 @@ public class TransformerImpl extends Transformer
     throws IllegalArgumentException
   {    
     String value = null;
-    if(null != m_outputFormat)
-    {
-      value = m_outputFormat.getProperty(qnameString);
-    }
+    
+    OutputProperties props = getOutputFormat();    
+    
+    value = props.getProperty(qnameString);
+    
     if(null == value)
     {
-      if(!m_outputFormat.isLegalPropertyKey(qnameString))
+      if(!props.isLegalPropertyKey(qnameString))
         throw new IllegalArgumentException("output property not recognized: "+qnameString);
     }
     return value;
@@ -755,11 +756,8 @@ public class TransformerImpl extends Transformer
    * for the next transformation.
    */
   public Properties getOutputProperties()
-  {
-    if (null == m_outputFormat) 
-      m_outputFormat = new OutputProperties(m_stylesheetRoot.getOutputProperties());
-    
-    return (Properties)m_outputFormat.getProperties().clone();  
+  {    
+    return (Properties)getOutputFormat().getProperties().clone();  
   }
 
   /**
