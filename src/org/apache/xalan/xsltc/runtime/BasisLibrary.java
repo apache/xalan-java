@@ -427,7 +427,7 @@ public final class BasisLibrary implements Operators {
 	if (name.equals("xsl:version"))
 	    return("1.0");
 	if (name.equals("xsl:vendor"))
-	    return("Apache Xalan XSLTC");
+	    return("Apache Software Foundation");
 	if (name.equals("xsl:vendor-url"))
 	    return("http://xml.apache.org/xalan-j");
 	

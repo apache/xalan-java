@@ -265,6 +265,10 @@ public class Parser implements Constants, ContentHandler {
     }
     
     public QName getQName(final String stringRep) {
+	return getQName(stringRep, true);    
+    }
+
+    public QName getQName(final String stringRep, boolean reportError) {
 	// parse and retrieve namespace
 	final int colon = stringRep.lastIndexOf(':');
 	if (colon != -1) {
@@ -275,7 +279,7 @@ public class Parser implements Constants, ContentHandler {
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals("xmlns") == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
-		if (namespace == null) {
+		if (namespace == null && reportError) {
 		    final int line = _locator.getLineNumber();
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
 						line, prefix);
@@ -1072,7 +1076,9 @@ public class Parser implements Constants, ContentHandler {
      *       This has to be passed on to the symbol table!
      */
     public void startPrefixMapping(String prefix, String uri) {
-	if (_prefixMapping == null) _prefixMapping = new Hashtable();
+	if (_prefixMapping == null) {
+	    _prefixMapping = new Hashtable();
+	}
 	_prefixMapping.put(prefix, uri);
     }
 

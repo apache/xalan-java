@@ -97,7 +97,7 @@ final class FormatNumberCall extends FunctionCall {
 	    _format = new CastExpr(_format, Type.String);
 	}
 	if (argumentCount() == 3) {
-	    final Type tname = _format.typeCheck(stable);
+	    final Type tname = _name.typeCheck(stable);
 	    if (tname instanceof StringType == false) {
 		_name = new CastExpr(_name, Type.String);
 	    }

@@ -57,6 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
@@ -64,6 +65,9 @@ package org.apache.xalan.xsltc.runtime;
 
 import java.lang.Class;
 import java.lang.ClassLoader;
+import java.lang.Thread;
+
+import java.net.*;	// temporary
 
 /**
  * This class is intended used when the default Class.forName() method fails.
@@ -91,14 +95,14 @@ final public class TransletLoader {
      * Get a handle to the system class loader
      */
     public TransletLoader() {
-	// Get the default class loader
-	ClassLoader loader = this.getClass().getClassLoader();
-	// If this is the extensions class loader we need to get the
-	// default system class loader instead. This is permitted if
-	// this class was loaded by the extensions class loader.
-	String loaderName = loader.getClass().getName();
-	if (loaderName.equals("sun.misc.Launcher$ExtClassLoader"))
+	// Get the loader for the current thread (not the current class)
+	ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+	// Avoid using the extensions class loader (see comment above)
+	final String loaderName = loader.getClass().getName();
+	if (loaderName.equals("sun.misc.Launcher$ExtClassLoader")) {
 	    loader = ClassLoader.getSystemClassLoader();
+	}
 	_loader = loader;
     }
 
@@ -108,6 +112,7 @@ final public class TransletLoader {
     public Class loadClass(String name) throws ClassNotFoundException {
 	return(Class.forName(name, false, _loader));
     }
+
     /**
      * Loads a Class definition and runs static initializers.
      */
