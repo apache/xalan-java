@@ -78,6 +78,7 @@
   <p>The &xslt4j; implementation is in xalan.jar. The SAX, DOM, and JAVAX interfaces are in xml-apis.jar. These interfaces are shared by a 
   number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a separate JAR simplifies coordination and reduces risk of duplication. 
   <em>Be sure to put both JAR files (and xercesImpl.jar or another JAXP 1.1-compliant XML parser) on your classpath!</em></p>
+  <p>&xslt4j-current; also introduces support for <link idref="extensionslib" anchor="exslt">EXSLT extensions </link>.</p>
   </s2> 
   <s2 title="How do I get it?">
     <p>To get the binary distribution (all you need to use and develop applications with &xslt4j;), download and unzip either of the following:</p>
