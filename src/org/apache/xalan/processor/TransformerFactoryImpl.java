@@ -457,6 +457,23 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     return th;
   }
   
+  /**
+   * Get a TransformerHandler object that can process SAX
+   * ContentHandler events into a Result, based on the Templates argument.
+   *
+   * @param templates The source of the transformation instructions.
+   *
+   * @return TransformerHandler ready to transform SAX events.
+   * @throws TransformerConfigurationException
+   */
+  public TransformerHandler newTransformerHandler(Templates templates)
+    throws TransformerConfigurationException
+  {
+    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
+    TransformerHandler th = (TransformerHandler)transformer.getInputContentHandler();
+    return th;
+  }
+  
   private static final String identityTransform 
     = "<xsl:stylesheet "+
       "xmlns:xsl='http://www.w3.org/1999/XSL/Transform' "+
@@ -550,8 +567,9 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     {
       DOMSource dsource = (DOMSource)source;
       Node node = dsource.getNode();
-      builder.setBaseID(dsource.getBaseID());
-      return processFromNode(node);
+      String baseID = dsource.getBaseID();
+      builder.setBaseID(baseID);
+      return processFromNode(node, baseID);
     }
     
     try
