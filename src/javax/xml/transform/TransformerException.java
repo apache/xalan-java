@@ -136,8 +136,9 @@ public class TransformerException extends Exception
    */
   public TransformerException(String message, Exception e)
   {
-
-    super("TRaX Transform Exception");
+    super ((message == null || message.length()== 0)? 
+           "TRaX Transform Exception" : message);
+      
 
     this.containedException = e;
     this.locator = null;

@@ -226,7 +226,7 @@ public class FuncDocument extends Function2Args
           mnl.addElement(newDoc);
       }
 
-      if (null == iterator)
+      if (null == iterator || newDoc == null)
         break;
     }
 
@@ -261,7 +261,7 @@ public class FuncDocument extends Function2Args
     catch (IOException ioe)
     {
       throw new TransformerException(ioe.getMessage(), 
-        (SAXSourceLocator)xctxt.getSAXLocator(), ioe);
+        (SourceLocator)xctxt.getSAXLocator(), ioe);
     }
     catch(TransformerException te)
     {
@@ -355,7 +355,7 @@ public class FuncDocument extends Function2Args
                                   + "): " + throwable.getMessage());
       }
 
-      diagnosticsString = sw.toString();
+      diagnosticsString = throwable.getMessage(); //sw.toString();
     }
 
     if (null == newDoc)
@@ -402,10 +402,12 @@ public class FuncDocument extends Function2Args
     String formattedMsg = XSLMessages.createMessage(msg, args);
     ErrorListener errHandler = xctxt.getErrorListener();
     TransformerException spe = new TransformerException(formattedMsg,
-                              (SAXSourceLocator)xctxt.getSAXLocator());
+                              (SourceLocator)xctxt.getSAXLocator());
 
     if (null != errHandler)
       errHandler.error(spe);
+    else
+      System.out.println(formattedMsg);
   }
 
   /**
@@ -426,10 +428,12 @@ public class FuncDocument extends Function2Args
     String formattedMsg = XSLMessages.createWarning(msg, args);
     ErrorListener errHandler = xctxt.getErrorListener();
     TransformerException spe = new TransformerException(formattedMsg,
-                              (SAXSourceLocator)xctxt.getSAXLocator());
+                              (SourceLocator)xctxt.getSAXLocator());
 
     if (null != errHandler)
-      errHandler.error(spe);
+      errHandler.warning(spe);
+    else
+      System.out.println(formattedMsg);
   }
 
   /*

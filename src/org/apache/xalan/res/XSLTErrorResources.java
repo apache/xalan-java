@@ -85,7 +85,7 @@ public class XSLTErrorResources extends XSLResourceBundle
   public static final String WARNING_SUFFIX = "WR";
 
   /** NEEDSDOC Field MAX_CODE          */
-  public static final int MAX_CODE = 106;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 107;  // this is needed to keep track of the number of messages          
 
   /** NEEDSDOC Field MAX_WARNING          */
   public static final int MAX_WARNING = 26;  // this is needed to keep track of the number of warnings
@@ -1063,6 +1063,15 @@ public class XSLTErrorResources extends XSLResourceBundle
   {
     contents[ER_INVALID_KEY_CALL][1] =
       "Invalid function call: recursive key() calls are not allowed";
+  }
+  
+  /** Variable is referencing itself          */
+  public static final int ER_REFERENCING_ITSELF = 107;
+
+  static
+  {
+    contents[ER_REFERENCING_ITSELF][1] =
+      "Variable {0} is directly or indirectly referencing itself!";
   }
 
   // Warnings...

@@ -931,6 +931,7 @@ public class TransformerImpl extends Transformer
         doc =
              ((org.apache.xalan.stree.SourceTreeHandler) inputHandler).getRoot();
       }
+
     }
     catch (java.lang.IllegalAccessException iae)
     {
@@ -948,6 +949,7 @@ public class TransformerImpl extends Transformer
     {
       throw new TransformerException(ioe);
     }
+
 
     return doc;
   }
@@ -1173,7 +1175,7 @@ public class TransformerImpl extends Transformer
         }
         catch(Exception e){}
       }
-      throw new TransformerException(se);
+      throw new TransformerException(se.getMessage(), se);
     }
   }
 

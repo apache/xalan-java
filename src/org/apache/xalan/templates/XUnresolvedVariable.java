@@ -64,6 +64,8 @@ import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 
@@ -93,6 +95,9 @@ public class XUnresolvedVariable extends XObject
   
   /** true if this variable or parameter is a global. */
   private boolean m_isGlobal;
+  
+  /** true if this variable or parameter is not currently being evaluated. */
+  private boolean m_doneEval = true;
   
   /**
    * Create an XUnresolvedVariable, that may be executed at a later time.
@@ -140,6 +145,12 @@ public class XUnresolvedVariable extends XObject
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
+    if (!m_doneEval) 
+    {
+      this.m_transformer.getMsgMgr().error      
+        (XSLTErrorResources.ER_REFERENCING_ITSELF, 
+          new Object[]{((ElemVariable)this.object()).getName().getLocalName()}); 
+    }
     VariableStack vars = xctxt.getVarStack();
     
     // These three statements need to be combined into one operation.
@@ -147,12 +158,14 @@ public class XUnresolvedVariable extends XObject
     vars.setSearchStart(m_varStackPos);
     vars.pushContextPosition(m_varStackContext);
 
+    m_doneEval = false;
     ElemVariable velem = (ElemVariable)m_obj;
     XObject var = velem.getValue(m_transformer, m_context);
     
     // These two statements need to be combined into one operation.
     vars.setSearchStart(savedStart);
     vars.popContextPosition();
+    m_doneEval = true;
 
     return var;
   }

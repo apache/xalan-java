@@ -323,12 +323,12 @@ public class SourceTreeManager
     }
     catch (IOException ioe)
     {
-      throw new TransformerException(ioe.getMessage(), (SAXSourceLocator)locator, ioe);
+      throw new TransformerException(ioe.getMessage(), locator, ioe);
     }
-    catch (TransformerException te)
+   /* catch (TransformerException te)
     {
-      throw new TransformerException(te.getMessage(), (SAXSourceLocator)locator, te);
-    }
+      throw new TransformerException(te.getMessage(), locator, te);
+    }*/
   }
 
   /**

@@ -50,10 +50,8 @@ SRCS = \
   javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)sax$(PATHSEP)SAXResult.java \
   javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)sax$(PATHSEP)SAXSource.java \
   javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)sax$(PATHSEP)SAXTransformerFactory.java \
-  javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)sax$(PATHSEP)SerializerHandler.java \
   javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)sax$(PATHSEP)TemplatesHandler.java \
   javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)sax$(PATHSEP)TransformerHandler.java \
-  javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)stream$(PATHSEP)OutputKeys.java \
   javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)stream$(PATHSEP)StreamResult.java \
   javax$(PATHSEP)xml$(PATHSEP)transform$(PATHSEP)stream$(PATHSEP)StreamSource.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)client$(PATHSEP)XSLTProcessorApplet.java \
@@ -202,6 +200,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)StylesheetRoot.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)TemplateList.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)TemplateSubPatternAssociation.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)XUnresolvedVariable.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)WhiteSpaceInfo.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)WhitespaceList.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)XMLNSDecl.java \
@@ -273,17 +272,16 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)FastStringBuffer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringBufferPool.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)DOMSerializer.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)Method.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)OutputFormat.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)QName.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)Serializer.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)SerializerFactory.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)SerializerHandler.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)HTMLOutputFormat.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)TextOutputFormat.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)XHTMLOutputFormat.java \
-  org$(PATHSEP)apache$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)XMLOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)DOMSerializer.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)Method.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)OutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)QName.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)Serializer.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)SerializerFactory.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)HTMLOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)TextOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)XHTMLOutputFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)serialize$(PATHSEP)helpers$(PATHSEP)XMLOutputFormat.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)Class.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)SynthesisException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Constructor.java \

@@ -611,11 +611,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
     catch(IOException ioe)
     {
-      throw new TransformerConfigurationException(ioe);
+      throw new TransformerConfigurationException(ioe.getMessage(), ioe);
     }
     catch(org.xml.sax.SAXException se)
     {
-      throw new TransformerConfigurationException(se);
+      throw new TransformerConfigurationException(se.getMessage(), se);
     }
 
     return builder.getTemplates();

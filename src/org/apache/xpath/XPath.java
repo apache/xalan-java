@@ -269,7 +269,10 @@ public class XPath implements Serializable
           e = ((org.apache.xalan.utils.WrappedRuntimeException) e).getException();
         }
 
-        throw new TransformerException("Error in XPath",
+
+        String msg = e.getMessage();
+        msg = (msg == null || msg.length()== 0)? "Error in XPath" : msg;
+        throw new TransformerException(msg,
                 (SAXSourceLocator)m_locator, e);
       }
     }

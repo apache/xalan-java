@@ -540,7 +540,8 @@ public class Process
                 || (throwable instanceof ClassCastException))
           doStackDumpOnError = true;
 
-        if (doStackDumpOnError)
+        diagnosticsWriter.println();
+        if (doStackDumpOnError)          
           throwable.printStackTrace(dumpWriter);
         else
           diagnosticsWriter.println(
