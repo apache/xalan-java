@@ -27,9 +27,9 @@ import org.xml.sax.Attributes;
  * formatter listener FormatterToXXX)classes.
  *
  * @see org.apache.xml.utils.DOMBuilder
- * @see org.apache.xalan.serialize.SerializerToHTML
- * @see org.apache.xalan.serialize.SerializerToText
- * @see org.apache.xalan.serialize.SerializerToXML
+ * @see org.apache.xml.serializer.ToHTMLStream
+ * @see org.apache.xml.serializer.ToTextStream
+ * @see org.apache.xml.serializer.ToXMLStream
  *
  * @xsl.usage advanced
  */
