@@ -472,6 +472,12 @@ public class ResultTreeHandler
     m_nsSupport.pushContext();
     setPendingElementName (ns, localName, name);
     m_haveDocContent = true;
+    if (ns != null && ns.length() > 0)
+    { 
+      int index;
+      String prefix = (index = name.indexOf(":"))< 0 ? "" : name.substring(0, index);
+      startPrefixMapping ( prefix, ns);
+    }
   }
 
   /**
@@ -489,6 +495,12 @@ public class ResultTreeHandler
     m_pendingAttributes.addAttributes(atts);
     setPendingElementName (ns, localName, name);
     m_haveDocContent = true;
+    if (ns != null && ns.length() > 0)
+    { 
+      int index;
+      String prefix = (index = name.indexOf(":"))< 0 ? "" : name.substring(0, index);
+      startPrefixMapping ( prefix, ns);
+    }
   }
 
   /**
@@ -856,7 +868,7 @@ public class ResultTreeHandler
       String name;
       if(isDefault)
       {
-        prefix = "xml";
+        //prefix = "xml";
         name = "xmlns";
       }
       else
@@ -882,33 +894,33 @@ public class ResultTreeHandler
     int type;
     // Vector nameValues = null;
     // Vector alreadyProcessedPrefixes = null;
-    Node parent = src;
-    while (parent != null
-           && ((type = parent.getNodeType()) == Node.ELEMENT_NODE
-               || (type == Node.ENTITY_REFERENCE_NODE)))
+    Node parent;
+    if(((type = src.getNodeType()) == Node.ELEMENT_NODE
+        || (type == Node.ENTITY_REFERENCE_NODE))
+       && (parent = src.getParentNode()) != null)
     {
-      if (type == Node.ELEMENT_NODE)
+      processNSDecls(parent);
+    }  
+    if (type == Node.ELEMENT_NODE)
+    {
+      NamedNodeMap nnm = src.getAttributes();
+      int nAttrs = nnm.getLength();
+      for (int i = 0;  i < nAttrs;  i++)
       {
-        NamedNodeMap nnm = parent.getAttributes();
-        int nAttrs = nnm.getLength();
-        for (int i = 0;  i < nAttrs;  i++)
+        Node attr = nnm.item(i);
+        String aname = attr.getNodeName();
+        if (QName.isXMLNSDecl(aname))
         {
-          Node attr = nnm.item(i);
-          String aname = attr.getNodeName();
-          if (QName.isXMLNSDecl(aname))
+          String prefix = QName.getPrefixFromXMLNSDecl(aname);
+          String desturi = getURI(prefix);
+          String srcURI = attr.getNodeValue();
+          if(!srcURI.equalsIgnoreCase(desturi))
           {
-            String prefix = QName.getPrefixFromXMLNSDecl(aname);
-            String desturi = getURI(prefix);
-            String srcURI = attr.getNodeValue();
-            if(!srcURI.equalsIgnoreCase(desturi))
-            {
-              this.startPrefixMapping(prefix, srcURI);
-            }
+            this.startPrefixMapping(prefix, srcURI);
           }
         }
       }
-      parent = parent.getParentNode();
-    }
+    }      
   }
     
   /**
