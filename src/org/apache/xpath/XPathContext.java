@@ -1726,4 +1726,31 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    	}
    	
    }
-}
+   
+   /** XPATH2: Default collation. If not set, should be taken as 
+    * standard Unicode codepoint collation
+	* (http://www.w3.org/2002/08/query-operators/collation/codepoint).
+	* 
+	* NOTE: We should probably instantiate the collator here.
+	* 
+	* NOTE: Mapping these URIs to Java collators is an open question.
+    */
+   private String m2_defaultCollation=null;
+   private java.text.Collator m2_defaultCollator=null;
+   
+   public void setDefaultCollation(String collationURI)
+   {
+   	m2_defaultCollation=collationURI;
+   	// m2_defaultCollator= ...
+   }
+   
+   public String getDefaultCollation()
+   {
+   	return m2_defaultCollation;
+   }
+   
+   public java.text.Collator getDefaultCollator()
+   {
+   	return m2_defaultCollator;   	
+   }
+   }

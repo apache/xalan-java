@@ -327,6 +327,9 @@ m_builtInFunctions.put(
       new QName("unique-ID"),
       new FuncUniqueID());
 m_builtInFunctions.put(
+      new QName("compare"),
+      new FuncCompare());
+m_builtInFunctions.put(
       new QName("matches"),
       new FuncMatches());
 m_builtInFunctions.put(
