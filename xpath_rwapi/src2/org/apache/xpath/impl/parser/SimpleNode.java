@@ -243,15 +243,15 @@ public class SimpleNode implements Node, Cloneable
                 break;
 
             // The nodes belows are filtered: no customisation possible
-            case XPathTreeConstants.JJTQNAME:
-            case XPathTreeConstants.JJTQNAMELPAR:
+            
             case XPathTreeConstants.JJTSTAR:
             case XPathTreeConstants.JJTNCNAMECOLONSTAR:
             case XPathTreeConstants.JJTSTARCOLONNCNAME:
-                newNode = new QNameWrapper(id);
-
-                break;
-
+			case XPathTreeConstants.JJTQNAME:    
+			case XPathTreeConstants.JJTQNAMELPAR:    
+				newNode = new QNameWrapper(id);
+				break;
+				
             case XPathTreeConstants.JJTDOTDOT:
                 newNode = Singletons.DOTDOT;
 

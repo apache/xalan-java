@@ -152,5 +152,15 @@ public class XPath20Utilities
 		}
 		return result;
 	}
+	
+	/**
+	 * Returns true whenever the specified expression is a
+	 * <em>singleton sequence</em> (a sequence with only one item).
+	 */
+	public static boolean isSingletonSequence(Expr e)
+	{
+		return e != null && e.getExprType() == Expr.SEQUENCE_EXPR
+		&& ((OperatorExpr) e).getOperandCount() == 1;
+	}
 
 }

@@ -56,8 +56,8 @@
 package org.apache.xpath.expression;
 
 /**
- * Represents <em>path</em> expression. <quote>It can be used to locate nodes within a tree.</quote>
- * <p>A path expression consists of a series of {@link StepExpr}. 
+ * Represents <em>path</em> expressions. <quote>It can be used to locate nodes within a tree.</quote>
+ * <p>A path expression consists of a sequence of {@link StepExpr}. 
  * It's a {@link OperatorExpr operator-based} expression
  * with {@link OperatorExpr#SLASH_STEP} as the operator separator 
  * and {@link Expr#PATH_EXPR} as the operator type. 

@@ -57,189 +57,206 @@ package org.apache.xpath.expression;
 
 import org.apache.xpath.XPath20Exception;
 
-
 /**
- * Represents a step. 
- * <quote>A step generates a sequence of items and then filters the sequence 
- * by zero or more predicates.</quote>
+ * Represents <em>step</em> expressions. 
+ * A step is either a <em>axis step</em> or an <em>filter step</em>.
  * @see <a href="http://www.w3.org/TR/xpath20/#id-axis-steps">XPath 2.0
  *      specification</a>
+ * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
+ * @version $Id$
  */
 public interface StepExpr extends Expr
 {
-    /**
-     * Full name of axis. This array is kept in synchronization with axis
-     * constants.
-     */
-    static final String[] FULL_AXIS_NAME = 
-                                           {
-                                               "", "child", "descendant",
-                                               "parent", "attribute", "self",
-                                               "descendant-or-self", "ancestor",
-                                               "following-sibling",
-                                               "preceding-sibling", "following",
-                                               "preceding", "namespace",
-                                               "ancestor-or-self"
-                                           };
+	/**
+	 * Full name of axis. This array is kept in synchronization with axis
+	 * constants.
+	 */
+	static final String[] FULL_AXIS_NAME =
+		{
+			"",
+			"child",
+			"descendant",
+			"parent",
+			"attribute",
+			"self",
+			"descendant-or-self",
+			"ancestor",
+			"following-sibling",
+			"preceding-sibling",
+			"following",
+			"preceding",
+			"namespace",
+			"ancestor-or-self" };
 
-    /**
-     * The step axis is child
-     */
-    static final short AXIS_CHILD = 1;
+	/**
+	 * The step axis is child
+	 */
+	static final short AXIS_CHILD = 1;
 
-    /**
-     * The step axis is descendant
-     */
-    static final short AXIS_DESCENDANT = 2;
+	/**
+	 * The step axis is descendant
+	 */
+	static final short AXIS_DESCENDANT = 2;
 
-    /**
-     * The step axis is parent
-     */
-    static final short AXIS_PARENT = 3;
+	/**
+	 * The step axis is parent
+	 */
+	static final short AXIS_PARENT = 3;
 
-    /**
-     * The step axis is attribute
-     */
-    static final short AXIS_ATTRIBUTE = 4;
+	/**
+	 * The step axis is attribute
+	 */
+	static final short AXIS_ATTRIBUTE = 4;
 
-    /**
-     * The step axis is self
-     */
-    static final short AXIS_SELF = 5;
+	/**
+	 * The step axis is self
+	 */
+	static final short AXIS_SELF = 5;
 
-    /**
-     * The step axis is descendant or self
-     */
-    static final short AXIS_DESCENDANT_OR_SELF = 6;
+	/**
+	 * The step axis is descendant or self
+	 */
+	static final short AXIS_DESCENDANT_OR_SELF = 6;
 
-    /**
-     * The step axis is ancestor
-     */
-    static final short AXIS_ANCESTOR = 7;
+	/**
+	 * The step axis is ancestor
+	 */
+	static final short AXIS_ANCESTOR = 7;
 
-    /**
-     * The step axis is following sibling
-     */
-    static final short AXIS_FOLLOWING_SIBLING = 8;
+	/**
+	 * The step axis is following sibling
+	 */
+	static final short AXIS_FOLLOWING_SIBLING = 8;
 
-    /**
-     * The step axis is preceding sibling
-     */
-    static final short AXIS_PRECEDING_SIBLING = 9;
+	/**
+	 * The step axis is preceding sibling
+	 */
+	static final short AXIS_PRECEDING_SIBLING = 9;
 
-    /**
-     * The step axis is following
-     */
-    static final short AXIS_FOLLOWING = 10;
+	/**
+	 * The step axis is following
+	 */
+	static final short AXIS_FOLLOWING = 10;
 
-    /**
-     * The step axis is preceding
-     */
-    static final short AXIS_PRECEDING = 11;
+	/**
+	 * The step axis is preceding
+	 */
+	static final short AXIS_PRECEDING = 11;
 
-    /**
-     * The step axis is namespace
-     */
-    static final short AXIS_NAMESPACE = 12;
+	/**
+	 * The step axis is namespace
+	 */
+	static final short AXIS_NAMESPACE = 12;
 
-    /**
-     * The step axis is ancestor or self
-     */
-    static final short AXIS_ANCESTOR_OR_SELF = 13;
+	/**
+	 * The step axis is ancestor or self
+	 */
+	static final short AXIS_ANCESTOR_OR_SELF = 13;
 
-    /**
-     * Tells whether or not this step is a foward axis step
-     * @return boolean
-     */
-    boolean isForwardStep();
+	/**
+	 * Tells whether this step is a forward axis step.
+	 * Includes the follwing axis: 
+	 * <ul>
+	 * <li>{@link #AXIS_CHILD}</li>
+	 * <li>{@link #AXIS_DESCENDANT}</li>
+	 * <li>{@link #AXIS_DESCENDANT_OR_SELF}</li>
+	 * <li>{@link #AXIS_ATTRIBUTE}</li>
+	 * <li>{@link #AXIS_SELF}</li>
+	 * <li>{@link #AXIS_FOLLOWING}</li>
+	 * <li>{@link #AXIS_FOLLOWING_SIBLING}</li>
+	 * <li>{@link #AXIS_NAMESPACE}</li> 
+	 * </ul>
+	 * @return true whenever {@link #getAxisType()} returns one the 
+	 * constants right above.
+	 */
+	boolean isForwardStep();
 
-    /**
-     * Tells whether or not this step is a reversed axis step
-     * @return boolean
-     */
-    boolean isReversedStep();
+	/**
+	 * Tells whether this step is a reversed axis step.
+	 * Includes the following axis: 
+	 * <ul>
+	 * <li>{@link #AXIS_PARENT}</li>
+	 * <li>{@link #AXIS_ANCESTOR}</li> 
+	 * <li>{@link #AXIS_PRECEDING}</li>
+	 * <li>{@link #AXIS_PRECEDING_SIBLING}</li>
+	 * <li>{@link #AXIS_ANCESTOR_OR_SELF}</li>
+	 * </ul> 
+	 * @return true whenever {@link #getAxisType()} returns one the 
+	 * constants right above.
+	 */
+	boolean isReversedStep();
 
-    /**
-     * Tells whether or not this step is a filter step.
-     * @return boolean
-     */
-    boolean isPrimaryExpr();
+	/**
+	 * Tells whether this step is a filter step
+	 * @return boolean
+	 */
+	boolean isFilterStep();
 
-    /**
-     * Gets the type of step axis
-     *
-     * @return short The axis type corresponding to one of the constants defined above.
-     * @throws XPath20Exception whenever the step is neither a forward step nor a reverse
-     *         step.
-     */
-    short getAxisType() throws XPath20Exception;
+	/**
+	 * Gets the type of step axis
+	 * @return short The axis type corresponding to one of the constants defined above.
+	 * @throws XPath20Exception whenever the step isn't an axis step
+	 */
+	short getAxisType() throws XPath20Exception;
 
-    /**
-     * Sets the type of the step axis
-     * @param newType The new axis type
-     * @throws XPath20Exception whenever the step is not a forward or reverse
-     *         step.
-     */
-    void setAxisType(short newType) throws XPath20Exception;
+	/**
+	 * Sets the type of the step axis
+	 * @param newType The new axis type
+	 * @throws XPath20Exception whenever the step isn't an axis step
+	 */
+	void setAxisType(short newType) throws XPath20Exception;
 
-    /**
-     * Gets the name of the step axis
-     *
-     * @return String Full name of the step axis
-     * @throws XPath20Exception whenever the step is not a forward or reverse
-     *         step.
-     */
-    String getAxisName() throws XPath20Exception;
+	/**
+	 * Gets the name of the step axis
+	 * @return String Full name of the step axis
+	 * @throws XPath20Exception whenever the step isn't an axis step
+	 */
+	String getAxisName() throws XPath20Exception;
 
-    /**
-     * Gets the node test 
-     *
-     * @return NodeTest
-     * @throws XPath20Exception whenever the step is not a forward or reverse
-     *          step.
-     */
-    NodeTest getNodeTest() throws XPath20Exception;
-    
+	/**
+	 * Gets the node test 
+	 * @return NodeTest
+	 * @throws XPath20Exception whenever the step isn't an axis step
+	 */
+	NodeTest getNodeTest() throws XPath20Exception;
+
 	/**
 	 * Sets the node test 
-	 *
 	 * @param NodeTest
-	 * @throws XPath20Exception whenever the step is not a forward or reverse
-	 *          step.
+	 * @throws XPath20Exception whenever the step isn't an axis step
 	 */
 	void setNodeTest(NodeTest test) throws XPath20Exception;
 
+	/**
+	 * Gets the primary expression of the filter step. 
+	 * @return Expr The primary expression 
+	 * @throws XPath20Exception whenever the step isn't a filter step
+	 */
+	Expr getPrimaryExpr() throws XPath20Exception;
 
-    /**
-     * Gets the step as a primary expression. 
-     *
-     * @return Expr The primary expression 
-     */
-    Expr getPrimaryExpr() throws XPath20Exception;
+	/**
+	 * Gets the predicate expression at the specified position
+	 * @param i index of the predicate to return
+	 * @return The predicate at the ith position
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
+	 */
+	Expr getPredicateAt(int i);
 
-    /**
-     * Gets the predicate expression at the specified position
-     * @param i index of the predicate to return
-     * @return The predicate at the ith position
-     * @throws java.lang.ArrayIndexOutOfBoundsException
-     */
-    Expr getPredicateAt(int i);
+	/**
+	 * Gets the number of predicate
+	 * @return The number of predicates
+	 */
+	int getPredicateCount();
 
-    /**
-     * Gets the number of predicate
-     *
-     * @return The number of predicates
-     */
-    int getPredicateCount();
+	/**
+	 * Append the specified predicate at the end of the list of
+	 * predicates
+	 * @param predicate The predicate to append
+	 */
+	void appendPredicate(Expr predicate);
 
-    /**
-     * Append the specified predicate
-     * @param predicate The predicate to append
-     */
-    void appendPredicate(Expr predicate);
-
-    /**
-     * Remove the specified predicate
-     */
-    void removePredicate(Expr predicate);
+	/**
+	 * Remove the specified predicate
+	 */
+	void removePredicate(Expr predicate);
 }

@@ -55,10 +55,11 @@
  */
 package org.apache.xpath.impl;
 
-import org.apache.xml.QName;
-
 import org.apache.xpath.XPath20Exception;
+import org.apache.xpath.expression.Expr;
+import org.apache.xpath.expression.NameTest;
 import org.apache.xpath.expression.NodeTest;
+import org.apache.xpath.expression.Visitor;
 import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
@@ -80,7 +81,7 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     /**
      * PI target
      */
-    protected QName m_pitarget;
+    protected NameTestImpl m_pitarget;
 
     /**
      * Creates an any kind test node. Internal uses only
@@ -154,7 +155,7 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     /**
      * @see org.apache.xpath.expression.NodeTest#getLocalNameTest()
      */
-    public QName getNameTest() throws XPath20Exception
+    public NameTest getNameTest() throws XPath20Exception
     {
     	if (m_kindTest == PROCESSING_INSTRUCTION_TEST)
     	{
@@ -166,13 +167,29 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     	}
     }
 
-    /**
-     * @see org.apache.xpath.expression.Expr#getString(boolean)
-     */
+	// Implements Expr
+
     public String getString(boolean abbreviate)
     {
         return KIND_TEST_NAME[m_kindTest];
     }
+
+	public Expr cloneExpression()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public short getExprType()
+	{
+		return Expr.NODE_TEST;
+	}
+
+	public boolean visit(Visitor visitor)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 
     /**
      * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)

@@ -55,12 +55,11 @@
  */
 package org.apache.xpath.expression;
 
-import org.apache.xml.QName;
 import org.apache.xpath.XPath20Exception;
 
 /**
- * Represents an item test. An item test includes both node tests 
- * and the context item test (dot).  
+ * Represents an <em>item test</em>. An item test includes both node tests 
+ * and the context item test (the character '.').  
  * <p>
  * A node test is either a name test or a kind test. For the former, use
  * the method {@link #getNameTest()} to get the {@link QName} involved in the test. 
@@ -79,38 +78,53 @@ import org.apache.xpath.XPath20Exception;
  * @see <a href="http://www.w3.org/TR/xpath20/#doc-NodeTest">Node test specification</a>
  * @see <a href="http://www.w3.org/TR/xpath20/#abbrev">Context item specification</a>
  */
-public interface NodeTest {
+public interface NodeTest extends Expr {
     
     /**
-     * The item test is a processing instruction kind test 
+     * Processing instruction test (kind test) 
      */
 	static final short PROCESSING_INSTRUCTION_TEST = 0;
 	
 	/**
-	 * The item test is a comment kind test
+	 * Comment test (kind test)
 	 */
 	static final short COMMENT_TEST = 1;
 	
 	/**	 
-	 * The item test is any kind of test (except context item test)
+	 * Any kind test (except context item test)
 	 */
 	static final short ANY_KIND_TEST = 2;
 	
 	/**
-	 * The item test is a text kind test
+	 * Text test (kind test)
 	 */
 	static final short TEXT_TEST = 3;
 	
 	/**
+	 * Document test (kind test)
+	 */
+	static final short DOCUMENT_TEST = 4;
+	
+	/**
+	 * Element test (kind test)
+	 */
+	static final short ELEMENT_TEST = 5;
+
+	/**
+	 * Attribute test (kind test)
+	 */
+	static final short ATTRIBUTE_TEST = 6;    
+	
+	/**
 	 * The node test is a context item test (belong to the kind test group)
 	 */
-	static final short CONTEXT_ITEM_TEST = 4;
+	static final short CONTEXT_ITEM_TEST = 7;
     
     /**
-     * Full name of kind tests. 
+     * Full name of simple kind tests (whithout parameters). 
      * This array is synchronized with the kind test constants
      */
-	static final String[] KIND_TEST_NAME = { "processing-instruction()", "comment()", "node()", "text()", "." };
+	static final String[] KIND_TEST_NAME = { "processing-instruction()", "comment()", "node()", "text()", "document-node()", "element()", "attribute()", "." };
     
     /**
      * Return true whenever this node test is a name test
@@ -128,6 +142,7 @@ public interface NodeTest {
      * Gets the kind test code.
      * @return short One of the kind test constant value
      * @throws XPath20Exception whenever this node test isn't a kind test
+     * @deprecated cast to KindTest
      */
     short getKindTest() throws XPath20Exception; 
     
@@ -138,8 +153,9 @@ public interface NodeTest {
      * @return QName The name test
      * @throws XPath20Exception whenever this node test isn't a name test
      * or a pi kind test
+     * @deprecated cast to NameTest
      */
-    QName getNameTest() throws XPath20Exception;
+    NameTest getNameTest() throws XPath20Exception;
     
    
 }

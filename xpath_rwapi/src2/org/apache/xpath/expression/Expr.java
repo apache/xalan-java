@@ -57,8 +57,8 @@ package org.apache.xpath.expression;
 
 /**
  * Represents a XPath expression.
- * <p>Use {@link #getExprType()} to query the expression type. 
- * More information about expression are obtained by casting it
+ * <p>Use {@link #getExprType()} to get the expression type. 
+ * Then, more information about expression are obtained by casting it
  * to its corresponding java type. Here the XPath expression type to Java type mapping table:
  * </p>
  * <table cellpadding="2" cellspacing="2" border="1">
@@ -161,7 +161,7 @@ package org.apache.xpath.expression;
  * 			}
  * 		} else 
  * 		{
- * 		  System.out.println(e.getString(true) + " ");
+ * 		  System.out.print(e.getString(true) + " ");
  * 		}
  * }
  * </pre> 
@@ -171,12 +171,13 @@ package org.apache.xpath.expression;
  * </pre> 
  * <p>XPath expressions are always fully expanded. For example, the expression
  * /a//b is expanded to fn:root(self::node())/descendant-or-self::node()/b.
- * The number of steps is 3 (and not 2). 
+ * The number of steps is then 3 (and not 2). 
  * </p> 
  * <p>
- * An {@link Expr} object may be not a valid XPath expression but only a fragment.
- * For example a {@link StepExpr} expression is a fragment but can't be executed by
- * itself. To be valid, the top level expression must be an expression sequence.
+ * An {@link Expr} object may be not a valid XPath expression but only a fragment (or a part).
+ * For example {@link StepExpr} and {@link NodeTest} expression types are fragments 
+ * and therefore can't be executed by themself. To be valid, the top level expression 
+ * must be an expression sequence.
  * </p>
  * @see <a href="http://www.w3.org/TR/2002/WD-xpath20-20020816/#id-expressions">XPath 2.0 Specification</a>
  * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
@@ -214,7 +215,7 @@ public interface Expr
 	/**
 	 * The expression is a quantified expression of type some     
 	 */
-	static final short SOME_EXPR = 22;
+	static final short SOME_EXPR = 8;
 
 	/**
 	 * The expression is a comparison expression type. 
@@ -254,11 +255,7 @@ public interface Expr
 	 */
 	static final short VARIABLE_REF_EXPR = 15;
 
-	/**
-	 * The expression is a step
-	 */
-	static final short STEP = 17;
-
+	
 	/**
 	 * The expression is an instance of expression
 	 */
@@ -284,6 +281,17 @@ public interface Expr
 	 */
 	static final short LET_EXPR = 23;
 
+	// Expression parts
+
+	/**
+	 * The expression part is a step
+	 */
+	static final short STEP = 17;
+
+	/**
+	 * The expression part is a node test
+	 */
+	static final short NODE_TEST = 11;
 
 	/**
 	 * Gets the expression type. 

@@ -56,111 +56,174 @@
 package org.apache.xpath.impl;
 
 import org.apache.xml.QName;
-
 import org.apache.xpath.XPath20Exception;
+import org.apache.xpath.expression.Expr;
+import org.apache.xpath.expression.NameTest;
 import org.apache.xpath.expression.NodeTest;
+import org.apache.xpath.expression.Visitor;
 import org.apache.xpath.impl.parser.Node;
+import org.apache.xpath.impl.parser.QNameWrapper;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
-
 
 /**
  * Default implementation of name test.
  */
-public class NameTestImpl extends SimpleNode implements NodeTest
+public class NameTestImpl extends SimpleNode implements NodeTest, NameTest
 {
-    /**
-     * Name test
-     */
-    QName m_qname;
+	/**
+	 * Name test
+	 */
+	QName m_qname;
 
-    /**
-     * Constructor for NameTestImpl. Internal uses only
-     *
-     * @param i
-     */
-    public NameTestImpl(int i)
-    {
-        super(i);
-    }
+	/**
+	 * NCName
+	 */
+	String m_ncname;
 
-    /**
-     * Constructor for NodeTestImpl. Internal uses only
-     */
-    public NameTestImpl(QName qname)
-    {
-        super(XPathTreeConstants.JJTNAMETEST);
+	/**
+	 * Nametest type
+	 */
+	short m_type;
 
-        m_qname = qname;
-    }
-    	
-    /**
-     * @see org.apache.xpath.expression.NodeTest#isNameTest()
-     */
-    public boolean isNameTest()
-    {
-        return true;
-    }
+	// Constructors
 
-    /**
-     * @see org.apache.xpath.expression.NodeTest#isKindTest()
-     */
-    public boolean isKindTest()
-    {
-        return false;
-    }
+	/**
+	 * Constructor for NameTestImpl. Internal uses only
+	 *
+	 * @param i
+	 */
+	public NameTestImpl(int i)
+	{
+		super(i);
+	}
 
-    /**
-     * @see org.apache.xpath.expression.NodeTest#getKindTest()
-     */
-    public short getKindTest() throws XPath20Exception
-    {
-        throw new XPath20Exception("Invalid call of this method on NameTest node"); //I8
-    }
+	/**
+	 * Constructor for NodeTestImpl. Internal uses only
+	 */
+	public NameTestImpl(QName qname)
+	{
+		super(XPathTreeConstants.JJTNAMETEST);
 
-    /**
-     * @see org.apache.xpath.expression.NodeTest#getLocalNameTest()
-     */
-    public QName getNameTest() throws XPath20Exception
-    {
-        return m_qname;
-    }
-  
-    /**
-     * @see org.apache.xpath.expression.Expr#getString(boolean)
-     */
-    public String getString(boolean abbreviate)
-    {
-        return m_qname.toString();
-    }
+		m_qname = qname;
+		m_type = QNAME;
+	}
 
- 
-    /**
-     * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
-     */
-    public void jjtAddChild(Node n, int i)
-    {
-        // don't add n in the tree
-        m_qname = ((org.apache.xpath.impl.parser.QNameWrapper) n).getQName();
-    }
+	/**
+	 * @see org.apache.xpath.expression.NodeTest#isNameTest()
+	 */
+	public boolean isNameTest()
+	{
+		return true;
+	}
 
-    /**
-     * @see org.apache.xpath.impl.ExprImpl#getString(StringBuffer,
-     *      boolean)
-     */
-    public void getString(StringBuffer expr, boolean abbreviate)
-    {
-        expr.append(m_qname.toString());
-    }
+	/**
+	 * @see org.apache.xpath.expression.NodeTest#isKindTest()
+	 */
+	public boolean isKindTest()
+	{
+		return false;
+	}
 
-    /**
-     * Override to print out useful instance data.
-     *
-     * @see org.apache.xpath.impl.parser.SimpleNode#toString()
-     */
-    public String toString()
-    {
-        return XPathTreeConstants.jjtNodeName[id] + " " + getClass() + " "
-        + getString(false);
-    }
+	/**
+	 * @see org.apache.xpath.expression.NodeTest#getKindTest()
+	 */
+	public short getKindTest() throws XPath20Exception
+	{
+		throw new XPath20Exception("Invalid call of this method on NameTest node");
+		//I8
+	}
+
+	/**
+	 * @see org.apache.xpath.expression.NodeTest#getLocalNameTest()
+	 */
+	public NameTest getNameTest() throws XPath20Exception
+	{
+		return this;
+	}
+
+	// Implements Expr
+	
+	public String getString(boolean abbreviate)
+	{
+		switch (m_type)
+		{
+			case WILDCARD :
+				return "*";
+			case QNAME :
+				return m_qname.toString();
+			case NCNAME_WILDCARD :
+				return m_ncname + ":*";
+			case WILDCARD_NCNAME :
+				return "*:" + m_ncname;
+				default:
+				throw new IllegalStateException("Invalid NameTest type " + m_type);
+		}
+	}
+
+	//
+	public Expr cloneExpression()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public short getExprType()
+	{
+		return NODE_TEST;
+	}
+
+	//
+	public boolean visit(Visitor visitor)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void jjtAddChild(Node n, int i)
+	{
+		QNameWrapper w = (QNameWrapper) n;
+		
+		m_type = w.m_type;
+		m_ncname = w.m_ncname;
+		m_qname = w.getQName();
+	}
+
+	public void getString(StringBuffer expr, boolean abbreviate)
+	{
+		expr.append(getString(abbreviate));
+	}
+
+	/**
+	 * Override to print out useful instance data.
+	 *
+	 * @see org.apache.xpath.impl.parser.SimpleNode#toString()
+	 */
+	public String toString()
+	{
+		return XPathTreeConstants.jjtNodeName[id]
+			+ " "
+			+ getClass()
+			+ " "
+			+ getString(false);
+	}
+
+	// Implements NameTest
+
+	public QName getName()
+	{
+		return m_qname;
+	}
+
+	public String getNCName()
+	{
+		return m_ncname;
+	}
+
+	public short getNameTestType()
+	{
+		return m_type;
+	}
+
+	
 }

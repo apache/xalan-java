@@ -62,18 +62,17 @@ import org.apache.xpath.XPath20Exception;
 
 
 /**
- * Represents literal expression type.
- * <pre>
- * [59]   Literal   ::=   NumericLiteral |  StringLiteral 
- * [58]   NumericLiteral   ::=   IntegerLiteral |  DecimalLiteral |  DoubleLiteral 
- * [1]   IntegerLiteral   ::=   Digits 
- * [2]   DecimalLiteral   ::=   ("." Digits) |  (Digits "." [0-9]*) 
- * [3]   DoubleLiteral   ::=   (("." Digits) |  (Digits ("." [0-9]*)?)) ("e" | "E") ("+" | "-")? Digits 
- * [4]   StringLiteral ::=   ('"' (('"' '"') |  [^"])* '"') |  ("'" (("'" "'") |  [^'])* "'")
- * </pre>
- * 
- * @see <a href="http://www.w3.org/TR/xpath20#id-literals">XPath 2.0
- *      Specification</a>
+ * Represents <em>literal</em> expressions.
+ * Use {@link #getLiteralType()} to get the type of literal, as following
+ * <ul>
+ * <li>{@link #INTEGER_LITERAL}: xs:integer datatype</li>
+ * <li>{@link #DOUBLE_LITERAL}: xs:double datatype</li>
+ * <li>{@link #DECIMAL_LITERAL}: xs:decimal datatype</li>
+ * <li>{@link #STRING_LITERAL}: xs:string datatype</li>
+ * </ul>
+ * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
+ * @version $Id$
+ * @see <a href="http://www.w3.org/TR/xpath20#id-literals">XPath 2.0 Specification</a>
  */
 public interface Literal extends Expr
 {
@@ -99,64 +98,52 @@ public interface Literal extends Expr
 
     /**
      * Gets the literal type
-     *
      * @return short One of the four following literal type:
-     *         <code>INTEGER_LITERAL</code>, <code>DECIMAL_LITERAL</code>,
-     *         <code>STRING_LITERAL</code>, <code>DOUBLE_LITERAL</code>.
+     *         {@link #INTEGER_LITERAL}, {@link #DECIMAL_LITERAL},
+     *         {@link #STRING_LITERAL}, {@link #DOUBLE_LITERAL}.
      */
     short getLiteralType();
 
     /**
-     * Gets the integer literal
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws XPath20Exception when the literal isn't an integer or cannot be
-     *         represented by the primitive int type (in case of big integer)
+     * Gets the integer literal as primitive Java int type. 
+     * @return int
+     * @throws XPath20Exception when the literal isn't an integer or when it cannot be
+     *         represented as a primitive int type without approximations
      */
     int getIntegerLiteralAsInt() throws XPath20Exception;
 
     /**
-     * Gets the integer literal
-     *
-     * @return DOCUMENT ME!
-     *
+     * Gets the integer literal.
+     * @return BigInteger
      * @throws XPath20Exception when the literal isn't an integer
      */
     BigInteger getIntegerLiteral() throws XPath20Exception;
 
     /**
      * Gets the decimal literal
-     *
-     * @return DOCUMENT ME!
-     *
+     * @return BigDecimal
      * @throws XPath20Exception when the literal isn't a decimal
      */
     BigDecimal getDecimalLiteral() throws XPath20Exception;
 
     /**
      * Gets the decimal literal as a double
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws XPath20Exception when the literal isn't a decimal
+     * @return double
+     * @throws XPath20Exception when the literal isn't a decimal or
+     * when it cannot be represented as a double without approximations
      */
     double getDecimalLiteralAsDouble() throws XPath20Exception;
 
     /**
      * Gets the double literal
-     *
-     * @return DOCUMENT ME!
-     *
+     * @return double
      * @throws XPath20Exception when the literal isn't a double
      */
     double getDoubleLiteral() throws XPath20Exception;
 
     /**
      * Gets the string literal
-     *
-     * @return DOCUMENT ME!
-     *
+     * @return String
      * @throws XPath20Exception when the literal isn't a string
      */
     String getStringLiteral() throws XPath20Exception;

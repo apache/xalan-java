@@ -194,7 +194,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.StepExpr#isPrimaryExpr()
      */
-    public boolean isPrimaryExpr()
+    public boolean isFilterStep()
     {
         return m_axisType == STEP_IS_PRIMARYEXPR;
     }

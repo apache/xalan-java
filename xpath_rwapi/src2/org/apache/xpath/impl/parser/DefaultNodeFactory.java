@@ -81,8 +81,6 @@ import org.apache.xpath.impl.VariableImpl;
 public class DefaultNodeFactory implements NodeFactory 
 {
 
-	final static public String FACTORY_PROPERTY_KEY = "org.apache.xpath.impl.parser.NodeFactory";
-
 	final static private NodeFactory DEFAULT_NODE_FACTORY = new DefaultNodeFactory();
 
 	static protected NodeFactory createNodeFactory()

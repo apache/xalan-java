@@ -75,6 +75,10 @@ import org.apache.xpath.impl.VariableImpl;
  */
 public interface NodeFactory
 {
+	final static public String FACTORY_PROPERTY_KEY = "org.apache.xpath.impl.parser.NodeFactory";
+
+
+	
     /**
      * Creates NameTest AST node
      *

@@ -58,7 +58,7 @@ package org.apache.xpath.expression;
 import org.apache.xpath.datamodel.SequenceType;
 
 /**
- * Represent "castable as" expression.
+ * Represent <em>castable as</em> expressions.
  * @see <a href="http://www.w3.org/TR/xpath20/#id-castable">
  * XPath 2.0 specification</a>
  */

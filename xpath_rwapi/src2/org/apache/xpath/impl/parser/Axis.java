@@ -58,7 +58,7 @@ package org.apache.xpath.impl.parser;
 import org.apache.xpath.expression.StepExpr;
 
 /**
- * Represent an Axis AST node.  
+ * Represents an Axis AST node.  
  */
 public class Axis extends SimpleNode {
 

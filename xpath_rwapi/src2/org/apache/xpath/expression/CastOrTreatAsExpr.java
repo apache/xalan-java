@@ -58,9 +58,9 @@ package org.apache.xpath.expression;
 import org.apache.xpath.datamodel.SequenceType;
 
 /**
- * Represents "cast as" and 'treat as' expression.
- * Use the method <code>getExprType()</code> to differentiate treat as and cast as 
- * expressions.
+ * Represents <em>cast as</em> and <em>treat as</em> expression.
+ * Use the method {@link #getExprType()} to differentiate 
+ * <em>treat as</em> from <em>cast as</em> expressions.
  * @see <a href="http://www.w3.org/TR/xpath20/#id-cast">
  * XPath 2.0 specification</a>
  */

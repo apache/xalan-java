@@ -206,7 +206,7 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
 			int et = step.getExprType();
 
 			return (
-				((et == STEP) && ((StepExpr) step).isPrimaryExpr())
+				((et == STEP) && ((StepExpr) step).isFilterStep())
 					|| (et == LITERAL_EXPR)
 					|| (et == FUNCTION_CALL_EXPR)
 					|| (et == SEQUENCE_EXPR)

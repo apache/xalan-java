@@ -56,6 +56,7 @@
 package org.apache.xpath.impl.parser;
 
 import org.apache.xml.QName;
+import org.apache.xpath.expression.NameTest;
 
 /**
  * QNameNode wrappers a 'real' QName object.
@@ -69,6 +70,9 @@ public class QNameWrapper extends SimpleNode
 	 * The wrapped QName
 	 */
 	QName m_qname;
+	
+	public short m_type;
+	public String m_ncname;
 
 	/**
 	 * Constructor for QName.
@@ -89,36 +93,31 @@ public class QNameWrapper extends SimpleNode
 		super(p, i);
 	}
 
-	/**
-	 * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
-	 */
 	public void processToken(Token t)
 	{
 		super.processToken(t);
-		String qname;
+
 		switch (id)
 		{
 			case XPathTreeConstants.JJTSTAR :
-				m_qname =
-					SimpleNode.getExpressionFactory().createQName(
-						null,
-						"*",
-						null);
+				m_type = NameTest.WILDCARD;
 				break;
 			case XPathTreeConstants.JJTSTARCOLONNCNAME :
-				qname = t.image.trim();
-				qname = qname.substring(qname.indexOf(":") + 1);
-				m_qname =
-					SimpleNode.getExpressionFactory().createQName(
-						null,
-						qname,
-						"*");
+				m_ncname = t.image.trim();
+				m_ncname = m_ncname.substring(m_ncname.indexOf(":") + 1);
+				m_type = NameTest.WILDCARD_NCNAME;
 
 				break;
 			case XPathTreeConstants.JJTNCNAMECOLONSTAR :
+				m_ncname = t.image.trim();
+				m_ncname = m_ncname.substring(0, m_ncname.indexOf(":"));
+				m_type = NameTest.NCNAME_WILDCARD;
+
+				break;
+
 			case XPathTreeConstants.JJTQNAME :
 			case XPathTreeConstants.JJTQNAMELPAR :
-				qname = t.image;
+				String qname = t.image;
 				int parenIndex = qname.lastIndexOf("(");
 				if (parenIndex > 0)
 				{
@@ -133,8 +132,7 @@ public class QNameWrapper extends SimpleNode
 							null,
 							qname,
 							null);
-				}
-				else
+				} else
 				{
 					m_qname =
 						SimpleNode.getExpressionFactory().createQName(
@@ -142,6 +140,7 @@ public class QNameWrapper extends SimpleNode
 							qname.substring(colonIdx + 1),
 							qname.substring(0, colonIdx));
 				}
+				m_type = NameTest.QNAME;
 				break;
 
 			default :
@@ -150,9 +149,7 @@ public class QNameWrapper extends SimpleNode
 		}
 	}
 
-	/**
-	 * @return org.apache.xml.QName
-	 */
+	
 	public org.apache.xml.QName getQName()
 	{
 		return m_qname;

@@ -59,16 +59,19 @@ import org.apache.xml.QName;
 import org.apache.xpath.XPath20Exception;
 
 /**
- * Represents variable.
+ * Represents <em>variable</em> references.
+ * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
+ * @version $Id$
  */
-public interface Variable extends Expr {
+public interface Variable extends Expr
+{
 
-   /**
-     * Gets the name of the variable.
-     * @return String
-     */
-    QName getVariableName();
-    
+	/**
+	 * Gets the name of the variable.
+	 * @return String
+	 */
+	QName getVariableName();
+
 	/**
 	 * Sets the name of the variable.
 	 * @param name New name of the variable
