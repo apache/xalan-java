@@ -62,6 +62,7 @@ import org.apache.xerces.impl.xs.AttributePSVImpl;
 import org.apache.xerces.impl.xs.ElementPSVImpl;
 import org.apache.xerces.impl.xs.psvi.XSSimpleTypeDefinition;
 import org.apache.xerces.impl.xs.psvi.XSTypeDefinition;
+import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xni.Augmentations;
 import org.apache.xerces.xni.QName;
 import org.apache.xerces.xni.XMLAttributes;
@@ -71,6 +72,7 @@ import org.apache.xerces.xni.XMLLocator;
 import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.XMLString;
 import org.apache.xerces.xni.XNIException;
+import org.apache.xerces.xni.parser.XMLDocumentSource;
 import org.apache.xerces.xni.parser.XMLErrorHandler;
 import org.apache.xerces.xni.parser.XMLParseException;
 import org.apache.xerces.xni.parser.XMLPullParserConfiguration;
@@ -132,6 +134,9 @@ public class XNI2DTM
    * @see setIncrementalXNISource
    */
   private XMLPullParserConfiguration m_incrementalXNISource = null;
+  
+  /** XNI expects us to retain this even if we aren't using it */
+  protected XMLDocumentSource m_documentSource;
 
   /** The XNI Document locator 
    * %REVIEW% Should we be storing a SAX locator instead? */
@@ -566,8 +571,27 @@ public class XNI2DTM
    * @throws XNIException Any XNI exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startDocument
+   * @deprecated
+   * @see org.apache.xml.dtm.ref.xni2dtm.XNI2DTM#startDocument(XMLLocator locator,String encoding,NamespaceContext namespaceContext,Augmentations augs)
    */
   public void startDocument(XMLLocator locator,String encoding,Augmentations augs)
+    throws XNIException
+  {
+    try
+    {	super.startDocument();    } 
+    catch(SAXException e)
+    {	throw new XNIException(e);    }
+  }
+
+  /**
+   * XNI XMLDocumentHandler: Receive notification of the beginning of the document.
+   *
+   * @throws XNIException Any XNI exception, possibly
+   *            wrapping another exception.
+   * @see org.xml.sax.ContentHandler#startDocument
+   */
+  public void startDocument(XMLLocator locator,String encoding,
+  	NamespaceContext namespaceContext,Augmentations augs)
     throws XNIException
   {
     try
@@ -894,7 +918,7 @@ public class XNI2DTM
     } // Attribute list loop
     
     
-    if(DTM2XNI.SUPPRESS_XSI_ATTRIBUTES)
+    if(DTM2XNI.SUPPRESS_XSI_ATTRIBUTES && augs!=null)
     {
      	// Were any XNI attributes passed _around_ the validator,
      	// using element augmentations? If so, magic them back
@@ -1425,4 +1449,15 @@ public class XNI2DTM
   public void endConditional(Augmentations augmentations)
     throws XNIException
   {  /*no op*/  } 
+  
+  /** @see XMLDocumentHandler#setDocumentSource */
+  public void setDocumentSource(XMLDocumentSource src)
+  {
+  	m_documentSource=src;
+  }
+  /** @see XMLDocumentHandler#getDocumentSource */
+  public XMLDocumentSource getDocumentSource()
+  {
+  	return m_documentSource;
+  }
 } // XNI2DTM

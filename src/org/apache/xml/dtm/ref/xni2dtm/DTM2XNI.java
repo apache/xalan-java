@@ -103,7 +103,14 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
    * */
   protected org.apache.xerces.xni.Augmentations m_augs=
   	new org.apache.xerces.util.AugmentationsImpl();
-  
+  	
+  // needed by new XNI APIs. Has to be _maintained_ in synch with the
+  // stream. Simplest, of course, might be to do another variant on
+  // our pseudo-SAX NamespaceSupportAtDTMNode and just update which node
+  // it's viewing as we traverse. Will that work without doing full
+  // namespace fix-up?
+  protected org.apache.xml.dtm.ref.xni2dtm.NamespaceContextAtDTMNode m_namespaceContext;
+  	
   /** Manefest constant: Augmentation flag for structure we added, which
    * may need to be stripped out again after validation 
    * This flag is also referenced in XNI2DTM
@@ -186,6 +193,12 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
     m_XMLDocumentHandler = handler;
   }
   
+  /** Get XNI listener */
+  public XMLDocumentHandler getDocumentHandler()
+  {
+    return m_XMLDocumentHandler;
+  }
+  
   /** Set source to read from */
   public void setSource(DTM dtm,int nodeHandle)
   {
@@ -231,8 +244,12 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
 		docaugs.putItem(DTM2XNI_ADDED_STRUCTURE,DTM2XNI_ADDED_STRUCTURE);
 	}
 
+	// This now requires .xni.NamespaceContext as its third argument
+	// (before the augmentations). Still working on figuring out how to
+	// build one... GONK!
+	m_namespaceContext=new NamespaceContextAtDTMNode(m_dtm,pos);
     m_XMLDocumentHandler.startDocument(null, m_dtm.getDocumentEncoding(pos),
-    	docaugs);
+    	m_namespaceContext,docaugs);
 
     // Generate the synthesized context
     // %REVIEW% Reuse one rather than recreating?
@@ -407,6 +424,9 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
       // already dealt with in traverse().
       break;
     case DTM.ELEMENT_NODE :
+      // Update XNI namespace context to display status at this element
+      m_namespaceContext.setCurrentNode(m_dtm,node);
+
       // %REVIEW% Reuse one rather than recreating?
       org.apache.xerces.xni.XMLAttributes attrs = 
                             new org.apache.xerces.util.XMLAttributesImpl();
@@ -494,7 +514,7 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
       // into the validation stream has been taken out of the
       // XSLT2 spec, at least for now. I'm happy; it was a mess,
       // even with the use of annotations to strip these out again.
-
+      
       String ns = m_dtm.getNamespaceURI(node);
       if(null!=ns && ns.length()==0)
         ns = null;
@@ -600,6 +620,11 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
         m_augs.putItem(DTM2XNI_ADDED_STRUCTURE,DTM2XNI_ADDED_STRUCTURE);
         m_XMLDocumentHandler.endPrefixMapping(prefix,m_augs);
       }
+
+      // Update our namespace context to display status at this element
+      m_namespaceContext=(NamespaceContextAtDTMNode)
+	      m_namespaceContext.getParentContext();
+
       break;
     case DTM.CDATA_SECTION_NODE :
       break;

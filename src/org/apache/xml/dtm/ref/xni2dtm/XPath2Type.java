@@ -379,8 +379,15 @@ public class XPath2Type
    * */  
   protected void heavyResolveTypeName(ItemPSVI psvi, boolean attr)
   {
-  	heavyResolveTypeName(psvi,psvi.getMemberTypeDefinition(),
-		psvi.getTypeDefinition(), attr);
+  	if(psvi!=null)
+	  	heavyResolveTypeName(psvi,
+	  		psvi.getMemberTypeDefinition(),
+			psvi.getTypeDefinition(), attr);
+	else
+	{
+        m_namespace = "http://www.w3.org/2001/XMLSchema";
+        m_localName = attr ? "anySimpleType" : "anyType";
+	}
   }
   
   /** Modification of the XPath2 type-name resolution algorithm
