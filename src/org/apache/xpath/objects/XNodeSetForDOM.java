@@ -41,14 +41,28 @@ public class XNodeSetForDOM extends XNodeSet
   {
     m_dtmMgr = xctxt.getDTMManager();
     m_origObj = nodeList;
-    m_obj = new org.apache.xpath.NodeSetDTM(nodeList, xctxt);
+
+    // JKESS 20020514: Longer-term solution is to force
+    // folks to request length through an accessor, so we can defer this
+    // retrieval... but that requires an API change.
+    // m_obj=new org.apache.xpath.NodeSetDTM(nodeList, xctxt);
+    org.apache.xpath.NodeSetDTM nsdtm=new org.apache.xpath.NodeSetDTM(nodeList, xctxt);
+    m_last=nsdtm.getLength();
+    m_obj = nsdtm;   
   }
 
   public XNodeSetForDOM(NodeIterator nodeIter, XPathContext xctxt)
   {
     m_dtmMgr = xctxt.getDTMManager();
     m_origObj = nodeIter;
-    m_obj = new org.apache.xpath.NodeSetDTM(nodeIter, xctxt);
+
+    // JKESS 20020514: Longer-term solution is to force
+    // folks to request length through an accessor, so we can defer this
+    // retrieval... but that requires an API change.
+    // m_obj = new org.apache.xpath.NodeSetDTM(nodeIter, xctxt);
+    org.apache.xpath.NodeSetDTM nsdtm=new org.apache.xpath.NodeSetDTM(nodeIter, xctxt);
+    m_last=nsdtm.getLength();
+    m_obj = nsdtm;   
   }
   
   /**
