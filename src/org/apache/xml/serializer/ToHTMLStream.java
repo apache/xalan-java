@@ -779,8 +779,12 @@ public class ToHTMLStream extends ToStream
             if (elemDesc.is(ElemDesc.EMPTY) )  
             {
                 // an optimization for elements which are expected
-                // to be empty.  Only remember the element description.
+                // to be empty.
                 m_elemContext = m_elemContext.push();
+                /* XSLTC sometimes calls namespaceAfterStartElement()
+                 * so we need to remember the name
+                 */
+                m_elemContext.m_elementName = name;
                 m_elemContext.m_elementDesc = elemDesc;
                 return;                
             } 
