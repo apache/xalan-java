@@ -477,24 +477,32 @@ public class StepPattern extends NodeTest implements SubContextList
 
               for (int i = 0; i < predPos; i++)
               {
-                XObject pred = m_predicates[i].execute(xctxt);
-
+                xctxt.pushPredicatePos(i);
                 try
                 {
-                  if (XObject.CLASS_NUMBER == pred.getType())
+                  XObject pred = m_predicates[i].execute(xctxt);
+                  
+                  try
                   {
-                    throw new Error("Why: Should never have been called");
+                    if (XObject.CLASS_NUMBER == pred.getType())
+                    {
+                      throw new Error("Why: Should never have been called");
+                    }
+                    else if (!pred.boolWithSideEffects())
+                    {
+                      pass = false;
+    
+                      break;
+                    }
                   }
-                  else if (!pred.boolWithSideEffects())
+                  finally
                   {
-                    pass = false;
-  
-                    break;
+                    pred.detach();
                   }
                 }
                 finally
                 {
-                  pred.detach();
+                  xctxt.popPredicatePos();
                 }
               }
             }
@@ -533,11 +541,13 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * @param xctxt XPath runtime context.
    * @param predPos Which predicate we're evaluating of foo[1][2][3].
+   * @param findLast If true, don't terminate when the context node is found.
    *
    * @return the proximity position index of the current node based on the
    *         node test.
    */
-  private final int getProximityPosition(XPathContext xctxt, int predPos)
+  private final int getProximityPosition(XPathContext xctxt, int predPos, 
+                    boolean findLast)
   {
 
     int pos = 0;
@@ -566,29 +576,37 @@ public class StepPattern extends NodeTest implements SubContextList
 
               for (int i = 0; i < predPos; i++)
               {
-                XObject pred = m_predicates[i].execute(xctxt);
-
+                xctxt.pushPredicatePos(i);
                 try
                 {
-                  if (XObject.CLASS_NUMBER == pred.getType())
+                  XObject pred = m_predicates[i].execute(xctxt);
+  
+                  try
                   {
-                    if ((pos + 1) != (int) pred.numWithSideEffects())
+                    if (XObject.CLASS_NUMBER == pred.getType())
+                    {
+                      if ((pos + 1) != (int) pred.numWithSideEffects())
+                      {
+                        pass = false;
+    
+                        break;
+                      }
+                    }
+                    else if (!pred.boolWithSideEffects())
                     {
                       pass = false;
-  
+    
                       break;
                     }
                   }
-                  else if (!pred.boolWithSideEffects())
+                  finally
                   {
-                    pass = false;
-  
-                    break;
+                    pred.detach();
                   }
                 }
                 finally
                 {
-                  pred.detach();
+                  xctxt.popPredicatePos();
                 }
               }
             }
@@ -600,7 +618,7 @@ public class StepPattern extends NodeTest implements SubContextList
             if (pass)
               pos++;
 
-            if (child == context)
+            if (!findLast && child == context)
             {
               return pos;
             }
@@ -634,9 +652,9 @@ public class StepPattern extends NodeTest implements SubContextList
    */
   public int getProximityPosition(XPathContext xctxt)
   {
-    return getProximityPosition(xctxt, xctxt.getPredicatePos());
+    return getProximityPosition(xctxt, xctxt.getPredicatePos(), false);
   }
-
+  
   /**
    * Get the count of the nodes that match the test, which is the proximity
    * position of the last node that can pass this test in the sub context
@@ -650,49 +668,7 @@ public class StepPattern extends NodeTest implements SubContextList
    */
   public int getLastPos(XPathContext xctxt)
   {
-
-    int context = xctxt.getCurrentNode();
-    DTM dtm = xctxt.getDTM(context);
-    int parentContext = dtm.getParent(context);
-
-    // System.out.println("parentContext: "+parentContext.getNodeName());
-    try
-    {
-      xctxt.pushCurrentNode(parentContext);
-
-      int count = 0;
-      DTMAxisTraverser traverser = dtm.getAxisTraverser(Axis.CHILD);
-
-      for (int child = traverser.first(parentContext); DTM.NULL != child;
-              child = traverser.next(parentContext, child))
-      {
-        try
-        {
-          xctxt.pushCurrentNode(child);
-
-          if (NodeTest.SCORE_NONE != super.execute(xctxt, child))
-            count++;
-        }
-        finally
-        {
-          xctxt.popCurrentNode();
-        }
-      }
-
-      return count;
-    }
-    catch (javax.xml.transform.TransformerException se)
-    {
-
-      // TODO: should keep throw sax exception...
-      throw new java.lang.RuntimeException(se.getMessage());
-    }
-    finally
-    {
-      xctxt.popCurrentNode();
-
-      // xctxt.popContextNodeList();
-    }
+    return getProximityPosition(xctxt, xctxt.getPredicatePos(), true);
   }
 
   /**
