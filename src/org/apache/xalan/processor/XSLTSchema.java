@@ -85,44 +85,44 @@ public class XSLTSchema extends XSLTElementDef
   {
 	// xsl:import, xsl:include
     XSLTAttributeDef hrefAttr = new XSLTAttributeDef(null, "href",
-                                  XSLTAttributeDef.T_URL, true, false,XSLTAttributeDef.WARNING);
+                                  XSLTAttributeDef.T_URL, true, false,XSLTAttributeDef.ERROR);
                                   
 	// xsl:preserve-space, xsl:strip-space
     XSLTAttributeDef elementsAttr = new XSLTAttributeDef(null, "elements",
                                       XSLTAttributeDef.T_SIMPLEPATTERNLIST,
-                                      true, false, XSLTAttributeDef.WARNING);
+                                      true, false, XSLTAttributeDef.ERROR);
                                       
     // XSLTAttributeDef anyNamespacedAttr = new XSLTAttributeDef("*", "*",
     //                                XSLTAttributeDef.T_CDATA, false);
     
     // xsl:output
     XSLTAttributeDef methodAttr = new XSLTAttributeDef(null, "method",
-                                    XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.WARNING);
+                                    XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef versionAttr = new XSLTAttributeDef(null, "version",
-                                     XSLTAttributeDef.T_NMTOKEN, false, false,XSLTAttributeDef.WARNING);
+                                     XSLTAttributeDef.T_NMTOKEN, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef encodingAttr = new XSLTAttributeDef(null, "encoding",
-                                      XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
+                                      XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef omitXmlDeclarationAttr = new XSLTAttributeDef(null,
                                                 "omit-xml-declaration",
                                                 XSLTAttributeDef.T_YESNO,
-                                                false, false,XSLTAttributeDef.WARNING);
+                                                false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef standaloneAttr = new XSLTAttributeDef(null,
                                         "standalone",
-                                        XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.WARNING);
+                                        XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef doctypePublicAttr = new XSLTAttributeDef(null,
                                            "doctype-public",
-                                           XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
+                                           XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef doctypeSystemAttr = new XSLTAttributeDef(null,
                                            "doctype-system",
-                                           XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
+                                           XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef cdataSectionElementsAttr = new XSLTAttributeDef(null,
                                                   "cdata-section-elements",
                                                   XSLTAttributeDef.T_QNAMES,
-                                                  false, false,XSLTAttributeDef.WARNING);
+                                                  false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef indentAttr = new XSLTAttributeDef(null, "indent",
-                                    XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.WARNING);
+                                    XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef mediaTypeAttr = new XSLTAttributeDef(null, "media-type",
-                                       XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
+                                       XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
                                        
                   
     // Required.
@@ -145,17 +145,13 @@ public class XSLTSchema extends XSLTElementDef
                                         
     // Optional.
     // Static error if invalid
-    // xsl:template                                       
+    // xsl:template, xsl:decimal-format                                      
     XSLTAttributeDef nameAttrOpt_ERROR = new XSLTAttributeDef(null, "name",
                                      XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.ERROR);
-    // Optional.
-    // xsl:decimal-format                                       
-    XSLTAttributeDef nameAttrOpt = new XSLTAttributeDef(null, "name",
-                                     XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.WARNING);
 
     // xsl:key                                 
     XSLTAttributeDef useAttr = new XSLTAttributeDef(null, "use",
-                                 XSLTAttributeDef.T_EXPR, true, false,XSLTAttributeDef.WARNING);
+                                 XSLTAttributeDef.T_EXPR, true, false,XSLTAttributeDef.ERROR);
            
     // xsl:element, xsl:attribute                              
     XSLTAttributeDef namespaceAVTOpt = new XSLTAttributeDef(null,
@@ -166,11 +162,11 @@ public class XSLTSchema extends XSLTElementDef
                                               "decimal-separator",
                                               XSLTAttributeDef.T_CHAR, false,XSLTAttributeDef.ERROR, ".");
     XSLTAttributeDef infinityAttr = new XSLTAttributeDef(null, "infinity",
-                                      XSLTAttributeDef.T_CDATA, false,XSLTAttributeDef.WARNING,"Infinity");
+                                      XSLTAttributeDef.T_CDATA, false,XSLTAttributeDef.ERROR,"Infinity");
     XSLTAttributeDef minusSignAttr = new XSLTAttributeDef(null, "minus-sign",
                                        XSLTAttributeDef.T_CHAR, false,XSLTAttributeDef.ERROR,"-");
     XSLTAttributeDef NaNAttr = new XSLTAttributeDef(null, "NaN",
-                                 XSLTAttributeDef.T_CDATA, false,XSLTAttributeDef.WARNING, "NaN");
+                                 XSLTAttributeDef.T_CDATA, false,XSLTAttributeDef.ERROR, "NaN");
     XSLTAttributeDef percentAttr = new XSLTAttributeDef(null, "percent",
                                      XSLTAttributeDef.T_CHAR, false,XSLTAttributeDef.ERROR, "%");
     XSLTAttributeDef perMilleAttr = new XSLTAttributeDef(null, "per-mille",
@@ -193,29 +189,29 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef useAttributeSetsAttr = new XSLTAttributeDef(null,
                                               "use-attribute-sets",
                                               XSLTAttributeDef.T_QNAMES,
-                                              false, false, XSLTAttributeDef.WARNING);
+                                              false, false, XSLTAttributeDef.ERROR);
 
     // xsl:if, xsl:when         
     XSLTAttributeDef testAttrRequired = new XSLTAttributeDef(null, "test",   
-                                          XSLTAttributeDef.T_EXPR, true, false,XSLTAttributeDef.WARNING);
+                                          XSLTAttributeDef.T_EXPR, true, false,XSLTAttributeDef.ERROR);
       
       
     // Required.                                       
     // xsl:value-of, xsl:for-each, xsl:copy-of                             
     XSLTAttributeDef selectAttrRequired = new XSLTAttributeDef(null,
                                             "select",
-                                            XSLTAttributeDef.T_EXPR, true, false,XSLTAttributeDef.WARNING);
+                                            XSLTAttributeDef.T_EXPR, true, false,XSLTAttributeDef.ERROR);
 
     // Optional.                                          
     // xsl:variable, xsl:param, xsl:with-param                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
-                                       XSLTAttributeDef.T_EXPR, false, false,XSLTAttributeDef.WARNING);
+                                       XSLTAttributeDef.T_EXPR, false, false,XSLTAttributeDef.ERROR);
 
     // Optional.
     // Default: "node()"
     // xsl:apply-templates                                           
     XSLTAttributeDef selectAttrDefNode = new XSLTAttributeDef(null, "select",
-                                           XSLTAttributeDef.T_EXPR, false,XSLTAttributeDef.WARNING, "node()");
+                                           XSLTAttributeDef.T_EXPR, false,XSLTAttributeDef.ERROR, "node()");
     // Optional.
     // Default: "."
     // xsl:sort                                        
@@ -223,17 +219,17 @@ public class XSLTSchema extends XSLTElementDef
                                           XSLTAttributeDef.T_EXPR, false,XSLTAttributeDef.ERROR, ".");
     // xsl:key                                      
     XSLTAttributeDef matchAttrRequired = new XSLTAttributeDef(null, "match",
-                                           XSLTAttributeDef.T_PATTERN, true, false,XSLTAttributeDef.WARNING);
+                                           XSLTAttributeDef.T_PATTERN, true, false,XSLTAttributeDef.ERROR);
     // xsl:template                                       
     XSLTAttributeDef matchAttrOpt = new XSLTAttributeDef(null, "match",
-                                      XSLTAttributeDef.T_PATTERN, false, false,XSLTAttributeDef.WARNING);
-    // xsl:tempate                                  
+                                      XSLTAttributeDef.T_PATTERN, false, false,XSLTAttributeDef.ERROR);
+    // xsl:template                                  
     XSLTAttributeDef priorityAttr = new XSLTAttributeDef(null, "priority",
-                                     XSLTAttributeDef.T_NUMBER, false, false,XSLTAttributeDef.WARNING);
+                                     XSLTAttributeDef.T_NUMBER, false, false,XSLTAttributeDef.ERROR);
                                      
     // xsl:template, xsl:apply-templates                                 
     XSLTAttributeDef modeAttr = new XSLTAttributeDef(null, "mode",
-                                     XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.WARNING);
+                                     XSLTAttributeDef.T_QNAME, false, false,XSLTAttributeDef.ERROR);
    
     XSLTAttributeDef spaceAttr =
       new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", false, false, false, XSLTAttributeDef.WARNING,
@@ -243,35 +239,35 @@ public class XSLTSchema extends XSLTElementDef
                          
     XSLTAttributeDef spaceAttrLiteral =
       new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", 
-                                          XSLTAttributeDef.T_URL, false, true,XSLTAttributeDef.WARNING);
+                                          XSLTAttributeDef.T_URL, false, true,XSLTAttributeDef.ERROR);
     // xsl:namespace-alias                                      
     XSLTAttributeDef stylesheetPrefixAttr = new XSLTAttributeDef(null,
                                               "stylesheet-prefix",
-                                              XSLTAttributeDef.T_CDATA, true, false,XSLTAttributeDef.WARNING);
+                                              XSLTAttributeDef.T_CDATA, true, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef resultPrefixAttr = new XSLTAttributeDef(null,
                                           "result-prefix",
-                                          XSLTAttributeDef.T_CDATA, true, false,XSLTAttributeDef.WARNING);
+                                          XSLTAttributeDef.T_CDATA, true, false,XSLTAttributeDef.ERROR);
                                           
     // xsl:text, xsl:value-of                                      
     XSLTAttributeDef disableOutputEscapingAttr = new XSLTAttributeDef(null,
                                                    "disable-output-escaping",
                                                    XSLTAttributeDef.T_YESNO,
-                                                   false, false,XSLTAttributeDef.WARNING);
+                                                   false, false,XSLTAttributeDef.ERROR);
                                                    
 	// xsl:number                                                   
-    XSLTAttributeDef levelAttr = new XSLTAttributeDef(null, "level", false, false, false, XSLTAttributeDef.WARNING,
+    XSLTAttributeDef levelAttr = new XSLTAttributeDef(null, "level", false, false, false, XSLTAttributeDef.ERROR,
                                    "single", Constants.NUMBERLEVEL_SINGLE,
                                    "multiple", Constants.NUMBERLEVEL_MULTI,
                                    "any", Constants.NUMBERLEVEL_ANY);
     levelAttr.setDefault("single");
     XSLTAttributeDef countAttr = new XSLTAttributeDef(null, "count",
-                                   XSLTAttributeDef.T_PATTERN, false, false,XSLTAttributeDef.WARNING);
+                                   XSLTAttributeDef.T_PATTERN, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef fromAttr = new XSLTAttributeDef(null, "from",
-                                  XSLTAttributeDef.T_PATTERN, false, false,XSLTAttributeDef.WARNING);
+                                  XSLTAttributeDef.T_PATTERN, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef valueAttr = new XSLTAttributeDef(null, "value",
-                                   XSLTAttributeDef.T_EXPR, false, false,XSLTAttributeDef.WARNING);
+                                   XSLTAttributeDef.T_EXPR, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef formatAttr = new XSLTAttributeDef(null, "format",
-                                    XSLTAttributeDef.T_CDATA, false, true,XSLTAttributeDef.WARNING);
+                                    XSLTAttributeDef.T_CDATA, false, true,XSLTAttributeDef.ERROR);
     formatAttr.setDefault("1");
     
     // xsl:number, xsl:sort
@@ -281,20 +277,20 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:number
     XSLTAttributeDef letterValueAttr = new XSLTAttributeDef(null,
                                          "letter-value",
-                                         false, true, false, XSLTAttributeDef.WARNING,
+                                         false, true, false, XSLTAttributeDef.ERROR,
                                          "alphabetic", Constants.NUMBERLETTER_ALPHABETIC,
                                          "traditional", Constants.NUMBERLETTER_TRADITIONAL);
     // xsl:number
     XSLTAttributeDef groupingSeparatorAVT = new XSLTAttributeDef(null,
                                               "grouping-separator",
-                                              XSLTAttributeDef.T_CHAR, false, true,XSLTAttributeDef.WARNING);
+                                              XSLTAttributeDef.T_CHAR, false, true,XSLTAttributeDef.ERROR);
     // xsl:number
     XSLTAttributeDef groupingSizeAttr = new XSLTAttributeDef(null,
                                           "grouping-size",
-                                          XSLTAttributeDef.T_NUMBER, false, true,XSLTAttributeDef.WARNING);
+                                          XSLTAttributeDef.T_NUMBER, false, true,XSLTAttributeDef.ERROR);
    
    // xsl:sort
-    XSLTAttributeDef dataTypeAttr = new XSLTAttributeDef(null, "data-type", false, true, true, XSLTAttributeDef.WARNING,
+    XSLTAttributeDef dataTypeAttr = new XSLTAttributeDef(null, "data-type", false, true, true, XSLTAttributeDef.ERROR,
                                     "text", Constants.SORTDATATYPE_TEXT ,"number", Constants.SORTDATATYPE_TEXT);
 	dataTypeAttr.setDefault("text");
 	
@@ -311,25 +307,25 @@ public class XSLTSchema extends XSLTElementDef
 	    
     // xsl:message                                   
     XSLTAttributeDef terminateAttr = new XSLTAttributeDef(null, "terminate",
-                                       XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.WARNING);
+                                       XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.ERROR);
     terminateAttr.setDefault("no");
 
 	// top level attributes
     XSLTAttributeDef xslExcludeResultPrefixesAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
                            "exclude-result-prefixes",
-                           XSLTAttributeDef.T_STRINGLIST, false, false,XSLTAttributeDef.WARNING);
+                           XSLTAttributeDef.T_STRINGLIST, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef xslExtensionElementPrefixesAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
                            "extension-element-prefixes",
-                           XSLTAttributeDef.T_PREFIX_URLLIST, false, false,XSLTAttributeDef.WARNING);
+                           XSLTAttributeDef.T_PREFIX_URLLIST, false, false,XSLTAttributeDef.ERROR);
     // result-element-atts                       
     XSLTAttributeDef xslUseAttributeSetsAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "use-attribute-sets",
-                           XSLTAttributeDef.T_QNAMES, false, false,XSLTAttributeDef.WARNING);
+                           XSLTAttributeDef.T_QNAMES, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef xslVersionAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "version",
-                           XSLTAttributeDef.T_NMTOKEN, false, false,XSLTAttributeDef.WARNING);
+                           XSLTAttributeDef.T_NMTOKEN, false, false,XSLTAttributeDef.ERROR);
                            
     XSLTElementDef charData = new XSLTElementDef(this, null, "text()",
                                 null /*alias */, null /* elements */, null,  /* attributes */
@@ -732,7 +728,7 @@ public class XSLTSchema extends XSLTElementDef
                                           null /*alias */,
                                           null /* elements */,  // EMPTY
                                           new XSLTAttributeDef[]{
-                                                  nameAttrOpt,
+                                                  nameAttrOpt_ERROR,
                                                   decimalSeparatorAttr,
                                                   groupingSeparatorAttr,
                                                   infinityAttr,

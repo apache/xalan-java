@@ -105,12 +105,6 @@ public class QName implements java.io.Serializable
     "http://www.w3.org/XML/1998/namespace";
 
   /**
-   * The xmlns namespace.
-   */
-  public static final String S_XMLNSNAMESPACEURI = 
-    "http://www.w3.org/2000/xmlns";
-
-  /**
    * The cached hashcode, which is calculated at construction time.
    * @serial
    */
@@ -403,7 +397,7 @@ public class QName implements java.io.Serializable
         // Do we want this?
         else if (prefix.equals("xmlns"))
         {
-          _namespaceURI = S_XMLNSNAMESPACEURI;
+          return;
         }
         else
         {
@@ -468,22 +462,18 @@ public class QName implements java.io.Serializable
   public QName(String qname, PrefixResolver resolver, boolean validate)
   {
 
+	String prefix = null;
     _namespaceURI = null;
 
     int indexOfNSSep = qname.indexOf(':');
 
     if (indexOfNSSep > 0)
     {
-      String prefix = qname.substring(0, indexOfNSSep);
+      prefix = qname.substring(0, indexOfNSSep);
 
       if (prefix.equals("xml"))
       {
         _namespaceURI = S_XMLNAMESPACEURI;
-      }
-      // Do we want this?
-      else if (prefix.equals("xmlns"))
-      {
-        _namespaceURI = S_XMLNSNAMESPACEURI;
       }
       else
       {
@@ -499,9 +489,9 @@ public class QName implements java.io.Serializable
       }
     }
 
-    _localName = (indexOfNSSep < 0)
-                 ? qname : qname.substring(indexOfNSSep + 1);
-
+	_localName = (indexOfNSSep < 0)
+                 ? qname : qname.substring(indexOfNSSep + 1);   
+                 
     if (validate)
     {
         if ((_localName == null) || (!XMLChar.isValidNCName(_localName))) 
@@ -510,8 +500,10 @@ public class QName implements java.io.Serializable
             XPATHErrorResources.ER_ARG_LOCALNAME_INVALID,null )); //"Argument 'localName' not a valid NCName");
         }
     }                 
-                 
+
+              
     m_hashCode = toString().hashCode();
+    _prefix = prefix;
   }
 
   /**
