@@ -441,40 +441,18 @@ public class ElemForEach extends ElemTemplateElement
               case Node.ELEMENT_NODE :
                 template = sroot.getDefaultRule();
                 break;
+              case Node.ATTRIBUTE_NODE :
               case Node.CDATA_SECTION_NODE :
-                if (child.isSupported(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
-                {
-                  ((SaxEventDispatch) child).dispatchSaxEvent(rth);
-                }
-                else
-                {
-                  rth.startCDATA();
-
-                  String data = child.getNodeValue();
-
-                  rth.characters(data.toCharArray(), 0, data.length());
-                  rth.endCDATA();
-                }
-
-                continue;
               case Node.TEXT_NODE :
                 if (child.isSupported(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
                 {
-                  ((SaxEventDispatch) child).dispatchSaxEvent(rth);
+                  ((SaxEventDispatch) child).dispatchCharactersEvent(rth);
                 }
                 else
                 {
                   String data = child.getNodeValue();
-
                   rth.characters(data.toCharArray(), 0, data.length());
                 }
-
-                continue;
-              case Node.ATTRIBUTE_NODE :
-                String data = child.getNodeValue();
-
-                rth.characters(data.toCharArray(), 0, data.length());
-
                 continue;
               case Node.DOCUMENT_NODE :
                 template = sroot.getDefaultRootRule();
