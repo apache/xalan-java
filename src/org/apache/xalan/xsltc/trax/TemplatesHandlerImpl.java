@@ -76,14 +76,17 @@ import org.apache.xalan.xsltc.compiler.Stylesheet;
 import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 
+import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.Attributes;
 
 /**
  * Implementation of a JAXP1.1 TemplatesHandler
  */
-public class TemplatesHandlerImpl extends Parser
-    implements TemplatesHandler, SourceLoader
+public class TemplatesHandlerImpl 
+    implements ContentHandler, TemplatesHandler, SourceLoader
 {
     /**
      * System ID for this stylesheet.
@@ -105,6 +108,11 @@ public class TemplatesHandlerImpl extends Parser
      * object belongs to.
      */
     private TransformerFactoryImpl _tfactory = null;
+    
+    /**
+     * A reference to XSLTC's parser object.
+     */
+    private Parser _parser = null;
 
     /**
      * Default constructor
@@ -112,22 +120,14 @@ public class TemplatesHandlerImpl extends Parser
     protected TemplatesHandlerImpl(int indentNumber,
 	TransformerFactoryImpl tfactory)
     {
-	super(null);
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
-    }
-
-    /**
-     * Internal initialization
-     */
-    public void init() {
-	// Create and initialize a stylesheet compiler
-	final XSLTC xsltc = new XSLTC();
-	super.setXSLTC(xsltc);
-	xsltc.init();
-	super.init();
-	xsltc.setParser(this);
-	xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
+    
+        // Initialize a parser object
+        XSLTC xsltc = new XSLTC();
+        xsltc.init();
+        xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
+        _parser = xsltc.getParser();
     }
 
     /**
@@ -168,7 +168,7 @@ public class TemplatesHandlerImpl extends Parser
      */
     public Templates getTemplates() {
 	try {
-	    final XSLTC xsltc = getXSLTC();
+	    XSLTC xsltc = _parser.getXSLTC();
 
 	    // Set a document loader (for xsl:include/import) if defined
 	    if (_uriResolver != null) {
@@ -189,25 +189,25 @@ public class TemplatesHandlerImpl extends Parser
 	    transletName = xsltc.getClassName();
 
 	    Stylesheet stylesheet = null;
-	    SyntaxTreeNode root = getDocumentRoot();
+	    SyntaxTreeNode root = _parser.getDocumentRoot();
 
 	    // Compile the translet - this is where the work is done!
-	    if (!errorsFound() && root != null) {
+	    if (!_parser.errorsFound() && root != null) {
 		// Create a Stylesheet element from the root node
-		stylesheet = makeStylesheet(root);
+		stylesheet = _parser.makeStylesheet(root);
 		stylesheet.setSystemId(_systemId);
 		stylesheet.setParentStylesheet(null);
-		setCurrentStylesheet(stylesheet);
+		_parser.setCurrentStylesheet(stylesheet);
 
 		// Set it as top-level in the XSLTC object
 		xsltc.setStylesheet(stylesheet);
 
 		// Create AST under the Stylesheet element
-		createAST(stylesheet);
+		_parser.createAST(stylesheet);
 	    }
 
 	    // Generate the bytecodes and output the translet class(es)
-	    if (!errorsFound() && stylesheet != null) {
+	    if (!_parser.errorsFound() && stylesheet != null) {
 		stylesheet.setMultiDocument(xsltc.isMultiDocument());
 
                 // Class synchronization is needed for BCEL
@@ -216,13 +216,13 @@ public class TemplatesHandlerImpl extends Parser
                 }
 	    }
 
-	    if (!errorsFound()) {
+	    if (!_parser.errorsFound()) {
 		// Check that the transformation went well before returning
 		final byte[][] bytecodes = xsltc.getBytecodes();
 		if (bytecodes != null) {
 		    final TemplatesImpl templates =
 			new TemplatesImpl(xsltc.getBytecodes(), transletName,
-			    getOutputProperties(), _indentNumber, _tfactory);
+			    _parser.getOutputProperties(), _indentNumber, _tfactory);
 
 		    // Set URIResolver on templates object
 		    if (_uriResolver != null) {
@@ -236,16 +236,6 @@ public class TemplatesHandlerImpl extends Parser
 	    // falls through
 	}
 	return null;
-    }
-
-    /**
-     * Recieve an object for locating the origin of SAX document events.
-     * Most SAX parsers will use this method to inform content handler
-     * of the location of the parsed document.
-     */
-    public void setDocumentLocator(Locator locator) {
-	super.setDocumentLocator(locator);
-  	setSystemId(locator.getSystemId());
     }
 
     /**
@@ -269,6 +259,89 @@ public class TemplatesHandlerImpl extends Parser
 	    // Falls through
 	}
 	return null;
+    }
+    
+    // -- ContentHandler --------------------------------------------------
+    
+    /**
+     * Re-initialize parser and forward SAX2 event.
+     */
+    public void startDocument() {
+        _parser.init();
+        _parser.startDocument();
+    }
+
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void endDocument() { 
+        _parser.endDocument();
+    }
+
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void startPrefixMapping(String prefix, String uri) {
+        _parser.startPrefixMapping(prefix, uri);
+    }
+
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void endPrefixMapping(String prefix) { 
+        _parser.endPrefixMapping(prefix);
+    }
+
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void startElement(String uri, String localname, String qname, 
+        Attributes attributes) throws SAXException 
+    {
+        _parser.startElement(uri, localname, qname, attributes);
+    }
+    
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void endElement(String uri, String localname, String qname) {
+        _parser.endElement(uri, localname, qname);
+    }
+
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void characters(char[] ch, int start, int length) {
+        _parser.characters(ch, start, length);
+    }
+    
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void processingInstruction(String name, String value) {
+        _parser.processingInstruction(name, value);
+    }
+    
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void ignorableWhitespace(char[] ch, int start, int length) { 
+        _parser.ignorableWhitespace(ch, start, length);
+    }
+
+    /**
+     * Just forward SAX2 event to parser object.
+     */
+    public void skippedEntity(String name) { 
+        _parser.skippedEntity(name);
+    }
+
+    /**
+     * Set internal system Id and forward SAX2 event to parser object.
+     */
+    public void setDocumentLocator(Locator locator) {
+        setSystemId(locator.getSystemId());
+        _parser.setDocumentLocator(locator);
     }
 }
 
