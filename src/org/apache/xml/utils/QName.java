@@ -77,9 +77,23 @@ import org.apache.xalan.res.XSLMessages;
  * is used as the name of the object. The default namespace is not used for
  * unprefixed names."
  */
-public class QName extends org.apache.xalan.serialize.QName
-        implements java.io.Serializable
+public class QName implements java.io.Serializable
 {
+
+  /**
+   * The local name.
+   */
+  protected String _localName;
+
+  /**
+   * The namespace URI.
+   */
+  protected String _namespaceURI;
+
+  /**
+   * The namespace prefix.
+   */
+  protected String _prefix;
 
   /**
    * The XML namespace.
@@ -88,93 +102,52 @@ public class QName extends org.apache.xalan.serialize.QName
     "http://www.w3.org/XML/1998/namespace";
 
   /**
-   * Get the namespace of the qualified name.
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public String getNamespace()
-  {
-    return getNamespaceURI();
-  }
-
-  /**
-   * Get the local part of the qualified name.
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public String getLocalPart()
-  {
-    return getLocalName();
-  }
-
-  /**
    * The cached hashcode, which is calculated at construction time.
    */
   private int m_hashCode;
 
   /**
-   * Return the cached hashcode of the qualified name.
-   *
-   * NEEDSDOC ($objectName$) @return
+   * Constructs an empty QName.
+   * 20001019: Try making this public, to support Serializable? -- JKESS
    */
-  public int hashCode()
+  public QName(){}
+
+  /**
+   * Constructs a new QName with the specified namespace URI and
+   * local name.
+   *
+   * @param namespaceURI The namespace URI if known, or null
+   * @param localName The local name
+   */
+  public QName(String namespaceURI, String localName)
   {
-    return m_hashCode;
+
+    if (localName == null)
+      throw new IllegalArgumentException("Argument 'localName' is null");
+
+    _namespaceURI = namespaceURI;
+    _localName = localName;
+    m_hashCode = toString().hashCode();
   }
 
   /**
-   * Override equals and agree that we're equal if
-   * the passed object is a string and it matches
-   * the name of the arg.
+   * Constructs a new QName with the specified namespace URI, prefix
+   * and local name.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localPart
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param namespaceURI The namespace URI if known, or null
+   * @param prefix The namespace prefix is known, or null
+   * @param localName The local name
    */
-  public boolean equals(String ns, String localPart)
+  public QName(String namespaceURI, String prefix, String localName)
   {
 
-    String thisnamespace = getNamespaceURI();
+    if (localName == null)
+      throw new IllegalArgumentException("Argument 'localName' is null");
 
-    return getLocalName().equals(localPart)
-           && (((null != thisnamespace) && (null != ns))
-               ? thisnamespace.equals(ns)
-               : ((null == thisnamespace) && (null == ns)));
-  }
-
-  /**
-   * Override equals and agree that we're equal if
-   * the passed object is a QName and it matches
-   * the name of the arg.
-   *
-   * NEEDSDOC @param qname
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public boolean equals(QName qname)
-  {
-
-    String thisnamespace = getNamespaceURI();
-    String thatnamespace = qname.getNamespaceURI();
-
-    return getLocalName().equals(qname.getLocalName())
-           && (((null != thisnamespace) && (null != thatnamespace))
-               ? thisnamespace.equals(thatnamespace)
-               : ((null == thisnamespace) && (null == thatnamespace)));
-  }
-  
-  public static QName getQNameFromString(String name)
-  {
-    StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
-    QName qname;
-    String s1 = tokenizer.nextToken();
-    String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
-    if(null == s2)
-      qname = new QName(null, s1);
-    else
-      qname = new QName(s1, s2);
-    return qname;
+    _namespaceURI = namespaceURI;
+    _prefix = prefix;
+    _localName = localName;
+    m_hashCode = toString().hashCode();
   }
 
   /**
@@ -186,85 +159,12 @@ public class QName extends org.apache.xalan.serialize.QName
   public QName(String localName)
   {
 
-    super(null, localName);
+    if (localName == null)
+      throw new IllegalArgumentException("Argument 'localName' is null");
 
+    _namespaceURI = null;
+    _localName = localName;
     m_hashCode = toString().hashCode();
-  }
-
-  /**
-   * Construct a QName from a namespace and a local name.
-   *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   */
-  public QName(String ns, String localName)
-  {
-
-    super(ns, localName);
-
-    m_hashCode = toString().hashCode();
-  }
-
-  /**
-   * This function tells if a raw attribute name is a
-   * xmlns attribute.
-   *
-   * NEEDSDOC @param attRawName
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public static boolean isXMLNSDecl(String attRawName)
-  {
-
-    return (attRawName.startsWith("xmlns")
-            && (attRawName.equals("xmlns")
-                || attRawName.startsWith("xmlns:")));
-  }
-
-  /**
-   * This function tells if a raw attribute name is a
-   * xmlns attribute.
-   *
-   * NEEDSDOC @param attRawName
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public static String getPrefixFromXMLNSDecl(String attRawName)
-  {
-
-    int index = attRawName.indexOf(':');
-
-    return (index >= 0) ? attRawName.substring(index + 1) : "";
-  }
-
-  /**
-   * Returns the local name of the given node.
-   *
-   * NEEDSDOC @param qname
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public static String getLocalPart(String qname)
-  {
-
-    int index = qname.indexOf(':');
-
-    return (index < 0) ? qname : qname.substring(index + 1);
-  }
-
-  /**
-   * Returns the local name of the given node.
-   *
-   * NEEDSDOC @param qname
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public static String getPrefixPart(String qname)
-  {
-
-    int index = qname.indexOf(':');
-
-    return (index >= 0) ? qname.substring(0, index) : "";
   }
 
   /**
@@ -431,6 +331,38 @@ public class QName extends org.apache.xalan.serialize.QName
   }
 
   /**
+   * Returns the namespace URI. Returns null if the namespace URI
+   * is not known.
+   *
+   * @return The namespace URI, or null
+   */
+  public String getNamespaceURI()
+  {
+    return _namespaceURI;
+  }
+
+  /**
+   * Returns the namespace prefix. Returns null if the namespace
+   * prefix is not known.
+   *
+   * @return The namespace prefix, or null
+   */
+  public String getPrefix()
+  {
+    return _prefix;
+  }
+
+  /**
+   * Returns the local part of the qualified name.
+   *
+   * @return The local part of the qualified name
+   */
+  public String getLocalName()
+  {
+    return _localName;
+  }
+
+  /**
    * Return the string representation of the namespace. Performs
    * string concatenation, so beware of performance issues.
    *
@@ -438,17 +370,168 @@ public class QName extends org.apache.xalan.serialize.QName
    */
   public String toString()
   {
-    return (null != this._namespaceURI)
-           ? (this._namespaceURI + ":" + this._localName) : this._localName;
+
+    return _prefix != null
+           ? (_prefix + ":" + _localName)
+           : (_namespaceURI != null
+              ? (_namespaceURI + "^" + _localName) : _localName);
   }
 
-  /** Serializable objects seem to require a public no-args constructor.
-   * Nobody else will be using it, and the object will be promptly 
-   * overwritten. Should this be putting the object in a recognizable
-   * "You shouldn't have done that" state?
+  /**
+   * Get the namespace of the qualified name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public QName()
-  { super();
-	/* Deserializer will run after this to fill in the fields */ 
+  public String getNamespace()
+  {
+    return getNamespaceURI();
+  }
+
+  /**
+   * Get the local part of the qualified name.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getLocalPart()
+  {
+    return getLocalName();
+  }
+
+  /**
+   * Return the cached hashcode of the qualified name.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public int hashCode()
+  {
+    return m_hashCode;
+  }
+
+  /**
+   * Override equals and agree that we're equal if
+   * the passed object is a string and it matches
+   * the name of the arg.
+   *
+   * NEEDSDOC @param ns
+   * NEEDSDOC @param localPart
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean equals(String ns, String localPart)
+  {
+
+    String thisnamespace = getNamespaceURI();
+
+    return getLocalName().equals(localPart)
+           && (((null != thisnamespace) && (null != ns))
+               ? thisnamespace.equals(ns)
+               : ((null == thisnamespace) && (null == ns)));
+  }
+
+  /**
+   * Override equals and agree that we're equal if
+   * the passed object is a QName and it matches
+   * the name of the arg.
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean equals(QName qname)
+  {
+
+    String thisnamespace = getNamespaceURI();
+    String thatnamespace = qname.getNamespaceURI();
+
+    return getLocalName().equals(qname.getLocalName())
+           && (((null != thisnamespace) && (null != thatnamespace))
+               ? thisnamespace.equals(thatnamespace)
+               : ((null == thisnamespace) && (null == thatnamespace)));
+  }
+
+  /**
+   * NEEDSDOC Method getQNameFromString 
+   *
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC (getQNameFromString) @return
+   */
+  public static QName getQNameFromString(String name)
+  {
+
+    StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
+    QName qname;
+    String s1 = tokenizer.nextToken();
+    String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+
+    if (null == s2)
+      qname = new QName(null, s1);
+    else
+      qname = new QName(s1, s2);
+
+    return qname;
+  }
+
+  /**
+   * This function tells if a raw attribute name is a
+   * xmlns attribute.
+   *
+   * NEEDSDOC @param attRawName
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public static boolean isXMLNSDecl(String attRawName)
+  {
+
+    return (attRawName.startsWith("xmlns")
+            && (attRawName.equals("xmlns")
+                || attRawName.startsWith("xmlns:")));
+  }
+
+  /**
+   * This function tells if a raw attribute name is a
+   * xmlns attribute.
+   *
+   * NEEDSDOC @param attRawName
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public static String getPrefixFromXMLNSDecl(String attRawName)
+  {
+
+    int index = attRawName.indexOf(':');
+
+    return (index >= 0) ? attRawName.substring(index + 1) : "";
+  }
+
+  /**
+   * Returns the local name of the given node.
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public static String getLocalPart(String qname)
+  {
+
+    int index = qname.indexOf(':');
+
+    return (index < 0) ? qname : qname.substring(index + 1);
+  }
+
+  /**
+   * Returns the local name of the given node.
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public static String getPrefixPart(String qname)
+  {
+
+    int index = qname.indexOf(':');
+
+    return (index >= 0) ? qname.substring(0, index) : "";
   }
 }

@@ -56,6 +56,8 @@
  */
 package org.apache.xalan.serialize;
 
+import org.apache.xml.utils.QName;
+
 /**
  * The output format affects the manner in which a document is
  * serialized. The output format determines the output method,

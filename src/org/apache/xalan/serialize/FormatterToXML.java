@@ -77,7 +77,7 @@ import org.apache.xalan.serialize.helpers.XMLOutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.DOMSerializer;
-import org.apache.xalan.serialize.QName;
+import org.apache.xml.utils.QName;
 
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.TreeWalker;

@@ -411,7 +411,7 @@ public class OutputFormatExtended extends OutputFormat
       m_cdataElementsHasBeenSet = true;
 
     int n = elements.size();
-    org.apache.xalan.serialize.QName[] qnames = new QName[n];
+    org.apache.xml.utils.QName[] qnames = new QName[n];
 
     for (int i = 0; i < n; i++)
     {
@@ -426,7 +426,7 @@ public class OutputFormatExtended extends OutputFormat
    *
    * NEEDSDOC @param elements
    */
-  public void setCdataSectionElements(org.apache.xalan.serialize.QName[] elements)
+  public void setCdataSectionElements(org.apache.xml.utils.QName[] elements)
   {
 
     if (m_shouldRecordHasBeenSet)
@@ -616,7 +616,7 @@ public class OutputFormatExtended extends OutputFormat
    * @param nonEscapingElements List of unescaped element tag names
    */
   public void setNonEscapingElements(
-          org.apache.xalan.serialize.QName[] nonEscapingElements)
+          org.apache.xml.utils.QName[] nonEscapingElements)
   {
 
     // TODO: Need to work on this.
